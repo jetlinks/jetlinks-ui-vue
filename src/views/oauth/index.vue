@@ -179,8 +179,11 @@ const getLoginUser = async (data?: any) => {
 }
 
 const getQueryVariable = (): Map<string, string> => {
-  const query = window.location.search.substring(1);
-  const vars = query.split('&');
+  const index = window.location.href.indexOf('?')
+  const paramsUrl = window.location.href.substr(index + 1)
+  const paramsArr = paramsUrl.split('#')?.[0] || ''
+
+  const vars = paramsArr.split('&');
   const maps = new Map()
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=');

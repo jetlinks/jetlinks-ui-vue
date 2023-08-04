@@ -86,8 +86,15 @@ const showText = computed(() => {
       case 'date':
         return props.value?.value;
       case 'boolean':
+        const _value = props.value?.value
         const item = props.options.find(item => item.value === props.value?.value)
-        return item ? item.label : props.value?.value === 'true' ? '是' : '否'
+        if (item) {
+          return item.label
+        }else if (_value) {
+          return _value === 'true' ? '是' : '否'
+        } else {
+          return ''
+        }
       default:
         return props.value?.value
     }

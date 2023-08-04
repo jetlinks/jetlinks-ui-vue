@@ -65,7 +65,13 @@ const showText = (value: any) => {
         return value;
       case 'boolean':
         const item = props.options.find(item => item.value === value)
-        return item ? item.label : value === 'true' ? '是' : '否'
+          if (item) {
+            return item.label
+          }else if (value) {
+            return value === 'true' ? '是' : '否'
+          } else {
+             return ''
+          }
       default:
         return value
     }
