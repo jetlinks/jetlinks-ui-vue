@@ -282,10 +282,16 @@ const handleSearch = async () => {
         );
       }
       if (resp && resp.status === 200 && resp.result) {
-        formData.virtualRule.script = resp.result.triggerProperties.script
+        const _triggerProperties = props.value?.expands?.virtualRule?.triggerProperties?.length ? props.value?.expands?.virtualRule?.triggerProperties : resp.result.triggerProperties
+        formData.virtualRule = {
+          triggerProperties: _triggerProperties?.length ? _triggerProperties : ['*'],
+          ...resp.result.rule,
+        }
+      } else {
+        setInitVirtualRule()
       }
-    } catch (e) {
-
+    } catch (err) {
+      setInitVirtualRule()
     }
 };
 
@@ -319,9 +325,8 @@ watch(
     (newVal: SourceType) => {
         if (newVal === 'rule') {
             formData.virtualRule = initData;
-            if (!formData.virtualRule.script) {
-              handleSearch();
-            }
+
+            handleSearch();
             setInitVirtualRule()
         } else {
             formData.virtualRule = undefined;
