@@ -1,7 +1,7 @@
 <template>
     <div class="metadata-type">
       <div class="metadata-type-select">
-        <DataTableTypeSelect :allowClear="true" v-model:value="type" @change="typeChange" />
+        <DataTableTypeSelect v-model:value="type" @change="typeChange" />
       </div>
         <DataTableArray
             v-if="type === 'array'"
@@ -192,6 +192,7 @@ watch(
     () => {
         type.value = props.value?.valueType?.type;
         _valueType.value = props.value?.valueType
+        console.log(props.value)
         // elements.value = props.value?.valueType.elements;
         // if (['float', 'double', 'int', 'long'].includes(type.value)) {
         //     const res = getUnit().then((res) => {

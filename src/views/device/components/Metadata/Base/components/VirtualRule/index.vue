@@ -266,34 +266,28 @@ const setInitVirtualRule = () => {
   }
 }
 
-// const handleSearch = async () => {
-//     let resp: any = undefined;
-//     try {
-//       if (target === 'product') {
-//         resp = await queryProductVirtualProperty(
-//             productStore.current?.id,
-//             props.value?.id,
-//         );
-//       } else {
-//         resp = await queryDeviceVirtualProperty(
-//             instanceStore.current?.productId,
-//             instanceStore.current?.id,
-//             props.value?.id,
-//         );
-//       }
-//       if (resp && resp.status === 200 && resp.result) {
-//         console.log(resp.result)
-//         formData.virtualRule = {
-//           triggerProperties: resp.result.triggerProperties?.length ? resp.result.triggerProperties : ['*'],
-//           ...resp.result.rule,
-//         }
-//       } else {
-//         setInitVirtualRule()
-//       }
-//     } catch (err) {
-//       setInitVirtualRule()
-//     }
-// };
+const handleSearch = async () => {
+    let resp: any = undefined;
+    try {
+      if (target === 'product') {
+        resp = await queryProductVirtualProperty(
+            productStore.current?.id,
+            props.value?.id,
+        );
+      } else {
+        resp = await queryDeviceVirtualProperty(
+            instanceStore.current?.productId,
+            instanceStore.current?.id,
+            props.value?.id,
+        );
+      }
+      if (resp && resp.status === 200 && resp.result) {
+        formData.virtualRule.script = resp.result.triggerProperties.script
+      }
+    } catch (e) {
+
+    }
+};
 
 const queryAggType = () => {
     getStreamingAggType().then((resp) => {
@@ -325,8 +319,9 @@ watch(
     (newVal: SourceType) => {
         if (newVal === 'rule') {
             formData.virtualRule = initData;
-
-            // handleSearch();
+            if (!formData.virtualRule.script) {
+              handleSearch();
+            }
             setInitVirtualRule()
         } else {
             formData.virtualRule = undefined;

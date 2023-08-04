@@ -2,7 +2,6 @@
     <j-input
         v-if="type === 'string'"
         v-model:value="myValue"
-        :maxLength="64"
         placeholder="请输入"
         @change="change"
     />
@@ -19,8 +18,8 @@
     <j-input-number
         v-else-if="type === 'long'"
         v-model:value="myValue"
-        :max="9999999999999999"
-        :min="-9999999999999999"
+        :max="999999999999999"
+        :min="-999999999999999"
         :precision="0"
         placeholder="请输入"
         style="width: 100%"
@@ -29,8 +28,8 @@
     <j-input-number
         v-else-if="['float', 'double'].includes(type)"
         v-model:value="myValue"
-        :max="9999999999999999"
-        :min="-9999999999999999"
+        :max="999999999999999"
+        :min="-999999999999999"
         placeholder="请输入"
         style="width: 100%"
         @change="change"

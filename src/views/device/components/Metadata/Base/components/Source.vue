@@ -163,7 +163,6 @@ const cancel = () => {
         myValue.value = props.value?.expands?.source || '';
       }
         type.value = props.value?.expands?.type || [];
-        console.log('取消', myValue.value);
 }
 
 watch(

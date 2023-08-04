@@ -354,7 +354,7 @@ const handleAddClick = async (_data?: any, index?: number) => {
 
 const copyItem = (record: any, index: number) => {
   const copyData = cloneDeep(omit(record, ['_uuid', '_sortIndex']))
-  copyData.id = `copy_${copyData.id}`.slice(0,64)
+  copyData.id = `copy_${copyData.id}`
   handleAddClick(copyData, index)
 }
 
@@ -374,6 +374,7 @@ const removeItem = (index: number) => {
 }
 
 const editStatusChange = (status: boolean) => {
+  console.log('editStatusChange',status)
   editStatus.value = status
 }
 
@@ -433,6 +434,7 @@ const handleSaveClick = async (next?: Function) => {
       if(result.success) {
         dataSource.value = resp
         tableRef.value.cleanEditStatus()
+        editStatus.value = false
         onlyMessage('操作成功！')
         next?.()
       }

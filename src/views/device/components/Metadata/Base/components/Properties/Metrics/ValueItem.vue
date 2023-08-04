@@ -1,7 +1,9 @@
 <template>
   <div class="metrics-item-value">
     <div class="metrics-item-text">
-      {{ showText }}
+      <j-ellipsis>
+        {{ showText }}
+      </j-ellipsis>
     </div>
     <j-popconfirm-modal
         :show-cancel="false"
@@ -11,7 +13,7 @@
     >
       <template #content>
         <j-form ref="formRef" :model="formData">
-          <j-form-item v-if="value.range === false" :rules="[{ required: true, message: '请输入指标值'}]" name="value">
+          <j-form-item v-if="value.range === false" :rules="[{ required: true, message: '请输入指标值'}, { validator: typeValidator}]" name="value">
             <Item v-model:value="formData.value" />
           </j-form-item>
           <div v-else class="data-table-boolean-item">
@@ -58,7 +60,7 @@ const props = defineProps({
 const emit = defineEmits<Emit>();
 const formItemContext = Form.useInjectFormItemContext();
 const fullRef = inject(FULL_CODE);
-
+const type = inject('metricsType')
 
 const formData = reactive<{
   value: ValueType;
@@ -83,6 +85,14 @@ const showText = computed(() => {
 const validator = (_: any, value: any) => {
   if (props.value.range && formData.rangeValue![0] >= formData.rangeValue![1]) {
     return Promise.reject('需大于左侧数值')
+  }
+  return Promise.resolve()
+}
+
+const typeValidator = (_: any, value: any) => {
+  console.log(value)
+  if (type === 'string' && value?.length > 64) {
+    return Promise.reject('最多可输入64个字符')
   }
   return Promise.resolve()
 }
@@ -121,6 +131,7 @@ watch(() => props.value.range,(value, oldValue) => {
   display: flex;
   gap: 12px;
   align-items: center;
+  width: 100%;
 
   .metrics-item-text {
     flex: 1;

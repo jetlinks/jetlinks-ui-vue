@@ -1,7 +1,7 @@
 <template>
     <div class="metadata-type">
       <div class="metadata-type-select">
-        <DataTableTypeSelect v-model:value="type" @change="typeChange" />
+        <DataTableTypeSelect v-model:value="type" :allowClear="true" @change="typeChange" />
       </div>
         <DataTableArray
             v-if="type === 'array'"
