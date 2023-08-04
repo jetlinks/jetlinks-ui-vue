@@ -94,13 +94,14 @@
           </j-tooltip>
           <OtherSetting
               v-else
-           v-model:value="data.record.expands"
+              v-model:value="data.record.expands"
               :id="data.record.id"
-           :type="data.record.valueType.type"
-          :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
-           :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
-              title: '继承自产品物模型的数据不支持删除',
-            } : undefined"
+              :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
+              :record="data.record"
+              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
+                title: '继承自产品物模型的数据不支持删除',
+              } : undefined"
+              :type="data.record.valueType.type"
           />
         </template>
         <template #action="{data}">

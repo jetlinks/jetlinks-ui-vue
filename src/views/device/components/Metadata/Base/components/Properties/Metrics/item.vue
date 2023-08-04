@@ -39,10 +39,7 @@
         placeholder="请选择"
         v-model:value="myValue"
         style="width: 100%"
-        :options="[
-            { label: '否', value: 'false'},
-            { label: '是', value: 'true'},
-        ]"
+        :options="options"
         :get-popup-container="(node) => fullRef || node"
         @change="change"
     />
@@ -66,6 +63,10 @@ const props = defineProps({
     value: {
         type: [String, Number, Array],
         default: undefined
+    },
+    options: {
+      type: Array,
+      default: () => []
     }
 })
 

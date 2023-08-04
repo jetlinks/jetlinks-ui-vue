@@ -45,6 +45,10 @@ const props = defineProps({
   type: {
     type: String,
     default: undefined
+  },
+  options: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -60,7 +64,8 @@ const showText = (value: any) => {
       case 'date':
         return value;
       case 'boolean':
-        return value ? value === 'true' ? '是' : '否' : ''
+        const item = props.options.find(item => item.value === value)
+        return item ? item.label : value === 'true' ? '是' : '否'
       default:
         return value
     }
@@ -123,7 +128,10 @@ const columns: any = [
     width: 100,
     type: 'components',
     components: {
-      name: MetricValueItem
+      name: MetricValueItem,
+      props: {
+        options: props.options
+      }
     },
     form: {
       required: true,

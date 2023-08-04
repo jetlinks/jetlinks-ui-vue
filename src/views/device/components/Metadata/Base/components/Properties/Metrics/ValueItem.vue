@@ -14,7 +14,7 @@
       <template #content>
         <j-form ref="formRef" :model="formData">
           <j-form-item v-if="value.range === false" :rules="[{ validator: typeValidator}]" name="value">
-            <Item v-model:value="formData.value" />
+            <Item v-model:value="formData.value" :options="options" />
           </j-form-item>
           <div v-else class="data-table-boolean-item">
             <div class="data-table-boolean-item--value">
@@ -56,6 +56,10 @@ const props = defineProps({
     type: Object as PropType<any>,
     default: undefined,
   },
+  options: {
+    type: Array,
+    default: () => []
+  }
 });
 
 const emit = defineEmits<Emit>();
@@ -82,7 +86,8 @@ const showText = computed(() => {
       case 'date':
         return props.value?.value;
       case 'boolean':
-        return props.value?.value ? props.value?.value === 'true' ? '是' : '否' : ''
+        const item = props.options.find(item => item.value === props.value?.value)
+        return item ? item.label : props.value?.value === 'true' ? '是' : '否'
       default:
         return props.value?.value
     }

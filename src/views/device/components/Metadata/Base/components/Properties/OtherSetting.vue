@@ -40,7 +40,7 @@
                 <AIcon type="ExclamationCircleOutlined" style="padding-left: 12px;padding-top: 4px;" />
               </j-tooltip>
             </template>
-            <Metrics ref="metricsRef" :value="myValue.metrics" :type="props.type"/>
+            <Metrics ref="metricsRef" :options="booleanOptions" :type="props.type" :value="myValue.metrics"/>
           </j-collapse-panel>
         </j-collapse>
 
@@ -84,6 +84,10 @@ const props = defineProps({
     type: String,
     default: undefined
   },
+  record: {
+    type: Object,
+    default: () => ({})
+  },
 })
 
 const fullRef = inject(FULL_CODE);
@@ -109,6 +113,11 @@ const showMetrics = computed(() => {
   return ['int', 'long', 'float', 'double', 'string', 'boolean', 'date'].includes(props.type as any)
 })
 
+const booleanOptions = ref([
+  { label: '否', value: 'false'},
+  { label: '是', value: 'true'},
+])
+
 const columns = ref([
   {
     title: '参数名称',
@@ -129,8 +138,15 @@ const columns = ref([
 
 const getConfig = async () => {
   const id = type === 'product' ? productStore.current?.id : deviceStore.current.id
-  console.log(props.id, id, props.type)
+  console.log(props.id, id, props)
+
   if(!props.id || !id || !props.type) return
+
+  if (props.type === 'boolean') {
+    const booleanValue = props.record.valueType
+    booleanOptions.value[0] = { label: booleanValue.falseText || '否', value: booleanValue.falseValue || 'false'}
+    booleanOptions.value[1] = { label: booleanValue.trueText || '是', value: booleanValue.trueValue || 'true'}
+  }
 
   const params: any = {
     deviceId: id,
@@ -201,6 +217,7 @@ const cancel = () => {
 }
 
 watch(() => props.value, () => {
+  console.log(props.value)
   myValue.value = cloneDeep(props.value)
 }, {immediate: true, deep: true})
 
