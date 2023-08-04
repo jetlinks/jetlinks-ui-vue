@@ -395,6 +395,10 @@ const beforeUpload = (file: any) => {
             onlyMessage('请上传json格式文件', 'error');
             return false;
         }
+        if(!text){
+            onlyMessage('文件内容不能为空','error')
+            return false;
+        }
         try {
             const data = JSON.parse(text);
             // 设置导入的产品状态为未发布
@@ -410,7 +414,7 @@ const beforeUpload = (file: any) => {
                 tableRef.value?.reload();
             }
             return true;
-        } catch {
+        } catch(e) {
             onlyMessage('请上传正确格式文件', 'error');
         }
         return true;
