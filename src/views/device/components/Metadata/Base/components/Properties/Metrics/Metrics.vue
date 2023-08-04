@@ -11,7 +11,9 @@
         {{ data.record.range === true ? '范围值' : '固定值'}}
       </template>
       <template #value="{data}">
-        {{ data.record.range === true ? data.record.value?.join('-') : data.record.value }}
+        <j-ellipsis>
+        {{ data.record.range === true ? data.record.value?.join('-') : showText(data.record.value) }}
+        </j-ellipsis>
       </template>
       <template #action="{data}">
         <j-button
@@ -52,6 +54,17 @@ const dataSource = ref<any[]>([])
 const tableRef = ref()
 
 provide('metricsType', props.type)
+
+const showText = (value: any) => {
+    switch (props.type) {
+      case 'date':
+        return value;
+      case 'boolean':
+        return value ? value === 'true' ? '是' : '否' : ''
+      default:
+        return value
+    }
+}
 
 const columns: any = [
   {

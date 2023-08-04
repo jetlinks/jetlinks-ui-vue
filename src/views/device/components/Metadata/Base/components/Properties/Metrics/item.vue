@@ -37,18 +37,24 @@
     <j-select
         v-else-if="type === 'boolean'"
         placeholder="请选择"
+        v-model:value="myValue"
+        style="width: 100%"
         :options="[
             { label: '否', value: 'false'},
             { label: '是', value: 'true'},
         ]"
         :get-popup-container="(node) => fullRef || node"
+        @change="change"
     />
     <j-date-picker
         v-else-if="type === 'date' "
         v-model:value="myValue"
         show-time
+        format="YYYY-MM-DD HH:mm:ss"
+        style="width: 100%"
         placeholder="请选择"
         :get-popup-container="(node) => fullRef || node"
+        valueFormat="YYYY-MM-DD HH:mm:ss"
         @change="change"
     />
 </template>
@@ -71,8 +77,8 @@ const myValue = ref(props.value)
 const fullRef = inject(FULL_CODE);
 
 const change = () => {
-    // formItemContext.onFieldChange()
     emit('update:value', myValue.value)
+    formItemContext.onFieldChange()
 }
 
 watch(() => props.value, () => {
