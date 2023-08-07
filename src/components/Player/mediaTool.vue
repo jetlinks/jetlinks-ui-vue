@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="direction-audio">
-                <!-- <AIcon type="AudioOutlined" /> -->
+                <slot name="center"><!-- <AIcon type="AudioOutlined" /> --></slot>
             </div>
         </div>
         <div class="zoom">

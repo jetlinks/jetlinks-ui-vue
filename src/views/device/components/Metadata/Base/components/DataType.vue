@@ -86,6 +86,7 @@ const columns = [{
   dataIndex: 'id',
   type: 'text',
   width: 100,
+  placement: 'Left',
   form: {
     required: true,
     rules: [{
@@ -105,7 +106,7 @@ const columns = [{
       { max: 64, message: '最多可输入64个字符' },
       {
         pattern: /^[a-zA-Z0-9_\-]+$/,
-        message: 'ID只能由数字、字母、下划线、中划线组成',
+        message: '标识只能由数字、字母、下划线、中划线组成',
       },
     ]
   }
@@ -191,6 +192,7 @@ watch(
     () => {
         type.value = props.value?.valueType?.type;
         _valueType.value = props.value?.valueType
+        console.log(props.value)
         // elements.value = props.value?.valueType.elements;
         // if (['float', 'double', 'int', 'long'].includes(type.value)) {
         //     const res = getUnit().then((res) => {

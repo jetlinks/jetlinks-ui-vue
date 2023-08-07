@@ -1,5 +1,10 @@
 <template>
-<j-form-item name="type" label="读写类型" required>
+<j-form-item name="type" label="读写类型" :rules="[
+  {
+    required: true,
+    message: '请选择读写类型'
+  }
+]">
   <j-select
       v-model:value="myValue"
       mode="multiple"

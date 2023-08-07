@@ -4,6 +4,7 @@
       title="功能详情"
       width="650px"
       :maskClosable="false"
+      :getContainer="getPopupContainer"
       @cancel="cancel"
       @ok="ok"
   >
@@ -40,6 +41,10 @@ const props = defineProps({
   data: {
     type: Object,
     default: () => ({})
+  },
+  getPopupContainer: {
+    type: Function,
+    default: undefined
   }
 })
 

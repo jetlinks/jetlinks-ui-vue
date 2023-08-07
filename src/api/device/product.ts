@@ -106,7 +106,7 @@ export const addProduct = (data:any) => server.post('/device-product',data)
  * @param data 
  * @returns 
  */
-export const editProduct = (data: any) => server.patch('/device-product', data)
+export const editProduct = (data: any) => server.put(`/device-product/${data.id}`, data)
 
 /**
  * 删除产品

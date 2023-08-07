@@ -45,7 +45,7 @@
                       v-if="serverOptions.length > 1"
                       v-model:value="serverActive"
                       :options="serverOptions"
-                      color="#2CB6E0"
+                      :color="colorCpu"
                   />
                 </template>
             </div>
@@ -59,9 +59,10 @@ import dayjs from 'dayjs';
 import {
     getTimeByType,
     arrayReverse,
-    defulteParamsData,
+    defaultParamsData,
     areaStyleCpu,
     typeDataLine,
+    colorCpu
 } from './tool.ts';
 import { DataType } from '../typings';
 import ServerList from './ServerList.vue'
@@ -97,6 +98,7 @@ const pickerTimeChange = () => {
 };
 
 const echartsOptions = computed(() => {
+  console.log(serverActive.value)
   const series = serverActive.value.length
           ? serverActive.value.map((key) => setOptions(serverData.data, key))
           : typeDataLine
@@ -128,13 +130,13 @@ const echartsOptions = computed(() => {
         end: data.value.type !== 'hour' ? 5 : 100,
       },
     ],
-    color: ['#2CB6E0'],
+    color: colorCpu,
     series: series
   };
 })
 const getCPUEcharts = async (val: any) => {
     loading.value = true;
-    const res: any = await dashboard(defulteParamsData('cpu', val));
+    const res: any = await dashboard(defaultParamsData('cpu', val));
     if (res.success) {
         const _cpuOptions = {};
         const _cpuXAxis = new Set();
@@ -174,7 +176,7 @@ const setOptions = (optionsData: any, key: string) => ({
     type: 'line',
     smooth: true,
     symbol: 'none',
-    areaStyle: areaStyleCpu,
+    // areaStyle: areaStyleCpu(index),
 });
 
 const handleCpuOptions = (optionsData: any, xAxis: any) => {

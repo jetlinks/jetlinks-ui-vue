@@ -104,7 +104,7 @@ export const networkParams = (val: any) => {
         },
     ];
 };
-export const defulteParamsData = (group: any, val: any) => [
+export const defaultParamsData = (group: any, val: any) => [
     {
         dashboard: 'systemMonitor',
         object: 'stats',
@@ -118,6 +118,10 @@ export const defulteParamsData = (group: any, val: any) => [
         },
     },
 ];
+
+export const colorNetwork = ['#FF7D00', '#FFC300', '#37E2E2', '#165DFF', '#722ED1']
+export const colorCpu = ['#313CA9', '#21CCFF', '#249EFF', '#86DF6C', '#979AFF']
+export const colorJvm = ['#246EFF', '#00B2FF', '#81E2FF', '#2CAB40', '#8D4EDA']
 
 export const areaStyle = {
     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [

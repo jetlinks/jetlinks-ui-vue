@@ -1,5 +1,5 @@
 <template>
-    <j-spin :spinning="loading" v-if="metadata.properties.length">
+    <j-spin v-if="metadata.properties?.length" :spinning="loading">
         <j-card :bordered="false" borderStyle="padding: 0">
             <template #extra>
                 <j-space>
@@ -28,14 +28,9 @@
                                     placeholder="请选择"
                                     allowClear
                                     :filter-option="filterOption"
+                                    :options="channelList"
+                                    @select="(_, option) => { record.provider = option.provider }"
                                 >
-                                    <j-select-option
-                                        v-for="item in channelList"
-                                        :key="item.value"
-                                        :value="item.value"
-                                        :label="item.label"
-                                        >{{ item.label }}</j-select-option
-                                    >
                                 </j-select>
                             </j-form-item>
                         </template>
@@ -188,16 +183,16 @@ const visible = ref<boolean>(false);
 const getChannel = async () => {
     const resp: any = await queryChannelNoPaging({
         paging: false,
-        terms: [
-            {
-                terms: [
-                    {
-                        column: 'provider',
-                        value: props.provider,
-                    },
-                ],
-            },
-        ],
+        // terms: [
+        //     {
+        //         terms: [
+        //             {
+        //                 column: 'provider',
+        //                 value: props.provider,
+        //             },
+        //         ],
+        //     },
+        // ],
     });
     if (resp.status === 200) {
         channelList.value = resp.result?.map((item: any) => ({
@@ -211,12 +206,12 @@ const getChannel = async () => {
 const handleSearch = async () => {
     loading.value = true;
     getChannel();
-    const _metadata = metadata.properties.map((item: any) => ({
+    const _metadata = metadata.properties?.map?.((item: any) => ({
         metadataId: item.id,
         metadataName: `${item.name}(${item.id})`,
         metadataType: 'property',
         name: item.name,
-    }));
+    })) || [];
     if (_metadata && _metadata.length) {
         const resp: any = await queryMapping(
             'device',
@@ -269,6 +264,7 @@ const onSave = () => {
                 (i: any) => i.channelId,
             );
             if (arr && arr.length !== 0) {
+                console.log(arr)
                 const resp = await saveMapping(
                     instanceStore.current.id,
                     props.provider,

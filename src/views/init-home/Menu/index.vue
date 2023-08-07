@@ -16,6 +16,8 @@ import BaseMenu, { USER_CENTER_MENU_DATA } from '../data/baseMenu'
 import { getSystemPermission, updateMenus } from '@/api/initHome';
 import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
+import { isNoCommunity } from '@/utils/utils';
+
 /**
  * 获取菜单数据
  */
@@ -23,15 +25,31 @@ const menuDatas = reactive({
     count: 0,
     current: undefined,
 });
+
+/**
+ * 查询支持的协议
+ */
+const getProvidersFn = async () => {
+    if (!isNoCommunity) {
+        return undefined
+    } else {
+        const res: any = await getProviders();
+        const ids = res.result?.map?.(item => item.id) || []
+        return protocolList.some(item => ids.includes(item.value))
+    }
+}
+
 /**
  * 获取当前系统权限信息
  */
 const getSystemPermissionData = async () => {
+    const hasProtocol = await getProvidersFn();
     const resp = await getSystemPermission();
     if (resp.status === 200) {
         const newTree = filterMenu(
             resp.result.map((item: any) => JSON.parse(item).id),
             BaseMenu,
+            hasProtocol
         );
         const _count = menuCount(newTree);
         menuDatas.current = newTree;
@@ -40,20 +58,9 @@ const getSystemPermissionData = async () => {
 };
 
 /**
- * 查询支持的协议
- */
-let filterProtocolList: any[] = [];
-const getProvidersFn = async () => {
-    const res: any = await getProviders();
-    filterProtocolList = protocolList.filter((item) => {
-        return res.result?.find((val: any) => item.alias == val.id);
-    })
-}
-getProvidersFn();
-/**
  * 过滤菜单
  */
-const filterMenu = (permissions: string[], menus: any[]) => {
+const filterMenu = (permissions: string[], menus: any[], hasProtocol: boolean) => {
     return menus.filter((item) => {
         let isShow = false;
         if (item.showPage && item.showPage.length) {
@@ -62,9 +69,9 @@ const filterMenu = (permissions: string[], menus: any[]) => {
             });
         }
         if (item.children) {
-            item.children = filterMenu(permissions, item.children);
+            item.children = filterMenu(permissions, item.children, hasProtocol);
         }
-        if (!filterProtocolList.length && item.code == 'link/DataCollect') {
+        if (!hasProtocol && item.code == 'link/DataCollect') {
             return false;
         }
         return isShow || !!item.children?.length;

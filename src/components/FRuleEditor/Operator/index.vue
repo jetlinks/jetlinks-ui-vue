@@ -15,6 +15,8 @@
                     :field-names="{ title: 'name', key: 'id' }"
                     auto-expand-parent
                     :tree-data="data"
+                    :showLine="{ showLeafIcon: false }"
+                    :show-icon="true"
                 >
                     <template #title="node">
                         <div class="node">
@@ -86,6 +88,7 @@ import Markdown from 'vue3-markdown-it';
 
 const props = defineProps({
     id: String,
+    propertiesOptions: Array
 });
 
 interface Emits {
@@ -121,16 +124,14 @@ const lastClick = (node: OperatorItem) => {
     emit('addOperatorValue', `$lastState("${node.id}")`);
 };
 const addClick = (node: OperatorItem) => {
-  console.log(node)
     emit('addOperatorValue', node.code);
 };
 
 const productStore = useProductStore();
 
 const getData = async (id?: string) => {
-    const metadata = productStore.current.metadata || '{}';
-    const _properties =
-        JSON.parse(metadata).properties || ([] as PropertyMetadata[]);
+    // const metadata = productStore.current.metadata || '{}';
+    const _properties = props.propertiesOptions as PropertyMetadata[]
     const properties = {
         id: 'property',
         name: '属性',
