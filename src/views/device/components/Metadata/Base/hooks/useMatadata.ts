@@ -21,50 +21,51 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
 
     const handleMetadata = (_metadataStr: string) => {
         const _metadata = JSON.parse(_metadataStr || '{}')
-        const newMetadata = (key ? _metadata?.[key] || [] : []) as DeviceMetadata[]
+        const newMetadata = (key ? _metadata?.[key] || [] : []) as any[]
 
 
         metadata.value = newMetadata as any
 
-        const indexKeys = newMetadata.map((item, index) => index)
+        const ids = newMetadata.map((item) => item.id)
         noEdit.value = {}
         productNoEdit.value = {}
-        noEdit.value.id = indexKeys
+        noEdit.value.id = ids
 
         if (key === 'properties') {
-            noEdit.value.source = indexKeys
+            noEdit.value.source = ids
         }
 
         if (type === 'device' && instanceCurrent.value.productMetadata) {
             const productMetadata: any = JSON.parse(instanceCurrent.value.productMetadata)
             const metaArray = key ? productMetadata[key] : []
-            const productIndexKeys = metaArray?.map((item:any, index: number) => index) || []
-            productNoEdit.value.ids = metaArray?.map((item: any) => item.id) || []
-            productNoEdit.value.id = productIndexKeys
-            productNoEdit.value.name = productIndexKeys
+            const productIds = metaArray?.map((item:any) => item.id) || []
+            // productNoEdit.value.ids = metaArray?.map((item: any) => item.id) || []
+            productNoEdit.value.ids = productIds
+            productNoEdit.value.id = productIds
+            productNoEdit.value.name = productIds
             if (key === 'properties') {
-                productNoEdit.value.valueType = productIndexKeys
-                productNoEdit.value.expands = productIndexKeys
+                productNoEdit.value.valueType = productIds
+                productNoEdit.value.expands = productIds
             }
 
             if (key === 'functions') {
-                productNoEdit.value.async = productIndexKeys
-                productNoEdit.value.inputs = productIndexKeys
-                productNoEdit.value.output = productIndexKeys
-                productNoEdit.value.description = productIndexKeys
+                productNoEdit.value.async = productIds
+                productNoEdit.value.inputs = productIds
+                productNoEdit.value.output = productIds
+                productNoEdit.value.description = productIds
             }
 
             if (key === 'events') {
-                productNoEdit.value.expands = productIndexKeys
-                productNoEdit.value.outInput = productIndexKeys
-                productNoEdit.value.properties = productIndexKeys
-                productNoEdit.value.description = productIndexKeys
+                productNoEdit.value.expands = productIds
+                productNoEdit.value.outInput = productIds
+                productNoEdit.value.properties = productIds
+                productNoEdit.value.description = productIds
             }
 
             if (key === 'tags') {
-                productNoEdit.value.valueType = productIndexKeys
-                productNoEdit.value.readType = productIndexKeys
-                productNoEdit.value.description = productIndexKeys
+                productNoEdit.value.valueType = productIds
+                productNoEdit.value.readType = productIds
+                productNoEdit.value.description = productIds
             }
         }
 
