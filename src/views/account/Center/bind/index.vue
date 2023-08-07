@@ -176,15 +176,17 @@ const getUrlCode = () => {
 const bindUser = ref<any>({ appName: '' })
 const getAppInfo = async () => {
   const code = getUrlCode()
-  const { result } = await applicationInfo(code)
-  bindUser.value = result
+  const { result,success } = await applicationInfo(code)
+  bindUser.value = result || {}
 
-  if (result.applicationProvider === 'dingtalk-ent-app') {
-    bindUser.value.appName = '钉钉'
-  } else if (result.applicationProvider === 'wechat-webapp') {
-    bindUser.value.appName = '微信'
-  } else {
-    bindUser.value.appName = result.applicationName
+  if(success){
+      if (result?.applicationProvider === 'dingtalk-ent-app') {
+      bindUser.value.appName = '钉钉'
+    } else if (result?.applicationProvider === 'wechat-webapp') {
+      bindUser.value.appName = '微信'
+    } else {
+      bindUser.value.appName = result?.applicationName
+    }
   }
 }
 
@@ -275,7 +277,7 @@ const handleLoginBind = () => {
             password:RsaConfig.enabled?encrypt(params.password,RsaConfig.publicKey):params.password,
             encryptId:RsaConfig.enabled?RsaConfig.id:undefined
       }
-      const res = await authLogin(params)
+      const res = await authLogin(data)
       console.log('res: ', res)
       if (res.success) {
         onlyMessage('登录成功')
@@ -289,11 +291,26 @@ const handleLoginBind = () => {
     })
 }
 
+
+const getQueryVariable = (): Map<string, string> => {
+  const index = window.location.href.indexOf('?')
+  const paramsUrl = window.location.href.substr(index + 1)
+  const paramsArr = paramsUrl.split('#')?.[0] || ''
+
+  const vars = paramsArr.split('&');
+  const maps = new Map()
+  for (let i = 0; i < vars.length; i++) {
+    const pair = vars[i].split('=');
+    const [key, value] = pair
+    maps.set(key, value)
+  }
+  return maps;
+}
 /**
  * 绑定成功跳转至页面url的: redirect
  */
 const goRedirect = () => {
-  const urlParams = new URLSearchParams(window.location.hash)
+  const urlParams = getQueryVariable();
   const redirectUrl =
     urlParams.get('redirect') ||
     window.location.href.split('redirect=')?.[1]

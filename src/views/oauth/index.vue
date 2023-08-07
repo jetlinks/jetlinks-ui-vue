@@ -213,7 +213,7 @@ const doLogin = () => {
     const res:any = await authLogin({
       verifyKey: captcha.key,
       ...formModel,
-      password:RsaConfig.enabled?encrypt(params.password,RsaConfig.publicKey):params.password,
+      password:RsaConfig.enabled?encrypt(formModel.password,RsaConfig.publicKey):formModel.password,
       encryptId:RsaConfig.enabled?RsaConfig.id:undefined
     })
     if (res.success) {
