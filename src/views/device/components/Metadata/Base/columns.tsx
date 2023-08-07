@@ -439,7 +439,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
               const virtualRule = values.expands?.virtualRule
               const source = value.source
               const ids = (noEdit?.value?.id || []) as any[]
-
+              console.log(source, value)
               if (source) {
                 if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');
@@ -542,13 +542,11 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       form: {
         required: true,
         rules: [
-          { required: true, message: '请选择读写类型' },
           {
           callback(rule:any,value: any, dataSource: any[]) {
             const field = rule.field.split('.')
             const fieldIndex = Number(field[1])
             const values = dataSource.find((item, index) => index === fieldIndex)
-
             if (!values?.expands?.type?.length) {
               return Promise.reject('请选择读写类型')
             }

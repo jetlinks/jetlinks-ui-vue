@@ -63,6 +63,8 @@ const props = defineProps({
     },
 });
 
+const emits = defineEmits(['refresh'])
+
 const columns = [
     {
         title: '序号',
@@ -101,6 +103,7 @@ const handleSearch = async (id: string, arr: Item[]) => {
             if (_item) {
                 return {
                     ..._item,
+                    name: item.name,
                     flag: true,
                 };
             }
@@ -125,7 +128,7 @@ const saveInfo = async (preset: Item[]) => {
         },
     });
     if (resp.status === 200) {
-        console.log(resp);
+        emits('refresh')
     }
 };
 

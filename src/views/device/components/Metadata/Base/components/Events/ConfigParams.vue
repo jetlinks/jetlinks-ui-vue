@@ -27,6 +27,7 @@ const columns = [
         title: '参数标识',
         dataIndex: 'id',
         type: 'text',
+      placement: 'Left',
         form: {
             required: true,
             rules: [{

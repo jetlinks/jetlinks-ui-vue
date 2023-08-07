@@ -369,7 +369,7 @@ const findComponents = (code: string, level: number, isApp: boolean, components:
   if (level === 1) { // BasicLayoutPage
     return myComponents ? () => myComponents() : BasicLayoutPage
   } else if (isApp){ // iframe
-    return () => Iframe
+    return Iframe
   } else if (level === 2) { // BlankLayoutPage or components
     return myComponents ? () => myComponents() : BlankLayoutPage
   } else if(myComponents) { // components

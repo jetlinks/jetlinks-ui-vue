@@ -1,13 +1,15 @@
 <template>
-  <j-select-boolean
+  <j-select
     v-model:value="myValue"
-    tureTitle="必填"
-    falseTitle='不必填'
     style="width: 100%;"
+    :options="[
+        { label: '不必填', value: 'false'},
+        { label: '必填', value: 'true'},
+    ]"
     @change="change"
   >
 
-  </j-select-boolean>
+  </j-select>
 </template>
 
 <script setup name="ConstraintSelect">
@@ -32,14 +34,14 @@ const myValue = ref()
 
 const change = (e) => {
   const newData = { ...props.value }
-  set(newData, props.name, myValue.value)
+  set(newData, props.name, myValue.value === 'true')
   console.log(newData, e);
   emit('update:value', newData)
 }
 
 watch(() => JSON.stringify(props.data), () => {
   console.log(props.value, props.name);
-  myValue.value = get(props.value, props.name) || false
+  myValue.value = get(props.value, props.name) === true ? 'true' : 'false'
 }, { immediate: true })
 
 </script>

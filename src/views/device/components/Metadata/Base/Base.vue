@@ -24,6 +24,7 @@
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
                         : '新增',
+                        getPopupContainer: getPopupContainer,
                 }"
               @click="handleAddClick()"
               placement="topRight"
@@ -43,8 +44,10 @@
                         ? '当前的存储方式不支持新增'
                         : !editStatus ? '暂无改动数据': '保存',
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
+                    getPopupContainer: getPopupContainer,
                 }"
               @click="handleSaveClick()"
+              placement="topRight"
           >
             保存
           </PermissionButton>
@@ -91,13 +94,14 @@
           </j-tooltip>
           <OtherSetting
               v-else
-           v-model:value="data.record.expands"
+              v-model:value="data.record.expands"
               :id="data.record.id"
-           :type="data.record.valueType.type"
-          :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
-           :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
-              title: '继承自产品物模型的数据不支持删除',
-            } : undefined"
+              :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
+              :record="data.record"
+              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
+                title: '继承自产品物模型的数据不支持删除',
+              } : undefined"
+              :type="data.record.valueType.type"
           />
         </template>
         <template #action="{data}">
@@ -111,6 +115,7 @@
                 @click="copyItem(data.record, data.index)"
                 :tooltip="{
                   title: operateLimits('add', type) ? '当前的存储方式不支持复制' : '复制',
+                  getPopupContainer: getPopupContainer,
                 }"
             >
               <AIcon type="CopyOutlined" />
@@ -124,6 +129,7 @@
                 @click="handleAddClick(null, data.index)"
                 :tooltip="{
                   title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
+                  getPopupContainer: getPopupContainer,
                 }"
             >
               <AIcon type="PlusSquareOutlined" />
@@ -136,6 +142,7 @@
                 @click="showDetail(data.record)"
                 :tooltip="{
                   title: '详情',
+                  getPopupContainer: getPopupContainer,
                 }"
             >
               <AIcon type="FileSearchOutlined" />
@@ -152,9 +159,11 @@
                   onConfirm: async () => {
                       await removeItem(data.index);
                     },
+                    getPopupContainer: getPopupContainer
                   }"
                 :tooltip="{
                   placement: 'topRight',
+                  getPopupContainer: getPopupContainer,
                   title: target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? '继承自产品物模型的数据不支持删除' :'删除',
                 }"
                 :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
@@ -167,21 +176,25 @@
     <PropertiesModal
         v-if="type === 'properties' && detailData.visible"
         :data="detailData.data"
+        :getPopupContainer="getPopupContainer"
         @cancel="cancelDetailModal"
     />
     <FunctionModal
         v-else-if="type === 'functions' && detailData.visible"
         :data="detailData.data"
+        :getPopupContainer="getPopupContainer"
         @cancel="cancelDetailModal"
     />
     <EventModal
         v-else-if="type === 'events' && detailData.visible"
         :data="detailData.data"
+        :getPopupContainer="getPopupContainer"
         @cancel="cancelDetailModal"
     />
     <TagsModal
         v-else-if="type === 'tags' && detailData.visible"
         :data="detailData.data"
+        :getPopupContainer="getPopupContainer"
         @cancel="cancelDetailModal"
     />
 </template>
@@ -210,10 +223,11 @@ import {omit} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
-import {watch} from "vue";
+import {computed, watch} from "vue";
 import {cloneDeep} from "lodash";
 import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
+import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 const props = defineProps({
     target: {
@@ -256,13 +270,23 @@ const detailData = reactive({
   visible:false
 })
 
+
+
 const showSave = ref(metadata.value.length !== 0)
 
-const showLastDelete = ref(false)
 const dataSourceCache = ref<any[]>(metadata.value)
+const fullRef = inject(FULL_CODE);
+
+const getPopupContainer = (node: any) => {
+  const fullDom = tableRef.value?.fullRef?.()
+  return fullDom || node
+}
+
+const showLastDelete = computed(() => {
+  return dataSourceCache.value.length === 1
+})
 
 provide('_dataSource', dataSourceCache)
-
 const showDetail = (data: any) => {
   detailData.data = data
   detailData.visible = true
@@ -345,15 +369,15 @@ const handleAddClick = async (_data?: any, index?: number) => {
   const newObject = _data || getDataByType()
 
   const _addData = await tableRef.value.addItem(newObject, index)
-  if (_addData.length === 1) {
-    showLastDelete.value = true
-  }
+  // if (_addData.length === 1) {
+  //   showLastDelete.value = true
+  // }
   showSave.value = true
 };
 
 const copyItem = (record: any, index: number) => {
   const copyData = cloneDeep(omit(record, ['_uuid', '_sortIndex']))
-  copyData.id = `copy_${copyData.id}`.slice(0,64)
+  copyData.id = `copy_${copyData.id}`
   handleAddClick(copyData, index)
 }
 
@@ -362,9 +386,9 @@ const removeItem = (index: number) => {
   // data.splice(index, 1);
   // dataSource.value = data
   const _data = tableRef.value.removeItem(index)
-  if (_data.length === 1) {
-    showLastDelete.value = true
-  }
+  // if (_data.length === 1) {
+  //   showLastDelete.value = true
+  // }
   if (_data.length === 0) {
     showSave.value = false
 
@@ -373,6 +397,7 @@ const removeItem = (index: number) => {
 }
 
 const editStatusChange = (status: boolean) => {
+  console.log('editStatusChange',status)
   editStatus.value = status
 }
 
@@ -432,6 +457,7 @@ const handleSaveClick = async (next?: Function) => {
       if(result.success) {
         dataSource.value = resp
         tableRef.value.cleanEditStatus()
+        editStatus.value = false
         onlyMessage('操作成功！')
         next?.()
       }

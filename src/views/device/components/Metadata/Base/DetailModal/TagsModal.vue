@@ -3,6 +3,7 @@
       visible
       :maskClosable="false"
       title="标签详情"
+      :getContainer="getPopupContainer"
       @cancel="cancel"
       @ok="ok"
   >
@@ -47,6 +48,10 @@ const props = defineProps({
   data: {
     type: Object,
     default: () => ({})
+  },
+  getPopupContainer: {
+    type: Function,
+    default: undefined
   }
 })
 

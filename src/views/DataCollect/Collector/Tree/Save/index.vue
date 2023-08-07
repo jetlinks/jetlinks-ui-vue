@@ -215,11 +215,17 @@ const _channelListAll = computed(() => {
 })
 
 const channelList = computed(() => {
-   return _channelListAll.value.map((item: any) => ({
+  const  list:any = [];
+  _channelListAll.value.forEach((item: any) => {
+    if(item?.state?.value !== 'disabled'){
+      list.push({
         provider: item.provider,
         value: item.id,
         label: item.name,
-    }));
+    })
+    }
+  });
+  return list
 })
 
 const channelSelect = (key: string, detail: any) => {

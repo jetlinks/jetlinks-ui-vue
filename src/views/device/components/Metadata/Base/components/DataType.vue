@@ -86,6 +86,7 @@ const columns = [{
   dataIndex: 'id',
   type: 'text',
   width: 100,
+  placement: 'Left',
   form: {
     required: true,
     rules: [{
@@ -191,6 +192,7 @@ watch(
     () => {
         type.value = props.value?.valueType?.type;
         _valueType.value = props.value?.valueType
+        console.log(props.value)
         // elements.value = props.value?.valueType.elements;
         // if (['float', 'double', 'int', 'long'].includes(type.value)) {
         //     const res = getUnit().then((res) => {

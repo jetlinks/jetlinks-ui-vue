@@ -6,7 +6,10 @@
             :options="typeOptions"
         />
         <template v-if="source === 'rule'">
-            <j-form-item :name="['virtualRule', 'triggerProperties']" required>
+            <j-form-item :name="['virtualRule', 'triggerProperties']" :rules="[{
+                required: true,
+                message: '请选择触发属性'
+            }]">
                 <template #label>
                     触发属性
                     <j-tooltip>
@@ -23,7 +26,7 @@
                 <j-select
                     v-model:value="formData.virtualRule.triggerProperties"
                     mode="multiple"
-                    placeholder="请选择属性"
+                    placeholder="请选择触发属性"
                     show-search
                     max-tag-count="responsive"
                 >
@@ -65,7 +68,10 @@
             <j-form-item
                 label="窗口"
                 :name="['virtualRule', 'windowType']"
-                required
+                :rules="[{
+                    required: true,
+                    message: '请选择窗口类型'
+                }]"
             >
                 <j-select
                     v-model:value="formData.virtualRule.windowType"
@@ -85,7 +91,10 @@
                 <j-form-item
                     label="聚合函数"
                     :name="['virtualRule', 'aggType']"
-                    required
+                    :rules="[{
+                        required: true,
+                        message: '请选择聚合函数'
+                    }]"
                 >
                     <j-select
                         v-model:value="formData.virtualRule.aggType"
@@ -108,7 +117,7 @@
                         },
                         {
                             pattern: /^\d+$/,
-                            message: '请输入0-999999之间的正整数',
+                            message: '请输入1-999999之间的正整数',
                         },
                     ]"
                 >
@@ -135,7 +144,7 @@
                         },
                         {
                             pattern: /^\d+$/,
-                            message: '请输入0-999999之间的正整数',
+                            message: '请输入1-999999之间的正整数',
                         },
                     ]"
                 >
@@ -250,11 +259,10 @@ const options = computed(() => {
 });
 
 const setInitVirtualRule = () => {
-  console.log(props.value?.expands?.virtualRule);
   formData.virtualRule = {
     ...initData,
     ...(props.value?.expands?.virtualRule || {}),
-    triggerProperties: props.value?.expands?.virtualRule?.triggerProperties || ['*'],
+    triggerProperties: props.value?.expands?.virtualRule?.triggerProperties?.length ? props.value?.expands?.virtualRule?.triggerProperties : ['*']
   }
 }
 
@@ -274,8 +282,9 @@ const handleSearch = async () => {
         );
       }
       if (resp && resp.status === 200 && resp.result) {
+        const _triggerProperties = props.value?.expands?.virtualRule?.triggerProperties?.length ? props.value?.expands?.virtualRule?.triggerProperties : resp.result.triggerProperties
         formData.virtualRule = {
-          triggerProperties: resp.result.triggerProperties,
+          triggerProperties: _triggerProperties?.length ? _triggerProperties : ['*'],
           ...resp.result.rule,
         }
       } else {
@@ -318,6 +327,7 @@ watch(
             formData.virtualRule = initData;
 
             handleSearch();
+            setInitVirtualRule()
         } else {
             formData.virtualRule = undefined;
         }

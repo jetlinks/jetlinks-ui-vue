@@ -56,7 +56,7 @@
                         class="tree-left-tag"
                         v-if="data.id !== '*'"
                         :color="colorMap.get(data?.uniformState?.value)"
-                    >{{ data?.pointNumber === 0 ? '--' : (data?.uniformState?.value === 'normal' ? '运行中' : data?.uniformState?.text) }}</j-tag
+                    >{{ data?.uniformState?.text }}</j-tag
                     >
                     <j-tag
                         class="tree-left-tag2"
@@ -67,7 +67,7 @@
                         "
                         >
                       {{
-                        data?.state?.value === 'disabled' ? '禁用' : '运行中'
+                       data?.state?.value === 'disabled' ? data?.state?.text : data?.runningState?.text
                       }}
                     </j-tag
                     >
@@ -94,6 +94,7 @@
                                         ? '启用'
                                         : '禁用',
                             }"
+                            :disabled="data?.runningState?.value === 'stopped' && data?.state?.value!== 'disabled'"
                             hasPermission="DataCollect/Collector:action"
                             :popConfirm="{
                                 title:

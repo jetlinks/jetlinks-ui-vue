@@ -11,7 +11,9 @@
         {{ data.record.range === true ? '范围值' : '固定值'}}
       </template>
       <template #value="{data}">
-        {{ data.record.range === true ? data.record.value?.join('-') : data.record.value }}
+        <j-ellipsis>
+        {{ data.record.range === true ? data.record.value?.join('-') : showText(data.record.value) }}
+        </j-ellipsis>
       </template>
       <template #action="{data}">
         <j-button
@@ -43,6 +45,10 @@ const props = defineProps({
   type: {
     type: String,
     default: undefined
+  },
+  options: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -53,12 +59,31 @@ const tableRef = ref()
 
 provide('metricsType', props.type)
 
+const showText = (value: any) => {
+    switch (props.type) {
+      case 'date':
+        return value;
+      case 'boolean':
+        const item = props.options.find(item => item.value === value)
+          if (item) {
+            return item.label
+          }else if (value) {
+            return value === 'true' ? '是' : '否'
+          } else {
+             return ''
+          }
+      default:
+        return value
+    }
+}
+
 const columns: any = [
   {
     title: '指标标识',
     dataIndex: 'id',
     width: 120,
     type: 'text',
+    placement: 'Left',
     form: {
       required: true,
       rules: [{
@@ -109,7 +134,10 @@ const columns: any = [
     width: 100,
     type: 'components',
     components: {
-      name: MetricValueItem
+      name: MetricValueItem,
+      props: {
+        options: props.options
+      }
     },
     form: {
       required: true,

@@ -82,7 +82,7 @@ import { ContextKey, arrayParamsKey, timeTypeKeys } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
-import { isArray, isObject, pick } from 'lodash-es'
+import {indexOf, isArray, isObject, isString, pick} from 'lodash-es'
 import {cloneDeep} from "lodash";
 
 const sceneStore = useSceneStore()
@@ -267,7 +267,8 @@ const columnSelect = (option: any) => {
     termTypeChange = true
     paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
   }
-  if (hasTypeChange) { // 类型发生变化
+  console.log('hasTypeChange', paramsValue.value.source, tabsOptions.value)
+  if (hasTypeChange || !tabsOptions.value.every(a => a.key === paramsValue.value.source )) { // 类型发生变化
     paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
     paramsValue.value = {
       source: tabsOptions.value[0].key,
@@ -289,6 +290,7 @@ const columnSelect = (option: any) => {
 
     paramsValue.value = newValue
   }
+  console.log(paramsValue, hasTypeChange)
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
   nextTick(() => {
@@ -322,8 +324,13 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
 
   if (_source === 'metric') {
     newValue.metric = paramsValue.value?.metric
+    const isArray = isString(paramsValue.value!.value) ? paramsValue.value!.value?.includes?.(',') : false
+    if (arrayParamsKey.includes(e.key) !== isArray) { // 有变化
+        newValue.value = undefined
+    }
   }
   paramsValue.value = newValue
+
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = e.name

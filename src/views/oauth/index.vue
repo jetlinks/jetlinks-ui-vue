@@ -151,13 +151,14 @@ const changeAccount = () => {
 const getLoginUser = async (data?: any) => {
   if (getToken()) { // 未登录
     const res = await getMe_api()
+    console.log(params.value, data)
     if (res.success) {
-      userName.value = res.result?.user.name
+      userName.value = res.result?.user?.name
       isLogin.value = true
       getApplication(data?.client_id || params.value.client_id)
-      if (data?.internal === 'true' || internal.value === 'true') { // 是否走oauth2
+      // if (data?.internal === 'true' || internal.value === 'true') { // 是否走oauth2
         goOAuth2Fn(data)
-      }
+      // }
     } else if (res.status === 401) {
       setTimeout(() => {
         spinning.value = false
@@ -177,16 +178,19 @@ const getLoginUser = async (data?: any) => {
   }
 }
 
-const getQueryVariable = (variable: any) => {
-  const query = window.location.search.substring(1);
-  const vars = query.split('&');
+const getQueryVariable = (): Map<string, string> => {
+  const index = window.location.href.indexOf('?')
+  const paramsUrl = window.location.href.substr(index + 1)
+  const paramsArr = paramsUrl.split('#')?.[0] || ''
+
+  const vars = paramsArr.split('&');
+  const maps = new Map()
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=');
-    if (pair[0] === variable) {
-      return pair[1];
-    }
+    const [key, value] = pair
+    maps.set(key, value)
   }
-  return '';
+  return maps;
 }
 
 const doLogin = () => {
@@ -210,33 +214,35 @@ const initPage = async () => {
   let redirectUrl
   // 获取url中的配置信息
   const paramsIndex = location.hash.indexOf('?')
-  const params = new URLSearchParams(location.hash.slice(paramsIndex))
+  const _params = getQueryVariable()
   const items = {
-    client_id: params.get('client_id'),
-    state: params.get('state'),
-    redirect_uri: decodeURIComponent(params.get('redirect_uri')!),
-    response_type: params.get('response_type'),
-    scope: params.get('scope'),
+    client_id: _params.get('client_id'),
+    state: _params.get('state'),
+    redirect_uri: decodeURIComponent(_params.get('redirect_uri')!),
+    response_type: _params.get('response_type'),
+    scope: _params.get('scope'),
   }
-  const item = params.get('internal');
+  const item = _params.get('internal');
   if (items.redirect_uri) {
     const origin = items.redirect_uri.split('/').slice(0, 3)
     const url = `${origin.join('/')}${items.redirect_uri?.split('redirect=')[1]}`
     // redirectUrl = `${items.redirect_uri?.split('redirect_uri=')[0]}?redirect=${url}`
     redirectUrl = items.redirect_uri
   }
-  // 获取用户信息
-  getLoginUser({
-    ...items,
-    internal: params.get('internal'),
-    redirect_uri: redirectUrl,
-  })
 
-  internal.value = item!
+  console.log(params)
+  internal.value = item
   params.value = {
     ...items,
     redirect_uri: redirectUrl,
   }
+  console.log(params.value)
+  // 获取用户信息
+  getLoginUser({
+    ...items,
+    internal: _params.get('internal'),
+    redirect_uri: redirectUrl,
+  })
 }
 
 const getSettingDetail = () => {
