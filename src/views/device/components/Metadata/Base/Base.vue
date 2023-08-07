@@ -83,7 +83,7 @@
         </template>
         <template #other="{ data }">
           <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
+            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
             title="继承自产品物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
@@ -96,9 +96,9 @@
               v-else
               v-model:value="data.record.expands"
               :id="data.record.id"
-              :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
+              :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
               :record="data.record"
-              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? {
+              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
                 title: '继承自产品物模型的数据不支持删除',
               } : undefined"
               :type="data.record.valueType.type"
@@ -161,12 +161,12 @@
                     },
                     getPopupContainer: getPopupContainer
                   }"
+                :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
                 :tooltip="{
                   placement: 'topRight',
                   getPopupContainer: getPopupContainer,
-                  title: target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex) ? '继承自产品物模型的数据不支持删除' :'删除',
+                  title: target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? '继承自产品物模型的数据不支持删除' :'删除',
                 }"
-                :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record._sortIndex)"
             >
               <AIcon type="DeleteOutlined" />
             </PermissionButton>
