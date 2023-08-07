@@ -14,6 +14,7 @@ ProtocolMapping.set('Ctwing', 'HTTP');
 ProtocolMapping.set('modbus-tcp', 'MODBUS_TCP');
 ProtocolMapping.set('opc-ua', 'OPC_UA');
 ProtocolMapping.set('edge-child-device', 'EdgeGateway');
+ProtocolMapping.set('collector-gateway', 'collector-gateway');
 ProtocolMapping.set('official-edge-gateway', 'MQTT');
 
 const NetworkTypeMapping = new Map();
@@ -44,6 +45,7 @@ BackMap.set('gb28181-2016', getImage('/access/gb28181.png'));
 BackMap.set('mqtt-client-gateway', getImage('/access/mqtt-broke.png'));
 BackMap.set('edge-child-device', getImage('/access/child-device.png'));
 BackMap.set('official-edge-gateway', getImage('/access/edge.png'));
+BackMap.set('collector-gateway', getImage('/access/collector-gateway.png'));
 
 const descriptionList = {
     'udp-device-gateway':

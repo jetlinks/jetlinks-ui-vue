@@ -10,11 +10,12 @@
                 <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
                 <j-tree
                     v-if="leftData.treeData.length > 0"
-                    showLine
                     defaultExpandAll
                     :tree-data="leftData.treeData"
                     v-model:selectedKeys="leftData.selectedKeys"
                     @select="onSelect"
+                    :showLine="{ showLeafIcon: false }"
+                    :show-icon="true"
                 >
                     <template #title="{ dataRef }">
                         <div

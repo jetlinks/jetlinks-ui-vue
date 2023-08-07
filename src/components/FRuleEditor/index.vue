@@ -24,7 +24,7 @@
         <div class="box">
             <div class="left">
                 <div>
-                    <Operator :id="id" @add-operator-value="addOperatorValue" />
+                    <Operator :id="id" :propertiesOptions="propertiesOptions" @add-operator-value="addOperatorValue" />
                 </div>
                 <div style="margin-top: 10px;">
                     <Editor
@@ -70,7 +70,8 @@ const props = defineProps({
     value: String,
     id: String,
     virtualRule: Object,
-    aggList: Array
+    aggList: Array,
+    propertiesOptions: Array
 });
 
 const _value = ref<string | undefined>(props.value);

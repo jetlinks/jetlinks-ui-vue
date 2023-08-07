@@ -5,6 +5,7 @@ export const InitLicense = '/init-license'
 export const NotificationSubscriptionCode = 'message-subscribe'
 export const NotificationRecordCode = 'account/NotificationRecord'
 export const OauthPath = '/oauth'
+export const VideoSharePath = '/media/device/Share'
 
 export const AccountMenu = {
     path: '/account',
@@ -85,6 +86,10 @@ export default [
             title: '微信授权页'
         },
         component: () => import('@/views/oauth/WeChat.vue')
+    },
+    {
+        path: VideoSharePath,
+        component: () => import('@/views/media/Device/Channel/Share/index.vue')
     },
     AccountMenu
 ]

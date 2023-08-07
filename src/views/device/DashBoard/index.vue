@@ -150,7 +150,7 @@ const menuStore = useMenuStore();
  * 获取产品数量
  */
 const getProductData = () => {
-    if (menuStore.hasMenu('device/Product')) {
+    // if (menuStore.hasMenu('device/Product')) {
         productCount().then((res) => {
             if (res.status == 200) {
                 productTotal.value = res.result;
@@ -180,14 +180,14 @@ const getProductData = () => {
                 productFooter.value[1].value = res.result;
             }
         });
-    }
+    // }
 };
 getProductData();
 /**
  * 获取设备数量
  */
 const getDeviceData = () => {
-    if (menuStore.hasMenu('device/Instance')) {
+    // if (menuStore.hasMenu('device/Instance')) {
         deviceCount().then((res) => {
             if (res.status == 200) {
                 deviceTotal.value = res.result;
@@ -206,7 +206,7 @@ const getDeviceData = () => {
                 }
             },
         );
-    }
+    // }
 };
 getDeviceData();
 /**
@@ -214,7 +214,7 @@ getDeviceData();
  */
 const getOnline = () => {
     const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-    const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {
@@ -481,7 +481,7 @@ const setDevMesChartOption = (
 //今日设备消息量
 const getDevice = () => {
   const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {

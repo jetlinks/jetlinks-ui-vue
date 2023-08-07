@@ -4,7 +4,7 @@
       <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
     </template>
     <template #required="{ data }">
-      <span>{{ data.record.expands?.required ? "是": '否' }}</span>
+      <span>{{ data.record.expands?.required ? "必填": '不必填' }}</span>
     </template>
     <template #config="{ data }">
       <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
@@ -64,6 +64,7 @@ const columns = ref([
     title: '参数标识',
     dataIndex: 'id',
     type: 'text',
+    placement: 'Left',
     form: {
       required: true,
       rules: [
@@ -84,7 +85,7 @@ const columns = ref([
         { max: 64, message: '最多可输入64个字符' },
         {
           pattern: /^[a-zA-Z0-9_\-]+$/,
-          message: 'ID只能由数字、字母、下划线、中划线组成',
+          message: '标识只能由数字、字母、下划线、中划线组成',
         },
       ]
     }

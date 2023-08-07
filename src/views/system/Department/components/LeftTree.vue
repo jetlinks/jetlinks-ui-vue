@@ -30,6 +30,8 @@
                   v-model:selected-keys="selectedKeys"
                   v-model:expandedKeys="expandedKeys"
                   :fieldNames="{ key: 'id' }"
+                  :showLine="{ showLeafIcon: false }"
+                  :show-icon="true"
               >
                   <template #title="{ name, data }">
                     <div class='department-tree-item-content'>

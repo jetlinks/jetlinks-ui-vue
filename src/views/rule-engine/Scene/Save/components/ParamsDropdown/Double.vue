@@ -60,6 +60,10 @@ const onSelect = (v: any, _label: string, index: number) => {
 const tabChange = (e: string) => {
   emit('update:source', e)
 }
+
+watch(() => props.value, () => {
+  myValue.value = props.value
+})
 </script>
 
 <style scoped>

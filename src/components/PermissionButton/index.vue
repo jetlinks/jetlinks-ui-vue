@@ -40,7 +40,7 @@
       </j-button>
     </template>
   </template>
-  <j-tooltip v-else title="暂无权限，请联系管理员">
+  <j-tooltip v-else title="暂无权限，请联系管理员" :placement="placement">
     <slot v-if="noButton"></slot>
     <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
       <slot></slot>
@@ -88,6 +88,10 @@ const props = defineProps({
   },
   style: {
     type: Object as PropType<CSSProperties>
+  },
+  placement:{
+    type: String,
+    default: 'top'
   },
   ...omit(buttonProps(), 'icon')
 })

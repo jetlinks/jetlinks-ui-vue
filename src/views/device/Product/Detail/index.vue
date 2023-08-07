@@ -8,43 +8,68 @@
         <template #title>
             <div>
                 <div style="display: flex; align-items: center">
-                    <a-tooltip>
+                    <j-tooltip>
                         <template #title>{{
                             productStore.current.name
                         }}</template>
                         <div class="productDetailHead">
                             {{ productStore.current.name }}
                         </div>
-                    </a-tooltip>
-                    <div style="margin: -5px 0 0 20px">
-                        <j-popconfirm
-                            title="确认禁用"
-                            @confirm="handleUndeploy"
-                            v-if="productStore.current.state === 1"
-                            okText="确定"
-                            cancelText="取消"
-                        >
-                            <j-switch
-                                :checked="productStore.current.state === 1"
-                                checked-children="正常"
-                                un-checked-children="禁用"
-                            />
-                        </j-popconfirm>
-                        <j-popconfirm
-                            title="确认启用"
-                            @confirm="handleDeploy"
-                            v-if="productStore.current.state === 0"
-                            okText="确定"
-                            cancelText="取消"
-                        >
-                            <j-switch
-                                :unCheckedValue="
-                                    productStore.current.state === 0
-                                "
-                                checked-children="正常"
-                                un-checked-children="禁用"
-                            />
-                        </j-popconfirm>
+                    </j-tooltip>
+                    <div style="margin: -5px 0 0 20px" v-if="permissionStore.hasPermission('device/Product:action')">
+                            <j-popconfirm
+                                title="确认禁用"
+                                @confirm="handleUndeploy"
+                                v-if="productStore.current.state === 1"
+                                okText="确定"
+                                cancelText="取消"
+                                :disabled="!permissionStore.hasPermission('device/Product:action')"
+                            >
+                                <j-switch
+                                    :checked="productStore.current.state === 1"
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                            </j-popconfirm>
+                            <j-popconfirm
+                                title="确认启用"
+                                @confirm="handleDeploy"
+                                v-if="productStore.current.state === 0"
+                                okText="确定"
+                                cancelText="取消"
+                                :disabled="!permissionStore.hasPermission('device/Product:action')"
+                            >
+                                <j-switch
+                                    :unCheckedValue="
+                                        productStore.current.state === 0
+                                    "
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                            </j-popconfirm>
+                    </div>
+                    <div style="margin: -5px 0 0 20px" v-else>
+                        <j-tooltip>
+                            <template #title>暂无权限，请联系管理员</template>
+                                <j-switch
+                                    v-if="productStore.current.state === 1"
+                                    :checked="productStore.current.state === 1"
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                                <j-switch
+                                    v-if="productStore.current.state === 0"
+                                    :unCheckedValue="
+                                        productStore.current.state === 0
+                                    "
+                                    checked-children="正常"
+                                    un-checked-children="禁用"
+                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
+                                />
+                            </j-tooltip>
                     </div>
                 </div>
             </div>
@@ -87,6 +112,7 @@
                         : undefined
                 "
                 hasPermission="device/Product:update"
+                placement="topRight"
                 >应用配置</PermissionButton
             >
         </template>
@@ -124,7 +150,9 @@ import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import {EventEmitter} from "@/utils/utils";
+import { usePermissionStore } from '@/store/permission';
 
+const permissionStore = usePermissionStore()
 const menuStory = useMenuStore();
 const route = useRoute();
 const checked = ref<boolean>(true);
@@ -169,7 +197,7 @@ const tabs = {
 watch(
     () => route.params.id,
     (newId) => {
-        if (newId) {
+        if (newId && route.name === 'device/Product/Detail') {
             productStore.reSet();
             productStore.tabActiveKey = 'Info';
             productStore.refresh(newId as string);
