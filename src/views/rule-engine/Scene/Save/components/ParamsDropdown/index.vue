@@ -55,6 +55,8 @@
                     :height='450'
                     :virtual='true'
                     @select='treeSelect'
+                    :showLine="{ showLeafIcon: false }"
+                    :show-icon="true"
                   >
                     <template #title="{ name, description }">
                       <j-space>
@@ -173,7 +175,7 @@ watchEffect(() => {
     treeOpenKeys.value = openKeysByTree(_options, props.value, props.valueName)
   } else {
     if (isMetric) { // 处理指标值回显
-      label.value = props.metric !== undefined ? props.value : props.placeholder
+      label.value = props.metric !== undefined ? props.value || props.placeholder  : props.placeholder
     } else {
       label.value = props.value !== undefined ? props.value : props.placeholder
     }

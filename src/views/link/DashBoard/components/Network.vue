@@ -7,7 +7,7 @@
                     <j-radio-group
                         button-style="solid"
                         v-model:value="data.type"
-                        @change="() => { getNetworkEcharts(data) }"
+                        @change="changeType"
                     >
                         <j-radio-button value="bytesRead">
                             上行
@@ -73,6 +73,7 @@ import {
   getTimeByType,
   typeDataLine,
   areaStyle,
+  colorNetwork,
   networkParams, arrayReverse,
 } from './tool.ts';
 import dayjs from 'dayjs';
@@ -108,7 +109,9 @@ const pickerTimeChange = (value: any) => {
     data.value.time.type = undefined;
     getNetworkEcharts(data.value);
 };
-
+const changeType = (value:any) =>{
+    getNetworkEcharts(data.value);
+} 
 const getNetworkEcharts = async (val: any) => {
     loading.value = true;
     const resp: any = await dashboard(networkParams(val));
@@ -168,7 +171,7 @@ const setOptions = (data: any, key: string) => ({
     name: key,
     type: 'line',
     smooth: true,
-    areaStyle,
+    // areaStyle,
 });
 
 const handleNetworkOptions = (optionsData: any, xAxis: any) => {
@@ -205,7 +208,7 @@ const echartsOptions = computed(() => {
       trigger: 'axis',
       formatter: (_value: any) => networkValueRender(_value[0]),
     },
-    color: ['#979AFF'],
+    color: colorNetwork,
     series: series
   };
 })
@@ -214,6 +217,7 @@ watch(
     () => data.value.time.type,
     (value) => {
         if (value === undefined) return;
+        console.log(value);
         const date = getTimeByType(value);
         data.value.time.time = [dayjs(date), dayjs(new Date())];
 

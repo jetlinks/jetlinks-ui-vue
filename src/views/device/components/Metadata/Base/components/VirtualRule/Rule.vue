@@ -2,7 +2,7 @@
     <j-button @click="visible = true" style="width: 100%" type="dashed">
         编辑规则
     </j-button>
-    <FRuleEditor :aggList="aggList" @close="onClose" v-if="visible" :value="value" @save="onChange" :id="id" :virtualRule="virtualRule" />
+    <FRuleEditor v-if="visible" :id="id" :aggList="aggList" :propertiesOptions="propertiesOptions" :value="value" :virtualRule="virtualRule" @close="onClose" @save="onChange" />
 </template>
 
 <script setup lang="ts" name="Rule">
@@ -21,7 +21,8 @@ const props = defineProps({
     value: String,
     id: String,
     virtualRule: Object,
-    aggList: Array
+    aggList: Array,
+    propertiesOptions: Array
 });
 
 const visible = ref<boolean>(false);

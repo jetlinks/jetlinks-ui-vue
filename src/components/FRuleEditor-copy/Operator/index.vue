@@ -3,7 +3,9 @@
     <j-input-search @search="search" allow-clear placeholder="搜索关键字" />
     <div class="tree">
       <j-tree @select="selectTree" :field-names="{ title: 'name', key: 'id', }" auto-expand-parent
-        :tree-data="data">
+        :tree-data="data"  
+        :showLine="{ showLeafIcon: false }"
+        :show-icon="true">
         <template #title="node">
           <div class="node">
             <div style="max-width: 180px"><Ellipsis>{{ node.name }}</Ellipsis></div>

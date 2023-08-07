@@ -1,5 +1,5 @@
 <template>
-    <div class="notification-record-container">
+        <div class="notification-record-container">
         <pro-search
             :columns="columns"
             :target="type"
@@ -14,6 +14,7 @@
             :params="queryParams"
             :bodyStyle="{ padding: 0 }"
             :defaultParams="defaultParams"
+            :scroll="{y:420}"
         >
             <!-- <template #rightExtraRender>
                 <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
@@ -75,7 +76,7 @@
             :data="viewItem"
             :type="type"
         />
-    </div>
+        </div>
 </template>
 
 <script setup lang="ts" name="NotificationRecord">

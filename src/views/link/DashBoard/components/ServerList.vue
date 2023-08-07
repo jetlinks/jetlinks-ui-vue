@@ -4,10 +4,10 @@
     <j-scrollbar>
       <div class="server-list-items">
         <div
-            v-for="item in options" :class="['server-item', myValue.includes(item) ? 'active' : '']"
+            v-for="(item, index) in options" :key="item" :class="['server-item', myValue.includes(item) ? 'active' : '']"
             @click="() => change(item)"
         >
-          <j-badge :color=" myValue.includes(item) ? color : '#a3a3a3'" :text="item" />
+          <j-badge :color="myValue.includes(item) ? (Array.isArray(color) ? color[index % 5] : color) : '#a3a3a3'" :text="item" />
         </div>
       </div>
     </j-scrollbar>
@@ -26,7 +26,7 @@ const props = defineProps({
     default: () => []
   },
   color: {
-    type: String,
+    type: [String, Array],
     default: '#979AFF'
   }
 })

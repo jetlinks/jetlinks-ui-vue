@@ -21,7 +21,6 @@
             <j-form-item label="名称" name="name">
                 <j-input
                     v-model:value="formModel.name"
-                    :maxlength="64"
                     placeholder="请输入名称"
                 />
             </j-form-item>
@@ -31,6 +30,7 @@
                     id="inputNumber"
                     v-model:value="formModel.sortIndex"
                     :min="1"
+                    :max="9999"
                     placeholder="请输入排序"
                 />
             </j-form-item>
@@ -102,7 +102,11 @@ const rules = ref({
             message: '最多可输入64个字符',
         },
     ],
-    sortIndex: [{ required: true, message: '请输入排序', trigger: 'blur' }],
+    sortIndex: [{ required: true, message: '请输入排序', trigger: 'blur' },{
+        pattern:/^\d+$/,
+        message:'请输入正整数',
+        trigger:'change'
+    }],
 });
 const visible = ref(false);
 const { resetFields, validate, validateInfos } = useForm(
@@ -174,7 +178,7 @@ const show = async (row: any) => {
                 childArr.value = row.children.sort(compare('sortIndex'));
                 formModel.value = {
                     name: '',
-                    sortIndex:
+                    sortIndex:childArr.value[childArr.value.length - 1].sortIndex === 9999 ? childArr.value[childArr.value.length - 1].sortIndex :
                         childArr.value[childArr.value.length - 1].sortIndex + 1,
                     description: '',
                 };
@@ -186,7 +190,7 @@ const show = async (row: any) => {
             if (arr.value.length > 0) {
                 formModel.value = {
                     name: '',
-                    sortIndex: arr.value[arr.value.length - 1].sortIndex + 1,
+                    sortIndex: arr.value[arr.value.length - 1].sortIndex === 9999 ? arr.value[arr.value.length - 1].sortIndex : arr.value[arr.value.length - 1].sortIndex + 1,
                     description: '',
                 };
             }

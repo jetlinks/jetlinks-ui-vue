@@ -53,9 +53,7 @@
                             :tab="item.title"
                         />
                     </j-tabs>
-                    <j-scrollbar :height="`calc(100% - 51px)`">
-                        <component :is="tabs[user.tabKey]" />
-                    </j-scrollbar>
+                    <component :is="tabs[user.tabKey]" />
                 </div>
             </div>
         </div>
