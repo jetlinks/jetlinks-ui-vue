@@ -136,9 +136,10 @@ export const typeSelectChange = (type: string) => {
   return obj
 }
 
-const isExtendsProdcut = (index: string, productKeys: string, type: string) => {
+const isExtendsProduct = (id: string, productKeys: string, type: string) => {
+  if (!id) return false
   const vailKeys = productKeys[type] || []
-  if (vailKeys.includes(index)) {
+  if (vailKeys.includes(id)) {
     onlyMessage('继承自产品物模型的数据不支持修改', 'warning')
     return true
   }
@@ -176,11 +177,11 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         ]
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'id')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'id')) {
           return false
         }
         const ids = (noEdit?.value?.id || []) as any[]
-        return !ids.includes(record._sortIndex)
+        return !ids.includes(record.id)
       }
     },
     {
@@ -199,7 +200,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         ]
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'name')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'name')) {
           return false
         }
         return true
@@ -219,7 +220,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'expands')) {
           return false
         }
         return true
@@ -266,7 +267,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       dataIndex: 'description',
       type: 'text',
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'description')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
         }
         return true
@@ -294,7 +295,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }
       },
       doubleClick(record) {
-        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'async');
+        return !isExtendsProduct(record.id, productNoEdit?.value, 'async');
 
       },
       control(newValue, oldValue) {
@@ -349,7 +350,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }]
       },
       doubleClick(record) {
-        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'output');
+        return !isExtendsProduct(record.id, productNoEdit?.value, 'output');
       },
       control(newValue, oldValue) {
         if (newValue && !oldValue) {
@@ -365,7 +366,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       dataIndex: 'description',
       type: 'text',
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'description')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
         }
         return true
@@ -404,7 +405,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       },
       width: 230,
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'valueType')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'valueType')) {
           return false
         }
         return true
@@ -425,7 +426,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         if (record.expands.source === 'rule') {
           return true
         }
-        return !isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'expands')
+        return !isExtendsProduct(record.id, productNoEdit?.value, 'expands')
       },
       form: {
         required: true,
@@ -438,7 +439,6 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
               const values = dataSource.find((item, index) => index === fieldIndex)
               const virtualRule = values.expands?.virtualRule
               const source = value.source
-              const ids = (noEdit?.value?.id || []) as any[]
               console.log(source, value)
               if (source) {
                 if (source === 'device' && !value.type?.length) {
@@ -512,7 +512,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         }]
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'valueType')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'valueType')) {
           return false
         }
         return true
@@ -534,7 +534,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         name: TagsType
       },
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'readType')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'readType')) {
           return false
         }
         return true
@@ -568,7 +568,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       dataIndex: 'description',
       type: 'text',
       doubleClick(record) {
-        if (isExtendsProdcut(record._sortIndex, productNoEdit?.value, 'description')) {
+        if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
         }
         return true
