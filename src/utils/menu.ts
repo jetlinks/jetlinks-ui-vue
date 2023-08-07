@@ -368,10 +368,10 @@ const findComponents = (code: string, level: number, isApp: boolean, components:
   const myComponents = components[code]
   if (level === 1) { // BasicLayoutPage
     return myComponents ? () => myComponents() : BasicLayoutPage
+  } else if (isApp){ // iframe
+    return Iframe
   } else if (level === 2) { // BlankLayoutPage or components
     return myComponents ? () => myComponents() : BlankLayoutPage
-  } else if (isApp){ // iframe
-    return () => Iframe
   } else if(myComponents) { // components
     return () => myComponents()
   }
@@ -417,6 +417,21 @@ const findDetailRouteItem = (item: any, components: any) => {
   return []
 }
 
+const findSaveRouteItem = (item: any, components: any) => {
+  const { code, url } = item
+  const Component = components[`${item.code}/Save`]
+  if (Component) {
+    return [{
+      url: `${url}/detail/:id`,
+      code: `${code}/Save`,
+      component: Component,
+      name: '详情信息',
+      isShow: false
+    }]
+  }
+  return []
+}
+
 export const handleMenus = (menuData: any[], components: any, level: number = 1) => {
   if (menuData && menuData.length) {
     return menuData.map(item => {
@@ -433,7 +448,6 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
       route.component = findComponents(item.code, level, isApp, components)
       const extraRoute = hasExtraChildren(item, extraRouteObj)
       const detail_components = findDetailRouteItem(item, components)
-
 
       if (extraRoute && !isApp) { // 包含额外的子路由
         route.children = route.children ? [...route.children, ...extraRoute] : extraRoute

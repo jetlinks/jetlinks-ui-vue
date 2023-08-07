@@ -1,5 +1,6 @@
 <template>
-    <div class="box">
+    <j-scrollbar :height="`calc(100% - 51px)`">
+        <div class="box">
         <div class="content">
             <template v-if="bindList.length">
                 <div
@@ -47,7 +48,8 @@
             </template>
             <j-empty v-else style="margin: 200px 0" />
         </div>
-    </div>
+        </div>
+    </j-scrollbar>
 </template>
 
 <script setup lang="ts">

@@ -11,7 +11,7 @@
                 :key="item.provider"
                 :tab="item.name"
             >
-                <NotificationRecord :type="item.provider" />
+                    <NotificationRecord :type="item.provider" />
             </j-tab-pane>
         </j-tabs>
         <j-empty v-else style="margin: 200px 0" />

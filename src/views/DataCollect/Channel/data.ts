@@ -15,6 +15,8 @@ export const FormState: FormDataType = {
         authType: 'anonymous',
         username: '',
         password: '',
+        deviceId: undefined,
+        deviceName: undefined,
     },
     description: '',
 };

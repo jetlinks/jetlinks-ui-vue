@@ -4,6 +4,7 @@
       :maskClosable="false"
       title="事件详情"
       width="650px"
+      :getContainer="getPopupContainer"
       @cancel="cancel"
       @ok="ok"
   >
@@ -36,6 +37,10 @@ const props = defineProps({
   data: {
     type: Object,
     default: () => ({})
+  },
+  getPopupContainer: {
+    type: Function,
+    default: undefined
   }
 })
 

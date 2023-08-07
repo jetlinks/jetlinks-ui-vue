@@ -1,5 +1,6 @@
 <template>
-    <j-spin :spinning="loading">
+    <j-scrollbar :height="`calc(100% - 51px)`">
+        <j-spin :spinning="loading">
         <div style="padding: 0 10px">
             <div class="alert">
                 <AIcon type="InfoCircleOutlined" />
@@ -47,7 +48,8 @@
                 <j-empty style="margin: 200px 0" v-else />
             </div>
         </div>
-    </j-spin>
+        </j-spin>
+    </j-scrollbar>
 </template>
 
 <script lang="ts" setup>

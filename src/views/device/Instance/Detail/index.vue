@@ -122,6 +122,7 @@ import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue';
+import GateWay from './GateWay/index.vue'
 import Log from './Log/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
@@ -181,7 +182,8 @@ const tabs = {
     EdgeMap,
     Parsing,
     Log,
-    MetadataMap
+    MetadataMap,
+  GateWay
 };
 
 const getStatus = (id: string) => {
@@ -225,7 +227,7 @@ const getDetail = () => {
     ) {
         list.value.push({
             key: 'Modbus',
-            tab: 'Modbus TCP',
+            tab: '数采映射',
         });
     }
     if (
@@ -234,8 +236,17 @@ const getDetail = () => {
     ) {
         list.value.push({
             key: 'OPCUA',
-            tab: 'OPC UA',
+            tab: '数采映射',
         });
+    }
+    if (
+        instanceStore.current?.protocol === 'collector-gateway' &&
+        !keys.includes('GateWay')
+    ) {
+      list.value.push({
+        key: 'GateWay',
+        tab: '数采映射',
+      });
     }
     if (
         instanceStore.current?.deviceType?.value === 'gateway' &&

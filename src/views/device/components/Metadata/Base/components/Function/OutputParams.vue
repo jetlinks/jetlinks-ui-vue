@@ -1,7 +1,7 @@
 <template>
     <div class="metadata-type">
       <div class="metadata-type-select">
-        <DataTableTypeSelect v-model:value="type" @change="typeChange" />
+        <DataTableTypeSelect v-model:value="type" :allowClear="true" @change="typeChange" />
       </div>
         <DataTableArray
             v-if="type === 'array'"
@@ -101,6 +101,7 @@ const columns = [
     title: '参数标识',
     dataIndex: 'id',
     type: 'text',
+    placement: 'Left',
     form: {
       required: true,
       rules: [{
@@ -120,7 +121,7 @@ const columns = [
         { max: 64, message: '最多可输入64个字符' },
         {
           pattern: /^[a-zA-Z0-9_\-]+$/,
-          message: 'ID只能由数字、字母、下划线、中划线组成',
+          message: '标识只能由数字、字母、下划线、中划线组成',
         },
       ]
     }

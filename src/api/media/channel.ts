@@ -67,4 +67,7 @@ export default {
 
     // 播放云端回放
     playbackStart: (recordId: string) => server.get(`/media/record/${recordId}.mp4`),
+
+    // 设备预置位相关接口
+    opFunction: (deviceId: string, functionId: string, data?: any) => server.post(`/device/invoked/${deviceId}/function/${functionId}`, data)
 }
