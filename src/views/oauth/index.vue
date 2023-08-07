@@ -74,10 +74,11 @@
 
 <script setup lang='ts' name='Oauth'>
 import { TOKEN_KEY } from '@/utils/variable'
-import { config, code, getOAuth2, initApplication, authLogin, settingDetail } from '@/api/login'
+import { config, code, getOAuth2, initApplication, authLogin, settingDetail,authLoginConfig } from '@/api/login'
 import { getMe_api } from '@/api/home'
 import { getImage, getToken } from '@/utils/comm'
 import Config from '../../../config/config'
+import {encrypt} from '@/utils/encrypt'
 
 const spinning = ref(true)
 const isLogin = ref(false)
@@ -193,11 +194,27 @@ const getQueryVariable = (): Map<string, string> => {
   return maps;
 }
 
+const  RsaConfig = reactive<any>({
+    enabled:false, //是否加密
+    publicKey:'', //rsa公钥,使用此公钥对密码进行加密
+    id:'' //密钥ID
+})
+
 const doLogin = () => {
   formRef.value.validate().then( async data => {
-    const res = await authLogin({
+    const resq:any = await authLoginConfig()
+      if(resq.status === 200){
+          if(resq.result?.encrypt){
+              RsaConfig.enabled = resq.result?.encrypt.enabled
+              RsaConfig.publicKey = resq.result?.encrypt.publicKey
+              RsaConfig.id = resq.result?.encrypt.id
+          }
+      }
+    const res:any = await authLogin({
       verifyKey: captcha.key,
-      ...formModel
+      ...formModel,
+      password:RsaConfig.enabled?encrypt(params.password,RsaConfig.publicKey):params.password,
+      encryptId:RsaConfig.enabled?RsaConfig.id:undefined
     })
     if (res.success) {
       const token = res.result.token

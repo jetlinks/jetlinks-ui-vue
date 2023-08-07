@@ -129,8 +129,9 @@ import { TOKEN_KEY } from '@/utils/variable'
 import { Form } from 'ant-design-vue'
 
 import { applicationInfo, bindAccount } from '@/api/bind'
-import { code, authLogin, userDetail } from '@/api/login'
+import { code, authLogin, userDetail , authLoginConfig} from '@/api/login'
 import { useSystem } from '@/store/system'
+import {encrypt} from '@/utils/encrypt'
 
 const useForm = Form.useForm;
 const systemStore = useSystem();
@@ -239,7 +240,11 @@ const getCode = async () => {
   captcha.value.key = res.result?.key
 }
 
-
+const  RsaConfig = reactive<any>({
+    enabled:false, //是否加密
+    publicKey:'', //rsa公钥,使用此公钥对密码进行加密
+    id:'' //密钥ID
+})
 /**
  * 登录并绑定账户
  */
@@ -252,13 +257,24 @@ const handleLoginBind = () => {
         bindCode: code,
         expires: 3600000
       }
-
+      const resq:any = await authLoginConfig()
+      if(resq.status === 200){
+          if(resq.result?.encrypt){
+              RsaConfig.enabled = resq.result?.encrypt.enabled
+              RsaConfig.publicKey = resq.result?.encrypt.publicKey
+              RsaConfig.id = resq.result?.encrypt.id
+          }
+      }
       if (captcha.value.base64) {
         params.verifyKey = captcha.value.key
       } else {
         delete params.verifyCode
       }
-
+      const data = {
+            ...params,
+            password:RsaConfig.enabled?encrypt(params.password,RsaConfig.publicKey):params.password,
+            encryptId:RsaConfig.enabled?RsaConfig.id:undefined
+      }
       const res = await authLogin(params)
       console.log('res: ', res)
       if (res.success) {
