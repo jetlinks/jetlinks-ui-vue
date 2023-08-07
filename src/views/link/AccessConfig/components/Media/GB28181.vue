@@ -333,6 +333,7 @@
                                                     index,
                                                     'publicHost',
                                                 ]"
+                                                :validateFirst="true"
                                                 :rules="[
                                                     {
                                                         required: true,
