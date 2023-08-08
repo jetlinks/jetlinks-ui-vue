@@ -21,8 +21,6 @@
                           :selectedKeys="selectedKeys"
                           @drop="onDrop"
                           @dragend="onDragend"
-                          :showLine="{ showLeafIcon: false }"
-                            :show-icon="true"
                         >
                           <template #title="row">
                             <div class="tree-content">
