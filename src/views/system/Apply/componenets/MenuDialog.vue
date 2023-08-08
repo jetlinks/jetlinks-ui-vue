@@ -33,8 +33,6 @@
             :fieldNames="{ key: 'code', title: 'name' }"
             @check="treeCheck"
             :height="300"
-            :showLine="{ showLeafIcon: false }"
-            :show-icon="true"
         >
             <template #title="{ name }">
                 <span>{{ name }}</span>

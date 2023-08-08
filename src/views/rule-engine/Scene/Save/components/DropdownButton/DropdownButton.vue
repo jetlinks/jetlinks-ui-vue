@@ -38,8 +38,6 @@
               :height='450'
               :virtual='true'
               @select='treeSelect'
-              :showLine="{ showLeafIcon: false }"
-              :show-icon="true"
             >
               <template #title="{ name, description }">
                 <j-space>
