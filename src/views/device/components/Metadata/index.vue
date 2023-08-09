@@ -81,7 +81,7 @@ provide('_metadataType', props.type)
 
 const showReset = computed(() => {
   if (props.type === 'device' && instanceStore.current.productMetadata) {
-    console.log(instanceStore.current)
+    console.log(instanceStore.current,123)
     const proMetadata = JSON.parse(instanceStore.current.productMetadata || '{}')
     const _metadata = JSON.parse(instanceStore.current.metadata || '{}')
     return !isEqual(_metadata, proMetadata)

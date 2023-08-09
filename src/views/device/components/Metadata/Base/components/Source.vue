@@ -116,7 +116,7 @@ const disabled = computed(() => {
     //     return true;
     // }
     return props.noEdit?.length
-        ? props.noEdit.includes(props.value._sortIndex)
+        ? props.noEdit.includes(props.value.id)
         : false;
 });
 
