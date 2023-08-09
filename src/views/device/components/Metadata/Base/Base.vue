@@ -56,7 +56,17 @@
             {{ TypeStringMap[data.record.valueType?.type] }}
         </template>
         <template #inputs="{ data }">
-          <InputParams v-model:value="data.record.inputs" />
+          <j-tooltip
+            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
+            title="继承自产品物模型的数据不支持修改"
+          >
+<!--            <ModelButton :disabled="true"/>-->
+            <j-button :disabled="true" type="link" style="padding-left: 0;">
+              <AIcon type="SettingOutlined" />
+              配置
+            </j-button>
+          </j-tooltip>
+          <InputParams  v-else v-model:value="data.record.inputs" />
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -71,7 +81,17 @@
         {{ data.record.id && !data.record?.expands?.source ? '设备' : sourceMap?.[data.record?.expands?.source] || '' }}
       </template>
         <template #properties="{ data }">
-          <ConfigParams v-model:value="data.record.valueType" />
+          <j-tooltip
+            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
+            title="继承自产品物模型的数据不支持修改"
+          >
+<!--            <ModelButton :disabled="true"/>-->
+            <j-button :disabled="true" type="link" style="padding-left: 0;">
+              <AIcon type="SettingOutlined" />
+              配置
+            </j-button>
+          </j-tooltip>
+          <ConfigParams v-else v-model:value="data.record.valueType" />
         </template>
         <template #outInput>
           object
