@@ -50,11 +50,11 @@
                                     <AIcon type="EditOutlined" />
                                 </j-button>
                             </j-tooltip>
-
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
                                 :tooltip="{ title: '新增子菜单' }"
+                                :disabled="slotProps.level >= 3"
                                 @click="table.addChildren(slotProps)"
                             >
                                 <AIcon type="PlusCircleOutlined" />
