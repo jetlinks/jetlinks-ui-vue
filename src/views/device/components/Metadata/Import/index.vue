@@ -257,14 +257,160 @@ const loadData = async () => {
 };
 loadData();
 
+// const propertiesSet = new Set(['id','name','expands','valueType']);
+
+// const handleMadeDataNull = (data:any) =>{
+//    return data?.properties?.some?.((item:any,index:number)=>{
+//                 if(!item?.id){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失id属性`,'error');
+//                     return true
+//                 }
+//                 if(!item?.name){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失name属性`,'error');
+//                     return 
+//                 }
+//                 if(!item?.expands?.source){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
+//                     return 
+//                 }
+               
+//                 if((item?.expands?.source === 'device' ||    item?.expands?.source === 'rule') && !item?.expands?.type){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
+//                     return
+//                 }           
+//         }) || false
+// }
+const requiredCheck = (data:any) =>{
+    let check:boolean = false;
+    if(data?.properties && !check){
+        data.properties.some((item:any,index:number)=>{
+                if(!item?.id){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return 
+                }
+                if(!item?.name){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return 
+                }
+                if(!item?.expands?.source){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
+                    check = true
+                    return 
+                }
+               
+                if((item?.expands?.source === 'device' ||    item?.expands?.source === 'rule') && !item?.expands?.type){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
+                    check = true
+                    return
+                }           
+        })
+    }
+    if(data?.functions  && !check){
+        data?.functions.forEach((item:any,index:number)=>{
+            if(!item?.id){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                } 
+            if(!item?.async && item?.async !== false){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失async属性`,'error');
+                    check = true
+                    return
+            }
+        })
+    }
+    if(data?.events && !check){
+        data?.events.forEach((item:any,index:number)=>{
+            if(!item?.id){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.async && item?.async !== false){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失async属性`,'error');
+                    check = true
+                    return
+            }
+            if(!item?.valueType?.type){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.type属性`,'error');
+                    check = true
+                    return
+            }
+            if(!item?.expands?.level){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失expands.level属性`,'error');
+                    check = true
+                    return
+            }
+             check || item?.valueType?.properties.forEach((i:any,number:number)=>{
+                if(!i?.id){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组第${number+1}项的id属性`,'error');
+                    check = true
+                    return
+                }
+                if(!i?.name){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组第${number+1}项的name属性`,'error');
+                    check = true
+                    return
+                }
+                if(!i?.valueType?.type){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组第${number+1}项的valueType.type属性`,'error');
+                    check = true
+                    return
+                }   
+           })    
+        })
+    }
+    if(data?.tags && !check){
+        data?.tags.forEach((item:any,index:number)=>{
+            if(!item?.id){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                } 
+            if(!item?.valueType?.type){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
+                    check = true
+                    return
+            }
+            if(!item?.expands?.type){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失expands.type属性`,'error');
+                    check = true
+                    return
+            }
+        })
+    }
+    return check
+}
+
 const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     if(file.type === 'application/json') {
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = (json) => {
             if(json.target?.result){
-                onlyMessage('操作成功！')
-                formModel.import = json.target?.result;
+                const data = JSON.parse(json.target?.result);
+                const check = requiredCheck(data);
+                if(!check){
+                    onlyMessage('操作成功！')
+                    formModel.import = json.target?.result;
+                }
             } else {
                 onlyMessage('文件内容不能为空', 'error')
             }
