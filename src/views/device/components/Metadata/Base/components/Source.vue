@@ -16,7 +16,7 @@
                 height: myValue === 'rule' ? '300px' : '80px',
             }"
             :get-popup-container="(node) => fullRef || node"
-            placement="topLeft"
+            placement="bottomRight"
             @confirm="confirm"
             @visibleChange="visibleChange"
         >

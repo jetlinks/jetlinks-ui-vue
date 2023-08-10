@@ -1,5 +1,5 @@
 <template>
-    <DataTableObject v-model:value="value" :columns="columns" @confirm="confirm">
+    <DataTableObject v-model:value="value" :columns="columns" @confirm="confirm" placement="bottomRight">
             <template #valueType="{ data }">
                 <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
             </template>
