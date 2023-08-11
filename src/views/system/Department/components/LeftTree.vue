@@ -164,12 +164,14 @@ const search = debounce(() => {
 
     function dig(_data: any[]): any {
         const pIds: string[] = [];
+        expandedKeys.value = []
         if (!_data.length) return;
         _data.forEach((item) => {
             if (treeMap.has(item)) {
                 const _item = treeMap.get(item);
                 pIds.push(_item.parentId);
                 treeArray.set(item, _item);
+                expandedKeys.value.push(_item.id)
             }
         });
     }
