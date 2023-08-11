@@ -198,6 +198,12 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           },
           { max: 64, message: '最多可输入64个字符' },
         ]
+        // rules:[{
+        //   callback(rule:any,value: any, dataSource: any[]) {
+        //     console.log(rule,value,dataSource,123)
+        //     return value
+        //   }
+        // }]
       },
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'name')) {
@@ -343,9 +349,8 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           callback(rule:any,value: any, dataSource: any[]) {
             const field = rule.field.split('.')
             const fieldIndex = Number(field[1])
-
             const values = dataSource.find((item, index) => index === fieldIndex)
-            return validatorConfig(values.output)
+            return validatorConfig(values?.output)
           }
         }]
       },

@@ -16,7 +16,7 @@
                 height: myValue === 'rule' ? '300px' : '80px',
             }"
             :get-popup-container="(node) => fullRef || node"
-            placement="topLeft"
+            placement="bottomRight"
             @confirm="confirm"
             @visibleChange="visibleChange"
         >
@@ -115,8 +115,9 @@ const disabled = computed(() => {
     // if (props.target === 'device') {
     //     return true;
     // }
+
     return props.noEdit?.length
-        ? props.noEdit.includes(props.value._sortIndex)
+        ? props.noEdit.includes(props.value.id) && props?.target === 'device'
         : false;
 });
 
