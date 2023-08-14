@@ -10,7 +10,7 @@
         >
         </j-select>
         <j-popconfirm-modal
-            v-if="myValue != 'manual'"
+            v-if="myValue != 'manual' && props.target === 'product'"
             :bodyStyle="{
                 width: '450px',
                 height: myValue === 'rule' ? '300px' : '80px',
@@ -37,6 +37,56 @@
                 <AIcon type="EditOutlined" />
             </j-button>
         </j-popconfirm-modal>
+        <j-dropdown v-if="myValue != 'manual'&& target === 'device'" :getPopupContainer="(triggerNode) => triggerNode.parentNode">
+            <span style="width: 20px;" @click.prevent>
+                <AIcon type="MoreOutlined" />
+            </span>
+            <template #overlay>
+                <j-menu>
+                    <j-menu-item>
+                        <j-popconfirm-modal
+                            :bodyStyle="{
+                                width: '450px',
+                                height: myValue === 'rule' ? '300px' : '80px',
+                            }"
+                            :get-popup-container="(node) => fullRef || node"
+                            placement="bottomRight"
+                            @confirm="confirm"
+                            @visibleChange="visibleChange"
+                        >
+                            <template #content>
+                                <j-scrollbar v-if="myValue">
+                                    <div style="padding: 0 10px">
+                                        <VirtualRule
+                                            v-if="visible"
+                                            :value="value"
+                                            :source="myValue"
+                                            :dataSource="dataSource"
+                                            ref="virtualRuleRef"
+                                        />
+                                    </div>
+                                </j-scrollbar>
+                            </template>
+                            <j-button style="padding: 4px 8px" type="link">
+                                编辑
+                            </j-button>
+                        </j-popconfirm-modal>
+                    </j-menu-item>
+                    <j-menu-divider/>
+                    <j-menu-item>
+                       <div style="display: flex;">
+                            <j-button style="padding: 4px 8px" type="link" @click="resetRules">
+                                    重置
+                            </j-button>
+                            <j-tooltip>
+                                <template #title>重置为产品属性规则</template>
+                                <AIcon type="QuestionCircleOutlined" style="margin-top: 10px;"/>
+                            </j-tooltip>
+                       </div>
+                    </j-menu-item>
+                </j-menu>
+            </template>
+        </j-dropdown>
     </div>
 </template>
 
@@ -45,7 +95,12 @@ import { isNoCommunity } from '@/utils/utils';
 import VirtualRule from './VirtualRule/index.vue';
 import { Form } from 'jetlinks-ui-components';
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
-
+import { useInstanceStore } from '@/store/instance';
+import {
+    queryProductVirtualProperty
+} from '@/api/device/product';
+import { updata } from '@/api/rule-engine/configuration';
+const instanceStore = useInstanceStore();
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
           {
@@ -115,7 +170,7 @@ const disabled = computed(() => {
     // if (props.target === 'device') {
     //     return true;
     // }
-
+    console.log(props)
     return props.noEdit?.length
         ? props.noEdit.includes(props.value.id) && props?.target === 'device'
         : false;
@@ -156,7 +211,20 @@ const confirm = async () => {
         }
     });
 };
-
+//重置规则
+const resetRules = async() =>{
+    let res:any =  await queryProductVirtualProperty(instanceStore.current?.productId,props.value.id)
+    if(res && res.status === 200 && res.result.rule){
+        const data:any = {}
+        data.virtualRule = res.result.rule
+        data.virtualRule.triggerProperties = res.result.triggerProperties
+        data.type = type.value
+        updateValue({
+            source:myValue.value,
+            ...data
+        })
+    }
+}
 const cancel = () => {
     if (props.value.id && !props.value?.expands?.source) {
         myValue.value = 'device';
