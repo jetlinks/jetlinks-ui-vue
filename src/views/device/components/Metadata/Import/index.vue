@@ -581,6 +581,7 @@ const handleImport = async () => {
         if (data.metadata === 'alink') {
             try {
                 const _import = JSON.parse(data.import);
+               
                 loading.value = true;
                 const res = await convertMetadata(
                     'from',
@@ -588,7 +589,8 @@ const handleImport = async () => {
                     _import,
                 ).catch((err) => err);
                 if (res.status === 200) {
-                    const metadata = operateLimits(res.result);
+                    // const metadata = operateLimits(res.result); // 导入取并集逻辑
+                    const metadata = res.result
                     let result;
                     if (props?.type === 'device') {
                         result = await saveMetadata(
@@ -644,14 +646,15 @@ const handleImport = async () => {
                     return;
                 }
                 const { id } = route.params || {};
-                const copyOperateLimits = operateLimits(
-                    _object as DeviceMetadata,
-                );
+                // const copyOperateLimits = operateLimits(
+                //     _object as DeviceMetadata,
+                // );
+                // console.log(copyOperateLimits,_object); // 导入取并集逻辑
                 const params = {
                     id,
-                    metadata: JSON.stringify(copyOperateLimits),
+                    metadata: JSON.stringify(_object),
                 };
-                const paramsDevice = copyOperateLimits;
+                const paramsDevice = _object;
                 let resp = undefined;
                 loading.value = true;
                 if (props?.type === 'device') {

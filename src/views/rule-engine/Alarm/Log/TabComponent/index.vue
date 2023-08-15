@@ -285,7 +285,58 @@ const newColumns = computed(() => {
       otherColumns.title = '场景名称'
       break;
   }
+  if(props.type === 'device'){
+    const productColumns =  {
+    title: '产品名称',
+    dataIndex: 'product_id',
+    key: 'product_id',
+    search: {
+      type: 'select',
+      options: async () => {
+        const termType = [
+          {
+            column: "targetType",
+            termType: "eq",
+            type: "and",
+            value: "product",
+          }
+        ]
 
+        if (props.id) {
+          termType.push({
+            termType: 'eq',
+            column: 'alarmConfigId',
+            value: props.id,
+            type: 'and',
+          },)
+        }
+
+        const resp: any = await handleSearch({
+          sorts: [{ name: 'alarmTime', order: 'desc' }],
+          terms: termType
+        });
+        const listMap: Map<string, any> = new Map()
+
+        if (resp.status === 200) {
+          resp.result.data.forEach(item => {
+            if (item.targetId) {
+              listMap.set(item.targetId, {
+                label: item.targetName,
+                value: item.targetId,
+              })
+            }
+
+          })
+
+          return [...listMap.values()]
+
+        }
+        return [];
+      },
+    },
+  }
+  return [otherColumns,productColumns,...columns]
+  }
   return ['all', 'detail'].includes(props.type) ? columns : [
     otherColumns,
     ...columns,
@@ -297,9 +348,9 @@ let params: any = ref({
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp = await query(params);
+    const resp:any = await query(params);
     if (resp.status === 200) {
-        const res = await getOrgList();
+        const res:any = await getOrgList();
         if (res.status === 200) {
             resp.result.data.map((item: any) => {
                 if (item.targetType === 'org') {
@@ -318,7 +369,7 @@ const handleSearch = async (params: any) => {
         }
     }
 };
-watchEffect(() => {
+onMounted(() => {
     if (props.type !== 'all' && !props.id) {
         params.value.terms = [
             {
@@ -353,6 +404,16 @@ const search = (data: any) => {
             value: props.type,
             type: 'and',
         });
+    }
+    if(props.type === 'device' && data?.terms[0]?.terms[0]?.column === 'product_id'){
+            params.value.terms = [{
+                column:"targetId$dev-instance",
+                value:[
+                    data?.terms[0]?.terms[0]
+                ]
+            }]
+        // delete params.value.terms
+        console.log(params.value)
     }
     if (props.id) {
         params.value.terms.push({
