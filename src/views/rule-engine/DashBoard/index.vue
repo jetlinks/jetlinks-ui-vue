@@ -438,6 +438,9 @@ const selectChange = () => {
             res.result
                 .filter((item: any) => item.group === 'alarmTrend')
                 .forEach((item: any) => {
+                    if(time === '1d'){
+                        item.data.timeString = item.data.timeString.split(' ')[0]
+                    }
                     xData.push(item.data.timeString);
                     sData.push(item.data.value);
                 });
