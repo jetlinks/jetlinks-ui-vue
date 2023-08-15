@@ -170,7 +170,6 @@ const disabled = computed(() => {
     // if (props.target === 'device') {
     //     return true;
     // }
-    console.log(props)
     return props.noEdit?.length
         ? props.noEdit.includes(props.value.id) && props?.target === 'device'
         : false;
