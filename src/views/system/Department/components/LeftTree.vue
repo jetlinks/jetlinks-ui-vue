@@ -199,8 +199,10 @@ function delDepartment(id: string) {
 }
 function refresh(id: string) {
     // @ts-ignore
-    window?.onTabSaveSuccess && window.onTabSaveSuccess(id);
-    setTimeout(() => window.close(), 300);
+    if(window?.onTabSaveSuccess){
+        window.onTabSaveSuccess(id);
+        setTimeout(() => window.close(), 300);
+    }
     getTree();
 }
 

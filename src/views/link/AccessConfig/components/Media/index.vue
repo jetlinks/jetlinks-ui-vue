@@ -124,8 +124,10 @@ const onFinish = async (values: any) => {
 
         if (route.query.save) {
             // @ts-ignore
-            window?.onTabSaveSuccess(resp.result);
-            setTimeout(() => window.close(), 300);
+            if((window as any).onTabSaveSuccess){
+                (window as any).onTabSaveSuccess(resp.result);
+                setTimeout(() => window.close(), 300);
+            }
         } else {
             history.back();
         }

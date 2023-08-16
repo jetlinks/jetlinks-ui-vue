@@ -64,8 +64,10 @@ const confirm = () => {
 
                 if (route.query.save) {
                     // @ts-ignore
-                    window?.onTabSaveSuccess(resp.result.id);
-                    setTimeout(() => window.close(), 300);
+                    if((window as any).onTabSaveSuccess){
+                        (window as any).onTabSaveSuccess(resp.result.id);
+                        setTimeout(() => window.close(), 300);
+                    }
                 } else jumpPage(`system/Role/Detail`, { id: resp.result.id });
             }
         })
