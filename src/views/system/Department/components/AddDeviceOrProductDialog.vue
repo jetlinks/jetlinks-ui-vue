@@ -310,7 +310,6 @@ const table: any = {
                 // fix: bug#10706
                 getBindingsPermission(props.assetType, ids).then(
                     (perResp: any) => {
-                        perResp.result = []
                         data.forEach((item) => {
                             item.permissionList = perResp.result
                                 .find((f: any) => f?.assetId === item.id)
