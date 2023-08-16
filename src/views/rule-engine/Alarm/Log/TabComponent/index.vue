@@ -133,6 +133,7 @@ import {
     getDeviceList,
     getOrgList,
     query,
+    getAlarmProduct
 } from '@/api/rule-engine/log';
 import { queryLevel } from '@/api/rule-engine/config';
 import Search from '@/components/Search';
@@ -294,24 +295,18 @@ const newColumns = computed(() => {
       type: 'select',
       options: async () => {
         const termType = [
-          {
+         {
+           column:"id$alarm-record",
+           value:[
+           {
             column: "targetType",
             termType: "eq",
-            type: "and",
-            value: "product",
+            value: "device",
           }
+           ]
+         }
         ]
-
-        if (props.id) {
-          termType.push({
-            termType: 'eq',
-            column: 'alarmConfigId',
-            value: props.id,
-            type: 'and',
-          },)
-        }
-
-        const resp: any = await handleSearch({
+        const resp: any = await getAlarmProduct({
           sorts: [{ name: 'alarmTime', order: 'desc' }],
           terms: termType
         });
@@ -319,15 +314,14 @@ const newColumns = computed(() => {
 
         if (resp.status === 200) {
           resp.result.data.forEach(item => {
-            if (item.targetId) {
-              listMap.set(item.targetId, {
-                label: item.targetName,
-                value: item.targetId,
+            if (item.productId) {
+              listMap.set(item.productId, {
+                label: item.productName,
+                value: item.productId,
               })
             }
 
           })
-
           return [...listMap.values()]
 
         }
@@ -412,8 +406,6 @@ const search = (data: any) => {
                     data?.terms[0]?.terms[0]
                 ]
             }]
-        // delete params.value.terms
-        console.log(params.value)
     }
     if (props.id) {
         params.value.terms.push({

@@ -253,6 +253,7 @@
         <ChooseIconDialog
             v-if="dialogVisible"
             v-model:visible="dialogVisible"
+            :icon="form.data.icon"
             @confirm="(typeStr:string)=>choseIcon(typeStr)"
         />
     </div>

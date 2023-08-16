@@ -243,7 +243,7 @@ const deleteScene = async (id: string) => {
 
 const deleteModal = (id: string) => {
   Modal.confirm({
-    title: '改场景已绑定告警，确定删除？',
+    title: '该场景已绑定告警，确定删除？',
     onOk: async () => {
       await deleteScene(id)
     }

@@ -235,7 +235,6 @@ const filterMenus = (menus: any[]) => {
             item.children = filterMenus(item.children);
         }
         if (!filterProtocolList.length && item.code == 'link/DataCollect') {
-            debugger
             return false;
         }
         return item

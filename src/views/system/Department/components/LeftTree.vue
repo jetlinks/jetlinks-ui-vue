@@ -155,6 +155,7 @@ const search = debounce(() => {
                 treeArray.set(item.id, item);
             }
         });
+        expandedKeys.value = []
         dig(searchTree);
         treeData.value = ArrayToTree(cloneDeep([...treeArray.values()]));
     } else {
@@ -172,6 +173,9 @@ const search = debounce(() => {
                 pIds.push(_item.parentId);
                 treeArray.set(item, _item);
                 expandedKeys.value.push(_item.id)
+                if(pIds.length > 0){
+                    dig(pIds)
+                }
             }
         });
     }
@@ -196,8 +200,10 @@ function delDepartment(id: string) {
 }
 function refresh(id: string) {
     // @ts-ignore
-    window?.onTabSaveSuccess && window.onTabSaveSuccess(id);
-    setTimeout(() => window.close(), 300);
+    if(window?.onTabSaveSuccess){
+        window.onTabSaveSuccess(id);
+        setTimeout(() => window.close(), 300);
+    }
     getTree();
 }
 
