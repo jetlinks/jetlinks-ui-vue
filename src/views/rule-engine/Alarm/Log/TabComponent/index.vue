@@ -406,7 +406,6 @@ const search = (data: any) => {
                     data?.terms[0]?.terms[0]
                 ]
             }]
-        console.log(params.value)
     }
     if (props.id) {
         params.value.terms.push({
