@@ -20,9 +20,12 @@ watch(
             deviceId.value = newId as string;
             _control(newId).then((resp: any) => {
                 if (resp.status === 200) {
-                    const protocol = location.protocol
-                    const item = `${protocol}//${resp.result?.url}/#/login?token=${resp.result.token}`;
-                    url.value = item;
+                    const item = `http://${resp.result?.url}/#/login?token=${resp.result.token}`;
+                    if(window.location.protocol === 'https:' && item){
+                        window.open(item)
+                    }else{
+                         url.value = item;
+                    }
                 }
             });
         }
@@ -35,12 +38,6 @@ onUnmounted(() => {
         _stopControl(unref(deviceId));
     }
 });
-const jumpPage = ()=>{
-    if(window.location.protocol === 'https:'){
-        window.open('https://'+window.location.host + window.location.hash)
-    }
-}
-jumpPage()
 </script>
 
 <style lang="less" scoped>
