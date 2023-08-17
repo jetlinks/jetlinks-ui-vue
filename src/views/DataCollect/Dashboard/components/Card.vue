@@ -66,7 +66,7 @@ const pickerTimeChange = () => {
 const getEcharts = async (val: any) => {
     loading.value = true;
     const resp: any = await dashboard(pointParams(val));
-    if (resp.success && resp.result) {
+    if (resp.success && resp?.result?.length) {
          const x = resp.result
             .map((item: any) => item.data.timeString)
             .reverse();
