@@ -61,22 +61,21 @@ const data: any = ref({
 
 const pickerTimeChange = () => {
     data.value.time.type = undefined;
-    console.log(1);
 };
 
 const getEcharts = async (val: any) => {
     loading.value = true;
     const resp: any = await dashboard(pointParams(val));
-    if (resp.success) {
-        const x = resp.result
+    if (resp.success && resp.result) {
+         const x = resp.result
             .map((item: any) => item.data.timeString)
             .reverse();
         const y = resp.result.map((item: any) => item.data.value).reverse();
         handleOptions(x, y);
     }
-    setTimeout(() => {
+    setTimeout(()=>{
         loading.value = false;
-    }, 300);
+    },300)
 };
 
 const handleOptions = (x = [], y = []) => {
