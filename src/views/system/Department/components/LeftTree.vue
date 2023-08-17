@@ -130,12 +130,12 @@ function getTree(cb?: Function) {
     treeMap.clear()
     getTreeData_api(params)
         .then((resp: any) => {
-            selectedKeys.value = [resp.result[0]?.id];
             sourceTree.value = resp.result.sort((a: any, b: any) =>
                 a.sortIndex === b.sortIndex
                     ? b.createTime - a.createTime
                     : a.sortIndex - b.sortIndex,
             ); // 报存源数据
+            selectedKeys.value = [resp.result[0]?.id];
             handleTreeMap(resp.result); // 将树形结构转换为map结构
             treeData.value = resp.result; // 第一次不用进行过滤
             cb && cb();
@@ -275,7 +275,7 @@ init();
     .tree {
       overflow-y: auto;
       overflow-x: auto;
-
+      flex: 1 1 auto;
       .department-tree-item-content {
         display: flex;
         align-items: center;

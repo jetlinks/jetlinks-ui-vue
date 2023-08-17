@@ -10,7 +10,7 @@
         >
         </j-select>
         <j-popconfirm-modal
-            v-if="myValue != 'manual' && props.target === 'product'"
+            v-if="myValue != 'manual' && !showReset"
             :bodyStyle="{
                 width: '450px',
                 height: myValue === 'rule' ? '300px' : '80px',
@@ -37,7 +37,7 @@
                 <AIcon type="EditOutlined" />
             </j-button>
         </j-popconfirm-modal>
-        <j-dropdown v-if="myValue != 'manual'&& target === 'device'" :getPopupContainer="(triggerNode) => triggerNode.parentNode">
+        <j-dropdown v-if="myValue === 'rule' && target === 'device' && showReset" :getPopupContainer="(triggerNode) => triggerNode.parentNode">
             <span style="width: 20px;" @click.prevent>
                 <AIcon type="MoreOutlined" />
             </span>
@@ -96,10 +96,9 @@ import VirtualRule from './VirtualRule/index.vue';
 import { Form } from 'jetlinks-ui-components';
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { useInstanceStore } from '@/store/instance';
-import {
-    queryProductVirtualProperty
-} from '@/api/device/product';
+import { resetRule } from '@/api/device/instance';
 import { updata } from '@/api/rule-engine/configuration';
+import { onlyMessage } from '@/utils/comm';
 const instanceStore = useInstanceStore();
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
@@ -134,7 +133,7 @@ type Emit = {
 };
 
 const fullRef = inject(FULL_CODE);
-
+const showReset = ref(false);
 const props = defineProps({
     value: {
         type: Object,
@@ -152,6 +151,10 @@ const props = defineProps({
         type: String,
         default: undefined,
     },
+    productNoEdit:{
+        type:Array,
+        default: []
+    }
 });
 
 const emit = defineEmits<Emit>();
@@ -211,17 +214,23 @@ const confirm = async () => {
     });
 };
 //重置规则
+// const resetRules = async() =>{
+//     let res:any =  await queryProductVirtualProperty(instanceStore.current?.productId,props.value.id)
+//     if(res && res.status === 200 && res.result.rule){
+//         const data:any = {}
+//         data.virtualRule = res.result.rule
+//         data.virtualRule.triggerProperties = res.result.triggerProperties
+//         data.type = type.value
+//         updateValue({
+//             source:myValue.value,
+//             ...data
+//         })
+//     }
+// }
 const resetRules = async() =>{
-    let res:any =  await queryProductVirtualProperty(instanceStore.current?.productId,props.value.id)
-    if(res && res.status === 200 && res.result.rule){
-        const data:any = {}
-        data.virtualRule = res.result.rule
-        data.virtualRule.triggerProperties = res.result.triggerProperties
-        data.type = type.value
-        updateValue({
-            source:myValue.value,
-            ...data
-        })
+    let res:any = await resetRule(instanceStore.current?.productId,instanceStore.current?.id,props.value?.id)
+    if(res.status === 200){
+        onlyMessage('操作成功！')
     }
 }
 const cancel = () => {
@@ -245,6 +254,13 @@ watch(
     },
     { immediate: true },
 );
+onMounted(()=>{
+    if(props.target === 'device'){
+        props.productNoEdit?.id?.forEach((item:any)=>{
+        item === props.value?.id ? showReset.value = true : ''
+    })
+    }
+})
 </script>
 
 <style scoped>

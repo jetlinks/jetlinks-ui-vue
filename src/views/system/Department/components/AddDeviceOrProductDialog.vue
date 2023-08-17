@@ -6,20 +6,22 @@
             只能分配有“共享”权限的资产数据
         </h5>
 
-        <div class="row">
-            <span style="margin-right: 8px">批量配置</span>
-            <j-switch v-model:checked="bulkBool" checked-children="开" un-checked-children="关" style="width: 56px" />
-        </div>
-        <div v-show="bulkBool">
-            <j-checkbox-group v-model:value="bulkList" :options="options" />
+        <div style="display: flex; margin-left: 24px;">
+                <div class="row">
+                <span style="margin-right: 8px">批量配置</span>
+                <j-switch v-model:checked="bulkBool" checked-children="开" un-checked-children="关" style="width: 56px" />
+            </div>
+            <div v-show="bulkBool" style="margin-left: 30px;">
+                <j-checkbox-group v-model:value="bulkList" :options="options" />
+            </div>
         </div>
 
-        <pro-search
+        <!-- <pro-search
             type="simple"
             :columns="searchColumns"
             target="category-bind-modal"
             @search="search"
-        />
+        /> -->
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
@@ -32,7 +34,17 @@
                 onSelectAll: selectAll
             }"
             :columns="columns"
+            style="max-height: 500px; overflow:auto"
         >
+            <template #headerTitle>
+                <pro-search
+                    type="simple"
+                    :columns="searchColumns"
+                    target="category-bind-modal"
+                    @search="search"
+                    style="width: 75%;"
+                />
+            </template>
             <template #card="slotProps">
                 <CardBox :value="slotProps" :actions="[{ key: 1 }]" v-bind="slotProps" :active="table._selectedRowKeys.value.includes(slotProps.id)
                     " @click="table.onSelectChange" :status="slotProps.state?.value"
@@ -490,6 +502,7 @@ const search = (query: any) => {
 
     h5 {
         padding: 12px;
+        padding-left: 24px;
         background-color: #f6f6f6;
         font-size: 14px;
     }
@@ -497,5 +510,8 @@ const search = (query: any) => {
     .row {
         margin-bottom: 12px;
     }
+}
+:deep(.jtable-body-header-left){
+    width: 80%;
 }
 </style>

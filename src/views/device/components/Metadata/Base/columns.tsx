@@ -425,6 +425,7 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         props: {
           noEdit: noEdit?.value?.source || [],
           target: target,
+          productNoEdit: productNoEdit?.value
         }
       },
       doubleClick(record){

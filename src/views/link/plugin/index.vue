@@ -215,6 +215,7 @@ const columns = [
 ]
 
 const handleAdd = () => {
+  editData.value = {}
   visible.value = true
 }
 
