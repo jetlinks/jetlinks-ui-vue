@@ -102,7 +102,8 @@
   <InkingModal
     v-if='inkingVisible'
     :id='inklingDeviceId'
-    :accessId='channelId'
+    :accessId='instanceStore.current.accessId'
+    :pluginId="channelId"
     @cancel="inkingVisible = false"
     @submit='saveInkling'
   />
