@@ -5,6 +5,13 @@ import { DeviceInstance } from '@/views/device/Instance/typings'
 import { DeviceMetadata, UnitType } from '@/views/device/Product/typings';
 
 /**
+ * 重置设备继承产品的物模型规则
+ * @param deviceId 设备ID
+ * @param productId 产品ID
+ */
+export const resetRule = (productId:string,deviceId:string,data:any) => server.remove(`/virtual/property/product/${productId}/${deviceId}/_batch`,{},{data})
+
+/**
  * 删除设备物模型
  * @param deviceId 设备ID
  * @returns 
