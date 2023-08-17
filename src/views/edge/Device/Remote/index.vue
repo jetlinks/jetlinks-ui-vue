@@ -35,6 +35,12 @@ onUnmounted(() => {
         _stopControl(unref(deviceId));
     }
 });
+const jumpPage = ()=>{
+    if(window.location.protocol === 'https:'){
+        window.open('https://'+window.location.host + window.location.hash)
+    }
+}
+jumpPage()
 </script>
 
 <style lang="less" scoped>
