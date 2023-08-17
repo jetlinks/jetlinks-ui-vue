@@ -349,8 +349,8 @@ const table: any = {
                     (perResp: any) => {
                         data.forEach((item) => {
                             item.permissionList = perResp.result
-                                .find((f: any) => f.assetId === item.id)
-                                .permissionInfoList?.map((m: any) => ({
+                                .find((f: any) => f?.assetId === item.id)
+                                ?.permissionInfoList?.map((m: any) => ({
                                     label: m.name,
                                     value: m.id,
                                     disabled: true,
@@ -358,13 +358,13 @@ const table: any = {
                             item.selectPermissions = ['read'];
                             // 资产排序
                             item.permissionList = item.permissionList
-                                .map((m: any) => {
+                                ?.map((m: any) => {
                                     return {
                                         ...m,
                                         idx: idxMap[m.value],
                                     };
                                 })
-                                .sort((a: any, b: any) => a.idx - b.idx);
+                                ?.sort((a: any, b: any) => a.idx - b.idx);
                             // 产品的状态进行转换处理
                             if (props.assetType === 'product') {
                                 item.state = {
@@ -387,7 +387,7 @@ const table: any = {
                             code: 200,
                             result: {
                                 data: data.sort(
-                                    (a, b) => a.createTime - b.createTime,
+                                    (a, b) =>  b.createTime - a.createTime
                                 ),
                                 pageIndex,
                                 pageSize,

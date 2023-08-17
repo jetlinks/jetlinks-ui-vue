@@ -154,6 +154,7 @@ const search = debounce(() => {
                 treeArray.set(item.id, item);
             }
         });
+        expandedKeys.value = []
         dig(searchTree);
         treeData.value = ArrayToTree(cloneDeep([...treeArray.values()]));
     } else {
@@ -169,6 +170,10 @@ const search = debounce(() => {
                 const _item = treeMap.get(item);
                 pIds.push(_item.parentId);
                 treeArray.set(item, _item);
+                expandedKeys.value.push(_item.id)
+                if(pIds.length > 0){
+                    dig(pIds)
+                }
             }
         });
     }
