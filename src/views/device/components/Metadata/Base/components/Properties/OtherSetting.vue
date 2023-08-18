@@ -1,7 +1,7 @@
 <template>
   <j-popconfirm-modal
       body-style="padding-top:4px;width:600px;"
-      placement="topRight"
+      placement="bottomRight"
       :disabled="disabled"
       :get-popup-container="(node) => fullRef || node"
       @confirm="confirm"

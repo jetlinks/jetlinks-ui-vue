@@ -157,7 +157,7 @@ const filterPath = (path: object, filterArr: string[]) => {
     .ant-tree-list {
         .ant-tree-list-holder-inner {
             .ant-tree-switcher-noop {
-                display: none !important;
+                // display: none !important;
             }
         }
     }

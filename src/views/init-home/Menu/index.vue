@@ -64,7 +64,7 @@ const filterMenu = (permissions: string[], menus: any[], hasProtocol: boolean) =
     return menus.filter((item) => {
         let isShow = false;
         if (item.showPage && item.showPage.length) {
-            isShow = item.showPage.every((pItem: any) => {
+            isShow = item.showPage.some((pItem: any) => {
                 return permissions.includes(pItem);
             });
         }

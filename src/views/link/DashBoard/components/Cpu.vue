@@ -52,7 +52,7 @@
         </div>
     </j-spin>
 </template>
-m
+
 <script lang="ts" setup name="Cpu">
 import { dashboard } from '@/api/link/dashboard';
 import dayjs from 'dayjs';
@@ -95,6 +95,9 @@ const serverData = reactive({
 
 const pickerTimeChange = () => {
     data.value.type = undefined;
+    if(props.isNoCommunity){
+      getCPUEcharts(data.value)
+    }
 };
 
 const echartsOptions = computed(() => {

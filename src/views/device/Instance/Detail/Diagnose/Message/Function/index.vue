@@ -170,7 +170,7 @@ const funcChange = (val: string) => {
                 id: item.id,
                 name: item.name,
                 value: undefined,
-                valueType: item?.valueType?.type,
+                valueType: item?.valueType,
                 required: item?.expands?.required,
             };
         });

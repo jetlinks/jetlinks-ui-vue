@@ -23,6 +23,7 @@
             hasPermission="system/Platforms/Setting:update"
             @click="save"
             v-if="props.mode !== 'home'"
+            style="margin-left: 20px;"
         >
             保存
         </PermissionButton>

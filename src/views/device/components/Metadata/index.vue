@@ -1,6 +1,6 @@
 <template>
     <div class='device-detail-metadata' style="position: relative;">
-<!--      <div class="tips">-->
+     <!-- <div class="tips">-->
 <!--        <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'-->
 <!--        ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'-->
 <!--        : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">-->
@@ -12,8 +12,8 @@
 <!--                : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'-->
 <!--            }}-->
 <!--          </div>-->
-<!--        </j-tooltip>-->
-<!--      </div>-->
+<!--        </j-tooltip> -->
+     <!-- </div> -->
       <j-tabs class="metadataNav" :activeKey="tabActiveKey" destroyInactiveTabPane type="card" @change="tabsChange">
         <template #rightExtra>
           <j-space>
@@ -30,7 +30,9 @@
             <PermissionButton :hasPermission="`${permission}:update`" @click="cat = true" key="tsl">物模型TSL</PermissionButton>
           </j-space>
         </template>
-
+        <template #centerExtra>
+          <span class="desc">设备会默认继承产品的物模型，继承的物模型不支持删改</span>
+        </template>
         <j-tab-pane tab="属性定义" key="properties">
           <BaseMetadata :target="type" type="properties" :permission="permission" />
         </j-tab-pane>
@@ -79,7 +81,6 @@ provide('_metadataType', props.type)
 
 const showReset = computed(() => {
   if (props.type === 'device' && instanceStore.current.productMetadata) {
-    console.log(instanceStore.current)
     const proMetadata = JSON.parse(instanceStore.current.productMetadata || '{}')
     const _metadata = JSON.parse(instanceStore.current.metadata || '{}')
     return !isEqual(_metadata, proMetadata)
@@ -127,6 +128,13 @@ const tabsChange = (e: string) => {
     :deep(.ant-card-body) {
       padding: 0;
     }
+  }
+  .desc{
+    font-size: 13px;
+    color: rgba(0,0,0,.8);
+    display: inline-block;
+    margin-top: 12px;
+    margin-left: 5px;
   }
 }
 </style>

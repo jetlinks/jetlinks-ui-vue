@@ -357,7 +357,6 @@ getCurrentAlarm();
 const initQueryTime = (data: any) => {
     queryCodition.startTime = data.start;
     queryCodition.endTime = data.end;
-    console.log(queryCodition);
     selectChange();
 };
 const selectChange = () => {
@@ -439,10 +438,14 @@ const selectChange = () => {
             res.result
                 .filter((item: any) => item.group === 'alarmTrend')
                 .forEach((item: any) => {
+                    if(time === '1d'){
+                        item.data.timeString = item.data.timeString.split(' ')[0]
+                    }
                     xData.push(item.data.timeString);
                     sData.push(item.data.value);
                 });
-            const maxY = sData.sort((a,b)=>{
+            const data:any = JSON.parse(JSON.stringify(sData))
+            const maxY = data.sort((a,b)=>{
                 return b-a
             })[0]
             alarmStatisticsOption.value = {

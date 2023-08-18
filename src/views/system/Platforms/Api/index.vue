@@ -3,11 +3,11 @@
         <div class="top">
             <slot name="top" />
         </div>
-        <j-row :gutter="24" class="content">
+        <j-row  class="content" :style="{padding:'24px'}" >
             <j-col
                 :span="24"
                 v-if="props.showTitle"
-                style="font-size: 16px; margin-bottom: 48px"
+                style="font-size: 16px;margin-bottom: 48px;"
             >
                 API文档
             </j-col>
@@ -180,7 +180,6 @@ watch(
 .api-page-container {
     .content {
         background-color: #fff;
-        padding: 24px;
         margin: 0 !important;
         .tree-content {
             padding-bottom: 30px;
