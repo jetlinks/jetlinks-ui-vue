@@ -1,5 +1,5 @@
 <template>
-  <DataTableObject :value="value" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm">
+  <DataTableObject :value="value" :columns="columns" :onAdd="addItem" width="700px" @confirm="confirm" placement="bottomRight">
     <template #valueType="{ data }">
       <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
     </template>

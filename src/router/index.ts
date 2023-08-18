@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
             router.addRoute('base',{
               path: '/:pathMatch(.*)',
               name: 'error',
-              component: () => NotFindPage
+              component: NotFindPage
             })
 
             next({ ...to, replace: true })

@@ -11,6 +11,11 @@ export const getProductList  = (parmas?:any)  => server.get('/device/product/_qu
 export const getDeviceList = (parmas?:any) => server.get('/device-instance/_query/no-paging?paging=false',parmas);
 
 /**
+ * 获取有设备的告警的产品名称
+ */ 
+export const getAlarmProduct = (parmas:any) => server.post('/device-instance/_query',parmas) 
+
+/**
  * 获取组织列表
  */
 export const getOrgList = (parmas?:any) => server.get('/organization/_query/no-paging?paging=false',parmas);

@@ -166,7 +166,9 @@
                                 <div class="card-item-content-text">
                                     平台对接
                                 </div>
+                                <Ellipsis style="width: calc(100% - 20px)">
                                 <div>{{ slotProps.platformConfigName }}</div>
+                                </Ellipsis>
                             </j-col>
                             <j-col :span="6">
                                 <div class="card-item-content-text">类型</div>

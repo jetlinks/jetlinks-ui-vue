@@ -7,13 +7,13 @@
             v-if="type === 'array'"
             v-model:value="_valueType.elementType"
             :unitOptions="unitOptions"
-            placement="topRight"
+            placement="bottomRight"
             @confirm="(data) => {valueChange(data, 'array')}"
         />
         <DataTableObject
             v-else-if="type === 'object'"
             :value="_valueType.properties"
-            placement="topRight"
+            placement="bottomRight"
             :columns="columns"
             @confirm="(data) => {valueChange(data, 'object')}"
         >
@@ -25,28 +25,28 @@
               <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
             </template>
         </DataTableObject>
-        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'enum')}"/>
-        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" placement="topRight" @confirm="(data) => {valueChange(data, 'boolean')}" />
+        <DataTableEnum v-else-if="type === 'enum'" v-model:value="_valueType" placement="bottomRight" @confirm="(data) => {valueChange(data, 'enum')}"/>
+        <DataTableBoolean v-else-if="type === 'boolean'" v-model:value="_valueType" placement="bottomRight" @confirm="(data) => {valueChange(data, 'boolean')}" />
         <DataTableDouble
             v-else-if="['float', 'double'].includes(type)"
             :options="unitOptions"
             v-model:value="_valueType"
-            placement="topRight"
+            placement="bottomRight"
             @confirm="(data) => {valueChange(data, 'float')}"
         />
         <DataTableInteger
             v-else-if="['int', 'long'].includes(type)"
             :options="unitOptions"
             v-model:value="_valueType.unit"
-            placement="topRight"
+            placement="bottomRight"
             @confirm="(data) => {valueChange(data, 'int')}"
         />
-        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" placement="topRight" @confirm="(data) => {valueChange(data, 'file')}"/>
-        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.format" placement="topRight" @confirm="(data) => {valueChange(data, 'date')}"/>
+        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" placement="bottomRight" @confirm="(data) => {valueChange(data, 'file')}"/>
+        <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.format" placement="bottomRight" @confirm="(data) => {valueChange(data, 'date')}"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"
             v-model:value="_valueType.maxLength"
-            placement="topRight"
+            placement="bottomRight"
             @confirm="(data) => {valueChange(data, 'string')}"
         />
     </div>
