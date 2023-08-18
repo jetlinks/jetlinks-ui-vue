@@ -66,7 +66,14 @@
               配置
             </j-button>
           </j-tooltip>
-          <InputParams  v-else v-model:value="data.record.inputs" />
+          <PermissionButton
+                v-else
+                :has-permission="`${permission}:update`"
+                type="link"
+                key="inputs"
+            >
+          <InputParams  v-model:value="data.record.inputs" />
+          </PermissionButton>
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -91,7 +98,14 @@
               配置
             </j-button>
           </j-tooltip>
-          <ConfigParams v-else v-model:value="data.record.valueType" />
+          <PermissionButton
+                v-else
+                :has-permission="`${permission}:update`"
+                type="link"
+                key="properties"
+            >
+          <ConfigParams  v-model:value="data.record.valueType" />
+          </PermissionButton>
         </template>
         <template #outInput>
           object
@@ -112,8 +126,13 @@
               配置
             </j-button>
           </j-tooltip>
-          <OtherSetting
-              v-else
+          <PermissionButton
+                v-else
+                :has-permission="`${permission}:update`"
+                type="link"
+                key="setting"
+            >
+            <OtherSetting
               v-model:value="data.record.expands"
               :id="data.record.id"
               :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
@@ -123,11 +142,13 @@
               } : undefined"
               :type="data.record.valueType.type"
           />
+            </PermissionButton>
+
         </template>
         <template #action="{data}">
           <j-space>
             <PermissionButton
-                :has-permission="`${permission}:add`"
+                :has-permission="`${permission}:update`"
                 type="link"
                 key="edit"
                 style="padding: 0"
@@ -168,7 +189,7 @@
               <AIcon type="FileSearchOutlined" />
             </PermissionButton>
             <PermissionButton
-                :has-permission="`${permission}:delete`"
+                :has-permission="`${permission}:update`"
                 type="link"
                 key="delete"
                 style="padding: 0"
@@ -248,6 +269,7 @@ import {cloneDeep} from "lodash";
 import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
+import { usePermissionStore } from '@/store/permission';
 
 const props = defineProps({
     target: {
@@ -273,6 +295,7 @@ const router = useRouter()
 const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
 const { hasOperate } = useOperateLimits(_target);
 
+const permissionStore = usePermissionStore()
 const metadataStore = useMetadataStore()
 const instanceStore = useInstanceStore()
 const productStore = useProductStore()
@@ -487,7 +510,7 @@ const handleSaveClick = async (next?: Function) => {
 const tabsChange = inject('tabsChange')
 
 const parentTabsChange = (next?: Function) => {
-  if (editStatus.value) {
+  if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`)) {
     const modal = Modal.confirm({
       content: '页面改动数据未保存',
       okText: '保存',
