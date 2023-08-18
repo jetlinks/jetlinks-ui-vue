@@ -1261,8 +1261,10 @@ const handleSubmit = () => {
         onlyMessage('保存成功');
         if (route.query?.notifyType) {
             // @ts-ignore
-            window?.onTabSaveSuccess(res.result);
-            setTimeout(() => window.close(), 300);
+            if((window as any).onTabSaveSuccess){
+                (window as any).onTabSaveSuccess(res.result);
+                setTimeout(() => window.close(), 300);
+            }
         } else {
             router.back();
         }

@@ -133,6 +133,7 @@ import {
     getDeviceList,
     getOrgList,
     query,
+    getAlarmProduct
 } from '@/api/rule-engine/log';
 import { queryLevel } from '@/api/rule-engine/config';
 import Search from '@/components/Search';
@@ -285,7 +286,51 @@ const newColumns = computed(() => {
       otherColumns.title = '场景名称'
       break;
   }
+  if(props.type === 'device'){
+    const productColumns =  {
+    title: '产品名称',
+    dataIndex: 'product_id',
+    key: 'product_id',
+    search: {
+      type: 'select',
+      options: async () => {
+        const termType = [
+         {
+           column:"id$alarm-record",
+           value:[
+           {
+            column: "targetType",
+            termType: "eq",
+            value: "device",
+          }
+           ]
+         }
+        ]
+        const resp: any = await getAlarmProduct({
+          sorts: [{ name: 'alarmTime', order: 'desc' }],
+          terms: termType
+        });
+        const listMap: Map<string, any> = new Map()
 
+        if (resp.status === 200) {
+          resp.result.data.forEach(item => {
+            if (item.productId) {
+              listMap.set(item.productId, {
+                label: item.productName,
+                value: item.productId,
+              })
+            }
+
+          })
+          return [...listMap.values()]
+
+        }
+        return [];
+      },
+    },
+  }
+  return [otherColumns,productColumns,...columns]
+  }
   return ['all', 'detail'].includes(props.type) ? columns : [
     otherColumns,
     ...columns,
@@ -297,9 +342,9 @@ let params: any = ref({
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp = await query(params);
+    const resp:any = await query(params);
     if (resp.status === 200) {
-        const res = await getOrgList();
+        const res:any = await getOrgList();
         if (res.status === 200) {
             resp.result.data.map((item: any) => {
                 if (item.targetType === 'org') {
@@ -318,7 +363,7 @@ const handleSearch = async (params: any) => {
         }
     }
 };
-watchEffect(() => {
+onMounted(() => {
     if (props.type !== 'all' && !props.id) {
         params.value.terms = [
             {
@@ -353,6 +398,14 @@ const search = (data: any) => {
             value: props.type,
             type: 'and',
         });
+    }
+    if(props.type === 'device' && data?.terms[0]?.terms[0]?.column === 'product_id'){
+            params.value.terms = [{
+                column:"targetId$dev-instance",
+                value:[
+                    data?.terms[0]?.terms[0]
+                ]
+            }]
     }
     if (props.id) {
         params.value.terms.push({

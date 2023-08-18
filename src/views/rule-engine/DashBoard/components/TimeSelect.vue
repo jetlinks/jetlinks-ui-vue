@@ -16,6 +16,7 @@
             </j-radio-button>
         </j-radio-group>
         <j-range-picker
+            :show-time="{format:'HH:mm:ss'}"
             format="YYYY-MM-DD HH:mm:ss"
             valueFormat="YYYY-MM-DD HH:mm:ss"
             style="margin-left: 12px"

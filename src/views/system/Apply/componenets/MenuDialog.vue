@@ -1,41 +1,17 @@
 <template>
-    <j-modal
-        visible
-        title="集成菜单"
-        width="600px"
-        @ok="handleOk"
-        @cancel="cancel"
-        class="edit-dialog-container"
-        :confirmLoading="loading"
-    >
-        <j-select
-            v-model:value="form.checkedSystem"
-            @change="(value) => value && getTree(value)"
-            style="width: 200px"
-            placeholder="请选择集成系统"
-        >
-            <j-select-option
-                v-for="item in form.systemList"
-                :value="item.value"
-                :key="item.value"
-                >{{ item.label }}</j-select-option
-            >
+    <j-modal visible title="集成菜单" width="600px" @ok="handleOk" @cancel="cancel" class="edit-dialog-container"
+        :confirmLoading="loading">
+        <j-select v-model:value="form.checkedSystem" @change="(value) => value && getTree(value)  " style="width: 200px"
+            placeholder="请选择集成系统">
+            <j-select-option v-for="item in form.systemList" :value="item.value" :key="item.value">{{ item.label
+            }}</j-select-option>
         </j-select>
 
         <p style="margin: 20px 0 0 0" v-show="form.menuTree.length > 0">
             当前集成菜单
         </p>
-        <j-tree
-            v-model:checkedKeys="form.checkedMenu"
-            v-model:expandedKeys="form.expandedKeys"
-            checkable
-            :tree-data="form.menuTree"
-            :fieldNames="{ key: 'code', title: 'name' }"
-            @check="treeCheck"
-            :height="300"
-            :showLine="{ showLeafIcon: false }"
-            :show-icon="true"
-        >
+        <j-tree v-model:checkedKeys="form.checkedMenu" v-model:expandedKeys="form.expandedKeys" checkable
+            :tree-data="form.menuTree" :fieldNames="{ key: 'code', title: 'name' }" @check="treeCheck" :height="300">
             <template #title="{ name }">
                 <span>{{ name }}</span>
             </template>
@@ -68,10 +44,12 @@ const props = defineProps<{
 // 弹窗相关
 const loading = ref(false);
 const handleOk = async () => {
-    const items = filterTree(form.menuTree, [
+    const menuTree = JSON.parse(JSON.stringify(form.menuTree));
+    const items = filterTree(menuTree, [
         ...form.checkedMenu,
-        ...form.half,
+        // ...form.half,
     ]);
+    console.log(items);
     if (form.checkedSystem) {
         if (items && items.length !== 0) {
             loading.value = true;
@@ -130,6 +108,16 @@ function getTree(params: string) {
         form.expandedKeys = resp.result.map((item: any) => item?.code);
     });
 }
+
+const getCheckMenu = (data: any, keys: any) => {
+    data.forEach((item: any) => {   
+            if (item.children) {
+                getCheckMenu(item.children, keys)
+            } else {
+                keys.push(item.code)
+            }
+    })
+}
 /**
  * 获取当前用户可访问菜单
  */
@@ -145,7 +133,9 @@ function getMenus(id: string) {
     getMenuTree_api(params).then((resp: any) => {
         if (resp.status === 200) {
             // form.menuTree = resp.result;
-            const keys = resp.result.map((item: any) => item?.code) as string[];
+            // const keys = resp.result.map((item: any) => item?.code) as string[];
+            let keys: any = [];
+            getCheckMenu(resp.result, keys)
             // form.expandedKeys = keys;
             form.checkedMenu = keys;
         }
@@ -172,10 +162,10 @@ function getSystemList(id: string) {
 
 watch(() => props.data, (newVal: any) => {
     form.checkedSystem = newVal?.page.configuration?.checkedSystem
-    if(form.checkedSystem){
+    if (form.checkedSystem) {
         getTree(form.checkedSystem)
     }
-    if(newVal?.id) {
+    if (newVal?.id) {
         getSystemList(newVal?.id);
         getMenus(newVal?.id);
     }
@@ -190,17 +180,23 @@ function treeCheck(checkedKeys: any, e: CheckInfo) {
 }
 //过滤节点-默认带上父节点
 function filterTree(nodes: any[], list: any[]) {
-    if (!nodes?.length) {
-        return nodes;
+    if (!nodes) {
+        return [];
     }
     return nodes.filter((it) => {
         // 不符合条件的直接砍掉
-        if (list.indexOf(it.code) <= -1) {
-            return false;
+        if (list.includes(it.code)) {
+            return true
+        } else if (it.children) {
+            it.children = filterTree(it.children, list);
+            return it.children.length
         }
+        // if (list.indexOf(it.code) <= -1) {
+        //     return false;
+        // }
         // 符合条件的保留，并且需要递归处理其子节点
-        it.children = filterTree(it.children, list);
-        return true;
+        //    it.children = filterTree(it.children, list);
+        // return true;
     });
 }
 </script>

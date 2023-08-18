@@ -8,9 +8,12 @@
             <template #bodyCell="{ column, text, record, index }">
                 <div>
                     <template
-                        v-if="['valueType', 'name'].includes(column.dataIndex)"
+                        v-if="['name'].includes(column.dataIndex)"
                     >
                         <span>{{ text }}</span>
+                    </template>
+                    <template v-else-if="['valueType'].includes(column.dataIndex)">
+                        <span>{{ text.type }}</span>
                     </template>
                     <template v-else>
                         <j-form-item
@@ -24,19 +27,19 @@
                         >
                             <ValueItem
                                 v-model:modelValue="record.value"
-                                :itemType="record.type"
+                                :itemType="record.valueType.type"
                                 
                                 :options="
-                                    record.type === 'enum'
+                                    record.valueType.type === 'enum'
                                         ? (
-                                              record?.dataType?.elements || []
+                                              record?.valueType?.elements || []
                                           ).map((item) => {
                                               return {
                                                   label: item.text,
                                                   value: item.value,
                                               };
                                           })
-                                        : record.type === 'boolean'
+                                        : record.valueType.type  === 'boolean'
                                         ? [
                                               { label: '是', value: true },
                                               { label: '否', value: false },
@@ -94,6 +97,7 @@ const formRef = ref<any>(null);
 
 watchEffect(() => {
     modelRef.dataSource = _props?.modelValue || []
+    console.log(modelRef.dataSource);
 })
 
 const onSave = () =>

@@ -257,14 +257,265 @@ const loadData = async () => {
 };
 loadData();
 
+// const propertiesSet = new Set(['id','name','expands','valueType']);
+
+// const handleMadeDataNull = (data:any) =>{
+//    return data?.properties?.some?.((item:any,index:number)=>{
+//                 if(!item?.id){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失id属性`,'error');
+//                     return true
+//                 }
+//                 if(!item?.name){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失name属性`,'error');
+//                     return 
+//                 }
+//                 if(!item?.expands?.source){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
+//                     return 
+//                 }
+               
+//                 if((item?.expands?.source === 'device' ||    item?.expands?.source === 'rule') && !item?.expands?.type){
+//                     onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
+//                     return
+//                 }           
+//         }) || false
+// }
+const requiredCheck = (data:any) =>{
+    let check:boolean = false;
+    if(data?.properties && !check){
+        data.properties.some((item:any,index:number)=>{
+                if(!item?.id){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return 
+                }
+                if(!item?.name){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return 
+                }
+                if(!item?.valueType?.type){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
+                    check = true
+                    return
+                }
+                if(!item?.expands?.source){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
+                    check = true
+                    return 
+                }
+               
+                if((item?.expands?.source === 'device' ||    item?.expands?.source === 'rule') && !item?.expands?.type){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
+                    check = true
+                    return
+                }           
+        })
+    }
+    if(data?.functions  && !check){
+        data?.functions.forEach((item:any,index:number)=>{
+            if(!item?.id){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                } 
+            if(!item?.async && item?.async !== false){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失async属性`,'error');
+                    check = true
+                    return
+            }
+        })
+    }
+    if(data?.events && !check){
+        data?.events.forEach((item:any,index:number)=>{
+            if(!item?.id){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.async && item?.async !== false){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失async属性`,'error');
+                    check = true
+                    return
+            }
+            if(!item?.valueType?.type){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.type属性`,'error');
+                    check = true
+                    return
+            }
+            if(!item?.expands?.level){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失expands.level属性`,'error');
+                    check = true
+                    return
+            }
+            if(!check){
+                if(item?.valueType?.properties){
+                    item?.valueType?.properties.forEach((i:any,number:number)=>{
+                if(!i?.id){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组第${number+1}项的id属性`,'error');
+                    check = true
+                    return
+                }
+                if(!i?.name){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组第${number+1}项的name属性`,'error');
+                    check = true
+                    return
+                }
+                if(!i?.valueType?.type){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组第${number+1}项的valueType.type属性`,'error');
+                    check = true
+                    return
+                }   
+                    })   
+                }else{
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.properties数组`,'error');
+                    check = true
+                    return
+                } 
+            }
+        })
+    }
+    if(data?.tags && !check){
+        data?.tags.forEach((item:any,index:number)=>{
+            if(!item?.id){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失id属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                } 
+            if(!item?.valueType?.type){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
+                    check = true
+                    return
+            }
+            if(!item?.expands?.type){
+                    onlyMessage(`标签定义第${index + 1}个数组中缺失expands.type属性`,'error');
+                    check = true
+                    return
+            }
+        })
+    }
+    return check
+}
+
+const aliCheck = (data:any) => {
+    let check:boolean = false;
+    if(data?.properties && !check){
+        data.properties.some((item:any,index:number)=>{
+                if(!item?.identifier){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失identifier属性`,'error');
+                    check = true
+                    return 
+                }
+                if(!item?.name){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return 
+                }
+                if(!item?.dataType?.type){
+                    onlyMessage(`属性定义第${index + 1}个数组中缺失dataType.type属性`,'error');
+                    check = true
+                    return 
+                }  
+        })
+    }
+    if(data?.functions  && !check){
+        data?.functions.forEach((item:any,index:number)=>{
+            if(!item?.identifier){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失identifier属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                } 
+            if(!item?.callType){
+                    onlyMessage(`方法定义第${index + 1}个数组中缺失callType属性`,'error');
+                    check = true
+                    return
+            }
+        })
+    }
+    if(data?.events && !check){
+        data?.events.forEach((item:any,index:number)=>{
+            if(!item?.identifier){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失identifier属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.name){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失name属性`,'error');
+                    check = true
+                    return
+                }
+            if(!item?.type){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失type属性`,'error');
+                    check = true
+                    return
+            }
+            if(!check){
+                if(item?.outputData){
+                    item?.outputData?.forEach((i:any,number:number)=>{
+                if(!i?.identifier){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失outputData数组第${number+1}项的id属性`,'error');
+                    check = true
+                    return
+                }
+                if(!i?.name){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失outputData数组第${number+1}项的name属性`,'error');
+                    check = true
+                    return
+                }
+                if(!i?.dataType?.type){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失outputData数组第${number+1}项的dataType.type属性`,'error');
+                    check = true
+                    return
+                }   
+                if(!i?.dataType?.specs){
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失outputData数组第${number+1}项的dataType.specs属性`,'error');
+                    check = true
+                    return
+                }   
+                    })   
+                }else{
+                    onlyMessage(`事件定义第${index + 1}个数组中缺失outputData数组`,'error');
+                    check = true
+                    return
+                } 
+            }
+        })
+    }
+    return check
+} 
 const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     if(file.type === 'application/json') {
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onload = (json) => {
             if(json.target?.result){
-                onlyMessage('操作成功！')
-                formModel.import = json.target?.result;
+                const data = JSON.parse(json.target?.result);
+
+                let check = formModel.metadata === 'jetlinks' ? requiredCheck(data) : aliCheck(data) 
+                if(!check){
+                    onlyMessage('操作成功！')
+                    formModel.import = json.target?.result;
+                }
             } else {
                 onlyMessage('文件内容不能为空', 'error')
             }
@@ -330,6 +581,7 @@ const handleImport = async () => {
         if (data.metadata === 'alink') {
             try {
                 const _import = JSON.parse(data.import);
+               
                 loading.value = true;
                 const res = await convertMetadata(
                     'from',
@@ -337,7 +589,8 @@ const handleImport = async () => {
                     _import,
                 ).catch((err) => err);
                 if (res.status === 200) {
-                    const metadata = operateLimits(res.result);
+                    // const metadata = operateLimits(res.result); // 导入取并集逻辑
+                    const metadata = res.result
                     let result;
                     if (props?.type === 'device') {
                         result = await saveMetadata(
@@ -393,14 +646,15 @@ const handleImport = async () => {
                     return;
                 }
                 const { id } = route.params || {};
-                const copyOperateLimits = operateLimits(
-                    _object as DeviceMetadata,
-                );
+                // const copyOperateLimits = operateLimits(
+                //     _object as DeviceMetadata,
+                // );
+                // console.log(copyOperateLimits,_object); // 导入取并集逻辑
                 const params = {
                     id,
-                    metadata: JSON.stringify(copyOperateLimits),
+                    metadata: JSON.stringify(_object),
                 };
-                const paramsDevice = copyOperateLimits;
+                const paramsDevice = _object;
                 let resp = undefined;
                 loading.value = true;
                 if (props?.type === 'device') {
