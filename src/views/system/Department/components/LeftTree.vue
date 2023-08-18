@@ -130,12 +130,12 @@ function getTree(cb?: Function) {
     treeMap.clear()
     getTreeData_api(params)
         .then((resp: any) => {
-            selectedKeys.value = [resp.result[0]?.id];
             sourceTree.value = resp.result.sort((a: any, b: any) =>
                 a.sortIndex === b.sortIndex
                     ? b.createTime - a.createTime
                     : a.sortIndex - b.sortIndex,
             ); // 报存源数据
+            selectedKeys.value = [resp.result[0]?.id];
             handleTreeMap(resp.result); // 将树形结构转换为map结构
             treeData.value = resp.result; // 第一次不用进行过滤
             cb && cb();
@@ -155,6 +155,7 @@ const search = debounce(() => {
                 treeArray.set(item.id, item);
             }
         });
+        expandedKeys.value = []
         dig(searchTree);
         treeData.value = ArrayToTree(cloneDeep([...treeArray.values()]));
     } else {
@@ -170,6 +171,10 @@ const search = debounce(() => {
                 const _item = treeMap.get(item);
                 pIds.push(_item.parentId);
                 treeArray.set(item, _item);
+                expandedKeys.value.push(_item.id)
+                if(pIds.length > 0){
+                    dig(pIds)
+                }
             }
         });
     }
@@ -194,8 +199,10 @@ function delDepartment(id: string) {
 }
 function refresh(id: string) {
     // @ts-ignore
-    window?.onTabSaveSuccess && window.onTabSaveSuccess(id);
-    setTimeout(() => window.close(), 300);
+    if(window?.onTabSaveSuccess){
+        window.onTabSaveSuccess(id);
+        setTimeout(() => window.close(), 300);
+    }
     getTree();
 }
 
@@ -268,7 +275,7 @@ init();
     .tree {
       overflow-y: auto;
       overflow-x: auto;
-
+      flex: 1 1 auto;
       .department-tree-item-content {
         display: flex;
         align-items: center;

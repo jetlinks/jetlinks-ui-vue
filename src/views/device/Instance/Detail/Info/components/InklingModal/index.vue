@@ -33,6 +33,10 @@ const props = defineProps({
   id: {
     type: String,
     default: undefined
+  },
+  pluginId:{
+    type:String,
+    default: undefined
   }
 })
 
@@ -46,7 +50,7 @@ const handleOk = async () => {
     loading.value = true
     const res = await savePluginData(
       'device',
-      props.accessId!,
+      props.pluginId!,
       route.params.id as string,
       checkKey.value
     ).catch(() => ({ success: false }))

@@ -14,6 +14,7 @@
             :columns="columns"
             target="category"
             @search="(params:any)=>queryParams = {...params}"
+            style="margin-bottom: 0;"
         />
         <div class="table">
             <j-pro-table
@@ -31,6 +32,7 @@
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
+                style="max-height: 510px; overflow: auto; padding-top: 0;"
             />
         </div>
     </j-modal>

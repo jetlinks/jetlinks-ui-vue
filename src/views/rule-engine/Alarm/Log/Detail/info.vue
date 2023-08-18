@@ -25,7 +25,7 @@
                 props.data?.alarmConfigName
             }}</j-descriptions-item>
             <j-descriptions-item label="告警时间" :span="1">{{
-                dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                dayjs(props.data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
             }}</j-descriptions-item>
             <j-descriptions-item label="告警级别" :span="1">
                 <j-tooltip

@@ -24,6 +24,10 @@ import iconKeys from './fields';
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
+    icon:{
+        type:string,
+        default:''
+    }
 }>();
 
 const confirm = () => {
@@ -31,7 +35,13 @@ const confirm = () => {
     emits('update:visible', false);
 };
 
+
 const selected = ref<string>('');
+
+onMounted(()=>{
+    console.log(props)
+    props?.icon ? selected.value = props.icon : ''
+})
 </script>
 
 <style lang="less" scoped>

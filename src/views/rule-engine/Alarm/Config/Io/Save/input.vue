@@ -10,10 +10,22 @@
         okText="确定"
     >
         <j-form layout="vertical" :model="inputData" ref="formRef">
+            <j-form-item label="状态">
+                <j-switch
+                    checked-children="启用"
+                    un-checked-children="启用"
+                    v-model:checked="inputData.status"
+                ></j-switch>
+            </j-form-item>
             <j-form-item
+                v-if="inputData.status"
                 label="kafka地址"
                 name="address"
                 :rules="[
+                    {
+                        required: true,
+                        message: '请输入topic',
+                    },
                     {
                         max: 64,
                         message: '最多输入64个字符',
@@ -26,9 +38,14 @@
                 ></j-input>
             </j-form-item>
             <j-form-item
+                v-if="inputData.status"
                 label="topic"
                 name="topic"
                 :rules="[
+                    {
+                        required: true,
+                        message: '请输入topic',
+                    },
                     {
                         max: 64,
                         message: '最多输入64个字符',
@@ -36,13 +53,6 @@
                 ]"
             >
                 <j-input v-model:value="inputData.topic"></j-input>
-            </j-form-item>
-            <j-form-item label="状态">
-                <j-switch
-                    checked-children="启用"
-                    un-checked-children="启用"
-                    v-model:checked="inputData.status"
-                ></j-switch>
             </j-form-item>
         </j-form>
     </j-modal>

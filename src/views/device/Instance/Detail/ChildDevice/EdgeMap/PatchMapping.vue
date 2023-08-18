@@ -21,8 +21,6 @@
                             :load-data="onLoadData"
                             @check="onCheck"
                             v-model:expandedKeys="expandedKeys"
-                            :showLine="{ showLeafIcon: false }"
-                            :show-icon="true"
                         />
                     </j-card>
                     <div style="width: 100px">
