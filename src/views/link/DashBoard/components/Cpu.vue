@@ -95,9 +95,7 @@ const serverData = reactive({
 
 const pickerTimeChange = () => {
     data.value.type = undefined;
-    if(props.isNoCommunity){
-      getCPUEcharts(data.value)
-    }
+  getCPUEcharts(data.value)
 };
 
 const echartsOptions = computed(() => {
@@ -196,9 +194,7 @@ watch(
         if (value === undefined) return;
         const date = getTimeByType(value);
         data.value.time = [dayjs(date), dayjs(new Date())];
-        if (props.isNoCommunity) {
-          getCPUEcharts(data.value);
-        }
+      getCPUEcharts(data.value);
     },
     { immediate: true, deep: true },
 );
