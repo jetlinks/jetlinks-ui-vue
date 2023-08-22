@@ -95,9 +95,7 @@ const serverData = reactive({
 
 const pickerTimeChange = () => {
     data.value.type = undefined;
-    if(props.isNoCommunity){
-      getJVMEcharts(data.value)
-    }
+  getJVMEcharts(data.value)
 };
 
 const getJVMEcharts = async (val: any) => {
@@ -200,9 +198,7 @@ watch(
         const date = getTimeByType(value);
         data.value.time = [dayjs(date), dayjs(new Date())];
 
-      if (props.isNoCommunity) {
-        getJVMEcharts(data.value);
-      }
+      getJVMEcharts(data.value);
     },
     { immediate: true, deep: true },
 );
