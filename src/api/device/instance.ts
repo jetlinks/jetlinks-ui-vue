@@ -617,3 +617,5 @@ export const queryByParent = (deviceId: string) => server.get(`/device/gateway/$
 
 export const queryCodeTips = (productId: string, deviceId: string) => server.get(`/device/transparent-codec/${productId}/${deviceId}.d.ts`)
 export const queryProductCodeTips = (productId: string) => server.get(`/device/transparent-codec/${productId}.d.ts`)
+
+export const queryTypescript = (id:string) => server.get(`/device/${id}/virtual-property.d.ts`) 

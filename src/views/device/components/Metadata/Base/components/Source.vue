@@ -99,6 +99,7 @@ import { useInstanceStore } from '@/store/instance';
 import { resetRule } from '@/api/device/instance';
 import { updata } from '@/api/rule-engine/configuration';
 import { onlyMessage } from '@/utils/comm';
+import { provide } from 'vue';
 const instanceStore = useInstanceStore();
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
@@ -156,7 +157,7 @@ const props = defineProps({
         default: []
     }
 });
-
+provide('target',props.target)
 const emit = defineEmits<Emit>();
 const formItemContext = Form.useInjectFormItemContext();
 
