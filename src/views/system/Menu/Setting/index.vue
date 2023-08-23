@@ -79,6 +79,7 @@ import { cloneDeep } from 'lodash';
 import { onlyMessage } from '@/utils/comm';
 import {
     USER_CENTER_MENU_CODE,
+    messageSubscribe
 } from '@/utils/consts';
 import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
@@ -199,7 +200,7 @@ const onDragend = (info: AntTreeNodeDropEvent) => {
 onMounted(() => {
     getSystemPermission_api().then((resp: any) => {
         const filterBaseMenu = BaseMenu.filter(item => ![
-          USER_CENTER_MENU_CODE,
+          USER_CENTER_MENU_CODE,messageSubscribe
         ].includes(item.code))
         baseMenu.value = filterMenu(
             resp.result.map((item: any) => JSON.parse(item).id),
@@ -210,7 +211,7 @@ onMounted(() => {
                 systemMenu.value = resp.result?.filter(
                     (item: { code: string }) =>
                         ![
-                            USER_CENTER_MENU_CODE
+                            USER_CENTER_MENU_CODE,messageSubscribe
                         ].includes(item.code),
                 );
                 //初始化菜单
@@ -219,12 +220,12 @@ onMounted(() => {
                 selectedKeys.value = systemMenuData.checkedKeys;
 
                 const AllMenu = filterMenus(mergeArr(
-                    cloneDeep(filterBaseMenu),
+                    cloneDeep(baseMenu.value),
                     cloneDeep(systemMenu.value),
                 ))
                 console.log(AllMenu);
                 // 处理排序
-                treeData.value = handleSortsArr(AllMenu);
+                treeData.value = handleSortsArr(systemMenu.value);
             }
         });
     });

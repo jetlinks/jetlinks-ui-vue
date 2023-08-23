@@ -903,6 +903,8 @@
                                                                         .script
                                                                 "
                                                                 language="javascript"
+                                                                :init="editorInit"
+                                                                :registrationTypescript="typescriptTip"
                                                             />
                                                         </div>
                                                     </j-form-item>
@@ -1127,6 +1129,7 @@ import {
     start,
     resourceClusters,
     resourceClustersById,
+    getTs
 } from '@/api/link/type';
 import {
     ParserConfiguration,
@@ -1171,6 +1174,34 @@ const portOptionsIndex: any = ref([]);
 // let portOptionsConst: any = [];
 const certIdOptions = ref([]);
 const configClustersList = ref<any[]>([]);
+
+const typescriptTip = reactive({
+  typescript: ''
+})
+
+const editorInit = (editor: any, monaco: any) => {
+  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+    noSemanticValidation: true,
+    noSyntaxValidation: false,
+  });
+
+  // compiler options
+  monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+    allowJs: true,
+    checkJs: true,
+    allowNonTsExtensions: true,
+    target: monaco.languages.typescript.ScriptTarget.ESNext,
+    strictNullChecks: false,
+    strictPropertyInitialization: true,
+    strictFunctionTypes: true,
+    strictBindCallApply: true,
+    useDefineForClassFields: true,//permit class static fields with private name to have initializer
+    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+    module: monaco.languages.typescript.ModuleKind.CommonJS,
+    typeRoots: ["types"],
+    lib: ["esnext"]
+  });
+}
 
 const dynamicValidateForm = reactive<{ cluster: FormData2Type[] }>({
     cluster: [{ ...cloneDeep(FormStates2), id: '1' }],
@@ -1249,6 +1280,13 @@ const changeType = (value: string) => {
     if (value !== 'MQTT_CLIENT') {
         const { configuration } = dynamicValidateForm.cluster[0];
         value && (configuration.host = '0.0.0.0');
+    }
+    if(value ==='TCP_SERVER'){
+        getTs().then((res:any)=>{
+            if (res.status===200) {
+                typescriptTip.typescript = res.result
+            }
+        })
     }
 };
 

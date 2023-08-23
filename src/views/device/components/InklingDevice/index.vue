@@ -177,7 +177,7 @@ const checkChange = (e: any) => { // 全选
     const keys = deviceList.value.filter(item => {
       //  过滤已选中和已绑定
       const type = !checkKeys.value.includes(item.id) && !disabledKeys.value.includes(item.id)
-      if (type && checkCache.value.has(item.id)) {
+      if (type && !checkCache.value.has(item.id)) {
         checkCache.value.set(item.id, item)
       }
       return type
