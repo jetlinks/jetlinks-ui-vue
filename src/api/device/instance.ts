@@ -618,4 +618,16 @@ export const queryByParent = (deviceId: string) => server.get(`/device/gateway/$
 export const queryCodeTips = (productId: string, deviceId: string) => server.get(`/device/transparent-codec/${productId}/${deviceId}.d.ts`)
 export const queryProductCodeTips = (productId: string) => server.get(`/device/transparent-codec/${productId}.d.ts`)
 
-export const queryTypescript = (id:string) => server.get(`/device/${id}/virtual-property.d.ts`) 
+/**
+ * 获取设备物模型规则TS
+ * @param deviceId 设备ID
+ * @returns 
+ */
+export const queryTypescript = (deviceId:string) => server.get(`/device/${deviceId}/virtual-property.d.ts`) 
+
+/**
+ * 获取产品物模型规则TS
+ * @param productId 产品ID
+ * @returns 
+ */
+export const queryProductTs = (productId:string) => server.get(`/product/${productId}/virtual-property.d.ts`)

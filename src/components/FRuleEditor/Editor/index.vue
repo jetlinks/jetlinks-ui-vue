@@ -36,7 +36,8 @@
 </template>
 <script setup lang="ts" name="Editor">
 import {
-  queryTypescript
+  queryTypescript,
+  queryProductTs
 } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
@@ -75,14 +76,20 @@ const queryCode = () => {
   let id = ''
   if(target==='device'){
     id = instanceStore.current.id
+    queryTypescript(id).then(res => {
+      if (res.status===200) {
+        typescriptTip.typescript = res.result
+      }
+    })
   }else if(target ==='product'){
     id = productStore.current.id
+    queryProductTs(id).then(res => {
+      if (res.status===200) {
+        typescriptTip.typescript = res.result
+      }
+    })
   }
-   queryTypescript(id).then(res => {
-     if (res.status===200) {
-      typescriptTip.typescript = res.result
-    }
-  })
+  
 }
 queryCode()
 
