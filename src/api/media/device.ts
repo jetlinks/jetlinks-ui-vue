@@ -25,4 +25,6 @@ export default {
     queryProvider: (data?: any) => server.post<any>(`/gateway/device/detail/_query`, data),
     // 查询网关配置
     getConfiguration: (id: string, transport: string) => server.get<any>(`/protocol/${id}/${transport}/configuration`),
+    //校验ID合法
+    validateId: (id:string) => server.get<any>('/media/device/id/_validate',{id:id})
 }
