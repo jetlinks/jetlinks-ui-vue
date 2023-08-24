@@ -41,7 +41,7 @@ const url = ref('');
 const urlRef = ref<HTMLInputElement>()
 
 watchEffect(() => {
-    url.value = `${window.location.origin}#/media/device/Share?deviceId=${props.data.deviceId}&channelId=${props.data.channelId}&type=${route.query.type}&${TOKEN_KEY}=${token}`
+    url.value = `${window.location.origin}#/media/device/Share?deviceId=${props.data.deviceId}&channelId=${props.data.channelId}&type=${route.query.type}&id=${props.data.id}&${TOKEN_KEY}=${token}`
 })
 
 const onCopy = () => {

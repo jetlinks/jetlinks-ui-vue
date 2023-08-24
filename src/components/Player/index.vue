@@ -35,7 +35,7 @@ type PlayerProps = {
     updateTime?: number;
     key?: string | number;
     loading?: boolean;
-    protocol?: 'mp4' | 'flv' | 'hls';
+    protocol?: 'mp4' | 'flv' | 'hls' | 'rtc';
     onDestroy?: (e?: any) => void;
     onMessage?: (msg: any) => void;
     onError?: (err: any) => void;
