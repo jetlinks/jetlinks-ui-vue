@@ -406,6 +406,7 @@
                 :hasPermission="`link/AccessConfig:${
                     id === ':id' ? 'add' : 'update'
                 }`"
+                :loading="loading"
             >
                 保存
             </PermissionButton>
@@ -486,6 +487,7 @@ const formData = ref<Form>({
     description: '',
 });
 
+const loading = ref(false)
 const current = ref(0);
 const stepCurrent = ref(0);
 const steps = ref(['接入配置', '消息协议', '完成']);
@@ -515,6 +517,7 @@ const procotolSearch = (value: string) => {
 
 const saveData = async () => {
     const data: any = await formRef2.value?.validate();
+    loading.value = true
     const params = {
         ...data,
         configuration: {
@@ -542,6 +545,7 @@ const saveData = async () => {
             setTimeout(() => window.close(), 300);
         }
     }
+    loading.value =false
 };
 
 const queryProcotolList = async (id: string, params = {}) => {
