@@ -228,6 +228,10 @@ const matchComponents: IMatcher[] = [
     pattern: /^CheckButton/,
     styleDir: 'CheckButton'
   },
+  {
+    pattern: /^ColorPicker/,
+    styleDir: 'ColorPicker'
+  },
 ]
 
 export interface JetlinksVueResolverOptions {
