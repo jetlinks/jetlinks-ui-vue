@@ -9,7 +9,6 @@
                 <j-radio-button value="mp4">MP4</j-radio-button>
                 <j-radio-button value="flv">FLV</j-radio-button>
                 <j-radio-button value="m3u8">HLS</j-radio-button>
-                <j-radio-button value='rtc'>RTC</j-radio-button>
             </j-radio-group>
             <div class="media-live-share" v-if="type !== 'share'">
                 <j-button type="link" @click="onShare"
