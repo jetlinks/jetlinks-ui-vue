@@ -310,6 +310,7 @@ import DeviceApi from '@/api/media/device';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';
 import SaveProduct from './SaveProduct.vue';
+import { notification } from 'jetlinks-ui-components';
 
 const router = useRouter();
 const route = useRoute();
@@ -425,13 +426,18 @@ const handleSubmit = () => {
     formRef.value
         ?.validate()
         .then(async () => {
-            btnLoading.value = true;
-            const res = !route.query.id
-                ? await DeviceApi.save(params)
-                : await DeviceApi.update(params);
-            if (res?.success) {
-                onlyMessage('保存成功');
-                history.back();
+            const resq:any = await DeviceApi.validateId(id)
+            if(resq.status === 200 && resq?.result?.passed){
+                btnLoading.value = true;
+                const res = !route.query.id
+                    ? await DeviceApi.save(params)
+                    : await DeviceApi.update(params);
+                if (res?.success) {
+                    onlyMessage('保存成功');
+                    history.back();
+                }
+            }else{
+                notification.error({ key: 'error', message: '设备ID已重复'})
             }
         })
         .catch((err: any) => {

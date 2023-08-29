@@ -150,43 +150,50 @@ const showNotification = (message: string, description: string, key?: string, sh
  * @returns {Promise<never>}
  */
 const errorHandler = (error: any) => {
+  
   if (error.response) {
     const data = error.response.data
     const status = error.response.status
-    if (data?.code === 'license required') {
-     Modal.error({
-        key: 'License',
-        title: 'License已到期或者错误',
-        content: h(
-          'a',
-          {
-            onClick: () =>
-            {
-              Modal.destroyAll?.();
-              window.location.href = '/#/init-license';
-            }
-          },
-          '请更新License'
-        )
+    if(data instanceof Blob){
+      data.text().then((res)=>{
+        showNotification(error.message, (JSON.parse(res).message + '').substr(0,90))
       })
-    } else if (status === 403) {
-      showNotification('Forbidden', (data.message + '').substr(0, 90), '403')
-    } else if (status === 500) {
-      showNotification('Server Side Error', (data.message + '').substr(0, 90), '500')
-    } else if (status === 400) {
-      showNotification('Request Error', (data.message + '').substr(0, 90), '400')
-    } else if (status === 401) {
-      showNotification('Unauthorized', '用户未登录', '401')
-      setTimeout(() => {
-        cleanToken()
-        router.replace({
-          path: LoginPath
-        })
-      }, 0)
-    } else if (status === 404) {
-      const data = error?.response?.data
-      const message = error?.response?.data?.message || `${data?.error} ${data?.path}`
-      showNotification(error?.code, message, '404')
+    }else{
+      if (data?.code === 'license required') {
+        Modal.error({
+           key: 'License',
+           title: 'License已到期或者错误',
+           content: h(
+             'a',
+             {
+               onClick: () =>
+               {
+                 Modal.destroyAll?.();
+                 window.location.href = '/#/init-license';
+               }
+             },
+             '请更新License'
+           )
+         })
+       } else if (status === 403) {
+         showNotification('Forbidden', (data.message + '').substr(0, 90), '403')
+       } else if (status === 500) {
+         showNotification('Server Side Error', (data.message + '').substr(0, 90), '500')
+       } else if (status === 400) {
+         showNotification('Request Error', (data.message + '').substr(0, 90), '400')
+       } else if (status === 401) {
+         showNotification('Unauthorized', '用户未登录', '401')
+         setTimeout(() => {
+           cleanToken()
+           router.replace({
+             path: LoginPath
+           })
+         }, 0)
+       } else if (status === 404) {
+         const data = error?.response?.data
+         const message = error?.response?.data?.message || `${data?.error} ${data?.path}`
+         showNotification(error?.code, message, '404')
+       }
     }
   } else if (error.response === undefined) {
     if (error.message.includes('timeout')) {

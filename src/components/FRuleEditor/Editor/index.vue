@@ -29,19 +29,28 @@
       </div>
     </div>
     <div class="editor">
-      <j-monaco-editor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" language="javascript"/>
+      <j-monaco-editor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" language="javascript" :registrationTypescript="typescriptTip"
+        :init="editorInit"/>
     </div>
   </div>
 </template>
 <script setup lang="ts" name="Editor">
-
+import {
+  queryTypescript,
+  queryProductTs
+} from '@/api/device/instance';
+import { useInstanceStore } from '@/store/instance';
+import { useProductStore } from '@/store/product';
+import { inject } from 'vue'
 interface Props {
   mode?: 'advance' | 'simple';
   id?: string;
   value?: string;
 }
 const props = defineProps<Props>()
-
+const target = inject('target')
+const instanceStore = useInstanceStore()
+const productStore = useProductStore()
 interface Emits {
   (e: 'change', data: string): void;
   (e: 'update:value', data: string): void;
@@ -58,6 +67,56 @@ type SymbolType = {
   key: string,
   value: string
 }
+
+const typescriptTip = reactive({
+  typescript: ''
+})
+
+const queryCode = () => {
+  let id = ''
+  if(target==='device'){
+    id = instanceStore.current.id
+    queryTypescript(id).then(res => {
+      if (res.status===200) {
+        typescriptTip.typescript = res.result
+      }
+    })
+  }else if(target ==='product'){
+    id = productStore.current.id
+    queryProductTs(id).then(res => {
+      if (res.status===200) {
+        typescriptTip.typescript = res.result
+      }
+    })
+  }
+  
+}
+queryCode()
+
+const editorInit = (editor: any, monaco: any) => {
+  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+    noSemanticValidation: true,
+    noSyntaxValidation: false,
+  });
+
+  // compiler options
+  monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+    allowJs: true,
+    checkJs: true,
+    allowNonTsExtensions: true,
+    target: monaco.languages.typescript.ScriptTarget.ESNext,
+    strictNullChecks: false,
+    strictPropertyInitialization: true,
+    strictFunctionTypes: true,
+    strictBindCallApply: true,
+    useDefineForClassFields: true,//permit class static fields with private name to have initializer
+    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+    module: monaco.languages.typescript.ModuleKind.CommonJS,
+    typeRoots: ["types"],
+    lib: ["esnext"]
+  });
+}
+
 const symbolList = [
   {
     key: 'add',

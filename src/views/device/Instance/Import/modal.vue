@@ -162,6 +162,7 @@ const save = () => {
 const importCancel = () => {
   importVisible.value = false
   emit('save')
+  cancel()
 }
 </script>
 
