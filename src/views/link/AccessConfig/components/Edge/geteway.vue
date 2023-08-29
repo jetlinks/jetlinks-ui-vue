@@ -49,6 +49,7 @@
                                 }`"
                   html-type="submit"
                   type="primary"
+                  :loading="loading"
               >
                 保存
               </PermissionButton>
@@ -88,6 +89,7 @@ const route = useRoute();
 const view = route.query.view as string;
 const id = route.params.id as string;
 
+const loading = ref(false)
 const props = defineProps({
   provider: {
     type: Object,
@@ -106,6 +108,7 @@ const formState = ref<FormState>({
   description: '',
 });
 const onFinish = async (values: any) => {
+  loading.value = true
   const providerId = props.provider.id;
   const params = {
     ...values,
@@ -124,6 +127,7 @@ const onFinish = async (values: any) => {
       setTimeout(() => window.close(), 300);
     }
   }
+  loading.value = false
 };
 
 onMounted(() => {

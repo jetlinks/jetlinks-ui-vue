@@ -42,7 +42,7 @@
                     :columns="searchColumns"
                     target="category-bind-modal"
                     @search="search"
-                    style="width: 75%;"
+                    style="width: 75%; margin-bottom: 0;"
                 />
             </template>
             <template #card="slotProps">

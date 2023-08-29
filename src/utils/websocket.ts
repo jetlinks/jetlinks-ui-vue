@@ -13,10 +13,11 @@ const timeout = 5000
 const tempQueue: any[] = [] // websocket未连接上时，缓存消息列
 
 export const initWebSocket = () => {
+    const token = getToken()
+    if (!token) return
     if (ws) {
         return ws
     }
-    const token = getToken()
     const url = `${document.location.protocol.replace('http', 'ws')}//${document.location.host}${BASE_API_PATH}/messaging/${token}?:X_Access_Token=${token}`;
     if (count < total) {
         count += 1
@@ -101,6 +102,13 @@ export const getWebSocket = (id: string, topic: string, parameter: Record<string
         }
     }
 })
+
+export const closeWs = () => {
+    if (ws) {
+        ws.close()
+        timer && clearInterval(timer)
+    }
+} 
 
 /**
  * 重连

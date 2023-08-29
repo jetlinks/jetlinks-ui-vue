@@ -3,7 +3,8 @@
     <j-modal
         v-model:visible="_vis"
         title="播放"
-        :width="_type ? 1200 : 900"
+        :width="type === 'share'? '100%' : _type ? 1200 : 900"
+        :class="{share: type === 'share'}"
         :maskClosable="false"
         @ok="_vis = false"
         :destroyOnClose="true"
@@ -20,6 +21,7 @@
                 <j-radio-button value="mp4">MP4</j-radio-button>
                 <j-radio-button value="flv">FLV</j-radio-button>
                 <j-radio-button value="m3u8">HLS</j-radio-button>
+                <!-- <j-radio-button value='rtc'>RTC</j-radio-button> -->
             </j-radio-group>
             <div class="media-live-share" v-if="type !== 'share'">
                 <j-button type="link" @click="onShare"
@@ -132,9 +134,9 @@
             </div>
         </div>
         <template #footer>
-          <j-space>
-            <j-button :disabled="type === 'share'" @click="_vis = false">取消</j-button>
-            <j-button :disabled="type === 'share'" @click="_vis = false" type="primary">确定</j-button>
+          <j-space v-if="type !== 'share'">
+            <j-button  @click="_vis = false">取消</j-button>
+            <j-button  @click="_vis = false" type="primary">确定</j-button>
           </j-space>
         </template>
     </j-modal>
@@ -179,7 +181,7 @@ const player = ref();
 // 视频地址
 const url = ref('');
 // 视频类型
-const mediaType = ref<'mp4' | 'flv' | 'hls'>('mp4');
+const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('mp4');
 const showTool = ref(false);
 const showToolLock = ref(false);
 
