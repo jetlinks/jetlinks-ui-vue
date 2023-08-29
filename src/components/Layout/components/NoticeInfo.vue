@@ -114,7 +114,9 @@ const getData = (type: string[]) => {
     getList_api(params)
         .then((resp: any) => {
             total.value = resp.result.total;
-            list.value = resp.result?.data || [];
+            list.value = resp.result?.data?.filter((item:any)=>{
+                return item?.state?.value === "unread"
+            }) || [];
         })
         .finally(() => (loading.value = false));
 };
