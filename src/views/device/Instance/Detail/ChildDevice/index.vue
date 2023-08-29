@@ -89,6 +89,7 @@
                         :key="i.key"
                     >
                         <PermissionButton
+                            v-if="i.key !== 'update' || detail.accessProvider === 'official-edge-gateway'"
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
                             :tooltip="{
@@ -307,6 +308,9 @@ const closeBindDevice = (val: boolean) => {
 const closeChildSave = () => {
     childVisible.value = false;
 };
+onMounted(()=>{
+    console.log(detail.value.accessProvider)
+})
 </script>
 
 <style lang="less">
