@@ -4,7 +4,7 @@
         :columns="columns"
         :dataSource="dataSource"
         :pagination="false"
-        :scroll="{ y: 200 }"
+        :scroll="share ? { y: 560} :{ y: 200 }"
     >
         <template #bodyCell="{ column, record }">
             <template v-if="column.dataIndex === 'actions'">
@@ -61,6 +61,10 @@ const props = defineProps({
         type: Object as PropType<Partial<Record<string, any>>>,
         default: () => ({}),
     },
+    share:{
+        type:Boolean,
+        default:false
+    }
 });
 
 const emits = defineEmits(['refresh'])

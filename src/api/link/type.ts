@@ -36,3 +36,8 @@ export const save = (data: Object) => server.post(`/network/config`, data);
 export const update = (data: Object) => server.patch(`/network/config`, data);
 
 export const detail = (id: string) => server.get(`/network/config/${id}`);
+
+/**
+ * 获取TCP粘拆包TS资源
+ */
+export const getTs = () => server.get('/system/resources/ScriptPayloadParser.d.ts')

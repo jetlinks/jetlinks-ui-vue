@@ -178,6 +178,7 @@ import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
 import {encrypt} from '@/utils/encrypt'
+import { closeWs } from '@/utils/websocket'
 
 const store = useUserInfo();
 const systemStore = useSystem();
@@ -382,6 +383,7 @@ getOpen();
 getCode();
 screenRotation(screenWidth.value, screenHeight.value);
 
+closeWs()
 onMounted(()=>{
     getRsa()
 })

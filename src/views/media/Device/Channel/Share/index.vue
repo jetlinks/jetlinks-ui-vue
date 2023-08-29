@@ -1,16 +1,17 @@
 <template>
-    <Live :visible="true" type="share" :data="playData" />
+    <ShareLive :visible="true" type="share" :data="playData"/>
 </template>
 
 <script lang="ts" setup>
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
-import Live from '../Live/index.vue';
+import ShareLive from '../Live/shareLive.vue';
 
 const playData = ref({
     deviceId: '',
     channelId: '',
-    type: ''
+    type: '',
+    id:''
 });
 
 // 获取url信息
@@ -21,7 +22,8 @@ watchEffect(() => {
     playData.value = {
         deviceId: obj?.deviceId || '',
         channelId: obj?.channelId || '',
-        type: obj?.type
+        type: obj?.type,
+        id:obj.id || ''
     };
     if(obj?.[TOKEN_KEY]){
         LocalStore.set(TOKEN_KEY, obj?.[TOKEN_KEY]);

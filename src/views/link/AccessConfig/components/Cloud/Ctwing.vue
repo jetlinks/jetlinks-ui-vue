@@ -328,6 +328,7 @@
                 :hasPermission="`link/AccessConfig:${
                     id === ':id' ? 'add' : 'update'
                 }`"
+                :loading="loading"
             >
                 保存
             </PermissionButton>
@@ -376,6 +377,7 @@ const route = useRoute();
 const view = route.query.view as string;
 const id = route.params.id as string;
 
+const loading = ref(false)
 const props = defineProps({
     provider: {
         type: Object,
@@ -434,6 +436,7 @@ const procotolSearch = (value: string) => {
 
 const saveData = async () => {
     const data: any = await formRef2.value?.validate();
+    loading.value = true
     const params = {
         ...data,
         configuration: {
@@ -460,6 +463,7 @@ const saveData = async () => {
             setTimeout(() => window.close(), 300);
         }
     }
+    loading.value = false
 };
 
 const queryProcotolList = async (id: string, params = {}) => {

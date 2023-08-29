@@ -123,7 +123,6 @@
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
 import {
-    getEdgeMap,
     saveEdgeMap,
     removeEdgeMap,
     edgeChannel,
