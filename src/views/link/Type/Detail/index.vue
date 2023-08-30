@@ -66,7 +66,7 @@
                                             )
                                         "
                                     >
-                                        <j-radio-button :value="true"
+                                        <j-radio-button :value="true" :disabled="formData.type ==='MQTT_CLIENT'"
                                             >共享配置</j-radio-button
                                         >
                                         <j-radio-button :value="false"
@@ -1280,6 +1280,9 @@ const changeType = (value: string) => {
     if (value !== 'MQTT_CLIENT') {
         const { configuration } = dynamicValidateForm.cluster[0];
         value && (configuration.host = '0.0.0.0');
+    }else{
+        formData.value.shareCluster  = false
+        changeShareCluster(formData.value.shareCluster)
     }
     if(value ==='TCP_SERVER'){
         getTs().then((res:any)=>{
