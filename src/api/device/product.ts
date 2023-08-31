@@ -1,6 +1,6 @@
 import { OperatorItem } from '@/components/FRuleEditor/Operator/typings'
 import server from '@/utils/request'
-import { DeviceMetadata, ProductItem, DepartmentItem, MetadataType  } from '@/views/device/Product/typings'
+import { DeviceMetadata, ProductItem, DepartmentItem, MetadataType } from '@/views/device/Product/typings'
 
 /**
  * 根据条件查询产品（不带翻页）
@@ -30,7 +30,7 @@ export const modify = (id: string, data: any) => server.put(`/device-product/${i
  * 
  * @returns 
  */
-export const getCodecs = () => server.get<{id: string, name: string}>('/device/product/metadata/codecs')
+export const getCodecs = () => server.get<{ id: string, name: string }>('/device/product/metadata/codecs')
 
 /**
  * 根据产品ID获取产品详情
@@ -48,41 +48,41 @@ export const category = (data: any) => server.get('/device/category/_tree?paging
 /**
  * 获取网关类型
  */
- export const getProviders = (terms?:any) => server.get('/gateway/device/providers',terms)
+export const getProviders = (terms?: any) => server.get('/gateway/device/providers', terms)
 
- /**
-  * 查询所属部门
-  * @param params 查询条件
-  */
- export const queryOrgThree = (params?: Record<string, any>) => server.post<DepartmentItem>('/organization/_all/tree', params)
+/**
+ * 查询所属部门
+ * @param params 查询条件
+ */
+export const queryOrgThree = (params?: Record<string, any>) => server.post<DepartmentItem>('/organization/_all/tree', params)
 
- /**
-  * 获取接入方式
-  * @param data 查询条件
-  */
- const defaultGatewayData = {
+/**
+ * 获取接入方式
+ * @param data 查询条件
+ */
+const defaultGatewayData = {
   paging: false,
   sorts: [
-   {
-    name: 'createTime',
-    order: 'desc',
-   },
+    {
+      name: 'createTime',
+      order: 'desc',
+    },
   ],
- }
- export const queryGatewayList = (data: any = defaultGatewayData) => server.post('/gateway/device/_query/no-paging', data)
+}
+export const queryGatewayList = (data: any = defaultGatewayData) => server.post('/gateway/device/_query/no-paging', data)
 
- /**
-  * 查询产品列表(分页)
-  * @param data 查询条件
-  */
- export const queryProductList = (data: any) => server.post('/device-product/_query', data)
-
- /**
- * 启用产品
- * @param productId 产品ID
- * @param data 
- * @returns 
+/**
+ * 查询产品列表(分页)
+ * @param data 查询条件
  */
+export const queryProductList = (data: any) => server.post('/device-product/_query', data)
+
+/**
+* 启用产品
+* @param productId 产品ID
+* @param data 
+* @returns 
+*/
 export const _deploy = (productId: string) => server.post(`/device-product/${productId}/deploy`)
 
 /**
@@ -98,7 +98,7 @@ export const _undeploy = (productId: string) => server.post(`/device-product/${p
  * @param data 
  * @returns 
  */
-export const addProduct = (data:any) => server.post('/device-product',data)
+export const addProduct = (data: any) => server.post('/device-product', data)
 
 /**
  * 修改产品
@@ -118,7 +118,7 @@ export const deleteProduct = (id: string) => server.remove(`/device-product/${id
  * 检测产品Id唯一性
  * @param id 产品ID
  */
- export const queryProductId = (id: string) => server.get(`/device-product/${id}/exists`)
+export const queryProductId = (id: string) => server.get(`/device-product/${id}/exists`)
 /**
  * 保存产品
  * @param data 产品信息
@@ -131,13 +131,13 @@ export const saveProductMetadata = (data: Record<string, unknown>) => server.pat
  * @param data 查询条件
  * @returns
  */
-export const getDeviceNumber = (params:any) => server.get<number>('/device-instance/_count', params)
+export const getDeviceNumber = (params: any) => server.get<number>('/device-instance/_count', params)
 
 /**
  * 获取协议详情
  *  @param id 协议ID
  */
-export const getProtocolDetail = (id:string) => server.post(`/protocol/${id}/detail`, id)
+export const getProtocolDetail = (id: string) => server.post(`/protocol/${id}/detail`, id)
 
 /**
  * 查询设备列表
@@ -170,12 +170,12 @@ export const getStoragList = () => server.get('/device/product/storage/policies'
 /**
  * 保存设备(设备接入)
  */
-export const saveDevice = (data:any) => server.post('/device-product',data)
+export const saveDevice = (data: any) => server.post('/device-product', data)
 
 /**
  * 更新选择设备(设备接入)
  */
-export const updateDevice = (data:any) => server.patch('/device-product',data)
+export const updateDevice = (data: any) => server.patch('/device-product', data)
 
 /**
  * 获取操作符
@@ -218,6 +218,11 @@ export const getMetadataDeviceConfig = (params: {
 export const saveProductVirtualProperty = (productId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/_batch`, data)
 
 export const queryProductVirtualProperty = (productId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${propertyId}`)
+/**
+ * 一键删除 
+ */
+export const allDltDeviceInfo = (productId: string) => server.post(`/device/instance/${productId}/delete/device`)
+
 
 
 

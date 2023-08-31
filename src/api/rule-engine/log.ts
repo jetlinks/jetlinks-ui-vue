@@ -3,44 +3,48 @@ import server from '@/utils/request';
 /**
  * 获取产品列表
  */
-export const getProductList  = (parmas?:any)  => server.get('/device/product/_query/no-paging?paging=false',parmas);
+export const getProductList = (parmas?: any) => server.get('/device/product/_query/no-paging?paging=false', parmas);
 
 /**
  * 获取设备列表
  */
-export const getDeviceList = (parmas?:any) => server.get('/device-instance/_query/no-paging?paging=false',parmas);
+export const getDeviceList = (parmas?: any) => server.get('/device-instance/_query/no-paging?paging=false', parmas);
 
 /**
  * 获取有设备的告警的产品名称
- */ 
-export const getAlarmProduct = (parmas:any) => server.post('/device-instance/_query',parmas) 
+ */
+export const getAlarmProduct = (parmas: any) => server.post('/device-instance/_query', parmas)
 
 /**
  * 获取组织列表
  */
-export const getOrgList = (parmas?:any) => server.get('/organization/_query/no-paging?paging=false',parmas);
+export const getOrgList = (parmas?: any) => server.get('/organization/_query/no-paging?paging=false', parmas);
 
 /**
  * 搜索
  */
-export const query = (data:any) => server.post('/alarm/record/_query/',data);
+export const query = (data: any) => server.post('/alarm/record/_query/', data);
 
 /**
  * 告警处理
  */
-export const handleLog = (data:any) => server.post('/alarm/record/_handle',data);
+export const handleLog = (data: any) => server.post('/alarm/record/_handle', data);
 
 /**
  * 告警记录
  */
-export const detail = (id:string) => server.get(`/alarm/record/${id}`);
+export const detail = (id: string) => server.get(`/alarm/record/${id}`);
 
 /**
  * 告警历史记录
  */
-export const queryHistoryList = (data:any) => server.post('/alarm/history/_query',data);
+export const queryHistoryList = (data: any) => server.post('/alarm/history/_query', data);
 
 /**
  * 获取告警处理结果
  */
-export const queryHandleHistory = (data:any) => server.post('/alarm/record/handle-history/_query',data);
+export const queryHandleHistory = (data: any) => server.post('/alarm/record/handle-history/_query', data);
+/**
+ * 一键删除告警记录
+ */
+export const dltAllAlarmHistory = (id: string) => server.post(`/alarm/record/delete/history?configId=${id}`);
