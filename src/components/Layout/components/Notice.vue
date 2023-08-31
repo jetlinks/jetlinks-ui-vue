@@ -88,13 +88,12 @@ const subscribeNotice = () => {
 const read = (type: string, data: any) => {
     changeStatus_api('_read', [data.payload.id]).then((resp: any) => {
         if (resp.status !== 200) return;
-
         notification.close(data.payload.id);
         getList();
         if (type !== '_read') {
             menuStory.routerPush('account/center', {
                 tabKey: 'StationMessage',
-                row: data.payload.detail,
+                row: data.payload,
             });
         }
     });

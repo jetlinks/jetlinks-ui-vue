@@ -86,6 +86,7 @@ const activeKey = ref<DataType>(props.tabs?.[0]?.key || 'alarm');
 const menuStory = useMenuStore();
 const route = useRoute();
 
+const type = ref();
 const userInfo = useUserInfo();
 
 const getData = (type: string[]) => {
@@ -107,6 +108,12 @@ const getData = (type: string[]) => {
                         termType: 'in',
                         column: 'topicProvider',
                     },
+                    {
+                        type: 'and',
+                        value: 'unread',
+                        termType: 'eq',
+                        column: 'state',
+                    },
                 ],
             },
         ],
@@ -114,16 +121,14 @@ const getData = (type: string[]) => {
     getList_api(params)
         .then((resp: any) => {
             total.value = resp.result.total;
-            list.value = resp.result?.data?.filter((item:any)=>{
-                return item?.state?.value === "unread"
-            }) || [];
+            list.value = resp.result?.data || [];
         })
         .finally(() => (loading.value = false));
 };
 
 const onChange = (_key: string) => {
-    const type = props.tabs.find((item: any) => item.key === _key)?.type || [];
-    getData(type);
+    type.value = props.tabs.find((item: any) => item.key === _key)?.type || [];
+    getData(type.value);
 };
 
 onMounted(async () => {
@@ -136,7 +141,7 @@ const onRefresh = (id: string,index:number) => {
         ...refreshObj.value,
         [id]: !flag,
     };
-    list.value.splice(index,1);
+    getData(type.value)
 };
 
 const onMore = (key: string) => {
