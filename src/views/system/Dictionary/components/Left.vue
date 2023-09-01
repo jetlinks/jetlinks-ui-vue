@@ -52,9 +52,6 @@ const queryData = () =>{
         }
     })
 }
-const changeStatus = (value:number,item:any) =>{
-    
-}
 const showEdit = (data:any) =>{
     saveShow.value = true
     addType.value = 'edit'
