@@ -570,7 +570,7 @@
 <script setup lang="ts">
 import { getImage, onlyMessage } from '@/utils/comm';
 import CascadeApi from '@/api/media/cascade';
-
+import { regIPv6 } from '@/utils/regular'
 const router = useRouter();
 const route = useRoute();
 
@@ -703,7 +703,7 @@ const checkHost = (host: string, port: string | number | undefined) => {
         return Promise.resolve();
     } else if (!host) {
         return Promise.reject(new Error('请输入IP 地址'));
-    } else if (host && !regDomain.test(host) && !ipv6.test(host)) {
+    } else if (host && !regDomain.test(host) && !regIPv6.test(host)) {
         return Promise.reject(new Error('请输入正确的IP地址'));
     } else if (!port) {
         return Promise.reject(new Error('请输入端口'));
