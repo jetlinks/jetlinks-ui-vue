@@ -13,4 +13,9 @@ export const verifyId = (id:string) => request.post(`/dictionary/_exists`,{where
 /**
  * 保存字典
  */
-export const addDictionary = (data:any) => request.post('/dictionary',data)
+export const addDictionary = (data:any) => request.patch('/dictionary',data)
+
+/**
+ * 删除字典
+ */
+export const deleteDictionary =(id:string) => request.delete(`/dictionary/${id}`)

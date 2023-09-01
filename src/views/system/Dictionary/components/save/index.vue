@@ -10,7 +10,7 @@
   >
     <j-form layout="vertical" :rules="rules" ref="formRef" :model="form">
         <j-form-item label="字典ID" name="id">
-            <j-input v-model:value="form.id"></j-input>
+            <j-input v-model:value="form.id" :disabled="type ==='edit'"></j-input>
         </j-form-item>
         <j-form-item label="字典名称" name="name">
             <j-input v-model:value="form.name"></j-input>
@@ -33,11 +33,14 @@ import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
 import { verifyId,addDictionary } from '@/api/system/dictionary'
 import { onlyMessage } from '@/utils/comm';
-import { error } from 'console';
 const props = defineProps({
     type:{
         type:String,
         default:'add'
+    },
+    data:{
+        type:Object,
+        default:{}
     }
 })
 const emit = defineEmits(['closeSave','success'])
@@ -96,21 +99,27 @@ const rules = {
 const submitData = () =>{
     formRef.value.validate().then(async()=>{
         loading.value = true
-        if(props.type === 'add'){
-            const res = await addDictionary(form)
+        const res = await addDictionary(form)
             if(res.status === 200){
                 onlyMessage('保存成功!')
                 emit('success')
             }else{
                 onlyMessage('操作失败!','error')
             }
-        }
         loading.value = false
     })
 }
 const closeModal = ()=>{
     emit('closeSave')
 }
+onMounted(()=>{
+    if(props.type==='edit' && props.data){
+        form.describe = props.data.describe
+        form.id = props.data.id
+        form.name = props.data.name
+        form.status = props.data.status
+    }
+})
 </script>
 <style lang="less" scoped>
 </style>
