@@ -12,10 +12,10 @@
     </div>
     
     <div>
-        <j-tree :tree-data="listData" :fieldNames="{title:'name',key:'id'}" blockNode>
+        <j-tree :tree-data="listData" :fieldNames="{title:'name',key:'id'}" blockNode @select="selectDic" :selectedKeys="selectedKeys">
             <template #title="item">
                 <div class="treeItem">
-                    <div>{{ item.name }}</div>
+                    <div class="itemText">{{ item.name }}</div>
                     <div>
                         <j-popconfirm :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
                             <j-switch v-model:checked="item.status" :checkedValue="1" :unCheckedValue="0"></j-switch>
@@ -37,10 +37,12 @@
 import { getDicList ,deleteDictionary,addDictionary} from '@/api/system/dictionary';
 import Save from './save/index.vue'
 import { onlyMessage } from '@/utils/comm';
+const emit = defineEmits(['selectData'])
 const saveShow = ref(false)
 const addType = ref('add')
 const listData = ref<any[]>([])
 const editData = ref()
+const selectedKeys = ref([])
 const showSave = () =>{
     saveShow.value = true
     addType.value = 'add'
@@ -96,6 +98,16 @@ const updateDic = (data:any)=>{
         }
     })
 }
+/**
+ * 切换选中字典
+ */
+const selectDic = (selectKeys:any)=>{
+    selectedKeys.value = selectKeys
+    const selectData = listData.value.filter((item:any)=>{
+       return item.id = selectKeys[0]
+    })[0]
+    emit('selectData',selectData)
+}
 onMounted(()=>{
     queryData()
 })
@@ -110,5 +122,8 @@ onMounted(()=>{
 .treeItem{
     display: flex;
     justify-content: space-between;
+    .itemText{
+        line-height: 32px
+    }
 }
 </style>
