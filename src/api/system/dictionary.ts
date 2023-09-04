@@ -6,6 +6,10 @@ import server, { request } from '@/utils/request';
 export const getDicList = (data:any) => request.post('/dictionary/_query/no-paging',data)
 
 /**
+ * 查询字典分页
+ */
+export const getDic_page = (data:any) => request.post('/dictionary/_query',data)
+/**
  * 查询字典ID是否重复
  */
 export const verifyId = (id:string) => request.post(`/dictionary/_exists`,{where:`id is ${id}`})
@@ -29,3 +33,18 @@ export const queryDicItem = (data:any)=>request.post('/dictionary-item/_query',d
  * 保存字典项
  */
 export const saveDicItem = (data:any) => request.patch('/dictionary-item',data)
+
+/**
+ * 删除字典项
+ */
+export const deleteDicItem = (id:string) => request.delete(`/dictionary-item/${id}`)
+
+/**
+ * 校验字典项value唯一
+ */
+export const  verifyValue = (data:any) => request.post('/dictionary-item/_exists',data)
+
+/**
+ * 下载字典
+ */
+export const downDic = (data:any) => request.post('/dictionary/detail/_query',data)

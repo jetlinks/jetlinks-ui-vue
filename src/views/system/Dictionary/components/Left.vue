@@ -6,9 +6,30 @@
         </template>
     </j-input>
     <div class="controls">
-        <j-button type="primary" @click="showSave" style="width: 60%;">新增字典</j-button>
-        <j-button type="text">下载</j-button>
-        <j-button type="text">导入</j-button>
+        <PermissionButton
+            type="primary"
+            :hasPermission="true"
+            @click="showSave"
+            style="width: 60%"
+        >
+            新增字典
+        </PermissionButton>
+        <!-- <j-button type="primary" @click="showSave" style="width: 60%;">新增字典</j-button> -->
+        <PermissionButton
+            type="text"
+            :hasPermission="true"
+            @click="downVisible=true"
+        >
+            下载
+        </PermissionButton>
+        <!-- <j-button type="text" @click="downVisible=true">下载</j-button> -->
+        <j-upload
+            :before-upload="beforeUpload"
+            accept=".json"
+            :show-upload-list="false"
+        >
+            <j-button type="text">导入</j-button>
+        </j-upload>
     </div>
     
     <div>
@@ -16,14 +37,31 @@
             <template #title="item">
                 <div class="treeItem" @click="()=>selectDic(item.data)">
                     <div class="itemText">{{ item.name }}</div>
-                    <div>
+                    <div @click="(e) => e.stopPropagation()">
                         <j-popconfirm :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
                             <j-switch v-model:checked="item.status" :checkedValue="1" :unCheckedValue="0"></j-switch>
                         </j-popconfirm>
-                        <j-popconfirm title="确认删除？" @confirm="()=>deleteDic(item.id)">
+                        <PermissionButton
+                              type="text"
+                              :hasPermission="true"
+                              :popConfirm="{
+                                  title: `确定要删除？`,
+                                  onConfirm: () => deleteDic(item.id),
+                              }"
+                          >
+                          删除
+                          </PermissionButton>
+                        <!-- <j-popconfirm title="确认删除？" @confirm="()=>deleteDic(item.id)">
                             <j-button type="text">删除</j-button>
-                        </j-popconfirm>
-                        <j-button type="text" @click="()=>showEdit(item.data)">编辑</j-button>
+                        </j-popconfirm> -->
+                        <PermissionButton
+                            type="text"
+                            :hasPermission="true"
+                            @click="showEdit(item.data)"
+                          >
+                          编辑
+                          </PermissionButton>
+                        <!-- <j-button type="text" @click="()=>showEdit(item.data)">编辑</j-button> -->
                     </div>
                 </div>
             </template>
@@ -31,12 +69,15 @@
     </div>
   </div>
   <Save v-if="saveShow" :type="addType" @close-save="saveShow = false" @success="saveSuccess" :data="editData"/>
+  <Export v-if="downVisible" @closeDown="closeDown"/>
+  <Import/>
 </template>
 
 <script lang="ts" setup>
 import { getDicList ,deleteDictionary,addDictionary} from '@/api/system/dictionary';
 import Save from './save/index.vue'
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage} from '@/utils/comm';
+import Export from './Export/index.vue'
 const emit = defineEmits(['selectData'])
 const saveShow = ref(false)
 const addType = ref('add')
@@ -47,6 +88,7 @@ const showSave = () =>{
     saveShow.value = true
     addType.value = 'add'
 }
+const downVisible = ref(false)
 const queryData = (first?:Boolean) =>{
     getDicList({sorts: [{ name: 'createTime', order: 'desc' }]}).then((res:any)=>{
         if(res.status === 200){
@@ -81,7 +123,7 @@ const deleteDic = (id:string) =>{
     deleteDictionary(id).then((res:any)=>{
         if(res.status === 200){
             onlyMessage('操作成功!')
-            reload()
+            queryData(true)
         }else{
             onlyMessage('操作失败!','error')
         }
@@ -107,6 +149,33 @@ const updateDic = (data:any)=>{
 const selectDic = (selectKeys:any)=>{
     selectedKeys.value = [selectKeys.id]
     emit('selectData',selectKeys)
+}
+/**
+ * 导入字典
+ */
+ const beforeUpload = (file:any) => {
+    if(file.type === 'application/json') {
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = async(json) => {
+            if(json.target?.result){
+                const data = JSON.parse(json.target?.result);
+                const res =await addDictionary(data)
+                if(res.status === 200){
+                    reload()
+                    onlyMessage('操作成功！')
+                }
+            } else {
+                onlyMessage('文件内容不能为空', 'error')
+            }
+        };
+    } else {
+        onlyMessage('请上传json格式的文件', 'error')
+    }
+};
+
+const closeDown = () =>{
+    downVisible.value = false
 }
 onMounted(()=>{
     queryData(true)

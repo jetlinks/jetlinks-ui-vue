@@ -24,25 +24,58 @@
                         新增
                     </PermissionButton>
             </template>
+            <template #action="slotProps">
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0 5px"
+                                :danger="i.key === 'delete'"
+                                :hasPermission="
+                                   true
+                                "
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
         </JProTable>
     </div>
   </div>
-  <Save v-if="saveVisible" :dicId='data.id' :sort=sort @closeModal="closeModal" @refresh="refresh"/>
+  <Save v-if="saveVisible" :dicId='data.id' :type="modalType" :data="current" :sort=sort @closeModal="closeModal" @refresh="refresh"/>
 </template>
 
 <script lang="ts" setup>
-import { queryDicItem } from '@/api/system/dictionary'
+import { queryDicItem ,deleteDicItem } from '@/api/system/dictionary'
 import Save from './Save/index.vue'
+import type { ActionsType } from './typings';
+import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es';
+import { table } from 'console';
 const props = defineProps({
     data:{
         type:Object,
         default:{}
-    }
+    },
 })
 const params = ref()
 const tableRef = ref()
 const saveVisible = ref(false)
 const sort = ref(0)
+const modalType = ref('add')
+const current = ref()
 const columns = [
     {
         title:'序号',
@@ -86,7 +119,53 @@ const columns = [
     }
 ];
 
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
+    if (!data) return [];
+    const actions = [
+        {
+            key: 'update',
+            text: '编辑',
+            tooltip: {
+                title: '编辑',
+            },
+            icon: 'EditOutlined',
+            onClick: () => {
+                saveVisible.value = true;
+                modalType.value = 'edit';
+                current.value = data
+            },
+        },
+        {
+            key: 'delete',
+            text: '删除',
+            tooltip: {
+                title:'删除',
+            },
+            popConfirm: {
+                title: '确认删除?',
+                onConfirm: async () => {
+                   const res = await deleteDicItem(data.id)
+                   if(res.status ===200){
+                    onlyMessage('操作成功!')
+                    tableRef.value.reload()
+                   }else{
+                    onlyMessage('操作失败!','error')
+                   }
+                },
+            },
+            icon: 'DeleteOutlined',
+        },
+    ];
+    if (type === 'card')
+        return actions.filter((i: ActionsType) => i.key !== 'view');
+    return actions;
+};
 const add = () =>{
+    modalType.value = 'add'
+    current.value = {}
     saveVisible.value = true
 }
 
@@ -115,8 +194,12 @@ const queryItem =async(_params:any)=>{
                 ],
             };
             const resp: any = await queryDicItem(params);
-            sort.value = resp?.result?.total + 1
             if(resp.status===200){
+                const arr = cloneDeep(resp.result.data)
+                arr?.sort((a:any,b:any)=>{
+                    return b.ordinal - a.ordinal
+                })
+                sort.value =arr.length ?  arr[0].ordinal + 1 : 1
                 return {
                 code: resp.status,
                 result: resp.result,
@@ -137,6 +220,9 @@ const queryItem =async(_params:any)=>{
             };
         }
     }
+watch(()=>props?.data?.id,()=>{
+    tableRef.value.reload()
+})  
 </script>
 <style lang="less" scoped>
 .des_head{
