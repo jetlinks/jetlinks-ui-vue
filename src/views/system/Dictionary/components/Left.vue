@@ -36,7 +36,7 @@
         <j-tree :tree-data="listData" :fieldNames="{title:'name',key:'id'}" blockNode  :selectedKeys="selectedKeys">
             <template #title="item">
                 <div class="treeItem" @click="()=>selectDic(item.data)">
-                    <div class="itemText">{{ item.name }}</div>
+                    <div class="itemText"><Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis></div>
                     <div @click="(e) => e.stopPropagation()">
                         <j-popconfirm :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
                             <j-switch v-model:checked="item.status" :checkedValue="1" :unCheckedValue="0"></j-switch>
@@ -192,7 +192,8 @@ onMounted(()=>{
     display: flex;
     justify-content: space-between;
     .itemText{
-        line-height: 32px
+        line-height: 32px;
+        max-width:40%
     }
 }
 </style>
