@@ -12,9 +12,9 @@
     </div>
     
     <div>
-        <j-tree :tree-data="listData" :fieldNames="{title:'name',key:'id'}" blockNode @select="selectDic" :selectedKeys="selectedKeys">
+        <j-tree :tree-data="listData" :fieldNames="{title:'name',key:'id'}" blockNode  :selectedKeys="selectedKeys">
             <template #title="item">
-                <div class="treeItem">
+                <div class="treeItem" @click="()=>selectDic(item.data)">
                     <div class="itemText">{{ item.name }}</div>
                     <div>
                         <j-popconfirm :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
@@ -42,15 +42,18 @@ const saveShow = ref(false)
 const addType = ref('add')
 const listData = ref<any[]>([])
 const editData = ref()
-const selectedKeys = ref([])
+const selectedKeys:any = ref([])
 const showSave = () =>{
     saveShow.value = true
     addType.value = 'add'
 }
-const queryData = () =>{
+const queryData = (first?:Boolean) =>{
     getDicList({sorts: [{ name: 'createTime', order: 'desc' }]}).then((res:any)=>{
         if(res.status === 200){
             listData.value = res.result
+            if(first){
+                selectDic(res.result[0])
+            }
         }
     })
 }
@@ -102,14 +105,11 @@ const updateDic = (data:any)=>{
  * 切换选中字典
  */
 const selectDic = (selectKeys:any)=>{
-    selectedKeys.value = selectKeys
-    const selectData = listData.value.filter((item:any)=>{
-       return item.id = selectKeys[0]
-    })[0]
-    emit('selectData',selectData)
+    selectedKeys.value = [selectKeys.id]
+    emit('selectData',selectKeys)
 }
 onMounted(()=>{
-    queryData()
+    queryData(true)
 })
 </script>
 <style lang="less" scoped>

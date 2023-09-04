@@ -19,3 +19,13 @@ export const addDictionary = (data:any) => request.patch('/dictionary',data)
  * 删除字典
  */
 export const deleteDictionary =(id:string) => request.delete(`/dictionary/${id}`)
+
+/**
+ * 查询字典项
+ */
+export const queryDicItem = (data:any)=>request.post('/dictionary-item/_query',data)
+
+/**
+ * 保存字典项
+ */
+export const saveDicItem = (data:any) => request.patch('/dictionary-item',data)
