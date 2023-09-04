@@ -16,7 +16,9 @@ import BaseMenu, { USER_CENTER_MENU_DATA } from '../data/baseMenu'
 import { getSystemPermission, updateMenus } from '@/api/initHome';
 import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
-import { isNoCommunity } from '@/utils/utils';
+import {
+  systemVersion,
+} from '@/api/login'
 
 /**
  * 获取菜单数据
@@ -30,7 +32,12 @@ const menuDatas = reactive({
  * 查询支持的协议
  */
 const getProvidersFn = async () => {
-    if (!isNoCommunity) {
+    let version = ''
+    const req:any =await systemVersion()
+    if(req.success && req.result){
+        version = req.result.edition
+    }
+    if (version ==='community') {
         return undefined
     } else {
         const res: any = await getProviders();

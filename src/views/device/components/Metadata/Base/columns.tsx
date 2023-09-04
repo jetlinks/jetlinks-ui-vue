@@ -272,6 +272,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
@@ -370,6 +374,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
@@ -573,6 +581,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
