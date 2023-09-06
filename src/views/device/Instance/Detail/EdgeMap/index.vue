@@ -210,7 +210,6 @@ import PatchMapping from './PatchMapping.vue';
 import { onlyMessage } from '@/utils/comm';
 import { cloneDeep } from 'lodash-es';
 import { usePermissionStore } from '@/store/permission';
-
 const columns = [
     {
         title: '名称',
@@ -313,6 +312,14 @@ const handleSearch = async (_array: any[]) => {
               Object.assign(item, metadataId);
               return item
             })
+            resp.result?.[0].forEach((item:any)=>{
+               const differ = array.every((i:any)=>{
+                   return item.metadataId !== i.metadataId
+                })
+                if(!differ){
+                    array.push(item)
+                }
+            })
             // const array = resp.result?.[0].reduce((x: any, y: any) => {
             //     const metadataId = _metadata.find(
             //         (item: any) => item.metadataId === y.metadataId,
@@ -324,6 +331,7 @@ const handleSearch = async (_array: any[]) => {
             //     }
             //     return x;
             // }, _metadata);
+            console.log(array)
             modelRef.dataSource = array;
         }
     }
