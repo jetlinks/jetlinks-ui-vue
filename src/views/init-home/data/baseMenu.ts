@@ -4013,6 +4013,93 @@ export default [
         accessSupport: { text: "不支持", value: "unsupported" },
         supportDataAccess: false
       },
+      {
+        code: 'system/Dictionary',
+        name: '数据字典',
+        owner: 'iot',
+        id: 'b69782873cc24be8165c6ad292359092',
+        sortIndex: 12,
+        url: '/system/Dictionary',
+        icon: 'FormOutlined',
+        showPage: [],
+        permissions: [],
+        buttons: [
+          {
+            id: "add",
+            name: "新增",
+            permissions: [
+              {
+                permission: "dictionary",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            id: "delete",
+            name: "删除",
+            permissions: [
+              {
+                permission: "dictionary",
+                actions: [
+                  "delete"
+                ]
+              }
+            ]
+          },
+          {
+            id: "update",
+            name: "编辑",
+            permissions: [
+              {
+                permission: "dictionary",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            id: "import",
+            name: "导入",
+            permissions: [
+              {
+                permission: "dictionary",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            id: "down",
+            name: "下载",
+            permissions: [
+              {
+                permission: "dictionary",
+                actions: [
+                  "query"
+                ]
+              }
+            ]
+          },
+          {
+            id: "action",
+            name: "启用/禁用",
+            permissions: [
+              {
+                permission: "dictionary",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          }
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
       // {
       //   code: 'system/License',
       //   name: 'License管理',

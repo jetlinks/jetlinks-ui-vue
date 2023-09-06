@@ -1,14 +1,14 @@
 <template>
   <div class="left-contain">
-    <j-input placeholder="字典名称">
+    <j-input placeholder="字典名称" v-model:value="searchValue" @pressEnter="search" @change="searchChange">
         <template #suffix>
-            <AIcon type="SearchOutlined" />
+            <AIcon type="SearchOutlined" @click="search" />
         </template>
     </j-input>
     <div class="controls">
         <PermissionButton
             type="primary"
-            :hasPermission="true"
+            hasPermission="system/Dictionary:add"
             @click="showSave"
             style="width: 60%"
         >
@@ -17,7 +17,7 @@
         <!-- <j-button type="primary" @click="showSave" style="width: 60%;">新增字典</j-button> -->
         <PermissionButton
             type="text"
-            :hasPermission="true"
+            hasPermission="system/Dictionary:down"
             @click="downVisible=true"
         >
             下载
@@ -28,22 +28,30 @@
             accept=".json"
             :show-upload-list="false"
         >
-            <j-button type="text">导入</j-button>
+            <PermissionButton
+                type="text"
+                hasPermission="system/Dictionary:import"
+            >
+            导入
+        </PermissionButton>
         </j-upload>
     </div>
     
     <div>
-        <j-tree :tree-data="listData" :fieldNames="{title:'name',key:'id'}" blockNode  :selectedKeys="selectedKeys">
+        <j-tree :tree-data="listData" v-if="listData.length" :fieldNames="{title:'name',key:'id'}" blockNode  :selectedKeys="selectedKeys">
             <template #title="item">
                 <div class="treeItem" @click="()=>selectDic(item.data)">
                     <div class="itemText"><Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis></div>
                     <div @click="(e) => e.stopPropagation()">
-                        <j-popconfirm :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
-                            <j-switch v-model:checked="item.status" :checkedValue="1" :unCheckedValue="0"></j-switch>
+                        <j-popconfirm v-if="hasPermission('system/Dictionary:action')" :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
+                            <j-switch v-model:checked="item.status" :disabled="!hasPermission('system/Dictionary:action')" :checkedValue="1" :unCheckedValue="0"></j-switch>
                         </j-popconfirm>
+                        <j-tooltip v-else  placement="top" title="暂无权限,请联系管理员">
+                            <j-switch v-model:checked="item.status" :disabled="!hasPermission('system/Dictionary:action')" :checkedValue="1" :unCheckedValue="0"></j-switch>
+                        </j-tooltip>   
                         <PermissionButton
                               type="text"
-                              :hasPermission="true"
+                              hasPermission="system/Dictionary:delete"
                               :popConfirm="{
                                   title: `确定要删除？`,
                                   onConfirm: () => deleteDic(item.id),
@@ -56,7 +64,7 @@
                         </j-popconfirm> -->
                         <PermissionButton
                             type="text"
-                            :hasPermission="true"
+                            hasPermission="system/Dictionary:update"
                             @click="showEdit(item.data)"
                           >
                           编辑
@@ -66,6 +74,7 @@
                 </div>
             </template>
         </j-tree>
+        <j-empty v-else style="margin-top: 100px;"/>
     </div>
   </div>
   <Save v-if="saveShow" :type="addType" @close-save="saveShow = false" @success="saveSuccess" :data="editData"/>
@@ -78,7 +87,10 @@ import { getDicList ,deleteDictionary,addDictionary} from '@/api/system/dictiona
 import Save from './save/index.vue'
 import { onlyMessage} from '@/utils/comm';
 import Export from './Export/index.vue'
+import { usePermissionStore } from '@/store/permission';
+import { first } from 'lodash-es';
 const emit = defineEmits(['selectData'])
+const hasPermission = usePermissionStore().hasPermission;
 const saveShow = ref(false)
 const addType = ref('add')
 const listData = ref<any[]>([])
@@ -89,15 +101,26 @@ const showSave = () =>{
     addType.value = 'add'
 }
 const downVisible = ref(false)
-const queryData = (first?:Boolean) =>{
-    getDicList({sorts: [{ name: 'createTime', order: 'desc' }]}).then((res:any)=>{
+const searchValue = ref()
+const queryData = (first?:Boolean,searchName?:any) =>{
+    const params = searchName ? {sorts: [{ name: 'createTime', order: 'desc' }],terms:[{terms:[{value:'%'+ searchName +'%',termType:'like',column:'name'}]}]} : {sorts: [{ name: 'createTime', order: 'desc' }]}
+    getDicList(params).then((res:any)=>{
         if(res.status === 200){
             listData.value = res.result
-            if(first){
+            if(first && res.result.length){
                 selectDic(res.result[0])
             }
         }
     })
+}
+const search = () =>{
+    queryData(true,searchValue.value)
+}
+const searchChange = () =>{
+    console.log(searchValue.value ==='')
+    if(searchValue.value === ''){
+        queryData(true)
+    }
 }
 const showEdit = (data:any) =>{
     saveShow.value = true

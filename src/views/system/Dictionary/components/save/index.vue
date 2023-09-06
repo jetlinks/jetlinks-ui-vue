@@ -50,7 +50,7 @@ const form = reactive({
     id:'',
     name:'',
     describe:'',
-    status:0,
+    status:1,
 })
 /**
  * 校验id

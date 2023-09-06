@@ -20,6 +20,7 @@
                     <PermissionButton
                         type="primary"
                         @click="add"
+                        hasPermission="system/Dictionary:add"
                     >
                         新增
                     </PermissionButton>
@@ -41,7 +42,7 @@
                                 style="padding: 0 5px"
                                 :danger="i.key === 'delete'"
                                 :hasPermission="
-                                   true
+                                   'system/Dictionary:' + i.key
                                 "
                             >
                                 <template #icon
@@ -63,7 +64,6 @@ import Save from './Save/index.vue'
 import type { ActionsType } from './typings';
 import { onlyMessage } from '@/utils/comm';
 import { cloneDeep } from 'lodash-es';
-import { table } from 'console';
 const props = defineProps({
     data:{
         type:Object,
