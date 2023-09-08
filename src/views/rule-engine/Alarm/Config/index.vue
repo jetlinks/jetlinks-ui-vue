@@ -86,7 +86,8 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { queryLevel, saveLevel } from '@/api/rule-engine/config';
 import { LevelItem } from './typing';
 import Io from './Io/index.vue';
-const list = ref([
+import { isNoCommunity } from '@/utils/utils';
+const list = isNoCommunity ?[
     {
         key: 'config',
         tab: '告警级别',
@@ -95,7 +96,12 @@ const list = ref([
         key: 'io',
         tab: '数据流转',
     },
-]);
+] : [
+    {
+        key: 'config',
+        tab: '告警级别',
+    }
+]
 let levels = ref<LevelItem[]>([]);
 let tab = ref<'io' | 'config' | string>('config');
 const getAlarmLevel = () => {

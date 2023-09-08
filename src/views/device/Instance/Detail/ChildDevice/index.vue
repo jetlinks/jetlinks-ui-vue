@@ -113,7 +113,7 @@
 <script setup lang="ts">
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
-import {query, unbindDevice, unbindBatchDevice, queryByParent} from '@/api/device/instance';
+import {query, unbindDevice, unbindBatchDevice, queryByParent , deleteDeviceMapping} from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import BindChildDevice from './BindChildDevice/index.vue';
@@ -241,6 +241,10 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                         data.id,
                         {},
                     );
+                    const res = await deleteDeviceMapping(
+                        detail.value.id,
+                        {ids:[data.id]}
+                    )
                     if (resp.status === 200) {
                         childDeviceRef.value?.reload();
                         onlyMessage('操作成功！');
@@ -282,6 +286,10 @@ const handleUnBind = async () => {
             _selectedRowKeys.value,
         );
         if (resp.status === 200) {
+            const res = await deleteDeviceMapping(
+                detail.value.id,
+                {ids:[_selectedRowKeys.value]}
+            )
             onlyMessage('操作成功！');
             cancelSelect();
             childDeviceRef.value?.reload();

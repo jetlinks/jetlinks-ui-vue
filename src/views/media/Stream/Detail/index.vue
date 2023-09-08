@@ -288,7 +288,7 @@ import { queryProviders, queryDetail, save, update } from '@/api/media/stream';
 import type { FormInstance } from 'ant-design-vue';
 
 import { FormDataType } from '../type';
-
+import { testIpv4_6 } from '@/utils/validate';
 const router = useRouter();
 const route = useRoute();
 const view = route.query.view as string;
@@ -301,10 +301,6 @@ const options = ref([]);
 const checked = ref(false);
 
 const Validator = {
-    regIpv4: new RegExp(
-        /^((([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))\.){3}(([01]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))$/,
-    ),
-    regIPv6: new RegExp(/^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/),
     regDomain: new RegExp(
         /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i,
     ),
@@ -314,8 +310,7 @@ const Validator = {
 const validateAddress = (_rule: any, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if (
-            Validator.regIpv4.test(value) ||
-            Validator.regIPv6.test(value) ||
+            testIpv4_6(value) ||
             Validator.regDomain.test(value)
         ) {
             return resolve('');

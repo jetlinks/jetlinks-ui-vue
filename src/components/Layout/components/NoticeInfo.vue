@@ -17,12 +17,12 @@
                 <j-spin :spinning="loading">
                     <div class="content">
                         <j-scrollbar class="list" :max-height="450" v-if="list.length">
-                            <template v-for="i in list" :key="i.id">
+                            <template v-for="(i,index) in list" :key="i.id">
                                 <NoticeItem
                                     :data="i"
                                     :type="item.key"
                                     @action="emits('action')"
-                                    @refresh="onRefresh(item.key)"
+                                    @refresh="onRefresh(item.key,index)"
                                 />
                             </template>
                             <div
@@ -86,6 +86,7 @@ const activeKey = ref<DataType>(props.tabs?.[0]?.key || 'alarm');
 const menuStory = useMenuStore();
 const route = useRoute();
 
+const type = ref();
 const userInfo = useUserInfo();
 
 const getData = (type: string[]) => {
@@ -107,6 +108,12 @@ const getData = (type: string[]) => {
                         termType: 'in',
                         column: 'topicProvider',
                     },
+                    {
+                        type: 'and',
+                        value: 'unread',
+                        termType: 'eq',
+                        column: 'state',
+                    },
                 ],
             },
         ],
@@ -120,20 +127,21 @@ const getData = (type: string[]) => {
 };
 
 const onChange = (_key: string) => {
-    const type = props.tabs.find((item: any) => item.key === _key)?.type || [];
-    getData(type);
+    type.value = props.tabs.find((item: any) => item.key === _key)?.type || [];
+    getData(type.value);
 };
 
 onMounted(async () => {
     onChange(props.tabs?.[0]?.key || "alarm");
 });
 
-const onRefresh = (id: string) => {
+const onRefresh = (id: string,index:number) => {
     const flag = cloneDeep(refreshObj.value[id]);
     refreshObj.value = {
         ...refreshObj.value,
         [id]: !flag,
     };
+    getData(type.value)
 };
 
 const onMore = (key: string) => {

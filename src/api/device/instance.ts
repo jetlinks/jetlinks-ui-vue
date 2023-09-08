@@ -271,6 +271,11 @@ export const queryDeviceMapping = (deviceId: string, data?: any) => server.post(
 export const saveDeviceMapping = (deviceId: string, data: any) => server.post(`/edge/operations/${deviceId}/device-mapping-save-batch/invoke`, data)
 
 /**
+ *批量删除云端映射设备 
+ */
+export const deleteDeviceMapping = (deviceId: string, data:any) => server.post(`/edge/operations/${deviceId}/device-mapping-delete/invoke`, data)
+
+/**
  * 获取产品列表
  * @param data
  */
@@ -279,7 +284,7 @@ export const getProductListNoPage = (data: any) => server.post('/device/product/
 /**
  * 修改设备
  */
-export const editDevice = (parmas: any) => server.patch('/device-instance', parmas)
+export const editDevice = (params: any) => server.patch('/device-instance', params)
 
 /**
  * 新增设备
