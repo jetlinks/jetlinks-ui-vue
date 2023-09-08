@@ -284,6 +284,11 @@
                                                                 .configuration
                                                                 .port
                                                         "
+                                                         :options="
+                                                            portOptionsIndex[
+                                                                index
+                                                            ]
+                                                        "
                                                         placeholder="请选择本地端口"
                                                         allowClear
                                                         show-search
@@ -291,7 +296,7 @@
                                                             filterPortOption
                                                         "
                                                     >
-                                                      <j-select-option
+                                                      <!-- <j-select-option
                                                           v-for="i in getPortList( portOptionsIndex[
                                                                 index
                                                             ], cluster
@@ -300,7 +305,7 @@
                                                         :value="i.value"
                                                       >
                                                         {{ i.label }}
-                                                      </j-select-option>
+                                                      </j-select-option> -->
                                                     </j-select>
                                                 </j-form-item>
                                             </j-col>
@@ -1231,11 +1236,11 @@ const filterPortOption = (input: string, option: any) => {
     return JSON.stringify(option.label).indexOf(input) >= 0;
 };
 
-const getPortList = (list: any[], id: string) => {
-  const keys = dynamicValidateForm?.cluster?.map?.(item => item.configuration?.port) || []
-//   console.log(dynamicValidateForm?.cluster, id, keys)
-  return (list || []).filter(item => item.value === id || !keys.includes(item.value) )
-}
+// const getPortList = (list: any[], id: string) => {
+//   const keys = dynamicValidateForm?.cluster?.map?.(item => item.configuration?.port) || []
+// //   console.log(dynamicValidateForm?.cluster, id, keys)
+//   return (list || []).filter(item => item.value === id || !keys.includes(item.value) )
+// }
 
 const filterConfigByType = (data: any[], type: string) => {
     let _temp = type;
