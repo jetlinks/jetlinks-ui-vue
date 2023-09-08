@@ -1,6 +1,7 @@
 <template>
     <page-container>
         <iframe
+            v-if="loading"
             :src="iframeUrl"
             frameBorder="0"
             style="width: 100%; height: calc(100vh - 140px)"
@@ -12,10 +13,11 @@
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, getToken } from '@/utils/comm';
 import { getAppInfo_api } from '@/api/system/apply';
+import { lowCodeUrl } from '@/api/comm'
 
 const iframeUrl = ref<string>('');
 const route = useRoute()
-
+const loading = ref(false)
 const handle = async (appId: string, url: string) => {
     const res = await getAppInfo_api(appId);
     let menuUrl: any = url;
@@ -38,16 +40,23 @@ const handle = async (appId: string, url: string) => {
     }
 };
 
+const lowCode = () => {
+  lowCodeUrl().then(res => {
+    if (res.success && res.result) {
+      const url = res.result['ui-addr']
+      iframeUrl.value = url + '/#' + route.path + '?&token=' + getToken()
+    }
+  })
+}
 
 watchEffect(() => {
     const matchedItem: any = route.matched?.[0]
     if (matchedItem?.meta?.isApp) {
       const params = route.path.split('/')?.[1];
-      console.log(route.path)
       if (params === 'preview') {
-        console.log(route.path)
-        iframeUrl.value = 'http://192.168.33.46:9900' + '/#' + route.path + '?&token=' + getToken()
+        lowCode()
       } else {
+        loading.value = true
         const url = route.path.split('/').slice(2).join('/');
         handle(params, url);
       }
