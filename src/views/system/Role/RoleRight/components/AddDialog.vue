@@ -22,6 +22,19 @@
                     allow-clear
                 />
             </j-form-item>
+            <j-form-item
+                name="groupId"
+                label="分组"
+                :rules="[
+                    { required: true, message: '请选择分组' },
+                ]"
+            >
+                <j-select
+                    v-model:value="form.groupId"
+                    placeholder="请选择分组"
+                    :options="groupOptions"
+                />
+            </j-form-item>
             <j-form-item name="name" label="说明">
                 <j-textarea
                     v-model:value="form.description"
@@ -37,7 +50,7 @@
 
 <script setup lang="ts">
 import { FormInstance } from 'ant-design-vue';
-import { saveRole_api } from '@/api/system/role';
+import { saveRole_api , queryRoleGroup} from '@/api/system/role';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 const route = useRoute();
@@ -46,12 +59,20 @@ const { jumpPage } = useMenuStore();
 const emits = defineEmits(['update:visible']);
 const props = defineProps<{
     visible: boolean;
+    groupId:{
+        type:String,
+        default:""
+    }
 }>();
 // 弹窗相关
 const loading = ref(false);
-const form = ref<any>({});
+const form = ref<any>({
+    name:'',
+    groupId:'',
+    description:''
+});
 const formRef = ref<FormInstance>();
-
+const groupOptions = ref<any>([])
 const confirm = () => {
     loading.value = true;
     formRef.value
@@ -74,6 +95,22 @@ const confirm = () => {
         .finally(() => (loading.value = false));
 };
 // 表单相关
+const  getGroupOptions = ()=>{
+    queryRoleGroup({sorts: [{ name: 'createTime', order: 'desc' }]}).then((res:any)=>{
+        if(res.status ===200){
+           groupOptions.value = res.result.map((item:any)=>{
+                return {
+                    label:item.name,
+                    value:item.id
+                } 
+            })
+        }
+    })
+}
+onMounted(()=>{
+    getGroupOptions()
+    form.value.groupId = props.groupId
+})
 </script>
 
 <style scoped></style>

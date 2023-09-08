@@ -1,0 +1,154 @@
+<template>
+    <div class="left-contain">
+      <j-input placeholder="分组名称" v-model:value="searchValue" @pressEnter="search" @change="searchChange">
+          <template #suffix>
+              <AIcon type="SearchOutlined" @click="search" />
+          </template>
+      </j-input>
+      <div class="controls">
+          <PermissionButton
+              type="primary"
+              hasPermission="system/Dictionary:add"
+              @click="addGroup"
+              style="width: 100%"
+          >
+              新增分组
+          </PermissionButton>
+      </div>
+      <div>
+          <j-tree :tree-data="listData" v-if="listData.length" :fieldNames="{title:'name',key:'id'}" blockNode  :selectedKeys="selectedKeys">
+              <template #title="item">
+                <div class="treeItem" @click="()=>selectGroup(item.data.id)"  v-if="!item.data?.edit">
+                      <div class="itemText">
+                        <Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis>
+                       
+                        </div>
+                      <div @click="(e) => e.stopPropagation()">
+                          <PermissionButton
+                                type="text"
+                                hasPermission="system/Role:delete"
+                                :popConfirm="{
+                                    title: `确定要删除？`,
+                                    onConfirm: () => deleteGroup(item.id),
+                                }"
+                            >
+                            删除
+                            </PermissionButton>
+                          <PermissionButton
+                              type="text"
+                              hasPermission="system/Role:update"
+                              @click="editGroup(item.data)"
+                            >
+                            编辑
+                            </PermissionButton>
+                      </div>
+                </div>
+                <div v-else>
+                    <j-input  v-model:value="addName" @blur="()=>saveGroup(item.data)" ref="inputRef"></j-input>
+                    <div style="color: red;" v-if="validateTip">分组名称不能为空</div>
+                </div>
+              </template>
+          </j-tree>
+          <j-empty v-else style="margin-top: 100px;"/>
+      </div>
+    </div>
+  </template>
+  
+<script lang="ts" setup>
+import { onlyMessage } from '@/utils/comm';
+import { queryRoleGroup , saveRoleGroup , deleteRoleGroup } from '@/api/system/role'
+import { randomString } from '@/utils/utils'
+const emit = defineEmits(['selectData'])
+const listData:any = ref([])
+const selectedKeys = ref<string[]>([])
+const searchValue = ref()
+const inputRef = ref()
+const validateTip = ref()
+const addName = ref()
+const queryGroup = async(select?:Boolean,searchName?:string) =>{
+    const params = searchName ? {sorts: [{ name: 'createTime', order: 'desc' }],terms:[{terms:[{value:'%'+ searchName +'%',termType:'like',column:'name'}]}]} : {sorts: [{ name: 'createTime', order: 'desc' }]}
+    const req:any = await queryRoleGroup(params)
+    if(req.status === 200){
+        listData.value = req.result
+        if(req.result.length && select){
+            selectGroup(req.result[0].id)
+        }
+    }
+}
+const addGroup = () =>{
+    listData.value.push({
+        name:'',
+        edit:true,
+        id: randomString()
+    })
+    nextTick(()=>{
+        inputRef.value.focus()
+    })
+}
+const saveGroup = async(data:any) =>{
+    if(addName.value === ''){
+        validateTip.value = true
+    }else{
+        validateTip.value = false
+        const saveData = {
+            name:addName.value,
+            id:data.id
+        }
+        const res = await saveRoleGroup(saveData)
+        if(res.status === 200){
+            onlyMessage('操作成功!')
+            queryGroup()
+        }else{
+            onlyMessage('操作失败!')
+        }
+    }
+}
+const search = () =>{
+    queryGroup(true,searchValue.value)
+}
+const searchChange = () =>{
+    if(searchValue.value === '' ){
+        queryGroup()
+    }
+}
+const selectGroup = (id:string) =>{
+    selectedKeys.value = [id]
+    emit('selectData',selectedKeys.value)
+}
+const deleteGroup = async(id:string)=>{
+    const res:any = await deleteRoleGroup(id)
+    if(res.status === 200){
+        onlyMessage('操作成功!')
+        queryGroup(true)
+    }else{
+        onlyMessage('操作失败!')
+    }
+}
+const editGroup = (data:any) => {
+    addName.value = data.name
+    listData.value.forEach((item:any)=>{
+        if(item.id === data.id){
+            item.edit = true
+        }
+    })
+}
+onMounted(()=>{
+    queryGroup(true)
+})
+</script>
+  <style lang="less" scoped>
+  :deep(.ant-tree-switcher){
+      display: none;
+  }
+  .controls{
+      margin: 10px 0;
+  }
+  .treeItem{
+      display: flex;
+      justify-content: space-between;
+      .itemText{
+          line-height: 32px;
+          max-width:40%
+      }
+  }
+  </style>
