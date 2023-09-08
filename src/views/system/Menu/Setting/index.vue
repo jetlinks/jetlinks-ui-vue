@@ -85,7 +85,7 @@ import {
 } from '@/utils/consts';
 import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
-
+import { isNoCommunity } from '@/utils/utils';
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
 const systemMenu: any = ref([]);
@@ -120,10 +120,14 @@ const params = {
  */
 let filterProtocolList: any[] = [];
 const getProvidersFn = async () => {
-    const res: any = await getProviders();
-    filterProtocolList = protocolList.filter((item) => {
+    if(!isNoCommunity){
+        return 
+    }else{
+        const res: any = await getProviders();
+        filterProtocolList = protocolList.filter((item) => {
         return res.result?.find((val: any) => item.alias == val.id);
     })
+    }
 }
 getProvidersFn();
 function filterTree(nodes: Array<any>, selectedKeys: Array<any>) {

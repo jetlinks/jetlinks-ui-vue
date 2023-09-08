@@ -10,7 +10,7 @@ export const updateMeInfo_api = (data:object) => server.put(`/user/detail`,data)
 // 修改登录用户密码
 export const updateMepsd_api = (data:object) => server.put(`/user/passwd`,data);
 // 第三方账号解绑
-export const unBind_api = (appId: string) => server.post(`/application/sso/${appId}/unbind/me`);
+export const unBind_api = (appId: string) => server.post(`/application/sso/${appId}/unbind/me`,[]);
 /**
  * 校验字段合法性
  * @param type 类型
