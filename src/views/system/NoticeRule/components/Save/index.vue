@@ -63,7 +63,7 @@
             <template v-if="current === 4">
                 <div class="alert">
                     <AIcon type="InfoCircleOutlined" />
-                    已规定固定收信人的模板在当前页面将被过滤
+                    通过角色控制哪些用户可以订阅从【{{ name }}】接收到【{{ showName }}】通知
                 </div>
                 <Role type="add" v-model="formModel.grant.role.idList" />
             </template>

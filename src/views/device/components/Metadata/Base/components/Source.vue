@@ -37,7 +37,7 @@
                 <AIcon type="EditOutlined" />
             </j-button>
         </j-popconfirm-modal>
-        <j-dropdown v-if="myValue === 'rule' && target === 'device' && showReset" :getPopupContainer="(triggerNode) => triggerNode.parentNode">
+        <j-dropdown v-if="myValue === 'rule' && target === 'device' && showReset" :getPopupContainer="(node) => fullRef || node" placement="bottom">
             <span style="width: 20px;" @click.prevent>
                 <AIcon type="MoreOutlined" />
             </span>
@@ -100,7 +100,13 @@ import { resetRule } from '@/api/device/instance';
 import { updata } from '@/api/rule-engine/configuration';
 import { onlyMessage } from '@/utils/comm';
 import { provide } from 'vue';
+import { queryDeviceVirtualProperty } from '@/api/device/instance';
+import {
+    queryProductVirtualProperty
+} from '@/api/device/product';
+import { useProductStore } from '@/store/product';
 const instanceStore = useInstanceStore();
+const productStore = useProductStore();
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
           {
@@ -132,6 +138,7 @@ type SourceType = 'device' | 'manual' | 'rule' | '';
 type Emit = {
     (e: 'update:value', data: Record<string, any>): void;
 };
+
 
 const fullRef = inject(FULL_CODE);
 const showReset = ref(false);
@@ -243,6 +250,32 @@ const cancel = () => {
         type.value = props.value?.expands?.type || [];
 }
 
+const handleSearch = async () => {
+    let resp: any = undefined;
+      if (props.target === 'product') {
+        resp = await queryProductVirtualProperty(
+            productStore.current?.id,
+            props.value?.id,
+        );
+      } else {
+        resp = await queryDeviceVirtualProperty(
+            instanceStore.current?.productId,
+            instanceStore.current?.id,
+            props.value?.id,
+        );
+      }
+      if (resp && resp.status === 200 && resp.result) {
+        const _triggerProperties = props.value?.expands?.virtualRule?.triggerProperties?.length ? props.value?.expands?.virtualRule?.triggerProperties : resp.result.triggerProperties
+            updateValue({
+                    source: myValue.value,
+                    virtualRule:{
+                    triggerProperties: _triggerProperties?.length ? _triggerProperties : ['*'],
+                    ...resp.result.rule
+                }             
+        });
+      }
+};
+
 watch(
     () => props.value,
     () => {
@@ -261,6 +294,7 @@ onMounted(()=>{
         item === props.value?.id ? showReset.value = true : ''
     })
     }
+    handleSearch()
 })
 </script>
 

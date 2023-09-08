@@ -5,6 +5,7 @@
         visible
         @ok="handleClick"
         @cancel="handleClose"
+        :confirmLoading="confirmLoading"
     >
         <div class="map-tree">
             <div class="map-tree-top">
@@ -99,6 +100,7 @@ const rightList = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
 
+const confirmLoading = ref(false)
 const handleData = (data: any[], type: string) => {
     data.forEach((item) => {
         item.key = item.id;
@@ -212,6 +214,7 @@ const _delete = (_key: string) => {
 };
 
 const handleClick = async () => {
+    confirmLoading.value = true
     if (!rightList.value.length) {
         onlyMessage('请选择采集器', 'warning');
     } else {
@@ -271,6 +274,7 @@ const handleClick = async () => {
             }
         }
     }
+    confirmLoading.value = false
 };
 const handleClose = () => {
     _emits('close');
