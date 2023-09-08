@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
+import { LocalStore, getToken } from '@/utils/comm';
 import { getAppInfo_api } from '@/api/system/apply';
 
 const iframeUrl = ref<string>('');
@@ -43,8 +43,14 @@ watchEffect(() => {
     const matchedItem: any = route.matched?.[0]
     if (matchedItem?.meta?.isApp) {
       const params = route.path.split('/')?.[1];
-      const url = route.path.split('/').slice(2).join('/');
-      handle(params, url);
+      console.log(route.path)
+      if (params === 'preview') {
+        console.log(route.path)
+        iframeUrl.value = 'http://192.168.33.46:9900' + '/#' + route.path + '?&token=' + getToken()
+      } else {
+        const url = route.path.split('/').slice(2).join('/');
+        handle(params, url);
+      }
     }
 });
 </script>

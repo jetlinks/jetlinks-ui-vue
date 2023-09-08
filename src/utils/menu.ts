@@ -1,6 +1,7 @@
-import { BlankLayoutPage, BasicLayoutPage } from 'components/Layout'
+import { BlankLayoutPage, BasicLayoutPage, SinglePage } from 'components/Layout'
 import { isNoCommunity } from '@/utils/utils'
 import Iframe from '../views/iframe/index.vue'
+import { h } from 'vue'
 
 const pagesComponent = import.meta.glob('../views/**/*.vue');
 
@@ -343,10 +344,12 @@ import { shallowRef } from 'vue'
 
 type Buttons = Array<{ id: string }>
 
-const hasAppID = (item: { appId?: string, url?: string }): { isApp: boolean, appUrl: string } => {
+const hasAppID = (item: any): { isApp: boolean, appUrl: string } => {
+  const isApp = !!item.appId
+  const isLowCode = !!item.options?.LowCode
   return {
-    isApp: !!item.appId,
-    appUrl: `/${item.appId}${item.url}`
+    isApp: isApp || isLowCode,
+    appUrl: isApp ? `/${item.appId}${item.url}` : item.url
   }
 }
 
@@ -451,6 +454,10 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
 
       if (extraRoute && !isApp) { // 包含额外的子路由
         route.children = route.children ? [...route.children, ...extraRoute] : extraRoute
+      }
+
+      if (item.options?.LowCode && level === 1) {
+        route.component = () => SinglePage
       }
 
       if (detail_components.length) {
