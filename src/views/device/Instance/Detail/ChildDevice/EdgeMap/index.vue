@@ -280,7 +280,9 @@ const onSave = async () => {
                         { deviceId: resq.result?.id, deviceName: formData.name }
                       ]
                     }
-                    const res = await saveDeviceMapping(instanceStore.current.id, params)
+                    if(!instanceStore.current.parentId){
+                        const res = await saveDeviceMapping(instanceStore.current.id, params)
+                    }
                     const submitData = {
                         deviceId: instanceStore.current.parentId
                             ? instanceStore.current.parentId

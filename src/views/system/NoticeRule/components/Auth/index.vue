@@ -8,7 +8,7 @@
     >
         <div class="alert">
             <AIcon type="InfoCircleOutlined" />
-            通过角色控制【{{ name }}】的所有的通知方式可被哪些用户订阅。
+            通过角色控制哪些用户可以订阅【{{ name }}】下所有的通知方式。
         </div>
         <Role v-model="_selectedRowKeys" :gridColumn="2" />
     </j-modal>

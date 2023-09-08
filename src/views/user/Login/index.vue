@@ -109,7 +109,7 @@
                                         </j-button>
                                     </j-form-item>
                                 </j-form>
-                                <div class="other">
+                                <div class="other" v-if="bindings.length">
                                     <j-divider plain>
                                         <div class="other-text">
                                             其他登录方式
@@ -245,7 +245,7 @@ const codeUrl = ref('');
 const codeConfig = ref(false);
 
 const loading = ref(false);
-const bindings = ref<any[]>();
+const bindings = ref<any[]>([]);
 // const basis = ref<any>({});
 
 const defaultImg = getImage('/apply/internal-standalone.png');
