@@ -66,7 +66,7 @@
                                             )
                                         "
                                     >
-                                        <j-radio-button :value="true"
+                                        <j-radio-button :value="true" :disabled="formData.type ==='MQTT_CLIENT'"
                                             >共享配置</j-radio-button
                                         >
                                         <j-radio-button :value="false"
@@ -284,6 +284,11 @@
                                                                 .configuration
                                                                 .port
                                                         "
+                                                         :options="
+                                                            portOptionsIndex[
+                                                                index
+                                                            ]
+                                                        "
                                                         placeholder="请选择本地端口"
                                                         allowClear
                                                         show-search
@@ -291,7 +296,7 @@
                                                             filterPortOption
                                                         "
                                                     >
-                                                      <j-select-option
+                                                      <!-- <j-select-option
                                                           v-for="i in getPortList( portOptionsIndex[
                                                                 index
                                                             ], cluster
@@ -300,7 +305,7 @@
                                                         :value="i.value"
                                                       >
                                                         {{ i.label }}
-                                                      </j-select-option>
+                                                      </j-select-option> -->
                                                     </j-select>
                                                 </j-form-item>
                                             </j-col>
@@ -1231,11 +1236,11 @@ const filterPortOption = (input: string, option: any) => {
     return JSON.stringify(option.label).indexOf(input) >= 0;
 };
 
-const getPortList = (list: any[], id: string) => {
-  const keys = dynamicValidateForm?.cluster?.map?.(item => item.configuration?.port) || []
-//   console.log(dynamicValidateForm?.cluster, id, keys)
-  return (list || []).filter(item => item.value === id || !keys.includes(item.value) )
-}
+// const getPortList = (list: any[], id: string) => {
+//   const keys = dynamicValidateForm?.cluster?.map?.(item => item.configuration?.port) || []
+// //   console.log(dynamicValidateForm?.cluster, id, keys)
+//   return (list || []).filter(item => item.value === id || !keys.includes(item.value) )
+// }
 
 const filterConfigByType = (data: any[], type: string) => {
     let _temp = type;
@@ -1280,6 +1285,9 @@ const changeType = (value: string) => {
     if (value !== 'MQTT_CLIENT') {
         const { configuration } = dynamicValidateForm.cluster[0];
         value && (configuration.host = '0.0.0.0');
+    }else{
+        formData.value.shareCluster  = false
+        changeShareCluster(formData.value.shareCluster)
     }
     if(value ==='TCP_SERVER'){
         getTs().then((res:any)=>{
