@@ -99,14 +99,15 @@
                             { required: form.data.username !== 'admin', message: '请选择角色' },
                         ]"
                     >
-                        <j-select
+                        <j-tree-select
                             v-model:value="form.data.roleIdList"
-                            mode="multiple"
+                            multiple
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
-                            :options="_roleOptions"
+                            :tree-data="form.roleOptions"
+                            :fieldNames="{ label: 'name', value: 'id', children:'children' }"
                             :disabled="form.data.username === 'admin'"
-                        ></j-select>
+                        ></j-tree-select>
 
                         <PermissionButton
                             :hasPermission="`${rolePermission}:add`"
@@ -199,6 +200,7 @@ import {
     updateUser_api,
     updatePassword_api,
     getUser_api,
+    getRoleList
 } from '@/api/system/user';
 import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
@@ -277,10 +279,9 @@ const form = reactive({
         },
     },
 
-    roleOptions: [] as optionType[],
+    roleOptions: [],
     departmentOptions: [] as DefaultOptionType[],
 
-    _roleOptions: [] as optionType[],
     _departmentOptions: [] as DefaultOptionType[],
 
     init: () => {
@@ -304,8 +305,8 @@ const form = reactive({
                         (item: dictType) => item.id,
                     ),
                 };
-                form._roleOptions = resp.result?.roleList?.map((i: any) => {
-                    return {label: i.name, value: i.id}
+                form.data.roleIdList = resp.result?.roleList?.map((i: any) => {
+                    return i.id
                 });
                 form._departmentOptions = resp.result?.orgList
                 nextTick(() => {
@@ -343,11 +344,10 @@ const form = reactive({
         return api(params);
     },
     getRoleList: () => {
-        getRoleList_api().then((resp: any) => {
-            form.roleOptions = resp.result.map((item: dictType) => ({
-                label: item.name,
-                value: item.id,
-            }));
+        getRoleList().then((resp: any) => {
+           if(resp.status === 200){
+            form.roleOptions =  dealRoleList(resp.result)
+           }
         });
     },
     getDepartmentList: () => {
@@ -366,9 +366,21 @@ const form = reactive({
     },
 });
 
-const _roleOptions = computed(() => {
-    return uniqBy([...form.roleOptions, ...form._roleOptions], 'value')
-})
+const  dealRoleList = (data:any) =>{
+    return data.map((item:any)=>{
+        return {
+            name: item.groupName,
+            id: item.groupId,
+            disabled: true,
+            children: item?.roles ?  item.roles.map((i:any)=>{
+            return {
+                name:i.name,
+                id:i.id
+            }
+        }) : []
+        }
+    })
+}
 
 const _departmentOptions = computed(() => {
     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')

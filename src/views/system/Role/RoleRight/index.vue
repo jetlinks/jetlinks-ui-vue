@@ -1,77 +1,36 @@
 <template>
     <page-container>
         <div class="role-container">
-            <pro-search
-                :columns="columns"
-                target="system-role"
-                @search="(params:any)=>queryParams = {...params}"
-            />
+            <pro-search :columns="columns" target="system-role" @search="handelSearch" />
             <FullPage>
-                <j-pro-table
-                    ref="tableRef"
-                    :columns="columns"
-                    :request="getRoleList_api"
-                    model="TABLE"
-                    :params="queryParams"
-                    :defaultParams="{
-                        sorts: [
-                            { name: 'createTime', order: 'desc' },
-                            { name: 'id', order: 'desc' },
-                        ],
-                        terms:[
-                            {
-                                terms:[{
-                                    value: groupId,
-                                    termType:'eq',
-                                    column:'groupId'
-                                }]
-                            }
-                        ]
-                    }"
-                >
+                <j-pro-table ref="tableRef" :columns="columns" :request="getRoleList_api" model="TABLE"
+                    :params="queryParams" :defaultParams="defaultParams">
                     <template #headerTitle>
-                        <PermissionButton
-                            type="primary"
-                            :hasPermission="`${permission}:add`"
-                            @click="dialogVisible = true"
-                        >
+                        <PermissionButton type="primary" :hasPermission="`${permission}:add`" @click="addRole">
                             <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
                     </template>
 
                     <template #action="slotProps">
-                        <j-space :size="16">
-                            <PermissionButton
-                                :hasPermission="`${permission}:update`"
-                                type="link"
-                                :tooltip="{
-                                    title: '编辑',
-                                }"
-                                @click="
-                                    jumpPage(`system/Role/Detail`, {
-                                        id: slotProps.id,
-                                    })
-                                "
-                            >
-                                <AIcon type="EditOutlined" />
-                            </PermissionButton>
-                            <PermissionButton
-                                type="link"
-                                :hasPermission="`${permission}:delete`"
-                                :tooltip="{ title: '删除' }"
-                                :popConfirm="{
-                                    title: `确定要删除吗`,
-                                    onConfirm: () => clickDel(slotProps),
-                                }"
-                            >
-                                <AIcon type="DeleteOutlined" />
-                            </PermissionButton>
+                        <j-space>
+                            <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
+                                <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
+                                    ...i.tooltip,
+                                }" @click="i.onClick" type="link" style="padding: 0 5px"
+                                    :danger="i.key === 'delete'" :hasPermission="'system/Role:' + i.key
+                                        ">
+                                    <template #icon>
+                                        <AIcon :type="i.icon" />
+                                    </template>
+                                </PermissionButton>
+                            </template>
                         </j-space>
                     </template>
                 </j-pro-table>
             </FullPage>
 
-            <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId"/>
+            <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
+                :current="current" />
         </div>
     </page-container>
 </template>
@@ -80,19 +39,39 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
+import type { ActionsType } from './typings';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 const props = defineProps({
-    groupId:{
-        type:String,
-        default:''
+    groupId: {
+        type: String,
+        default: ''
     }
 })
 const permission = 'system/Role';
 const { jumpPage } = useMenuStore();
-
+const modalType = ref('add')
+const current = ref()
 const isSave = !!useRoute().query.save;
-
+const queryParams = ref({});
+const defaultParams = ref({
+    sorts: [
+        { name: 'createTime', order: 'desc' },
+        { name: 'id', order: 'desc' },
+    ],
+    terms: [
+        {
+            terms: [{
+                value: props.groupId,
+                termType: 'eq',
+                column: 'groupId'
+            }]
+        }
+    ]
+})
+// 表格
+const tableRef = ref<Record<string, any>>();
+const dialogVisible = ref(isSave);
 const columns = [
     {
         title: '标识',
@@ -131,19 +110,73 @@ const columns = [
         scopedSlots: true,
     },
 ];
-const queryParams = ref({});
-// 表格
-const tableRef = ref<Record<string, any>>();
-const clickDel = (row: any) => {
-    delRole_api(row.id).then((resp: any) => {
-        if (resp.status === 200) {
-            tableRef.value?.reload();
-            onlyMessage('操作成功!');
-        }
-    });
+const getActions = (
+    data: Partial<Record<string, any>>,
+    type: 'card' | 'table',
+): ActionsType[] => {
+    if (!data) return [];
+    const actions = [
+        {
+            key: 'update',
+            text: '编辑',
+            tooltip: {
+                title: '编辑',
+            },
+            icon: 'EditOutlined',
+            onClick: () => {
+                dialogVisible.value = true;
+                modalType.value = 'edit';
+                current.value = data
+            },
+        },
+        {
+            key: 'update',
+            text: '权限配置',
+            tooltip: {
+                title: '权限配置'
+            },
+            onClick: () => {
+                jumpPage(`system/Role/Detail`, {
+                    id: data.id,
+                })
+            },
+            icon: 'FormOutlined'
+        },
+        {
+            key: 'delete',
+            text: '删除',
+            tooltip: {
+                title: '删除',
+            },
+            popConfirm: {
+                title: '确认删除?',
+                onConfirm: async () => {
+                    const res = await delRole_api(data.id)
+                    if (res.status === 200) {
+                        onlyMessage('操作成功!')
+                        tableRef.value?.reload()
+                    } else {
+                        onlyMessage('操作失败!', 'error')
+                    }
+                },
+            },
+            icon: 'DeleteOutlined',
+        },
+    ];
+    if (type === 'card')
+        return actions.filter((i: ActionsType) => i.key !== 'view');
+    return actions;
 };
-const dialogVisible = ref(isSave);
-watch(()=>props.groupId,()=>{
+
+const addRole = () =>{
+    dialogVisible.value = true
+    modalType.value = 'add'
+}
+const handelSearch = (search: any) => {
+    queryParams.value = search
+}
+watch(() => props.groupId, () => {
+    defaultParams.value.terms[0].terms[0].value = props.groupId
     tableRef.value?.reload()
 })
 </script>

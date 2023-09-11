@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="新增"
+        :title="modalType ==='add' ? '新增' : '编辑'"
         width="670px"
         @cancel="emits('update:visible', false)"
         @ok="confirm"
@@ -50,20 +50,31 @@
 
 <script setup lang="ts">
 import { FormInstance } from 'ant-design-vue';
-import { saveRole_api , queryRoleGroup} from '@/api/system/role';
+import { saveRole_api , queryRoleGroup , updateRole_api} from '@/api/system/role';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 const route = useRoute();
 const { jumpPage } = useMenuStore();
 
 const emits = defineEmits(['update:visible']);
-const props = defineProps<{
-    visible: boolean;
+const props = defineProps({
+    visible: {
+        type:Boolean,
+        default:false
+    },
     groupId:{
         type:String,
         default:""
+    },
+    modalType:{
+        type:String,
+        default:'add'
+    },
+    current:{
+        type:Object,
+        default:{}
     }
-}>();
+})
 // 弹窗相关
 const loading = ref(false);
 const form = ref<any>({
@@ -73,26 +84,35 @@ const form = ref<any>({
 });
 const formRef = ref<FormInstance>();
 const groupOptions = ref<any>([])
-const confirm = () => {
+const confirm = async() => {
     loading.value = true;
     formRef.value
         ?.validate()
-        .then(() => saveRole_api(form.value))
-        .then((resp) => {
-            if (resp.status === 200) {
-                onlyMessage('操作成功');
-                emits('update:visible', false);
-
-                if (route.query.save) {
-                    // @ts-ignore
-                    if((window as any).onTabSaveSuccess){
-                        (window as any).onTabSaveSuccess(resp.result.id);
-                        setTimeout(() => window.close(), 300);
-                    }
+        .then(() => {
+            if(props.modalType === 'add'){
+                saveRole_api(form.value).then((resp:any)=>{
+                    if (resp.status === 200) {
+                    onlyMessage('操作成功');
+                    emits('update:visible', false);
+                    if (route.query.save) {
+                        // @ts-ignore
+                        if((window as any).onTabSaveSuccess){
+                            (window as any).onTabSaveSuccess(resp.result.id);
+                            setTimeout(() => window.close(), 300);
+                        }
                 } else jumpPage(`system/Role/Detail`, { id: resp.result.id });
             }
+                }).catch(() => (loading.value = false));
+            }else{
+                updateRole_api(form.value).then((resp:any)=>{
+                    if (resp.status === 200) {
+                    onlyMessage('操作成功');
+                    emits('update:visible', false);
+                    }
+                }).catch(() => (loading.value = false));
+            }
         })
-        .finally(() => (loading.value = false));
+       .catch(() => (loading.value = false));
 };
 // 表单相关
 const  getGroupOptions = ()=>{
@@ -110,6 +130,9 @@ const  getGroupOptions = ()=>{
 onMounted(()=>{
     getGroupOptions()
     form.value.groupId = props.groupId
+    if(props.modalType === 'edit'){
+        form.value = props.current
+    }
 })
 </script>
 

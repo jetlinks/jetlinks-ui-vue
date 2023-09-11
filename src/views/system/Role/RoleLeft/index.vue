@@ -44,7 +44,7 @@
                       </div>
                 </div>
                 <div v-else>
-                    <j-input  v-model:value="addName" @blur="()=>saveGroup(item.data)" ref="inputRef"></j-input>
+                    <j-input  v-model:value="addName" @blur="()=>saveGroup(item.data)" ref="inputRef" :maxlength="64"></j-input>
                     <div style="color: red;" v-if="validateTip">分组名称不能为空</div>
                 </div>
               </template>
@@ -76,6 +76,7 @@ const queryGroup = async(select?:Boolean,searchName?:string) =>{
     }
 }
 const addGroup = () =>{
+    addName.value = ''
     listData.value.push({
         name:'',
         edit:true,
