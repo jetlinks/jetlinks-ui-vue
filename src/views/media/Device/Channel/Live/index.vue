@@ -130,7 +130,7 @@
                         </template>
                     </MediaTool>
                 </div>
-                <Preset :data="data" @refresh="onRefresh" />
+                <Preset  v-if='data.ptzType.value ===0 || data.ptzType.value === 1' :data="data" @refresh="onRefresh" />
             </div>
         </div>
         <template #footer>
