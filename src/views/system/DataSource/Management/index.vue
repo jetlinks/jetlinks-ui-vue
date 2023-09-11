@@ -9,41 +9,43 @@
                         style="margin-bottom: 24px"
                     />
                     <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
-                    <j-tree
-                        v-if="leftData.treeData.length > 0"
-                        defaultExpandAll
-                        :tree-data="leftData.treeData"
-                        v-model:selectedKeys="leftData.selectedKeys"
-                        @select="onSelect"
-                        :showLine="{ showLeafIcon: false }"
-                        :show-icon="true"
-                    >
-                        <template #title="{ dataRef }">
-                            <Ellipsis>
-                                <div
-                                    v-if="dataRef.root"
-                                    style="
-                                        justify-content: space-between;
-                                        display: flex;
-                                        align-items: center;
-                                        width: 200px;
-                                    "
-                                >
-                                    <span>
+                    <div class="tree">
+                        <j-tree
+                            v-if="leftData.treeData.length > 0"
+                            defaultExpandAll
+                            :tree-data="leftData.treeData"
+                            v-model:selectedKeys="leftData.selectedKeys"
+                            @select="onSelect"
+                            :showLine="{ showLeafIcon: false }"
+                            :show-icon="true"
+                        >
+                            <template #title="{ dataRef }">
+                                <Ellipsis>
+                                    <div
+                                        v-if="dataRef.root"
+                                        style="
+                                            justify-content: space-between;
+                                            display: flex;
+                                            align-items: center;
+                                            width: 200px;
+                                        "
+                                    >
+                                        <span>
+                                            {{ dataRef.title }}
+                                        </span>
+                                        <AIcon
+                                            type="PlusOutlined"
+                                            style="color: #1d39c4"
+                                            @click="addTable"
+                                        />
+                                    </div>
+                                    <span v-else>
                                         {{ dataRef.title }}
                                     </span>
-                                    <AIcon
-                                        type="PlusOutlined"
-                                        style="color: #1d39c4"
-                                        @click="addTable"
-                                    />
-                                </div>
-                                <span v-else>
-                                    {{ dataRef.title }}
-                                </span>
-                            </Ellipsis>
-                        </template>
-                    </j-tree>
+                                </Ellipsis>
+                            </template>
+                        </j-tree>
+                    </div>
                 </div>
                 <div class="right">
                     <div class="btns">
@@ -507,7 +509,10 @@ const checkName = (_: any, value: any) =>
         box-sizing: border-box;
         width:300px;
         height:100%;
-        overflow-y: auto;
+        .tree{
+            max-height: 680px;
+            overflow-y: auto;
+        }
     }
     .right {
         width: calc(100% - 280px);
