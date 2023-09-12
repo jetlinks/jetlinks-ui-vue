@@ -67,10 +67,31 @@
                     "
                     >******</span
                 >
+                <span v-else-if="item.type.type === 'enum'">
+                    <Ellipsis>{{
+                         item.type.elements?.filter((i)=>
+                            i.value ===  instanceStore.current?.configuration?.[
+                                item.property
+                            ] 
+                           )[0].text
+                    }}</Ellipsis>
+                    <j-tooltip
+                        v-if="isExit(item.property)"
+                        :title="`有效值:${
+                            instanceStore.current?.configuration?.[
+                                item.property
+                            ]
+                        }`"
+                        ><AIcon type="QuestionCircleOutlined"
+                    /></j-tooltip>
+                </span>
                 <span v-else>
                     <Ellipsis>{{
-                        instanceStore.current?.configuration?.[item.property] ||
-                        ''
+                         item.type.elements?.filter((i)=>
+                            i.value ===  instanceStore.current?.configuration?.[
+                                item.property
+                            ] 
+                           )[0].text
                     }}</Ellipsis>
                     <j-tooltip
                         v-if="isExit(item.property)"
