@@ -509,10 +509,7 @@ const checkName = (_: any, value: any) =>
         box-sizing: border-box;
         width:300px;
         height:100%;
-        .tree{
-            max-height: 680px;
-            overflow-y: auto;
-        }
+        overflow-y: auto;
     }
     .right {
         width: calc(100% - 280px);
