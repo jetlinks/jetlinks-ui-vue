@@ -44,6 +44,7 @@
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
                         @click="handleView(slotProps.id)"
+                        @click="handleView(slotProps.id)"
                         :statusNames="{
                             online: 'processing',
                             offline: 'error',
