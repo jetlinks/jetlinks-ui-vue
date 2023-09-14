@@ -69,11 +69,11 @@
                 >
                 <span v-else-if="item.type.type === 'enum'">
                     <Ellipsis>{{
-                         item.type.elements?.filter((i)=>
+                         item.type.elements?.find((i)=>
                             i.value ===  instanceStore.current?.configuration?.[
                                 item.property
                             ] 
-                           )[0].text
+                           )?.text || ''
                     }}</Ellipsis>
                     <j-tooltip
                         v-if="isExit(item.property)"
@@ -87,11 +87,8 @@
                 </span>
                 <span v-else>
                     <Ellipsis>{{
-                         item.type.elements?.filter((i)=>
-                            i.value ===  instanceStore.current?.configuration?.[
-                                item.property
-                            ] 
-                           )[0].text
+                           instanceStore.current?.configuration?.[item.property] ||
+                        ''
                     }}</Ellipsis>
                     <j-tooltip
                         v-if="isExit(item.property)"
