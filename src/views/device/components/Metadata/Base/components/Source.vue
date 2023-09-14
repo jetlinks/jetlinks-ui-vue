@@ -236,7 +236,7 @@ const confirm = async () => {
 //     }
 // }
 const resetRules = async() =>{
-    let res:any = await resetRule(instanceStore.current?.productId,instanceStore.current?.id,props.value?.id)
+    let res:any = await resetRule(instanceStore.current?.productId,instanceStore.current?.id,[props.value?.id])
     if(res.status === 200){
         onlyMessage('操作成功！')
     }

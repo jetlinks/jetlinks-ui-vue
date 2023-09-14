@@ -316,7 +316,7 @@ const handleSearch = async (_array: any[]) => {
                const differ = array.every((i:any)=>{
                    return item.metadataId !== i.metadataId
                 })
-                if(!differ){
+                if(differ){
                     array.push(item)
                 }
             })
