@@ -101,7 +101,7 @@
                                             :key="i"
                                         >
                                             <PermissionButton
-                                                :disabled="o.disabled || item.state !== 'online'"
+                                                :disabled="o.disabled || slotProps.state.value !== 'online'"
                                                 :popConfirm="o.popConfirm"
                                                 :tooltip="{
                                                     ...o.tooltip,
