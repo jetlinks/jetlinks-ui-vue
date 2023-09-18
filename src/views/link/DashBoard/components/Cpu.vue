@@ -47,7 +47,6 @@
         </div>
     </j-spin>
 </template>
-m
 <script lang="ts" setup name="Cpu">
 import * as echarts from 'echarts';
 import { dashboard } from '@/api/link/dashboard';
