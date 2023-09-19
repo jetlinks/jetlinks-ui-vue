@@ -3,17 +3,11 @@
     <div class="header-btns">
         <j-button @click="handleAdd">新增</j-button>
         <j-button class="search-btn" type="primary" @click="handleSearch">搜索</j-button>
-        <PermissionButton type="primary" :danger="false" :hasPermission="true" :popConfirm="{
-            title: `确定下发？`,
-            onConfirm: () => handleSend(),
-        }">
-            下发设备
-        </PermissionButton>
     </div>
     <!-- table -->
     <j-pro-table ref="tableRef" model="TABLE" :columns="columns" :request="queryProperty" :defaultParams="{
         sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [{ value: _productId, termType: 'eq', column: 'productId' }]
+        terms: [{ value: _deviceId, termType: 'eq', column: 'deviceId' }]
     }" :params="params">
         <template #action="slotProps">
             <PermissionButton type="link" :tooltip="{
@@ -61,15 +55,19 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
+// import {
+//     queryProperty, addProperty, editProperty, dltProperty, detail, sendDevice
+// } from '@/api/device/instance';
+
 import {
-    queryProperty, addProperty, editProperty, dltProperty, detail, sendDevice
-} from '@/api/device/product';
+    queryProperty, addProperty, dltProperty, detail
+} from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
 import { useRoute } from 'vue-router';
 const route = useRoute();
 const tableRef = ref<Record<string, any>>({});
 const formRef = ref<any>(null)
-const _productId = route.params.id
+const _deviceId = route.params.id
 const formData = ref({
     propertyId: null,
     propertyAlias: '',
@@ -82,7 +80,7 @@ const propertyOptions = ref([])
 const editId = ref('')
 // 获取物模型数据
 const getProperty = () => {
-    detail(_productId).then(res => {
+    detail(_deviceId).then(res => {
         if (res.status === 200) {
             const propertyArr = JSON.parse(res.result?.metadata)?.properties
             propertyOptions.value = propertyArr.map(itm => {
@@ -101,12 +99,6 @@ const handleAdd = () => {
 }
 const handleSearch = () => {
     tableRef.value?.reload()
-}
-const handleSend = async () => {
-    const res = await sendDevice(_productId)
-    if (res.status === 200) {
-        onlyMessage('下发成功')
-    }
 }
 // 编辑
 const handlEdit = (data: any) => {
@@ -141,7 +133,7 @@ const formConfim = () => {
             } else {
                 delete res.id
             }
-            addProperty({ ...res, productId: _productId }).then(resp => {
+            addProperty({ ...res, deviceId: _deviceId }).then(resp => {
                 if (resp.status === 200) {
                     onlyMessage(modalTitle.value === 'edit' ? '编辑成功' : '新增成功')
                     formData.value = {

@@ -1,10 +1,5 @@
 <template>
-    <page-container
-        :tabList="list"
-        :showBack="true"
-        :tabActiveKey="instanceStore.tabActiveKey"
-        @tabChange="onTabChange"
-    >
+    <page-container :tabList="list" :showBack="true" :tabActiveKey="instanceStore.tabActiveKey" @tabChange="onTabChange">
         <template #title>
             <div style="display: flex; align-items: center">
                 <j-tooltip :title="instanceStore.current?.name">
@@ -16,59 +11,36 @@
                 <j-space>
                     <span style="font-size: 14px; color: rgba(0, 0, 0, 0.85)">
                         状态：
-                        <j-badge
-                            :status="
-                                statusMap.get(
-                                    instanceStore.current?.state?.value,
-                                )
-                            "
-                        />
+                        <j-badge :status="statusMap.get(
+                            instanceStore.current?.state?.value,
+                        )
+                            " />
                         {{ instanceStore.current?.state?.text }}
                     </span>
-                    <PermissionButton
-                        v-if="
-                            instanceStore.current?.state?.value === 'notActive'
-                        "
-                        type="link"
-                        style="margin-top: -5px; padding: 0 20px"
-                        :popConfirm="{
-                            title: '确认启用设备',
-                            onConfirm: handleAction,
-                        }"
-                        hasPermission="device/Instance:action"
-                    >
+                    <PermissionButton v-if="instanceStore.current?.state?.value === 'notActive'
+                        " type="link" style="margin-top: -5px; padding: 0 20px" :popConfirm="{
+        title: '确认启用设备',
+        onConfirm: handleAction,
+    }" hasPermission="device/Instance:action">
                         启用设备
                     </PermissionButton>
-                    <PermissionButton
-                        v-if="instanceStore.current?.state?.value === 'online'"
-                        type="link"
-                        style="margin-top: -5px; padding: 0 20px"
-                        :popConfirm="{
+                    <PermissionButton v-if="instanceStore.current?.state?.value === 'online'" type="link"
+                        style="margin-top: -5px; padding: 0 20px" :popConfirm="{
                             title: '确认断开连接？',
                             onConfirm: handleDisconnect,
-                        }"
-                        hasPermission="device/Instance:action"
-                    >
+                        }" hasPermission="device/Instance:action">
                         断开连接
                     </PermissionButton>
-                    <j-tooltip
-                        v-if="
-                            instanceStore.current?.accessProvider ===
-                                'child-device' &&
-                            instanceStore.current?.state?.value === 'offline'
-                        "
-                        :title="
-                            instanceStore.current?.features?.find(
-                                (item) => item?.id === 'selfManageState',
-                            )
-                                ? '该设备的在线状态与父设备(网关设备)保持一致'
-                                : '该设备在线状态由设备自身运行状态决定，不继承父设备（网关设备）的在线状态'
-                        "
-                    >
-                        <AIcon
-                            type="QuestionCircleOutlined"
-                            style="font-size: 14px"
-                        />
+                    <j-tooltip v-if="instanceStore.current?.accessProvider ===
+                        'child-device' &&
+                        instanceStore.current?.state?.value === 'offline'
+                        " :title="instanceStore.current?.features?.find(
+        (item) => item?.id === 'selfManageState',
+    )
+        ? '该设备的在线状态与父设备(网关设备)保持一致'
+        : '该设备在线状态由设备自身运行状态决定，不继承父设备（网关设备）的在线状态'
+        ">
+                        <AIcon type="QuestionCircleOutlined" style="font-size: 14px" />
                     </j-tooltip>
                 </j-space>
             </div>
@@ -79,31 +51,19 @@
                     instanceStore.current?.id
                 }}</j-descriptions-item>
                 <j-descriptions-item label="所属产品">
-                    <PermissionButton
-                        type="link"
-                        style="margin-top: -5px; padding: 0"
-                        @click="jumpProduct"
-                        hasPermission="device/Product:view"
-                    >
+                    <PermissionButton type="link" style="margin-top: -5px; padding: 0" @click="jumpProduct"
+                        hasPermission="device/Product:view">
                         {{ instanceStore.current?.productName }}
                     </PermissionButton>
                 </j-descriptions-item>
             </j-descriptions>
         </template>
         <template #extra>
-            <img
-                @click="handleRefresh"
-                :src="getImage('/device/button.png')"
-                style="margin-right: 20px; cursor: pointer"
-            />
+            <img @click="handleRefresh" :src="getImage('/device/button.png')" style="margin-right: 20px; cursor: pointer" />
         </template>
         <FullPage>
             <div style="padding: 24px;height: 100%">
-                <component
-                    :is="tabs[instanceStore.tabActiveKey]"
-                    v-bind="{ type: 'device' }"
-                    @onJump="onTabChange"
-                />
+                <component :is="tabs[instanceStore.tabActiveKey]" v-bind="{ type: 'device' }" @onJump="onTabChange" />
             </div>
         </FullPage>
     </page-container>
@@ -122,7 +82,9 @@ import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue';
-import GateWay from './GateWay/index.vue'
+import GateWay from './GateWay/index.vue';
+import PropertyName from './PropertyName/index.vue';
+
 import Log from './Log/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
@@ -166,6 +128,10 @@ const initList = [
         key: 'Log',
         tab: '日志管理',
     },
+    {
+        key: 'PropertyName',
+        tab: '属性别名',
+    }
 ];
 
 const list = ref([...initList]);
@@ -183,7 +149,8 @@ const tabs = {
     Parsing,
     Log,
     MetadataMap,
-  GateWay
+    GateWay,
+    PropertyName
 };
 
 const getStatus = (id: string) => {
@@ -243,10 +210,10 @@ const getDetail = () => {
         instanceStore.current?.protocol === 'collector-gateway' &&
         !keys.includes('GateWay')
     ) {
-      list.value.push({
-        key: 'GateWay',
-        tab: '数采映射',
-      });
+        list.value.push({
+            key: 'GateWay',
+            tab: '数采映射',
+        });
     }
     if (
         instanceStore.current?.deviceType?.value === 'gateway' &&
@@ -275,22 +242,22 @@ const getDetail = () => {
         ) &&
         !keys.includes('MetadataMap')
     ) {
-        list.value.push({ key: 'MetadataMap', tab: '物模型映射'});
+        list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
     }
 };
 
 const initPage = async (newId: any) => {
-  await instanceStore.refresh(String(newId));
-  getStatus(String(newId));
-  list.value = [...initList];
-  getDetail();
-  instanceStore.tabActiveKey = 'Info';
+    await instanceStore.refresh(String(newId));
+    getStatus(String(newId));
+    list.value = [...initList];
+    getDetail();
+    instanceStore.tabActiveKey = 'Info';
 }
 
 onBeforeRouteUpdate((to: any) => {
-  if (to.params?.id!==instanceStore.current.id && to.name === 'device/Instance/Detail') {
-    initPage(to.params?.id)
-  }
+    if (to.params?.id !== instanceStore.current.id && to.name === 'device/Instance/Detail') {
+        initPage(to.params?.id)
+    }
 })
 
 
@@ -311,11 +278,11 @@ onMounted(() => {
 
 const onTabChange = (e: string) => {
     if (instanceStore.tabActiveKey === 'Metadata') {
-      EventEmitter.emit('MetadataTabs', () => {
-        instanceStore.tabActiveKey = e;
-      })
+        EventEmitter.emit('MetadataTabs', () => {
+            instanceStore.tabActiveKey = e;
+        })
     } else {
-      instanceStore.tabActiveKey = e;
+        instanceStore.tabActiveKey = e;
     }
 };
 

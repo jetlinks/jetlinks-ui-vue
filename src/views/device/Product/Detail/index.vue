@@ -78,7 +78,7 @@
                 <component :is="tabs[productStore.tabActiveKey]" :class="productStore.tabActiveKey === 'Metadata'
                     ? 'metedata'
                     : ''
-                    " v-bind="{ type: 'product' }" />
+                    " v-bind="{ type: 'product' }" :isProduct="true" />
             </div>
         </FullPage>
     </page-container>

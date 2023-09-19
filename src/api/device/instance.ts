@@ -9,7 +9,7 @@ import { DeviceMetadata, UnitType } from '@/views/device/Product/typings';
  * @param deviceId 设备ID
  * @param productId 产品ID
  */
-export const resetRule = (productId:string,deviceId:string,data:any) => server.remove(`/virtual/property/product/${productId}/${deviceId}/_batch`,{},{data})
+export const resetRule = (productId: string, deviceId: string, data: any) => server.remove(`/virtual/property/product/${productId}/${deviceId}/_batch`, {}, { data })
 
 /**
  * 删除设备物模型
@@ -114,7 +114,7 @@ export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boo
  * @param type 文件类型
  * @returns 
  */
-export const deviceExport = (productId: string, type: string, params?: any) => server.get(`/device-instance${!!productId ? `/${productId}` : ''}/export.${type}`, params, {responseType: 'blob'})
+export const deviceExport = (productId: string, type: string, params?: any) => server.get(`/device-instance${!!productId ? `/${productId}` : ''}/export.${type}`, params, { responseType: 'blob' })
 
 /**
  * 验证设备ID是否重复
@@ -589,7 +589,7 @@ export const queryLog = (deviceId: string, data: Record<string, unknown>) => ser
  */
 export const queryLogsType = () => server.get(`/dictionary/device-log-type/items`)
 
-export const getDeviceNumber = (data?:any) => server.post<number>('/device-instance/_count', data)
+export const getDeviceNumber = (data?: any) => server.post<number>('/device-instance/_count', data)
 
 /**
  * 导入映射设备
@@ -623,11 +623,30 @@ export const queryProductCodeTips = (productId: string) => server.get(`/device/t
  * @param deviceId 设备ID
  * @returns 
  */
-export const queryTypescript = (deviceId:string) => server.get(`/device/${deviceId}/virtual-property.d.ts`) 
+export const queryTypescript = (deviceId: string) => server.get(`/device/${deviceId}/virtual-property.d.ts`)
 
 /**
  * 获取产品物模型规则TS
  * @param productId 产品ID
  * @returns 
  */
-export const queryProductTs = (productId:string) => server.get(`/product/${productId}/virtual-property.d.ts`)
+export const queryProductTs = (productId: string) => server.get(`/product/${productId}/virtual-property.d.ts`)
+
+/**
+ * 查询属性别名
+ */
+export const queryProperty = (data: any) => server.post('/property/alias/_query', data)
+/**
+ * 新增属性别名
+ */
+export const addProperty = (data: any) => server.patch('/property/alias', data)
+/**
+ * 删除属性别名
+ */
+export const dltProperty = (id: string) => server.remove(`/property/alias/${id}`)
+
+/**
+ * 下发设备 GET /property/alias/{productId}/sync
+ */
+export const sendDevice = (productId: string) => server.get(`/property/alias/${productId}/sync`)
+
