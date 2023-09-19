@@ -222,6 +222,28 @@ export const queryProductVirtualProperty = (productId: string, propertyId: strin
  * 一键删除 
  */
 export const allDltDeviceInfo = (productId: string) => server.post(`/device/instance/${productId}/delete/device`)
+/**
+ * 查询属性别名
+ */
+export const queryProperty = (data: any) => server.post('/property/alias/_query', data)
+/**
+ * 新增属性别名
+ */
+export const addProperty = (data: any) => server.patch('/property/alias', data)
+/**
+ * 编辑属性别名 put /property/alias/{id}
+ */
+export const editProperty = (data: any, id: string) => server.put(`/property/alias/${id}`, data)
+/**
+ * 删除属性别名
+ */
+export const dltProperty = (id: string) => server.remove(`/property/alias/${id}`)
+
+/**
+ * 下发设备 GET /property/alias/{productId}/sync
+ */
+export const sendDevice = (productId: string) => server.get(`/property/alias/${productId}/sync`)
+
 
 
 

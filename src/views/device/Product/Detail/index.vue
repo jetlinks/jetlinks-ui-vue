@@ -90,6 +90,7 @@ import Info from './BasicInfo/indev.vue';
 import Device from './DeviceAccess/index.vue';
 import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
+import Property from './PropertyName/index.vue'
 import MetadataMap from './MetadataMap'
 // import Metadata from '../../../components/Metadata/index.vue';
 import {
@@ -138,6 +139,10 @@ const list = ref([
         key: 'Device',
         tab: '设备接入',
     },
+    {
+        key: 'Property',
+        tab: '属性别名',
+    },
 ]);
 
 const tabs = {
@@ -145,7 +150,8 @@ const tabs = {
     Metadata,
     Device,
     DataAnalysis,
-    MetadataMap
+    MetadataMap,
+    Property
 };
 
 watch(
@@ -261,6 +267,10 @@ const getProtocol = async () => {
                         key: 'DataAnalysis',
                         tab: '数据解析',
                     },
+                    {
+                        key: 'Property',
+                        tab: '属性别名',
+                    }
                 ];
             } else {
                 list.value = [
@@ -276,6 +286,10 @@ const getProtocol = async () => {
                     {
                         key: 'Device',
                         tab: '设备接入',
+                    },
+                    {
+                        key: 'Property',
+                        tab: '属性别名',
                     },
                 ];
             }
