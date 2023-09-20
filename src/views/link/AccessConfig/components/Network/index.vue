@@ -100,6 +100,7 @@
                         type="primary"
                         @click="addProcotol"
                         hasPermission="link/Protocol:add"
+                        :disabled="id !== ':id'"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增

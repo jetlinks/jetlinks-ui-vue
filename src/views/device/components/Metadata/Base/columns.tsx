@@ -85,8 +85,9 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.format = value
       break;
     case 'string':
+      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
     case 'password':
-      obj.maxLength = value
+      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
       break;
     default:
       obj = value

@@ -1,19 +1,23 @@
 <template>
     <page-container>
+      <full-page>
         <iframe
             v-if="loading"
             :src="iframeUrl"
+            scrolling="no"
             frameBorder="0"
-            style="width: 100%; height: calc(100vh - 140px)"
+            style="width: 100%; height: 100%"
         ></iframe>
+      </full-page>
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" name="IframgePage" setup>
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, getToken } from '@/utils/comm';
 import { getAppInfo_api } from '@/api/system/apply';
 import { lowCodeUrl } from '@/api/comm'
+import FullPage from "components/Layout/FullPage.vue";
 
 const iframeUrl = ref<string>('');
 const route = useRoute()
@@ -42,9 +46,12 @@ const handle = async (appId: string, url: string) => {
 
 const lowCode = () => {
   lowCodeUrl().then(res => {
+    console.log(res.success && res.result)
     if (res.success && res.result) {
       const url = res.result['ui-addr']
       iframeUrl.value = url + '/#' + route.path + '?&token=' + getToken()
+      console.log(iframeUrl.value)
+      loading.value = true
     }
   })
 }
