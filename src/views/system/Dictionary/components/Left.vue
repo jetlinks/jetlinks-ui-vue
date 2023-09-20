@@ -88,7 +88,6 @@ import Save from './save/index.vue'
 import { onlyMessage} from '@/utils/comm';
 import Export from './Export/index.vue'
 import { usePermissionStore } from '@/store/permission';
-import { first } from 'lodash-es';
 const emit = defineEmits(['selectData'])
 const hasPermission = usePermissionStore().hasPermission;
 const saveShow = ref(false)
