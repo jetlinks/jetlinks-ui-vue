@@ -55,10 +55,6 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-// import {
-//     queryProperty, addProperty, editProperty, dltProperty, detail, sendDevice
-// } from '@/api/device/instance';
-
 import {
     queryProperty, addProperty, dltProperty, detail
 } from '@/api/device/instance';
