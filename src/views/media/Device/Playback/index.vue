@@ -237,7 +237,9 @@ const queryLocalRecords = async (date: Dayjs) => {
             deviceId.value,
             channelId.value,
             params,
-        );
+        ).finally(()=>{
+            loading.value = false;
+        })
         if (localResp.status === 200 && localResp.result.length) {
             const serviceResp = await playBackApi.recordsInServer(
                 deviceId.value,
@@ -247,10 +249,8 @@ const queryLocalRecords = async (date: Dayjs) => {
                     includeFiles: false,
                 },
             );
-            loading.value = false;
             let newList: recordsItemType[] = serviceResp.result;
             // console.log(newList)
-
             if (serviceResp.status === 200 && serviceResp.result) {
                 // 判断是否已下载云端视频
                 newList = localResp.result.map((item: recordsItemType) => {
