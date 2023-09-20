@@ -92,7 +92,7 @@
             <j-descriptions-item label="请求耗时">
                 {{
                     descriptionsData?.responseTime -
-                    descriptionsData?.responseTime +
+                    descriptionsData?.requestTime +
                     'ms'
                 }}
             </j-descriptions-item>

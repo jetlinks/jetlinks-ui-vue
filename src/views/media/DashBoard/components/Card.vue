@@ -141,7 +141,9 @@ const createChart = () => {
 watch(
     () => props.chartData,
     (val) => {
-        createChart();
+        if(props.chartData.length){
+            createChart();
+        }
     },
     { deep: true },
 );

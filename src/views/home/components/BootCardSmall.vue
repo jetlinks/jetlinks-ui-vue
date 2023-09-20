@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="right-bj">
-                    <img :src="`/images/home/home-${index + 1}.png`" alt="" />
+                    <img :src="`/images/home/${index + 1}.png`" alt="" />
                 </div>
             </div>
         </div>
