@@ -112,6 +112,7 @@
                         <PermissionButton
                             :hasPermission="`${rolePermission}:add`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
+                            v-if="!admin"
                         >
                             <AIcon type="PlusOutlined" />
                         </PermissionButton>
@@ -208,6 +209,15 @@ import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import { uniqBy } from 'lodash-es';
+import { useUserInfo } from '@/store/userInfo';
+import { storeToRefs } from 'pinia';
+
+const userInfoStore = useUserInfo()
+const { userInfos } = storeToRefs(userInfoStore)
+
+const admin = computed(() => {
+  return userInfos.value?.username === 'admin';
+})
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
