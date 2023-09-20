@@ -95,6 +95,7 @@
                                         ]"
                                     >
                                         <j-input
+                                            :disabled="record.old_id"
                                             v-model:value="record.type"
                                             placeholder="请输入类型"
                                         />
@@ -510,7 +511,7 @@ const checkName = (_: any, value: any) =>
         width:300px;
         height:100%;
         .tree{
-            max-height: 680px;
+            height: 680px;
             overflow-y: auto;
         }
     }
