@@ -273,7 +273,7 @@ export const saveDeviceMapping = (deviceId: string, data: any) => server.post(`/
 /**
  *批量删除云端映射设备 
  */
-export const deleteDeviceMapping = (deviceId: string, data:any) => server.post(`/edge/operations/${deviceId}/device-mapping-delete/invoke`, data)
+export const deleteDeviceMapping = (deviceId: string, data:any) => server.post(`/edge/operations/${deviceId}/device-mapping-delete-by-deviceid/invoke`, data)
 
 /**
  * 获取产品列表
