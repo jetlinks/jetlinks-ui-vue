@@ -53,8 +53,8 @@
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
-                                :tooltip="{ title: '新增子菜单' }"
-                                :disabled="slotProps.level >= 3"
+                                :tooltip="{ title:  slotProps?.options?.LowCode ? '低码创建的菜单不支持编辑' : slotProps.level >= 3 ? '仅支持3级菜单' :   '新增子菜单' }"
+                                :disabled="slotProps.level >= 3 || slotProps?.options?.LowCode"
                                 @click="table.addChildren(slotProps)"
                             >
                                 <AIcon type="PlusCircleOutlined" />

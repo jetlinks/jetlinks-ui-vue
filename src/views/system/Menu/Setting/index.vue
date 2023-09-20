@@ -128,21 +128,21 @@ const getProvidersFn = async () => {
     }
 }
 getProvidersFn();
-function filterTree(nodes: Array<any>, selectedKeys: Array<any>) {
+function filterTree(nodes: Array<any>, selectedKeys: Array<any>,parentId?:string) {
     const filtered = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (!node.code) {
             continue;
         }
-
+        node.parentId = parentId ?  undefined : parentId
         if (selectedKeys.indexOf(node.code) !== -1) {
             filtered.push(node);
             if (node.children) {
-                node.children = filterTree(node.children, selectedKeys);
+                node.children = filterTree(node.children, selectedKeys,node.id);
             }
         } else if (node.children) {
-            node.children = filterTree(node.children, selectedKeys);
+            node.children = filterTree(node.children, selectedKeys,node.id);
             if (node.children.length > 0) {
                 filtered.push(node);
             }
@@ -155,6 +155,7 @@ const handleOk = async () => {
     const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
     const _dataSorts = handleSorts(_dataArr)
     loading.value = true;
+    console.log(_dataSorts)
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
