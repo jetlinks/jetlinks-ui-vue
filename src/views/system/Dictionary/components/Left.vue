@@ -14,7 +14,6 @@
         >
             新增字典
         </PermissionButton>
-        <!-- <j-button type="primary" @click="showSave" style="width: 60%;">新增字典</j-button> -->
         <PermissionButton
             type="text"
             hasPermission="system/Dictionary:down"
@@ -22,7 +21,6 @@
         >
             下载
         </PermissionButton>
-        <!-- <j-button type="text" @click="downVisible=true">下载</j-button> -->
         <j-upload
             :before-upload="beforeUpload"
             accept=".json"
@@ -44,10 +42,10 @@
                     <div class="itemText"><Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis></div>
                     <div @click="(e) => e.stopPropagation()">
                         <j-popconfirm v-if="hasPermission('system/Dictionary:action')" :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="()=>updateDic(item.data)">
-                            <j-switch v-model:checked="item.status" :disabled="!hasPermission('system/Dictionary:action')" :checkedValue="1" :unCheckedValue="0"></j-switch>
+                            <j-switch :checked="item.status" :disabled="!hasPermission('system/Dictionary:action')" :checkedValue="1" :unCheckedValue="0"></j-switch>
                         </j-popconfirm>
                         <j-tooltip v-else  placement="top" title="暂无权限,请联系管理员">
-                            <j-switch v-model:checked="item.status" :disabled="!hasPermission('system/Dictionary:action')" :checkedValue="1" :unCheckedValue="0"></j-switch>
+                            <j-switch :checked="item.status" :disabled="!hasPermission('system/Dictionary:action')" :checkedValue="1" :unCheckedValue="0"></j-switch>
                         </j-tooltip>   
                         <PermissionButton
                               type="text"
@@ -59,9 +57,6 @@
                           >
                           删除
                           </PermissionButton>
-                        <!-- <j-popconfirm title="确认删除？" @confirm="()=>deleteDic(item.id)">
-                            <j-button type="text">删除</j-button>
-                        </j-popconfirm> -->
                         <PermissionButton
                             type="text"
                             hasPermission="system/Dictionary:update"
@@ -69,7 +64,6 @@
                           >
                           编辑
                           </PermissionButton>
-                        <!-- <j-button type="text" @click="()=>showEdit(item.data)">编辑</j-button> -->
                     </div>
                 </div>
             </template>
