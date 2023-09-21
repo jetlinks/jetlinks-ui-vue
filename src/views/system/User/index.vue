@@ -94,7 +94,7 @@
                                         : '删除',
                                 }"
                                 :popConfirm="{
-                                    title:slotProps?.type?.id === 'application' ? '此操作将同步删除对应的第三方配置，确认删除?':'确认删除',
+                                    title:'确认删除?',
                                     onConfirm: () =>
                                         table.clickDel(slotProps.id),
                                 }"
