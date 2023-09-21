@@ -94,10 +94,11 @@
                                         : '删除',
                                 }"
                                 :popConfirm="{
-                                    title: `确认删除`,
+                                    title:slotProps?.type?.id === 'application' ? '此操作将同步删除对应的第三方配置，确认删除?':'确认删除',
                                     onConfirm: () =>
                                         table.clickDel(slotProps.id),
                                 }"
+
                                 :disabled="slotProps.status"
                             >
                                 <AIcon type="DeleteOutlined" />
@@ -215,7 +216,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
-        width: 150,
+        width: 200,
         scopedSlots: true,
     },
 ];
