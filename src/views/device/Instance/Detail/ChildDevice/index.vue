@@ -243,7 +243,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                     );
                     const res = await deleteDeviceMapping(
                         detail.value.id,
-                        {ids:[data.id]}
+                        {deviceIds:[data.id]}
                     )
                     if (resp.status === 200) {
                         childDeviceRef.value?.reload();
