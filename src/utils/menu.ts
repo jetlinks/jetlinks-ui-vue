@@ -457,7 +457,7 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
       }
 
       if (item.options?.LowCode && level === 1) {
-        route.component = () => SinglePage
+        route.component = SinglePage
       }
 
       if (detail_components.length) {
