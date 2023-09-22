@@ -4,13 +4,15 @@
             <div>平台角色内置分组</div>
             <div class="group">
                 <div v-for="(item,index) in group" class="group_item"  @mouseover="()=>showButton(item)" @mouseleave="()=>hiddenButton(item)">
-                    <j-button  block  :type="item.selected ? 'primary' : 'default'">{{ item.name }}</j-button>
+                    <div  class="group_name" :class="{group_selected: item.selected}"  :type="item.selected ? 'primary' : 'default'">
+                        <j-ellipsis style="max-width: 100%;"><span>{{ item.name }}</span><AIcon type="CloseOutlined" class="closeIcon" v-if="item.closeIcon" @click="group.splice(index,1)"></AIcon></j-ellipsis>
+                    </div>
                     <div v-if="item.show">
                         <j-button block @click="()=>selectGroup(item)">{{ item.selected ? '取消选中' : '选中' }}</j-button>
-                        <j-button block >编辑</j-button>
+                        <j-button block @click="()=>showEditGroup(item)">编辑</j-button>
                     </div>
                 </div>
-                <j-button type="text" @click="addGroup">+ 自定义分组</j-button>
+                <j-button type="text" @click="showAddGroup" :disabled="group.length >=10">+ 自定义分组</j-button>
             </div>
         </div>
         <j-checkbox-group @change="getCheckValue">
@@ -69,7 +71,7 @@
             </div>
         </j-checkbox-group>
     </div>
-    <j-modal :visible="showAdd" title="自定义分组" @cancel="showAdd = false">
+    <j-modal :visible="showAdd" title="自定义分组" @cancel="showAdd = false" @ok="addGroup">
         <j-form layout="vertical" ref="formRef" :model="formData">
             <j-form-item 
                 name="name"
@@ -106,10 +108,10 @@ const getCheckValue = (val: any) => {
 /**
  * 获取分组数据
  */
-const group = ref([{
+const group = ref<any[]>([{
     name:'默认',
     show:false,
-    selected:false
+    selected:true
 },{
     name:'岗位',
     show:false,
@@ -125,6 +127,8 @@ const showAdd = ref(false)
 const formData = ref({
     name:''
 })
+
+const formRef = ref()
 /**
  * 根据菜单找角色
  */
@@ -211,7 +215,9 @@ const addRoleData = async () => {
 };
 
 const showButton = (item:any) =>{
-    item.show = true
+    if(item.name != '默认'){
+        item.show = true
+    }
 }
 const hiddenButton = (item:any)=>{
     item.show = false
@@ -220,10 +226,30 @@ const hiddenButton = (item:any)=>{
 const selectGroup = (item:any)=>{
     item.selected = !item.selected
 }
-
-const addGroup = ()=>{
-    console.log(showAdd.value)
+/**
+ * 新增分组
+ */
+const showAddGroup = ()=>{
+    formData.value.name = ''
     showAdd.value = true
+}
+/**
+ * 分组编辑
+ */
+const showEditGroup = (item:any) =>{
+    formData.value.name = item.name
+    showAdd.value = true
+}
+const addGroup = () =>{
+    formRef.value?.validate().then(()=>{
+        group.value.push({
+            name:formData.value.name,
+            selected:true,
+            show:false,
+            closeIcon:true
+        })
+        showAdd.value = false
+    })
 }
 defineExpose({
     submitRole: addRoleData,
@@ -243,6 +269,24 @@ defineExpose({
                 margin-right: 20px;
                 .button{
                     display: block;
+                }
+                .group_name{
+                    border: .2px solid rgb(217, 217, 217);
+                    text-align: center;
+                    height: 32px;
+                    line-height: 32px;
+                    border-radius: 12%;
+                    padding: 0 10px;
+                    position: relative;
+                    .closeIcon{
+                        font-size: 12px;
+                        position: absolute;
+                        top: 4px;
+                        right: 4px;
+                    }
+                }
+                .group_selected{
+                    background-color: rgb(190, 232, 251);
                 }
             }
         }
