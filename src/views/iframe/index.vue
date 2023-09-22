@@ -46,9 +46,9 @@ const handle = async (appId: string, url: string) => {
 
 const lowCode = () => {
   lowCodeUrl().then(res => {
-    console.log(res.success && res.result)
     if (res.success && res.result) {
       const url = res.result['ui-addr']
+      // const url = 'http://localhost:8080'
       iframeUrl.value = url + '/#' + route.path + '?&token=' + getToken()
       console.log(iframeUrl.value)
       loading.value = true
@@ -58,7 +58,7 @@ const lowCode = () => {
 
 watchEffect(() => {
     const matchedItem: any = route.matched?.[0]
-    if (matchedItem?.meta?.isApp) {
+    if (route.meta?.isApp) {
       const params = route.path.split('/')?.[1];
       if (params === 'preview') {
         lowCode()
