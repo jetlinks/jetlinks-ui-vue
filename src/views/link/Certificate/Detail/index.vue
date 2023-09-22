@@ -47,6 +47,18 @@
                                     placeholder="请输入证书文件"
                                 />
                             </j-form-item>
+                            <j-form-item label="证书类型">
+                                <j-radio-group>
+                                    <j-radio-button value="a" style="margin-right: 30px;" size="large">客户端</j-radio-button>
+                                    <j-radio-button value="b" size="large">服务端</j-radio-button>
+                                </j-radio-group>
+                            </j-form-item>
+                            <j-form-item label="认证方式">
+                                <j-radio-group>
+                                    <j-radio-button value="a" style="margin-right: 30px;" size="large">单向认证</j-radio-button>
+                                    <j-radio-button value="b" size="large">双向认证</j-radio-button>
+                                </j-radio-group>
+                            </j-form-item>
                             <j-form-item
                                 label="证书私钥"
                                 v-bind="validateInfos['configs.key']"
