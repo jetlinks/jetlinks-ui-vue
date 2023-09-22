@@ -1,5 +1,18 @@
 <template>
     <div class="init-home-role">
+        <div class="built_in_group">
+            <div>平台角色内置分组</div>
+            <div class="group">
+                <div v-for="(item,index) in group" class="group_item"  @mouseover="()=>showButton(item)" @mouseleave="()=>hiddenButton(item)">
+                    <j-button  block  :type="item.selected ? 'primary' : 'default'">{{ item.name }}</j-button>
+                    <div v-if="item.show">
+                        <j-button block @click="()=>selectGroup(item)">{{ item.selected ? '取消选中' : '选中' }}</j-button>
+                        <j-button block >编辑</j-button>
+                    </div>
+                </div>
+                <j-button type="text" @click="addGroup">+ 自定义分组</j-button>
+            </div>
+        </div>
         <j-checkbox-group @change="getCheckValue">
             <div class="init-home-role-content">
                 <div
@@ -56,6 +69,25 @@
             </div>
         </j-checkbox-group>
     </div>
+    <j-modal :visible="showAdd" title="自定义分组" @cancel="showAdd = false">
+        <j-form layout="vertical" ref="formRef" :model="formData">
+            <j-form-item 
+                name="name"
+                label="名称" 
+                :rules="[
+                    {
+                        required: true,
+                        message: '请输入名称',
+                    },
+                    {
+                        max: 64,
+                        message: '最多可输入64个字符',
+                    },
+                        ]">
+                <j-input v-model:value="formData.name"></j-input>
+            </j-form-item>
+        </j-form>
+    </j-modal>
 </template>
 
 <script lang="ts" setup>
@@ -71,6 +103,28 @@ const keys = ref([]);
 const getCheckValue = (val: any) => {
     keys.value = val;
 };
+/**
+ * 获取分组数据
+ */
+const group = ref([{
+    name:'默认',
+    show:false,
+    selected:false
+},{
+    name:'岗位',
+    show:false,
+    selected:false
+},{
+    name:'职位',
+    show:false,
+    selected:false
+}])
+
+const showAdd = ref(false)
+
+const formData = ref({
+    name:''
+})
 /**
  * 根据菜单找角色
  */
@@ -156,16 +210,48 @@ const addRoleData = async () => {
   });
 };
 
+const showButton = (item:any) =>{
+    item.show = true
+}
+const hiddenButton = (item:any)=>{
+    item.show = false
+}
+
+const selectGroup = (item:any)=>{
+    item.selected = !item.selected
+}
+
+const addGroup = ()=>{
+    console.log(showAdd.value)
+    showAdd.value = true
+}
 defineExpose({
     submitRole: addRoleData,
 });
 </script>
 <style lang="less" scoped>
 .init-home-role {
+    .built_in_group{
+        margin-bottom: 10px;
+        position: relative;
+        .group{
+            display: flex;
+            position: absolute;
+            z-index: 999;
+            .group_item{
+                width: 100px;
+                margin-right: 20px;
+                .button{
+                    display: block;
+                }
+            }
+        }
+    }
     .init-home-role-content {
         display: flex;
         grid-gap: 24px;
         gap: 24px;
+        margin-top: 40px;
     }
     .role-item-1 {
         background-image: url(/images/init-home/role1.png);
