@@ -6,6 +6,7 @@
             model="CARD" 
             :request="getDic_page"
             :gridColumn="2"
+            :defaultParams="{sorts: [{ name: 'createTime', order: 'desc' }]}"
         >
             <template #headerTitle>
                 请选择需要下载的字典
