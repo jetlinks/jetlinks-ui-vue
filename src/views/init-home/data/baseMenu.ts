@@ -4021,7 +4021,7 @@ export default [
         sortIndex: 12,
         url: '/system/Dictionary',
         icon: 'FormOutlined',
-        showPage: [],
+        showPage: ['dictionary'],
         permissions: [],
         buttons: [
           {

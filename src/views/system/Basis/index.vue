@@ -319,7 +319,7 @@
                 </j-button>
             </div>
         </FullPage>
-        <Relation></Relation>
+        <!-- <Relation></Relation> -->
     </page-container>
 </template>
 
