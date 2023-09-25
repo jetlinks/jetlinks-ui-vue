@@ -73,6 +73,13 @@ onMounted(() => {
                 emit('update:value', options.value?.[0]?.value);
                 emit('update:name', options.value?.[0]?.label);
                 emit('change', {label: options.value?.[0]?.label, value: options.value?.[0]?.value});
+            }else{
+                options.value.find((item:any)=>{
+                    if(item.value === props.value){
+                        emit('update:name',item.label)
+                        return true
+                    }
+                })
             }
         }
         loading.value = false;
