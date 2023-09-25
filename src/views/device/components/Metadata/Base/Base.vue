@@ -247,6 +247,7 @@ import type {
     ProductItem,
 } from '@/views/device/Product/typings';
 import type { PropType } from 'vue';
+import { TOKEN_KEY } from '@/utils/variable'
 import {useRouter, onBeforeRouteUpdate} from 'vue-router'
 import { useMetadata, useOperateLimits } from './hooks';
 import {TypeStringMap, useColumns} from './columns';
@@ -259,7 +260,7 @@ import { useProductStore } from '@/store/product';
 import { asyncUpdateMetadata, updateMetadata } from '../metadata';
 import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage , LocalStore} from '@/utils/comm';
 import {omit} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
@@ -510,7 +511,7 @@ const handleSaveClick = async (next?: Function) => {
 const tabsChange = inject('tabsChange')
 
 const parentTabsChange = (next?: Function) => {
-  if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`)) {
+  if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`) && LocalStore.get(TOKEN_KEY)) {
     const modal = Modal.confirm({
       content: '页面改动数据未保存',
       okText: '保存',

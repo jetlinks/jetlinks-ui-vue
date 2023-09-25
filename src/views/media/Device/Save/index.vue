@@ -426,20 +426,24 @@ const handleSubmit = () => {
     formRef.value
         ?.validate()
         .then(async () => {
-            const resq:any = await DeviceApi.validateId(id)
-            if(resq.status === 200 && resq?.result?.passed){
                 btnLoading.value = true;
-                const res = !route.query.id
-                    ? await DeviceApi.save(params)
-                    : await DeviceApi.update(params);
+                let res;
+                if(!route.query.id){
+                    const resp:any = await DeviceApi.validateId(id)
+                    if(resp.status === 200 && resp?.result?.passed){
+                            res = await DeviceApi.save(params)
+                    }else{
+                            notification.error({ key: 'error', message: '设备ID已重复'})
+                        }
+                }else{
+                    res = await DeviceApi.update(params);
+                }
                 if (res?.success) {
                     onlyMessage('保存成功');
                     history.back();
                 }
-            }else{
-                notification.error({ key: 'error', message: '设备ID已重复'})
             }
-        })
+        )
         .catch((err: any) => {
             console.log('err: ', err);
         })
