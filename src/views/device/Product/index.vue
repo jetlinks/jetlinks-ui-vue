@@ -399,11 +399,9 @@ const beforeUpload = (file: any) => {
             onlyMessage('文件内容不能为空','error')
             return false;
         }
-        try {
             const data = JSON.parse(text);
             // 设置导入的产品状态为未发布
             data.state = 0;
-            
             if (Array.isArray(data)) {
                 onlyMessage('请上传正确格式文件', 'error');
                 return false;
@@ -418,10 +416,6 @@ const beforeUpload = (file: any) => {
                 tableRef.value?.reload();
             }
             return true;
-        } catch(e) {
-            onlyMessage('请上传正确格式文件', 'error');
-        }
-        return true;
     };
     return false;
 };
