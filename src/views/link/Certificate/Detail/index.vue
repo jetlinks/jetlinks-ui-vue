@@ -47,16 +47,16 @@
                                     placeholder="请输入证书文件"
                                 />
                             </j-form-item>
-                            <j-form-item label="证书类型">
-                                <j-radio-group>
-                                    <j-radio-button value="a" style="margin-right: 30px;" size="large">客户端</j-radio-button>
-                                    <j-radio-button value="b" size="large">服务端</j-radio-button>
+                            <j-form-item label="证书类型" v-bind="validateInfos.mode">
+                                <j-radio-group v-model:value="formData.mode" button-style="solid">
+                                    <j-radio-button value="client" style="margin-right: 30px;" size="large">客户端</j-radio-button>
+                                    <j-radio-button value="server" size="large">服务端</j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
-                            <j-form-item label="认证方式">
-                                <j-radio-group>
-                                    <j-radio-button value="a" style="margin-right: 30px;" size="large">单向认证</j-radio-button>
-                                    <j-radio-button value="b" size="large">双向认证</j-radio-button>
+                            <j-form-item label="认证方式" v-if="formData.mode === 'server'" v-bind="validateInfos.authenticationMethod">
+                                <j-radio-group button-style="solid" v-model:value="formData.authenticationMethod">
+                                    <j-radio-button value="single" style="margin-right: 30px;" size="large">单向认证</j-radio-button>
+                                    <j-radio-button value="binomial" size="large">双向认证</j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
                             <j-form-item
@@ -143,6 +143,8 @@ const formData = ref<FormDataType>({
         key: '',
     },
     description: '',
+    mode:'client',
+    authenticationMethod:'single'
 });
 
 const { resetFields, validate, validateInfos } = useForm(
@@ -160,6 +162,8 @@ const { resetFields, validate, validateInfos } = useForm(
             { required: true, message: '请输入或上传文件', trigger: 'blur' },
         ],
         description: [{ max: 200, message: '最多可输入200个字符' }],
+        mode:[{ required: true, message: '请选择证书类型', trigger: 'blur' }],
+        authenticationMethod:[{ required: true, message: '请选择认证方式', trigger: 'blur' }]
     }),
 );
 
