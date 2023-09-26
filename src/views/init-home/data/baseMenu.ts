@@ -3445,6 +3445,30 @@ export default [
                 permission: 'role',
                 actions: ['query'],
               },
+              {
+                permission: 'role-group',
+                actions: ['query']
+              }
+            ],
+          },
+          {
+            id: 'groupUpdate',
+            name: '角色组编辑',
+            permissions: [
+              {
+                permission: 'role-group',
+                actions: ['query','save']
+              }
+            ],
+          },
+          {
+            id: 'groupDelete',
+            name: '角色组删除',
+            permissions: [
+              {
+                permission: 'role-group',
+                actions: ['query','delete']
+              }
             ],
           },
         ],

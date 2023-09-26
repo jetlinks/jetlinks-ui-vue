@@ -4,7 +4,12 @@
             <pro-search :columns="columns" target="system-role" @search="handelSearch" />
             <FullPage>
                 <j-pro-table ref="tableRef" :columns="columns" :request="getRoleList_api" model="TABLE"
-                    :params="queryParams" :defaultParams="defaultParams">
+                    :params="queryParams" :defaultParams="{
+                        sorts: [
+                            { name: 'createTime', order: 'desc' },
+                            { name: 'id', order: 'desc' },
+                        ]
+                    }">
                     <template #headerTitle>
                         <PermissionButton type="primary" :hasPermission="`${permission}:add`" @click="addRole">
                             <AIcon type="PlusOutlined" />新增
@@ -16,8 +21,8 @@
                             <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
                                 <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
                                     ...i.tooltip,
-                                }" @click="i.onClick" type="link" style="padding: 0 5px"
-                                    :danger="i.key === 'delete'" :hasPermission="'system/Role:' + i.key
+                                }" @click="i.onClick" type="link" style="padding: 0 5px" :danger="i.key === 'delete'"
+                                    :hasPermission="'system/Role:' + i.key
                                         ">
                                     <template #icon>
                                         <AIcon :type="i.icon" />
@@ -53,22 +58,7 @@ const { jumpPage } = useMenuStore();
 const modalType = ref('add')
 const current = ref()
 const isSave = !!useRoute().query.save;
-const queryParams = ref({});
-const defaultParams = ref({
-    sorts: [
-        { name: 'createTime', order: 'desc' },
-        { name: 'id', order: 'desc' },
-    ],
-    terms: [
-        {
-            terms: [{
-                value: props.groupId,
-                termType: 'eq',
-                column: 'groupId'
-            }]
-        }
-    ]
-})
+const queryParams = ref<any>({terms:[]});
 // 表格
 const tableRef = ref<Record<string, any>>();
 const dialogVisible = ref(isSave);
@@ -168,16 +158,27 @@ const getActions = (
     return actions;
 };
 
-const addRole = () =>{
+const addRole = () => {
     dialogVisible.value = true
     modalType.value = 'add'
 }
 const handelSearch = (search: any) => {
-    queryParams.value = search
+    queryParams.value.terms =props.groupId ? [{
+        value: props.groupId,
+        termType: 'eq',
+        column: 'groupId'
+    }, ...search.terms] : [...search.terms]
 }
-watch(() => props.groupId, () => {
-    defaultParams.value.terms[0].terms[0].value = props.groupId
-    tableRef.value?.reload()
+watch(() => props.groupId, (value) => {
+    queryParams.value = value ? {
+        terms: [{
+            value: props.groupId,
+            termType: 'eq',
+            column: 'groupId'
+        }]
+    } : {
+        terms: []
+    }
 })
 </script>
 

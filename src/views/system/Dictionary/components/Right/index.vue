@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="des">
         <div class="des_head">
             <div>字典ID：<span>{{ data.id }}</span></div>
             <div>说明：<span>{{ data.describe }}</span></div>
@@ -12,7 +12,7 @@
             }}</span></div>
         </div>
         <div class="contain">
-            <pro-search :columns="columns" @search="handleSearch" />
+            <pro-search :columns="columns" @search="handleSearch" target="system_dictionary"/>
             <JProTable :columns="columns" model="TABLE" :request="queryItem" :params="params" ref="tableRef">
                 <template #headerTitle>
                     <PermissionButton type="primary" @click="add" hasPermission="system/Dictionary:add">
@@ -167,7 +167,7 @@ const queryItem = async (_params: any) => {
     if (props.data?.id) {
         const params = {
             ..._params,
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            sorts: [{ name: 'ordinal', order: 'asc' }],
             terms: [
                 ..._params.terms,
                 {
@@ -209,6 +209,7 @@ watch(() => props?.data?.id, () => {
 })  
 </script>
 <style lang="less" scoped>
+
 .des_head {
     padding: 10px 20px;
     background-color: rgb(242, 242, 242);

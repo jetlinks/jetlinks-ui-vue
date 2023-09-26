@@ -66,7 +66,7 @@ const validateInput = async (_rule: Rule, value: string) => {
  * 校验value唯一
  */
 const validateValue = async (_rule: Rule, value: string) => {
-    if (value) {
+    if (value && props.type === 'add') {
         const res:any = await verifyValue({
             terms: [
                 {

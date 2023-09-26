@@ -1,40 +1,45 @@
 <template>
-   <page-container>
+    <page-container>
         <FullPage>
             <div class="dictionary_contain">
                 <div class="dictionary_left">
-                    <Left @selectData="selectData"/>
+                    <Left @selectData="selectData" />
                 </div>
                 <div class="dictionary_right">
-                    <Right :data="data"/>
+                    <Right :data="data" />
                 </div>
             </div>
         </FullPage>
-   </page-container>
+    </page-container>
 </template>
 
 <script lang="ts" setup>
 import Left from './components/Left.vue'
 import Right from './components/Right/index.vue'
 const data = ref()
-const selectData = (i:any)=>{
-    data.value= i
+const selectData = (i: any) => {
+    data.value = i
 }
 </script>
 <style lang="less" scoped>
-.dictionary_contain{
-    display: flex;
+.dictionary_contain {
     background-color: #fff;
     padding: 24px;
+    padding-bottom: 0;
+    position: relative;
     height: 100%;
 }
-.dictionary_left{
+
+.dictionary_left {
+    position: absolute;
     border-right: 1px solid #f0f0f0;
     padding-right: 24px;
-    flex:1;
-    height:100%
+    width: 310px;
+    height: 100%;
 }
-.dictionary_right{
-    flex:4
+
+.dictionary_right {
+    margin-left: 317px;
+    width: calc(100% - 317px);
 }
 </style>

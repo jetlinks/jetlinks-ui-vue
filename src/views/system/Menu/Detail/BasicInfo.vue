@@ -315,6 +315,7 @@ const form = reactive({
             getMenuInfo_api(routeParams.id).then((resp: any) => {
                 form.data = {
                     ...(resp.result as formType),
+                    permissions: resp.result?.permissions ? resp.result.permissions : [],
                     accessSupport:
                         resp.result?.accessSupport?.value || 'unsupported',
                 };

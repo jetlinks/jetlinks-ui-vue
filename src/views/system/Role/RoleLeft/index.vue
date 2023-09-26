@@ -15,38 +15,45 @@
             </j-button>
       </div>
       <div class="listBox">
-          <j-tree :tree-data="listData" v-if="listData.length" :fieldNames="{title:'name',key:'id'}" blockNode  :selectedKeys="selectedKeys">
+          <j-tree 
+            :tree-data="listData" 
+            v-if="listData.length" 
+            :fieldNames="{title:'name',key:'id',children:'children'}" 
+            blockNode  
+            :selectedKeys="selectedKeys" 
+            :default-expanded-keys="['global_role']"  
+            :showLine="{ showLeafIcon: false }"
+            >
               <template #title="item">
-                <div class="treeItem" @click="()=>selectGroup(item.data.id)"  v-if="!item.data?.edit">
-                      <div class="itemText">
-                        <Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis>
-                       
+                        <div class="treeItem" @click="()=>selectGroup(item.data.id)"  v-if="!item.data?.edit">
+                            <template v-if="!item?.children">
+                            <div class="itemText">
+                                <Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis>
+                                </div>
+                            <div @click="(e) => e.stopPropagation()" v-if="item.id !== 'default_group'">
+                                <PermissionButton
+                                        type="text"
+                                        hasPermission="system/Role:groupDelete"
+                                        :popConfirm="{
+                                            title: `确定要删除？`,
+                                            onConfirm: () => deleteGroup(item.id),
+                                        }"
+                                        :disabled="item.id === 'default_group'"
+                                    >
+                                    删除
+                                    </PermissionButton>
+                                <PermissionButton
+                                    type="text"
+                                    hasPermission="system/Role:groupUpdate"
+                                    @click="editGroup(item.data)"
+                                    :disabled="item.id === 'default_group'"
+                                    >
+                                    编辑
+                                    </PermissionButton>
+                            </div>
+                        </template>
+                        <template v-else><Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis></template>
                         </div>
-                      <div @click="(e) => e.stopPropagation()">
-                          <PermissionButton
-                                type="text"
-                                hasPermission="system/Role:delete"
-                                :popConfirm="{
-                                    title: `确定要删除？`,
-                                    onConfirm: () => deleteGroup(item.id),
-                                }"
-                                :disabled="item.id === 'default_group'"
-                            >
-                            删除
-                            </PermissionButton>
-                          <PermissionButton
-                              type="text"
-                              hasPermission="system/Role:update"
-                              @click="editGroup(item.data)"
-                              :disabled="item.id === 'default_group'"
-                            >
-                            编辑
-                            </PermissionButton>
-                      </div>
-                </div>
-                <div v-else>
-                    <j-input  v-model:value="addName" @blur="()=>saveGroup(item.data)" ref="inputRef" :maxlength="64"></j-input>
-                </div>
               </template>
           </j-tree>
           <j-empty v-else style="margin-top: 100px;"/>
@@ -66,8 +73,12 @@ const { userInfos } = storeToRefs(userInfoStore)
 const admin = computed(() => {
   return userInfos.value?.username === 'admin';
 })
-const listData:any = ref([])
-const selectedKeys = ref<string[]>([])
+const listData:any = ref([{
+    name:'全局角色',
+    id:'global_role',
+    children:[]
+}])
+const selectedKeys = ref<string[]>(['global_role'])
 const searchValue = ref()
 const inputRef = ref()
 const addName = ref()
@@ -76,10 +87,10 @@ const queryGroup = async(select?:Boolean,searchName?:string) =>{
     const params = searchName ? {sorts: [{ name: 'createTime', order: 'desc' }],terms:[{terms:[{value:'%'+ searchName +'%',termType:'like',column:'name'}]}]} : {sorts: [{ name: 'createTime', order: 'desc' }]}
     const req:any = await queryRoleGroup(params)
     if(req.status === 200){
-        listData.value = req.result
-        if(req.result.length && select){
-            selectGroup(req.result[0].id)
-        }
+        listData.value[0].children = req.result
+        // if(req.result.length && select){
+        //     selectGroup(req.result[0].id)
+        // }
     }
 }
 const addGroup = () =>{
@@ -121,7 +132,8 @@ const searchChange = () =>{
 }
 const selectGroup = (id:string) =>{
     selectedKeys.value = [id]
-    emit('selectData',selectedKeys.value)
+    id === 'global_role' ?  emit('selectData','') : emit('selectData',selectedKeys.value)
+    
 }
 const deleteGroup = async(id:string)=>{
     const res:any = await deleteRoleGroup(id)
@@ -144,10 +156,7 @@ onMounted(()=>{
     queryGroup(true)
 })
 </script>
-  <style lang="less" scoped>
-  :deep(.ant-tree-switcher){
-      display: none;
-  }
+<style lang="less" scoped>
   .controls{
       margin: 10px 0;
   }

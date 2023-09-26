@@ -65,6 +65,7 @@ import {
 import {
     filterMenu,
     initData,
+    inItSelected,
     drop,
     select,
     getMaxDepth,
@@ -128,7 +129,38 @@ const getProvidersFn = async () => {
     }
 }
 getProvidersFn();
-function filterTree(nodes: Array<any>, selectedKeys: Array<any>,parentId?:string) {
+/**
+ * 作用：过滤掉非选中菜单重新组成新的数组
+ */
+// function filterTree(nodes: Array<any>, selectedKeys: Array<any>,parentId?:string) {
+//     const filtered = [];
+//     for (let i = 0; i < nodes.length; i++) {
+//         const node = nodes[i];
+//         if (!node.code) {
+//             continue;
+//         }
+//         node.parentId = parentId ?  undefined : parentId
+//         if (selectedKeys.indexOf(node.code) !== -1) {
+//             filtered.push(node);
+//             if (node.children) {
+//                 node.children = filterTree(node.children, selectedKeys,node.id);
+//             }
+//         } else if (node.children) {
+//             node.children = filterTree(node.children, selectedKeys,node.id);
+//             if (node.children.length > 0) {
+//                 filtered.push(node);
+//             }
+//         }
+//     }
+//     return filtered;
+// }
+/**
+ * 
+ * @param nodes 菜单数据
+ * @param selectedKeys 选中的菜单
+ * 选中和非选中改变show的值
+ */
+const dealTree = (nodes: Array<any>, selectedKeys: Array<any>,parentId?:string) =>{
     const filtered = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
@@ -136,26 +168,33 @@ function filterTree(nodes: Array<any>, selectedKeys: Array<any>,parentId?:string
             continue;
         }
         node.parentId = parentId ?  undefined : parentId
+        node?.options ? node.options.show = false :  node.options = { show : false }
+
         if (selectedKeys.indexOf(node.code) !== -1) {
-            filtered.push(node);
+            node.options.show =  true
             if (node.children) {
-                node.children = filterTree(node.children, selectedKeys,node.id);
+                node.children = dealTree(node.children, selectedKeys,node.id);
             }
         } else if (node.children) {
-            node.children = filterTree(node.children, selectedKeys,node.id);
-            if (node.children.length > 0) {
-                filtered.push(node);
+            node.children = dealTree(node.children, selectedKeys,node.id);
+            const children  =node.children.filter((item:any)=>{
+                item.options.show === true
+            })
+            if (children.length > 0) {
+                node.options.show =  true
             }
+        }else{
+            node.options.show = false
         }
+        filtered.push(node)
     }
     return filtered;
 }
-
 const handleOk = async () => {
-    const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
+    // const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
+    const _dataArr = dealTree(cloneDeep(treeData.value),selectedKeys.value)
     const _dataSorts = handleSorts(_dataArr)
     loading.value = true;
-    console.log(_dataSorts)
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
@@ -204,13 +243,13 @@ const onDragend = (info: AntTreeNodeDropEvent) => {
 
 onMounted(() => {
     getSystemPermission_api().then((resp: any) => {
-        const filterBaseMenu = BaseMenu.filter(item => ![
-          USER_CENTER_MENU_CODE,messageSubscribe
-        ].includes(item.code))
-        baseMenu.value = filterMenu(
-            resp.result.map((item: any) => JSON.parse(item).id),
-          filterBaseMenu,
-        );
+        // const filterBaseMenu = BaseMenu.filter(item => ![
+        //   USER_CENTER_MENU_CODE,messageSubscribe
+        // ].includes(item.code))
+        // baseMenu.value = filterMenu(
+        //     resp.result.map((item: any) => JSON.parse(item).id),
+        //   filterBaseMenu,
+        // );
         getMenuTree_api(params).then((resp: any) => {
             if (resp.status == 200) {
                 systemMenu.value = resp.result?.filter(
@@ -220,15 +259,14 @@ onMounted(() => {
                         ].includes(item.code),
                 );
                 //初始化菜单
-                initData(baseMenu.value); // 不要克隆，通过引用 处理key和name
-                const systemMenuData = initData(systemMenu.value);
+                // initData(baseMenu.value); // 不要克隆，通过引用 处理key和name
+                const systemMenuData = inItSelected(systemMenu.value);
                 selectedKeys.value = systemMenuData.checkedKeys;
-
-                const AllMenu = filterMenus(mergeArr(
-                    cloneDeep(baseMenu.value),
-                    cloneDeep(systemMenu.value),
-                ))
-                console.log(AllMenu);
+                // const AllMenu = filterMenus(mergeArr(
+                //     cloneDeep(baseMenu.value),
+                //     cloneDeep(systemMenu.value),
+                // ))
+                // console.log(AllMenu);
                 // 处理排序
                 treeData.value = handleSortsArr(systemMenu.value);
             }

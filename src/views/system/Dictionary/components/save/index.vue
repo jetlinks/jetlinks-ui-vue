@@ -63,7 +63,7 @@ const form = reactive({
             if (props.type === 'add') {
                 const res:any = await verifyId(value);
                 if (res.status === 200 && res.result) {
-                    return Promise.reject('ID重复');
+                    return Promise.reject('该字典ID已存在');
                 } else {
                     return Promise.resolve();
                 }

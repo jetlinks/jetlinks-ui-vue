@@ -11,21 +11,8 @@
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-form-item
-                label="名称"
-                name="name"
-                :rules="[
-                    { required: true, message: '请输入名称' },
-                    { max: 64, message: '最多可输入64个字符' },
-                ]"
-            >
-                <j-input
-                    v-model:value="form.data.name"
-                    placeholder="请输入名称"
-                />
-            </j-form-item>
-            <j-form-item
                 name="relation"
-                label="标识"
+                label="关系标识"
                 :rules="[
                     { required: true, message: '请输入标识' },
                     { max: 64, message: '最多可输入64个字符' },
@@ -83,6 +70,32 @@
                     </j-form-item>
                 </j-col>
             </j-row>
+            <j-form-item
+                label="正向关系名称"
+                name="name"
+                :rules="[
+                    { required: true, message: '请输入名称' },
+                    { max: 64, message: '最多可输入64个字符' },
+                ]"
+            >
+                <j-input
+                    v-model:value="form.data.name"
+                    placeholder="请输入名称"
+                />
+            </j-form-item>
+            <j-form-item
+                label="反向关系名称"
+                name="reverseName"
+                :rules="[
+                    { required: true, message: '请输入名称' },
+                    { max: 64, message: '最多可输入64个字符' },
+                ]"
+            >
+                <j-input
+                    v-model:value="form.data.reverseName"
+                    placeholder="请输入名称"
+                />
+            </j-form-item>
             <j-form-item name="description" label="说明">
                 <j-textarea
                     v-model:value="form.data.description"
@@ -203,6 +216,7 @@ form.getObjectList();
 
 type formType = {
     name: string;
+    reverseName: string;
     relation: string;
     objectType: string | undefined;
     targetType: string | undefined;
