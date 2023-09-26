@@ -41,8 +41,8 @@
                 { required: true, message: '请输入别名' },
                 { max: 32, message: '最多可输入32个字符' },
                 {
-                    pattern: /^[0-9\u4e00-\u9fa5]{1,32}$/,
-                    message: '别名只能由数字、汉字组成',
+                    pattern: /^[0-9a-zA-Z\u4e00-\u9fa5]{1,32}$/,
+                    message: '别名只能由数字、字母、汉字组成',
                 }
             ]">
                 <j-input :maxLength="32" show-count v-model:value="formData.propertyAlias" placeholder="请输入别名"></j-input>
