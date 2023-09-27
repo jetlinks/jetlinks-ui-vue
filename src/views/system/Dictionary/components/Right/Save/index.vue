@@ -47,7 +47,7 @@ const form: any = ref({
     text: '',
     ordinal: 0
 })
-
+const lastValue = ref()
 const loading = ref(false)
 const formRef = ref()
 /*
@@ -66,7 +66,7 @@ const validateInput = async (_rule: Rule, value: string) => {
  * 校验value唯一
  */
 const validateValue = async (_rule: Rule, value: string) => {
-    if (value && props.type === 'add') {
+    if (value && lastValue.value !== value) {
         const res:any = await verifyValue({
             terms: [
                 {
@@ -133,6 +133,7 @@ onMounted(() => {
         form.value.ordinal = props.sort
     } else {
         form.value = props.data
+        lastValue.value = props.data.value
     }
 })
 </script>
