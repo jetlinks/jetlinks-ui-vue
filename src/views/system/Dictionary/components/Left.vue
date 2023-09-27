@@ -79,7 +79,7 @@ const showSave = () => {
 const downVisible = ref(false)
 const searchValue = ref()
 const queryData = (first?: Boolean, searchName?: any) => {
-    const params = searchName ? { sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }] }
+    const params = searchName ? { paging:false ,sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }], paging:false  }
     getDicList(params).then((res: any) => {
         if (res.status === 200) {
             listData.value = res.result

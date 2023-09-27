@@ -29,6 +29,13 @@
                     <template #type="slotProps">
                         {{ slotProps.type?.name }}
                     </template>
+                    <template #roleList="slotProps">
+                        <j-ellipsis>
+                            {{ slotProps?.roleList?.map((item)=>{
+                                return item.name
+                            }).join(',') }}
+                        </j-ellipsis>
+                    </template>
                     <template #status="slotProps">
                         <BadgeStatus
                             :status="slotProps.status"
@@ -171,6 +178,15 @@ const columns = [
                 }),
         },
         scopedSlots: true,
+    },
+    {
+        title: '角色',
+        dataIndex: 'roleList',
+        key: 'roleList',
+        search:{
+            type:'string'
+        },
+         scopedSlots: true,
     },
     {
         title: '状态',
