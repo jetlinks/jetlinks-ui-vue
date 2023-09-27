@@ -324,7 +324,15 @@ const form = reactive({
 
         if (isNoCommunity) {
           // 获取关联菜单
-          getMenuTree_api({ paging: false }).then((resp: any) => {
+          getMenuTree_api({ paging: false,terms:[{terms:[{
+                    terms:[
+                        {
+                            value:"%show\":true%",
+                            termType:"like",
+                            column:"options"
+                        }
+                    ]
+                }]}]}).then((resp: any) => {
               form.treeData = resp.result;
           });
           // 获取资产类型
