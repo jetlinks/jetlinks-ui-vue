@@ -25,7 +25,7 @@
         <UserInfo />
       </div>
     </template>
-    <Iframe />
+    <Iframe :key="route.path" />
   </j-pro-layout>
 </template>
 
