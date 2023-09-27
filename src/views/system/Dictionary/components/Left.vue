@@ -79,7 +79,7 @@ const showSave = () => {
 const downVisible = ref(false)
 const searchValue = ref()
 const queryData = (first?: Boolean, searchName?: any) => {
-    const params = searchName ? { sorts: [{ name: 'createTime', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }] }
+    const params = searchName ? { sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }, { name: 'name', order: 'desc' }] }
     getDicList(params).then((res: any) => {
         if (res.status === 200) {
             listData.value = res.result
@@ -156,9 +156,16 @@ const beforeUpload = (file: any) => {
     if (file.type === 'application/json') {
         const reader = new FileReader();
         reader.readAsText(file);
-        reader.onload = async (json) => {
-            if (json.target?.result) {
-                const data = JSON.parse(json.target?.result);
+        reader.onload = async (json: any) => {
+            if (json?.target?.result) {
+                const text = json.target.result
+                let data
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    onlyMessage('请上传json格式的文件', 'error')
+                    return false
+                }
                 const res = await addDictionary(data)
                 if (res.status === 200) {
                     reload()
