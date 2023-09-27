@@ -12,7 +12,7 @@
             }}</span></div>
         </div>
         <div class="contain">
-            <pro-search :columns="columns" @search="handleSearch" target="system_dictionary"/>
+            <pro-search :columns="columns" @search="handleSearch" target="system_dictionary" />
             <JProTable :columns="columns" model="TABLE" :request="queryItem" :params="params" ref="tableRef">
                 <template #headerTitle>
                     <PermissionButton type="primary" @click="add" hasPermission="system/Dictionary:add">
@@ -65,8 +65,13 @@ const columns = [
         title: '序号',
         dataIndex: 'ordinal',
         key: 'ordinal',
+    },
+    {
+        title: '检索码',
+        dataIndex: '',
+        hideInTable: true,
         search: {
-            type: 'number'
+            type: 'string'
         }
     },
     {
@@ -209,7 +214,6 @@ watch(() => props?.data?.id, () => {
 })  
 </script>
 <style lang="less" scoped>
-
 .des_head {
     padding: 10px 20px;
     background-color: rgb(242, 242, 242);

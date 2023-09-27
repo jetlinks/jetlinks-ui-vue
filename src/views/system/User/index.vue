@@ -134,6 +134,7 @@ import {
     getUserList_api,
     changeUserStatus_api,
     deleteUser_api,
+    queryRole_api
 } from '@/api/system/user';
 import { onlyMessage } from '@/utils/comm';
 
@@ -184,7 +185,27 @@ const columns = [
         dataIndex: 'roleList',
         key: 'roleList',
         search:{
-            type:'string'
+            type:'select',
+            rename:'id$in-dimension$role',
+            options:() => 
+            new Promise((resolve)=>{
+                queryRole_api(
+                    {   
+                        paging:false,
+                        sorts: [
+                            { name: 'createTime', order: 'desc' },
+                            { name: 'id', order: 'desc' },
+                        ]
+                    }
+                ).then((resp:any)=>{
+                    resolve(
+                            resp.result.map((item: dictType) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                })
+            })
         },
          scopedSlots: true,
     },

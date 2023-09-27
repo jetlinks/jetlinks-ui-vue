@@ -37,3 +37,5 @@ export const updatePassword_api = (data: { id: string, password: string }) => se
 export const changeUserStatus_api = (data: object) => server.patch(`/user`,data);
 // 删除用户
 export const deleteUser_api = (id: string) => server.remove(`/user/${id}`);
+// 查询角色不分页
+export const queryRole_api = (data: any): Promise<any> => server.post(`/role/_query/no-paging`, data)
