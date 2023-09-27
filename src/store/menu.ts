@@ -12,7 +12,7 @@ import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
 import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
 import { USER_CENTER_MENU_CODE } from '@/utils/consts'
-import {isNoCommunity} from "@/utils/utils";
+import { isNoCommunity } from "@/utils/utils";
 
 const defaultOwnParams = [
   {
@@ -29,6 +29,21 @@ const defaultOwnParams = [
             termType: 'isnull',
             value: '1',
             type: 'or'
+          }, {
+            column: 'options'
+          }
+        ]
+      },
+      {
+        terms: [
+          {
+            terms: [
+              {
+                value: "%show\":true%",
+                termType: "like",
+                column: "options"
+              }
+            ]
           }
         ]
       }
@@ -79,7 +94,7 @@ export const useMenuStore = defineStore({
     jumpPage(name: string, params?: Record<string, any>, query?: Record<string, any>) {
       const path = this.hasMenu(name)
       if (path) {
-        this.params = { [name]: params || {}}
+        this.params = { [name]: params || {} }
         router.push({
           name, params, query, state: { params }
         })
@@ -89,14 +104,14 @@ export const useMenuStore = defineStore({
       }
     },
     routerPush(name: string, params?: Record<string, any>, query?: Record<string, any>) {
-      this.params = { [name]: params || {}}
-        router.push({
-          name, params, query, state: { params }
-        })
+      this.params = { [name]: params || {} }
+      router.push({
+        name, params, query, state: { params }
+      })
     },
-    handleMenusMapById(item: { code: string, path: string}) {
+    handleMenusMapById(item: { code: string, path: string }) {
       const { name, path } = item
-      this.menus[name] = {path}
+      this.menus[name] = { path }
     },
     queryMenuTree(isCommunity = false): Promise<any[]> {
       return new Promise(async (res) => {
