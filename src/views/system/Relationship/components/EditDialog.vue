@@ -76,25 +76,30 @@
                 :rules="[
                     { required: true, message: '请输入名称' },
                     { max: 64, message: '最多可输入64个字符' },
+                    { required: true , validator:validateName, trigger: 'blur',}
                 ]"
             >
                 <j-input
                     v-model:value="form.data.name"
                     placeholder="请输入名称"
                 />
+                <span class="example">正向关系示例：用户张三是001号视频设备的管理员</span>
             </j-form-item>
+          
             <j-form-item
                 label="反向关系名称"
                 name="reverseName"
                 :rules="[
                     { required: true, message: '请输入名称' },
                     { max: 64, message: '最多可输入64个字符' },
+                    { required: true , validator:validateName, trigger: 'blur',}
                 ]"
             >
                 <j-input
                     v-model:value="form.data.reverseName"
                     placeholder="请输入名称"
                 />
+                <span class="example">反向关系示例：001号视频设备是用户张三的管辖设备</span>
             </j-form-item>
             <j-form-item name="description" label="说明">
                 <j-textarea
@@ -209,6 +214,12 @@ const form = reactive({
         return api(params);
     },
 });
+const validateName = async(_:any,value:any)=>{
+   if(!value){
+    return Promise.resolve()
+   }
+   return form.data.reverseName === form.data.name ? Promise.reject('不能使用相同的关系名称') : Promise.resolve()
+}
 const targetList = computed(() =>
     form.data.objectType === 'device' ? [{ id: 'user', name: '用户' }] : [],
 );
@@ -224,3 +235,9 @@ type formType = {
     id?: string;
 };
 </script>
+<style scoped lang="less">
+.example {
+    color: rgb(192, 192, 192);
+    font-size: 12px;
+}
+</style>
