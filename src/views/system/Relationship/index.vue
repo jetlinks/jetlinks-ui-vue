@@ -90,7 +90,7 @@ const columns = [
         },
     },
     {
-        title: '正向关系名称',
+        title: '反向关系名称',
         dataIndex: 'reverseName',
         key: 'reverseName',
         ellipsis: true,
