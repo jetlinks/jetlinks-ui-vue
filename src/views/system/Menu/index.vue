@@ -55,7 +55,7 @@
                                 type="link"
                                 :hasPermission="`${permission}:add`"
                                 :tooltip="{ title: slotProps.level >= 3 ? '仅支持3级菜单' :   '新增子菜单' }"
-                                :disabled="slotProps.level >= 3"
+                                :disabled="slotProps.level >= 3 || slotProps?.options?.LowCode"
                                 @click="table.addChildren(slotProps)"
                             >
                                 <AIcon type="PlusCircleOutlined" />
@@ -195,6 +195,19 @@ const table = reactive({
                         },
                     ],
                 },
+                {
+                terms:[
+                    {
+                        terms:[
+                            {
+                                value:"%show\":true%",
+                                termType:"like",
+                                column:"options"
+                            }
+                        ]
+                    }
+                ]
+            }
             ],
         };
         const params = {
