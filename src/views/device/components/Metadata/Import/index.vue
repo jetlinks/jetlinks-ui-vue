@@ -510,11 +510,17 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
         reader.onload = (json) => {
             if(json.target?.result){
                 const data = JSON.parse(json.target?.result);
-
+                Object.keys(data).forEach((i:any)=>{
+                    const map = new Map()
+                    data[i].forEach((item:any)=>(
+                        map.set(item.id,item)
+                    ))
+                    data[i] = [...map.values()]
+                })
                 let check = formModel.metadata === 'jetlinks' ? requiredCheck(data) : aliCheck(data) 
                 if(!check){
                     onlyMessage('操作成功！')
-                    formModel.import = json.target?.result;
+                    formModel.import = JSON.stringify(data);
                 }
             } else {
                 onlyMessage('文件内容不能为空', 'error')
