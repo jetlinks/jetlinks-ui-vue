@@ -50,7 +50,7 @@
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/product';
 import { downloadFileByUrl } from '@/utils/utils';
-import encodeQuery from '@/utils/encodeQuery';
+import { paramsEncodeQuery } from '@/utils/encodeQuery';
 import { deviceExport } from '@/api/device/instance';
 
 const emit = defineEmits(['close']);
@@ -84,7 +84,7 @@ watch(
 );
 
 const handleOk = async () => {
-    const params = encodeQuery(props.data);
+    const params = paramsEncodeQuery(props.data);
     // downloadFile(
     //     deviceExport(modelRef.product || '', modelRef.fileType),
     //     params,
