@@ -21,6 +21,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 import { saveDicItem, verifyValue } from '@/api/system/dictionary';
 import { onlyMessage } from '@/utils/comm';
 import { validateValueType } from '@/views/device/components/Metadata/Base/Edit/validator';
+import { cloneDeep } from 'lodash-es';
 const props = defineProps({
     type: {
         type: String,
@@ -134,7 +135,7 @@ onMounted(() => {
         form.value.dictId = props.dicId
         form.value.ordinal = props.sort
     } else {
-        form.value = props.data
+        form.value = cloneDeep(props.data)
         lastValue.value = props.data.value
     }
 })
