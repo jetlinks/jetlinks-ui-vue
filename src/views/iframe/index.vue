@@ -14,10 +14,14 @@
 
 <script lang="ts" name="IframgePage" setup>
 import { TOKEN_KEY } from '@/utils/variable';
-import { LocalStore, getToken } from '@/utils/comm';
+import {LocalStore, getToken, cleanToken} from '@/utils/comm';
 import { getAppInfo_api } from '@/api/system/apply';
 import { lowCodeUrl } from '@/api/comm'
 import FullPage from "components/Layout/FullPage.vue";
+import {onUnmounted} from "vue";
+import router from "@/router";
+import {LoginPath} from "@/router/menu";
+import { TokenLose} from "@/utils/request";
 
 const iframeUrl = ref<string>('');
 const route = useRoute()
@@ -47,14 +51,35 @@ const handle = async (appId: string, url: string) => {
 const lowCode = () => {
   lowCodeUrl().then(res => {
     if (res.success && res.result) {
-      const url = res.result['ui-addr']
-      // const url = 'http://localhost:8080'
+      // const url = res.result['ui-addr']
+      const url = 'http://localhost:8080'
       iframeUrl.value = url + '/#' + route.path + '?&token=' + getToken()
       console.log(iframeUrl.value)
       loading.value = true
     }
   })
 }
+
+const onMessage = (msg: any) => {
+  console.log('onMessage',msg)
+  if (msg?.data?.token === 'LOSE') {
+    TokenLose()
+    setTimeout(() => {
+      cleanToken()
+      router.replace({
+        path: LoginPath
+      })
+    }, 0)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', onMessage)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('message', onMessage)
+})
 
 watchEffect(() => {
     const matchedItem: any = route.matched?.[0]
