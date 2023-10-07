@@ -51,8 +51,8 @@ const handle = async (appId: string, url: string) => {
 const lowCode = () => {
   lowCodeUrl().then(res => {
     if (res.success && res.result) {
-      // const url = res.result['ui-addr']
-      const url = 'http://localhost:8080'
+      const url = res.result['ui-addr']
+      // const url = 'http://localhost:8080'
       iframeUrl.value = url + '/#' + route.path + '?&token=' + getToken()
       console.log(iframeUrl.value)
       loading.value = true
