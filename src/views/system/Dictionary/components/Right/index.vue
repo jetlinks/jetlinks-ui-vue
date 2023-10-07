@@ -68,7 +68,7 @@ const columns = [
     },
     {
         title: '检索码',
-        dataIndex: '',
+        dataIndex: 'searchCode',
         hideInTable: true,
         search: {
             type: 'string'

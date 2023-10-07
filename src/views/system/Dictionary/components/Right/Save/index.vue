@@ -45,7 +45,8 @@ const form: any = ref({
     name: '',
     value: '',
     text: '',
-    ordinal: 0
+    ordinal: 0,
+    searchCode:''
 })
 const lastValue = ref()
 const loading = ref(false)
@@ -113,6 +114,7 @@ const rules = {
 const submitData = () => {
     formRef.value.validate().then(async () => {
         loading.value = true
+        form.value.searchCode = form.value.name + ':' + form.value.value + ':' + form.value.text
         const res = await saveDicItem(form.value)
         if (res.status === 200) {
             onlyMessage('操作成功!')
