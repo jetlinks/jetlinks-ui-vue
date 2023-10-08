@@ -47,6 +47,18 @@
                                     placeholder="请输入证书文件"
                                 />
                             </j-form-item>
+                            <j-form-item label="证书类型" v-bind="validateInfos.mode">
+                                <j-radio-group v-model:value="formData.mode" button-style="solid">
+                                    <j-radio-button value="client" style="margin-right: 30px;" size="large">客户端</j-radio-button>
+                                    <j-radio-button value="server" size="large">服务端</j-radio-button>
+                                </j-radio-group>
+                            </j-form-item>
+                            <j-form-item label="认证方式" v-if="formData.mode === 'client'" v-bind="validateInfos.authenticationMethod">
+                                <j-radio-group button-style="solid" v-model:value="formData.authenticationMethod">
+                                    <j-radio-button value="single" style="margin-right: 30px;" size="large">单向认证</j-radio-button>
+                                    <j-radio-button value="binomial" size="large">双向认证</j-radio-button>
+                                </j-radio-group>
+                            </j-form-item>
                             <j-form-item
                                 label="证书私钥"
                                 v-bind="validateInfos['configs.key']"
@@ -112,6 +124,7 @@ import type { UploadChangeParam } from 'ant-design-vue';
 import { save, update, queryDetail } from '@/api/link/certificate';
 import { FormDataType, TypeObjType } from '../type';
 import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es';
 
 const router = useRouter();
 const route = useRoute();
@@ -131,6 +144,8 @@ const formData = ref<FormDataType>({
         key: '',
     },
     description: '',
+    mode:'server',
+    authenticationMethod:'single'
 });
 
 const { resetFields, validate, validateInfos } = useForm(
@@ -148,13 +163,25 @@ const { resetFields, validate, validateInfos } = useForm(
             { required: true, message: '请输入或上传文件', trigger: 'blur' },
         ],
         description: [{ max: 200, message: '最多可输入200个字符' }],
+        mode:[{ required: true, message: '请选择证书类型', trigger: 'blur' }],
+        authenticationMethod:[{ required: true, message: '请选择认证方式', trigger: 'blur' }]
     }),
 );
 
 const onSubmit = () => {
     validate()
         .then(async (res) => {
-            const params = toRaw(formData.value);
+            let params:any = toRaw(formData.value);
+            if(formData.value.mode === 'client'){
+                if(formData.value.authenticationMethod === 'binomial'){
+                    params.configs.trust = params.configs.cert
+                }else{
+                    params.configs = {
+                        key:formData.value.configs.key,
+                        trust:formData.value.configs.cert
+                    }
+                }
+            }
             loading.value = true;
             const response =
                 id === ':id'
@@ -190,6 +217,12 @@ const detail = async (id: string) => {
             const type = result.type.value as TypeObjType;
             formData.value = {
                 ...result,
+                configs:{
+                    key:result.configs.key,
+                    cert:result.configs?.cert ? result.configs?.cert : result.configs?.trust
+                },
+                mode: result.mode.value,
+                authenticationMethod: result.authenticationMethod.value,
                 type,
             };
         }
