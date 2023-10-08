@@ -15,7 +15,11 @@
                 blockNode :selectedKeys="selectedKeys" :default-expanded-keys="['global_role']"
                 :showLine="{ showLeafIcon: false }">
                 <template #title="item">
-                    <div class="treeItem" @click="() => selectGroup(item.data.id)" v-if="!item.data?.edit">
+                    <div v-if="selectId === item.data.id">
+                        <j-input v-model:value="addName" @blur="() => saveGroup(item.data)" ref="inputRef"
+                            :maxlength="64"></j-input>
+                    </div>
+                    <div class="treeItem" @click="() => selectGroup(item.data.id)" v-else>
                         <template v-if="!item?.children">
                             <div class="itemText">
                                 <Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis>
@@ -36,11 +40,7 @@
                         <template v-else>
                             <Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis>
                         </template>
-                    </div>
-                    <div v-else>
-                        <j-input v-model:value="addName" @blur="() => saveGroup(item.data)" ref="inputRef"
-                            :maxlength="64"></j-input>
-                    </div>
+                    </div> 
                 </template>
             </j-tree>
             <j-empty v-else style="margin-top: 100px;" />
@@ -69,6 +69,7 @@ const selectedKeys = ref<string[]>(['global_role'])
 const searchValue = ref()
 const inputRef = ref()
 const addName = ref()
+const selectId = ref()
 const addStatus = ref(false) // 新增分组状态
 const queryGroup = async (select?: Boolean, searchName?: string) => {
     const params = searchName ? { sorts: [{ name: 'createTime', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }] }
@@ -82,11 +83,12 @@ const queryGroup = async (select?: Boolean, searchName?: string) => {
 }
 const addGroup = () => {
     addName.value = ''
+    const newId = randomString()
     listData.value[0].children.unshift({
         name: '',
-        edit: true,
-        id: randomString()
+        id: newId
     })
+    selectId.value = newId
     nextTick(() => {
         inputRef.value.focus()
     })
@@ -107,7 +109,9 @@ const saveGroup = async (data: any) => {
             onlyMessage('操作失败!')
         }
     }
-    addStatus.value = false
+    setTimeout(()=>{
+        selectId.value = ''
+    },300)
 }
 const search = () => {
     queryGroup(true, searchValue.value)
@@ -132,12 +136,19 @@ const deleteGroup = async (id: string) => {
     }
 }
 const editGroup = (data: any) => {
-    addName.value = data.name
-    listData.value[0].children.forEach((item: any) => {
-        if (item.id === data.id) {
-            item.edit = true
+        if(!selectId.value){
+            selectId.value = data.id
+            addName.value = data.name
+            listData.value[0].children.forEach((item: any) => {
+                if (item.id === data.id) {
+                    item.edit = true
+                }
+            })
+            nextTick(() => {
+                inputRef.value.focus()
+            })
         }
-    })
+       
 }
 onMounted(() => {
     queryGroup(true)
