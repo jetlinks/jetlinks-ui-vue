@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import Left from './components/Left.vue'
+import Left from './components/Left/index.vue'
 import Right from './components/Right/index.vue'
 const data = ref()
 const selectData = (i: any) => {
