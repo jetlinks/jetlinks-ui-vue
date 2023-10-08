@@ -229,7 +229,7 @@ onMounted(() => {
                 ))
                 console.log(AllMenu);
                 // 处理排序
-                treeData.value = handleSortsArr(systemMenu.value);
+                treeData.value = handleSortsArr(AllMenu);
             }
         });
     });

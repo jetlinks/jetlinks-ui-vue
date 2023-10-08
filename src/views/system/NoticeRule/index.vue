@@ -21,7 +21,7 @@
                             />
                         </template>
                         <j-collapse-panel
-                            v-for="item in dataSource"
+                            v-for="item in tabs"
                             :key="item.provider"
                         >
                             <template #header>
@@ -36,7 +36,7 @@
                                     :key="child.provider"
                                 >
                                     <Item
-                                        :data="data.find(i => i?.provider === child?.provider)"
+                                        :data="child"
                                         @refresh="onRefresh"
                                         :isLast="index === item.children?.length"
                                         :provider="item.provider"
@@ -105,15 +105,42 @@ const dataMap = new Map();
 
 const data = ref<any[]>([]);
 
+const tabs = ref<any[]>([])
 const handleSearch = () => {
     queryChannelConfig().then((resp) => {
         if (resp.status === 200) {
-            (resp?.result || []).map((item: any) => {
-                dataMap.set(item.provider, item);
-            });
-            data.value = Array.from(dataMap).map((item) => {
-                return item?.[1];
-            });
+            // (resp?.result || []).map((item: any) => {
+            //     dataMap.set(item.provider, item);
+            // });
+            // data.value = Array.from(dataMap).map((item) => {
+            //     return item?.[1];
+            // });
+            const arr = dataSource
+                .map((item: any) => {
+                    const _child = item.children.map((i: any) => {
+                        const _item = (resp.result || []).find(
+                            (t: any) => t?.provider === i?.provider,
+                        );
+                        return {
+                            ...i,
+                            ..._item,
+                        };
+                    });
+                    return {
+                        ...item,
+                        children: _child,
+                    };
+                })
+                .filter((it: any) => {
+                    return it.children.filter((lt: any) => lt?.id)?.length;
+                })
+                .map((item) => {
+                    return {
+                        ...item,
+                        children: item.children.filter((lt: any) => lt?.id),
+                    };
+                });
+                tabs.value  = arr
         }
     });
 };
@@ -123,15 +150,15 @@ const onRefresh = () => {
 }
 
 onMounted(() => {
-    dataMap.clear();
-    dataSource.forEach((item) => {
-        item.children.map((i) => {
-            dataMap.set(i.provider, i);
-        });
-    });
-    data.value = Array.from(dataMap).map((item) => {
-        return item?.[1];
-    });
+    // dataMap.clear();
+    // dataSource.forEach((item) => {
+    //     item.children.map((i) => {
+    //         dataMap.set(i.provider, i);
+    //     });
+    // });
+    // data.value = Array.from(dataMap).map((item) => {
+    //     return item?.[1];
+    // });
     handleSearch();
 });
 </script>

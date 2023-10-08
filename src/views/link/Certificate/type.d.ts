@@ -13,7 +13,8 @@ export type FormDataType = {
     };
     id?: string;
     format?: string;
-    mode?: object;
+    mode?: object | string;
     creatorId?: string;
     createTime?: number;
+    authenticationMethod: string;
 };
