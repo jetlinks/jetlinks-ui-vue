@@ -259,4 +259,6 @@ urlMap.set('mqtt-client-gateway', 'topic');
 urlMap.set('http-server-gateway', 'url');
 urlMap.set('websocket-server', 'url');
 urlMap.set('coap-server-gateway', 'url');
+urlMap.set('udp-device-gateway', 'url');
+urlMap.set('tcp-server-gateway', 'url');
 
