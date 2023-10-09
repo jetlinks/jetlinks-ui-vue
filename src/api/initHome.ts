@@ -5,7 +5,7 @@ export const updateMenus = (data: any) => server.patch(`/menu/iot/_all`, data)
 // 添加角色
 export const addRole = (data: any) => server.post(`/role`, data)
 //添加角色分组
-export const addRoleGroup = (data:any) => server.post('/role/group',data)
+export const addRoleGroup = (data:any) => server.patch('/role/group',data)
 //更新权限菜单
 export const getRoleMenu = (id: string) => server.get(`/menu/role/${id}/_grant/tree`)
 
