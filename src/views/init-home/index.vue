@@ -112,6 +112,11 @@ const submitData = async () => {
         loading.value = false;
         return;
     }
+    const roleGroupRes = await roleRef.value.submitRole();
+    if (!roleGroupRes) {
+        loading.value = false;
+        return;
+    }
     const initDataRes = await initDataRef.value.save();
     if (!initDataRes) {
         loading.value = false;
@@ -119,7 +124,7 @@ const submitData = async () => {
     }
     loading.value = false;
     // 当前数据是否成功提交
-    if (basicRes && menuRes && roleRes && initDataRes) {
+    if (basicRes && menuRes && roleRes && roleGroupRes && initDataRes) {
         onlyMessage('保存成功');
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();

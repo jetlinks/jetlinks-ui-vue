@@ -3,28 +3,29 @@
         <div class="built_in_group">
             <div>平台角色内置分组</div>
             <div class="group">
-                <div v-for="(item,index) in group" class="group_item"  @mouseover="()=>showButton(item)" @mouseleave="()=>hiddenButton(item)">
-                    <div  class="group_name" :class="{group_selected: item.selected}"  :type="item.selected ? 'primary' : 'default'">
-                        <j-ellipsis style="max-width: 100%;"><span>{{ item.name }}</span><AIcon type="CloseOutlined" class="closeIcon" v-if="item.closeIcon" @click="group.splice(index,1)"></AIcon></j-ellipsis>
+                <div v-for="(item, index) in group" class="group_item" @mouseover="() => showButton(item)"
+                    @mouseleave="() => hiddenButton(item)">
+                    <div class="group_name" :class="{ group_selected: item.selected }"
+                        :type="item.selected ? 'primary' : 'default'">
+                        <j-ellipsis style="max-width: 100%;"><span>{{ item.name }}</span>
+                            <AIcon type="CloseOutlined" class="closeIcon" v-if="item.closeIcon"
+                                @click="group.splice(index, 1)"></AIcon>
+                        </j-ellipsis>
                     </div>
                     <div v-if="item.show">
-                        <j-button block @click="()=>selectGroup(item)">{{ item.selected ? '取消选中' : '选中' }}</j-button>
-                        <j-button block @click="()=>showEditGroup(item)">编辑</j-button>
+                        <j-button block @click="() => selectGroup(item)">{{ item.selected ? '取消选中' : '选中' }}</j-button>
+                        <j-button block @click="() => showEditGroup(item, index)">编辑</j-button>
                     </div>
                 </div>
-                <j-button type="text" @click="showAddGroup" :disabled="group.length >=10">+ 自定义分组</j-button>
+                <j-button type="text" @click="showAddGroup" :disabled="group.length >= 10">+ 自定义分组</j-button>
             </div>
         </div>
         <j-checkbox-group @change="getCheckValue">
             <div class="init-home-role-content">
-                <div
-                    class="role-item role-item-1"
-                    :style="
-                        keys.includes('device')
-                            ? 'background-color: #f5f5f5;'
-                            : ''
-                    "
-                >
+                <div class="role-item role-item-1" :style="keys.includes('device')
+                        ? 'background-color: #f5f5f5;'
+                        : ''
+                    ">
                     <div class="role-item-title">
                         <j-checkbox :value="ROLEKEYS.device"></j-checkbox>
                         <div class="role-title">设备接入岗</div>
@@ -34,14 +35,10 @@
                         该角色负责设备接入模块的维护管理
                     </div>
                 </div>
-                <div
-                    class="role-item role-item-2"
-                    :style="
-                        keys.includes('link')
-                            ? 'background-color: #f5f5f5;'
-                            : ''
-                    "
-                >
+                <div class="role-item role-item-2" :style="keys.includes('link')
+                        ? 'background-color: #f5f5f5;'
+                        : ''
+                    ">
                     <div class="role-item-title">
                         <j-checkbox :value="ROLEKEYS.link"></j-checkbox>
                         <div class="role-title">运维管理岗</div>
@@ -51,14 +48,10 @@
                         该角色负责系统运维模块的维护管理
                     </div>
                 </div>
-                <div
-                    class="role-item role-item-3"
-                    :style="
-                        keys.includes('complex')
-                            ? 'background-color: #f5f5f5;'
-                            : ''
-                    "
-                >
+                <div class="role-item role-item-3" :style="keys.includes('complex')
+                        ? 'background-color: #f5f5f5;'
+                        : ''
+                    ">
                     <div class="role-item-title">
                         <j-checkbox :value="ROLEKEYS.complex"></j-checkbox>
                         <div class="role-title">综合管理岗</div>
@@ -73,19 +66,16 @@
     </div>
     <j-modal :visible="showAdd" title="自定义分组" @cancel="showAdd = false" @ok="addGroup">
         <j-form layout="vertical" ref="formRef" :model="formData">
-            <j-form-item 
-                name="name"
-                label="名称" 
-                :rules="[
-                    {
-                        required: true,
-                        message: '请输入名称',
-                    },
-                    {
-                        max: 64,
-                        message: '最多可输入64个字符',
-                    },
-                        ]">
+            <j-form-item name="name" label="名称" :rules="[
+                {
+                    required: true,
+                    message: '请输入名称',
+                },
+                {
+                    max: 64,
+                    message: '最多可输入64个字符',
+                },
+            ]">
                 <j-input v-model:value="formData.name"></j-input>
             </j-form-item>
         </j-form>
@@ -94,7 +84,8 @@
 
 <script lang="ts" setup>
 import RoleMenuData, { ROLEKEYS, RoleData } from '../data/RoleData';
-import { updateRoleMenu, addRole, getRoleMenu } from '@/api/initHome';
+import { updateRoleMenu, addRole, getRoleMenu, addRoleGroup } from '@/api/initHome';
+import { randomString } from '@/utils/utils';
 /**
  * 角色勾选数据
  */
@@ -109,23 +100,27 @@ const getCheckValue = (val: any) => {
  * 获取分组数据
  */
 const group = ref<any[]>([{
-    name:'默认',
-    show:false,
-    selected:true
-},{
-    name:'岗位',
-    show:false,
-    selected:false
-},{
-    name:'职位',
-    show:false,
-    selected:false
+    name: '默认',
+    show: false,
+    selected: true,
+    id: 'default_group'
+}, {
+    name: '岗位',
+    show: false,
+    selected: false,
+    id: randomString()
+}, {
+    name: '职位',
+    show: false,
+    selected: false,
+    id: randomString()
 }])
 
 const showAdd = ref(false)
-
+const groupStatue = ref('add')
+const selectedGroup = ref()
 const formData = ref({
-    name:''
+    name: ''
 })
 
 const formRef = ref()
@@ -195,82 +190,111 @@ const saveRoleData = (item: any) => {
  * 保存角色
  */
 const addRoleData = async () => {
-  return new Promise((resolve) => {
-    if (!keys.value.length) {
-      return resolve(true);
-    }
+    return new Promise((resolve) => {
+        if (!keys.value.length) {
+            return resolve(true);
+        }
 
-    const allPromise = keys.value.map(async (item) => {
-      return await saveRoleData(item);
-    });
+        const allPromise = keys.value.map(async (item) => {
+            return await saveRoleData(item);
+        });
 
-    Promise.all(allPromise).then((item) => {
-      resolve(
-        item.every((i) => {
-          return i;
-        }),
-      );
+        Promise.all(allPromise).then((item) => {
+            resolve(
+                item.every((i) => {
+                    return i;
+                }),
+            );
+        });
     });
-  });
 };
 
-const showButton = (item:any) =>{
-    if(item.name != '默认'){
+const showButton = (item: any) => {
+    if (item.name != '默认') {
         item.show = true
     }
 }
-const hiddenButton = (item:any)=>{
+const hiddenButton = (item: any) => {
     item.show = false
 }
 
-const selectGroup = (item:any)=>{
+const selectGroup = (item: any) => {
     item.selected = !item.selected
 }
 /**
  * 新增分组
  */
-const showAddGroup = ()=>{
+const showAddGroup = () => {
     formData.value.name = ''
     showAdd.value = true
+    groupStatue.value = 'add'
 }
 /**
  * 分组编辑
  */
-const showEditGroup = (item:any) =>{
+const showEditGroup = (item: any, index: number) => {
     formData.value.name = item.name
     showAdd.value = true
+    groupStatue.value = 'edit'
+    selectedGroup.value = index
 }
-const addGroup = () =>{
-    formRef.value?.validate().then(()=>{
-        group.value.push({
-            name:formData.value.name,
-            selected:true,
-            show:false,
-            closeIcon:true
-        })
+const addGroup = () => {
+    formRef.value?.validate().then(() => {
+        groupStatue.value === 'add' ? group.value.push({
+            name: formData.value.name,
+            selected: true,
+            show: false,
+            closeIcon: true,
+            id: randomString()
+        }) : group.value[selectedGroup.value].name = formData.value.name
         showAdd.value = false
+    })
+}
+/**
+ * 保存角色分组
+ */
+const saveGroup = async () => {
+    const roleGroup = group.value.filter((item: any) => {
+        return item.selected
+    })
+    return new Promise((resolve) => {
+        const allPromise = roleGroup.map(async (item) => {
+            return await addRoleGroup({ id: item.id, name: item.name });
+        });
+        Promise.all(allPromise).then((item) => {
+            resolve(
+                item.every((i) => {
+                    return i;
+                }),
+            );
+        });
     })
 }
 defineExpose({
     submitRole: addRoleData,
+    submitRoleGroup: saveGroup
 });
 </script>
 <style lang="less" scoped>
 .init-home-role {
-    .built_in_group{
+    .built_in_group {
         margin-bottom: 10px;
         position: relative;
-        .group{
+
+        .group {
             display: flex;
             position: absolute;
             z-index: 999;
-            .group_item{
+
+            .group_item {
                 width: 100px;
                 margin-right: 20px;
-                .button{
+
+                .button {
                     display: block;
                 }
-                .group_name{
+
+                .group_name {
                     border: .2px solid rgb(217, 217, 217);
                     text-align: center;
                     height: 32px;
@@ -278,34 +302,41 @@ defineExpose({
                     border-radius: 12%;
                     padding: 0 10px;
                     position: relative;
-                    .closeIcon{
+
+                    .closeIcon {
                         font-size: 12px;
                         position: absolute;
                         top: 4px;
                         right: 4px;
                     }
                 }
-                .group_selected{
+
+                .group_selected {
                     background-color: rgb(190, 232, 251);
                 }
             }
         }
     }
+
     .init-home-role-content {
         display: flex;
         grid-gap: 24px;
         gap: 24px;
         margin-top: 40px;
     }
+
     .role-item-1 {
         background-image: url(/images/init-home/role1.png);
     }
+
     .role-item-2 {
         background-image: url(/images/init-home/role2.png);
     }
+
     .role-item-3 {
         background-image: url(/images/init-home/role3.png);
     }
+
     .role-item {
         position: relative;
         display: flex;
@@ -317,8 +348,10 @@ defineExpose({
         background-position: 50%;
         background-size: 370px;
         border: 1px solid #f5f5f5;
+
         .role-item-title {
             display: flex;
+
             .role-title {
                 flex: 1 1 auto;
                 font-weight: 700;
@@ -326,11 +359,13 @@ defineExpose({
                 text-align: center;
             }
         }
+
         .role-item-content {
             width: 250px;
             height: 260px;
             margin-top: 24px;
         }
+
         .role-item-footer {
             position: absolute;
             bottom: -30px;
@@ -341,5 +376,4 @@ defineExpose({
             text-align: center;
         }
     }
-}
-</style>
+}</style>
