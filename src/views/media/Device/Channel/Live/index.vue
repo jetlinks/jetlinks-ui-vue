@@ -29,8 +29,8 @@
                 >
             </div>
         </div>
-        <div class="media-live" @mouseenter="visibleChange"  @mouseleave="mouseleave">
-            <div class="media-live-video">
+        <div class="media-live">
+            <div class="media-live-video" @mouseenter="visibleChange"  @mouseleave="mouseleave">
                 <div
                     :class="mediaToolClass"
                     @mouseenter="showTool = true"
