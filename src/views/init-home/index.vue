@@ -112,7 +112,7 @@ const submitData = async () => {
         loading.value = false;
         return;
     }
-    const roleGroupRes = await roleRef.value.submitRole();
+    const roleGroupRes = await roleRef.value.submitRoleGroup();
     if (!roleGroupRes) {
         loading.value = false;
         return;
