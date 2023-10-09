@@ -34,19 +34,19 @@ const defaultOwnParams = [
           }
         ]
       },
-      // {
-      //   terms: [
-      //     {
-      //       terms: [
-      //         {
-      //           value: "%show\":true%",
-      //           termType: "like",
-      //           column: "options"
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // }
+      {
+        terms: [
+          {
+            terms: [
+              {
+                value: "%show\":true%",
+                termType: "like",
+                column: "options"
+              }
+            ]
+          }
+        ]
+      }
     ]
   }
 ]

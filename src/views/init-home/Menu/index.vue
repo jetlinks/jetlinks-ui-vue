@@ -97,11 +97,25 @@ const menuCount = (menus: any[]) => {
     }, 0);
 };
 /**
+ * 添加options show用于控制菜单是否显示函数
+ */
+const dealMenu = (data:any) =>{
+    data.forEach((item:any)=>{
+        item.options = {
+            show: true
+        }
+        if(item.children){
+            dealMenu(item.children)
+        }
+    })
+}
+/**
  * 初始化菜单
  */
 const initMenu = async () => {
     return new Promise(async (resolve) => {
       //  用户中心
+        dealMenu(menuDatas.current)
         console.log([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         if (res.status === 200) {

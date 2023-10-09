@@ -371,6 +371,9 @@ const form = reactive({
                 const accessSupportValue = form.data.accessSupport;
                 const params = {
                     ...form.data,
+                    options:{
+                        show:true
+                    },
                     accessSupport: {
                         value: accessSupportValue,
                         label:
