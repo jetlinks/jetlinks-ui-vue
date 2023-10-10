@@ -19,8 +19,6 @@
                             :tree-data="dataSource"
                             :checkedKeys="checkedKeys"
                             @check="onCheck"
-                            :showLine="{ showLeafIcon: false }"
-                            :show-icon="true"
                         />
                     </j-card>
                     <div style="width: 100px">
@@ -137,7 +135,7 @@ const _delete = (_key: string) => {
 };
 
 const handleClick = async () => {
-   
+
     if (!rightList.value.length) {
         onlyMessage('请选择采集器', 'warning');
     } else {
@@ -154,7 +152,7 @@ const handleClick = async () => {
             }));
             params.push(...array);
         });
-        
+
         const filterParms = params.filter((item) => !!item.metadataId);
         if (filterParms && filterParms.length !== 0) {
             const res = await saveMapping(_props.deviceId, _props.type, filterParms);

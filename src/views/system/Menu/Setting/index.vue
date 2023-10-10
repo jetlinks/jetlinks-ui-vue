@@ -21,8 +21,6 @@
                           :selectedKeys="selectedKeys"
                           @drop="onDrop"
                           @dragend="onDragend"
-                          :showLine="{ showLeafIcon: false }"
-                            :show-icon="true"
                         >
                           <template #title="row">
                             <div class="tree-content">
@@ -121,7 +119,7 @@ const params = {
 let filterProtocolList: any[] = [];
 const getProvidersFn = async () => {
     if(!isNoCommunity){
-        return 
+        return
     }else{
         const res: any = await getProviders();
         filterProtocolList = protocolList.filter((item) => {

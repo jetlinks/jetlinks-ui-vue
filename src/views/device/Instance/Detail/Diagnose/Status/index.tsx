@@ -63,7 +63,7 @@ const Status = defineComponent({
         }
 
         const jumpAccessConfig = () => {
-            menuStory.jumpPage('device/Product/Detail', { id: unref(device).productId, tab: 'access' });
+            menuStory.jumpPage('device/Product/Detail', { id: unref(device).productId, tab: 'Device' });
         };
 
         const jumpDeviceConfig = () => {
