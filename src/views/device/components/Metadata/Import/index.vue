@@ -580,7 +580,13 @@ const handleImport = async () => {
         if (data.metadata === 'alink') {
             try {
                 const _import = JSON.parse(data.import);
-
+                Object.keys(_import).forEach((i:any)=>{
+                    const map = new Map()
+                    _import[i].forEach((item:any)=>(
+                        map.set(item.id,item)
+                    ))
+                    _import[i] = [...map.values()]
+                })
                 loading.value = true;
                 const res = await convertMetadata(
                     'from',
@@ -631,7 +637,15 @@ const handleImport = async () => {
                     data[data?.type === 'copy' ? 'copy' : 'import'] ||
                         '{}',
                 );
-
+                if(data?.type === 'import'){
+                        Object.keys(_object).forEach((i:any)=>{
+                        const map = new Map()
+                        _object[i].forEach((item:any)=>(
+                            map.set(item.id,item)
+                        ))
+                        _object[i] = [...map.values()]
+                    })
+                }
                 if (
                     !(
                         !!_object?.properties ||
