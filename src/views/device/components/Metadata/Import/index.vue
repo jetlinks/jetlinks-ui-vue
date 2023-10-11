@@ -638,7 +638,6 @@ const handleImport = async () => {
                         '{}',
                 );
                 if(data?.type !== 'copy'){
-                        console.log(123)
                         Object.keys(_object).forEach((i:any)=>{
                         const map = new Map()
                         _object[i].forEach((item:any)=>(

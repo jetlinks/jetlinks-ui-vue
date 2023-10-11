@@ -29,7 +29,7 @@ const handleTermsToString = (queryTerms: any, terms: Array<TermsType>, parentKey
     Object.keys(a).forEach((b) => {
       const key = `${parentKey}[${aIndex}].${b}`
       if (b === 'terms') {
-        handleTermsToString(queryTerms, a[b], `${key}.`)
+        handleTermsToString(queryTerms, a[b], `${key}`)
       } else {
         queryTerms[key] = a[b]
       }
@@ -48,7 +48,7 @@ export const paramsEncodeQuery = (params?: ParamsType) => {
     const { sorts, terms } = params
 
     if (terms) {
-      handleTermsToString(queryParams, terms, 'terms.')
+      handleTermsToString(queryParams, terms, 'terms')
     }
 
     if (sorts) {
