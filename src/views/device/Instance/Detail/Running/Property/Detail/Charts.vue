@@ -185,7 +185,8 @@ const getOptions = (arr: any[]) => {
         tooltip: {
             trigger: 'axis',
             position: function (pt: any) {
-                return [pt[0], '10%'];
+                const left = pt[0] - 80
+                return [left, '10%'];
             },
         },
         series: [
