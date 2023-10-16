@@ -147,9 +147,8 @@
                                             message: '请输入IP地址',
                                         },
                                         {
-                                            pattern:
-                                                /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/,
-                                            message: '请输入正确的IP地址',
+                                            validator:validateUrl,
+                                            trigger: 'change',
                                         },
 
                                     ]"
@@ -341,10 +340,8 @@
                                                             '请输入公网 Host',
                                                     },
                                                     {
-                                                        pattern:
-                                                            /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/,
-                                                        message:
-                                                            '请输入正确的IP地址',
+                                                        validator:validateUrl,
+                                                        trigger: 'change',
                                                     },
                                                 ]"
                                             >
@@ -514,7 +511,8 @@ import { getResourcesCurrent, getClusters } from '@/api/link/accessConfig';
 import { update, save } from '@/api/link/accessConfig';
 import { onlyMessage } from '@/utils/comm';
 import { isNumber } from 'lodash-es';
-
+import type { Rule } from 'ant-design-vue/es/form';
+import { testIpv4_6 } from '@/utils/validate';
 interface Form2 {
     clusterNodeId: string | undefined;
     port: string | undefined;
@@ -598,6 +596,16 @@ const rules = {
   ]
 }
 
+const  validateUrl=async (_rule: Rule, value: string) => {
+    if (!value) {
+        return Promise.reject('请输入IP地址');
+    } else {
+        if (!testIpv4_6(value)) {
+            return Promise.reject('请输入正确的IP地址');
+        }
+        return Promise.resolve();
+    }
+}
 const removeCluster = (item: Form2) => {
     let index = dynamicValidateForm.cluster.indexOf(item);
     if (index !== -1) {

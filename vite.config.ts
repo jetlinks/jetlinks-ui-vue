@@ -90,34 +90,33 @@ export default defineConfig(({ mode }) => {
         server: {
             host: '0.0.0.0',
 
-            proxy: {
-                [env.VITE_APP_BASE_API]: {
-                    // target: 'http://192.168.32.226:8844',
-                    // target: 'http://192.168.32.244:8881',
-                    //   target: 'http://192.168.32.163:8844', //张季本地
-                    //   target: 'http://120.77.179.54:8844', // 120测试
-                    // target: 'http://192.168.32.221:8844/',//黄
-                    target: 'http://192.168.32.219:8845/',//杜
-                    //   target: 'http://192.168.33.46:8844', // 本地开发环境
-                    ws: 'ws://192.168.33.46:8844',
-                    changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, '')
-                }
-            }
-        },
-        css: {
-            preprocessorOptions: {
-                less: {
-                    modifyVars: {
-                        'root-entry-name': 'variable',
-                        hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
-                    },
-                    javascriptEnabled: true,
-                }
-            }
-        },
-        optimizeDeps: {
-            include: ['pinia', 'vue-router', 'axios', 'lodash-es', '@vueuse/core', 'echarts', 'dayjs'],
-        }
-    }
+          proxy: {
+              [env.VITE_APP_BASE_API]: {
+                  // target: 'http://192.168.32.226:8844',
+                  // target: 'http://192.168.32.244:8881',
+                //   target: 'http://192.168.32.163:8844', //张季本地
+                //   target: 'http://120.77.179.54:8844', // 120测试
+                  target: 'http://192.168.33.46:8844', // 本地开发环境
+                //   target: 'http://192.168.32.5:8848', // 刘本地
+                  ws: 'ws://192.168.33.46:8844',
+                  changeOrigin: true,
+                  rewrite: (path) => path.replace(/^\/api/, '')
+              }
+          }
+      },
+      css: {
+          preprocessorOptions: {
+              less: {
+                  modifyVars: {
+                      'root-entry-name': 'variable',
+                      hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
+                  },
+                  javascriptEnabled: true,
+              }
+          }
+      },
+      optimizeDeps: {
+          include: ['pinia', 'vue-router', 'axios', 'lodash-es', '@vueuse/core', 'echarts', 'dayjs'],
+      }
+  }
 })

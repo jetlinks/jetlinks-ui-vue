@@ -510,7 +510,6 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
         reader.onload = (json) => {
             if(json.target?.result){
                 const data = JSON.parse(json.target?.result);
-
                 let check = formModel.metadata === 'jetlinks' ? requiredCheck(data) : aliCheck(data) 
                 if(!check){
                     onlyMessage('操作成功！')
@@ -581,7 +580,13 @@ const handleImport = async () => {
         if (data.metadata === 'alink') {
             try {
                 const _import = JSON.parse(data.import);
-               
+                Object.keys(_import).forEach((i:any)=>{
+                    const map = new Map()
+                    _import[i].forEach((item:any)=>(
+                        map.set(item.id,item)
+                    ))
+                    _import[i] = [...map.values()]
+                })
                 loading.value = true;
                 const res = await convertMetadata(
                     'from',
@@ -632,7 +637,15 @@ const handleImport = async () => {
                     data[data?.type === 'copy' ? 'copy' : 'import'] ||
                         '{}',
                 );
-                
+                if(data?.type !== 'copy'){
+                        Object.keys(_object).forEach((i:any)=>{
+                        const map = new Map()
+                        _object[i].forEach((item:any)=>(
+                            map.set(item.id,item)
+                        ))
+                        _object[i] = [...map.values()]
+                    })
+                }
                 if (
                     !(
                         !!_object?.properties ||

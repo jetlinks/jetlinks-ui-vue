@@ -61,10 +61,11 @@
             title="继承自产品物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link" style="padding-left: 0;">
-              <AIcon type="SettingOutlined" />
-              配置
-            </j-button>
+              <j-button :disabled="true" type="link" >
+                <AIcon type="SettingOutlined" />
+                配置
+              </j-button>
+           
           </j-tooltip>
           <PermissionButton
                 v-else
@@ -93,7 +94,7 @@
             title="继承自产品物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link" style="padding-left: 0;">
+            <j-button :disabled="true" type="link">
               <AIcon type="SettingOutlined" />
               配置
             </j-button>
@@ -116,30 +117,29 @@
           </j-tag>
         </template>
         <template #other="{ data }">
-          <j-tooltip
+          <!-- <j-tooltip
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
             title="继承自产品物模型的数据不支持修改"
-          >
+          > -->
 <!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link" style="padding-left: 0;">
+            <!-- <j-button :disabled="true" type="link" style="padding-left: 0;">
               <AIcon type="SettingOutlined" />
               配置
-            </j-button>
-          </j-tooltip>
+            </j-button> -->
+          <!-- </j-tooltip> -->
           <PermissionButton
-                v-else
                 :has-permission="`${permission}:update`"
                 type="link"
                 key="setting"
+                :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
+                title: '继承自产品物模型的数据不支持删除',
+              } : undefined"
             >
             <OtherSetting
               v-model:value="data.record.expands"
               :id="data.record.id"
               :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
               :record="data.record"
-              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
-                title: '继承自产品物模型的数据不支持删除',
-              } : undefined"
               :type="data.record.valueType.type"
           />
             </PermissionButton>
@@ -247,6 +247,7 @@ import type {
     ProductItem,
 } from '@/views/device/Product/typings';
 import type { PropType } from 'vue';
+import { TOKEN_KEY } from '@/utils/variable'
 import {useRouter, onBeforeRouteUpdate} from 'vue-router'
 import { useMetadata, useOperateLimits } from './hooks';
 import {TypeStringMap, useColumns} from './columns';
@@ -259,7 +260,7 @@ import { useProductStore } from '@/store/product';
 import { asyncUpdateMetadata, updateMetadata } from '../metadata';
 import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage , LocalStore} from '@/utils/comm';
 import {omit} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
@@ -510,7 +511,7 @@ const handleSaveClick = async (next?: Function) => {
 const tabsChange = inject('tabsChange')
 
 const parentTabsChange = (next?: Function) => {
-  if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`)) {
+  if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`) && LocalStore.get(TOKEN_KEY)) {
     const modal = Modal.confirm({
       content: '页面改动数据未保存',
       okText: '保存',

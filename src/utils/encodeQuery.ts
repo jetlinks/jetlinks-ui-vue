@@ -1,5 +1,19 @@
 import { isObject, isArray } from 'lodash-es'
 
+type TermsType = {
+  column: string
+  type: string
+  value: string
+  termsType: string
+  terms: Array<TermsType>
+}
+
+type ParamsType = {
+  terms?: Array<TermsType>
+  sorts?: Array<{name:string, order: string }>
+  current?: any
+}
+
 export const encodeParams = (params: Record<string, any>) => {
   const _params = new URLSearchParams()
   for (const key in params) {
@@ -8,6 +22,42 @@ export const encodeParams = (params: Record<string, any>) => {
     _params.set(key, isArrOrObj ? JSON.stringify(_value) : _value)
   }
   return _params.toString()
+}
+
+const handleTermsToString = (queryTerms: any, terms: Array<TermsType>, parentKey?: string) => {
+  terms.forEach((a, aIndex) => {
+    Object.keys(a).forEach((b) => {
+      const key = `${parentKey}[${aIndex}].${b}`
+      if (b === 'terms') {
+        handleTermsToString(queryTerms, a[b], `${key}`)
+      } else {
+        queryTerms[key] = a[b]
+      }
+    })
+
+  })
+}
+
+export const paramsEncodeQuery = (params?: ParamsType) => {
+    if (!params) return {}
+
+    const queryParams = {
+      current: params.current,
+    }
+
+    const { sorts, terms } = params
+
+    if (terms) {
+      handleTermsToString(queryParams, terms, 'terms')
+    }
+
+    if (sorts) {
+      sorts.forEach((item, index) => {
+        queryParams[`sorts[${index}].name`] = item.name;
+        queryParams[`sorts[${index}].order`] = item.order;
+      })
+    }
+  return queryParams
 }
 
 export default function encodeQuery(params: any) {

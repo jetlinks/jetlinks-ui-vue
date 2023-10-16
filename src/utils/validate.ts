@@ -1,3 +1,4 @@
+import { regIPv6,regIpv4 } from './regular'
 /**
  * 座机号+手机号校验
  * @param value
@@ -25,3 +26,9 @@ export const testIP = (value: string) => {
         /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])$/;
     return ip.test(value);
 };
+/**
+ * 判断是否为Ipv4和Ipv6的地址
+ */
+export const testIpv4_6 = (value:string) => {
+    return regIpv4.test(value) || regIPv6.test(value)
+}

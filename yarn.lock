@@ -3850,6 +3850,7 @@
   "resolved" "https://registry.npmmirror.com/is-yarn-global/-/is-yarn-global-0.3.0.tgz"
   "version" "0.3.0"
 
+<<<<<<< HEAD
 "isexe@^2.0.0":
   "integrity" "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="
   "resolved" "https://registry.npmmirror.com/isexe/-/isexe-2.0.0.tgz"
@@ -3924,6 +3925,22 @@
   "version" "4.1.0"
   dependencies:
     "argparse" "^2.0.1"
+=======
+jetlinks-ui-components@^1.0.33:
+  version "1.0.33"
+  resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.33.tgz#49ce2b8c1e7be66272864728d5df82f834ec4490"
+  integrity sha512-vYUP4MhzO6r0golmKqO8lHk8w5ldhAkgXWZfFII1Zoa7JtUwveqpSywTU23iSmCN+4muPaSLvHw713k6OdzLmg==
+  dependencies:
+    "@vueuse/core" "^9.12.0"
+    "@vueuse/router" "^9.13.0"
+    ant-design-vue "^3.2.15"
+    colorpicker-v3 "^2.10.2"
+    lodash-es "^4.17.21"
+    monaco-editor "^0.40.0"
+    onigasm "^2.2.5"
+    sortablejs "^1.15.0"
+    vuedraggable "^4.1.0"
+>>>>>>> ad04405afbe938071259d40db048aebfed711edd
 
 "jsbn@~0.1.0":
   "integrity" "sha512-UVU9dibq2JcFWxQPA6KCqj5O42VOmAY3zQUfEKxU0KpTGXwNoCjkX1e13eHNvw/xPynt6pU0rZ1htjWTNTSXsg=="
@@ -5257,10 +5274,29 @@
   dependencies:
     "wrappy" "1"
 
+<<<<<<< HEAD
 "onetime@^5.1.0", "onetime@^5.1.2":
   "integrity" "sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg=="
   "resolved" "https://registry.npmmirror.com/onetime/-/onetime-5.1.2.tgz"
   "version" "5.1.2"
+=======
+onigasm@^2.2.5:
+  version "2.2.5"
+  resolved "http://registry.jetlinks.cn/onigasm/-/onigasm-2.2.5.tgz#cc4d2a79a0fa0b64caec1f4c7ea367585a676892"
+  integrity sha512-F+th54mPc0l1lp1ZcFMyL/jTs2Tlq4SqIHKIXGZOR/VkHkF9A7Fr5rRr5+ZG/lWeRsyrClLYRq7s/yFQ/XhWCA==
+  dependencies:
+    lru-cache "^5.1.1"
+
+only@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.jetlinks.cn/only/-/only-0.0.2.tgz"
+  integrity sha512-Fvw+Jemq5fjjyWz6CpKx6w9s7xxqo3+JCyM0WXWeCSOboZ8ABkyvP8ID4CZuChA/wxSx+XSJmdOm8rGVyJ1hdQ==
+
+open@>=6.0.0:
+  version "8.4.2"
+  resolved "https://registry.jetlinks.cn/open/-/open-8.4.2.tgz"
+  integrity sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==
+>>>>>>> ad04405afbe938071259d40db048aebfed711edd
   dependencies:
     "mimic-fn" "^2.1.0"
 

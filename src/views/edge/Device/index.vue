@@ -43,6 +43,7 @@
                         :actions="getActions(slotProps, 'card')"
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
+                        @click="handleView(slotProps.id)"
                         :statusNames="{
                             online: 'processing',
                             offline: 'error',
@@ -63,7 +64,6 @@
                             <Ellipsis style="width: calc(100% - 100px)">
                                 <span
                                     style="font-size: 16px; font-weight: 600"
-                                    @click.stop="handleView(slotProps.id)"
                                 >
                                     {{ slotProps.name }}
                                 </span>
@@ -101,7 +101,7 @@
                                             :key="i"
                                         >
                                             <PermissionButton
-                                                :disabled="o.disabled"
+                                                :disabled="o.disabled || slotProps.state.value !== 'online'"
                                                 :popConfirm="o.popConfirm"
                                                 :tooltip="{
                                                     ...o.tooltip,
@@ -470,7 +470,7 @@ const getActions = (
             },
             icon: 'RedoOutlined',
             popConfirm: {
-                title: '确认重置密码为P@ssw0rd？',
+                title: '确认重置密码为Jetlinks123？',
                 onConfirm: async () => {
                     restPassword(data.id).then((resp: any) => {
                         if (resp.status === 200) {

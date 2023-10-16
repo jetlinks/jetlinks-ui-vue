@@ -1,176 +1,183 @@
 <template>
     <page-container>
-        <div class="manager-container">
-            <div class="left">
-                <j-input-search
-                    v-model:value="leftData.searchValue"
-                    placeholder="请输入"
-                    style="margin-bottom: 24px"
-                />
-                <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
-                <j-tree
-                    v-if="leftData.treeData.length > 0"
-                    defaultExpandAll
-                    :tree-data="leftData.treeData"
-                    v-model:selectedKeys="leftData.selectedKeys"
-                    @select="onSelect"
-                    :showLine="{ showLeafIcon: false }"
-                    :show-icon="true"
-                >
-                    <template #title="{ dataRef }">
-                        <div
-                            v-if="dataRef.root"
-                            style="
-                                justify-content: space-between;
-                                display: flex;
-                                align-items: center;
-                                width: 200px;
-                            "
+        <FullPage>
+            <div class="manager-container">
+                <div class="left">
+                    <j-input-search
+                        v-model:value="leftData.searchValue"
+                        placeholder="请输入"
+                        style="margin-bottom: 24px"
+                    />
+                    <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
+                    <div class="tree">
+                        <j-tree
+                            v-if="leftData.treeData.length > 0"
+                            defaultExpandAll
+                            :tree-data="leftData.treeData"
+                            v-model:selectedKeys="leftData.selectedKeys"
+                            @select="onSelect"
+                            :showLine="{ showLeafIcon: false }"
+                            :show-icon="true"
                         >
-                            <span>
-                                {{ dataRef.title }}
-                            </span>
-                            <AIcon
-                                type="PlusOutlined"
-                                style="color: #1d39c4"
-                                @click="addTable"
-                            />
-                        </div>
-                        <span v-else>
-                            {{ dataRef.title }}
-                        </span>
-                    </template>
-                </j-tree>
-            </div>
-            <div class="right">
-                <div class="btns">
-                    <j-button type="primary" @click="clickSave">保存</j-button>
-                </div>
-                <j-form ref="formRef" :model="table">
-                    <j-table
-                        :columns="columns"
-                        :dataSource="table.data"
-                        :pagination="false"
-                        :scroll="{ y: 500 }"
-                    >
-                        <template #bodyCell="{ column, record, index }">
-                            <template v-if="column.key === 'name'">
-                                <j-form-item
-                                    :name="['data', index, 'name']"
-                                    :rules="[
-                                        {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
-                                        },
-                                        {
-                                            required: true,
-                                            message: '请输入名称',
-                                        },
-                                    ]"
-                                >
-                                    <j-input
-                                        :disabled="record.old_id"
-                                        v-model:value="record.name"
-                                        placeholder="请输入名称"
-                                    />
-                                </j-form-item>
-                            </template>
-                            <template v-else-if="column.key === 'type'">
-                                <j-form-item
-                                    :name="['data', index, 'type']"
-                                    :rules="[
-                                        {
-                                            max: 64,
-                                            message: '最多可输入64个字符',
-                                        },
-                                        {
-                                            required: true,
-                                            message: '请输入类型',
-                                        },
-                                    ]"
-                                >
-                                    <j-input
-                                        v-model:value="record.type"
-                                        placeholder="请输入类型"
-                                    />
-                                </j-form-item>
-                            </template>
-                            <template v-else-if="column.key === 'length'">
-                                <j-form-item :name="['data', index, 'length']">
-                                    <j-input-number
-                                        v-model:value="record.length"
-                                        :min="0"
-                                        :max="99999"
-                                        style="width: 100%"
-                                    />
-                                </j-form-item>
-                            </template>
-                            <template v-else-if="column.key === 'scale'">
-                                <j-form-item :name="['data', index, 'scale']">
-                                    <j-input-number
-                                        v-model:value="record.scale"
-                                        :min="0"
-                                        :max="99999"
-                                        style="width: 100%"
-                                    />
-                                </j-form-item>
-                            </template>
-                            <template v-else-if="column.key === 'notnull'">
-                                <j-form-item
-                                    :name="['data', index, 'notnull']"
-                                    :rules="[
-                                        {
-                                            required: true,
-                                            message: '请选择是否不能为空',
-                                        },
-                                    ]"
-                                >
-                                    <j-radio-group
-                                        v-model:value="record.notnull"
-                                        button-style="solid"
+                            <template #title="{ dataRef }">
+                                <Ellipsis>
+                                    <div
+                                        v-if="dataRef.root"
+                                        style="
+                                            justify-content: space-between;
+                                            display: flex;
+                                            align-items: center;
+                                            width: 200px;
+                                        "
                                     >
-                                        <j-radio-button :value="true"
-                                            >是</j-radio-button
+                                        <span>
+                                            {{ dataRef.title }}
+                                        </span>
+                                        <AIcon
+                                            type="PlusOutlined"
+                                            style="color: #1d39c4"
+                                            @click="addTable"
+                                        />
+                                    </div>
+                                    <span v-else>
+                                        {{ dataRef.title }}
+                                    </span>
+                                </Ellipsis>
+                            </template>
+                        </j-tree>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="btns">
+                        <j-button type="primary" @click="clickSave">保存</j-button>
+                    </div>
+                    <j-form ref="formRef" :model="table">
+                        <j-table
+                            :columns="columns"
+                            :dataSource="table.data"
+                            :pagination="false"
+                            :scroll="{ y: 500 }"
+                        >
+                            <template #bodyCell="{ column, record, index }">
+                                <template v-if="column.key === 'name'">
+                                    <j-form-item
+                                        :name="['data', index, 'name']"
+                                        :rules="[
+                                            {
+                                                max: 64,
+                                                message: '最多可输入64个字符',
+                                            },
+                                            {
+                                                required: true,
+                                                message: '请输入名称',
+                                            },
+                                        ]"
+                                    >
+                                        <j-input
+                                            :disabled="record.old_id"
+                                            v-model:value="record.name"
+                                            placeholder="请输入名称"
+                                        />
+                                    </j-form-item>
+                                </template>
+                                <template v-else-if="column.key === 'type'">
+                                    <j-form-item
+                                        :name="['data', index, 'type']"
+                                        :rules="[
+                                            {
+                                                max: 64,
+                                                message: '最多可输入64个字符',
+                                            },
+                                            {
+                                                required: true,
+                                                message: '请输入类型',
+                                            },
+                                        ]"
+                                    >
+                                        <j-input
+                                            :disabled="record.old_id"
+                                            v-model:value="record.type"
+                                            placeholder="请输入类型"
+                                        />
+                                    </j-form-item>
+                                </template>
+                                <template v-else-if="column.key === 'length'">
+                                    <j-form-item :name="['data', index, 'length']">
+                                        <j-input-number
+                                            v-model:value="record.length"
+                                            :min="0"
+                                            :max="99999"
+                                            style="width: 100%"
+                                        />
+                                    </j-form-item>
+                                </template>
+                                <template v-else-if="column.key === 'scale'">
+                                    <j-form-item :name="['data', index, 'scale']">
+                                        <j-input-number
+                                            v-model:value="record.scale"
+                                            :min="0"
+                                            :max="99999"
+                                            style="width: 100%"
+                                        />
+                                    </j-form-item>
+                                </template>
+                                <template v-else-if="column.key === 'notnull'">
+                                    <j-form-item
+                                        :name="['data', index, 'notnull']"
+                                        :rules="[
+                                            {
+                                                required: true,
+                                                message: '请选择是否不能为空',
+                                            },
+                                        ]"
+                                    >
+                                        <j-radio-group
+                                            v-model:value="record.notnull"
+                                            button-style="solid"
                                         >
-                                        <j-radio-button :value="false"
-                                            >否</j-radio-button
-                                        >
-                                    </j-radio-group>
-                                </j-form-item>
+                                            <j-radio-button :value="true"
+                                                >是</j-radio-button
+                                            >
+                                            <j-radio-button :value="false"
+                                                >否</j-radio-button
+                                            >
+                                        </j-radio-group>
+                                    </j-form-item>
+                                </template>
+                                <template v-else-if="column.key === 'comment'">
+                                    <j-form-item :name="['data', index, 'comment']">
+                                        <j-input
+                                            v-model:value="record.comment"
+                                            placeholder="请输入说明"
+                                        />
+                                    </j-form-item>
+                                </template>
+                                <template v-else-if="column.key === 'action'">
+                                    <PermissionButton
+                                        hasPermission="system/DataSource:delete"
+                                        type="link"
+                                        :tooltip="{ title: '删除' }"
+                                        :danger="true"
+                                        :popConfirm="{
+                                            title: `确认删除`,
+                                            onConfirm: () =>
+                                                clickDel(record, index),
+                                        }"
+                                        :disabled="record.status"
+                                    >
+                                        <AIcon type="DeleteOutlined" />
+                                    </PermissionButton>
+                                </template>
                             </template>
-                            <template v-else-if="column.key === 'comment'">
-                                <j-form-item :name="['data', index, 'comment']">
-                                    <j-input
-                                        v-model:value="record.comment"
-                                        placeholder="请输入说明"
-                                    />
-                                </j-form-item>
-                            </template>
-                            <template v-else-if="column.key === 'action'">
-                                <PermissionButton
-                                    hasPermission="system/DataSource:delete"
-                                    type="link"
-                                    :tooltip="{ title: '删除' }"
-                                    :danger="true"
-                                    :popConfirm="{
-                                        title: `确认删除`,
-                                        onConfirm: () =>
-                                            clickDel(record, index),
-                                    }"
-                                    :disabled="record.status"
-                                >
-                                    <AIcon type="DeleteOutlined" />
-                                </PermissionButton>
-                            </template>
-                        </template>
-                    </j-table>
-                </j-form>
+                        </j-table>
+                    </j-form>
 
-                <j-button class="add-row" @click="addRow">
-                    <AIcon type="PlusOutlined" /> 新增行
-                </j-button>
+                    <j-button class="add-row" @click="addRow">
+                        <AIcon type="PlusOutlined" /> 新增行
+                    </j-button>
+                </div>
             </div>
-        </div>
+        </FullPage>
         <j-modal
             :visible="true"
             v-if="dialog.visible"
@@ -495,12 +502,18 @@ const checkName = (_: any, value: any) =>
     padding: 24px;
     background-color: #fff;
     display: flex;
-    min-height: 500px;
+    height: 100%;
 
     .left {
         flex-basis: 280px;
         padding: 0 24px;
         box-sizing: border-box;
+        width:300px;
+        height:100%;
+        .tree{
+            height: 680px;
+            overflow-y: auto;
+        }
     }
     .right {
         width: calc(100% - 280px);

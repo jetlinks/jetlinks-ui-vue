@@ -107,6 +107,7 @@
                                 v-model:value="modalForm.publicPort"
                                 placeholder="请输入公网端口"
                                 style="width: 100%"
+                                :precision="0"
                             />
                         </j-form-item>
                     </j-col>
@@ -131,6 +132,7 @@ import {
 } from '@/api/initHome';
 import { modalState } from '../data/interface';
 import type { Rule } from 'ant-design-vue/es/form';
+import { testIpv4_6 } from '@/utils/validate';
 const formRef = ref();
 /**
  * 初始化数据状态
@@ -143,6 +145,7 @@ const visible = ref<boolean>(false);
 const modalForm = reactive<modalState>({
     host: '0.0.0.0',
 });
+
 /**
  * 校验官网地址
  */
@@ -150,10 +153,7 @@ const validateUrl = async (_rule: Rule, value: string) => {
     if (!value) {
         return Promise.reject('请输入公网地址');
     } else {
-        var reg = new RegExp(
-            /^(25[0-5]|2[0-4]\d|[0-1]?\d?\d)(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}$/,
-        );
-        if (!reg.test(value)) {
+        if (!testIpv4_6(value)) {
             return Promise.reject('请输入正确的公网地址');
         }
         return Promise.resolve();

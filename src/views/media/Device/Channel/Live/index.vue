@@ -30,17 +30,15 @@
             </div>
         </div>
         <div class="media-live">
-            <div class="media-live-video">
+            <div class="media-live-video" @mouseenter="visibleChange"  @mouseleave="mouseleave">
                 <div
                     :class="mediaToolClass"
-                    @mouseleave="mouseleave"
                     @mouseenter="showTool = true"
                 >
                     <div class="tool-item" v-if="type !== 'share'">
                         <template v-if="isRecord === 0">
                             <j-dropdown
                                 trigger="click"
-                                @visibleChange="visibleChange"
                                 @click="showToolLock = true"
                             >
                                 <div>开始录像</div>
@@ -130,7 +128,7 @@
                         </template>
                     </MediaTool>
                 </div>
-                <Preset :data="data" @refresh="onRefresh" />
+                <Preset  v-if='data.ptzType.value ===0 || data.ptzType.value === 1' :data="data" @refresh="onRefresh" />
             </div>
         </div>
         <template #footer>
@@ -212,8 +210,8 @@ const mouseleave = () => {
     }
 };
 
-const visibleChange = (v: boolean) => {
-    showTool.value = v;
+const visibleChange = () => {
+    showTool.value = true;
 };
 
 const getPopupContainer = (trigger: HTMLElement) => {

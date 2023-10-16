@@ -85,8 +85,9 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.format = value
       break;
     case 'string':
+      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
     case 'password':
-      obj.maxLength = value
+      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
       break;
     default:
       obj = value
@@ -272,6 +273,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
@@ -370,6 +375,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
@@ -573,6 +582,10 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       title: '说明',
       dataIndex: 'description',
       type: 'text',
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
       doubleClick(record) {
         if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
           return false
