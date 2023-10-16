@@ -170,7 +170,7 @@ export const LeftTreeRules = {
     endianIn: [
         { required: true, message: '请选择单字高低位切换', trigger: 'blur' },
     ],
-    requsetTimeout:[
+    requestTimeout:[
         { pattern: /^\d+$/, message:'请输入2000-60000的正整数',trigger: 'change'}
     ]
 };
