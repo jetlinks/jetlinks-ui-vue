@@ -319,7 +319,6 @@
                 </j-button>
             </div>
         </FullPage>
-        <Relation></Relation>
     </page-container>
 </template>
 
@@ -333,7 +332,6 @@ import { save_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
 import { useSystem } from '@/store/system';
 import { settingDetail } from '@/api/login';
-import Relation from '@/components/Relation/index.vue'
 const action = `${BASE_API_PATH}/file/static`;
 const headers = { [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) };
 const formRef = ref();
