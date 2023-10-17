@@ -503,6 +503,17 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'treeSelect',
+            // handleValue(v) {
+            //   return {
+            //     assetType: 'device',
+            //     targets: [
+            //       {
+            //         type: 'org',
+            //         id: v,
+            //       },
+            //     ],
+            //   }
+            // },
             options: () =>
                 new Promise((resolve) => {
                     queryOrgThree({}).then((resp: any) => {
@@ -515,13 +526,13 @@ const columns = [
                                 _list.push({
                                     ...item,
                                     id: JSON.stringify({
-                                        assetType: 'device',
-                                        targets: [
-                                            {
-                                                type: 'org',
-                                                id: item.id,
-                                            },
-                                        ],
+                                      assetType: 'device',
+                                      targets: [
+                                        {
+                                          type: 'org',
+                                          id: item.id,
+                                        },
+                                      ],
                                     }),
                                 });
                             });
@@ -732,13 +743,13 @@ const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
             const arr = changeRows.map((item: any) => item.id)
             const _ids: string[] = [];
             _selectedRowKeys.value.map((i: any) => {
-                if (!arr.includes(i)) {   
+                if (!arr.includes(i)) {
                     _ids.push(i)
                 }
             })
             _selectedRowKeys.value = _ids
-            
-        }     
+
+        }
 }
 
 const handleClick = (dt: any) => {
@@ -918,15 +929,26 @@ const handleSearch = (_params: any) => {
     // params.value = _params;
     const newParams = (_params?.terms as any[])?.map((item1) => {
         item1.terms = item1.terms.map((item2: any) => {
-            if (
+          if (item2.column === 'id$dim-assets') {
+            if (item2.termType === 'not') {
+              const oldValue = JSON.parse(item2.value)
+              oldValue.not = true
+              item2.value = JSON.stringify(oldValue)
+            }
+            delete item2.termType
+          }
+
+          if (
                 item2.column &&
                 ['classifiedId', 'accessId', 'accessProvider'].includes(
                     item2.column,
                 )
             ) {
+                const oldTermType = item2.termType
+                delete item2.termType
                 return {
                     ...item2,
-                    column: 'productId$product-info',
+                    column: `productId$product-info$${oldTermType}`,
                 };
             }
             return item2;
