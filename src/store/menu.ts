@@ -29,23 +29,18 @@ const defaultOwnParams = [
             termType: 'isnull',
             value: '1',
             type: 'or'
-          }, {
-            column: 'options'
-          }
+          },
         ]
       },
       {
         terms: [
           {
-            terms: [
-              {
-                value: "%show\":true%",
-                termType: "like",
-                column: "options"
-              }
-            ]
+            value: "%show\":true%",
+            termType: "like",
+            column: "options"
           }
-        ]
+        ],
+        type:'or'
       }
     ]
   }
