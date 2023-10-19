@@ -119,7 +119,7 @@ const params = {
 let filterProtocolList: any[] = [];
 const getProvidersFn = async () => {
     if(!isNoCommunity){
-        return
+        return 
     }else{
         const res: any = await getProviders();
         filterProtocolList = protocolList.filter((item) => {
@@ -229,7 +229,7 @@ onMounted(() => {
                 ))
                 console.log(AllMenu);
                 // 处理排序
-                treeData.value = handleSortsArr(systemMenu.value);
+                treeData.value = handleSortsArr(AllMenu);
             }
         });
     });
