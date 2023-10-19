@@ -22,8 +22,8 @@
         <div class="top-card-footer">
             <template v-for="(item, index) in footer" :key="index">
                 <span v-if="item?.status">{{ item?.title }}</span>
-                <j-badge v-else :text="item?.title" :status="item.status" />
-                <div class="footer-item-value">{{ item.value }}</div>
+                <j-badge v-else :text="item?.title" :status="item?.status" />
+                <div class="footer-item-value">{{ item?.value }}</div>
             </template>
         </div>
     </div>
