@@ -8,7 +8,7 @@
                 </j-space>
             </template>
             <j-form ref="formRef" :model="modelRef">
-                <j-table :dataSource="modelRef.dataSource" :columns="columns">
+                <j-table :columns="columns" :dataSource="modelRef.dataSource" @change="tableChange">
                     <template #headerCell="{ column }">
                         <template v-if="column.key === 'collectorId'">
                             采集器
@@ -20,7 +20,7 @@
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'channelId'">
                             <j-form-item
-                                :name="['dataSource', index, 'channelId']"
+                                :name="['dataSource', myCurrent * 10 + index, 'channelId']"
                             >
                                 <j-select
                                     style="width: 100%"
@@ -36,7 +36,7 @@
                         </template>
                         <template v-if="column.dataIndex === 'collectorId'">
                             <j-form-item
-                                :name="['dataSource', index, 'collectorId']"
+                                :name="['dataSource', myCurrent * 10 + index, 'collectorId']"
                                 :rules="[
                                     {
                                         required: !!record.channelId,
@@ -53,7 +53,7 @@
                         </template>
                         <template v-if="column.dataIndex === 'pointId'">
                             <j-form-item
-                                :name="['dataSource', index, 'pointId']"
+                                :name="['dataSource', myCurrent * 10 + index, 'pointId']"
                                 :rules="[
                                     {
                                         required: !!record.channelId,
@@ -157,6 +157,8 @@ const columns = [
     },
 ];
 
+const myCurrent = ref(0)
+
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
@@ -234,6 +236,10 @@ const handleSearch = async () => {
     }
     loading.value = false;
 };
+
+const tableChange = (pagination: { current: number }) => {
+  myCurrent.value = pagination.current - 1
+}
 
 const unbind = async (id: string) => {
     if (id) {
