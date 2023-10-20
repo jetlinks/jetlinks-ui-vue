@@ -395,6 +395,7 @@ const setDevMesChartOption = (
     y: Array<number>,
     maxY: number,
 ): void => {
+  const yLen = String(Math.ceil(maxY)).length
     devMegOptions.value = {
         xAxis: {
             type: 'category',
@@ -412,7 +413,7 @@ const setDevMesChartOption = (
         grid: {
             top: '2%',
             bottom: '5%',
-            left: maxY > 100000 ? '50px' : '70px',
+            left: maxY < 900000 ? '60px' : (yLen * 7.5 +  Math.floor(yLen/3) * 1.2 + 10) + 'px',
             right: '50px',
         },
         series: [
@@ -596,8 +597,9 @@ const getEcharts = (data: any) => {
             const y = res.result.map((item: any) => item.data.value).reverse();
             const maxY = Math.max.apply(
                 null,
-                messageChartYData.value.length ? messageChartYData.value : [0],
+                y.length ? y : [0],
             );
+
             setDevMesChartOption(x, y, maxY);
         }
     });
