@@ -243,11 +243,11 @@ const columns = [
       options: [
         {
           label: '正常',
-          value: 'started',
+          value: 'enabled',
         },
         {
           label: '禁用',
-          value: 'disable',
+          value: 'disabled',
         },
       ],
     },
