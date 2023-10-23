@@ -208,10 +208,17 @@ const columns = [
     },
     {
         dataIndex: 'id$dim-assets',
+        key: 'id$dim-assets',
         title: '所属组织',
         hideInTable: true,
         search: {
             type: 'treeSelect',
+            componentProps: {
+              fieldNames: {
+                label: 'name',
+                value: 'value',
+              },
+            },
             options: () =>
                 new Promise((resolve) => {
                     getTreeData_api({ paging: false }).then((resp: any) => {
@@ -256,6 +263,7 @@ const productQuery = (p: any) => {
     }
     sorts.push({ name: 'createTime', order: 'desc' });
     p.sorts = sorts;
+  console.log('productQuery',p)
     return queryProductList(p);
 };
 

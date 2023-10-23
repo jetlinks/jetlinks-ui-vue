@@ -173,11 +173,18 @@ const onChange = () => {
 
 const onValueChange = (val: any, label: string) => {
   const optionColumn = isObject(val) && (val as any).metadata ? [(val as any).column] : []
+
+  const objectValue: any = {
+    value: propertyModelRef?.propertiesValue,
+    source: propertyModelRef?.source,
+  }
+
+    if (propertyModelRef?.source === 'upper') {
+      objectValue.upperKey = propertyModelRef?.propertiesValue
+    }
+
     const obj = {
-        [`${propertyModelRef.properties}`]: {
-            value: propertyModelRef?.propertiesValue,
-            source: propertyModelRef?.source,
-        },
+        [`${propertyModelRef.properties}`]: objectValue
     };
     emit('update:value', obj);
     emit('change', label || val, optionColumn)
