@@ -109,9 +109,13 @@ const upperOptions = computed(() => {
 });
 
 const onChange = () => {
+  const objValue: any = { source: _source.value, value: _value.value }
+  if (_source.value === 'upper') {
+    objValue.upperKey = _value.value
+  }
     emit('update:value', _value.value);
     emit('update:source', _source.value);
-    emit('change', { source: _source.value, value: _value.value });
+    emit('change', objValue);
 };
 
 watchEffect(() => {
