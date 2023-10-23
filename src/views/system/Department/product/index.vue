@@ -214,6 +214,7 @@
                 :all-permission="tableData.permissionList"
                 asset-type="product"
                 @confirm="table.addConfirm"
+                @next="nextAction"
             />
             <EditPermissionDialog
                 v-if="dialogs.editShow"
@@ -229,7 +230,7 @@
             <NextDialog
                 v-if="dialogs.nextShow"
                 v-model:visible="dialogs.nextShow"
-                @confirm="emits('openDeviceBind')"
+                @confirm="nextConfirm"
             />
         </div>
     </div>
@@ -241,7 +242,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDeviceOrProductDialog from '../components/AddDeviceOrProductDialog.vue';
 import EditPermissionDialog from '../components/EditPermissionDialog.vue';
 import NextDialog from '../components/NextDialog.vue';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     getDeviceOrProductList_api,
     getPermission_api,
@@ -250,12 +251,10 @@ import {
     getBindingsPermission,
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
-
-import type { dictType } from '../typing.d.ts';
-import { message } from 'jetlinks-ui-components';
-
+import { useDepartmentStore } from '@/store/department';
 const permission = 'system/Department';
 
+const departmentStore = useDepartmentStore();
 const emits = defineEmits(['openDeviceBind']);
 const props = defineProps<{
     parentId: string;
@@ -611,10 +610,20 @@ watch(
         if (!val) tableData.selectedRows = [];
     },
 );
+let Temporary:any = '';
+
+const nextAction = (data:any) =>{
+    Temporary = data
+}
+const nextConfirm = () =>{
+    departmentStore.setProductId(Temporary);
+    emits('openDeviceBind')
+}
 </script>
 
 <style lang="less" scoped>
 .product-container {
+    :deep(.ant-table td) { white-space: nowrap; }
     :deep(.ant-table-tbody) {
         .ant-table-cell {
             .ant-space-item {
