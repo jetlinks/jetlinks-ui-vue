@@ -32,6 +32,7 @@
                         mode="advance"
                         key="advance"
                         v-model:value="_value"
+                        :tips="tips"
                     />
                 </div>
             </div>
@@ -59,7 +60,8 @@ import Editor from './Editor/index.vue';
 import Debug from './Debug/index.vue';
 import Operator from './Operator/index.vue';
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
-
+import { cloneDeep } from 'lodash-es';
+import { PropertyMetadata } from '@/views/device/Product/typings';
 interface Emits {
     (e: 'save', data: string | undefined): void;
     (e: 'close'): void;
@@ -77,7 +79,7 @@ const props = defineProps({
 const _value = ref<string | undefined>(props.value);
 const _disabled = ref<boolean>(true);
 const fullRef = inject(FULL_CODE);
-
+const tips = ref<any[]>([])
 const handleCancel = () => {
     emit('close');
 };
@@ -98,6 +100,29 @@ const addOperatorValue = (val: string) => {
     editor.value.addOperatorValue(val);
 };
 
+const getAllCrud = () => {
+  const list = cloneDeep(props.propertiesOptions)?.filter((i:any)=>
+    props?.id !== i.id
+  )
+  console.log(list,'list')
+  // 转化为语法提示
+  list.forEach(item => {
+    console.log(item)
+    const config = item
+    tips.value.push({
+      label: `${config.name}$recent实时值`, 
+      insertText:`$recent ("${config.id}")`,
+      kind: 18,
+    })
+    tips.value.push({
+        label: `${config.name}上一值`,
+        insertText: `$lastState("${config.id}"))`,
+        kind: 18
+    })
+  })
+}
+
+
 watch(() => _value.value, () => {
     _disabled.value = true
 })
@@ -105,6 +130,7 @@ watch(() => _value.value, () => {
 const onSuccess = (bool: boolean) => {
     _disabled.value = bool;
 }
+getAllCrud()
 </script>
 <style lang="less" scoped>
 .header {
