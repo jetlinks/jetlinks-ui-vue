@@ -27,12 +27,12 @@
             <j-checkbox-group v-model:value="bulkList" :options="options" />
         </div>
 
-        <pro-search
+        <!-- <pro-search
             type="simple"
             :columns="searchColumns"
             target="category-bind-modal"
             @search="search"
-        />
+        /> -->
         <j-pro-table
             ref="tableRef"
             :request="table.requestFun"
@@ -40,11 +40,22 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: table._selectedRowKeys.value,
-                onChange: selectChange,
+                onSelect: table.onSelectChange,
+                onSelectNone: table.cancelSelect,
+                onSelectAll: selectAll
             }"
-            @cancelSelect="table.cancelSelect"
             :columns="columns"
+            style="max-height: 500px; overflow:auto"
         >
+            <template #headerTitle>
+                <pro-search
+                    :columns="searchColumns"
+                    style="width: 75%; margin-bottom: 0;"
+                    target="category-bind-modal"
+                    type="simple"
+                    @search="search"
+                />
+            </template>
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
@@ -142,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import { uniq, intersection } from 'lodash-es';
 import {
     getDeviceOrProductList_api,
@@ -151,14 +162,13 @@ import {
     bindDeviceOrProductList_api,
     getBindingsPermission,
 } from '@/api/system/department';
-import { message } from 'jetlinks-ui-components';
 import { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import dayjs from 'dayjs';
 
 const departmentStore = useDepartmentStore();
 
-const emits = defineEmits(['confirm', 'update:visible']);
+const emits = defineEmits(['confirm', 'update:visible','next']);
 const props = defineProps<{
     visible: boolean;
     queryColumns: any[];
@@ -173,7 +183,7 @@ const queryCount = ref(0);
 
 const confirm = () => {
     if (table.selectedRows.length < 1) {
-        return message.warning('请先勾选数据');
+        return onlyMessage('请先勾选数据', 'warning');
     }
 
     const params = table.selectedRows.map((item: any) => ({
@@ -188,13 +198,17 @@ const confirm = () => {
     }));
 
     // 分配产品资产后, 进入设备资产分配
-    departmentStore.setProductId(table.selectedRows.map((item: any) => item.id));
+    // departmentStore.setProductId(table.selectedRows.map((item: any) => item.id));
 
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
         .then(() => {
-            message.success('操作成功');
+            onlyMessage('操作成功');
             emits('confirm');
+            emits('next',table.selectedRows.map((item: any) => item.id))
+            if(props.assetType === 'device'){
+                departmentStore.setProductId(undefined)
+            }
             emits('update:visible', false);
         })
         .finally(() => {
@@ -217,23 +231,28 @@ const columns = props.queryColumns.filter(
 );
 
 const searchColumns = computed(() => {
-  return props.queryColumns.map(item => {
-    if (departmentStore.productId) {
-      if (item.dataIndex === 'productName') {
-        item.search.first = true
-        item.search.componentProps = {
-          mode: 'multiple',
-          "max-tag-count": "responsive"
-        }
-        item.search.defaultTermType = 'eq'
-        item.search.defaultOnceValue = departmentStore.productId
+    return props.queryColumns.map(item => {
+        if (departmentStore.productId) {
+            if (item.dataIndex === 'productName') {
+                item.search.first = true
+                item.search.componentProps = {
+                    mode: 'multiple',
+                    "max-tag-count": "responsive"
+                }
+                item.search.defaultTermType = 'eq'
+                item.search.defaultOnceValue = departmentStore.productId
 
-      } else if (item.search && 'first' in item.search) {
-        delete item.search.first
-      }
-    }
-    return item
-  })
+            } else if (item.search && 'first' in item.search) {
+                delete item.search.first
+            }
+         }
+        else{
+            if (item.dataIndex === 'productName'){
+                item.search.defaultOnceValue = ''
+            }
+        }
+        return item
+    })
 })
 
 const queryParams = ref({});
@@ -299,7 +318,7 @@ const table: any = {
     onSelectChange: (row: any) => {
         // 若该项的可选权限中没有分享权限，则不支持任何操作
         if (!row.permissionList.find((item: any) => item.value === 'share')) {
-            message.warning('该资产不支持共享');
+            onlyMessage('该资产不支持共享', 'warning');
             return;
         }
         const selectedRowKeys = table._selectedRowKeys.value;
@@ -313,6 +332,7 @@ const table: any = {
             selectedRowKeys.splice(index, 1);
             table.selectedRows.splice(index, 1);
         }
+        table._selectedRowKeys.value = selectedRowKeys
     },
     // 取消全选
     cancelSelect: () => {
@@ -470,14 +490,42 @@ table.init();
 //     table._selectedRowKeys.value = okRows.map((item) => item.id);
 // };
 // fix: bug#10749
-const selectChange = (keys: string[], rows: any[]) => {
-    table.selectedRows = rows;
-    table._selectedRowKeys.value = keys;
+const selectChange = (record: any,selected: boolean,selectedRows: any,) => {
+    const arr = new Set(table._selectedRowKeys.value);
+    if(selected){
+        arr.add(record.id)
+    }else{
+        arr.delete(record.id)
+    }
+    table._selectedRowKeys.value = [...arr.values()]
 };
 
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!table._selectedRowKeys.value.includes(i.id)) {
+                    table._selectedRowKeys.value.push(i.id)
+                    table.selectedRows.push(i)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            const _row: any[] = [];
+            table.selectedRows.map((i: any) => {
+                if (!arr.includes(i.id)) {
+                    _ids.push(i.id)
+                    _row.push(i)
+                }
+            })
+            table._selectedRowKeys.value = _ids;
+            table.selectedRows = _row;
+        }
+}
 const cancel = () => {
-  departmentStore.setProductId()
-  emits('update:visible', false)
+    departmentStore.setProductId(undefined)
+    console.log(departmentStore.productId)
+    emits('update:visible', false)
 }
 
 const search = (query: any) => {
@@ -493,11 +541,15 @@ const search = (query: any) => {
     }
     h5 {
         padding: 12px;
+        padding-left: 24px;
         background-color: #f6f6f6;
         font-size: 14px;
     }
     .row {
         margin-bottom: 12px;
     }
+}
+:deep(.jtable-body-header-left){
+    width: 80%;
 }
 </style>

@@ -17,6 +17,7 @@
                     v-model:value="form.data.parentId"
                     style="width: 100%"
                     placeholder="请选择上级组织"
+                    allowClear
                     :tree-data="treeData"
                     :field-names="{ value: 'id' }"
                     @change="handleTreeSelectChange"
@@ -174,6 +175,10 @@ const form = reactive({
 
     submit: () => {
         const api = form.data.id ? updateDepartment_api : addDepartment_api;
+        form.data.parentId =  form.data.parentId ? form.data.parentId : '';
+        if(form.data.id && form.data?.children){
+            delete(form.data.children)
+        }
         return api(form.data);
     },
 });
