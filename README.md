@@ -48,6 +48,18 @@ yarn dev:force
 
 此处可以更改系统名称、主题色、系统logo、浏览器页签等
 
+#### 主题色
+
+```javascript
+// src/App.vue
+
+ConfigProvider.config({
+  theme: {
+    primaryColor: "#315efb"
+  }
+})
+```
+
 #### 2.默认配置
 
 在代码根目录找到`config\config.ts`文件
