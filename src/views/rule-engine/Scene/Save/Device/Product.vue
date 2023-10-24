@@ -192,6 +192,12 @@ const columns = [
     hideInTable: true,
     search: {
       type: 'treeSelect',
+      componentProps: {
+        fieldNames: {
+          label: 'name',
+          value: 'value',
+        },
+      },
       options: () => new Promise((resolve) => {
         getTreeData_api({ paging: false }).then((resp: any) => {
           const formatValue = (list: any[]) => {
