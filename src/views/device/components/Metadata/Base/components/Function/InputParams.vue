@@ -9,7 +9,14 @@
     <template #config="{ data }">
       <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
     </template>
-    <ModelButton />
+    <PermissionButton
+        key="properties"
+        :has-permission="hasPermission"
+        type="link"
+    >
+      <AIcon type="SettingOutlined" />
+      配置
+    </PermissionButton>
   </DataTableObject>
 </template>
 
@@ -43,6 +50,7 @@ const props = defineProps({
         type: Array as PropType<{ label: string; value: string }[]>,
         default: () => [],
     },
+  hasPermission: String,
 });
 const formItemContext = Form.useInjectFormItemContext();
 
