@@ -1,7 +1,7 @@
 <template>
   <template v-if="isPermission">
     <template v-if="popConfirm">
-      <j-popconfirm :overlayStyle='{width: "220px"}' v-bind="popConfirm" :disabled="!isPermission || props.disabled">
+      <j-popconfirm :disabled="!isPermission || props.disabled" :overlayStyle='{width: "220px", zIndex: 1075 }' v-bind="popConfirm">
         <j-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
           <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">

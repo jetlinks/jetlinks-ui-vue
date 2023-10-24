@@ -4,7 +4,7 @@ import store from './store'
 import components from './components'
 import router from './router'
 import './style.less'
-
+import 'ant-design-vue/dist/antd.variable.min.css'
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 dayjs.locale('zh-cn');

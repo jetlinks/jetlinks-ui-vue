@@ -51,8 +51,17 @@
         />
       </div>
     </template>
-
-    <ModelButton :disabled="disabled"/>
+    <PermissionButton
+        key="setting"
+        :disabled="disabled"
+        :has-permission="hasPermission"
+        :tooltip="tooltip"
+        style="padding-left: 0;"
+        type="link"
+    >
+      <AIcon type="SettingOutlined" />
+      配置
+    </PermissionButton>
   </j-popconfirm-modal>
 </template>
 
@@ -88,6 +97,8 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   },
+  hasPermission: String,
+  tooltip: Object
 })
 
 const fullRef = inject(FULL_CODE);

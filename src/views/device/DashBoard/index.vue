@@ -28,7 +28,7 @@
                 ></j-col>
                 <j-col :span="6"
                     ><TopCard
-                        title="今日设备信息量"
+                        title="今日设备消息量"
                         :footer="messageFooter"
                         :value="dayMessage"
                     >

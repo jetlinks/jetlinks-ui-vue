@@ -55,15 +55,15 @@
 import { getUnit } from '@/api/device/instance';
 import {
   DataTableTypeSelect,
-    DataTableArray,
-    DataTableString,
-    DataTableInteger,
-    DataTableDouble,
-    DataTableBoolean,
-    DataTableEnum,
-    DataTableFile,
-    DataTableDate,
-    DataTableObject,
+  DataTableArray,
+  DataTableString,
+  DataTableInteger,
+  DataTableDouble,
+  DataTableBoolean,
+  DataTableEnum,
+  DataTableFile,
+  DataTableDate,
+  DataTableObject, Form,
 } from 'jetlinks-ui-components';
 
 import ConfigModal from '@/views/device/components/Metadata/Base/components/ConfigModal.vue'
@@ -83,7 +83,7 @@ const props = defineProps({
     },
 });
 
-
+const formItemContext = Form.useInjectFormItemContext();
 const options = ref<{ label: string; value: string }[]>([]);
 const emit = defineEmits(['update:value']);
 
@@ -235,6 +235,7 @@ const valueChange = () => {
     ...props.value,
     output: {...data.value, type: type.value},
   });
+  formItemContext.onFieldChange()
 }
 
 </script>
