@@ -278,12 +278,12 @@
                         <!-- webhook -->
                         <template v-if="formData.type === 'webhook'">
                             <j-form-item
-                                label="Webhook"
+                                label="WebHook"
                                 v-bind="validateInfos['configuration.url']"
                             >
                                 <j-input
                                     v-model:value="formData.configuration.url"
-                                    placeholder="请输入Webhook"
+                                    placeholder="请输入WebHook"
                                 />
                             </j-form-item>
                             <j-form-item label="请求头">

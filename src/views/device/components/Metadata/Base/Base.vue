@@ -65,16 +65,13 @@
                 <AIcon type="SettingOutlined" />
                 配置
               </j-button>
-           
+
           </j-tooltip>
-          <PermissionButton
-                v-else
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="inputs"
-            >
-          <InputParams  v-model:value="data.record.inputs" />
-          </PermissionButton>
+          <InputParams
+              v-else
+              v-model:value="data.record.inputs"
+              :has-permission="`${permission}:update`"
+          />
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -99,14 +96,11 @@
               配置
             </j-button>
           </j-tooltip>
-          <PermissionButton
-                v-else
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="properties"
-            >
-          <ConfigParams  v-model:value="data.record.valueType" />
-          </PermissionButton>
+          <ConfigParams
+              v-else
+              v-model:value="data.record.valueType"
+              :has-permission="`${permission}:update`"
+          />
         </template>
         <template #outInput>
           object
@@ -127,22 +121,17 @@
               配置
             </j-button> -->
           <!-- </j-tooltip> -->
-          <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="setting"
-                :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
-                title: '继承自产品物模型的数据不支持删除',
-              } : undefined"
-            >
-            <OtherSetting
+          <OtherSetting
               v-model:value="data.record.expands"
               :id="data.record.id"
               :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
               :record="data.record"
               :type="data.record.valueType.type"
+              :has-permission="`${permission}:update`"
+              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
+                title: '继承自产品物模型的数据不支持删除',
+              } : undefined"
           />
-            </PermissionButton>
 
         </template>
         <template #action="{data}">

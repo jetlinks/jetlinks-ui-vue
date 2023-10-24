@@ -6,7 +6,15 @@
             <template #config="{ data }">
                 <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
             </template>
-            <ModelButton />
+        <PermissionButton
+            key="properties"
+            :has-permission="hasPermission"
+            style="padding-left: 0;"
+            type="link"
+        >
+          <AIcon type="SettingOutlined" />
+          配置
+        </PermissionButton>
         </DataTableObject>
 </template>
 
@@ -23,7 +31,7 @@ import {omit} from "lodash-es";
 import {TypeStringMap, validatorConfig} from "../../columns";
 
 const columns = [
-    { 
+    {
         title: '参数标识',
         dataIndex: 'id',
         type: 'text',
@@ -52,7 +60,7 @@ const columns = [
             ]
         }
     },
-    { 
+    {
         title: '参数名称',
         dataIndex: 'name',
         type: 'text',
@@ -139,6 +147,7 @@ const props = defineProps({
         type: Array as PropType<{ label: string; value: string }[]>,
         default: () => [],
     },
+    hasPermission: String,
 });
 
 const value = ref(props.value.properties);
@@ -151,7 +160,7 @@ const confirm = (data: any) => {
   })
 
   console.log('ConfigParams',newObject)
-  
+
   emit('update:value', {
     properties: newObject,
     type: 'object',

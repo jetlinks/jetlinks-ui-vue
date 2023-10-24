@@ -29,7 +29,7 @@
       </div>
     </div>
     <div class="editor">
-      <j-monaco-editor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" language="javascript" :registrationTypescript="typescriptTip"
+      <j-monaco-editor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" language="javascript" :registrationTypescript="typescriptTip" :registrationTips="registrationTips"
         :init="editorInit"/>
     </div>
   </div>
@@ -41,11 +41,13 @@ import {
 } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
+import { cloneDeep } from 'lodash-es';
 import { inject } from 'vue'
 interface Props {
   mode?: 'advance' | 'simple';
   id?: string;
   value?: string;
+  tips?:  Array<any>
 }
 const props = defineProps<Props>()
 const target = inject('target')
@@ -71,28 +73,9 @@ type SymbolType = {
 const typescriptTip = reactive({
   typescript: ''
 })
-
-const queryCode = () => {
-  let id = ''
-  if(target==='device'){
-    id = instanceStore.current.id
-    queryTypescript(id).then(res => {
-      if (res.status===200) {
-        typescriptTip.typescript = res.result
-      }
-    })
-  }else if(target ==='product'){
-    id = productStore.current.id
-    queryProductTs(id).then(res => {
-      if (res.status===200) {
-        typescriptTip.typescript = res.result
-      }
-    })
-  }
-  
-}
-queryCode()
-
+const registrationTips = ref<any>({
+  name: 'javascript'
+})
 const editorInit = (editor: any, monaco: any) => {
   monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
     noSemanticValidation: true,
@@ -200,11 +183,27 @@ const _value = computed({
 })
 
 const loading = ref(false)
-onMounted(() => {
-  setTimeout(() => {
-    loading.value = true;
-  }, 100);
-})
+const queryCode = () => {
+  registrationTips.value.suggestions = cloneDeep(props.tips)
+  let id = ''
+  if(target==='device'){
+    id = instanceStore.current.id
+    queryTypescript(id).then(res => {
+      if (res.status===200) {
+        typescriptTip.typescript = res.result
+      }
+    })
+  }else if(target ==='product'){
+    id = productStore.current.id
+    queryProductTs(id).then(res => {
+      if (res.status===200) {
+        typescriptTip.typescript = res.result
+      }
+    })
+  }
+  
+}
+
 
 const addOperatorValue = (val: string) => {
   editor.value?.insert(val)
@@ -220,6 +219,13 @@ defineExpose({
   addOperatorValue
 })
 
+onMounted(() => {
+  setTimeout(() => {
+    loading.value = true;
+  }, 100);
+})
+
+queryCode()
 </script>
 <style lang="less" scoped>
 .editor-box {
