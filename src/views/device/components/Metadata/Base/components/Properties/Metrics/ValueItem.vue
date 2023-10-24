@@ -120,7 +120,7 @@ const validator = (_: any, value: any) => {
 }
 
 const typeValidator = (_: any, value: any) => {
-  if (value === undefined) {
+  if (value === undefined || value === null) {
     return  Promise.reject(validatorTip())
   }
   if (type === 'string' && value?.length > 64) {
@@ -146,7 +146,7 @@ const handleValueByType = (value: any, isRange: boolean = false) => {
 
 const confirm = () => {
   return new Promise((resolve, reject) => {
-    formRef.value.validate().then(() => {
+    formRef.value.validate().then((res) => {
       let value = props.value.range === true ? formData.rangeValue : formData.value
 
       if (['int', 'long'].includes(type)) {

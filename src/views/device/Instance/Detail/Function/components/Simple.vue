@@ -177,7 +177,7 @@ const newFunctions = computed(() => {
                 required: tableItem.expands?.required
             });
         }
-        
+
         result.push({
             ...func,
             table: array,
@@ -197,7 +197,7 @@ const handleExecute = async (func: any) => {
         .then(async () => {
             const obj = {};
             func.table.forEach((item: any) => {
-                if (item.type === 'object') {
+                if (item.type === 'object' && item.value) {
                     obj[item.id] = JSON.parse(item.value);
                 } else {
                     obj[item.id] = item.value;

@@ -15,7 +15,11 @@ const system = useSystem();
 const {configInfo} = storeToRefs(system);
 
 system.setDocumentTitle()
-
+ConfigProvider.config({
+  theme: {
+    primaryColor: "#315efb"
+  }
+})
 </script>
 
 <style scoped>

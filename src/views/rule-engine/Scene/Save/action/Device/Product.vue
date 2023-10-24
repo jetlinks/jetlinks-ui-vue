@@ -263,7 +263,6 @@ const productQuery = (p: any) => {
     }
     sorts.push({ name: 'createTime', order: 'desc' });
     p.sorts = sorts;
-  console.log('productQuery',p)
     return queryProductList(p);
 };
 

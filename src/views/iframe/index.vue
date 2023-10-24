@@ -31,7 +31,7 @@ const handle = async (appId: string, url: string) => {
     let menuUrl: any = url;
     if (res.status === 200) {
         if (res.result.page.routeType === 'hash') {
-            menuUrl = `/#${url}`;
+            menuUrl = `#${url}`;
         }
         if (res.result.provider === 'internal-standalone') {
             const urlStandalone = `${res.result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;

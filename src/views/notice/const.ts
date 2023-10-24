@@ -28,7 +28,7 @@ export const NOTICE_METHOD: INoticeMethod[] = [
         value: 'sms',
     },
     {
-        label: 'webhook',
+        label: 'WebHook',
         value: 'webhook',
     },
 ];
@@ -75,7 +75,7 @@ export const MSG_TYPE = {
     ],
     webhook: [
         {
-            label: 'webhook',
+            label: 'WebHook',
             value: 'http',
             logo: getImage('/notice/webhook.png'),
         },

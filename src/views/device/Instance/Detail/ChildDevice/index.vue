@@ -1,106 +1,60 @@
 <template>
-    <SaveChild
-        v-if="childVisible"
-        @close-child-save="closeChildSave"
-        :childData="_current"
-    />
+    <SaveChild v-if="childVisible" @close-child-save="closeChildSave" :childData="_current" />
     <div v-else>
-        <pro-search
-            :columns="columns"
-            target="child-device"
-            @search="handleSearch"
-            class="device-child-device-search"
-        />
+        <pro-search :columns="columns" target="child-device" @search="handleSearch" class="device-child-device-search" />
         <!-- <j-divider /> -->
-        <JProTable
-            ref="childDeviceRef"
-            :columns="columns"
-            :request="query"
-            :bodyStyle="{
-                padding: 0
-            }"
-            :defaultParams="{
-                terms: [
-                    {
-                        column: 'parentId',
-                        value: detail?.id || '',
-                        termType: 'eq',
-                    },
-                ],
-            }"
-            :rowSelection="{
-                selectedRowKeys: _selectedRowKeys,
-                onChange: onSelectChange,
-            }"
-            :params="params"
-            :model="'TABLE'"
-        >
+        <JProTable ref="childDeviceRef" :columns="columns" :request="query" :bodyStyle="{
+            padding: 0
+        }" :defaultParams="{
+    terms: [
+        {
+            column: 'parentId',
+            value: detail?.id || '',
+            termType: 'eq',
+        },
+    ],
+}" :rowSelection="{
+    selectedRowKeys: _selectedRowKeys,
+    onChange: onSelectChange,
+}" :params="params" :model="'TABLE'">
             <template #rightExtraRender>
                 <j-space>
-                    <PermissionButton
-                        type="primary"
-                        v-if="
-                            detail?.accessProvider === 'official-edge-gateway'
-                        "
-                        hasPermission="device/Instance:update"
-                        @click="
-                            _current = {};
-                            childVisible = true;
-                        "
-                        >新增并绑定</PermissionButton
-                    >
-                    <PermissionButton
-                        type="primary"
-                        @click="visible = true"
-                        hasPermission="device/Instance:update"
-                    >
-                        绑定</PermissionButton
-                    >
-                    <PermissionButton
-                        type="primary"
-                        hasPermission="device/Instance:update"
-                        :popConfirm="{
-                            title: '确定解绑吗？',
-                            onConfirm: handleUnBind,
-                        }"
-                        >批量解除</PermissionButton
-                    >
+                    <PermissionButton type="primary" v-if="detail?.accessProvider === 'official-edge-gateway'
+                        " hasPermission="device/Instance:update" @click="
+        _current = {};
+    childVisible = true;
+    ">新增并绑定</PermissionButton>
+                    <PermissionButton type="primary" @click="visible = true" hasPermission="device/Instance:update">
+                        绑定</PermissionButton>
+                    <PermissionButton type="primary" hasPermission="device/Instance:update" :popConfirm="{
+                        title: '确定解绑吗？',
+                        onConfirm: handleUnBind,
+                    }">批量解除</PermissionButton>
                 </j-space>
             </template>
             <template #registryTime="slotProps">
                 {{
                     slotProps.registryTime
-                        ? moment(slotProps.registryTime).format(
-                              'YYYY-MM-DD HH:mm:ss',
-                          )
-                        : ''
+                    ? moment(slotProps.registryTime).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    )
+                    : ''
                 }}
             </template>
             <template #state="slotProps">
-                <j-badge
-                    :text="slotProps.state.text"
-                    :status="statusMap.get(slotProps.state.value)"
-                />
+                <j-badge :text="slotProps.state.text" :status="statusMap.get(slotProps.state.value)" />
             </template>
             <template #action="slotProps">
                 <j-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
-                    >
-                        <PermissionButton
-                            v-if="i.key !== 'update' || detail.accessProvider === 'official-edge-gateway'"
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
+                    <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
+                        <PermissionButton v-if="i.key !== 'update' || detail.accessProvider === 'official-edge-gateway'"
+                            :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
                                 ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="'device/Instance:' + i.key"
-                        >
-                            <template #icon><AIcon :type="i.icon" /></template>
+                            }" @click="i.onClick" type="link" style="padding: 0px"
+                            :hasPermission="'device/Instance:' + i.key">
+                            <template #icon>
+                                <AIcon :type="i.icon" />
+                            </template>
                         </PermissionButton>
                     </template>
                 </j-space>
@@ -113,7 +67,7 @@
 <script setup lang="ts">
 import moment from 'moment';
 import type { ActionsType } from '@/components/Table';
-import {query, unbindDevice, unbindBatchDevice, queryByParent , deleteDeviceMapping} from '@/api/device/instance';
+import { query, unbindDevice, unbindBatchDevice, queryByParent, deleteDeviceMapping } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import BindChildDevice from './BindChildDevice/index.vue';
@@ -241,10 +195,12 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                         data.id,
                         {},
                     );
-                    const res = await deleteDeviceMapping(
-                        detail.value.id,
-                        {deviceIds:[data.id]}
-                    )
+                    if (instanceStore.current.accessProvider === 'official-edge-gateway') {
+                        const res = await deleteDeviceMapping(
+                            detail.value.id,
+                            { ids: [data.id] }
+                        )
+                    }
                     if (resp.status === 200) {
                         childDeviceRef.value?.reload();
                         onlyMessage('操作成功！');
@@ -285,11 +241,13 @@ const handleUnBind = async () => {
             detail.value.id,
             _selectedRowKeys.value,
         );
-        if (resp.status === 200) {
+        if (instanceStore.current.accessProvider === 'official-edge-gateway') {
             const res = await deleteDeviceMapping(
                 detail.value.id,
-                {ids:[_selectedRowKeys.value]}
+                { ids: [_selectedRowKeys.value] }
             )
+        }
+        if (resp.status === 200) {
             onlyMessage('操作成功！');
             cancelSelect();
             childDeviceRef.value?.reload();
@@ -316,7 +274,7 @@ const closeBindDevice = (val: boolean) => {
 const closeChildSave = () => {
     childVisible.value = false;
 };
-onMounted(()=>{
+onMounted(() => {
     console.log(detail.value.accessProvider)
 })
 </script>

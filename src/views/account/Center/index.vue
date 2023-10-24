@@ -90,6 +90,7 @@ import {
 } from '@/utils/consts';
 import { usePermissionStore } from '@/store/permission';
 import RoleShow from './components/RoleShow/index.vue';
+import {isNoCommunity} from "@/utils/utils";
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -103,7 +104,8 @@ const imageTypes = reactive([
 const user = useUserInfo();
 
 type KeyType = 'HomeView' | 'BindThirdAccount' | 'Subscribe' | 'StationMessage';
-const list: { key: KeyType; title: string }[] = [
+console.log(isNoCommunity)
+const list: { key: KeyType; title: string }[] = isNoCommunity ? [
     {
         key: 'HomeView',
         title: '首页视图',
@@ -120,6 +122,19 @@ const list: { key: KeyType; title: string }[] = [
         key: 'StationMessage',
         title: '站内信',
     },
+] : [
+  {
+    key: 'HomeView',
+    title: '首页视图',
+  },
+  {
+    key: 'Subscribe',
+    title: '我的订阅',
+  },
+  {
+    key: 'StationMessage',
+    title: '站内信',
+  },
 ];
 
 const tabs = {
