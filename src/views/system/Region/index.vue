@@ -12,7 +12,7 @@
                 <LeftTree />
             </div>
             <div class="right">
-                <Map />
+                <Map :path="path" type="create" />
             </div>
         </div>
       </full-page>
@@ -29,6 +29,7 @@ import FullPage from "components/Layout/FullPage.vue";
 const searchValue = ref()
 const visible = ref<boolean>(false)
 const current = ref<any>({})
+const path = ref([[121.5273285, 31.21515044], [121.5293285, 31.21515044], [121.5293285, 31.21915044], [121.5273285, 31.21515044]])
 
 const onSearch = () => {
 

@@ -22,6 +22,8 @@ import '@vuemap/vue-amap/dist/style.css';
 import { getAMapUiPromise } from './utils';
 import { useSystem } from '@/store/system';
 
+const emit = defineEmits('init')
+
 const system = useSystem();
 interface AMapProps {
     style?: CSSProperties;
@@ -65,6 +67,7 @@ const initMap = (e: any) => {
     if (isOpenUi.value) {
         getAMapUI();
     }
+    emit('init', e)
 };
 </script>
 

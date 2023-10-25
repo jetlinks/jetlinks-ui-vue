@@ -4132,7 +4132,7 @@ export default [
         sortIndex: 12,
         url: '/system/region',
         icon: 'FormOutlined',
-        showPage: ['region'],
+        showPage: ['area'],
         permissions: [],
         buttons: [
           {
@@ -4140,7 +4140,7 @@ export default [
             name: "新增",
             permissions: [
               {
-                permission: "region",
+                permission: "area",
                 actions: [
                   "save"
                 ]
@@ -4152,7 +4152,7 @@ export default [
             name: "删除",
             permissions: [
               {
-                permission: "region",
+                permission: "area",
                 actions: [
                   "delete"
                 ]
@@ -4164,7 +4164,7 @@ export default [
             name: "编辑",
             permissions: [
               {
-                permission: "region",
+                permission: "area",
                 actions: [
                   "save"
                 ]
