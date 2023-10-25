@@ -6,10 +6,9 @@ import { EventLevel } from "@/views/device/data";
 import {MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
-import {omit, pick} from "lodash-es";
+import {omit, pick, isObject, cloneDeep} from "lodash-es";
 import { message } from 'jetlinks-ui-components'
 import { onlyMessage } from "@/utils/comm";
-import {cloneDeep} from "lodash";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -37,9 +36,7 @@ const type = {
   report: '上报',
 };
 
-export const validatorConfig = (value: any, isObject: boolean = false) => {
-
-  console.log(value)
+export const validatorConfig = (value: any, _isObject: boolean = false) => {
 
   if (!value) {
     return Promise.resolve()
@@ -52,11 +49,11 @@ export const validatorConfig = (value: any, isObject: boolean = false) => {
     return Promise.reject('请选择元素类型')
   }
 
-  if (isObject && value.type === 'object' && !value.properties?.length) {
+  if (_isObject && value.type === 'object' && !value.properties?.length) {
     return Promise.reject('请添加参数')
   }
 
-  if (value.type === 'file' && (!value.fileType || !Object.keys(value.fileType).length)) {
+  if (value.type === 'file' && (!value.fileType || (isObject(value.fileType) && !Object.keys(value.fileType).length))) {
     return Promise.reject('请选择文件类型')
   }
 
