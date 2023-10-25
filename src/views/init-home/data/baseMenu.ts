@@ -1413,7 +1413,7 @@ export default [
                   },
                 ],
               },
-        
+
             ],
             accessSupport: { text: "间接支持", value: "indirect" },
             supportDataAccess: false,
@@ -4120,6 +4120,57 @@ export default [
               }
             ]
           }
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
+      {
+        code: 'system/Region',
+        name: '地区管理',
+        owner: 'iot',
+        id: 'b69782873cc24be8165c6ad29233333',
+        sortIndex: 12,
+        url: '/system/region',
+        icon: 'FormOutlined',
+        showPage: ['region'],
+        permissions: [],
+        buttons: [
+          {
+            id: "add",
+            name: "新增",
+            permissions: [
+              {
+                permission: "region",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            id: "delete",
+            name: "删除",
+            permissions: [
+              {
+                permission: "region",
+                actions: [
+                  "delete"
+                ]
+              }
+            ]
+          },
+          {
+            id: "update",
+            name: "编辑",
+            permissions: [
+              {
+                permission: "region",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
         ],
         accessSupport: { text: "不支持", value: "unsupported" },
         supportDataAccess: false

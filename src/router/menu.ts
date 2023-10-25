@@ -92,8 +92,4 @@ export default [
         component: () => import('@/views/media/Device/Channel/Share/index.vue')
     },
     AccountMenu,
-    {
-        path: '/system/region',
-        component: () => import('@/views/system/Region/index.vue')
-    },
 ]

@@ -1,5 +1,6 @@
 <template>
     <page-container>
+      <full-page>
         <div class="region">
             <div class="left">
                 <j-input-search
@@ -11,9 +12,10 @@
                 <LeftTree />
             </div>
             <div class="right">
-                地图
+                <Map />
             </div>
         </div>
+      </full-page>
         <Save v-if="visible" :data="current" @save="onSave" @close="onClose" />
     </page-container>
 </template>
@@ -21,6 +23,8 @@
 <script setup lang="ts" name="RegionMange">
 import LeftTree from './LeftTree/index.vue'
 import Save from './Save/index.vue'
+import Map from './MapTool/map.vue'
+import FullPage from "components/Layout/FullPage.vue";
 
 const searchValue = ref()
 const visible = ref<boolean>(false)
@@ -48,9 +52,12 @@ const onClose = () => {
 .region {
     display: flex;
     gap: 24px;
-    
+    height: 100%;
+    padding: 16px;
+
     .left {
         width: 300px;
+
 
         .btn {
             width: 100%;
