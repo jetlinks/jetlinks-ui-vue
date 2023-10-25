@@ -56,7 +56,7 @@
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.url"
-                            placeholder="请输入r2bdc或者jdbc连接地址，示例：r2dbc:mysql://127.0.0.1:3306/test"
+                            placeholder="请输入r2bdc连接地址，示例：r2dbc:mysql://127.0.0.1:3306/test"
                         />
                     </j-form-item>
                 </j-col>

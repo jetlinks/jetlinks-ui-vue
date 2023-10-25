@@ -1285,7 +1285,7 @@ const changeType = (value: string) => {
     if (value !== 'MQTT_CLIENT') {
         const { configuration } = dynamicValidateForm.cluster[0];
         value && (configuration.host = '0.0.0.0');
-    }else{
+    }else if(isNoCommunity){
         formData.value.shareCluster  = false
         changeShareCluster(formData.value.shareCluster)
     }
