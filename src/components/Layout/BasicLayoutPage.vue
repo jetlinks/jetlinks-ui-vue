@@ -107,14 +107,16 @@ const jump = (item: any) => {
   router.push(item.path)
 }
 
-
-
 watchEffect(() => {
   if (router.currentRoute) {
     const paths = router.currentRoute.value.matched
     basicLayout.value.selectedKeys = paths.map(item => item.path)
     basicLayout.value.openKeys = paths.map(item => item.path)
     console.log(paths) //
+  }
+
+  if (route.query?.layout === 'false') {
+    basicLayout.value.pure = true
   }
 })
 

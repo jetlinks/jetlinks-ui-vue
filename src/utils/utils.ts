@@ -71,8 +71,8 @@ export const isNoCommunity = !(localStorage.getItem(SystemConst.VERSION_CODE) ==
 
 /**
  * 生成随机数
- * @param length 
- * @returns 
+ * @param length
+ * @returns
  */
 export const randomString = (length?: number) => {
   const tempLength = length || 32;
@@ -87,8 +87,8 @@ export const randomString = (length?: number) => {
 
 /**
  * 时间戳转时分秒文本
- * @param time 
- * @returns 
+ * @param time
+ * @returns
  */
 export const timestampFormat = (time: number) => {
   let hour = 0;
