@@ -13,7 +13,7 @@
             v-if="myValue != 'manual' && !showReset"
             :bodyStyle="{
                 width: '450px',
-                height: myValue === 'rule' ? '300px' : '80px',
+                height: myValue === 'rule' ? '300px' : '90px',
             }"
             :get-popup-container="(node) => fullRef || node"
             placement="bottomRight"
