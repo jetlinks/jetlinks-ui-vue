@@ -294,7 +294,9 @@ onMounted(()=>{
         item === props.value?.id ? showReset.value = true : ''
     })
     }
-    handleSearch()
+    if(isNoCommunity && myValue.value === 'rule'){
+        handleSearch()
+    }
 })
 </script>
 
