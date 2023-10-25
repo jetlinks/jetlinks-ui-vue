@@ -21,7 +21,7 @@ const handle = async (appId: string, url: string) => {
     let menuUrl: any = url;
     if (res.status === 200) {
         if (res.result.page.routeType === 'hash') {
-            menuUrl = `${url}`;
+            menuUrl = `#${url}`;
         }
         if (res.result.provider === 'internal-standalone') {
             const urlStandalone = `${res.result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
@@ -29,7 +29,7 @@ const handle = async (appId: string, url: string) => {
         } else if (res.result.provider === 'internal-integrated') {
             const tokenUrl = `${
                 res.result.page.baseUrl
-            }?X-Access-Token=${LocalStore.get(TOKEN_KEY)}`;
+            }/${menuUrl}?layout=false&X-Access-Token=${LocalStore.get(TOKEN_KEY)}`;
             iframeUrl.value = tokenUrl;
         } else {
             const urlOther = `${res.result.page.baseUrl}/${menuUrl}`;

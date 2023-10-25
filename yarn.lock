@@ -3851,6 +3851,7 @@
   "version" "0.3.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "isexe@^2.0.0":
   "integrity" "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="
   "resolved" "https://registry.npmmirror.com/isexe/-/isexe-2.0.0.tgz"
@@ -3930,6 +3931,12 @@ jetlinks-ui-components@^1.0.33:
   version "1.0.33"
   resolved "http://registry.jetlinks.cn/jetlinks-ui-components/-/jetlinks-ui-components-1.0.33.tgz#49ce2b8c1e7be66272864728d5df82f834ec4490"
   integrity sha512-vYUP4MhzO6r0golmKqO8lHk8w5ldhAkgXWZfFII1Zoa7JtUwveqpSywTU23iSmCN+4muPaSLvHw713k6OdzLmg==
+=======
+jetlinks-ui-components@^1.0.34-2:
+  version "1.0.34-2"
+  resolved "https://registry.npmjs.org/jetlinks-ui-components/-/jetlinks-ui-components-1.0.34-2.tgz#8acd9f5dd4e5baa89703391620c80545c60ea98d"
+  integrity sha512-Z8/TRoJut1CuGsXXkzUYwvmKdQ1FhvXc46uK308M76Ezv4iJIGphwt1ancqVst0+WRBWoG6ps2ZsBbqCSQB7Rg==
+>>>>>>> f319d4e0e232f5b18c282e717b1f0ec1a1a29ce8
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"

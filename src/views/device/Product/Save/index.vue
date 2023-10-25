@@ -313,8 +313,9 @@ const submitData = () => {
                 if (form.id === '') {
                     form.id = undefined;
                 }
-                const res = await addProduct(form);
-                loading.value = false
+                const res = await addProduct(form).finally(()=>{
+                    loading.value = false
+                });
                 if (res.status === 200) {
                     onlyMessage('保存成功！');
                     visible.value = false;

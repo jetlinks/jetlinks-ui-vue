@@ -145,7 +145,10 @@ const visible = ref<boolean>(false);
 const modalForm = reactive<modalState>({
     host: '0.0.0.0',
 });
-
+const regDomain = new RegExp(
+        // /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i,
+      /^[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/
+    )
 /**
  * 校验官网地址
  */
@@ -153,7 +156,7 @@ const validateUrl = async (_rule: Rule, value: string) => {
     if (!value) {
         return Promise.reject('请输入公网地址');
     } else {
-        if (!testIpv4_6(value)) {
+        if (!testIpv4_6(value) && !regDomain.test(value)) {
             return Promise.reject('请输入正确的公网地址');
         }
         return Promise.resolve();

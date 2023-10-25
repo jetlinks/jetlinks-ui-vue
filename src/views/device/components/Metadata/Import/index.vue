@@ -158,7 +158,7 @@
                 <template #label>
                     <j-space>
                         物模型
-                        <j-tooltip title="在线编辑器中编写物模型脚本">
+                        <j-tooltip title="在编辑器中编写物模型脚本">
                             <AIcon
                                 type="QuestionCircleOutlined"
                                 style="color: rgb(136, 136, 136)"

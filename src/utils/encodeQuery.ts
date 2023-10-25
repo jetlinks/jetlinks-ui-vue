@@ -24,12 +24,42 @@ export const encodeParams = (params: Record<string, any>) => {
   return _params.toString()
 }
 
+const handleTermsArr = (queryTerms: any, data: any[], parentKey?: string) => {
+  data.forEach((item, index) => {
+    const key = `${parentKey}[${index}]`
+
+    if (isArray(item)){
+      handleTermsArr(queryTerms, item, `${key}`)
+    } else if (isObject(item)) {
+      handleTermsObject(queryTerms, item, `${key}`)
+    } else  {
+      queryTerms[key] = item
+    }
+  })
+}
+const handleTermsObject = (queryTerms: any, data: any, parentKey?: string) => {
+  Object.keys(data).forEach(k => {
+    const key = `${parentKey}.${k}`
+    console.log(key, data[k], isObject(data[k]), isArray(data[k]))
+    if (isArray(data[k])) {
+      handleTermsArr(queryTerms, data[k], `${key}`)
+    } else if (isObject(data[k])) {
+      handleTermsObject(queryTerms, data[k], `${key}`)
+    } else  {
+      queryTerms[key] = data[k]
+    }
+  })
+}
+
 const handleTermsToString = (queryTerms: any, terms: Array<TermsType>, parentKey?: string) => {
+  console.log(terms)
   terms.forEach((a, aIndex) => {
     Object.keys(a).forEach((b) => {
       const key = `${parentKey}[${aIndex}].${b}`
-      if (b === 'terms') {
-        handleTermsToString(queryTerms, a[b], `${key}`)
+      if (isArray(a[b])) {
+        handleTermsArr(queryTerms, a[b], `${key}`)
+      } else if (isObject(a[b])) {
+        handleTermsObject(queryTerms, a[b], `${key}`)
       } else {
         queryTerms[key] = a[b]
       }
