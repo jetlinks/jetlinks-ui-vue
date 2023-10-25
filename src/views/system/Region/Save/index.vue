@@ -10,62 +10,90 @@
     >
         <div style="margin-top: 10px">
             <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
-                <j-form-item name="productId" label="上级区域">
-                    <j-select
+                <j-form-item name="parentId" label="上级区域">
+                    <j-tree-select
                         showSearch
-                        v-model:value="modelRef.productId"
+                        v-model:value="modelRef.parentId"
                         placeholder="1级区域不需要选择"
-                    >
-                        <j-select-option
-                            :value="item.id"
-                            v-for="item in productList"
-                            :key="item.id"
-                            :label="item.name"
-                            >{{ item.name }}</j-select-option
-                        >
-                    </j-select>
+                        :tree-data="areaList"
+                        allowClear
+                        :field-names="{
+                            children: 'children',
+                            label: 'name',
+                            value: 'id',
+                        }"
+                        tree-node-filter-prop="name"
+                    />
                 </j-form-item>
                 <j-form-item name="type" label="添加方式">
                     <j-radio-group
                         v-model:value="modelRef.type"
                         button-style="solid"
+                        @change="onChange"
                     >
-                        <a-radio-button value="a">内置行政区</a-radio-button>
-                        <a-radio-button value="b">自定义数据</a-radio-button>
+                        <a-radio-button value="builtIn"
+                            >内置行政区</a-radio-button
+                        >
+                        <a-radio-button value="Custom"
+                            >自定义数据</a-radio-button
+                        >
                     </j-radio-group>
                 </j-form-item>
-                <j-form-item>
-                    <j-select
-                        showSearch
-                        v-model:value="modelRef.productId"
-                        placeholder="1级区域不需要选择"
-                    >
-                        <j-select-option
-                            :value="item.id"
-                            v-for="item in productList"
-                            :key="item.id"
-                            :label="item.name"
-                            >{{ item.name }}</j-select-option
-                        >
-                    </j-select>
-                    <j-checkbox v-model:checked="modelRef.productId">同步添加下一级区域</j-checkbox>
+                <j-form-item v-if="modelRef.type === 'builtIn'">
+                    <BuildIn v-model:value="modelRef.features" />
                 </j-form-item>
                 <j-form-item
                     label="区域名称"
                     name="name"
+                    required
                     :rules="[
                         {
-                            max: 200,
-                            message: '最多输入200个字符',
+                            required: true,
+                            message: '请输入区域名称',
+                        },
+                        {
+                            max: 64,
+                            message: '最多输入64个字符',
+                        },
+                        {
+                            validator: vailName,
+                            trigger: 'blur',
                         },
                     ]"
                 >
-                    <j-textarea
-                        v-model:value="modelRef.describe"
-                        placeholder="请输入说明"
-                        showCount
-                        :maxlength="200"
+                    <j-input
+                        v-model:value="modelRef.name"
+                        placeholder="请输入区域名称"
                     />
+                </j-form-item>
+                <j-form-item
+                    label="行政区划代码"
+                    name="code"
+                    required
+                    :rules="[
+                        {
+                            required: true,
+                            message: '请输入行政区划代码',
+                        },
+                        {
+                            validator: vailCode,
+                            trigger: 'blur',
+                        },
+                    ]"
+                >
+                    <j-input-number
+                        v-model:value="modelRef.code"
+                        style="width: 100%"
+                        placeholder="请输入行政区划代码"
+                    />
+                </j-form-item>
+                <j-form-item
+                    v-if="modelRef.type !== 'builtIn'"
+                    label="区划划分"
+                    required
+                    name="features"
+                >
+                    <TracePoint v-model:value="modelRef.features" />
                 </j-form-item>
             </j-form>
         </div>
@@ -73,32 +101,45 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, reactive } from 'vue';
+import { ref, watch, reactive, PropType, onMounted } from 'vue';
+import TracePoint from './TracePoint.vue';
+import BuildIn from './BuildIn.vue';
+import {
+    validateName,
+    getRegionTree,
+    validateCode,
+} from '@/api/system/region';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
     data: {
         type: Object,
-        default: undefined,
+        default: () => {},
+    },
+    mode: {
+        type: String as PropType<'add' | 'edit'>,
+        default: 'add',
     },
 });
-const productList = ref<Record<string, any>[]>([]);
+const areaList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 
 const formRef = ref();
 
 const modelRef = reactive({
-    productId: undefined,
+    parentId: undefined,
     id: undefined,
-    name: '',
-    describe: '',
-    type: 'a',
+    name: undefined,
+    code: undefined,
+    type: 'builtIn',
+    features: undefined,
 });
 
 watch(
     () => props.data,
-    (newValue) => {
-        Object.assign(modelRef, newValue);
+    () => {
+        console.log(props.data);
+        Object.assign(modelRef, props.data);
     },
     { immediate: true, deep: true },
 );
@@ -117,4 +158,46 @@ const handleSave = () => {
             console.log('error', err);
         });
 };
+
+const vailName = async (_: Record<string, any>, value: string) => {
+    if (!props?.data?.id && value) {
+        const resp = await validateName(value, props.data.id);
+        if (resp.status === 200 && resp.result) {
+            return Promise.reject('区域名称重复');
+        } else {
+            return Promise.resolve();
+        }
+    } else {
+        return Promise.resolve();
+    }
+};
+
+const vailCode = async (_: Record<string, any>, value: string) => {
+    if (!props?.data?.id && value) {
+        const resp = await validateCode(value, props.data.id);
+        if (resp.status === 200 && resp.result) {
+            return Promise.reject('行政区域代码重复');
+        } else {
+            return Promise.resolve();
+        }
+    } else {
+        return Promise.resolve();
+    }
+};
+
+const onChange = () => {
+    // console.log(e.target.value)
+    modelRef.features = undefined
+}
+
+const handleSearch = async () => {
+    const resp = await getRegionTree();
+    if (resp.success) {
+        areaList.value = resp?.result || [];
+    }
+};
+
+onMounted(() => {
+    handleSearch();
+});
 </script>
