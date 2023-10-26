@@ -3,7 +3,7 @@
         :maskClosable="false"
         width="650px"
         :visible="true"
-        :title="!!data?.id ? '编辑区域' : '新增区域'"
+        :title="mode === 'edit' ? '编辑区域' : '新增区域'"
         @ok="handleSave"
         @cancel="handleCancel"
         :confirmLoading="loading"
@@ -25,22 +25,26 @@
                         tree-node-filter-prop="name"
                     />
                 </j-form-item>
-                <j-form-item name="type" label="添加方式">
+                <j-form-item :name="['properties', 'type']" label="添加方式">
                     <j-radio-group
-                        v-model:value="modelRef.type"
+                        v-model:value="modelRef.properties.type"
                         button-style="solid"
                         @change="onChange"
                     >
-                        <a-radio-button value="builtIn"
-                            >内置行政区</a-radio-button
+                        <j-radio-button value="builtin"
+                            >内置行政区</j-radio-button
                         >
-                        <a-radio-button value="Custom"
-                            >自定义数据</a-radio-button
+                        <j-radio-button value="Custom"
+                            >自定义数据</j-radio-button
                         >
                     </j-radio-group>
                 </j-form-item>
-                <j-form-item v-if="modelRef.type === 'builtIn'">
-                    <BuildIn v-model:value="modelRef.features" />
+                <j-form-item v-if="modelRef.properties.type === 'builtin'">
+                    <BuildIn
+                        v-model:value="modelRef.code"
+                        v-model:children="modelRef.children"
+                        v-model:name="modelRef.name"
+                    />
                 </j-form-item>
                 <j-form-item
                     label="区域名称"
@@ -88,7 +92,7 @@
                     />
                 </j-form-item>
                 <j-form-item
-                    v-if="modelRef.type !== 'builtIn'"
+                    v-if="modelRef.properties.type !== 'builtin'"
                     label="区划划分"
                     required
                     name="features"
@@ -108,7 +112,9 @@ import {
     validateName,
     getRegionTree,
     validateCode,
+    updateRegion,
 } from '@/api/system/region';
+import { onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -126,20 +132,36 @@ const loading = ref<boolean>(false);
 
 const formRef = ref();
 
-const modelRef = reactive({
+const init = {
     parentId: undefined,
     id: undefined,
     name: undefined,
     code: undefined,
-    type: 'builtIn',
     features: undefined,
-});
+    children: [],
+    properties: {
+        type: 'builtin',
+    },
+};
+
+const modelRef = reactive(init);
 
 watch(
     () => props.data,
     () => {
-        console.log(props.data);
-        Object.assign(modelRef, props.data);
+        Object.assign(modelRef, {});
+        if (props.mode === 'add' && props.data?.id) {
+            // 添加子
+            Object.assign(modelRef, {
+                ...init,
+                parentId: props.data.id,
+            });
+        } else if (props.mode === 'edit') {
+            // 编辑
+            Object.assign(modelRef, props.data);
+        } else {
+            Object.assign(modelRef, init);
+        }
     },
     { immediate: true, deep: true },
 );
@@ -153,6 +175,16 @@ const handleSave = () => {
         .validate()
         .then(async (_data: any) => {
             loading.value = true;
+            const resp = await updateRegion({
+                ...props.data,
+                ...modelRef,
+            }).finally(() => {
+                loading.value = false;
+            });
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                emit('save');
+            }
         })
         .catch((err: any) => {
             console.log('error', err);
@@ -162,8 +194,8 @@ const handleSave = () => {
 const vailName = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {
         const resp = await validateName(value, props.data.id);
-        if (resp.status === 200 && resp.result) {
-            return Promise.reject('区域名称重复');
+        if (resp.status === 200 && !resp.result?.passed) {
+            return Promise.reject(resp.result?.reason || '区域名称重复');
         } else {
             return Promise.resolve();
         }
@@ -175,8 +207,8 @@ const vailName = async (_: Record<string, any>, value: string) => {
 const vailCode = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {
         const resp = await validateCode(value, props.data.id);
-        if (resp.status === 200 && resp.result) {
-            return Promise.reject('行政区域代码重复');
+        if (resp.status === 200 && !resp.result?.passed) {
+            return Promise.reject(resp.result?.reason || '行政区域代码重复');
         } else {
             return Promise.resolve();
         }
@@ -186,9 +218,8 @@ const vailCode = async (_: Record<string, any>, value: string) => {
 };
 
 const onChange = () => {
-    // console.log(e.target.value)
-    modelRef.features = undefined
-}
+    modelRef.features = undefined;
+};
 
 const handleSearch = async () => {
     const resp = await getRegionTree();

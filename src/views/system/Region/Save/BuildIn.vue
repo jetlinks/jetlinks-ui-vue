@@ -26,20 +26,27 @@
 
 <script lang="ts" setup>
 import { getBuiltinRegionTree } from '@/api/system/region';
-import { omit } from 'lodash-es';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
     value: {
+        type: String,
+        default: '',
+    },
+    name: {
+        type: String,
+        default: '',
+    },
+    children: {
         type: Array,
         default: () => [],
     },
 });
 
-const emits = defineEmits(['update:value']);
+const emits = defineEmits(['update:value', 'update:name', 'update:children']);
 
-const features = ref<any>();
-const _value = ref<string>('100000')
+const features = ref<any>({});
+const _value = ref<string>();
 const builtInAreaList = ref<Record<string, any>[]>([]);
 const _checked = ref<boolean>(false);
 
@@ -55,23 +62,63 @@ const queryBuiltinRegionTree = async () => {
 
 const onCheckChange = (e: any) => {
     if (e.target.checked) {
-        emits('update:value', features.value);
+        emits('update:children', features.value?.children || []);
     } else {
-        emits('update:value', omit(features.value, 'children'));
+        emits('update:children', []);
     }
 };
 
+const getObj = (node: any): any => {
+    const _children = (node?.children || []).map((item: any) => {
+        return {
+            code: item.code,
+            name: item.name,
+            parentId: item.parentId,
+        };
+    });
+    return {
+        code: node.code,
+        name: node.name,
+        parentId: node.parentId,
+        children: _children,
+    };
+};
+
 const onSelect = (val: string, node: any) => {
-    features.value = node;
-    _value.value = val
-    if (_checked.value) {
-        emits('update:value', node);
-    } else {
-        emits('update:value', omit(node, 'children'));
-    }
+    features.value = getObj(node);
+    _value.value = val;
+    emits('update:name', features.value?.name);
+    emits('update:value', features.value?.code);
 };
 
 onMounted(() => {
     queryBuiltinRegionTree();
 });
+
+watch(
+    () => props.value,
+    () => {
+        if (props.value) {
+            _value.value = props.value
+        } else {
+            emits('update:name', '中国');
+            emits('update:value', 100000);
+        }
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
+
+watch(
+    () => props.children,
+    () => {
+        _checked.value = !!props.children?.length
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 </script>

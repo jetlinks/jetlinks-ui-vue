@@ -106,7 +106,10 @@ const onSearch = debounce((v: string) => {
     _treeData.value = filterTreeNodes(treeData.value, v);
 });
 
-const onSave = () => {};
+const onSave = () => {
+    visible.value = false;
+    handleSearch()
+};
 
 const onClose = () => {
     visible.value = false;

@@ -1,5 +1,5 @@
 <template>
-    <j-button v-if="_value.length" type="link">请在地图上描点</j-button>
+    <j-button v-if="!_value.length" type="link">请在地图上描点</j-button>
     <div v-else>
         已完成描点<j-button type="link">编辑</j-button>
     </div>
