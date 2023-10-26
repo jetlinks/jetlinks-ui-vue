@@ -191,7 +191,7 @@ const form = reactive({
             else {
                 const resp: any = await checkId_api({ id });
                 if (resp.result.passed) return Promise.resolve();
-                else return Promise.reject(resp.result.reason);
+                else return Promise.reject("标识重复");
             }
         },
     },

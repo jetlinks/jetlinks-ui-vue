@@ -112,7 +112,7 @@ const codecs = ref<{ id: string; name: string }[]>()
 const routeChange = async (id: string) => {
   const res = await getCodecs()
   if (res.status === 200) {
-    codecs.value = [{ id: 'jetlinks', name: 'jetlinks' }].concat(res.result)
+    codecs.value = [{ id: 'jetlinks', name: '标准物模型' }].concat(res.result)
   }
   if (props.type === 'device' && id) {
     detail(id as string).then((resp) => {
