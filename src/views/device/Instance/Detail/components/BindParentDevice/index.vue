@@ -155,7 +155,7 @@ const handleOk = () => {
         return;
     }
     btnLoading.value = true;
-    bindDevice(_selectedRowKeys.value[0], props.data.id, )
+    bindDevice(_selectedRowKeys.value[0], [props.data.id])
         .then((resp) => {
             if(resp.status === 200){
                 emit('ok', _selectedRowKeys.value[0]);
