@@ -97,7 +97,7 @@
                     required
                     name="features"
                 >
-                    <TracePoint v-model:value="modelRef.features" />
+                    <TracePoint @close="emit('close')" v-model:value="modelRef.features" />
                 </j-form-item>
             </j-form>
         </div>

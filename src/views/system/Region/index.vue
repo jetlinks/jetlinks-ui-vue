@@ -1,15 +1,16 @@
 <template>
     <page-container>
-      <full-page>
-        <div class="region">
-            <div class="left">
-                <LeftTree />
+        <full-page>
+            <div class="region">
+                <div class="left">
+                    <LeftTree />
+                    <div class="mask" v-if="type === 'edit'"></div>
+                </div>
+                <div class="right">
+                    <Map :path="path" :type="mapType" />
+                </div>
             </div>
-            <div class="right">
-                <Map :path="path" type="create" />
-            </div>
-        </div>
-      </full-page>
+        </full-page>
     </page-container>
 </template>
 
@@ -17,15 +18,17 @@
 import LeftTree from './LeftTree/index.vue'
 import Map from './MapTool/map.vue'
 import FullPage from "components/Layout/FullPage.vue";
+import { provide } from 'vue'
 
-const searchValue = ref()
-const current = ref<any>({})
 const path = ref([[121.5273285, 31.21515044], [121.5293285, 31.21515044], [121.5293285, 31.21915044], [121.5273285, 31.21515044]])
+const type = ref<'view' | 'edit'>('view')
+const mapType = ref<string>('create')
 
-const onSave = () => {
-
-}
-
+provide('system-region', {
+    type,
+    mapType: '',
+    path
+})
 </script>
 
 <style lang="less" scoped>
@@ -37,11 +40,22 @@ const onSave = () => {
 
     .left {
         width: 300px;
-
+        position: relative;
 
         .btn {
             width: 100%;
             margin: 18px 0;
+        }
+
+        .mask {
+            width: 100%;
+            position: absolute;
+            height: 100%;
+            background-color: lightgray;
+            opacity: .5;
+            left: 0;
+            top: 0;
+            z-index: 10;
         }
     }
     .right {
