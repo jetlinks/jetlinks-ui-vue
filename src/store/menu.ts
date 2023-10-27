@@ -12,7 +12,7 @@ import router from '@/router'
 import { onlyMessage } from '@/utils/comm'
 import { AccountMenu, NotificationRecordCode, NotificationSubscriptionCode } from '@/router/menu'
 import { USER_CENTER_MENU_CODE } from '@/utils/consts'
-import { isNoCommunity } from "@/utils/utils";
+import {isNoCommunity} from "@/utils/utils";
 
 const defaultOwnParams = [
   {

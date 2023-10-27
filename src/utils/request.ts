@@ -6,7 +6,7 @@ import { LoginPath } from '@/router/menu'
 import { cleanToken, getToken, LocalStore } from '@/utils/comm'
 import type { AxiosInstance, AxiosResponse } from 'axios'
 
-interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
+export interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
   result: T
   success: boolean
 }

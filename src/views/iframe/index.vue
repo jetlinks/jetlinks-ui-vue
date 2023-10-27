@@ -30,19 +30,29 @@ const handle = async (appId: string, url: string) => {
     const res = await getAppInfo_api(appId);
     let menuUrl: any = url;
     if (res.status === 200) {
-        if (res.result.page.routeType === 'hash') {
-            menuUrl = `#${url}`;
+      const result = res.result
+        if (result.page.routeType === 'hash') {
+            menuUrl = url.startsWith('/') ? `#${url}` : `#/${url}`;
         }
-        if (res.result.provider === 'internal-standalone') {
-            const urlStandalone = `${res.result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
+
+        if (result.page.parameters) {
+          const params = new URLSearchParams()
+          result.page.parameters.forEach((item: any) => {
+            params.set(item.key,item.value)
+          })
+          menuUrl += `?${params.toString()}`
+        }
+
+        if (result.provider === 'internal-standalone') {
+            const urlStandalone = `${result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
             iframeUrl.value = urlStandalone;
-        } else if (res.result.provider === 'internal-integrated') {
+        } else if (result.provider === 'internal-integrated') {
             const tokenUrl = `${
-                res.result.page.baseUrl
+                result.page.baseUrl
             }/${menuUrl}?layout=false&X-Access-Token=${LocalStore.get(TOKEN_KEY)}`;
             iframeUrl.value = tokenUrl;
         } else {
-            const urlOther = `${res.result.page.baseUrl}/${menuUrl}`;
+            const urlOther = `${result.page.baseUrl}/${menuUrl}`;
             iframeUrl.value = urlOther;
         }
     }

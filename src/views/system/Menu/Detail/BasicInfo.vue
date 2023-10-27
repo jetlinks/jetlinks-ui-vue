@@ -129,6 +129,20 @@
                                 />
                             </j-form-item>
                         </j-col>
+                      <j-col :span="12">
+                        <j-form-item
+                            label="所属应用"
+                            name="owner"
+                        >
+                          <j-select
+                              v-model:value="form.data.owner"
+                              :options="[{ label: 'Iot', value: 'iot' }]"
+                              allowClear
+                              placeholder="请选择所属应用"
+                              style="width: 100%"
+                          />
+                        </j-form-item>
+                      </j-col>
                     </j-row>
                 </div>
 
@@ -371,9 +385,8 @@ const form = reactive({
                 const accessSupportValue = form.data.accessSupport;
                 const params = {
                     ...form.data,
-                    options:{
-                        show:true
-                    },
+                    owner: form.data?.owner ?? null,
+                    options: { show: true },
                     accessSupport: {
                         value: accessSupportValue,
                         label:
@@ -383,7 +396,6 @@ const form = reactive({
                                 ? '支持'
                                 : '间接控制',
                     },
-                    owner: 'iot',
                 };
                 api(params)
                     .then((resp: any) => {
@@ -454,7 +466,7 @@ type assetType = {
 
             &::before {
                 position: absolute;
-                top: 5px px;
+                top: 5px;
                 left: 0;
                 width: 4px;
                 height: calc(100% - 10px);
