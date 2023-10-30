@@ -299,6 +299,8 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
                     check = true
                     return
+                }else{
+                    check = testType(item,index)
                 }
                 if(!item?.expands?.source){
                     onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
@@ -309,10 +311,7 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
                     check = true
                     return
-                }
-                if(item?.valueType?.type){
-                    check = testType(item,index)
-                }           
+                }       
         })
     }
     if(data?.functions  && !check){
