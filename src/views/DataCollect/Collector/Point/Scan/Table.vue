@@ -5,6 +5,7 @@
             :dataSource="modelRef.dataSource"
             :columns="FormTableColumns"
             :scroll="{ y: 580 }"
+            :pagination="false"
         >
             <template #headerCell="{ column }">
                 <template
@@ -308,7 +309,6 @@ watch(
     () => props.data,
     (value, preValue) => {
         modelRef.dataSource = value;
-
         // 有新增时同上数据
         const vlength = value.length,
             plength = preValue.length;

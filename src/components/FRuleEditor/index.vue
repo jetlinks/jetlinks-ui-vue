@@ -50,7 +50,7 @@
         <template #footer>
             <j-space>
                 <j-button @click="handleCancel">取消</j-button>
-                <j-button :disabled="_disabled" @click="handleOk" type="primary">确定</j-button>
+                <j-button @click="handleOk" type="primary">确定</j-button>
             </j-space>
         </template>
     </j-modal>
@@ -123,13 +123,14 @@ const getAllCrud = () => {
 }
 
 
-watch(() => _value.value, () => {
-    _disabled.value = true
-})
+// watch(() => _value.value, () => {
+//     console.log(_value.value)
+//     _disabled.value = true
+// })
 
-const onSuccess = (bool: boolean) => {
-    _disabled.value = bool;
-}
+// const onSuccess = (bool: boolean) => {
+//     _disabled.value = bool;
+// }
 getAllCrud()
 </script>
 <style lang="less" scoped>

@@ -24,12 +24,12 @@ const defaultOwnParams = [
             termType: 'eq',
             value: 'iot'
           },
-          {
-            column: 'owner',
-            termType: 'isnull',
-            value: '1',
-            type: 'or'
-          }
+          // {
+          //   column: 'owner',
+          //   termType: 'isnull',
+          //   value: '1',
+          //   type: 'or'
+          // }
         ]
       }
     ]
