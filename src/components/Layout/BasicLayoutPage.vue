@@ -25,9 +25,11 @@
                 <UserInfo />
             </div>
         </template>
-      <router-view v-slot="{ Component }">
-        <component :is="components || Component" />
-      </router-view>
+      <slot>
+        <router-view v-slot="{ Component }">
+          <component :is="components || Component" />
+        </router-view>
+      </slot>
     </j-pro-layout>
 </template>
 
@@ -40,6 +42,7 @@ import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util';
 import { AccountMenu } from '@/router/menu'
 import { useSystem } from '@/store/system';
 import { storeToRefs } from 'pinia';
+import { useSlots } from 'vue'
 
 type StateType = {
     collapsed: boolean;
@@ -55,7 +58,7 @@ const menu = useMenuStore();
 
 const system = useSystem();
 const {configInfo,layout, basicLayout} = storeToRefs(system);
-
+const slots = useSlots()
 const layoutConf = reactive({
     theme: DefaultSetting.layout.theme,
     siderWidth: layout.value.siderWidth,
@@ -107,14 +110,16 @@ const jump = (item: any) => {
   router.push(item.path)
 }
 
-
-
 watchEffect(() => {
   if (router.currentRoute) {
     const paths = router.currentRoute.value.matched
     basicLayout.value.selectedKeys = paths.map(item => item.path)
     basicLayout.value.openKeys = paths.map(item => item.path)
     console.log(paths) //
+  }
+
+  if (route.query?.layout === 'false') {
+    basicLayout.value.pure = true
   }
 })
 

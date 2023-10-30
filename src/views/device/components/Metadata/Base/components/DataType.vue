@@ -21,7 +21,6 @@
                 {{ TypeStringMap[data.record.valueType?.type] }}
             </template>
             <template #config="{ data }">
-<!--                <OtherConfigInfo :value="data.record.valueType"></OtherConfigInfo>-->
               <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
             </template>
         </DataTableObject>
@@ -54,7 +53,7 @@
 
 <script setup lang="ts" name="MetadataDataType">
 import { getUnit } from '@/api/device/instance';
-import { ValueObject } from '../components'
+import {DataType, ValueObject} from '../components'
 import {
     DataTableTypeSelect,
     DataTableArray,
@@ -68,7 +67,7 @@ import {
     DataTableObject,
 } from 'jetlinks-ui-components';
 import { cloneDeep } from 'lodash-es';
-import {handleTypeValue, typeSelectChange, TypeStringMap, useUnit} from '../columns'
+import {handleTypeValue, typeSelectChange, TypeStringMap, useUnit, validatorConfig} from '../columns'
 import ConfigModal from './ConfigModal.vue'
 import { Form } from 'jetlinks-ui-components'
 
@@ -137,7 +136,6 @@ const columns = [{
       required: true,
       rules: [{
         validator(_: any, value: any) {
-          console.log('validator',value)
           if (!value?.type) {
             return Promise.reject('请选择数据类型')
           }
@@ -150,7 +148,23 @@ const columns = [{
   {
     title: '其他配置',
     dataIndex: 'config',
-    width: 100
+    width: 100,
+    // components: {
+    //   name: ConfigModal,
+    //   props: {
+    //     showOther: false
+    //   }
+    // },
+    form: {
+      rules: [{
+        callback(rule: any, value: any, dataSource: any[]) {
+          const field = rule.field.split('.')
+          const fieldIndex = Number(field[1])
+          const values = dataSource.find((item, index) => index === fieldIndex)
+          return validatorConfig(values?.valueType)
+        }
+      }]
+    },
   },
   {
     title: '操作',

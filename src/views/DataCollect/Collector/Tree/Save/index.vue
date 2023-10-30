@@ -133,13 +133,13 @@
             </p>
             </div>
             <j-form-item
-                :name="['configuration', 'requsetTimeout']"
-                :rules="LeftTreeRules.requsetTimeout"
+                :name="['configuration', 'requestTimeout']"
+                :rules="LeftTreeRules.requestTimeout"
             >
                 <j-input-number
                     style="width: 100%"
                     placeholder="请输入请求超时时间配置"
-                    v-model:value="formData.configuration.requsetTimeout"
+                    v-model:value="formData.configuration.requestTimeout"
                     addon-after="ms"
                     :max="60000"
                     :min="2000"
@@ -257,7 +257,7 @@ const formData = ref({
         type: 'LowerFrequency',
         endian: 'BIG',
         endianIn: 'BIG',
-        requsetTimeout: 2000,
+        requestTimeout: 2000,
         inheritBreakerSpec: {
           type: 'LowerFrequency',
         }

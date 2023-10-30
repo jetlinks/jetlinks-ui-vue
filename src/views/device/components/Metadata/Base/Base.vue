@@ -61,19 +61,17 @@
             title="继承自产品物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link" style="padding-left: 0;">
-              <AIcon type="SettingOutlined" />
-              配置
-            </j-button>
+              <j-button :disabled="true" type="link" >
+                <AIcon type="SettingOutlined" />
+                配置
+              </j-button>
+
           </j-tooltip>
-          <PermissionButton
-                v-else
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="inputs"
-            >
-          <InputParams  v-model:value="data.record.inputs" />
-          </PermissionButton>
+          <InputParams
+              v-else
+              v-model:value="data.record.inputs"
+              :has-permission="`${permission}:update`"
+          />
         </template>
         <template #output="{ data }">
           {{ data.record.output?.type }}
@@ -93,19 +91,16 @@
             title="继承自产品物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link" style="padding-left: 0;">
+            <j-button :disabled="true" type="link">
               <AIcon type="SettingOutlined" />
               配置
             </j-button>
           </j-tooltip>
-          <PermissionButton
-                v-else
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="properties"
-            >
-          <ConfigParams  v-model:value="data.record.valueType" />
-          </PermissionButton>
+          <ConfigParams
+              v-else
+              v-model:value="data.record.valueType"
+              :has-permission="`${permission}:update`"
+          />
         </template>
         <template #outInput>
           object
@@ -116,33 +111,27 @@
           </j-tag>
         </template>
         <template #other="{ data }">
-          <j-tooltip
+          <!-- <j-tooltip
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
             title="继承自产品物模型的数据不支持修改"
-          >
+          > -->
 <!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link" style="padding-left: 0;">
+            <!-- <j-button :disabled="true" type="link" style="padding-left: 0;">
               <AIcon type="SettingOutlined" />
               配置
-            </j-button>
-          </j-tooltip>
-          <PermissionButton
-                v-else
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="setting"
-            >
-            <OtherSetting
+            </j-button> -->
+          <!-- </j-tooltip> -->
+          <OtherSetting
               v-model:value="data.record.expands"
               :id="data.record.id"
               :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
               :record="data.record"
+              :type="data.record.valueType.type"
+              :has-permission="`${permission}:update`"
               :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
                 title: '继承自产品物模型的数据不支持删除',
               } : undefined"
-              :type="data.record.valueType.type"
           />
-            </PermissionButton>
 
         </template>
         <template #action="{data}">
