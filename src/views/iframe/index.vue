@@ -38,9 +38,14 @@ const handle = async (appId: string, url: string) => {
         if (result.page.parameters) {
           const params = new URLSearchParams()
           result.page.parameters.forEach((item: any) => {
-            params.set(item.key,item.value)
+            if (item?.key) {
+              params.set(item.key,item.value)
+            }
           })
-          menuUrl += `?${params.toString()}`
+          const urlParams = params.toString()
+          if (urlParams) {
+            menuUrl += `?${urlParams}`
+          }
         }
 
         if (result.provider === 'internal-standalone') {
