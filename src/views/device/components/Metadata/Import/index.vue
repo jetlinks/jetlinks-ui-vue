@@ -197,6 +197,7 @@ import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
 import { omit } from 'lodash-es';
 import { Modal } from 'jetlinks-ui-components';
+import { testObject , testType} from './valideta'
 
 const route = useRoute();
 const instanceStore = useInstanceStore();
@@ -304,11 +305,13 @@ const requiredCheck = (data:any) =>{
                     check = true
                     return 
                 }
-               
                 if((item?.expands?.source === 'device' ||    item?.expands?.source === 'rule') && !item?.expands?.type){
                     onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
                     check = true
                     return
+                }
+                if(item?.valueType?.type){
+                    check = testType(item,index)
                 }           
         })
     }
@@ -328,6 +331,16 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`方法定义第${index + 1}个数组中缺失async属性`,'error');
                     check = true
                     return
+            }
+            if(item?.inputs){
+                testObject(item.inputs,index)
+                item.inputs.forEach((i:any)=>{
+                    if(!i?.expands?.required && i?.expands?.required !== false){
+                        onlyMessage(`方法定义inputs第${index+1}个数组中缺失expands.required属性`,'error')
+                        check = true
+                        return
+                    }
+                })
             }
         })
     }
@@ -401,6 +414,8 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
                     check = true
                     return
+            }else{
+                testType(item?.valueType?.type,index)
             }
             if(!item?.expands?.type){
                     onlyMessage(`标签定义第${index + 1}个数组中缺失expands.type属性`,'error');
