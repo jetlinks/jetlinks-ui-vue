@@ -197,7 +197,7 @@ import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
 import { omit } from 'lodash-es';
 import { Modal } from 'jetlinks-ui-components';
-import { testObject , testType} from './valideta'
+import { testObject , testType , testAliType , testAliObject} from './valideta'
 
 const route = useRoute();
 const instanceStore = useInstanceStore();
@@ -444,6 +444,8 @@ const aliCheck = (data:any) => {
                     onlyMessage(`属性定义第${index + 1}个数组中缺失dataType.type属性`,'error');
                     check = true
                     return 
+                }else{
+                    testAliType(item,index)
                 }  
         })
     }
@@ -463,6 +465,9 @@ const aliCheck = (data:any) => {
                     onlyMessage(`方法定义第${index + 1}个数组中缺失callType属性`,'error');
                     check = true
                     return
+            }
+            if(item?.inputData){
+                testAliObject(item.inputData,index)
             }
         })
     }
