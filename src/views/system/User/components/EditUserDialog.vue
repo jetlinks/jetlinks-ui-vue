@@ -102,11 +102,15 @@
                         <j-tree-select
                             v-model:value="form.data.roleIdList"
                             multiple
+                            show-search
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
                             :tree-data="form.roleOptions"
                             :fieldNames="{ label: 'name', value: 'id', children:'children' }"
                             :disabled="form.data.username === 'admin'"
+                            :filterTreeNode="
+                                (v: string, node: any) => filterSelectNode(v, node, 'name')
+                            "
                         ></j-tree-select>
 
                         <PermissionButton
