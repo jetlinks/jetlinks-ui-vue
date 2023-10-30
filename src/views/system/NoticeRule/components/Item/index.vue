@@ -17,6 +17,7 @@
                 <div
                     class="child-item-left-auth"
                     :class="{ disabled: !checked }"
+                    v-if="isNoCommunity"
                 >
                     <j-tooltip>
                         <template #title>
@@ -163,6 +164,7 @@ import { Modal, Checkbox } from 'jetlinks-ui-components';
 import { usePermissionStore } from '@/store/permission';
 import { LocalStore } from '@/utils/comm';
 import { useUserInfo } from '@/store/userInfo';
+import { isNoCommunity } from '@/utils/utils';
 
 const props = defineProps({
     data: {

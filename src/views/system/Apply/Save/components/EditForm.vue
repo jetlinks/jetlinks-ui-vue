@@ -144,12 +144,7 @@
 
                             <RequestTable
                                 v-model:value="form.data.page.parameters"
-                                value-type="select"
-                                :value-options="[
-                                    { label: '用户ID', value: '用户ID' },
-                                    { label: '用户名', value: '用户名' },
-                                    { label: 'token', value: 'token' },
-                                ]"
+                                value-type="input"
                             />
                         </j-form-item>
                     </template>
@@ -1397,12 +1392,20 @@
 
         <div class="dialog">
             <MenuDialog
-                v-if="dialog.visible"
+                v-if="dialog.visible && dialog.current.provider !== 'third-party'"
                 v-model:visible="dialog.visible"
                 :data="dialog.current"
                 :mode="routeQuery.id ? 'edit' : 'add'"
                 @refresh="menuStory.jumpPage('system/Apply')"
             />
+          <ThirdMenu
+              v-if="dialog.visible && dialog.current.provider === 'third-party'"
+              :data="dialog.current"
+              :mode="routeQuery.id ? 'edit' : 'add'"
+              mode="add"
+              @cancel="dialog.visible = false"
+              @ok="menuStory.jumpPage('system/Apply')"
+          />
         </div>
     </div>
 </template>
@@ -1420,6 +1423,7 @@ import {
 import FormLabel from './FormLabel.vue';
 import RequestTable from './RequestTable.vue';
 import MenuDialog from '../../componenets/MenuDialog.vue';
+import ThirdMenu from '../../componenets/ThirdMenu.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import type { formType, dictType, optionsType, applyType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
@@ -1573,7 +1577,7 @@ const getType = async () => {
         typeOptions.value = arr;
     }
 }
- 
+
 onMounted(async () => {
     await getType();
     getRoleIdList();

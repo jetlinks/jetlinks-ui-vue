@@ -183,12 +183,19 @@
         </div>
         <div class="dialogs">
             <MenuDialog
-                v-if="dialogVisible"
+                v-if="dialogVisible && current.provider !== 'third-party'"
                 v-model:visible="dialogVisible"
                 mode="edit"
                 :data="current"
                 @refresh="table.refresh"
             />
+          <ThirdMenu
+              v-if="dialogVisible && current.provider === 'third-party'"
+              :data="current"
+              mode="edit"
+              @cancel="dialogVisible = false"
+              @ok="() => { dialogVisible = false; table.refresh}"
+          />
         </div>
         <Add v-if="visible" @close="visible = false" />
     </page-container>
@@ -197,6 +204,7 @@
 <script setup lang="ts" name="Apply">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import MenuDialog from './componenets/MenuDialog.vue';
+import ThirdMenu from './componenets/ThirdMenu.vue'
 import {
     getApplyList_api,
     changeApplyStatus_api,

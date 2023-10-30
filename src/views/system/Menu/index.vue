@@ -179,21 +179,17 @@ const table = reactive({
         //过滤非集成的菜单
         const item = {
             terms: [
-                {
-                    terms: [
-                        {
-                            column: 'owner',
-                            termType: 'eq',
-                            value: 'iot',
-                        },
-                        {
-                            column: 'owner',
-                            termType: 'isnull',
-                            value: '1',
-                            type: 'or',
-                        },
-                    ],
-                },
+              {
+                column: 'owner',
+                termType: 'eq',
+                value: 'iot',
+              },
+              {
+                column: 'owner',
+                termType: 'isnull',
+                value: '1',
+                type: 'or',
+              },
             ],
         };
         const params = {
