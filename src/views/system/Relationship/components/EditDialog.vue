@@ -133,6 +133,7 @@ const props = defineProps<{
 }>();
 // 弹窗相关
 const loading = ref(false);
+const targetList = ref([])
 const dialogTitle = computed(() => (props.data.id ? '编辑' : '新增'));
 const confirm = () => {
     loading.value = true;
@@ -198,6 +199,7 @@ const form = reactive({
     getObjectList: () => {
         getObjectList_api().then((resp: any) => {
             form.objectList = resp.result;
+            targetList.value = resp.result
         });
     },
     submit: () => {
@@ -220,9 +222,6 @@ const validateName = async(_:any,value:any)=>{
    }
    return form.data.reverseName === form.data.name ? Promise.reject('不能使用相同的关系名称') : Promise.resolve()
 }
-const targetList = computed(() =>
-    form.data.objectType === 'device' ? [{ id: 'user', name: '用户' }] : [],
-);
 form.getObjectList();
 
 type formType = {
