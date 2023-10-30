@@ -141,7 +141,7 @@
                         <div>
                             1、平台支持将告警数据输出到kafka，第三方系统可订阅kafka中的告警数据，进行业务处理。
                         </div>
-                        <h2>输出参数</h2>
+                        <h2>推送参数</h2>
                         <div>
                             <j-table
                                 :dataSource="outputData"

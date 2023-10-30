@@ -80,7 +80,7 @@
                                 "
                             >
                                 <j-form-item
-                                    label="webHook"
+                                    label="WebHook"
                                     v-bind="validateInfos['configuration.url']"
                                     :rules='[{ max: 64, message: "最多可输入64个字符" }]'
                                 >
@@ -88,7 +88,7 @@
                                         v-model:value="
                                             formData.configuration.url
                                         "
-                                        placeholder="请输入webHook"
+                                        placeholder="请输入WebHook"
                                     />
                                 </j-form-item>
                             </template>
@@ -278,12 +278,12 @@
                         <!-- webhook -->
                         <template v-if="formData.type === 'webhook'">
                             <j-form-item
-                                label="Webhook"
+                                label="WebHook"
                                 v-bind="validateInfos['configuration.url']"
                             >
                                 <j-input
                                     v-model:value="formData.configuration.url"
-                                    placeholder="请输入Webhook"
+                                    placeholder="请输入WebHook"
                                 />
                             </j-form-item>
                             <j-form-item label="请求头">
@@ -447,7 +447,7 @@ const formRules = ref({
     ],
     // webhook
     'configuration.url': [
-        { required: true, message: '请输入Webhook', trigger: 'blur' },
+        { required: true, message: '请输入WebHook', trigger: 'blur' },
         // {
         //     pattern:
         //         /^(((ht|f)tps?):\/\/)?([^!@#$%^&*?.\s-]([^!@#$%^&*?.\s]{0,63}[^!@#$%^&*?.\s])?\.)+[j-z]{2,6}\/?/,

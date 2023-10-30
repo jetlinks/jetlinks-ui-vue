@@ -111,7 +111,7 @@ const pickerTimeChange = (value: any) => {
 };
 const changeType = (value:any) =>{
     getNetworkEcharts(data.value);
-} 
+}
 const getNetworkEcharts = async (val: any) => {
     loading.value = true;
     const resp: any = await dashboard(networkParams(val));
@@ -149,10 +149,16 @@ const getNetworkEcharts = async (val: any) => {
 
 const formatterData = (value: any) => {
     let _data = '';
-    if (value >= 1024 && value < 1024 * 1024) {
-        _data = `${Number((value / 1024).toFixed(2))}KB`;
-    } else if (value >= 1024 * 1024) {
-        _data = `${Number((value / 1024 / 1024).toFixed(2))}M`;
+    const kb = 1024
+    const mb = kb**2
+    const gb = kb**3
+
+    if (value >= kb && value < mb) {
+        _data = `${Number((value / kb).toFixed(2))}KB`;
+    } else if (value >= mb && value < gb) {
+        _data = `${Number((value / mb).toFixed(2))}M`;
+    } else if (value >= gb) {
+        _data = `${Number((value / gb).toFixed(2))}G`;
     } else {
         _data = `${value}B`;
     }
