@@ -50,7 +50,7 @@ import { Form } from 'jetlinks-ui-components';
 Form.useInjectFormItemContext();
 
 const props = defineProps<{
-    key: string;
+    btnId: string;
     value: any[];
     firstWidth: number;
     maxHeight: string;
@@ -78,7 +78,7 @@ const permission = reactive({
     init: () => {
         permission.getList();
         watch(
-            () => props.key,
+            () => props.btnId,
             () => {
                 nextTick(() => {
                     permission.list = permission.makeList(
