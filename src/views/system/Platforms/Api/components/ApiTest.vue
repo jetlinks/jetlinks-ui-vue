@@ -52,12 +52,7 @@
                                                     requestBody.pageSize,
                                             'value',
                                         ]"
-                                        :rules="[
-                                            {
-                                                required: true,
-                                                message: '该字段是必填字段',
-                                            },
-                                        ]"
+                                        
                                     >
                                         <j-input
                                             v-model:value="record.value"
@@ -230,16 +225,22 @@ const _send = () => {
     };
 
     let url = props.selectApi?.url;
-    const urlParams = {};
-    requestBody.params.paramsTable.forEach((item) => {
-        if (methodName === 'get') urlParams[item.name] = item.value;
+    let params
+    if (methodName === 'get'){
+        const urlParams = {};
+        requestBody.params.paramsTable.forEach((item) => {
+        urlParams[item.name] = item.value;
         if (url.includes(`{${item.name}}`))
             url = url.replace(`{${item.name}}`, item.value);
     });
-    const params = {
+    params = {
         ...JSON.parse(requestBody.code || '{}'),
         ...urlParams,
     };
+    }else{
+        parmas = JSON.parse(requestBody.code || '{}')
+    }
+    
     server[methodObj[methodName]](url, params).then((resp: any) => {
         // 如果用户没填写参数且有body的情况下，给用户展示请求示例
         if (Object.keys(params).length === 0 && refStr.value) {
