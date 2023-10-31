@@ -237,7 +237,7 @@ const _send = () => {
         ...urlParams,
     };
     }else{
-        params = JSON.parse(requestBody.code)
+        params = JSON.parse(requestBody.code || '{}')
     }
    
     server[methodObj[methodName]](url, params).then((resp: any) => {
