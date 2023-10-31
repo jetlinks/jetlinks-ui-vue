@@ -52,12 +52,7 @@
                                                     requestBody.pageSize,
                                             'value',
                                         ]"
-                                        :rules="[
-                                            {
-                                                required: true,
-                                                message: '该字段是必填字段',
-                                            },
-                                        ]"
+                                        
                                     >
                                         <j-input
                                             v-model:value="record.value"
