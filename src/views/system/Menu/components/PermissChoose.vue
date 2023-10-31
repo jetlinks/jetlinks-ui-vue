@@ -77,17 +77,17 @@ const permission = reactive({
 
     init: () => {
         permission.getList();
-        watch(
-            () => props.btnId,
-            () => {
-                nextTick(() => {
-                    permission.list = permission.makeList(
-                        props.value,
-                        permission.sourceList,
-                    );
-                });
-            },
-        );
+        // watch(
+        //     () => props.btnId,
+        //     () => {
+        //         nextTick(() => {
+        //             permission.list = permission.makeList(
+        //                 props.value,
+        //                 permission.sourceList,
+        //             );
+        //         });
+        //     },
+        // );
     },
     // 获取权限列表
     getList: () => {
