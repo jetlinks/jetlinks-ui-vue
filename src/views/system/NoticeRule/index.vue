@@ -54,8 +54,10 @@
 <script lang="ts" setup>
 import { queryChannelConfig } from '@/api/system/noticeRule';
 import Item from './components/Item/index.vue';
-
-const dataSource = [
+import { useMenuStore } from '@/store/menu';
+const menuStore = useMenuStore();
+let dataSource:any[] =[] 
+const systemNotice = [
     {
         provider: 'alarm',
         name: '告警',
@@ -99,7 +101,27 @@ const dataSource = [
         ],
     },
 ];
-const activeKey = ref<string[]>(['alarm', 'system-monitor', 'system-business']);
+const lowCodeNotice = [
+    {
+        provider: 'workflow-notification',
+        name: '工作流通知',
+        children: [
+            {
+                provider: 'workflow-task-cc',
+                name: '抄送通知',
+            },
+            {
+                provider: 'workflow-task-todo',
+                name: '待办通知'
+            },{
+                provider: 'workflow-task-completed',
+                name: '完成通知'
+            }
+        ],
+    },
+]
+
+const activeKey = ref<string[]>();
 
 const dataMap = new Map();
 
@@ -159,6 +181,13 @@ onMounted(() => {
     // data.value = Array.from(dataMap).map((item) => {
     //     return item?.[1];
     // });
+    if(menuStore.hasMenu('code')){
+        dataSource = [...systemNotice,...lowCodeNotice]
+        activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
+    }else{
+        dataSource = [...systemNotice]
+        activeKey.value = ['alarm', 'system-monitor', 'system-business']
+    }
     handleSearch();
 });
 </script>

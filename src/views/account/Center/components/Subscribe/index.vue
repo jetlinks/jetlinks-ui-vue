@@ -55,14 +55,15 @@
 <script lang="ts" setup>
 import { getAllNotice } from '@/api/account/center';
 import { getNoticeList_api } from '@/api/account/notificationSubscription';
-import { initData } from '../data';
+import { getInitData } from '../data';
 import Item from './components/Item.vue';
-
+import { useMenuStore } from '@/store/menu';
+const menuStore = useMenuStore();
 const subscribe = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
-const activeKey = ref<string[]>(['alarm', 'system-monitor', 'system-business']);
+const activeKey = ref<string[]>();
 const loading = ref<boolean>(false)
-
+let initData:any[] 
 const handleSearch = () => {
     loading.value = true
     getAllNotice().then((resp: any) => {
@@ -105,6 +106,8 @@ const handleSearch = () => {
 };
 
 onMounted(() => {
+    activeKey.value = menuStore.hasMenu('code') ? ['alarm', 'system-monitor', 'system-business','workflow-notification'] : ['alarm', 'system-monitor', 'system-business']
+    initData = getInitData()
     handleSearch();
 });
 </script>
