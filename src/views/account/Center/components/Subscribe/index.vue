@@ -63,7 +63,7 @@ const subscribe = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
 const activeKey = ref<string[]>();
 const loading = ref<boolean>(false)
-let initData:any[] 
+let initData:any[]
 const handleSearch = () => {
     loading.value = true
     getAllNotice().then((resp: any) => {
@@ -106,7 +106,11 @@ const handleSearch = () => {
 };
 
 onMounted(() => {
-    activeKey.value = menuStore.hasMenu('code') ? ['alarm', 'system-monitor', 'system-business','workflow-notification'] : ['alarm', 'system-monitor', 'system-business']
+  const keys = ['alarm', 'system-monitor', 'system-business']
+  if (menuStore.hasMenu('workflow')) {
+    keys.push('workflow-notification')
+  }
+    activeKey.value = keys
     initData = getInitData()
     handleSearch();
 });

@@ -72,6 +72,5 @@ const workflowNotice = [
     },
 ]
 export const getInitData = () =>{
-    let initData:any[]
-   return initData = menuStore.hasMenu('code') ? [...systemNotice,...workflowNotice] : [...systemNotice]
+   return menuStore.hasMenu('workflow') ? [...systemNotice,...workflowNotice] : [...systemNotice]
 }
