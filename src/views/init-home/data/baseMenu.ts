@@ -4593,16 +4593,15 @@ export default [
     ],
   },
   {
-    "id": "50a4a0582cc8b93590475efc96ffa86e",
-    "path": "3nkE",
+    "path": "3n23",
     "sortIndex": 5,
     "level": 1,
     "owner": "iot",
-    "name": "低码菜单",
-    "code": "code",
-    "url": "/code",
+    "name": "WEB IDE",
+    "code": "web_ide",
+    "url": "/web_ide",
     "icon": "MenuUnfoldOutlined",
-    showPage: ["low-code-editor","process-deployment", "low-code-info"],
+    showPage: ["low-code-info", "low-code-editor"],
     "options": {
       isShow: false,
     },
@@ -4624,6 +4623,36 @@ export default [
           "query", "deploy"
         ]
       }
+    ],
+    "creatorId": "1199596756811550720",
+    "createTime": 1698735482730,
+    "supportDataAccess": false
+  },
+  {
+    "path": "4FgE",
+    "sortIndex": 6,
+    "level": 1,
+    "owner": "iot",
+    "name": "工作流",
+    "code": "workflow",
+    "url": "/workflow",
+    "icon": "MenuUnfoldOutlined",
+    showPage: ["process-form","process-deployment"],
+    "options": {
+      isShow: false,
+    },
+    "accessSupport": {
+      "text": "不支持",
+      "value": "unsupported"
+    },
+    "indirectMenus": [],
+    permissions: [
+      {
+        "permission": "low-code-info",
+        "actions": [
+          "query",
+        ]
+      },
     ],
     "buttons": [
       {
