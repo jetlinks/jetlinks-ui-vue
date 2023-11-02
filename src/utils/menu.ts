@@ -320,6 +320,9 @@ export const handleSiderMenu = (menuData: any[]) => {
   if (menuData && menuData.length) {
     return menuData.map(item => {
       const { isApp, appUrl } = hasAppID(item) // 是否为第三方程序
+      if ( item.options?.isShow !== undefined && item.isShow === undefined) {
+        item.isShow = item.options.isShow
+      }
       const meta = handleMeta(item, isApp)
       const route: any = {
         path: isApp ? appUrl : `${item.url}`,
@@ -333,7 +336,7 @@ export const handleSiderMenu = (menuData: any[]) => {
         route.children = handleSiderMenu(route.children)
       }
 
-      route.meta.hideInMenu = hideInMenu(item.code)
+      // route.meta.hideInMenu = hideInMenu(item.code)
 
       return route
     })

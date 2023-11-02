@@ -386,7 +386,7 @@ const form = reactive({
                 const params = {
                     ...form.data,
                     owner: form.data?.owner ?? null,
-                    options: { show: true },
+                    options: form.data?.options || { show: true },
                     accessSupport: {
                         value: accessSupportValue,
                         label:
