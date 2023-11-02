@@ -137,13 +137,13 @@ watch(
       if (props.type === 'device') {
         detail(id as string).then((resp) => {
           loading.value = false
-          instanceStore.setCurrent(resp.result)
+          // instanceStore.setCurrent(resp.result)
           value.value = resp.result.metadata
         });
       } else {
         productDetail(id as string).then((resp) => {
           loading.value = false
-          productStore.setCurrent(resp.result)
+          // productStore.setCurrent(resp.result)
           value.value = resp.result.metadata
         });
       }
