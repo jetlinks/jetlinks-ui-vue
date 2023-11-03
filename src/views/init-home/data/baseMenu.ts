@@ -4637,7 +4637,7 @@ export default [
     "code": "workflow",
     "url": "/workflow",
     "icon": "MenuUnfoldOutlined",
-    showPage: ["process-form","process-deployment"],
+    showPage: ["process-form","process-deployment", "process-runtime"],
     "options": {
       isShow: false,
     },
@@ -4650,14 +4650,26 @@ export default [
       {
         "permission": "low-code-info",
         "actions": [
-          "query",
+          "query"
         ]
       },
+      {
+        "permission": "process-runtime",
+        "actions": [
+          "reject",
+          "start",
+          "self",
+          "claim",
+          "complete",
+          "createAndStart",
+          "repeal"
+        ]
+      }
     ],
     "buttons": [
       {
         "id": "form_query",
-        "name": "流程表单-查询",
+        "name": "表单-查询",
         "permissions": [
           {
             "permission": "process-form",
@@ -4669,7 +4681,7 @@ export default [
       },
       {
         "id": "form_save",
-        "name": "流程表单-保存",
+        "name": "表单-新增",
         "permissions": [
           {
             "permission": "process-form",
@@ -4681,7 +4693,7 @@ export default [
       },
       {
         "id": "form_delete",
-        "name": "流程表单-删除",
+        "name": "表单-删除",
         "permissions": [
           {
             "permission": "process-form",
@@ -4691,9 +4703,22 @@ export default [
           }
         ]
       },
+
       {
-        "id": "definition_query",
-        "name": "流程定义-查询",
+        "id": "form_update",
+        "name": "表单-编辑",
+        "permissions": [
+          {
+            "permission": "process-form",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "model_query",
+        "name": "模型-查询",
         "permissions": [
           {
             "permission": "process-definition",
@@ -4704,8 +4729,8 @@ export default [
         ]
       },
       {
-        "id": "definition_save",
-        "name": "流程定义-保存",
+        "id": "model_deploy",
+        "name": "模型-部署",
         "permissions": [
           {
             "permission": "process-definition",
@@ -4716,8 +4741,44 @@ export default [
         ]
       },
       {
-        "id": "definition_delete",
-        "name": "流程定义-删除",
+        "id": "model_add",
+        "name": "模型-新增",
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "model_update",
+        "name": "模型-编辑",
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "model_save",
+        "name": "模型-保存",
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "model_delete",
+        "name": "模型-删除",
         "permissions": [
           {
             "permission": "process-definition",
@@ -4729,7 +4790,7 @@ export default [
       },
       {
         "id": "release_query",
-        "name": "流程部署-查询",
+        "name": "实例-查询",
         "permissions": [
           {
             "permission": "process-deployment",
@@ -4740,8 +4801,32 @@ export default [
         ]
       },
       {
-        "id": "release_save",
-        "name": "流程部署-保存",
+        "id": "release_action",
+        "name": "实例-启/禁用",
+        "permissions": [
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "release_auth",
+        "name": "实例-权限控制",
+        "permissions": [
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "release_copy",
+        "name": "实例-复制",
         "permissions": [
           {
             "permission": "process-deployment",
@@ -4753,7 +4838,7 @@ export default [
       },
       {
         "id": "release_delete",
-        "name": "流程部署-删除",
+        "name": "实例-删除",
         "permissions": [
           {
             "permission": "process-deployment",
@@ -4762,94 +4847,11 @@ export default [
             ]
           }
         ]
-      },
-      {
-        "id": "runtime-dismiss",
-        "name": "流程运行时-驳回任务",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "reject"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "runtime-initiate",
-        "name": "流程运行时-发起流程",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "start"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "runtime-mine",
-        "name": "流程运行时-我的流程",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "self"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "runtime-sign",
-        "name": "流程运行时-签收任务",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "claim"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "runtime-complete",
-        "name": "流程运行时-完成任务",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "complete"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "runtime-create",
-        "name": "流程运行时-创建/启动流程",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "createAndStart"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "runtime-revoke",
-        "name": "流程运行时-撤销流程",
-        "permissions": [
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "repeal"
-            ]
-          }
-        ]
       }
     ],
     "creatorId": "1199596756811550720",
     "createTime": 1698735482730,
     "supportDataAccess": false
-  }
+  },
+
 ];
