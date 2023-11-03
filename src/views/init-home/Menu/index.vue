@@ -101,9 +101,9 @@ const menuCount = (menus: any[]) => {
  */
 const dealMenu = (data:any) =>{
     data.forEach((item:any)=>{
-        item.options = {
-            show: true
-        }
+        item.options = Object.assign({
+          show: true
+        }, item?.options || {})
         if(item.children){
             dealMenu(item.children)
         }

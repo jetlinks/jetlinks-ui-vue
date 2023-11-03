@@ -13,6 +13,9 @@ export const USER_CENTER_MENU_DATA = {
   sortIndex: 9999,
   granted: true,
   owner: 'iot',
+  options: {
+    isShow: false,
+  },
   permissions: [
     {
       permission: 'system_config',
@@ -4588,5 +4591,265 @@ export default [
         supportDataAccess: false
       },
     ],
+  },
+  {
+    "path": "3n23",
+    "sortIndex": 5,
+    "level": 1,
+    "owner": "iot",
+    "name": "WEB IDE",
+    "code": "web_ide",
+    "url": "/web_ide",
+    "icon": "MenuUnfoldOutlined",
+    showPage: ["low-code-info", "low-code-editor"],
+    "options": {
+      isShow: false,
+    },
+    "accessSupport": {
+      "text": "不支持",
+      "value": "unsupported"
+    },
+    "indirectMenus": [],
+    permissions: [
+      {
+        "permission": "low-code-info",
+        "actions": [
+          "add", "query", "save", "delete"
+        ]
+      },
+      {
+        "permission": "low-code-editor",
+        "actions": [
+          "query", "deploy"
+        ]
+      }
+    ],
+    "creatorId": "1199596756811550720",
+    "createTime": 1698735482730,
+    "supportDataAccess": false
+  },
+  {
+    "path": "4FgE",
+    "sortIndex": 6,
+    "level": 1,
+    "owner": "iot",
+    "name": "工作流",
+    "code": "workflow",
+    "url": "/workflow",
+    "icon": "MenuUnfoldOutlined",
+    showPage: ["process-form","process-deployment"],
+    "options": {
+      isShow: false,
+    },
+    "accessSupport": {
+      "text": "不支持",
+      "value": "unsupported"
+    },
+    "indirectMenus": [],
+    permissions: [
+      {
+        "permission": "low-code-info",
+        "actions": [
+          "query",
+        ]
+      },
+    ],
+    "buttons": [
+      {
+        "id": "form_query",
+        "name": "流程表单-查询",
+        "permissions": [
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "form_save",
+        "name": "流程表单-保存",
+        "permissions": [
+          {
+            "permission": "process-form",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "form_delete",
+        "name": "流程表单-删除",
+        "permissions": [
+          {
+            "permission": "process-form",
+            "actions": [
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "definition_query",
+        "name": "流程定义-查询",
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "definition_save",
+        "name": "流程定义-保存",
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "definition_delete",
+        "name": "流程定义-删除",
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "release_query",
+        "name": "流程部署-查询",
+        "permissions": [
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "release_save",
+        "name": "流程部署-保存",
+        "permissions": [
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "save"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "release_delete",
+        "name": "流程部署-删除",
+        "permissions": [
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "delete"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-dismiss",
+        "name": "流程运行时-驳回任务",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "reject"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-initiate",
+        "name": "流程运行时-发起流程",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "start"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-mine",
+        "name": "流程运行时-我的流程",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "self"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-sign",
+        "name": "流程运行时-签收任务",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "claim"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-complete",
+        "name": "流程运行时-完成任务",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "complete"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-create",
+        "name": "流程运行时-创建/启动流程",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "createAndStart"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "runtime-revoke",
+        "name": "流程运行时-撤销流程",
+        "permissions": [
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "repeal"
+            ]
+          }
+        ]
+      }
+    ],
+    "creatorId": "1199596756811550720",
+    "createTime": 1698735482730,
+    "supportDataAccess": false
   }
 ];

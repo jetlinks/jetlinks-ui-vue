@@ -50,7 +50,7 @@ import { Form } from 'jetlinks-ui-components';
 Form.useInjectFormItemContext();
 
 const props = defineProps<{
-    key: string;
+    btnId: string;
     value: any[];
     firstWidth: number;
     maxHeight: string;
@@ -77,17 +77,17 @@ const permission = reactive({
 
     init: () => {
         permission.getList();
-        watch(
-            () => props.key,
-            () => {
-                nextTick(() => {
-                    permission.list = permission.makeList(
-                        props.value,
-                        permission.sourceList,
-                    );
-                });
-            },
-        );
+        // watch(
+        //     () => props.btnId,
+        //     () => {
+        //         nextTick(() => {
+        //             permission.list = permission.makeList(
+        //                 props.value,
+        //                 permission.sourceList,
+        //             );
+        //         });
+        //     },
+        // );
     },
     // 获取权限列表
     getList: () => {
