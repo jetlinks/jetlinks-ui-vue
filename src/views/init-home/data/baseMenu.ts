@@ -4825,18 +4825,6 @@ export default [
         ]
       },
       {
-        "id": "release_copy",
-        "name": "实例-复制",
-        "permissions": [
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
         "id": "release_delete",
         "name": "实例-删除",
         "permissions": [
