@@ -13,7 +13,7 @@
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
-                <j-col :span="12">
+                <j-col :span="24">
                     <j-form-item
                         name="name"
                         label="姓名"
@@ -31,7 +31,112 @@
                         />
                     </j-form-item>
                 </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
+                    <j-form-item
+                        name="telephone"
+                        label="手机号"
+                        :rules="[
+                            {
+                                pattern: /^1[3456789]\d{9}$/,
+                                message: '请输入正确的手机号',
+                            },
+                        ]"
+                    >
+                        <j-input
+                            v-model:value="form.data.telephone"
+                            placeholder="请输入手机号"
+                            :maxlength="64"
+                        />
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item
+                        name="email"
+                        label="邮箱"
+                        :rules="[
+                            {
+                                pattern:
+                                    /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+                                message: '请输入正确的邮箱',
+                            },
+                        ]"
+                    >
+                        <j-input
+                            v-model:value="form.data.email"
+                            placeholder="请输入邮箱"
+                            :maxlength="64"
+                        />
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
+                <j-col :span="12">
+                    <j-form-item name="roleIdList" label="角色" class="flex" 
+                        :rules="[
+                            { required: form.data.username !== 'admin', message: '请选择角色' },
+                        ]"
+                    >
+                        <j-tree-select
+                            v-model:value="form.data.roleIdList"
+                            multiple
+                            show-search
+                            style="width: calc(100% - 40px)"
+                            placeholder="请选择角色"
+                            :tree-data="form.roleOptions"
+                            :fieldNames="{ label: 'name', value: 'id', children:'children' }"
+                            :disabled="form.data.username === 'admin'"
+                            :filterTreeNode="
+                                (v: string, node: any) => filterSelectNode(v, node, 'name')
+                            "
+                        >
+                        <template #title="{ name }">
+                            <div style="width: calc(100% - 10px) ">
+                                <Ellipsis>{{ name }}</Ellipsis>
+                            </div>
+                        </template>
+                    </j-tree-select>
+                        <PermissionButton
+                            :hasPermission="`${rolePermission}:add`"
+                            @click="form.clickAddItem('roleIdList', 'Role')"
+                            v-if="!admin"
+                        >
+                            <AIcon type="PlusOutlined" />
+                        </PermissionButton>
+                    </j-form-item>
+                </j-col>
+                <j-col :span="12">
+                    <j-form-item name="orgIdList" label="组织" class="flex">
+                        <j-tree-select
+                            v-model:value="form.data.orgIdList"
+                            show-search
+                            style="width: calc(100% - 40px)"
+                            placeholder="请选择组织"
+                            :tree-data="form.departmentOptions"
+                            :fieldNames="{ label: 'name', value: 'id' }"
+                            multiple
+                            :filterTreeNode="
+                                (v: string, node: any) => filterSelectNode(v, node, 'name')
+                            "
+                        >
+                            <template #title="{ name }">
+                                {{ name }}
+                            </template>
+                        </j-tree-select>
+                        <PermissionButton
+                            :hasPermission="`${deptPermission}:add`"
+                            @click="
+                                form.clickAddItem('orgIdList', 'Department')
+                            "
+                        >
+                            <AIcon type="PlusOutlined" />
+                        </PermissionButton>
+                    </j-form-item>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
+                <j-col :span="24">
                     <j-form-item
                         name="username"
                         label="用户名"
@@ -87,104 +192,6 @@
                         <j-input-password
                             v-model:value="form.data.confirmPassword"
                             placeholder="请再次输入密码"
-                            :maxlength="64"
-                        />
-                    </j-form-item>
-                </j-col>
-            </j-row>
-            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
-                <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex" 
-                        :rules="[
-                            { required: form.data.username !== 'admin', message: '请选择角色' },
-                        ]"
-                    >
-                        <j-tree-select
-                            v-model:value="form.data.roleIdList"
-                            multiple
-                            show-search
-                            style="width: calc(100% - 40px)"
-                            placeholder="请选择角色"
-                            :tree-data="form.roleOptions"
-                            :fieldNames="{ label: 'name', value: 'id', children:'children' }"
-                            :disabled="form.data.username === 'admin'"
-                            :filterTreeNode="
-                                (v: string, node: any) => filterSelectNode(v, node, 'name')
-                            "
-                        ></j-tree-select>
-
-                        <PermissionButton
-                            :hasPermission="`${rolePermission}:add`"
-                            @click="form.clickAddItem('roleIdList', 'Role')"
-                            v-if="!admin"
-                        >
-                            <AIcon type="PlusOutlined" />
-                        </PermissionButton>
-                    </j-form-item>
-                </j-col>
-                <j-col :span="12">
-                    <j-form-item name="orgIdList" label="组织" class="flex">
-                        <j-tree-select
-                            v-model:value="form.data.orgIdList"
-                            show-search
-                            style="width: calc(100% - 40px)"
-                            placeholder="请选择组织"
-                            :tree-data="_departmentOptions"
-                            :fieldNames="{ label: 'name', value: 'id' }"
-                            multiple
-                            :filterTreeNode="
-                                (v: string, node: any) => filterSelectNode(v, node, 'name')
-                            "
-                        >
-                            <template #title="{ name }">
-                                {{ name }}
-                            </template>
-                        </j-tree-select>
-                        <PermissionButton
-                            :hasPermission="`${deptPermission}:add`"
-                            @click="
-                                form.clickAddItem('orgIdList', 'Department')
-                            "
-                        >
-                            <AIcon type="PlusOutlined" />
-                        </PermissionButton>
-                    </j-form-item>
-                </j-col>
-            </j-row>
-            <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
-                <j-col :span="12">
-                    <j-form-item
-                        name="telephone"
-                        label="手机号"
-                        :rules="[
-                            {
-                                pattern: /^1[3456789]\d{9}$/,
-                                message: '请输入正确的手机号',
-                            },
-                        ]"
-                    >
-                        <j-input
-                            v-model:value="form.data.telephone"
-                            placeholder="请输入手机号"
-                            :maxlength="64"
-                        />
-                    </j-form-item>
-                </j-col>
-                <j-col :span="12">
-                    <j-form-item
-                        name="email"
-                        label="邮箱"
-                        :rules="[
-                            {
-                                pattern:
-                                    /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-                                message: '请输入正确的邮箱',
-                            },
-                        ]"
-                    >
-                        <j-input
-                            v-model:value="form.data.email"
-                            placeholder="请输入邮箱"
                             :maxlength="64"
                         />
                     </j-form-item>
@@ -358,15 +365,22 @@ const form = reactive({
         return api(params);
     },
     getRoleList: () => {
-        getRoleList().then((resp: any) => {
+        getRoleList({ sorts: [{ name: 'createTime', order: 'desc' }] }).then((resp: any) => {
            if(resp.status === 200){
             form.roleOptions =  dealRoleList(resp.result)
            }
         });
     },
     getDepartmentList: () => {
-        getDepartmentList_api().then((resp: any) => {
-            form.departmentOptions = resp.result;
+        getDepartmentList_api({
+        paging: false,
+        sorts: [{ name: 'sortIndex', order: 'asc' }],
+    }).then((resp: any) => {
+            form.departmentOptions = resp.result.sort((a: any, b: any) =>
+                a.sortIndex === b.sortIndex
+                    ? b.createTime - a.createTime
+                    : a.sortIndex - b.sortIndex,
+            ); // 报存源数据;
         });
     },
     IsShow: (...typeList: modalType[]) => typeList.includes(props.type),
@@ -395,10 +409,10 @@ const  dealRoleList = (data:any) =>{
         }
     })
 }
-
-const _departmentOptions = computed(() => {
-    return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
-})
+// 组织已删除在仍显示在列表中 
+// const _departmentOptions = computed(() => {
+//     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
+// })
 
 form.init();
 

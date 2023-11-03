@@ -17,9 +17,9 @@ export const validateField_api = (type: 'username' | 'password', name: string) =
 export const getRoleList_api = () => server.get(`/role/_query/no-paging?paging=false`);
 
 //获取角色列表
-export const getRoleList = () => server.post('/role/group/detail/_query/tree')
+export const getRoleList = (data:any) => server.post('/role/group/detail/_query/tree',data)
 // 获取组织列表
-export const getDepartmentList_api = () => server.get(`/organization/_all/tree?paging=false`);
+export const getDepartmentList_api = (data:any) => server.post(`/organization/_all/tree`,data);
 
 // 获取用户信息
 export const getUser_api = (id: string) => server.get(`/user/detail/${id}`);
