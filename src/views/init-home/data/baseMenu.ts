@@ -4841,5 +4841,383 @@ export default [
     "createTime": 1698735482730,
     "supportDataAccess": false
   },
-
+  {
+    "path": "3nkE",
+    "sortIndex": 4,
+    "level": 1,
+    "owner": "iot",
+    "name": "工作流",
+    "code": "process",
+    "url": "/workflow",
+    "icon": "MenuUnfoldOutlined",
+    "status": 1,
+    "permissions": [
+      {
+        "permission": "low-code-info",
+        "actions": [
+          "query"
+        ]
+      },
+      {
+        "permission": "process-runtime",
+        "actions": [
+          "reject",
+          "start",
+          "self",
+          "claim",
+          "complete",
+          "createAndStart",
+          "repeal"
+        ]
+      }
+    ],
+    "accessSupport": {
+      "text": "不支持",
+      "value": "unsupported"
+    },
+    "indirectMenus": [],
+    "options": {
+      "show": true,
+      "isShow": false
+    },
+    "children": [
+      {
+        "id": "db83e1856d06fdd463ee3d5657037a4d",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-n7lJ",
+        "sortIndex": 1,
+        "level": 2,
+        "name": "表单",
+        "code": "process/form",
+        "describe": "",
+        "url": "/workflow/form",
+        "icon": "UpCircleOutlined",
+        "status": 1,
+        "permissions": [
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          }
+        ],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "buttons": [
+          {
+            "id": "add",
+            "name": "保存",
+            "permissions": [
+              {
+                "permission": "process-form",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "update",
+            "name": "编辑",
+            "permissions": [
+              {
+                "permission": "process-form",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "delete",
+            "name": "删除",
+            "permissions": [
+              {
+                "permission": "process-form",
+                "actions": [
+                  "delete"
+                ]
+              }
+            ]
+          }
+        ],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699263818795,
+        "supportDataAccess": false
+      },
+      {
+        "id": "770ee993e000a63954c32a5a1d30cad0",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-ysKb",
+        "sortIndex": 2,
+        "level": 2,
+        "name": "流程模型",
+        "code": "process/model",
+        "describe": "",
+        "url": "/workflow/model",
+        "icon": "UpCircleOutlined",
+        "status": 1,
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          }
+        ],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "buttons": [
+          {
+            "id": "add",
+            "name": "新增",
+            "permissions": [
+              {
+                "permission": "process-definition",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "delete",
+            "name": "删除",
+            "permissions": [
+              {
+                "permission": "process-definition",
+                "actions": [
+                  "delete"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "update",
+            "name": "编辑",
+            "permissions": [
+              {
+                "permission": "process-definition",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "save",
+            "name": "保存",
+            "permissions": [
+              {
+                "permission": "process-definition",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "deploy",
+            "name": "部署",
+            "permissions": [
+              {
+                "permission": "process-definition",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          }
+        ],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699264341009,
+        "supportDataAccess": false
+      },
+      {
+        "id": "867542227c35f8b26c9c753a291663c6",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-fJkR",
+        "sortIndex": 3,
+        "level": 2,
+        "name": "流程实例",
+        "code": "process/instance",
+        "describe": "",
+        "url": "/workflow/instance",
+        "icon": "UpCircleOutlined",
+        "status": 1,
+        "permissions": [
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          }
+        ],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "buttons": [
+          {
+            "id": "action",
+            "name": "启/禁用",
+            "permissions": [
+              {
+                "permission": "process-deployment",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "auth",
+            "name": "权限控制",
+            "permissions": [
+              {
+                "permission": "process-deployment",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "delete",
+            "name": "删除",
+            "permissions": [
+              {
+                "permission": "process-deployment",
+                "actions": [
+                  "delete"
+                ]
+              }
+            ]
+          }
+        ],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699264485954,
+        "supportDataAccess": false
+      },
+      {
+        "id": "f935c9c3e124018fdc32d57b5659ee6b",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-i2nG",
+        "sortIndex": 4,
+        "level": 2,
+        "name": "发起流程",
+        "code": "process/initiate",
+        "describe": "",
+        "url": "/workflow/initiate",
+        "icon": "UpOutlined",
+        "status": 1,
+        "permissions": [],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699269393605,
+        "supportDataAccess": false
+      },
+      {
+        "id": "931cb0d78a442dee328fb7bdcd953e6a",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-4T1D",
+        "sortIndex": 5,
+        "level": 2,
+        "name": "待办事项",
+        "code": "process/me/todo",
+        "describe": "",
+        "url": "/workflow/me/todo",
+        "icon": "UpCircleOutlined",
+        "status": 1,
+        "permissions": [],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699269425041,
+        "supportDataAccess": false
+      },
+      {
+        "id": "b21ae5d76185b1a007376684b26e9fac",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-RXP3",
+        "sortIndex": 6,
+        "level": 2,
+        "name": "已办事项",
+        "code": "process/me",
+        "describe": "",
+        "url": "/workflow/me",
+        "icon": "UpCircleOutlined",
+        "status": 1,
+        "permissions": [],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699269455412,
+        "supportDataAccess": false
+      },
+      {
+        "id": "b73b178a0c8fddd0ae3ea87aab68931a",
+        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
+        "path": "3nkE-ibau",
+        "sortIndex": 7,
+        "level": 2,
+        "name": "我发起的",
+        "code": "process/me/initiate",
+        "describe": "",
+        "url": "/workflow/me/initiate",
+        "icon": "UpCircleOutlined",
+        "status": 1,
+        "permissions": [],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699269488928,
+        "supportDataAccess": false
+      }
+    ],
+    "creatorId": "8004214f8141f29cb951befdca3615f0",
+    "createTime": 1699262480040,
+    "supportDataAccess": false
+  }
 ];
