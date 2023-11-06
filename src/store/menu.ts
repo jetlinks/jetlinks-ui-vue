@@ -104,9 +104,11 @@ export const useMenuStore = defineStore({
         name, params, query, state: { params }
       })
     },
-    handleMenusMapById(item: { code: string, path: string }) {
+    handleMenusMapById(item: { name: string, path: string }) {
       const { name, path } = item
-      this.menus[name] = { path }
+      if (name) {
+        this.menus[name] = { path }
+      }
     },
     queryMenuTree(isCommunity = false): Promise<any[]> {
       return new Promise(async (res) => {
@@ -115,9 +117,6 @@ export const useMenuStore = defineStore({
         if (resp.success) {
           const permission = usePermissionStore()
           let resultData = resp.result
-          // if (!isNoCommunity) {
-          //   resultData = filterCommunityMenus(resultData)
-          // }
           const components = getAsyncRoutesMap()
           const menusData = handleMenus(cloneDeep(resultData), components)
           permission.handlePermission(resultData)
