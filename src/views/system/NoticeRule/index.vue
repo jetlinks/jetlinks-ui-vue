@@ -107,16 +107,25 @@ const lowCodeNotice = [
         name: '工作流通知',
         children: [
             {
+                provider: 'workflow-task-todo',
+                name: '待办通知',
+            },
+            {
+                provider: 'workflow-task-reject',
+                name: '驳回通知',
+            },
+            {
                 provider: 'workflow-task-cc',
                 name: '抄送通知',
             },
             {
-                provider: 'workflow-task-todo',
-                name: '待办通知'
-            },{
-                provider: 'workflow-task-completed',
-                name: '完成通知'
-            }
+                provider: 'workflow-process-finish',
+                name: '办结通知',
+            },
+            {
+                provider: 'workflow-process-repealed',
+                name: '关闭通知',
+            },
         ],
     },
 ]
@@ -181,7 +190,7 @@ onMounted(() => {
     // data.value = Array.from(dataMap).map((item) => {
     //     return item?.[1];
     // });
-    if(menuStore.hasMenu('code')){
+    if(menuStore.hasMenu('process')){
         dataSource = [...systemNotice,...lowCodeNotice]
         activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
     }else{
