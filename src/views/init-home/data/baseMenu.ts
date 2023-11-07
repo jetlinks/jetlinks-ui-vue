@@ -4667,11 +4667,47 @@ export default [
       "value": "unsupported"
     },
     "indirectMenus": [],
-
     "children": [
+      // {
+      //   "path": "3nkE-n7lJ",
+      //   "sortIndex": 1,
+      //   "level": 2,
+      //   "name": "工作流",
+      //   "code": "process/home",
+      //   "describe": "",
+      //   "url": "/workflow/home",
+      //   "icon": "UpCircleOutlined",
+      //   showPage: ["process-form"],
+      //   "permissions": [
+      //     {
+      //       "permission": "process-form",
+      //       "actions": [
+      //         "query"
+      //       ]
+      //     },
+      //     {
+      //       "permission": "low-code-info",
+      //       "actions": [
+      //         "query"
+      //       ]
+      //     },
+      //   ],
+      //   "accessSupport": {
+      //     "text": "不支持",
+      //     "value": "unsupported"
+      //   },
+      //   "indirectMenus": [],
+      //   "buttons": [],
+      //   "options": {
+      //     "show": true
+      //   },
+      //   "creatorId": "1199596756811550720",
+      //   "createTime": 1699263818795,
+      //   "supportDataAccess": false
+      // },
       {
         "path": "3nkE-n7lJ",
-        "sortIndex": 1,
+        "sortIndex": 2,
         "level": 2,
         "name": "表单",
         "code": "process/form",
@@ -4695,6 +4731,18 @@ export default [
         "buttons": [
           {
             "id": "add",
+            "name": "新增",
+            "permissions": [
+              {
+                "permission": "process-form",
+                "actions": [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "save",
             "name": "保存",
             "permissions": [
               {
@@ -4739,7 +4787,7 @@ export default [
       },
       {
         "path": "3nkE-ysKb",
-        "sortIndex": 2,
+        "sortIndex": 3,
         "level": 2,
         "name": "流程模型",
         "code": "process/model",
@@ -4831,7 +4879,7 @@ export default [
       },
       {
         "path": "3nkE-fJkR",
-        "sortIndex": 3,
+        "sortIndex": 4,
         "level": 2,
         "name": "流程实例",
         "code": "process/instance",
@@ -4900,7 +4948,7 @@ export default [
       },
       {
         "path": "3nkE-i2nG",
-        "sortIndex": 4,
+        "sortIndex": 5,
         "level": 2,
         "name": "发起流程",
         "code": "process/initiate",
@@ -4908,7 +4956,38 @@ export default [
         "url": "/workflow/initiate",
         "icon": "UpOutlined",
         showPage: ["process-runtime"],
-        "permissions": [],
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "reject",
+              "start",
+              "self",
+              "claim",
+              "complete",
+              "createAndStart",
+              "repeal"
+            ]
+          }
+        ],
         "accessSupport": {
           "text": "不支持",
           "value": "unsupported"
@@ -4923,7 +5002,7 @@ export default [
       },
       {
         "path": "3nkE-4T1D",
-        "sortIndex": 5,
+        "sortIndex": 6,
         "level": 2,
         "name": "待办事项",
         "code": "process/me/todo",
@@ -4931,7 +5010,38 @@ export default [
         "url": "/workflow/me/todo",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
-        "permissions": [],
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "reject",
+              "start",
+              "self",
+              "claim",
+              "complete",
+              "createAndStart",
+              "repeal"
+            ]
+          }
+        ],
         "accessSupport": {
           "text": "不支持",
           "value": "unsupported"
@@ -4946,7 +5056,7 @@ export default [
       },
       {
         "path": "3nkE-RXP3",
-        "sortIndex": 6,
+        "sortIndex": 7,
         "level": 2,
         "name": "已办事项",
         "code": "process/me",
@@ -4954,7 +5064,38 @@ export default [
         "url": "/workflow/me",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
-        "permissions": [],
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "reject",
+              "start",
+              "self",
+              "claim",
+              "complete",
+              "createAndStart",
+              "repeal"
+            ]
+          }
+        ],
         "accessSupport": {
           "text": "不支持",
           "value": "unsupported"
@@ -4969,7 +5110,7 @@ export default [
       },
       {
         "path": "3nkE-ibau",
-        "sortIndex": 7,
+        "sortIndex": 8,
         "level": 2,
         "name": "我发起的",
         "code": "process/me/initiate",
@@ -4977,7 +5118,38 @@ export default [
         "url": "/workflow/me/initiate",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
-        "permissions": [],
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "reject",
+              "start",
+              "self",
+              "claim",
+              "complete",
+              "createAndStart",
+              "repeal"
+            ]
+          }
+        ],
         "accessSupport": {
           "text": "不支持",
           "value": "unsupported"
@@ -4988,6 +5160,61 @@ export default [
         },
         "creatorId": "1199596756811550720",
         "createTime": 1699269488928,
+        "supportDataAccess": false
+      },
+      {
+        "path": "3nkE-vCQb",
+        "sortIndex": 10,
+        "level": 2,
+        "name": "抄送给我",
+        "code": "process/me/cc",
+        "describe": "",
+        "url": "/workflow/me/cc",
+        "icon": "BorderInnerOutlined",
+        "status": 1,
+        showPage: ["process-runtime"],
+        "permissions": [
+          {
+            "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-runtime",
+            "actions": [
+              "reject",
+              "start",
+              "self",
+              "claim",
+              "complete",
+              "createAndStart",
+              "repeal"
+            ]
+          },
+          {
+            "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          }
+        ],
+        "accessSupport": {
+          "text": "不支持",
+          "value": "unsupported"
+        },
+        "indirectMenus": [],
+        "options": {
+          "show": true
+        },
+        "creatorId": "1199596756811550720",
+        "createTime": 1699348851779,
         "supportDataAccess": false
       }
     ],
