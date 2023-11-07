@@ -255,7 +255,7 @@ const findSaveRouteItem = (item: any, components: any) => {
   return []
 }
 
-export const handleMenus = (menuData: any[], components: any, level: number = 1) => {
+export const handleMenus = (menuData: any[], components: any, level: number = 1, extraModules = {}) => {
   if (menuData && menuData.length) {
     return menuData.map(item => {
       const { isApp, appUrl } = hasAppID(item) // 是否为第三方程序

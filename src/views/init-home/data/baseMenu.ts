@@ -4629,228 +4629,19 @@ export default [
     "supportDataAccess": false
   },
   {
-    "path": "4FgE",
-    "sortIndex": 6,
-    "level": 1,
-    "owner": "iot",
-    "name": "工作流",
-    "code": "workflow",
-    "url": "/workflow",
-    "icon": "MenuUnfoldOutlined",
-    showPage: ["process-form","process-deployment", "process-runtime"],
-    "options": {
-      isShow: false,
-    },
-    "accessSupport": {
-      "text": "不支持",
-      "value": "unsupported"
-    },
-    "indirectMenus": [],
-    permissions: [
-      {
-        "permission": "low-code-info",
-        "actions": [
-          "query"
-        ]
-      },
-      {
-        "permission": "process-runtime",
-        "actions": [
-          "reject",
-          "start",
-          "self",
-          "claim",
-          "complete",
-          "createAndStart",
-          "repeal"
-        ]
-      }
-    ],
-    "buttons": [
-      {
-        "id": "form_query",
-        "name": "表单-查询",
-        "permissions": [
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "form_save",
-        "name": "表单-新增",
-        "permissions": [
-          {
-            "permission": "process-form",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "form_delete",
-        "name": "表单-删除",
-        "permissions": [
-          {
-            "permission": "process-form",
-            "actions": [
-              "delete"
-            ]
-          }
-        ]
-      },
-
-      {
-        "id": "form_update",
-        "name": "表单-编辑",
-        "permissions": [
-          {
-            "permission": "process-form",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "model_query",
-        "name": "模型-查询",
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "model_deploy",
-        "name": "模型-部署",
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "model_add",
-        "name": "模型-新增",
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "model_update",
-        "name": "模型-编辑",
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "model_save",
-        "name": "模型-保存",
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "model_delete",
-        "name": "模型-删除",
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "delete"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "release_query",
-        "name": "实例-查询",
-        "permissions": [
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "release_action",
-        "name": "实例-启/禁用",
-        "permissions": [
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "release_auth",
-        "name": "实例-权限控制",
-        "permissions": [
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "save"
-            ]
-          }
-        ]
-      },
-      {
-        "id": "release_delete",
-        "name": "实例-删除",
-        "permissions": [
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "delete"
-            ]
-          }
-        ]
-      }
-    ],
-    "creatorId": "1199596756811550720",
-    "createTime": 1698735482730,
-    "supportDataAccess": false
-  },
-  {
     "path": "3nkE",
-    "sortIndex": 4,
+    "sortIndex": 6,
     "level": 1,
     "owner": "iot",
     "name": "工作流",
     "code": "process",
     "url": "/workflow",
     "icon": "MenuUnfoldOutlined",
-    "status": 1,
+    showPage: ["process-form","process-deployment", "process-runtime"],
+    "options": {
+      "show": true,
+      "isShow": false
+    },
     "permissions": [
       {
         "permission": "low-code-info",
@@ -4876,14 +4667,9 @@ export default [
       "value": "unsupported"
     },
     "indirectMenus": [],
-    "options": {
-      "show": true,
-      "isShow": false
-    },
+
     "children": [
       {
-        "id": "db83e1856d06fdd463ee3d5657037a4d",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-n7lJ",
         "sortIndex": 1,
         "level": 2,
@@ -4892,7 +4678,7 @@ export default [
         "describe": "",
         "url": "/workflow/form",
         "icon": "UpCircleOutlined",
-        "status": 1,
+        showPage: ["process-form"],
         "permissions": [
           {
             "permission": "process-form",
@@ -4952,8 +4738,6 @@ export default [
         "supportDataAccess": false
       },
       {
-        "id": "770ee993e000a63954c32a5a1d30cad0",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-ysKb",
         "sortIndex": 2,
         "level": 2,
@@ -4962,7 +4746,7 @@ export default [
         "describe": "",
         "url": "/workflow/model",
         "icon": "UpCircleOutlined",
-        "status": 1,
+        showPage: ["process-definition"],
         "permissions": [
           {
             "permission": "process-definition",
@@ -5046,14 +4830,13 @@ export default [
         "supportDataAccess": false
       },
       {
-        "id": "867542227c35f8b26c9c753a291663c6",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-fJkR",
         "sortIndex": 3,
         "level": 2,
         "name": "流程实例",
         "code": "process/instance",
         "describe": "",
+        showPage: ["process-deployment"],
         "url": "/workflow/instance",
         "icon": "UpCircleOutlined",
         "status": 1,
@@ -5116,8 +4899,6 @@ export default [
         "supportDataAccess": false
       },
       {
-        "id": "f935c9c3e124018fdc32d57b5659ee6b",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-i2nG",
         "sortIndex": 4,
         "level": 2,
@@ -5126,7 +4907,7 @@ export default [
         "describe": "",
         "url": "/workflow/initiate",
         "icon": "UpOutlined",
-        "status": 1,
+        showPage: ["process-runtime"],
         "permissions": [],
         "accessSupport": {
           "text": "不支持",
@@ -5141,8 +4922,6 @@ export default [
         "supportDataAccess": false
       },
       {
-        "id": "931cb0d78a442dee328fb7bdcd953e6a",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-4T1D",
         "sortIndex": 5,
         "level": 2,
@@ -5151,7 +4930,7 @@ export default [
         "describe": "",
         "url": "/workflow/me/todo",
         "icon": "UpCircleOutlined",
-        "status": 1,
+        showPage: ["process-runtime"],
         "permissions": [],
         "accessSupport": {
           "text": "不支持",
@@ -5166,8 +4945,6 @@ export default [
         "supportDataAccess": false
       },
       {
-        "id": "b21ae5d76185b1a007376684b26e9fac",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-RXP3",
         "sortIndex": 6,
         "level": 2,
@@ -5176,7 +4953,7 @@ export default [
         "describe": "",
         "url": "/workflow/me",
         "icon": "UpCircleOutlined",
-        "status": 1,
+        showPage: ["process-runtime"],
         "permissions": [],
         "accessSupport": {
           "text": "不支持",
@@ -5191,8 +4968,6 @@ export default [
         "supportDataAccess": false
       },
       {
-        "id": "b73b178a0c8fddd0ae3ea87aab68931a",
-        "parentId": "adae5f1167d08c4266f6be74dfedc8ae",
         "path": "3nkE-ibau",
         "sortIndex": 7,
         "level": 2,
@@ -5201,7 +4976,7 @@ export default [
         "describe": "",
         "url": "/workflow/me/initiate",
         "icon": "UpCircleOutlined",
-        "status": 1,
+        showPage: ["process-runtime"],
         "permissions": [],
         "accessSupport": {
           "text": "不支持",
