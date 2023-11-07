@@ -58,19 +58,28 @@ const workflowNotice = [
         name: '工作流通知',
         children: [
             {
+                provider: 'workflow-task-todo',
+                name: '待办通知',
+            },
+            {
+                provider: 'workflow-task-reject',
+                name: '驳回通知',
+            },
+            {
                 provider: 'workflow-task-cc',
                 name: '抄送通知',
             },
             {
-                provider: 'workflow-task-todo',
-                name: '待办通知'
-            },{
-                provider: 'workflow-task-completed',
-                name: '完成通知'
-            }
+                provider: 'workflow-process-finish',
+                name: '办结通知',
+            },
+            {
+                provider: 'workflow-process-repealed',
+                name: '关闭通知',
+            },
         ],
     },
 ]
 export const getInitData = () =>{
-   return menuStore.hasMenu('workflow') ? [...systemNotice,...workflowNotice] : [...systemNotice]
+   return menuStore.hasMenu('process') ? [...systemNotice,...workflowNotice] : [...systemNotice]
 }
