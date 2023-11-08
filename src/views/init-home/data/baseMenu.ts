@@ -5059,9 +5059,9 @@ export default [
         "sortIndex": 7,
         "level": 2,
         "name": "已办事项",
-        "code": "process/me",
+        "code": "process/me/finished",
         "describe": "",
-        "url": "/workflow/me",
+        "url": "/workflow/me/finished",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
         "permissions": [
