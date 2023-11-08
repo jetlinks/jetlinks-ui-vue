@@ -60,14 +60,14 @@
                     ref="variableRef"
                 />
             </template>
-            <template v-if="current === 4">
+            <template v-if="current === 4 && isNoCommunity ">
                 <div class="alert">
                     <AIcon type="InfoCircleOutlined" />
                     通过角色控制哪些用户可以订阅从【{{ name }}】接收到【{{ showName }}】通知
                 </div>
                 <Role type="add" v-model="formModel.grant.role.idList" />
             </template>
-            <template v-if="current === 5">
+            <template v-if="current === 5 || current === 4 && !isNoCommunity">
                 <div>
                     <div class="alert">
                         <AIcon type="InfoCircleOutlined" />
@@ -134,6 +134,7 @@ import { onlyMessage } from '@/utils/comm';
 import Template from '@/api/notice/template';
 import { variableMap } from '../../data';
 import { cloneDeep } from 'lodash-es';
+import { isNoCommunity } from "@/utils/utils";
 
 type GrantType = {
     role: {
@@ -169,14 +170,20 @@ const props = defineProps({
     },
 });
 
-const stepList = [
+const stepList = isNoCommunity ? [
     '选择通知方式',
     '选择通知配置',
     '选择通知模板',
     '配置模板变量',
     '配置用户权限',
     '完成',
-];
+] : [
+    '选择通知方式',
+    '选择通知配置',
+    '选择通知模板',
+    '配置模板变量',
+    '完成',
+]
 const current = ref<number>(0);
 const variable = ref([]);
 const formModel = reactive<{
