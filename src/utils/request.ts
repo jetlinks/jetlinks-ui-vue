@@ -131,7 +131,7 @@ export const postStream = function(url: string, data = {}, params = {}) {
   })
 }
 
-const showNotification = (message: string, description: string, key?: string, show: boolean = true) => {
+export const showNotification = (message: string, description: string, key?: string, show: boolean = true) => {
   if (show) {
     Notification.error({
       style: {
@@ -142,6 +142,10 @@ const showNotification = (message: string, description: string, key?: string, sh
       description
     })
   }
+}
+
+export const TokenLose = () => {
+  showNotification('Unauthorized', '用户未登录', '401')
 }
 
 /**
@@ -182,7 +186,7 @@ const errorHandler = (error: any) => {
        } else if (status === 400) {
          showNotification('Request Error', (data.message + '').substr(0, 90), '400')
        } else if (status === 401) {
-         showNotification('Unauthorized', '用户未登录', '401')
+         TokenLose()
          setTimeout(() => {
            cleanToken()
            router.replace({

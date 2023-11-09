@@ -1,4 +1,6 @@
-const initData: any[] = [
+import { useMenuStore } from '@/store/menu';
+const menuStore = useMenuStore();
+const systemNotice = [
     {
         provider: 'alarm',
         name: '告警',
@@ -50,5 +52,34 @@ const initData: any[] = [
         ],
     },
 ];
-
-export { initData };
+const workflowNotice = [
+    {
+        provider: 'workflow-notification',
+        name: '工作流通知',
+        children: [
+            {
+                provider: 'workflow-task-todo',
+                name: '待办通知',
+            },
+            {
+                provider: 'workflow-task-reject',
+                name: '驳回通知',
+            },
+            {
+                provider: 'workflow-task-cc',
+                name: '抄送通知',
+            },
+            {
+                provider: 'workflow-process-finish',
+                name: '办结通知',
+            },
+            {
+                provider: 'workflow-process-repealed',
+                name: '关闭通知',
+            },
+        ],
+    },
+]
+export const getInitData = () =>{
+   return menuStore.hasMenu('process') ? [...systemNotice,...workflowNotice] : [...systemNotice]
+}

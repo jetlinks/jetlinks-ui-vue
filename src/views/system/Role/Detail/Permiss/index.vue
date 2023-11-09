@@ -1,6 +1,6 @@
 <template>
     <div class="role-permiss-container">
-        <section class="card">
+        <!-- <section class="card">
             <h5>基本信息</h5>
             <j-form
                 ref="formRef"
@@ -30,7 +30,7 @@
                     />
                 </j-form-item>
             </j-form>
-        </section>
+        </section> -->
 
         <section class="card">
             <h5>权限分配</h5>
@@ -38,7 +38,7 @@
 
             <j-button
                 type="primary"
-                :disabled="form.loading"
+                :confirm-loading="form.loading"
                 @click="form.clickSave"
                 style="margin-top: 24px"
                 >保存</j-button
@@ -70,33 +70,33 @@ const roleId = route.params.id as string;
 const formRef = ref<FormInstance>();
 const form = reactive({
     loading: false,
-    data: {
-        name: '',
-        description: '',
-    },
+    // data: {
+    //     name: '',
+    //     description: '',
+    // },
     menus: [], // USER_CENTER_MENU_DATA
-    getForm: () => {
-        getRoleDetails_api(roleId).then((resp) => {
-            if (resp.status) {
-                form.data = resp.result;
-            }
-        });
-    },
-    clickSave: () => {
-        formRef.value?.validate().then(() => {
-            const updateRole = editRole_api(roleId, form.data);
+    // getForm: () => {
+    //     getRoleDetails_api(roleId).then((resp) => {
+    //         if (resp.status) {
+    //             form.data = resp.result;
+    //         }
+    //     });
+    // },
+    clickSave: () => {   
+        // formRef.value?.validate().then(() => {
+            // const updateRole = editRole_api(roleId, form.data);
             const updateTree = updatePrimissTree_api(roleId, {
                 menus: form.menus,
             });
-            Promise.all([updateRole, updateTree]).then((resp) => {
+            Promise.all([ updateTree]).then((resp) => {
                 onlyMessage('操作成功');
                 // jumpPage(`system/Role`);
-            });
-        });
+            })
+        // });
     },
 });
 
-form.getForm();
+// form.getForm();
 </script>
 
 <style lang="less" scoped>

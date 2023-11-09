@@ -13,15 +13,18 @@ export const RoleData = {
   [ROLEKEYS.device]: {
     name: '设备接入岗',
     description: '该角色负责设备接入模块的维护管理',
+    groupId:'default_group',
     state: { text: '正常', value: 'enabled' },
   },
   [ROLEKEYS.link]: {
     name: '运维管理岗',
+    groupId:'default_group',
     description: '该角色负责系统运维模块的维护管理',
     state: { text: '正常', value: 'enabled' },
   },
   [ROLEKEYS.complex]: {
     name: '综合管理岗',
+    groupId:'default_group',
     description: '该角色负责系统运维和设备接入模块的维护管理',
     state: { text: '正常', value: 'enabled' },
   },
