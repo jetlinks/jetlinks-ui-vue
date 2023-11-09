@@ -31,9 +31,11 @@ export const systemVersion = () => server.get<{edition?: string}>('/system/versi
 
 /**
  * 聚合查询
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const queryDashboard = (data: Record<string, any>) => server.post(`/dashboard/_multi`, data)
 
 export const fileUpload = (data: any) => server.post('/file/static', data)
+
+export const lowCodeUrl = () => server.get('/system/config/low-code')

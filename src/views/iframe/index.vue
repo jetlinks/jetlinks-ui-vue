@@ -1,21 +1,31 @@
 <template>
     <page-container>
+      <full-page>
         <iframe
+            v-if="loading"
             :src="iframeUrl"
+            scrolling="no"
             frameBorder="0"
-            style="width: 100%; height: calc(100vh - 140px)"
+            style="width: 100%; height: 100%"
         ></iframe>
+      </full-page>
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" name="IframgePage" setup>
 import { TOKEN_KEY } from '@/utils/variable';
-import { LocalStore } from '@/utils/comm';
+import {LocalStore, getToken, cleanToken} from '@/utils/comm';
 import { getAppInfo_api } from '@/api/system/apply';
+import { lowCodeUrl } from '@/api/comm'
+import FullPage from "components/Layout/FullPage.vue";
+import {onUnmounted} from "vue";
+import router from "@/router";
+import {LoginPath} from "@/router/menu";
+import { TokenLose} from "@/utils/request";
 
 const iframeUrl = ref<string>('');
 const route = useRoute()
-
+const loading = ref(false)
 const handle = async (appId: string, url: string) => {
     const res = await getAppInfo_api(appId);
     let menuUrl: any = url;
@@ -53,13 +63,50 @@ const handle = async (appId: string, url: string) => {
     }
 };
 
+const lowCode = () => {
+  lowCodeUrl().then(res => {
+    if (res.success && res.result) {
+      const url = res.result['ui-addr']
+      // const url = 'http://localhost:8080'
+      iframeUrl.value = url + '/#' + route.path + '?&token=' + getToken()
+      console.log(iframeUrl.value)
+      loading.value = true
+    }
+  })
+}
+
+const onMessage = (msg: any) => {
+  console.log('onMessage',msg)
+  if (msg?.data?.token === 'LOSE') {
+    TokenLose()
+    setTimeout(() => {
+      cleanToken()
+      router.replace({
+        path: LoginPath
+      })
+    }, 0)
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', onMessage)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('message', onMessage)
+})
 
 watchEffect(() => {
     const matchedItem: any = route.matched?.[0]
-    if (matchedItem?.meta?.isApp) {
+    if (route.meta?.isApp) {
       const params = route.path.split('/')?.[1];
-      const url = route.path.split('/').slice(2).join('/');
-      handle(params, url);
+      if (params === 'preview') {
+        lowCode()
+      } else {
+        loading.value = true
+        const url = route.path.split('/').slice(2).join('/');
+        handle(params, url);
+      }
     }
 });
 </script>

@@ -80,9 +80,19 @@ const permission = 'system/Relationship';
 
 const columns = [
     {
-        title: '名称',
+        title: '正向关系名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
+        fixed: 'left',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '反向关系名称',
+        dataIndex: 'reverseName',
+        key: 'reverseName',
         ellipsis: true,
         fixed: 'left',
         search: {

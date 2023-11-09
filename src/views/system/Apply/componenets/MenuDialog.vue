@@ -127,7 +127,16 @@ function getMenus(id: string) {
             {
                 column: 'appId',
                 value: id,
-            },
+            },  
+            {
+                terms:[
+                    {
+                        value:"%show\":true%",
+                        termType:"like",
+                        column:"options"
+                    }
+                ]
+            }
         ],
     };
     getMenuTree_api(params).then((resp: any) => {

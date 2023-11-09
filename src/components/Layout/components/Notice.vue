@@ -175,11 +175,11 @@ watch(updateCount, () => getList());
 
 const tabs = ref<any>([]);
 
-const queryTypeList = async () => {
+const queryTypeList = async (_tab: any[]) => {
     const resp: any = await getAllNotice();
     if (resp.status === 200) {
         const provider = resp.result.map((i: any) => i.provider) || [];
-        const arr = tab.filter((item: any) => {
+        const arr = _tab.filter((item: any) => {
             return item.type.some((i: any) => provider.includes(i))
         });
         tabs.value = arr;
@@ -191,7 +191,15 @@ const queryTypeList = async () => {
 };
 
 onMounted(() => {
-    queryTypeList()
+    const _list: any[] = [...tab]
+    if(menuStory.hasMenu('process')){
+        _list.push({
+            key: 'workflow-notification',
+            tab: '工作流通知',
+            type: ['workflow-task-todo', 'workflow-task-reject', 'workflow-task-cc', 'workflow-process-finish', 'workflow-process-repealed'],
+        })
+    }
+    queryTypeList(_list)
 })
 </script>
 

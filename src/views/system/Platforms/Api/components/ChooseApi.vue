@@ -93,6 +93,7 @@ const rowSelection = {
     //     }
     // },
     onChange: (keys: string[], _data: any[]) => {
+        console.log(keys,'keys')
         const _keys = _data.map(i => i.id)
         // 当前节点表格数据id
         const currenTableKeys = _tableData.value.map((m: any) => m.id);
@@ -113,17 +114,18 @@ const rowSelection = {
         emits('update:selectedRowKeys', [...otherSelectedKeys, ..._keys]);
 
         // 新增选中/取消选中的数据
-        const changed = {};
-        [...addKeys, ...removeKeys].forEach((key: string) => {
-            changed[key] = _tableData.value.find((f: any) => f.id === key);
-        });
-        if (props.mode === 'appManger') {
-            // 缓存当前表格和其他表格改变的数据
-            emits('update:changedApis', {
-                ...department.changedApis,
-                ...changed,
-            });
-        }
+        // const changed = {};
+        // [...addKeys, ...removeKeys].forEach((key: string) => {
+        //     changed[key] = _tableData.value.find((f: any) => f.id === key);
+        // });
+        // console.log(department.changedApis,'123')
+        // if (props.mode === 'appManger') {
+        //     // 缓存当前表格和其他表格改变的数据
+        //     emits('update:changedApis', {
+        //         ...department.changedApis,
+        //         ...changed,
+        //     });
+        // }
     },
     selectedRowKeys: ref<string[]>([]),
 };
@@ -133,7 +135,6 @@ const save = async () => {
     const removeKeys = props.sourceKeys.filter((key) => !keys.includes(key));
     // 新选中的key
     const addKeys = keys.filter((key) => !props.sourceKeys.includes(key));
-
     if (props.mode === 'api') {
         // 此时是api配置
         // removeKeys.length &&
@@ -156,23 +157,33 @@ const save = async () => {
             return
         }
     } else if (props.mode === 'appManger') {
-        const removeItems = removeKeys.map((key) => ({
+        const items = props.selectedRowKeys.map((key)=>({
             id: key,
-            permissions: props.changedApis[key]?.security?props.changedApis[key]?.security:[],
-        }));
-        const addItems = addKeys.map((key) => ({
-            id: key,
-            permissions: props.changedApis[key]?.security?props.changedApis[key]?.security:[],
-        }));
-        Promise.all([
-            updateOperations_api(code, '_delete', { operations: removeItems }),
-            updateOperations_api(code, '_add', { operations: addItems }),
-        ]).then((resps) => {
-            if (resps[0].status === 200 && resps[1].status === 200) {
+            permissions: department.changedApis[key]?.security ? department.changedApis[key]?.security : []
+        }))
+        // const removeItems = removeKeys.map((key) => ({
+        //     id: key,
+        //     permissions: props.changedApis[key]?.security ? props.changedApis[key]?.security:[],
+        // }));
+        // const addItems = addKeys.map((key) => ({
+        //     id: key,
+        //     permissions: props.changedApis[key]?.security ? props.changedApis[key]?.security:[],
+        // }));
+        // Promise.all([
+        //     updateOperations_api(code, '_delete', { operations: removeItems }),
+        //     updateOperations_api(code, '_add', { operations: addItems }),
+        // ]).then((resps) => {
+        //     if (resps[0].status === 200 && resps[1].status === 200) {
+        //         onlyMessage('操作成功');
+        //         emits('refresh');
+        //     }
+        // });
+        updateOperations_api(code,{operations:items}).then((resp)=>{
+            if(resp.status === 200){
                 onlyMessage('操作成功');
-                emits('refresh');
+                emits('refresh')
             }
-        });
+        })
     }
 };
 

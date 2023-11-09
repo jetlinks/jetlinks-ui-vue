@@ -64,12 +64,13 @@ import NoticeTab from './NoticeTab.vue';
 
 const emits = defineEmits(['action']);
 
-type DataType = 'alarm' | 'system-monitor' | 'system-business';
+type DataType = 'alarm' | 'system-monitor' | 'system-business' | 'workflow-notification';
 
 const refreshObj = ref({
     'alarm': true,
     'system-monitor': true,
     'system-business': true,
+    'workflow-notification': true
 });
 
 const props = defineProps({
