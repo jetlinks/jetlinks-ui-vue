@@ -37,7 +37,11 @@ import AmapComponent from '@/components/AMapComponent/index.vue';
 import { getGo } from '@/api/device/dashboard';
 let point = ref();
 const getMapData = async () => {
-    const res = await getGo({});
+    const res = await getGo({
+    filter:{
+        paging:false
+    }
+});
     point.value = res.result?.features;
 };
 getMapData();
