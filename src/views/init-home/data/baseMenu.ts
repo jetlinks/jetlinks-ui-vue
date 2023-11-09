@@ -4712,12 +4712,97 @@ export default [
         "name": "表单",
         "code": "process/form",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/form",
         "icon": "UpCircleOutlined",
         showPage: ["process-form"],
         "permissions": [
           {
             "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
             "actions": [
               "query"
             ]
@@ -4792,12 +4877,97 @@ export default [
         "name": "流程模型",
         "code": "process/model",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/model",
         "icon": "UpCircleOutlined",
         showPage: ["process-definition"],
         "permissions": [
           {
             "permission": "process-definition",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
             "actions": [
               "query"
             ]
@@ -4884,6 +5054,7 @@ export default [
         "name": "流程实例",
         "code": "process/instance",
         "describe": "",
+        "owner": "iot",
         showPage: ["process-deployment"],
         "url": "/workflow/instance",
         "icon": "UpCircleOutlined",
@@ -4891,6 +5062,90 @@ export default [
         "permissions": [
           {
             "permission": "process-deployment",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
             "actions": [
               "query"
             ]
@@ -4953,6 +5208,7 @@ export default [
         "name": "发起流程",
         "code": "process/initiate",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/initiate",
         "icon": "UpOutlined",
         showPage: ["process-runtime"],
@@ -4986,6 +5242,90 @@ export default [
               "createAndStart",
               "repeal"
             ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5007,6 +5347,7 @@ export default [
         "name": "待办事项",
         "code": "process/me/todo",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/me/todo",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
@@ -5040,6 +5381,90 @@ export default [
               "createAndStart",
               "repeal"
             ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5061,6 +5486,7 @@ export default [
         "name": "已办事项",
         "code": "process/me/finished",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/me/finished",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
@@ -5094,6 +5520,90 @@ export default [
               "createAndStart",
               "repeal"
             ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5115,6 +5625,7 @@ export default [
         "name": "我发起的",
         "code": "process/me/initiate",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/me/initiate",
         "icon": "UpCircleOutlined",
         showPage: ["process-runtime"],
@@ -5148,6 +5659,90 @@ export default [
               "createAndStart",
               "repeal"
             ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5164,11 +5759,12 @@ export default [
       },
       {
         "path": "3nkE-vCQb",
-        "sortIndex": 10,
+        "sortIndex": 9,
         "level": 2,
         "name": "抄送给我",
         "code": "process/me/cc",
         "describe": "",
+        "owner": "iot",
         "url": "/workflow/me/cc",
         "icon": "BorderInnerOutlined",
         "status": 1,
@@ -5200,6 +5796,90 @@ export default [
           },
           {
             "permission": "process-form",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "role-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-third-party-manager",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "user-token",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-category",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "edge-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dueros-product",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-gateway",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-msg-task",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-group",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "opc-point",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "device-mapping",
             "actions": [
               "query"
             ]
