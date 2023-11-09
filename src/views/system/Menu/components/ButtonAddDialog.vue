@@ -59,7 +59,7 @@
                     max-height="350px"
                     v-model:value="form.data.permissions"
                     :disabled="props.mode === '查看'"
-                    :key="form.data.id || ''"
+                    :btnId="form.data.id "
                 />
             </j-form-item>
             <j-form-item label="说明" name="describe">
