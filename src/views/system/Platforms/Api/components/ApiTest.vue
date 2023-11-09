@@ -112,7 +112,7 @@
                     v-if="refStr"
                     ref="editorRef"
                     language="json"
-                    style="height: 100%"
+                    style="height: 100% ; min-height: 200px;"
                     theme="vs"
                     v-model:modelValue="requestBody.code"
                 />
