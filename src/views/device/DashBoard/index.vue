@@ -209,7 +209,7 @@ getDeviceData();
  */
 const getOnline = () => {
     const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-    const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {
@@ -390,6 +390,7 @@ const setDevMesChartOption = (
     y: Array<number>,
     maxY: number,
 ): void => {
+const yLen = String(Math.ceil(maxY)).length
     devMegOptions.value = {
         xAxis: {
             type: 'category',
@@ -407,7 +408,7 @@ const setDevMesChartOption = (
         grid: {
             top: '2%',
             bottom: '5%',
-            left: maxY > 100000 ? '50px' : '70px',
+            left: maxY < 900000 ? '60px' : (yLen * 7.5 +  Math.floor(yLen/3) * 1.2 + 10) + 'px',
             right: '50px',
         },
         series: [
@@ -476,7 +477,7 @@ const setDevMesChartOption = (
 //今日设备消息量
 const getDevice = () => {
   const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const endTime = dayjs().subtract(0, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+  const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {
@@ -539,20 +540,25 @@ const getDevice = () => {
 };
 
 const getEcharts = (data: any) => {
-    let _time = '1h';
-    let format = 'HH';
+    let _time = '1m';
+    let format = 'M月dd日 HH:mm';
     let limit = 12;
     const dt = data.end - data.start;
     const hour = 60 * 60 * 1000;
     const days = hour * 24;
     const months = days * 30;
     const year = 365 * days;
-    if (dt <= days) {
-        limit = Math.abs(Math.ceil(dt / hour));
+    if (dt <= (hour + 10)) {
+        limit = 60
+        format = 'HH:mm';
+    } else if (dt > hour && dt <= days) {
+        _time = '1h'
+        limit = 24;
+
     } else if (dt > days && dt < year) {
         limit = Math.abs(Math.ceil(dt / days)) + 1;
         _time = '1d';
-        format = 'M月dd日';
+        format = 'M月dd日 HH:mm:ss';
     } else if (dt >= year) {
         limit = Math.abs(Math.floor(dt / months));
         _time = '1M';
@@ -583,10 +589,10 @@ const getEcharts = (data: any) => {
                         : item.data.timeString,
                 )
                 .reverse();
-            const y = res.result.map((item: any) => item.data.value).reverse();
+            const y = res.result.map((item: any) => item.data.value ).reverse();
             const maxY = Math.max.apply(
                 null,
-                messageChartYData.value.length ? messageChartYData.value : [0],
+                y.length ? y : [0],
             );
             setDevMesChartOption(x, y, maxY);
         }
