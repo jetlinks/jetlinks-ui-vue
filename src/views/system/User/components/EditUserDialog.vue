@@ -12,6 +12,7 @@
         okText="确定"
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
+            <div class="formName" v-if="form.IsShow('add', 'edit')">基础信息</div>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="24">
                     <j-form-item
@@ -100,7 +101,7 @@
                         <PermissionButton
                             :hasPermission="`${rolePermission}:add`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
-                            v-if="!admin"
+                            v-if="form.data.username !== 'admin'"
                         >
                             <AIcon type="PlusOutlined" />
                         </PermissionButton>
@@ -135,6 +136,7 @@
                     </j-form-item>
                 </j-col>
             </j-row>
+            <div class="formName" v-if="form.IsShow('add', 'edit')">账号信息</div>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="24">
                     <j-form-item
@@ -220,15 +222,7 @@ import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import { uniqBy } from 'lodash-es';
-import { useUserInfo } from '@/store/userInfo';
 import { storeToRefs } from 'pinia';
-
-const userInfoStore = useUserInfo()
-const { userInfos } = storeToRefs(userInfoStore)
-
-const admin = computed(() => {
-  return userInfos.value?.username === 'admin';
-})
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -475,6 +469,18 @@ type optionType = {
                 }
             }
         }
+    }
+}
+.formName{
+    margin-bottom: 10px;
+    font-size: 16px;
+    &::before{
+    width: 2px;
+    background-color: rgb(184, 184, 184);
+    display: inline-block;
+    height: 13px;
+    margin-right: 3px;
+    content:''
     }
 }
 </style>
