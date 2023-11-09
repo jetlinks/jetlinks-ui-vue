@@ -31,7 +31,7 @@
                     <j-ellipsis :lineClamp="2">{{ variables }}</j-ellipsis>
                 </div>
             </div>
-            <div class="item">
+            <div class="item" v-if="isNoCommunity" >
                 <div class="label">用户权限</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ obj.role }}</j-ellipsis>
@@ -49,6 +49,7 @@ import ConfigApi from '@/api/notice/config';
 import TemplateApi from '@/api/notice/template';
 import { queryConfigVariables } from '@/api/system/noticeRule';
 import { getRoleList_api } from '@/api/system/user';
+import { isNoCommunity } from "@/utils/utils";
 
 const props = defineProps({
     data: {

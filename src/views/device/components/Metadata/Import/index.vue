@@ -197,6 +197,7 @@ import { getToken, onlyMessage } from '@/utils/comm';
 import { useMetadataStore } from '@/store/metadata';
 import { omit } from 'lodash-es';
 import { Modal } from 'jetlinks-ui-components';
+import { testObject , testType , testAliType , testAliObject} from './valideta'
 
 const route = useRoute();
 const instanceStore = useInstanceStore();
@@ -298,18 +299,19 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
                     check = true
                     return
+                }else{
+                    check = testType(item,index)
                 }
                 if(!item?.expands?.source){
                     onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
                     check = true
                     return 
                 }
-               
                 if((item?.expands?.source === 'device' ||    item?.expands?.source === 'rule') && !item?.expands?.type){
                     onlyMessage(`属性定义第${index + 1}个数组中缺失type属性`,'error');
                     check = true
                     return
-                }           
+                }       
         })
     }
     if(data?.functions  && !check){
@@ -328,6 +330,16 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`方法定义第${index + 1}个数组中缺失async属性`,'error');
                     check = true
                     return
+            }
+            if(item?.inputs){
+                testObject(item.inputs,index)
+                item.inputs.forEach((i:any)=>{
+                    if(!i?.expands?.required && i?.expands?.required !== false){
+                        onlyMessage(`方法定义inputs第${index+1}个数组中缺失expands.required属性`,'error')
+                        check = true
+                        return
+                    }
+                })
             }
         })
     }
@@ -401,6 +413,8 @@ const requiredCheck = (data:any) =>{
                     onlyMessage(`标签定义第${index + 1}个数组中缺失valueType.type属性`,'error');
                     check = true
                     return
+            }else{
+                testType(item?.valueType?.type,index)
             }
             if(!item?.expands?.type){
                     onlyMessage(`标签定义第${index + 1}个数组中缺失expands.type属性`,'error');
@@ -430,6 +444,8 @@ const aliCheck = (data:any) => {
                     onlyMessage(`属性定义第${index + 1}个数组中缺失dataType.type属性`,'error');
                     check = true
                     return 
+                }else{
+                    testAliType(item,index)
                 }  
         })
     }
@@ -449,6 +465,9 @@ const aliCheck = (data:any) => {
                     onlyMessage(`方法定义第${index + 1}个数组中缺失callType属性`,'error');
                     check = true
                     return
+            }
+            if(item?.inputData){
+                testAliObject(item.inputData,index)
             }
         })
     }
