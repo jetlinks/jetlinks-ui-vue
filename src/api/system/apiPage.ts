@@ -32,4 +32,9 @@ export const delOperations_api = (data:object) => server.remove(`/application/op
  * @param data 
  * @returns 
  */
-export const updateOperations_api = (code:string,type:'_add'| '_delete', data: object) => server.post(`/application/${code}/grant/${type}`, data);
+// export const updateOperations_api = (code:string,type:'_add'| '_delete', data: object) => server.post(`/application/${code}/grant/${type}`, data);
+
+/**
+ * 赋权-选中/取消选中api
+ */
+export const updateOperations_api = (id:string,data:object) => server.post(`/application/${id}/grant`,data)
