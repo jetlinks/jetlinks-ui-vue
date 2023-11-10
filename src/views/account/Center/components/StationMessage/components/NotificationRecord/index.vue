@@ -86,6 +86,7 @@ import {
     getList_api,
     changeStatus_api,
     changeAllStatus,
+    getWorkflowNotice
 } from '@/api/account/notificationRecord';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
@@ -220,6 +221,19 @@ const queryParams = ref({});
 const tableRef = ref();
 
 const view = (row: any) => {
+    // if(props.type === 'workflow-notification'){
+    //     const params = {
+    //         terms:[{
+    //             type: "or",
+    //             value: ['workflow-process-finish', 'workflow-process-repealed'].includes(row.topicProvider)  ? row.dataId : JSON.parse(row.detailJson)?.processId,
+    //             termType: "eq",
+    //             column: "id"
+    //         }]
+    //     } 
+    //     getWorkflowNotice(params).then((res)=>{
+    //         console.log(res)
+    //     })
+    // }
     viewItem.value = row;
     viewVisible.value = true;
 };
