@@ -221,21 +221,24 @@ const queryParams = ref({});
 const tableRef = ref();
 
 const view = (row: any) => {
-    // if(props.type === 'workflow-notification'){
-    //     const params = {
-    //         terms:[{
-    //             type: "or",
-    //             value: ['workflow-process-finish', 'workflow-process-repealed'].includes(row.topicProvider)  ? row.dataId : JSON.parse(row.detailJson)?.processId,
-    //             termType: "eq",
-    //             column: "id"
-    //         }]
-    //     } 
-    //     getWorkflowNotice(params).then((res)=>{
-    //         console.log(res)
-    //     })
-    // }
-    viewItem.value = row;
-    viewVisible.value = true;
+    if(props.type === 'workflow-notification'){
+        const params = {
+            terms:[{
+                type: "or",
+                value: ['workflow-process-finish', 'workflow-process-repealed'].includes(row.topicProvider)  ? row.dataId : JSON.parse(row.detailJson)?.processId,
+                termType: "eq",
+                column: "id"
+            }]
+        } 
+        getWorkflowNotice(params).then((res)=>{
+            viewItem.value = {'topicProvider':row.topicProvider,...res?.result?.[0]}
+            viewVisible.value = true;
+        })
+    }else{
+        viewItem.value = row;
+        viewVisible.value = true;
+    }
+    
 };
 const refresh = () => {
     tableRef.value && tableRef.value.reload();

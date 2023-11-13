@@ -9,7 +9,7 @@ export const changeStatus_api = (type: '_read' | '_unread', data: string[]): any
 
 export const changeAllStatus = (type: '_read' | '_unread', data: string[]): any => server.post(`/notifications/${type}/provider`, data)
 //查看工作流通知详情
-export const getWorkflowNotice = (data:any) => server.post('/process/runtime/processes/_query?history=true',data)
+export const getWorkflowNotice = (data:any) => server.post('/process/runtime/processes/_query/no-paging',data)
 
 // 查询告警记录详情
 export const getDetail = (id: string): any => server.get(`/alarm/record/${id}`)

@@ -16,6 +16,43 @@
                 </div>
             </div>
         </template>
+        <template v-else-if="['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed'].includes(data?.topicProvider)">
+            <j-descriptions
+                :column="2"
+                :contentStyle="{
+                    color: '#333333',
+                }"
+                :labelStyle="{
+                    color: 'rgba(0, 0, 0, 0.6)',
+                    width: '72px',
+                }"
+            >
+                <j-descriptions-item label="发起人">
+                    <j-ellipsis>{{ _data?.creatorName }}</j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="发起时间">
+                    <j-ellipsis>
+                        {{  dayjs(_data?.createTime).format('YYYY-MM-DD HH:mm:ss')  }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="流程分类">
+                    <j-ellipsis>
+                        {{ _data?.classifiedName }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="流程名称"><j-ellipsis>
+                      {{ _data?.modelName }}
+                    </j-ellipsis></j-descriptions-item>
+                <j-descriptions-item label="标题"><j-ellipsis>
+                      {{ _data?.name }}
+                    </j-ellipsis></j-descriptions-item>
+                <j-descriptions-item label="摘要">
+                    <j-ellipsis>
+                      {{ _data?.summary }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+            </j-descriptions>
+        </template>
         <template v-else>
             <j-descriptions
                 :column="2"
@@ -75,7 +112,7 @@
 <script setup lang="ts">
 import { JsonViewer } from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/index.css';
-import { queryLevel as queryLevel_api } from '@/api/rule-engine/config';
+import { queryLevel as queryLevel_api} from '@/api/rule-engine/config';
 import dayjs from 'dayjs';
 
 const emits = defineEmits(['update:visible']);
