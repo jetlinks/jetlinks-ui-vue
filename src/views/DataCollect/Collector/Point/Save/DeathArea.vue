@@ -52,6 +52,9 @@
 </template>
 
 <script setup lang='ts'>
+import { Form } from 'ant-design-vue';
+
+const formItemContext = Form.useInjectFormItemContext()
 
 const props = defineProps({
     value: {
@@ -200,6 +203,7 @@ const handlePercentProps = (arr: any) => {
 const handleChange = () => {
     emits('update:value', _value.value)
     emits('change', _value.value)
+    formItemContext.onFieldChange()
 }
 
 watch(

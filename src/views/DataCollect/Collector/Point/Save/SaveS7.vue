@@ -83,7 +83,7 @@
             </j-form-item>
             <j-form-item :name="['configuration', 'terms']" :rules="[{
                 validator: Area,
-                trigger: 'blur',
+                trigger: 'change',
             }]">
                 <template #label>
                     <j-space>
@@ -277,7 +277,6 @@ const handleOk = async () => {
         collectorId:props.data.collectorId,
         accessModes:res?.accessModes.filter((item:any)=>item)
     }
-    console.log('data', params)
     loading.value = true;
     const response = !props.data.id
         ? await savePoint(params).catch(() => { })
@@ -299,13 +298,15 @@ const Area = (_: any, value: any): Promise<any> =>
             return value[0].value && value[0].termType ? resolve('') : reject('请配置点位死区');
         }else{
             if(value[0].column === 'currentValue'){
-                value.forEach((item:any) => {
-                    if(item.termType || item.value){
-                       return resolve('')
-                    }else{
-                        return reject('请配置点位死区')
-                    }
-                });
+                // value.forEach((item:any) => {
+                //     if(item.termType && item.value){
+                //        return resolve('')
+                //     }else{
+                //         return reject('请配置点位死区')
+                //     }
+                // });
+                const pass = value.every((item:any)=>item.termType && item.value)
+                return pass ? resolve(''):reject('请配置点位死区')
             }else{
                 value.forEach((item:any) => {
                     if(item.column ===`this['currentValue'] - this['lastValue']*init/100`){
@@ -322,7 +323,6 @@ onMounted(() => {
     form.value.features = props.data.features?.map((item:any)=>item.value)
     if(props.data.accessModes?.length!==0){
         form.value.accessModes = props.data.accessModes?.map((item:any)=>item.value)
-        console.log('props====',props.data.accessModes?.map((item:any)=>item.value))
     }
 })
 
