@@ -140,7 +140,7 @@ const getJVMEcharts = async (val: any) => {
 
 const setOptions = (optionsData: any, key: string) => ({
     data: arrayReverse(optionsData[key]),
-    name: key,
+    // name: key!= 'undefined' ? key : '',
     type: 'line',
     smooth: true,
     symbol: 'none',
