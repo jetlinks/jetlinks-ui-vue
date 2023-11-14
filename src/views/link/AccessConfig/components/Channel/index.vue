@@ -64,7 +64,7 @@
                     <p>
                         {{ provider.description }}
                     </p>
-                    <p>消息协议：{{ provider.id }}</p>
+                    <!-- <p>消息协议：{{ provider.id }}</p> -->
                     <TitleComponent data="设备接入指引" />
                     <p>1、配置{{ provider.name }}通道</p>
                     <p>2、创建{{ provider.name }}设备接入网关</p>
