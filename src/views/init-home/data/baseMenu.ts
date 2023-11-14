@@ -4633,7 +4633,7 @@ export default [
     "sortIndex": 6,
     "level": 1,
     "owner": "iot",
-    "name": "工作流",
+    "name": "流程引擎",
     "code": "process",
     "url": "/workflow",
     "icon": "MenuUnfoldOutlined",
@@ -5240,7 +5240,8 @@ export default [
               "claim",
               "complete",
               "createAndStart",
-              "repeal"
+              "repeal",
+              "query"
             ]
           },
           {
@@ -5379,7 +5380,8 @@ export default [
               "claim",
               "complete",
               "createAndStart",
-              "repeal"
+              "repeal",
+              "query"
             ]
           },
           {
@@ -5518,7 +5520,8 @@ export default [
               "claim",
               "complete",
               "createAndStart",
-              "repeal"
+              "repeal",
+              "query"
             ]
           },
           {
@@ -5657,7 +5660,8 @@ export default [
               "claim",
               "complete",
               "createAndStart",
-              "repeal"
+              "repeal",
+              "query"
             ]
           },
           {
@@ -5785,7 +5789,8 @@ export default [
               "claim",
               "complete",
               "createAndStart",
-              "repeal"
+              "repeal",
+              "query"
             ]
           },
           {
