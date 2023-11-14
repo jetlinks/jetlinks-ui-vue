@@ -17,6 +17,7 @@ export const FormState: FormDataType = {
         password: '',
         deviceId: undefined,
         deviceName: undefined,
+        connect:false,
     },
     description: '',
 };
