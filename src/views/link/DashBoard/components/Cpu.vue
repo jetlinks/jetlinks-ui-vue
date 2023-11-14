@@ -99,7 +99,7 @@ const pickerTimeChange = () => {
 };
 
 const echartsOptions = computed(() => {
-  console.log(serverActive.value)
+  console.log(serverActive.value,'---')
   const series = serverActive.value.length
           ? serverActive.value.map((key) => setOptions(serverData.data, key))
           : typeDataLine
@@ -173,7 +173,7 @@ const getCPUEcharts = async (val: any) => {
 
 const setOptions = (optionsData: any, key: string) => ({
     data: arrayReverse(optionsData[key]),
-    name: key,
+    name: key != 'undefined' ? key : '',
     type: 'line',
     smooth: true,
     symbol: 'none',
