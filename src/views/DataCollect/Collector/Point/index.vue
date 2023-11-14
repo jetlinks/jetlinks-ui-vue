@@ -20,7 +20,7 @@
                     <template #headerTitle>
                         <j-space>
                             <PermissionButton
-                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(data?.provider)"
+                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7'].includes(data?.provider)"
                                 type="primary"
                                 @click="handlAdd"
                                 hasPermission="DataCollect/Collector:add"
@@ -150,13 +150,7 @@
                                 </div>
                             </template>
                             <template #img>
-                                <img
-                                    :src="
-                                        slotProps.provider === 'OPC_UA'
-                                            ? opcImage
-                                            : modbusImage
-                                    "
-                                />
+                                <img :src="ImageMap.get(slotProps.provider)"/>
                             </template>
                             <template #content>
                                 <div class="card-box-content">
@@ -319,6 +313,7 @@
             :data="current"
             @change="saveChange"
         />
+        <SaveS7 v-if="visible.saveS7"  :data="current" @change="saveChange"/>
         <Scan v-if="visible.scan" :data="current" @change="saveChange" />
     </j-spin>
 </template>
@@ -345,6 +340,7 @@ import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
 import { responsiveArray } from 'ant-design-vue/lib/_util/responsiveObserve';
+import SaveS7 from './Save/SaveS7.vue';
 
 const props = defineProps({
     data: {
@@ -357,12 +353,22 @@ const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
+const s7Image = getImage('/DataCollect/s7.png')
+const gatewayImage = getImage('/DataCollect/gateway.png')
+const ImageMap = new Map()
+ImageMap.set('OPC_UA',opcImage)
+ImageMap.set('MODBUS_TCP',modbusImage)
+ImageMap.set('snap7',s7Image)
+ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
+
+
 const visible = reactive({
     saveModBus: false,
     saveOPCUA: false,
     writePoint: false,
     batchUpdate: false,
     scan: false,
+    saveS7:false
 });
 const current: any = ref({});
 const accessModesOption = ref();
@@ -474,16 +480,28 @@ const clickBatch = () => {
 };
 
 const handlAdd = () => {
-    visible.saveModBus = true;
-    current.value = {
-        collectorId: props.data?.id,
-        provider: props.data?.provider || 'MODBUS_TCP',
-    };
+    if( props.data?.provider === 'snap7'){
+        console.log(props.data)
+        visible.saveS7 = true
+        current.value = {
+            collectorId: props.data?.id,
+            provider: props.data?.provider
+        }
+    }else{
+        visible.saveModBus = true;
+        current.value = {
+            collectorId: props.data?.id,
+            provider: props.data?.provider || 'MODBUS_TCP',
+        };
+    }
+   
 };
 const handlEdit = (data: any) => {
     if (data?.provider === 'OPC_UA') {
         visible.saveOPCUA = true;
-    } else {
+    } else if(data?.provider === 'snap7'){
+        visible.saveS7 = true
+    }else{
         visible.saveModBus = true;
     }
     current.value = cloneDeep(data);
