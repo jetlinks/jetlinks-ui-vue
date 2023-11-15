@@ -1675,119 +1675,199 @@ export default [
             permissions: [],
             buttons: [
               {
-                id: 'view',
-                name: '查看',
-                permissions: [
+                "id": "view",
+                "name": "查看",
+                "permissions": [
                   {
-                    permission: 'data-collect-channel',
-                    actions: ['query'],
+                    "permission": "data-collect-channel",
+                    "actions": [
+                      "query"
+                    ]
                   },
                   {
-                    permission: 'data-collector',
-                    actions: ['query'],
+                    "permission": "data-collector",
+                    "actions": [
+                      "query"
+                    ]
                   },
                   {
-                    permission: 'data-collect-opc',
-                    actions: ['query'],
+                    "permission": "data-collect-opc",
+                    "actions": [
+                      "query"
+                    ]
                   },
                   {
-                    permission: 'things-collector',
-                    actions: ['query'],
+                    "permission": "things-collector",
+                    "actions": [
+                      "query"
+                    ]
                   },
-                ],
+                  {
+                    "permission": "s7-client",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
               },
               {
-                id: 'add',
-                name: '新增',
-                permissions: [
+                "id": "add",
+                "name": "新增",
+                "permissions": [
                   {
-                    permission: 'data-collect-channel',
-                    actions: ['save', 'query'],
+                    "permission": "data-collect-channel",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'data-collector',
-                    actions: ['save', 'query'],
+                    "permission": "data-collector",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'data-collect-opc',
-                    actions: ['save', 'query'],
+                    "permission": "data-collect-opc",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'things-collector',
-                    actions: ['save', 'query'],
+                    "permission": "things-collector",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
-                ],
+                  {
+                    "permission": "s7-client",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
               },
               {
-                id: 'update',
-                name: '编辑',
-                permissions: [
+                "id": "update",
+                "name": "编辑",
+                "permissions": [
                   {
-                    permission: 'data-collect-channel',
-                    actions: ['save', 'query'],
+                    "permission": "data-collect-channel",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'data-collector',
-                    actions: ['save', 'query'],
+                    "permission": "data-collector",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'data-collect-opc',
-                    actions: ['save', 'query'],
+                    "permission": "data-collect-opc",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'things-collector',
-                    actions: ['save', 'query'],
+                    "permission": "things-collector",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'certificate',
-                    actions: ['query'],
+                    "permission": "certificate",
+                    "actions": [
+                      "query"
+                    ]
                   },
-                ],
+                  {
+                    "permission": "s7-client",
+                    "actions": [
+                      "query"
+                    ]
+                  }
+                ]
               },
               {
-                id: 'action',
-                name: '禁用/启用',
-                permissions: [
+                "id": "action",
+                "name": "禁用/启用",
+                "permissions": [
                   {
-                    permission: 'data-collect-channel',
-                    actions: ['save', 'query'],
+                    "permission": "data-collect-channel",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'data-collector',
-                    actions: ['save', 'query'],
+                    "permission": "data-collector",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'data-collect-opc',
-                    actions: ['save', 'query'],
+                    "permission": "data-collect-opc",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
                   {
-                    permission: 'things-collector',
-                    actions: ['save', 'query'],
+                    "permission": "things-collector",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
                   },
-                ],
+                  {
+                    "permission": "s7-client",
+                    "actions": []
+                  }
+                ]
               },
               {
-                id: 'delete',
-                name: '删除',
-                permissions: [
+                "id": "delete",
+                "name": "删除",
+                "permissions": [
                   {
-                    permission: 'data-collect-channel',
-                    actions: ['delete', 'query'],
+                    "permission": "data-collect-channel",
+                    "actions": [
+                      "query",
+                      "delete"
+                    ]
                   },
                   {
-                    permission: 'data-collector',
-                    actions: ['delete', 'query'],
+                    "permission": "data-collector",
+                    "actions": [
+                      "query",
+                      "delete"
+                    ]
                   },
                   {
-                    permission: 'data-collect-opc',
-                    actions: ['delete', 'query'],
+                    "permission": "data-collect-opc",
+                    "actions": [
+                      "query",
+                      "delete"
+                    ]
                   },
                   {
-                    permission: 'things-collector',
-                    actions: ['delete', 'query'],
-                  },
-                ],
-              },
+                    "permission": "things-collector",
+                    "actions": [
+                      "query",
+                      "delete"
+                    ]
+                  }
+                ]
+              }
             ],
             accessSupport: { text: "支持", value: "support" },
             supportDataAccess: true,
