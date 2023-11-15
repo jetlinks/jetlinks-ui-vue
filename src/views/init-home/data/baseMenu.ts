@@ -4806,6 +4806,12 @@ export default [
             "actions": [
               "query"
             ]
+          },
+          {
+            "permission": "dictionary",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -4968,6 +4974,12 @@ export default [
           },
           {
             "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dictionary",
             "actions": [
               "query"
             ]
@@ -5149,6 +5161,12 @@ export default [
             "actions": [
               "query"
             ]
+          },
+          {
+            "permission": "dictionary",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5327,6 +5345,12 @@ export default [
             "actions": [
               "query"
             ]
+          },
+          {
+            "permission": "dictionary",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5464,6 +5488,12 @@ export default [
           },
           {
             "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dictionary",
             "actions": [
               "query"
             ]
@@ -5607,6 +5637,12 @@ export default [
             "actions": [
               "query"
             ]
+          },
+          {
+            "permission": "dictionary",
+            "actions": [
+              "query"
+            ]
           }
         ],
         "accessSupport": {
@@ -5744,6 +5780,12 @@ export default [
           },
           {
             "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dictionary",
             "actions": [
               "query"
             ]
@@ -5885,6 +5927,12 @@ export default [
           },
           {
             "permission": "device-mapping",
+            "actions": [
+              "query"
+            ]
+          },
+          {
+            "permission": "dictionary",
             "actions": [
               "query"
             ]
