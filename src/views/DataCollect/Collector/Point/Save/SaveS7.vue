@@ -242,7 +242,7 @@ getTypes();
 
 const dataAreaFilterList = computed(() => {
     let result = daveAreaList.value.filter((item: any) =>
-        dataAreaFilter[deviceType.value].includes(item.id),
+        dataAreaFilter[deviceType.value]?.includes(item.id),
     );
     if (deviceType.value == 'S200') {
         result.push({

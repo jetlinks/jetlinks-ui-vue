@@ -505,7 +505,10 @@ const handlEdit = (data: any) => {
     }else{
         visible.saveModBus = true;
     }
-    current.value = cloneDeep(data);
+    current.value = cloneDeep({
+        ...data,
+        deviceType:props.data?.configuration.type,
+    });
 };
 
 const handlDelete = async (id: string | undefined = undefined) => {
