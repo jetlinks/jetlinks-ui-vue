@@ -110,7 +110,7 @@ const getType = computed(() => {
         return ['system-event'];
     } else if(props.type === 'workflow-notification'){
         return ['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed']
-    } 
+    }
     else {
         return [
             'alarm',
@@ -129,6 +129,7 @@ const columns = [
         key: 'topicProvider',
         search: {
             type: 'select',
+            termFilter: ['in', 'nin'],
             options: () =>
                 getTypeList_api().then((resp: any) => {
                     return resp.result
@@ -229,7 +230,7 @@ const view = (row: any) => {
                 termType: "eq",
                 column: "id"
             }]
-        } 
+        }
         getWorkflowNotice(params).then((res)=>{
             viewItem.value = {'topicProvider':row.topicProvider,...res?.result?.[0]}
             viewVisible.value = true;
@@ -238,7 +239,7 @@ const view = (row: any) => {
         viewItem.value = row;
         viewVisible.value = true;
     }
-    
+
 };
 const refresh = () => {
     tableRef.value && tableRef.value.reload();
