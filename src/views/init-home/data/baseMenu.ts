@@ -4652,10 +4652,14 @@ export default [
       {
         "permission": "process-runtime",
         "actions": [
+          "transfer",
           "reject",
+          "query",
           "start",
+          "save",
           "self",
           "claim",
+          "delete-ready",
           "complete",
           "createAndStart",
           "repeal"
@@ -5252,14 +5256,17 @@ export default [
           {
             "permission": "process-runtime",
             "actions": [
+              "transfer",
               "reject",
+              "query",
               "start",
+              "save",
               "self",
               "claim",
+              "delete-ready",
               "complete",
               "createAndStart",
-              "repeal",
-              "query"
+              "repeal"
             ]
           },
           {
@@ -5398,14 +5405,17 @@ export default [
           {
             "permission": "process-runtime",
             "actions": [
+              "transfer",
               "reject",
+              "query",
               "start",
+              "save",
               "self",
               "claim",
+              "delete-ready",
               "complete",
               "createAndStart",
-              "repeal",
-              "query"
+              "repeal"
             ]
           },
           {
@@ -5544,14 +5554,17 @@ export default [
           {
             "permission": "process-runtime",
             "actions": [
+              "transfer",
               "reject",
+              "query",
               "start",
+              "save",
               "self",
               "claim",
+              "delete-ready",
               "complete",
               "createAndStart",
-              "repeal",
-              "query"
+              "repeal"
             ]
           },
           {
@@ -5690,14 +5703,17 @@ export default [
           {
             "permission": "process-runtime",
             "actions": [
+              "transfer",
               "reject",
+              "query",
               "start",
+              "save",
               "self",
               "claim",
+              "delete-ready",
               "complete",
               "createAndStart",
-              "repeal",
-              "query"
+              "repeal"
             ]
           },
           {
@@ -5825,14 +5841,17 @@ export default [
           {
             "permission": "process-runtime",
             "actions": [
+              "transfer",
               "reject",
+              "query",
               "start",
+              "save",
               "self",
               "claim",
+              "delete-ready",
               "complete",
               "createAndStart",
-              "repeal",
-              "query"
+              "repeal"
             ]
           },
           {
