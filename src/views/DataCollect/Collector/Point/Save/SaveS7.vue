@@ -177,7 +177,7 @@ const emit = defineEmits(['change']);
 const loading = ref(false);
 const formRef = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
-const deviceType = ref<string>('S200');
+const deviceType = ref<string>(props.data.deviceType);
 const dataTypesList = ref<any[]>([]);
 const daveAreaList = ref<any>([]);
 
@@ -326,11 +326,37 @@ const Area = (_: any, value: any): Promise<any> =>
 
 onMounted(() => {
     form.value.features = props.data.features?.map((item:any)=>item.value)
+    form.value.configuration.bytes = props.data.configuration?.bytes
     if(props.data.accessModes?.length!==0){
         form.value.accessModes = props.data.accessModes?.map((item:any)=>item.value)
     }
 })
 
+
+watch(
+  () => dataTypesList.value,
+  (val: any[]) => {
+    if (val) {
+      const result: any = dataTypesList.value.find(
+        (item: any) => item.id == form.value.configuration.type,
+      );
+      if(result) {
+        // console.log('result',result)
+        disabled.value = (result && result.length !== 0);
+      }
+    }
+  },
+);
+
+watch(
+  () => form.value.configuration.type,
+  (val) => {
+    if (val !== 'Bool') {
+      form.value.configuration.bits = 0;
+    }
+  },
+  { deep: true },
+);
 
 </script>
 
