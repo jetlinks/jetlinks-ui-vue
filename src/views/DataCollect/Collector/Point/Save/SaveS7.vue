@@ -46,7 +46,7 @@
                     placeholder="请输入字符串长度" :precision="0" :controls="false" :maxlength="64" :disabled="disabled" />
             </j-form-item>
 
-            <j-form-item v-if="form.type == 'Bool'" label="位偏移量（bit）" :name="['configuration', 'bits']" :rules="{
+            <j-form-item v-if="form.configuration.type == 'Bool'" label="位偏移量（bit）" :name="['configuration', 'bits']" :rules="{
                 required: true,
                 message: '请输入0~7之间的正整数',
                 trigger: 'blur',
@@ -189,6 +189,7 @@ const form = ref<any>({
         type: undefined,
         interval: 3000,
         areaNumber: undefined,
+        bytes:undefined,
         terms: []
     },
     accessModes: [],
@@ -267,10 +268,14 @@ const handleCancelInterval = () => {
 
 
 const handleOk = async () => {
-    const res = await formRef.value?.validate();
+    const res:any = await formRef.value?.validate();
     
     const params = {
         ...res,
+        configuration:{
+            ...res.configuration,
+            bytes:res.configuration.bytes || form.value.configuration.bytes
+        },
         inheritBreaker: true,
         pointKey: props.data.pointKey || randomString(9),
         provider:props.data.provider,
