@@ -172,6 +172,7 @@ const columns = [
         key: 'state',
         search: {
             type: 'select',
+            termFilter: ['in', 'nin'],
             options: [
                 {
                     label: '未读',
