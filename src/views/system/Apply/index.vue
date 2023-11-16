@@ -410,6 +410,22 @@ const table = {
                     dialogVisible.value = true;
                 },
             });
+            others.children?.push({
+                permission: [`${permission}:add`, `${permission}:update`],
+                key: 'addMenu',
+                text: '新增菜单',
+                tooltip: {
+                    title: !disabled ? '请先启用' : '新增菜单',
+                },
+                icon: 'icon-caidanguanli',
+                disabled: !disabled,
+                onClick: () => {
+                    // selectId.value = data.id;
+                    // selectProvider.value = data.provider;
+                    // current.value = data
+                    // dialogVisible.value = true;
+                },
+            });
         // 有api操作权限
         if (otherServers.includes('apiServer'))
             others.children?.push(
