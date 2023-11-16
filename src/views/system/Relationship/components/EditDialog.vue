@@ -207,7 +207,7 @@ const form = reactive({
             ...form.data,
             objectTypeName: form.objectList.find(
                 (item) => item.id === form.data.objectType,
-            ).name,
+            )?.name,
             targetTypeName: targetList.value.find(
                 (item: dictItemType) => item.id === form.data.targetType,
             )?.name,
