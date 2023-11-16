@@ -20,7 +20,7 @@
                     <template #headerTitle>
                         <j-space>
                             <PermissionButton
-                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(data?.provider)"
+                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7'].includes(data?.provider)"
                                 type="primary"
                                 @click="handlAdd"
                                 hasPermission="DataCollect/Collector:add"
@@ -150,13 +150,7 @@
                                 </div>
                             </template>
                             <template #img>
-                                <img
-                                    :src="
-                                        slotProps.provider === 'OPC_UA'
-                                            ? opcImage
-                                            : modbusImage
-                                    "
-                                />
+                                <img :src="ImageMap.get(slotProps.provider)"/>
                             </template>
                             <template #content>
                                 <div class="card-box-content">
@@ -319,6 +313,7 @@
             :data="current"
             @change="saveChange"
         />
+        <SaveS7 v-if="visible.saveS7"  :data="current" @change="saveChange"/>
         <Scan v-if="visible.scan" :data="current" @change="saveChange" />
     </j-spin>
 </template>
@@ -340,11 +335,12 @@ import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
 import { colorMap } from '../data';
-import { cloneDeep, isNumber, throttle } from 'lodash-es';
+import { cloneDeep, isBoolean, isNumber, throttle } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
 import { responsiveArray } from 'ant-design-vue/lib/_util/responsiveObserve';
+import SaveS7 from './Save/SaveS7.vue';
 
 const props = defineProps({
     data: {
@@ -357,12 +353,22 @@ const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
+const s7Image = getImage('/DataCollect/s7.png')
+const gatewayImage = getImage('/DataCollect/gateway.png')
+const ImageMap = new Map()
+ImageMap.set('OPC_UA',opcImage)
+ImageMap.set('MODBUS_TCP',modbusImage)
+ImageMap.set('snap7',s7Image)
+ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
+
+
 const visible = reactive({
     saveModBus: false,
     saveOPCUA: false,
     writePoint: false,
     batchUpdate: false,
     scan: false,
+    saveS7:false
 });
 const current: any = ref({});
 const accessModesOption = ref();
@@ -474,19 +480,35 @@ const clickBatch = () => {
 };
 
 const handlAdd = () => {
-    visible.saveModBus = true;
-    current.value = {
-        collectorId: props.data?.id,
-        provider: props.data?.provider || 'MODBUS_TCP',
-    };
+    if( props.data?.provider === 'snap7'){
+        console.log(props.data)
+        visible.saveS7 = true
+        current.value = {
+            collectorId: props.data?.id,
+            provider: props.data?.provider,
+            deviceType:props.data?.configuration.type,
+        }
+    }else{
+        visible.saveModBus = true;
+        current.value = {
+            collectorId: props.data?.id,
+            provider: props.data?.provider || 'MODBUS_TCP',
+        };
+    }
+   
 };
 const handlEdit = (data: any) => {
     if (data?.provider === 'OPC_UA') {
         visible.saveOPCUA = true;
-    } else {
+    } else if(data?.provider === 'snap7'){
+        visible.saveS7 = true
+    }else{
         visible.saveModBus = true;
     }
-    current.value = cloneDeep(data);
+    current.value = cloneDeep({
+        ...data,
+        deviceType:props.data?.configuration.type,
+    });
 };
 
 const handlDelete = async (id: string | undefined = undefined) => {
@@ -526,11 +548,13 @@ const clickEdit = async (data: object) => {
 
 // ReadIdMap
 const clickRead = async (data: any) => {
+    console.log('------')
     const res: any = await readPoint(data?.collectorId, [data?.id]);
     if (res.status === 200) {
         const readData: any = res.result[0];
         const _data = ReadIdMap.get(data?.id);
         ReadIdMap.set(data?.id, { ..._data, ...readData });
+        console.log('====',ReadIdMap.get(data.id))
         cancelSelect();
         tableRef.value?.reload();
         onlyMessage('操作成功', 'success');
@@ -574,7 +598,12 @@ const getReadParseData = (item: any) => {
     let _data = '--';
     if (ReadIdMap.has(item.id)) {
         const { parseData, dataType } = ReadIdMap.get(item.id);
-        _data = !!parseData ? `${parseData}(${dataType || '-'}) ` : '--';
+        if(isBoolean(parseData)){
+            _data =  `${parseData}(${dataType || '-'}) `;
+        }else{
+            _data = !!parseData ? `${parseData}(${dataType || '-'}) ` : '--';
+        }
+        
     }
     return _data;
 };

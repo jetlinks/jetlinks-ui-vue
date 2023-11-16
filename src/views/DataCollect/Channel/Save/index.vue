@@ -171,6 +171,12 @@
                     v-model:value="formData.configuration.password"
                 />
             </j-form-item>
+            <!-- <j-form-item
+                v-if="formData.provider === 'snap7'"
+                :name="['configuration', 'connect']"
+            >
+                <j-input v-model:value="formData.configuration.connect"/>
+            </j-form-item> -->
             <j-form-item label="说明" name="description">
                 <j-textarea
                     placeholder="请输入说明"
@@ -239,6 +245,12 @@ const handleOk = async () => {
       params.configuration.deviceName = formData.value.configuration.deviceName
     }
 
+    if(params?.provider === 'snap7'){
+        params.configuration={
+            connect : false
+        }
+    }
+
     params.circuitBreaker = {
       type: 'Ignore'
     }
@@ -304,7 +316,7 @@ const getProvidersList = async () => {
     if (resp.status === 200) {
         const arr = resp.result
             .filter(
-                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua'].includes(item.name),
+                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7'].includes(item.name),
             )
             .map((it: any) => it.name);
         const providers: any = protocolList.filter((item: any) =>

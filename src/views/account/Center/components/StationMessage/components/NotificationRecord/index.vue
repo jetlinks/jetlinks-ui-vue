@@ -109,7 +109,7 @@ const getType = computed(() => {
         return ['system-event'];
     } else if(props.type === 'workflow-notification'){
         return ['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed']
-    } 
+    }
     else {
         return [
             'alarm',
@@ -128,6 +128,7 @@ const columns = [
         key: 'topicProvider',
         search: {
             type: 'select',
+            termFilter: ['in', 'nin'],
             options: () =>
                 getTypeList_api().then((resp: any) => {
                     return resp.result
