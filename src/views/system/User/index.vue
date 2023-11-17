@@ -29,6 +29,13 @@
                     <template #type="slotProps">
                         {{ slotProps.type?.name }}
                     </template>
+                    <template #roleList="slotProps">
+                        <j-ellipsis>
+                            {{ slotProps?.roleList?.map((item)=>{
+                                return item.name
+                            }).join(',') }}
+                        </j-ellipsis>
+                    </template>
                     <template #status="slotProps">
                         <BadgeStatus
                             :status="slotProps.status"
@@ -94,10 +101,11 @@
                                         : '删除',
                                 }"
                                 :popConfirm="{
-                                    title: `确认删除`,
+                                    title:'确认删除?',
                                     onConfirm: () =>
                                         table.clickDel(slotProps.id),
                                 }"
+
                                 :disabled="slotProps.status"
                             >
                                 <AIcon type="DeleteOutlined" />
@@ -126,6 +134,7 @@ import {
     getUserList_api,
     changeUserStatus_api,
     deleteUser_api,
+    queryRole_api
 } from '@/api/system/user';
 import { onlyMessage } from '@/utils/comm';
 
@@ -172,6 +181,35 @@ const columns = [
         scopedSlots: true,
     },
     {
+        title: '角色',
+        dataIndex: 'roleList',
+        key: 'roleList',
+        search:{
+            type:'select',
+            rename:'id$in-dimension$role',
+            options:() => 
+            new Promise((resolve)=>{
+                queryRole_api(
+                    {   
+                        paging:false,
+                        sorts: [
+                            { name: 'createTime', order: 'desc' },
+                            { name: 'id', order: 'desc' },
+                        ]
+                    }
+                ).then((resp:any)=>{
+                    resolve(
+                            resp.result.map((item: dictType) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                })
+            })
+        },
+         scopedSlots: true,
+    },
+    {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
@@ -215,7 +253,7 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
-        width: 150,
+        width: 200,
         scopedSlots: true,
     },
 ];

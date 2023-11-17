@@ -115,9 +115,7 @@ export const initData = (Menu: any) => {
         arr.forEach((item: any) => {
             item.title = item.code;
             item.key = item.code; // treeData需要唯一key
-
             checkedKeys.push(item.code);
-
             if (item?.children) {
                 getMap(item?.children);
             }
@@ -126,6 +124,23 @@ export const initData = (Menu: any) => {
     getMap(Menu);
     return { checkedKeys };
 };
+
+/**通过options判断选中菜单 */
+export const inItSelected = (Menu:any) =>{
+    const checkedKeys: any = [];
+    const getMap = (arr: any) => {
+        arr.forEach((item: any) => {
+            item.title = item.code;
+            item.key = item.code; // treeData需要唯一key
+            item?.options?.show ?  checkedKeys.push(item.code) : '';
+            if (item?.children) {
+                getMap(item?.children);
+            }
+        });
+    };
+    getMap(Menu);
+    return { checkedKeys };
+}
 
 /**
  * 查找父级、子级code

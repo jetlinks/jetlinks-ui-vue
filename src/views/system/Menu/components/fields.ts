@@ -62,6 +62,7 @@ const direction = [
     'RadiusUpright',
     'Fullscreen',
     'FullscreenExit',
+    'EnvironmentOutlined',
 ];
 
 const suggestion = [

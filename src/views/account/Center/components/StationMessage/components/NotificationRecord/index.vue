@@ -85,7 +85,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import {
     getList_api,
     changeStatus_api,
-    changeAllStatus,
+    changeAllStatus,    
 } from '@/api/account/notificationRecord';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
@@ -107,7 +107,10 @@ const getType = computed(() => {
         return ['device-transparent-codec'];
     } else if (props.type === 'system-monitor') {
         return ['system-event'];
-    } else {
+    } else if(props.type === 'workflow-notification'){
+        return ['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed']
+    }
+    else {
         return [
             'alarm',
             'alarm-product',
@@ -125,6 +128,7 @@ const columns = [
         key: 'topicProvider',
         search: {
             type: 'select',
+            termFilter: ['in', 'nin'],
             options: () =>
                 getTypeList_api().then((resp: any) => {
                     return resp.result
@@ -168,6 +172,7 @@ const columns = [
         key: 'state',
         search: {
             type: 'select',
+            termFilter: ['in', 'nin'],
             options: [
                 {
                     label: '未读',
@@ -217,8 +222,8 @@ const queryParams = ref({});
 const tableRef = ref();
 
 const view = (row: any) => {
-    viewItem.value = row;
-    viewVisible.value = true;
+        viewItem.value = row;
+        viewVisible.value = true;
 };
 const refresh = () => {
     tableRef.value && tableRef.value.reload();
