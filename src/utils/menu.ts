@@ -330,7 +330,7 @@ export const handleSiderMenu = (menuData: any[]) => {
   if (menuData && menuData.length) {
     return menuData.filter(item => {
 
-      if (('isShow' in item.options && item.options.isShow === false) || item.meta?.hideInMenu === true) {
+      if ((item.options?.isShow === false) || item.meta?.hideInMenu === true) {
         return false
       }
       return true
