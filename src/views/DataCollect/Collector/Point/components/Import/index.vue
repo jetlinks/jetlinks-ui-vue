@@ -84,7 +84,7 @@ const beforeUpload = (_file: any) => {
     const isXlsx =
         _file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    if (!isCsv || !isXlsx) {
+    if (!isCsv && !isXlsx) {
         onlyMessage('请上传.csv或.xlsx格式文件', 'warning');
     }
     return isCsv || isXlsx;
