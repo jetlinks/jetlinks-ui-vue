@@ -196,6 +196,7 @@
               @cancel="dialogVisible = false"
               @ok="() => { dialogVisible = false; table.refresh}"
           />
+          <AddMenu v-if="addMenuVisible" @close-add-menu="addMenuVisible=false"/>
         </div>
         <Add v-if="visible" @close="visible = false" />
     </page-container>
@@ -205,6 +206,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import MenuDialog from './componenets/MenuDialog.vue';
 import ThirdMenu from './componenets/ThirdMenu.vue'
+import AddMenu from './componenets/AddMenu.vue'
 import {
     getApplyList_api,
     changeApplyStatus_api,
@@ -221,6 +223,7 @@ const permission = 'system/Apply';
 
 const typeOptions = ref<any[]>([])
 const visible = ref<boolean>(false)
+const addMenuVisible = ref<boolean>(false)
 
 onMounted(() => {
     queryType().then((resp: any) => {
@@ -423,7 +426,7 @@ const table = {
                     // selectId.value = data.id;
                     // selectProvider.value = data.provider;
                     // current.value = data
-                    // dialogVisible.value = true;
+                    addMenuVisible.value = true;
                 },
             });
         // 有api操作权限
