@@ -1,5 +1,5 @@
 <template>
-    <j-modal visible title="导入" @cancel="emit('closeImport')" @ok="emit('closeImport')" :width="800" :maskClosable="false">
+    <j-modal visible title="导入" @cancel="emit('closeImport')" @ok="emit('closeImport')" :width="800" maskClosable="false">
         <div class="import-content">
             <div class="column">
                 <p>上传文件</p>
@@ -80,19 +80,14 @@ const uploadChange = async (info: Record<string, any>) => {
 };
 
 const beforeUpload = (_file: any) => {
-    const fileType = ['xlsx', 'xls', 'csv']
-    console.log(_file.type)
     const isCsv = _file.type === 'text/csv';
-    // const isXlsx =
-    //     _file.type ===
-    //     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    // if (!isCsv && fileType !== 'xlsx') {
-    //     onlyMessage('请上传.csv格式文件', 'warning');
-    // }
-    // if (!isXlsx && fileType !== 'csv') {
-    //     onlyMessage('请上传.xlsx格式文件', 'warning');
-    // }
-    // return (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
+    const isXlsx =
+        _file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    if (!isCsv || !isXlsx) {
+        onlyMessage('请上传.csv或.xlsx格式文件', 'warning');
+    }
+    return isCsv || isXlsx;
 };
 const downTemplate = async (type: string) => {
     const res: any = await exportTemplate(<string>props.data?.provider, type);
