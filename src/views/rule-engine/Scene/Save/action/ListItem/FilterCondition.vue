@@ -203,6 +203,17 @@ const handOptionByColumn = (option: any) => {
     valueOptions.value = []
     valueColumnOptions.value = []
   }
+  if(paramsValue.termType){
+    if (columnType.value ==='date') {
+      if (timeTypeKeys.includes(paramsValue.termType)) {
+        if (tabsOptions.value[0].component !== 'int') {
+        }
+        tabsOptions.value[0].component = 'int'
+      } else if (!timeTypeKeys.includes(paramsValue.termType) && tabsOptions.value[0].component == 'int') {
+        tabsOptions.value[0].component = 'date'
+      }
+    }
+  }
 }
 
 watch(() => [columnOptions.value, paramsValue.column], () => {
