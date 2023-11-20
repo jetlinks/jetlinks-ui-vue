@@ -21,3 +21,5 @@ export const saveMenuInfo_api = (data: object) => server.patch(`/menu`, data);
 export const addMenuInfo_api = (data: object) => server.post(`/menu`, data);
 // 删除菜单信息
 export const delMenuInfo_api = (id: string) => server.remove(`/menu/${id}`);
+//查询集成菜单
+export const queryApp = (data:any) => server.post('/application/_query/no-paging',data)

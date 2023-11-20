@@ -196,7 +196,6 @@
               @cancel="dialogVisible = false"
               @ok="() => { dialogVisible = false; table.refresh}"
           />
-          <AddMenu v-if="addMenuVisible" @close-add-menu="addMenuVisible=false"/>
         </div>
         <Add v-if="visible" @close="visible = false" />
     </page-container>
@@ -206,7 +205,6 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import MenuDialog from './componenets/MenuDialog.vue';
 import ThirdMenu from './componenets/ThirdMenu.vue'
-import AddMenu from './componenets/AddMenu.vue'
 import {
     getApplyList_api,
     changeApplyStatus_api,
@@ -411,22 +409,6 @@ const table = {
                     selectProvider.value = data.provider;
                     current.value = data
                     dialogVisible.value = true;
-                },
-            });
-            others.children?.push({
-                permission: [`${permission}:add`, `${permission}:update`],
-                key: 'addMenu',
-                text: '新增菜单',
-                tooltip: {
-                    title: !disabled ? '请先启用' : '新增菜单',
-                },
-                icon: 'icon-caidanguanli',
-                disabled: !disabled,
-                onClick: () => {
-                    // selectId.value = data.id;
-                    // selectProvider.value = data.provider;
-                    // current.value = data
-                    addMenuVisible.value = true;
                 },
             });
         // 有api操作权限
