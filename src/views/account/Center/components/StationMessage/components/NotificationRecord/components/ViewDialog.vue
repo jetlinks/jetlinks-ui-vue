@@ -11,7 +11,7 @@
             </div>
         </template>
         <template
-            v-else-if="['workflow-task-cc', 'workflow-task-todo', 'workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed'].includes(data?.topicProvider)">
+            v-else-if="['workflow-task-cc', 'workflow-task-todo', 'workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(data?.topicProvider)">
             <j-descriptions :column="2" :contentStyle="{
                 color: '#333333',
             }" :labelStyle="{
@@ -130,7 +130,7 @@ onMounted(() => {
     if (!['device-transparent-codec', 'system-event'].includes(props?.data?.topicProvider)) {
         getLevel();
     }
-    if (['workflow-task-cc', 'workflow-task-todo', 'workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed'].includes(props?.data?.topicProvider)) {
+    if (['workflow-task-cc', 'workflow-task-todo', 'workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(props?.data?.topicProvider)) {
         const params = {
             terms: [{
                 type: "or",

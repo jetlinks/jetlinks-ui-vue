@@ -126,6 +126,10 @@ const lowCodeNotice = [
                 provider: 'workflow-process-repealed',
                 name: '关闭通知',
             },
+            {
+                provider: 'workflow-task-transfer-todo',
+                name: '转办通知'
+            }
         ],
     },
 ]
