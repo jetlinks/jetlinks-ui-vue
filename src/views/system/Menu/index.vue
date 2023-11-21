@@ -218,12 +218,12 @@ const table = reactive({
     },
     addChildren: (row: any) => {
         const sortIndex = row?.children?.length || 0;
-
         router.push(
             `/system/Menu/detail/:id?pid=${row.id}&basePath=${
                 row.url || ''
-            }&sortIndex=${sortIndex + 1}`,
+            }&sortIndex=${sortIndex + 1}&isChildren=${true}`,
         );
+
     },
     // 跳转至详情页
     toDetails: (row: any) => {

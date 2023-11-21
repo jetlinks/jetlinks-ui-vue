@@ -83,9 +83,9 @@
                                     style="width: 100%" />
                             </j-form-item>
                         </j-col>
-                        <j-col :span="12">
+                        <j-col :span="12" v-if="!isChildren">
                             <j-form-item label="所属应用" name="appId">
-                                <j-select v-model:value="form.data.appId" :options="appOptions" allowClear
+                                <j-select v-model:value="form.data.appId" :options="appOptions" :allowClear="!routeParams.id"
                                     placeholder="请选择所属应用" style="width: 100%"  @change="selectApp"/>
                             </j-form-item>
                         </j-col>
@@ -98,7 +98,7 @@
                 </j-form-item>
             </j-form>
         </div>
-        <div class="card" v-if="!form.data.appId">
+        <div class="card" v-if="!form.data.appId && !isChildren">
             <h3>权限配置</h3>
             <j-form ref="permissFormRef" :model="form.data" class="basic-form permiss-form">
                 <j-form-item name="accessSupport" required v-if="isNoCommunity">
@@ -189,7 +189,7 @@ const routeParams = {
     url: route.query.basePath,
     parentId: route.query.pid,
 };
-
+const isChildren = route.query?.isChildren
 // 表单
 const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
@@ -267,7 +267,7 @@ const form = reactive({
                 const api = routeParams.id ? saveMenuInfo_api : addMenuInfo_api;
                 form.saveLoading = true;
                 const accessSupportValue = form.data.accessSupport;
-                const params = {
+                const params:any = {
                     ...form.data,
                     owner: 'iot',
                     options: { show: true },
@@ -281,6 +281,9 @@ const form = reactive({
                                     : '间接控制',
                     },
                 };
+                if(params?.isChildren){
+                    delete params.isChildren
+                }
                 api(params)
                     .then((resp: any) => {
                         if (resp.status === 200) {
