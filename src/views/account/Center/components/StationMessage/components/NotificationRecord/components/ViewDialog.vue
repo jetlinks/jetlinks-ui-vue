@@ -1,11 +1,5 @@
 <template>
-    <j-modal
-        visible
-        title="详情"
-        width="754px"
-        @cancel="emits('update:visible', false)"
-        class="view-dialog-container"
-    >
+    <j-modal visible title="详情" width="754px" @cancel="emits('update:visible', false)" class="view-dialog-container">
         <template v-if="['device-transparent-codec', 'system-event'].includes(data?.topicProvider)">
             <div>
                 <div class="label">通知流水:</div>
@@ -16,20 +10,50 @@
                 </div>
             </div>
         </template>
+        <template
+            v-else-if="['workflow-task-cc', 'workflow-task-todo', 'workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(data?.topicProvider)">
+            <j-descriptions :column="2" :contentStyle="{
+                color: '#333333',
+            }" :labelStyle="{
+    color: 'rgba(0, 0, 0, 0.6)',
+    width: '72px',
+}">
+                <j-descriptions-item label="发起人">
+                    <j-ellipsis>{{ workFlowData?.creatorName }}</j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="发起时间">
+                    <j-ellipsis>
+                        {{ dayjs(workFlowData?.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="流程分类">
+                    <j-ellipsis>
+                        {{ workFlowData?.classifiedName }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+                <j-descriptions-item label="流程名称"><j-ellipsis>
+                        {{ workFlowData?.modelName }}
+                    </j-ellipsis></j-descriptions-item>
+                <j-descriptions-item label="标题"><j-ellipsis>
+                        {{ workFlowData?.name }}
+                    </j-ellipsis></j-descriptions-item>
+                <j-descriptions-item label="摘要">
+                    <j-ellipsis>
+                        {{ workFlowData?.summary }}
+                    </j-ellipsis>
+                </j-descriptions-item>
+            </j-descriptions>
+        </template>
         <template v-else>
-            <j-descriptions
-                :column="2"
-                :contentStyle="{
-                    color: '#333333',
-                }"
-                :labelStyle="{
-                    color: 'rgba(0, 0, 0, 0.6)',
-                    width: '72px',
-                }"
-            >
+            <j-descriptions :column="2" :contentStyle="{
+                color: '#333333',
+            }" :labelStyle="{
+    color: 'rgba(0, 0, 0, 0.6)',
+    width: '72px',
+}">
                 <template v-if="data?.topicProvider === 'alarm-device'">
                     <j-descriptions-item label="告警设备">
-                        <j-ellipsis>{{ _data?.targetName || ''}}</j-ellipsis>
+                        <j-ellipsis>{{ _data?.targetName || '' }}</j-ellipsis>
                     </j-descriptions-item>
                     <j-descriptions-item label="设备ID">
                         <j-ellipsis>
@@ -58,10 +82,7 @@
                 <div class="label">告警流水:</div>
                 <div style="padding: 10px; background-color: #fafafa">
                     <j-scrollbar height="200px">
-                        <JsonViewer
-                            style="background-color: #fafafa"
-                            :value="JSON.parse(_data?.alarmInfo || '{}')"
-                        />
+                        <JsonViewer style="background-color: #fafafa" :value="JSON.parse(_data?.alarmInfo || '{}')" />
                     </j-scrollbar>
                 </div>
             </div>
@@ -77,6 +98,7 @@ import { JsonViewer } from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/index.css';
 import { queryLevel as queryLevel_api } from '@/api/rule-engine/config';
 import dayjs from 'dayjs';
+import { getWorkflowNotice } from '@/api/account/notificationRecord';
 
 const emits = defineEmits(['update:visible']);
 const props = defineProps<{
@@ -86,6 +108,8 @@ const props = defineProps<{
 }>();
 
 const levelList = ref<any[]>([]);
+//工作流详情的值
+const workFlowData = ref()
 
 const _data = computed(() => {
     if (props.data.detailJson) return JSON.parse(props.data.detailJson);
@@ -103,8 +127,21 @@ const getLevelLabel = (id: number) => {
     return obj?.title;
 };
 onMounted(() => {
-    if(!['device-transparent-codec', 'system-event'].includes(props?.data?.topicProvider)){
+    if (!['device-transparent-codec', 'system-event'].includes(props?.data?.topicProvider)) {
         getLevel();
+    }
+    if (['workflow-task-cc', 'workflow-task-todo', 'workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(props?.data?.topicProvider)) {
+        const params = {
+            terms: [{
+                type: "or",
+                value: ['workflow-process-finish', 'workflow-process-repealed'].includes(props?.data?.topicProvider) ? props?.data?.dataId : props?.data?.detailJson ? JSON.parse(props?.data?.detailJson)?.processId : props?.data?.detail?.processId,
+                termType: "eq",
+                column: "id"
+            }]
+        }
+        getWorkflowNotice(params).then((res) => {
+            workFlowData.value = { 'topicProvider': props?.data?.topicProvider, ...res?.result?.[0] }
+        })
     }
 })
 </script>

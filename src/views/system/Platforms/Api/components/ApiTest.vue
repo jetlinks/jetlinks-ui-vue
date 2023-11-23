@@ -225,21 +225,21 @@ const _send = () => {
 
     let url = props.selectApi?.url;
     let params
-    if (methodName === 'get'){
-        const urlParams = {};
-        requestBody.params.paramsTable.forEach((item) => {
-        urlParams[item.name] = item.value;
-        if (url.includes(`{${item.name}}`))
-            url = url.replace(`{${item.name}}`, item.value);
+    const urlParams = {};
+    requestBody.params.paramsTable.forEach((item) => {
+    urlParams[item.name] = item.value;
+    if (url.includes(`{${item.name}}`))
+        url = url.replace(`{${item.name}}`, item.value);
     });
-    params = {
-        ...JSON.parse(requestBody.code || '{}'),
-        ...urlParams,
-    };
+    if (methodName === 'get'){
+        params = {
+            ...JSON.parse(requestBody.code || '{}'),
+            ...urlParams,
+        };
     }else{
         params = JSON.parse(requestBody.code || '{}')
     }
-   
+
     server[methodObj[methodName]](url, params).then((resp: any) => {
         // 如果用户没填写参数且有body的情况下，给用户展示请求示例
         if (Object.keys(params).length === 0 && refStr.value) {
