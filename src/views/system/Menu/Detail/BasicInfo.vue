@@ -83,12 +83,6 @@
                                     style="width: 100%" />
                             </j-form-item>
                         </j-col>
-                        <j-col :span="12" v-if="!isChildren">
-                            <j-form-item label="所属应用" name="appId">
-                                <j-select v-model:value="form.data.appId" :options="appOptions" :allowClear="!routeParams.id"
-                                    placeholder="请选择所属应用" style="width: 100%"  @change="selectApp"/>
-                            </j-form-item>
-                        </j-col>
                     </j-row>
                 </div>
 
@@ -172,12 +166,11 @@ import {
     saveMenuInfo_api,
     addMenuInfo_api,
     validCode_api,
-    queryApp
 } from '@/api/system/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import { isNoCommunity } from '@/utils/utils';
 import { onlyMessage } from '@/utils/comm';
-import { applicationInfo } from '@/api/bind';
+
 
 const permission = 'system/Menu';
 // 路由
@@ -206,8 +199,6 @@ const form = reactive({
         accessSupport: 'unsupported',
         assetType: undefined,
         indirectMenus: [],
-        appId: '',
-        application:'',
         ...routeParams,
     } as formType,
     treeData: [], // 关联菜单
@@ -316,32 +307,9 @@ const choseIcon = (typeStr: string) => {
     form.data.icon = typeStr;
     uploadIcon.value?.clearValidate();
 }
-
-const selectApp = (value:string,options:any) =>{
-    form.data.application = options?.label
-}
 // 弹窗
 const dialogVisible = ref(false);
 
-onMounted(() => {
-    queryApp({
-        terms: [
-            {
-                "column": "integrationModes",
-                "termType": "in$any",
-                "value": "page"
-            }
-        ],
-        paging: false
-    }).then((res:any)=>{   
-       appOptions.value  = res.result?.map((i:any)=>{
-            return {
-                label:i.name,
-                value:i.id
-            }
-        })
-    })
-})
 type formType = {
     id?: string;
     name: string;
@@ -355,8 +323,6 @@ type formType = {
     assetType: string | undefined;
     indirectMenus: any[];
     parentId?: string;
-    appId:string,
-    application:string
 };
 
 type assetType = {
