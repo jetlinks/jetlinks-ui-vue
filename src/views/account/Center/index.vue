@@ -251,7 +251,7 @@ onUnmounted(() => {
     .person-content-item {
         padding: 10px 20px;
         background-color: #fff;
-        overflow: hidden;
+        // overflow: hidden;
     }
 
     .person-content {
@@ -261,7 +261,7 @@ onUnmounted(() => {
     }
 
     .person-content-item-content {
-        height: calc(100vh - 251px);
+        // height: calc(100vh - 251px);
         width: 100%;
         padding: 10px 0;
     }

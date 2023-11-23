@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { queryDicItem, deleteDicItem } from '@/api/system/dictionary'
+import { queryDicItem, deleteDicItem, queryDicItemNoPage } from '@/api/system/dictionary'
 import Save from './Save/index.vue'
 import type { ActionsType } from './typings';
 import { onlyMessage } from '@/utils/comm';
@@ -61,11 +61,6 @@ const sort = ref(0)
 const modalType = ref('add')
 const current = ref()
 const columns = [
-    {
-        title: '序号',
-        dataIndex: 'ordinal',
-        key: 'ordinal',
-    },
     {
         title: '检索码',
         dataIndex: 'searchCode',
@@ -155,7 +150,18 @@ const getActions = (
 const add = () => {
     modalType.value = 'add'
     current.value = {}
-    saveVisible.value = true
+    queryDicItemNoPage({
+        paging: false, 
+        sorts: [{ name: 'ordinal', order: 'desc' }],
+        terms: [{
+            column: 'dictId',
+            termType: 'eq',
+            value: props.data?.id
+        }]
+    }).then((res:any)=>{
+        sort.value = res.result?.length ?  res.result[0].ordinal + 1 : 1 
+        saveVisible.value = true
+    })
 }
 
 const closeModal = () => {
@@ -172,7 +178,7 @@ const queryItem = async (_params: any) => {
     if (props.data?.id) {
         const params = {
             ..._params,
-            sorts: [{ name: 'ordinal', order: 'asc' }],
+            sorts: [{ name: 'ordinal', order: 'desc' }],
             terms: [
                 ..._params.terms,
                 {
@@ -188,7 +194,6 @@ const queryItem = async (_params: any) => {
             arr?.sort((a: any, b: any) => {
                 return b.ordinal - a.ordinal
             })
-            sort.value = arr.length ? arr[0].ordinal + 1 : 1
             return {
                 code: resp.status,
                 result: resp.result,
@@ -196,7 +201,6 @@ const queryItem = async (_params: any) => {
             };
         }
     } else {
-        sort.value = 1
         return {
             code: 200,
             result: {

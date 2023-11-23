@@ -72,6 +72,7 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import {
     getRelationshipList_api,
     delRelation_api,
+    getObjectList_api
 } from '@/api/system/relationship';
 import EditDialog from './components/EditDialog.vue';
 import { onlyMessage } from '@/utils/comm';
@@ -107,17 +108,16 @@ const columns = [
         fixed: 'left',
         search: {
             type: 'select',
-            options: [
-                {
-                    label: '用户',
-                    value: '用户',
-                },
-                {
-                    label: '设备',
-                    value: '设备',
-                },
-            ],
-        },
+            options: async () =>{
+               const res:any = await getObjectList_api()
+               return res.result?.map((i:any)=>{
+                return {
+                    label:i.name,
+                    value:i.id
+                }
+               })
+            }
+        }
     },
     {
         title: '被关联方',
@@ -128,12 +128,15 @@ const columns = [
         search: {
             rename: 'targetType',
             type: 'select',
-            options: [
-                {
-                    label: '用户',
-                    value: 'user',
-                },
-            ],
+            options: async () =>{
+               const res:any = await getObjectList_api()
+               return res.result?.map((i:any)=>{
+                return {
+                    label:i.name,
+                    value:i.id
+                }
+               })
+            } 
         },
     },
     {
@@ -184,6 +187,7 @@ const dialog = reactive({
     selectRow: {} as any,
     visible: false,
 });
+
 </script>
 
 <style lang="less" scoped>
