@@ -18,16 +18,16 @@
                 </div>
             </div>
             <div class="importing-status" v-if="importStatus == 'importing'">
-                    <loading-outlined />
+                <AIcon  type="LoadingOutlined" />
                 正在导入
             </div>
             <div class="column" v-if="importStatus != 'wait'">
                 <p>
-                    <check-outlined style="color: #00a4ff" />导入成功 总数量
+                    <AIcon style="color: #00a4ff"  type="CheckOutlined"/>导入成功 总数量
                     {{ successNumber }}
                 </p>
                 <span v-if="failNumber">
-                    <close-outlined style="color: #e50012" />导入失败 总数量
+                    <AIcon style="color: #e50012" type="CloseOutlined"/>导入失败 总数量
                     {{ failNumber }}
                 </span>
             </div>
@@ -44,12 +44,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    ArrowLeftOutlined,
-    CheckOutlined,
-    CloseOutlined,
-    LoadingOutlined,
-} from '@ant-design/icons-vue';
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY, BASE_API_PATH } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';

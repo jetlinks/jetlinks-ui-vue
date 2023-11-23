@@ -60,7 +60,7 @@ const formItemContext = Form.useInjectFormItemContext()
 const props = defineProps({
     value: {
         type: Array,
-        default: () => [{}]
+        default: () => []
     }
 })
 
