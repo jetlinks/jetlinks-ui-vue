@@ -30,7 +30,17 @@
                                 /></template>
                                 新增点位
                             </PermissionButton>
-
+                            <PermissionButton
+                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7'].includes(data?.provider)"
+                                type="primary"
+                                @click="handleImport"
+                                hasPermission="DataCollect/Collector:add"
+                            >
+                                <!-- <template #icon
+                                    ><AIcon type="PlusOutlined"
+                                /></template> -->
+                                批量导入
+                            </PermissionButton>
                             <PermissionButton
                                 v-if="data?.provider === 'OPC_UA'"
                                 type="primary"
@@ -315,6 +325,7 @@
         />
         <SaveS7 v-if="visible.saveS7"  :data="current" @change="saveChange"/>
         <Scan v-if="visible.scan" :data="current" @change="saveChange" />
+        <Import v-if="visible.import" :data="current" @close-import="closeImport"/>
     </j-spin>
 </template>
 <script lang="ts" setup name="PointPage">
@@ -335,13 +346,13 @@ import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
 import { colorMap } from '../data';
-import { cloneDeep, isNumber, throttle } from 'lodash-es';
+import { cloneDeep, isBoolean, isNumber, throttle } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
 import { responsiveArray } from 'ant-design-vue/lib/_util/responsiveObserve';
 import SaveS7 from './Save/SaveS7.vue';
-
+import Import from './components/Import/index.vue'
 const props = defineProps({
     data: {
         type: Object,
@@ -368,7 +379,8 @@ const visible = reactive({
     writePoint: false,
     batchUpdate: false,
     scan: false,
-    saveS7:false
+    saveS7:false,
+    import:false
 });
 const current: any = ref({});
 const accessModesOption = ref();
@@ -485,7 +497,8 @@ const handlAdd = () => {
         visible.saveS7 = true
         current.value = {
             collectorId: props.data?.id,
-            provider: props.data?.provider
+            provider: props.data?.provider,
+            deviceType:props.data?.configuration.type,
         }
     }else{
         visible.saveModBus = true;
@@ -504,7 +517,10 @@ const handlEdit = (data: any) => {
     }else{
         visible.saveModBus = true;
     }
-    current.value = cloneDeep(data);
+    current.value = cloneDeep({
+        ...data,
+        deviceType:props.data?.configuration.type,
+    });
 };
 
 const handlDelete = async (id: string | undefined = undefined) => {
@@ -537,6 +553,10 @@ const handlScan = () => {
     visible.scan = true;
     current.value = cloneDeep(props.data);
 };
+const handleImport = () =>{
+    visible.import = true
+    current.value = cloneDeep(props.data)
+}
 const clickEdit = async (data: object) => {
     visible.writePoint = true;
     current.value = cloneDeep(data);
@@ -544,11 +564,13 @@ const clickEdit = async (data: object) => {
 
 // ReadIdMap
 const clickRead = async (data: any) => {
+    console.log('------')
     const res: any = await readPoint(data?.collectorId, [data?.id]);
     if (res.status === 200) {
         const readData: any = res.result[0];
         const _data = ReadIdMap.get(data?.id);
         ReadIdMap.set(data?.id, { ..._data, ...readData });
+        console.log('====',ReadIdMap.get(data.id))
         cancelSelect();
         tableRef.value?.reload();
         onlyMessage('操作成功', 'success');
@@ -592,7 +614,12 @@ const getReadParseData = (item: any) => {
     let _data = '--';
     if (ReadIdMap.has(item.id)) {
         const { parseData, dataType } = ReadIdMap.get(item.id);
-        _data = !!parseData ? `${parseData}(${dataType || '-'}) ` : '--';
+        if(isBoolean(parseData)){
+            _data =  `${parseData}(${dataType || '-'}) `;
+        }else{
+            _data = !!parseData ? `${parseData}(${dataType || '-'}) ` : '--';
+        }
+        
     }
     return _data;
 };
@@ -664,6 +691,11 @@ const onCheckAllChange = (e: any) => {
         checkAll.value = false;
     }
 };
+
+const closeImport = () =>{
+    visible.import = false
+    tableRef.value.reload()
+}
 
 watch(
     () => tableRef?.value?._dataSource,

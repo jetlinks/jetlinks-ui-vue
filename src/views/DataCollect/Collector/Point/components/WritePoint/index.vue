@@ -90,6 +90,48 @@
                         message: `请输入${data.name}`,
                     },
                 ]"
+                v-else-if="data.provider === 'snap7'"
+            >
+                <j-input-number
+                    v-if="s7Type.includes(data.configuration?.type)"
+                    style="width: 100%"
+                    placeholder="请输入"
+                    v-model:value="formData.value"
+                />
+                <j-select
+                    v-else-if="['Bool'].includes(data.configuration?.type)"
+                    style="width: 100%"
+                    v-model:value="formData.value"
+                    :options="[
+                        {
+                            label: '是',
+                            value: true,
+                        },
+                        {
+                            label: '否',
+                            value: false,
+                        },
+                    ]"
+                    placeholder="请选择"
+                    allowClear
+                    show-search
+                    :filter-option="filterOption"
+                />
+                <j-input
+                    v-else
+                    placeholder="请输入"
+                    v-model:value="formData.value"
+                />
+            </j-form-item>
+            <j-form-item
+                :label="data.name"
+                name="value"
+                :rules="[
+                    {
+                        required: true,
+                        message: `请输入${data.name}`,
+                    },
+                ]"
                 v-else
             >
                 <j-input-number
@@ -175,6 +217,19 @@ const valueTypeArray = [
     'hex,',
     'number',
 ];
+
+const s7Type =[
+    'Byte',
+    'Word',
+    'DWord',
+    'USInt',
+    'SInt',
+    'Int',
+    'UDInt',
+    'DInt',
+    'Real',
+    'LReal'
+]
 
 const emit = defineEmits(['change']);
 const loading = ref(false);

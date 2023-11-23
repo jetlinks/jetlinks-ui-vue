@@ -45,7 +45,7 @@
               <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入通道IP" :disabled="false"/>
             </j-form-item>
             <j-form-item v-if="provider === 'snap7'" label="端口" :name="['configuration', 'port']" :rules="LeftTreeRules.port">
-              <j-input-number style="width: 100%" v-model:value="formData.configuration.port" autocomplete="off" placeholder="请输入通道端口"/>
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" placeholder="请输入通道端口"/>
             </j-form-item>
             <j-form-item v-if="provider === 'snap7'" label="机架号" :name="['configuration', 'rack']" :rules="LeftTreeRules.rack">
               <j-input-number style="width: 100%" v-model:value="formData.configuration.rack" autocomplete="off" placeholder="请输入机架号" :maxlength="64" />

@@ -11,21 +11,8 @@
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-form-item
-                label="名称"
-                name="name"
-                :rules="[
-                    { required: true, message: '请输入名称' },
-                    { max: 64, message: '最多可输入64个字符' },
-                ]"
-            >
-                <j-input
-                    v-model:value="form.data.name"
-                    placeholder="请输入名称"
-                />
-            </j-form-item>
-            <j-form-item
                 name="relation"
-                label="标识"
+                label="关系标识"
                 :rules="[
                     { required: true, message: '请输入标识' },
                     { max: 64, message: '最多可输入64个字符' },
@@ -83,6 +70,37 @@
                     </j-form-item>
                 </j-col>
             </j-row>
+            <j-form-item
+                label="正向关系名称"
+                name="name"
+                :rules="[
+                    { required: true, message: '请输入名称' },
+                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true , validator:validateName, trigger: 'blur',}
+                ]"
+            >
+                <j-input
+                    v-model:value="form.data.name"
+                    placeholder="请输入名称"
+                />
+                <span class="example">正向关系示例：用户张三是001号视频设备的管理员</span>
+            </j-form-item>
+          
+            <j-form-item
+                label="反向关系名称"
+                name="reverseName"
+                :rules="[
+                    { required: true, message: '请输入名称' },
+                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true , validator:validateName, trigger: 'blur',}
+                ]"
+            >
+                <j-input
+                    v-model:value="form.data.reverseName"
+                    placeholder="请输入名称"
+                />
+                <span class="example">反向关系示例：001号视频设备是用户张三的管辖设备</span>
+            </j-form-item>
             <j-form-item name="description" label="说明">
                 <j-textarea
                     v-model:value="form.data.description"
@@ -115,6 +133,7 @@ const props = defineProps<{
 }>();
 // 弹窗相关
 const loading = ref(false);
+const targetList = ref([])
 const dialogTitle = computed(() => (props.data.id ? '编辑' : '新增'));
 const confirm = () => {
     loading.value = true;
@@ -180,6 +199,7 @@ const form = reactive({
     getObjectList: () => {
         getObjectList_api().then((resp: any) => {
             form.objectList = resp.result;
+            targetList.value = resp.result
         });
     },
     submit: () => {
@@ -187,7 +207,7 @@ const form = reactive({
             ...form.data,
             objectTypeName: form.objectList.find(
                 (item) => item.id === form.data.objectType,
-            ).name,
+            )?.name,
             targetTypeName: targetList.value.find(
                 (item: dictItemType) => item.id === form.data.targetType,
             )?.name,
@@ -196,13 +216,17 @@ const form = reactive({
         return api(params);
     },
 });
-const targetList = computed(() =>
-    form.data.objectType === 'device' ? [{ id: 'user', name: '用户' }] : [],
-);
+const validateName = async(_:any,value:any)=>{
+   if(!value){
+    return Promise.resolve()
+   }
+   return form.data.reverseName === form.data.name ? Promise.reject('不能使用相同的关系名称') : Promise.resolve()
+}
 form.getObjectList();
 
 type formType = {
     name: string;
+    reverseName: string;
     relation: string;
     objectType: string | undefined;
     targetType: string | undefined;
@@ -210,3 +234,9 @@ type formType = {
     id?: string;
 };
 </script>
+<style scoped lang="less">
+.example {
+    color: rgb(192, 192, 192);
+    font-size: 12px;
+}
+</style>

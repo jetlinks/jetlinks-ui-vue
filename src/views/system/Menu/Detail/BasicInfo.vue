@@ -222,6 +222,7 @@ const form = reactive({
             getMenuInfo_api(routeParams.id).then((resp: any) => {
                 form.data = {
                     ...(resp.result as formType),
+                    permissions: resp.result?.permissions ? resp.result.permissions : [],
                     accessSupport:
                         resp.result?.accessSupport?.value || 'unsupported',
                 };
@@ -229,17 +230,25 @@ const form = reactive({
             });
 
         if (isNoCommunity) {
-            // 获取关联菜单
-            getMenuTree_api({ paging: false }).then((resp: any) => {
-                form.treeData = resp.result;
-            });
-            // 获取资产类型
-            getAssetsType_api().then((resp: any) => {
-                form.assetsType = resp.result.map((item: any) => ({
-                    label: item.name,
-                    value: item.id,
-                }));
-            });
+          // 获取关联菜单
+          getMenuTree_api({ paging: false,terms:[{terms:[{
+                    terms:[
+                        {
+                            value:"%show\":true%",
+                            termType:"like",
+                            column:"options"
+                        }
+                    ]
+                }]}]}).then((resp: any) => {
+              form.treeData = resp.result;
+          });
+          // 获取资产类型
+          getAssetsType_api().then((resp: any) => {
+              form.assetsType = resp.result.map((item: any) => ({
+                  label: item.name,
+                  value: item.id,
+              }));
+          });
         }
     },
     checkCode: async (_rule: Rule, value: string): Promise<any> => {

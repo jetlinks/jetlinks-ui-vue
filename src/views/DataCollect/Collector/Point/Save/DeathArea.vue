@@ -21,8 +21,9 @@
                             :max="_value[1] ? _value[1].value : 999999" :min="1" @change="handleChange" />
                     </j-col>
                     <j-col>
-                        <j-select v-model:value="_value[0].termType" :showArrow="false" :options="termTypeOptions"
-                            placeholder="符号" @change="handleChange" />
+                        <j-select v-model:value="_value[0].termType" :showArrow="false"
+                            :options="_value.length !== 2 ? termTypeOptions : leftOptions" placeholder="符号"
+                            @change="handleChange" />
                     </j-col>
                     <template v-if="swap === 'range'">
                         <j-col>点位值</j-col>
@@ -59,7 +60,7 @@ const formItemContext = Form.useInjectFormItemContext()
 const props = defineProps({
     value: {
         type: Array,
-        default: () => [{}]
+        default: () => []
     }
 })
 
@@ -87,6 +88,11 @@ const termTypeOptions = computed(() => {
         ];
     }
 });
+
+const leftOptions = [
+    { label: '<', value: 'lte' },
+    { label: '≤', value: 'lt' },
+];
 
 const handleDeathArea = (e: any) => {
     if (e) {
@@ -175,7 +181,7 @@ const handlePercent = (e: any) => {
                 type: 'or',
             }
         ]
-    }else{
+    } else {
         _value.value = [
             {
                 column: `this['currentValue'] - this['lastValue'] * 1/100`,

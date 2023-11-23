@@ -41,11 +41,12 @@
                     <template #action="slotProps">
                         <j-space :size="16">
                             <j-tooltip>
-                                <template #title>编辑</template>
+                                <template #title>{{ slotProps?.options?.LowCode ? '低码创建的菜单不支持编辑' : '编辑' }}</template>
                                 <j-button
                                     style="padding: 0"
                                     type="link"
                                     @click="table.toDetails(slotProps)"
+                                    :disabled="slotProps?.options?.LowCode"
                                 >
                                     <AIcon type="EditOutlined" />
                                 </j-button>
@@ -53,8 +54,8 @@
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
-                                :tooltip="{ title: '新增子菜单' }"
-                                :disabled="slotProps.level >= 3"
+                                :tooltip="{ title: slotProps.level >= 3 ? '仅支持3级菜单' :   '新增子菜单' }"
+                                :disabled="slotProps.level >= 3 || slotProps?.options?.LowCode"
                                 @click="table.addChildren(slotProps)"
                             >
                                 <AIcon type="PlusCircleOutlined" />
@@ -179,17 +180,34 @@ const table = reactive({
         //过滤非集成的菜单
         const item = {
             terms: [
-              {
-                column: 'owner',
-                termType: 'eq',
-                value: 'iot',
-              },
-              {
-                column: 'owner',
-                termType: 'isnull',
-                value: '1',
-                type: 'or',
-              },
+                {
+                    terms: [
+                        {
+                            column: 'owner',
+                            termType: 'eq',
+                            value: 'iot',
+                        },
+                        {
+                            column: 'owner',
+                            termType: 'isnull',
+                            value: '1',
+                            type: 'or',
+                        },
+                    ],
+                },
+                {
+                terms:[
+                    {
+                        terms:[
+                            {
+                                value:"%show\":true%",
+                                termType:"like",
+                                column:"options"
+                            }
+                        ]
+                    }
+                ]
+            }
             ],
         };
         const params = {

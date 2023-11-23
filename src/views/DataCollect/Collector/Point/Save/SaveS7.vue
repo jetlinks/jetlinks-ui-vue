@@ -46,11 +46,12 @@
                     placeholder="请输入字符串长度" :precision="0" :controls="false" :maxlength="64" :disabled="disabled" />
             </j-form-item>
 
-            <j-form-item v-if="form.type == 'Bool'" label="位偏移量（bit）" :name="['configuration', 'bits']" :rules="{
-                required: true,
-                message: '请输入0~7之间的正整数',
-                trigger: 'blur',
-            }">
+            <j-form-item v-if="form.configuration.type == 'Bool'" label="位偏移量（bit）" :name="['configuration', 'bits']"
+                :rules="{
+                    required: true,
+                    message: '请输入0~7之间的正整数',
+                    trigger: 'blur',
+                }">
                 <j-input-number type="number" style="width: 100%" addon-after="位" v-model:value="form.configuration.bits"
                     placeholder="请输入位偏移量" :precision="0" :min="0" :max="7" :controls="false" :maxlength="2" />
             </j-form-item>
@@ -116,6 +117,9 @@
                     <j-checkbox value="changedOnly">只推送变化的数据</j-checkbox>
                 </j-checkbox-group>
             </j-form-item>
+            <j-form-item label="说明" name="description">
+                <j-textarea placeholder="请输入说明" v-model:value="form.description" :maxlength="200" :rows="3" showCount />
+            </j-form-item>
         </j-form>
         <j-modal title="采集频率" :visible="intervalRef.visible" @cancel="handleCancelInterval" @ok="handleInterval">
             <j-form ref="formRef2" name="virtual-form" layout="vertical" :model="intervalRef">
@@ -127,6 +131,7 @@
                 </j-form-item>
             </j-form>
         </j-modal>
+
         <template #footer>
             <j-button key="back" @click="handleCancel">取消</j-button>
             <PermissionButton key="submit" type="primary" :loading="loading" @click="handleOk" style="margin-left: 8px"
@@ -177,7 +182,7 @@ const emit = defineEmits(['change']);
 const loading = ref(false);
 const formRef = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
-const deviceType = ref<string>('S200');
+const deviceType = ref<string>(props.data.deviceType);
 const dataTypesList = ref<any[]>([]);
 const daveAreaList = ref<any>([]);
 
@@ -189,6 +194,7 @@ const form = ref<any>({
         type: undefined,
         interval: 3000,
         areaNumber: undefined,
+        bytes: undefined,
         terms: []
     },
     accessModes: [],
@@ -241,7 +247,7 @@ getTypes();
 
 const dataAreaFilterList = computed(() => {
     let result = daveAreaList.value.filter((item: any) =>
-        dataAreaFilter[deviceType.value].includes(item.id),
+        dataAreaFilter[deviceType.value]?.includes(item.id),
     );
     if (deviceType.value == 'S200') {
         result.push({
@@ -267,15 +273,19 @@ const handleCancelInterval = () => {
 
 
 const handleOk = async () => {
-    const res = await formRef.value?.validate();
-    
+    const res: any = await formRef.value?.validate();
+
     const params = {
         ...res,
+        configuration: {
+            ...res.configuration,
+            bytes: res.configuration.bytes || form.value.configuration.bytes
+        },
         inheritBreaker: true,
         pointKey: props.data.pointKey || randomString(9),
-        provider:props.data.provider,
-        collectorId:props.data.collectorId,
-        accessModes:res?.accessModes.filter((item:any)=>item)
+        provider: props.data.provider,
+        collectorId: props.data.collectorId,
+        accessModes: res?.accessModes.filter((item: any) => item)
     }
     loading.value = true;
     const response = !props.data.id
@@ -291,13 +301,15 @@ const handleCancel = () => {
 
 const Area = (_: any, value: any): Promise<any> =>
     new Promise(async (resolve, reject) => {
-        console.log('value',value)
-        if(value.length === 0){
+        if (!value) {
             return resolve('')
-        }else if(value.length === 1){
+        }
+        if (value?.length === 0) {
+            return resolve('')
+        } else if (value?.length === 1) {
             return value[0].value && value[0].termType ? resolve('') : reject('请配置点位死区');
-        }else{
-            if(value[0].column === 'currentValue'){
+        } else {
+            if (value?.[0].column === 'currentValue') {
                 // value.forEach((item:any) => {
                 //     if(item.termType && item.value){
                 //        return resolve('')
@@ -305,27 +317,55 @@ const Area = (_: any, value: any): Promise<any> =>
                 //         return reject('请配置点位死区')
                 //     }
                 // });
-                const pass = value.every((item:any)=>item.termType && item.value)
-                return pass ? resolve(''):reject('请配置点位死区')
-            }else{
-                value.forEach((item:any) => {
-                    if(item.column ===`this['currentValue'] - this['lastValue']*init/100`){
+                const pass = value.every((item: any) => item.termType && item.value)
+                return pass ? resolve('') : reject('请配置点位死区')
+            } else {
+                value.forEach((item: any) => {
+                    if (item.column === `this['currentValue'] - this['lastValue']*init/100`) {
                         return reject('请配置点位死区')
-                    }else{
+                    } else {
                         return resolve('')
                     }
                 });
             }
+
         }
     });
 
 onMounted(() => {
-    form.value.features = props.data.features?.map((item:any)=>item.value)
-    if(props.data.accessModes?.length!==0){
-        form.value.accessModes = props.data.accessModes?.map((item:any)=>item.value)
+    form.value.features = props.data.features?.map((item: any) => item.value)
+    form.value.configuration.bytes = props.data.configuration?.bytes
+    if (props.data.accessModes?.length !== 0) {
+        form.value.accessModes = props.data.accessModes?.map((item: any) => item.value)
     }
+    console.log(props.data.configuration, 123)
 })
 
+
+watch(
+    () => dataTypesList.value,
+    (val: any[]) => {
+        if (val) {
+            const result: any = dataTypesList.value.find(
+                (item: any) => item.id == form.value.configuration.type,
+            );
+            if (result) {
+                // console.log('result',result)
+                disabled.value = (result && result.length !== 0);
+            }
+        }
+    },
+);
+
+watch(
+    () => form.value.configuration.type,
+    (val) => {
+        if (val !== 'Bool') {
+            form.value.configuration.bits = 0;
+        }
+    },
+    { deep: true },
+);
 
 </script>
 

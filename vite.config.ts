@@ -99,6 +99,7 @@ export default defineConfig(({ mode}) => {
                 target: 'http://192.168.33.46:8844', // 本地开发环境
                 // target: 'http://192.168.33.1:8845', // 社区版开发环境
                 //   target: 'http://192.168.32.5:8848', // 刘本地
+                //   target: 'http://192.168.32.187:8844', // 谭本地
                   ws: 'ws://192.168.33.46:8844',
                   changeOrigin: true,
                   rewrite: (path) => path.replace(/^\/api/, '')
