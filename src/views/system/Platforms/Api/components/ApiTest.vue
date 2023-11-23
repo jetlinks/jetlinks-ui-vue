@@ -112,7 +112,7 @@
                     v-if="refStr"
                     ref="editorRef"
                     language="json"
-                    style="height: 100%"
+                    style="height: 100% ; min-height: 200px;"
                     theme="vs"
                     v-model:modelValue="requestBody.code"
                 />
@@ -225,20 +225,20 @@ const _send = () => {
     };
 
     let url = props.selectApi?.url;
-    let params
-    if (methodName === 'get'){
-        const urlParams = {};
-        requestBody.params.paramsTable.forEach((item) => {
-        urlParams[item.name] = item.value;
-        if (url.includes(`{${item.name}}`))
-            url = url.replace(`{${item.name}}`, item.value);
+    let params:any
+    const urlParams = {};
+    requestBody.params.paramsTable.forEach((item) => {
+    urlParams[item.name] = item.value;
+    if (url.includes(`{${item.name}}`))
+        url = url.replace(`{${item.name}}`, item.value);
     });
-    params = {
-        ...JSON.parse(requestBody.code || '{}'),
-        ...urlParams,
-    };
+    if (methodName === 'get'){  
+        params = {
+            ...JSON.parse(requestBody.code || '{}'),
+            ...urlParams,
+        };
     }else{
-        parmas = JSON.parse(requestBody.code || '{}')
+        params = JSON.parse(requestBody.code || '{}')
     }
     
     server[methodObj[methodName]](url, params).then((resp: any) => {
