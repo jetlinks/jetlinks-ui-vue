@@ -98,7 +98,7 @@
                 </j-form-item>
             </j-form>
         </div>
-        <div class="card" v-if="!form.data.appId && !isChildren">
+        <div class="card" v-if="!form.data.appId">
             <h3>权限配置</h3>
             <j-form ref="permissFormRef" :model="form.data" class="basic-form permiss-form">
                 <j-form-item name="accessSupport" required v-if="isNoCommunity">
@@ -189,7 +189,6 @@ const routeParams = {
     url: route.query.basePath,
     parentId: route.query.pid,
 };
-const isChildren = route.query?.isChildren
 // 表单
 const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
@@ -290,9 +289,6 @@ const form = reactive({
                                     : '间接控制',
                     },
                 };
-                if(params?.isChildren){
-                    delete params.isChildren
-                }
                 api(params)
                     .then((resp: any) => {
                         if (resp.status === 200) {
