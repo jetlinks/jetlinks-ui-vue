@@ -10,6 +10,7 @@ export interface ConfigurationType {
     authType: string | undefined,
     deviceId: string | undefined,
     deviceName: string | undefined,
+    connect:boolean | undefined
 }
 
 export interface FormDataType {

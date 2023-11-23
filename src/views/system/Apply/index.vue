@@ -221,6 +221,7 @@ const permission = 'system/Apply';
 
 const typeOptions = ref<any[]>([])
 const visible = ref<boolean>(false)
+const addMenuVisible = ref<boolean>(false)
 
 onMounted(() => {
     queryType().then((resp: any) => {

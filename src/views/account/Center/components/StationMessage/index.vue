@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import NotificationRecord from './components/NotificationRecord/index.vue';
-import { initData } from '../data';
+import { getInitData } from '../data';
 import { getAllNotice } from '@/api/account/center';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { useUserInfo } from '@/store/userInfo';
@@ -28,7 +28,7 @@ import { useUserInfo } from '@/store/userInfo';
 const tabs = ref<any[]>([]);
 const router = useRouterParams();
 const user = useUserInfo();
-    
+let initData:any[]
 const queryTypeList = () => {
     getAllNotice().then((resp: any) => {
         if (resp.status === 200) {
@@ -73,6 +73,7 @@ watchEffect(() => {
 });
 
 onMounted(() => {
+    initData = getInitData()
     queryTypeList();
 });
 </script>
