@@ -60,7 +60,6 @@ const queryTypeList = () => {
             if (!user.other.tabKey) {
                 user.other.tabKey = arr?.[0]?.provider;
             }
-
             tabs.value = arr;
         }
     });
@@ -69,6 +68,17 @@ const queryTypeList = () => {
 watchEffect(() => {
     if (router.params.value?.other?.tabKey) {
         user.other.tabKey = router.params.value?.other?.tabKey
+    }
+    if(router.params?.value.row){
+        if(['device-transparent-codec'].includes(router.params?.value.row.topicProvider)){
+            user.other.tabKey = 'system-business'
+        }
+        if(['system-event'].includes(router.params?.value.row.topicProvider)){
+            user.other.tabKey = 'system-monitor'
+        }
+        if(['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(router.params?.value.row.topicProvider)){
+            user.other.tabKey =  'workflow-notification'
+        }
     }
 });
 

@@ -107,6 +107,7 @@ const columns = [
         ellipsis: true,
         fixed: 'left',
         search: {
+            rename:'objectType',
             type: 'select',
             options: async () =>{
                const res:any = await getObjectList_api()
