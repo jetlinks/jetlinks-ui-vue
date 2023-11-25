@@ -1,5 +1,6 @@
 <template>
-    <j-data-table
+    <div ref="tableContainer">
+      <j-data-table
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
@@ -12,7 +13,7 @@
         @change="(data) => dataSourceCache = data"
     >
         <template #expand>
-          <PermissionButton
+          <!-- <PermissionButton
               type="primary"
               v-if="!showSave"
               :hasPermission="`${permission}:update`"
@@ -30,12 +31,11 @@
               placement="topRight"
           >
             新增
-          </PermissionButton>
+          </PermissionButton> -->
           <PermissionButton
               type="primary"
               :hasPermission="`${permission}:update`"
               key="update"
-              v-else
               :loading="loading"
 
               :disabled="hasOperate('add', type) || !editStatus"
@@ -202,7 +202,26 @@
             </PermissionButton>
           </j-space>
         </template>
-    </j-data-table>
+      </j-data-table>
+      <PermissionButton
+              type="dashed"
+              block
+              :hasPermission="`${permission}:update`"
+              key="add"
+              :disabled="hasOperate('add', type)"
+              :tooltip="{
+                    placement: hasOperate('add', type) ? 'topRight' : 'top',
+                    title: hasOperate('add', type)
+                        ? '当前的存储方式不支持新增'
+                        : '新增',
+                        getPopupContainer: getPopupContainer,
+                }"
+              @click="handleAddClick()"
+              placement="topRight"
+          >
+            新增
+      </PermissionButton>
+    </div>
     <PropertiesModal
         v-if="type === 'properties' && detailData.visible"
         :data="detailData.data"
@@ -278,6 +297,7 @@ const props = defineProps({
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
 
+const tableContainer = ref()
 const system = useSystem();
 const {basicLayout} = storeToRefs(system);
 const router = useRouter()
@@ -402,6 +422,11 @@ const handleAddClick = async (_data?: any, index?: number) => {
   const newObject = _data || getDataByType()
 
   const _addData = await tableRef.value.addItem(newObject, index)
+  nextTick(()=>{
+    if(tableContainer.value.classList.value === 'tableContainer'){
+      tableContainer.value.classList.remove('tableContainer')
+    }
+  })
   // if (_addData.length === 1) {
   //   showLastDelete.value = true
   // }
@@ -534,6 +559,11 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
+  if(!dataSource.value.length){
+    nextTick(()=>{
+      tableContainer.value.classList.add('tableContainer')
+    })
+  }
 }, { immediate: true })
 
 onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转
@@ -551,5 +581,10 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
     display: flex;
     justify-content: space-between;
     padding-bottom: 16px;
+}
+.tableContainer{
+  :deep(.ant-table-body){
+    display: none;
+  }
 }
 </style>
