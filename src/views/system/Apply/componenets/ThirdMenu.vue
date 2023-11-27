@@ -149,7 +149,7 @@
                         </j-col> -->
                       </j-row>
                 </div>
-                <j-form-item label="页面地址" name="url" :rules="[
+                <j-form-item label="页面地址" name="url" :validateFirst="true" :rules="[
                                 {
                                     required: true,
                                     message: '请输入页面地址',
