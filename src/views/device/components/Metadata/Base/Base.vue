@@ -37,7 +37,6 @@
               :hasPermission="`${permission}:update`"
               key="update"
               :loading="loading"
-
               :disabled="hasOperate('add', type) || !editStatus"
               :tooltip="{
                     title: hasOperate('add', type)
@@ -559,10 +558,17 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
+  console.log(dataSource.value,'dataSource')
   if(!dataSource.value.length){
     nextTick(()=>{
       tableContainer.value.classList.add('tableContainer')
     })
+  }else{
+    nextTick(()=>{
+    if(tableContainer.value.classList.value === 'tableContainer'){
+      tableContainer.value.classList.remove('tableContainer')
+    }
+  })
   }
 }, { immediate: true })
 
