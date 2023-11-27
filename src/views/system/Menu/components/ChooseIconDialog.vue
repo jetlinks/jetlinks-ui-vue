@@ -3,6 +3,7 @@
         visible
         title="菜单图标"
         width="800px"
+        :maskClosable="false"
         @cancel="emits('update:visible', false)"
         @ok="confirm"
     >
