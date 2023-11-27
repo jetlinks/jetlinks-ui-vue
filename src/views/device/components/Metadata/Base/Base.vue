@@ -1,6 +1,7 @@
 <template>
     <div ref="tableContainer">
       <j-data-table
+        v-if="!heavyLoad"
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
@@ -278,6 +279,7 @@ import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { usePermissionStore } from '@/store/permission';
+import App from '@/App.vue';
 
 const props = defineProps({
     target: {
@@ -322,7 +324,7 @@ const detailData = reactive({
   visible:false
 })
 
-
+const heavyLoad = ref<Boolean>(false)
 
 const showSave = ref(metadata.value.length !== 0)
 
@@ -448,7 +450,6 @@ const removeItem = (index: number) => {
   // }
   if (_data.length === 0) {
     showSave.value = false
-
     handleSaveClick()
   }
 }
