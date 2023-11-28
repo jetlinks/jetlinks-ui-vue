@@ -40,9 +40,14 @@ const getProvidersFn = async () => {
     if (version ==='community') {
         return undefined
     } else {
-        const res: any = await getProviders();
-        const ids = res.result?.map?.(item => item.id) || []
-        return protocolList.some(item => ids.includes(item.value))
+        try {
+            const res: any = await getProviders();
+            const ids = res.result?.map?.(item => item.id) || []
+            return protocolList.some(item => ids.includes(item.value))
+        } catch (error) {
+            return false
+        }
+       
     }
 }
 

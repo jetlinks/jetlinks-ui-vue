@@ -50,12 +50,10 @@
                                     {
                                         required: true,
                                         message: '请输入名称',
-                                        trigger: 'change',
                                     },
                                     {
                                         max: 64,
                                         message: '最多可输入64个字符',
-                                        trigger: 'change',
                                     },
                                 ]"
                             >
@@ -73,12 +71,10 @@
                                     {
                                         required: true,
                                         message: '请输入编码',
-                                        trigger: 'change',
                                     },
                                     {
                                         max: 64,
                                         message: '最多可输入64个字符',
-                                        trigger: 'change',
                                     },
                                     {
                                         validator: form.checkCode,
@@ -96,13 +92,14 @@
                             <j-form-item
                                 label="页面地址"
                                 name="url"
+                                :validateFirst="true"
                                 :rules="[
                                     {
                                         required: true,
                                         message: '请输入页面地址',
                                     },
                                     { max: 128, message: '最多可输入128字符' },
-                                    { pattern: /^\// ,message:'请正确填写地址，以/开头'},
+                                    { pattern: /^\// ,message:'请正确填写地址，以/开头',trigger:'change'},
                                 ]"
                             >
                                 <j-input
