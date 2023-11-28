@@ -67,6 +67,7 @@
                             <j-form-item
                                 label="编码"
                                 name="code"
+                                :validateFirst="true"
                                 :rules="[
                                     {
                                         required: true,
