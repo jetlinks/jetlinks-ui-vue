@@ -1,6 +1,6 @@
 <template>
-    <div ref="tableContainer">
-      <j-data-table
+  <j-data-table
+        v-if="!heavyLoad"
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
@@ -37,7 +37,6 @@
               :hasPermission="`${permission}:update`"
               key="update"
               :loading="loading"
-
               :disabled="hasOperate('add', type) || !editStatus"
               :tooltip="{
                     title: hasOperate('add', type)
@@ -202,10 +201,11 @@
             </PermissionButton>
           </j-space>
         </template>
-      </j-data-table>
-      <PermissionButton
-              type="dashed"
+  </j-data-table>
+    <PermissionButton
+              type="primary"
               block
+              ghost
               :hasPermission="`${permission}:update`"
               key="add"
               :disabled="hasOperate('add', type)"
@@ -219,9 +219,9 @@
               @click="handleAddClick()"
               placement="topRight"
           >
-            新增
-      </PermissionButton>
-    </div>
+          <template #icon><AIcon type="PlusOutlined"/></template>
+            新增行
+    </PermissionButton>
     <PropertiesModal
         v-if="type === 'properties' && detailData.visible"
         :data="detailData.data"
@@ -279,6 +279,7 @@ import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { usePermissionStore } from '@/store/permission';
+import App from '@/App.vue';
 
 const props = defineProps({
     target: {
@@ -323,7 +324,7 @@ const detailData = reactive({
   visible:false
 })
 
-
+const heavyLoad = ref<Boolean>(false)
 
 const showSave = ref(metadata.value.length !== 0)
 
@@ -449,7 +450,6 @@ const removeItem = (index: number) => {
   // }
   if (_data.length === 0) {
     showSave.value = false
-
     handleSaveClick()
   }
 }
@@ -559,11 +559,6 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
-  if(!dataSource.value.length){
-    nextTick(()=>{
-      tableContainer.value.classList.add('tableContainer')
-    })
-  }
 }, { immediate: true })
 
 onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转
@@ -581,10 +576,5 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
     display: flex;
     justify-content: space-between;
     padding-bottom: 16px;
-}
-.tableContainer{
-  :deep(.ant-table-body){
-    display: none;
-  }
 }
 </style>

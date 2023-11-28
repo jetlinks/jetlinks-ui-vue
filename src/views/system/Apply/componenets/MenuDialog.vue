@@ -49,6 +49,7 @@ const handleOk = async () => {
         ...form.checkedMenu,
         // ...form.half,
     ]);
+    dealMenu(items)
     console.log(items);
     if (form.checkedSystem) {
         if (items && items.length !== 0) {
@@ -169,6 +170,17 @@ function getSystemList(id: string) {
     });
 }
 
+const dealMenu = (data:any)=>{
+    data?.forEach((i:any)=>{
+        i.options = {
+            show:true
+        }
+        if(i.children){
+            dealMenu(i.children)
+        }
+    })
+   
+}
 watch(() => props.data, (newVal: any) => {
     form.checkedSystem = newVal?.page.configuration?.checkedSystem
     if (form.checkedSystem) {

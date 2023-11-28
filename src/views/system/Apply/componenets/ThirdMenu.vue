@@ -4,6 +4,7 @@
       title="集成菜单"
       visible
       width="800px"
+      :maskClosable="false"
       @cancel="cancel"
       @ok="cancel"
   >
@@ -106,12 +107,10 @@
                                   {
                                       required: true,
                                       message: '请输入名称',
-                                      trigger: 'change',
                                   },
                                   {
                                       max: 64,
                                       message: '最多可输入64个字符',
-                                      trigger: 'change',
                                   },
                               ]">
                                   <j-input v-model:value="formData.name" placeholder="请输入名称" />
@@ -122,12 +121,10 @@
                                   {
                                       required: true,
                                       message: '请输入编码',
-                                      trigger: 'change',
                                   },
                                   {
                                       max: 64,
                                       message: '最多可输入64个字符',
-                                      trigger: 'change',
                                   },
                                   {
                                       validator: checkCode,
@@ -152,12 +149,12 @@
                         </j-col> -->
                       </j-row>
                 </div>
-                <j-form-item label="页面地址" name="url" :rules="[
+                <j-form-item label="页面地址" name="url" :validateFirst="true" :rules="[
                                 {
                                     required: true,
                                     message: '请输入页面地址',
                                 },
-                                { max: 128, message: '最多可输入128字符' },
+                                { max: 128, message: '最多可输入128个字符'},
                                 { pattern: /^\//, message: '请正确填写地址，以/开头' },
                             ]">
                                 <j-input v-model:value="formData.url" placeholder="请输入页面地址" />
@@ -268,6 +265,7 @@ const addChildrenMenu = (data:any) =>{
 const addMenu = () =>{
   initFormData()
   formData.value.sortIndex = rootMenuTotal.value
+  sourceCode.value = ''
   showControls.value = true
   editType.value = 'add'
 }
