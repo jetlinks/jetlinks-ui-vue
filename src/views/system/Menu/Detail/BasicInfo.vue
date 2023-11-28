@@ -61,14 +61,14 @@
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
-                            <j-form-item label="页面地址" name="url" :rules="[
+                            <j-form-item :rules="[
                                 {
                                     required: true,
                                     message: '请输入页面地址',
                                 },
                                 { max: 128, message: '最多可输入128字符' },
                                 { pattern: /^\//, message: '请正确填写地址，以/开头' },
-                            ]">
+                            ]" :validateFirst="true" label="页面地址" name="url">
                                 <j-input v-model:value="form.data.url" placeholder="请输入页面地址" />
                             </j-form-item>
                         </j-col>
@@ -337,7 +337,7 @@ type assetType = {
     padding: 24px;
     .card {
         margin-bottom: 24px;
-        
+
         h3 {
             position: relative;
             display: flex;
