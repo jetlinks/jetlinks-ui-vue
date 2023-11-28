@@ -1,6 +1,5 @@
 <template>
-    <div ref="tableContainer">
-      <j-data-table
+  <j-data-table
         v-if="!heavyLoad"
         ref="tableRef"
         :data-source="dataSource"
@@ -202,10 +201,11 @@
             </PermissionButton>
           </j-space>
         </template>
-      </j-data-table>
-      <PermissionButton
-              type="dashed"
+  </j-data-table>
+    <PermissionButton
+              type="primary"
               block
+              ghost
               :hasPermission="`${permission}:update`"
               key="add"
               :disabled="hasOperate('add', type)"
@@ -219,9 +219,9 @@
               @click="handleAddClick()"
               placement="topRight"
           >
-            新增
-      </PermissionButton>
-    </div>
+          <template #icon><AIcon type="PlusOutlined"/></template>
+            新增行
+    </PermissionButton>
     <PropertiesModal
         v-if="type === 'properties' && detailData.visible"
         :data="detailData.data"
@@ -559,18 +559,6 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
-  console.log(dataSource.value,'dataSource')
-  if(!dataSource.value.length){
-    nextTick(()=>{
-      tableContainer.value.classList.add('tableContainer')
-    })
-  }else{
-    nextTick(()=>{
-    if(tableContainer.value.classList.value === 'tableContainer'){
-      tableContainer.value.classList.remove('tableContainer')
-    }
-  })
-  }
 }, { immediate: true })
 
 onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转
@@ -588,10 +576,5 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
     display: flex;
     justify-content: space-between;
     padding-bottom: 16px;
-}
-.tableContainer{
-  :deep(.ant-table-body){
-    display: none;
-  }
 }
 </style>
