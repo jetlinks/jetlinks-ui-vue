@@ -159,11 +159,11 @@ const extraRouteObj = {
 type Buttons = Array<{ id: string }>
 
 const hasAppID = (item: any): { isApp: boolean, appUrl: string } => {
-  const isApp = !!item.appId
+  const isApp = !!item.appId || item.options?.owner
   const isLowCode = !!item.options?.LowCode
   return {
     isApp: isApp || isLowCode,
-    appUrl: isApp ? `/${item.appId}${item.url}` : item.url
+    appUrl: isApp ? `/${item.appId || item.options?.owner}${item.url}` : item.url
   }
 }
 

@@ -48,17 +48,18 @@ const handle = async (appId: string, url: string) => {
           }
         }
 
+        const _url = menuUrl.startsWith('/') ? menuUrl : `/${menuUrl}`;
+
         if (result.provider === 'internal-standalone') {
             const urlStandalone = `${result.page.baseUrl}/api/application/sso/${appId}/login?redirect=${menuUrl}?layout=false`;
             iframeUrl.value = urlStandalone;
         } else if (result.provider === 'internal-integrated') {
-            const _url = menuUrl.startsWith('/') ? menuUrl : `/${menuUrl}`;
             const tokenUrl = `${
                 result.page.baseUrl
             }${_url}?layout=false&X-Access-Token=${LocalStore.get(TOKEN_KEY)}`;
             iframeUrl.value = tokenUrl;
         } else {
-            const urlOther = `${result.page.baseUrl}/${menuUrl}`;
+            const urlOther = `${result.page.baseUrl}${_url}`;
             iframeUrl.value = urlOther;
         }
     }
@@ -106,6 +107,7 @@ watchEffect(() => {
       } else {
         loading.value = true
         const url = route.path.split('/').slice(2).join('/');
+        console.log(route.path.split('/').slice(2))
         handle(params, url);
       }
     }
