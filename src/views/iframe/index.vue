@@ -4,7 +4,7 @@
         <iframe
             v-if="loading"
             :src="iframeUrl"
-            scrolling="no"
+            scrolling="yes"
             frameBorder="0"
             style="width: 100%; height: 100%"
         ></iframe>
