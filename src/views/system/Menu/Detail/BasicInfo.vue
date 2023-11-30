@@ -99,7 +99,7 @@
                                         required: true,
                                         message: '请输入页面地址',
                                     },
-                                    { max: 128, message: '最多可输入128字符' },
+                                    { max: 128, message: '最多可输入128个字符' },
                                     { pattern: /^\// ,message:'请正确填写地址，以/开头',trigger:'change'},
                                 ]"
                             >
