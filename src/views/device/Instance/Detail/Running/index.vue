@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import Event from './Event/index.vue';
 import Property from './Property/index.vue';
 

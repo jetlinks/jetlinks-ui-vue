@@ -481,7 +481,7 @@ import {
     getAliyunProductsList,
     queryProductList,
 } from '@/api/northbound/alicloud';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';
 import { _deploy } from '@/api/device/product';

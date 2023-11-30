@@ -146,7 +146,7 @@ import { getImage } from '@/utils/comm';
 import { list, remove } from '@/api/link/protocol';
 import { onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});

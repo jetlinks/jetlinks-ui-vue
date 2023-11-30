@@ -1428,7 +1428,7 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import type { formType, dictType, optionsType, applyType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
 import { randomString } from '@/utils/utils';
-import { cloneDeep, difference } from 'lodash';
+import { cloneDeep, difference } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import ApplyList from './ApplyList/index.vue';
