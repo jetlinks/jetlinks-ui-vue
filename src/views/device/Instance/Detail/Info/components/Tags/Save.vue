@@ -49,7 +49,7 @@
 
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { saveTags, delTags } from '@/api/device/instance'
 import { onlyMessage } from '@/utils/comm';
 

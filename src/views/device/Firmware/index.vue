@@ -74,7 +74,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
 import dayjs from 'dayjs';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import type { FormDataType } from './type';

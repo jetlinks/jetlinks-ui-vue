@@ -546,7 +546,7 @@ import {
     savePatch,
     detail,
 } from '@/api/northbound/dueros';
-import _, { cloneDeep } from 'lodash';
+import _, { cloneDeep } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';

@@ -269,12 +269,11 @@ import { asyncUpdateMetadata, updateMetadata } from '../metadata';
 import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage , LocalStore} from '@/utils/comm';
-import {omit} from "lodash-es";
+import { omit , cloneDeep} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
 import {computed, watch} from "vue";
-import {cloneDeep} from "lodash";
 import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'

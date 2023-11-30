@@ -57,7 +57,7 @@ import { map } from 'rxjs/operators';
 import { useInstanceStore } from '@/store/instance';
 import { getWebSocket } from '@/utils/websocket';
 import { randomString } from '@/utils/utils';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 const message = reactive<MessageType>({
     up: {

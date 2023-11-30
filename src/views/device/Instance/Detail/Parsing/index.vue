@@ -160,7 +160,7 @@ import {
   delDeviceCode, queryCodeTips, queryProductCodeTips,
 } from '@/api/device/instance';
 import { message } from 'jetlinks-ui-components';
-import { isBoolean } from 'lodash';
+import { isBoolean } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 
 const defaultValue =
