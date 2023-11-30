@@ -4,8 +4,8 @@
         v-model:collapsed="basicLayout.collapsed"
         v-model:openKeys="basicLayout.openKeys"
         :selectedKeys="basicLayout.selectedKeys"
-        :headerHeight='layout.headerHeight'
-        :breadcrumb="{ routes: breadcrumbs }"
+        :breadcrumb="basicLayout.pure ? undefined : { routes: breadcrumbs }"
+        :headerHeight='basicLayout.pure ? 1 : layout.headerHeight'
         :pure="basicLayout.pure"
         @backClick='routerBack'
     >
