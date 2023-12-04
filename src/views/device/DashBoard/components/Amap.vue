@@ -26,7 +26,7 @@
                     clipOrigin: [459, 92],
                     clipSize: [50, 68],
                 }"
-                >123</el-amap-label-marker
+                ></el-amap-label-marker
             >
         </AmapComponent>
     </div>
