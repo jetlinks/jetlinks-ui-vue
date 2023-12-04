@@ -135,6 +135,7 @@
             <j-form-item
                 :name="['configuration', 'requestTimeout']"
                 :rules="LeftTreeRules.requestTimeout"
+                label='请求超时时间'
             >
                 <j-input-number
                     style="width: 100%"
