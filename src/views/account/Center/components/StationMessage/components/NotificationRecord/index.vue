@@ -107,9 +107,10 @@ const getType = computed(() => {
         return ['device-transparent-codec'];
     } else if (props.type === 'system-monitor') {
         return ['system-event'];
-    } else if(props.type === 'workflow-notification'){
-        return ['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo']
-    }
+    } 
+    // else if(props.type === 'workflow-notification'){
+    //     return ['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo']
+    // }
     else {
         return [
             'alarm',

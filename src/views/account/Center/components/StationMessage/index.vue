@@ -76,9 +76,9 @@ watchEffect(() => {
         if(['system-event'].includes(router.params?.value.row.topicProvider)){
             user.other.tabKey = 'system-monitor'
         }
-        if(['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(router.params?.value.row.topicProvider)){
-            user.other.tabKey =  'workflow-notification'
-        }
+        // if(['workflow-task-cc','workflow-task-todo','workflow-task-reject', 'workflow-process-finish', 'workflow-process-repealed','workflow-task-transfer-todo'].includes(router.params?.value.row.topicProvider)){
+        //     user.other.tabKey =  'workflow-notification'
+        // }
     }
 });
 
