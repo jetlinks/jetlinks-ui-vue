@@ -21,7 +21,7 @@ import { DeviceInstance } from '@/views/device/Instance/typings';
 import BaseForm from './BaseForm.vue';
 import { PropType } from 'vue';
 import { _deploy } from '@/api/device/product';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({

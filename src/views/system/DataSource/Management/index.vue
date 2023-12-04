@@ -235,8 +235,7 @@ import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { FormInstance } from 'ant-design-vue';
 import { DataNode } from 'ant-design-vue/lib/tree';
-import _ from 'lodash';
-import { cloneDeep } from 'lodash';
+import _ , { cloneDeep } from 'lodash-es';
 import type { dbColumnType, dictItemType, sourceItemType } from '../typing';
 
 const id = useRoute().query.id as string;

@@ -149,7 +149,7 @@ import { StatusColorEnum, updateStatus } from './data';
 import { useMenuStore } from 'store/menu';
 import Save from './Save/index.vue';
 import { protocolList } from '@/utils/consts';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});

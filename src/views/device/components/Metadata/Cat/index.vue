@@ -33,8 +33,7 @@ import type { Key } from 'ant-design-vue/es/_util/type';
 import { convertMetadata, getCodecs, detail as productDetail } from '@/api/device/product';
 import { detail } from '@/api/device/instance'
 import { onlyMessage } from '@/utils/comm';
-import {cloneDeep} from "lodash";
-import {omit} from "lodash-es";
+import { omit , cloneDeep } from "lodash-es";
 
 interface Props {
   visible: boolean;

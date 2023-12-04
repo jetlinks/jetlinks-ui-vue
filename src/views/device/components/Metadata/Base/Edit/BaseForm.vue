@@ -71,7 +71,7 @@ import { EventLevel, ExpandsTypeList } from '@/views/device/data';
 import { useMetadataStore } from '@/store/metadata';
 import { validateJson } from './validator';
 import { Rule } from 'ant-design-vue/es/form';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 
 const props = defineProps({
   type: {

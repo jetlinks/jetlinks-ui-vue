@@ -41,7 +41,7 @@ import { reactive } from 'vue';
 import type { PropType } from 'vue';
 import Item from './item.vue'
 import {Form} from "jetlinks-ui-components";
-import {cloneDeep} from "lodash";
+import { cloneDeep } from "lodash-es";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import dayjs from "dayjs";
 

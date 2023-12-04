@@ -300,7 +300,7 @@ import 'driver.js/dist/driver.min.css';
 import { marked } from 'marked';
 import type { TableColumnType } from 'ant-design-vue';
 import { useMenuStore } from '@/store/menu';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import AccessModal from './accessModal.vue'
 import MetaDataModal from './metadataModal.vue'

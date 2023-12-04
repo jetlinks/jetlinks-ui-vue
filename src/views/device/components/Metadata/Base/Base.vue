@@ -1,5 +1,6 @@
 <template>
-    <j-data-table
+  <j-data-table
+        v-if="!heavyLoad"
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
@@ -12,7 +13,7 @@
         @change="(data) => dataSourceCache = data"
     >
         <template #expand>
-          <PermissionButton
+          <!-- <PermissionButton
               type="primary"
               v-if="!showSave"
               :hasPermission="`${permission}:update`"
@@ -30,14 +31,12 @@
               placement="topRight"
           >
             新增
-          </PermissionButton>
+          </PermissionButton> -->
           <PermissionButton
               type="primary"
               :hasPermission="`${permission}:update`"
               key="update"
-              v-else
               :loading="loading"
-
               :disabled="hasOperate('add', type) || !editStatus"
               :tooltip="{
                     title: hasOperate('add', type)
@@ -202,7 +201,27 @@
             </PermissionButton>
           </j-space>
         </template>
-    </j-data-table>
+  </j-data-table>
+    <PermissionButton
+              type="primary"
+              block
+              ghost
+              :hasPermission="`${permission}:update`"
+              key="add"
+              :disabled="hasOperate('add', type)"
+              :tooltip="{
+                    placement: hasOperate('add', type) ? 'topRight' : 'top',
+                    title: hasOperate('add', type)
+                        ? '当前的存储方式不支持新增'
+                        : '新增',
+                        getPopupContainer: getPopupContainer,
+                }"
+              @click="handleAddClick()"
+              placement="topRight"
+          >
+          <template #icon><AIcon type="PlusOutlined"/></template>
+            新增行
+    </PermissionButton>
     <PropertiesModal
         v-if="type === 'properties' && detailData.visible"
         :data="detailData.data"
@@ -250,16 +269,16 @@ import { asyncUpdateMetadata, updateMetadata } from '../metadata';
 import { useMetadataStore } from '@/store/metadata';
 import { DeviceInstance } from '@/views/device/Instance/typings';
 import { onlyMessage , LocalStore} from '@/utils/comm';
-import {omit} from "lodash-es";
+import { omit , cloneDeep} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
 import {computed, watch} from "vue";
-import {cloneDeep} from "lodash";
 import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { usePermissionStore } from '@/store/permission';
+import App from '@/App.vue';
 
 const props = defineProps({
     target: {
@@ -278,6 +297,7 @@ const props = defineProps({
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
 
+const tableContainer = ref()
 const system = useSystem();
 const {basicLayout} = storeToRefs(system);
 const router = useRouter()
@@ -303,7 +323,7 @@ const detailData = reactive({
   visible:false
 })
 
-
+const heavyLoad = ref<Boolean>(false)
 
 const showSave = ref(metadata.value.length !== 0)
 
@@ -402,6 +422,11 @@ const handleAddClick = async (_data?: any, index?: number) => {
   const newObject = _data || getDataByType()
 
   const _addData = await tableRef.value.addItem(newObject, index)
+  nextTick(()=>{
+    if(tableContainer.value.classList.value === 'tableContainer'){
+      tableContainer.value.classList.remove('tableContainer')
+    }
+  })
   // if (_addData.length === 1) {
   //   showLastDelete.value = true
   // }
@@ -424,7 +449,6 @@ const removeItem = (index: number) => {
   // }
   if (_data.length === 0) {
     showSave.value = false
-
     handleSaveClick()
   }
 }

@@ -68,12 +68,11 @@
 <script setup lang="ts" name="OtherSetting">
 import Metrics from './Metrics/Metrics.vue'
 import {watch} from "vue";
-import {cloneDeep} from "lodash";
 import {useProductStore} from "store/product";
 import {useInstanceStore} from "store/instance";
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
-import {omit} from "lodash-es";
+import { omit , cloneDeep} from "lodash-es";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 
 const props = defineProps({

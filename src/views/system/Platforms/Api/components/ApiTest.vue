@@ -131,7 +131,7 @@ import { JsonViewer } from 'vue3-json-viewer';
 import 'vue3-json-viewer/dist/index.css';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
-import { cloneDeep, toLower } from 'lodash';
+import { cloneDeep, toLower } from 'lodash-es';
 import { FormInstance } from 'ant-design-vue';
 import server from '@/utils/request';
 import { findData, getCodeText } from '../utils';
