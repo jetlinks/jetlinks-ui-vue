@@ -119,7 +119,7 @@ import {
   testCode,
   saveProductCode, queryProductCodeTips,
 } from '@/api/device/instance';
-import { isBoolean } from 'lodash';
+import { isBoolean } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 
 const defaultValue =

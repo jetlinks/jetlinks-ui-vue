@@ -82,8 +82,7 @@ import { ContextKey, arrayParamsKey, timeTypeKeys } from './util'
 import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
-import {indexOf, isArray, isObject, isString, pick} from 'lodash-es'
-import {cloneDeep} from "lodash";
+import {indexOf, isArray, isObject, isString, pick , cloneDeep } from 'lodash-es'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)

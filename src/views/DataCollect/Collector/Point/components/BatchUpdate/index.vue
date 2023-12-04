@@ -87,7 +87,7 @@
 <script lang="ts" setup>
 import type { FormInstance } from 'ant-design-vue';
 import { savePointBatch } from '@/api/data-collect/collector';
-import { cloneDeep, isObject } from 'lodash';
+import { cloneDeep, isObject } from 'lodash-es';
 import { regOnlyNumber } from '../../../data';
 
 const props = defineProps({

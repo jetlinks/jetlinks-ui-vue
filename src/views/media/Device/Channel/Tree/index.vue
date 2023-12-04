@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import ChannelApi from '@/api/media/channel';
 import DeviceApi from '@/api/media/device';
 

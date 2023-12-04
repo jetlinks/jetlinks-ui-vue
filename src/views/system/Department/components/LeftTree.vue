@@ -255,7 +255,6 @@ init();
             width: 100%;
         }
     }
-
     :deep(.ant-tree-treenode) {
         width: 100%;
         .ant-tree-node-content-wrapper {
@@ -278,7 +277,7 @@ init();
       flex: 1 1 auto;
       .department-tree-item-content {
         display: flex;
-        align-items: center;
+        align-items: stretch;
 
         .title {
                 flex: 1;

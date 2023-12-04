@@ -312,7 +312,8 @@ const tableRef = ref();
 const current = ref<any>({})
 const table = {
     refresh: () => {
-        tableRef.value.reload(queryParams.value);
+        // tableRef.value.reload(queryParams.value);
+        window.location.reload()
     },
     toAdd: () => {
         visible.value = true
