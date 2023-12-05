@@ -107,9 +107,9 @@ const handleSearch = () => {
 
 onMounted(() => {
   const keys = ['alarm', 'system-monitor', 'system-business']
-//   if (menuStore.hasMenu('process')) {
-//     keys.push('workflow-notification')
-//   }
+  if (menuStore.hasMenu('process')) {
+    keys.push('workflow-notification')
+  }
     activeKey.value = keys
     initData = getInitData()
     handleSearch();

@@ -193,13 +193,13 @@ const queryTypeList = async (_tab: any[]) => {
 
 onMounted(() => {
     const _list: any[] = [...tab]
-    // if(menuStory.hasMenu('process')){
-    //     _list.push({
-    //         key: 'workflow-notification',
-    //         tab: '工作流通知',
-    //         type: ['workflow-task-todo', 'workflow-task-reject', 'workflow-task-cc', 'workflow-process-finish', 'workflow-process-repealed'],
-    //     })
-    // }
+    if(menuStory.hasMenu('process')){
+        _list.push({
+            key: 'workflow-notification',
+            tab: '工作流通知',
+            type: ['workflow-task-todo', 'workflow-task-reject', 'workflow-task-cc', 'workflow-process-finish', 'workflow-process-repealed'],
+        })
+    }
     queryTypeList(_list)
 })
 </script>

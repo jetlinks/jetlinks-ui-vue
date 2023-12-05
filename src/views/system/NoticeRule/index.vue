@@ -101,38 +101,38 @@ const systemNotice = [
         ],
     },
 ];
-// const lowCodeNotice = [
-//     {
-//         provider: 'workflow-notification',
-//         name: '工作流通知',
-//         children: [
-//             {
-//                 provider: 'workflow-task-todo',
-//                 name: '待办通知',
-//             },
-//             {
-//                 provider: 'workflow-task-reject',
-//                 name: '驳回通知',
-//             },
-//             {
-//                 provider: 'workflow-task-cc',
-//                 name: '抄送通知',
-//             },
-//             {
-//                 provider: 'workflow-process-finish',
-//                 name: '办结通知',
-//             },
-//             {
-//                 provider: 'workflow-process-repealed',
-//                 name: '关闭通知',
-//             },
-//             {
-//                 provider: 'workflow-task-transfer-todo',
-//                 name: '转办通知'
-//             }
-//         ],
-//     },
-// ]
+const lowCodeNotice = [
+    {
+        provider: 'workflow-notification',
+        name: '工作流通知',
+        children: [
+            {
+                provider: 'workflow-task-todo',
+                name: '待办通知',
+            },
+            {
+                provider: 'workflow-task-reject',
+                name: '驳回通知',
+            },
+            {
+                provider: 'workflow-task-cc',
+                name: '抄送通知',
+            },
+            {
+                provider: 'workflow-process-finish',
+                name: '办结通知',
+            },
+            {
+                provider: 'workflow-process-repealed',
+                name: '关闭通知',
+            },
+            {
+                provider: 'workflow-task-transfer-todo',
+                name: '转办通知'
+            }
+        ],
+    },
+]
 
 const activeKey = ref<string[]>();
 
@@ -194,13 +194,13 @@ onMounted(() => {
     // data.value = Array.from(dataMap).map((item) => {
     //     return item?.[1];
     // });
-    // if(menuStore.hasMenu('process')){
-    //     dataSource = [...systemNotice,...lowCodeNotice]
-    //     activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
-    // }else{
+    if(menuStore.hasMenu('process')){
+        dataSource = [...systemNotice,...lowCodeNotice]
+        activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
+    }else{
         dataSource = [...systemNotice]
         activeKey.value = ['alarm', 'system-monitor', 'system-business']
-    // }
+    }
     handleSearch();
 });
 </script>
