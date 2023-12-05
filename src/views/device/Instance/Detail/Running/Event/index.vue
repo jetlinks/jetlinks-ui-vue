@@ -83,6 +83,7 @@ watchEffect(() => {
                     type: i?.valueType?.type || 'string',
                     rename: i.id
                 },
+                ellipsis: true,
             });
         });
     } else {
