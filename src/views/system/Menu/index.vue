@@ -196,17 +196,14 @@ const table = reactive({
                     ],
                 },
                 {
-                terms:[
+                  type: 'or',
+                  terms:[
                     {
-                        terms:[
-                            {
-                                value:"%show\":true%",
-                                termType:"like",
-                                column:"options"
-                            }
-                        ]
+                      value:"%show\":true%",
+                      termType:"like",
+                      column:"options"
                     }
-                ]
+                  ]
             }
             ],
         };
@@ -239,7 +236,7 @@ const table = reactive({
         router.push(
             `/system/Menu/detail/:id?pid=${row.id}&basePath=${
                 row.url || ''
-            }&sortIndex=${sortIndex + 1}&isChildren=${true}`,
+            }&sortIndex=${sortIndex + 1}`,
         );
 
     },

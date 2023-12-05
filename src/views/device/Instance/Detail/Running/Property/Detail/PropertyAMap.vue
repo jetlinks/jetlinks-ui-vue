@@ -65,8 +65,10 @@ const query = async () => {
             },
             sorts: { timestamp: 'asc' },
         }),
-    );
-    loading.value = false;
+    ).finally(()=>{
+        loading.value = false;
+    }
+    )
     if (resp.status === 200) {
         const list: any[] = [];
         ((resp.result as any)?.data || []).forEach((item: any) => {

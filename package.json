@@ -13,6 +13,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "@liveqing/liveplayer-v3": "^3.7.10",
     "@types/marked": "^4.0.8",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
@@ -37,6 +38,7 @@
     "nrm": "^1.2.5",
     "pinia": "^2.0.28",
     "rollup-plugin-copy": "^3.4.0",
+    "rxjs": "^7.8.1",
     "unplugin-auto-import": "^0.12.1",
     "unplugin-vue-components": "^0.22.12",
     "v-clipboard3": "^0.1.4",
