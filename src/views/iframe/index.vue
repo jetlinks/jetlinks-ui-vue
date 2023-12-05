@@ -1,5 +1,5 @@
 <template>
-    <page-container>
+    <page-container class="iframe-warp">
       <full-page>
         <iframe
             v-if="loading"
@@ -26,6 +26,21 @@ import { TokenLose} from "@/utils/request";
 const iframeUrl = ref<string>('');
 const route = useRoute()
 const loading = ref(false)
+
+const props = defineProps({
+  noMargin: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const className = computed(() => {
+  return {
+    'iframe-warp': true,
+    'margin-full': props.hasOwnProperty('noMargin') && props.noMargin !== false
+  }
+})
+
 const handle = async (appId: string, url: string) => {
     const res = await getAppInfo_api(appId);
     let menuUrl: any = url;
@@ -63,7 +78,7 @@ const handle = async (appId: string, url: string) => {
             iframeUrl.value = urlOther;
         }
     }
-};
+}
 
 const lowCode = () => {
   lowCodeUrl().then(res => {
@@ -78,7 +93,6 @@ const lowCode = () => {
 }
 
 const onMessage = (msg: any) => {
-  console.log('onMessage',msg)
   if (msg?.data?.token === 'LOSE') {
     TokenLose()
     setTimeout(() => {
@@ -115,7 +129,5 @@ watchEffect(() => {
 </script>
 
 <style lang='less' scoped>
-:deep(.children-full-height) {
-  margin: 0 !important;
-}
+
 </style>
