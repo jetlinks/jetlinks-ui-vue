@@ -127,7 +127,7 @@ const dropdownButtonClass = computed(() => ({
 const treeSelect = (v: any, option: any) => {
   const node = option.node
   visible.value = false
-  label.value = node.fullname || node.name
+  label.value = node.fullName || node.name
   selectValue.value = v[0]
   emit('update:value', node[props.valueName])
   emit('select', node)
