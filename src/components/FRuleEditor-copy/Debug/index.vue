@@ -71,7 +71,6 @@
 </template>
 <script setup lang="ts" name="Debug">
 import { PropType } from 'vue';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';

@@ -39,7 +39,7 @@
                     placeholder="请输入采集器名称"
                     v-model:value="formData.name"
                 />
-              
+
             </j-form-item>
             <j-form-item  v-if="provider === 'snap7'" label="IP" :name="['configuration', 'host']" :rules="LeftTreeRules.host" >
               <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入通道IP" :disabled="false"/>
@@ -163,6 +163,7 @@
                 v-if="provider !== 'snap7'"
                 :name="['configuration', 'requestTimeout']"
                 :rules="LeftTreeRules.requestTimeout"
+                label='请求超时时间'
             >
                 <j-input-number
                     style="width: 100%"

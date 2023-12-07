@@ -81,8 +81,11 @@ const queryChartsAggList = async () => {
             from: prop.time[0],
             to: prop.time[1],
         },
-    });
-    loading.value = false;
+    }).finally(
+       ()=>{
+        loading.value = false;
+       }
+    )
     if (resp.status === 200) {
         const dataList: any[] = [
             {
@@ -127,8 +130,12 @@ const queryChartsList = async () => {
             ],
             sorts: [{ name: 'timestamp', order: 'asc' }],
         },
-    );
-    loading.value = false;
+    ).finally(
+       ()=>{
+        loading.value = false;
+       }
+    )
+
     if (resp.status === 200) {
         const dataList: any[] = [
             {

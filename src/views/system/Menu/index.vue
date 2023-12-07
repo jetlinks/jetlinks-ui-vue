@@ -196,17 +196,14 @@ const table = reactive({
                     ],
                 },
                 {
-                terms:[
+                  type: 'or',
+                  terms:[
                     {
-                        terms:[
-                            {
-                                value:"%show\":true%",
-                                termType:"like",
-                                column:"options"
-                            }
-                        ]
+                      value:"%show\":true%",
+                      termType:"like",
+                      column:"options"
                     }
-                ]
+                  ]
             }
             ],
         };
