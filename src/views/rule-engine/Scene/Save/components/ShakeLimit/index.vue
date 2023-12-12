@@ -7,7 +7,7 @@
             style="margin-right: 12px"
         />
         <template v-if="shakeLimit.enabled">
-            <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.time" style="width: 38px" />
+            <j-input-number :min="1"  :precision="0" size="small" v-model:value="shakeLimit.time" style="width: 38px" />
             <span>秒内发送</span>
             <j-input-number :min="1" :max="100" :precision="0" size="small" v-model:value="shakeLimit.threshold" style="width: 38px" />
             <span>次及以上时，处理</span>

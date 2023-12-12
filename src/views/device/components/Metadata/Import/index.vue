@@ -300,7 +300,7 @@ const requiredCheck = (data:any) =>{
                     check = true
                     return
                 }else{
-                    check = testType(item,index)
+                    check = testType(item.valueType,index)
                 }
                 if(!item?.expands?.source){
                     onlyMessage(`属性定义第${index + 1}个数组中缺失expands.source属性`,'error');
@@ -414,7 +414,7 @@ const requiredCheck = (data:any) =>{
                     check = true
                     return
             }else{
-                testType(item?.valueType?.type,index)
+                testType(item?.valueType,index)
             }
             if(!item?.expands?.type){
                     onlyMessage(`标签定义第${index + 1}个数组中缺失expands.type属性`,'error');
@@ -595,6 +595,12 @@ const metadataStore = useMetadataStore();
 
 const handleImport = async () => {
     formRef.value.validate().then(async (data: any) => {
+        let check 
+        if((props.type === 'device' || formModel.type === 'import') &&
+                    formModel.metadataType === 'script'){
+                        check =  formModel.metadata === 'jetlinks' ? requiredCheck(JSON.parse(formModel.import)) : aliCheck(JSON.parse(formModel.import))
+                    }
+       if(!check){
         const { id } = route.params || {};
         if (data.metadata === 'alink') {
             try {
@@ -723,6 +729,7 @@ const handleImport = async () => {
                 );
             }
         }
+       }
     });
 };
 
