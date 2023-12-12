@@ -36,6 +36,7 @@
         v-model:value='paramsValue.termType'
         @select='termsTypeSelect'
       />
+     <div v-if="!['notnull','isnull'].includes(paramsValue.termType)">
       <DoubleParamsDropdown
         v-if='showDouble'
         icon='icon-canshu'
@@ -59,6 +60,7 @@
         v-model:source='paramsValue.value.source'
         @select='valueSelect'
       />
+     </div>
       <j-popconfirm title='确认删除？' @confirm='onDelete' :overlayStyle='{minWidth: "180px"}'>
         <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
       </j-popconfirm>
@@ -88,7 +90,6 @@ import {cloneDeep} from "lodash";
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
 const formItemContext = Form.useInjectFormItemContext();
-
 type Emit = {
   (e: 'update:value', data: TermsType): void
 }
@@ -329,15 +330,21 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
         newValue.value = undefined
     }
   }
+  if(
+    ['isnull','notull'].includes(e.key)
+  ){
+    newValue.value.value = 1
+  }
   paramsValue.value = newValue
 
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
   formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = e.name
-
+  
 }
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
+  console.log(labelObj,option,paramsValue.value,'____123')
   if (paramsValue.value?.source === 'metric') {
     paramsValue.value.metric = option?.id
   }
