@@ -7,7 +7,7 @@ import { useInstanceStore } from "@/store/instance"
 import { startNetwork, startGateway, getGatewayDetail, queryGatewayState, queryProtocolDetail, detail, queryProductState, queryProductConfig, queryDeviceConfig, _deploy } from '@/api/device/instance'
 import { PropType, VNode } from "vue"
 import { _deploy as _deployProduct } from "@/api/device/product"
-import _ from "lodash"
+import _ from "lodash-es"
 import DiagnosticAdvice from './DiagnosticAdvice'
 import ManualInspection from './ManualInspection'
 import { deployDevice } from "@/api/initHome"
@@ -1380,7 +1380,7 @@ const Status = defineComponent({
                                                 >
                                                     设备接入配置
                                                 </Button>
-                                                中{urlMap.get(unref(device)?.accessProvider) || ''}信息，任意上报一条数据 
+                                                中{urlMap.get(unref(device)?.accessProvider) || ''}信息，任意上报一条数据
                                             </span>
                                         }
                                     />,
@@ -1392,7 +1392,7 @@ const Status = defineComponent({
                                         text={
                                             <span>
                                                 请联系管理员提供{urlMap.get(unref(device)?.accessProvider) || ''}
-                                                信息，并根据URL信息任意上报一条数据 
+                                                信息，并根据URL信息任意上报一条数据
                                             </span>
                                         }
                                     />,
