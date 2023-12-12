@@ -1,7 +1,7 @@
 import { Badge, Descriptions, Modal, Tooltip, AIcon, DescriptionsItem } from "jetlinks-ui-components"
 import TitleComponent from '@/components/TitleComponent/index.vue'
 import styles from './index.module.less'
-import _ from "lodash";
+import _ from "lodash-es";
 
 const DiagnosticAdvice = defineComponent({
     props: {

@@ -7,7 +7,7 @@
  根据visible标识对数据进行递归过滤，得到最后的数据
  */
 
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 export type TreeNode = {
   id: string;
