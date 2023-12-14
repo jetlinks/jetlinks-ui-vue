@@ -70,12 +70,13 @@
                 v-if="type === 'device' || formModel.type === 'import'"
             >
                 <j-select v-model:value="formModel.metadata">
-                    <j-select-option value="jetlinks"
+                    <!-- <j-select-option value="jetlinks"
                         >Jetlinks物模型</j-select-option
                     >
                     <j-select-option value="alink"
                         >阿里云物模型TSL</j-select-option
-                    >
+                    > -->
+                    <j-select-option v-for="i in codecs" :value="i.id">{{ i.name }}</j-select-option>
                 </j-select>
             </j-form-item>
             <j-form-item
@@ -177,6 +178,7 @@
     </j-modal>
 </template>
 <script setup lang="ts" name="Import">
+import { getCodecs } from '@/api/device/product';
 import { saveMetadata } from '@/api/device/instance';
 import {
     queryNoPagingPost,
@@ -214,7 +216,7 @@ interface Emits {
 const props = defineProps<Props>();
 const emits = defineEmits<Emits>();
 const loading = ref(false);
-
+const codecs = ref<any>([])
 const _visible = computed({
     get: () => {
         return props.visible;
@@ -733,6 +735,12 @@ const handleImport = async () => {
     });
 };
 
+onMounted(async()=>{
+    const res = await getCodecs()
+  if (res.status === 200) {
+    codecs.value = [{ id: 'jetlinks', name: '标准物模型' }].concat(res.result)
+  }
+})
 // const showProduct = computed(() => formModel.type === 'copy')
 </script>
 <style scoped lang="less">
