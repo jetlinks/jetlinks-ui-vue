@@ -4,15 +4,16 @@ export const testProperties = (data:any) =>{
 }
 
 export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolean)=>{
-    if(data.valueType.type === 'boolean'){
-        if(!data?.valueType?.trueText || !data?.valueType?.trueValue || !data?.valueType?.falseText || !data?.valueType?.falseValue){
+    console.log(data,index)
+    if(data.type === 'boolean'){
+        if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
             return true
         }
     }
-    if(data.valueType.type === 'enum' && !isObject){
-        if(data.valueType?.elements?.length > 0){
-            data.valueType.elements.forEach((a:any,b:number)=>{
+    if(data.type === 'enum' && !isObject){
+        if(data?.elements?.length > 0){
+            data.elements.forEach((a:any,b:number)=>{
                 if(!a.value || !a.text){
                     onlyMessage(`方法定义inputs第${index+1}个数组ValueType中elements缺失必填属性`,'error')
                     return true
@@ -23,23 +24,23 @@ export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolea
             return true
         }
     }
-    if(data.valueType.type === 'array' && !isArray && !isObject){
-        if(data.valueType?.elementType){
-            testType(data.valueType.elementType,index,true)
+    if(data.type === 'array' && !isArray && !isObject){
+        if(data?.elementType){
+            testType(data.elementType,index,true)
         }else{
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elementType属性`,'error')
             return true
         }
     }
-    if(data.valueType.type === 'file' && !isArray && !isObject){
-        if(!data.valueType?.fileType){
+    if(data.type === 'file' && !isArray && !isObject){
+        if(!data?.fileType){
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失fileType属性`,'error')
             return true
         }
     }
-    if(data.valueType.type === 'object' && !isArray  && !isObject){
+    if(data.type === 'object' && !isArray  && !isObject){
         if(data?.valueType?.properties?.length > 0){
-          return  testObject(data.valueType.properties,index)
+          return  testObject(data.properties,index)
         }else{
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失properties属性`,'error')
             return true
