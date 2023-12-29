@@ -170,7 +170,7 @@ const addWhen = () => {
   }
   FormModel.value.branches?.[props.name].when?.push(terms)
   FormModel.value.branches?.push(null as any)
-  FormModel.value.options!.when[props.name]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
+  FormModel.value.options[props.name]!.when[props.name]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
 }
 
 const optionsClass = computed(() => {

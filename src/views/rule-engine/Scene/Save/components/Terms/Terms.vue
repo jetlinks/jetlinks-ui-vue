@@ -12,25 +12,35 @@
       </template>
     </TitleComponent>
     <template v-if='open'>
-      <template v-for='(item, index) in data.branches'>
-        <Branches
-          v-if='!!item'
-          :data='item'
-          :isFirst='index === 0'
-          :name='index'
-          :key='item.key'
-          @delete='branchesDelete'
-          @deleteAll='branchesDeleteAll'
-        />
-        <div v-else class='actions-terms-warp' :style='{ marginTop: data.branches.length === 2 ? 0 : 24 }'>
-          <div class='actions-terms-title' style='padding: 0;margin-bottom: 24px;'>
-            否则
-          </div>
-          <div class='actions-terms-options no-when'>
-            <AIcon type='PlusOutlined' class='when-add-button' @click='addBranches' />
-          </div>
-        </div>
-      </template>
+      <div>
+        <j-tabs type="editable-card">
+          <j-tab-pane
+            v-for="(b, i) in data.branches"
+            :tab="`条件${i + 1}`"
+          >
+            <template v-for='(item, index) in b'>
+              <Branches
+                v-if='!!item'
+                :data='item'
+                :isFirst='index === 0'
+                :name='index'
+                :key='item.key'
+                @delete='branchesDelete'
+                @deleteAll='branchesDeleteAll'
+              />
+              <div v-else class='actions-terms-warp' :style='{ marginTop: data.branches.length === 2 ? 0 : 24 }'>
+                <div class='actions-terms-title' style='padding: 0;margin-bottom: 24px;'>
+                  否则
+                </div>
+                <div class='actions-terms-options no-when'>
+                  <AIcon type='PlusOutlined' class='when-add-button' @click='addBranches' />
+                </div>
+              </div>
+            </template>
+          </j-tab-pane>
+        </j-tabs>
+      </div>
+
     </template>
     <div v-else class='actions-branches-item'>
       <j-form-item

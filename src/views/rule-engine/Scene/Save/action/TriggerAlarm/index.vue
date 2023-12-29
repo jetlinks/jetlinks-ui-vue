@@ -4,7 +4,7 @@
         @cancel="emit('close')"
         @ok="emit('close')"
         visible
-        title="关联此场景的告警"
+        title="关联此条件的告警"
     >
         <div style="margin-bottom: 24px">关联告警数量：{{ count }}</div>
         <JProTable

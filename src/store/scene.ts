@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import { detail } from '@/api/rule-engine/scene'
-import { cloneDeep, isArray } from 'lodash-es'
+import {cloneDeep, isArray, isObject} from 'lodash-es'
 import { randomString } from '@/utils/utils'
 
 type DataType = {
@@ -73,8 +73,8 @@ const defaultOptions = {
 export const useSceneStore = defineStore('scene', () => {
   const data = ref<FormModelType>({
     trigger: { type: ''},
-    options: defaultOptions,
-    branches: defaultBranches,
+    options: [defaultOptions],
+    branches: [defaultBranches],
     description: '',
     name: '',
     id: undefined
@@ -85,11 +85,19 @@ export const useSceneStore = defineStore('scene', () => {
   const refresh = () => {
     data.value = {
       trigger: { type: ''},
-      options: cloneDeep(defaultOptions),
-      branches: cloneDeep(defaultBranches),
+      options: [cloneDeep(defaultOptions)],
+      branches: [cloneDeep(defaultBranches)],
       description: '',
       name: '',
       id: undefined
+    }
+  }
+
+  const compatibleOldOptions = (options: any) => {
+    if (isObject(options)) {
+      return [options]
+    } else {
+      return options
     }
   }
 
@@ -102,7 +110,7 @@ export const useSceneStore = defineStore('scene', () => {
       let branches: any[] = result.branches
 
       if (!branches) {
-        branches = cloneDeep(defaultBranches)
+        branches = [cloneDeep(defaultBranches)]
         if (triggerType === 'device') {
           branches.push(null)
         } else {
@@ -122,8 +130,8 @@ export const useSceneStore = defineStore('scene', () => {
       data.value = {
         ...result,
         trigger: result.trigger || {},
-        branches: cloneDeep(assignmentKey(branches)),
-        options: result.options ? {...cloneDeep(defaultOptions), ...result.options } : cloneDeep(defaultOptions),
+        branches: cloneDeep(branches.map(item => assignmentKey(item))),
+        options: result.options?.length ? compatibleOldOptions(result.options) : [cloneDeep(defaultOptions)],
       }
     }
   }

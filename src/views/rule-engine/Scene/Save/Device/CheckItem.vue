@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from '@/store/scene'
 import { Form } from 'jetlinks-ui-components'
 import { queryProductList } from '@/api/device/product'
-import { query as deviceQuery } from '@/api/device/instance'
+import {query as deviceQuery, detail as deviceDetailQuery} from '@/api/device/instance'
 import { getTreeData_api } from '@/api/system/department'
 
 const sceneStore = useSceneStore()
@@ -42,7 +42,8 @@ const check = async (): Promise<boolean> => {
     }
 
     if (selectorValues!.length === 1) {
-      const deviceDetail = deviceResp?.result?.data?.[0]
+      const deviceDetailResp = await deviceDetailQuery(selectorValues![0])
+      const deviceDetail = deviceDetailResp?.result
       metadata = JSON.parse(deviceDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
     }
   } else if (deviceTrigger.selector === 'org') { // 组织
@@ -60,7 +61,7 @@ const check = async (): Promise<boolean> => {
   // 判断物模型
   if (['readProperty', 'writeProperty'].includes(deviceTrigger.operation?.operator!)) {
     let hasProperties = false
-    if (metadata.properties.length) {
+    if (metadata.properties?.length) {
       if (deviceTrigger.operation?.readProperties && deviceTrigger.operation?.readProperties.length) {
         // hasProperties = metadata.properties.every((item: any) => deviceTrigger.operation!.readProperties!.includes(item.id))
         hasProperties = deviceTrigger.operation!.readProperties.every(_id => metadata.properties.some((item: any) => item.id === _id))
