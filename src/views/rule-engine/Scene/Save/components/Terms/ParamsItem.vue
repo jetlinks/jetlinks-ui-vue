@@ -85,7 +85,6 @@ import { useSceneStore } from 'store/scene'
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components'
 import {indexOf, isArray, isObject, isString, pick} from 'lodash-es'
-import {cloneDeep} from "lodash";
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)
@@ -122,6 +121,10 @@ const props = defineProps({
     default: 0
   },
   branchName: {
+    type: Number,
+    default: 0
+  },
+  branches_Index: {
     type: Number,
     default: 0
   },
@@ -268,7 +271,7 @@ const columnSelect = (option: any) => {
     termTypeChange = true
     paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
   }
-  console.log('hasTypeChange', paramsValue.value.source, tabsOptions.value)
+
   if (hasTypeChange || !tabsOptions.value.every(a => a.key === paramsValue.value.source )) { // 类型发生变化
     paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
     paramsValue.value = {
@@ -291,14 +294,19 @@ const columnSelect = (option: any) => {
 
     paramsValue.value = newValue
   }
-  console.log(paramsValue, hasTypeChange)
+
   handOptionByColumn(option)
   emit('update:value', { ...paramsValue })
   nextTick(() => {
     formItemContext.onFieldChange()
   })
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][0] = option.name
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
+
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  console.log([props.branchName, props.whenName, props.termsName])
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][0] = option.name
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
 }
 
 const termsTypeSelect = (e: { key: string, name: string }) => {
@@ -330,21 +338,21 @@ const termsTypeSelect = (e: { key: string, name: string }) => {
         newValue.value = undefined
     }
   }
+
   if(
-    ['isnull','notull'].includes(e.key)
+    ['isnull','notnull'].includes(e.key)
   ){
-    newValue.value.value = 1
+    newValue.value = 1
   }
   paramsValue.value = newValue
 
   emit('update:value', { ...paramsValue })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][1] = e.name
-  
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][1] = e.key
+
 }
 
 const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
-  console.log(labelObj,option,paramsValue.value,'____123')
   if (paramsValue.value?.source === 'metric') {
     paramsValue.value.metric = option?.id
   }
@@ -356,12 +364,16 @@ const valueSelect = (v: any, label: string, labelObj: Record<number, any>, optio
   }
   emit('update:value', { ...newValues })
   formItemContext.onFieldChange()
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][2] = labelObj
+
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][2] = labelObj
 }
 
 const typeSelect = (e: any) => {
   emit('update:value', { ...paramsValue })
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName][3] = e.label
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][3] = e.label
 }
 
 const termAdd = () => {
@@ -375,13 +387,16 @@ const termAdd = () => {
     type: 'and',
     key: `params_${new Date().getTime()}`
   }
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.push(terms)
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms[props.termsName].push(['', '', '', '并且'])
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  formModel.value.branches?.[props.branches_Index]?.when?.[props.whenName]?.terms?.push(terms)
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms.push(['', '', '', '并且'])
 }
 
 const onDelete = () => {
-  formModel.value.branches?.[props.branchName]?.when?.[props.whenName]?.terms?.splice(props.termsName, 1)
-  formModel.value.options!.when[props.branchName].terms[props.whenName].terms.splice(props.termsName, 1)
+  formModel.value.branches?.[props.branches_Index]?.when?.[props.whenName]?.terms?.splice(props.termsName, 1)
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms.splice(props.termsName, 1)
 }
 
 nextTick(() => {

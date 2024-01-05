@@ -280,6 +280,8 @@ export interface ActionBranchesProps {
   shakeLimit: ShakeLimitType;
   then: BranchesThen[];
   key?: string;
+
+  executeAnyway?: boolean
 }
 
 export interface ActionsType {
@@ -301,6 +303,8 @@ export interface ActionsType {
   options?: Record<string, any>;
 }
 
+export type BranchesGroup = Array<ActionBranchesProps[]>
+
 export interface FormModelType {
   id?: string;
   name?: string;
@@ -319,7 +323,7 @@ export interface FormModelType {
   /**
    * 动作分支
    */
-  branches?: ActionBranchesProps[];
+  branches?: ActionBranchesProps[] | Array<ActionBranchesProps[]>;
   /**
    * 拓展信息,用于前端存储一些渲染数据
    */

@@ -30,6 +30,7 @@
           v-for='(item, index) in termsData'
           :key='item.key'
           :branchName='branchName'
+          :branches_Index='branches_Index'
           :whenName='props.name'
           :name='index'
           :showDeleteBtn='termsData.length > 1'
@@ -89,6 +90,10 @@ const props = defineProps({
     type: Number,
     default: 0
   },
+  branches_Index: {
+    type: Number,
+    default: 0
+  },
   isLast: {
     type: Boolean,
     default: true
@@ -119,7 +124,7 @@ const typeChange = (e: any) => {
 
 const onDelete = () => {
   formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
-  formModel.value.options!.when[props.branchName].terms.splice(props.name, 1)
+  formModel.value.options!.when[props.branches_Index].terms.splice(props.name, 1)
 }
 
 const addWhen = () => {
@@ -140,7 +145,10 @@ const addWhen = () => {
     key: `terms_${randomString()}`
   }
   formModel.value.branches?.[props.branchName]?.when?.push(terms)
-  formModel.value.options?.when?.[props.branchName]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  formModel.value.options?.when?.[props.branches_Index]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
 }
 
 </script>

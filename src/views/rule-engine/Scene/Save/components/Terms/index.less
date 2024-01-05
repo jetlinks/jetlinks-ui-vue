@@ -50,6 +50,16 @@
   .actions-terms-warp {
     display: flex;
     margin-bottom: 24px;
+    position: relative;
+
+    .group-delete {
+      position: absolute;
+      right: 0;
+      top: -14px;
+      z-index: 2;
+      cursor: pointer;
+      color: #e50012;
+    }
 
     &.first-children,
     &:last-child {

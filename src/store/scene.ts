@@ -54,6 +54,7 @@ export const defaultBranches = [
       alarmFirst: false,
     },
     then: [],
+    branchId: Math.floor(Math.random() * 100000000)
   },
 ];
 
@@ -74,7 +75,7 @@ export const useSceneStore = defineStore('scene', () => {
   const data = ref<FormModelType>({
     trigger: { type: ''},
     options: [defaultOptions],
-    branches: [defaultBranches],
+    branches: defaultBranches,
     description: '',
     name: '',
     id: undefined
@@ -85,8 +86,8 @@ export const useSceneStore = defineStore('scene', () => {
   const refresh = () => {
     data.value = {
       trigger: { type: ''},
-      options: [cloneDeep(defaultOptions)],
-      branches: [cloneDeep(defaultBranches)],
+      options: cloneDeep(defaultOptions),
+      branches: cloneDeep(defaultBranches),
       description: '',
       name: '',
       id: undefined
@@ -110,28 +111,40 @@ export const useSceneStore = defineStore('scene', () => {
       let branches: any[] = result.branches
 
       if (!branches) {
-        branches = [cloneDeep(defaultBranches)]
+        branches = cloneDeep(defaultBranches)
         if (triggerType === 'device') {
           branches.push(null)
         } else {
           branches[0].when.length = []
         }
       } else {
-        const branchesLength = branches.length;
-        if (
-          triggerType === 'device' &&
-          ((branchesLength === 1 && branches[0]?.when?.length) || // 有一组数据并且when有值
-            (branchesLength > 1 && branches[branchesLength - 1]?.when?.length)) // 有多组否则数据，并且最后一组when有值
-        ) {
-          branches.push(null);
+        if (triggerType === 'device') {
+          const len = branches.length
+          branches.forEach((item, index) => {
+            if (item?.executeAnyway) {
+              branches.splice(index, 0 , null)
+            }
+
+            if ( index === len - 1 && item?.when?.length) {
+              branches.push(null)
+            }
+          })
         }
+        // const branchesLength = branches.length;
+        // if (
+        //   triggerType === 'device' &&
+        //   ((branchesLength === 1 && branches[0]?.when?.length) || // 有一组数据并且when有值
+        //     (branchesLength > 1 && branches[branchesLength - 1]?.when?.length)) // 有多组否则数据，并且最后一组when有值
+        // ) {
+        //   branches.push(null);
+        // }
       }
-      console.log(branches)
+      console.log('result.options',branches)
       data.value = {
         ...result,
         trigger: result.trigger || {},
-        branches: cloneDeep(branches.map(item => assignmentKey(item))),
-        options: result.options?.length ? compatibleOldOptions(result.options) : [cloneDeep(defaultOptions)],
+        branches: cloneDeep(assignmentKey(branches)),
+        options: result.options && Object.keys(result.options)?.length ? result.options : cloneDeep(defaultOptions),
       }
     }
   }

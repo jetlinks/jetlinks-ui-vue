@@ -195,7 +195,7 @@ const handOptionByColumn = (option: any) => {
     } else if(option.type === 'enum') {
       valueOptions.value = _options?.elements?.map((item: any) => ({ ...item, label: item.text, value: item.value})) || []
     } else{
-      valueOptions.value = _options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
+      valueOptions.value = (isObject(_options) ? [] : _options)?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
     }
     valueColumnOptions.value = treeFilter(cloneDeep(columnOptions.value), option.type, 'type')
   } else {
