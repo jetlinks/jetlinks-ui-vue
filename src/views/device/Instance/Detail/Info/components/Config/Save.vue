@@ -79,11 +79,11 @@ const getOptions = (i: any) => {
     } else if (i.type.type === 'boolean') {
         return [
             {
-                label: '是',
+                label: 'true',
                 value: 'true',
             },
             {
-                label: '否',
+                label: 'false',
                 value: 'false',
             },
         ];
