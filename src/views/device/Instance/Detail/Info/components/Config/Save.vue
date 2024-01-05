@@ -19,13 +19,17 @@
             </div>
         </template>
         <j-form layout="vertical" ref="formRef" :model="modelRef">
-            <template v-for="(item, index) in (props.config || [])" :key="index">
+            <template v-for="(item, index) in props.config || []" :key="index">
                 <j-form-item
                     v-for="i in item.properties"
                     :name="i.property"
                     :key="i.property"
-                    :required='!!i.type.expands?.required'
-                    :rules='!!i.type.expands?.required ? [{ required: true, message: `请输入${i.name}`}] :[]'
+                    :required="!!i.type.expands?.required"
+                    :rules="
+                        !!i.type.expands?.required
+                            ? [{ required: true, message: `请输入${i.name}` }]
+                            : []
+                    "
                 >
                     <template #label>
                         <span style="margin-right: 5px">{{ i.name }}</span>
@@ -36,16 +40,7 @@
                     <ValueItem
                         v-model:modelValue="modelRef[i.property]"
                         :itemType="i.type.type"
-                        :options="
-                            i.type.type === 'enum'
-                                ? (i.type?.elements || []).map((item) => {
-                                      return {
-                                          label: item?.text,
-                                          value: item?.value,
-                                      };
-                                  })
-                                : undefined
-                        "
+                        :options="getOptions(i)"
                     />
                 </j-form-item>
             </template>
@@ -68,23 +63,45 @@ const instanceStore = useInstanceStore();
 const props = defineProps({
     config: {
         type: Array,
-        default: []
-    }
-})
+        default: [],
+    },
+});
 
+const getOptions = (i: any) => {
+    console.log(123)
+    if (i.type.type === 'enum') {
+        return (i.type?.elements || []).map((item) => {
+            return {
+                label: item?.text,
+                value: item?.value,
+            };
+        });
+    } else if (i.type.type === 'boolean') {
+        return [
+            {
+                label: '是',
+                value: 'true',
+            },
+            {
+                label: '否',
+                value: 'false',
+            },
+        ];
+    }
+    undefined;
+};
 watchEffect(() => {
-    const obj = instanceStore.current?.configuration
-    if(obj && Object.keys(obj).length) {
+    const obj = instanceStore.current?.configuration;
+    if (obj && Object.keys(obj).length) {
         (props?.config || []).map((item: any) => {
-            if(Array.isArray(item.properties) && item?.properties.length){
+            if (Array.isArray(item.properties) && item?.properties.length) {
                 item.properties.map((i: any) => {
-                    modelRef[i.property] = obj[i.property]
-                })
+                    modelRef[i.property] = obj[i.property];
+                });
             }
-        })
+        });
     }
-
-})
+});
 
 const onClose = () => {
     emit('close');
@@ -93,17 +110,17 @@ const onClose = () => {
 
 const saveBtn = () => {
     formRef.value.validate().then(async (res) => {
-      if (res) {
-        const values = toRaw(modelRef);
-        const resp = await modify(instanceStore.current?.id || '', {
-            id: instanceStore.current?.id,
-            configuration: { ...values }
-        })
-        if(resp.status === 200){
-            onlyMessage('操作成功！')
-            emit('save');
+        if (res) {
+            const values = toRaw(modelRef);
+            const resp = await modify(instanceStore.current?.id || '', {
+                id: instanceStore.current?.id,
+                configuration: { ...values },
+            });
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                emit('save');
+            }
         }
-      }
     });
 };
 </script>
