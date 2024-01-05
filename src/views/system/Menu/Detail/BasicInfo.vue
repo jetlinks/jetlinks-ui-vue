@@ -41,7 +41,11 @@
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
-                            <j-form-item label="编码" name="code" :rules="[
+                            <j-form-item
+                                label="编码"
+                                name="code"
+                                :validateFirst="true"
+                                :rules="[
                                 {
                                     required: true,
                                     message: '请输入编码',
