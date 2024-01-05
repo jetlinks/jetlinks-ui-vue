@@ -597,7 +597,7 @@ const metadataStore = useMetadataStore();
 
 const handleImport = async () => {
     formRef.value.validate().then(async (data: any) => {
-let check 
+        let check 
         if((props.type === 'device' || formModel.type === 'import') &&
                     formModel.metadataType === 'script'){
                         check =  formModel.metadata === 'jetlinks' ? requiredCheck(JSON.parse(formModel.import)) : aliCheck(JSON.parse(formModel.import))
@@ -731,7 +731,7 @@ let check
                 );
             }
         }
-}
+       }
     });
 };
 
