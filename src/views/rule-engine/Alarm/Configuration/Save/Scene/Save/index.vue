@@ -9,10 +9,12 @@
     @ok="saveCorrelation"
     :maskClosable="false"
   >
-    <j-steps :current="current">
-      <j-step title="选择场景"></j-step>
-      <j-step title="选择条件"></j-step>
-    </j-steps>
+    <div v-if="type !== 'other'" style="padding: 0 24px">
+      <j-steps :current="current" >
+        <j-step title="选择场景"></j-step>
+        <j-step title="选择条件"></j-step>
+      </j-steps>
+    </div>
     <template v-if="current === 0 || type === 'other' ">
       <pro-search :columns="columns" type="simple" @search="handleSearch"/>
       <div style="height: 500px; overflow-y: auto">
