@@ -300,6 +300,8 @@ watch(
                 )
             ) {
                 queryBuiltIn();
+            }else{
+                modelRef.message.properties = [] as any
             }
         }
     },

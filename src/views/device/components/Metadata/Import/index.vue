@@ -328,20 +328,20 @@ const requiredCheck = (data:any) =>{
                     check = true
                     return
                 } 
-            if(!item?.async && item?.async !== false){
-                    onlyMessage(`方法定义第${index + 1}个数组中缺失async属性`,'error');
-                    check = true
-                    return
-            }
+            // if(!item?.async && item?.async !== false){
+            //         onlyMessage(`方法定义第${index + 1}个数组中缺失async属性`,'error');
+            //         check = true
+            //         return
+            // }
             if(item?.inputs){
                 testObject(item.inputs,index)
-                item.inputs.forEach((i:any)=>{
-                    if(!i?.expands?.required && i?.expands?.required !== false){
-                        onlyMessage(`方法定义inputs第${index+1}个数组中缺失expands.required属性`,'error')
-                        check = true
-                        return
-                    }
-                })
+                // item.inputs.forEach((i:any)=>{
+                //     if(!i?.expands?.required && i?.expands?.required !== false){
+                //         onlyMessage(`方法定义inputs第${index+1}个数组中缺失expands.required属性`,'error')
+                //         check = true
+                //         return
+                //     }
+                // })
             }
         })
     }
@@ -357,11 +357,11 @@ const requiredCheck = (data:any) =>{
                     check = true
                     return
                 }
-            if(!item?.async && item?.async !== false){
-                    onlyMessage(`事件定义第${index + 1}个数组中缺失async属性`,'error');
-                    check = true
-                    return
-            }
+            // if(!item?.async && item?.async !== false){
+            //         onlyMessage(`事件定义第${index + 1}个数组中缺失async属性`,'error');
+            //         check = true
+            //         return
+            // }
             if(!item?.valueType?.type){
                     onlyMessage(`事件定义第${index + 1}个数组中缺失valueType.type属性`,'error');
                     check = true

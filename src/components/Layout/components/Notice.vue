@@ -29,6 +29,7 @@ import { useUserInfo } from '@/store/userInfo';
 import { useMenuStore } from '@/store/menu';
 import { getAllNotice } from '@/api/account/center';
 import { flatten } from 'lodash-es';
+import { onlyMessage } from '@/utils/comm';
 
 const updateCount = computed(() => useUserInfo().alarmUpdateCount);
 const menuStory = useMenuStore();
@@ -37,7 +38,6 @@ const total = ref(0);
 // const list = ref<any[]>([]);
 const loading = ref(false);
 const visible = ref(false);
-
 const subscribeNotice = () => {
     getWebSocket('notification', '/notifications', {})
         ?.pipe()
@@ -96,7 +96,7 @@ const read = (type: string, data: any) => {
                 row: data.payload,
             });
         }
-    });
+    })
 };
 
 const tab = [
