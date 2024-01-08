@@ -37,7 +37,6 @@ const total = ref(0);
 // const list = ref<any[]>([]);
 const loading = ref(false);
 const visible = ref(false);
-const btnLoading = ref(false)
 const subscribeNotice = () => {
     getWebSocket('notification', '/notifications', {})
         ?.pipe()
@@ -72,7 +71,6 @@ const subscribeNotice = () => {
                     {
                       type: "primary",
                       size: "small",
-                      loading:btnLoading.value,
                       onClick: (e: Event) => {
                         e.stopPropagation();
                         read('_read', resp);
