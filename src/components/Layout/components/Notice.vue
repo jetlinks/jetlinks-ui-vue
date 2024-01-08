@@ -38,7 +38,6 @@ const total = ref(0);
 // const list = ref<any[]>([]);
 const loading = ref(false);
 const visible = ref(false);
-const btnLoading = ref(false)
 const subscribeNotice = () => {
     getWebSocket('notification', '/notifications', {})
         ?.pipe()
@@ -73,7 +72,6 @@ const subscribeNotice = () => {
                     {
                       type: "primary",
                       size: "small",
-                      loading: btnLoading.value,
                       onClick: (e: Event) => {
                         e.stopPropagation();
                         read('_read', resp);
@@ -88,7 +86,6 @@ const subscribeNotice = () => {
 };
 
 const read = (type: string, data: any) => {
-    btnLoading.value = true
     changeStatus_api('_read', [data.payload.id]).then((resp: any) => {
         if (resp.status !== 200) return;
         notification.close(data.payload.id);
@@ -98,11 +95,7 @@ const read = (type: string, data: any) => {
                 tabKey: 'StationMessage',
                 row: data.payload,
             });
-        }else{
-            onlyMessage('操作成功!')
         }
-    }).finally(()=>{
-        btnLoading.value = false
     })
 };
 
