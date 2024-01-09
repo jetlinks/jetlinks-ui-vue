@@ -68,7 +68,6 @@ const props = defineProps({
 });
 
 const getOptions = (i: any) => {
-    console.log(123)
     if (i.type.type === 'enum') {
         return (i.type?.elements || []).map((item) => {
             return {
@@ -79,13 +78,13 @@ const getOptions = (i: any) => {
     } else if (i.type.type === 'boolean') {
         return [
             {
-                label: 'true',
-                value: 'true',
+                label: i.type?.falseText,
+                value: i.type?.falseValue,
             },
             {
-                label: 'false',
-                value: 'false',
-            },
+                label: i.type?.trueText,
+                value: i.type?.trueValue,
+            }
         ];
     }
     undefined;
