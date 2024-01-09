@@ -37,7 +37,6 @@ const total = ref(0);
 // const list = ref<any[]>([]);
 const loading = ref(false);
 const visible = ref(false);
-
 const subscribeNotice = () => {
     getWebSocket('notification', '/notifications', {})
         ?.pipe()
@@ -88,9 +87,8 @@ const subscribeNotice = () => {
 const read = (type: string, data: any) => {
     changeStatus_api('_read', [data.payload.id]).then((resp: any) => {
         if (resp.status !== 200) return;
-        // notification.close(data.payload.id);
+        notification.close(data.payload.id);
         getList();
-        console.log(data,type)
         if (type !== '_read') {
             menuStory.routerPush('account/center', {
                 tabKey: 'StationMessage',

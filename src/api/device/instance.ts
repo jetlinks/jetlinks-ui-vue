@@ -529,7 +529,7 @@ export const getPropertiesInfo = (deviceId: string, data: Record<string, unknown
  * @param data 
  * @returns 
  */
-export const getPropertiesList = (deviceId: string, property: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/property/${property}/_query`, data)
+export const getPropertiesList = (deviceId: string, property: string, data: Record<string, unknown>) => server.post(`/device-instance/${deviceId}/property/${property}/_query/no-paging`, data)
 
 /**
  * 获取指定协议
