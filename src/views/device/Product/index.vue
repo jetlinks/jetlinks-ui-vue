@@ -32,6 +32,7 @@
                             accept=".json"
                             :showUploadList="false"
                             :before-upload="beforeUpload"
+                            :disabled="!permission"
                         >
                             <PermissionButton
                                 hasPermission="device/Product:import"
@@ -198,9 +199,13 @@ import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import {cloneDeep} from "lodash";
+import { usePermissionStore } from '@/store/permission';
 /**
  * 表格数据
  */
+ const permission = usePermissionStore().hasPermission(
+    `device/Product:import`,
+);
 const menuStory = useMenuStore();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
