@@ -32,6 +32,7 @@
                             accept=".json"
                             :showUploadList="false"
                             :before-upload="beforeUpload"
+                            :disabled="!permission"
                         >
                             <PermissionButton
                                 hasPermission="device/Product:import"
@@ -198,6 +199,7 @@ import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import { usePermissionStore } from '@/store/permission';
 /**
  * 表格数据
  */
@@ -259,7 +261,9 @@ const columns = [
         ellipsis: true,
     },
 ];
-
+const permission = usePermissionStore().hasPermission(
+    `device/Product:import`,
+);
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
 
