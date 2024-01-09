@@ -87,7 +87,7 @@ const getOptions = (i: any) => {
             }
         ];
     }
-    undefined;
+    return undefined;
 };
 watchEffect(() => {
     const obj = instanceStore.current?.configuration;
