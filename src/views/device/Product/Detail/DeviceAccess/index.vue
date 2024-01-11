@@ -110,7 +110,7 @@
                             {
                                 required: !!item?.type?.expands?.required,
                                 message: `${
-                                    item.type.type === 'enum'
+                                    item.type.type === 'enum' || 'boolean'
                                         ? '请选择'
                                         : '请输入'
                                 }${item.name}`,
@@ -129,10 +129,11 @@
                         ></j-input-password>
                         <j-select
                             placeholder="请选择"
-                            v-if="item.type.type === 'enum'"
+                            v-if="item.type.type === 'enum' || item.type.type === 'boolean'"
                             v-model:value="formData.data[item.property]"
+                            :options="getOptions(item)"
                         >
-                            <j-select-option
+                            <!-- <j-select-option
                                 v-for="el in item?.type?.type === 'enum' &&
                                 item?.type?.elements
                                     ? item?.type?.elements
@@ -141,8 +142,9 @@
                                 :value="el.value"
                             >
                                 {{ el.text }}
-                            </j-select-option>
+                            </j-select-option> -->
                         </j-select>
+                        <j-input-number v-if="['int','float','double','long'].includes(item.type.type)" v-model:value="formData.data[item.property]" placeholder="请输入"></j-input-number>
                     </j-form-item>
                 </j-form>
                 <Title data="存储策略">
@@ -346,6 +348,29 @@ const form = reactive<Record<string, any>>({
 const formData = reactive<Record<string, any>>({
     data: productStore.current?.configuration || {},
 });
+//获取物模型下拉选项
+const getOptions = (i:any) =>{
+    if (i.type.type === 'enum') {
+        return (i.type?.elements || []).map((item) => {
+            return {
+                label: item?.text,
+                value: item?.value,
+            };
+        });
+    } else if (i.type.type === 'boolean') {
+        return [
+            {
+                label: i.type?.falseText,
+                value: i.type?.falseValue,
+            },
+            {
+                label: i.type?.trueText,
+                value: i.type?.trueValue,
+            }
+        ];
+    }
+    return undefined;
+}
 const fun = () =>{
     console.log(formData.data,productStore.current?.configuration)
 }
