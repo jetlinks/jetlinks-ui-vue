@@ -6,6 +6,7 @@
       @cancel="cancel"
       @ok="ok"
       :confirmLoading="loading"
+      :maskClosable="false"
   >
     <div style="height: 300px; width: 100%;">
       <vue-cropper

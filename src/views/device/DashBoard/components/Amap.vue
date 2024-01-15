@@ -20,11 +20,9 @@
                     },
                 }"
                 :icon="{
-                    image: 'https://a.amap.com/jsapi_demos/static/images/poi-marker.png',
+                    image: '/images/marker.png',
                     anchor: 'bottom-center',
                     size: [25, 34],
-                    clipOrigin: [459, 92],
-                    clipSize: [50, 68],
                 }"
                 ></el-amap-label-marker
             >
@@ -35,6 +33,7 @@
 <script lang="ts" setup>
 import AmapComponent from '@/components/AMapComponent/index.vue';
 import { getGo } from '@/api/device/dashboard';
+import { getImage } from '@/utils/comm';
 let point = ref();
 const getMapData = async () => {
     const res = await getGo({

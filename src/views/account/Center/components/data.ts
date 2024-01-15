@@ -86,4 +86,5 @@ const workflowNotice = [
 ]
 export const getInitData = () =>{
    return menuStore.hasMenu('process') ? [...systemNotice,...workflowNotice] : [...systemNotice]
+
 }
