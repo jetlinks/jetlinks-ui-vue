@@ -54,6 +54,7 @@ export const defaultBranches = [
       alarmFirst: false,
     },
     then: [],
+    executeAnyway: true,
     branchId: Math.floor(Math.random() * 100000000)
   },
 ];
@@ -120,8 +121,10 @@ export const useSceneStore = defineStore('scene', () => {
       } else {
         if (triggerType === 'device') {
           const len = branches.length
+
           branches.forEach((item, index) => {
-            if (item?.executeAnyway) {
+
+            if (item?.executeAnyway && index > 0 && branches[index - 1].when?.length) {
               branches.splice(index, 0 , null)
             }
 

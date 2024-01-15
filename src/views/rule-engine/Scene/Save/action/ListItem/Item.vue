@@ -386,6 +386,7 @@
         </template>
         <TriggerAlarm
             :id="_data.id"
+            :branchId="_data.branches[branchesName].branchId"
             v-if="triggerVisible"
             @close="triggerVisible = false"
         />

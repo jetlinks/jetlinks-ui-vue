@@ -228,17 +228,17 @@ watchEffect(() => {
   let _group = []
   if (branches) {
     branches.forEach((item, index) => {
-      if (index === 0) {
-        _group.push({
-          id: `group_${item.key}`,
-          len: 0,
-          start: 0,
-        })
-      }
+      // if (index === 0) {
+      //   _group.push({
+      //     id: `group_${item.key}`,
+      //     len: 0,
+      //     start: 0,
+      //   })
+      // }
 
       const lastIndex = _group.length - 1
 
-      if (item?.executeAnyway) {
+      if (index === 0 || item?.executeAnyway) {
         _group[lastIndex + 1] = {
           id: `group_${item.key}`,
           len: 1,

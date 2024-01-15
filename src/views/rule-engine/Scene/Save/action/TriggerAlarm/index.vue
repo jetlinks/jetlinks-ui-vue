@@ -18,9 +18,8 @@
                     {
                         terms: [
                             {
-                                column: 'id',
-                                value: id,
-                                termType: 'rule-bind-alarm',
+                                column: 'id$rule-bind-alarm',
+                                value: branchId ? `${id}:${branchId}` : id,
                             },
                         ],
                     },
@@ -59,6 +58,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    branchId: {
+    type: String,
+    default: '',
+  },
 });
 const emit = defineEmits(['close']);
 
@@ -108,7 +111,8 @@ watch(
                 terms: [
                     {
                         column: 'id$rule-bind-alarm',
-                        value: newId,
+                        // value: newId,
+                        value: props.branchId ? `${newId}:${props.branchId}` : newId,
                     },
                 ],
             }).then((resp) => {

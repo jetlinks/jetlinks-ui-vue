@@ -240,12 +240,12 @@ const branchCheckKeys = ref([])
 const terms = [
   {
     terms: [
-      {
-        column: 'id',
-        termType: 'alarm-bind-rule$not',
-        value: props.id,
-        type: 'and',
-      },
+      // {
+      //   column: 'id',
+      //   termType: 'alarm-bind-rule$not',
+      //   value: props.id,
+      //   type: 'and',
+      // },
       {
         column: 'triggerType',
         termType: 'eq',
@@ -323,9 +323,8 @@ const next = () => {
 }
 
 const branchCheck = (checkedKeys: string[], { checkedNodes }) => {
-  console.log(checkedNodes)
   branchCheckKeys.value = checkedNodes.filter(item => item.branchId).map(item => ({
-    branchId: item.branchId,
+    branchIndex: item.branchId,
     ruleId: item.sceneId,
     alarmId: props.id,
   }))

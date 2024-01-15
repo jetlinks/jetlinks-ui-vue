@@ -42,7 +42,7 @@ export const detail = (id:string) => server.get(`/alarm/config/${id}`);
 /**
  * 解除场景联动绑定
  */
-export const unbindScene = (id:string,data:any) => server.post(`/alarm/rule/bind/${id}/_delete`,data);
+export const unbindScene = (id:string,data:any, branchId: string) => server.post(`/alarm/rule/bind/${id}/_delete?branchIndex=${branchId}`,data);
 
 /**
  * 保存关联场景
