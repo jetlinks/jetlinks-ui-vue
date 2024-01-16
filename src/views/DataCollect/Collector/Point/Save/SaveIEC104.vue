@@ -120,7 +120,7 @@
                 @ok="handleInterval"
             >
                 <j-form
-                    ref="formRef2"
+                    ref="intervalModal"
                     name="virtual-form"
                     layout="vertical"
                     :model="intervalRef"
@@ -180,6 +180,7 @@ const intervalRef = reactive({
     visible: false,
     interval: 3000,
 });
+const intervalModal = ref()
 const loading = ref(false);
 const formRef = ref()
 const dataTypeList = ref([
@@ -298,7 +299,13 @@ const handleCancel = () => {
     emit('change', false);
 };
 
-const handleInterval = () => {};
+const handleInterval = async () => {
+  const res = await intervalModal.value?.validate()
+    if (res) {
+        formData.value.configuration.interval = res.interval
+        intervalRef.visible = false
+    }
+};
 
 onMounted(() => {
     formData.value.features = props.data.features?.map((item: any) => item.value)
