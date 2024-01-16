@@ -121,17 +121,30 @@ export const useSceneStore = defineStore('scene', () => {
       } else {
         if (triggerType === 'device') {
           const len = branches.length
+          const newBranches: any[] = []
+
 
           branches.forEach((item, index) => {
 
-            if (item?.executeAnyway && index > 0 && branches[index - 1].when?.length) {
-              branches.splice(index, 0 , null)
+            if (item?.executeAnyway && index > 0 && branches[index - 1]?.when?.length) {
+              newBranches.push(null)
+              newBranches.push(item)
+              // branches.splice(index, 0 , null)
+            } else {
+              newBranches.push(item)
             }
 
+
+            // if (item?.executeAnyway && index > 0 && branches[index - 1]?.when?.length) {
+            //   branches.splice(index, 0 , null)
+            // }
+
             if ( index === len - 1 && item?.when?.length) {
-              branches.push(null)
+              newBranches.push(null)
             }
           })
+
+          branches = [...newBranches]
         }
         // const branchesLength = branches.length;
         // if (
