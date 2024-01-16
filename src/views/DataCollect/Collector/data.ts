@@ -271,6 +271,8 @@ export const LeftTreeRules = {
     timeout: [{ required: true, trigger: 'blur', validator: validator4 }],
     type: [{required: true, trigger: 'change', message: '请选择型号'}],
     serializable: [{required: true, trigger: 'change', message: '请选择型号'}],
+    terminnalAddress: [{required: true, trigger: 'blur', message: '请输入分组地址'}],
+    frameAmountMax: [{required: true, message: '请输入确认帧数量', trigger: 'blur'}],
 };
 
 export const FormTableColumns = [

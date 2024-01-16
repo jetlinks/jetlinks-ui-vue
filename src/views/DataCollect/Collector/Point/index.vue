@@ -20,7 +20,7 @@
                     <template #headerTitle>
                         <j-space>
                             <PermissionButton
-                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7'].includes(data?.provider)"
+                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7', 'iec104'].includes(data?.provider)"
                                 type="primary"
                                 @click="handlAdd"
                                 hasPermission="DataCollect/Collector:add"
@@ -31,7 +31,7 @@
                                 新增点位
                             </PermissionButton>
                             <PermissionButton
-                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7'].includes(data?.provider)"
+                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7', 'iec104'].includes(data?.provider)"
                                 type="primary"
                                 @click="handleImport"
                                 hasPermission="DataCollect/Collector:add"
@@ -324,6 +324,7 @@
             @change="saveChange"
         />
         <SaveS7 v-if="visible.saveS7"  :data="current" @change="saveChange"/>
+        <SaveIEC104 v-if="visible.saveIEC104" :data="current" @change="saveChange"/>
         <Scan v-if="visible.scan" :data="current" @change="saveChange" />
         <Import v-if="visible.import" :data="current" @close-import="closeImport"/>
     </j-spin>
@@ -352,6 +353,7 @@ import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
 import { responsiveArray } from 'ant-design-vue/lib/_util/responsiveObserve';
 import SaveS7 from './Save/SaveS7.vue';
+import SaveIEC104 from './Save/SaveIEC104.vue';
 import Import from './components/Import/index.vue'
 const props = defineProps({
     data: {
@@ -366,10 +368,12 @@ const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
 const s7Image = getImage('/DataCollect/s7.png')
 const gatewayImage = getImage('/DataCollect/gateway.png')
+const iecImage = getImage('/DataCollect/IEC104.png')
 const ImageMap = new Map()
 ImageMap.set('OPC_UA',opcImage)
 ImageMap.set('MODBUS_TCP',modbusImage)
 ImageMap.set('snap7',s7Image)
+ImageMap.set('iec104',iecImage)
 ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
 
 
@@ -380,7 +384,8 @@ const visible = reactive({
     batchUpdate: false,
     scan: false,
     saveS7:false,
-    import:false
+    import:false,
+    saveIEC104: false
 });
 const current: any = ref({});
 const accessModesOption = ref();
@@ -500,7 +505,13 @@ const handlAdd = () => {
             provider: props.data?.provider,
             deviceType:props.data?.configuration.type,
         }
-    }else{
+    }else if (props.data?.provider === 'iec104'){
+        visible.saveIEC104 = true;
+        current.value = {
+            collectorId: props.data?.id,
+            provider: props.data?.provider,
+        }
+    } else {
         visible.saveModBus = true;
         current.value = {
             collectorId: props.data?.id,
@@ -514,7 +525,9 @@ const handlEdit = (data: any) => {
         visible.saveOPCUA = true;
     } else if(data?.provider === 'snap7'){
         visible.saveS7 = true
-    }else{
+    } else if(data?.provider === 'iec104') {
+        visible.saveIEC104 = true
+    } else {
         visible.saveModBus = true;
     }
     current.value = cloneDeep({
