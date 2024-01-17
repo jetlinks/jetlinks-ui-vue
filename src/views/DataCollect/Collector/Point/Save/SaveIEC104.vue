@@ -77,25 +77,14 @@
                         >采集频率为0时不执行轮询任务</span
                     >
                 </p>
-                <j-radio-group v-model:value="formData.configuration.interval">
-                    <j-space>
-                        <j-radio-button :value="3000">3000ms</j-radio-button>
-                        <j-radio-button :value="6000">6000ms</j-radio-button>
-                        <j-radio-button :value="9000">9000ms</j-radio-button>
-                        <j-radio-button
-                            :value="Number(formData.configuration.interval)"
-                            @click="intervalRef.visible = true"
-                        >
-                            {{
-                                ![3000, 6000, 9000].includes(
-                                    formData.configuration.interval,
-                                )
-                                    ? formData.configuration.interval + 'ms'
-                                    : '自定义'
-                            }}
-                        </j-radio-button>
-                    </j-space>
-                </j-radio-group>
+                <j-input-number
+                    style="width: 100%"
+                    placeholder="请输入采集频率"
+                    v-model:value="formData.configuration.interval"
+                    addon-after="ms"
+                    :max="2147483648"
+                    :min="0"
+                />
             </j-form-item>
             <j-form-item name="features">
                 <j-checkbox-group v-model:value="formData.features">
@@ -113,35 +102,6 @@
                     showCount
                 />
             </j-form-item>
-            <j-modal
-                title="采集频率"
-                :visible="intervalRef.visible"
-                @cancel="intervalRef.visible = false"
-                @ok="handleInterval"
-            >
-                <j-form
-                    ref="intervalModal"
-                    name="virtual-form"
-                    layout="vertical"
-                    :model="intervalRef"
-                >
-                    <j-form-item
-                        label="采集频率"
-                        name="interval"
-                        :rules="[{ required: true, message: '请输入采集频率' }]"
-                    >
-                        <j-input-number
-                            type="tel"
-                            addonAfter="ms"
-                            v-model:value="intervalRef.interval"
-                            placeholder="请输入采集频率"
-                            :controls="false"
-                            :precision="0"
-                            :maxlength="64"
-                        />
-                    </j-form-item>
-                </j-form>
-            </j-modal>
         </j-form>
         <template #footer>
             <j-button @click="handleCancel">取消</j-button>
@@ -176,11 +136,6 @@ const props = defineProps({
 
 const emit = defineEmits(['change']);
 
-const intervalRef = reactive({
-    visible: false,
-    interval: 3000,
-});
-const intervalModal = ref()
 const loading = ref(false);
 const formRef = ref()
 const dataTypeList = ref([
@@ -297,14 +252,6 @@ const handleOk = async () => {
 
 const handleCancel = () => {
     emit('change', false);
-};
-
-const handleInterval = async () => {
-  const res = await intervalModal.value?.validate()
-    if (res) {
-        formData.value.configuration.interval = res.interval
-        intervalRef.visible = false
-    }
 };
 
 onMounted(() => {
