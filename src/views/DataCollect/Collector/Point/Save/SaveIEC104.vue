@@ -259,6 +259,5 @@ onMounted(() => {
     if (props.data.accessModes?.length !== 0) {
         formData.value.accessModes = props.data.accessModes?.map((item: any) => item.value)
     }
-    console.log(props.data.configuration, 123)
 })
 </script>
