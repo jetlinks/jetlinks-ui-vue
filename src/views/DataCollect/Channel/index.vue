@@ -103,7 +103,7 @@
                                             <div class="card-item-content-text">
                                                 说明
                                             </div>
-                                            <div class="card-item-content-text">
+                                            <div class="card-item-content-description">
                                                 <j-ellipsis>{{slotProps.description}}</j-ellipsis>
                                             </div>
                                         </j-col>
@@ -366,6 +366,11 @@ const handleSearch = (e: any) => {
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
+    }
+    .card-item-content-description{
+        margin-top: 10px;
+        color: rgba(0, 0, 0, 0.65);
+        font-size: 12px;
     }
 }
 .details-text {
