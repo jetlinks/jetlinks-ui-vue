@@ -67,9 +67,9 @@
                                             <div class="card-item-content-text">
                                                 <j-tooltip>
                                                     <template #title>{{
-                                                        slotProps.provider
+                                                        protocolList.find(item => item.value === slotProps.provider)?.label
                                                     }}</template>
-                                                    {{ slotProps.provider }}
+                                                    {{ protocolList.find(item => item.value === slotProps.provider)?.label }}
                                                 </j-tooltip>
                                             </div>
                                         </j-col>

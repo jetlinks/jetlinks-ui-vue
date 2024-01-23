@@ -54,9 +54,9 @@ export const messageSubscribe  = 'message-subscribe'
 
 /**协议列表 */
 export const protocolList = [
-    { label: 'opc-ua', value: 'OPC_UA', alias: 'opc-ua' },
-    { label: 'Modbus/TCP', value: 'MODBUS_TCP', alias: 'Modbus/TCP' },
-    { label: 'GATEWAY', value: 'COLLECTOR_GATEWAY', alias: 'GATEWAY' },
-    { label: 'snap7', value: 'snap7', alias: 'snap7' },
+    { label: 'OPC_UA', value: 'OPC_UA', alias: 'opc-ua' },
+    { label: 'MODBUS_TCP', value: 'MODBUS_TCP', alias: 'Modbus/TCP' },
+    { label: 'COLLECTOR_GATEWAY', value: 'COLLECTOR_GATEWAY', alias: 'GATEWAY' },
+    { label: 'S7', value: 'snap7', alias: 'snap7' },
     { label: 'IEC104', value: 'iec104', alias: 'IEC104' }
 ]
