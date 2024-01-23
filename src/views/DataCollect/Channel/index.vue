@@ -103,9 +103,11 @@
                                             <div class="card-item-content-text">
                                                 说明
                                             </div>
-                                            <div class="card-item-content-description">
-                                                <j-ellipsis>{{slotProps.description}}</j-ellipsis>
-                                            </div>
+                                            <j-ellipsis>
+                                              <div class="explain">
+                                                {{slotProps.description}}
+                                              </div>
+                                            </j-ellipsis>
                                         </j-col>
                                     </j-row>
                                 </div>
@@ -161,10 +163,12 @@ const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
 const s7Image = getImage('/DataCollect/s7.png')
 const gatewayImage = getImage('/DataCollect/gateway.png')
+const iecImage = getImage('/DataCollect/IEC104.png')
 const ImageMap = new Map()
 ImageMap.set('OPC_UA',opcImage)
 ImageMap.set('MODBUS_TCP',modbusImage)
 ImageMap.set('snap7',s7Image)
+ImageMap.set('iec104',iecImage)
 ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
 
 
@@ -367,10 +371,8 @@ const handleSearch = (e: any) => {
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
     }
-    .card-item-content-description{
-        margin-top: 10px;
-        color: rgba(0, 0, 0, 0.65);
-        font-size: 12px;
+    .explain {
+      margin-top: 10px;
     }
 }
 .details-text {

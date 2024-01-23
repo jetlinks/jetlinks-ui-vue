@@ -67,6 +67,20 @@
                 <j-radio-button :value="true">串行</j-radio-button>
               </j-radio-group>
             </j-form-item>
+            <template v-if="provider === 'iec104'">
+              <j-form-item label="从机地址" :name="['configuration', 'host']" :rules="LeftTreeRules.host">
+                <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入" :disabled="false"/>
+              </j-form-item>
+              <j-form-item label="从机端口" :name="['configuration', 'port']" >
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" placeholder="请输入从机端口"/>
+              </j-form-item>
+              <j-form-item label="分组地址" :name="['configuration', 'terminnalAddress']" :rules="LeftTreeRules.terminnalAddress">
+                <j-input-number style="width: 100%" :min="0" :max="65535" :precision="0" v-model:value="formData.configuration.terminnalAddress" autocomplete="off" placeholder="请输入分组地址"></j-input-number>
+              </j-form-item>
+              <j-form-item label="确认帧数量" :name="['configuration', 'frameAmountMax']" :rules="LeftTreeRules.frameAmountMax">
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.frameAmountMax" placeholder="请输入确认帧数量" :min="1" :maxlength="16" :precision="0"></j-input-number>
+              </j-form-item>
+            </template>
             <j-form-item
                 v-if="provider === 'COLLECTOR_GATEWAY'"
                 label="通讯协议"
