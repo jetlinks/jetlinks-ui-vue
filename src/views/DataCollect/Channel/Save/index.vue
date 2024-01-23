@@ -249,6 +249,8 @@ const handleOk = async () => {
         params.configuration={
             connect : false
         }
+    } else {
+      params.configuration = {}
     }
 
     params.circuitBreaker = {
@@ -316,7 +318,7 @@ const getProvidersList = async () => {
     if (resp.status === 200) {
         const arr = resp.result
             .filter(
-                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7'].includes(item.name),
+                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7', 'IEC104'].includes(item.name),
             )
             .map((it: any) => it.name);
         const providers: any = protocolList.filter((item: any) =>

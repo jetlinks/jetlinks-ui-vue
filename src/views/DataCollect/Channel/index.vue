@@ -67,9 +67,9 @@
                                             <div class="card-item-content-text">
                                                 <j-tooltip>
                                                     <template #title>{{
-                                                        slotProps.provider
+                                                        protocolList.find(item => item.value === slotProps.provider)?.label
                                                     }}</template>
-                                                    {{ slotProps.provider }}
+                                                    {{ protocolList.find(item => item.value === slotProps.provider)?.label }}
                                                 </j-tooltip>
                                             </div>
                                         </j-col>
@@ -103,9 +103,11 @@
                                             <div class="card-item-content-text">
                                                 说明
                                             </div>
-                                            <div class="card-item-content-text">
-                                                <j-ellipsis>{{slotProps.description}}</j-ellipsis>
-                                            </div>
+                                            <j-ellipsis>
+                                              <div class="explain">
+                                                {{slotProps.description}}
+                                              </div>
+                                            </j-ellipsis>
                                         </j-col>
                                     </j-row>
                                 </div>
@@ -161,10 +163,12 @@ const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
 const s7Image = getImage('/DataCollect/s7.png')
 const gatewayImage = getImage('/DataCollect/gateway.png')
+const iecImage = getImage('/DataCollect/IEC104.png')
 const ImageMap = new Map()
 ImageMap.set('OPC_UA',opcImage)
 ImageMap.set('MODBUS_TCP',modbusImage)
 ImageMap.set('snap7',s7Image)
+ImageMap.set('iec104',iecImage)
 ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
 
 
@@ -366,6 +370,9 @@ const handleSearch = (e: any) => {
         overflow: hidden; //超出的文本隐藏
         text-overflow: ellipsis; //溢出用省略号显示
         white-space: nowrap; //溢出不换行
+    }
+    .explain {
+      margin-top: 10px;
     }
 }
 .details-text {
