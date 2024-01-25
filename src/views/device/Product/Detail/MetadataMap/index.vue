@@ -140,7 +140,7 @@ import { useProductStore } from '@/store/product';
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig';
 import { getPluginData, getProductByPluginId } from '@/api/link/plugin';
 import { getImage, onlyMessage } from '@/utils/comm';
-import { getMetadataMapById, metadataMapById } from '@/api/device/instance';
+import { getMetadataMapById, metadataMapById, getProtocolMetadata } from '@/api/device/instance';
 import { cloneDeep } from 'lodash-es';
 
 const productStore = useProductStore();
@@ -242,7 +242,7 @@ const onSearch = () => {
 const getDefaultMetadata = async () => {
     const metadata = JSON.parse(productDetail.value?.metadata || '{}');
     const properties = metadata.properties;
-    const pluginMetadata = await getPluginMetadata();
+    const pluginMetadata = await getMetadata();
     const pluginProperties = pluginMetadata?.properties || [];
     const metadataMap: any = await getMetadataMapData();
     pluginOptions.value = pluginProperties.map((item) => ({
@@ -303,6 +303,19 @@ const getPluginMetadata = (): Promise<{ properties: any[] }> => {
 
                         resolve(_item ? _item.metadata : { properties: [] });
                     }
+                }
+                resolve({ properties: [] });
+            },
+        );
+    });
+};
+const getMetadata = (): Promise<{ properties: any[] }> => {
+    return new Promise((resolve) => {
+        const transport = productDetail.value?.transportProtocol;
+        getProtocolMetadata(productDetail.value?.messageProtocol || '', transport).then(
+            (res: any) => {
+                if (res.success) {
+                    resolve(JSON.parse(res?.result || '{}'));
                 }
                 resolve({ properties: [] });
             },
