@@ -10,7 +10,7 @@
             :label="item?.name"
             v-for="(item, index) in variableDefinitions"
             :key="item.id"
-            :required="getType(item) !== 'file' ? true : false"
+            :required="!['file', 'user', 'org', 'tag'].includes(getType(item)) ? true : false"
             :rules="[
                 {
                     validator: (_rule, value) => checkValue(_rule, value, item),
@@ -62,6 +62,7 @@ import Tag from './variableItem/Tag.vue';
 import InputFile from './variableItem/InputFile.vue';
 import User from './variableItem/User.vue';
 import { PropType } from 'vue';
+import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
     variableDefinitions: {
@@ -209,6 +210,13 @@ const onChange = (val: any, type: any, index: number, options?: string) => {
 
 const onSave = () =>
     new Promise((resolve, reject) => {
+        const pass = props.variableDefinitions.filter(item => ['user', 'org', 'tag'].includes(getType(item))).some(item => {
+            return modelRef[item.id]
+        })
+        if(!pass) {
+            onlyMessage('收信人，收信人部门，收信人标签至少填写一个', 'warning')
+            return reject(false)
+        }
         formRef.value?.validate().then((_data: any) => {
             resolve(_data);
         }).catch(() => {
