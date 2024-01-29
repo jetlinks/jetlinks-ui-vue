@@ -315,7 +315,9 @@ const getProtocol = async () => {
                 ];
             }
         }
-        if (productStore.current?.accessProvider === 'plugin_gateway') {
+        //当前设备接入选择的协议
+        const protocol = res.result?.transports.find(item => item.id === productStore.current.transportProtocol);
+        if(protocol?.features.find(item => item.id === 'diffMetadataSameProduct')){
           list.value.push({ key: 'MetadataMap', tab: '物模型映射'})
         }
     }
