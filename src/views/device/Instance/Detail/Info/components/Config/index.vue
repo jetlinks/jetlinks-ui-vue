@@ -50,7 +50,7 @@
                 :key="item.property"
             >
                 <template #label>
-                    <Ellipsis style="margin-right: 5px;">
+                    <Ellipsis style="margin-right: 5px">
                         {{ item.name }}
                         <j-tooltip
                             v-if="item.description"
@@ -69,11 +69,13 @@
                 >
                 <span v-else-if="item.type.type === 'enum'">
                     <Ellipsis>{{
-                         item.type.elements?.find((i)=>
-                            i.value ===  instanceStore.current?.configuration?.[
-                                item.property
-                            ] 
-                           )?.text || ''
+                        item.type.elements?.find(
+                            (i) =>
+                                i.value ===
+                                instanceStore.current?.configuration?.[
+                                    item.property
+                                ],
+                        )?.text || ''
                     }}</Ellipsis>
                     <j-tooltip
                         v-if="isExit(item.property)"
@@ -85,9 +87,24 @@
                         ><AIcon type="QuestionCircleOutlined"
                     /></j-tooltip>
                 </span>
+                <span v-else-if="item.type.type === 'boolean'">
+                    <Ellipsis>{{
+                        [
+                            {
+                                label:  item?.type?.falseText,
+                                value: item?.type?.falseValue,
+                            },
+                            {
+                                label: item?.type?.trueText,
+                                value: item?.type?.trueValue,
+                            }
+                        ].find((i) => i.value ===
+                           instanceStore.current?.configuration?.[item.property] )?.label || ''
+                    }}</Ellipsis>
+                </span>
                 <span v-else>
                     <Ellipsis>{{
-                           instanceStore.current?.configuration?.[item.property] ||
+                        instanceStore.current?.configuration?.[item.property] ||
                         ''
                     }}</Ellipsis>
                     <j-tooltip
