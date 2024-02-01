@@ -452,8 +452,9 @@ const handleBind = (row: any) => {
  * 绑定用户, 用户下拉筛选
  */
 const filterOption = (input: string, option: any) => {
+    const text = option?.componentOptions?.children?.[0]?.text ||  option.label
     return (
-        option.componentOptions.children[0].text
+        text
             .toLowerCase()
             .indexOf(input.toLowerCase()) >= 0
     );

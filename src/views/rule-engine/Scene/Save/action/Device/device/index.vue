@@ -80,7 +80,7 @@ import Tag from './Tag.vue';
 import RelationSelect from './RelationSelect.vue';
 import { getParams } from '../../../util';
 import { handleParamsData } from '../../../components/Terms/util';
-import _ from 'lodash';
+import _ from 'lodash-es';
 
 const props = defineProps({
     values: {
