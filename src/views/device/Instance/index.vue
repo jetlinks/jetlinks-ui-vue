@@ -925,6 +925,19 @@ const saveBtn = () => {
     instanceRef.value?.reload();
 };
 
+const dealSearchValue = (item:any) =>{
+    let value:any = ''
+    console.log(item)
+    item.value.forEach((i:any,index:number)=>{
+        console.log(i)
+        if(index > 0){
+            value += ',' + (i.slice((item.column + ' is ').length))
+        }else{
+            value += item.column + ' in ' + i.slice((item.column + ' is ').length)
+        }
+    })
+    return value
+}
 const handleSearch = (_params: any) => {
     // params.value = _params;
     const newParams = (_params?.terms as any[])?.map((item1) => {
@@ -937,7 +950,6 @@ const handleSearch = (_params: any) => {
             }
             delete item2.termType
           }
-
           if (
                 item2.column &&
                 ['classifiedId', 'accessId', 'accessProvider'].includes(
@@ -949,6 +961,7 @@ const handleSearch = (_params: any) => {
                 return {
                     ...item2,
                     column: `productId$product-info$${oldTermType}`,
+                    value: Array.isArray(item2.value) ? dealSearchValue(item2) : item2.value,
                 };
             }
             return item2;
