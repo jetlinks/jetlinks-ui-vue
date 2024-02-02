@@ -31,7 +31,7 @@
                     <j-ellipsis :lineClamp="2">{{ variables }}</j-ellipsis>
                 </div>
             </div>
-            <div class="item" v-if="isNoCommunity" >
+            <div class="item">
                 <div class="label">用户权限</div>
                 <div class="value">
                     <j-ellipsis :lineClamp="2">{{ obj.role }}</j-ellipsis>
