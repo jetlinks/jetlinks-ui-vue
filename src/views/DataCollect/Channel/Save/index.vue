@@ -249,7 +249,7 @@ const handleOk = async () => {
         params.configuration={
             connect : false
         }
-    } else {
+    } else if (params?.provider === 'iec104') {
       params.configuration = {}
     }
 

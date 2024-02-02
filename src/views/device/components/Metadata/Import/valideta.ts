@@ -39,7 +39,8 @@ export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolea
         }
     }
     if(data.type === 'object' && !isArray  && !isObject){
-        if(data?.valueType?.properties?.length > 0){
+        console.log(data,'data123')
+        if(data?.properties?.length > 0){
           return  testObject(data.properties,index)
         }else{
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失properties属性`,'error')
