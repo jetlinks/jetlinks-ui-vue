@@ -36,7 +36,8 @@
                 v-model:value="paramsValue.termType"
                 @select="termsTypeSelect"
             />
-            <DoubleParamsDropdown
+            <div v-if="!['notnull','isnull'].includes(paramsValue.termType)">
+                <DoubleParamsDropdown
                 v-if="showDouble"
                 icon="icon-canshu"
                 placeholder="参数值"
@@ -46,19 +47,20 @@
                 v-model:value="paramsValue.value.value"
                 v-model:source="paramsValue.value.source"
                 @select="valueSelect"
-            />
-            <ParamsDropdown
-                v-else
-                icon="icon-canshu"
-                placeholder="参数值"
-                :options="valueOptions"
-                :metricOptions="metricOption"
-                :tabsOptions="tabsOptions"
-                :metric="paramsValue.value?.metric"
-                v-model:value="paramsValue.value.value"
-                v-model:source="paramsValue.value.source"
-                @select="valueSelect"
-            />
+                />
+                <ParamsDropdown
+                    v-else
+                    icon="icon-canshu"
+                    placeholder="参数值"
+                    :options="valueOptions"
+                    :metricOptions="metricOption"
+                    :tabsOptions="tabsOptions"
+                    :metric="paramsValue.value?.metric"
+                    v-model:value="paramsValue.value.value"
+                    v-model:source="paramsValue.value.source"
+                    @select="valueSelect"
+                />
+            </div>
             <j-popconfirm
                 title="确认删除？"
                 @confirm="onDelete"
@@ -411,6 +413,11 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
             // 有变化
             newValue.value = undefined;
         }
+    }
+    if(
+        ['isnull','notull'].includes(e.key)
+    ){
+        newValue.value = 1
     }
     paramsValue.value = newValue;
 
