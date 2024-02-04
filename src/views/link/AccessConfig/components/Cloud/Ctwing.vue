@@ -165,7 +165,7 @@
                                             真实设备的PSK，非必填
                                         </j-descriptions-item>
                                     </j-descriptions>
-                                    <div>
+                                    <div class="overLength">
                                         5、CTWing端配置产品/设备/分组级订阅，订阅方URL地址请填写： {{
                                                 `${origin}/api/ctwing/${randomString()}/notify`
                                             }}（此处订阅地址可以在JetLinks平台中配置完成CTWing网关后再填写）。
@@ -564,5 +564,8 @@ watch(
     display: flex;
     margin: 15px 0;
     justify-content: space-between;
+}
+.overLength{
+    overflow-wrap: break-word;
 }
 </style>
