@@ -21,7 +21,7 @@
       <a-descriptions-item v-if="['int', 'long', 'float', 'double'].includes(data.valueType.type)" label="单位">{{ unitLabel }}</a-descriptions-item>
       <a-descriptions-item v-if="['float', 'double'].includes(data.valueType.type)" label="精度">{{ data.valueType?.scale }}</a-descriptions-item>
       <a-descriptions-item v-if="['string', 'password'].includes(data.valueType.type)" label="最大长度">{{ data.valueType?.maxLength }}</a-descriptions-item>
-      <a-descriptions-item v-if="data.valueType.type === 'file'" label="文件类型">{{ data.valueType?.fileType }}</a-descriptions-item>
+      <a-descriptions-item v-if="data.valueType.type === 'file'" label="文件类型">{{ data.valueType?.bodyType }}</a-descriptions-item>
       <a-descriptions-item v-if="data.valueType.type === 'date'" label="格式">{{ data.valueType?.format }}</a-descriptions-item>
       <a-descriptions-item
           v-if="

@@ -1,6 +1,6 @@
 import { onlyMessage } from "@/utils/comm"
 export const testProperties = (data:any) =>{
-    
+
 }
 
 export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolean)=>{
@@ -33,8 +33,8 @@ export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolea
         }
     }
     if(data.type === 'file' && !isArray && !isObject){
-        if(!data?.fileType){
-            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失fileType属性`,'error')
+        if(!data?.bodyType){
+            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失bodyType属性`,'error')
             return true
         }
     }
@@ -54,20 +54,20 @@ export const testObject = (data:any,index:number)=>{
         if(!i?.id){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失id属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.name){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失name属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.valueType?.type){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失valueType.type属性`,'error')
             check = true
-            return 
+            return
         }else{
            check =  testType(i,index,false,true)
-           return 
+           return
         }
     })
     return check
@@ -102,8 +102,8 @@ export const testAliType = (data:any,index:number,isArray?:boolean,isObject?:boo
         }
     }
     if(data.dataType.type === 'file' && !isArray && !isObject){
-        if(!data.dataType?.fileType){
-            onlyMessage(`方法定义inputs第${index+1}个数组dataType中缺失fileType属性`,'error')
+        if(!data.dataType?.bodyType){
+            onlyMessage(`方法定义inputs第${index+1}个数组dataType中缺失bodyType属性`,'error')
             return true
         }
     }
@@ -123,20 +123,20 @@ export const testAliObject = (data:any,index:number)=>{
         if(!i?.identifier){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失id属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.name){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失name属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.dataType?.type){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失dataType.type属性`,'error')
             check = true
-            return 
+            return
         }else{
            check =  testAliType(i,index,false,true)
-           return 
+           return
         }
     })
     return check

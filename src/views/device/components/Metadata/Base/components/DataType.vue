@@ -40,7 +40,7 @@
             placement="bottomRight"
             @confirm="(data) => {valueChange(data, 'int')}"
         />
-        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.fileType" placement="bottomRight" @confirm="(data) => {valueChange(data, 'file')}"/>
+        <DataTableFile v-else-if="type === 'file'" v-model:value="_valueType.bodyType" placement="bottomRight" @confirm="(data) => {valueChange(data, 'file')}"/>
         <DataTableDate v-else-if="type === 'date'" v-model:value="_valueType.format" placement="bottomRight" @confirm="(data) => {valueChange(data, 'date')}"/>
         <DataTableString
             v-else-if="['string', 'password'].includes(type)"

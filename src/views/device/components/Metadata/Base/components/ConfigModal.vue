@@ -61,7 +61,7 @@
   </DataTableInteger>
   <DataTableFile
       v-else-if="type === 'file'"
-      v-model:value="myValue.fileType"
+      v-model:value="myValue.bodyType"
       placement="topRight"
       @confirm="valueChange"
   >

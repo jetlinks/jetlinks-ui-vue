@@ -7,7 +7,7 @@
             --
         </div>
         <div v-else-if="_data.data?.valueType?.type === 'file'">
-            <template v-if="data?.valueType?.fileType === 'base64'">
+            <template v-if="data?.valueType?.bodyType === 'base64'">
                 <div :class="valueClass" v-if="!!getType(value?.formatValue)">
                     <img :src="imgMap.get(_type)" @error="onError" />
                 </div>
@@ -16,7 +16,7 @@
                 </div>
             </template>
             <div
-                v-else-if="data?.valueType?.fileType === 'Binary(二进制)'"
+                v-else-if="data?.valueType?.bodyType === 'Binary(二进制)'"
                 :class="valueClass"
             >
                 <img :src="imgMap.get('other')" />
