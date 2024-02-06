@@ -98,7 +98,7 @@ const addGroup = () => {
 }
 const saveGroup = async (data: any) => {
     if (addName.value === '') {
-        listData.value[0].children.shift()
+        listData.value[0].children.splice(1,1)
     } else {
         const saveData = {
             name: addName.value,
