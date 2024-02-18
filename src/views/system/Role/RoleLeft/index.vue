@@ -70,12 +70,15 @@ const searchValue = ref()
 const inputRef = ref()
 const addName = ref()
 const selectId = ref()
-const addStatus = ref(false) // 新增分组状态
 const queryGroup = async (select?: Boolean, searchName?: string) => {
     const params = searchName ? { sorts: [{ name: 'createTime', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }] }
     const req: any = await queryRoleGroup(params)
     if (req.status === 200) {
         listData.value[0].children = req.result
+        if(req.result[req.result.length - 1].id === 'default_group'){
+            req.result.unshift(req.result[req.result.length - 1])
+            req.result.pop()
+        }
         // if(req.result.length && select){
         //     selectGroup(req.result[0].id)
         // }
@@ -84,10 +87,10 @@ const queryGroup = async (select?: Boolean, searchName?: string) => {
 const addGroup = () => {
     addName.value = ''
     const newId = randomString()
-    listData.value[0].children.unshift({
+    listData.value[0].children.splice(1, 0, ({
         name: '',
         id: newId
-    })
+    }))
     selectId.value = newId
     nextTick(() => {
         inputRef.value.focus()
@@ -95,7 +98,7 @@ const addGroup = () => {
 }
 const saveGroup = async (data: any) => {
     if (addName.value === '') {
-        listData.value[0].children.shift()
+        listData.value[0].children.splice(1,1)
     } else {
         const saveData = {
             name: addName.value,
@@ -124,7 +127,6 @@ const searchChange = () => {
 const selectGroup = (id: string) => {
     selectedKeys.value = [id]
     id === 'global_role' ? emit('selectData', '') : emit('selectData', selectedKeys.value)
-
 }
 const deleteGroup = async (id: string) => {
     const res: any = await deleteRoleGroup(id)
