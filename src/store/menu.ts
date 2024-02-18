@@ -114,12 +114,16 @@ export const useMenuStore = defineStore({
           const silderMenus = handleSiderMenu(cloneDeep(resultData))
           // const { menusData, silderMenus } = filterAsyncRouter(resultData)
           handleMenusMap(cloneDeep(menusData), this.handleMenusMapById)
+          if(!menusData.length){
+              menusData.push(AccountMenu)
+              this.handleMenusMapById(AccountMenu)
+          }
           menusData.push({
             path: '/',
             redirect: menusData[0]?.path,
             meta: {
               hideInMenu: true
-            }
+              }
           })
           // console.log(menusData)
           // menusData.push(AccountMenu)
