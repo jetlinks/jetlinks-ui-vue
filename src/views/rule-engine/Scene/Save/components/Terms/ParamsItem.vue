@@ -41,6 +41,7 @@
                 v-if="showDouble"
                 icon="icon-canshu"
                 placeholder="参数值"
+                :termType="paramsValue.termType"
                 :options="valueOptions"
                 :metricOptions="metricOption"
                 :tabsOptions="tabsOptions"
@@ -49,16 +50,16 @@
                 @select="valueSelect"
                 />
                 <ParamsDropdown
-                    v-else
-                    icon="icon-canshu"
-                    placeholder="参数值"
-                    :options="valueOptions"
-                    :metricOptions="metricOption"
-                    :tabsOptions="tabsOptions"
-                    :metric="paramsValue.value?.metric"
-                    v-model:value="paramsValue.value.value"
-                    v-model:source="paramsValue.value.source"
-                    @select="valueSelect"
+                v-else
+                icon="icon-canshu"
+                placeholder="参数值"
+                :options="valueOptions"
+                :metricOptions="metricOption"
+                :tabsOptions="tabsOptions"
+                :metric="paramsValue.value?.metric"
+                v-model:value="paramsValue.value.value"
+                v-model:source="paramsValue.value.source"
+                @select="valueSelect"
                 />
             </div>
             <j-popconfirm
