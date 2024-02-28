@@ -1,5 +1,5 @@
 <template>
-    <page-container>
+    
         <div class="role-container">
             <pro-search :columns="columns" target="system-role" @search="handelSearch" />
             <FullPage>
@@ -37,7 +37,7 @@
             <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
                 :current="current" />
         </div>
-    </page-container>
+    
 </template>
 
 <script setup lang="ts" name="Role">
