@@ -607,7 +607,7 @@ export const metadataMapById = (type: 'device' | 'product', productId: string, d
 
 export const getMetadataMapById = (type: 'device' | 'product', productId: string) => server.get(`/device/metadata/mapping/${type}/${productId}`)
 
-export const getInkingDevices = (data: string[]) => server.post('/plugin/mapping/device/_all', data)
+export const getInkingDevices = (data: string[],pluginId:any) => server.post(`/plugin/mapping/device/${pluginId}/_all`, data)
 
 export const getProtocolMetadata = (id: string, transport: string) => server.get(`/protocol/${id}/${transport}/metadata`)
 
