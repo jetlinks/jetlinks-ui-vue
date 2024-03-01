@@ -44,6 +44,17 @@
             导入属性
           </PermissionButton>
           <PermissionButton
+              key="export"
+              style="margin-right: 20px;"
+              :tooltip="{
+                   title: '导出属性',
+                }"
+              @click="exportStats"
+              placement="topRight"
+          >
+            导出属性
+          </PermissionButton>
+          <PermissionButton
               type="primary"
               :hasPermission="`${permission}:update`"
               key="update"
@@ -273,8 +284,8 @@ import { useMetadata, useOperateLimits } from './hooks';
 import {TypeStringMap, useColumns} from './columns';
 import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
 import { Source, OtherSetting, InputParams, ConfigParams } from './components';
-import { saveProductVirtualProperty } from '@/api/device/product';
-import { saveDeviceVirtualProperty } from '@/api/device/instance';
+import { saveProductVirtualProperty,exportProductStats} from '@/api/device/product';
+import { saveDeviceVirtualProperty,exportInsStats } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import { asyncUpdateMetadata, updateMetadata } from '../metadata';
@@ -292,6 +303,7 @@ import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { usePermissionStore } from '@/store/permission';
 import Import from './components/Import/index.vue'
 import App from '@/App.vue';
+import { downloadFileByUrl } from '@/utils/utils';
 
 const props = defineProps({
     target: {
@@ -314,6 +326,7 @@ const tableContainer = ref()
 const system = useSystem();
 const {basicLayout} = storeToRefs(system);
 const router = useRouter()
+const route = useRoute()
 
 const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
 const { hasOperate } = useOperateLimits(_target);
@@ -565,6 +578,15 @@ const parentTabsChange = (next?: Function) => {
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
+const exportStats = async() =>{
+  const { id } = route.params
+  const res = props?.target === 'product' ? await exportProductStats(id) : await exportInsStats(id)
+  if (res) {
+        const blob = new Blob([res], { type: 'xlsx' });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(url, `物模型导出`, 'xlsx');
+    }
+} 
 onUnmounted(() => {
   EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
 })

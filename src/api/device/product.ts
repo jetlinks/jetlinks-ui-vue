@@ -226,5 +226,10 @@ export const productTemplate = (productId:string,format:string) => server.get(`/
 //导入产品属性
 export const importProductProperty = (productId: string, url: string) => server.post(`/device-product/${productId}/property-metadata/import?fileUrl=${url}`)
 
+/**
+ * 导出产品物模型属性
+ */
+export const exportProductStats = (id:string) => server.get(`/device-product/${id}/property-metadata/export.xlsx`,{},{responseType: 'blob'})
+
 
 

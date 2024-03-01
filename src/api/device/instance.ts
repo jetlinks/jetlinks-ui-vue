@@ -647,3 +647,8 @@ export const instanceTemplate = (deviceId:string,format:string) => server.get(`/
 
 //导入设备属性
 export const importInsProperty = (deviceId:string,url:string) => server.post(`/device-product/${deviceId}/property-metadata/import?fileUrl=${url}`)
+
+/**
+ * 导出设备物模型属性
+ */
+export const exportInsStats = (id:string) => server.get(`/device-instance/${id}/property-metadata/export.xlsx`,{},{responseType: 'blob'})
