@@ -33,6 +33,17 @@
             新增
           </PermissionButton> -->
           <PermissionButton
+              key="import"
+              style="margin-right: 20px;"
+              :tooltip="{
+                   title: '导入属性',
+                }"
+              @click="visibleImport = true"
+              placement="topRight"
+          >
+            导入属性
+          </PermissionButton>
+          <PermissionButton
               type="primary"
               :hasPermission="`${permission}:update`"
               key="update"
@@ -246,6 +257,7 @@
         :getPopupContainer="getPopupContainer"
         @cancel="cancelDetailModal"
     />
+    <Import v-if="visibleImport" @close="visibleImport = false" :type="target" ></Import>
 </template>
 
 <script setup lang="ts" name="MetadataBase">
@@ -278,6 +290,7 @@ import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { usePermissionStore } from '@/store/permission';
+import Import from './components/Import/index.vue'
 import App from '@/App.vue';
 
 const props = defineProps({
@@ -296,7 +309,7 @@ const props = defineProps({
 });
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
-
+const visibleImport = ref(false);
 const tableContainer = ref()
 const system = useSystem();
 const {basicLayout} = storeToRefs(system);

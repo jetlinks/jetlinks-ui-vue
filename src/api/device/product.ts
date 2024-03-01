@@ -26,6 +26,7 @@ export const convertMetadata = (direction: 'from' | 'to', type: string, data: an
  */
 export const modify = (id: string, data: any) => server.put(`/device-product/${id}`, data)
 
+
 /**
  * 
  * @returns 
@@ -218,6 +219,12 @@ export const getMetadataDeviceConfig = (params: {
 export const saveProductVirtualProperty = (productId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/_batch`, data)
 
 export const queryProductVirtualProperty = (productId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${propertyId}`)
+
+// 下载产品导入属性模板
+export const productTemplate = (productId:string,format:string) => server.get(`/device-product/${productId}/property-metadata/template.${format}`,{},{responseType: 'blob'})
+
+//导入产品属性
+export const importProductProperty = (productId: string, url: string) => server.post(`/device-product/${productId}/property-metadata/import?fileUrl=${url}`)
 
 
 

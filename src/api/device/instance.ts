@@ -27,6 +27,11 @@ export const deleteMetadata = (deviceId: string) => server.remove(`/device-insta
 export const saveMetadata = (id: string, data: DeviceMetadata) => server.put(`/device/instance/${id}/metadata`, data)
 
 /**
+ * 导入设备物模型保存接口
+ */
+export const saveMetadataStats =(id: string , data:any) => server.put(`/device-instance/${id}/metadata`, data)
+
+/**
  * 根据设备ID获取设备详情
  * @param id 设备ID
  * @returns 设备详情
@@ -636,3 +641,9 @@ export const queryTypescript = (deviceId:string) => server.get(`/device/${device
  * @returns 
  */
 export const queryProductTs = (productId:string) => server.get(`/product/${productId}/virtual-property.d.ts`)
+
+//下载设备导入属性模板
+export const instanceTemplate = (deviceId:string,format:string) => server.get(`/device-instance/${deviceId}/property-metadata/template.${format}`,{},{responseType: 'blob'})
+
+//导入设备属性
+export const importInsProperty = (deviceId:string,url:string) => server.post(`/device-product/${deviceId}/property-metadata/import?fileUrl=${url}`)
