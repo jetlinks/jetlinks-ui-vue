@@ -17,7 +17,7 @@
                         placeholder="请选择文件格式"
                     >
                         <j-radio-button value="xlsx">xlsx</j-radio-button>
-                        <j-radio-button value="csv">csv</j-radio-button>
+                        <!-- <j-radio-button value="csv">csv</j-radio-button> -->
                     </j-radio-group>
                 </j-form-item>
 
@@ -52,7 +52,7 @@
                 <j-space>
                     下载模板
                     <a @click="downFile('xlsx')">.xlsx</a>
-                    <a @click="downFile('csv')">.csv</a>
+                    <!-- <a @click="downFile('csv')">.csv</a> -->
                 </j-space>
             </div>
         </div>
