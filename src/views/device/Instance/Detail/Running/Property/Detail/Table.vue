@@ -200,4 +200,7 @@ const _download = (record: any) => {
 :deep(.ant-pagination-jump-next){
     display: none !important;
 }
+:deep(.ant-pagination-jump-prev){
+    display: none !important;
+}
 </style>
