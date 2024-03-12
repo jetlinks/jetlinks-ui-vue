@@ -35,11 +35,12 @@
                     <j-form-item
                         name="username"
                         label="用户名"
+                        :validateFirst=true
                         :rules="[
                             { required: true, message: '' },
                             {
                                 validator: form.rules.checkUserName,
-                                trigger: 'blur',
+                                trigger: ['blur', 'change'],
                             },
                             {
                                 validator: checkCh,
