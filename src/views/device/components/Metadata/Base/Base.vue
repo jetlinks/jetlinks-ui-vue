@@ -423,7 +423,7 @@ const handleAddClick = async (_data?: any, index?: number) => {
 
   const _addData = await tableRef.value.addItem(newObject, index)
   nextTick(()=>{
-    if(tableContainer.value.classList.value === 'tableContainer'){
+    if(tableContainer?.value?.classList?.value === 'tableContainer'){
       tableContainer.value.classList.remove('tableContainer')
     }
   })

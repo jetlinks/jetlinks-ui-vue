@@ -5,7 +5,7 @@
                 <div class="left" >
                     <img
                         style="width: 100%; height: 100%"
-                        :src="basis.backgroud || getImage('/login.png')"
+                        :src="basis.background || getImage('/login.png')"
                     />
                     <a
                         href="https://beian.miit.gov.cn/#/Integrated/index"
