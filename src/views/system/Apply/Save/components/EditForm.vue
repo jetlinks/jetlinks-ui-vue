@@ -1274,6 +1274,10 @@
                                         required: true,
                                         message: '请输入用户名前缀',
                                     },
+                                    {
+                                        validator: checkCh,
+                                        trigger: 'change'
+                                    }
                                 ]"
                             >
                                 <j-input
@@ -1548,7 +1552,14 @@ const form = reactive({
     uploadLoading: false,
 });
 
-// 请求头和参数必填验证
+
+const checkCh = (_rule:Rule,value:string): Promise<any> => 
+            new Promise((resolve,reject) => {
+                if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
+                else return resolve('')
+            })
+
+// 请求头和参数必填验
 const headerValid = ref(true);
 const paramsValid = ref(true);
 const headerValidator = () => {
