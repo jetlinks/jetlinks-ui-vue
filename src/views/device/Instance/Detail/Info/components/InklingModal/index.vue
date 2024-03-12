@@ -11,6 +11,7 @@
     <InklingDevice
       v-model:value='checkKey'
       :accessId='accessId'
+      :pluginId="pluginId"
     />
   </j-modal>
 </template>
