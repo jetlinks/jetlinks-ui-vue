@@ -14,25 +14,25 @@
       <template v-if='!options.onlyName'>
         <div v-if='options.productName' class='center-item'>
           <AIcon type='icon-chanpin1' class='icon-padding-right' />
-          <span className='trigger-options-type'>{{ options.productName }}</span>
+          <span class='trigger-options-type'>{{ options.productName }}</span>
         </div>
 
         <div v-if='options.when'>
-          <span className='trigger-options-when'>{{ options.when }}</span>
+          <span class='trigger-options-when'>{{ options.when }}</span>
         </div>
         <div v-if='options.time'>
-          <span className='trigger-options-time'>{{ options.time }}</span>
+          <span class='trigger-options-time'>{{ options.time }}</span>
         </div>
         <div v-if='options.extraTime'>
-          <span className='trigger-options-extraTime'>{{ options.extraTime }}</span>
+          <span class='trigger-options-extraTime'>{{ options.extraTime }}</span>
         </div>
         <div v-if='options.action' class='center-item'>
           <AIcon :type='options.typeIcon' class='icon-padding-right' />
-          <span className='trigger-options-action'>{{ options.action }}</span>
+          <span class='trigger-options-action'>{{ options.action }}</span>
         </div>
         <div v-if='options.type' class='center-item'>
           <AIcon :type='options.typeIcon' class='icon-padding-right' />
-          <span className='trigger-options-type'>{{ options.type }}</span>
+          <span class='trigger-options-type'>{{ options.type }}</span>
         </div>
       </template>
     </template>

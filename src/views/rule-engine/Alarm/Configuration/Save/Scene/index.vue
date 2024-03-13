@@ -2,7 +2,7 @@
     <FullPage>
         <JProTable
             model="CARD"
-            :request="query"
+            :request="queryTable"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
                 terms,
@@ -47,11 +47,15 @@
                         <img :src="typeMap.get(slotProps.triggerType)?.img" />
                     </template>
                     <template #content>
+                      <div style="height: 102px;">
                         <Ellipsis style="width: calc(100% - 100px)">
                             <span style="font-size: 16px; font-weight: 600">
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
+                        <div v-if="slotProps.branchName">
+                          {{ slotProps.branchName }}
+                        </div>
                         <Ellipsis :lineClamp="2">
                             <div class="subTitle">
                                 说明：{{
@@ -60,6 +64,7 @@
                                 }}
                             </div>
                         </Ellipsis>
+                      </div>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -95,7 +100,7 @@
 </template>
 
 <script lang="ts" setup>
-import { query } from '@/api/rule-engine/scene';
+import { queryBranch} from '@/api/rule-engine/scene';
 import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
@@ -154,7 +159,7 @@ const getActions = (
             popConfirm: {
                 title: '确定解绑？',
                 onConfirm: async () => {
-                    const res = await unbindScene(id, [data.id]);
+                    const res = await unbindScene(id, [data.id], data.branchIndex);
                     if (res.status === 200) {
                         onlyMessage('操作成功');
                         actionRef.value.reload();
@@ -165,6 +170,11 @@ const getActions = (
     ];
     return actions;
 };
+
+const queryTable = (_terms: any) => {
+  return queryBranch(_terms, id)
+}
+
 const visible = ref(false);
 const log = () => {
     console.log();

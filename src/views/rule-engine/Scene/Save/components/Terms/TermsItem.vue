@@ -11,6 +11,7 @@
         :termsName='name'
         :whenName='whenName'
         :branchName='branchName'
+        :branches_Index='branches_Index'
     />
   </j-form-item>
 </template>
@@ -57,6 +58,10 @@ const props = defineProps({
     default: 0
   },
   branchName: {
+    type: Number,
+    default: 0
+  },
+  branches_Index: {
     type: Number,
     default: 0
   },

@@ -1,82 +1,76 @@
 <template>
-    <div class="terms-params-item">
-        <div v-if="!isFirst" class="term-type-warp">
-            <DropdownButton
-                :options="[
-                    { label: '并且', value: 'and' },
-                    { label: '或者', value: 'or' },
-                ]"
-                type="type"
-                v-model:value="paramsValue.type"
-                @select="typeSelect"
-            />
-        </div>
-        <div
-            class="params-item_button"
-            @mouseover="mouseover"
-            @mouseout="mouseout"
-        >
-            <DropdownButton
-                :options="columnOptions"
-                icon="icon-zhihangdongzuoxie-1"
-                type="column"
-                value-name="column"
-                label-name="fullName"
-                placeholder="请选择参数"
-                v-model:value="paramsValue.column"
-                component="treeSelect"
-                @select="columnSelect"
-            />
-            <DropdownButton
-                :options="termTypeOptions"
-                type="termType"
-                value-name="id"
-                label-name="name"
-                placeholder="操作符"
-                v-model:value="paramsValue.termType"
-                @select="termsTypeSelect"
-            />
-            <div v-if="!['notnull','isnull'].includes(paramsValue.termType)">
-                <DoubleParamsDropdown
-                v-if="showDouble"
-                icon="icon-canshu"
-                placeholder="参数值"
-                :options="valueOptions"
-                :metricOptions="metricOption"
-                :tabsOptions="tabsOptions"
-                v-model:value="paramsValue.value.value"
-                v-model:source="paramsValue.value.source"
-                @select="valueSelect"
-                />
-                <ParamsDropdown
-                    v-else
-                    icon="icon-canshu"
-                    placeholder="参数值"
-                    :options="valueOptions"
-                    :metricOptions="metricOption"
-                    :tabsOptions="tabsOptions"
-                    :metric="paramsValue.value?.metric"
-                    v-model:value="paramsValue.value.value"
-                    v-model:source="paramsValue.value.source"
-                    @select="valueSelect"
-                />
-            </div>
-            <j-popconfirm
-                title="确认删除？"
-                @confirm="onDelete"
-                :overlayStyle="{ minWidth: '180px' }"
-            >
-                <div v-show="showDelete" class="button-delete">
-                    <AIcon type="CloseOutlined" />
-                </div>
-            </j-popconfirm>
-        </div>
-        <div class="term-add" @click.stop="termAdd" v-if="isLast">
-            <div class="terms-content">
-                <AIcon type="PlusOutlined" style="font-size: 12px" />
-            </div>
-        </div>
+  <div class='terms-params-item'>
+    <div v-if='!isFirst' class='term-type-warp'>
+      <DropdownButton
+        :options='[
+            { label: "并且", value: "and" },
+            { label: "或者", value: "or" },
+          ]'
+        type='type'
+        v-model:value='paramsValue.type'
+        @select='typeSelect'
+      />
     </div>
+    <div
+      class='params-item_button'
+      @mouseover='mouseover'
+      @mouseout='mouseout'
+    >
+      <DropdownButton
+        :options='columnOptions'
+        icon='icon-zhihangdongzuoxie-1'
+        type='column'
+        value-name='column'
+        label-name='fullName'
+        placeholder='请选择参数'
+        v-model:value='paramsValue.column'
+        component='treeSelect'
+        @select='columnSelect'
+      />
+      <DropdownButton
+        :options='termTypeOptions'
+        type="termType"
+        value-name='id'
+        label-name='name'
+        placeholder="操作符"
+        v-model:value='paramsValue.termType'
+        @select='termsTypeSelect'
+      />
+     <div v-if="!['notnull','isnull'].includes(paramsValue.termType)">
+      <DoubleParamsDropdown
+        v-if='showDouble'
+        icon='icon-canshu'
+        placeholder='参数值'
+        :options='valueOptions'
+        :metricOptions='metricOption'
+        :tabsOptions='tabsOptions'
+        v-model:value='paramsValue.value.value'
+        v-model:source='paramsValue.value.source'
+        @select='valueSelect'
+      />
+      <ParamsDropdown
+        v-else
+        icon='icon-canshu'
+        placeholder='参数值'
+        :options='valueOptions'
+        :metricOptions='metricOption'
+        :tabsOptions='tabsOptions'
+        :metric='paramsValue.value?.metric'
+        v-model:value='paramsValue.value.value'
+        v-model:source='paramsValue.value.source'
+        @select='valueSelect'
+      />
+     </div>
+      <j-popconfirm title='确认删除？' @confirm='onDelete' :overlayStyle='{minWidth: "180px"}'>
+        <div v-show='showDelete' class='button-delete'> <AIcon type='CloseOutlined' /></div>
+      </j-popconfirm>
+    </div>
+    <div class='term-add' @click.stop='termAdd' v-if='isLast'>
+      <div class='terms-content'>
+        <AIcon type='PlusOutlined' style='font-size: 12px' />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts" name="ParamsItem">
@@ -114,47 +108,51 @@ type TabsOption = {
 };
 
 const props = defineProps({
-    isFirst: {
-        type: Boolean,
-        default: true,
-    },
-    isLast: {
-        type: Boolean,
-        default: true,
-    },
-    showDeleteBtn: {
-        type: Boolean,
-        default: true,
-    },
-    name: {
-        type: Number,
-        default: 0,
-    },
-    termsName: {
-        type: Number,
-        default: 0,
-    },
-    branchName: {
-        type: Number,
-        default: 0,
-    },
-    whenName: {
-        type: Number,
-        default: 0,
-    },
-    value: {
-        type: Object as PropType<TermsType>,
-        default: () => ({
-            column: '',
-            type: '',
-            termType: 'eq',
-            value: {
-                source: 'manual',
-                value: undefined,
-            },
-        }),
-    },
-});
+  isFirst: {
+    type: Boolean,
+    default: true
+  },
+  isLast: {
+    type: Boolean,
+    default: true
+  },
+  showDeleteBtn: {
+    type: Boolean,
+    default: true
+  },
+  name: {
+    type: Number,
+    default: 0
+  },
+  termsName: {
+    type: Number,
+    default: 0
+  },
+  branchName: {
+    type: Number,
+    default: 0
+  },
+  branches_Index: {
+    type: Number,
+    default: 0
+  },
+  whenName: {
+    type: Number,
+    default: 0
+  },
+  value: {
+    type: Object as PropType<TermsType>,
+    default: () => ({
+      column: '',
+      type: '',
+      termType: 'eq',
+      value: {
+        source: 'manual',
+        value: undefined
+      }
+    })
+  }
+})
 
 const emit = defineEmits<Emit>();
 
@@ -321,33 +319,20 @@ const columnSelect = (option: any) => {
     // 如果参数类型未发生变化，则不修改操作符以及值
     const termTypes = option.termTypes;
 
-    if (
-        !termTypes.some(
-            (item: { id: string }) => paramsValue.termType === item.id,
-        )
-    ) {
-        // 修改操作符
-        termTypeChange = true;
-        paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq';
+  if (!termTypes.some((item: {id: string}) => paramsValue.termType === item.id)) { // 修改操作符
+    termTypeChange = true
+    paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
+  }
+
+  if (hasTypeChange || !tabsOptions.value.every(a => a.key === paramsValue.value.source )) { // 类型发生变化
+    paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq'
+    paramsValue.value = {
+      source: tabsOptions.value[0].key,
+      value: undefined
     }
-    console.log('hasTypeChange', paramsValue.value.source, tabsOptions.value);
-    if (
-        hasTypeChange ||
-        !tabsOptions.value.every((a) => a.key === paramsValue.value.source)
-    ) {
-        // 类型发生变化
-        paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq';
-        paramsValue.value = {
-            source: tabsOptions.value[0].key,
-            value: undefined,
-        };
-    } else if (termTypeChange) {
-        const oldValue = isArray(paramsValue.value!.value)
-            ? paramsValue.value!.value[0]
-            : paramsValue.value!.value;
-        const value = arrayParamsKey.includes(paramsValue.termType as string)
-            ? [oldValue, undefined]
-            : oldValue;
+  } else if (termTypeChange) {
+    const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
+    const value = arrayParamsKey.includes(paramsValue.termType as string) ? [ oldValue, undefined ] : oldValue
 
         const _source = paramsValue.value?.source || tabsOptions.value[0].key;
         const newValue: any = {
@@ -359,21 +344,22 @@ const columnSelect = (option: any) => {
             newValue.metric = paramsValue.value?.metric;
         }
 
-        paramsValue.value = newValue;
-    }
-    console.log(paramsValue, hasTypeChange);
-    handOptionByColumn(option);
-    emit('update:value', { ...paramsValue });
-    nextTick(() => {
-        formItemContext.onFieldChange();
-    });
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ][0] = option.name;
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ][1] = paramsValue.termType;
-};
+    paramsValue.value = newValue
+  }
+
+  handOptionByColumn(option)
+  emit('update:value', { ...paramsValue })
+  nextTick(() => {
+    formItemContext.onFieldChange()
+  })
+
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  console.log([props.branchName, props.whenName, props.termsName])
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][0] = option.name
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
+}
 
 const termsTypeSelect = (e: { key: string; name: string }) => {
     const oldValue = isArray(paramsValue.value!.value)
@@ -404,29 +390,26 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
         value: value,
     };
 
-    if (_source === 'metric') {
-        newValue.metric = paramsValue.value?.metric;
-        const isArray = isString(paramsValue.value!.value)
-            ? paramsValue.value!.value?.includes?.(',')
-            : false;
-        if (arrayParamsKey.includes(e.key) !== isArray) {
-            // 有变化
-            newValue.value = undefined;
-        }
+  if (_source === 'metric') {
+    newValue.metric = paramsValue.value?.metric
+    const isArray = isString(paramsValue.value!.value) ? paramsValue.value!.value?.includes?.(',') : false
+    if (arrayParamsKey.includes(e.key) !== isArray) { // 有变化
+        newValue.value = undefined
     }
-    if(
-        ['isnull','notull'].includes(e.key)
-    ){
-        newValue.value = 1
-    }
-    paramsValue.value = newValue;
+  }
 
-    emit('update:value', { ...paramsValue });
-    formItemContext.onFieldChange();
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ][1] = e.name;
-};
+  if(
+    ['isnull','notnull'].includes(e.key)
+  ){
+    newValue.value = 1
+  }
+  paramsValue.value = newValue
+
+  emit('update:value', { ...paramsValue })
+  formItemContext.onFieldChange()
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][1] = e.key
+
+}
 
 const valueSelect = (
     v: any,
@@ -440,50 +423,45 @@ const valueSelect = (
 
     const newValues = { ...paramsValue };
 
-    if (paramsValue.value?.source !== 'metric') {
-        delete newValues.value.metric;
-    }
-    emit('update:value', { ...newValues });
-    formItemContext.onFieldChange();
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ][2] = labelObj;
-};
+  if (paramsValue.value?.source !== 'metric') {
+    delete newValues.value.metric
+  }
+  emit('update:value', { ...newValues })
+  formItemContext.onFieldChange()
+
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][2] = labelObj
+}
 
 const typeSelect = (e: any) => {
-    emit('update:value', { ...paramsValue });
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ][3] = e.label;
-};
+  emit('update:value', { ...paramsValue })
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][3] = e.label
+}
 
 const termAdd = () => {
-    const terms = {
-        column: undefined,
-        value: {
-            source: 'manual',
-            value: undefined,
-        },
-        termType: undefined,
-        type: 'and',
-        key: `params_${new Date().getTime()}`,
-    };
-    formModel.value.branches?.[props.branchName]?.when?.[
-        props.whenName
-    ]?.terms?.push(terms);
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ].push(['', '', '', '并且']);
-};
+  const terms = {
+    column: undefined,
+    value: {
+      source: 'manual',
+      value: undefined
+    },
+    termType: undefined,
+    type: 'and',
+    key: `params_${new Date().getTime()}`
+  }
+  if (!formModel.value.options!.when[props.branches_Index]) {
+    formModel.value.options!.when[props.branches_Index] = {terms:[{terms: [['', '', '', '并且']]}]}
+  }
+  formModel.value.branches?.[props.branches_Index]?.when?.[props.whenName]?.terms?.push(terms)
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms.push(['', '', '', '并且'])
+}
 
 const onDelete = () => {
-    formModel.value.branches?.[props.branchName]?.when?.[
-        props.whenName
-    ]?.terms?.splice(props.termsName, 1);
-    formModel.value.options!.when[props.branchName].terms[
-        props.whenName
-    ].terms.splice(props.termsName, 1);
-};
+  formModel.value.branches?.[props.branches_Index]?.when?.[props.whenName]?.terms?.splice(props.termsName, 1)
+  formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms.splice(props.termsName, 1)
+}
 
 nextTick(() => {
     Object.assign(
@@ -499,7 +477,9 @@ nextTick(() => {
             'key',
         ]),
     );
-});
+})
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
