@@ -411,10 +411,6 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
 
 }
 
-const valueSelect = (v: any, label: string, labelObj: Record<number, any>, option: any) => {
-  if (paramsValue.value?.source === 'metric') {
-    paramsValue.value.metric = option?.id
-  }
 const valueSelect = (
     v: any,
     label: string,
