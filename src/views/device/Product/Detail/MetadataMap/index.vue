@@ -113,10 +113,11 @@
             <j-scrollbar>
                 <div class="title">功能说明</div>
                 <p>
-                    该功能用于将插件中的
+                    该功能用于将插件/协议包中的
                     <b>物模型属性标识</b>与
                     <b>平台物模型属性标识</b
-                    >进行映射,当两方属性标识不一致时，可在当前页面直接修改映射管理，系统将以映射后的物模型属性进行数据处理。
+                    >进行映射,当两方属性标识不一致时，可在当前页面直接修改映射管理，系统将以
+                    <b>映射后</b>的<b>物模型属性</b>进行数据处理。
                 </p>
                 <p>
                     未完成映射的属性标识“目标属性”列数据为空，代表该属性值来源以在平台配置的来源为准。
@@ -139,7 +140,7 @@ import { useProductStore } from '@/store/product';
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig';
 import { getPluginData, getProductByPluginId } from '@/api/link/plugin';
 import { getImage, onlyMessage } from '@/utils/comm';
-import { getMetadataMapById, metadataMapById } from '@/api/device/instance';
+import { getMetadataMapById, metadataMapById, getProtocolMetadata } from '@/api/device/instance';
 import { cloneDeep } from 'lodash-es';
 
 const productStore = useProductStore();
@@ -241,7 +242,7 @@ const onSearch = () => {
 const getDefaultMetadata = async () => {
     const metadata = JSON.parse(productDetail.value?.metadata || '{}');
     const properties = metadata.properties;
-    const pluginMetadata = await getPluginMetadata();
+    const pluginMetadata = await getMetadata();
     const pluginProperties = pluginMetadata?.properties || [];
     const metadataMap: any = await getMetadataMapData();
     pluginOptions.value = pluginProperties.map((item) => ({
@@ -302,6 +303,19 @@ const getPluginMetadata = (): Promise<{ properties: any[] }> => {
 
                         resolve(_item ? _item.metadata : { properties: [] });
                     }
+                }
+                resolve({ properties: [] });
+            },
+        );
+    });
+};
+const getMetadata = (): Promise<{ properties: any[] }> => {
+    return new Promise((resolve) => {
+        const transport = productDetail.value?.transportProtocol;
+        getProtocolMetadata(productDetail.value?.messageProtocol || '', transport).then(
+            (res: any) => {
+                if (res.success) {
+                    resolve(JSON.parse(res?.result || '{}'));
                 }
                 resolve({ properties: [] });
             },

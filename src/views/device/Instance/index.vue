@@ -19,7 +19,7 @@
                               selectedRowKeys: _selectedRowKeys,
                               onSelect: onSelectChange,
                               onSelectAll: selectAll,
-                              onSelectNone: ()=>_selectedRowKeys = []
+                              onSelectNone: () => (_selectedRowKeys = []),
                           }
                         : false
                 "
@@ -175,7 +175,12 @@
                             />
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;">
+                            <Ellipsis
+                                style="
+                                    width: calc(100% - 100px);
+                                    margin-bottom: 18px;
+                                "
+                            >
                                 <span style="font-size: 16px; font-weight: 600">
                                     {{ slotProps.name }}
                                 </span>
@@ -526,13 +531,13 @@ const columns = [
                                 _list.push({
                                     ...item,
                                     id: JSON.stringify({
-                                      assetType: 'device',
-                                      targets: [
-                                        {
-                                          type: 'org',
-                                          id: item.id,
-                                        },
-                                      ],
+                                        assetType: 'device',
+                                        targets: [
+                                            {
+                                                type: 'org',
+                                                id: item.id,
+                                            },
+                                        ],
                                     }),
                                 });
                             });
@@ -608,7 +613,7 @@ const handleParams = (config: Record<string, any>) => {
     if (Object.keys(_terms).length) {
         const url = new URLSearchParams();
         Object.keys(_terms).forEach((key) => {
-            console.log(_terms[key])
+            console.log(_terms[key]);
             url.append(key, _terms[key]);
         });
         return url.toString();
@@ -721,7 +726,7 @@ const getActions = (
     return actions;
 };
 
-const onSelectChange = (item: any,state: boolean) => {
+const onSelectChange = (item: any, state: boolean) => {
     const arr = new Set(_selectedRowKeys.value);
     // console.log(item, state);
     if (state) {
@@ -732,25 +737,24 @@ const onSelectChange = (item: any,state: boolean) => {
     _selectedRowKeys.value = [...arr.values()];
 };
 
-const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+const selectAll = (selected: Boolean, selectedRows: any, changeRows: any) => {
     if (selected) {
-            changeRows.map((i: any) => {
-                if (!_selectedRowKeys.value.includes(i.id)) {
-                    _selectedRowKeys.value.push(i.id)
-                }
-            })
-        } else {
-            const arr = changeRows.map((item: any) => item.id)
-            const _ids: string[] = [];
-            _selectedRowKeys.value.map((i: any) => {
-                if (!arr.includes(i)) {
-                    _ids.push(i)
-                }
-            })
-            _selectedRowKeys.value = _ids
-
-        }
-}
+        changeRows.map((i: any) => {
+            if (!_selectedRowKeys.value.includes(i.id)) {
+                _selectedRowKeys.value.push(i.id);
+            }
+        });
+    } else {
+        const arr = changeRows.map((item: any) => item.id);
+        const _ids: string[] = [];
+        _selectedRowKeys.value.map((i: any) => {
+            if (!arr.includes(i)) {
+                _ids.push(i);
+            }
+        });
+        _selectedRowKeys.value = _ids;
+    }
+};
 
 const handleClick = (dt: any) => {
     if (isCheck.value) {
@@ -770,17 +774,17 @@ const onCheckChange = () => {
 };
 
 const handleGetParams = (p: any) => {
-  p?.terms.map((a: any) => {
-    return a.terms.map((b: any) => {
-      if (b.column.includes('$product-info')) {
-        b.column = 'productId'
-        b.termType = 'product-info'
-      }
-      return b
-    })
-  })
-  return p
-}
+    p?.terms.map((a: any) => {
+        return a.terms.map((b: any) => {
+            if (b.column.includes('$product-info')) {
+                b.column = 'productId';
+                b.termType = 'product-info';
+            }
+            return b;
+        });
+    });
+    return p;
+};
 
 const activeAllDevice = () => {
     type.value = 'active';
@@ -925,30 +929,47 @@ const saveBtn = () => {
     instanceRef.value?.reload();
 };
 
+const dealSearchValue = (item: any) => {
+    let value: any = '';
+    console.log(item);
+    item.value.forEach((i: any, index: number) => {
+        console.log(i);
+        if (index > 0) {
+            value += ',' + i.slice((item.column + ' is ').length);
+        } else {
+            value +=
+                item.column + ' in ' + i.slice((item.column + ' is ').length);
+        }
+    });
+    return value;
+};
 const handleSearch = (_params: any) => {
     // params.value = _params;
     const newParams = (_params?.terms as any[])?.map((item1) => {
         item1.terms = item1.terms.map((item2: any) => {
-          if (item2.column === 'id$dim-assets') {
-            if (item2.termType === 'not') {
-              const oldValue = JSON.parse(item2.value)
-              oldValue.not = true
-              item2.value = JSON.stringify(oldValue)
+            if (item2.column === 'id$dim-assets') {
+                if (item2.termType === 'not') {
+                    const oldValue = JSON.parse(item2.value);
+                    oldValue.not = true;
+                    item2.value = JSON.stringify(oldValue);
+                }
+                delete item2.termType;
             }
-            delete item2.termType
-          }
 
-          if (
+            if (
                 item2.column &&
                 ['classifiedId', 'accessId', 'accessProvider'].includes(
                     item2.column,
                 )
             ) {
-                const oldTermType = item2.termType
-                delete item2.termType
+                const oldTermType = item2.termType;
+                delete item2.termType;
                 return {
                     ...item2,
                     column: `productId$product-info$${oldTermType}`,
+                    value: Array.isArray(item2.value)
+                        ? dealSearchValue(item2)
+                        : item2.value,
                 };
             }
             return item2;

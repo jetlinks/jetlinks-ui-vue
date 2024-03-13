@@ -268,7 +268,6 @@ watch(
     () => props.productDetail,
     (newVal) => {
         if (newVal?.id) {
-                console.log(props.values)
             if (props.values?.selector === 'fixed' && props.values?.selectorValues?.length === 1) {
                 const id = props.values?.selectorValues?.[0]?.value;
                 if (id) {
@@ -300,6 +299,8 @@ watch(
                 )
             ) {
                 queryBuiltIn();
+            }else{
+                modelRef.message.properties =  [] as any;
             }
         }
     },

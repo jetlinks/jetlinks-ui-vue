@@ -11,6 +11,7 @@
     <InklingDevice
       v-model:value='checkKey'
       :accessId='accessId'
+      :pluginId="pluginId"
     />
   </j-modal>
 </template>
@@ -50,7 +51,7 @@ const handleOk = async () => {
     loading.value = true
     const res = await savePluginData(
       'device',
-      props.accessId!,
+      props.pluginId!,
       route.params.id as string,
       checkKey.value
     ).catch(() => ({ success: false }))

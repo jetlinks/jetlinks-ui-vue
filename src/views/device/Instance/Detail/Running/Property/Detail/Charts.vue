@@ -135,7 +135,6 @@ const queryChartsList = async () => {
         loading.value = false;
        }
     )
-
     if (resp.status === 200) {
         const dataList: any[] = [
             {
@@ -144,7 +143,7 @@ const queryChartsList = async () => {
                 type: prop.data?.name || '',
             },
         ];
-        (resp.result as any)?.data?.forEach((i: any) => {
+        (resp.result as any)?.forEach((i: any) => {
             dataList.push({
                 ...i,
                 year: i.timestamp,

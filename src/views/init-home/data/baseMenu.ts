@@ -1506,7 +1506,6 @@ export default [
             url: '/iot/DataCollect/Dashboard',
             icon: 'icon-keshihua',
             showPage: [
-              'dashboard',
               'data-collect-channel',
               'data-collect-opc',
               'data-collector',
@@ -2836,7 +2835,7 @@ export default [
           },
         ],
         buttons: [],
-        showPage: ['dashboard', 'media-device'],
+        showPage: ['media-device'],
         accessSupport: { text: "不支持", value: "unsupported" },
         supportDataAccess: false
       },

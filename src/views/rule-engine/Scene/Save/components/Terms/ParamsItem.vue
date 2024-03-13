@@ -73,31 +73,39 @@
   </div>
 </template>
 
-<script setup lang='ts' name='ParamsItem'>
-import type { PropType } from 'vue'
-import type { TermsType } from '@/views/rule-engine/Scene/typings'
-import DropdownButton from '../DropdownButton'
-import { getOption } from '../DropdownButton/util'
-import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown'
-import {inject, watch} from 'vue'
-import { ContextKey, arrayParamsKey, timeTypeKeys } from './util'
-import { useSceneStore } from 'store/scene'
+<script setup lang="ts" name="ParamsItem">
+import type { PropType } from 'vue';
+import type { TermsType } from '@/views/rule-engine/Scene/typings';
+import DropdownButton from '../DropdownButton';
+import { getOption } from '../DropdownButton/util';
+import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown';
+import { inject, watch } from 'vue';
+import { ContextKey, arrayParamsKey, timeTypeKeys } from './util';
+import { useSceneStore } from 'store/scene';
 import { storeToRefs } from 'pinia';
-import { Form } from 'jetlinks-ui-components'
-import {indexOf, isArray, isObject, isString, pick} from 'lodash-es'
+import { Form } from 'jetlinks-ui-components';
+import {
+    indexOf,
+    isArray,
+    isObject,
+    isString,
+    pick,
+    cloneDeep,
+} from 'lodash-es';
 
-const sceneStore = useSceneStore()
-const { data: formModel } = storeToRefs(sceneStore)
+const sceneStore = useSceneStore();
+const { data: formModel } = storeToRefs(sceneStore);
 const formItemContext = Form.useInjectFormItemContext();
+
 type Emit = {
-  (e: 'update:value', data: TermsType): void
-}
+    (e: 'update:value', data: TermsType): void;
+};
 
 type TabsOption = {
-  label: string;
-  key: string;
-  component: string
-}
+    label: string;
+    key: string;
+    component: string;
+};
 
 const props = defineProps({
   isFirst: {
@@ -146,126 +154,170 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits<Emit>()
+const emit = defineEmits<Emit>();
 
 const paramsValue = reactive<TermsType>({
-  column: props.value?.column,
-  type: props.value?.type,
-  termType: props.value?.termType,
-  value: props.value?.value,
-  metric: undefined
-})
+    column: props.value?.column,
+    type: props.value?.type,
+    termType: props.value?.termType,
+    value: props.value?.value,
+    metric: undefined,
+});
 
-const showDelete = ref(false)
-const columnOptions: any = inject(ContextKey) //
-const columnType = ref<string>()
-const termTypeOptions = ref<Array<{ id: string, name: string}>>([]) // 条件值
-const valueOptions = ref<any[]>([]) // 默认手动输入下拉
-const metricOption = ref<any[]>([])  // 根据termType获取对应指标值
-const isMetric = ref<boolean>(false) // 是否为指标值
-const tabsOptions = ref<Array<TabsOption>>([{ label: '手动输入', key: 'manual', component: 'string' }])
-const metricsCacheOption = ref<any[]>([]) // 缓存指标值
+const showDelete = ref(false);
+const columnOptions: any = inject(ContextKey); //
+const columnType = ref<string>();
+const termTypeOptions = ref<Array<{ id: string; name: string }>>([]); // 条件值
+const valueOptions = ref<any[]>([]); // 默认手动输入下拉
+const metricOption = ref<any[]>([]); // 根据termType获取对应指标值
+const isMetric = ref<boolean>(false); // 是否为指标值
+const tabsOptions = ref<Array<TabsOption>>([
+    { label: '手动输入', key: 'manual', component: 'string' },
+]);
+const metricsCacheOption = ref<any[]>([]); // 缓存指标值
 
 const handOptionByColumn = (option: any) => {
-  if (option) {
-    termTypeOptions.value = option.termTypes || []
-    metricsCacheOption.value = option.metrics?.map((item: any) => ({...item, label: item.name})) || []
-    tabsOptions.value.length = 1
-    tabsOptions.value[0].component = option.dataType
-    columnType.value = option.dataType
-    if (option.metrics && option.metrics.length) {
+    if (option) {
+        termTypeOptions.value = option.termTypes || [];
+        metricsCacheOption.value =
+            option.metrics?.map((item: any) => ({
+                ...item,
+                label: item.name,
+            })) || [];
+        tabsOptions.value.length = 1;
+        tabsOptions.value[0].component = option.dataType;
+        columnType.value = option.dataType;
+        if (option.metrics && option.metrics.length) {
+            tabsOptions.value.push({
+                label: '指标值',
+                key: 'metric',
+                component: 'select',
+            });
+            isMetric.value = true;
+        } else {
+            isMetric.value = false;
+        }
 
-      tabsOptions.value.push(
-        { label: '指标值', key: 'metric', component: 'select' }
-      )
-      isMetric.value = true
+        if (option.dataType === 'boolean') {
+            // 处理_options为Object时
+            const _options = option.options || option.others;
+            if (isObject(_options)) {
+                const bool = (_options as any)?.bool;
+                valueOptions.value = [
+                    { label: bool.falseText, value: String(bool.falseValue) },
+                    { label: bool.trueText, value: String(bool.trueValue) },
+                ];
+            } else {
+                valueOptions.value = option.options?.map((item: any) => ({
+                    ...item,
+                    label: item.name,
+                    value: item.id,
+                })) || [
+                    { label: '是', value: 'true' },
+                    { label: '否', value: 'false' },
+                ];
+            }
+        } else if (option.dataType === 'enum') {
+            valueOptions.value =
+                option.options?.map((item: any) => ({
+                    ...item,
+                    label: item.name,
+                    value: item.id,
+                })) || [];
+        } else {
+            valueOptions.value = (option.options || []).map((item: any) => ({
+                ...item,
+                label: item.name,
+                value: item.id,
+            }));
+        }
     } else {
-      isMetric.value = false
+        termTypeOptions.value = [];
+        metricsCacheOption.value = [];
+        valueOptions.value = [];
     }
+};
 
-    if (option.dataType === 'boolean') {
-      // 处理_options为Object时
-      const _options = option.options || option.others
-      if (isObject(_options)) {
-        const bool = (_options as any)?.bool
-        valueOptions.value = [
-          { label: bool.falseText, value: String(bool.falseValue)},
-          { label: bool.trueText, value: String(bool.trueValue)},
-        ]
-      } else {
-        valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || [
-          { label: '是', value: 'true' },
-          { label: '否', value: 'false' },
-        ]
-      }
-    } else if(option.dataType === 'enum') {
-      valueOptions.value = option.options?.map((item: any) => ({ ...item, label: item.name, value: item.id})) || []
-    } else{
-      valueOptions.value = (option.options || []).map((item: any) => ({ ...item, label: item.name, value: item.id}))
-    }
-  } else {
-    termTypeOptions.value = []
-    metricsCacheOption.value = []
-    valueOptions.value = []
-  }
-}
-
-watch(() => JSON.stringify(columnOptions.value), () => {
-  if (paramsValue.column) {
-    const option = getOption(columnOptions.value, paramsValue.column, 'column')
-    const copyValue = props.value
-    if (option && Object.keys(option).length) {
-      handOptionByColumn(option)
-      if (copyValue.error) {
-        copyValue.error = false
-        emit('update:value', copyValue)
-        formItemContext.onFieldChange()
-      }
-    } else {
-      copyValue.error = true
-      emit('update:value', copyValue)
-      formItemContext.onFieldChange()
-    }
-
-  }
-}, { immediate: true })
+watch(
+    () => JSON.stringify(columnOptions.value),
+    () => {
+        if (paramsValue.column) {
+            const option = getOption(
+                columnOptions.value,
+                paramsValue.column,
+                'column',
+            );
+            const copyValue = props.value;
+            if (option && Object.keys(option).length) {
+                handOptionByColumn(option);
+                if (copyValue.error) {
+                    copyValue.error = false;
+                    emit('update:value', copyValue);
+                    formItemContext.onFieldChange();
+                }
+            } else {
+                copyValue.error = true;
+                emit('update:value', copyValue);
+                formItemContext.onFieldChange();
+            }
+            //数据类型为date时判断是选择还是手动输入
+            if (option?.dataType === 'date') {
+                if (timeTypeKeys.includes(paramsValue.termType || '')) {
+                    if (tabsOptions.value[0].component !== 'int') {
+                    }
+                    tabsOptions.value[0].component = 'int';
+                } else if (
+                    !timeTypeKeys.includes(paramsValue.termType || '') &&
+                    tabsOptions.value[0].component == 'int'
+                ) {
+                    tabsOptions.value[0].component = 'date';
+                }
+            }
+        }
+    },
+    { immediate: true },
+);
 
 const showDouble = computed(() => {
-  const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false
-  const isSourceMetric = paramsValue.value?.source === 'metric'
-  if (metricsCacheOption.value.length) {
-    metricOption.value = metricsCacheOption.value.filter(item => isRange ? item.range : !item.range)
-  } else {
-    metricOption.value = []
-  }
-
-  if (isRange) {
-    if (isMetric.value) {
-      return !isSourceMetric
+    const isRange = paramsValue.termType
+        ? arrayParamsKey.includes(paramsValue.termType)
+        : false;
+    const isSourceMetric = paramsValue.value?.source === 'metric';
+    if (metricsCacheOption.value.length) {
+        metricOption.value = metricsCacheOption.value.filter((item) =>
+            isRange ? item.range : !item.range,
+        );
+    } else {
+        metricOption.value = [];
     }
-    return true
-  }
-  return false
-})
+
+    if (isRange) {
+        if (isMetric.value) {
+            return !isSourceMetric;
+        }
+        return true;
+    }
+    return false;
+});
 
 const mouseover = () => {
-  if (props.showDeleteBtn){
-    showDelete.value = true
-  }
-}
+    if (props.showDeleteBtn) {
+        showDelete.value = true;
+    }
+};
 
 const mouseout = () => {
-  if (props.showDeleteBtn){
-    showDelete.value = false
-  }
-}
+    if (props.showDeleteBtn) {
+        showDelete.value = false;
+    }
+};
 
 const columnSelect = (option: any) => {
-  const dataType = option.dataType
-  const hasTypeChange = dataType !== tabsOptions.value[0].component
-  let termTypeChange = false
-  // 如果参数类型未发生变化，则不修改操作符以及值
-  const termTypes = option.termTypes
+    const dataType = option.dataType;
+    const hasTypeChange = dataType !== tabsOptions.value[0].component;
+    let termTypeChange = false;
+    // 如果参数类型未发生变化，则不修改操作符以及值
+    const termTypes = option.termTypes;
 
   if (!termTypes.some((item: {id: string}) => paramsValue.termType === item.id)) { // 修改操作符
     termTypeChange = true
@@ -282,15 +334,15 @@ const columnSelect = (option: any) => {
     const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
     const value = arrayParamsKey.includes(paramsValue.termType as string) ? [ oldValue, undefined ] : oldValue
 
-    const _source = paramsValue.value?.source || tabsOptions.value[0].key
-    const newValue: any = {
-      source: _source,
-      value: value
-    }
+        const _source = paramsValue.value?.source || tabsOptions.value[0].key;
+        const newValue: any = {
+            source: _source,
+            value: value,
+        };
 
-    if (_source === 'metric') {
-      newValue.metric = paramsValue.value?.metric
-    }
+        if (_source === 'metric') {
+            newValue.metric = paramsValue.value?.metric;
+        }
 
     paramsValue.value = newValue
   }
@@ -309,27 +361,34 @@ const columnSelect = (option: any) => {
   formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[props.termsName][1] = paramsValue.termType
 }
 
-const termsTypeSelect = (e: { key: string, name: string }) => {
-  const oldValue = isArray(paramsValue.value!.value) ? paramsValue.value!.value[0] : paramsValue.value!.value
-  let value = arrayParamsKey.includes(e.key) ? [ oldValue, undefined ] : oldValue
-  // 如果上次的值 在 timeTypeKeys中 则不变
-  if (columnType.value === 'date') {
-    if (timeTypeKeys.includes(e.key)) {
-      if (tabsOptions.value[0].component !== 'int') {
-        value = undefined
-      }
-      tabsOptions.value[0].component = 'int'
-    } else if (!timeTypeKeys.includes(e.key) && tabsOptions.value[0].component == 'int') {
-      value = undefined
-      tabsOptions.value[0].component = 'date'
+const termsTypeSelect = (e: { key: string; name: string }) => {
+    const oldValue = isArray(paramsValue.value!.value)
+        ? paramsValue.value!.value[0]
+        : paramsValue.value!.value;
+    let value = arrayParamsKey.includes(e.key)
+        ? [oldValue, undefined]
+        : oldValue;
+    // 如果上次的值 在 timeTypeKeys中 则不变
+    if (columnType.value === 'date') {
+        if (timeTypeKeys.includes(e.key)) {
+            if (tabsOptions.value[0].component !== 'int') {
+                value = undefined;
+            }
+            tabsOptions.value[0].component = 'int';
+        } else if (
+            !timeTypeKeys.includes(e.key) &&
+            tabsOptions.value[0].component == 'int'
+        ) {
+            value = undefined;
+            tabsOptions.value[0].component = 'date';
+        }
     }
-  }
 
-  const _source = paramsValue.value?.source || tabsOptions.value[0].key
-  const newValue: any = {
-    source: _source,
-    value: value
-  }
+    const _source = paramsValue.value?.source || tabsOptions.value[0].key;
+    const newValue: any = {
+        source: _source,
+        value: value,
+    };
 
   if (_source === 'metric') {
     newValue.metric = paramsValue.value?.metric
@@ -356,8 +415,17 @@ const valueSelect = (v: any, label: string, labelObj: Record<number, any>, optio
   if (paramsValue.value?.source === 'metric') {
     paramsValue.value.metric = option?.id
   }
+const valueSelect = (
+    v: any,
+    label: string,
+    labelObj: Record<number, any>,
+    option: any,
+) => {
+    if (paramsValue.value?.source === 'metric') {
+        paramsValue.value.metric = option?.id;
+    }
 
-  const newValues = { ...paramsValue }
+    const newValues = { ...paramsValue };
 
   if (paramsValue.value?.source !== 'metric') {
     delete newValues.value.metric
@@ -400,9 +468,20 @@ const onDelete = () => {
 }
 
 nextTick(() => {
-  Object.assign(paramsValue, pick(props.value, ['column', 'options', 'termType', 'terms', 'type', 'value', 'metric', 'key']))
+    Object.assign(
+        paramsValue,
+        pick(props.value, [
+            'column',
+            'options',
+            'termType',
+            'terms',
+            'type',
+            'value',
+            'metric',
+            'key',
+        ]),
+    );
 })
-
 </script>
 
 <style scoped>
