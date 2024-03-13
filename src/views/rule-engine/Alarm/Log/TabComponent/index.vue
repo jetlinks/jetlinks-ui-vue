@@ -150,14 +150,14 @@ const tableRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 
-const getDefaulitLevel = () => {
+const getDefaultLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
             data.value.defaultLevel = res.result?.levels || [];
         }
     });
 };
-getDefaulitLevel();
+getDefaultLevel();
 const props = defineProps<{
     type: string;
     id?: string;
@@ -181,18 +181,12 @@ const columns = [
         key: 'level',
         search: {
             type: 'select',
-            options: async () => {
-              const res = await queryLevel()
-              if (res.success && res.result?.levels) {
-                return  (res.result.levels as any[]).map((item: any) => {
-                  return {
-                    label: item.title,
-                    value: item.level
-                  }
-                })
-              }
-              return []
-            }
+            options: data.value.defaultLevel.map((item:any)=>{
+                return {
+                    label:item.title,
+                    value:item.level
+                }
+            })
         },
     },
     {

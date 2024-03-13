@@ -8,7 +8,6 @@
 import { isNoCommunity } from '@/utils/utils';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
-import { queryLevel } from '@/api/rule-engine/config';
 import  TableComponents  from './TabComponent/index.vue';
 const list = [
     {
@@ -52,14 +51,6 @@ const noList = [
 ];
 const alarmStore = useAlarmStore();
 const { data }  = storeToRefs(alarmStore);
-const getDefaulitLevel = () => {
-    queryLevel().then((res)=>{
-        if(res.status === 200 ){
-            data.value.defaultLevel = res.result?.levels || [];
-        }
-    })
-}
-getDefaulitLevel();
 const onTabChange = (key:string) =>{
     data.value.tab = key;
 }
