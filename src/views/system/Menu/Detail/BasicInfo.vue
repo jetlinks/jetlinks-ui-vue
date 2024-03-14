@@ -76,6 +76,11 @@
                                     {
                                         max: 64,
                                         message: '最多可输入64个字符',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        validator: checkCh,
+                                        trigger: ['change', 'blur'],
                                     },
                                     {
                                         validator: form.checkCode,
@@ -99,8 +104,15 @@
                                         required: true,
                                         message: '请输入页面地址',
                                     },
-                                    { max: 128, message: '最多可输入128个字符' },
-                                    { pattern: /^\// ,message:'请正确填写地址，以/开头',trigger:'change'},
+                                    {
+                                        max: 128,
+                                        message: '最多可输入128个字符',
+                                    },
+                                    {
+                                        pattern: /^\//,
+                                        message: '请正确填写地址，以/开头',
+                                        trigger: 'change',
+                                    },
                                 ]"
                             >
                                 <j-input
@@ -127,20 +139,17 @@
                                 />
                             </j-form-item>
                         </j-col>
-                      <j-col :span="12">
-                        <j-form-item
-                            label="所属应用"
-                            name="owner"
-                        >
-                          <j-select
-                              v-model:value="form.data.owner"
-                              :options="[{ label: 'Iot', value: 'iot' }]"
-                              allowClear
-                              placeholder="请选择所属应用"
-                              style="width: 100%"
-                          />
-                        </j-form-item>
-                      </j-col>
+                        <j-col :span="12">
+                            <j-form-item label="所属应用" name="owner">
+                                <j-select
+                                    v-model:value="form.data.owner"
+                                    :options="[{ label: 'Iot', value: 'iot' }]"
+                                    allowClear
+                                    placeholder="请选择所属应用"
+                                    style="width: 100%"
+                                />
+                            </j-form-item>
+                        </j-col>
                     </j-row>
                 </div>
 
@@ -255,7 +264,7 @@
                     route.params.id === ':id' ? 'add' : 'update'
                 }`"
                 @click="form.clickSave"
-                :loading='form.saveLoading'
+                :loading="form.saveLoading"
             >
                 保存
             </PermissionButton>
@@ -334,17 +343,17 @@ const form = reactive({
             });
 
         if (isNoCommunity) {
-          // 获取关联菜单
-          getMenuTree_api({ paging: false }).then((resp: any) => {
-              form.treeData = resp.result;
-          });
-          // 获取资产类型
-          getAssetsType_api().then((resp: any) => {
-              form.assetsType = resp.result.map((item: any) => ({
-                  label: item.name,
-                  value: item.id,
-              }));
-          });
+            // 获取关联菜单
+            getMenuTree_api({ paging: false }).then((resp: any) => {
+                form.treeData = resp.result;
+            });
+            // 获取资产类型
+            getAssetsType_api().then((resp: any) => {
+                form.assetsType = resp.result.map((item: any) => ({
+                    label: item.name,
+                    value: item.id,
+                }));
+            });
         }
     },
     checkCode: async (_rule: Rule, value: string): Promise<any> => {
@@ -409,10 +418,15 @@ const form = reactive({
 });
 form.init();
 
-const choseIcon = (typeStr:string) =>{
+const checkCh = async (_rule: Rule, value: string) => {
+    if (/[\u4e00-\u9fa5]/.test(value))
+        return Promise.reject('用户名不能包含中文');
+    else return Promise.resolve('');
+};
+const choseIcon = (typeStr: string) => {
     form.data.icon = typeStr;
     uploadIcon.value?.clearValidate();
-}
+};
 // 弹窗
 const dialogVisible = ref(false);
 
