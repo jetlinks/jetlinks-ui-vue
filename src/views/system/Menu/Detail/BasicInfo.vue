@@ -4,40 +4,65 @@
             <h3>基本信息</h3>
             <j-form ref="basicFormRef" :model="form.data" class="basic-form">
                 <div class="row" style="display: flex">
-                    <j-form-item ref="uploadIcon" label="菜单图标" name="icon" :rules="[
-                        {
-                            required: true,
-                            message: '请上传图标',
-                            trigger: 'change',
-                        },
-                    ]" style="flex: 0 0 186px">
+                    <j-form-item
+                        ref="uploadIcon"
+                        label="菜单图标"
+                        name="icon"
+                        :rules="[
+                            {
+                                required: true,
+                                message: '请上传图标',
+                                trigger: 'change',
+                            },
+                        ]"
+                        style="flex: 0 0 186px"
+                    >
                         <div class="icon-upload has-icon" v-if="form.data.icon">
-                            <AIcon :type="form.data.icon" style="font-size: 90px" />
-                            <span class="mark" @click="dialogVisible = true">点击修改</span>
+                            <AIcon
+                                :type="form.data.icon"
+                                style="font-size: 90px"
+                            />
+                            <span class="mark" @click="dialogVisible = true"
+                                >点击修改</span
+                            >
                         </div>
 
-                        <div v-else @click="dialogVisible = true" class="icon-upload no-icon">
+                        <div
+                            v-else
+                            @click="dialogVisible = true"
+                            class="icon-upload no-icon"
+                        >
                             <span>
-                                <AIcon type="PlusOutlined" style="font-size: 30px" />
+                                <AIcon
+                                    type="PlusOutlined"
+                                    style="font-size: 30px"
+                                />
                                 <p>点击选择图标</p>
                             </span>
                         </div>
                     </j-form-item>
                     <j-row :gutter="24" style="flex: 1 1 auto">
                         <j-col :span="12">
-                            <j-form-item label="名称" name="name" :rules="[
-                                {
-                                    required: true,
-                                    message: '请输入名称',
-                                    trigger: 'change',
-                                },
-                                {
-                                    max: 64,
-                                    message: '最多可输入64个字符',
-                                    trigger: 'change',
-                                },
-                            ]">
-                                <j-input v-model:value="form.data.name" placeholder="请输入名称" />
+                            <j-form-item
+                                label="名称"
+                                name="name"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请输入名称',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
+                                <j-input
+                                    v-model:value="form.data.name"
+                                    placeholder="请输入名称"
+                                />
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
@@ -46,81 +71,140 @@
                                 name="code"
                                 :validateFirst="true"
                                 :rules="[
-                                {
-                                    required: true,
-                                    message: '请输入编码',
-                                    trigger: 'change',
-                                },
-                                {
-                                    max: 64,
-                                    message: '最多可输入64个字符',
-                                    trigger: 'change',
-                                },
-                                {
-                                    validator: form.checkCode,
-                                    trigger: 'blur',
-                                },
-                            ]">
-                                <j-input v-model:value="form.data.code" placeholder="请输入编码" />
+                                    {
+                                        required: true,
+                                        message: '请输入编码',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                        trigger: 'change',
+                                    },
+                                    {
+                                        validator: checkCh,
+                                        trigger: ['change', 'blur'],
+                                    },
+                                    {
+                                        validator: form.checkCode,
+                                        trigger: 'blur',
+                                    },
+                                ]"
+                            >
+                                <j-input
+                                    v-model:value="form.data.code"
+                                    placeholder="请输入编码"
+                                />
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
-                            <j-form-item :rules="[
-                                {
-                                    required: true,
-                                    message: '请输入页面地址',
-                                },
-                                { max: 128, message: '最多可输入128个字符' },
-                                { pattern: /^\//, message: '请正确填写地址，以/开头' },
-                            ]" :validateFirst="true" label="页面地址" name="url">
-                                <j-input v-model:value="form.data.url" placeholder="请输入页面地址" />
+                            <j-form-item
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请输入页面地址',
+                                    },
+                                    {
+                                        max: 128,
+                                        message: '最多可输入128个字符',
+                                    },
+                                    {
+                                        pattern: /^\//,
+                                        message: '请正确填写地址，以/开头',
+                                    },
+                                ]"
+                                :validateFirst="true"
+                                label="页面地址"
+                                name="url"
+                            >
+                                <j-input
+                                    v-model:value="form.data.url"
+                                    placeholder="请输入页面地址"
+                                />
                             </j-form-item>
                         </j-col>
                         <j-col :span="12">
-                            <j-form-item label="排序" name="sortIndex" :rules="[
-                                {
-                                    pattern: /^[0-9]*[1-9][0-9]*$/,
-                                    message: '请输入大于0的整数',
-                                },
-                            ]">
-                                <j-input-number v-model:value="form.data.sortIndex" placeholder="请输入排序"
-                                    style="width: 100%" />
+                            <j-form-item
+                                label="排序"
+                                name="sortIndex"
+                                :rules="[
+                                    {
+                                        pattern: /^[0-9]*[1-9][0-9]*$/,
+                                        message: '请输入大于0的整数',
+                                    },
+                                ]"
+                            >
+                                <j-input-number
+                                    v-model:value="form.data.sortIndex"
+                                    placeholder="请输入排序"
+                                    style="width: 100%"
+                                />
                             </j-form-item>
                         </j-col>
                     </j-row>
                 </div>
 
                 <j-form-item label="说明" name="describe">
-                    <j-textarea v-model:value="form.data.describe" :rows="4" show-count :maxlength="200"
-                        placeholder="请输入说明" />
+                    <j-textarea
+                        v-model:value="form.data.describe"
+                        :rows="4"
+                        show-count
+                        :maxlength="200"
+                        placeholder="请输入说明"
+                    />
                 </j-form-item>
             </j-form>
         </div>
         <div class="card" v-if="!form.data.appId">
             <h3>权限配置</h3>
-            <j-form ref="permissFormRef" :model="form.data" class="basic-form permiss-form">
+            <j-form
+                ref="permissFormRef"
+                :model="form.data"
+                class="basic-form permiss-form"
+            >
                 <j-form-item name="accessSupport" required v-if="isNoCommunity">
                     <template #label>
                         <span style="margin-right: 3px">数据权限控制</span>
                         <j-tooltip title="此菜单页面数据所对应的资产类型">
-                            <AIcon type="QuestionCircleOutlined" class="img-style" style="color: #a6a6a6" />
+                            <AIcon
+                                type="QuestionCircleOutlined"
+                                class="img-style"
+                                style="color: #a6a6a6"
+                            />
                         </j-tooltip>
                     </template>
-                    <j-radio-group v-model:value="form.data.accessSupport" name="radioGroup">
+                    <j-radio-group
+                        v-model:value="form.data.accessSupport"
+                        name="radioGroup"
+                    >
                         <j-radio value="unsupported">不支持</j-radio>
                         <j-radio value="support">支持</j-radio>
                         <j-radio value="indirect">
                             <span style="margin-right: 3px">间接控制</span>
-                            <j-tooltip title="此菜单内的数据基于其他菜单的数据权限控制">
-                                <AIcon type="QuestionCircleFilled" class="img-style" />
+                            <j-tooltip
+                                title="此菜单内的数据基于其他菜单的数据权限控制"
+                            >
+                                <AIcon
+                                    type="QuestionCircleFilled"
+                                    class="img-style"
+                                />
                             </j-tooltip>
                         </j-radio>
                     </j-radio-group>
 
-                    <j-form-item name="assetType" v-if="form.data.accessSupport === 'support'"
-                        :rules="[{ required: true, message: '请选择资产类型' }]" style="margin-top: 24px; margin-bottom: 0">
-                        <j-select v-model:value="form.data.assetType" style="width: 500px" placeholder="请选择资产类型" show-search
-                            :options="form.assetsType">
+                    <j-form-item
+                        name="assetType"
+                        v-if="form.data.accessSupport === 'support'"
+                        :rules="[{ required: true, message: '请选择资产类型' }]"
+                        style="margin-top: 24px; margin-bottom: 0"
+                    >
+                        <j-select
+                            v-model:value="form.data.assetType"
+                            style="width: 500px"
+                            placeholder="请选择资产类型"
+                            show-search
+                            :options="form.assetsType"
+                        >
                             <!-- <j-select-option
                                 v-for="item in form.assetsType"
                                 :value="item.value"
@@ -129,32 +213,60 @@
                         </j-select>
                     </j-form-item>
 
-                    <j-form-item name="indirectMenus" v-if="form.data.accessSupport === 'indirect'"
-                        :rules="[{ required: true, message: '请选择关联菜单' }]" style="margin-top: 24px; margin-bottom: 0">
-                        <j-tree-select v-model:value="form.data.indirectMenus" style="width: 400px" :dropdown-style="{
-                            maxHeight: '400px',
-                            overflow: 'auto',
-                        }" placeholder="请选择关联菜单" multiple show-search :tree-data="form.treeData" :field-names="{
-    children: 'children',
-    label: 'name',
-    value: 'id',
-}">
+                    <j-form-item
+                        name="indirectMenus"
+                        v-if="form.data.accessSupport === 'indirect'"
+                        :rules="[{ required: true, message: '请选择关联菜单' }]"
+                        style="margin-top: 24px; margin-bottom: 0"
+                    >
+                        <j-tree-select
+                            v-model:value="form.data.indirectMenus"
+                            style="width: 400px"
+                            :dropdown-style="{
+                                maxHeight: '400px',
+                                overflow: 'auto',
+                            }"
+                            placeholder="请选择关联菜单"
+                            multiple
+                            show-search
+                            :tree-data="form.treeData"
+                            :field-names="{
+                                children: 'children',
+                                label: 'name',
+                                value: 'id',
+                            }"
+                        >
                         </j-tree-select>
                     </j-form-item>
                 </j-form-item>
                 <j-form-item label="权限">
-                    <PermissChoose :first-width="3" max-height="350px" v-model:value="form.data.permissions"
-                        :key="form.data.id || ''" />
+                    <PermissChoose
+                        :first-width="3"
+                        max-height="350px"
+                        v-model:value="form.data.permissions"
+                        :key="form.data.id || ''"
+                    />
                 </j-form-item>
             </j-form>
         </div>
-        <PermissionButton type="primary" :hasPermission="`${permission}:${route.params.id === ':id' ? 'add' : 'update'
-                }`" @click="form.clickSave" :loading='form.saveLoading' class="saveBtn">
-                保存
+        <PermissionButton
+            type="primary"
+            :hasPermission="`${permission}:${
+                route.params.id === ':id' ? 'add' : 'update'
+            }`"
+            @click="form.clickSave"
+            :loading="form.saveLoading"
+            class="saveBtn"
+        >
+            保存
         </PermissionButton>
         <!-- 弹窗 -->
-        <ChooseIconDialog v-if="dialogVisible" v-model:visible="dialogVisible" :icon="form.data.icon"
-            @confirm="(typeStr: string) => choseIcon(typeStr)" />
+        <ChooseIconDialog
+            v-if="dialogVisible"
+            v-model:visible="dialogVisible"
+            :icon="form.data.icon"
+            @confirm="(typeStr: string) => choseIcon(typeStr)"
+        />
     </div>
 </template>
 
@@ -175,7 +287,6 @@ import { Rule } from 'ant-design-vue/lib/form';
 import { isNoCommunity } from '@/utils/utils';
 import { onlyMessage } from '@/utils/comm';
 
-
 const permission = 'system/Menu';
 // 路由
 const route = useRoute();
@@ -191,7 +302,7 @@ const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
 const uploadIcon = ref<FormInstance>();
 //菜单应用选项
-const appOptions = ref<any>([])
+const appOptions = ref<any>([]);
 const form = reactive({
     data: {
         name: '',
@@ -216,7 +327,9 @@ const form = reactive({
             getMenuInfo_api(routeParams.id).then((resp: any) => {
                 form.data = {
                     ...(resp.result as formType),
-                    permissions: resp.result?.permissions ? resp.result.permissions : [],
+                    permissions: resp.result?.permissions
+                        ? resp.result.permissions
+                        : [],
                     accessSupport:
                         resp.result?.accessSupport?.value || 'unsupported',
                 };
@@ -224,25 +337,34 @@ const form = reactive({
             });
 
         if (isNoCommunity) {
-          // 获取关联菜单
-          getMenuTree_api({ paging: false,terms:[{terms:[{
-                    terms:[
-                        {
-                            value:"%show\":true%",
-                            termType:"like",
-                            column:"options"
-                        }
-                    ]
-                }]}]}).then((resp: any) => {
-              form.treeData = resp.result;
-          });
-          // 获取资产类型
-          getAssetsType_api().then((resp: any) => {
-              form.assetsType = resp.result.map((item: any) => ({
-                  label: item.name,
-                  value: item.id,
-              }));
-          });
+            // 获取关联菜单
+            getMenuTree_api({
+                paging: false,
+                terms: [
+                    {
+                        terms: [
+                            {
+                                terms: [
+                                    {
+                                        value: '%show":true%',
+                                        termType: 'like',
+                                        column: 'options',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            }).then((resp: any) => {
+                form.treeData = resp.result;
+            });
+            // 获取资产类型
+            getAssetsType_api().then((resp: any) => {
+                form.assetsType = resp.result.map((item: any) => ({
+                    label: item.name,
+                    value: item.id,
+                }));
+            });
         }
     },
     checkCode: async (_rule: Rule, value: string): Promise<any> => {
@@ -270,7 +392,7 @@ const form = reactive({
                 const api = routeParams.id ? saveMenuInfo_api : addMenuInfo_api;
                 form.saveLoading = true;
                 const accessSupportValue = form.data.accessSupport;
-                const params:any = {
+                const params: any = {
                     ...form.data,
                     owner: 'iot',
                     options: { show: true },
@@ -280,8 +402,8 @@ const form = reactive({
                             accessSupportValue === 'unsupported'
                                 ? '不支持'
                                 : accessSupportValue === 'support'
-                                    ? '支持'
-                                    : '间接控制',
+                                ? '支持'
+                                : '间接控制',
                     },
                 };
                 api(params)
@@ -302,15 +424,20 @@ const form = reactive({
                     })
                     .finally(() => (form.saveLoading = false));
             })
-            .catch((err) => { });
+            .catch((err) => {});
     },
 });
 form.init();
 
+const checkCh = async (_rule: Rule, value: string) => {
+    if (/[\u4e00-\u9fa5]/.test(value))
+        return Promise.reject('用户名不能包含中文');
+    else return Promise.resolve('');
+};
 const choseIcon = (typeStr: string) => {
     form.data.icon = typeStr;
     uploadIcon.value?.clearValidate();
-}
+};
 // 弹窗
 const dialogVisible = ref(false);
 
