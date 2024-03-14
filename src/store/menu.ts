@@ -40,7 +40,7 @@ const defaultOwnParams = [
             column: "options"
           }
         ],
-        type:'or'
+        type:'and'
       }
     ]
   }
