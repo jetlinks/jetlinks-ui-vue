@@ -331,7 +331,7 @@ const handleSearch = async () => {
             //     }
             // })
             
-            resp.result?.[0].forEach((item:any)=>{
+            resp.result?.[0]?.forEach((item:any)=>{
                 _metadataMap.has(item.metadataId) ? _metadataMap.set(item.metadataId,Object.assign(_metadataMap.get(item.metadataId),item)) : _metadataMap.set(item.metadataId,item)
             })
             data.value = [..._metadataMap.values()]
