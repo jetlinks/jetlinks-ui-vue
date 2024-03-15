@@ -143,9 +143,9 @@ const instanceStore = useInstanceStore();
 const visible = ref<boolean>(false);
 const config = ref<ConfigMetadata[]>([]);
 
-watchEffect(() => {
-    if (instanceStore.current.id) {
-        getConfigMetadata(instanceStore.current.id).then((resp) => {
+watch(()=>instanceStore.current.id,(val) => {
+    if (val) {
+        getConfigMetadata(val).then((resp) => {
             if (resp.status === 200) {
                 config.value = resp?.result as ConfigMetadata[];
             }

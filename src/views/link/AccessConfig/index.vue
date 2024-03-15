@@ -331,6 +331,9 @@ const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
     providersOptions.value = accessConfigTypeFilter(res.result || []);
+    providersOptions.value =  providersOptions.value.filter((i:any)=>{
+        return i.id !== 'modbus-tcp' && i.id !== 'opc-ua'
+    })
 };
 getProvidersList();
 
