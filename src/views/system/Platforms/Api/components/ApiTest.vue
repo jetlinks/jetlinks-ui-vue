@@ -108,7 +108,7 @@
                     </j-button>
                 </div>
                 <j-monaco-editor
-                    v-if="refStr"
+                    v-if=" method !=='get' && method !=='patch'"
                     ref="editorRef"
                     language="json"
                     style="height: 100% ; min-height: 200px;"
@@ -143,6 +143,7 @@ const props = defineProps<{
 const responsesContent = ref({});
 const editorRef = ref();
 const formRef = ref<FormInstance>();
+const method = ref()
 const requestBody = reactive({
     tableColumns: [
         {
@@ -199,9 +200,10 @@ let schema: any = {};
 const refStr = ref('');
 
 const init = () => {
-    if (!props.selectApi.requestBody) return;
-    schema = props.selectApi.requestBody.content['application/json'].schema;
-    refStr.value = schema.$ref || schema?.items?.$ref;
+    method.value = props.selectApi.method
+    // if (!props.selectApi.requestBody) return;
+    // schema = props.selectApi.requestBody.content['application/json'].schema;
+    // refStr.value = schema.$ref || schema?.items?.$ref;
 };
 init();
 

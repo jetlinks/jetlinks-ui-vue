@@ -35,11 +35,16 @@
                     <j-form-item
                         name="username"
                         label="用户名"
+                        :validateFirst=true
                         :rules="[
                             { required: true, message: '' },
                             {
                                 validator: form.rules.checkUserName,
-                                trigger: 'blur',
+                                trigger: ['blur', 'change'],
+                            },
+                            {
+                                validator: checkCh,
+                                trigger: 'change',
                             },
                         ]"
                     >
@@ -94,9 +99,15 @@
             </j-row>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex" 
+                    <j-form-item
+                        name="roleIdList"
+                        label="角色"
+                        class="flex"
                         :rules="[
-                            { required: form.data.username !== 'admin', message: '请选择角色' },
+                            {
+                                required: form.data.username !== 'admin',
+                                message: '请选择角色',
+                            },
                         ]"
                     >
                         <j-select
@@ -209,8 +220,8 @@ import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import { uniqBy } from 'lodash-es';
 
 const admin = computed(() => {
-  return userInfos.value?.username === 'admin';
-})
+    return userInfos.value?.username === 'admin';
+});
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -310,9 +321,9 @@ const form = reactive({
                     ),
                 };
                 form._roleOptions = resp.result?.roleList?.map((i: any) => {
-                    return {label: i.name, value: i.id}
+                    return { label: i.name, value: i.id };
                 });
-                form._departmentOptions = resp.result?.orgList
+                form._departmentOptions = resp.result?.orgList;
                 nextTick(() => {
                     formRef.value?.clearValidate();
                 });
@@ -370,14 +381,22 @@ const form = reactive({
         };
     },
 });
+const checkCh = (_rule: Rule, value: string): Promise<any> =>
+    new Promise((resolve, reject) => {
+        if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
+        else return resolve('');
+    });
 
 const _roleOptions = computed(() => {
-    return uniqBy([...form.roleOptions, ...form._roleOptions], 'value')
-})
+    return uniqBy([...form.roleOptions, ...form._roleOptions], 'value');
+});
 
 const _departmentOptions = computed(() => {
-    return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
-})
+    return uniqBy(
+        [...form.departmentOptions, ...form._departmentOptions],
+        'id',
+    );
+});
 
 form.init();
 

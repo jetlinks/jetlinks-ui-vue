@@ -60,9 +60,9 @@ const instanceStore = useInstanceStore();
 const options = ref({});
 
 const _type = computed(() => {
-    const flag = list.includes(prop.data?.valueType?.type || '')
-    cycle.value =  flag ? '*' : '1m'
-    return flag
+    const flag = list.includes(prop.data?.valueType?.type || '');
+    cycle.value = flag ? '*' : '1m';
+    return flag;
 });
 
 const queryChartsAggList = async () => {
@@ -81,11 +81,9 @@ const queryChartsAggList = async () => {
             from: prop.time[0],
             to: prop.time[1],
         },
-    }).finally(
-       ()=>{
+    }).finally(() => {
         loading.value = false;
-       }
-    )
+    });
     if (resp.status === 200) {
         const dataList: any[] = [
             {
@@ -130,21 +128,13 @@ const queryChartsList = async () => {
             ],
             sorts: [{ name: 'timestamp', order: 'asc' }],
         },
-    ).finally(
-       ()=>{
+    ).finally(() => {
         loading.value = false;
-       }
-    )
-   
+    });
+
     if (resp.status === 200) {
-        const dataList: any[] = [
-            {
-                year: prop.time[0],
-                value: undefined,
-                type: prop.data?.name || '',
-            },
-        ];
-        (resp.result as any)?.data?.forEach((i: any) => {
+        const dataList: any[] = [];
+        (resp.result as any)?.forEach((i: any) => {
             dataList.push({
                 ...i,
                 year: i.timestamp,
@@ -152,12 +142,27 @@ const queryChartsList = async () => {
                 type: prop.data?.name || '',
             });
         });
-        dataList.push({
-            year: prop.time[1],
-            value: undefined,
-            type: prop.data?.name || '',
+        const beginTimeExist = dataList.find((i: any) => {
+            return i.year === prop.time[0];
         });
-        chartsList.value = dataList || [];
+        const endTimeExist = dataList.find((i: any) => {
+            return i.year === prop.time[1];
+        });
+        if (!beginTimeExist) {
+            dataList.unshift({
+                year: prop.time[0],
+                value: undefined,
+                type: prop.data?.name || '',
+            });
+        }
+        if (!endTimeExist) {
+            dataList.push({
+                year: prop.time[1],
+                value: undefined,
+                type: prop.data?.name || '',
+            });
+            chartsList.value = dataList || [];
+        }
     }
 };
 
@@ -192,7 +197,7 @@ const getOptions = (arr: any[]) => {
         tooltip: {
             trigger: 'axis',
             position: function (pt: any) {
-                const left = pt[0] - 80
+                const left = pt[0] - 80;
                 return [left, '10%'];
             },
         },
