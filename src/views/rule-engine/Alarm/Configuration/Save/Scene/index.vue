@@ -31,6 +31,7 @@
                         started: 'processing',
                         disable: 'error',
                     }"
+                    @click="handleView(slotProps.id, slotProps.triggerType)"
                 >
                     <template #type>
                         <span
@@ -103,6 +104,8 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
+import { useMenuStore } from 'store/menu';
+const menuStory = useMenuStore();
 const route = useRoute();
 const id = route.query?.id;
 
@@ -179,6 +182,18 @@ const closeSave = () => {
 const saveSuccess = () => {
     visible.value = false;
     actionRef.value.reload();
+};
+/**
+ * 查看
+ * @param id
+ * @param triggerType 触发类型
+ */
+ const handleView = (id: string, triggerType: string) => {
+    menuStory.jumpPage(
+        'rule-engine/Scene/Save',
+        {},
+        { triggerType: triggerType, id, type: 'view' },
+    );
 };
 </script>
 <style lang="less" scoped>
