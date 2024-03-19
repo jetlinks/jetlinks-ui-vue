@@ -25,7 +25,7 @@
                             v-model:checked="rowItem.checkAll"
                             :indeterminate="rowItem.indeterminate"
                             @change="() => permission.selectAllOpions(rowItem)"
-                            :disabled="props.disabled"
+                            :disabled="props.disabled || rowItem.disabled"
                         >
                             {{ rowItem.name }}
                         </j-checkbox>
@@ -35,7 +35,7 @@
                             v-model:value="rowItem.checkedList"
                             :options="rowItem.options"
                             @change="((checkValue:string[])=>permission.selectOption(rowItem, checkValue))"
-                            :disabled="props.disabled"
+                            :disabled="props.disabled || rowItem.disabled"
                         />
                     </j-col>
                 </j-row>
@@ -177,6 +177,7 @@ const permission = reactive({
                         checked.actions.length < item.actions.length) ||
                     false,
                 options,
+disabled: item.status === 0,
             };
         }) as permissionType[];
 
@@ -192,6 +193,7 @@ type permissionType = {
     checkAll: boolean;
     indeterminate: boolean;
     options: any[];
+disabled: boolean;
 };
 type paramsType = {
     paging: boolean;
