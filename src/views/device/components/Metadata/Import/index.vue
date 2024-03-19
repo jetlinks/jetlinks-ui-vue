@@ -606,7 +606,7 @@ const handleImport = async () => {
         const { id } = route.params || {};
         if (data.metadata === 'alink') {
             try {
-                const _import = JSON.parse(data.import);
+                const _import = omit(JSON.parse(data.import),['schema','profile']);
                 Object.keys(_import).forEach((i:any)=>{
                     const map = new Map()
                     _import[i].forEach((item:any)=>(

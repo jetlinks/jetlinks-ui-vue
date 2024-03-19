@@ -63,8 +63,12 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
 export const handleTypeValue = (type:string, value: any = {}) => {
   let obj: any = {}
   switch (type) {
+//bug#22609
     case 'array':
-      obj.elementType = value
+      obj.elementType = {
+        type: 'object',
+        properties: []
+      }
       break;
     case 'object':
       obj.properties = (value || []).map((item: any) => {
