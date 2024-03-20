@@ -106,6 +106,7 @@ const goBack = () => {
 const TypeMap = new Map([
     ['fixed-media', 'media'],
     ['gb28181-2016', 'media'],
+    ['onvif', 'media'],
     ['OneNet', 'cloud'],
     ['Ctwing', 'cloud'],
     ['modbus-tcp', 'channel'],

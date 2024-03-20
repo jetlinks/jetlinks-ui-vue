@@ -197,6 +197,7 @@
                         </template>
                         <template v-if="!!route.query.id">
                             <j-form-item
+                                v-if="formData.channel === 'gb28181-2016'"
                                 label="流传输模式"
                                 name="streamMode"
                                 :rules="{
@@ -462,6 +463,7 @@ const getDetail = async () => {
     const res = await DeviceApi.detail(route.query.id as string);
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
+    console.log(formData.value,'formData')
 };
 
 onMounted(() => {
@@ -474,7 +476,7 @@ onMounted(() => {
 const btnLoading = ref<boolean>(false);
 const formRef = ref();
 const handleSubmit = () => {
-    const {
+    let {
         others,
         id,
         streamMode,
@@ -491,17 +493,17 @@ const handleSubmit = () => {
             : { id, streamMode, manufacturer, model, firmware, ...extraParams };
     } else if (formData.value.channel === 'gb28181-2016') {
         // 国标
-        const gbOthers = omit(others, [
+         others = omit(others, [
             'onvifUrl',
             'onvifPassword',
             'onvifUsername',
         ]);
         const getParmas = () => {
-            if (gbOthers?.stream_mode) {
-                gbOthers.stream_mode = streamMode;
+            if (others?.stream_mode) {
+                others.stream_mode = streamMode;
             }
             return {
-                gbOthers,
+                others,
                 id,
                 streamMode,
                 manufacturer,
@@ -510,12 +512,12 @@ const handleSubmit = () => {
                 ...extraParams,
             };
         };
-        params = !id ? { gbOthers, id, ...extraParams } : getParmas();
+        params = !id ? { others, id, ...extraParams } : getParmas();
     } else {
-        const onvOthers = omit(others, ['access_pwd']);
+        others = omit(others, ['access_pwd']);
         params = !id
-            ? {onvOthers,...extraParams}
-            : { id, streamMode, manufacturer, model, firmware,onvOthers, ...extraParams };
+            ? {others,...extraParams}
+            : { id, streamMode, manufacturer, model, firmware,others, ...extraParams };
     }
 
     formRef.value
