@@ -431,7 +431,7 @@ form.init();
 
 const checkCh = async (_rule: Rule, value: string) => {
     if (/[\u4e00-\u9fa5]/.test(value))
-        return Promise.reject('用户名不能包含中文');
+        return Promise.reject('编码不能包含中文');
     else return Promise.resolve('');
 };
 const choseIcon = (typeStr: string) => {

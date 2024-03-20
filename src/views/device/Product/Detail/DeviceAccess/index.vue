@@ -826,8 +826,9 @@ const updateAccessData = async (id: string, values: any) => {
     id: id,
     configuration: { ...extra },
     storePolicy: storePolicy,
-  });
-  submitLoading.value = false
+  }).finally(()=>{
+    submitLoading.value = false
+  })
   if (resp.status === 200) {
     onlyMessage('操作成功！');
     productStore.current!.storePolicy = storePolicy;
