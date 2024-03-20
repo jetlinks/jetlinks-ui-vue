@@ -473,7 +473,13 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data));
+                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
+                                    return (
+                                        i.id !== 'modbus-tcp' &&
+                                        i.id !== 'opc-ua'
+                                    );
+                                }));
+
                         });
                     });
                 },
