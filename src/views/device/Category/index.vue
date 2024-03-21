@@ -90,6 +90,7 @@ const title = ref('');
 const isAdd = ref(0);
 const isChild = ref(0);
 const tableLoading = ref(false);
+const addSortId = ref()
 // 筛选
 const query = reactive({
     columns: [
@@ -182,6 +183,7 @@ const getActions = (
                 }
                 nextTick(() => {
                     modifyRef.value.show(data);
+addSortId.value = data.id
                 });
             },
         },
@@ -257,6 +259,10 @@ const table = reactive({
      * 刷新表格数据
      */
     refresh: () => {
+if(isAdd.value === 0 && isChild.value !==3){
+            expandedRowKeys.value.push(addSortId.value);
+        }
+        console.log(expandedRowKeys.value)
         tableRef.value.reload();
     },
 });

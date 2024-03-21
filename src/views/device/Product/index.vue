@@ -473,7 +473,13 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data));
+                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
+                                    return (
+                                        i.id !== 'modbus-tcp' &&
+                                        i.id !== 'opc-ua'
+                                    );
+                                }));
+
                         });
                     });
                 },
@@ -550,7 +556,7 @@ const query = reactive({
             },
         },
         {
-            title: '分类',
+            title: '产品分类',
             key: 'classified',
             dataIndex: 'classifiedId',
             search: {
@@ -616,13 +622,12 @@ const query = reactive({
 });
 const saveRef = ref();
 const handleSearch = (e: any) => {
-
-  const newTerms = cloneDeep(e)
+const newTerms = cloneDeep(e);
   if (newTerms.terms?.length) {
-    newTerms.terms.forEach((a : any) => {
+    newTerms.terms.forEach((a: any) => {
         a.terms = a.terms.map((b: any) => {
           if (b.column === 'id$dim-assets') {
-            const value = b.value
+            const value = b.value;
             b = {
               column: 'id',
               termType: 'dim-assets',
@@ -635,11 +640,19 @@ const handleSearch = (e: any) => {
                   },
                 ],
               },
-            }
+            };
+                }
+                if(b.column === 'accessProvider'){
+                    if(b.value === 'collector-gateway'){
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
+                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
+                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                    }
           }
-          return b
-        })
-    })
+          return b;
+        });
+    });
   }
 
   params.value = newTerms;
