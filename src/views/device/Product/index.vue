@@ -70,7 +70,11 @@
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;"
+                            <Ellipsis
+                                style="
+                                    width: calc(100% - 100px);
+                                    margin-bottom: 18px;
+                                "
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
@@ -191,7 +195,7 @@ import {
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
-import { omit , cloneDeep } from 'lodash-es';
+import { omit, cloneDeep } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
@@ -260,9 +264,7 @@ const columns = [
         ellipsis: true,
     },
 ];
-const permission = usePermissionStore().hasPermission(
-    `device/Product:import`,
-);
+const permission = usePermissionStore().hasPermission(`device/Product:import`);
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
 
@@ -318,7 +320,7 @@ const getActions = (
                     'accessProvider',
                     'messageProtocol',
                 ]);
-                downloadObject(extra, data.name+'产品');
+                downloadObject(extra, data.name + '产品');
             },
         },
         {
@@ -397,31 +399,31 @@ const beforeUpload = (file: any) => {
             onlyMessage('请上传json格式文件', 'error');
             return false;
         }
-        if(!text){
-            onlyMessage('文件内容不能为空','error')
+        if (!text) {
+            onlyMessage('文件内容不能为空', 'error');
             return false;
         }
-            const data = JSON.parse(text);
-            // 设置导入的产品状态为未发布
-            data.state = 0;
-            if (Array.isArray(data)) {
-                onlyMessage('请上传正确格式文件', 'error');
-                return false;
-            }
-            delete data.state;
-            if(!data?.name){
-                data.name = "产品" + Date.now();
-            }
-            if(!data?.deviceType || JSON.stringify(data?.deviceType) === '{}' ){
-                onlyMessage('缺少deviceType字段或对应的值','error')
-                return false
-            }
-            const res = await updateDevice(data);
-            if (res.status === 200) {
-                onlyMessage('操作成功');
-                tableRef.value?.reload();
-            }
-            return true;
+        const data = JSON.parse(text);
+        // 设置导入的产品状态为未发布
+        data.state = 0;
+        if (Array.isArray(data)) {
+            onlyMessage('请上传正确格式文件', 'error');
+            return false;
+        }
+        delete data.state;
+        if (!data?.name) {
+            data.name = '产品' + Date.now();
+        }
+        if (!data?.deviceType || JSON.stringify(data?.deviceType) === '{}') {
+            onlyMessage('缺少deviceType字段或对应的值', 'error');
+            return false;
+        }
+        const res = await updateDevice(data);
+        if (res.status === 200) {
+            onlyMessage('操作成功');
+            tableRef.value?.reload();
+        }
+        return true;
     };
     return false;
 };
@@ -471,7 +473,13 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data));
+                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
+                                    return (
+                                        i.id !== 'modbus-tcp' &&
+                                        i.id !== 'opc-ua'
+                                    );
+                                }));
+                            
                         });
                     });
                 },
@@ -548,7 +556,7 @@ const query = reactive({
             },
         },
         {
-            title: '分类',
+            title: '产品分类',
             key: 'classified',
             dataIndex: 'classifiedId',
             search: {
@@ -614,33 +622,40 @@ const query = reactive({
 });
 const saveRef = ref();
 const handleSearch = (e: any) => {
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if (b.column === 'id$dim-assets') {
+                    const value = b.value;
+                    b = {
+                        column: 'id',
+                        termType: 'dim-assets',
+                        value: {
+                            assetType: 'product',
+                            targets: [
+                                {
+                                    type: 'org',
+                                    id: value,
+                                },
+                            ],
+                        },
+                    };
+                }
+                if(b.column === 'accessProvider'){
+                    if(b.value === 'collector-gateway'){
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
+                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
+                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                    }
+                }
+                return b;
+            });
+        });
+    }
 
-  const newTerms = cloneDeep(e)
-  if (newTerms.terms?.length) {
-    newTerms.terms.forEach((a : any) => {
-        a.terms = a.terms.map((b: any) => {
-          if (b.column === 'id$dim-assets') {
-            const value = b.value
-            b = {
-              column: 'id',
-              termType: 'dim-assets',
-              value: {
-                assetType: 'product',
-                targets: [
-                  {
-                    type: 'org',
-                    id: value,
-                  },
-                ],
-              },
-            }
-          }
-          return b
-        })
-    })
-  }
-
-  params.value = newTerms;
+    params.value = newTerms;
 };
 const routerParams = useRouterParams();
 onMounted(() => {
