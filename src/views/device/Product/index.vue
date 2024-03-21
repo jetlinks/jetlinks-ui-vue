@@ -556,7 +556,7 @@ const query = reactive({
             },
         },
         {
-            title: '分类',
+            title: '产品分类',
             key: 'classified',
             dataIndex: 'classifiedId',
             search: {
@@ -641,6 +641,14 @@ const handleSearch = (e: any) => {
                             ],
                         },
                     };
+                }
+                if(b.column === 'accessProvider'){
+                    if(b.value === 'collector-gateway'){
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
+                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
+                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                    }
                 }
                 return b;
             });
