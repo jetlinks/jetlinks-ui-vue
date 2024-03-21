@@ -97,6 +97,241 @@ const modelRef = reactive({
 
 const fileList = ref();
 
+const requiredCheck = (data: any) => {
+    let check: boolean = false;
+    if (data?.properties && !check) {
+        data.properties.some((item: any, index: number) => {
+            if (!item?.id) {
+                onlyMessage(
+                    `属性定义第${index + 1}个数组中缺失id属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (/[\u4e00-\u9fa5]/.test(item.id)) {
+                onlyMessage(
+                    `属性定义第${index + 1}个数组中id属性不能包含中文`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.name) {
+                onlyMessage(
+                    `属性定义第${index + 1}个数组中缺失name属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.valueType?.type) {
+                onlyMessage(
+                    `标签定义第${index + 1}个数组中缺失valueType.type属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.expands?.source) {
+                onlyMessage(
+                    `属性定义第${index + 1}个数组中缺失expands.source属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (
+                (item?.expands?.source === 'device' ||
+                    item?.expands?.source === 'rule') &&
+                !item?.expands?.type
+            ) {
+                onlyMessage(
+                    `属性定义第${index + 1}个数组中缺失type属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+        });
+    }
+    if (data?.functions && !check) {
+        data?.functions.forEach((item: any, index: number) => {
+            if (!item?.id) {
+                onlyMessage(
+                    `方法定义第${index + 1}个数组中缺失id属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (/[\u4e00-\u9fa5]/.test(item.id)) {
+                onlyMessage(
+                    `方法定义第${index + 1}个数组中id属性不能包含中文`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.name) {
+                onlyMessage(
+                    `方法定义第${index + 1}个数组中缺失name属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+        });
+    }
+    if (data?.events && !check) {
+        data?.events.forEach((item: any, index: number) => {
+            if (!item?.id) {
+                onlyMessage(
+                    `事件定义第${index + 1}个数组中缺失id属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (/[\u4e00-\u9fa5]/.test(item.id)) {
+                onlyMessage(
+                    `事件定义第${index + 1}个数组中id属性不能包含中文`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.name) {
+                onlyMessage(
+                    `事件定义第${index + 1}个数组中缺失name属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            // if(!item?.async && item?.async !== false){
+            //         onlyMessage(`事件定义第${index + 1}个数组中缺失async属性`,'error');
+            //         check = true
+            //         return
+            // }
+            if (!item?.valueType?.type) {
+                onlyMessage(
+                    `事件定义第${index + 1}个数组中缺失valueType.type属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.expands?.level) {
+                onlyMessage(
+                    `事件定义第${index + 1}个数组中缺失expands.level属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!check) {
+                if (item?.valueType?.properties) {
+                    item?.valueType?.properties.forEach(
+                        (i: any, number: number) => {
+                            if (!i?.id) {
+                                onlyMessage(
+                                    `事件定义第${
+                                        index + 1
+                                    }个数组中缺失valueType.properties数组第${
+                                        number + 1
+                                    }项的id属性`,
+                                    'error',
+                                );
+                                check = true;
+                                return;
+                            }
+                            if (!i?.name) {
+                                onlyMessage(
+                                    `事件定义第${
+                                        index + 1
+                                    }个数组中缺失valueType.properties数组第${
+                                        number + 1
+                                    }项的name属性`,
+                                    'error',
+                                );
+                                check = true;
+                                return;
+                            }
+                            if (!i?.valueType?.type) {
+                                onlyMessage(
+                                    `事件定义第${
+                                        index + 1
+                                    }个数组中缺失valueType.properties数组第${
+                                        number + 1
+                                    }项的valueType.type属性`,
+                                    'error',
+                                );
+                                check = true;
+                                return;
+                            }
+                        },
+                    );
+                } else {
+                    onlyMessage(
+                        `事件定义第${
+                            index + 1
+                        }个数组中缺失valueType.properties数组`,
+                        'error',
+                    );
+                    check = true;
+                    return;
+                }
+            }
+        });
+    }
+    if (data?.tags && !check) {
+        data?.tags.forEach((item: any, index: number) => {
+            if (!item?.id) {
+                onlyMessage(
+                    `标签定义第${index + 1}个数组中缺失id属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (/[\u4e00-\u9fa5]/.test(item.id)) {
+                onlyMessage(
+                    `标签定义第${index + 1}个数组中id属性不能包含中文`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.name) {
+                onlyMessage(
+                    `标签定义第${index + 1}个数组中缺失name属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.valueType?.type) {
+                onlyMessage(
+                    `标签定义第${index + 1}个数组中缺失valueType.type属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+            if (!item?.expands?.type) {
+                onlyMessage(
+                    `标签定义第${index + 1}个数组中缺失expands.type属性`,
+                    'error',
+                );
+                check = true;
+                return;
+            }
+        });
+    }
+    return check;
+};
+
 const beforeUpload = (_file: any) => {
     const fileType = modelRef?.fileType === 'csv' ? 'csv' : 'xlsx';
     const isCsv = _file.type === 'text/csv';
@@ -125,19 +360,22 @@ const onChange = async (e: any) => {
             ? await importProductProperty(id, file.response.result)
             : await importInsProperty(id, file.response.result);
         if (res.status === 200) {
-           
+            let check = requiredCheck(JSON.parse(res.result))
+            if(check){
+                return 
+            }
             const params = {
-                    id,
-                    metadata: res.result,
-                };
+                id,
+                metadata: res.result,
+            };
             const resp = isDevice
                 ? await saveMetadataStats(id, JSON.parse(res.result))
                 : await modify(id, params);
             if (resp.status === 200) {
                 onlyMessage('导入成功');
-                isDevice ?
-                    await instanceStore.refresh(id as string) : await productStore.getDetail(id as string);
-
+                isDevice
+                    ? await instanceStore.refresh(id as string)
+                    : await productStore.getDetail(id as string);
             }
         } else {
             onlyMessage('导入失败', 'error');
