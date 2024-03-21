@@ -15,7 +15,7 @@
                 :rules="[
                     { required: true, message: '请输入编码' },
                     { max: 64, message: '最多可输入64个字符' },
-                    { validator: validateIdRepeat,trigger: 'blur' }
+                    { validator: validateIdRepeat, trigger: 'blur' },
                 ]"
             >
                 <j-auto-complete
@@ -60,7 +60,7 @@
                     max-height="350px"
                     v-model:value="form.data.permissions"
                     :disabled="props.mode === '查看'"
-                    :btnId="form.data.id "
+                    :btnId="form.data.id"
                 />
             </j-form-item>
             <j-form-item label="说明" name="describe">
@@ -91,10 +91,10 @@ const props = defineProps<{
     visible: boolean;
     mode: '查看' | '新增' | '编辑';
     data: formType;
-    menuData:{
-        type:Array<any>,
-        default:[]
-    }
+    menuData: {
+        type: Array<any>;
+        default: [];
+    };
 }>();
 
 const loading = ref(false);
@@ -146,16 +146,19 @@ const codeOptions = [
     { label: 'delete', value: 'delete', message: '删除' },
     { label: 'update', value: 'update', message: '更新' },
 ];
-const validateIdRepeat = (rule:any,val:any) =>{
-   const isRepeat =  props.menuData.find((i:any)=>{
-       return i.id === val
-    })
-    if(isRepeat){
-        return Promise.reject('编码重复');
-    }else{
-        return Promise.resolve('')
+const validateIdRepeat = (rule: any, val: any) => {
+    if (props.mode === '编辑') {
+        return Promise.resolve('');
     }
-}
+    const isRepeat = props.menuData.find((i: any) => {
+        return i.id === val;
+    });
+    if (isRepeat) {
+        return Promise.reject('编码重复');
+    } else {
+        return Promise.resolve('');
+    }
+};
 type formType = {
     name: string;
     id: string;
