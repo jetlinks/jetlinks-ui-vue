@@ -198,6 +198,7 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import {  cloneDeep } from 'lodash-es';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -366,7 +367,23 @@ const getStatus = (slotProps: Record<string, any>) =>
  * @param params
  */
 const handleSearch = (e: any) => {
-    params.value = e;
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if(b.column === 'provider'){
+                    if(b.value === 'collector-gateway'){
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
+                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
+                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                    }
+                }
+                return b;
+            });
+        });
+    }
+    params.value = newTerms;
 };
 </script>
 <style lang="less" scoped>
