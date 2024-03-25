@@ -118,7 +118,7 @@
                                     <div class="other-button">
                                         <div
                                           class='other-button-item'
-                                          v-for="(item, index) in bindings"
+                                          v-for="(item, index) in bindings.slice(0,4)"
                                           :key="index"
                                           @click="handleClickOther(item)"
                                         >
@@ -132,6 +132,9 @@
                                                 "
                                           />
                                         </div>
+                                    </div>
+                                    <div class="more" v-if="bindings.length > 4">
+                                        <j-button  type="link"  @click="moreVisible = true">查看更多</j-button>
                                     </div>
                                 </div>
                             </div>
@@ -158,6 +161,31 @@
             </div>
         </j-spin>
     </div>
+    <j-modal 
+        title="更多登录"
+        :visible="moreVisible"
+        @cancel="() => (moreVisible = false)"
+        :footer="null"
+        :width="800"
+    >
+    <div class="more-button">
+            <div
+                class="more-button-item"
+                v-for="(item, index) in bindings"
+                :key="index"
+                @click="handleClickOther(item)"
+            >
+                <img
+                    style="width: 100px; height: 100px"
+                    :alt="item.name"
+                    :src="item.logoUrl"
+                />
+                <Ellipsis style="margin-top: 5px; width:calc(100% - 40px); margin: 0 auto">
+                    {{ item.name }}
+                </Ellipsis>
+            </div>
+        </div>
+    </j-modal>
 </template>
 
 <script setup lang="ts">
@@ -189,7 +217,7 @@ const viewLogo = getImage('/view-logo.png');
 const LoginWarpStyle = reactive({
     backgroundImage: `url(${bgImage})`,
 });
-
+const moreVisible = ref(false)
 const screenWidth = ref(document.body.clientWidth);
 const screenHeight = ref(document.body.clientHeight);
 
@@ -515,6 +543,9 @@ onMounted(()=>{
                             }
 
                         }
+                        .more{
+                            text-align: center;
+                        }
                     }
 
                     .prefixIcon {
@@ -599,6 +630,17 @@ onMounted(()=>{
     .content {
         padding: 32px 0 24px !important;
         margin-top: 12% !important;
+    }
+}
+.more-button {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    .more-button-item {
+        width: 18%;
+        margin-left: 2%;
+        text-align: center;
+        margin-bottom: 20px
     }
 }
 </style>
