@@ -133,8 +133,8 @@
                                           />
                                         </div>
                                     </div>
-                                    <div class="more" v-if="bindings.length > 4">
-                                        <j-button  type="link"  @click="moreVisible = true">查看更多</j-button>
+                                    <div class="more" v-if="bindings.length > 4" @click="moreVisible = true">
+                                        查看更多
                                     </div>
                                 </div>
                             </div>
@@ -545,6 +545,7 @@ onMounted(()=>{
                         }
                         .more{
                             text-align: center;
+                            cursor: pointer;
                         }
                     }
 

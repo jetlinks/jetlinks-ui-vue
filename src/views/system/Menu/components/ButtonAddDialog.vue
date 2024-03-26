@@ -63,9 +63,9 @@
                     :btnId="form.data.id"
                 />
             </j-form-item>
-            <j-form-item label="说明" name="describe">
+            <j-form-item label="说明" name="description">
                 <j-textarea
-                    v-model:value="form.data.describe"
+                    v-model:value="form.data.description"
                     :rows="4"
                     placeholder="请输入说明"
                     :disabled="props.mode === '查看'"
@@ -131,7 +131,7 @@ const initForm = {
     name: '',
     id: '',
     permissions: [],
-    describe: '',
+    description: '',
 } as formType;
 const formRef = ref<FormInstance>();
 const form = reactive({
@@ -163,7 +163,7 @@ type formType = {
     name: string;
     id: string;
     permissions: any[];
-    describe: string;
+    description: string;
 };
 </script>
 
