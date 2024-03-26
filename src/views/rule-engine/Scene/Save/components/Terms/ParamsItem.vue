@@ -461,9 +461,7 @@ const valueSelect = (
     if (paramsValue.value?.source === 'metric') {
         paramsValue.value.metric = option?.id;
     }
-
     const newValues = { ...paramsValue };
-
     if (paramsValue.value?.source !== 'metric') {
         delete newValues.value.metric;
     }
