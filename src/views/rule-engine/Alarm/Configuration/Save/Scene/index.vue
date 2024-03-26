@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts" setup>
-import { queryBranch} from '@/api/rule-engine/scene';
+import { queryBranch , query} from '@/api/rule-engine/scene';
 import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
@@ -159,7 +159,8 @@ const getActions = (
             popConfirm: {
                 title: '确定解绑？',
                 onConfirm: async () => {
-                    const res = await unbindScene(id, [data.id], data.branchIndex);
+                    // const res = await unbindScene(id, [data.id], data.branchIndex);
+                    const res = await unbindScene(id, [data.id]);
                     if (res.status === 200) {
                         onlyMessage('操作成功');
                         actionRef.value.reload();
@@ -172,7 +173,7 @@ const getActions = (
 };
 
 const queryTable = (_terms: any) => {
-  return queryBranch(_terms, id)
+  return query(_terms, id)
 }
 
 const visible = ref(false);

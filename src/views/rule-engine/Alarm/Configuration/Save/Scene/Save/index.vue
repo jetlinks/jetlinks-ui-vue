@@ -9,13 +9,13 @@
     @ok="saveCorrelation"
     :maskClosable="false"
   >
-    <div v-if="type !== 'other'" style="padding: 0 24px">
+    <!-- <div v-if="type !== 'other'" style="padding: 0 24px">
       <j-steps :current="current" >
         <j-step title="选择场景"></j-step>
         <j-step title="选择条件"></j-step>
       </j-steps>
-    </div>
-    <template v-if="current === 0 || type === 'other' ">
+    </div> -->
+    <!-- <template v-if="current === 0 || type === 'other' "> -->
       <pro-search :columns="columns" type="simple" @search="handleSearch"/>
       <div style="height: 500px; overflow-y: auto">
         <JProTable
@@ -86,8 +86,8 @@
           </template>
         </JProTable>
       </div>
-    </template>
-    <template v-if="current === 1">
+    <!-- </template> -->
+    <!-- <template v-if="current === 1">
       <div class="branch-terms-items">
         <j-tree
           v-if="branchGroup.length"
@@ -97,7 +97,7 @@
           @check="branchCheck"
         >
 
-        </j-tree>
+        </j-tree> -->
 <!--        <CardBox-->
 <!--          v-for="(item, index) in branchGroup.branches"-->
 <!--          :showStatus="false"-->
@@ -124,14 +124,14 @@
 <!--            </div>-->
 <!--          </template>-->
 <!--        </CardBox>-->
-      </div>
+      <!-- </div>
     </template>
     <template #footer>
       <j-button v-if="current === 0" @click="closeModal">取消</j-button>
       <j-button v-if="current === 0" type="primary" @click="next">下一步</j-button>
       <j-button v-if="current === 1" @click="prev">上一步</j-button>
       <j-button v-if="current === 1" type="primary" @click="saveCorrelation">完成</j-button>
-    </template>
+    </template> -->
   </j-modal>
 </template>
 
@@ -231,21 +231,40 @@ const props = defineProps({
     type: String,
   },
 });
+// 告警改造后的逻辑，后端没有接口暂时屏蔽
+// const current = ref(0)
+// const branchGroup = ref<any[]>([])
+// const branchActiveKey = ref([])
+// const branchCheckKeys = ref([])
 
-const current = ref(0)
-const branchGroup = ref<any[]>([])
-const branchActiveKey = ref([])
-const branchCheckKeys = ref([])
-
-const terms = [
-  {
-    terms: [
+// const terms = [
+//   {
+//     terms: [
       // {
       //   column: 'id',
       //   termType: 'alarm-bind-rule$not',
       //   value: props.id,
       //   type: 'and',
       // },
+//       {
+//         column: 'triggerType',
+//         termType: 'eq',
+//         value: props.type === 'other' ? undefined : 'device',
+//       },
+//     ],
+//     type: 'and',
+//   },
+// ];
+
+const terms = [
+  {
+    terms: [
+      {
+        column: 'id',
+        termType: 'alarm-bind-rule$not',
+        value: props.id,
+        type: 'and',
+      },
       {
         column: 'triggerType',
         termType: 'eq',
@@ -292,68 +311,86 @@ const onSelectChange = (arr: any[]) => {
   _selectedRowKeys.value = arr
 };
 
-const branchClick = (id: string) => {
-  const keys = new Set(branchActiveKey.value)
+// const branchClick = (id: string) => {
+//   const keys = new Set(branchActiveKey.value)
 
 
-}
+// }
 
 const handleSearch = (e: any) => {
   params.value = e;
 };
 const emit = defineEmits(['closeSave', 'saveScene']);
 
-const next = () => {
-  if (_selectedRowKeys.value.length) {
-    query({
-      pageSize: 99,
-      terms: [{column: 'id', termType: 'in', value: _selectedRowKeys.value.join(',')}]
-    }).then(res => {
-      if (res.success) {
-        branchGroup.value = handleSceneBranches(res.result.data) || []
+// const next = () => {
+//   if (_selectedRowKeys.value.length) {
+//     query({
+//       pageSize: 99,
+//       terms: [{column: 'id', termType: 'in', value: _selectedRowKeys.value.join(',')}]
+//     }).then(res => {
+//       if (res.success) {
+//         branchGroup.value = handleSceneBranches(res.result.data) || []
 
-        console.log(branchGroup.value)
-      }
-    })
-    current.value += 1
+//         console.log(branchGroup.value)
+//       }
+//     })
+//     current.value += 1
 
-  } else {
-    onlyMessage('请选择场景', 'warning')
-  }
-}
+//   } else {
+//     onlyMessage('请选择场景', 'warning')
+//   }
+// }
 
-const branchCheck = (checkedKeys: string[], { checkedNodes }) => {
-  branchCheckKeys.value = checkedNodes.filter(item => item.branchId).map(item => ({
-    branchIndex: item.branchId,
-    ruleId: item.sceneId,
-    alarmId: props.id,
-  }))
-}
+// const branchCheck = (checkedKeys: string[], { checkedNodes }) => {
+//   branchCheckKeys.value = checkedNodes.filter(item => item.branchId).map(item => ({
+//     branchIndex: item.branchId,
+//     ruleId: item.sceneId,
+//     alarmId: props.id,
+//   }))
+// }
 
-const prev = () => {
-  current.value -= 1
-}
+// const prev = () => {
+//   current.value -= 1
+// }
 /**
  * 保存选中关联场景
  */
+// const saveCorrelation = async () => {
+//   if (_selectedRowKeys.value.length === 0 && branchCheckKeys.value.length === 0) {
+//     onlyMessage('请选择至少一条数据', 'error')
+//     return
+//   }
+
+//   const list = props.type === 'other' ?  _selectedRowKeys.value.map((item: any) => {
+//     return {
+//       alarmId: props.id,
+//       ruleId: item,
+//     };
+//   }) : branchCheckKeys.value
+
+//   const res = await bindScene([...list]);
+//   if (res.status === 200) {
+//     onlyMessage('操作成功');
+//     emit('saveScene');
+//   }
+// };
+
 const saveCorrelation = async () => {
-  if (_selectedRowKeys.value.length === 0 && branchCheckKeys.value.length === 0) {
-    onlyMessage('请选择至少一条数据', 'error')
-    return
-  }
-
-  const list = props.type === 'other' ?  _selectedRowKeys.value.map((item: any) => {
-    return {
-      alarmId: props.id,
-      ruleId: item,
-    };
-  }) : branchCheckKeys.value
-
-  const res = await bindScene([...list]);
-  if (res.status === 200) {
-    onlyMessage('操作成功');
-    emit('saveScene');
-  }
+    if (_selectedRowKeys.value.length > 0) {
+        const list = _selectedRowKeys.value.map((item: any) => {
+            return {
+                alarmId: props.id,
+                ruleId: item,
+            };
+        });
+        const res = await bindScene([...list]);
+        if (res.status === 200) {
+            onlyMessage('操作成功');
+            emit('saveScene');
+        }
+    } else {
+        onlyMessage('请选择至少一条数据', 'error');
+    }
 };
 const closeModal = () => {
   emit('closeSave');
