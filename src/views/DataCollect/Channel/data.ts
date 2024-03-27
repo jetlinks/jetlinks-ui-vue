@@ -18,6 +18,11 @@ export const FormState: FormDataType = {
         deviceId: undefined,
         deviceName: undefined,
         connect:false,
+        instanceNumber: undefined,
+        overIp: {
+            localBindAddress: '0.0.0.0',
+            port: 47808
+        }
     },
     description: '',
 };

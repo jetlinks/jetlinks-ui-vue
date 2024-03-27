@@ -8,7 +8,7 @@
     >
         <div class="sizeText">
             将批量修改
-            {{ data.length }} 条数据的访问类型、采集频率、只推送变化的数据
+            {{ data.length }} 条数据的【{{ labelName.join(',') }}】
         </div>
         <j-form
             class="form"
@@ -18,6 +18,15 @@
             autocomplete="off"
             ref="formRef"
         >
+            <j-form-item label="值类型" v-if="provider === 'BACNetIp'">
+                <j-select
+                    v-model:value="formData.valueType"
+                    allowClear
+                    placeholder="请选择值类型"
+                >
+                    <j-select-option v-for="item in bacnetValueType" :key="item" :value="item">{{ item }}</j-select-option>
+                </j-select>
+            </j-form-item>
             <j-form-item label="访问类型" name="accessModes">
                 <j-card-select
                     multiple
@@ -86,7 +95,7 @@
 </template>
 <script lang="ts" setup>
 import type { FormInstance } from 'ant-design-vue';
-import { savePointBatch } from '@/api/data-collect/collector';
+import { savePointBatch, getBacnetValueType } from '@/api/data-collect/collector';
 import { cloneDeep, isObject } from 'lodash-es';
 import { regOnlyNumber } from '../../../data';
 
@@ -95,6 +104,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    provider: {
+        type: String,
+        default: '',
+    }
 });
 
 const emit = defineEmits(['change']);
@@ -105,16 +118,28 @@ const formData = ref({
     accessModes: [],
     interval: undefined,
     features: [],
+    valueType: undefined
 });
+
+const bacnetValueType = ref<string[]>([])
+
+const getIdAndType = async () => {
+  const resp: any = await getBacnetValueType()
+  if(resp.success) {
+    bacnetValueType.value = resp.result
+  }
+}
+
+
 
 const handleOk = async () => {
     const data = cloneDeep(formData.value);
-    const { accessModes, features, interval } = data;
+    const { accessModes, features, interval, valueType } = data;
     const ischange =
         accessModes.length !== 0 ||
         features.length !== 0 ||
         Number(interval) === 0 ||
-        !!interval;
+        !!interval || !!valueType;
     if (ischange) {
         const params = cloneDeep(props.data);
         params.forEach((i: any) => {
@@ -139,6 +164,12 @@ const handleOk = async () => {
                     interval: data.interval,
                 };
             }
+            if(data.valueType) {
+                i.configuration = {
+                    ...i.configuration,
+                    valueType: data.valueType
+                }
+            }
         });
         loading.value = true;
         const response = await savePointBatch(params).catch(() => {});
@@ -152,6 +183,32 @@ const handleOk = async () => {
 const handleCancel = () => {
     emit('change', false);
 };
+
+watch(() => props.provider, () => {
+    if(props.provider === 'BACNetIp') {
+        getIdAndType()
+    }
+}, { immediate: true });
+
+const labelName = computed(() => {
+  const arr = [];
+  if (formData.value.accessModes.length) {
+    arr.push('访问类型');
+  }
+  if (!!formData.value.interval) {
+    arr.push('采集频率');
+  }
+  if (formData.value.features.length) {
+    arr.push('只推送变化的数据');
+  }
+  if (formData.value.type) {
+    arr.push('数据类型');
+  }
+  if (formData.value.valueType) {
+    arr.push('值类型');
+  }
+  return arr;
+});
 </script>
 
 <style lang="less" scoped>
