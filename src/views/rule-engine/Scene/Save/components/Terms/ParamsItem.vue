@@ -36,17 +36,30 @@
                 v-model:value="paramsValue.termType"
                 @select="termsTypeSelect"
             />
-            <div v-if="!['notnull','isnull'].includes(paramsValue.termType)">
+            <div v-if="!['notnull', 'isnull'].includes(paramsValue.termType)">
                 <DoubleParamsDropdown
-                v-if="showDouble"
-                icon="icon-canshu"
-                placeholder="参数值"
-                :options="valueOptions"
-                :metricOptions="metricOption"
-                :tabsOptions="tabsOptions"
-                v-model:value="paramsValue.value.value"
-                v-model:source="paramsValue.value.source"
-                @select="valueSelect"
+                    v-if="showDouble"
+                    icon="icon-canshu"
+                    placeholder="参数值"
+                    :options="valueOptions"
+                    :metricOptions="metricOption"
+                    :tabsOptions="tabsOptions"
+                    v-model:value="paramsValue.value.value"
+                    v-model:source="paramsValue.value.source"
+                    @select="valueSelect"
+                />
+                <ArrayParamsDropdown
+                    v-else-if="
+                      showArray
+                    "
+                    icon="icon-canshu"
+                    placeholder="参数值"
+                    :options="valueOptions"
+                    :metricOptions="metricOption"
+                    :tabsOptions="tabsOptions"
+                    v-model:value="paramsValue.value.value"
+                    v-model:source="paramsValue.value.source"
+                    @select="valueSelect"
                 />
                 <ParamsDropdown
                     v-else
@@ -84,9 +97,17 @@ import type { PropType } from 'vue';
 import type { TermsType } from '@/views/rule-engine/Scene/typings';
 import DropdownButton from '../DropdownButton';
 import { getOption } from '../DropdownButton/util';
-import ParamsDropdown, { DoubleParamsDropdown } from '../ParamsDropdown';
+import ParamsDropdown, {
+    DoubleParamsDropdown,
+    ArrayParamsDropdown,
+} from '../ParamsDropdown';
 import { inject, watch } from 'vue';
-import { ContextKey, arrayParamsKey, timeTypeKeys } from './util';
+import {
+    ContextKey,
+    arrayParamsKey,
+    timeTypeKeys,
+    doubleParamsKey,
+} from './util';
 import { useSceneStore } from 'store/scene';
 import { storeToRefs } from 'pinia';
 import { Form } from 'jetlinks-ui-components';
@@ -282,7 +303,7 @@ watch(
 
 const showDouble = computed(() => {
     const isRange = paramsValue.termType
-        ? arrayParamsKey.includes(paramsValue.termType)
+        ? doubleParamsKey.includes(paramsValue.termType)
         : false;
     const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
@@ -301,6 +322,32 @@ const showDouble = computed(() => {
     }
     return false;
 });
+
+const showArray = computed(()=>{
+    const isRange = paramsValue.termType ?   [
+                            'in',
+                            'nin',
+                            'contains_all',
+                            'contains_any',
+                            'not_contains',
+                        ].includes(paramsValue.termType) : false;
+                        const isSourceMetric = paramsValue.value?.source === 'metric';
+    if (metricsCacheOption.value.length) {
+        metricOption.value = metricsCacheOption.value.filter((item) =>
+            isRange ? item.range : !item.range,
+        );
+    } else {
+        metricOption.value = [];
+    }
+
+    if (isRange) {
+        if (isMetric.value) {
+            return !isSourceMetric;
+        }
+        return true;
+    }
+    return false;                  
+})
 
 const mouseover = () => {
     if (props.showDeleteBtn) {
@@ -330,7 +377,6 @@ const columnSelect = (option: any) => {
         termTypeChange = true;
         paramsValue.termType = termTypes?.length ? termTypes[0].id : 'eq';
     }
-    console.log('hasTypeChange', paramsValue.value.source, tabsOptions.value);
     if (
         hasTypeChange ||
         !tabsOptions.value.every((a) => a.key === paramsValue.value.source)
@@ -414,13 +460,11 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
             newValue.value = undefined;
         }
     }
-    if(
-        ['isnull','notull'].includes(e.key)
-    ){
-        newValue.value = 1
+    if (['isnull', 'notnull'].includes(e.key)) {
+        newValue.value = 1;
+        newValue.source = tabsOptions.value[0].key;
     }
     paramsValue.value = newValue;
-
     emit('update:value', { ...paramsValue });
     formItemContext.onFieldChange();
     formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
@@ -437,9 +481,7 @@ const valueSelect = (
     if (paramsValue.value?.source === 'metric') {
         paramsValue.value.metric = option?.id;
     }
-
     const newValues = { ...paramsValue };
-
     if (paramsValue.value?.source !== 'metric') {
         delete newValues.value.metric;
     }
