@@ -579,6 +579,7 @@ const query = reactive({
             search: {
                 first: true,
                 type: 'treeSelect',
+                termOptions:['eq'],
                 options: async () => {
                     return new Promise((res) => {
                         queryOrgThree({ paging: false }).then((resp: any) => {
