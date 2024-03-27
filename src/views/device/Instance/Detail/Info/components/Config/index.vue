@@ -151,7 +151,7 @@ watch(()=>instanceStore.current.id,(val) => {
             }
         });
     }
-});
+},{ immediate: true });
 
 const isExit = (property: string) => {
     return (

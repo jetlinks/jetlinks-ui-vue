@@ -26,7 +26,7 @@
                         :tab="item.label"
                         :key="item.key"
                     >
-                        <div v-for="(i, index) in myValue">
+                        <div v-for="(i, index) in myValue" class="scene-select-item">
                             <ArrayItem
                                 v-model:value="myValue[index]"
                                 :valueName="valueName"
@@ -50,6 +50,7 @@ import type { ValueType } from './typings';
 import { defaultSetting } from './typings';
 import ArrayItem from './ArrayItem.vue';
 import { cloneDeep } from 'lodash-es';
+import { getOption } from '../DropdownButton/util';
 type Emit = {
     (e: 'update:value', data: ValueType): void;
     (e: 'update:source', data: string): void;
@@ -68,24 +69,19 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
-const myValue = ref<ValueType>([undefined, undefined] as any);
+const myValue = ref<ValueType>(cloneDeep(props.value) || [undefined, undefined] as any);
 const mySource = ref<string>(props.source);
 const label = ref<any>(props.placeholder);
 const visible = ref(false);
 const tabsChange = (e: string) => {
     mySource.value = e;
-    myValue.value = undefined;
     emit('update:source', mySource.value);
-    emit('update:value', undefined);
-    emit('tabChange', e);
-    emit('select', {}, '', { 0: undefined });
 };
 
 const onSelect = (v: any, _label: string, index: number) => {
-    console.log(myValue.value,'test')
-    // emit('update:value', myValue.value);
-    // label.value[index] = _label;
-    // emit('select', myValue.value, _label, label);
+    emit('update:value', myValue.value);
+    label.value[index] = _label;
+    emit('select', myValue.value, _label, label.value);
 };
 
 const visibleChange = (v: boolean) => {
@@ -94,22 +90,34 @@ const visibleChange = (v: boolean) => {
 
 const addItem = () => {
     myValue.value?.push(null);
+    emit('update:value', myValue.value);
 };
 
 const deleteItem = () => {
     myValue.value?.pop();
+    emit('update:value', myValue.value);
 };
 
-watch(
-    () => props.value,
-    () => {
-        myValue.value = cloneDeep(props.value);
-        console.log(myValue.value)
-    },
-    {
-        immediate: true,
-    },
-);
+watchEffect(() => {
+    const _options = props.options;
+    const _value = props.value;
+    const _valueName = props.valueName;
+    if (Array.isArray(_value) && _value.length) {
+        label.value = []
+        _value?.forEach((i: any, index: number) => {
+            const option = getOption(_options, i as string, _valueName);
+            if (option) {
+                label.value.push(option[props.labelName] || option.name);
+            } else {
+                label.value.push(i);
+            }
+        });
+    }
+});
+
+watch(()=>props.value,()=>{
+    myValue.value = cloneDeep(props.value);
+})
 </script>
 
 <style scoped lang="less">

@@ -50,13 +50,7 @@
                 />
                 <ArrayParamsDropdown
                     v-else-if="
-                        [
-                            'in',
-                            'nin',
-                            'contains_all',
-                            'contains_any',
-                            'not_contains',
-                        ].includes(paramsValue.termType)
+                      showArray
                     "
                     icon="icon-canshu"
                     placeholder="参数值"
@@ -328,6 +322,32 @@ const showDouble = computed(() => {
     }
     return false;
 });
+
+const showArray = computed(()=>{
+    const isRange = paramsValue.termType ?   [
+                            'in',
+                            'nin',
+                            'contains_all',
+                            'contains_any',
+                            'not_contains',
+                        ].includes(paramsValue.termType) : false;
+                        const isSourceMetric = paramsValue.value?.source === 'metric';
+    if (metricsCacheOption.value.length) {
+        metricOption.value = metricsCacheOption.value.filter((item) =>
+            isRange ? item.range : !item.range,
+        );
+    } else {
+        metricOption.value = [];
+    }
+
+    if (isRange) {
+        if (isMetric.value) {
+            return !isSourceMetric;
+        }
+        return true;
+    }
+    return false;                  
+})
 
 const mouseover = () => {
     if (props.showDeleteBtn) {

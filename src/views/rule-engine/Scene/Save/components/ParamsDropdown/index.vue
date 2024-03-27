@@ -167,7 +167,6 @@ watchEffect(() => {
   const option = getOption(_options, _value as string, _valueName) // 回显label值
   myValue.value = isMetric ? props.metric : props.value
   mySource.value = props.source
-  console.log(option)
   if (option) {
     label.value = option[props.labelName] || option.name
     treeOpenKeys.value = openKeysByTree(_options, props.value, props.valueName)

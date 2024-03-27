@@ -56,7 +56,7 @@ type Emit = {
     (e: 'tabChange', data: any): void;
 };
 const emit = defineEmits<Emit>();
-const label = ref({});
+const label = ref();
 const myValue = ref<ValueType>(props.value);
 const valueItemChange = (e: string) => {
     label.value = e;
@@ -66,7 +66,6 @@ const valueItemChange = (e: string) => {
 
 const onSelect = (e: string, option: any, index: number) => {
     label.value = option[props.labelName];
-    console.log(e, option);
     emit('update:value', e);
     emit('select', e, label.value, { 0: label.value }, option);
 };
@@ -77,16 +76,6 @@ const timeChange = (e: any) => {
     emit('select', e, label.value, { 0: label.value });
 };
 
-watchEffect(() => {
-    const _options = props.options;
-    const _value = props.value;
-    const _valueName = props.valueName;
-    const option = getOption(_options, _value as string, _valueName); // 回显label值
-    myValue.value = props.value;
-    if (option) {
-        label.value = option[props.labelName] || option.name;
-    }
-});
 </script>
 <style lang="less" scoped>
 @import '../DropdownButton/index.less';
