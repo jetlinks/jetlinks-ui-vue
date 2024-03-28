@@ -372,25 +372,21 @@ const onChannelChange = (_index: number, type: 'collector' | 'channel') => {
     }
 };
 
-onMounted(() => {
-    getChannel();
-    handleSearch();
-});
-
 const onPageChange = () => {
+formRef.value?.validate().then(() => {
     const _cur = current.value >= 1 ? current.value : 1;
-    const _pageSize = pageSize.value
-    const array = data.value.slice((_cur - 1) * _pageSize, _cur * _pageSize) || [];
+    const _pageSize = pageSize.value;
+    const array =
+            data.value.slice((_cur - 1) * _pageSize, _cur * _pageSize) || [];
     modelRef.dataSource = array;
+});
 };
 
 const onSave = () => {
     formRef.value
         .validate()
         .then(async (_data: any) => {
-            const arr = toRaw(modelRef).dataSource.filter(
-                (i: any) => i.channelId,
-            );
+            const arr = toRaw(data.value).filter((i: any) => i.channelId);
             if (arr && arr.length !== 0) {
                 const submitData = {
                     deviceId: instanceStore.current.id,
@@ -469,6 +465,26 @@ const onRefresh = async () => {
     }
     loading.value = false;
 };
+
+watch(
+    () => modelRef.dataSource,
+    (val) => {
+        const dataMap = new Map();
+        val.forEach((item: any) => {
+            dataMap.set(item.metadataId, item);
+        });
+        data.value.forEach((item: any, index: number) => {
+            dataMap.has(item.metadataId) ? (data.value[index] = item) : '';
+        });
+    },
+    {
+        deep: true,
+    },
+);
+onMounted(() => {
+    getChannel();
+    handleSearch();
+});
 </script>
 
 <style lang="less" scoped>
