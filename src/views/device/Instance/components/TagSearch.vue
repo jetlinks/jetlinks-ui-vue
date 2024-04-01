@@ -5,10 +5,10 @@
             <j-form-item label="设备标签:">
                 <j-row :gutter="16" v-for="(i,index) in searchValue" style="margin-bottom: 10px;">
                     <j-col :span="10">
-                        <j-input placeholder="请输入标签key" v-model="i.key"></j-input>
+                        <j-input placeholder="请输入标签key" v-model:value="i.key"></j-input>
                     </j-col>
                     <j-col :span="10">
-                        <j-input placeholder="请输入标签value" v-model="i.value"></j-input>
+                        <j-input placeholder="请输入标签value" v-model:value="i.value"></j-input>
                     </j-col>
                     <j-col :span="4">
                         <j-button type="link">
@@ -25,6 +25,7 @@
 </template>
 
 <script lang="ts" setup>
+const emit =  defineEmits(['change','update:value'])
 const showTagSearch = ref(false);
 const presentation = ref('');
 const searchValue = ref([{
@@ -45,9 +46,10 @@ const deletePair = (index:number) =>{
 }
 const submitSearch = () => {
     searchValue.value.forEach((item:any,index:number)=>{
-      presentation.value = index !== 0 ? item.key + '=' + item.value :presentation.value + ';' + item.key + '=' + item.value
+      presentation.value = index === 0 ? item.key + '=' + item.value :presentation.value + ';' + item.key + '=' + item.value
     })
-    console.log( presentation.value)
+    emit('update:value',searchValue)
+    emit('change')
     showTagSearch.value = false
 }
 </script>
