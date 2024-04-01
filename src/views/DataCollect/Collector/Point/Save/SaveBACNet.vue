@@ -8,10 +8,7 @@
                     :maxlength="64"
                 />
             </j-form-item>
-            <j-form-item
-                label="对象ID"
-                :name="['configuration', 'ObjectId']"
-            >
+            <j-form-item label="对象ID" :name="['configuration', 'ObjectId']">
                 <j-card>
                     <j-form-item label="对象类型">
                         <j-input
@@ -40,10 +37,13 @@
                 ></j-input>
             </j-form-item>
             <j-form-item label="值类型" :name="['configuration', 'valueType']">
-                <j-select
-                    v-model:value="formData.configuration.valueType"
-                >
-                    <j-select-option v-for="item in bacnetValueType" :key="item" :value="item">{{ item }}</j-select-option>
+                <j-select v-model:value="formData.configuration.valueType">
+                    <j-select-option
+                        v-for="item in bacnetValueType"
+                        :key="item"
+                        :value="item"
+                        >{{ item }}</j-select-option
+                    >
                 </j-select>
             </j-form-item>
             <j-form-item
@@ -141,7 +141,11 @@
     </j-modal>
 </template>
 <script setup lang="ts">
-import { savePoint, updatePoint, getBacnetValueType } from '@/api/data-collect/collector';
+import {
+    savePoint,
+    updatePoint,
+    getBacnetValueType,
+} from '@/api/data-collect/collector';
 import { randomString } from '@/utils/utils';
 import DeathArea from './DeathArea.vue';
 const props = defineProps({
@@ -232,33 +236,28 @@ const Area = (_: any, value: any): Promise<any> =>
                 );
                 return pass ? resolve('') : reject('请配置点位死区');
             } else {
-                value.forEach((item: any) => {
-                    if (
-                        item.column ===
-                        `this['currentValue'] - this['lastValue']*init/100`
-                    ) {
-                        return reject('请配置点位死区');
-                    } else {
-                        return resolve('');
-                    }
+                const validate = value.find((item: any) => {
+                    item.column ===
+                        `this['currentValue'] - this['lastValue']*init/100`;
                 });
+                return validate ? reject('请配置点位死区') : resolve('');
             }
         }
     });
-const bacnetValueType = ref<string[]>([])
+const bacnetValueType = ref<string[]>([]);
 
 const getIdAndType = async () => {
-//   const res = await getBacnetPropertyId()
-//   if(res.success) {
-//     bacnetPropertyId.value = res.result
-//   }
-  const resp: any = await getBacnetValueType()
-  if(resp.success) {
-    bacnetValueType.value = resp.result
-  }
-}
+    //   const res = await getBacnetPropertyId()
+    //   if(res.success) {
+    //     bacnetPropertyId.value = res.result
+    //   }
+    const resp: any = await getBacnetValueType();
+    if (resp.success) {
+        bacnetValueType.value = resp.result;
+    }
+};
 
-getIdAndType()
+getIdAndType();
 const handleOk = async () => {
     const res: any = await formRef.value?.validate();
 
