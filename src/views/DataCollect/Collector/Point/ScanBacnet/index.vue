@@ -9,6 +9,7 @@
             ></Tree>
             <Table
                 :data="tableData"
+                :collectorData="treeData"
                 class="table"
                 @change="changeTable"
                 ref="formTableRef"
@@ -32,7 +33,6 @@
 <script lang="ts" setup>
 import type { FormInstance } from 'ant-design-vue';
 import { savePointBatch } from '@/api/data-collect/collector';
-import { Rule } from 'ant-design-vue/lib/form';
 
 import Table from './Table.vue';
 import Tree from './Tree.vue';
@@ -49,7 +49,7 @@ const treeData = ref(props.data);
 const emit = defineEmits(['change']);
 const loading = ref(false);
 const formTableRef = ref<FormInstance>();
-const tableData = ref();
+const tableData = ref<any[]>([]);
 const tableDataMap = new Map();
 const unSelectKeys = ref();
 
@@ -59,14 +59,17 @@ const handleOk = async () => {
     const list: any = data.map((item: any) => {
         return {
             name: item.name,
-            provider: 'OPC_UA',
+            provider: 'BACNetIp',
             collectorId: props.data?.id,
             collectorName: props.data?.name,
             pointKey: item.id,
             configuration: {
                 interval: item.configuration?.interval?.value,
-                type: item.type,
+                valueType: item.valueType,
+                propertyId: item.propertyId,
+                objectId: item.objectId,
             },
+            pointKey: `${item.objectId.type}:${item.objectId.instanceNumber}:${item.propertyId}`,
             features: !item.features?.value ? [] : ['changedOnly'],
             accessModes: item.accessModes?.value || [],
         };
@@ -80,14 +83,11 @@ const handleCancel = () => {
     emit('change', false);
 };
 
-const changeTree = (row: any, checked: boolean) => {
-    checked ? tableDataMap.set(row.id, row) : tableDataMap.delete(row.id);
-    tableData.value = [...tableDataMap.values()];
+const changeTree = (row: any) => {
+    tableData.value.push(row)
 };
-const changeTable = (value: string) => {
-    unSelectKeys.value = value;
-    tableDataMap.delete(value);
-    tableData.value = [...tableDataMap.values()];
+const changeTable = (value: string, index: number) => {
+    tableData.value.splice(index, 1)
 };
 </script>
 

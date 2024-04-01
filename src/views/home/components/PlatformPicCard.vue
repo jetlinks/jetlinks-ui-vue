@@ -45,7 +45,7 @@ const props = defineProps({
         width: 100%;
         height: calc(100% - 50px);
         margin-top: 40px;
-        background-size: 95%;
+        background-size: 85%;
         background-position: center;
         background-repeat: no-repeat;
     }

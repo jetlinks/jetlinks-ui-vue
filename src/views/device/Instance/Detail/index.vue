@@ -193,8 +193,10 @@ const getStatus = (id: string) => {
         {
             deviceId: id,
         },
-    ).subscribe(() => {
-        instanceStore.refresh(id);
+    ).subscribe((message:any) => {
+        if(message.payload?.value?.type !== instanceStore.current?.state.value){
+            instanceStore.refresh(id);
+        }
     });
 };
 

@@ -135,8 +135,69 @@
                                 placeholder="请输入接入密码"
                             />
                         </j-form-item>
+                        <template v-if="formData.channel === 'onvif'">
+                            <j-form-item
+                                label="接入地址"
+                                :name="['others', 'onvifUrl']"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请输入接入密码',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                    },
+                                ]"
+                            >
+                                <j-input
+                                    v-model:value="formData.others.onvifUrl"
+                                ></j-input>
+                            </j-form-item>
+                            <j-form-item
+                                label="接入账户"
+                                :name="['others', 'onvifUsername']"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请输入接入密码',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                    },
+                                ]"
+                            >
+                                <j-input
+                                    v-model:value="
+                                        formData.others.onvifUsername
+                                    "
+                                ></j-input>
+                            </j-form-item>
+                            <j-form-item
+                                label="接入密码"
+                                :name="['others', 'onvifPassword']"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请输入接入密码',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64个字符',
+                                    },
+                                ]"
+                            >
+                                <j-input-password
+                                    v-model:value="
+                                        formData.others.onvifPassword
+                                    "
+                                ></j-input-password>
+                            </j-form-item>
+                        </template>
                         <template v-if="!!route.query.id">
                             <j-form-item
+                                v-if="formData.channel === 'gb28181-2016'"
                                 label="流传输模式"
                                 name="streamMode"
                                 :rules="{
@@ -156,26 +217,49 @@
                                     </j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
-                            <j-form-item label="设备厂商"  
+                            <j-form-item
+                                label="设备厂商"
                                 name="manufacturer"
-                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
+                                :rules="[
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="formData.manufacturer"
                                     placeholder="请输入设备厂商"
-                                   
                                 />
                             </j-form-item>
-                            <j-form-item label="设备型号" 
+                            <j-form-item
+                                label="设备型号"
                                 name="model"
-                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
+                                :rules="[
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="formData.model"
                                     placeholder="请输入设备型号"
                                 />
                             </j-form-item>
-                            <j-form-item label="固件版本"
+                            <j-form-item
+                                label="固件版本"
                                 name="firmware"
-                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
+                                :rules="[
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="formData.firmware"
                                     placeholder="请输入固件版本"
@@ -311,6 +395,7 @@ import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import type { ProductType } from '@/views/media/Device/typings';
 import SaveProduct from './SaveProduct.vue';
 import { notification } from 'jetlinks-ui-components';
+import { omit } from 'lodash-es';
 
 const router = useRouter();
 const route = useRoute();
@@ -325,6 +410,9 @@ const formData = ref({
     description: '',
     others: {
         access_pwd: '',
+        onvifUrl: '',
+        onvifPassword: '',
+        onvifUsername: '',
     },
     // 编辑字段
     streamMode: 'UDP',
@@ -375,6 +463,7 @@ const getDetail = async () => {
     const res = await DeviceApi.detail(route.query.id as string);
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
+    console.log(formData.value,'formData')
 };
 
 onMounted(() => {
@@ -387,7 +476,7 @@ onMounted(() => {
 const btnLoading = ref<boolean>(false);
 const formRef = ref();
 const handleSubmit = () => {
-    const {
+    let {
         others,
         id,
         streamMode,
@@ -402,48 +491,58 @@ const handleSubmit = () => {
         params = !id
             ? extraParams
             : { id, streamMode, manufacturer, model, firmware, ...extraParams };
-    } else {
+    } else if (formData.value.channel === 'gb28181-2016') {
         // 国标
-        const getParmas = () =>{
-                if(others?.stream_mode){
-                    others.stream_mode = streamMode
-                }
-                return{
-                  others,
-                  id,
-                  streamMode,
-                  manufacturer,
-                  model,
-                  firmware,
-                  ...extraParams,
-              };
+         others = omit(others, [
+            'onvifUrl',
+            'onvifPassword',
+            'onvifUsername',
+        ]);
+        const getParmas = () => {
+            if (others?.stream_mode) {
+                others.stream_mode = streamMode;
             }
+            return {
+                others,
+                id,
+                streamMode,
+                manufacturer,
+                model,
+                firmware,
+                ...extraParams,
+            };
+        };
+        params = !id ? { others, id, ...extraParams } : getParmas();
+    } else {
+        others = omit(others, ['access_pwd']);
         params = !id
-            ? { others, id, ...extraParams }
-            : getParmas()
+            ? {others,...extraParams}
+            : { id, streamMode, manufacturer, model, firmware,others, ...extraParams };
     }
 
     formRef.value
         ?.validate()
         .then(async () => {
-                btnLoading.value = true;
-                let res;
-                if(!route.query.id){
-                    const resp:any = await DeviceApi.validateId(id)
-                    if(resp.status === 200 && resp?.result?.passed){
-                            res = await DeviceApi.save(params)
-                    }else{
-                            notification.error({ key: 'error', message: '设备ID已重复'})
-                        }
-                }else{
-                    res = await DeviceApi.update(params);
+            btnLoading.value = true;
+            let res;
+            if (!route.query.id) {
+                const resp: any = await DeviceApi.validateId(id);
+                if (resp.status === 200 && resp?.result?.passed) {
+                    res = await DeviceApi.save(params);
+                } else {
+                    notification.error({
+                        key: 'error',
+                        message: '设备ID已重复',
+                    });
                 }
-                if (res?.success) {
-                    onlyMessage('保存成功');
-                    history.back();
-                }
+            } else {
+                res = await DeviceApi.update(params);
             }
-        )
+            if (res?.success) {
+                onlyMessage('保存成功');
+                history.back();
+            }
+        })
         .catch((err: any) => {
             console.log('err: ', err);
         })

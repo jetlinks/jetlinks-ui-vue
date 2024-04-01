@@ -248,6 +248,7 @@ const columns = [
                                 messageProtocol$in: [
                                     'gb28181-2016',
                                     'fixed-media',
+                                    'onvif',
                                 ],
                             },
                         }),

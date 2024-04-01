@@ -13,7 +13,6 @@
                 :params="params"
                 :gridColumns="[1, 1, 2]"
                 :gridColumn="2"
-                model="CARD"
                 ref="tableRef"
             >
                 <template #card="slotProps">
@@ -42,7 +41,7 @@
                             />
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px);">
+                            <Ellipsis style="width: calc(100% - 100px)">
                                 <span style="font-weight: 500">
                                     {{ slotProps.alarmName }}
                                 </span>
@@ -116,6 +115,60 @@
                         </template>
                     </CardBox>
                 </template>
+                <template #targetType="slotProps">
+                    {{ titleMap.get(slotProps.targetType) }}
+                </template>
+                <template #alarmTime="slotProps">
+                   {{ dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')}}
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state.value"
+                        :statusName="{
+                            warning: 'warning',
+                            normal: 'default',
+                        }"
+                    >
+                    </BadgeStatus
+                    ><span
+                        :style="
+                            slotProps.state.value === 'warning'
+                                ? 'color: #E50012'
+                                : 'color:black'
+                        "
+                    >
+                        {{ slotProps.state.text }}
+                    </span>
+                </template>
+                <template #actions="slotProps">
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                type="link"
+                                :disabled="
+                                    i.key === 'solve' &&
+                                    slotProps.state.value === 'normal'
+                                "
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                :hasPermission="
+                                    i.key == 'solve'
+                                        ? 'rule-engine/Alarm/Log:action'
+                                        : 'rule-engine/Alarm/Log:view'
+                                "
+                            >
+                                <template #icon>
+                                    <AIcon :type="i.icon" />
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
             </JProTable>
         </FullPage>
         <SolveComponent
@@ -128,21 +181,13 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import {
-    getProductList,
-    getDeviceList,
-    getOrgList,
-    query,
-    getAlarmProduct
-} from '@/api/rule-engine/log';
+import { getOrgList, query, getAlarmProduct } from '@/api/rule-engine/log';
 import { queryLevel } from '@/api/rule-engine/config';
-import Search from '@/components/Search';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
-import SolveLog from '../SolveLog/index.vue';
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
 const menuStory = useMenuStore();
@@ -150,14 +195,14 @@ const tableRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 
-const getDefaulitLevel = () => {
+const getDefaultLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
             data.value.defaultLevel = res.result?.levels || [];
         }
     });
 };
-getDefaulitLevel();
+getDefaultLevel();
 const props = defineProps<{
     type: string;
     id?: string;
@@ -176,23 +221,33 @@ titleMap.set('other', '其他');
 titleMap.set('org', '组织');
 const columns = [
     {
+        title:'配置名称',
+        dataIndex:'alarmName',
+        key:'alarmName',
+    },{
+        title:'类型',
+        dataIndex:'targetType',
+        key:'targetType',
+        scopedSlots:true
+    },
+    {
+        title:'关联场景联动',
+        dataIndex:'sourceName',
+        key:'sourceName',
+
+    },
+    {
         title: '告警级别',
         dataIndex: 'level',
         key: 'level',
         search: {
             type: 'select',
-            options: async () => {
-              const res = await queryLevel()
-              if (res.success && res.result?.levels) {
-                return  (res.result.levels as any[]).map((item: any) => {
-                  return {
+            options: data.value.defaultLevel.map((item: any) => {
+                return {
                     label: item.title,
-                    value: item.level
-                  }
-                })
-              }
-              return []
-            }
+                    value: item.level,
+                };
+            }),
         },
     },
     {
@@ -202,6 +257,7 @@ const columns = [
         search: {
             type: 'date',
         },
+        scopedSlots: true,
     },
     {
         title: '状态',
@@ -220,131 +276,133 @@ const columns = [
                 },
             ],
         },
+        scopedSlots: true,
+    },
+    {
+        title: '操作',
+        dateIndex: 'actions',
+        key: 'actions',
+        scopedSlots: true,
+        width: 200,
     },
 ];
 
 const newColumns = computed(() => {
+    const otherColumns = {
+        title: '产品名称',
+        dataIndex: 'targetId',
+        key: 'targetId',
+        search: {
+            type: 'select',
+            options: async () => {
+                const termType = [
+                    {
+                        column: 'targetType',
+                        termType: 'eq',
+                        type: 'and',
+                        value: props.type,
+                    },
+                ];
 
-  const otherColumns = {
-    title: '产品名称',
-    dataIndex: 'targetId',
-    key: 'targetId',
-    search: {
-      type: 'select',
-      options: async () => {
-        const termType = [
-          {
-            column: "targetType",
-            termType: "eq",
-            type: "and",
-            value: props.type,
-          }
-        ]
+                if (props.id) {
+                    termType.push({
+                        termType: 'eq',
+                        column: 'alarmConfigId',
+                        value: props.id,
+                        type: 'and',
+                    });
+                }
 
-        if (props.id) {
-          termType.push({
-            termType: 'eq',
-            column: 'alarmConfigId',
-            value: props.id,
-            type: 'and',
-          },)
-        }
+                const resp: any = await handleSearch({
+                    sorts: [{ name: 'alarmTime', order: 'desc' }],
+                    terms: termType,
+                });
+                const listMap: Map<string, any> = new Map();
 
-        const resp: any = await handleSearch({
-          sorts: [{ name: 'alarmTime', order: 'desc' }],
-          terms: termType
-        });
-        const listMap: Map<string, any> = new Map()
+                if (resp.status === 200) {
+                    resp.result.data.forEach((item) => {
+                        if (item.targetId) {
+                            listMap.set(item.targetId, {
+                                label: item.targetName,
+                                value: item.targetId,
+                            });
+                        }
+                    });
 
-        if (resp.status === 200) {
-          resp.result.data.forEach(item => {
-            if (item.targetId) {
-              listMap.set(item.targetId, {
-                label: item.targetName,
-                value: item.targetId,
-              })
-            }
+                    return [...listMap.values()];
+                }
+                return [];
+            },
+        },
+    };
 
-          })
+    switch (props.type) {
+        case 'device':
+            otherColumns.title = '设备名称';
+            break;
+        case 'org':
+            otherColumns.title = '组织名称';
+            break;
+        case 'other':
+            otherColumns.title = '场景名称';
+            break;
+    }
+    if (props.type === 'device') {
+        const productColumns = {
+            title: '产品名称',
+            dataIndex: 'product_id',
+            key: 'product_id',
+            search: {
+                type: 'select',
+                options: async () => {
+                    const termType = [
+                        {
+                            column: 'id$alarm-record',
+                            value: [
+                                {
+                                    column: 'targetType',
+                                    termType: 'eq',
+                                    value: 'device',
+                                },
+                            ],
+                        },
+                    ];
+                    const resp: any = await getAlarmProduct({
+                        sorts: [{ name: 'alarmTime', order: 'desc' }],
+                        terms: termType,
+                    });
+                    const listMap: Map<string, any> = new Map();
 
-          return [...listMap.values()]
-
-        }
-        return [];
-      },
-    },
-  }
-
-  switch(props.type) {
-    case 'device':
-      otherColumns.title = '设备名称'
-          break;
-    case 'org':
-      otherColumns.title = '组织名称'
-      break;
-    case 'other':
-      otherColumns.title = '场景名称'
-      break;
-  }
-  if(props.type === 'device'){
-    const productColumns =  {
-    title: '产品名称',
-    dataIndex: 'product_id',
-    key: 'product_id',
-    search: {
-      type: 'select',
-      options: async () => {
-        const termType = [
-         {
-           column:"id$alarm-record",
-           value:[
-           {
-            column: "targetType",
-            termType: "eq",
-            value: "device",
-          }
-           ]
-         }
-        ]
-        const resp: any = await getAlarmProduct({
-          sorts: [{ name: 'alarmTime', order: 'desc' }],
-          terms: termType
-        });
-        const listMap: Map<string, any> = new Map()
-
-        if (resp.status === 200) {
-          resp.result.data.forEach(item => {
-            if (item.productId) {
-              listMap.set(item.productId, {
-                label: item.productName,
-                value: item.productId,
-              })
-            }
-
-          })
-          return [...listMap.values()]
-
-        }
-        return [];
-      },
-    },
-  }
-  return [otherColumns,productColumns,...columns]
-  }
-  return ['all', 'detail'].includes(props.type) ? columns : [
-    otherColumns,
-    ...columns,
-  ]
-})
+                    if (resp.status === 200) {
+                        resp.result.data.forEach((item) => {
+                            if (item.productId) {
+                                listMap.set(item.productId, {
+                                    label: item.productName,
+                                    value: item.productId,
+                                });
+                            }
+                        });
+                        return [...listMap.values()];
+                    }
+                    return [];
+                },
+            },
+        };
+        return [otherColumns, productColumns, ...columns];
+    }
+    return ['all', 'detail'].includes(props.type)
+        ? columns
+        : [otherColumns, ...columns];
+});
 
 let params: any = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp:any = await query(params);
+    const resp: any = await query(params);
     if (resp.status === 200) {
-        const res:any = await getOrgList();
+        const res: any = await getOrgList();
         if (res.status === 200) {
             resp.result.data.map((item: any) => {
                 if (item.targetType === 'org') {
@@ -363,31 +421,6 @@ const handleSearch = async (params: any) => {
         }
     }
 };
-onMounted(() => {
-    if (props.type !== 'all' && !props.id) {
-        params.value.terms = [
-            {
-                termType: 'eq',
-                column: 'targetType',
-                value: props.type,
-                type: 'and',
-            },
-        ];
-    }
-    if (props.id) {
-        params.value.terms = [
-            {
-                termType: 'eq',
-                column: 'alarmConfigId',
-                value: props.id,
-                type: 'and',
-            },
-        ];
-    }
-    if (props.type === 'all') {
-        params.value.terms = [];
-    }
-});
 
 const search = (data: any) => {
     params.value.terms = [...data?.terms];
@@ -399,13 +432,16 @@ const search = (data: any) => {
             type: 'and',
         });
     }
-    if(props.type === 'device' && data?.terms[0]?.terms[0]?.column === 'product_id'){
-            params.value.terms = [{
-                column:"targetId$dev-instance",
-                value:[
-                    data?.terms[0]?.terms[0]
-                ]
-            }]
+    if (
+        props.type === 'device' &&
+        data?.terms[0]?.terms[0]?.column === 'product_id'
+    ) {
+        params.value.terms = [
+            {
+                column: 'targetId$dev-instance',
+                value: [data?.terms[0]?.terms[0]],
+            },
+        ];
     }
     if (props.id) {
         params.value.terms.push({
@@ -419,7 +455,7 @@ const search = (data: any) => {
 
 const getActions = (
     currentData: Partial<Record<string, any>>,
-    type: 'card',
+    type: 'card' | 'table',
 ): ActionsType[] => {
     if (!currentData) return [];
     const actions = [
@@ -485,12 +521,31 @@ const closeSolve = () => {
     data.value.solveVisible = false;
     tableRef.value.reload(params.value);
 };
-/**
- * 关闭处理记录
- */
-const closeLog = () => {
-    data.value.logVisible = false;
-};
+onMounted(() => {
+    if (props.type !== 'all' && !props.id) {
+        params.value.terms = [
+            {
+                termType: 'eq',
+                column: 'targetType',
+                value: props.type,
+                type: 'and',
+            },
+        ];
+    }
+    if (props.id) {
+        params.value.terms = [
+            {
+                termType: 'eq',
+                column: 'alarmConfigId',
+                value: props.id,
+                type: 'and',
+            },
+        ];
+    }
+    if (props.type === 'all') {
+        params.value.terms = [];
+    }
+});
 </script>
 <style lang="less" scoped>
 .content-left {
