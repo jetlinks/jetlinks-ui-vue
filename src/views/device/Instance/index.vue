@@ -550,11 +550,11 @@ const columns = [
         },
     },
     {
-        key: 'tag',
-        dataIndex: 'tag',
+        key: 'id$dev-tag',
+        dataIndex: 'id$dev-tag',
         title: '设备标签',
         hideInTable: true,
-        search : {  type: 'component' , components:  TagSearch  }
+        search : {  type: 'component' , components:  TagSearch , termOptions:['eq'] }
     },
     {
         title: '说明',
