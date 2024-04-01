@@ -1,7 +1,7 @@
 <template>
     <pro-search
         class="device-running-search"
-        type="simple"
+        
         :columns="columns"
         target="device-instance-running-events"
         @search="handleSearch"
@@ -24,7 +24,7 @@
         </template>
     </JProTable>
     <j-modal :width="600" v-model:visible="visible" title="详情" class="device-running-event-modal">
-        <JsonViewer :value="info" />
+        <JsonViewer :value="info" style="max-height: calc(100vh - 400px);overflow: auto;"/>
         <template #footer>
             <j-button type="primary" @click="visible = false">关闭</j-button>
         </template>

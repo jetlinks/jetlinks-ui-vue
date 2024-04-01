@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal
         :title="data.id ? '编辑' : '新增'"
         :visible="true"
@@ -112,6 +112,32 @@
                   :max="255"
               />
             </j-form-item>
+            <template v-if="provider === 'BACNetIp'">
+              <j-form-item
+                label="设备实例号"
+                :name="['configuration', 'instanceNumber']"
+                :rules="[{ required: true, trigger: 'change' }]"
+              >
+                <j-input
+                  type="number"
+                  style="width: 100%"
+                  v-model:value="formData.configuration.instanceNumber"
+                  placeholder="请输入设备实例号"
+                  :maxlength="64"
+                  :disabled="route.query.id ? true : false"
+                />
+              </j-form-item>
+              <j-form-item label="地址" :name="['configuration', 'address']">
+                <j-input
+                  style="width: 100%"
+                  v-model:value="formData.configuration.address"
+                  :maxlength="64"
+                  type="tel"
+                  placeholder="请输入地址"
+                >
+                </j-input>
+              </j-form-item>
+            </template>
             <j-form-item
                 v-if="provider !== 'COLLECTOR_GATEWAY'"
                 :name="['configuration', 'inheritBreakerSpec', 'type']"
@@ -221,6 +247,8 @@ import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
 import {cloneDeep, omit} from "lodash-es";
 import {protocolList} from "@/utils/consts";
+
+const route = useRoute()
 
 const loading = ref(false);
 const visibleEndian = ref(false);

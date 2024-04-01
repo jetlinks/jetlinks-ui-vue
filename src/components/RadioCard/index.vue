@@ -96,6 +96,7 @@ const handleRadio = (item: any) => {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 24px;
     .disabled {
         >div {
           color: rgba(0, 0, 0, 0.25);
@@ -105,7 +106,7 @@ const handleRadio = (item: any) => {
 
     }
     &-item {
-        width: 49%;
+        flex:1;
         height: 70px;
         padding: 10px 15px;
         margin-bottom: 12px;
@@ -113,7 +114,7 @@ const handleRadio = (item: any) => {
         border-radius: 2px;
         display: flex;
         align-items: center;
-        gap: 24px;
+        
         cursor: pointer;
         .img {
             width: 32px;

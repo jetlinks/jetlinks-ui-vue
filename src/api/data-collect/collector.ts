@@ -69,3 +69,19 @@ export const getSnapTypes = () => server.get('/s7/client/s7codecs/list')
 export const getArea = () => server.get('/s7/client/s7area/list')
 
 export const exportTemplate = (provider: string, format: string) =>server.get(`/data-collect/point/${provider}/template.${format}`, {}, {responseType: 'blob'})
+
+/**
+ * BACNet协议扫描对象
+ * @param channelId 通道id
+ * @param instanceNumber 设备实例号
+ */
+export const getBacnetObjectList = (channelId: string, instanceNumber: string) => server.get(`/collect/bacnet/${channelId}/${instanceNumber}/objects`);
+
+/**
+ * 查询未使用的属性id
+ * @param data 采集器Id
+ */
+export const getBacnetPropertyIdNotUse = (data: any) => server.post(`/collect/bacnet/${data.collectorId}/unused/ids`, data)
+
+/**查询bacnet值类型*/
+export const getBacnetValueType = () => server.get(`/collect/bacnet/value/types`)

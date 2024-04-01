@@ -78,12 +78,16 @@
         <div v-else-if="channel === 'gb28181'">
             <GB28181 :provider="props.provider" :data="props.data"></GB28181>
         </div>
+        <div v-else-if="channel === 'onvif'">
+            <Onvif :provider="props.provider" :data="props.data"></Onvif>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup name="AccessMedia">
 import { onlyMessage } from '@/utils/comm';
 import GB28181 from './GB28181.vue';
+import Onvif from './Onvif.vue'
 import { update, save } from '@/api/link/accessConfig';
 
 interface FormState {

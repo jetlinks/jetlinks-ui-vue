@@ -8,6 +8,7 @@
         visible
         @ok="submitData"
         @cancel="close"
+        :confirmLoading="loading"
         okText="确定"
         cancelText="取消"
         v-bind="layout"
@@ -86,6 +87,7 @@ const arr = ref([]);
 const updateObj = ref({});
 const addObj = ref({});
 const addParams = ref({});
+const loading = ref(false)
 /**
  * 表单数据
  */
@@ -118,6 +120,7 @@ const { resetFields, validate, validateInfos } = useForm(
  */
 const submitData = async () => {
     formRef.value.validate().then(async () => {
+        loading.value = true
         addParams.value = {};
         if (props.isAdd === 0) {
             if (props.isChild === 1) {
@@ -139,7 +142,9 @@ const submitData = async () => {
                     // sortIndex: arr.value[arr.value.length - 1].sortIndex + 1,
                 };
             }
-            const res = await saveTree(addParams.value);
+            const res = await saveTree(addParams.value).finally(() => {
+                loading.value = false
+            })
             if (res.status === 200) {
                 onlyMessage('操作成功！');
                 visible.value = false;
@@ -155,7 +160,9 @@ const submitData = async () => {
                 key: updateObj.value.key,
                 parentId: updateObj.value.parentId,
             };
-            const res = await updateTree(id, updateParams);
+            const res = await updateTree(id, updateParams).finally(()=>{
+                loading.value = false
+            })
             if (res.status === 200) {
                 onlyMessage('操作成功！');
                 visible.value = false;
