@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal
         :title="data.id ? '编辑' : '新增'"
         :visible="true"
@@ -94,14 +94,14 @@
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'COLLECTOR_GATEWAY'"
-                :name="['configuration','deviceId']"
-                :rules="[{ required: true, message: '请选择网关设备'}]"
+                :name="['configuration', 'deviceId']"
+                :rules="[{ required: true, message: '请选择网关设备' }]"
                 label="选择网关设备"
             >
-              <GateWayFormItem
-                  v-model:name="formData.configuration.deviceName"
-                  v-model:value="formData.configuration.deviceId"
-              />
+                <GateWayFormItem
+                    v-model:name="formData.configuration.deviceName"
+                    v-model:value="formData.configuration.deviceId"
+                />
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
@@ -171,6 +171,50 @@
                     v-model:value="formData.configuration.password"
                 />
             </j-form-item>
+            <template v-if="formData.provider === 'BACNetIp'">
+                <j-form-item label="BACNet实例号" :name="['configuration', 'instanceNumber']" :rules="{
+                    required: true,
+                    trigger:'blur',
+                    validator: validate,
+                }">
+                    <j-input-number
+                        style="width: 100%"
+                        v-model:value="formData.configuration.instanceNumber"
+                        :min="0"
+                        :precision="0"
+                        :max="999999999999"
+                        placeholder="请输入BACNet实例号"
+                    ></j-input-number>
+                </j-form-item>
+                <j-form-item
+                    label="网卡"
+                    :name="['configuration', 'overIp', 'localBindAddress']"
+                    :rules="{
+                        required: true,
+                        trigger:'blur',
+                        message: '请选择网卡'
+                    }"
+                >
+                    <j-input
+                        v-model:value="formData.configuration.overIp.localBindAddress"
+                    >
+                    </j-input>
+                </j-form-item>
+                <j-form-item label="广播端口" :name="['configuration', 'overIp', 'port']" :rules="{
+                    required: true,
+                    trigger: 'blur',
+                    message: '请输入广播端口'
+                }">
+                    <j-input-number
+                        v-model:value="formData.configuration.overIp.port"
+                        style="width: 100%"
+                        :min="0"
+                        :max="65535"
+                        :precision="0"
+                        placeholder="请输入广播端口"
+                    ></j-input-number>
+                </j-form-item>
+            </template>
             <!-- <j-form-item
                 v-if="formData.provider === 'snap7'"
                 :name="['configuration', 'connect']"
@@ -215,7 +259,7 @@ import type { FormInstance } from 'ant-design-vue';
 import type { FormDataType } from '../type.d';
 import { cloneDeep, isArray } from 'lodash-es';
 import { protocolList } from '@/utils/consts';
-import GateWayFormItem from "@/views/DataCollect/Channel/Save/GateWayFormItem.vue";
+import GateWayFormItem from '@/views/DataCollect/Channel/Save/GateWayFormItem.vue';
 
 const props = defineProps({
     data: {
@@ -242,20 +286,21 @@ const formData = ref<FormDataType>(cloneDeep(FormState));
 const handleOk = async () => {
     const params: any = await formRef.value?.validate();
     if (params?.provider === 'COLLECTOR_GATEWAY') {
-      params.configuration.deviceName = formData.value.configuration.deviceName
+        params.configuration.deviceName =
+            formData.value.configuration.deviceName;
     }
 
-    if(params?.provider === 'snap7'){
-        params.configuration={
-            connect : false
-        }
+    if (params?.provider === 'snap7') {
+        params.configuration = {
+            connect: false,
+        };
     } else if (params?.provider === 'iec104') {
-      params.configuration = {}
+        params.configuration = {};
     }
 
     params.circuitBreaker = {
-      type: 'Ignore'
-    }
+        type: 'Ignore',
+    };
 
     loading.value = true;
     const response = !id
@@ -265,6 +310,18 @@ const handleOk = async () => {
     loading.value = false;
     formRef.value?.resetFields();
 };
+
+const validate = async (_rule: any, value: string) => {
+  if (!value) {
+    return Promise.reject('请输入BACnet实例号');
+  } else {
+    var reg = new RegExp(/^[0-9]*$/)
+    if(!reg.test(value) || parseInt(value) < 0) {
+      return Promise.reject('请输入正确的BACnet实例号');
+    }
+    return Promise.resolve()
+  }
+}
 
 const handleCancel = () => {
     emit('change', false);
@@ -317,8 +374,15 @@ const getProvidersList = async () => {
     const resp: any = await getProviders();
     if (resp.status === 200) {
         const arr = resp.result
-            .filter(
-                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7', 'IEC104'].includes(item.name),
+            .filter((item: any) =>
+                [
+                    'GATEWAY',
+                    'Modbus/TCP',
+                    'opc-ua',
+                    'snap7',
+                    'IEC104',
+                    'BACNet/IP',
+                ].includes(item.name),
             )
             .map((it: any) => it.name);
         const providers: any = protocolList.filter((item: any) =>
@@ -337,7 +401,7 @@ watch(
     () => props.data,
     (value) => {
         if (value.id) {
-          formData.value = value as FormDataType;
+            formData.value = value as FormDataType;
         }
     },
     { immediate: true, deep: true },

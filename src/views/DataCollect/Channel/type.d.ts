@@ -11,6 +11,11 @@ export interface ConfigurationType {
     deviceId: string | undefined,
     deviceName: string | undefined,
     connect:boolean | undefined
+    instanceNumber?:number
+    overIp: {
+        localBindAddress: string,
+        port: number
+    }
 }
 
 export interface FormDataType {

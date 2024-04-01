@@ -23,8 +23,12 @@
                     </template>
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'metadataName'">
-                            <span v-if="record.metadataName">{{ record.metadataName }}</span>
-                            <span v-else style="color: red;">{{ record.metadataId }}</span>
+                            <span v-if="record.metadataName">{{
+                                record.metadataName
+                            }}</span>
+                            <span v-else style="color: red">{{
+                                record.metadataId
+                            }}</span>
                         </template>
                         <template v-if="column.dataIndex === 'channelId'">
                             <j-form-item
@@ -96,11 +100,7 @@
                                     status="success"
                                     text="启用"
                                 />
-                                <j-badge
-                                    v-else
-                                    status="warning"
-                                    text="禁用"
-                                />
+                                <j-badge v-else status="warning" text="禁用" />
                             </template>
                             <j-badge v-else status="error" text="未绑定" />
                         </template>
@@ -251,7 +251,7 @@ const columns = [
 
 const permissionStore = usePermissionStore();
 
-const data:any = ref([])
+const data: any = ref([]);
 const isPermission = permissionStore.hasPermission('device/Instance:update');
 
 const current = ref<number>(1);
@@ -292,18 +292,17 @@ const getChannel = async () => {
 
 const handleSearch = async () => {
     loading.value = true;
-    const _metadataMap = new Map ()
+    const _metadataMap = new Map();
     const _metadata: any[] = metadata.properties.map((item: any) => {
         const value = {
             metadataId: item.id,
             metadataName: `${item.name}(${item.id})`,
             metadataType: 'property',
             name: item.name,
-        }
-        _metadataMap.set(item.id,value)
-        return value
+        };
+        _metadataMap.set(item.id, value);
+        return value;
     });
-   
 
     if (_metadata && _metadata.length) {
         const resp: any = await getEdgeMap(
@@ -330,12 +329,20 @@ const handleSearch = async () => {
             //         array.push(item)
             //     }
             // })
-            
-            resp.result?.[0]?.forEach((item:any)=>{
-                _metadataMap.has(item.metadataId) ? _metadataMap.set(item.metadataId,Object.assign(_metadataMap.get(item.metadataId),item)) : _metadataMap.set(item.metadataId,item)
-            })
-            data.value = [..._metadataMap.values()]
-            onPageChange()
+
+            resp.result?.[0]?.forEach((item: any) => {
+                _metadataMap.has(item.metadataId)
+                    ? _metadataMap.set(
+                          item.metadataId,
+                          Object.assign(
+                              _metadataMap.get(item.metadataId),
+                              item,
+                          ),
+                      )
+                    : _metadataMap.set(item.metadataId, item);
+            });
+            data.value = [..._metadataMap.values()];
+            onPageChange();
         }
     }
     loading.value = false;
@@ -372,25 +379,21 @@ const onChannelChange = (_index: number, type: 'collector' | 'channel') => {
     }
 };
 
-onMounted(() => {
-    getChannel();
-    handleSearch();
-});
-
 const onPageChange = () => {
-    const _cur = current.value >= 1 ? current.value : 1;
-    const _pageSize = pageSize.value
-    const array = data.value.slice((_cur - 1) * _pageSize, _cur * _pageSize) || [];
-    modelRef.dataSource = array;
+    formRef.value?.validate().then(() => {
+        const _cur = current.value >= 1 ? current.value : 1;
+        const _pageSize = pageSize.value;
+        const array =
+            data.value.slice((_cur - 1) * _pageSize, _cur * _pageSize) || [];
+        modelRef.dataSource = array;
+    });
 };
 
 const onSave = () => {
     formRef.value
         .validate()
         .then(async (_data: any) => {
-            const arr = toRaw(modelRef).dataSource.filter(
-                (i: any) => i.channelId,
-            );
+            const arr = toRaw(data.value).filter((i: any) => i.channelId);
             if (arr && arr.length !== 0) {
                 const submitData = {
                     deviceId: instanceStore.current.id,
@@ -469,6 +472,26 @@ const onRefresh = async () => {
     }
     loading.value = false;
 };
+
+watch(
+    () => modelRef.dataSource,
+    (val) => {
+        const dataMap = new Map();
+        val.forEach((item: any) => {
+            dataMap.set(item.metadataId, item);
+        });
+        data.value.forEach((item: any, index: number) => {
+            dataMap.has(item.metadataId) ? (data.value[index] = item) : '';
+        });
+    },
+    {
+        deep: true,
+    },
+);
+onMounted(() => {
+    getChannel();
+    handleSearch();
+});
 </script>
 
 <style lang="less" scoped>
