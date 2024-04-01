@@ -271,15 +271,15 @@
                                                 </div>
                                                 <div
                                                     class="upload-image"
-                                                    v-if="formValue.backgroud"
+                                                    v-if="formValue.background"
                                                     :style="
-                                                        formValue.backgroud
-                                                            ? `background-image: url(${formValue.backgroud});`
+                                                        formValue.background
+                                                            ? `background-image: url(${formValue.background});`
                                                             : ''
                                                     "
                                                 ></div>
                                                 <div
-                                                    v-if="formValue.backgroud"
+                                                    v-if="formValue.background"
                                                     class="upload-image-mask"
                                                 >
                                                     点击修改
@@ -345,7 +345,7 @@ const form = reactive<formType>({
         'base-path': `${window.location.origin}/api`,
         logo: '',
         ico: '',
-        backgroud: '',
+        background: '',
     },
     rulesFrom: {
         title: [
@@ -387,8 +387,8 @@ const form = reactive<formType>({
             headerTheme: configInfo.front?.headerTheme,
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
-            backgroud:
-                configInfo.front?.backgroud || '/images/login.png',
+            background:
+                configInfo.front?.background || '/images/login.png',
             apiKey: configInfo.amap?.apiKey,
             'base-path': configInfo.paths?.['base-path'],
         };
@@ -497,7 +497,7 @@ const uploader: uploaderType = {
         } else if (info.file.status === 'done') {
             info.file.url = info.file.response?.result;
             form.backLoading = false;
-            form.formValue.backgroud = info.file.response?.result;
+            form.formValue.background = info.file.response?.result;
         } else if (info.file.status === 'error') {
             form.logoLoading = false;
             onlyMessage('背景图上传失败，请稍后再试', 'error');
