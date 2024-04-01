@@ -334,6 +334,7 @@ import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import TagSearch from './components/TagSearch.vue'
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -547,6 +548,13 @@ const columns = [
                     });
                 }),
         },
+    },
+    {
+        key: 'id$dev-tag',
+        dataIndex: 'id$dev-tag',
+        title: '设备标签',
+        hideInTable: true,
+        search : {  type: 'component' , components:  TagSearch , termOptions:['eq'] }
     },
     {
         title: '说明',
