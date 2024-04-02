@@ -328,7 +328,10 @@ const getActions = (
                           {
                             column: 'id',
                             termType: 'rule-bind-alarm',
-                            value: data.id,
+                            value: {
+                              ruleId: [data.id],
+                              branchId: [-1]
+                            },
                           },
                         ]
                       }

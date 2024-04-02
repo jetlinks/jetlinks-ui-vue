@@ -44,7 +44,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
-import type { ActionsType } from './typings';
+import type { ActionsType } from '@/components/Table';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 const props = defineProps({
