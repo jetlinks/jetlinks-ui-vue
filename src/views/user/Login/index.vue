@@ -7,14 +7,14 @@
                         style="width: 100%; height: 100%"
                         :src="basis.background || getImage('/login.png')"
                     />
-                    <a
+                    <!-- <a
                         href="https://beian.miit.gov.cn/#/Integrated/index"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="records"
                     >
                         备案：渝ICP备19017719号-1
-                    </a>
+                    </a> -->
                 </div>
                 <div class="right">
                     <div class="content">
