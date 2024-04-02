@@ -17,7 +17,7 @@
           <j-tab-pane
             v-for="(b, i) in group"
             :key="b.id"
-            :tab="b.branchName"
+            :tab="b.branchName || `条件${i+1}`"
             :closable="false"
           >
             <template v-for='(item, index) in data.branches'>
@@ -64,8 +64,12 @@
       </j-form-item>
     </div>
   </div>
-  <j-modal v-if="editConditionVisible"  title="编辑" visible @cancel="editConditionVisible = false">
-
+  <j-modal v-if="editConditionVisible"  title="编辑" visible @cancel="editConditionVisible = false" @ok="changeBranchName">
+    <j-form layout='vertical'>
+      <j-form-item label="条件名称：" :required="true">
+        <j-input v-model:value="conditionName"></j-input>
+      </j-form-item>
+    </j-form>
   </j-modal>
 </template>
 
@@ -88,6 +92,7 @@ const columnOptions = ref<any>([])
 const group = ref<Array<{ id: string, len: number}>>([])
 const activeKey = ref('')
 const editConditionVisible = ref(false);
+const conditionName = ref<any>('')
 
 provide(ContextKey, columnOptions)
 
@@ -215,10 +220,23 @@ const groupDelete = (g: any, index: number) => {
   activeKey.value = group.value[_index].id
 }
 
-const showEditCondition = () =>{
-  console.log(activeKey.value)
-  editConditionVisible.value = true;
-  
+const showEditCondition = (key:any) =>{
+  if(key === activeKey.value){
+    editConditionVisible.value = true;
+    conditionName.value = group.value.find((i:any)=>{
+      return i.id === key
+    })?.branchName
+  }
+}
+
+const changeBranchName = () =>{
+  console.log(data.value)
+  data.value.branches?.forEach((item:any)=>{
+     if(item?.key === activeKey.value.slice(6)){
+      item.branchName = conditionName.value
+     }
+  })
+  editConditionVisible.value =false
 }
 watchEffect(() => {
   if (data.value.trigger?.device) {
