@@ -232,33 +232,28 @@ const Area = (_: any, value: any): Promise<any> =>
                 );
                 return pass ? resolve('') : reject('请配置点位死区');
             } else {
-                value.forEach((item: any) => {
-                    if (
-                        item.column ===
-                        `this['currentValue'] - this['lastValue']*init/100`
-                    ) {
-                        return reject('请配置点位死区');
-                    } else {
-                        return resolve('');
-                    }
+                const validate = value.find((item: any) => {
+                    item.column ===
+                        `this['currentValue'] - this['lastValue']*init/100`;
                 });
+                return validate ? reject('请配置点位死区') : resolve('');
             }
         }
     });
-const bacnetValueType = ref<string[]>([])
+const bacnetValueType = ref<string[]>([]);
 
 const getIdAndType = async () => {
-//   const res = await getBacnetPropertyId()
-//   if(res.success) {
-//     bacnetPropertyId.value = res.result
-//   }
-  const resp: any = await getBacnetValueType()
-  if(resp.success) {
-    bacnetValueType.value = resp.result
-  }
-}
+    //   const res = await getBacnetPropertyId()
+    //   if(res.success) {
+    //     bacnetPropertyId.value = res.result
+    //   }
+    const resp: any = await getBacnetValueType();
+    if (resp.success) {
+        bacnetValueType.value = resp.result;
+    }
+};
 
-getIdAndType()
+getIdAndType();
 const handleOk = async () => {
     const res: any = await formRef.value?.validate();
 
