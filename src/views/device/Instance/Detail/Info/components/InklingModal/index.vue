@@ -50,7 +50,7 @@ const handleOk = async () => {
     loading.value = true
     const res = await savePluginData(
       'device',
-      props.pluginId!,
+      props.accessId!,
       route.params.id as string,
       checkKey.value
     ).catch(() => ({ success: false }))

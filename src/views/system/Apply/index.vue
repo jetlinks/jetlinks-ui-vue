@@ -53,11 +53,11 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <h3 class="card-item-content-title">
-                                    <Ellipsis>
+                                <Ellipsis>
+                                    <h3 class="card-item-content-title">
                                         {{ slotProps.name }}
-                                    </Ellipsis>
-                                </h3>
+                                    </h3>
+                                </Ellipsis>
                                 <j-row>
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
@@ -102,13 +102,21 @@
                                                     ) in item.children"
                                                     :key="i"
                                                 >
-                                                    <j-tooltip :title="o?.tooltip?.title">
+                                                    <j-tooltip
+                                                        :title="
+                                                            o?.tooltip?.title
+                                                        "
+                                                    >
                                                         <j-button
                                                             type="link"
                                                             @click="o.onClick"
-                                                            :disabled="o.disabled"
+                                                            :disabled="
+                                                                o.disabled
+                                                            "
                                                         >
-                                                            <AIcon :type="o.icon" />
+                                                            <AIcon
+                                                                :type="o.icon"
+                                                            />
                                                             <span>{{
                                                                 o.text
                                                             }}</span>
@@ -189,13 +197,18 @@
                 :data="current"
                 @refresh="table.refresh"
             />
-          <ThirdMenu
-              v-if="dialogVisible && current.provider === 'third-party'"
-              :data="current"
-              mode="edit"
-              @cancel="dialogVisible = false"
-              @ok="() => { dialogVisible = false; table.refresh}"
-          />
+            <ThirdMenu
+                v-if="dialogVisible && current.provider === 'third-party'"
+                :data="current"
+                mode="edit"
+                @cancel="dialogVisible = false"
+                @ok="
+                    () => {
+                        dialogVisible = false;
+                        table.refresh;
+                    }
+                "
+            />
         </div>
         <Add v-if="visible" @close="visible = false" />
     </page-container>
@@ -204,12 +217,12 @@
 <script setup lang="ts" name="Apply">
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import MenuDialog from './componenets/MenuDialog.vue';
-import ThirdMenu from './componenets/ThirdMenu.vue'
+import ThirdMenu from './componenets/ThirdMenu.vue';
 import {
     getApplyList_api,
     changeApplyStatus_api,
     delApply_api,
-    queryType
+    queryType,
 } from '@/api/system/apply';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
@@ -219,20 +232,20 @@ import Add from './Save/Add.vue';
 const menuStory = useMenuStore();
 const permission = 'system/Apply';
 
-const typeOptions = ref<any[]>([])
-const visible = ref<boolean>(false)
+const typeOptions = ref<any[]>([]);
+const visible = ref<boolean>(false);
 
 onMounted(() => {
     queryType().then((resp: any) => {
-        if(resp.status === 200){
+        if (resp.status === 200) {
             const arr = resp.result.map((item: any) => ({
                 label: item.name,
                 value: item.provider,
-            }))
-            typeOptions.value = arr
+            }));
+            typeOptions.value = arr;
         }
     });
-})
+});
 const columns = [
     {
         title: '名称',
@@ -308,13 +321,13 @@ const columns = [
 const queryParams = ref({});
 
 const tableRef = ref();
-const current = ref<any>({})
+const current = ref<any>({});
 const table = {
     refresh: () => {
         tableRef.value.reload(queryParams.value);
     },
     toAdd: () => {
-        visible.value = true
+        visible.value = true;
     },
     toSave: (id?: string, view = false) => {
         if (id) menuStory.jumpPage('system/Apply/Save', {}, { id, view });
@@ -406,7 +419,7 @@ const table = {
                 onClick: () => {
                     selectId.value = data.id;
                     selectProvider.value = data.provider;
-                    current.value = data
+                    current.value = data;
                     dialogVisible.value = true;
                 },
             });
