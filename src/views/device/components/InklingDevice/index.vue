@@ -173,7 +173,7 @@ const queryInkingDevices = (data: string[]) => {
             return;
         }
 
-        const res = await getInkingDevices(data,props.pluginId);
+        const res = await getInkingDevices(data,props.accessId);
         if (res) {
             disabledKeys.value = res.result?.map((item) => item.externalId);
         }
