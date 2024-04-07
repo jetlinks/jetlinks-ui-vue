@@ -34,6 +34,7 @@
                             4: 'level4',
                             5: 'level5',
                         }"
+                        :customBadge="true"
                     >
                         <template #img>
                             <img
@@ -42,7 +43,7 @@
                             />
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px);">
+                            <Ellipsis style="width: calc(100% - 100px)">
                                 <span style="font-weight: 500">
                                     {{ slotProps.alarmName }}
                                 </span>
@@ -133,7 +134,7 @@ import {
     getDeviceList,
     getOrgList,
     query,
-    getAlarmProduct
+    getAlarmProduct,
 } from '@/api/rule-engine/log';
 import { queryLevel } from '@/api/rule-engine/config';
 import Search from '@/components/Search';
@@ -181,13 +182,13 @@ const columns = [
         key: 'level',
         search: {
             type: 'select',
-            options: data.value.defaultLevel.map((item:any)=>{
-                  return {
-                    label:item.title,
-                    value:item.level
-                  }
-                })
-                      },
+            options: data.value.defaultLevel.map((item: any) => {
+                return {
+                    label: item.title,
+                    value: item.level,
+                };
+            }),
+        },
     },
     {
         title: '最近告警时间',
@@ -218,127 +219,121 @@ const columns = [
 ];
 
 const newColumns = computed(() => {
+    const otherColumns = {
+        title: '产品名称',
+        dataIndex: 'targetId',
+        key: 'targetId',
+        search: {
+            type: 'select',
+            options: async () => {
+                const termType = [
+                    {
+                        column: 'targetType',
+                        termType: 'eq',
+                        type: 'and',
+                        value: props.type,
+                    },
+                ];
 
-  const otherColumns = {
-    title: '产品名称',
-    dataIndex: 'targetId',
-    key: 'targetId',
-    search: {
-      type: 'select',
-      options: async () => {
-        const termType = [
-          {
-            column: "targetType",
-            termType: "eq",
-            type: "and",
-            value: props.type,
-          }
-        ]
+                if (props.id) {
+                    termType.push({
+                        termType: 'eq',
+                        column: 'alarmConfigId',
+                        value: props.id,
+                        type: 'and',
+                    });
+                }
 
-        if (props.id) {
-          termType.push({
-            termType: 'eq',
-            column: 'alarmConfigId',
-            value: props.id,
-            type: 'and',
-          },)
-        }
+                const resp: any = await handleSearch({
+                    sorts: [{ name: 'alarmTime', order: 'desc' }],
+                    terms: termType,
+                });
+                const listMap: Map<string, any> = new Map();
 
-        const resp: any = await handleSearch({
-          sorts: [{ name: 'alarmTime', order: 'desc' }],
-          terms: termType
-        });
-        const listMap: Map<string, any> = new Map()
+                if (resp.status === 200) {
+                    resp.result.data.forEach((item) => {
+                        if (item.targetId) {
+                            listMap.set(item.targetId, {
+                                label: item.targetName,
+                                value: item.targetId,
+                            });
+                        }
+                    });
 
-        if (resp.status === 200) {
-          resp.result.data.forEach(item => {
-            if (item.targetId) {
-              listMap.set(item.targetId, {
-                label: item.targetName,
-                value: item.targetId,
-              })
-            }
+                    return [...listMap.values()];
+                }
+                return [];
+            },
+        },
+    };
 
-          })
+    switch (props.type) {
+        case 'device':
+            otherColumns.title = '设备名称';
+            break;
+        case 'org':
+            otherColumns.title = '组织名称';
+            break;
+        case 'other':
+            otherColumns.title = '场景名称';
+            break;
+    }
+    if (props.type === 'device') {
+        const productColumns = {
+            title: '产品名称',
+            dataIndex: 'product_id',
+            key: 'product_id',
+            search: {
+                type: 'select',
+                options: async () => {
+                    const termType = [
+                        {
+                            column: 'id$alarm-record',
+                            value: [
+                                {
+                                    column: 'targetType',
+                                    termType: 'eq',
+                                    value: 'device',
+                                },
+                            ],
+                        },
+                    ];
+                    const resp: any = await getAlarmProduct({
+                        sorts: [{ name: 'alarmTime', order: 'desc' }],
+                        terms: termType,
+                    });
+                    const listMap: Map<string, any> = new Map();
 
-          return [...listMap.values()]
-
-        }
-        return [];
-      },
-    },
-  }
-
-  switch(props.type) {
-    case 'device':
-      otherColumns.title = '设备名称'
-          break;
-    case 'org':
-      otherColumns.title = '组织名称'
-      break;
-    case 'other':
-      otherColumns.title = '场景名称'
-      break;
-  }
-  if(props.type === 'device'){
-    const productColumns =  {
-    title: '产品名称',
-    dataIndex: 'product_id',
-    key: 'product_id',
-    search: {
-      type: 'select',
-      options: async () => {
-        const termType = [
-         {
-           column:"id$alarm-record",
-           value:[
-           {
-            column: "targetType",
-            termType: "eq",
-            value: "device",
-          }
-           ]
-         }
-        ]
-        const resp: any = await getAlarmProduct({
-          sorts: [{ name: 'alarmTime', order: 'desc' }],
-          terms: termType
-        });
-        const listMap: Map<string, any> = new Map()
-
-        if (resp.status === 200) {
-          resp.result.data.forEach(item => {
-            if (item.productId) {
-              listMap.set(item.productId, {
-                label: item.productName,
-                value: item.productId,
-              })
-            }
-
-          })
-          return [...listMap.values()]
-
-        }
-        return [];
-      },
-    },
-  }
-  return [otherColumns,productColumns,...columns]
-  }
-  return ['all', 'detail'].includes(props.type) ? columns : [
-    otherColumns,
-    ...columns,
-  ]
-})
+                    if (resp.status === 200) {
+                        resp.result.data.forEach((item) => {
+                            if (item.productId) {
+                                listMap.set(item.productId, {
+                                    label: item.productName,
+                                    value: item.productId,
+                                });
+                            }
+                        });
+                        return [...listMap.values()];
+                    }
+                    return [];
+                },
+            },
+        };
+        return [otherColumns, productColumns, ...columns];
+    }
+    return ['all', 'detail'].includes(props.type)
+        ? columns
+        : [otherColumns, ...columns];
+});
 
 let params: any = ref({
     sorts: [{ name: 'alarmTime', order: 'desc' }],
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp:any = await query(params);
+    const resp: any = await query(params);
     if (resp.status === 200) {
-        const res:any = await getOrgList();
+        const res: any = await getOrgList();
         if (res.status === 200) {
             resp.result.data.map((item: any) => {
                 if (item.targetType === 'org') {
@@ -393,13 +388,16 @@ const search = (data: any) => {
             type: 'and',
         });
     }
-    if(props.type === 'device' && data?.terms[0]?.terms[0]?.column === 'product_id'){
-            params.value.terms = [{
-                column:"targetId$dev-instance",
-                value:[
-                    data?.terms[0]?.terms[0]
-                ]
-            }]
+    if (
+        props.type === 'device' &&
+        data?.terms[0]?.terms[0]?.column === 'product_id'
+    ) {
+        params.value.terms = [
+            {
+                column: 'targetId$dev-instance',
+                value: [data?.terms[0]?.terms[0]],
+            },
+        ];
     }
     if (props.id) {
         params.value.terms.push({
