@@ -20,7 +20,14 @@
                                 :title="item.alarmName"
                                 placement="topLeft"
                             >
-                                <a @click="()=>{return jumpDetail(item)}">{{ item.alarmName }}</a>
+                                <a
+                                    @click="
+                                        () => {
+                                            return jumpDetail(item);
+                                        }
+                                    "
+                                    >{{ item.alarmName }}</a
+                                >
                             </j-tooltip>
                         </div>
                         <div class="new-alarm-item-state">
@@ -42,13 +49,16 @@
                                 {{ item.state?.text }}
                             </span>
                         </div>
+
                         <div
                             :class="[
                                 'new-alarm-item-level',
                                 `level-${item.level}`,
                             ]"
                         >
-                            {{ item.levelName }}
+                            <Ellipsis style="width: calc(100%)">
+                                {{ item.levelName }}
+                            </Ellipsis>
                         </div>
                     </div>
                 </li>
@@ -72,9 +82,12 @@ const props = defineProps({
     },
 });
 const menuStore = useMenuStore();
-const jumpDetail = (item:any) =>{
-    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`,{id:item.id,detail:true});
-}
+const jumpDetail = (item: any) => {
+    menuStore.jumpPage(`rule-engine/Alarm/Log/Detail`, {
+        id: item.id,
+        detail: true,
+    });
+};
 </script>
 <style scoped lang="less">
 .new-alarm {
