@@ -61,48 +61,48 @@ const events = defineProps({
 const instanceStore = useInstanceStore();
 
 const defaultColumns = [
-  {
-    title: '时间',
-    dataIndex: 'timestamp',
-    key: 'timestamp',
-    scopedSlots: true,
-    search: {
-      type: 'date',
+    {
+        title: '时间',
+        dataIndex: 'timestamp',
+        key: 'timestamp',
+        scopedSlots: true,
+        search: {
+            type: 'date',
+        },
     },
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    key: 'action',
-    scopedSlots: true,
-  }
-]
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        scopedSlots: true,
+    },
+];
 
 const columns = ref<Array<Record<string, any>>>([...defaultColumns]);
 const params = ref<Record<string, any>>({});
 const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
-const objectKey = ref<Array>([]);
+const objectKey = ref<Array<any>>([]);
 
 const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
 
 watchEffect(() => {
-  columns.value = [...defaultColumns]
+    columns.value = [...defaultColumns];
     if (events.data?.valueType?.type === 'object') {
         (events.data.valueType?.properties || []).reverse().map((i: any) => {
-if (i.valueType?.type === 'object') {
+            if (i.valueType?.type === 'object') {
                 objectKey.value.push({
-                    key:i.id,
-                    dataIndex: `${i.id}_format`
+                    key: i.id,
+                    dataIndex: `${i.id}_format`,
                 });
-            columns.value.splice(0, 0, {
-                key: i.id,
-                title: i.name,
-                dataIndex: `${i.id}_format`,
-                search: {
-                    type: i?.valueType?.type || 'string',
-                    rename: i.id,
+                columns.value.splice(0, 0, {
+                    key: i.id,
+                    title: i.name,
+                    dataIndex: `${i.id}_format`,
+                    search: {
+                        type: i?.valueType?.type || 'string',
+                        rename: i.id,
                     },
                     scopedSlots: true,
                 });
@@ -114,9 +114,10 @@ if (i.valueType?.type === 'object') {
                     search: {
                         type: i?.valueType?.type || 'string',
                         rename: i.id,
-                },
-                ellipsis: true,
-            });
+                    },
+                    ellipsis: true,
+                });
+            }
         });
     } else {
         columns.value.splice(0, 0, {
@@ -131,8 +132,8 @@ const handleSearch = (_params: any) => {
 };
 
 const detail = (_info: any) => {
-    info.value = _info
-    visible.value = true
+    info.value = _info;
+    visible.value = true;
     // Modal.info({
     //     title: () => '详情',
     //     width: 850,
