@@ -44,7 +44,11 @@
                 />
             </j-form-item>
             <j-row>
-                <j-col :span="joinOptions.length >= 3 ? 24 : 6 * joinOptions.length">
+                <j-col
+                    :span="
+                        joinOptions.length >= 3 ? 24 : 6 * joinOptions.length
+                    "
+                >
                     <j-form-item
                         label="接入方式"
                         name="integrationModes"
@@ -55,15 +59,15 @@
                             },
                         ]"
                     >
-                            <j-check-button
-                                v-model:value="form.data.integrationModes"
-                                :options="joinOptions"
-                                :multiple="true"
-                            />
+                        <j-check-button
+                            v-model:value="form.data.integrationModes"
+                            :options="joinOptions"
+                            :multiple="true"
+                        />
                     </j-form-item>
                 </j-col>
             </j-row>
-            <j-collapse style="margin-bottom: 20px;">
+            <j-collapse style="margin-bottom: 20px">
                 <j-collapse-panel
                     v-for="(item, index) in form.data.integrationModes"
                     :key="item + index"
@@ -1222,7 +1226,13 @@
 
                             <!-- 钉钉 + 微信 -->
                             <j-form-item
-                                v-if="['wechat-miniapp', 'wechat-webapp', 'dingtalk-ent-app'].includes(form.data?.provider)"
+                                v-if="
+                                    [
+                                        'wechat-miniapp',
+                                        'wechat-webapp',
+                                        'dingtalk-ent-app',
+                                    ].includes(form.data?.provider)
+                                "
                                 class="resetLabel"
                                 :name="['sso', 'configuration', 'appSecret']"
                                 :rules="[
@@ -1276,8 +1286,8 @@
                                     },
                                     {
                                         validator: checkCh,
-                                        trigger: 'change'
-                                    }
+                                        trigger: 'change',
+                                    },
                                 ]"
                             >
                                 <j-input
@@ -1303,7 +1313,7 @@
                                     // },
                                     {
                                         validator: checkPassword,
-                                    }
+                                    },
                                 ]"
                             >
                                 <j-input
@@ -1396,20 +1406,24 @@
 
         <div class="dialog">
             <MenuDialog
-                v-if="dialog.visible && dialog.current.provider !== 'third-party'"
+                v-if="
+                    dialog.visible && dialog.current.provider !== 'third-party'
+                "
                 v-model:visible="dialog.visible"
                 :data="dialog.current"
                 :mode="routeQuery.id ? 'edit' : 'add'"
                 @refresh="menuStory.jumpPage('system/Apply')"
             />
-          <ThirdMenu
-              v-if="dialog.visible && dialog.current.provider === 'third-party'"
-              :data="dialog.current"
-              :mode="routeQuery.id ? 'edit' : 'add'"
-              mode="add"
-              @cancel="dialog.visible = false"
-              @ok="menuStory.jumpPage('system/Apply')"
-          />
+            <ThirdMenu
+                v-if="
+                    dialog.visible && dialog.current.provider === 'third-party'
+                "
+                :data="dialog.current"
+                :mode="routeQuery.id ? 'edit' : 'add'"
+                mode="add"
+                @cancel="dialog.visible = false"
+                @ok="menuStory.jumpPage('system/Apply')"
+            />
         </div>
     </div>
 </template>
@@ -1432,12 +1446,23 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import type { formType, dictType, optionsType, applyType } from '../typing';
 import { getRoleList_api } from '@/api/system/user';
 import { randomString } from '@/utils/utils';
-import { cloneDeep, difference } from 'lodash';
+import { cloneDeep, difference } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import ApplyList from './ApplyList/index.vue';
 
 const emit = defineEmits(['changeApplyType']);
+
+const defaultImg = {
+    'internal-standalone': getImage('/apply/internal-standalone.png'),
+    'internal-integrated': getImage('/apply/internal-integrated.png'),
+    'wechat-webapp': getImage('/apply/wechat-webapp.png'),
+    'dingtalk-ent-app': getImage('/apply/dingtalk-ent-app.png'),
+    'third-party': getImage('/apply/third-party.png'),
+    'wechat-miniapp': getImage('/apply/wechat-miniapp.png'),
+};
+
+
 const routeQuery = useRoute().query;
 const menuStory = useMenuStore();
 
@@ -1552,12 +1577,11 @@ const form = reactive({
     uploadLoading: false,
 });
 
-
-const checkCh = (_rule:Rule,value:string): Promise<any> => 
-            new Promise((resolve,reject) => {
-                if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
-                else return resolve('')
-            })
+const checkCh = (_rule: Rule, value: string): Promise<any> =>
+    new Promise((resolve, reject) => {
+        if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
+        else return resolve('');
+    });
 
 // 请求头和参数必填验
 const headerValid = ref(true);
@@ -1587,7 +1611,7 @@ const getType = async () => {
         }));
         typeOptions.value = arr;
     }
-}
+};
 
 onMounted(async () => {
     await getType();
@@ -1596,15 +1620,16 @@ onMounted(async () => {
     if (routeQuery.id) {
         getInfo(routeQuery.id as string);
     }
-    if(routeQuery.provider){
+    if (routeQuery.provider) {
         form.data.provider = routeQuery?.provider as applyType;
         typeOptions.value = typeOptions.value.filter((i: any) => {
             return i.value === routeQuery.provider;
         });
+        form.data.logoUrl = defaultImg[typeOptions.value[0].value]
     }
 });
 
-const checkPassword = (_rule: Rule, value: string) =>  {
+const checkPassword = (_rule: Rule, value: string) => {
     return new Promise((resolve, reject) => {
         if (!value) return resolve('');
         else if (value.length > 64) return reject('最多可输入64个字符');
@@ -1612,10 +1637,10 @@ const checkPassword = (_rule: Rule, value: string) =>  {
         else if (!passwordRegEx(value)) {
             return reject('密码必须包含大小写英文和数字');
         } else {
-            resolve('')
+            resolve('');
         }
-    })
-}
+    });
+};
 
 // 接入方式的选项
 const joinOptions = computed(() => {
@@ -1657,11 +1682,7 @@ watch(
         emit('changeApplyType', n);
         if (routeQuery.id) return;
         if (
-            [
-                'wechat-webapp',
-                'dingtalk-ent-app',
-                'wechat-miniapp',
-            ].includes(n)
+            ['wechat-webapp', 'dingtalk-ent-app', 'wechat-miniapp'].includes(n)
         ) {
             form.data.integrationModes = ['ssoClient'];
             // form.integrationModesISO = ['ssoClient'];
@@ -1747,9 +1768,9 @@ function clickAddItem(data: string[], target: string) {
         if (target === 'Role') {
             getRoleIdList();
         } else {
-            getOrgIdList()
+            getOrgIdList();
         }
-        data.push(value)
+        data.push(value);
     };
 }
 // 保存
@@ -1783,7 +1804,10 @@ function clickSave() {
                     params.integrationModes.includes('apiServer') &&
                     params.integrationModes.length === 2)
             ) {
-                return onlyMessage('配置单点登录需同时配置API客户端', 'warning');
+                return onlyMessage(
+                    '配置单点登录需同时配置API客户端',
+                    'warning',
+                );
             }
         }
 
