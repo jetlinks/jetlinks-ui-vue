@@ -14,6 +14,13 @@
         :params="params"
         :bodyStyle="{ padding: '0 0 0 24px' }"
     >
+        <template v-for="i in objectKey" #[i.key]="slotProps">
+            <Ellipsis>
+                <span @click="detail(slotProps[i.dataIndex])">{{
+                    JSON.stringify(slotProps[i.dataIndex])
+                }}</span>
+            </Ellipsis>
+        </template>
         <template #timestamp="slotProps">
             {{ dayjs(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
@@ -23,8 +30,16 @@
             </j-button>
         </template>
     </JProTable>
-    <j-modal :width="600" v-model:visible="visible" title="详情" class="device-running-event-modal">
-        <JsonViewer :value="info" />
+    <j-modal
+        :width="600"
+        v-model:visible="visible"
+        title="详情"
+        class="device-running-event-modal"
+    >
+        <JsonViewer
+            :value="info"
+            style="max-height: calc(100vh - 400px); overflow: auto"
+        />
         <template #footer>
             <j-button type="primary" @click="visible = false">关闭</j-button>
         </template>
@@ -67,6 +82,7 @@ const columns = ref<Array<Record<string, any>>>([...defaultColumns]);
 const params = ref<Record<string, any>>({});
 const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
+const objectKey = ref<Array>([]);
 
 const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
@@ -75,13 +91,29 @@ watchEffect(() => {
   columns.value = [...defaultColumns]
     if (events.data?.valueType?.type === 'object') {
         (events.data.valueType?.properties || []).reverse().map((i: any) => {
+if (i.valueType?.type === 'object') {
+                objectKey.value.push({
+                    key:i.id,
+                    dataIndex: `${i.id}_format`
+                });
             columns.value.splice(0, 0, {
                 key: i.id,
                 title: i.name,
                 dataIndex: `${i.id}_format`,
                 search: {
                     type: i?.valueType?.type || 'string',
-                    rename: i.id
+                    rename: i.id,
+                    },
+                    scopedSlots: true,
+                });
+            } else {
+                columns.value.splice(0, 0, {
+                    key: i.id,
+                    title: i.name,
+                    dataIndex: `${i.id}_format`,
+                    search: {
+                        type: i?.valueType?.type || 'string',
+                        rename: i.id,
                 },
                 ellipsis: true,
             });
