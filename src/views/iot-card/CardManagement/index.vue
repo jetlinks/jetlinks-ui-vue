@@ -680,6 +680,7 @@ const getActions = (
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功');
+                        _selectedRowKeys.value=[];
                         cardManageRef.value?.reload();
                     } else {
                         onlyMessage('操作失败！', 'error');
