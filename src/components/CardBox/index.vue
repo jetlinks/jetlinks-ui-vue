@@ -52,10 +52,17 @@
                 >
                     <div class="card-state-content">
                         <BadgeStatus
+                            v-if="!customBadge"
                             :status="status"
                             :text="statusText"
                             :statusNames="statusNames"
                         ></BadgeStatus>
+                        <CustomBadgeStatus 
+                            v-else 
+                            :status="status"
+                            :text="statusText"
+                            :statusNames="statusNames">
+                        </CustomBadgeStatus>
                     </div>
                 </div>
             </div>
@@ -89,6 +96,7 @@
 
 <script setup lang="ts" name='CardBox'>
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import CustomBadgeStatus from '@/components/BadgeStatus/CustomBadgeStatus.vue'
 import color, { getHexColor } from '../BadgeStatus/color';
 import type { ActionsType } from '@/components/Table';
 import { PropType } from 'vue';
@@ -143,6 +151,10 @@ const props = defineProps({
     disabled: {
         type: Boolean,
         default: false,
+    },
+    customBadge:{
+        type: Boolean,
+        default: false
     }
 });
 

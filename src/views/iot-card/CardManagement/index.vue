@@ -142,8 +142,8 @@
                     :actions="getActions(slotProps, 'card')"
                     v-bind="slotProps"
                     :active="_selectedRowKeys.includes(slotProps.id)"
-                    :status="slotProps.cardStateType.value"
-                    :statusText="slotProps.cardStateType.text"
+                    :status="slotProps.cardStateType?.value"
+                    :statusText="slotProps.cardStateType?.text"
                     :statusNames="{
                         using: 'processing',
                         toBeActivated: 'default',
@@ -183,14 +183,6 @@
                         </j-row>
                         <j-divider style="margin: 12px 0" />
                         <div class="content-bottom">
-<!--                            <div v-if="slotProps.usedFlow === 0">-->
-<!--                                <span class="flow-text">-->
-<!--                                    {{ slotProps.totalFlow }}-->
-<!--                                </span>-->
-<!--                                <span class="card-item-content-text">-->
-<!--                                    M 使用流量</span-->
-<!--                                >-->
-<!--                            </div>-->
                             <div>
                                 <div class="progress-text">
                                     <div>
@@ -240,42 +232,6 @@
                                 <span>{{ item?.text }}</span>
                             </template>
                         </PermissionButton>
-                        <!-- <a-tooltip
-                            v-bind="item.tooltip"
-                            :title="item.disabled && item.tooltip.title"
-                        >
-                            <a-popconfirm
-                                v-if="item.popConfirm"
-                                v-bind="item.popConfirm"
-                                :disabled="item.disabled"
-                            >
-                                <a-button :disabled="item.disabled">
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
-                                </a-button>
-                            </a-popconfirm>
-                            <template v-else>
-                                <a-button
-                                    :disabled="item.disabled"
-                                    @click="item.onClick"
-                                >
-                                    <AIcon
-                                        type="DeleteOutlined"
-                                        v-if="item.key === 'delete'"
-                                    />
-                                    <template v-else>
-                                        <AIcon :type="item.icon" />
-                                        <span>{{ item.text }}</span>
-                                    </template>
-                                </a-button>
-                            </template>
-                                                        </j-tooltip> -->
                     </template>
                 </CardBox>
             </template>
@@ -532,6 +488,7 @@ const columns = [
     },
     {
         title: '总流量',
+        key: 'totalFlow',
         dataIndex: 'totalFlow',
         width: 120,
         scopedSlots: true,

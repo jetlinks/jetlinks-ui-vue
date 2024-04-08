@@ -38,10 +38,11 @@
 
 <script lang="ts" setup>
 import { FILE_UPLOAD } from '@/api/comm';
-import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
 import { exportCard, _import } from '@/api/iot-card/cardManagement';
+import { TOKEN_KEY, BASE_API_PATH } from '@/utils/variable';
+import { getToken } from '@/utils/comm';
 
 type Emits = {
     (e: 'update:modelValue', data: string[]): void;
@@ -68,6 +69,8 @@ const importLoading = ref<boolean>(false);
 const flag = ref<boolean>(false);
 const count = ref<number>(0);
 const errMessage = ref<string>('');
+const detailFile = ref('');
+const failNumber = ref<number>(0);
 
 const downFile = async (type: string) => {
     const res: any = await exportCard(type);
@@ -96,20 +99,49 @@ const beforeUpload = (_file: any) => {
 const uploadChange = async (info: Record<string, any>) => {
     importLoading.value = true;
     if (info.file.status === 'done') {
+        // const resp: any = info.file.response || { result: '' };
+        // flag.value = true;
+        // _import(props.product, { fileUrl: resp.result })
+        //     .then((response: any) => {
+        //         count.value = response.result?.total || 0
+        //         onlyMessage('导入成功');
+        //         errMessage.value = '';
+        //     })
+        //     .catch((err) => {
+        //         errMessage.value = err?.response?.data?.message || '导入失败'
+        //     })
+        //     .finally(() => {
+        //         flag.value = false;
+        //     });
         const resp: any = info.file.response || { result: '' };
-        flag.value = true;
-        _import(props.product, { fileUrl: resp.result })
-            .then((response: any) => {
-                count.value = response.result?.total || 0
-                onlyMessage('导入成功');
-                errMessage.value = '';
-            })
-            .catch((err) => {
-                errMessage.value = err?.response?.data?.message || '导入失败'
-            })
-            .finally(() => {
-                flag.value = false;
-            });
+        handleImport(resp)
     }
+};
+
+const handleImport = async (file: any) => {
+    let message: any = []
+    flag.value = true;
+    let event: EventSource
+    event = new EventSource(
+        `${BASE_API_PATH}/network/card/${props.product}/_import?:X_Access_Token=${getToken()
+        }&fileUrl=${file.result}`,
+        { withCredentials: true },
+    );
+    event.onopen = (e) => {
+        // pushMessage.value = []
+        console.log('open');
+    };
+    event.onmessage = (e) => {
+        console.log(123,e)
+        const result = JSON.parse(e.data);
+        if (result?.updated) {
+            count.value += result.updated;
+        }
+    };
+    event.onerror = (err) => {
+        flag.value = false;
+        onlyMessage('导入失败!','error')
+        event.close();
+    };
 };
 </script>
