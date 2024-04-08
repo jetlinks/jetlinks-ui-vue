@@ -734,6 +734,9 @@ const cancelSelect = () => {
 };
 
 const handleClick = (dt: any) => {
+    if(!dt?.cardStateType){
+        return
+    }
     if (isCheck.value) {
         if (_selectedRowKeys.value.includes(dt.id)) {
             const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
