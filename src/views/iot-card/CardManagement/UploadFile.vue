@@ -134,24 +134,13 @@ const handleImport = async (file: any) => {
     event.onmessage = (e) => {
         console.log(123,e)
         const result = JSON.parse(e.data);
-        if (result.success) {
-            count.value++;
-        } else {
-            if (result.rowNumber !== -1) {
-                failNumber.value++;
-                message.push({
-                    rowNumber: `第${result.rowNumber}行`,
-                    message: result.message,
-                    name: result.name
-                })
-                errMessage.value = JSON.stringify(message)
-            } else {
-                detailFile.value = result.detailFile;
-            }
+        if (result?.updated) {
+            count.value += result.updated;
         }
     };
     event.onerror = (err) => {
         flag.value = false;
+        onlyMessage('导入失败!','error')
         event.close();
     };
 };
