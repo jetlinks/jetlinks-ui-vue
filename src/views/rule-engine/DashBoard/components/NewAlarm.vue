@@ -48,7 +48,9 @@
                                 `level-${item.level}`,
                             ]"
                         >
+                            <Ellipsis style="width: calc(100%)">
                             {{ item.levelName }}
+                            </Ellipsis>
                         </div>
                     </div>
                 </li>

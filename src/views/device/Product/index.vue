@@ -191,14 +191,13 @@ import {
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
-import { omit } from 'lodash-es';
+import { omit, cloneDeep } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
-import {cloneDeep} from "lodash";
 import { usePermissionStore } from '@/store/permission';
 /**
  * 表格数据
@@ -320,7 +319,7 @@ const getActions = (
                     'accessProvider',
                     'messageProtocol',
                 ]);
-                downloadObject(extra, data.name+'产品');
+                downloadObject(extra, data.name + '产品');
             },
         },
         {
