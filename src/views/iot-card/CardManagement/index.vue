@@ -680,6 +680,7 @@ const getActions = (
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功');
+                        _selectedRowKeys.value=[];
                         cardManageRef.value?.reload();
                     } else {
                         onlyMessage('操作失败！', 'error');
@@ -734,6 +735,9 @@ const cancelSelect = () => {
 };
 
 const handleClick = (dt: any) => {
+    if(!dt?.cardStateType){
+        return
+    }
     if (isCheck.value) {
         if (_selectedRowKeys.value.includes(dt.id)) {
             const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
