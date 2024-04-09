@@ -202,6 +202,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                         )
                     }
                     if (resp.status === 200) {
+                        cancelSelect();
                         childDeviceRef.value?.reload();
                         onlyMessage('操作成功！');
                     }
