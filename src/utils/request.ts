@@ -184,6 +184,7 @@ const errorHandler = (error: any) => {
           showNotification('Server Side Error', ('该通道无预置点位' + '').substr(0, 90), '500')
         }else{
          showNotification('Server Side Error', (data.message + '').substr(0, 90), '500')
+        }
        } else if (status === 400) {
          showNotification('Request Error', (data.message + '').substr(0, 90), '400')
        } else if (status === 401) {
