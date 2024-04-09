@@ -1,5 +1,5 @@
 <template>
-    <Ellipsis>
+    <Ellipsis  placement="topLeft" style="max-width:80px;">
         <span class="dot" :style="{ backgroundColor: _color}"></span>
         <span>{{ text }}</span>
     </Ellipsis>
