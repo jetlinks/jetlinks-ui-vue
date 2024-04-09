@@ -178,6 +178,11 @@ const errorHandler = (error: any) => {
        } else if (status === 403) {
          showNotification('Forbidden', (data.message + '').substr(0, 90), '403')
        } else if (status === 500) {
+        //处理预置点位接口无预置点位导致超时--特殊处理
+        const queryPreset = new RegExp('/function/QueryPreset')
+        if(queryPreset.test(error.config.url)){
+          showNotification('Server Side Error', ('该通道无预置点位' + '').substr(0, 90), '500')
+        }else{
          showNotification('Server Side Error', (data.message + '').substr(0, 90), '500')
        } else if (status === 400) {
          showNotification('Request Error', (data.message + '').substr(0, 90), '400')
