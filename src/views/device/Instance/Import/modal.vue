@@ -61,7 +61,6 @@ import { getImage, onlyMessage } from '@/utils/comm'
 import File from './file.vue'
 import Plugin from './plugin.vue'
 import { importDeviceByPlugin } from '@/api/device/instance'
-import { title } from 'process'
 const emit = defineEmits(['cancel', 'save']);
 const steps = ref(0) // 步骤
 const importData = reactive<{productId?: string, type?: string}>({
