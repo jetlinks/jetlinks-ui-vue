@@ -31,7 +31,7 @@
         </j-form>
       </div>
       <div v-else>
-        <File v-if='importData.type ==="file"' :product='importData.productId' />
+        <File v-if='importData.type ==="file"' :product='importData.productId'  />
         <Plugin v-else :accessId='productDetail.accessId'  @change='pluginChange'/>
       </div>
     </div>
@@ -39,7 +39,7 @@
       <j-button v-if='steps === 0' @click='cancel' >取消</j-button>
       <j-button v-if='steps !== 0' @click='prev' >上一步</j-button>
       <j-button v-if='steps !== 2' @click='next' type='primary'>下一步</j-button>
-      <j-button v-if='steps === 2' @click='save' type='primary'>确认</j-button>
+      <j-button v-if='steps === 2' @click='save' type='primary' :disabled="flag">确认</j-button>
     </template>
   </j-modal>
   <j-modal
@@ -55,27 +55,25 @@
 </template>
 
 <script lang='ts' setup name='DeviceImport'>
+import {provide,ref} from 'vue'
 import Product from './product.vue'
 import { getImage, onlyMessage } from '@/utils/comm'
 import File from './file.vue'
 import Plugin from './plugin.vue'
 import { importDeviceByPlugin } from '@/api/device/instance'
-
 const emit = defineEmits(['cancel', 'save']);
-
 const steps = ref(0) // 步骤
-
 const importData = reactive<{productId?: string, type?: string}>({
   productId: undefined,
   type: undefined,
 })
-
 const productDetail = ref()
 const deviceList = ref<any[]>([])
 const visible = ref(true)
 const importVisible = ref(false)
 const count = ref(0)
-
+const flag=ref<boolean>(false)
+provide("flag",flag)
 const typeOptions = computed(() => {
   const array = [
     {
