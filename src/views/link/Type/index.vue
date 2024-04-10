@@ -209,7 +209,13 @@ const columns = [
         width: 150,
         search: {
             type: 'select',
-            options: options,
+            options: async() => {
+                const res: any = await supports();
+              return  options.value = res.result.map((item: any) => ({
+                    value: item.id,
+                    label: item.name,
+                }));
+            },
         },
         scopedSlots: true,
     },
@@ -394,16 +400,14 @@ const getDetails = (slotProps: Partial<Record<string, any>>) => {
     return head + headers + content;
 };
 
-
-
-const getSupports = async () => {
-    const res: any = await supports();
-    options.value = res.result.map((item: any) => ({
-        value: item.id,
-        label: item.name,
-    }));
-};
-getSupports();
+// const getSupports = async () => {
+//     const res: any = await supports();
+//     options.value = res.result.map((item: any) => ({
+//         value: item.id,
+//         label: item.name,
+//     }));
+// };
+// getSupports();
 
 /**
  * 搜索

@@ -452,12 +452,6 @@ const getProductName = (pid: string) => {
 };
 
 const jumpDetail =  (data:any) =>{
-    menuStory.jumpPage(
-                    'media/Device/Save',
-                    {},
-                    {
-                        id: data.id,
-                    },
-                );
+    menuStory.jumpPage('device/Instance/Detail', { id: data.id });
 }
 </script>

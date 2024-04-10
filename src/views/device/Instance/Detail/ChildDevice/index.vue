@@ -202,6 +202,12 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                         )
                     }
                     if (resp.status === 200) {
+                        _selectedRowKeys.value.find((i:any,index:number)=>{
+                            if(i === data.id){
+                                _selectedRowKeys.value.splice(index,1)
+                            }
+                            return i === data.id 
+                        })
                         childDeviceRef.value?.reload();
                         onlyMessage('操作成功！');
                     }

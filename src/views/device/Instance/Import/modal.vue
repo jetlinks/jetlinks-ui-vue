@@ -39,7 +39,7 @@
       <j-button v-if='steps === 0' @click='cancel' >取消</j-button>
       <j-button v-if='steps !== 0' @click='prev' >上一步</j-button>
       <j-button v-if='steps !== 2' @click='next' type='primary'>下一步</j-button>
-      <j-button v-if='steps === 2' @click='save' type='primary'>确认</j-button>
+      <j-button v-if='steps === 2' @click='save' type='primary' :disabled="flag">确认</j-button>
     </template>
   </j-modal>
   <j-modal
@@ -55,6 +55,7 @@
 </template>
 
 <script lang='ts' setup name='DeviceImport'>
+import {provide} from 'vue'
 import Product from './product.vue'
 import { getImage, onlyMessage } from '@/utils/comm'
 import File from './file.vue'
@@ -75,7 +76,8 @@ const deviceList = ref<any[]>([])
 const visible = ref(true)
 const importVisible = ref(false)
 const count = ref(0)
-
+const flag = ref<boolean>(false)
+provide("flag",flag)
 const typeOptions = computed(() => {
   const array = [
     {

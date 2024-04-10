@@ -50,7 +50,7 @@
                             :key="index"
                             :value="item.value"
                         >
-                            <div
+                            <Ellipsis
                                 style="
                                     text-align: center;
                                     margin-top: 10px;
@@ -65,7 +65,7 @@
                                     style="height: 40px"
                                     alt=""
                                 />{{ item.label }}
-                            </div>
+                            </Ellipsis>
                         </j-radio-button>
                     </j-radio-group>
                 </j-form-item>
