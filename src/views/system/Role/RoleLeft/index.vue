@@ -68,7 +68,7 @@ const listData: any = ref([{
 const selectedKeys = ref<string[]>(['global_role'])
 const searchValue = ref()
 const inputRef = ref()
-const addName = ref()
+const addName = ref()   
 const selectId = ref()
 const queryGroup = async (select?: Boolean, searchName?: string) => {
     const params = searchName ? { sorts: [{ name: 'createTime', order: 'desc' }], terms: [{ terms: [{ value: '%' + searchName + '%', termType: 'like', column: 'name' }] }] } : { sorts: [{ name: 'createTime', order: 'desc' }] }
@@ -98,8 +98,8 @@ const addGroup = () => {
 }
 const saveGroup = async (data: any) => {
     if (addName.value === '') {
-        addName.value = data.name;
-    } else {
+        listData.value[0].children.splice(1,1)
+    }else {
         const saveData = {
             name: addName.value,
             id: data.id
@@ -144,6 +144,7 @@ const editGroup = (data: any) => {
             listData.value[0].children.forEach((item: any) => {
                 if (item.id === data.id) {
                     item.edit = true
+                    addName.value = data.name;
                 }
             })
             nextTick(() => {
