@@ -53,10 +53,16 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <Ellipsis>
-                                    <h3 class="card-item-content-title">
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        font-size: 16px;
+                                        color: rgb(49, 94, 251);
+                                        font-weight: 700;
+                                        margin-bottom: 8px;
+                                    "
+                                >
                                         {{ slotProps.name }}
-                                    </h3>
                                 </Ellipsis>
                                 <j-row>
                                     <j-col :span="12">
