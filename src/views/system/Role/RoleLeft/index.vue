@@ -98,7 +98,7 @@ const addGroup = () => {
 }
 const saveGroup = async (data: any) => {
     if (addName.value === '') {
-        listData.value[0].children.splice(1,1)
+        addName.value = data.name;
     } else {
         const saveData = {
             name: addName.value,
@@ -150,8 +150,8 @@ const editGroup = (data: any) => {
                 inputRef.value.focus()
             })
         }
+};
        
-}
 onMounted(() => {
     queryGroup(true)
 })
