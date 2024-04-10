@@ -44,11 +44,13 @@
                 label="排序"
                 :rules="[{ required: true, message: '请输入排序' }]"
             >
-                <j-input
+                <j-input-number
+                    style="width: 100%;"
                     v-model:value="form.data.sortIndex"
                     placeholder="请输入排序"
-                    :maxlength="64"
-                    @blur="form.checkSort"
+                    :controls="false"
+                    :min="0"
+                    :max="99999999"
                 />
             </j-form-item>
         </j-form>
@@ -140,7 +142,6 @@ const filterTree = (treeNode: treeType[]) => {
 const formRef = ref<FormInstance>();
 const form = reactive({
     data: {} as formType,
-    beforeSortIndex: '' as string | number,
 
     init: () => {
         if (props.data.id) {
@@ -160,19 +161,10 @@ const form = reactive({
                 sortIndex: props.data.sortIndex,
             };
         }
-        form.beforeSortIndex = form.data.sortIndex;
         nextTick(() => {
             formRef.value?.clearValidate();
         });
     },
-    checkSort: (e: any) => {
-        const value = e.target.value.match(/^[1-9]*/)[0];
-        if (value) {
-            form.data.sortIndex = value;
-            form.beforeSortIndex = value;
-        } else form.data.sortIndex = form.beforeSortIndex;
-    },
-
     submit: () => {
         const api = form.data.id ? updateDepartment_api : addDepartment_api;
         form.data.parentId =  form.data.parentId ? form.data.parentId : '';
