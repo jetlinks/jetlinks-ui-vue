@@ -55,7 +55,11 @@
 </template>
 
 <script lang='ts' setup name='DeviceImport'>
+<<<<<<< HEAD
 import {provide,ref} from 'vue'
+=======
+import {provide} from 'vue'
+>>>>>>> dev-bug
 import Product from './product.vue'
 import { getImage, onlyMessage } from '@/utils/comm'
 import File from './file.vue'
@@ -72,7 +76,7 @@ const deviceList = ref<any[]>([])
 const visible = ref(true)
 const importVisible = ref(false)
 const count = ref(0)
-const flag=ref<boolean>(false)
+const flag = ref<boolean>(false)
 provide("flag",flag)
 const typeOptions = computed(() => {
   const array = [

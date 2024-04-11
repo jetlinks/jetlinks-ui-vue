@@ -41,7 +41,10 @@ type Emit = {
 }
 
 const props = defineProps({
-  ...defaultSetting
+  ...defaultSetting,
+  termType:{
+    type: String,
+  }
 })
 
 const label: Record<number, any> = {

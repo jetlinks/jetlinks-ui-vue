@@ -316,6 +316,7 @@ const checkNoticeDelete = async () => {
 }
 
 const check = () => {
+  console.log(_data.value.branches)
   const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
   if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
     checkDeviceDelete()

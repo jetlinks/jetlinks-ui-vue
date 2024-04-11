@@ -605,6 +605,7 @@ onMounted(() => {
                             .other-button-item {
                                 cursor: pointer;
                                 padding: 4px;
+<<<<<<< HEAD
                             }
                         }
                         .more {
@@ -612,6 +613,19 @@ onMounted(() => {
                             .moreIcon {
                                 transform: translateY(50%);
                             }
+=======
+                            }
+                        }
+                        .more {
+                            cursor: pointer;
+                            .moreIcon {
+                                transform: translateY(50%);
+                            }
+                        }
+                        .more{
+                            text-align: center;
+                            cursor: pointer;
+>>>>>>> dev-bug
                         }
                     }
 

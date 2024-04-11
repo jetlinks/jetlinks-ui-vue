@@ -209,7 +209,13 @@ const columns = [
         width: 150,
         search: {
             type: 'select',
-            options: options,
+            options: async() => {
+                const res: any = await supports();
+              return  options.value = res.result.map((item: any) => ({
+                    value: item.id,
+                    label: item.name,
+                }));
+            },
         },
         scopedSlots: true,
     },
@@ -378,32 +384,42 @@ const getDetails = (slotProps: Partial<Record<string, any>>) => {
     } else {
         !!cluster[0].configuration.publicHos && (head = '公网:');
     }
-    if( !shareCluster  && cluster.length > 1){
-        const contentItem2 = (cluster[0].configuration.publicHost ||
-              cluster[0].configuration.remoteHost) +
-          ':' +
-          (cluster[0].configuration.publicPort ||
-              cluster[0].configuration.remotePort)
-        let headItme2 ='远程'
-         !!cluster[0].configuration.publicHos && (headItme2 = '公网:');
-         if(cluster.length > 2){
-            return head + headers + content + " "  + headItme2 + headers + contentItem2 + '。。。'
-         } 
-         return  head + headers + content + " "  + headItme2 + headers + contentItem2 
+    if (!shareCluster && cluster.length > 1) {
+        const contentItem2 =
+            (cluster[0].configuration.publicHost ||
+                cluster[0].configuration.remoteHost) +
+            ':' +
+            (cluster[0].configuration.publicPort ||
+                cluster[0].configuration.remotePort);
+        let headItme2 = '远程';
+        !!cluster[0].configuration.publicHos && (headItme2 = '公网:');
+        if (cluster.length > 2) {
+            return (
+                head +
+                headers +
+                content +
+                ' ' +
+                headItme2 +
+                headers +
+                contentItem2 +
+                '。。。'
+            );
+        }
+        return (
+            head + headers + content + ' ' + headItme2 + headers + contentItem2
+        );
     }
     return head + headers + content;
 };
 
-
-
-const getSupports = async () => {
-    const res: any = await supports();
-    options.value = res.result.map((item: any) => ({
-        value: item.id,
-        label: item.name,
-    }));
-};
-getSupports();
+// const getSupports = async () => {
+//     const res: any = await supports();
+//     options.value = res.result.map((item: any) => ({
+//         value: item.id,
+//         label: item.name,
+//     }));
+// };
+// getSupports();
 
 /**
  * 搜索

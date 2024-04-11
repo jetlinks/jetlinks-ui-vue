@@ -141,7 +141,7 @@ const submitData = async (fileUrl: string) => {
         errCount.value = 0;
         const autoDeploy = !!modelRef?.file?.autoDeploy || false;
         importLoading.value = true;
-        flag.value=true;
+        flag.value = true;
         let dt = 0;
         let et = 0;
         const source = new EventSourcePolyfill(
@@ -185,6 +185,7 @@ const uploadChange = async (info: Record<string, any>) => {
         disabled.value = false;
     }
 };
+
 </script>
 
 <style scoped lang='less'>

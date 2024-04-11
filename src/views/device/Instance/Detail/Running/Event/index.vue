@@ -48,6 +48,7 @@ import dayjs from 'dayjs';
 import { getEventList } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import JsonViewer from 'vue-json-viewer';
+import { cloneDeep } from 'lodash-es';
 
 const events = defineProps({
     data: {
@@ -87,7 +88,8 @@ const _getEventList = (_params: any) =>
 watchEffect(() => {
     columns.value = [...defaultColumns];
     if (events.data?.valueType?.type === 'object') {
-        (events.data.valueType?.properties || []).reverse().map((i: any) => {
+        const eventProperties = cloneDeep(events.data.valueType?.properties || [])
+        eventProperties.reverse().map((i: any) => {
             if (i.valueType?.type === 'object') {
                 objectKey.value.push({
                     key:i.id,
