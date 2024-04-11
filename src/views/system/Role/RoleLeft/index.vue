@@ -153,11 +153,12 @@ const addGroup = () => {
     });
 };
 const saveGroup = async (data: any) => {
-    if (addName.value === '') {
-        if (data.name === '') {
+    if (addName.value === '' ) {
+        if(data.name===''){
             listData.value[0].children.splice(1, 1);
         }
-    } else {
+    }
+    else {
         const saveData = {
             name: addName.value,
             id: data.id,
