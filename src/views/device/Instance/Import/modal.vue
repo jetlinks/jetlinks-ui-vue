@@ -55,11 +55,7 @@
 </template>
 
 <script lang='ts' setup name='DeviceImport'>
-<<<<<<< HEAD
-import {provide,ref} from 'vue'
-=======
 import {provide} from 'vue'
->>>>>>> dev-bug
 import Product from './product.vue'
 import { getImage, onlyMessage } from '@/utils/comm'
 import File from './file.vue'
