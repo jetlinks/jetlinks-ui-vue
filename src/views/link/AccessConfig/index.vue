@@ -205,7 +205,6 @@ const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 let providersList = ref<Record<string, any>>([]);
-const providersOptions = ref<Record<string, any>>([]);
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -227,7 +226,13 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            options: providersOptions,
+            options: async() =>{
+                const res: any = await getProviders();
+               const providersOptions = accessConfigTypeFilter(res.result || []);
+                return providersOptions.filter((i:any)=>{
+                    return i.id !== 'modbus-tcp' && i.id !== 'opc-ua'
+                })
+            },
         },
     },
     {
@@ -331,10 +336,6 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
-    providersOptions.value = accessConfigTypeFilter(res.result || []);
-    providersOptions.value =  providersOptions.value.filter((i:any)=>{
-        return i.id !== 'modbus-tcp' && i.id !== 'opc-ua'
-    })
 };
 getProvidersList();
 
