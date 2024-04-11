@@ -215,15 +215,15 @@ const openDialog = (row: any = {}) => {
     // 计算默认排序值，为子列表中最大的排序值+1
     let sortIndex = row.sortIndex || 1;
     if (!row.id) {
-        let childrens = [] as any[];
+        let children = [] as any[];
         if (row.parentId) {
-            childrens = row.children;
-        } else childrens = treeData.value;
-        const indexs =
-            childrens?.length > 0
-                ? childrens?.map((item) => item.sortIndex)
+            children = row.children;
+        } else children = treeData.value;
+        const index =
+        children?.length > 0
+                ? children?.map((item) => item.sortIndex)
                 : [0];
-        sortIndex = Math.max(...indexs) + 1;
+        sortIndex = Math.max(...index) + 1;
     }
 
     dialog.selectItem = { ...row, sortIndex };

@@ -2,7 +2,7 @@
     <div>
         <j-spin :spinning="loading" :delay="500">
             <div class="container">
-                <div class="left" >
+                <div class="left">
                     <img
                         style="width: 100%; height: 100%"
                         :src="basis.background || getImage('/login.png')"
@@ -37,22 +37,16 @@
                                     :model="form"
                                     class="login-form"
                                     @finish="onFinish"
-                                    :rules='rules'
+                                    :rules="rules"
                                 >
-                                    <j-form-item
-                                        label="账号"
-                                        name="username"
-                                    >
+                                    <j-form-item label="账号" name="username">
                                         <j-input
                                             v-model:value="form.username"
                                             placeholder="请输入账号"
                                             :maxlength="64"
                                         ></j-input>
                                     </j-form-item>
-                                    <j-form-item
-                                        label="密码"
-                                        name="password"
-                                    >
+                                    <j-form-item label="密码" name="password">
                                         <j-input-password
                                             v-model:value="form.password"
                                             placeholder="请输入密码"
@@ -117,25 +111,89 @@
                                     </j-divider>
                                     <div class="other-button">
                                         <div
-                                          class='other-button-item'
-                                          v-for="(item, index) in bindings.slice(0,4)"
-                                          :key="index"
-                                          @click="handleClickOther(item)"
+                                            class="other-button-item"
+                                            v-for="(
+                                                item, index
+                                            ) in bindings.slice(0, 4)"
+                                            :key="index"
+                                            @click="handleClickOther(item)"
                                         >
-                                          <img
-                                            style="width: 32px; height: 32px"
-                                            :alt="item.name"
-                                            :src="
-                                                    item.logoUrl || iconMap.get(
-                                                        item.provider,
-                                                    ) || defaultImg
+                                            <img
+                                                style="
+                                                    width: 32px;
+                                                    height: 32px;
                                                 "
-                                          />
+                                                :alt="item.name"
+                                                :src="
+                                                    item.logoUrl ||
+                                                    iconMap.get(
+                                                        item.provider,
+                                                    ) ||
+                                                    defaultImg
+                                                "
+                                            />
                                         </div>
+                                        <j-popover
+                                            trigger="click"
+                                            v-model:visible="moreVisible"
+                                            placement="bottomRight"
+                                        >
+                                            <template #content>
+                                                <j-scrollbar :max-height="120">
+                                                    <div class="more-button">
+                                                        <div
+                                                            class="more-button-item"
+                                                            v-for="(
+                                                                item, index
+                                                            ) in bindings"
+                                                            :key="index"
+                                                            @click="
+                                                                handleClickOther(
+                                                                    item,
+                                                                )
+                                                            "
+                                                        >
+                                                            <img
+                                                                style="
+                                                                    width: 32px;
+                                                                    height: 32px;
+                                                                "
+                                                                :alt="item.name"
+                                                                :src="
+                                                                    item.logoUrl
+                                                                "
+                                                            />
+                                                            <Ellipsis
+                                                                style="
+                                                                    margin-top: 5px;
+                                                                    width: calc(
+                                                                        100%
+                                                                    );
+                                                                    margin: 0
+                                                                        auto;
+                                                                "
+                                                            >
+                                                                {{ item.name }}
+                                                            </Ellipsis>
+                                                        </div>
+                                                    </div>
+                                                </j-scrollbar>
+                                            </template>
+                                            <div
+                                                v-if="bindings.length > 4"
+                                                class="more"
+                                            >
+                                                <AIcon
+                                                    class="moreIcon"
+                                                    type="MoreOutlined"
+                                                    style="font-size: 20px"
+                                                ></AIcon>
+                                            </div>
+                                        </j-popover>
                                     </div>
-                                    <div class="more" v-if="bindings.length > 4" @click="moreVisible = true">
+                                    <!-- <div class="more" v-if="bindings.length > 4" @click="moreVisible = true">
                                         查看更多
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -161,14 +219,14 @@
             </div>
         </j-spin>
     </div>
-    <j-modal 
+    <!-- <j-modal
         title="更多登录"
         :visible="moreVisible"
         @cancel="() => (moreVisible = false)"
         :footer="null"
         :width="800"
     >
-    <div class="more-button">
+        <div class="more-button">
             <div
                 class="more-button-item"
                 v-for="(item, index) in bindings"
@@ -180,33 +238,40 @@
                     :alt="item.name"
                     :src="item.logoUrl"
                 />
-                <Ellipsis style="margin-top: 5px; width:calc(100% - 40px); margin: 0 auto">
+                <Ellipsis
+                    style="
+                        margin-top: 5px;
+                        width: calc(100% - 40px);
+                        margin: 0 auto;
+                    "
+                >
                     {{ item.name }}
                 </Ellipsis>
             </div>
         </div>
-    </j-modal>
+    </j-modal> -->
 </template>
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
 import {
-  config,
-  code,
-  authLogin,
-  getInitSet,
-  systemVersion,
-  bindInfo,
-  settingDetail, userDetail,
-  authLoginConfig
-} from '@/api/login'
+    config,
+    code,
+    authLogin,
+    getInitSet,
+    systemVersion,
+    bindInfo,
+    settingDetail,
+    userDetail,
+    authLoginConfig,
+} from '@/api/login';
 import { useUserInfo } from '@/store/userInfo';
-import { useSystem } from '@/store/system'
+import { useSystem } from '@/store/system';
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
-import {encrypt} from '@/utils/encrypt'
-import { closeWs } from '@/utils/websocket'
+import { encrypt } from '@/utils/encrypt';
+import { closeWs } from '@/utils/websocket';
 
 const store = useUserInfo();
 const systemStore = useSystem();
@@ -217,7 +282,7 @@ const viewLogo = getImage('/view-logo.png');
 const LoginWarpStyle = reactive({
     backgroundImage: `url(${bgImage})`,
 });
-const moreVisible = ref(false)
+const moreVisible = ref(false);
 const screenWidth = ref(document.body.clientWidth);
 const screenHeight = ref(document.body.clientHeight);
 
@@ -230,44 +295,44 @@ const form = reactive({
     verifyKey: '',
 });
 
-const  RsaConfig = reactive<any>({
-    enabled:false, //是否加密
-    publicKey:'', //rsa公钥,使用此公钥对密码进行加密
-    id:'' //密钥ID
-})
+const RsaConfig = reactive<any>({
+    enabled: false, //是否加密
+    publicKey: '', //rsa公钥,使用此公钥对密码进行加密
+    id: '', //密钥ID
+});
 
 const rules = {
-  username: [
-    {
-      validator(_: any, value: string) {
-        if (!value) {
-          return Promise.reject('请输入账号!')
-        }
-        return Promise.resolve()
-      }
-    }
-  ],
-  password: [
-    {
-      validator(_: any, value: string) {
-        if (!value) {
-          return Promise.reject('请输入密码!')
-        }
-        return Promise.resolve()
-      }
-    }
-  ],
-  verifyCode: [
-    {
-      validator(_: any, value: string) {
-        if (!value) {
-          return Promise.reject('请输入验证码!')
-        }
-        return Promise.resolve()
-      }
-    }
-  ]
-}
+    username: [
+        {
+            validator(_: any, value: string) {
+                if (!value) {
+                    return Promise.reject('请输入账号!');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
+    password: [
+        {
+            validator(_: any, value: string) {
+                if (!value) {
+                    return Promise.reject('请输入密码!');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
+    verifyCode: [
+        {
+            validator(_: any, value: string) {
+                if (!value) {
+                    return Promise.reject('请输入验证码!');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
+};
 
 const codeUrl = ref('');
 const codeConfig = ref(false);
@@ -290,45 +355,47 @@ const onFinish = async () => {
 
         const data = {
             ...form,
-            password:RsaConfig.enabled?encrypt(form.password,RsaConfig.publicKey):form.password,
-            encryptId:RsaConfig.enabled?RsaConfig.id:undefined
-        }
+            password: RsaConfig.enabled
+                ? encrypt(form.password, RsaConfig.publicKey)
+                : form.password,
+            encryptId: RsaConfig.enabled ? RsaConfig.id : undefined,
+        };
 
         const res: any = await authLogin(data);
         loading.value = false;
         if (res.success) {
-          LocalStore.set(TOKEN_KEY, res?.result.token);
-          const userResp = await userDetail()
-          if (userResp.success) {
-            store.$patch({
-              userInfos: {
-                ...userResp.result,
-                token: res?.result.token,
-              },
-              isAdmin: userResp.username === "admin",
-            });
+            LocalStore.set(TOKEN_KEY, res?.result.token);
+            const userResp = await userDetail();
+            if (userResp.success) {
+                store.$patch({
+                    userInfos: {
+                        ...userResp.result,
+                        token: res?.result.token,
+                    },
+                    isAdmin: userResp.username === 'admin',
+                });
 
-            if (userResp.result?.username === 'admin') {
-              const resp: any = await getInitSet();
-              if (resp.status === 200 && !resp.result.length) {
-                window.location.href = '/#/init-home';
-                // router.push('/init-home')
-                return;
-              }
+                if (userResp.result?.username === 'admin') {
+                    const resp: any = await getInitSet();
+                    if (resp.status === 200 && !resp.result.length) {
+                        window.location.href = '/#/init-home';
+                        // router.push('/init-home')
+                        return;
+                    }
+                }
+            } else {
+                store.$patch({
+                    ...res.result,
+                });
             }
-          } else {
-            store.$patch({
-              ...res.result
-            });
-          }
             window.location.href = '/';
-          // router.push('/')
+            // router.push('/')
         }
     } catch (error) {
         form.verifyCode = '';
         getCode();
         loading.value = false;
-        getRsa()
+        getRsa();
     }
 };
 
@@ -345,7 +412,6 @@ const getCode = async () => {
     }
 };
 
-
 const getOpen = () => {
     LocalStore.removeAll();
     systemVersion().then((res: any) => {
@@ -360,24 +426,24 @@ const getOpen = () => {
             }
         }
     });
-    systemStore.getFront()
+    systemStore.getFront();
 };
 
 //获取加密信息
-const getRsa =async () =>{
-    const res:any = await authLoginConfig()
-    if(res.status === 200){
-        if(res.result?.encrypt){
-            RsaConfig.enabled = res.result?.encrypt.enabled
-            RsaConfig.publicKey = res.result?.encrypt.publicKey
-            RsaConfig.id = res.result?.encrypt.id
+const getRsa = async () => {
+    const res: any = await authLoginConfig();
+    if (res.status === 200) {
+        if (res.result?.encrypt) {
+            RsaConfig.enabled = res.result?.encrypt.enabled;
+            RsaConfig.publicKey = res.result?.encrypt.publicKey;
+            RsaConfig.id = res.result?.encrypt.id;
         }
     }
-}
+};
 
 const basis = computed(() => {
-  return systemStore.configInfo['front'] || {}
-})
+    return systemStore.configInfo['front'] || {};
+});
 const handleClickOther = (item: any) => {
     LocalStore.set('onLogin', 'no');
     window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
@@ -411,11 +477,10 @@ getOpen();
 getCode();
 screenRotation(screenWidth.value, screenHeight.value);
 
-closeWs()
-onMounted(()=>{
-    getRsa()
-})
-
+closeWs();
+onMounted(() => {
+    getRsa();
+});
 </script>
 
 <style scoped lang="less">
@@ -538,10 +603,15 @@ onMounted(()=>{
                             flex-wrap: wrap;
 
                             .other-button-item {
-                              cursor: pointer;
-                              padding: 4px;
+                                cursor: pointer;
+                                padding: 4px;
                             }
-
+                        }
+                        .more {
+                            cursor: pointer;
+                            .moreIcon {
+                                transform: translateY(50%);
+                            }
                         }
                         .more{
                             text-align: center;
@@ -567,9 +637,9 @@ onMounted(()=>{
                         }
                     }
 
-                  .login-form-button {
-                    width: 100%;
-                  }
+                    .login-form-button {
+                        width: 100%;
+                    }
                 }
             }
         }
@@ -637,11 +707,13 @@ onMounted(()=>{
     display: flex;
     flex-wrap: wrap;
     cursor: pointer;
+    overflow: auto;
+    width: 300px;
     .more-button-item {
-        width: 18%;
-        margin-left: 2%;
+        width: 62px;
         text-align: center;
-        margin-bottom: 20px
+        margin-bottom: 10px;
+        margin-left: 12px;
     }
 }
 </style>

@@ -300,6 +300,7 @@ const columns = [
                     });
                 }),
         },
+        ellipsis:true
     },
     {
         title: '注册时间',

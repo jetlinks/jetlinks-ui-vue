@@ -1438,6 +1438,17 @@ import { Rule } from 'ant-design-vue/lib/form';
 import ApplyList from './ApplyList/index.vue';
 
 const emit = defineEmits(['changeApplyType']);
+
+const defaultImg = {
+    'internal-standalone': getImage('/apply/internal-standalone.png'),
+    'internal-integrated': getImage('/apply/internal-integrated.png'),
+    'wechat-webapp': getImage('/apply/wechat-webapp.png'),
+    'dingtalk-ent-app': getImage('/apply/dingtalk-ent-app.png'),
+    'third-party': getImage('/apply/third-party.png'),
+    'wechat-miniapp': getImage('/apply/wechat-miniapp.png'),
+};
+
+
 const routeQuery = useRoute().query;
 const menuStory = useMenuStore();
 
@@ -1601,6 +1612,8 @@ onMounted(async () => {
         typeOptions.value = typeOptions.value.filter((i: any) => {
             return i.value === routeQuery.provider;
         });
+        console.log(typeOptions.value[0].value)
+        form.data.logoUrl = defaultImg[typeOptions.value[0].value]
     }
 });
 

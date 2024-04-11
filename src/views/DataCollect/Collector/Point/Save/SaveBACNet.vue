@@ -8,10 +8,7 @@
                     :maxlength="64"
                 />
             </j-form-item>
-            <j-form-item
-                label="对象ID"
-                :name="['configuration', 'ObjectId']"
-            >
+            <j-form-item label="对象ID" :name="['configuration', 'ObjectId']">
                 <j-card>
                     <j-form-item label="对象类型">
                         <j-input
@@ -40,10 +37,13 @@
                 ></j-input>
             </j-form-item>
             <j-form-item label="值类型" :name="['configuration', 'valueType']">
-                <j-select
-                    v-model:value="formData.configuration.valueType"
-                >
-                    <j-select-option v-for="item in bacnetValueType" :key="item" :value="item">{{ item }}</j-select-option>
+                <j-select v-model:value="formData.configuration.valueType">
+                    <j-select-option
+                        v-for="item in bacnetValueType"
+                        :key="item"
+                        :value="item"
+                        >{{ item }}</j-select-option
+                    >
                 </j-select>
             </j-form-item>
             <j-form-item
@@ -141,7 +141,11 @@
     </j-modal>
 </template>
 <script setup lang="ts">
-import { savePoint, updatePoint, getBacnetValueType } from '@/api/data-collect/collector';
+import {
+    savePoint,
+    updatePoint,
+    getBacnetValueType,
+} from '@/api/data-collect/collector';
 import { randomString } from '@/utils/utils';
 import DeathArea from './DeathArea.vue';
 const props = defineProps({

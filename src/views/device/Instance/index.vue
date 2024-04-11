@@ -720,6 +720,7 @@ const getActions = (
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功！');
+                        _selectedRowKeys.value=[];
                         instanceRef.value?.reload();
                     } else {
                         onlyMessage('操作失败！', 'error');

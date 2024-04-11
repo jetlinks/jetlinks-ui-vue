@@ -13,11 +13,11 @@
     </TitleComponent>
     <template v-if='open'>
       <div>
-        <j-tabs type="editable-card" v-model:activeKey="activeKey" @edit="addGroup">
+        <j-tabs type="editable-card" v-model:activeKey="activeKey" @edit="addGroup" @tabClick="showEditCondition">
           <j-tab-pane
             v-for="(b, i) in group"
             :key="b.id"
-            :tab="`条件${i + 1}`"
+            :tab="b.branchName || `条件${i+1}`"
             :closable="false"
           >
             <template v-for='(item, index) in data.branches'>
@@ -64,6 +64,13 @@
       </j-form-item>
     </div>
   </div>
+  <j-modal v-if="editConditionVisible"  title="编辑" visible @cancel="editConditionVisible = false" @ok="changeBranchName">
+    <j-form layout='vertical'>
+      <j-form-item label="条件名称：" :required="true">
+        <j-input v-model:value="conditionName"></j-input>
+      </j-form-item>
+    </j-form>
+  </j-modal>
 </template>
 
 <script setup lang='ts' name='Terms'>
@@ -84,6 +91,8 @@ const open = ref<boolean>(false)
 const columnOptions = ref<any>([])
 const group = ref<Array<{ id: string, len: number}>>([])
 const activeKey = ref('')
+const editConditionVisible = ref(false);
+const conditionName = ref<any>('')
 
 provide(ContextKey, columnOptions)
 
@@ -183,7 +192,8 @@ const addGroup = () => {
     },
     then: [],
     executeAnyway: true,
-    branchId: Math.floor(Math.random() * 100000000)
+    branchId: Math.floor(Math.random() * 100000000),
+    branchName:'条件'+ data.value.branches?.length
   }
   data.value.branches?.push(branchesItem)
   data.value.branches?.push(null as any)
@@ -210,6 +220,24 @@ const groupDelete = (g: any, index: number) => {
   activeKey.value = group.value[_index].id
 }
 
+const showEditCondition = (key:any) =>{
+  if(key === activeKey.value){
+    editConditionVisible.value = true;
+    conditionName.value = group.value.find((i:any)=>{
+      return i.id === key
+    })?.branchName
+  }
+}
+
+const changeBranchName = () =>{
+  console.log(data.value)
+  data.value.branches?.forEach((item:any)=>{
+     if(item?.key === activeKey.value.slice(6)){
+      item.branchName = conditionName.value
+     }
+  })
+  editConditionVisible.value =false
+}
 watchEffect(() => {
   if (data.value.trigger?.device) {
     queryColumn({ trigger: data.value.trigger })
@@ -242,7 +270,8 @@ watchEffect(() => {
         _group[lastIndex + 1] = {
           id: `group_${item.key}`,
           len: 1,
-          start: index
+          start: index,
+          branchName:item.branchName
         }
       } else {
         _group[lastIndex].len += 1
@@ -258,7 +287,7 @@ watchEffect(() => {
       activeKey.value = _group[0].id
     }
   }
-
+  console.log(group.value,'group')
 })
 
 </script>

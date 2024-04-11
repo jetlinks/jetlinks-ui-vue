@@ -55,7 +55,8 @@ export const defaultBranches = [
     },
     then: [],
     executeAnyway: true,
-    branchId: Math.floor(Math.random() * 100000000)
+    branchId: Math.floor(Math.random() * 100000000),
+    branchName:'条件1'
   },
 ];
 

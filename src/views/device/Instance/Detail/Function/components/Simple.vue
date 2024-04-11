@@ -91,7 +91,7 @@
                         </div>
                     </j-col>
                     <j-col :span="9">
-                        <h6>执行结果：</h6>
+                        <h4>执行结果：</h4>
                         <span
                             :ref="`result${func.id}Ref`"
                             class="execute-result"
