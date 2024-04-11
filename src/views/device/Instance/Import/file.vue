@@ -161,7 +161,6 @@ const submitData = async (fileUrl: string) => {
                     errCount.value = et;
                 }
             }
-            flag.value=false;
             disabled.value = false;
         };
         source.onerror = (e: { status: number }) => {
