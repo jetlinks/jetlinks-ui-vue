@@ -723,6 +723,10 @@ const getActions = (
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功');
+                        const index = _selectedRowKeys.value.findIndex((id: any) => id === data.id);
+                        if (index !== -1) {
+                            _selectedRowKeys.value.splice(index, 1);
+                        }
                         cardManageRef.value?.reload();
                     } else {
                         onlyMessage('操作失败！', 'error');
