@@ -35,7 +35,9 @@
                             :name="['metrics', index, 'value', 0]"
                         >
                             <template #label>
-                                <Ellipsis>{{ item?.name || '指标值' }}</Ellipsis>
+                                <Ellipsis>{{
+                                    item?.name || '指标值'
+                                }}</Ellipsis>
                             </template>
                             <ValueItem
                                 v-model:modelValue="item.value[0]"
@@ -136,7 +138,9 @@ watch(
                             const list = resp?.result.map((item: any) => {
                                 const val = Array.isArray(item?.value)
                                     ? item?.value
-                                    : (isNumber(item?.value) ? [item.value] : item?.value?.split(','))
+                                    : isNumber(item?.value)
+                                    ? [item.value]
+                                    : item?.value?.split(',');
                                 return {
                                     ...item,
                                     value: val,
@@ -160,8 +164,19 @@ watch(
                                 );
                                 modelRef.metrics = list || [];
                             } else {
-                                modelRef.metrics =
-                                    props.data.expands?.metrics || [];
+                                modelRef.metrics = (
+                                    props.data.expands?.metrics || []
+                                ).map((item: any) => {
+                                    const val = Array.isArray(item?.value)
+                                        ? item?.value
+                                        : isNumber(item?.value)
+                                        ? [item.value]
+                                        : item?.value?.split(',');
+                                    return {
+                                        ...item,
+                                        value: val,
+                                    };
+                                });
                             }
                         }
                     }
