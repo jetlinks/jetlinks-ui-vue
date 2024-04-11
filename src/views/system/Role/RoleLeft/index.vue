@@ -97,9 +97,13 @@ const addGroup = () => {
     })
 }
 const saveGroup = async (data: any) => {
-    if (addName.value === '') {
-        listData.value[0].children.splice(1,1)
-    }else {
+    if (addName.value === '' && data.name==='' ) {
+        listData.value[0].children.splice(1, 1);
+    }
+    else {
+        if(addName.value === '' && data.name!==''){
+            addName.value=data.name
+        }
         const saveData = {
             name: addName.value,
             id: data.id
@@ -116,6 +120,8 @@ const saveGroup = async (data: any) => {
         selectId.value = ''
     },300)
 }
+
+
 const search = () => {
     queryGroup(true, searchValue.value)
 }
@@ -144,13 +150,13 @@ const editGroup = (data: any) => {
             listData.value[0].children.forEach((item: any) => {
                 if (item.id === data.id) {
                     item.edit = true
-                    addName.value = data.name;
                 }
             })
             nextTick(() => {
                 inputRef.value.focus()
             })
         }
+        
 };
        
 onMounted(() => {
