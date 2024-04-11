@@ -613,6 +613,10 @@ onMounted(() => {
                                 transform: translateY(50%);
                             }
                         }
+                        .more{
+                            text-align: center;
+                            cursor: pointer;
+                        }
                     }
 
                     .prefixIcon {
