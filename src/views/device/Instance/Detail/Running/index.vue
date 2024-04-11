@@ -16,7 +16,18 @@
                 :tabBarStyle="{ width: '200px' }"
                 @change="tabChange"
             >
-                <j-tab-pane v-for="i in tabList" :key="i.key" :tab="i.tab" />
+                <j-tab-pane v-for="i in tabList" :key="i.key">
+                    <template #tab>
+                        <j-tooltip>
+                            <template #title>
+                                {{ i.tab }}
+                            </template>
+                            <div style="max-width: 150px" class="tabTitle">
+                                {{ i.tab }}
+                            </div>
+                        </j-tooltip>
+                    </template>
+                </j-tab-pane>
             </j-tabs>
             <JEmpty v-else style="margin: 180px 0" />
         </div>
@@ -30,7 +41,7 @@
 
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import Event from './Event/index.vue';
 import Property from './Property/index.vue';
 
@@ -128,5 +139,10 @@ const tabChange = (key: string) => {
     .property-box-right {
         flex: 1;
     }
+}
+.tabTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>
