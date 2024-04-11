@@ -289,7 +289,6 @@ const handleOk = async () => {
         params.configuration.deviceName =
             formData.value.configuration.deviceName;
     }
-
     if (params?.provider === 'snap7') {
         params.configuration = {
             connect: false,
@@ -315,7 +314,7 @@ const validate = async (_rule: any, value: string) => {
   if (!value) {
     return Promise.reject('请输入BACnet实例号');
   } else {
-    var reg = new RegExp(/^[0-9]*$/)
+    const reg = new RegExp(/^[0-9]*$/)
     if(!reg.test(value) || parseInt(value) < 0) {
       return Promise.reject('请输入正确的BACnet实例号');
     }

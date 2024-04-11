@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import { detail } from '@/api/rule-engine/scene'
-import { cloneDeep, isArray } from 'lodash-es'
+import {cloneDeep, isArray, isObject} from 'lodash-es'
 import { randomString } from '@/utils/utils'
 
 type DataType = {
@@ -54,6 +54,9 @@ export const defaultBranches = [
       alarmFirst: false,
     },
     then: [],
+    executeAnyway: true,
+    branchId: Math.floor(Math.random() * 100000000),
+    branchName:'条件1'
   },
 ];
 
@@ -73,7 +76,7 @@ const defaultOptions = {
 export const useSceneStore = defineStore('scene', () => {
   const data = ref<FormModelType>({
     trigger: { type: ''},
-    options: defaultOptions,
+    options: [defaultOptions],
     branches: defaultBranches,
     description: '',
     name: '',
@@ -93,6 +96,14 @@ export const useSceneStore = defineStore('scene', () => {
     }
   }
 
+  const compatibleOldOptions = (options: any) => {
+    if (isObject(options)) {
+      return [options]
+    } else {
+      return options
+    }
+  }
+
   const getDetail = async (id: string) => {
     refresh()
     const resp = await detail(id)
@@ -109,21 +120,48 @@ export const useSceneStore = defineStore('scene', () => {
           branches[0].when.length = []
         }
       } else {
-        const branchesLength = branches.length;
-        if (
-          triggerType === 'device' &&
-          ((branchesLength === 1 && branches[0]?.when?.length) || // 有一组数据并且when有值
-            (branchesLength > 1 && branches[branchesLength - 1]?.when?.length)) // 有多组否则数据，并且最后一组when有值
-        ) {
-          branches.push(null);
+        if (triggerType === 'device') {
+          const len = branches.length
+          const newBranches: any[] = []
+
+
+          branches.forEach((item, index) => {
+
+            if (item?.executeAnyway && index > 0 && branches[index - 1]?.when?.length) {
+              newBranches.push(null)
+              newBranches.push(item)
+              // branches.splice(index, 0 , null)
+            } else {
+              newBranches.push(item)
+            }
+
+
+            // if (item?.executeAnyway && index > 0 && branches[index - 1]?.when?.length) {
+            //   branches.splice(index, 0 , null)
+            // }
+
+            if ( index === len - 1 && item?.when?.length) {
+              newBranches.push(null)
+            }
+          })
+
+          branches = [...newBranches]
         }
+        // const branchesLength = branches.length;
+        // if (
+        //   triggerType === 'device' &&
+        //   ((branchesLength === 1 && branches[0]?.when?.length) || // 有一组数据并且when有值
+        //     (branchesLength > 1 && branches[branchesLength - 1]?.when?.length)) // 有多组否则数据，并且最后一组when有值
+        // ) {
+        //   branches.push(null);
+        // }
       }
-      console.log(branches)
+      console.log('result.options',branches)
       data.value = {
         ...result,
         trigger: result.trigger || {},
         branches: cloneDeep(assignmentKey(branches)),
-        options: result.options ? {...cloneDeep(defaultOptions), ...result.options } : cloneDeep(defaultOptions),
+        options: result.options && Object.keys(result.options)?.length ? result.options : cloneDeep(defaultOptions),
       }
     }
   }
