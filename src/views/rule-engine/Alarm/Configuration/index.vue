@@ -78,9 +78,16 @@
                                         <div class="content-des-title">
                                             关联场景联动
                                         </div>
-                                        <Ellipsis style='margin-bottom: 18px;'
+                                        <Ellipsis style="margin-bottom: 18px"
                                             ><div>
-                                                {{ (slotProps?.scene || []).map((item: any) => item?.name).join(',') || '' }}
+                                                {{
+                                                    (slotProps?.scene || [])
+                                                        .map(
+                                                            (item: any) =>
+                                                                item?.name,
+                                                        )
+                                                        .join(',') || ''
+                                                }}
                                             </div></Ellipsis
                                         >
                                     </j-col>
@@ -88,10 +95,15 @@
                                         <div class="content-des-title">
                                             告警级别
                                         </div>
-                                        <div>
-                                            {{ (defaultLevel || []).find((item: any) => item?.level === slotProps.level)?.title ||
-            slotProps.level }}
-                                        </div>
+                                        <Ellipsis>
+                                            {{
+                                                (defaultLevel || []).find(
+                                                    (item: any) =>
+                                                        item?.level ===
+                                                        slotProps.level,
+                                                )?.title || slotProps.level
+                                            }}
+                                        </Ellipsis>
                                     </j-col>
                                 </j-row>
                             </template>
@@ -122,21 +134,20 @@
                         <span>{{ map[slotProps.targetType] }}</span>
                     </template>
                     <template #level="slotProps">
-                        <j-tooltip
-                            placement="topLeft"
-                            :title="(defaultLevel || []).find((item) => item?.level === slotProps.level)?.title ||
-            slotProps.level"
-                        >
-                            <div class="ellipsis">
-                                {{ (defaultLevel || []).find((item) => item?.level === slotProps.level)?.title ||
-            slotProps.level }}
-                            </div>
-                        </j-tooltip>
+                        <Ellipsis>
+                            {{
+                                (defaultLevel || []).find(
+                                    (item) => item?.level === slotProps.level,
+                                )?.title || slotProps.level
+                            }}
+                        </Ellipsis>
                     </template>
                     <template #scene="slotProps">
-                        <span
-                            >{{(slotProps?.scene || []).map((item) => item?.name).join(',') || ''}}</span
-                        >
+                        <span>{{
+                            (slotProps?.scene || [])
+                                .map((item) => item?.name)
+                                .join(',') || ''
+                        }}</span>
                     </template>
                     <template #state="slotProps">
                         <BadgeStatus
@@ -184,7 +195,12 @@
             </FullPage>
         </div>
     </page-container>
-    <HandTrigger @save="onSave" @close="visible = false" v-if="visible" :data="current" />
+    <HandTrigger
+        @save="onSave"
+        @close="visible = false"
+        v-if="visible"
+        :data="current"
+    />
 </template>
 
 <script lang="ts" setup>
@@ -267,7 +283,6 @@ const columns = [
             },
         },
         width: 200,
-        ellipsis: true,
     },
     {
         title: '关联场景联动',
@@ -278,20 +293,23 @@ const columns = [
             type: 'select',
             // defaultTermType: 'rule-bind-alarm',
             options: async () => {
-                const allData = await queryList({paging: false, sorts: [{ name: 'createTime', order: 'desc' }]})
-                const result = allData.result?.data as any[]
+                const allData = await queryList({
+                    paging: false,
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                });
+                const result = allData.result?.data as any[];
                 if (allData.success && result && result.length) {
-                  const sceneDataMap = new Map() // 用于去重
-                  result.forEach(item => {
-                    item.scene.forEach((a: any) => {
-                      sceneDataMap.set(a.id, {
-                        label: a.name,
-                        value: a.id
-                      })
-                    })
-                  })
+                    const sceneDataMap = new Map(); // 用于去重
+                    result.forEach((item) => {
+                        item.scene.forEach((a: any) => {
+                            sceneDataMap.set(a.id, {
+                                label: a.name,
+                                value: a.id,
+                            });
+                        });
+                    });
 
-                  return [...sceneDataMap.values()]
+                    return [...sceneDataMap.values()];
                 }
 
                 // const res = await getScene(
@@ -362,21 +380,21 @@ const map = {
 const handleSearch = (e: any) => {
     const _terms = (e?.terms || []).map((item: any) => {
         item.terms = item.terms.map((i: any) => {
-            if(i.column === 'scene'){
+            if (i.column === 'scene') {
                 return {
                     ...i,
                     termType: 'rule-bind-alarm',
-                    column: 'id'
-                }
+                    column: 'id',
+                };
             }
-            return i
-        })
-        return item
-    })
+            return i;
+        });
+        return item;
+    });
     params.value = {
         ...e,
-        terms: _terms
-    }
+        terms: _terms,
+    };
 };
 const queryDefaultLevel = () => {
     queryLevel().then((res) => {
@@ -406,7 +424,7 @@ const getActions = (
             },
             onClick: () => {
                 visible.value = true;
-                current.value = data
+                current.value = data;
             },
             icon: 'LikeOutlined',
         },
@@ -467,7 +485,7 @@ const getActions = (
                     data?.state?.value !== 'disabled'
                         ? '请先禁用该告警，再删除'
                         : '删除',
-                placement:"topLeft"
+                placement: 'topLeft',
             },
             popConfirm: {
                 title: '确认删除?',
@@ -491,7 +509,7 @@ const getActions = (
 const onSave = () => {
     visible.value = false;
     tableRef.value?.reload();
-}
+};
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };

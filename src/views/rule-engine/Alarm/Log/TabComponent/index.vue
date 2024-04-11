@@ -33,6 +33,7 @@
                             4: 'level4',
                             5: 'level5',
                         }"
+                        :customBadge="true"
                     >
                         <template #img>
                             <img
@@ -120,6 +121,13 @@
                 </template>
                 <template #alarmTime="slotProps">
                    {{ dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')}}
+                </template>
+                <template #level="slotProps">
+                    <Ellipsis style="width: calc(100% - 20px)">
+                        {{ data.defaultLevel.find((i)=>{
+                            return i.level === slotProps.level
+                        }).title}}
+                    </Ellipsis>
                 </template>
                 <template #state="slotProps">
                     <BadgeStatus
@@ -240,6 +248,7 @@ const columns = [
         title: '告警级别',
         dataIndex: 'level',
         key: 'level',
+        width:200,
         search: {
             type: 'select',
             options: data.value.defaultLevel.map((item: any) => {
@@ -249,6 +258,7 @@ const columns = [
                 };
             }),
         },
+        scopedSlots: true
     },
     {
         title: '最近告警时间',

@@ -115,7 +115,7 @@ export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boo
  * @returns 
  */
 export const deviceExport = (productId: string, type: string, params?: any) => server.get(`/device-instance${!!productId ? `/${productId}` : ''}/export.${type}`, params, {responseType: 'blob'})
-
+export const deviceExportPath = (productId: string, type: string) => (`${BASE_API_PATH}/device-instance${!!productId ? `/${productId}` : ''}/export.${type}`)
 /**
  * 验证设备ID是否重复
  * @param id 设备id

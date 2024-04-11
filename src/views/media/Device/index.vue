@@ -29,6 +29,7 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
+                        @click="()=>jumpDetail(slotProps)"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
@@ -450,4 +451,8 @@ getProductList();
 const getProductName = (pid: string) => {
     return productList.value.find((f: any) => f.value === pid)?.label;
 };
+
+const jumpDetail =  (data:any) =>{
+    menuStory.jumpPage('device/Instance/Detail', { id: data.id });
+}
 </script>

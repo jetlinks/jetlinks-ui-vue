@@ -72,6 +72,7 @@
 </template>
 
 <script setup lang='ts' name='DeviceImportFile'>
+import {inject,Ref} from 'vue'
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
@@ -96,10 +97,10 @@ const modelRef = reactive({
 });
 
 const importLoading = ref<boolean>(false);
-const flag = ref<boolean>(false);
+const flag = inject("flag") as Ref<boolean>;
 const count = ref<number>(0);
-const errCount = ref<number>(0);
 
+const errCount = ref<number>(0);
 const errMessage = ref<string>('');
 const disabled = ref(false);
 
@@ -140,6 +141,7 @@ const submitData = async (fileUrl: string) => {
         errCount.value = 0;
         const autoDeploy = !!modelRef?.file?.autoDeploy || false;
         importLoading.value = true;
+        flag.value = true;
         let dt = 0;
         let et = 0;
         const source = new EventSourcePolyfill(
@@ -159,11 +161,12 @@ const submitData = async (fileUrl: string) => {
                     errCount.value = et;
                 }
             }
+            flag.value=false;
             disabled.value = false;
         };
         source.onerror = (e: { status: number }) => {
             if (e.status === 403) errMessage.value = '暂无权限，请联系管理员';
-            flag.value = false;
+            flag.value= false;
             disabled.value = false;
             source.close();
         };
@@ -182,6 +185,7 @@ const uploadChange = async (info: Record<string, any>) => {
         disabled.value = false;
     }
 };
+
 </script>
 
 <style scoped lang='less'>
