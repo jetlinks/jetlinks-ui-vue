@@ -210,7 +210,7 @@
               key="add"
               :disabled="hasOperate('add', type)"
               :tooltip="{
-                    placement: hasOperate('add', type) ? 'topRight' : 'top',
+                    placement:'top',
                     title: hasOperate('add', type)
                         ? '当前的存储方式不支持新增'
                         : '新增',
