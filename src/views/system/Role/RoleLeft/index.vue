@@ -97,13 +97,12 @@ const addGroup = () => {
     })
 }
 const saveGroup = async (data: any) => {
-    if (addName.value === '' && data.name==='' ) {
-        listData.value[0].children.splice(1, 1);
+    if (addName.value === '' ) {
+        if(data.name===''){
+            listData.value[0].children.splice(1, 1);
+        }
     }
     else {
-        if(addName.value === '' && data.name!==''){
-            addName.value=data.name
-        }
         const saveData = {
             name: addName.value,
             id: data.id
