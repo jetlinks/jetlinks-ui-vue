@@ -303,7 +303,7 @@ watch(
 
 const showDouble = computed(() => {
     const isRange = paramsValue.termType
-        ? doubleParamsKey.includes(paramsValue.termType)
+        ? arrayParamsKey.includes(paramsValue.termType)
         : false;
     const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
@@ -324,13 +324,7 @@ const showDouble = computed(() => {
 });
 
 const showArray = computed(()=>{
-    const isRange = paramsValue.termType ?   [
-                            'in',
-                            'nin',
-                            'contains_all',
-                            'contains_any',
-                            'not_contains',
-                        ].includes(paramsValue.termType) : false;
+    const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false;
                         const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
         metricOption.value = metricsCacheOption.value.filter((item) =>
@@ -458,6 +452,8 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
         if (arrayParamsKey.includes(e.key) !== isArray) {
             // 有变化
             newValue.value = undefined;
+        }else{
+            newValue.value = paramsValue.value!.value
         }
     }
     if (['isnull', 'notnull'].includes(e.key)) {
