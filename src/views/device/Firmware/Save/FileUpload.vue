@@ -4,7 +4,7 @@
             placeholder="请上传文件"
             v-model:value="fileValue"
             style="width: calc(100% - 110px)"
-            :disabled="true"
+            @change="fileValueChange"
         />
         <j-upload
             name="file"
@@ -78,6 +78,10 @@ const handleChange = async (info: UploadChangeParam) => {
         }
     }
 };
+
+const fileValueChange = () =>{
+    emit('update:modelValue',fileValue.value)
+}
 
 watch(
     () => props.modelValue,

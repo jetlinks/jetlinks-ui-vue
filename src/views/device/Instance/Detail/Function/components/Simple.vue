@@ -6,12 +6,22 @@
                 <span>精简模式下参数只支持输入框的方式录入</span>
             </j-space>
         </div>
-        <j-tabs v-model="activeKey" tab-position="left" @change="onTabChange" :destroyInactiveTabPane="true">
+        <j-tabs
+            v-model="activeKey"
+            tab-position="left"
+            @change="onTabChange"
+            :destroyInactiveTabPane="true"
+        >
             <j-tab-pane v-for="func in newFunctions" :key="func.id">
                 <template #tab>
-                    <Ellipsis style="width: 100px; text-align: left">
-                        {{ func.name }}
-                    </Ellipsis>
+                    <j-tooltip>
+                        <template #title>
+                            {{ func.name }}
+                        </template>
+                        <div style="max-width: 150px" class="tabTitle">
+                            {{ func.name }}
+                        </div>
+                    </j-tooltip>
                 </template>
                 <j-row :gutter="30">
                     <j-col :span="15">
@@ -137,7 +147,7 @@ const columns = ref([
     },
 ]);
 
-const executeResult = ref('')
+const executeResult = ref('');
 
 // 设备功能数据处理
 const newFunctions = computed(() => {
@@ -174,7 +184,7 @@ const newFunctions = computed(() => {
                         ? tableItem['json']?.['properties'][0]
                         : undefined,
                 value: undefined,
-                required: tableItem.expands?.required
+                required: tableItem.expands?.required,
             });
         }
 
@@ -203,17 +213,18 @@ const handleExecute = async (func: any) => {
                     obj[item.id] = item.value;
                 }
             });
-            loading.value = true
+            loading.value = true;
             const { success, result } = await execute(
                 route.params.id as string,
                 func.id,
                 obj,
-            ).catch(() => {
-                loading.value = false
-            })
-            .finally(() => {
-                loading.value = false
-            })
+            )
+                .catch(() => {
+                    loading.value = false;
+                })
+                .finally(() => {
+                    loading.value = false;
+                });
             if (!success) return;
             onlyMessage('操作成功');
             executeResult.value = result instanceof Array ? result[0] : result;
@@ -227,13 +238,13 @@ const handleExecute = async (func: any) => {
  * 清空
  */
 const handleClear = (func: any) => {
-    executeResult.value = ''
+    executeResult.value = '';
     proxy?.$refs[`${func.id}Ref`][0].resetFields();
 };
 
 const onTabChange = (_key: string) => {
-    executeResult.value = ''
-}
+    executeResult.value = '';
+};
 </script>
 
 <style lang="less" scoped>
@@ -262,5 +273,10 @@ const onTabChange = (_key: string) => {
         max-height: 450px;
         overflow: auto;
     }
+}
+.tabTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

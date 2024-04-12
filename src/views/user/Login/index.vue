@@ -145,7 +145,7 @@
                                                             class="more-button-item"
                                                             v-for="(
                                                                 item, index
-                                                            ) in bindings"
+                                                            ) in bindings.slice(4,bindings.length-1)"
                                                             :key="index"
                                                             @click="
                                                                 handleClickOther(
