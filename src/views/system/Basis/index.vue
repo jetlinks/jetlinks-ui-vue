@@ -462,7 +462,7 @@ const uploader: uploaderType = {
         if (!typeBool) {
             onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
         } else if (!sizeBool) {
-            onlyMessage(`图片大小必须小于2M`, 'error');
+            onlyMessage(`图片大小必须小于4M`, 'error');
         }
         return typeBool && sizeBool;
     },
