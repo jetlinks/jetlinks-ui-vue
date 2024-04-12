@@ -9,9 +9,14 @@
             >
                 <j-tab-pane v-for="func in newFunctions" :key="func.id">
                     <template #tab>
-                        <div style="width: 100px; text-align: left">
-                            <j-ellipsis>{{ func.name }}</j-ellipsis>
+                        <j-tooltip>
+                            <template #title>
+                                {{ func.name }}
+                            </template>
+                            <div style="max-width: 100px" class="tabTitle">
+                                {{ func.name }}
                         </div>
+                        </j-tooltip>
                     </template>
                 </j-tab-pane>
             </j-tabs>
@@ -180,5 +185,10 @@ const handleClear = () => {
         max-height: 450px;
         overflow: auto;
     }
+}
+.tabTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

@@ -6,12 +6,22 @@
                 <span>精简模式下参数只支持输入框的方式录入</span>
             </j-space>
         </div>
-        <j-tabs v-model="activeKey" tab-position="left" @change="onTabChange" :destroyInactiveTabPane="true">
+        <j-tabs
+            v-model="activeKey"
+            tab-position="left"
+            @change="onTabChange"
+            :destroyInactiveTabPane="true"
+        >
             <j-tab-pane v-for="func in newFunctions" :key="func.id">
                 <template #tab>
-                    <Ellipsis style="width: 100px; text-align: left">
+                    <j-tooltip>
+                        <template #title>
                         {{ func.name }}
-                    </Ellipsis>
+                        </template>
+                        <div style="max-width: 150px" class="tabTitle">
+                            {{ func.name }}
+                        </div>
+                    </j-tooltip>
                 </template>
                 <j-row :gutter="30">
                     <j-col :span="15">
@@ -262,5 +272,10 @@ const onTabChange = (_key: string) => {
         max-height: 450px;
         overflow: auto;
     }
+}
+.tabTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>
