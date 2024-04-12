@@ -33,6 +33,7 @@
             新增
           </PermissionButton> -->
           <PermissionButton
+              v-if="type === 'properties'"
               key="import"
               style="margin-right: 20px;"
               :tooltip="{
@@ -44,6 +45,7 @@
             导入属性
           </PermissionButton>
           <PermissionButton
+              v-if="type === 'properties'"
               key="export"
               style="margin-right: 20px;"
               :tooltip="{
