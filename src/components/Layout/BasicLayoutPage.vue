@@ -20,7 +20,6 @@
         </template>
         <template #rightContentRender>
             <div class="right-content">
-                <AIcon type="QuestionCircleOutlined" @click="toDoc" />
                 <Notice style="margin: 0 24px" />
                 <UserInfo />
             </div>
@@ -123,7 +122,6 @@ watchEffect(() => {
   }
 })
 
-const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');
 </script>
 
 <style scoped>
