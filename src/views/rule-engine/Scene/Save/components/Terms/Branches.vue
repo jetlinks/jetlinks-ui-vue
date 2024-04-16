@@ -47,7 +47,7 @@
                   v-for='(item, index) in whenData'
                   :key='item.key'
                   :name='index'
-                  :showDeleteBtn='whenData.length !== 0'
+                  :showDeleteBtn='whenData.length !== 1'
                   :isFirst='index === 0'
                   :isLast='index === whenData.length -1'
                   :branchName='name'
@@ -156,7 +156,7 @@ const WarpClass = computed(() => {
 
 const onDelete = () => {
   if (FormModel.value.branches?.length == 2) {
-    FormModel.value.branches?.splice(props.name, 1, null)
+    FormModel.value.branches?.splice(props.name, 1)
   } else {
     FormModel.value.branches?.splice(props.name, 1)
   }
@@ -164,8 +164,8 @@ const onDelete = () => {
 
 const onDeleteAll = () => {
   if (FormModel.value.branches) {
-    FormModel.value.branches.length = props.name
-    FormModel.value.branches.push(null as any)
+    FormModel.value.branches[props.name].when = []
+    FormModel.value.options.when[props.branches_Index].terms = []
   }
 }
 

@@ -125,7 +125,6 @@ const typeChange = (e: any) => {
 const onDelete = () => {
   formModel.value.branches?.[props.branchName]?.when?.splice(props.name, 1)
   formModel.value.options!.when[props.branches_Index].terms.splice(props.name, 1)
-  console.log(formModel.value,props.branchName,props.branches_Index)
 }
 
 const addWhen = () => {
