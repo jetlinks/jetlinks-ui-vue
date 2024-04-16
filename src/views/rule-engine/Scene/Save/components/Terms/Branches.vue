@@ -30,7 +30,7 @@
         @mouseout='mouseout'
       >
         <j-popconfirm
-          title='该操作将清空其它所有否则条件，确认删除？'
+          title='该操作将清空过滤条件，确认删除？'
           placement="topRight"
           @confirm='onDeleteAll'
         >
@@ -47,7 +47,7 @@
                   v-for='(item, index) in whenData'
                   :key='item.key'
                   :name='index'
-                  :showDeleteBtn='whenData.length !== 1'
+                  :showDeleteBtn='whenData.length !== 0'
                   :isFirst='index === 0'
                   :isLast='index === whenData.length -1'
                   :branchName='name'
