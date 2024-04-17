@@ -2,16 +2,69 @@
     <div class="debug-container">
         <div class="top">
             <div class="header">
-                <div>
-                    <div class="title">
+                <j-tabs v-model:activeKey="headerType">
+                    <j-tab-pane key="property">
+                        <template #tab>
+                            <span class="title">
                         属性赋值
+                            </span>
+                        </template>
+                    </j-tab-pane>
+                    <j-tab-pane key="tag">
+                        <template #tab>
+                            <span class="title">
+                                标签赋值
+                            </span>
+                        </template>
+                    </j-tab-pane>
+                </j-tabs>
+                <!-- <div>
+                    <j-dropdown>
+                        <div class="title" @click.prevent>
+                            {{
+                                headerType === 'property'
+                                    ? '属性赋值'
+                                    : '标签赋值'
+                            }}
                         <div class="description">
-                            请对上方规则使用的属性进行赋值
+                                {{
+                                    `请对上方规则使用的${
+                                        headerType === 'property'
+                                            ? '属性'
+                                            : '标签'
+                                    }进行赋值`
+                                }}
+                            </div>
                         </div>
-                    </div>
+                        <template #overlay>
+                            <j-menu>
+                                <j-menu-item>
+                                    <a
+                                        href="javascript:;"
+                                        @click="headerType = 'property'"
+                                        >属性赋值</a
+                                    >
+                                </j-menu-item>
+                                <j-menu-item>
+                                    <a
+                                        href="javascript:;"
+                                        @click="headerType = 'tag'"
+                                        >标签赋值</a
+                                    >
+                                </j-menu-item>
+                            </j-menu>
+                        </template>
+                    </j-dropdown>
+                </div> -->
                 </div>
+            <div class="description">
+                {{
+                    `请对上方规则使用的${
+                        headerType === 'property' ? '属性' : '标签'
+                    }进行赋值`
+                }}
             </div>
-            <div class="top-bottom">
+            <div class="top-bottom" v-if="headerType === 'property'">
                 <j-table
                     :columns="columns"
                     :data-source="property"
@@ -62,6 +115,51 @@
                     添加条目
                 </j-button>
             </div>
+            <div class="top-bottom" v-if="headerType === 'tag'">
+                <j-table
+                    :columns="tagColumns"
+                    :data-source="tag"
+                    :pagination="false"
+                    bordered
+                    size="small"
+                    :scroll="{ y: 200 }"
+                >
+                    <template #bodyCell="{ column, record, index }">
+                        <template v-if="column.key === 'id'">
+                            <j-select
+                                showSearch
+                                :options="tagOptions"
+                                v-model:value="record.id"
+                                size="small"
+                                style="width: 100%; z-index: 1400 !important"
+                            />
+                        </template>
+                        <template v-if="column.key === 'current'">
+                            <j-input
+                                v-model:value="record.current"
+                                size="small"
+                            ></j-input>
+                        </template>
+                        <template v-if="column.key === 'action'">
+                            <AIcon
+                                type="DeleteOutlined"
+                                @click="deleteTagItem(index)"
+                            />
+                        </template>
+                    </template>
+                </j-table>
+                <j-button
+                    type="dashed"
+                    block
+                    style="margin-top: 5px"
+                    @click="addTagItem"
+                >
+                    <template #icon>
+                        <AIcon type="PlusOutlined" />
+                    </template>
+                    添加条目
+                </j-button>
+            </div>
         </div>
         <div class="bottom">
             <div class="header">
@@ -98,7 +196,9 @@
                         :span="3"
                     >
                         <template #label>
-                            <template v-if="!!runningState(index + 1, item._time)">
+                            <template
+                                v-if="!!runningState(index + 1, item._time)"
+                            >
                                 {{ runningState(index + 1, item._time) }}
                             </template>
                             <template v-else>{{
@@ -140,7 +240,19 @@ type propertyType = {
     last?: string;
 };
 const property = ref<propertyType[]>([]);
-
+const tag = ref<Array<any>>([]);
+const headerOptions = [
+    {
+        key: 'property',
+        label: '属性赋值',
+        title: '属性赋值',
+    },
+    {
+        key: 'tag',
+        label: '标签赋值',
+        title: '标签赋值',
+    },
+];
 const columns = [
     {
         title: '属性名称',
@@ -164,17 +276,42 @@ const columns = [
     },
 ];
 
+const tagColumns = [
+    {
+        title: '属性名称',
+        dataIndex: 'id',
+        key: 'id',
+    },
+    {
+        title: '当前值',
+        dataIndex: 'current',
+        key: 'current',
+    },
+    {
+        title: '操作',
+        key: 'action',
+        width: 50,
+    },
+];
+const headerType = ref('property');
 const addItem = () => {
     property.value.push({});
 };
+const addTagItem = () => {
+    tag.value.push({});
+};
 const deleteItem = (index: number) => {
     property.value.splice(index, 1);
+};
+const deleteTagItem = (index: number) => {
+    tag.value.splice(index, 1);
 };
 
 const ws = ref();
 
 const virtualIdRef = ref(new Date().getTime());
 const medataSource = inject<Ref<any[]>>('_dataSource');
+const tagsSource = inject<Ref<any[]>>('_tagsDataSource');
 const productStore = useProductStore();
 const ruleEditorStore = useRuleEditorStore();
 
@@ -188,7 +325,10 @@ const runScript = () => {
         const _item = propertiesList.find((i: any) => i.id === item.id);
         return { ...item, type: _item?.valueType?.type };
     });
-
+    let _tags = {};
+    tag.value.forEach((item) => {
+        _tags[item.id] = item.current;
+    });
     if (ws.value) {
         ws.value.unsubscribe?.();
     }
@@ -208,12 +348,13 @@ const runScript = () => {
                 ...props.virtualRule,
             },
             properties: _properties || [],
+            tags: _tags,
         },
     ).subscribe((data: any) => {
         ruleEditorStore.state.log.push({
             time: new Date().getTime(),
             content: JSON.stringify(data.payload),
-            _time: unref(time.value)
+            _time: unref(time.value),
         });
         emits('success', false);
         if (props.virtualRule?.type !== 'window') {
@@ -275,8 +416,8 @@ const stopAction = () => {
     if (ws.value) {
         ws.value.unsubscribe?.();
     }
-    window.clearInterval(timer.value)
-    timer.value = null
+    window.clearInterval(timer.value);
+    timer.value = null;
 };
 const clearAction = () => {
     ruleEditorStore.set('log', []);
@@ -287,8 +428,8 @@ onUnmounted(() => {
         ws.value.unsubscribe?.();
     }
     clearAction();
-    window.clearInterval(timer.value)
-    timer.value = null
+    window.clearInterval(timer.value);
+    timer.value = null;
 });
 
 const options = computed(() => {
@@ -298,6 +439,13 @@ const options = computed(() => {
             label: item.name,
             value: item.id,
         }));
+});
+
+const tagOptions = computed(() => {
+    return (tagsSource.value || []).map((item) => ({
+        label: item.name,
+        value: item.id,
+    }));
 });
 
 // const getProperty = () => {

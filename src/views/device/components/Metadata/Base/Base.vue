@@ -331,6 +331,7 @@ const router = useRouter()
 const route = useRoute()
 
 const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
+const { data: tagsMetadata } = useMetadata(_target,'tags')
 const { hasOperate } = useOperateLimits(_target);
 
 const permissionStore = usePermissionStore()
@@ -367,7 +368,8 @@ const showLastDelete = computed(() => {
   return dataSourceCache.value.length === 1
 })
 
-provide('_dataSource', dataSourceCache)
+provide('_dataSource', dataSourceCache);
+provide('_tagsDataSource',tagsMetadata)
 const showDetail = (data: any) => {
   detailData.data = data
   detailData.visible = true

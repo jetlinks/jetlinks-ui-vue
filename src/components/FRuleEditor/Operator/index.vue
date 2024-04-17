@@ -8,8 +8,6 @@
             />
             <div class="tree">
               <j-scrollbar>
-
-
                 <j-tree
                     @select="selectTree"
                     :field-names="{ title: 'name', key: 'id' }"
@@ -25,13 +23,15 @@
                             </div>
                             <div
                                 :class="
-                                    node.children?.length > 0 ? 'parent' : 'add'
+                                        node.children?.length > 0
+                                            ? 'parent'
+                                            : 'add'
                                 "
                             >
                                 <j-popover
                                     v-if="node.type === 'property'"
                                     :overlayStyle="{
-                                      zIndex: 1200
+                                            zIndex: 1200,
                                     }"
                                     placement="right"
                                     title="请选择使用值"
@@ -44,7 +44,9 @@
                                             >
                                                 <j-button
                                                     type="text"
-                                                    @click="recentClick(node)"
+                                                        @click="
+                                                            recentClick(node)
+                                                        "
                                                 >
                                                     $recent实时值
                                                 </j-button>
@@ -64,8 +66,40 @@
                                     </template>
                                     <a class="has-property">添加</a>
                                 </j-popover>
-
-                                <a class="no-property" v-else @click.stop="addClick(node)"> 添加 </a>
+                                    <j-popover
+                                        v-else-if="node.type === 'tags'"
+                                        :overlayStyle="{
+                                            zIndex: 1200,
+                                        }"
+                                        placement="right"
+                                        title="请选择使用值"
+                                    >
+                                        <template #content>
+                                            <j-space direction="vertical">
+                                                <j-tooltip
+                                                    placement="right"
+                                                    title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值"
+                                                >
+                                                    <j-button
+                                                        type="text"
+                                                        @click="
+                                                            recentTagsClick(node)
+                                                        "
+                                                    >
+                                                        tag实时值
+                                                    </j-button>
+                                                </j-tooltip>
+                                            </j-space>
+                                        </template>
+                                        <a class="has-property">添加</a>
+                                    </j-popover>
+                                    <a
+                                        class="no-property"
+                                        v-else
+                                        @click.stop="addClick(node)"
+                                    >
+                                        添加
+                                    </a>
                             </div>
                         </div>
                     </template>
@@ -85,10 +119,12 @@ import { treeFilter } from '@/utils/tree';
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product';
 import Markdown from 'vue3-markdown-it';
+import { inject } from 'vue';
+import { Descriptions } from 'ant-design-vue';
 
 const props = defineProps({
     id: String,
-    propertiesOptions: Array
+    propertiesOptions: Array,
 });
 
 interface Emits {
@@ -99,7 +135,7 @@ const emit = defineEmits<Emits>();
 const item = ref<Partial<OperatorItem>>();
 const data = ref<OperatorItem[]>([]);
 const dataRef = ref<OperatorItem[]>([]);
-
+const tagsMetadata: any = inject('_tagsDataSource');
 const search = (value: string) => {
     if (value) {
         const nodes = treeFilter(
@@ -117,6 +153,9 @@ const selectTree = (k: any, info: any) => {
     item.value = info.node as unknown as OperatorItem;
 };
 
+const recentTagsClick = (node:OperatorItem) =>{
+    emit('addOperatorValue',`tag("${node.id}")`)
+}
 const recentClick = (node: OperatorItem) => {
     emit('addOperatorValue', `$recent("${node.id}")`);
 };
@@ -131,7 +170,7 @@ const productStore = useProductStore();
 
 const getData = async (id?: string) => {
     // const metadata = productStore.current.metadata || '{}';
-    const _properties = props.propertiesOptions as PropertyMetadata[]
+    const _properties = props.propertiesOptions as PropertyMetadata[];
     const properties = {
         id: 'property',
         name: '属性',
@@ -149,10 +188,33 @@ const getData = async (id?: string) => {
                 type: 'property',
             })),
     };
+    const tags = {
+        id: 'tags',
+        name: '标签',
+        Description: '',
+        code: '',
+        children: tagsMetadata.value.map((i: any) => ({
+            id: i.id,
+            name: i.name,
+            description: `### ${i.name}
+        \n 数据类型: ${i.valueType?.type}
+        \n 是否只读: ${i.expands?.readOnly || 'false'}
+        \n 可写数值范围: `,
+            type: 'tags',
+        })),
+    };
     const response = await getOperator();
     if (response.status === 200) {
-        data.value = [properties as OperatorItem, ...response.result];
-        dataRef.value = [properties as OperatorItem, ...response.result];
+        data.value = [
+            properties as OperatorItem,
+            tags as any,
+            ...response.result,
+        ];
+        dataRef.value = [
+            properties as OperatorItem,
+            tags as any,
+            ...response.result,
+        ];
     }
 };
 
