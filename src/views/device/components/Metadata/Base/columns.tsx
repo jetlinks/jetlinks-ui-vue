@@ -66,17 +66,16 @@ export const handleTypeValue = (type:string, value: any = {}) => {
     //bug#22609
     case 'array':
       if(value.type === 'array'){
-        obj.elementType = {
+      obj.elementType = {
           ...value,
           elementType:{
-            type: 'object',
-            properties: []
-          }
+        type: 'object',
+        properties: []
+      }
         }
       }else{
         obj.elementType = value
       }
-      console.log(obj)
       break;
     case 'object':
       obj.properties = (value || []).map((item: any) => {
