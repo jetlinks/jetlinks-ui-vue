@@ -511,7 +511,22 @@ const columns = [
         width: 120,
         search: {
             type: 'select',
-            options: OperatorList,
+            options: async () => {
+                return [
+                    {
+                        label: '移动',
+                        value: '移动',
+                    },
+                    {
+                        label: '电信',
+                        value: '电信',
+                    },
+                    {
+                        label: '联通',
+                        value: '联通',
+                    },
+                ];
+            },
         },
     },
     {
