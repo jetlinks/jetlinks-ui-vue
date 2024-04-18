@@ -7,38 +7,40 @@
             @search="handleSearch"
         />
         <FullPage>
-        <j-pro-table
-            :scroll="{ x: 1366 }"
-            ref="cardManageRef"
-            :columns="columns"
-            :request="query"
-            :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }"
-            :rowSelection="
-                isCheck
-                    ? {
-                          selectedRowKeys: _selectedRowKeys,
-                          onChange: onSelectChange,
-                      }
-                    : false
-            "
-            :params="params"
-            :gridColumn="3"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        @click="handleAdd"
-                        :hasPermission="'iot-card/CardManagement:add'"
-                        type="primary"
-                    >
-                        <AIcon type="PlusOutlined" />新增
-                    </PermissionButton>
-                    <BatchDropdown
-                        v-model:isCheck="isCheck"
-                        :actions="batchActions"
-                        @change="onCheckChange"
-                    />
-                    <!-- <j-dropdown>
+            <j-pro-table
+                :scroll="{ x: 1366 }"
+                ref="cardManageRef"
+                :columns="columns"
+                :request="query"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :rowSelection="
+                    isCheck
+                        ? {
+                              selectedRowKeys: _selectedRowKeys,
+                              onChange: onSelectChange,
+                          }
+                        : false
+                "
+                :params="params"
+                :gridColumn="3"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            @click="handleAdd"
+                            :hasPermission="'iot-card/CardManagement:add'"
+                            type="primary"
+                        >
+                            <AIcon type="PlusOutlined" />新增
+                        </PermissionButton>
+                        <BatchDropdown
+                            v-model:isCheck="isCheck"
+                            :actions="batchActions"
+                            @change="onCheckChange"
+                        />
+                        <!-- <j-dropdown>
                         <j-button>
                             批量操作
                             <AIcon type="DownOutlined" />
@@ -133,206 +135,222 @@
                             </j-menu>
                         </template>
                     </j-dropdown> -->
-                </j-space>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    @click="handleClick"
-                    :actions="getActions(slotProps, 'card')"
-                    v-bind="slotProps"
-                    :active="_selectedRowKeys.includes(slotProps.id)"
-                    :status="slotProps.cardStateType?.value"
-                    :statusText="slotProps.cardStateType?.text"
-                    :statusNames="{
-                        using: 'processing',
-                        toBeActivated: 'default',
-                        deactivate: 'error',
-                    }"
-                >
-                    <template #img>
-                        <slot name="img">
-                            <img :src="getImage('/iot-card/iot-card-bg.png')" />
-                        </slot>
-                    </template>
-                    <template #content>
-                      <span style="font-size: 16px; font-weight: 600">
-                        <Ellipsis style="width: calc(100% - 100px)">
-                                {{ slotProps.id }}
-                        </Ellipsis>
-                      </span>
-                        <j-row style="margin-top: 20px">
-                            <j-col :span="8">
-                                <div class="card-item-content-text">
-                                    平台对接
-                                </div>
-                                <Ellipsis style="width: calc(100% - 20px)">
-                                <div>{{ slotProps.platformConfigName }}</div>
-                                </Ellipsis>
-                            </j-col>
-                            <j-col :span="6">
-                                <div class="card-item-content-text">类型</div>
-                                <div>{{ slotProps.cardType.text }}</div>
-                            </j-col>
-                            <j-col :span="6">
-                                <div class="card-item-content-text">
-                                    绑定设备
-                                </div>
-                                <Ellipsis>{{ slotProps.deviceName }}</Ellipsis>
-                            </j-col>
-                        </j-row>
-                        <j-divider style="margin: 12px 0" />
-                        <div class="content-bottom">
-                            <div>
-                                <div class="progress-text">
-                                    <div>
-                                        {{
-                                            slotProps.totalFlow ? (
-                                                 (slotProps.usedFlow /
-                                                    slotProps.totalFlow) *
-                                                100
-                                            ).toFixed(2) : '0.00'
-                                        }}
-                                        %
-                                    </div>
-                                    <div class="card-item-content-text">
-                                        总共 {{ slotProps.totalFlow }} M
-                                    </div>
-                                </div>
-                                <j-progress
-                                    :strokeColor="'#ADC6FF'"
-                                    :showInfo="false"
-                                    :percent="
-                                        slotProps.totalFlow ? (slotProps.usedFlow /
-                                            slotProps.totalFlow) *
-                                        100 : 0
-                                    "
-                                />
-                            </div>
-                        </div>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="
-                                'iot-card/CardManagement:' + item.key
-                            "
-                        >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-            <template #deviceId="slotProps">
-                {{ slotProps.deviceName }}
-            </template>
-            <template #totalFlow="slotProps">
-                <div>
-                    {{
-                        slotProps.totalFlow
-                            ? slotProps.totalFlow.toFixed(2) + ' M'
-                            : ''
-                    }}
-                </div>
-            </template>
-            <template #usedFlow="slotProps">
-                <div>
-                    {{
-                        slotProps.usedFlow
-                            ? slotProps.usedFlow.toFixed(2) + ' M'
-                            : ''
-                    }}
-                </div>
-            </template>
-            <template #residualFlow="slotProps">
-                <div>
-                    {{
-                        slotProps.residualFlow
-                            ? slotProps.residualFlow.toFixed(2) + ' M'
-                            : ''
-                    }}
-                </div>
-            </template>
-            <template #operatorName='slotProps'>
-              {{ OperatorMap[slotProps.operatorName]}}
-            </template>
-            <template #cardType="slotProps">
-                {{ slotProps.cardType.text }}
-            </template>
-            <template #cardStateType="slotProps">
-                <BadgeStatus
-                    :status="slotProps.cardStateType?.value"
-                    :text="slotProps.cardStateType?.text"
-                    :statusNames="{
-                        using: 'processing',
-                        toBeActivated: 'default',
-                        deactivate: 'error',
-                    }"
-                />
-            </template>
-            <template #activationDate="slotProps">
-                {{
-                    slotProps.activationDate
-                        ? dayjs(slotProps.activationDate).format(
-                              'YYYY-MM-DD HH:mm:ss',
-                          )
-                        : ''
-                }}
-            </template>
-            <template #updateTime="slotProps">
-                {{
-                    slotProps.updateTime
-                        ? dayjs(slotProps.updateTime).format(
-                              'YYYY-MM-DD HH:mm:ss',
-                          )
-                        : ''
-                }}
-            </template>
-            <template #action="slotProps">
-                <j-space :size="16">
-                    <template
-                        v-for="i in getActions(slotProps, 'table')"
-                        :key="i.key"
+                    </j-space>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        @click="handleClick"
+                        :actions="getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :active="_selectedRowKeys.includes(slotProps.id)"
+                        :status="slotProps.cardStateType?.value"
+                        :statusText="slotProps.cardStateType?.text"
+                        :statusNames="{
+                            using: 'processing',
+                            toBeActivated: 'default',
+                            deactivate: 'error',
+                        }"
                     >
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
-                            @click="i.onClick"
-                            type="link"
-                            style="padding: 0px"
-                            :hasPermission="
-                                i.key === 'view'
-                                    ? true
-                                    : 'iot-card/CardManagement:' + i.key
-                            "
-                            :danger="i.key === 'delete'"
+                        <template #img>
+                            <slot name="img">
+                                <img
+                                    :src="getImage('/iot-card/iot-card-bg.png')"
+                                />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <span style="font-size: 16px; font-weight: 600">
+                                <Ellipsis style="width: calc(100% - 100px)">
+                                    {{ slotProps.id }}
+                                </Ellipsis>
+                            </span>
+                            <j-row style="margin-top: 20px">
+                                <j-col :span="8">
+                                    <div class="card-item-content-text">
+                                        平台对接
+                                    </div>
+                                    <Ellipsis style="width: calc(100% - 20px)">
+                                        <div>
+                                            {{ slotProps.platformConfigName }}
+                                        </div>
+                                    </Ellipsis>
+                                </j-col>
+                                <j-col :span="6">
+                                    <div class="card-item-content-text">
+                                        类型
+                                    </div>
+                                    <div>{{ slotProps.cardType.text }}</div>
+                                </j-col>
+                                <j-col :span="6">
+                                    <div class="card-item-content-text">
+                                        绑定设备
+                                    </div>
+                                    <Ellipsis>{{
+                                        slotProps.deviceName
+                                    }}</Ellipsis>
+                                </j-col>
+                            </j-row>
+                            <j-divider style="margin: 12px 0" />
+                            <div class="content-bottom">
+                                <div>
+                                    <div class="progress-text">
+                                        <div>
+                                            {{
+                                                slotProps.totalFlow
+                                                    ? (
+                                                          (slotProps.usedFlow /
+                                                              slotProps.totalFlow) *
+                                                          100
+                                                      ).toFixed(2)
+                                                    : '0.00'
+                                            }}
+                                            %
+                                        </div>
+                                        <div class="card-item-content-text">
+                                            总共 {{ slotProps.totalFlow }} M
+                                        </div>
+                                    </div>
+                                    <j-progress
+                                        :strokeColor="'#ADC6FF'"
+                                        :showInfo="false"
+                                        :percent="
+                                            slotProps.totalFlow
+                                                ? (slotProps.usedFlow /
+                                                      slotProps.totalFlow) *
+                                                  100
+                                                : 0
+                                        "
+                                    />
+                                </div>
+                            </div>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="
+                                    'iot-card/CardManagement:' + item.key
+                                "
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #deviceId="slotProps">
+                    {{ slotProps.deviceName }}
+                </template>
+                <template #totalFlow="slotProps">
+                    <div>
+                        {{
+                            slotProps.totalFlow
+                                ? slotProps.totalFlow.toFixed(2) + ' M'
+                                : ''
+                        }}
+                    </div>
+                </template>
+                <template #usedFlow="slotProps">
+                    <div>
+                        {{
+                            slotProps.usedFlow
+                                ? slotProps.usedFlow.toFixed(2) + ' M'
+                                : ''
+                        }}
+                    </div>
+                </template>
+                <template #residualFlow="slotProps">
+                    <div>
+                        {{
+                            slotProps.residualFlow
+                                ? slotProps.residualFlow.toFixed(2) + ' M'
+                                : ''
+                        }}
+                    </div>
+                </template>
+                <template #operatorName="slotProps">
+                    {{ OperatorMap[slotProps.operatorName] }}
+                </template>
+                <template #cardType="slotProps">
+                    {{ slotProps.cardType.text }}
+                </template>
+                <template #cardStateType="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.cardStateType?.value"
+                        :text="slotProps.cardStateType?.text"
+                        :statusNames="{
+                            using: 'processing',
+                            toBeActivated: 'default',
+                            deactivate: 'error',
+                        }"
+                    />
+                </template>
+                <template #activationDate="slotProps">
+                    {{
+                        slotProps.activationDate
+                            ? dayjs(slotProps.activationDate).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}
+                </template>
+                <template #updateTime="slotProps">
+                    {{
+                        slotProps.updateTime
+                            ? dayjs(slotProps.updateTime).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
                         >
-                            <template #icon>
-                                <AIcon :type="i.icon" />
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </j-pro-table>
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'iot-card/CardManagement:' + i.key
+                                "
+                                :danger="i.key === 'delete'"
+                            >
+                                <template #icon>
+                                    <AIcon :type="i.icon" />
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </j-pro-table>
         </FullPage>
         <!-- 批量导入 -->
-        <Import v-if="importVisible" @close="importVisible = false"  @save="importSave"/>
+        <Import
+            v-if="importVisible"
+            @close="importVisible = false"
+            @save="importSave"
+        />
         <!-- 批量导出 -->
         <Export
             v-if="exportVisible"
@@ -432,9 +450,9 @@ const columns = [
         scopedSlots: true,
         width: 200,
         search: {
-          type: 'string',
-          rename: 'deviceName'
-        }
+            type: 'string',
+            rename: 'deviceName',
+        },
     },
     {
         title: '平台对接',
@@ -553,7 +571,7 @@ const columns = [
                 { label: '未激活', value: 'toBeActivated' },
                 { label: '停机', value: 'deactivate' },
                 { label: '其它', value: 'using,toBeActivated,deactivate' },
-            ]
+            ],
         },
     },
     {
@@ -567,11 +585,11 @@ const columns = [
 const btnHasPermission = usePermissionStore().hasPermission;
 const paltformPermission = btnHasPermission(`iot-card/Platform:add`);
 const importSave = () => {
-  cardManageRef.value?.reload()
-  importVisible.value = false
-}
+    cardManageRef.value?.reload();
+    importVisible.value = false;
+};
 
-const routerParams = useRouterParams()
+const routerParams = useRouterParams();
 
 const getActions = (
     data: Partial<Record<string, any>>,
@@ -695,7 +713,9 @@ const getActions = (
                     const resp: any = await del(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功');
-                        const index = _selectedRowKeys.value.findIndex((id: any) => id === data.id);
+                        const index = _selectedRowKeys.value.findIndex(
+                            (id: any) => id === data.id,
+                        );
                         if (index !== -1) {
                             _selectedRowKeys.value.splice(index, 1);
                         }
@@ -731,15 +751,19 @@ const getActions = (
 };
 
 const handleSearch = (e: any) => {
-    const newParams = (e?.terms as any[])?.map(item1 => {
-      item1.terms = item1.terms.map((item2: any) => {
-        if (['cardStateType'].includes(item2.column) && !(['using', 'toBeActivated', 'deactivate'].includes(item2.value))) { // 处理其它状态
-          item2.termType = item2.termType === 'not' ? 'in' : 'nin'
-        }
-        return item2
-      })
-      return item1
-    })
+    const newParams = (e?.terms as any[])?.map((item1) => {
+        item1.terms = item1.terms.map((item2: any) => {
+            if (
+                ['cardStateType'].includes(item2.column) &&
+                !['using', 'toBeActivated', 'deactivate'].includes(item2.value)
+            ) {
+                // 处理其它状态
+                item2.termType = item2.termType === 'not' ? 'in' : 'nin';
+            }
+            return item2;
+        });
+        return item1;
+    });
     params.value = { terms: newParams || [] };
 };
 
@@ -753,8 +777,8 @@ const cancelSelect = () => {
 };
 
 const handleClick = (dt: any) => {
-    if(!dt?.cardStateType){
-        return
+    if (!dt?.cardStateType) {
+        return;
     }
     if (isCheck.value) {
         if (_selectedRowKeys.value.includes(dt.id)) {
@@ -812,7 +836,7 @@ const bindDevice = (val: boolean) => {
  */
 const handleActive = () => {
     if (!_selectedRowKeys.value.length) {
-      return onlyMessage('请选择数据', 'warning');
+        return onlyMessage('请选择数据', 'warning');
     }
     if (
         _selectedRowKeys.value.length >= 10 &&
@@ -824,7 +848,10 @@ const handleActive = () => {
             }
         });
     } else {
-        onlyMessage('仅支持同一个运营商下且最少10条数据,最多100条数据', 'warning');
+        onlyMessage(
+            '仅支持同一个运营商下且最少10条数据,最多100条数据',
+            'warning',
+        );
     }
 };
 
@@ -842,7 +869,10 @@ const handleStop = () => {
             }
         });
     } else {
-        onlyMessage('仅支持同一个运营商下且最少10条数据,最多100条数据', 'warning');
+        onlyMessage(
+            '仅支持同一个运营商下且最少10条数据,最多100条数据',
+            'warning',
+        );
     }
 };
 
@@ -860,7 +890,10 @@ const handleResumption = () => {
             }
         });
     } else {
-        onlyMessage('仅支持同一个运营商下且最少10条数据,最多100条数据', 'warning');
+        onlyMessage(
+            '仅支持同一个运营商下且最少10条数据,最多100条数据',
+            'warning',
+        );
     }
 };
 
@@ -884,7 +917,9 @@ const handelRemove = async () => {
         onlyMessage('请选择数据', 'error');
         return;
     }
-    const resp = await removeCards(_selectedRowKeys.value.map( v => ({ id:v })));
+    const resp = await removeCards(
+        _selectedRowKeys.value.map((v) => ({ id: v })),
+    );
     if (resp.status === 200) {
         onlyMessage('操作成功');
         _selectedRowKeys.value = [];
@@ -977,10 +1012,10 @@ const batchActions: BatchActionsType[] = [
 ];
 
 onMounted(() => {
-  if (routerParams.params.value.type === 'add' && paltformPermission) {
-    handleAdd()
-  }
-})
+    if (routerParams.params.value.type === 'add' && paltformPermission) {
+        handleAdd();
+    }
+});
 </script>
 
 <style scoped lang="less">
