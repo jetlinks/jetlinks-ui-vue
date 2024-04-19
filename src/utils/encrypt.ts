@@ -1,4 +1,4 @@
-import JSEncrypt from "jsencrypt";
+import JSEncrypt from "jsencrypt/bin/jsencrypt.min.js";
 
 export const encrypt =(txt:string,publicKey:string)=>{
     const encryptor = new JSEncrypt()

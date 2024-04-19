@@ -10,7 +10,6 @@ declare module '*.gif';
 declare module '*.bmp';
 declare module '*.js';
 declare module '*.ts';
-declare module 'js-cookie';
 declare module 'jetlinks-ui-components';
 declare module 'vue3-json-viewer';
 declare module 'event-source-polyfill';
