@@ -472,7 +472,15 @@ const columns = [
             type: 'select',
             options: () =>
                 new Promise((resolve) => {
-                    queryGatewayList({}).then((resp: any) => {
+                    queryGatewayList({
+                        paging: false,
+                        sorts: [
+                            {
+                                name: 'createTime',
+                                order: 'desc',
+                            },
+                        ],
+                    }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
@@ -503,6 +511,7 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'treeSelect',
+            termOptions: ['eq'],
             // handleValue(v) {
             //   return {
             //     assetType: 'device',
