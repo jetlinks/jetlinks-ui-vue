@@ -89,26 +89,22 @@ const productName = computed(() => {
 })
 
 const handleOk = async () => {
- 
     const params = paramsEncodeQuery(props.data);
     // downloadFile(
     //     deviceExport(modelRef.product || '', modelRef.fileType),
     //     params,
     // );
-    // const res: any = await deviceExport(
-    //     modelRef.product || '',
-    //     modelRef.fileType,
-    //     params
-    // );
-    console.log(props.data,params)
-    window.open(`${deviceExportPath( modelRef.product || '',modelRef.fileType)}?X-Access-Token=${getToken()
-        }`)
-    // if (res) {
-    //     const blob = new Blob([res], { type: modelRef.fileType });
-    //     const url = URL.createObjectURL(blob);
-    //     downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
-    //     emit('close');
-    // }
+    const res: any = await deviceExport(
+        modelRef.product || '',
+        modelRef.fileType,
+        params
+    );
+    if (res) {
+        const blob = new Blob([res], { type: modelRef.fileType });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
+        emit('close');
+    }
 };
 
 const handleCancel = () => {
