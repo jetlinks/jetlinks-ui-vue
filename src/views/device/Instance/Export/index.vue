@@ -88,7 +88,6 @@ const productName = computed(() => {
 })
 
 const handleOk = async () => {
-  console.log(props.data)
     const params = paramsEncodeQuery(props.data);
     // downloadFile(
     //     deviceExport(modelRef.product || '', modelRef.fileType),
