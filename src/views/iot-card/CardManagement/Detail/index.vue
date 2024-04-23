@@ -286,14 +286,18 @@ const getDataTotal = () => {
             .reduce((r, n) => r + Number(n), 0)
             .toFixed(2);
         monthOptions.value = resp.sortArray;
+        console.log('monthTotal.value:'+monthTotal.value);
     });
     getData(yTime[0], yTime[1]).then((resp) => {
         yearTotal.value = resp.data
             .reduce((r, n) => r + Number(n), 0)
             .toFixed(2);
         yearOptions.value = resp.sortArray;
+        console.log('yearOptions.value:'+yearTotal.value);
     });
+    
 };
+
 
 /**
  * 流量统计
@@ -302,7 +306,7 @@ const getDataTotal = () => {
 const getEcharts = (data: any) => {
     let startTime = data.start;
     let endTime = data.end;
-    if (data.type === 'week' || data.type === 'month') {
+    if (data.type === 'week' || data.type === 'month'||data.type === 'year') {
         startTime = moment(data.start).startOf('days').valueOf();
         endTime = moment(data.end).startOf('days').valueOf();
     }
