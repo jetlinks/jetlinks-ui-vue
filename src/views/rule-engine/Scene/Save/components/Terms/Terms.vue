@@ -287,7 +287,6 @@ watchEffect(() => {
       activeKey.value = _group[0].id
     }
   }
-  console.log(group.value,'group')
 })
 
 </script>

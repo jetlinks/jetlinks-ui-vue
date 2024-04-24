@@ -303,6 +303,7 @@ const {basicLayout} = storeToRefs(system);
 const router = useRouter()
 
 const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
+const { data: tagsMetadata } = useMetadata(_target,'tags')
 const { hasOperate } = useOperateLimits(_target);
 
 const permissionStore = usePermissionStore()
@@ -339,7 +340,8 @@ const showLastDelete = computed(() => {
   return dataSourceCache.value.length === 1
 })
 
-provide('_dataSource', dataSourceCache)
+provide('_dataSource', dataSourceCache);
+provide('_tagsDataSource',tagsMetadata)
 const showDetail = (data: any) => {
   detailData.data = data
   detailData.visible = true
@@ -558,6 +560,7 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
+
 }, { immediate: true })
 
 onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转

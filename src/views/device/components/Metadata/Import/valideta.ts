@@ -33,7 +33,7 @@ export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolea
         }
     }
     if(data.type === 'file' && !isArray && !isObject){
-        if(!data?.fileType){
+        if(!data?.bodyType){
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失fileType属性`,'error')
             return true
         }
@@ -102,7 +102,7 @@ export const testAliType = (data:any,index:number,isArray?:boolean,isObject?:boo
         }
     }
     if(data.dataType.type === 'file' && !isArray && !isObject){
-        if(!data.dataType?.fileType){
+        if(!data.dataType?.bodyType){
             onlyMessage(`方法定义inputs第${index+1}个数组dataType中缺失fileType属性`,'error')
             return true
         }

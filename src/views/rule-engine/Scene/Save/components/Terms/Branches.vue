@@ -30,7 +30,7 @@
         @mouseout='mouseout'
       >
         <j-popconfirm
-          title='该操作将清空其它所有否则条件，确认删除？'
+          title='该操作将清空过滤条件，确认删除？'
           placement="topRight"
           @confirm='onDeleteAll'
         >
@@ -156,7 +156,7 @@ const WarpClass = computed(() => {
 
 const onDelete = () => {
   if (FormModel.value.branches?.length == 2) {
-    FormModel.value.branches?.splice(props.name, 1, null)
+    FormModel.value.branches?.splice(props.name, 1)
   } else {
     FormModel.value.branches?.splice(props.name, 1)
   }
@@ -164,8 +164,8 @@ const onDelete = () => {
 
 const onDeleteAll = () => {
   if (FormModel.value.branches) {
-    FormModel.value.branches.length = props.name
-    FormModel.value.branches.push(null as any)
+    FormModel.value.branches[props.name].when = []
+    FormModel.value.options.when[props.branches_Index].terms = []
   }
 }
 
