@@ -17,7 +17,7 @@
                 placement="topRight"
                 v-model:value="formData.unit"
             />
-            <DataTableFile v-else-if="formData.type === 'file'" v-model:value="formData.fileType" placement="topRight"/>
+            <DataTableFile v-else-if="formData.type === 'file'" v-model:value="formData.bodyType" placement="topRight"/>
             <DataTableDate v-else-if="formData.type === 'date'" v-model:value="formData.date" placement="topRight"/>
             <DataTableString
                 v-else-if="['string', 'password'].includes(formData.type)"
