@@ -84,7 +84,7 @@ import type { OperatorItem } from './typings';
 import { treeFilter } from '@/utils/tree';
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product';
-import Markdown from 'vue3-markdown-it';
+import Markdown from '@/components/Markdown'
 
 const props = defineProps({
     id: String,
