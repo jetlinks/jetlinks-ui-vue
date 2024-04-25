@@ -22,7 +22,7 @@
             </div>
         </div>
         <div v-if="chartData.length" class="chart" ref="chartRef"></div>
-        <j-empty v-else class="no-data" description="暂无数据"></j-empty>
+        <j-empty v-else class="no-data" description="暂无数据" ></j-empty>
     </div>
 </template>
 
@@ -40,6 +40,7 @@ const props = defineProps({
     title: { type: String, default: '' },
     // 图表数据
     chartData: { type: Array, default: () => [] },
+    
 });
 
 // 统计时间维度
@@ -55,10 +56,14 @@ const dateRange = ref<any>([
 const chartRef = ref();
 const createChart = () => {
     nextTick(() => {
+        if (!chartRef.value) {
+            return; // 如果不存在，直接返回，不执行初始化操作
+        }
         const myChart = echarts.init(chartRef.value as HTMLElement);
         const sData: number[] = props.chartData.map(
             (m: any) => m.value && m.value.toFixed(0),
         );
+        
         const maxY = Math.max.apply(null, sData.length ? sData : [0]);
         const options = {
             grid: {
@@ -130,12 +135,13 @@ const createChart = () => {
                 },
             ],
         };
-
+        
         myChart.setOption(options);
         window.addEventListener('resize', function () {
             myChart.resize();
         });
     });
+    
 };
 
 watch(
@@ -145,6 +151,7 @@ watch(
     },
     { deep: true },
 );
+
 watch(
     () => dateRange.value,
     (val) => {

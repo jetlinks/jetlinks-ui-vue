@@ -36,7 +36,6 @@ const props = defineProps({
 const createChart = () => {
     nextTick(() => {
         const myChart = echarts.init(proxy.$refs.chart);
-
         const options = {
             grid: {
                 left: '5%',
