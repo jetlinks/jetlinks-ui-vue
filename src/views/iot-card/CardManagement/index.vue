@@ -901,8 +901,13 @@ const handleResumption = () => {
  * 同步状态
  */
 const handleSync = () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('请选择数据', 'error');
+        return;
+    }
     sync().then((res: any) => {
         if (res.status === 200) {
+            _selectedRowKeys.value = [];
             cardManageRef.value?.reload();
             onlyMessage('同步状态成功');
         }
@@ -991,9 +996,11 @@ const batchActions: BatchActionsType[] = [
         type: 'primary',
         permission: 'iot-card/CardManagement:sync',
         icon: 'SwapOutlined',
-        popConfirm: {
-            title: '确认同步状态吗？',
-            onConfirm: handleSync,
+        selected:{
+                popConfirm: {
+                title: '确认同步状态吗？',
+                onConfirm: handleSync,
+            },
         },
     },
     {
