@@ -293,7 +293,7 @@ const form = reactive({
                 });
             }),
         checkAgainPassword: (_rule: Rule, value: string): Promise<any> => {
-            if (!value) return Promise.reject('请输入8~64位的密码');
+            if (!value) return Promise.reject('请再次输入密码');
             return value === form.data.password
                 ? Promise.resolve()
                 : Promise.reject('两次密码输入不一致');
