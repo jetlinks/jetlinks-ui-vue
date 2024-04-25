@@ -186,6 +186,8 @@ const form = reactive({
             if (!id) return Promise.reject('请输入标识(ID)');
             else if (id.length > 64)
                 return Promise.reject('最多可输入64个字符');
+            else if (!/^\w+$/.test(id))
+                return Promise.reject('内容只能为字母、数字或者下划线！');
             else if (props.data?.id && props.data?.id === form.data?.id)
                 return Promise.resolve();
             else {

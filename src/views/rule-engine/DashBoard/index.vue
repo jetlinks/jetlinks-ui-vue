@@ -445,60 +445,64 @@ const selectChange = () => {
                     sData.push(item.data.value);
                 });
             const data:any = JSON.parse(JSON.stringify(sData))
-            const maxY = data.sort((a,b)=>{
-                return b-a
-            })[0]
-            alarmStatisticsOption.value = {
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: xData.reverse(),
-                },
-                yAxis: {
-                    type: 'value',
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    // axisPointer: {
-                    //   type: 'shadow',
-                    // },
-                },
-                grid: {
-                    top: '2%',
-                    bottom: '5%',
-                    left:  maxY < 1000 ? 50 : maxY.toString().length * 10,
-                    right: '48px',
-                },
-                series: [
-                    {
-                        name: tip,
-                        data: sData.reverse(),
-                        type: 'line',
-                        smooth: true,
-                        color: '#ADC6FF',
-                        areaStyle: {
-                            color: {
-                                type: 'linear',
-                                x: 0,
-                                y: 0,
-                                x2: 0,
-                                y2: 1,
-                                colorStops: [
-                                    {
-                                        offset: 0,
-                                        color: '#ADC6FF', // 100% 处的颜色
-                                    },
-                                    {
-                                        offset: 1,
-                                        color: '#FFFFFF', //   0% 处的颜色
-                                    },
-                                ],
-                                global: false, // 缺省为 false
+            if (data && data.length > 0 ) {
+                    const maxY = data.sort((a,b)=>{
+                    return b-a
+                })[0]
+                alarmStatisticsOption.value = {
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: xData.reverse(),
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        // axisPointer: {
+                        //   type: 'shadow',
+                        // },
+                    },
+                    grid: {
+                        top: '2%',
+                        bottom: '5%',
+                        left:  maxY < 1000 ? 50 : maxY.toString().length * 10,
+                        right: '48px',
+                    },
+                    series: [
+                        {
+                            name: tip,
+                            data: sData.reverse(),
+                            type: 'line',
+                            smooth: true,
+                            color: '#ADC6FF',
+                            areaStyle: {
+                                color: {
+                                    type: 'linear',
+                                    x: 0,
+                                    y: 0,
+                                    x2: 0,
+                                    y2: 1,
+                                    colorStops: [
+                                        {
+                                            offset: 0,
+                                            color: '#ADC6FF', // 100% 处的颜色
+                                        },
+                                        {
+                                            offset: 1,
+                                            color: '#FFFFFF', //   0% 处的颜色
+                                        },
+                                    ],
+                                    global: false, // 缺省为 false
+                                },
                             },
                         },
-                    },
-                ],
-            };
+                    ],
+                };
+            }else{
+                console.log('data is empty ')
+            }
             state.ranking = res.result
                 ?.filter(
                     (item: any) =>
