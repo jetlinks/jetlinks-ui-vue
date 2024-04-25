@@ -900,18 +900,20 @@ const handleResumption = () => {
 /**
  * 同步状态
  */
-const handleSync = () => {
+ const handleSync = async() => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择数据', 'error');
         return;
     }
-    sync().then((res: any) => {
-        if (res.status === 200) {
+    const resp = await sync(
+        _selectedRowKeys.value.map((v) => ({ id: v })),
+    );
+    
+        if (resp.status === 200) {
             _selectedRowKeys.value = [];
             cardManageRef.value?.reload();
             onlyMessage('同步状态成功');
         }
-    });
 };
 
 /**
