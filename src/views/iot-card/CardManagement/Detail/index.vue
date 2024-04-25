@@ -282,19 +282,30 @@ const getDataTotal = () => {
         dayOptions.value = resp.sortArray;
     });
     getData(mTime[0], mTime[1]).then((resp) => {
-        monthTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
-            .toFixed(2);
-        monthOptions.value = resp.sortArray;
-        console.log('monthTotal.value:'+monthTotal.value);
-    });
-    getData(yTime[0], yTime[1]).then((resp) => {
-        yearTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
-            .toFixed(2);
-        yearOptions.value = resp.sortArray;
-        console.log('yearOptions.value:'+yearTotal.value);
-    });
+    const monthData = resp.data;
+    monthTotal.value = monthData
+        .reduce((r, n) => r + Number(n), 0)
+        .toFixed(2);
+    monthOptions.value = resp.sortArray;
+    console.log('monthTotal.value:' + monthTotal.value);
+    console.log('monthData.length:' + monthData.length);
+    // 如果只有一个月有数据，将本年统计的值设置为本月统计的值
+    if (monthData.length <=31) {
+        yearTotal.value = monthTotal.value;
+        yearOptions.value = monthOptions.value;
+        console.log('yearTotal.value:' + yearTotal.value);
+        
+    } else {
+        getData(yTime[0], yTime[1]).then((resp) => {
+            yearTotal.value = resp.data
+                .reduce((r, n) => r + Number(n), 0)
+                .toFixed(2);
+            yearOptions.value = resp.sortArray;
+            console.log('yearTotal.value:' + yearTotal.value);
+        });
+    }
+});
+
     
 };
 
