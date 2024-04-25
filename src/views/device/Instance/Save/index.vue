@@ -13,7 +13,10 @@
                 <j-row type="flex">
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
-                            <JProUpload accept="image/jpeg,image/png" v-model="modelRef.photoUrl" />
+                            <JProUpload
+                                accept="image/jpeg,image/png"
+                                v-model="modelRef.photoUrl"
+                            />
                         </j-form-item>
                     </j-col>
                     <j-col flex="auto">
@@ -110,12 +113,37 @@
                     </j-select>
                 </j-form-item>
                 <j-form-item
+                    label="所属工厂"
+                    name="factoryId"
+                    :rules="[
+                        {
+                            required: true,
+                            message: '请选择所属工厂',
+                        },
+                    ]"
+                >
+                    <j-select
+                        showSearch
+                        v-model:value="modelRef.factoryId"
+                        :disabled="!!data?.id"
+                        placeholder="请选择所属工厂"
+                    >
+                        <j-select-option
+                            v-for="item in factoryList"
+                            :value="item.id"
+                            :key="item.id"
+                            :label="item.name"
+                            >{{ item.name }}</j-select-option
+                        >
+                    </j-select>
+                </j-form-item>
+                <j-form-item
                     label="说明"
                     name="describe"
                     :rules="[
                         {
                             max: 200,
-                            message: '最多输入200个字符'
+                            message: '最多输入200个字符',
                         },
                     ]"
                 >
@@ -135,6 +163,7 @@
 import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { queryFactoryList } from '@/api/factory/factory';
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -144,12 +173,14 @@ const props = defineProps({
     },
 });
 const productList = ref<Record<string, any>[]>([]);
+const factoryList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
 
 const formRef = ref();
 
 const modelRef = reactive({
     productId: undefined,
+    factoryId: undefined,
     id: undefined,
     name: '',
     describe: '',
@@ -191,9 +222,25 @@ watch(
                 productList.value = resp.result as Record<string, any>[];
             }
         });
+
+        queryFactoryList({
+            paging: false,
+            sorts: [
+                {
+                    name: 'createTime',
+                    order: 'desc',
+                },
+            ],
+            terms: [],
+        }).then((response: any) => {
+            if (response.status === 200) {
+                factoryList.value = response.result.data
+                console.log(response.result.data)
+            }
+        });
         Object.assign(modelRef, newValue);
         // description 和 describe 处理
-        modelRef.describe = newValue?.describe || newValue?.description
+        modelRef.describe = newValue?.describe || newValue?.description;
     },
     { immediate: true, deep: true },
 );

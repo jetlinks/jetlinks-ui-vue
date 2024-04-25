@@ -334,6 +334,7 @@ import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import { sandDevice } from '@/api/factory/factory';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -392,6 +393,27 @@ const columns = [
         search: {
             type: 'select',
             rename: 'productId',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
+    },
+    {
+        title: '所属工厂',
+        dataIndex: 'factoryName',
+        key: 'factoryName',
+        ellipsis: true,
+        search: {
+            type: 'select',
+            rename: 'factoryId',
             options: () =>
                 new Promise((resolve) => {
                     queryNoPagingPost({ paging: false }).then((resp: any) => {
@@ -664,6 +686,26 @@ const getActions = (
             onClick: () => {
                 visible.value = true;
                 current.value = data;
+            },
+        },
+        {
+            key: 'distribute',
+            text: '下发',
+            tooltip: {
+                title: '下发',
+            },
+            icon: 'EditOutlined',
+            popConfirm: {
+                title: `确认下发吗?`,
+                onConfirm: async () => {
+                    let response = undefined;
+                    response = await sandDevice(data.id);
+                    if (response && response.status === 200) {
+                        onlyMessage('下发成功！');
+                    } else {
+                        onlyMessage('下发失败', 'error');
+                    }
+                },
             },
         },
         {
