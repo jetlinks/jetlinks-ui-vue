@@ -45,20 +45,54 @@
                                     placeholder="请输入高德API Key"
                                 />
                             </j-form-item>
+                            <j-form-item>
+                                <template #label>
+                                    <span>工厂ID</span>
+                                </template>
+                                <j-input
+                                    v-model:value="formValue.factoryKey"
+                                    placeholder="请输入工厂ID"
+                                />
+                            </j-form-item>
+                            <j-form-item
+                                name="factoryType"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请选择工厂类型',
+                                    },
+                                ]"
+                            >
+                                <template #label>
+                                    <span>工厂类型 </span>
+                                </template>
+                                <j-select
+                                    showSearch
+                                    v-model:value="formValue.factoryType"
+                                    placeholder="请选择工厂类型"
+                                >
+                                    <j-select-option
+                                        v-for="item in factoryTypeList"
+                                        :value="item.value"
+                                        :key="item.value"
+                                        :label="item.name"
+                                        >{{ item.name }}</j-select-option
+                                    >
+                                </j-select>
+                            </j-form-item>
                             <j-form-item name="base-path">
                                 <template #label>
                                     <span>base-path</span>
-                                    <j-tooltip >
-                                      <template #title>
-                                        <div style='word-break: break-all;'>
-                                          <div>
-                                            系统后台访问的url。
-                                          </div>
-                                          <div>
-                                           格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
-                                          </div>
-                                        </div>
-                                      </template>
+                                    <j-tooltip>
+                                        <template #title>
+                                            <div style="word-break: break-all">
+                                                <div>系统后台访问的url。</div>
+                                                <div>
+                                                    格式：{http/https}:
+                                                    //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                                </div>
+                                            </div>
+                                        </template>
 
                                         <img
                                             class="img-style"
@@ -342,6 +376,8 @@ const form = reactive<formType>({
         title: '',
         headerTheme: 'light',
         apiKey: '',
+        factoryKey: '',
+        factoryType: '',
         'base-path': `${window.location.origin}/api`,
         logo: '',
         ico: '',
@@ -378,7 +414,6 @@ const form = reactive<formType>({
     iconLoading: false, // 页签加载状态
     saveLoading: false,
     getDetails: async () => {
-
         // await system.getSystemConfig();
         // await settingDetail('front');
         const configInfo = system.configInfo;
@@ -387,8 +422,9 @@ const form = reactive<formType>({
             headerTheme: configInfo.front?.headerTheme,
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
-            backgroud:
-                configInfo.front?.backgroud || '/images/login.png',
+            backgroud: configInfo.front?.backgroud || '/images/login.png',
+            factoryKey: configInfo.front?.factoryKey,
+            factoryType: configInfo.front?.factoryType,
             apiKey: configInfo.amap?.apiKey,
             'base-path': configInfo.paths?.['base-path'],
         };
@@ -420,12 +456,11 @@ const form = reactive<formType>({
                         },
                     },
                 ];
-
                 save_api(params)
                     .then(async (resp) => {
                         if (resp.status === 200) {
                             onlyMessage('保存成功');
-                            await system.getSystemConfig()
+                            await system.getSystemConfig();
                             await form.getDetails();
                         }
                     })
@@ -437,6 +472,17 @@ const form = reactive<formType>({
     },
 });
 const { formValue, rulesFrom } = toRefs(form);
+
+const factoryTypeList = [
+    {
+        value: 'general',
+        name: '总工厂',
+    },
+    {
+        value: 'sub',
+        name: '子工厂', 
+    }
+];
 
 const uploader: uploaderType = {
     // imageTypes: [
@@ -459,7 +505,10 @@ const uploader: uploaderType = {
                 .filter((typeStr) => file.type.includes(typeStr)).length > 0;
         const sizeBool = file.size / 1024 / 1024 < 2;
         if (!typeBool) {
-            onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
+            onlyMessage(
+                `请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`,
+                'error',
+            );
         } else if (!sizeBool) {
             onlyMessage(`图片大小必须小于2M`, 'error');
         }

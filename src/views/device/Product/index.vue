@@ -169,6 +169,7 @@
         </FullPage>
         <!-- 新增、编辑 -->
         <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
+        <Allots v-if="allotsVisible" :disProductId="disProductId" @close="allotsVisible = false"></Allots>
     </page-container>
 </template>
 
@@ -199,6 +200,7 @@ import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';
+import Allots from "./allots/index.vue";
 /**
  * 表格数据
  */
@@ -206,6 +208,8 @@ const menuStory = useMenuStore();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const params = ref<Record<string, any>>({});
+const allotsVisible = ref(false)
+const disProductId = ref()
 const columns = [
     {
         title: 'ID',
@@ -319,6 +323,19 @@ const getActions = (
                     'messageProtocol',
                 ]);
                 downloadObject(extra, data.name+'产品');
+            },
+        },
+        {
+            key: 'distribute',
+            text: '下发',
+            tooltip: {
+                title: '下发',
+            },
+            icon: 'ArrowRightOutlined',
+            onClick: () => {
+                allotsVisible.value = true
+                disProductId.value = data.id
+                console.log(disProductId.value)
             },
         },
         {

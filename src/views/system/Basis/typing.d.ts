@@ -5,6 +5,8 @@ export interface formValueType {
     title: string | undefined; // 系统名称
     headerTheme: string | undefined; // 主题色
     apiKey: string | undefined; // 高德 API key
+    factoryKey:string | undefined; //工厂id配置
+    factoryType: string | undefined; //工厂类型
     'base-path': string | undefined; // 系统后台访问的URL
     logo: string | undefined;
     ico: string | undefined;
