@@ -8,7 +8,7 @@
     :maskClosable="false"
     :confirmLoading="loading"
   >
-    <j-form layout="vertical" :rules="rules" ref="formRef" :model="form">
+    <j-form layout="vertical" :rules="rules" ref="formRef" :model="form" >
         <j-form-item label="字典ID" name="id">
             <j-input v-model:value="form.id" :disabled="type ==='edit'"></j-input>
         </j-form-item>
@@ -76,9 +76,16 @@ const form = reactive({
 
 const rules = {
     id: [
-        { required:true,message:'请输入ID'},
-        { validator: validateInput, trigger: 'blur' },
+        { required:true,message:'请输入ID',trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        {  validator: (rule: Rule, value: string) => {
+                // 判断是否满足执行后续验证逻辑的条件
+                if (value && value.length <= 64) {
+                    return validateInput(rule, value);
+                } else {
+                    return Promise.reject();
+                }
+            },  trigger: 'blur' },
     ],
     name: [
         { required: true, message: '请输入名称', trigger: 'blur' },

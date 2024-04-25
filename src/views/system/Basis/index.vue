@@ -371,6 +371,16 @@ const form = reactive<formType>({
                 message: '请输入base-path',
                 trigger: 'blur',
             },
+            {
+            validator: (rule, value, callback) => {
+                if (value && value.includes('localhost')) {
+                    callback('输入内容不能包含 localhost');
+                        } else {
+                            callback();
+                    }
+                },
+                trigger: 'blur',
+            },
         ],
     },
     logoLoading: false, // logo加载状态

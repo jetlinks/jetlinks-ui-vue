@@ -32,6 +32,7 @@
                 </j-alert>
             </div>
         </template>
+        <!-- //添加 -->
         <template v-else>
             <div class="role-alert" style="margin-bottom: 10px;">
                 <j-alert type="info">
@@ -80,9 +81,7 @@
                 :bodyStyle="{ padding: 0 }"
                 :gridColumn="gridColumn"
                 :alertRender="false"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
+                :defaultParams="defaultParams"
                 :rowSelection="{
                     selectedRowKeys: _selectedRowKeys,
                 }"
@@ -101,11 +100,9 @@
         </j-scrollbar>
     </div>
 </template>
-
 <script lang="ts" setup>
 import { queryRoleList } from '@/api/system/noticeRule';
 import { PropType } from 'vue';
-
 const props = defineProps({
     modelValue: {
         type: Array as PropType<string[]>,
@@ -120,9 +117,7 @@ const props = defineProps({
         default: '',
     },
 });
-
 const emit = defineEmits(['update:modelValue']);
-
 const params = ref<any>();
 const _selectedRowKeys = ref<string[]>([]);
 const tableRef = ref();
@@ -130,7 +125,19 @@ const tableRef = ref();
 const dataSource = computed(() => {
     return tableRef.value?._dataSource || [];
 });
-
+const defaultParams = ref({
+  sorts: [{ name: 'id', order: 'asc', value: 'id' }],
+});
+onMounted(() => {
+  // 将modelValue数组中的值依次插入到defaultParams.value.sorts数组中每个对象的value属性中
+  props.modelValue.forEach((value: string) => {
+    defaultParams.value.sorts.push({
+      name: 'id',
+      order: 'asc',
+      value: value,
+    });
+  });
+});
 const indeterminate = computed(() => {
     return (
         dataSource.value.some((item: any) => {
@@ -201,6 +208,7 @@ const onSelect = (e: any, record: any) => {
         _set.delete(record.id);
     }
     emit('update:modelValue', [..._set.values()]);
+    console.log('')
 };
 
 const onSelectAll = (e: any) => {
