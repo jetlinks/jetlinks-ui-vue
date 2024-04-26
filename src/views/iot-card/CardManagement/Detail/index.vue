@@ -294,8 +294,6 @@ const getDataTotal = () => {
 };
 
 
-
-
 /**
  * 流量统计
  * @param data
@@ -303,7 +301,7 @@ const getDataTotal = () => {
 const getEcharts = (data: any) => {
     let startTime = data.start;
     let endTime = data.end;
-    if (data.type === 'week' || data.type === 'month') {
+    if (data.type === 'week' || data.type === 'month'||data.type === 'year') {
         startTime = moment(data.start).startOf('days').valueOf();
         endTime = moment(data.end).startOf('days').valueOf();
     }

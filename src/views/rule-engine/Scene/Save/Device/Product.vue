@@ -122,7 +122,7 @@ const columns = [
   },
   {
     title: '接入方式',
-    dataIndex: 'accessName',
+    dataIndex: 'accessId',
     width: 150,
     ellipsis: true,
     search: {
@@ -192,12 +192,14 @@ const columns = [
     hideInTable: true,
     search: {
       type: 'treeSelect',
+      termOptions: ['eq'],
       componentProps: {
         fieldNames: {
           label: 'name',
           value: 'value',
         },
       },
+     
       options: () => new Promise((resolve) => {
         getTreeData_api({ paging: false }).then((resp: any) => {
           const formatValue = (list: any[]) => {
