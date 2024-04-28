@@ -53,6 +53,8 @@ import { downloadFileByUrl } from '@/utils/utils';
 import { paramsEncodeQuery } from '@/utils/encodeQuery';
 import { deviceExport , deviceExportPath} from '@/api/device/instance';
 import { getToken } from '@/utils/comm';
+import { TOKEN_KEY } from '@/utils/variable';
+import { LocalStore, onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close']);
 const props = defineProps({
@@ -82,10 +84,17 @@ watch(
         });
     },
     { immediate: true, deep: true },
+    
+    
 );
 
 const productName = computed(() => {
+    console.log(modelRef.product);
     return productList.value.find(item => item.id === modelRef.product)?.name || ''
+    // console.log(item.id);
+   
+    
+    
 })
 
 const handleOk = async () => {
@@ -98,13 +107,17 @@ const handleOk = async () => {
         modelRef.product || '',
         modelRef.fileType,
         params
+        
+        
     );
     if (res) {
-        const blob = new Blob([res], { type: modelRef.fileType });
-        const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
+        // const blob = new Blob([res], { type: modelRef.fileType });
+        // const url = URL.createObjectURL(blob);
+        // downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
+        window.open(`${origin}/api/device-instance/${modelRef.product}/export.xlsx?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`)
         emit('close');
     }
+    
 };
 
 const handleCancel = () => {
