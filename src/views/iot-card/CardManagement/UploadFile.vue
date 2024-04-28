@@ -5,7 +5,7 @@
             name="file"
             :action="FILE_UPLOAD"
             :headers="{
-                'X-Access-Token': LocalStore.get(TOKEN_KEY),
+                [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
             }"
             :maxCount="1"
             :showUploadList="false"
