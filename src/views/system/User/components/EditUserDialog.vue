@@ -270,7 +270,8 @@ const form = reactive({
     rules: {
         checkUserName: (_rule: Rule, value: string): Promise<any> =>
             new Promise((resolve, reject) => {
-                if (!value) return reject('请输入用户名');
+                if(props.type==='edit') return resolve('')
+                else if(!value) return reject('请输入用户名');
                 else if (value.length > 64) return reject('最多可输入64个字符');
                 validateField_api('username', value).then((resp: any): any => {
                     resp.result.passed
