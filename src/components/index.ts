@@ -11,6 +11,7 @@ import JProUpload from './Upload/index.vue'
 import { BasicLayoutPage, BlankLayoutPage, FullPage } from './Layout'
 import RadioCard from './RadioCard/index.vue'
 import { PageContainer, AIcon, Ellipsis } from 'jetlinks-ui-components'
+import MarkDown from './Markdown'
 // import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
 import AMapComponent from './AMapComponent/index.vue'
@@ -41,5 +42,6 @@ export default  {
             .component('RowPagination', RowPagination)
             .component('FullPage', FullPage)
             .component('RadioCard', RadioCard)
+            .component('MarkDown', MarkDown)
     }
 }
