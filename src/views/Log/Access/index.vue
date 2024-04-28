@@ -115,6 +115,7 @@
                     v-model:value="descriptionsData.exception"
                     placeholder="暂无数据"
                     :auto-size="{ minRows: 3, maxRows: 20 }"
+                    readonly
                 />
             </j-descriptions-item>
         </j-descriptions>

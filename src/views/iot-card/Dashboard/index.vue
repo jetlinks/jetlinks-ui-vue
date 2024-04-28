@@ -45,7 +45,7 @@
                     <j-col :span="8">
                         <div class="data-statistics-item">
                             <div class="flow-info" style="width: 100%">
-                                <div class="label">本年流量消耗1</div>
+                                <div class="label">本年流量消耗</div>
                                 <j-tooltip placement="bottomLeft">
                                     <template #title>
                                         <span>{{ yearTotal }} M</span>
@@ -177,7 +177,7 @@ const quickBtnList = [
 const getData = (
     start: number,
     end: number,
-): Promise<{ sortArray: any[]; data: any[] }> => {
+): Promise<{ sortArray: any[]}> => {
     return new Promise((resolve) => {
         queryFlow(start, end, {
             orderBy: 'date',
@@ -189,9 +189,6 @@ const getData = (
                 );
                 resolve({
                     sortArray,
-                    data: sortArray.map(
-                        (item: any) => item.value && item.value.toFixed(2),
-                    ),
                 });
             }
         });
@@ -215,20 +212,20 @@ const getDataTotal = () => {
       dayjs().endOf('year').valueOf(),
     ];
     getData(dTime[0], dTime[1]).then((resp) => {
-        dayTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
+        dayTotal.value = resp.sortArray
+            .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         dayOptions.value = resp.sortArray;
     });
     getData(mTime[0], mTime[1]).then((resp) => {
-        monthTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
+        monthTotal.value = resp.sortArray
+            .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         monthOptions.value = resp.sortArray;
     });
     getData(yTime[0], yTime[1]).then((resp) => {
-        yearTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
+        yearTotal.value = resp.sortArray
+            .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         yearOptions.value = resp.sortArray;
     });

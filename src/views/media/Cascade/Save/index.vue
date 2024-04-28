@@ -643,7 +643,10 @@ const handleTransportChange = () => {
  */
 const allListPorts = ref([]);
 const setPorts = () => {
-    if (!formData.value.host) return;
+    if (!formData.value.host) {
+        allListPorts.value = []
+        return
+    };
     allListPorts.value = allList.value
         .find((f: any) => f.host === formData.value.host)
         ?.ports[formData.value.transport || '']?.map((m: string) => ({
