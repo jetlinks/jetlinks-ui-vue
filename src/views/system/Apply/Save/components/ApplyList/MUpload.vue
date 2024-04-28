@@ -9,7 +9,7 @@
                 :before-upload="beforeUpload"
                 :action="FILE_UPLOAD"
                 :headers="{
-                    'X-Access-Token': LocalStore.get(TOKEN_KEY),
+                    [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                 }"
                 v-bind="props"
             >
