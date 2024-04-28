@@ -280,7 +280,7 @@ const backLoading = ref(false);
 const iconLoading = ref(false);
 const imageTypes = ref(['image/jpeg', 'image/png']);
 const iconTypes = ref(['image/x-icon']);
-const headers = ref({ 'X-Access-Token': LocalStore.get(TOKEN_KEY) });
+const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 /**
  * 表单数据
  */

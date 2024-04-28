@@ -239,16 +239,17 @@ const pageChange = (page: number, pageSize: number) => {
 const init = async () => {
     if (props.accessId) {
         const resp = await getCommandsByAccess(props.accessId);
-        if (resp.success) {
-            const item = resp.result?.[0];
+        if (resp.success && resp.result?.length) {
+            // 获取分页查询条件
+            const item = resp.result.find(item => item.id === 'QueryDevicePage');
             if (item) {
-                showPage.value = item.id === 'QueryDevicePage'; // 分页
+                showPage.value = true
                 columns.value = item.expands?.terms?.map((t) => ({
-                    title: t.name,
-                    dataIndex: t.id,
-                    search: {
-                        type: t.valueType.type,
-                    },
+                  title: t.name,
+                  dataIndex: t.id,
+                  search: {
+                    type: t.valueType.type,
+                  },
                 }));
             }
         }

@@ -139,7 +139,7 @@
                     :show-upload-list="false"
                     :action="FILE_UPLOAD"
                     @change="fileChange"
-                    :headers="{ 'X-Access-Token': getToken() }"
+                    :headers="{ [TOKEN_KEY]: getToken() }"
                 >
                     <j-button>
                         <template #icon

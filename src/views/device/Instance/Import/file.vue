@@ -8,13 +8,13 @@
                         <div class="alert"><AIcon style="margin-right: 5px;" type="InfoCircleOutlined" />导入系统已存在的设备数据，不会更改已存在设备的所属产品信息</div>
                     </div>
                 </template>
-                
+
                 <a-upload-dragger
                     v-model:fileList="modelRef.upload"
                     name="file"
                     :action="FILE_UPLOAD"
                     :headers="{
-                        'X-Access-Token': LocalStore.get(TOKEN_KEY),
+                        [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                     }"
                     :maxCount="1"
                     :showUploadList="false"
@@ -222,7 +222,7 @@ const uploadChange = async (info: Record<string, any>) => {
         color: #666666;
 
         .icon {
-            font-size: 30px; 
+            font-size: 30px;
             color: @primary-color;
         }
     }
