@@ -791,7 +791,7 @@ const Status = defineComponent({
                                 {
                                     key: `product-auth${i}`,
                                     name: `产品-${item?.name}`,
-                                    desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'loading',
                                     text: '正在诊断中...',
                                     info: null,
@@ -805,7 +805,7 @@ const Status = defineComponent({
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
                                     name: `产品-${item?.name}`,
-                                    desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'success',
                                     text: '正常',
                                     info: null,
@@ -822,7 +822,7 @@ const Status = defineComponent({
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
                                     name: `产品-${item?.name}`,
-                                    desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'error',
                                     text: '异常',
                                     info: (
@@ -849,7 +849,7 @@ const Status = defineComponent({
                                                                         {
                                                                             key: `product-auth${i}`,
                                                                             name: `产品-${item?.name}`,
-                                                                            desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                                                            desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                             status: 'success',
                                                                             text: '正常',
                                                                             info: null,
@@ -873,7 +873,7 @@ const Status = defineComponent({
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
                                     name: `产品-${item?.name}`,
-                                    desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'warning',
                                     text: '可能存在异常',
                                     info: (
@@ -890,7 +890,7 @@ const Status = defineComponent({
                                                                         type: 'product',
                                                                         key: `product-auth${i}`,
                                                                         name: `产品-${item?.name}`,
-                                                                        desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                                                        desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                         data: { ...item },
                                                                         configuration: _configuration,
                                                                         productId: unref(device).productId,
@@ -909,7 +909,7 @@ const Status = defineComponent({
                                                                         {
                                                                             key: `product-auth${i}`,
                                                                             name: `产品-${item?.name}`,
-                                                                            desc: '诊断产品MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                                                            desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                             status: 'success',
                                                                             text: '正常',
                                                                             info: null,
@@ -952,7 +952,7 @@ const Status = defineComponent({
                                 {
                                     key: `device-auth${i}`,
                                     name: `设备-${item?.name}`,
-                                    desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'loading',
                                     text: '正在诊断中...',
                                     info: null,
@@ -966,7 +966,7 @@ const Status = defineComponent({
                                 list.value = modifyArrayList(list.value, {
                                     key: `device-auth${i}`,
                                     name: `设备-${item?.name}`,
-                                    desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'success',
                                     text: '正常',
                                     info: null,
@@ -983,7 +983,7 @@ const Status = defineComponent({
                                 list.value = modifyArrayList(list.value, {
                                     key: `device-auth${i}`,
                                     name: `设备-${item?.name}`,
-                                    desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'error',
                                     text: '异常',
                                     info: (
@@ -1010,7 +1010,7 @@ const Status = defineComponent({
                                                                         {
                                                                             key: `device-auth${i}`,
                                                                             name: `设备-${item?.name}`,
-                                                                            desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                                                            desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                             status: 'success',
                                                                             text: '正常',
                                                                             info: null,
@@ -1034,7 +1034,7 @@ const Status = defineComponent({
                                 list.value = modifyArrayList(list.value, {
                                     key: `device-auth${i}`,
                                     name: `设备-${item?.name}`,
-                                    desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'warning',
                                     text: '可能存在异常',
                                     info: (
@@ -1051,7 +1051,7 @@ const Status = defineComponent({
                                                                         type: 'device',
                                                                         key: `device-auth${i}`,
                                                                         name: `设备-${item?.name}`,
-                                                                        desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                                                        desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                         data: { ...item },
                                                                         configuration: _configuration,
                                                                         productId: unref(device).productId,
@@ -1070,7 +1070,7 @@ const Status = defineComponent({
                                                                         {
                                                                             key: `device-auth${i}`,
                                                                             name: `设备-${item?.name}`,
-                                                                            desc: '诊断设备MQTT认证配置是否正确，错误的配置将导致连接失败',
+                                                                            desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                             status: 'success',
                                                                             text: '正常',
                                                                             info: null,
