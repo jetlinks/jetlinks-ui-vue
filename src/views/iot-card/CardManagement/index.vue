@@ -370,6 +370,12 @@
             :data="current"
             @change="saveChange"
         />
+        <!--   批量同步     -->
+        <SyncModal
+          v-if="syncVisible"
+          :params="params"
+          @close="syncClose"
+        />
     </page-container>
 </template>
 
@@ -403,6 +409,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { usePermissionStore } from 'store/permission';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
+import SyncModal from './Sync.vue'
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -418,6 +425,7 @@ const cardId = ref<any>();
 const current = ref<Partial<CardManagement>>({});
 const saveType = ref<string>('');
 const isCheck = ref<boolean>(false);
+const syncVisible = ref(false)
 
 const columns = [
     {
@@ -901,19 +909,28 @@ const handleResumption = () => {
  * 同步状态
  */
  const handleSync = async() => {
-    if (!_selectedRowKeys.value.length) {
-        onlyMessage('请选择数据', 'error');
-        return;
-    }
-    const resp = await sync(
-        _selectedRowKeys.value.map((v) => ({ id: v })),
-    );
-    
-        if (resp.status === 200) {
-            _selectedRowKeys.value = [];
-            cardManageRef.value?.reload();
-            onlyMessage('同步状态成功');
-        }
+  syncVisible.value = true
+    // if (!_selectedRowKeys.value.length) {
+    //     onlyMessage('请选择数据', 'error');
+    //     return;
+    // }
+
+    // const api = `${BASE_API_PATH}/network/card/state/_sync`
+    // const _source = new EventSourcePolyfill(api)
+    //
+    // _source.onmessage = (e: any) => {
+    //   console.log(e)
+    // }
+    //
+    // const resp = await sync(
+    //     _selectedRowKeys.value.map((v) => ({ id: v })),
+    // );
+    //
+    //     if (resp.status === 200) {
+    //         _selectedRowKeys.value = [];
+    //         cardManageRef.value?.reload();
+    //         onlyMessage('同步状态成功');
+    //     }
 };
 
 /**
@@ -998,12 +1015,7 @@ const batchActions: BatchActionsType[] = [
         type: 'primary',
         permission: 'iot-card/CardManagement:sync',
         icon: 'SwapOutlined',
-        selected:{
-                popConfirm: {
-                title: '确认同步状态吗？',
-                onConfirm: handleSync,
-            },
-        },
+        onClick: handleSync
     },
     {
         key: 'delete',
@@ -1019,6 +1031,11 @@ const batchActions: BatchActionsType[] = [
         },
     },
 ];
+
+const syncClose = () => {
+  syncVisible.value = false
+  cardManageRef.value?.reload();
+}
 
 onMounted(() => {
     if (routerParams.params.value.type === 'add' && paltformPermission) {
