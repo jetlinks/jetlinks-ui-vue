@@ -25,8 +25,8 @@
                 </j-tag>
             </template>
             <template #username="slotProps">
-                
-                    <!-- <j-tag color="geekblue"> -->  
+
+                    <!-- <j-tag color="geekblue"> -->
                     <div class="userName">
                         <Ellipsis style="max-width: 100px;">
                         {{ slotProps.context.userName }}
@@ -34,9 +34,9 @@
                      <!-- </j-tag> -->
                 </div>
             </template>
-                   
-                   
-               
+
+
+
             <template #action="slotProps">
                 <j-space :size="16">
                     <j-tooltip
@@ -111,12 +111,7 @@
                 {{ descriptionsData?.parameters }}
             </j-descriptions-item>
             <j-descriptions-item label="异常信息" :span="2">
-                <j-textarea
-                    v-model:value="descriptionsData.exception"
-                    placeholder="暂无数据"
-                    :auto-size="{ minRows: 3, maxRows: 20 }"
-                    readonly
-                />
+                {{ descriptionsData.exception }}
             </j-descriptions-item>
         </j-descriptions>
         <template #footer>

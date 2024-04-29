@@ -92,11 +92,14 @@
             </j-tag>
             <span>{{ descriptionsData?.message }}</span>
         </div>
-        <j-textarea
-            v-model:value="descriptionsData.exceptionStack"
-            placeholder="暂无数据"
-            :auto-size="{ minRows: 24, maxRows: 28 }"
-        />
+      <div class="warn-content">
+        {{ descriptionsData.exceptionStack }}
+      </div>
+<!--        <j-textarea-->
+<!--            v-model:value=""-->
+<!--            placeholder="暂无数据"-->
+<!--            :auto-size="{ minRows: 24, maxRows: 28 }"-->
+<!--        />-->
         <template #footer>
             <j-button type="primary" @click="handleOk">关闭</j-button>
         </template>
@@ -253,5 +256,10 @@ const handleSearch = (e: any) => {
 }
 .mb-10 {
     margin-bottom: 10px;
+}
+.warn-content {
+  border: 1px solid #d9d9d9;
+  padding: 12px;
+  border-radius: 2px;
 }
 </style>
