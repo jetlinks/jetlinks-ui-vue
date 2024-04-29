@@ -185,7 +185,7 @@ const detail = async (id: string) => {
                     cert: result.configs?.cert ? result.configs?.cert : result.configs?.trust
                 },
                 mode: result.mode.value,
-                authenticationMethod: result.authenticationMethod.value,
+                authenticationMethod: result.authenticationMethod?.value,
                 type,
             };
         }
