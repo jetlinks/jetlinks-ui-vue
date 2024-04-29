@@ -233,7 +233,7 @@ const getDetail = () => {
                 deactivateData.show = true
               //   获取停机原因
               queryDeactivate(route.params.id as string).then((deacResp: any) => {
-                if (deacResp.success && deacResp.result.message) {
+                if (deacResp.success && deacResp.result?.message) {
                   deactivateData.tip = deacResp.result.message.toString()
                 }
               })
