@@ -14,6 +14,8 @@ export interface formState  {
   title: string; // 系统名称
   headerTheme: string; // 主题色
   apikey: string; // 高德 API key
+  factoryKey:string; //工厂id
+  factoryType:string; //工厂类型
   basePath: string; // 系统后台访问的URL
   logo: string; // 系统logo
   ico: string; // 浏览器页签

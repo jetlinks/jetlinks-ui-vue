@@ -3,9 +3,7 @@
         <pro-search :columns="columns" type="simple" @search="onSearch" />
         <FullPage>
             <j-pro-table
-                :defaultParams="{
-                    pageSize: 20,
-                }"
+                :defaultParams="defaultParams"
                 :pagination="{
                     pageSizeOptions: ['10', '20', '50', '80', '100'],
                     showSizeChanger: true,
@@ -17,8 +15,10 @@
                 ref="tableRef"
                 :request="query"
                 :row-selection="{
-                    selectedRowKeys: state.selectedRowKeys,
-                    onChange: onSelectChange,
+                    selectedRowKeys: selectedRowKeys,
+                    onSelect: onSelectChange,
+                    onSelectAll: onSelectAll,
+                    onSelectNone: () => (selectedRowKeys = []),
                 }"
             >
                 <template #headerTitle>
@@ -28,9 +28,8 @@
                         >
                         <j-button
                             type="default"
-                            @click="handleExport"
+                            @click="handleExport()"
                             :disabled="!hasSelected"
-                            :loading="state.loading"
                             >导出</j-button
                         >
                     </j-space>
@@ -60,6 +59,8 @@
                     <CardBox
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
+                        @click="handleClick"
+                        :active="selectedRowKeys.includes(slotProps.id)"
                         :showStatus="true"
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
@@ -77,12 +78,16 @@
                             <j-row>
                                 <j-col :span="8">
                                     <div class="card-item-content-text">
-                                        设备类型
+                                        产品名称
                                     </div>
                                     <j-ellipsis
                                         style="width: calc(100% - 10px)"
                                     >
-                                        <div>{{ slotProps.position }}</div>
+                                        <div>
+                                            {{
+                                                getProduct(slotProps.productId)
+                                            }}
+                                        </div>
                                     </j-ellipsis>
                                 </j-col>
                                 <j-col :span="8">
@@ -162,15 +167,7 @@
                                     placeholder="请输入group.id"
                                 />
                             </j-form-item>
-                            <j-form-item
-                                name="productId"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请选择产品',
-                                    },
-                                ]"
-                            >
+                            <j-form-item name="productId">
                                 <template #label>
                                     <span
                                         >选择产品
@@ -198,22 +195,15 @@
                                     >
                                 </j-select>
                             </j-form-item>
-                            <j-form-item
-                                name="productId"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请选择设备',
-                                    },
-                                ]"
-                            >
+                            <j-form-item name="deviceIds">
                                 <template #label>
                                     <span>选择设备 </span>
                                 </template>
                                 <j-select
                                     showSearch
-                                    v-model:value="form.deviceId"
+                                    v-model:value="form.deviceIds"
                                     placeholder="请选择设备"
+                                    mode="multiple"
                                 >
                                     <j-select-option
                                         v-for="item in deviceList"
@@ -242,18 +232,23 @@
 </template>
 
 <script lang="ts" setup>
-import { useMenuStore } from 'store/menu';
 import { getImage, onlyMessage } from '@/utils/comm';
 import {
-    addDataReceive,
-    editDataReceive,
-    deleteDataReceive,
+    addDataSand,
+    editDataSand,
+    deleteDataSand,
     queryDataReceiveList,
     queryNoPagingPostDevice,
+    queryDeviceProductList,
 } from '@/api/exchange/receive';
-import { _deploy, _undeploy } from '@/api/device/instance';
+import {
+    _deploy,
+    _undeploy,
+    queryNoPagingReceive,
+} from '@/api/device/instance';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { isNoCommunity, downloadObject } from '@/utils/utils';
 import { isUrl } from '@/utils/regular';
 import { ActionsType } from '../typings';
 import { omit, cloneDeep } from 'lodash-es';
@@ -264,21 +259,25 @@ const tableRef = ref<Record<string, any>>({});
 
 const productList = ref<Record<string, any>[]>([]);
 const deviceList = ref<Record<string, any>[]>([]);
+const selectedRowKeys = ref<string[]>([]);
+const selectedRow = ref<string[]>([]);
 
 const formRef = ref();
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
 });
 
-const modelRef = reactive({
-    id: undefined,
-    name: '',
-    url: '',
-    topic: '',
-    productId: undefined,
-    deviceId: undefined,
-    groupId: undefined,
-    description: '',
+const defaultParams = ref({
+    pageSize: 20,
+    pageIndex: 0,
+    terms: [
+        {
+            type: 'or',
+            value: 'receive',
+            termType: 'eq',
+            column: 'type',
+        },
+    ],
 });
 
 const modalState = reactive({
@@ -289,7 +288,7 @@ const modalState = reactive({
         formRef.value?.validate().then(() => {
             let { id, ...addData } = form.value;
             if (isAdd.value === 1) {
-                addDataReceive(addData).then((res: any) => {
+                addDataSand(addData).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('添加成功！');
                         modalState.openView = false;
@@ -297,7 +296,7 @@ const modalState = reactive({
                     }
                 });
             } else {
-                editDataReceive(form.value).then((res: any) => {
+                editDataSand(form.value).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('修改成功！');
                         modalState.openView = false;
@@ -315,22 +314,42 @@ const modalState = reactive({
 });
 const { form } = toRefs(data);
 
-type Key = string | number;
-const state = reactive<{
-    selectedRowKeys: Key[];
-    selectedRows: [];
-    loading: boolean;
-}>({
-    selectedRowKeys: [],
-    selectedRows: [],
-    loading: false,
-});
-const hasSelected = computed(() => state.selectedRowKeys.length > 0);
+const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
-const onSelectChange = (selectedRowKeys: Key[], selectedRows: any) => {
-    console.log('selectedRow changed: ', selectedRows);
-    state.selectedRowKeys = selectedRowKeys;
-    state.selectedRows = selectedRows;
+const handleClick = (dt: any) => {
+    if (selectedRowKeys.value.includes(dt.id)) {
+        const _index = selectedRowKeys.value.findIndex((i: any) => i === dt.id);
+        selectedRowKeys.value.splice(_index, 1);
+        selectedRow.value.splice(_index, 1);
+    } else {
+        selectedRowKeys.value = [...selectedRowKeys.value, dt.id];
+        selectedRow.value = [...selectedRow.value, dt];
+    }
+};
+
+const onSelectChange = (_selectedRowKeys: any, state: boolean) => {
+    const arr = new Set(selectedRowKeys.value);
+    const arr1 = new Set(selectedRow.value);
+    if (state) {
+        arr.add(_selectedRowKeys.id);
+        arr1.add(_selectedRowKeys);
+    } else {
+        arr.delete(_selectedRowKeys.id);
+        arr1.delete(_selectedRowKeys);
+    }
+    selectedRowKeys.value = [...arr.values()];
+    selectedRow.value = [...arr1.values()];
+};
+
+const onSelectAll = (selected: boolean, selectedRows: any, changeRows: any) => {
+    if (!selected) {
+        selectedRowKeys.value = [];
+        selectedRow.value = [];
+    } else {
+        selectedRow.value = selectedRows;
+        const arr = selectedRows.map((item: any) => item.id);
+        selectedRowKeys.value = arr;
+    }
 };
 
 const validatorUrl = (rule: any, value: any, callback: any) => {
@@ -359,9 +378,12 @@ const rules = {
         { required: true, message: '请选择产品', trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
-    deviceId: [
-        { required: true, message: '请选择设备', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    deviceIds: [
+        {
+            required: true,
+            message: '请选择产品下设备',
+            type: 'array',
+        },
     ],
     groupId: [
         { required: true, message: '请输入group.id', trigger: 'blur' },
@@ -379,7 +401,7 @@ const reset = () => {
         url: '',
         topic: '',
         productId: '',
-        deviceId: '',
+        deviceIds: [],
         groupId: '',
         description: '',
         type: 'receive',
@@ -397,11 +419,11 @@ const onSearch = (e: any) => {
                 if (b.column === 'type') {
                     const value = b.value;
                     b = {
-                            type: 'or',
-                            value: `${value}`,
-                            termType: 'eq',
-                            column: 'type',
-                        };
+                        type: 'or',
+                        value: `${value}`,
+                        termType: 'eq',
+                        column: 'type',
+                    };
                 }
                 return b;
             });
@@ -419,11 +441,36 @@ const handleAdd = () => {
 };
 
 const handleExport = () => {
-    // detail(data.deviceId).then((res: any) => {
-    //     console.log(res);
-    //     // downloadObject(res.result, data.name + '设备');
-    // });
-    console.log(state.selectedRowKeys);
+    let myArr = selectedRow.value.map((item: any) => {
+        return {
+            productId: item.productId,
+            deviceIds: item.deviceIds,
+        };
+    });
+
+    myArr.map((element) => {
+        const terms: any = [
+            {
+                column: 'productId',
+                termType: 'eq',
+                type: 'or',
+                value: `${element.productId}`,
+            },
+        ];
+        queryDeviceProductList({ terms }).then((res: any) => {
+            const arr = res.result.map((item: any) => item.metadata);
+            console.log(JSON.parse(arr[0]));
+            const extra = omit(JSON.parse(arr[0]), [
+                'transportProtocol',
+                'protocolName',
+                'accessId',
+                'accessName',
+                'accessProvider',
+                'messageProtocol',
+            ]);
+            downloadObject(extra, '导出信息');
+        });
+    });
 };
 
 // 编辑操作
@@ -438,9 +485,17 @@ const handleUpdate = (data: any) => {
 const handleView = (data: string) => {};
 // 删除操作
 const handleDelete = async (id: string) => {
-    deleteDataReceive(id).then((response: any) => {
+    deleteDataSand(id).then((response: any) => {
         if (response.status === 200) onlyMessage('删除成功！');
     });
+};
+
+//获取卡片字段产品名称
+const getProduct = (productId: string) => {
+    const getList: any = productList.value.find(
+        (item: any) => (item.id = productId),
+    );
+    return getList?.name;
 };
 
 const columns = [
@@ -531,14 +586,14 @@ const getActions = (
                     let updateData = data;
                     if (data.state.value !== 'disabled') {
                         updateData.state = 'disabled';
-                        response = await editDataReceive(updateData);
+                        response = await editDataSand(updateData);
                     } else {
                         updateData.state = 'enabled';
-                        response = await editDataReceive(updateData);
+                        response = await editDataSand(updateData);
                     }
                     if (response && response.status === 200) {
                         onlyMessage('操作成功！');
-                        formRef.value?.reload();
+                        tableRef.value?.reload();
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
@@ -562,8 +617,11 @@ const getActions = (
                             column: 'factoryId',
                         },
                     ];
-                    deleteDataReceive(data.id).then((response: any) => {
-                        if (response.status === 200) onlyMessage('删除成功！');
+                    deleteDataSand(data.id).then((response: any) => {
+                        if (response.status === 200) {
+                            onlyMessage('删除成功！');
+                            tableRef.value?.reload();
+                        }
                     });
                 },
             },
@@ -575,7 +633,7 @@ const getActions = (
 
 const query = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        console.log(params.terms)
+        console.log(params.terms);
         queryDataReceiveList({
             pageIndex: params.pageIndex + 1,
             pageSize: params.pageSize,
@@ -588,6 +646,7 @@ const query = (params: Record<string, any>) =>
             terms: params.terms,
         })
             .then((response: any) => {
+                console.log(response);
                 resolve({
                     result: {
                         data: response.result?.data,

@@ -2,7 +2,7 @@
     <page-container>
         <pro-search
             :columns="columns"
-            target="product-manage"
+            target="factory-manage"
             @search="onSearch"
         />
         <FullPage>
@@ -255,7 +255,6 @@ const modalState = reactive({
                     if (res.status === 200) {
                         onlyMessage('修改成功！');
                         modalState.openView = false;
-                        console.log(tableRef.value);
                         tableRef.value?.reload();
                     }
                 });
@@ -284,32 +283,31 @@ const reset = () => {
 };
 // 搜索
 const onSearch = (e: any) => {
-    const newTerms = cloneDeep(e)
-  if (newTerms.terms?.length) {
-    newTerms.terms.forEach((a : any) => {
-        a.terms = a.terms.map((b: any) => {
-          if (b.column === 'id$dim-assets') {
-            const value = b.value
-            b = {
-              column: 'id',
-              termType: 'dim-assets',
-              value: {
-                assetType: 'factory',
-                targets: [
-                  {
-                    type: 'org',
-                    id: value,
-                  },
-                ],
-              },
-            }
-          }
-          return b
-        })
-    })
-  }
-
-  params.value = newTerms;
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if (b.column === 'id$dim-assets') {
+                    const value = b.value;
+                    b = {
+                        column: 'id',
+                        termType: 'dim-assets',
+                        value: {
+                            assetType: 'factory',
+                            targets: [
+                                {
+                                    type: 'org',
+                                    id: value,
+                                },
+                            ],
+                        },
+                    };
+                }
+                return b;
+            });
+        });
+    }
+    params.value = newTerms;
 };
 
 //新增
@@ -480,7 +478,6 @@ const query = (params: Record<string, any>) =>
             ],
             terms: params.terms,
         }).then((response: any) => {
-            console.log(response)
             resolve({
                 result: {
                     data: response.result?.data,

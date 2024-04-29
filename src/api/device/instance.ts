@@ -53,6 +53,13 @@ export const query = (data?: Record<string, any>) => server.post('/device-instan
 export const queryNoPagingPost = (data?: Record<string, any>) => server.post('/device-instance/_query/no-paging?paging=false', data)
 
 /**
+ * 不分页查询设备
+ * @param data 
+ * @returns 
+ */
+export const queryNoPagingReceive = (data?: Record<string, any>) => server.post('/device-instance/_query/no-paging?paging=false', data)
+
+/**
  * 删除设备
  * @param id 设备ID
  * @returns 

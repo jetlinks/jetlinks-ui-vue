@@ -38,6 +38,42 @@
                         placeholder="请输入高德API Key"
                     />
                 </j-form-item>
+                <j-form-item name="factoryKey" v-bind="validateInfos.factoryKey">
+                                <template #label>
+                                    <span>工厂ID</span>
+                                </template>
+                                <j-input
+                                    v-model:value="form.factoryKey"
+                                    placeholder="请输入工厂ID"
+                                />
+                            </j-form-item>
+                            <j-form-item
+                                name="factoryType"
+                                v-bind="validateInfos.factoryType"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请选择工厂类型',
+                                    },
+                                ]"
+                            >
+                                <template #label>
+                                    <span>工厂类型 </span>
+                                </template>
+                                <j-select
+                                    showSearch
+                                    v-model:value="form.factoryType"
+                                    placeholder="请选择工厂类型"
+                                >
+                                    <j-select-option
+                                        v-for="item in factoryTypeList"
+                                        :value="item.value"
+                                        :key="item.value"
+                                        :label="item.name"
+                                        >{{ item.name }}</j-select-option
+                                    >
+                                </j-select>
+                            </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
                         <span>base-path</span>
@@ -291,8 +327,11 @@ const form = ref<formState>({
     basePath: `${window.location.origin}/api`,
     logo: '/logo.png',
     ico: '/favicon.ico',
+    factoryKey:'',
+    factoryType:'',
     background: '/images/login.png',
 });
+
 const rulesFrom = ref({
     title: [
         {
@@ -300,11 +339,40 @@ const rulesFrom = ref({
             message: '最多可输入64位',
             trigger: 'change',
         },
+        {
+            required: true,
+            message: '请填写系统名称',
+            trigger: 'blur',
+        },
+    ],
+    factoryKey: [
+        {
+            max: 64,
+            message: '最多可输入64位',
+            trigger: 'change',
+        },
+        {
+            required: true,
+            message: '请输入工厂ID',
+            trigger: 'blur',
+        },
     ],
     headerTheme: [
         {
             required: true,
             message: '请选择主题色',
+            trigger: 'blur',
+        },
+    ],
+    factoryType: [
+        {
+            max: 64,
+            message: '最多可输入64位',
+            trigger: 'change',
+        },
+        {
+            required: true,
+            message: '请输入工厂类型',
             trigger: 'blur',
         },
     ],
@@ -320,6 +388,17 @@ const { resetFields, validate, validateInfos } = useForm(
     form.value,
     rulesFrom.value,
 );
+
+const factoryTypeList = [
+    {
+        value: 'general',
+        name: '总工厂',
+    },
+    {
+        value: 'sub',
+        name: '子工厂', 
+    }
+];
 /**
  * 提交数据
  */

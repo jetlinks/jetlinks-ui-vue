@@ -1,86 +1,95 @@
 <template>
-    <page-container>
+    <page-container :showBack="true">
+        <template #title>
+            
+        </template>
         <pro-search :columns="columns" type="object" @search="onSearch" />
-        <FullPage>
-            <j-pro-table
-                :defaultParams="{
-                    pageSize: 20,
-                }"
-                :pagination="{
-                    pageSizeOptions: ['10', '20', '50', '80', '100'],
-                    showSizeChanger: true,
-                    showQuickJumper: false,
-                    size: 'size',
-                }"
-                :columns="columns"
-                :params="factoryDetails"
-                ref="cardRef"
-                :request="query"
-            >
-                <template #card="slotProps">
-                    <CardBox
-                        :value="slotProps"
-                        :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
-                        :statusNames="{
-                            online: 'processing',
-                            office: 'error',
-                        }"
-                    >
-                        <template #img>
-                            <img
-                                :width="80"
-                                :height="80"
-                                :src="
-                                    slotProps?.photoUrl ||
-                                    getImage('/device/instance/device-card.png')
-                                "
-                            />
-                        </template>
-                        <template #content>
-                            <Ellipsis style="width: calc(100% - 10px)">
-                                <span style="font-size: 16px; font-weight: 600">
-                                    {{ slotProps.name }}
-                                </span>
-                            </Ellipsis>
-                            <j-row>
-                                <j-col :span="8">
-                                    <div class="card-item-content-text">
-                                        设备类型
-                                    </div>
-                                    <j-ellipsis
-                                        style="width: calc(100% - 10px)"
-                                    >
-                                        <span>{{
-                                            slotProps.deviceType?.text
-                                        }}</span>
-                                    </j-ellipsis>
-                                </j-col>
-                                <j-col :span="8">
-                                    <div class="card-item-content-text">
-                                        所属产品
-                                    </div>
-                                    <j-ellipsis
-                                        style="width: calc(100% - 10px)"
-                                    >
-                                        <div>{{ slotProps.productName }}</div>
-                                    </j-ellipsis>
-                                </j-col>
-                            </j-row>
-                        </template>
-                    </CardBox>
-                </template>
-            </j-pro-table>
-        </FullPage>
+        <j-pro-table
+            :defaultParams="defaultParams"
+            :pagination="{
+                pageSizeOptions: ['10', '20', '50', '80', '100'],
+                showSizeChanger: true,
+                showQuickJumper: false,
+                size: 'size',
+            }"
+            :columns="columns"
+            :params="factoryDetails"
+            model="CARD"
+            ref="cardRef"
+            :request="query"
+        >
+            <template #card="slotProps">
+                <CardBox
+                    :value="slotProps"
+                    :status="slotProps.state?.value"
+                    :statusText="slotProps.state?.text"
+                    :statusNames="{
+                        online: 'processing',
+                        office: 'error',
+                    }"
+                >
+                    <template #img>
+                        <img
+                            :width="80"
+                            :height="80"
+                            :src="
+                                slotProps?.photoUrl ||
+                                getImage('/device/instance/device-card.png')
+                            "
+                        />
+                    </template>
+                    <template #content>
+                        <Ellipsis style="width: calc(100% - 10px)">
+                            <span style="font-size: 16px; font-weight: 600">
+                                {{ slotProps.name }}
+                            </span>
+                        </Ellipsis>
+                        <j-row>
+                            <j-col :span="8">
+                                <div class="card-item-content-text">
+                                    设备类型
+                                </div>
+                                <j-ellipsis style="width: calc(100% - 10px)">
+                                    <span>{{
+                                        slotProps.deviceType?.text
+                                    }}</span>
+                                </j-ellipsis>
+                            </j-col>
+                            <j-col :span="8">
+                                <div class="card-item-content-text">
+                                    所属产品
+                                </div>
+                                <j-ellipsis style="width: calc(100% - 10px)">
+                                    <div>{{ slotProps.productName }}</div>
+                                </j-ellipsis>
+                            </j-col>
+                        </j-row>
+                    </template>
+                </CardBox>
+            </template>
+        </j-pro-table>
     </page-container>
 </template>
 <script lang="ts" setup>
 import { _queryFactory } from '@/api/factory/factory';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { omit, cloneDeep } from 'lodash-es';
 
 const route = useRoute();
 const factoryDetails = ref<Record<string, any>>({});
 const cardRef = ref<Record<string, any>>({});
+const defaultParams = {
+    pageSize: 20,
+    pageIndex: 0,
+    terms: [
+        {
+            type: 'or',
+            value: `${route.params?.id}`,
+            termType: 'eq',
+            column: 'factoryId',
+        },
+    ],
+};
 
 const columns = [
     {
@@ -96,11 +105,11 @@ const columns = [
     },
     {
         title: '设备类型',
-        dataIndex: 'deviceType',
         key: 'deviceType',
-        valueType: 'select',
-        width: 220,
+        dataIndex: 'deviceType',
+        width: 200,
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'select',
             options: [
@@ -133,21 +142,37 @@ const columns = [
 
 // 搜索
 const onSearch = (e: any) => {
-    console.log(e);
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if (b.column === 'id$dim-assets') {
+                    const value = b.value;
+                    b = {
+                        column: 'id',
+                        termType: 'dim-assets',
+                        value: {
+                            assetType: 'factory',
+                            targets: [
+                                {
+                                    type: 'org',
+                                    id: value,
+                                },
+                            ],
+                        },
+                    };
+                }
+                return b;
+            });
+        });
+    }
+    factoryDetails.value = newTerms;
 };
 
 const query = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        _queryFactory({
-            terms: [
-                {
-                    type: 'or',
-                    value: `${route.params?.id}`,
-                    termType: 'eq',
-                    column: 'factoryId',
-                },
-            ],
-        }).then((response: any) => {
+        _queryFactory(params).then((response: any) => {
+            console.log(response);
             resolve({
                 result: {
                     data: response.result?.data,

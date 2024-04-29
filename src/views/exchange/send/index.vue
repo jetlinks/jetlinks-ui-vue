@@ -3,9 +3,7 @@
         <pro-search :columns="columns" type="simple" @search="onSearch" />
         <FullPage>
             <j-pro-table
-                :defaultParams="{
-                    pageSize: 20,
-                }"
+                :defaultParams="defaultParams"
                 :pagination="{
                     pageSizeOptions: ['10', '20', '50', '80', '100'],
                     showSizeChanger: true,
@@ -22,15 +20,12 @@
                         <j-button type="primary" @click="handleAdd"
                             >新增</j-button
                         >
-                        <j-button type="default" @click="handleExport"
-                            >导入</j-button
-                        >
                     </j-space>
                 </template>
                 <template #actions="slotProps">
                     <a @click="handleUpdate(slotProps)">编辑</a>
                     <j-divider type="vertical" />
-                    <a @click="handleView(slotProps.id)">配置</a>
+                    <a @click="handleView(slotProps)">配置</a>
                     <j-divider type="vertical" />
                     <a
                         style="color: #f53f3f"
@@ -69,12 +64,16 @@
                             <j-row>
                                 <j-col :span="8">
                                     <div class="card-item-content-text">
-                                        设备类型
+                                        产品名称
                                     </div>
                                     <j-ellipsis
                                         style="width: calc(100% - 10px)"
                                     >
-                                        <div>{{ slotProps.position }}</div>
+                                        <div>
+                                            {{
+                                                getProduct(slotProps.productId)
+                                            }}
+                                        </div>
                                     </j-ellipsis>
                                 </j-col>
                                 <j-col :span="8">
@@ -154,15 +153,7 @@
                                     placeholder="请输入group.id"
                                 />
                             </j-form-item>
-                            <j-form-item
-                                name="productId"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请选择产品',
-                                    },
-                                ]"
-                            >
+                            <j-form-item name="productId">
                                 <template #label>
                                     <span
                                         >选择产品
@@ -190,22 +181,15 @@
                                     >
                                 </j-select>
                             </j-form-item>
-                            <j-form-item
-                                name="productId"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请选择设备',
-                                    },
-                                ]"
-                            >
+                            <j-form-item name="deviceIds">
                                 <template #label>
                                     <span>选择设备 </span>
                                 </template>
                                 <j-select
                                     showSearch
-                                    v-model:value="form.deviceId"
+                                    v-model:value="form.deviceIds"
                                     placeholder="请选择设备"
+                                    mode="multiple"
                                 >
                                     <j-select-option
                                         v-for="item in deviceList"
@@ -237,9 +221,9 @@
 import { useMenuStore } from 'store/menu';
 import { getImage, onlyMessage } from '@/utils/comm';
 import {
-    addDataReceive,
-    editDataReceive,
-    deleteDataReceive,
+    addDataSand,
+    editDataSand,
+    deleteDataSand,
     queryDataReceiveList,
     queryNoPagingPostDevice,
 } from '@/api/exchange/receive';
@@ -269,7 +253,7 @@ const modelRef = reactive({
     url: '',
     topic: '',
     productId: undefined,
-    deviceId: undefined,
+    deviceIds: [],
     groupId: undefined,
     description: '',
 });
@@ -281,8 +265,9 @@ const modalState = reactive({
     confirm() {
         formRef.value?.validate().then(() => {
             let { id, ...addData } = form.value;
+            console.log(addData);
             if (isAdd.value === 1) {
-                addDataReceive(addData).then((res: any) => {
+                addDataSand(addData).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('添加成功！');
                         modalState.openView = false;
@@ -290,11 +275,10 @@ const modalState = reactive({
                     }
                 });
             } else {
-                editDataReceive(form.value).then((res: any) => {
+                editDataSand(form.value).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('修改成功！');
                         modalState.openView = false;
-                        console.log(tableRef.value);
                         tableRef.value?.reload();
                     }
                 });
@@ -307,17 +291,6 @@ const modalState = reactive({
     },
 });
 const { form } = toRefs(data);
-
-type Key = string | number;
-const state = reactive<{
-    selectedRowKeys: Key[];
-    selectedRows: [];
-    loading: boolean;
-}>({
-    selectedRowKeys: [],
-    selectedRows: [],
-    loading: false,
-});
 
 const menuStory = useMenuStore();
 
@@ -347,9 +320,12 @@ const rules = {
         { required: true, message: '请选择产品', trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
-    deviceId: [
-        { required: true, message: '请选择设备', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    deviceIds: [
+        {
+            required: true,
+            message: '请选择产品下设备',
+            type: 'array',
+        },
     ],
     groupId: [
         { required: true, message: '请输入group.id', trigger: 'blur' },
@@ -367,7 +343,7 @@ const reset = () => {
         url: '',
         topic: '',
         productId: '',
-        deviceId: '',
+        deviceIds: [],
         groupId: '',
         description: '',
         type: 'sand',
@@ -375,6 +351,19 @@ const reset = () => {
     };
     formRef.value?.resetFields();
 };
+
+const defaultParams = ref({
+    pageSize: 20,
+    pageIndex: 0,
+    terms: [
+        {
+            type: 'or',
+            value: 'sand',
+            termType: 'eq',
+            column: 'type',
+        },
+    ],
+});
 
 // 搜索
 const onSearch = (e: any) => {
@@ -406,13 +395,6 @@ const handleAdd = () => {
     reset();
 };
 
-const handleExport = async () => {
-    // detail(data.deviceId).then((res: any) => {
-    //     console.log(res);
-    //     // downloadObject(res.result, data.name + '设备');
-    // });
-};
-
 // 编辑操作
 const handleUpdate = (data: any) => {
     isAdd.value = 2;
@@ -422,14 +404,26 @@ const handleUpdate = (data: any) => {
 };
 
 //查看配置
-const handleView = (id: string) => {
-    menuStory.jumpPage('exchange/send/Detail', { id });
+const handleView = (data: any) => {
+    // console.log(data)
+    menuStory.jumpPage('exchange/send/Detail', {
+        id: data.id,
+        productId: data.productId,
+    });
 };
 // 删除操作
 const handleDelete = async (id: string) => {
-    deleteDataReceive(id).then((response: any) => {
+    deleteDataSand(id).then((response: any) => {
         if (response.status === 200) onlyMessage('删除成功！');
     });
+};
+
+//获取卡片字段产品名称
+const getProduct = (productId: string) => {
+    const getList: any = productList.value.find(
+        (item: any) => (item.id = productId),
+    );
+    return getList?.name;
 };
 
 const columns = [
@@ -509,7 +503,10 @@ const getActions = (
             },
             icon: 'EyeOutlined',
             onClick: () => {
-                menuStory.jumpPage('exchange/send/Detail', { id: data.id });
+                menuStory.jumpPage('exchange/send/Detail', {
+                    id: data.id,
+                    productId: data.productId,
+                });
             },
         },
         {
@@ -529,7 +526,7 @@ const getActions = (
                             column: 'factoryId',
                         },
                     ];
-                    deleteDataReceive(data.id).then((response: any) => {
+                    deleteDataSand(data.id).then((response: any) => {
                         if (response.status === 200) onlyMessage('删除成功！');
                     });
                 },
@@ -542,7 +539,6 @@ const getActions = (
 
 const query = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        console.log(params.terms);
         queryDataReceiveList({
             pageIndex: params.pageIndex + 1,
             pageSize: params.pageSize,
