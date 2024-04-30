@@ -45,15 +45,6 @@
                                     placeholder="请输入高德API Key"
                                 />
                             </j-form-item>
-                            <j-form-item>
-                                <template #label>
-                                    <span>工厂ID</span>
-                                </template>
-                                <j-input
-                                    v-model:value="formValue.factoryKey"
-                                    placeholder="请输入工厂ID"
-                                />
-                            </j-form-item>
                             <j-form-item
                                 name="factoryType"
                                 :rules="[
@@ -79,6 +70,24 @@
                                         >{{ item.name }}</j-select-option
                                     >
                                 </j-select>
+                            </j-form-item>
+                            <j-form-item
+                                name="factoryKey"
+                                v-show="isChild"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请填写工厂Topic',
+                                    },
+                                ]"
+                            >
+                                <template #label>
+                                    <span>Topic</span>
+                                </template>
+                                <j-input
+                                    v-model:value="formValue.factoryKey"
+                                    placeholder="请填写工厂Topic"
+                                />
                             </j-form-item>
                             <j-form-item name="base-path">
                                 <template #label>
@@ -472,7 +481,18 @@ const form = reactive<formType>({
     },
 });
 const { formValue, rulesFrom } = toRefs(form);
-
+const isChild = ref(false);
+watch(
+    () => formValue.value.factoryType,
+    (newValue: any) => {
+        console.log('newValue', newValue);
+        if (newValue === 'sub') {
+            isChild.value = true;
+        } else {
+            isChild.value = false;
+        }
+    },
+);
 const factoryTypeList = [
     {
         value: 'general',
@@ -480,8 +500,8 @@ const factoryTypeList = [
     },
     {
         value: 'sub',
-        name: '子工厂', 
-    }
+        name: '子工厂',
+    },
 ];
 
 const uploader: uploaderType = {

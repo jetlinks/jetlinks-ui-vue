@@ -46,6 +46,7 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
+                        style="width: 500px"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
@@ -70,7 +71,11 @@
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px); margin-bottom: 18px;"
+                            <Ellipsis
+                                style="
+                                    width: calc(100% - 100px);
+                                    margin-bottom: 18px;
+                                "
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
@@ -169,7 +174,11 @@
         </FullPage>
         <!-- 新增、编辑 -->
         <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
-        <Allots v-if="allotsVisible" :disProductId="disProductId" @close="allotsVisible = false"></Allots>
+        <Allots
+            v-if="allotsVisible"
+            :disProductId="disProductId"
+            @close="allotsVisible = false"
+        ></Allots>
     </page-container>
 </template>
 
@@ -192,7 +201,7 @@ import {
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
-import { omit , cloneDeep } from 'lodash-es';
+import { omit, cloneDeep } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
@@ -200,7 +209,7 @@ import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';
-import Allots from "./allots/index.vue";
+import Allots from './allots/index.vue';
 /**
  * 表格数据
  */
@@ -208,8 +217,8 @@ const menuStory = useMenuStore();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const params = ref<Record<string, any>>({});
-const allotsVisible = ref(false)
-const disProductId = ref()
+const allotsVisible = ref(false);
+const disProductId = ref();
 const columns = [
     {
         title: 'ID',
@@ -259,14 +268,12 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 220,
         scopedSlots: true,
         ellipsis: true,
     },
 ];
-const permission = usePermissionStore().hasPermission(
-    `device/Product:import`,
-);
+const permission = usePermissionStore().hasPermission(`device/Product:import`);
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
 
@@ -322,7 +329,7 @@ const getActions = (
                     'accessProvider',
                     'messageProtocol',
                 ]);
-                downloadObject(extra, data.name+'产品');
+                downloadObject(extra, data.name + '产品');
             },
         },
         {
@@ -333,9 +340,9 @@ const getActions = (
             },
             icon: 'ArrowRightOutlined',
             onClick: () => {
-                allotsVisible.value = true
-                disProductId.value = data.id
-                console.log(disProductId.value)
+                allotsVisible.value = true;
+                disProductId.value = data.id;
+                console.log(disProductId.value);
             },
         },
         {
@@ -414,31 +421,31 @@ const beforeUpload = (file: any) => {
             onlyMessage('请上传json格式文件', 'error');
             return false;
         }
-        if(!text){
-            onlyMessage('文件内容不能为空','error')
+        if (!text) {
+            onlyMessage('文件内容不能为空', 'error');
             return false;
         }
-            const data = JSON.parse(text);
-            // 设置导入的产品状态为未发布
-            data.state = 0;
-            if (Array.isArray(data)) {
-                onlyMessage('请上传正确格式文件', 'error');
-                return false;
-            }
-            delete data.state;
-            if(!data?.name){
-                data.name = "产品" + Date.now();
-            }
-            if(!data?.deviceType || JSON.stringify(data?.deviceType) === '{}' ){
-                onlyMessage('缺少deviceType字段或对应的值','error')
-                return false
-            }
-            const res = await updateDevice(data);
-            if (res.status === 200) {
-                onlyMessage('操作成功');
-                tableRef.value?.reload();
-            }
-            return true;
+        const data = JSON.parse(text);
+        // 设置导入的产品状态为未发布
+        data.state = 0;
+        if (Array.isArray(data)) {
+            onlyMessage('请上传正确格式文件', 'error');
+            return false;
+        }
+        delete data.state;
+        if (!data?.name) {
+            data.name = '产品' + Date.now();
+        }
+        if (!data?.deviceType || JSON.stringify(data?.deviceType) === '{}') {
+            onlyMessage('缺少deviceType字段或对应的值', 'error');
+            return false;
+        }
+        const res = await updateDevice(data);
+        if (res.status === 200) {
+            onlyMessage('操作成功');
+            tableRef.value?.reload();
+        }
+        return true;
     };
     return false;
 };
@@ -631,33 +638,32 @@ const query = reactive({
 });
 const saveRef = ref();
 const handleSearch = (e: any) => {
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if (b.column === 'id$dim-assets') {
+                    const value = b.value;
+                    b = {
+                        column: 'id',
+                        termType: 'dim-assets',
+                        value: {
+                            assetType: 'product',
+                            targets: [
+                                {
+                                    type: 'org',
+                                    id: value,
+                                },
+                            ],
+                        },
+                    };
+                }
+                return b;
+            });
+        });
+    }
 
-  const newTerms = cloneDeep(e)
-  if (newTerms.terms?.length) {
-    newTerms.terms.forEach((a : any) => {
-        a.terms = a.terms.map((b: any) => {
-          if (b.column === 'id$dim-assets') {
-            const value = b.value
-            b = {
-              column: 'id',
-              termType: 'dim-assets',
-              value: {
-                assetType: 'product',
-                targets: [
-                  {
-                    type: 'org',
-                    id: value,
-                  },
-                ],
-              },
-            }
-          }
-          return b
-        })
-    })
-  }
-
-  params.value = newTerms;
+    params.value = newTerms;
 };
 const routerParams = useRouterParams();
 onMounted(() => {

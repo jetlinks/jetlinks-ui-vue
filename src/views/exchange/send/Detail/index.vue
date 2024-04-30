@@ -6,7 +6,7 @@
                 <j-tab-pane class="tab_con" key="DataMap" tab="数据映射">
                     <DataMap
                         :mapDataList="mapDataList"
-                        :dataMapOption="dataMapOption"
+                        :dataMapOpt="dataMapOpt"
                         :dataDetailList="dataDetailList"
                     />
                 </j-tab-pane>
@@ -14,7 +14,7 @@
                     <DeviceMap
                         :mapDeviceList="mapDeviceList"
                         :deviceMapOption="deviceMapOption"
-                        :deviceIdsMap="deviceIdsMap"
+                        :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
                     />
                 </j-tab-pane>
@@ -31,12 +31,16 @@ import {
 } from '@/api/exchange/receive';
 import DataMap from './dataMap/index.vue';
 import DeviceMap from './deviceMap/index.vue';
+import { getImage, onlyMessage } from '@/utils/comm';
 const route = useRoute();
 
 const mapDeviceList = ref<any>([]);
 const mapDataList = ref<any>([]);
 const deviceMapOption = ref<any>([]);
 const dataMapOption = ref<any>([]);
+const dataMapOpt = ref<any>([]);
+
+const deviceIdsMapOpt = ref<any>([]);
 const deviceIdsMap = ref();
 
 const activeKey = ref('DataMap');
@@ -52,9 +56,41 @@ const mergeArraysById = (arr1: any, arr2: any) => {
         if (item2) {
             // 如果在arr2中找到了相同id的对象，则合并除了id以外的属性
             const { id, ...rest2 } = item2;
-            return { ...item1, targetAttribute: { ...rest2 } };
+            return {
+                ...item1,
+                targetAttribute: { ...rest2 },
+                select: item2.targetName + `(${item2.targetId})`,
+                state: 'enabled',
+            };
+        } else {
+            return item1;
         }
-        return item1;
+    });
+    return merged;
+};
+
+const mergeArraysByArr = (arr1: any, arr2: any) => {
+    const merged = arr1.map((item1: any) => {
+        const item2 = arr2.find(
+            (item: any) => item.targetId === item1.originalId,
+        );
+        // console.log(item1);
+        // console.log(item2);
+        if (item2) {
+            // 如果在arr2中找到了相同id的对象，则合并除了id以外的属性
+            const { id, ...rest2 } = item2;
+            return {
+                ...item1,
+                targetAttribute: {
+                    ...rest2,
+                    deviceTargetMap: item1.deviceTargetAttribute,
+                },
+                select: item2.targetName + `(${item2.targetId})`,
+                state: 'enabled',
+            };
+        } else {
+            return item1;
+        }
     });
     return merged;
 };
@@ -86,6 +122,9 @@ onMounted(() => {
                     originalId: item.id,
                     originalName: item.name,
                 }));
+                let select = yDevMetadata.map(
+                    (item: any) => item.name + `(${item.id})`,
+                );
                 return {
                     originalId: item.id,
                     originalName: item.name,
@@ -106,28 +145,65 @@ onMounted(() => {
                 },
             ],
         }).then((res: any) => {
-            console.log(res.result[0]);
             const deviceMap = res.result[0]?.deviceMapping;
             const dataMap = res.result[0]?.dataMapping;
+            if (!res.result[0].targetMapping) {
+                onlyMessage('没有映射数据源，请检查', 'error');
+                return;
+            }
             const deviceTargetMaps = res.result[0].targetMapping?.deviceDetails;
-            // console.log('deviceTargetMaps', deviceTargetMaps);
 
+            //处理数据映射
             const dataTargetMaps = res.result[0].targetMapping?.metadata;
+
             const dataTargetMap = JSON.parse(dataTargetMaps).properties;
             let TargetAttribute = dataTargetMap.map((item: any) => ({
                 targetId: item.id,
                 targetName: item.name,
             }));
             dataMapOption.value = TargetAttribute;
+            dataMapOpt.value = TargetAttribute.map((item: any) => ({
+                value: item.targetName + `(${item.targetId})`,
+            }));
+
             let mergeDataMap = mergeArraysById(
                 dataDetailList.value,
                 dataMapOption.value,
             );
-            if(mergeDataMap){
-                dataDetailList.value = mergeDataMap
+            console.log(mergeDataMap);
+            if (mergeDataMap) {
+                dataDetailList.value = mergeDataMap;
             }
-            console.log('mergeDataMap', mergeDataMap);
-            console.log('dataMapOption', dataMapOption.value);
+
+            //处理设备映射及其数据映射
+            let deviceTargetMap = deviceTargetMaps.map((item: any) => {
+                // console.log(item)
+                let devicesMetadata = JSON.parse(item.metadata).properties;
+                let deviceMapMetadata = devicesMetadata.map((item: any) => ({
+                    targetId: item.id,
+                    targetName: item.name,
+                }));
+                return {
+                    targetId: item.id,
+                    targetName: item.name,
+                    deviceTargetAttribute: deviceMapMetadata,
+                };
+            });
+            deviceIdsMap.value = deviceTargetMap;
+
+            deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
+                value: item.targetName + `(${item.targetId})`,
+            }));
+            console.log(deviceIdsMapOpt.value)
+
+            console.log('deviceTargetMap', deviceIdsMap.value);
+            console.log('deviceDetailList', deviceDetailList.value);
+            let deviceIdsMapNew = mergeArraysByArr(
+                deviceDetailList.value,
+                deviceIdsMap.value,
+            );
+            deviceDetailList.value = deviceIdsMapNew;
+            console.log(deviceDetailList.value);
 
             if (deviceMap) {
                 const deviceMaps = deviceMap.map(

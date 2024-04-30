@@ -3733,6 +3733,45 @@ export default [
         supportDataAccess: false
       },
       {
+        code: 'factory',
+        name: '工厂管理',
+        owner: 'iot',
+        id: '96e4bd287adbe0486e2168c59450121f',
+        sortIndex: 7,
+        url: '/factory',
+        icon: 'icon-shezhi',
+        showPage: ['factory'],
+        permissions: [],
+        buttons: [
+          {
+            id: 'view',
+            name: '查看',
+            permissions: [
+              {
+                permission: 'factory',
+                actions: ['query'],
+              },
+            ],
+          },
+          {
+            id: 'update',
+            name: '编辑',
+            permissions: [
+              {
+                permission: 'factory',
+                actions: ['query', 'save'],
+              },
+              {
+                permission: 'file',
+                actions: ['upload-static'],
+              },
+            ],
+          },
+        ],
+        accessSupport: { text: "不支持", value: "unsupported" },
+        supportDataAccess: false
+      },
+      {
         code: 'system/Relationship',
         name: '关系配置',
         owner: 'iot',

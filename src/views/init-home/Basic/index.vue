@@ -38,53 +38,56 @@
                         placeholder="请输入高德API Key"
                     />
                 </j-form-item>
-                <j-form-item name="factoryKey" v-bind="validateInfos.factoryKey">
-                                <template #label>
-                                    <span>工厂ID</span>
-                                </template>
-                                <j-input
-                                    v-model:value="form.factoryKey"
-                                    placeholder="请输入工厂ID"
-                                />
-                            </j-form-item>
-                            <j-form-item
-                                name="factoryType"
-                                v-bind="validateInfos.factoryType"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请选择工厂类型',
-                                    },
-                                ]"
-                            >
-                                <template #label>
-                                    <span>工厂类型 </span>
-                                </template>
-                                <j-select
-                                    showSearch
-                                    v-model:value="form.factoryType"
-                                    placeholder="请选择工厂类型"
-                                >
-                                    <j-select-option
-                                        v-for="item in factoryTypeList"
-                                        :value="item.value"
-                                        :key="item.value"
-                                        :label="item.name"
-                                        >{{ item.name }}</j-select-option
-                                    >
-                                </j-select>
-                            </j-form-item>
+                <j-form-item
+                    name="factoryType"
+                    v-bind="validateInfos.factoryType"
+                    :rules="[
+                        {
+                            required: true,
+                            message: '请选择工厂类型',
+                        },
+                    ]"
+                >
+                    <template #label>
+                        <span>工厂类型 </span>
+                    </template>
+                    <j-select
+                        showSearch
+                        v-model:value="form.factoryType"
+                        placeholder="请选择工厂类型"
+                    >
+                        <j-select-option
+                            v-for="item in factoryTypeList"
+                            :value="item.value"
+                            :key="item.value"
+                            :label="item.name"
+                            >{{ item.name }}</j-select-option
+                        >
+                    </j-select>
+                </j-form-item>
+                <j-form-item
+                    name="factoryKey"
+                    v-bind="validateInfos.factoryKey"
+                    v-show="isChild"
+                >
+                    <template #label>
+                        <span>Topic</span>
+                    </template>
+                    <j-input
+                        v-model:value="form.factoryKey"
+                        placeholder="请填写工厂Topic"
+                    />
+                </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
                         <span>base-path</span>
                         <j-tooltip>
                             <template #title>
-                                <div style='word-break: break-all;'>
+                                <div style="word-break: break-all">
+                                    <div>系统后台访问的url。</div>
                                     <div>
-                                    系统后台访问的url。
-                                    </div>
-                                    <div>
-                                    格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                        格式：{http/https}:
+                                        //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
                                     </div>
                                 </div>
                             </template>
@@ -301,9 +304,7 @@
 import { modalState, formState, logoState } from '../data/interface';
 import { Form } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
-import {
-    save,
-} from '@/api/initHome';
+import { save } from '@/api/initHome';
 import { LocalStore, getImage, onlyMessage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
@@ -327,10 +328,12 @@ const form = ref<formState>({
     basePath: `${window.location.origin}/api`,
     logo: '/logo.png',
     ico: '/favicon.ico',
-    factoryKey:'',
-    factoryType:'',
+    factoryKey: '',
+    factoryType: '',
     background: '/images/login.png',
 });
+
+const isChild = ref(false);
 
 const rulesFrom = ref({
     title: [
@@ -353,7 +356,7 @@ const rulesFrom = ref({
         },
         {
             required: true,
-            message: '请输入工厂ID',
+            message: '请填写工厂Topic',
             trigger: 'blur',
         },
     ],
@@ -389,6 +392,18 @@ const { resetFields, validate, validateInfos } = useForm(
     rulesFrom.value,
 );
 
+watch(
+    () => form.value.factoryType,
+    (newValue: any) => {
+        console.log('newValue', newValue);
+        if (newValue === 'sub') {
+            isChild.value = true;
+        } else {
+            isChild.value = false;
+        }
+    },
+);
+
 const factoryTypeList = [
     {
         value: 'general',
@@ -396,14 +411,14 @@ const factoryTypeList = [
     },
     {
         value: 'sub',
-        name: '子工厂', 
-    }
+        name: '子工厂',
+    },
 ];
 /**
  * 提交数据
  */
 const saveBasicInfo = () => {
-    return new Promise(async (resolve,reject) => {
+    return new Promise(async (resolve, reject) => {
         validate()
             .then(async () => {
                 const item = [

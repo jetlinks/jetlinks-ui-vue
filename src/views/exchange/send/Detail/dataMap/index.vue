@@ -9,7 +9,6 @@
                 placeholder: '请输入搜索文本',
                 onSearch: onSearch,
             }"
-            :row-class-name="(_record :any, index:any) => (index % 2 === 1 ? 'table-striped' : null)"
             bordered
         >
             <template #expand>
@@ -38,15 +37,13 @@
                     保存
                 </PermissionButton>
             </template>
-            <template #targetAttribute="{ data }">
+            <template #select="{ data }">
                 <j-select
-                    v-model="data.record.targetAttribute"
-                    label-in-value
+                    v-model:value="data.record.select"
                     style="width: 150px"
-                    :options="props.dataMapOption"
+                    :options="props.dataMapOpt"
                     placeholder="请选择目标属性"
-                    @change="saveRowData(data.index, 'name', $event)"
-                    :field-names="{ label: 'targetName', value: 'targetId' }"
+                    @change="saveRowData(data.index, 'select', $event)"
                 ></j-select>
             </template>
             <template #state="{ data }">
@@ -72,26 +69,29 @@ const props = defineProps({
         type: [String, Array] as PropType<string | string[]>,
         default: undefined,
     },
-    dataMapOption: {
+    dataMapOpt: {
         type: [String, Array] as PropType<string | string[]>,
         default: undefined,
     },
-    dataDetailList:{
+    dataDetailList: {
         type: [String, Array] as PropType<string | string[]>,
         default: [],
     },
 });
 
-watch(props.dataDetailList, (newValue: any) => {
-    console.log('newValue',newValue);
-});
-const dataDetailList = ref<any>();
+watch(
+    () => props.dataDetailList,
+    (newValue: any) => {
+        console.log('newValue', newValue);
+    },
+);
 
 const saveRowData = (index: any, dataIndex: string, event: any) => {
-    dataDetailList.value[index][dataIndex] = {
-        targetId:event.value,
-        targetName: event.label
-    };
+    if (dataIndex === 'select') {
+        props.dataDetailList[index][dataIndex] = event;
+    } else {
+        props.dataDetailList[index][dataIndex] = event;
+    }
 };
 
 const onSearch = (value: any) => {
@@ -135,7 +135,7 @@ const beforeUpload = (file: any) => {
 const columns = [
     { title: '原属性名称', dataIndex: 'originalName' },
     { title: '原属性标识', dataIndex: 'originalId' },
-    { title: '目标属性', dataIndex: 'targetAttribute' },
+    { title: '目标属性', dataIndex: 'select' },
     { title: '状态', dataIndex: 'state', width: 200 },
 ];
 

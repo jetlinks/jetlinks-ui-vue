@@ -152,16 +152,16 @@
                                     placeholder="请输入appId"
                                 />
                             </j-form-item>
-                            <j-form-item label="secureKey" name="secureKey">
+                            <j-form-item label="appKey" name="secureKey">
                                 <j-input
                                     v-model:value="form.secureKey"
-                                    placeholder="请输入secureKey"
+                                    placeholder="请输入appKey"
                                 />
                             </j-form-item>
-                            <j-form-item label="Group.id" name="groupId">
+                            <j-form-item label="Topic" name="groupId">
                                 <j-input
                                     v-model:value="form.groupId"
-                                    placeholder="请输入Group.id"
+                                    placeholder="请输入Topic"
                                 />
                             </j-form-item>
                         </j-col>
@@ -193,6 +193,7 @@ import {
 } from '@/api/factory/factory';
 import { omit, cloneDeep } from 'lodash-es';
 import { FormState, ActionsType } from './typings';
+import { isUrl } from '@/utils/regular';
 
 const menuStory = useMenuStore();
 
@@ -201,6 +202,19 @@ const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 
 const formRef = ref();
+
+const validatorUrl = (rule: any, value: any, callback: any) => {
+    if (value === undefined || value === '' || value === null) {
+        return Promise.reject('请输入链接地址');
+    } else {
+        if (!isUrl(value)) {
+            return Promise.reject(
+                '请输入正确的链接地址(例：http或https://www.baidu.com)',
+            );
+        }
+        return Promise.resolve();
+    }
+};
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
     rules: {
@@ -212,7 +226,7 @@ const data = reactive({
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
         url: [
-            { required: true, message: '请输入链接地址', trigger: 'blur' },
+            { required: true, trigger: 'blur', validator: validatorUrl },
             { max: 256, message: '最多可输入256位字符', trigger: 'change' },
         ],
         port: [
@@ -228,6 +242,7 @@ const data = reactive({
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
         groupId: [
+            { required: true, message: '请输入Topic', trigger: 'blur' },
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
         description: [

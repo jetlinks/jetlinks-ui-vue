@@ -3,7 +3,7 @@
         class="ant-table-striped"
         ref="tableRef"
         :columns="columns"
-        :data-source="deviceDetailList"
+        :data-source="props.deviceDetailList"
         :searchProps="{
             placeholder: '请输入搜索名称',
         }"
@@ -35,15 +35,13 @@
                 保存
             </PermissionButton>
         </template>
-        <template #targetAttribute="{ data }">
+        <template #select="{ data }">
             <j-select
-                    v-model="data.record.targetAttribute"
-                    label-in-value
+                    v-model:value="data.record.select"
                     style="width: 150px"
-                    :options="mapOptions"
+                    :options="props.deviceIdsMapOpt"
                     placeholder="请选择目标设备"
-                    @change="saveRowData(data.index, 'targetAttribute', $event)"
-                    :field-names="{ label: 'targetName', value: 'targetId' }"
+                    @change="saveRowData(data.index, 'select', $event)"
                 ></j-select>
         </template>
         <template #state="{ data }">
@@ -103,18 +101,13 @@
                         保存
                     </PermissionButton>
                 </template>
-                <template #targetAttribute="{ data }">
+                <template #select="{ data }">
                     <j-select
-                        v-model:value="data.record.targetAttribute"
-                        label-in-value
-                        style="width: 150px"
-                        :options="mapOptions"
-                        @change="saveMapRowData(data.index, 'targetAttribute', $event)"
+                        v-model:value="data.record.select"
+                        style="width: 100%"
+                        :options="props.deviceIdsMapOpt"
+                        @change="saveMapRowData(data.index, 'select', $event)"
                         placeholder="请选择目标属性"
-                        :field-names="{
-                            label: 'targetName',
-                            value: 'targetId',
-                        }"
                     ></j-select>
                 </template>
                 <template #state="{ data }">
@@ -164,7 +157,7 @@ const props = defineProps({
         type: [String, Array] as PropType<string | string[]>,
         default: [],
     },
-    deviceIdsMap: {
+    deviceIdsMapOpt: {
         type: [String, Array] as PropType<string | string[]>,
         default: [],
     },
@@ -173,12 +166,12 @@ const props = defineProps({
         default: [],
     },
 });
-const deviceDetailList = ref<any>(props.deviceDetailList);
+// const deviceDetailList = ref<any>(props.deviceDetailList);
 
 const columns = [
     { title: '原设备名称', dataIndex: 'originalName' },
     { title: '原设备标识', dataIndex: 'originalId' },
-    { title: '目标设备', dataIndex: 'targetAttribute' },
+    { title: '目标设备', dataIndex: 'select' },
     { title: '状态', dataIndex: 'state', width: 200 },
     { title: '操作', dataIndex: 'action', width: 100 },
 ];
@@ -192,7 +185,7 @@ const DetailColumns = [
 
 //修改设备table表数据
 const saveRowData = (index: any, dataIndex: string, event: any) => {
-    deviceDetailList.value[index][dataIndex] = event;
+    props.deviceDetailList[index][dataIndex] = event;
 };
 
 //修改映射table表数据
@@ -205,7 +198,7 @@ const handleImport = () => {
 };
 
 const handleSave = () => {
-    console.log(deviceDetailList.value);
+    console.log(props.deviceDetailList);
 };
 
 //映射保存
@@ -224,7 +217,7 @@ const handleMap = (data: any) => {
     State.openView = true;
 };
 
-// watch(props.deviceDetailList, (newValue: any) => {
+// watch(()=>props.deviceDetailList, (newValue: any) => {
 //     console.log('newValue',newValue);
 // });
 </script>
