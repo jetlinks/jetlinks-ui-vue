@@ -37,7 +37,7 @@
                     <div class='department-tree-item-content'>
                       <span class='title'>
                         <j-ellipsis>
-                          {{ name }}
+                            {{ name.trim() === '' ? '\u200B' : name }}
                         </j-ellipsis>
                       </span>
                       <span class="func-btns" @click="(e) => e.stopPropagation()">
