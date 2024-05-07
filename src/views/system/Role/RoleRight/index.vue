@@ -140,6 +140,7 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
+                placement:'topRight',
                 onConfirm: async () => {
                     const res = await delRole_api(data.id)
                     if (res.status === 200) {

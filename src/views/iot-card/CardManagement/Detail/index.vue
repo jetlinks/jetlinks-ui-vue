@@ -83,9 +83,18 @@
                                 ? detail.residualFlow.toFixed(2) + ' M'
                                 : ''
                         }}</j-descriptions-item>
-                        <j-descriptions-item label="状态">{{
+                        <j-descriptions-item label="状态">
+                          {{
                             detail?.cardState?.text
-                        }}</j-descriptions-item>
+                          }}
+                          <span v-if="deactivateData.show" style="padding-left: 8px;">
+                            <a-tooltip
+                              :title="deactivateData.tip"
+                            >
+                              <AIcon type="ExclamationCircleOutlined" style="color: var(--ant-error-color);"/>
+                            </a-tooltip>
+                          </span>
+                        </j-descriptions-item>
                         <j-descriptions-item label="说明">{{
                             detail?.describe
                         }}</j-descriptions-item>
@@ -178,10 +187,10 @@
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="CardDetail">
 import moment from 'moment';
 import type { CardManagement } from '../typing';
-import { queryDetail } from '@/api/iot-card/cardManagement';
+import {queryDeactivate, queryDetail} from '@/api/iot-card/cardManagement';
 import Save from '../Save.vue';
 import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
@@ -203,6 +212,11 @@ const dayOptions = ref<any[]>([]);
 const monthOptions = ref<any[]>([]);
 const yearOptions = ref<any[]>([]);
 
+const deactivateData = reactive({
+  show: false,
+  tip: ''
+})
+
 const quickBtnList = [
     { label: '昨日', value: 'yesterday' },
     { label: '近一周', value: 'week' },
@@ -212,8 +226,18 @@ const quickBtnList = [
 
 const getDetail = () => {
     queryDetail(route.params.id).then((resp: any) => {
-        if (resp.status === 200) {
+        if (resp.success) {
             detail.value = resp.result;
+
+            if (resp.result.cardStateType?.value === 'deactivate') {
+                deactivateData.show = true
+              //   获取停机原因
+              queryDeactivate(route.params.id as string).then((deacResp: any) => {
+                if (deacResp.success && deacResp.result?.message) {
+                  deactivateData.tip = deacResp.result.message.toString()
+                }
+              })
+            }
         }
     });
 };

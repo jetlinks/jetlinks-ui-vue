@@ -164,8 +164,18 @@ const onDelete = () => {
 
 const onDeleteAll = () => {
   if (FormModel.value.branches) {
+<<<<<<< HEAD
     FormModel.value.branches[props.name].when = []
     FormModel.value.options.when[props.branches_Index].terms = []
+=======
+    // FormModel.value.branches.length = props.name
+    // FormModel.value.branches.push(null as any)
+    FormModel.value.branches[props.name].when = []
+    FormModel.value.options.when[props.branches_Index].terms = []
+    if(FormModel.value.branches[props.name + 1] === null){
+      FormModel.value.branches.splice(props.name + 1 , 1)
+    }
+>>>>>>> 39a0991d4a3c9da4014154682811fd8270bd35c8
   }
 }
 
@@ -199,7 +209,9 @@ const addWhen = () => {
     key: `terms_${randomString()}`
   }
   FormModel.value.branches?.[props.name].when?.push(terms)
-  FormModel.value.branches?.splice(props.groupLen, 0, null)
+  if(FormModel.value.branches?.length <= props.name + 1){
+    FormModel.value.branches?.splice(props.groupLen, 0, null)
+  }
   FormModel.value.options!.when[props.branches_Index]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
 }
 
