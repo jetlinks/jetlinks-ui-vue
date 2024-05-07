@@ -186,7 +186,7 @@ const columns = [
         key: 'roleList',
         search:{
             type:'select',
-            rename:'id$in-dimension$role',
+            // rename:'id$in-dimension$role',
             options:() => 
             new Promise((resolve)=>{
                 queryRole_api(
@@ -327,6 +327,21 @@ const handleParams = (params: any) => {
                         value: 1,
                     }
                 ]
+            }
+            if(item2.column === 'roleList'){
+                if(item2.termType === 'eq' || item2.termType === 'in'){
+                    return {
+                        column: 'id$in-dimension$role',
+                        type: item2.type,
+                        value: item2.value
+                    }
+                }else{
+                    return {
+                        column: 'id$in-dimension$role$not',
+                        type: item2.type,
+                        value: item2.value
+                    }
+                }
             }
             return item2;
         });
