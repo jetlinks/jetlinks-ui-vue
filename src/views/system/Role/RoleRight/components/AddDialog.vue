@@ -53,6 +53,7 @@ import { FormInstance } from 'ant-design-vue';
 import { saveRole_api , queryRoleGroup , updateRole_api} from '@/api/system/role';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es'
 const route = useRoute();
 const { jumpPage } = useMenuStore();
 
@@ -131,7 +132,7 @@ onMounted(()=>{
     getGroupOptions()
     form.value.groupId = props.groupId
     if(props.modalType === 'edit'){
-        form.value = props.current
+        form.value = props.current(props.current)
     }
 })
 </script>
