@@ -360,6 +360,13 @@ const runScript = () => {
         if (props.virtualRule?.type !== 'window') {
             stopAction();
         }
+    }, () => {}, () => {
+      ruleEditorStore.state.log.push({
+        time: new Date().getTime(),
+        content: '运行结束',
+        _time: unref(time.value),
+      });
+      stopAction()
     });
 };
 

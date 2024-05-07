@@ -187,10 +187,10 @@ const columns = [
         search:{
             type:'select',
             rename:'id$in-dimension$role',
-            options:() => 
+            options:() =>
             new Promise((resolve)=>{
                 queryRole_api(
-                    {   
+                    {
                         paging:false,
                         sorts: [
                             { name: 'createTime', order: 'desc' },
@@ -303,37 +303,45 @@ type dictType = {
 type modalType = '' | 'add' | 'edit' | 'reset';
 
 const handleParams = (params: any) => {
-    const newParams = (params?.terms as any[])?.map((item1) => {
+    const newParams = (params?.terms as any[])?.map((termsGroupA) => {
         let arr: any[] = []
-        item1.terms = item1.terms.map((item2: any) => {
-            if (['telephone', 'email'].includes(item2.column)) {
+        termsGroupA.terms = termsGroupA.terms.map((termsItem: any) => {
+
+            if (termsItem.column === 'id$in-dimension$role') {
+              let _termType = termsItem.termType === 'nin' ? 'not$in' : termsItem.termType
+              termsItem.column = `${termsItem.column}$${_termType}`
+              delete termsItem.termType
+            }
+            if (['telephone', 'email'].includes(termsItem.column)) {
                 return {
                     column: 'id$user-detail',
-                    value: [item2],
+                    value: [termsItem],
                 };
             }
-            if (['type'].includes(item2.column) && item2.value === 'other') {
+            if (['type'].includes(termsItem.column) && termsItem.value === 'other') {
                 arr = [
                     {
-                        ...item2,
+                        ...termsItem,
                         type: 'or',
                         termType: 'isnull',
                         value: 1,
                     },
                     {
-                        ...item2,
+                        ...termsItem,
                         type: 'or',
                         termType: 'empty',
                         value: 1,
                     }
                 ]
             }
-            return item2;
+            return termsItem;
         });
+
         if(arr.length){
-            item1.terms = [...item1.terms, ...arr]
+          termsGroupA.terms = [...termsGroupA.terms, ...arr]
         }
-        return item1;
+
+        return termsGroupA;
     });
     queryParams.value = { terms: newParams || [] };
 };
