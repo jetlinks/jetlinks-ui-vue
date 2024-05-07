@@ -62,6 +62,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { getDataSandMap } from '@/api/exchange/receive';
 const tableRef = ref();
 
 const props = defineProps({
@@ -74,8 +75,12 @@ const props = defineProps({
         default: undefined,
     },
     dataDetailList: {
-        type: [String, Array] as PropType<string | string[]>,
+        type: [Array, String] as PropType<string[] | string>,
         default: [],
+    },
+    sendId: {
+        type: [String, Array] as PropType<string | string[]>,
+        default: undefined,
     },
 });
 
@@ -149,6 +154,16 @@ const handleImport = () => {
 
 const handleSave = () => {
     console.log(props.dataDetailList);
+    // const {originalName,select, ...data} = props.dataDetailList
+    let getData = props.dataDetailList.map((item: any) => ({
+        originalId: item.originalId,
+        targetAttribute: item.targetAttribute,
+        state: item.state,
+    }));
+    console.log(getData)
+    getDataSandMap(props.sendId, getData).then((res: any) => {
+        console.log(res);
+    });
 };
 
 const handleMap = (data: any) => {

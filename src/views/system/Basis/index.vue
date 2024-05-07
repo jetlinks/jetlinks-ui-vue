@@ -74,12 +74,7 @@
                             <j-form-item
                                 name="factoryKey"
                                 v-show="isChild"
-                                :rules="[
-                                    {
-                                        required: true,
-                                        message: '请填写工厂Topic',
-                                    },
-                                ]"
+                                :rules="facRules"
                             >
                                 <template #label>
                                     <span>Topic</span>
@@ -442,12 +437,19 @@ const form = reactive<formType>({
         const hasPermission = usePermissionStore().hasPermission;
         if (hasPermission(`system/Basis:update`)) {
             formRef.value.validate().then(() => {
+                let formValues = {};
+                if (form.formValue.factoryType !== 'sub') {
+                    const { factoryKey, ...res } = form.formValue;
+                    formValues = res;
+                } else {
+                    formValues = form.formValue;
+                }
                 form.saveLoading = true;
                 const params = [
                     {
                         scope: 'front',
                         properties: {
-                            ...form.formValue,
+                            ...formValues,
                             apiKey: '',
                             'base-path': '',
                         },
@@ -465,6 +467,7 @@ const form = reactive<formType>({
                         },
                     },
                 ];
+                console.log(params)
                 save_api(params)
                     .then(async (resp) => {
                         if (resp.status === 200) {
@@ -482,14 +485,28 @@ const form = reactive<formType>({
 });
 const { formValue, rulesFrom } = toRefs(form);
 const isChild = ref(false);
+const facRules = ref<any>();
 watch(
     () => formValue.value.factoryType,
     (newValue: any) => {
         console.log('newValue', newValue);
         if (newValue === 'sub') {
             isChild.value = true;
+            facRules.value = [
+                {
+                    max: 64,
+                    message: '最多可输入64位',
+                    trigger: 'change',
+                },
+                {
+                    required: true,
+                    message: '请填写工厂Topic',
+                    trigger: 'blur',
+                },
+            ];
         } else {
             isChild.value = false;
+            facRules.value = [];
         }
     },
 );

@@ -8,6 +8,7 @@
                         :mapDataList="mapDataList"
                         :dataMapOpt="dataMapOpt"
                         :dataDetailList="dataDetailList"
+                        :sendId = "route.query?.id"
                     />
                 </j-tab-pane>
                 <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
@@ -99,14 +100,21 @@ onMounted(() => {
     //获取原设备和原属性
     const terms: any = [
         {
-            column: 'productId',
+            column: 'id',
             termType: 'eq',
             type: 'or',
-            value: `${route.params?.productId}`,
+            value: `${route.query?.productId}`,
         },
     ];
+    console.log(route)
+    console.log(route.params)
     queryDeviceProductList({ terms }).then((res: any) => {
+        console.log(res)
         const getData = res.result[0];
+        if(getData.metadata === undefined){
+            onlyMessage('请先为产品设置物模型信息', 'error');
+            return false
+        }
         const attributeList = JSON.parse(getData.metadata);
         if (attributeList?.properties) {
             let objectValues = attributeList?.properties.map((item: any) => ({
@@ -141,7 +149,7 @@ onMounted(() => {
                     column: 'id',
                     termType: 'eq',
                     type: 'or',
-                    value: `${route.params?.id}`,
+                    value: `${route.query?.id}`,
                 },
             ],
         }).then((res: any) => {

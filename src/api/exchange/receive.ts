@@ -5,11 +5,12 @@ import server from '@/utils/request';
  * @param data
  * @returns
  */
-export const addDataSand = (data: any) => server.post('/tbea/receive/sand/_add', data);
+export const addDataSand = (data: any) =>
+    server.post('/tbea/receive/sand/_add', data);
 
 /**
  * 修改数据
- * @param id 
+ * @param id
  * @param data 修改数据
  * @returns
  */
@@ -33,28 +34,42 @@ export const queryDataReceiveList = (data: any) =>
 export const queryDataSendList = (data: any) =>
     server.post('/tbea/receive/sand/_query/no-paging', data);
 
-
 /**
  * 不分页查询设备
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
-export const queryNoPagingPostDevice = (data?: Record<string, any>) => server.post('/device-instance/_query/no-paging?paging=false', data)
-
+export const queryNoPagingPostDevice = (data?: Record<string, any>) =>
+    server.post('/device-instance/_query/no-paging?paging=false', data);
 
 /**
  * 根据产品id和设备id获取物模型数据
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
-export const queryDeviceProductList = (data: Record<string, any>) => server.post(`/device/instance/product/detail/_query/no-paging`, data)
+export const queryDeviceProductList = (data: Record<string, any>) =>
+    server.post(`/device/instance/product/detail/_query/no-paging`, data);
 
 /**
  * 保存配置
- * 
+ *
  */
 ///tbea/receive/sand/{id}/configuration
+///tbea/receive/sand/{id}/target
 
-export const saveSandConfiguration = (id: string,data:any) => server.put(`/tbea/receive/sand/${id}/configuration`, data);
+/**
+ * 保存导入数据
+ *
+ */
+export const exportSandTarget = (id: string, data: any) =>
+    server.put(`/tbea/receive/sand/${id}/target`, data);
 
-export const getDataSandMap = (id: any) => server.post(`/tbea/receive/sand/${id}/mapping`);
+export const saveSandConfiguration = (id: string, data: any) =>
+    server.put(`/tbea/receive/sand/${id}/configuration`, data);
+
+/**
+ * 保存当前映射数据
+ *
+ */
+export const getDataSandMap = (id: any, data: any) =>
+    server.put(`/tbea/receive/sand/${id}/mapping`, data);

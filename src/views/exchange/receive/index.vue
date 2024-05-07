@@ -2,7 +2,7 @@
     <page-container>
         <pro-search :columns="columns" type="simple" @search="onSearch" />
         <FullPage>
-            <j-pro-table
+            <JProTable
                 :defaultParams="defaultParams"
                 :pagination="{
                     pageSizeOptions: ['10', '20', '50', '80', '100'],
@@ -118,7 +118,7 @@
                         </template>
                     </CardBox>
                 </template>
-            </j-pro-table>
+            </JProTable>
         </FullPage>
 
         <!-- 新增和编辑 -->
@@ -259,6 +259,8 @@ const tableRef = ref<Record<string, any>>({});
 
 const productList = ref<Record<string, any>[]>([]);
 const deviceList = ref<Record<string, any>[]>([]);
+const paramsProductID = ref<any>();
+
 const selectedRowKeys = ref<string[]>([]);
 const selectedRow = ref<string[]>([]);
 
@@ -278,6 +280,7 @@ const defaultParams = ref({
             column: 'type',
         },
     ],
+    sorts: [{ name: 'createTime', order: 'desc' }],
 });
 
 const modalState = reactive({
@@ -300,7 +303,6 @@ const modalState = reactive({
                     if (res.status === 200) {
                         onlyMessage('修改成功！');
                         modalState.openView = false;
-                        console.log(tableRef.value);
                         tableRef.value?.reload();
                     }
                 });
@@ -492,8 +494,8 @@ const handleDelete = async (id: string) => {
 
 //获取卡片字段产品名称
 const getProduct = (productId: string) => {
-    const getList: any = productList.value.find(
-        (item: any) => (item.id = productId),
+    let getList: any = productList.value.find(
+        (item: any) => item.id === productId,
     );
     return getList?.name;
 };
@@ -633,20 +635,13 @@ const getActions = (
 
 const query = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        console.log(params.terms);
         queryDataReceiveList({
             pageIndex: params.pageIndex + 1,
             pageSize: params.pageSize,
-            sorts: [
-                {
-                    name: 'createTime',
-                    order: 'desc',
-                },
-            ],
+            sorts: params.sorts,
             terms: params.terms,
         })
             .then((response: any) => {
-                console.log(response);
                 resolve({
                     result: {
                         data: response.result?.data,
@@ -661,15 +656,32 @@ const query = (params: Record<string, any>) =>
                 console.log(error);
             });
     });
+
+watch(
+    () => form.value.productId,
+    (newValue, oldValue) => {
+        const terms: any = [
+            {
+                column: 'productId',
+                termType: 'eq',
+                type: 'or',
+                value: `${newValue}`,
+            },
+        ];
+        queryNoPagingPostDevice({ terms }).then((resp) => {
+            if (resp.status === 200) {
+                deviceList.value = resp.result as Record<string, any>[];
+            }
+        });
+        form.value.deviceIds = []
+    },
+);
+
 onMounted(() => {
-    queryNoPagingPost({ paging: false }).then((resp) => {
+    queryNoPagingPost({ paging: false }).then((resp: any) => {
         if (resp.status === 200) {
             productList.value = resp.result as Record<string, any>[];
-        }
-    });
-    queryNoPagingPostDevice({ paging: false }).then((resp) => {
-        if (resp.status === 200) {
-            deviceList.value = resp.result as Record<string, any>[];
+            paramsProductID.value = resp.result[0]?.productId;
         }
     });
 });

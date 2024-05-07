@@ -40,11 +40,16 @@
                 </j-form-item>
                 <j-form-item
                     name="factoryType"
-                    v-bind="validateInfos.factoryType"
                     :rules="[
                         {
+                            max: 64,
+                            message: '最多可输入64位',
+                            trigger: 'change',
+                        },
+                        {
                             required: true,
-                            message: '请选择工厂类型',
+                            message: '请输入工厂类型',
+                            trigger: 'blur',
                         },
                     ]"
                 >
@@ -67,16 +72,13 @@
                 </j-form-item>
                 <j-form-item
                     name="factoryKey"
-                    v-bind="validateInfos.factoryKey"
                     v-show="isChild"
+                    :rules="isFactoryKeyRules"
                 >
                     <template #label>
                         <span>Topic</span>
                     </template>
-                    <j-input
-                        v-model:value="form.factoryKey"
-                        placeholder="请填写工厂Topic"
-                    />
+                    <j-input v-model:value="form.factoryKey" />
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
@@ -334,7 +336,7 @@ const form = ref<formState>({
 });
 
 const isChild = ref(false);
-
+const isFactoryKeyRules = ref<any>([]);
 const rulesFrom = ref({
     title: [
         {
@@ -348,34 +350,10 @@ const rulesFrom = ref({
             trigger: 'blur',
         },
     ],
-    factoryKey: [
-        {
-            max: 64,
-            message: '最多可输入64位',
-            trigger: 'change',
-        },
-        {
-            required: true,
-            message: '请填写工厂Topic',
-            trigger: 'blur',
-        },
-    ],
     headerTheme: [
         {
             required: true,
             message: '请选择主题色',
-            trigger: 'blur',
-        },
-    ],
-    factoryType: [
-        {
-            max: 64,
-            message: '最多可输入64位',
-            trigger: 'change',
-        },
-        {
-            required: true,
-            message: '请输入工厂类型',
             trigger: 'blur',
         },
     ],
@@ -395,11 +373,23 @@ const { resetFields, validate, validateInfos } = useForm(
 watch(
     () => form.value.factoryType,
     (newValue: any) => {
-        console.log('newValue', newValue);
         if (newValue === 'sub') {
             isChild.value = true;
+            isFactoryKeyRules.value = [
+                {
+                    max: 64,
+                    message: '最多可输入64位',
+                    trigger: 'change',
+                },
+                {
+                    required: true,
+                    message: '请填写工厂Topic',
+                    trigger: 'blur',
+                },
+            ];
         } else {
             isChild.value = false;
+            isFactoryKeyRules.value = [];
         }
     },
 );
@@ -421,11 +411,19 @@ const saveBasicInfo = () => {
     return new Promise(async (resolve, reject) => {
         validate()
             .then(async () => {
+                console.log(111);
+                let formValues = {};
+                if (form.value.factoryType !== 'sub') {
+                    const { factoryKey, ...res } = form.value;
+                    formValues = res;
+                } else {
+                    formValues = form.value;
+                }
                 const item = [
                     {
                         scope: 'front',
                         properties: {
-                            ...form.value,
+                            ...formValues,
                             apikey: '',
                             'base-path': '',
                         },
@@ -444,6 +442,7 @@ const saveBasicInfo = () => {
                     },
                 ];
                 const res = await save(item);
+                console.log(res);
                 if (res.status === 200) {
                     resolve(true);
                     localStorage.setItem(

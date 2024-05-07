@@ -126,8 +126,8 @@
 
 <script lang="ts" setup>
 import type { PropType } from 'vue';
-import { queryNoPagingPost } from '@/api/device/product';
-import { getDataSandMap } from '@/api/exchange/receive';
+// import { queryNoPagingPost } from '@/api/device/product';
+import { getDataSandMap,exportSandTarget } from '@/api/exchange/receive';
 
 const params = ref<Record<string, any>>({});
 const mappingData = ref<any>([]);

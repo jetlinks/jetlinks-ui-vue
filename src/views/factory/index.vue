@@ -152,15 +152,15 @@
                                     placeholder="请输入appId"
                                 />
                             </j-form-item>
-                            <j-form-item label="appKey" name="secureKey">
+                            <j-form-item label="appKey" name="appKey">
                                 <j-input
-                                    v-model:value="form.secureKey"
+                                    v-model:value="form.appKey"
                                     placeholder="请输入appKey"
                                 />
                             </j-form-item>
-                            <j-form-item label="Topic" name="groupId">
+                            <j-form-item label="Topic" name="topic">
                                 <j-input
-                                    v-model:value="form.groupId"
+                                    v-model:value="form.topic"
                                     placeholder="请输入Topic"
                                 />
                             </j-form-item>
@@ -237,11 +237,11 @@ const data = reactive({
             { required: true, message: '请输入appId', trigger: 'blur' },
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
-        secureKey: [
-            { required: true, message: '请输入secureKey', trigger: 'blur' },
+        appKey: [
+            { required: true, message: '请输入appKey', trigger: 'blur' },
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
-        groupId: [
+        topic: [
             { required: true, message: '请输入Topic', trigger: 'blur' },
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
@@ -290,8 +290,8 @@ const reset = () => {
         url: '',
         port: '',
         appId: '',
-        secureKey: '',
-        groupId: '',
+        appKey: '',
+        topic: '',
         description: '',
     };
     formRef.value?.resetFields();
@@ -493,6 +493,7 @@ const query = (params: Record<string, any>) =>
             ],
             terms: params.terms,
         }).then((response: any) => {
+            console.log(response)
             resolve({
                 result: {
                     data: response.result?.data,

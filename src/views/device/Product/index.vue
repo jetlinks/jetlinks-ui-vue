@@ -210,6 +210,9 @@ import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';
 import Allots from './allots/index.vue';
+import { useSystem } from '@/store/system';
+const system = useSystem();
+const configInfo = system.configInfo;
 /**
  * 表格数据
  */
@@ -336,9 +339,13 @@ const getActions = (
             key: 'distribute',
             text: '下发',
             tooltip: {
-                title: '下发',
+                title:
+                    configInfo.front?.factoryType === 'sub'
+                        ? '子工厂不能进行下发操作'
+                        : '下发',
             },
             icon: 'ArrowRightOutlined',
+            disabled: configInfo.front?.factoryType === 'sub',
             onClick: () => {
                 allotsVisible.value = true;
                 disProductId.value = data.id;

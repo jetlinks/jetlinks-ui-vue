@@ -265,7 +265,6 @@ const modalState = reactive({
     confirm() {
         formRef.value?.validate().then(() => {
             let { id, ...addData } = form.value;
-            console.log(addData);
             if (isAdd.value === 1) {
                 addDataSand(addData).then((res: any) => {
                     if (res.status === 200) {
@@ -405,11 +404,18 @@ const handleUpdate = (data: any) => {
 
 //查看配置
 const handleView = (data: any) => {
-    // console.log(data)
-    menuStory.jumpPage('exchange/send/Detail', {
-        id: data.id,
-        productId: data.productId,
-    });
+    console.log(data);
+    menuStory.jumpPage(
+        'exchange/send/Detail',
+        {
+            id: data.id,
+            productId: data.productId,
+        },
+        {
+            id: data.id,
+            productId: data.productId,
+        },
+    );
 };
 // 删除操作
 const handleDelete = async (id: string) => {
@@ -421,7 +427,7 @@ const handleDelete = async (id: string) => {
 //获取卡片字段产品名称
 const getProduct = (productId: string) => {
     const getList: any = productList.value.find(
-        (item: any) => (item.id = productId),
+        (item: any) => item.id === productId,
     );
     return getList?.name;
 };
@@ -503,10 +509,17 @@ const getActions = (
             },
             icon: 'EyeOutlined',
             onClick: () => {
-                menuStory.jumpPage('exchange/send/Detail', {
-                    id: data.id,
-                    productId: data.productId,
-                });
+                menuStory.jumpPage(
+                    'exchange/send/Detail',
+                    {
+                        id: data.id,
+                        productId: data.productId,
+                    },
+                    {
+                        id: data.id,
+                        productId: data.productId,
+                    },
+                );
             },
         },
         {
@@ -551,6 +564,7 @@ const query = (params: Record<string, any>) =>
             terms: params.terms,
         })
             .then((response: any) => {
+                console.log(response);
                 resolve({
                     result: {
                         data: response.result?.data,
@@ -565,15 +579,29 @@ const query = (params: Record<string, any>) =>
                 console.log(error);
             });
     });
+
+watch(
+    () => form.value.productId,
+    (newValue, oldValue) => {
+        const terms: any = [
+            {
+                column: 'productId',
+                termType: 'eq',
+                type: 'or',
+                value: `${newValue}`,
+            },
+        ];
+        queryNoPagingPostDevice({ terms }).then((resp) => {
+            if (resp.status === 200) {
+                deviceList.value = resp.result as Record<string, any>[];
+            }
+        });
+    },
+);
 onMounted(() => {
     queryNoPagingPost({ paging: false }).then((resp) => {
         if (resp.status === 200) {
             productList.value = resp.result as Record<string, any>[];
-        }
-    });
-    queryNoPagingPostDevice({ paging: false }).then((resp) => {
-        if (resp.status === 200) {
-            deviceList.value = resp.result as Record<string, any>[];
         }
     });
 });

@@ -325,6 +325,7 @@ import {
     queryNoPagingPost,
     queryOrgThree,
 } from '@/api/device/product';
+import { queryFactoryList } from '@/api/factory/factory';
 import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
 import type { ActionsType } from './typings';
@@ -335,6 +336,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { sandDevice } from '@/api/factory/factory';
+import { useSystem } from '@/store/system';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -349,6 +351,8 @@ const type = ref<string>('');
 const isCheck = ref<boolean>(false);
 const routerParams = useRouterParams();
 const menuStory = useMenuStore();
+const system = useSystem();
+const configInfo = system.configInfo;
 
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
@@ -416,9 +420,18 @@ const columns = [
             rename: 'factoryId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                    queryFactoryList({
+                        paging: false,
+                        sorts: [
+                            {
+                                name: 'createTime',
+                                order: 'desc',
+                            },
+                        ],
+                        terms: [],
+                    }).then((response: any) => {
                         resolve(
-                            resp.result.map((item: any) => ({
+                            response.result.data.map((item: any) => ({
                                 label: item.name,
                                 value: item.id,
                             })),
@@ -692,9 +705,13 @@ const getActions = (
             key: 'distribute',
             text: '下发',
             tooltip: {
-                title: '下发',
+                title:
+                    configInfo.front?.factoryType === 'sub'
+                        ? '子工厂不能进行下发'
+                        : '下发',
             },
-            icon: 'EditOutlined',
+            icon: 'ArrowRightOutlined',
+            disabled: configInfo.front?.factoryType === 'sub',
             popConfirm: {
                 title: `确认下发吗?`,
                 onConfirm: async () => {
@@ -1024,4 +1041,10 @@ const handleSearch = (_params: any) => {
 const onRefresh = () => {
     instanceRef.value?.reload();
 };
+
+onMounted(() => {
+    query().then((res: any) => {
+        console.log(res);
+    });
+});
 </script>
