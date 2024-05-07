@@ -37,12 +37,12 @@
         </template>
         <template #select="{ data }">
             <j-select
-                    v-model:value="data.record.select"
-                    style="width: 150px"
-                    :options="props.deviceIdsMapOpt"
-                    placeholder="请选择目标设备"
-                    @change="saveRowData(data.index, 'select', $event)"
-                ></j-select>
+                v-model:value="data.record.select"
+                style="width: 150px"
+                :options="props.deviceIdsMapOpt"
+                placeholder="请选择目标设备"
+                @change="saveRowData(data.index, 'select', $event)"
+            ></j-select>
         </template>
         <template #state="{ data }">
             <j-switch
@@ -87,25 +87,11 @@
                 }"
                 bordered
             >
-                <template #expand>
-                    <PermissionButton
-                        key="save"
-                        style="margin-right: 20px"
-                        type="primary"
-                        :tooltip="{
-                            title: '保存',
-                        }"
-                        @click="handleMapSave"
-                        placement="topRight"
-                    >
-                        保存
-                    </PermissionButton>
-                </template>
                 <template #select="{ data }">
                     <j-select
                         v-model:value="data.record.select"
                         style="width: 100%"
-                        :options="props.deviceIdsMapOpt"
+                        :options="mapOptions"
                         @change="saveMapRowData(data.index, 'select', $event)"
                         placeholder="请选择目标属性"
                     ></j-select>
@@ -127,21 +113,22 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 // import { queryNoPagingPost } from '@/api/device/product';
-import { getDataSandMap,exportSandTarget } from '@/api/exchange/receive';
+import { getDataSandMap, exportSandTarget } from '@/api/exchange/receive';
+import { onlyMessage } from '@/utils/comm';
 
 const params = ref<Record<string, any>>({});
 const mappingData = ref<any>([]);
 const tableRef = ref();
 const DelTableRef = ref();
-const mapOptions = ref<any>([]);
 const deviceMapDetail = ref<any>([]);
+const mapOptions = ref<any>([]);
 
 const State = reactive({
     openView: false,
     title: '映射',
     confirmLoading: false,
     confirm() {
-        console.log('保存');
+        console.log(deviceMapDetail.value);
     },
     cancel() {
         State.openView = false;
@@ -161,9 +148,13 @@ const props = defineProps({
         type: [String, Array] as PropType<string | string[]>,
         default: [],
     },
-    deviceDetailList:{
+    deviceDetailList: {
         type: [String, Array] as PropType<string | string[]>,
         default: [],
+    },
+    sendId: {
+        type: String,
+        default: undefined,
     },
 });
 // const deviceDetailList = ref<any>(props.deviceDetailList);
@@ -179,18 +170,28 @@ const columns = [
 const DetailColumns = [
     { title: '原属性名称', dataIndex: 'originalName' },
     { title: '原属性标识', dataIndex: 'originalId' },
-    { title: '目标属性', dataIndex: 'targetAttribute' },
+    { title: '目标属性', dataIndex: 'select' },
     { title: '状态', dataIndex: 'state', width: 200 },
 ];
 
 //修改设备table表数据
 const saveRowData = (index: any, dataIndex: string, event: any) => {
-    props.deviceDetailList[index][dataIndex] = event;
+    if (dataIndex === 'select') {
+        props.deviceDetailList[index][dataIndex] = event;
+        props.deviceDetailList[index]['targetAttribute'] = splitHumidity(event);
+    } else {
+        props.deviceDetailList[index][dataIndex] = event;
+    }
 };
 
 //修改映射table表数据
 const saveMapRowData = (index: any, dataIndex: string, event: any) => {
-    deviceMapDetail.value[index][dataIndex] = event;
+    if (dataIndex === 'select') {
+        deviceMapDetail.value[index][dataIndex] = event;
+        deviceMapDetail.value[index]['targetAttribute'] = splitHumidity(event);
+    } else {
+        deviceMapDetail.value[index][dataIndex] = event;
+    }
 };
 
 const handleImport = () => {
@@ -199,11 +200,27 @@ const handleImport = () => {
 
 const handleSave = () => {
     console.log(props.deviceDetailList);
-};
-
-//映射保存
-const handleMapSave = () => {
-    console.log(deviceMapDetail.value);
+    let getData = props.deviceDetailList.map((item: any) => {
+        let deviceTargetAttribute = item.deviceTargetAttribute.map(
+            (item: any) => ({
+                originalId: item.originalId,
+                targetAttribute: item.targetAttribute,
+            }),
+        );
+        return {
+            originalId: item.originalId,
+            targetAttribute: item.targetAttribute,
+            deviceTargetAttribute: deviceTargetAttribute,
+            state: item.state,
+        };
+    });
+    let senSaveDataMap = { deviceMapping: getData };
+    console.log(senSaveDataMap)
+    getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
+        if (res.status === 200) {
+            onlyMessage('保存成功');
+        }
+    });
 };
 
 const handleChange = (value: any, key: any) => {
@@ -211,9 +228,28 @@ const handleChange = (value: any, key: any) => {
     console.log(key);
 };
 
+const splitHumidity = (data: any) => {
+    const match = data.match(/^([^(]+)\((.*)\)$/);
+    if (match) {
+        return {
+            targetName: match[1],
+            targetId: match[2],
+        };
+    } else {
+        return {
+            targetName: data,
+            targetId: '',
+        };
+    }
+};
+
 const handleMap = (data: any) => {
-    console.log(data.record.deviceTargetAttribute);
-    deviceMapDetail.value = data.record.deviceTargetAttribute
+    deviceMapDetail.value = data.record.deviceTargetAttribute;
+    mapOptions.value = data.record.deviceTargetAttribute.map((item: any) => ({
+        value:
+            item.targetAttribute.targetName +
+            `(${item.targetAttribute.targetId})`,
+    }));
     State.openView = true;
 };
 

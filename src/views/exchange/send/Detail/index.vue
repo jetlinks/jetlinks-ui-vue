@@ -8,7 +8,7 @@
                         :mapDataList="mapDataList"
                         :dataMapOpt="dataMapOpt"
                         :dataDetailList="dataDetailList"
-                        :sendId = "route.query?.id"
+                        :sendId="route.query?.id"
                     />
                 </j-tab-pane>
                 <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
@@ -17,6 +17,7 @@
                         :deviceMapOption="deviceMapOption"
                         :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
+                        :sendId="route.query?.id"
                     />
                 </j-tab-pane>
             </j-tabs>
@@ -75,17 +76,35 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
         const item2 = arr2.find(
             (item: any) => item.targetId === item1.originalId,
         );
-        // console.log(item1);
-        // console.log(item2);
         if (item2) {
             // 如果在arr2中找到了相同id的对象，则合并除了id以外的属性
-            const { id, ...rest2 } = item2;
+            const { originalId, originalName, ...orgData } = item1;
+            const { deviceTargetAttribute, ...rest2 } = item2;
+            const mergedDevDataMap = orgData.deviceTargetAttribute.map(
+                (orgItem1: any) => {
+                    const orgItem2 = deviceTargetAttribute.find(
+                        (item: any) => item.targetId === orgItem1.originalId,
+                    );
+                    if (orgItem2) {
+                        return {
+                            ...orgItem1,
+                            targetAttribute: orgItem2,
+                            select:
+                                orgItem2.targetName + `(${orgItem2.targetId})`,
+                            state: 'enabled',
+                        };
+                    } else {
+                        return orgItem1;
+                    }
+                },
+            );
             return {
-                ...item1,
+                originalId,
+                originalName,
                 targetAttribute: {
                     ...rest2,
-                    deviceTargetMap: item1.deviceTargetAttribute,
                 },
+                deviceTargetAttribute: mergedDevDataMap,
                 select: item2.targetName + `(${item2.targetId})`,
                 state: 'enabled',
             };
@@ -106,14 +125,12 @@ onMounted(() => {
             value: `${route.query?.productId}`,
         },
     ];
-    console.log(route)
-    console.log(route.params)
     queryDeviceProductList({ terms }).then((res: any) => {
-        console.log(res)
+        console.log(res);
         const getData = res.result[0];
-        if(getData.metadata === undefined){
+        if (getData.metadata === undefined) {
             onlyMessage('请先为产品设置物模型信息', 'error');
-            return false
+            return false;
         }
         const attributeList = JSON.parse(getData.metadata);
         if (attributeList?.properties) {
@@ -153,17 +170,25 @@ onMounted(() => {
                 },
             ],
         }).then((res: any) => {
+            console.log('mapping', res.result);
             const deviceMap = res.result[0]?.deviceMapping;
             const dataMap = res.result[0]?.dataMapping;
             if (!res.result[0].targetMapping) {
                 onlyMessage('没有映射数据源，请检查', 'error');
-                return;
+                return false;
             }
             const deviceTargetMaps = res.result[0].targetMapping?.deviceDetails;
+            if (!deviceTargetMaps) {
+                onlyMessage('设备映射数据为空', 'error');
+                return false;
+            }
 
             //处理数据映射
             const dataTargetMaps = res.result[0].targetMapping?.metadata;
-
+            if (!dataTargetMaps) {
+                onlyMessage('数据映射为空', 'error');
+                return false;
+            }
             const dataTargetMap = JSON.parse(dataTargetMaps).properties;
             let TargetAttribute = dataTargetMap.map((item: any) => ({
                 targetId: item.id,
@@ -178,7 +203,6 @@ onMounted(() => {
                 dataDetailList.value,
                 dataMapOption.value,
             );
-            console.log(mergeDataMap);
             if (mergeDataMap) {
                 dataDetailList.value = mergeDataMap;
             }
@@ -202,16 +226,15 @@ onMounted(() => {
             deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
                 value: item.targetName + `(${item.targetId})`,
             }));
-            console.log(deviceIdsMapOpt.value)
+            console.log(deviceIdsMapOpt.value);
 
-            console.log('deviceTargetMap', deviceIdsMap.value);
-            console.log('deviceDetailList', deviceDetailList.value);
+            // console.log('deviceTargetMap', deviceIdsMap.value);
+            // console.log('deviceDetailList', deviceDetailList.value);
             let deviceIdsMapNew = mergeArraysByArr(
                 deviceDetailList.value,
                 deviceIdsMap.value,
             );
             deviceDetailList.value = deviceIdsMapNew;
-            console.log(deviceDetailList.value);
 
             if (deviceMap) {
                 const deviceMaps = deviceMap.map(

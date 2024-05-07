@@ -79,23 +79,39 @@ const props = defineProps({
         default: [],
     },
     sendId: {
-        type: [String, Array] as PropType<string | string[]>,
+        type: String,
         default: undefined,
     },
 });
 
-watch(
-    () => props.dataDetailList,
-    (newValue: any) => {
-        console.log('newValue', newValue);
-    },
-);
+// watch(
+//     () => props.dataDetailList,
+//     (newValue: any) => {
+//         console.log('newValue', newValue);
+//     },
+// );
 
 const saveRowData = (index: any, dataIndex: string, event: any) => {
     if (dataIndex === 'select') {
         props.dataDetailList[index][dataIndex] = event;
+        props.dataDetailList[index]['targetAttribute'] = splitHumidity(event);
     } else {
         props.dataDetailList[index][dataIndex] = event;
+    }
+};
+
+const splitHumidity = (data: any) => {
+    const match = data.match(/^([^(]+)\((.*)\)$/);
+    if (match) {
+        return {
+            targetName: match[1],
+            targetId: match[2],
+        };
+    } else {
+        return {
+            targetName: data,
+            targetId: '',
+        };
     }
 };
 
@@ -153,16 +169,17 @@ const handleImport = () => {
 };
 
 const handleSave = () => {
-    console.log(props.dataDetailList);
-    // const {originalName,select, ...data} = props.dataDetailList
     let getData = props.dataDetailList.map((item: any) => ({
         originalId: item.originalId,
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    console.log(getData)
-    getDataSandMap(props.sendId, getData).then((res: any) => {
-        console.log(res);
+    let senSaveDataMap = { dataMapping: getData };
+    console.log(senSaveDataMap)
+    getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
+        if(res.status === 200){
+            onlyMessage('保存成功');
+        }
     });
 };
 
