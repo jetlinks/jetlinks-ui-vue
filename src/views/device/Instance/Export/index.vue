@@ -84,40 +84,47 @@ watch(
         });
     },
     { immediate: true, deep: true },
-    
-    
+
+
 );
 
 const productName = computed(() => {
-    console.log(modelRef.product);
     return productList.value.find(item => item.id === modelRef.product)?.name || ''
     // console.log(item.id);
-   
-    
-    
+
+
+
 })
 
 const handleOk = async () => {
-    const params = paramsEncodeQuery(props.data);
+    const _params = paramsEncodeQuery(props.data);
     // downloadFile(
     //     deviceExport(modelRef.product || '', modelRef.fileType),
     //     params,
     // );
-    const res: any = await deviceExport(
-        modelRef.product || '',
-        modelRef.fileType,
-        params
-        
-        
-    );
-    if (res) {
-        // const blob = new Blob([res], { type: modelRef.fileType });
-        // const url = URL.createObjectURL(blob);
-        // downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
-        window.open(`${origin}/api/device-instance/${modelRef.product}/export.xlsx?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`)
-        emit('close');
-    }
-    
+    // const res: any = await deviceExport(
+    //     modelRef.product || '',
+    //     modelRef.fileType,
+    //     params
+    //
+    //
+    // );
+    // if (res) {
+    //     // const blob = new Blob([res], { type: modelRef.fileType });
+    //     // const url = URL.createObjectURL(blob);
+    //     // downloadFileByUrl(url, `${productName.value ? (productName.value  + '下设备') : '设备实例'}`, modelRef.fileType);
+    //
+    // }
+    const urlParams = new URLSearchParams()
+
+    Object.keys(_params).forEach(key => {
+      if (_params[key]) {
+        urlParams.append(key, _params[key])
+      }
+    })
+    window.open(`${origin}/api/device-instance/${modelRef.product}/export.xlsx?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}&${urlParams}`)
+    emit('close');
+
 };
 
 const handleCancel = () => {
