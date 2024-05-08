@@ -115,12 +115,7 @@
                 <j-form-item
                     label="所属工厂"
                     name="factoryId"
-                    :rules="[
-                        {
-                            required: true,
-                            message: '请选择所属工厂',
-                        },
-                    ]"
+                    :required="isRequired('factoryId')"
                 >
                     <j-select
                         showSearch
@@ -164,6 +159,8 @@ import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { queryFactoryList } from '@/api/factory/factory';
+import { useSystem } from '@/store/system';
+const system = useSystem();
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -200,6 +197,12 @@ const vailId = async (_: Record<string, any>, value: string) => {
     }
 };
 
+const isRequired = (field: string) => {
+    const configInfo = system.configInfo;
+    if (configInfo.front?.factoryType === 'sub') return false;
+    return true;
+};
+
 watch(
     () => props.data,
     (newValue) => {
@@ -234,8 +237,8 @@ watch(
             terms: [],
         }).then((response: any) => {
             if (response.status === 200) {
-                factoryList.value = response.result.data
-                console.log(response.result.data)
+                factoryList.value = response.result.data;
+                console.log(response.result.data);
             }
         });
         Object.assign(modelRef, newValue);

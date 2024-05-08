@@ -77,7 +77,11 @@
                                     <div class="card-item-content-text">
                                         说明
                                     </div>
-                                    <div>{{ slotProps.description }}</div>
+                                    <j-ellipsis
+                                        style="width: calc(100% - 10px)"
+                                    >
+                                        <div>{{ slotProps.description }}</div>
+                                    </j-ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
@@ -161,6 +165,7 @@
                             <j-form-item label="Topic" name="topic">
                                 <j-input
                                     v-model:value="form.topic"
+                                    :disabled="!!form?.id"
                                     placeholder="请输入Topic"
                                 />
                             </j-form-item>
@@ -359,6 +364,7 @@ const handleDelete = async (id: string) => {
     if (res.result.data?.length === 0) {
         deleteFactory(id).then((response: any) => {
             if (response.status === 200) onlyMessage('删除成功！');
+            tableRef.value?.reload();
         });
     } else {
         onlyMessage('删除失败,工厂下还存在设备', 'warning');
@@ -468,6 +474,7 @@ const getActions = (
                         deleteFactory(data.id).then((response: any) => {
                             if (response.status === 200)
                                 onlyMessage('删除成功！');
+                            tableRef.value?.reload();
                         });
                     } else {
                         onlyMessage('删除失败,工厂下还存在设备', 'warning');
@@ -493,7 +500,7 @@ const query = (params: Record<string, any>) =>
             ],
             terms: params.terms,
         }).then((response: any) => {
-            console.log(response)
+            console.log(response);
             resolve({
                 result: {
                     data: response.result?.data,

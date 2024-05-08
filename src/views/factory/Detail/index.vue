@@ -1,8 +1,6 @@
 <template>
     <page-container :showBack="true">
-        <template #title>
-            
-        </template>
+        <template #title> </template>
         <pro-search :columns="columns" type="object" @search="onSearch" />
         <j-pro-table
             :defaultParams="defaultParams"
@@ -25,7 +23,8 @@
                     :statusText="slotProps.state?.text"
                     :statusNames="{
                         online: 'processing',
-                        office: 'error',
+                        offline: 'error',
+                        notActive: 'warning',
                     }"
                 >
                     <template #img>
@@ -125,6 +124,20 @@ const columns = [
                     label: '网关设备',
                     value: 'gateway',
                 },
+            ],
+        },
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        ellipsis: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '禁用', value: 'notActive' },
+                { label: '离线', value: 'offline' },
+                { label: '在线', value: 'online' },
             ],
         },
     },

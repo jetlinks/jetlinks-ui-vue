@@ -102,7 +102,7 @@ export default defineConfig(({ mode}) => {
                 //   target: 'http://192.168.32.187:8844', // 谭本地
                   target: 'http://192.168.35.1:8844', // 谭聪本地
                 // target: 'http://192.168.33.53:8844', //测试环境1
-                // target: 'http://192.168.33.53:8845', //测试环境2
+                // target: 'http://192.168.33.57:8844', //测试环境2
                   ws: 'ws://192.168.35.1:8844',
                   changeOrigin: true,
                   rewrite: (path) => path.replace(/^\/api/, '')

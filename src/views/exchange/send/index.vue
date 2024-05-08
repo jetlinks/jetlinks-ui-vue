@@ -144,6 +144,7 @@
                             <j-form-item label="Topic" name="topic">
                                 <j-input
                                     v-model:value="form.topic"
+                                    :disabled="!!form?.id"
                                     placeholder="请输入Topic"
                                 />
                             </j-form-item>
@@ -169,6 +170,7 @@
                                 </template>
                                 <j-select
                                     showSearch
+                                    @change="curProductChange"
                                     v-model:value="form.productId"
                                     placeholder="请选择状态为“正常”的产品"
                                 >
@@ -531,14 +533,6 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const terms = [
-                        {
-                            type: 'or',
-                            value: `%${data.id}%`,
-                            termType: 'like',
-                            column: 'factoryId',
-                        },
-                    ];
                     deleteDataSand(data.id).then((response: any) => {
                         if (response.status === 200) onlyMessage('删除成功！');
                     });
@@ -580,6 +574,10 @@ const query = (params: Record<string, any>) =>
             });
     });
 
+//监听产品select选项变动,清空设备多选框
+const curProductChange = (val:any)=>{
+    form.value.deviceIds = [];
+}
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {

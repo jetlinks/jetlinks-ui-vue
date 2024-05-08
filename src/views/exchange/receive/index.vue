@@ -158,6 +158,7 @@
                             <j-form-item label="Topic" name="topic">
                                 <j-input
                                     v-model:value="form.topic"
+                                    :disabled="!!form?.id"
                                     placeholder="请输入Topic"
                                 />
                             </j-form-item>
@@ -184,6 +185,7 @@
                                 <j-select
                                     showSearch
                                     v-model:value="form.productId"
+                                    @change="curProductChange"
                                     placeholder="请选择状态为“正常”的产品"
                                 >
                                     <j-select-option
@@ -477,6 +479,7 @@ const handleExport = () => {
 
 // 编辑操作
 const handleUpdate = (data: any) => {
+    console.log(data);
     isAdd.value = 2;
     form.value = data;
     modalState.title = '编辑';
@@ -611,14 +614,6 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    const terms = [
-                        {
-                            type: 'or',
-                            value: `%${data.id}%`,
-                            termType: 'like',
-                            column: 'factoryId',
-                        },
-                    ];
                     deleteDataSand(data.id).then((response: any) => {
                         if (response.status === 200) {
                             onlyMessage('删除成功！');
@@ -657,6 +652,10 @@ const query = (params: Record<string, any>) =>
             });
     });
 
+//监听产品select选项变动,清空设备多选框
+const curProductChange = (val:any)=>{
+    form.value.deviceIds = [];
+}
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
@@ -673,7 +672,6 @@ watch(
                 deviceList.value = resp.result as Record<string, any>[];
             }
         });
-        form.value.deviceIds = []
     },
 );
 

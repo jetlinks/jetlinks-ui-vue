@@ -258,7 +258,6 @@
                                 }"
                                 @click="i.onClick"
                                 type="link"
-                                style="padding: 0 5px"
                                 :danger="i.key === 'delete'"
                                 :hasPermission="
                                     i.key === 'view'
@@ -588,6 +587,7 @@ const columns = [
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
+        width: 200,
         search: {
             type: 'string',
         },
@@ -596,7 +596,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 300,
         scopedSlots: true,
     },
 ];
@@ -672,6 +672,8 @@ const handleView = (id: string) => {
     menuStory.jumpPage('device/Instance/Detail', { id });
 };
 
+const factoryType = ref();
+factoryType.value = configInfo.front?.factoryType;
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -699,30 +701,6 @@ const getActions = (
             onClick: () => {
                 visible.value = true;
                 current.value = data;
-            },
-        },
-        {
-            key: 'distribute',
-            text: '下发',
-            tooltip: {
-                title:
-                    configInfo.front?.factoryType === 'sub'
-                        ? '子工厂不能进行下发'
-                        : '下发',
-            },
-            icon: 'ArrowRightOutlined',
-            disabled: configInfo.front?.factoryType === 'sub',
-            popConfirm: {
-                title: `确认下发吗?`,
-                onConfirm: async () => {
-                    let response = undefined;
-                    response = await sandDevice(data.id);
-                    if (response && response.status === 200) {
-                        onlyMessage('下发成功！');
-                    } else {
-                        onlyMessage('下发失败', 'error');
-                    }
-                },
             },
         },
         {
@@ -780,6 +758,29 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
+    let distributeData = {
+            key: 'distribute',
+            text: '下发',
+            tooltip: {
+                title: '下发',
+            },
+            icon: 'ArrowRightOutlined',
+            popConfirm: {
+                title: `确认下发吗?`,
+                onConfirm: async () => {
+                    let response = undefined;
+                    response = await sandDevice(data.id);
+                    if (response && response.status === 200) {
+                        onlyMessage('下发成功！');
+                    } else {
+                        onlyMessage('下发失败', 'error');
+                    }
+                },
+            },
+        };
+    if (factoryType.value !== 'sub') {
+        actions.splice(2, 0, distributeData);
+    }
     if (type === 'card')
         return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;

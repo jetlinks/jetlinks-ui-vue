@@ -78,7 +78,7 @@
                     <template #label>
                         <span>Topic</span>
                     </template>
-                    <j-input v-model:value="form.factoryKey" />
+                    <j-input v-model:value="form.factoryKey"/>
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
@@ -411,7 +411,6 @@ const saveBasicInfo = () => {
     return new Promise(async (resolve, reject) => {
         validate()
             .then(async () => {
-                console.log(111);
                 let formValues = {};
                 if (form.value.factoryType !== 'sub') {
                     const { factoryKey, ...res } = form.value;

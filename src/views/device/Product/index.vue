@@ -46,7 +46,6 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
-                        style="width: 500px"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
@@ -73,7 +72,7 @@
                         <template #content>
                             <Ellipsis
                                 style="
-                                    width: calc(100% - 100px);
+                                    width: calc(100% - 10px);
                                     margin-bottom: 18px;
                                 "
                                 ><span
@@ -87,7 +86,11 @@
                                     <div class="card-item-content-text">
                                         设备类型
                                     </div>
-                                    <div>{{ slotProps?.deviceType?.text }}</div>
+                                    <ellipsis>
+                                        <div>
+                                            {{ slotProps?.deviceType?.text }}
+                                        </div>
+                                    </ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -106,8 +109,41 @@
                             </j-row>
                         </template>
                         <template #actions="item">
+                            <j-dropdown
+                                placement="bottomRight"
+                                v-if="item.key === 'more'"
+                            >
+                                <j-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </j-button>
+                                <template #overlay>
+                                    <j-menu>
+                                        <j-menu-item
+                                            v-for="(o, i) in item.children"
+                                            :key="i"
+                                        >
+                                            <PermissionButton
+                                                :popConfirm="o.popConfirm"
+                                                :tooltip="{
+                                                    ...o.tooltip,
+                                                }"
+                                                @click="o.onClick"
+                                                :hasPermission="
+                                                    'device/Product:' + o.key
+                                                "
+                                                type="link"
+                                            >
+                                                <AIcon :type="o.icon" />
+                                                <span>{{ o?.text }}</span>
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
                             <PermissionButton
                                 :disabled="item.disabled"
+                                v-else
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{
                                     ...item.tooltip,
@@ -148,7 +184,6 @@
                             :key="i.key"
                         >
                             <PermissionButton
-                                :disabled="i.disabled"
                                 :popConfirm="i.popConfirm"
                                 :hasPermission="
                                     i.key === 'view'
@@ -160,7 +195,6 @@
                                 }"
                                 @click="i.onClick"
                                 type="link"
-                                style="padding: 0px"
                                 :danger="i.key === 'delete'"
                             >
                                 <template #icon
@@ -183,8 +217,7 @@
 </template>
 
 <script setup lang="ts">
-import server from '@/utils/request';
-import type { ActionsType } from '@/components/Table/index.vue';
+import type { ActionsType } from './typings';
 import { getImage, onlyMessage } from '@/utils/comm';
 import {
     getProviders,
@@ -195,17 +228,12 @@ import {
     _deploy,
     _undeploy,
     deleteProduct,
-    addProduct,
-    editProduct,
-    queryProductId,
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
 import { omit, cloneDeep } from 'lodash-es';
-import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
-import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';
@@ -222,27 +250,27 @@ const title = ref<string>('');
 const params = ref<Record<string, any>>({});
 const allotsVisible = ref(false);
 const disProductId = ref();
+const factoryType = ref();
 const columns = [
     {
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        scopedSlots: true,
-        width: 200,
+        width: 180,
         ellipsis: true,
     },
     {
         title: '产品名称',
         dataIndex: 'name',
         key: 'name',
-        width: 220,
+        width: 200,
         ellipsis: true,
     },
     {
         title: '接入方式',
         dataIndex: 'accessName',
         key: 'accessName',
-        width: 220,
+        width: 160,
         ellipsis: true,
     },
     {
@@ -271,15 +299,15 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 220,
+        width: 380,
         scopedSlots: true,
-        ellipsis: true,
     },
 ];
 const permission = usePermissionStore().hasPermission(`device/Product:import`);
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
 
+factoryType.value = configInfo.front?.factoryType;
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -314,6 +342,8 @@ const getActions = (
                 });
             },
         },
+    ];
+    const others = [
         {
             key: 'export',
             text: '导出',
@@ -333,23 +363,6 @@ const getActions = (
                     'messageProtocol',
                 ]);
                 downloadObject(extra, data.name + '产品');
-            },
-        },
-        {
-            key: 'distribute',
-            text: '下发',
-            tooltip: {
-                title:
-                    configInfo.front?.factoryType === 'sub'
-                        ? '子工厂不能进行下发操作'
-                        : '下发',
-            },
-            icon: 'ArrowRightOutlined',
-            disabled: configInfo.front?.factoryType === 'sub',
-            onClick: () => {
-                allotsVisible.value = true;
-                disProductId.value = data.id;
-                console.log(disProductId.value);
             },
         },
         {
@@ -377,31 +390,58 @@ const getActions = (
                 },
             },
         },
-        {
-            key: 'delete',
-            text: '删除',
-            disabled: data.state !== 0,
-            tooltip: {
-                title: data.state !== 0 ? '已启用的产品不能删除' : '删除',
-            },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await deleteProduct(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
-                },
-            },
-            icon: 'DeleteOutlined',
-        },
     ];
-    if (type === 'card')
-        return actions.filter((i: ActionsType) => i.key !== 'view');
-    return actions;
+    const distributeData = {
+        key: 'distribute',
+        text: '下发',
+        tooltip: {
+            title: '下发',
+        },
+        icon: 'ArrowRightOutlined',
+        onClick: () => {
+            allotsVisible.value = true;
+            disProductId.value = data.id;
+        },
+    };
+    const deleteItem = {
+        key: 'delete',
+        text: '删除',
+        disabled: data.state?.value !== 'notActive',
+        tooltip: {
+            title: data.state !== 0 ? '已启用的产品不能删除' : '删除',
+        },
+        popConfirm: {
+            title: '确认删除?',
+            onConfirm: async () => {
+                const resp = await deleteProduct(data.id);
+                if (resp.status === 200) {
+                    onlyMessage('操作成功！');
+                    tableRef.value?.reload();
+                } else {
+                    onlyMessage('操作失败！', 'error');
+                }
+            },
+        },
+        icon: 'DeleteOutlined',
+    };
+    if (factoryType.value !== 'sub') {
+        others.splice(1, 0, distributeData);
+    }
+    if (type === 'card') {
+        const arr = actions.filter((i: ActionsType) => i.key !== 'view');
+        return [
+            ...arr,
+            {
+                key: 'more',
+                text: '其他',
+                icon: 'EllipsisOutlined',
+                children: [...others],
+            },
+            deleteItem,
+        ];
+    } else {
+        return [...actions, ...others, deleteItem];
+    }
 };
 
 /**
