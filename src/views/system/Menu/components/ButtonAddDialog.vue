@@ -147,7 +147,7 @@ const codeOptions = [
     { label: 'update', value: 'update', message: '更新' },
 ];
 const validateIdRepeat = (rule: any, val: any) => {
-    if (props.mode === '编辑') {
+    if (props.mode === '编辑'|| props.mode === '查看') {
         return Promise.resolve('');
     }
     const isRepeat = props.menuData.find((i: any) => {
