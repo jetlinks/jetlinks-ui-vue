@@ -132,7 +132,7 @@ onMounted(()=>{
     getGroupOptions()
     form.value.groupId = props.groupId
     if(props.modalType === 'edit'){
-        form.value = props.current(props.current)
+        form.value = props.current
     }
 })
 </script>

@@ -164,10 +164,6 @@ const onDelete = () => {
 
 const onDeleteAll = () => {
   if (FormModel.value.branches) {
-<<<<<<< HEAD
-    FormModel.value.branches[props.name].when = []
-    FormModel.value.options.when[props.branches_Index].terms = []
-=======
     // FormModel.value.branches.length = props.name
     // FormModel.value.branches.push(null as any)
     FormModel.value.branches[props.name].when = []
@@ -175,7 +171,6 @@ const onDeleteAll = () => {
     if(FormModel.value.branches[props.name + 1] === null){
       FormModel.value.branches.splice(props.name + 1 , 1)
     }
->>>>>>> 39a0991d4a3c9da4014154682811fd8270bd35c8
   }
 }
 

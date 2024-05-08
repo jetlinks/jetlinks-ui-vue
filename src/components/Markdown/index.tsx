@@ -83,7 +83,6 @@ export default {
                 .use(MarkdownItAbbr)
                 .use(MarkdownItAnchor, props.anchor)
                 .use(MarkdownItDeflist)
-                .use(emoji, props.emoji)
                 .use(MarkdownItFootnote)
                 .use(MarkdownItHighlightjs, props.highlight)
                 .use(MarkdownItIns)

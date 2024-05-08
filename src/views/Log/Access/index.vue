@@ -111,16 +111,7 @@
                 {{ descriptionsData?.parameters }}
             </j-descriptions-item>
             <j-descriptions-item label="异常信息" :span="2">
-<<<<<<< HEAD
-                <j-textarea
-                    v-model:value="descriptionsData.exception"
-                    placeholder="暂无数据"
-                    :auto-size="{ minRows: 3, maxRows: 20 }"
-                    readonly
-                />
-=======
                 {{ descriptionsData.exception }}
->>>>>>> 39a0991d4a3c9da4014154682811fd8270bd35c8
             </j-descriptions-item>
         </j-descriptions>
         <template #footer>
