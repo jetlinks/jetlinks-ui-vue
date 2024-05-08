@@ -1,6 +1,6 @@
 <template>
     <div class="button-mange-container">
-        <j-pro-table
+            <j-pro-table
             ref="tableRef"
             :columns="table.columns"
             model="TABLE"
@@ -46,7 +46,7 @@
                     </PermissionButton>
                 </j-space>
             </template>
-        </j-pro-table>
+            </j-pro-table>
 
         <div class="dialog">
             <ButtonAddDialog
@@ -110,6 +110,7 @@ const table = reactive({
             title: '说明',
             dataIndex: 'description',
             key: 'description',
+            ellipsis: true,
         },
         {
             title: '操作',

@@ -63,7 +63,10 @@
                     :btnId="form.data.id"
                 />
             </j-form-item>
-            <j-form-item label="说明" name="description">
+            <j-form-item label="说明" name="description"
+            :rules="[
+                    { max: 200, message: '最多可输入200个字符' },
+                ]">
                 <j-textarea
                     v-model:value="form.data.description"
                     :rows="4"
