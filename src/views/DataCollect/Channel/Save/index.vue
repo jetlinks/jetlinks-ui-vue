@@ -239,6 +239,14 @@ const handleOk = async () => {
       params.configuration.deviceName = formData.value.configuration.deviceName
     }
 
+    if(params?.provider === 'snap7'){
+        params.configuration={
+            connect : false
+        }
+    } else if (params?.provider === 'iec104') {
+      params.configuration = {}
+    }
+
     params.circuitBreaker = {
       type: 'Ignore'
     }
@@ -304,7 +312,7 @@ const getProvidersList = async () => {
     if (resp.status === 200) {
         const arr = resp.result
             .filter(
-                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua'].includes(item.name),
+                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7', 'IEC104'].includes(item.name),
             )
             .map((it: any) => it.name);
         const providers: any = protocolList.filter((item: any) =>

@@ -39,7 +39,48 @@
                     placeholder="请输入采集器名称"
                     v-model:value="formData.name"
                 />
+
             </j-form-item>
+            <j-form-item  v-if="provider === 'snap7'" label="IP" :name="['configuration', 'host']" :rules="LeftTreeRules.host" >
+              <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入通道IP" :disabled="false"/>
+            </j-form-item>
+            <j-form-item v-if="provider === 'snap7'" label="端口" :name="['configuration', 'port']" :rules="LeftTreeRules.port">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" placeholder="请输入通道端口"/>
+            </j-form-item>
+            <j-form-item v-if="provider === 'snap7'" label="机架号" :name="['configuration', 'rack']" :rules="LeftTreeRules.rack">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.rack" autocomplete="off" placeholder="请输入机架号" :maxlength="64" />
+            </j-form-item>
+            <j-form-item v-if="provider === 'snap7'" label="型号" :name="['configuration', 'type']" :rules="LeftTreeRules.type">
+              <j-select v-model:value="formData.configuration.type" placeholder="请选择型号" @change="typeChange">
+                <j-select-option v-for="item in typeOptions" :key="item.value" :value="item.value">{{ item.label }}</j-select-option>
+              </j-select>
+            </j-form-item>
+            <j-form-item v-if="provider === 'snap7'" label="槽位" :name="['configuration', 'slot']" :rules="LeftTreeRules.slot">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.slot" autocomplete="off" placeholder="请输入槽位" :maxlength="64" :disabled="formData.configuration.type == 'S200' || formData.configuration.type == 'S1200'"/>
+            </j-form-item>
+            <j-form-item v-if="provider === 'snap7'" label="超时时间（毫秒）" :name="['configuration', 'timeout']" :rules="LeftTreeRules.timeout">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.timeout" autocomplete="off" placeholder="请输入超时时间" :maxlength="64" />
+            </j-form-item>
+            <j-form-item v-if="provider === 'snap7'" label="数据读取方式" :name="['configuration', 'serializable']">
+              <j-radio-group v-model:value="formData.configuration.serializable">
+                <j-radio-button :value="false">并行</j-radio-button>
+                <j-radio-button :value="true">串行</j-radio-button>
+              </j-radio-group>
+            </j-form-item>
+            <template v-if="provider === 'iec104'">
+              <j-form-item label="从机地址" :name="['configuration', 'host']" :rules="LeftTreeRules.host">
+                <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入" :disabled="false"/>
+              </j-form-item>
+              <j-form-item label="从机端口" :name="['configuration', 'port']" >
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" placeholder="请输入从机端口"/>
+              </j-form-item>
+              <j-form-item label="分组地址" :name="['configuration', 'terminnalAddress']" :rules="LeftTreeRules.terminnalAddress">
+                <j-input-number style="width: 100%" :min="0" :max="65535" :precision="0" v-model:value="formData.configuration.terminnalAddress" autocomplete="off" placeholder="请输入分组地址"></j-input-number>
+              </j-form-item>
+              <j-form-item label="确认帧数量" :name="['configuration', 'frameAmountMax']" :rules="LeftTreeRules.frameAmountMax">
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.frameAmountMax" placeholder="请输入确认帧数量" :min="1" :maxlength="16" :precision="0"></j-input-number>
+              </j-form-item>
+            </template>
             <j-form-item
                 v-if="provider === 'COLLECTOR_GATEWAY'"
                 label="通讯协议"
@@ -133,6 +174,7 @@
             </p>
             </div>
             <j-form-item
+                v-if="provider !== 'snap7'"
                 :name="['configuration', 'requestTimeout']"
                 :rules="LeftTreeRules.requestTimeout"
                 label='请求超时时间'
@@ -197,6 +239,14 @@ const props = defineProps({
 
 const emit = defineEmits(['change']);
 
+const typeOptions = ref([
+  {value: 'S200', label: 'S7-200'},
+  {value: 'S300', label: 'S7-300'},
+  {value: 'S400', label: 'S7-400'},
+  {value: 'S1200', label: 'S7-1200'},
+  {value: 'S1500', label: 'S7-1500'},
+])
+
 const id = props.data.id;
 const formRef = ref<FormInstance>();
 const provider = ref()
@@ -249,16 +299,17 @@ const endianData = computed(() => {
     }
 });
 
-const formData = ref({
+const formData = ref<any>({
     channelId: undefined,
     name: '',
     collectorProvider: undefined,
     configuration: {
         unitId: '',
-        type: 'LowerFrequency',
+        type: undefined,
         endian: 'BIG',
         endianIn: 'BIG',
         requestTimeout: 2000,
+        serializable:false,
         inheritBreakerSpec: {
           type: 'LowerFrequency',
         }
@@ -348,10 +399,16 @@ const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
+const typeChange = (val:any)=>{
+  if(val == 'S200' || val == 'S1200') {
+    formData.value.configuration.slot = 1
+  }
+}
+
 watch(
     () => formData.value.channelId,
     (value) => {
-        const dt = _channelListAll.value.find((item) => item.id === value);
+        const dt:any = _channelListAll.value.find((item:any) => item.id === value);
         visibleUnitId.value = visibleEndian.value =
             dt?.provider && ['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(dt?.provider);
     },
