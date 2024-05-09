@@ -72,7 +72,11 @@ const props = defineProps({
     },
     dataMapOpt: {
         type: [String, Array] as PropType<string | string[]>,
-        default: undefined,
+        default: [
+            {
+                value: '',
+            },
+        ],
     },
     dataDetailList: {
         type: [Array, String] as PropType<string[] | string>,
@@ -175,9 +179,9 @@ const handleSave = () => {
         state: item.state,
     }));
     let senSaveDataMap = { dataMapping: getData };
-    console.log(senSaveDataMap)
+    console.log(senSaveDataMap);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
-        if(res.status === 200){
+        if (res.status === 200) {
             onlyMessage('保存成功');
         }
     });

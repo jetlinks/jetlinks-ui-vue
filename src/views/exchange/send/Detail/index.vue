@@ -13,10 +13,9 @@
                 </j-tab-pane>
                 <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
                     <DeviceMap
-                        :mapDeviceList="mapDeviceList"
-                        :deviceMapOption="deviceMapOption"
                         :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
+                        @updateParentVar ='updateParentVar'
                         :sendId="route.query?.id"
                     />
                 </j-tab-pane>
@@ -26,7 +25,6 @@
 </template>
 
 <script lang="ts" setup>
-import { queryNoPagingPost } from '@/api/device/product';
 import {
     queryDeviceProductList,
     queryDataSendList,
@@ -36,9 +34,7 @@ import DeviceMap from './deviceMap/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 const route = useRoute();
 
-const mapDeviceList = ref<any>([]);
 const mapDataList = ref<any>([]);
-const deviceMapOption = ref<any>([]);
 const dataMapOption = ref<any>([]);
 const dataMapOpt = ref<any>([]);
 
@@ -49,6 +45,10 @@ const activeKey = ref('DataMap');
 
 const dataDetailList = ref<any>([]);
 const deviceDetailList = ref<any>([]);
+
+const updateParentVar = (newValue:any) => {
+    deviceDetailList.value = newValue;
+};
 
 const mergeArraysById = (arr1: any, arr2: any) => {
     const merged = arr1.map((item1: any) => {
@@ -79,7 +79,11 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
         if (item2) {
             // 如果在arr2中找到了相同id的对象，则合并除了id以外的属性
             const { originalId, originalName, ...orgData } = item1;
-            const { deviceTargetAttribute, ...rest2 } = item2;
+            const {
+                deviceTargetAttribute,
+                deviceTargetAttributeMap,
+                ...rest2
+            } = item2;
             const mergedDevDataMap = orgData.deviceTargetAttribute.map(
                 (orgItem1: any) => {
                     const orgItem2 = deviceTargetAttribute.find(
@@ -105,6 +109,7 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                     ...rest2,
                 },
                 deviceTargetAttribute: mergedDevDataMap,
+                deviceTargetAttributeMap: deviceTargetAttributeMap,
                 select: item2.targetName + `(${item2.targetId})`,
                 state: 'enabled',
             };
@@ -215,10 +220,16 @@ onMounted(() => {
                     targetId: item.id,
                     targetName: item.name,
                 }));
+                let deviceTargetAttributeMap = deviceMapMetadata.map(
+                    (item: any) => ({
+                        value: item.targetName + `(${item.targetId})`,
+                    }),
+                );
                 return {
                     targetId: item.id,
                     targetName: item.name,
                     deviceTargetAttribute: deviceMapMetadata,
+                    deviceTargetAttributeMap: deviceTargetAttributeMap,
                 };
             });
             deviceIdsMap.value = deviceTargetMap;
@@ -226,27 +237,89 @@ onMounted(() => {
             deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
                 value: item.targetName + `(${item.targetId})`,
             }));
-            console.log(deviceIdsMapOpt.value);
 
-            // console.log('deviceTargetMap', deviceIdsMap.value);
-            // console.log('deviceDetailList', deviceDetailList.value);
             let deviceIdsMapNew = mergeArraysByArr(
                 deviceDetailList.value,
                 deviceIdsMap.value,
             );
             deviceDetailList.value = deviceIdsMapNew;
 
-            if (deviceMap) {
-                const deviceMaps = deviceMap.map(
-                    (obj: any) => obj.targetAttribute,
-                );
-                console.log('deviceMaps', deviceMaps);
-                deviceMapOption.value = deviceMaps;
-            }
             if (dataMap) {
-                const dataMaps = dataMap.map((obj: any) => obj.targetAttribute);
-                console.log('dataMaps', dataMaps);
-                dataMapOption.value = dataMaps;
+                //处理数据映射 已保存后数据加载
+                //dataDetailList.value
+                dataDetailList.value = dataDetailList.value.map((item: any) => {
+                    const dataDetailListLaster = dataMap.find(
+                        (item1: any) => item1.originalId === item.originalId,
+                    );
+                    if (dataDetailListLaster) {
+                        return {
+                            originalId: item.originalId,
+                            originalName: item.originalName,
+                            select: dataDetailListLaster.targetAttribute
+                                ? `${dataDetailListLaster.targetAttribute.targetName}(${dataDetailListLaster.targetAttribute.targetId})`
+                                : undefined,
+                            state: dataDetailListLaster.state.value,
+                            targetAttribute:
+                                dataDetailListLaster.targetAttribute,
+                        };
+                    } else {
+                        return item;
+                    }
+                });
+            }
+
+            if (deviceMap) {
+                // console.log('deviceMap', deviceMap);
+                // console.log('deviceDetailList', deviceDetailList.value);
+                // deviceDetailList.value
+                deviceDetailList.value = deviceDetailList.value.map(
+                    (item: any) => {
+                        const deviceDetailListLaster = deviceMap.find(
+                            (item1: any) =>
+                                item1.originalId === item.originalId,
+                        );
+                        if (deviceDetailListLaster) {
+                            //处理设备映射>>数据映射 已保存后数据加载
+                            const getDevDataLists =
+                                item.deviceTargetAttribute.map((item2: any) => {
+                                    const getDevDataList =
+                                        deviceDetailListLaster.deviceTargetAttribute.find(
+                                            (item3: any) =>
+                                                item3.originalId ===
+                                                item2.originalId,
+                                        );
+                                    if (getDevDataList) {
+                                        return {
+                                            originalId: item2.originalId,
+                                            originalName: item2.originalName,
+                                            select: getDevDataList.targetAttribute
+                                                ? `${getDevDataList.targetAttribute.targetName}(${getDevDataList.targetAttribute.targetId})`
+                                                : undefined,
+                                            state: getDevDataList.state.value,
+                                            targetAttribute:
+                                                getDevDataList.targetAttribute,
+                                        };
+                                    } else {
+                                        return item2;
+                                    }
+                                });
+
+                            return {
+                                originalId: item.originalId,
+                                originalName: item.originalName,
+                                select: `${deviceDetailListLaster.targetAttribute.targetName}(${deviceDetailListLaster.targetAttribute.targetId})`,
+                                state: deviceDetailListLaster.state.value,
+                                deviceTargetAttribute: getDevDataLists,
+                                deviceTargetAttributeMap:
+                                    item.deviceTargetAttributeMap,
+                                targetAttribute:
+                                    deviceDetailListLaster.targetAttribute,
+                            };
+                        } else {
+                            return item;
+                        }
+                    },
+                );
             }
         });
     });

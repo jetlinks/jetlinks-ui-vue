@@ -117,18 +117,36 @@ import { getDataSandMap, exportSandTarget } from '@/api/exchange/receive';
 import { onlyMessage } from '@/utils/comm';
 
 const params = ref<Record<string, any>>({});
-const mappingData = ref<any>([]);
 const tableRef = ref();
 const DelTableRef = ref();
 const deviceMapDetail = ref<any>([]);
 const mapOptions = ref<any>([]);
+const deviceMapDetailOne = ref<any>();
 
 const State = reactive({
     openView: false,
     title: '映射',
     confirmLoading: false,
     confirm() {
-        console.log(deviceMapDetail.value);
+        deviceMapDetailOne.value.deviceTargetAttribute = deviceMapDetail.value;
+        const arr = props.deviceDetailList.map((item: any) => {
+            if (item.originalId === deviceMapDetailOne.value.originalId) {
+                return {
+                    originalId: deviceMapDetailOne.value.originalId,
+                    originalName: deviceMapDetailOne.value.originalName,
+                    select: deviceMapDetailOne.value.select,
+                    state: deviceMapDetailOne.value.state,
+                    targetAttribute: deviceMapDetailOne.value.targetAttribute,
+                    deviceTargetAttributeMap:
+                        deviceMapDetailOne.value.deviceTargetAttributeMap,
+                    deviceTargetAttribute:
+                        deviceMapDetailOne.value.deviceTargetAttribute,
+                };
+            }
+            return item;
+        });
+        emit('updateParentVar', arr);
+        State.openView = false;
     },
     cancel() {
         State.openView = false;
@@ -136,14 +154,6 @@ const State = reactive({
 });
 
 const props = defineProps({
-    mapDeviceList: {
-        type: [String, Array] as PropType<string | string[]>,
-        default: [],
-    },
-    deviceMapOption: {
-        type: [String, Array] as PropType<string | string[]>,
-        default: [],
-    },
     deviceIdsMapOpt: {
         type: [String, Array] as PropType<string | string[]>,
         default: [],
@@ -204,6 +214,7 @@ const handleSave = () => {
         let deviceTargetAttribute = item.deviceTargetAttribute.map(
             (item: any) => ({
                 originalId: item.originalId,
+                state: item.state,
                 targetAttribute: item.targetAttribute,
             }),
         );
@@ -215,7 +226,7 @@ const handleSave = () => {
         };
     });
     let senSaveDataMap = { deviceMapping: getData };
-    console.log(senSaveDataMap)
+    console.log(senSaveDataMap);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
             onlyMessage('保存成功');
@@ -244,15 +255,13 @@ const splitHumidity = (data: any) => {
 };
 
 const handleMap = (data: any) => {
+    deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
-    mapOptions.value = data.record.deviceTargetAttribute.map((item: any) => ({
-        value:
-            item.targetAttribute.targetName +
-            `(${item.targetAttribute.targetId})`,
-    }));
+    mapOptions.value = data.record.deviceTargetAttributeMap;
     State.openView = true;
 };
 
+const emit = defineEmits(['updateParentVar']);
 // watch(()=>props.deviceDetailList, (newValue: any) => {
 //     console.log('newValue',newValue);
 // });
