@@ -200,7 +200,7 @@
                                 :danger="i.key === 'delete'"
                             >
                                 <template #icon
-                                    ><AIcon style="font-size: 12px;gap:10px" :type="i.icon"
+                                    ><AIcon style="font-size: 13px;" :type="i.icon"
                                 /></template>
                             </PermissionButton>
                         </template>

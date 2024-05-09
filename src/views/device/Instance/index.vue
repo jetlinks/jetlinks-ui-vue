@@ -266,7 +266,7 @@
                                 "
                             >
                                 <template #icon
-                                    ><AIcon :type="i.icon"
+                                    ><AIcon style="font-size: 13px;" :type="i.icon"
                                 /></template>
                             </PermissionButton>
                         </template>
@@ -1049,3 +1049,9 @@ onMounted(() => {
     });
 });
 </script>
+
+<style scoped>
+td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first > div{
+    gap: 2px !important;
+}
+</style>
