@@ -198,7 +198,7 @@ import {
 } from '@/api/factory/factory';
 import { omit, cloneDeep } from 'lodash-es';
 import { FormState, ActionsType } from './typings';
-import { isUrl } from '@/utils/regular';
+import { isUrl,isPort } from '@/utils/regular';
 
 const menuStory = useMenuStore();
 
@@ -220,6 +220,19 @@ const validatorUrl = (rule: any, value: any, callback: any) => {
         return Promise.resolve();
     }
 };
+
+const validatorPort = (rule: any, value: any, callback: any) => {
+    if (value === undefined || value === '' || value === null) {
+        return Promise.reject('请输入端口号');
+    } else {
+        if (!isPort(parseInt(value))) {
+            return Promise.reject(
+                '请输入正确端口号(有效端口号范围(0到65535))',
+            );
+        }
+        return Promise.resolve();
+    }
+};
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
     rules: {
@@ -235,8 +248,8 @@ const data = reactive({
             { max: 256, message: '最多可输入256位字符', trigger: 'change' },
         ],
         port: [
-            { required: true, message: '请输入端口号', trigger: 'blur' },
-            { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+            { required: true, trigger: 'blur' ,validator: validatorPort},
+            { max: 8, message: '最多可输入8位字符', trigger: 'change' },
         ],
         appId: [
             { required: true, message: '请输入appId', trigger: 'blur' },
@@ -283,6 +296,7 @@ const modalState = reactive({
     },
     cancel() {
         modalState.openView = false;
+        tableRef.value?.reload();
     },
 });
 const { form, rules } = toRefs(data);
@@ -500,7 +514,6 @@ const query = (params: Record<string, any>) =>
             ],
             terms: params.terms,
         }).then((response: any) => {
-            console.log(response);
             resolve({
                 result: {
                     data: response.result?.data,

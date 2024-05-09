@@ -124,6 +124,7 @@
                                             :key="i"
                                         >
                                             <PermissionButton
+                                                :disabled="o.disabled"
                                                 :popConfirm="o.popConfirm"
                                                 :tooltip="{
                                                     ...o.tooltip,
@@ -184,6 +185,7 @@
                             :key="i.key"
                         >
                             <PermissionButton
+                                :disabled="i.disabled"
                                 :popConfirm="i.popConfirm"
                                 :hasPermission="
                                     i.key === 'view'
@@ -198,7 +200,7 @@
                                 :danger="i.key === 'delete'"
                             >
                                 <template #icon
-                                    ><AIcon :type="i.icon"
+                                    ><AIcon style="font-size: 12px;gap:10px" :type="i.icon"
                                 /></template>
                             </PermissionButton>
                         </template>
@@ -299,7 +301,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 380,
+        width: 340,
         scopedSlots: true,
     },
 ];
@@ -406,7 +408,7 @@ const getActions = (
     const deleteItem = {
         key: 'delete',
         text: '删除',
-        disabled: data.state?.value !== 'notActive',
+        disabled: data.state !== 0,
         tooltip: {
             title: data.state !== 0 ? '已启用的产品不能删除' : '删除',
         },
@@ -733,5 +735,8 @@ onMounted(() => {
     white-space: nowrap; /*强制在同一行内显示所有文本，直到文本结束或者遭遇br标签对象才换行。*/
     overflow: hidden; /*超出部分隐藏*/
     text-overflow: ellipsis; /*隐藏部分以省略号代替*/
+}
+td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first > div{
+    gap: 2px !important;
 }
 </style>

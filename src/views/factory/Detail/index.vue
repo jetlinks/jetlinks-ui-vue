@@ -185,7 +185,6 @@ const onSearch = (e: any) => {
 const query = (params: Record<string, any>) =>
     new Promise((resolve) => {
         _queryFactory(params).then((response: any) => {
-            console.log(response);
             resolve({
                 result: {
                     data: response.result?.data,
