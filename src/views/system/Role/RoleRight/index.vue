@@ -34,8 +34,10 @@
                 </j-pro-table>
             </FullPage>
 
-            <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
-                :current="current" />
+            <AddDialog  v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
+                :current="current" 
+                @refresh="tableRef?.reload()"
+                />
         </div>
     
 </template>
