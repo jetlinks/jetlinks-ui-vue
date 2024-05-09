@@ -313,7 +313,7 @@ const getDataTotal = () => {
         yearTotal.value = resp.sortArray
             .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
-            yearOptions.value = monthOptions.value;
+            yearOptions.value = resp.sortArray;
     });
 };
 
