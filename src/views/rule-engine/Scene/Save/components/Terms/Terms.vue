@@ -196,7 +196,6 @@ const addGroup = () => {
     branchName:'条件'+ data.value.branches?.length
   }
   data.value.branches?.push(branchesItem)
-  data.value.branches?.push(null as any)
   activeKey.value = `group_${branchesItem.key}`
   data.value.options!.when.push({
     terms: [{
