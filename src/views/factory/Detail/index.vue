@@ -19,6 +19,7 @@
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
+                    @click="handleClick(slotProps.id)"
                     :status="slotProps.state?.value"
                     :statusText="slotProps.state?.text"
                     :statusNames="{
@@ -73,6 +74,9 @@
 import { _queryFactory } from '@/api/factory/factory';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { omit, cloneDeep } from 'lodash-es';
+import { useMenuStore } from '@/store/menu';
+
+const menuStory = useMenuStore();
 
 const route = useRoute();
 const factoryDetails = ref<Record<string, any>>({});
@@ -88,6 +92,10 @@ const defaultParams = {
             column: 'factoryId',
         },
     ],
+};
+
+const handleClick = (id: string) => {
+    menuStory.jumpPage('device/Instance/Detail', { id });
 };
 
 const columns = [

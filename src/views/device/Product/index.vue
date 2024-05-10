@@ -200,7 +200,9 @@
                                 :danger="i.key === 'delete'"
                             >
                                 <template #icon
-                                    ><AIcon style="font-size: 13px;" :type="i.icon"
+                                    ><AIcon
+                                        style="font-size: 13px"
+                                        :type="i.icon"
                                 /></template>
                             </PermissionButton>
                         </template>
@@ -233,6 +235,7 @@ import {
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
+import { queryGetSendData } from '@/api/exchange/receive';
 import { omit, cloneDeep } from 'lodash-es';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
@@ -415,6 +418,18 @@ const getActions = (
         popConfirm: {
             title: '确认删除?',
             onConfirm: async () => {
+                // const getInstance = {
+                //     terms: [
+                //         {
+                //             column: 'productId',
+                //             termType: 'eq',
+                //             type: 'or',
+                //             value: `${data.id}`,
+                //         },
+                //     ],
+                // };
+                // const result = await queryGetSendData(getInstance);
+                // console.log('result',result)
                 const resp = await deleteProduct(data.id);
                 if (resp.status === 200) {
                     onlyMessage('操作成功！');
@@ -736,7 +751,8 @@ onMounted(() => {
     overflow: hidden; /*超出部分隐藏*/
     text-overflow: ellipsis; /*隐藏部分以省略号代替*/
 }
-td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first > div{
+td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first
+    > div {
     gap: 2px !important;
 }
 </style>

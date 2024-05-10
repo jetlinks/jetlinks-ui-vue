@@ -14,7 +14,7 @@
                     <j-col flex="180px">
                         <j-form-item name="photoUrl">
                             <JProUpload
-                                accept="image/jpeg,image/png"
+                                accept="image/jpeg,image/png,jpg,gif"
                                 v-model="modelRef.photoUrl"
                             />
                         </j-form-item>
@@ -157,7 +157,7 @@
 <script lang="ts" setup>
 import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
-import { getImage, onlyMessage } from '@/utils/comm';
+import { getImage, onlyMessage, getBase64 } from '@/utils/comm';
 import { queryFactoryList } from '@/api/factory/factory';
 import { useSystem } from '@/store/system';
 const system = useSystem();

@@ -162,7 +162,22 @@
                                     placeholder="请输入appKey"
                                 />
                             </j-form-item>
-                            <j-form-item label="Topic" name="topic">
+                            <j-form-item
+                                label="Topic"
+                                name="topic"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        validator: vailTopic,
+                                        trigger: 'blur',
+                                    },
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="form.topic"
                                     :disabled="!!form?.id"
@@ -195,10 +210,11 @@ import {
     deleteFactory,
     queryFactoryList,
     getDeviceList_factory,
+    isTopic,
 } from '@/api/factory/factory';
 import { omit, cloneDeep } from 'lodash-es';
 import { FormState, ActionsType } from './typings';
-import { isUrl,isPort } from '@/utils/regular';
+import { isUrl, isPort } from '@/utils/regular';
 
 const menuStory = useMenuStore();
 
@@ -226,13 +242,40 @@ const validatorPort = (rule: any, value: any, callback: any) => {
         return Promise.reject('请输入端口号');
     } else {
         if (!isPort(parseInt(value))) {
-            return Promise.reject(
-                '请输入正确端口号(有效端口号范围(0到65535))',
-            );
+            return Promise.reject('请输入正确端口号(有效端口号范围(0到65535))');
         }
         return Promise.resolve();
     }
 };
+
+const vailTopic = async (_: Record<string, any>, value: string) => {
+    if (value) {
+        let updateID = form.value.id;
+        if (updateID) {
+            const resp: any = await isTopic({
+                topic: value,
+                id: updateID,
+            });
+            if (resp.status === 200 && resp.result?.passed === false) {
+                return Promise.reject('Topic重复');
+            } else {
+                return Promise.resolve();
+            }
+        } else {
+            const resp: any = await isTopic({
+                topic: value,
+            });
+            if (resp.status === 200 && resp.result?.passed === false) {
+                return Promise.reject('Topic重复');
+            } else {
+                return Promise.resolve();
+            }
+        }
+    } else {
+        return Promise.resolve();
+    }
+};
+
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
     rules: {
@@ -248,7 +291,7 @@ const data = reactive({
             { max: 256, message: '最多可输入256位字符', trigger: 'change' },
         ],
         port: [
-            { required: true, trigger: 'blur' ,validator: validatorPort},
+            { required: true, trigger: 'blur', validator: validatorPort },
             { max: 8, message: '最多可输入8位字符', trigger: 'change' },
         ],
         appId: [
@@ -259,26 +302,25 @@ const data = reactive({
             { required: true, message: '请输入appKey', trigger: 'blur' },
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
-        topic: [
-            { required: true, message: '请输入Topic', trigger: 'blur' },
-            { max: 64, message: '最多可输入64位字符', trigger: 'change' },
-        ],
         description: [
             { max: 200, message: '最多可输入200位字符', trigger: 'change' },
         ],
     },
 });
+
 const modalState = reactive({
     openView: false,
     title: '新增',
     confirmLoading: false,
     confirm() {
         formRef.value?.validate().then(() => {
+            modalState.confirmLoading = true;
             let { id, ...addData } = form.value;
             if (isAdd.value === 1) {
                 addFactory(addData).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('添加成功！');
+                        modalState.confirmLoading = false;
                         modalState.openView = false;
                         tableRef.value?.reload();
                     }
@@ -287,6 +329,7 @@ const modalState = reactive({
                 editFactory(form.value).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('修改成功！');
+                        modalState.confirmLoading = false;
                         modalState.openView = false;
                         tableRef.value?.reload();
                     }

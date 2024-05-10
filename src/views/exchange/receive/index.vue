@@ -248,6 +248,7 @@ import {
     _undeploy,
     queryNoPagingReceive,
 } from '@/api/device/instance';
+import { isTopic } from '@/api/factory/factory';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
@@ -291,11 +292,13 @@ const modalState = reactive({
     confirmLoading: false,
     confirm() {
         formRef.value?.validate().then(() => {
+            modalState.confirmLoading = true;
             let { id, ...addData } = form.value;
             if (isAdd.value === 1) {
                 addDataSand(addData).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('添加成功！');
+                        modalState.confirmLoading = false;
                         modalState.openView = false;
                         tableRef.value?.reload();
                     }
@@ -304,6 +307,7 @@ const modalState = reactive({
                 editDataSand(form.value).then((res: any) => {
                     if (res.status === 200) {
                         onlyMessage('修改成功！');
+                        modalState.confirmLoading = false;
                         modalState.openView = false;
                         tableRef.value?.reload();
                     }
@@ -368,6 +372,35 @@ const validatorUrl = (rule: any, value: any, callback: any) => {
         return Promise.resolve();
     }
 };
+
+const vailTopic = async (_: Record<string, any>, value: string) => {
+    if (value) {
+        let updateID = form.value.id;
+        if (updateID) {
+            const resp: any = await isTopic({
+                topic: value,
+                id: updateID,
+            });
+            if (resp.status === 200 && resp.result?.passed === false) {
+                return Promise.reject('Topic重复');
+            } else {
+                return Promise.resolve();
+            }
+        } else {
+            const resp: any = await isTopic({
+                topic: value,
+            });
+            if (resp.status === 200 && resp.result?.passed === false) {
+                return Promise.reject('Topic重复');
+            } else {
+                return Promise.resolve();
+            }
+        }
+    } else {
+        return Promise.resolve();
+    }
+};
+
 const rules = {
     name: [
         { required: true, message: '请输入名称', trigger: 'blur' },
@@ -375,7 +408,7 @@ const rules = {
     ],
     url: [{ required: true, trigger: 'blur', validator: validatorUrl }],
     topic: [
-        { required: true, message: '请输入Topic', trigger: 'blur' },
+        { required: true, trigger: 'blur', validator: vailTopic },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
     productId: [
@@ -445,36 +478,57 @@ const handleAdd = () => {
 };
 
 const handleExport = () => {
-    let myArr = selectedRow.value.map((item: any) => {
-        return {
-            productId: item.productId,
-            deviceIds: item.deviceIds,
-        };
-    });
-
-    myArr.map((element) => {
+    let myArr = selectedRow.value.map((item: any) => item.productId);
+    if (myArr.length === 1) {
         const terms: any = [
             {
-                column: 'productId',
+                column: 'id',
                 termType: 'eq',
                 type: 'or',
-                value: `${element.productId}`,
+                value: `${myArr[0]}`,
             },
         ];
         queryDeviceProductList({ terms }).then((res: any) => {
-            const arr = res.result.map((item: any) => item.metadata);
-            console.log(JSON.parse(arr[0]));
-            const extra = omit(JSON.parse(arr[0]), [
-                'transportProtocol',
-                'protocolName',
-                'accessId',
-                'accessName',
-                'accessProvider',
-                'messageProtocol',
-            ]);
-            downloadObject(extra, '导出信息');
+            let result = res.result[0];
+            // console.log(result);
+            if (result) {
+                const extra = omit(JSON.parse(JSON.stringify(result)), [
+                    'transportProtocol',
+                    'protocolName',
+                    'accessId',
+                    'accessName',
+                    'accessProvider',
+                    'messageProtocol',
+                ]);
+                downloadObject(extra, '导出信息');
+            }
         });
-    });
+    } else if (myArr.length > 1) {
+        const terms: any = [
+            {
+                column: 'id',
+                termType: 'in',
+                type: 'or',
+                value: myArr,
+            },
+        ];
+        queryDeviceProductList({ terms }).then((res: any) => {
+            // console.log(res.result);
+            res.result.map((element: any) => {
+                const extra = omit(JSON.parse(JSON.stringify(element)), [
+                    'transportProtocol',
+                    'protocolName',
+                    'accessId',
+                    'accessName',
+                    'accessProvider',
+                    'messageProtocol',
+                ]);
+                downloadObject(extra, '导出信息');
+            });
+        });
+    } else {
+        onlyMessage('请先选择需要导出数据', 'error');
+    }
 };
 
 // 编辑操作
@@ -653,9 +707,9 @@ const query = (params: Record<string, any>) =>
     });
 
 //监听产品select选项变动,清空设备多选框
-const curProductChange = (val:any)=>{
+const curProductChange = (val: any) => {
     form.value.deviceIds = [];
-}
+};
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
@@ -676,7 +730,21 @@ watch(
 );
 
 onMounted(() => {
-    queryNoPagingPost({ paging: false }).then((resp: any) => {
+    queryNoPagingPost({
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+        terms: [
+            {
+                terms: [
+                    {
+                        termType: 'eq',
+                        column: 'state',
+                        value: 1,
+                    },
+                ],
+            },
+        ],
+    }).then((resp: any) => {
         if (resp.status === 200) {
             productList.value = resp.result as Record<string, any>[];
             paramsProductID.value = resp.result[0]?.productId;

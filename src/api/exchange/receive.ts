@@ -51,11 +51,12 @@ export const queryDeviceProductList = (data: Record<string, any>) =>
     server.post(`/device/instance/product/detail/_query/no-paging`, data);
 
 /**
- * 保存配置
- *
+ * 配置导入保存
+ * @param data
+ * 
  */
-///tbea/receive/sand/{id}/configuration
-///tbea/receive/sand/{id}/target
+export const queryDeviceProductTarget = (data: any) =>
+    server.put(`/tbea/receive/sand/target/_update`, data);
 
 /**
  * 保存导入数据
@@ -73,3 +74,10 @@ export const saveSandConfiguration = (id: string, data: any) =>
  */
 export const getDataSandMap = (id: any, data: any) =>
     server.put(`/tbea/receive/sand/${id}/mapping`, data);
+
+/**
+ * 查询收据收发是否选中了该数据
+ *
+ */
+export const queryGetSendData = (data: any) =>
+    server.post('/tbea/receive/sand/_query/no-paging', data);

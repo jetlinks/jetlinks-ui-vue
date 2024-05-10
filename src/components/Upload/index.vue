@@ -107,7 +107,7 @@ const props: JUploadProps = defineProps({
 
 const loading = ref<boolean>(false);
 const imageUrl = ref<string>(props?.modelValue || '');
-const imageTypes = props.types ? props.types : ['image/jpeg', 'image/png'];
+const imageTypes = props.types ? props.types : ['image/jpeg', 'image/png', 'jpg', 'gif'];
 
 const cropperImg = ref()
 const cropperVisible = ref(false)
@@ -141,7 +141,7 @@ const handleChange = (info: UploadChangeParam) => {
 
 const beforeUpload = (file: UploadProps['fileList'][number]) => {
     const isType = imageTypes.includes(file.type);
-    const maxSize = props.size || 2 // 最大值
+    const maxSize = props.size || 4 // 最大值
     if (!isType) {
         if (props.errorMessage) {
             onlyMessage(props.errorMessage, 'error');

@@ -266,7 +266,9 @@
                                 "
                             >
                                 <template #icon
-                                    ><AIcon style="font-size: 13px;" :type="i.icon"
+                                    ><AIcon
+                                        style="font-size: 13px"
+                                        :type="i.icon"
                                 /></template>
                             </PermissionButton>
                         </template>
@@ -324,7 +326,8 @@ import {
     queryNoPagingPost,
     queryOrgThree,
 } from '@/api/device/product';
-import { queryFactoryList } from '@/api/factory/factory';
+import { queryFactoryList, sandDevice } from '@/api/factory/factory';
+import { queryGetSendData } from '@/api/exchange/receive';
 import { queryTree } from '@/api/device/category';
 import { useMenuStore } from '@/store/menu';
 import type { ActionsType } from './typings';
@@ -334,7 +337,6 @@ import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
-import { sandDevice } from '@/api/factory/factory';
 import { useSystem } from '@/store/system';
 
 const instanceRef = ref<Record<string, any>>({});
@@ -746,6 +748,17 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
+                    // const getInstance = {
+                    //     terms: [
+                    //         {
+                    //             column: 'id',
+                    //             termType: 'eq',
+                    //             type: 'or',
+                    //             value: `${data.id}`,
+                    //         },
+                    //     ],
+                    // };
+                    // const result = await queryGetSendData(getInstance);
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功！');
@@ -759,25 +772,25 @@ const getActions = (
         },
     ];
     let distributeData = {
-            key: 'distribute',
-            text: '下发',
-            tooltip: {
-                title: '下发',
+        key: 'distribute',
+        text: '下发',
+        tooltip: {
+            title: '下发',
+        },
+        icon: 'ArrowRightOutlined',
+        popConfirm: {
+            title: `确认下发吗?`,
+            onConfirm: async () => {
+                let response = undefined;
+                response = await sandDevice(data.id);
+                if (response && response.status === 200) {
+                    onlyMessage('下发成功！');
+                } else {
+                    onlyMessage('下发失败', 'error');
+                }
             },
-            icon: 'ArrowRightOutlined',
-            popConfirm: {
-                title: `确认下发吗?`,
-                onConfirm: async () => {
-                    let response = undefined;
-                    response = await sandDevice(data.id);
-                    if (response && response.status === 200) {
-                        onlyMessage('下发成功！');
-                    } else {
-                        onlyMessage('下发失败', 'error');
-                    }
-                },
-            },
-        };
+        },
+    };
     if (factoryType.value !== 'sub') {
         actions.splice(2, 0, distributeData);
     }
@@ -1051,7 +1064,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first > div{
+td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first
+    > div {
     gap: 2px !important;
 }
 </style>

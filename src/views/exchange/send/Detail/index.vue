@@ -9,14 +9,16 @@
                         :dataMapOpt="dataMapOpt"
                         :dataDetailList="dataDetailList"
                         :sendId="route.query?.id"
+                        @refresh="refresh"
                     />
                 </j-tab-pane>
                 <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
                     <DeviceMap
                         :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
-                        @updateParentVar ='updateParentVar'
+                        @updateParentVar="updateParentVar"
                         :sendId="route.query?.id"
+                        @refresh="refresh"
                     />
                 </j-tab-pane>
             </j-tabs>
@@ -46,7 +48,7 @@ const activeKey = ref('DataMap');
 const dataDetailList = ref<any>([]);
 const deviceDetailList = ref<any>([]);
 
-const updateParentVar = (newValue:any) => {
+const updateParentVar = (newValue: any) => {
     deviceDetailList.value = newValue;
 };
 
@@ -120,7 +122,11 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
     return merged;
 };
 
-onMounted(() => {
+const refresh = ()=>{
+    Init()
+}
+
+const Init = () => {
     //获取原设备和原属性
     const terms: any = [
         {
@@ -131,7 +137,7 @@ onMounted(() => {
         },
     ];
     queryDeviceProductList({ terms }).then((res: any) => {
-        console.log(res);
+        console.log('res', res);
         const getData = res.result[0];
         if (getData.metadata === undefined) {
             onlyMessage('请先为产品设置物模型信息', 'error');
@@ -323,6 +329,10 @@ onMounted(() => {
             }
         });
     });
+};
+
+onMounted(() => {
+    Init();
 });
 </script>
 

@@ -7,6 +7,7 @@
         @cancel="cancel"
         cancelText="取消"
         okText="确定下发"
+        :confirmLoading="loading"
     >
         <j-transfer
             v-model:target-keys="targetKeys"
@@ -42,27 +43,33 @@ const emit = defineEmits(['close']);
 
 const openView = ref(true);
 const title = ref('下发');
+const loading = ref<boolean>(false);
 const targetKeys = ref<string[]>([]);
 const factoryList = ref<any>([]);
 
 const confirm = () => {
+    loading.value = true;
     let foundObjects = targetKeys.value.map((key) => {
         return factoryList.value.find((obj: any) => {
             delete obj.key;
             return obj.id === key;
         });
     });
-    if (props.disProductId && foundObjects) {
+    if (props.disProductId && foundObjects.length > 0) {
         sandProduct(props.disProductId, foundObjects)
             .then((res: any) => {
                 if (res.status === 200) {
                     onlyMessage('下发成功！');
                     emit('close');
+                    loading.value = false;
                 }
             })
             .catch((error) => {
                 console.log(error);
             });
+    } else {
+        onlyMessage('请选中下发工厂，并添加到目标列表中', 'error');
+        loading.value = false;
     }
 };
 const cancel = () => {

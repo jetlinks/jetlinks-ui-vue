@@ -62,7 +62,10 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 import { getImage, onlyMessage } from '@/utils/comm';
-import { getDataSandMap } from '@/api/exchange/receive';
+import {
+    queryDeviceProductTarget,
+    getDataSandMap,
+} from '@/api/exchange/receive';
 const tableRef = ref();
 
 const props = defineProps({
@@ -148,10 +151,25 @@ const beforeUpload = (file: any) => {
             onlyMessage('请上传正确格式文件', 'error');
             return false;
         }
-        if (!data?.expands || JSON.stringify(data?.expands) === '{}') {
-            onlyMessage('缺少deviceType字段或对应的值', 'error');
+        if (
+            !data?.deviceDetails ||
+            JSON.stringify(data?.deviceDetails) === '{}'
+        ) {
+            onlyMessage('缺少deviceDetails字段或对应的值', 'error');
             return false;
         }
+        let saveData = [
+            {
+                id: props.sendId,
+                targetMapping: data,
+            },
+        ];
+        console.log('saveData',saveData)
+        queryDeviceProductTarget(saveData).then((res:any)=>{
+            if(res.status === 200){
+                onlyMessage('导入成功！');
+            }
+        })
         return true;
     };
     return false;
@@ -164,14 +182,6 @@ const columns = [
     { title: '状态', dataIndex: 'state', width: 200 },
 ];
 
-const handChange = (e: any) => {
-    console.log(e);
-};
-
-const handleImport = () => {
-    console.log('导入');
-};
-
 const handleSave = () => {
     let getData = props.dataDetailList.map((item: any) => ({
         originalId: item.originalId,
@@ -183,13 +193,12 @@ const handleSave = () => {
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
             onlyMessage('保存成功');
+            emit('refresh')
         }
     });
 };
 
-const handleMap = (data: any) => {
-    console.log(data);
-};
+const emit = defineEmits(['refresh']);
 </script>
 
 <style lang="less" scoped>

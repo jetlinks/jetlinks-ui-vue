@@ -365,6 +365,7 @@ import { formType, uploaderType } from './typing';
 import { getImage } from '@/utils/comm.ts';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
+import { isTopic } from '@/api/factory/factory';
 
 import { save_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
@@ -467,7 +468,6 @@ const form = reactive<formType>({
                         },
                     },
                 ];
-                console.log(params)
                 save_api(params)
                     .then(async (resp) => {
                         if (resp.status === 200) {
@@ -486,6 +486,20 @@ const form = reactive<formType>({
 const { formValue, rulesFrom } = toRefs(form);
 const isChild = ref(false);
 const facRules = ref<any>();
+const vailTopic = async (_: Record<string, any>, value: string) => {
+    if (value) {
+        const resp: any = await isTopic({
+            topic: value,
+        });
+        if (resp.status === 200 && resp.result?.passed === false) {
+            return Promise.reject('Topic重复');
+        } else {
+            return Promise.resolve();
+        }
+    } else {
+        return Promise.resolve();
+    }
+};
 watch(
     () => formValue.value.factoryType,
     (newValue: any) => {
@@ -500,8 +514,8 @@ watch(
                 },
                 {
                     required: true,
-                    message: '请填写工厂Topic',
                     trigger: 'blur',
+                    validator: vailTopic,
                 },
             ];
         } else {

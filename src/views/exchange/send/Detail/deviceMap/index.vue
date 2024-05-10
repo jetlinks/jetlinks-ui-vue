@@ -11,16 +11,14 @@
         bordered
     >
         <template #expand>
-            <PermissionButton
-                key="import"
-                style="margin-right: 20px"
-                :tooltip="{
-                    title: '导入',
-                }"
-                @click="handleImport"
-                placement="topRight"
-            >
-                导入
+            <PermissionButton style="margin-right: 20px" placement="topRight">
+                <j-upload
+                    name="file"
+                    accept=".json"
+                    :showUploadList="false"
+                    :before-upload="beforeUpload"
+                    >导入</j-upload
+                >
             </PermissionButton>
             <PermissionButton
                 key="save"
@@ -39,6 +37,7 @@
             <j-select
                 v-model:value="data.record.select"
                 style="width: 150px"
+                allowClear
                 :options="props.deviceIdsMapOpt"
                 placeholder="请选择目标设备"
                 @change="saveRowData(data.index, 'select', $event)"
@@ -113,7 +112,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 // import { queryNoPagingPost } from '@/api/device/product';
-import { getDataSandMap, exportSandTarget } from '@/api/exchange/receive';
+import { getDataSandMap, queryDeviceProductTarget } from '@/api/exchange/receive';
 import { onlyMessage } from '@/utils/comm';
 
 const params = ref<Record<string, any>>({});
@@ -184,6 +183,52 @@ const DetailColumns = [
     { title: '状态', dataIndex: 'state', width: 200 },
 ];
 
+/**
+ * 导入
+ */
+ const beforeUpload = (file: any) => {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = (result) => {
+        const text = result.target?.result;
+        if (!file.type.includes('json')) {
+            onlyMessage('请上传json格式文件', 'error');
+            return false;
+        }
+        if (!text) {
+            onlyMessage('文件内容不能为空', 'error');
+            return false;
+        }
+        const data = JSON.parse(text);
+        if (Array.isArray(data)) {
+            onlyMessage('请上传正确格式文件', 'error');
+            return false;
+        }
+        if (
+            !data?.deviceDetails ||
+            JSON.stringify(data?.deviceDetails) === '{}'
+        ) {
+            onlyMessage('缺少deviceDetails字段或对应的值', 'error');
+            return false;
+        }
+        let saveData = [
+            {
+                id: props.sendId,
+                targetMapping: data,
+            },
+        ];
+        console.log('saveData',saveData)
+        queryDeviceProductTarget(saveData).then((res:any)=>{
+            if(res.status === 200){
+                onlyMessage('导入成功！');
+                emit('refresh');
+            }
+        })
+        return true;
+    };
+    return false;
+};
+
 //修改设备table表数据
 const saveRowData = (index: any, dataIndex: string, event: any) => {
     if (dataIndex === 'select') {
@@ -202,10 +247,6 @@ const saveMapRowData = (index: any, dataIndex: string, event: any) => {
     } else {
         deviceMapDetail.value[index][dataIndex] = event;
     }
-};
-
-const handleImport = () => {
-    console.log('导入');
 };
 
 const handleSave = () => {
@@ -261,7 +302,7 @@ const handleMap = (data: any) => {
     State.openView = true;
 };
 
-const emit = defineEmits(['updateParentVar']);
+const emit = defineEmits(['updateParentVar','refresh']);
 // watch(()=>props.deviceDetailList, (newValue: any) => {
 //     console.log('newValue',newValue);
 // });

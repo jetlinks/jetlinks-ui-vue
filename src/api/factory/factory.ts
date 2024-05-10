@@ -57,3 +57,11 @@ export const sandDevice = (id: string) =>
  */
 export const sandProduct = (id: string, data: any) =>
     server.post(`/tbea/receive/sand/product/${id}`, data);
+
+/**
+ * 验证Topic是否具有唯一性
+ * @param topic topic
+ */
+
+export const isTopic = (data: any) =>
+    server.post(`/tbea/receive/sand/topic/_validate`, data);
