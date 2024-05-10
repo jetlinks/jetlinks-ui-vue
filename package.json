@@ -43,7 +43,7 @@
     "unplugin-vue-components": "^0.22.12",
     "v-clipboard3": "^0.1.4",
     "vite-plugin-monaco-editor": "^1.1.0",
-    "vue": "^3.2.45",
+    "vue": "3.3.4",
     "vue-cropper": "^1.0.9",
     "vue-json-viewer": "^3.0.4",
     "vue-router": "^4.1.6",
