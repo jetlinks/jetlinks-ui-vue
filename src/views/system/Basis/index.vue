@@ -489,6 +489,7 @@ const facRules = ref<any>();
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
         const resp: any = await isTopic({
+            id: form.formValue.factoryType,
             topic: value,
         });
         if (resp.status === 200 && resp.result?.passed === false) {

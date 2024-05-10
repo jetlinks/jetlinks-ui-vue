@@ -168,6 +168,7 @@ const beforeUpload = (file: any) => {
         queryDeviceProductTarget(saveData).then((res:any)=>{
             if(res.status === 200){
                 onlyMessage('导入成功！');
+                emit('refresh');
             }
         })
         return true;

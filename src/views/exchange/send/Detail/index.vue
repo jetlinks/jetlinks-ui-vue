@@ -8,7 +8,7 @@
                         :mapDataList="mapDataList"
                         :dataMapOpt="dataMapOpt"
                         :dataDetailList="dataDetailList"
-                        :sendId="route.query?.id"
+                        :sendId="sendId"
                         @refresh="refresh"
                     />
                 </j-tab-pane>
@@ -17,7 +17,7 @@
                         :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
                         @updateParentVar="updateParentVar"
-                        :sendId="route.query?.id"
+                        :sendId="sendId"
                         @refresh="refresh"
                     />
                 </j-tab-pane>
@@ -47,7 +47,9 @@ const activeKey = ref('DataMap');
 
 const dataDetailList = ref<any>([]);
 const deviceDetailList = ref<any>([]);
+const sendId = ref<any>();
 
+sendId.value = route.query.id as string;
 const updateParentVar = (newValue: any) => {
     deviceDetailList.value = newValue;
 };
@@ -122,9 +124,9 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
     return merged;
 };
 
-const refresh = ()=>{
-    Init()
-}
+const refresh = () => {
+    Init();
+};
 
 const Init = () => {
     //获取原设备和原属性
@@ -258,6 +260,10 @@ const Init = () => {
                         (item1: any) => item1.originalId === item.originalId,
                     );
                     if (dataDetailListLaster) {
+                        console.log(
+                            'dataDetailListLaster',
+                            dataDetailListLaster,
+                        );
                         return {
                             originalId: item.originalId,
                             originalName: item.originalName,
@@ -275,7 +281,7 @@ const Init = () => {
             }
 
             if (deviceMap) {
-                // console.log('deviceMap', deviceMap);
+                console.log('deviceMap', deviceMap);
                 // console.log('deviceDetailList', deviceDetailList.value);
                 // deviceDetailList.value
                 deviceDetailList.value = deviceDetailList.value.map(
@@ -286,6 +292,10 @@ const Init = () => {
                         );
                         if (deviceDetailListLaster) {
                             //处理设备映射>>数据映射 已保存后数据加载
+                            console.log(
+                                'deviceDetailListLaster',
+                                deviceDetailListLaster,
+                            );
                             const getDevDataLists =
                                 item.deviceTargetAttribute.map((item2: any) => {
                                     const getDevDataList =
@@ -294,6 +304,11 @@ const Init = () => {
                                                 item3.originalId ===
                                                 item2.originalId,
                                         );
+                                    console.log(
+                                        'getDevDataList',
+                                        getDevDataList,
+                                    );
+                                    console.log('item2', item2);
                                     if (getDevDataList) {
                                         return {
                                             originalId: item2.originalId,
@@ -301,7 +316,7 @@ const Init = () => {
                                             select: getDevDataList.targetAttribute
                                                 ? `${getDevDataList.targetAttribute.targetName}(${getDevDataList.targetAttribute.targetId})`
                                                 : undefined,
-                                            state: getDevDataList.state.value,
+                                            state: getDevDataList.state || undefined,
                                             targetAttribute:
                                                 getDevDataList.targetAttribute,
                                         };
@@ -313,8 +328,10 @@ const Init = () => {
                             return {
                                 originalId: item.originalId,
                                 originalName: item.originalName,
-                                select: `${deviceDetailListLaster.targetAttribute.targetName}(${deviceDetailListLaster.targetAttribute.targetId})`,
-                                state: deviceDetailListLaster.state.value,
+                                select: deviceDetailListLaster.targetAttribute
+                                    ? `${deviceDetailListLaster.targetAttribute.targetName}(${deviceDetailListLaster.targetAttribute.targetId})`
+                                    : undefined,
+                                state: deviceDetailListLaster.state,
                                 deviceTargetAttribute: getDevDataLists,
                                 deviceTargetAttributeMap:
                                     item.deviceTargetAttributeMap,
@@ -326,6 +343,8 @@ const Init = () => {
                         }
                     },
                 );
+
+                console.log('deviceDetailList', deviceDetailList.value);
             }
         });
     });

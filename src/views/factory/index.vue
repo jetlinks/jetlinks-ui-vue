@@ -241,8 +241,10 @@ const validatorPort = (rule: any, value: any, callback: any) => {
     if (value === undefined || value === '' || value === null) {
         return Promise.reject('请输入端口号');
     } else {
-        if (!isPort(parseInt(value))) {
-            return Promise.reject('请输入正确端口号(有效端口号范围(0到65535))');
+        if (
+            !(/^[1-9]\d*$/.test(value) && 1 <= 1 * value && 1 * value <= 65535)
+        ) {
+            return Promise.reject('请输入正确端口号(有效端口号范围(0到65535正整数))');
         }
         return Promise.resolve();
     }

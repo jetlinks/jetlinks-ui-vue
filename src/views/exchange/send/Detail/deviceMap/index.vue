@@ -267,17 +267,13 @@ const handleSave = () => {
         };
     });
     let senSaveDataMap = { deviceMapping: getData };
-    console.log(senSaveDataMap);
+    console.log('senSaveDataMap',senSaveDataMap);
+    console.log('props.sendId',props.sendId);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
             onlyMessage('保存成功');
         }
     });
-};
-
-const handleChange = (value: any, key: any) => {
-    console.log(value);
-    console.log(key);
 };
 
 const splitHumidity = (data: any) => {
@@ -307,6 +303,7 @@ const emit = defineEmits(['updateParentVar','refresh']);
 //     console.log('newValue',newValue);
 // });
 </script>
+
 
 <style lang="less" scoped>
 [data-doc-theme='light'] .ant-table-striped :deep(.table-striped) td {
