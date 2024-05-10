@@ -136,6 +136,7 @@
         :data="current"
         v-if="detailVisible"
         @close="detailVisible = false"
+        :maskClosable="false"
     />
     <Auth
         v-if="authVisible"
