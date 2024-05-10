@@ -34,8 +34,10 @@
                 </j-pro-table>
             </FullPage>
 
-            <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
-                :current="current" />
+            <AddDialog  v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
+                :current="current" 
+                @refresh="tableRef?.reload()"
+                />
         </div>
     
 </template>
@@ -140,6 +142,7 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
+                placement:'topRight',
                 onConfirm: async () => {
                     const res = await delRole_api(data.id)
                     if (res.status === 200) {

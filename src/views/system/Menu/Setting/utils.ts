@@ -328,7 +328,7 @@ export const handleSorts = (node: any[]) => {
     if (!node) return []
     return node.map((item, index) => {
         if (item.index !== index) {
-            item.sortIndex = index
+            item.sortIndex = index + 1
             if (item.children) {
                 item.children = handleSorts(item.children).sort((a, b) => a.sortIndex - b.sortIndex)
             }

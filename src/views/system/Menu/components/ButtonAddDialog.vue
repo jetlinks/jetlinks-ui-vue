@@ -63,7 +63,10 @@
                     :btnId="form.data.id"
                 />
             </j-form-item>
-            <j-form-item label="说明" name="description">
+            <j-form-item label="说明" name="description"
+            :rules="[
+                    { max: 200, message: '最多可输入200个字符' },
+                ]">
                 <j-textarea
                     v-model:value="form.data.description"
                     :rows="4"
@@ -147,7 +150,7 @@ const codeOptions = [
     { label: 'update', value: 'update', message: '更新' },
 ];
 const validateIdRepeat = (rule: any, val: any) => {
-    if (props.mode === '编辑') {
+    if (props.mode === '编辑'|| props.mode === '查看') {
         return Promise.resolve('');
     }
     const isRepeat = props.menuData.find((i: any) => {
