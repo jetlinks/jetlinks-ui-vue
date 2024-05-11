@@ -81,6 +81,10 @@ const props = defineProps({
             },
         ],
     },
+    deviceDetailList: {
+        type: [Array, String] as PropType<string[] | string>,
+        default: [],
+    },
     dataDetailList: {
         type: [Array, String] as PropType<string[] | string>,
         default: [],
@@ -90,13 +94,6 @@ const props = defineProps({
         default: undefined,
     },
 });
-
-// watch(
-//     () => props.dataDetailList,
-//     (newValue: any) => {
-//         console.log('newValue', newValue);
-//     },
-// );
 
 const saveRowData = (index: any, dataIndex: string, event: any) => {
     if (dataIndex === 'select') {
@@ -165,12 +162,12 @@ const beforeUpload = (file: any) => {
             },
         ];
         // console.log('saveData',saveData)
-        queryDeviceProductTarget(saveData).then((res:any)=>{
-            if(res.status === 200){
+        queryDeviceProductTarget(saveData).then((res: any) => {
+            if (res.status === 200) {
                 onlyMessage('导入成功！');
                 emit('refresh');
             }
-        })
+        });
         return true;
     };
     return false;
@@ -189,12 +186,28 @@ const handleSave = () => {
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    let senSaveDataMap = { dataMapping: getData };
+    let getDeviceData = props.deviceDetailList.map((item: any) => {
+        let deviceTargetAttribute = item.deviceTargetAttribute.map(
+            (item: any) => ({
+                originalId: item.originalId,
+                state: item.state,
+                targetAttribute: item.targetAttribute,
+            }),
+        );
+        return {
+            originalId: item.originalId,
+            targetAttribute: item.targetAttribute,
+            deviceTargetAttribute: deviceTargetAttribute,
+            bln: item.bln,
+            state: item.state,
+        };
+    });
+    let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
     console.log(senSaveDataMap);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
             onlyMessage('保存成功');
-            emit('refresh')
+            emit('refresh');
         }
     });
 };

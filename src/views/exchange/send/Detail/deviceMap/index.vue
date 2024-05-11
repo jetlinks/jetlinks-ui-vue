@@ -164,6 +164,10 @@ const props = defineProps({
         type: [String, Array] as PropType<string | string[]>,
         default: [],
     },
+    dataDetailList: {
+        type: [String, Array] as PropType<string | string[]>,
+        default: [],
+    },
     deviceDetailList: {
         type: [String, Array] as PropType<string | string[]>,
         default: [],
@@ -274,8 +278,8 @@ const saveMapRowData = (index: any, dataIndex: string, event: any) => {
 };
 
 const handleSave = () => {
-    console.log(props.deviceDetailList);
-    let getData = props.deviceDetailList.map((item: any) => {
+    // console.log(props.deviceDetailList);
+    let getDeviceData = props.deviceDetailList.map((item: any) => {
         let deviceTargetAttribute = item.deviceTargetAttribute.map(
             (item: any) => ({
                 originalId: item.originalId,
@@ -285,13 +289,19 @@ const handleSave = () => {
         );
         return {
             originalId: item.originalId,
+            bln: item.bln,
             targetAttribute: item.targetAttribute,
             deviceTargetAttribute: deviceTargetAttribute,
             state: item.state,
         };
     });
-    let senSaveDataMap = { deviceMapping: getData };
-    // console.log('senSaveDataMap',senSaveDataMap);
+    let getData = props.dataDetailList.map((item: any) => ({
+        originalId: item.originalId,
+        targetAttribute: item.targetAttribute,
+        state: item.state,
+    }));
+    let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
+    console.log('senSaveDataMap',senSaveDataMap);
     // console.log('props.sendId',props.sendId);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
@@ -316,6 +326,9 @@ const splitHumidity = (data: any) => {
 };
 
 const handleMap = (data: any) => {
+    console.log('dataDetailList',props.dataDetailList)
+    console.log('data',data)
+
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
     mapOptions.value = data.record.deviceTargetAttributeMap;

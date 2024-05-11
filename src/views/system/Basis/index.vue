@@ -488,14 +488,26 @@ const isChild = ref(false);
 const facRules = ref<any>();
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
-        const resp: any = await isTopic({
-            id: form.formValue.factoryType,
-            topic: value,
-        });
-        if (resp.status === 200 && resp.result?.passed === false) {
-            return Promise.reject('Topic重复');
+        let oldValue = system.configInfo.front?.factoryKey;
+        if (oldValue === value) {
+            const resp: any = await isTopic({
+                topic: value,
+            });
+            if (resp.status === 200 && resp.result?.passed === false) {
+                return Promise.reject('Topic重复');
+            } else {
+                return Promise.resolve();
+            }
         } else {
-            return Promise.resolve();
+            const resp: any = await isTopic({
+                id: form.formValue.factoryType,
+                topic: value,
+            });
+            if (resp.status === 200 && resp.result?.passed === false) {
+                return Promise.reject('Topic重复');
+            } else {
+                return Promise.resolve();
+            }
         }
     } else {
         return Promise.resolve();

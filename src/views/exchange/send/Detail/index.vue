@@ -7,6 +7,7 @@
                     <DataMap
                         :mapDataList="mapDataList"
                         :dataMapOpt="dataMapOpt"
+                        :deviceDetailList="deviceDetailList"
                         :dataDetailList="dataDetailList"
                         :sendId="sendId"
                         @refresh="refresh"
@@ -16,6 +17,7 @@
                     <DeviceMap
                         :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
+                        :dataDetailList="dataDetailList"
                         @updateParentVar="updateParentVar"
                         :sendId="sendId"
                         @refresh="refresh"
@@ -272,6 +274,7 @@ const Init = () => {
             if (dataMap) {
                 //处理数据映射 已保存后数据加载
                 //dataDetailList.value
+                console.log('dataMap',dataMap)
                 dataDetailList.value = dataDetailList.value.map((item: any) => {
                     const dataDetailListLaster = dataMap.find(
                         (item1: any) => item1.originalId === item.originalId,
@@ -300,9 +303,9 @@ const Init = () => {
                     deviceDetailList.value = deviceDetailList.value.map(
                         (item: any) => {
                             const deviceDetailListLaster = deviceMap.find(
-                                (item1: any) =>
-                                    item1.originalId === item.originalId,
+                                (item1: any) => item1.originalId === item.originalId,
                             );
+                            // console.log('deviceDetailListLaster',deviceDetailListLaster)
                             if (deviceDetailListLaster) {
                                 //处理设备映射>>数据映射 已保存后数据加载
                                 const getDevDataLists =
@@ -310,9 +313,7 @@ const Init = () => {
                                         (item2: any) => {
                                             const getDevDataList =
                                                 deviceDetailListLaster.deviceTargetAttribute.find(
-                                                    (item3: any) =>
-                                                        item3.originalId ===
-                                                        item2.originalId,
+                                                    (item3: any) =>item3.originalId === item2.originalId,
                                                 );
                                             // console.log('getDevDataList',getDevDataList)
                                             if (getDevDataList) {
@@ -359,6 +360,8 @@ const Init = () => {
                         },
                     );
                 }
+
+                
             }
         });
     });

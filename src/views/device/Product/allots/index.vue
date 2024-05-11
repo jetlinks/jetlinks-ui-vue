@@ -90,9 +90,13 @@ const getMock = () => {
     });
     queryFactoryIssued(props.disProductId).then((res: any) => {
         if (res.status === 200) {
-            targetKeys.value = res.result.map((item: any) => {
-                return item.id;
-            });
+            if (res.result.length > 0) {
+                targetKeys.value = res.result.map((item: any) => {
+                    return item.factoryId;
+                });
+            } else {
+                targetKeys.value = [];
+            }
         }
     });
 };
