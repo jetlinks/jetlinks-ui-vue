@@ -46,6 +46,7 @@
                     <CardBox
                         :showStatus="false"
                         :value="slotProps"
+                        @click="handleSee(slotProps)"
                         :actions="getActions(slotProps, 'card')"
                     >
                         <template #content>
@@ -211,6 +212,7 @@ import {
     queryFactoryList,
     getDeviceList_factory,
     isTopic,
+    getSubFactoryToken,
 } from '@/api/factory/factory';
 import { omit, cloneDeep } from 'lodash-es';
 import { FormState, ActionsType } from './typings';
@@ -244,7 +246,9 @@ const validatorPort = (rule: any, value: any, callback: any) => {
         if (
             !(/^[1-9]\d*$/.test(value) && 1 <= 1 * value && 1 * value <= 65535)
         ) {
-            return Promise.reject('请输入正确端口号(有效端口号范围(0到65535正整数))');
+            return Promise.reject(
+                '请输入正确端口号(有效端口号范围(0到65535正整数))',
+            );
         }
         return Promise.resolve();
     }
@@ -403,6 +407,21 @@ const handleUpdate = (data: any) => {
     form.value = data;
     modalState.title = '编辑';
     modalState.openView = true;
+};
+
+//查看子工厂
+const handleSee = (data: any) => {
+    getSubFactoryToken(data).then((res: any) => {
+        if(res.result){
+            console.log(`${data.url}:${data.port}/api/token-set.html?token=` + res.result,)
+            window.open(
+            `${data.url}:${data.port}/api/token-set.html?token=` + res.result,
+            '_blank',
+        );
+        }
+    }).catch(()=>{
+        onlyMessage('地址错误,请检查！', 'error');
+    });
 };
 
 //查看设备

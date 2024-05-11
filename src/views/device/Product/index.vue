@@ -235,7 +235,6 @@ import {
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
-import { queryGetSendData } from '@/api/exchange/receive';
 import { omit, cloneDeep } from 'lodash-es';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';

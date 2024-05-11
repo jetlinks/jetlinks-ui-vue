@@ -29,8 +29,11 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { queryFactoryList } from '@/api/factory/factory';
-import { sandProduct } from '@/api/factory/factory';
+import {
+    queryFactoryList,
+    queryFactoryIssued,
+    sandProduct,
+} from '@/api/factory/factory';
 import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
@@ -60,8 +63,8 @@ const confirm = () => {
             .then((res: any) => {
                 if (res.status === 200) {
                     onlyMessage('下发成功！');
-                    emit('close');
                     loading.value = false;
+                    emit('close');
                 }
             })
             .catch((error) => {
@@ -83,6 +86,13 @@ const getMock = () => {
     }).then((response: any) => {
         if (response.status === 200) {
             factoryList.value = response.result.data;
+        }
+    });
+    queryFactoryIssued(props.disProductId).then((res: any) => {
+        if (res.status === 200) {
+            targetKeys.value = res.result.map((item: any) => {
+                return item.id;
+            });
         }
     });
 };

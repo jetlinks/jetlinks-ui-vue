@@ -48,7 +48,7 @@ export const queryNoPagingPostDevice = (data?: Record<string, any>) =>
  * @returns
  */
 export const queryDeviceProductList = (data: Record<string, any>) =>
-    server.post(`/device/instance/product/detail/_query/no-paging`, data);
+    server.post(`/device-instance/product/detail/_query/no-paging`, data);
 
 /**
  * 配置导入保存

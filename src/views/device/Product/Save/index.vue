@@ -115,7 +115,7 @@
 <script lang="ts" setup>
 import { category } from '@/api/device/product';
 import { Form } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm.ts';
+import { getImage } from '@/utils/comm';
 import DialogTips from '../DialogTips/index.vue';
 import { useProductStore } from '@/store/product';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';

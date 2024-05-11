@@ -37,7 +37,7 @@
             <j-select
                 v-model:value="data.record.select"
                 style="width: 150px"
-                allowClear
+                :allowClear="true"
                 :options="props.deviceIdsMapOpt"
                 placeholder="请选择目标设备"
                 @change="saveRowData(data.index, 'select', $event)"
@@ -112,7 +112,10 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue';
 // import { queryNoPagingPost } from '@/api/device/product';
-import { getDataSandMap, queryDeviceProductTarget } from '@/api/exchange/receive';
+import {
+    getDataSandMap,
+    queryDeviceProductTarget,
+} from '@/api/exchange/receive';
 import { onlyMessage } from '@/utils/comm';
 
 const params = ref<Record<string, any>>({});
@@ -133,13 +136,17 @@ const State = reactive({
                 return {
                     originalId: deviceMapDetailOne.value.originalId,
                     originalName: deviceMapDetailOne.value.originalName,
-                    select: deviceMapDetailOne.value.select,
-                    state: deviceMapDetailOne.value.state,
-                    targetAttribute: deviceMapDetailOne.value.targetAttribute,
+                    select: deviceMapDetailOne.value.select || undefined,
+                    state: deviceMapDetailOne.value.state || undefined,
+                    bln: true,
+                    targetAttribute:
+                        deviceMapDetailOne.value.targetAttribute || undefined,
                     deviceTargetAttributeMap:
-                        deviceMapDetailOne.value.deviceTargetAttributeMap,
+                        deviceMapDetailOne.value.deviceTargetAttributeMap ||
+                        undefined,
                     deviceTargetAttribute:
-                        deviceMapDetailOne.value.deviceTargetAttribute,
+                        deviceMapDetailOne.value.deviceTargetAttribute ||
+                        undefined,
                 };
             }
             return item;
@@ -186,7 +193,7 @@ const DetailColumns = [
 /**
  * 导入
  */
- const beforeUpload = (file: any) => {
+const beforeUpload = (file: any) => {
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = (result) => {
@@ -217,23 +224,40 @@ const DetailColumns = [
                 targetMapping: data,
             },
         ];
-        console.log('saveData',saveData)
-        queryDeviceProductTarget(saveData).then((res:any)=>{
-            if(res.status === 200){
+        console.log('saveData', saveData);
+        queryDeviceProductTarget(saveData).then((res: any) => {
+            if (res.status === 200) {
                 onlyMessage('导入成功！');
                 emit('refresh');
             }
-        })
+        });
         return true;
     };
     return false;
 };
 
+// const handleClear = (index: any, dataIndex: string, event: any) => {
+//     console.log('index', index);
+//     console.log('dataIndex', dataIndex);
+//     console.log(event);
+//     if (event === undefined) {
+//     }
+// };
+
 //修改设备table表数据
 const saveRowData = (index: any, dataIndex: string, event: any) => {
     if (dataIndex === 'select') {
-        props.deviceDetailList[index][dataIndex] = event;
-        props.deviceDetailList[index]['targetAttribute'] = splitHumidity(event);
+        if (event) {
+            const getTargetAtt = props.deviceDetailList.find((item:any)=> item.select = event)
+            // console.log(getTargetAtt)
+            props.deviceDetailList[index]['deviceTargetAttribute'] = getTargetAtt.deviceTargetAttribute;
+            props.deviceDetailList[index]['deviceTargetAttributeMap'] = getTargetAtt.deviceTargetAttributeMap;
+            props.deviceDetailList[index][dataIndex] = event;
+            props.deviceDetailList[index]['targetAttribute'] = splitHumidity(event);
+        }else{
+            props.deviceDetailList[index][dataIndex] = event;
+            props.deviceDetailList[index]['targetAttribute'] = undefined;
+        }
     } else {
         props.deviceDetailList[index][dataIndex] = event;
     }
@@ -267,8 +291,8 @@ const handleSave = () => {
         };
     });
     let senSaveDataMap = { deviceMapping: getData };
-    console.log('senSaveDataMap',senSaveDataMap);
-    console.log('props.sendId',props.sendId);
+    // console.log('senSaveDataMap',senSaveDataMap);
+    // console.log('props.sendId',props.sendId);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
             onlyMessage('保存成功');
@@ -298,12 +322,11 @@ const handleMap = (data: any) => {
     State.openView = true;
 };
 
-const emit = defineEmits(['updateParentVar','refresh']);
+const emit = defineEmits(['updateParentVar', 'refresh']);
 // watch(()=>props.deviceDetailList, (newValue: any) => {
 //     console.log('newValue',newValue);
 // });
 </script>
-
 
 <style lang="less" scoped>
 [data-doc-theme='light'] .ant-table-striped :deep(.table-striped) td {

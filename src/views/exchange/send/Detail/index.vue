@@ -130,15 +130,24 @@ const refresh = () => {
 
 const Init = () => {
     //获取原设备和原属性
-    const terms: any = [
-        {
-            column: 'id',
-            termType: 'eq',
-            type: 'or',
-            value: `${route.query?.productId}`,
+    const query = {
+        ids: route.query?.ids,
+        queryParam: {
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'id',
+                            termType: 'eq',
+                            type: 'or',
+                            value: `${route.query?.productId}`,
+                        },
+                    ],
+                },
+            ],
         },
-    ];
-    queryDeviceProductList({ terms }).then((res: any) => {
+    };
+    queryDeviceProductList(query).then((res: any) => {
         console.log('res', res);
         const getData = res.result[0];
         if (getData.metadata === undefined) {
@@ -155,6 +164,10 @@ const Init = () => {
         }
         if (getData.deviceDetails.length > 0) {
             let deviceDetail = getData.deviceDetails.map((item: any) => {
+                if (!item.metadata) {
+                    onlyMessage('设备未添加物模型', 'error');
+                    return false;
+                }
                 let yDevMetadata = JSON.parse(item.metadata)?.properties;
                 let yDevMetadatas = yDevMetadata.map((item: any) => ({
                     originalId: item.id,
@@ -166,11 +179,14 @@ const Init = () => {
                 return {
                     originalId: item.id,
                     originalName: item.name,
+                    bln: false,
                     deviceTargetAttribute: yDevMetadatas,
                 };
             });
             deviceDetailList.value = deviceDetail;
         }
+
+        console.log(deviceDetailList.value);
 
         //获取目标设备和属性
         queryDataSendList({
@@ -252,6 +268,7 @@ const Init = () => {
             );
             deviceDetailList.value = deviceIdsMapNew;
 
+            //判断是否保存了数据映射
             if (dataMap) {
                 //处理数据映射 已保存后数据加载
                 //dataDetailList.value
@@ -260,10 +277,6 @@ const Init = () => {
                         (item1: any) => item1.originalId === item.originalId,
                     );
                     if (dataDetailListLaster) {
-                        console.log(
-                            'dataDetailListLaster',
-                            dataDetailListLaster,
-                        );
                         return {
                             originalId: item.originalId,
                             originalName: item.originalName,
@@ -278,73 +291,74 @@ const Init = () => {
                         return item;
                     }
                 });
-            }
 
-            if (deviceMap) {
-                console.log('deviceMap', deviceMap);
-                // console.log('deviceDetailList', deviceDetailList.value);
-                // deviceDetailList.value
-                deviceDetailList.value = deviceDetailList.value.map(
-                    (item: any) => {
-                        const deviceDetailListLaster = deviceMap.find(
-                            (item1: any) =>
-                                item1.originalId === item.originalId,
-                        );
-                        if (deviceDetailListLaster) {
-                            //处理设备映射>>数据映射 已保存后数据加载
-                            console.log(
-                                'deviceDetailListLaster',
-                                deviceDetailListLaster,
+                //判断是否保存了设备映射
+                if (deviceMap) {
+                    // console.log('deviceMap', deviceMap);
+                    // console.log('deviceDetailList', deviceDetailList.value);
+                    // deviceDetailList.value
+                    deviceDetailList.value = deviceDetailList.value.map(
+                        (item: any) => {
+                            const deviceDetailListLaster = deviceMap.find(
+                                (item1: any) =>
+                                    item1.originalId === item.originalId,
                             );
-                            const getDevDataLists =
-                                item.deviceTargetAttribute.map((item2: any) => {
-                                    const getDevDataList =
-                                        deviceDetailListLaster.deviceTargetAttribute.find(
-                                            (item3: any) =>
-                                                item3.originalId ===
-                                                item2.originalId,
-                                        );
-                                    console.log(
-                                        'getDevDataList',
-                                        getDevDataList,
+                            if (deviceDetailListLaster) {
+                                //处理设备映射>>数据映射 已保存后数据加载
+                                const getDevDataLists =
+                                    item.deviceTargetAttribute.map(
+                                        (item2: any) => {
+                                            const getDevDataList =
+                                                deviceDetailListLaster.deviceTargetAttribute.find(
+                                                    (item3: any) =>
+                                                        item3.originalId ===
+                                                        item2.originalId,
+                                                );
+                                            // console.log('getDevDataList',getDevDataList)
+                                            if (getDevDataList) {
+                                                return {
+                                                    originalId:
+                                                        item2.originalId,
+                                                    originalName:
+                                                        item2.originalName,
+                                                    select: getDevDataList.targetAttribute
+                                                        ? `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`
+                                                        : undefined,
+                                                    state:
+                                                        getDevDataList.state
+                                                            ?.value ||
+                                                        undefined,
+                                                    targetAttribute:
+                                                        getDevDataList.targetAttribute,
+                                                };
+                                            } else {
+                                                return item2;
+                                            }
+                                        },
                                     );
-                                    console.log('item2', item2);
-                                    if (getDevDataList) {
-                                        return {
-                                            originalId: item2.originalId,
-                                            originalName: item2.originalName,
-                                            select: getDevDataList.targetAttribute
-                                                ? `${getDevDataList.targetAttribute.targetName}(${getDevDataList.targetAttribute.targetId})`
-                                                : undefined,
-                                            state: getDevDataList.state || undefined,
-                                            targetAttribute:
-                                                getDevDataList.targetAttribute,
-                                        };
-                                    } else {
-                                        return item2;
-                                    }
-                                });
 
-                            return {
-                                originalId: item.originalId,
-                                originalName: item.originalName,
-                                select: deviceDetailListLaster.targetAttribute
-                                    ? `${deviceDetailListLaster.targetAttribute.targetName}(${deviceDetailListLaster.targetAttribute.targetId})`
-                                    : undefined,
-                                state: deviceDetailListLaster.state,
-                                deviceTargetAttribute: getDevDataLists,
-                                deviceTargetAttributeMap:
-                                    item.deviceTargetAttributeMap,
-                                targetAttribute:
-                                    deviceDetailListLaster.targetAttribute,
-                            };
-                        } else {
-                            return item;
-                        }
-                    },
-                );
-
-                console.log('deviceDetailList', deviceDetailList.value);
+                                return {
+                                    originalId: item.originalId,
+                                    originalName: item.originalName,
+                                    select: deviceDetailListLaster.targetAttribute
+                                        ? `${deviceDetailListLaster.targetAttribute?.targetName}(${deviceDetailListLaster.targetAttribute?.targetId})`
+                                        : undefined,
+                                    state:
+                                        deviceDetailListLaster.state?.value ||
+                                        undefined,
+                                    bln: deviceDetailListLaster?.bln || false,
+                                    deviceTargetAttribute: getDevDataLists,
+                                    deviceTargetAttributeMap:
+                                        item.deviceTargetAttributeMap,
+                                    targetAttribute:
+                                        deviceDetailListLaster.targetAttribute,
+                                };
+                            } else {
+                                return item;
+                            }
+                        },
+                    );
+                }
             }
         });
     });

@@ -478,17 +478,37 @@ const handleAdd = () => {
 };
 
 const handleExport = () => {
-    let myArr = selectedRow.value.map((item: any) => item.productId);
+    let myArr = selectedRow.value.map((item: any) => ({
+        productId: item.productId,
+        deviceIds: item.deviceIds,
+    }));
     if (myArr.length === 1) {
         const terms: any = [
             {
                 column: 'id',
                 termType: 'eq',
                 type: 'or',
-                value: `${myArr[0]}`,
+                value: `${myArr[0].productId}`,
             },
         ];
-        queryDeviceProductList({ terms }).then((res: any) => {
+        const query = {
+            ids: myArr[0].deviceIds,
+            queryParam: {
+                terms: [
+                    {
+                        terms: [
+                            {
+                                column: 'id',
+                                termType: 'eq',
+                                type: 'or',
+                                value: `${myArr[0].productId}`,
+                            },
+                        ],
+                    },
+                ],
+            },
+        };
+        queryDeviceProductList(query).then((res: any) => {
             let result = res.result[0];
             // console.log(result);
             if (result) {
@@ -504,26 +524,37 @@ const handleExport = () => {
             }
         });
     } else if (myArr.length > 1) {
-        const terms: any = [
-            {
-                column: 'id',
-                termType: 'in',
-                type: 'or',
-                value: myArr,
-            },
-        ];
-        queryDeviceProductList({ terms }).then((res: any) => {
-            // console.log(res.result);
-            res.result.map((element: any) => {
-                const extra = omit(JSON.parse(JSON.stringify(element)), [
-                    'transportProtocol',
-                    'protocolName',
-                    'accessId',
-                    'accessName',
-                    'accessProvider',
-                    'messageProtocol',
-                ]);
-                downloadObject(extra, '导出信息');
+        myArr.forEach((element) => {
+            const query = {
+                ids: element.deviceIds,
+                queryParam: {
+                    terms: [
+                        {
+                            terms: [
+                                {
+                                    column: 'id',
+                                    termType: 'eq',
+                                    type: 'or',
+                                    value: `${element.productId}`,
+                                },
+                            ],
+                        },
+                    ],
+                },
+            };
+            queryDeviceProductList(query).then((res: any) => {
+                // console.log(res.result);
+                if (res.result) {
+                    const extra = omit(JSON.parse(JSON.stringify(res.result)), [
+                        'transportProtocol',
+                        'protocolName',
+                        'accessId',
+                        'accessName',
+                        'accessProvider',
+                        'messageProtocol',
+                    ]);
+                    downloadObject(extra, '导出信息');
+                }
             });
         });
     } else {

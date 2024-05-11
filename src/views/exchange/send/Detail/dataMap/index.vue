@@ -164,7 +164,7 @@ const beforeUpload = (file: any) => {
                 targetMapping: data,
             },
         ];
-        console.log('saveData',saveData)
+        // console.log('saveData',saveData)
         queryDeviceProductTarget(saveData).then((res:any)=>{
             if(res.status === 200){
                 onlyMessage('导入成功！');

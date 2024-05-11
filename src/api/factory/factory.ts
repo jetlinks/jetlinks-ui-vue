@@ -65,3 +65,22 @@ export const sandProduct = (id: string, data: any) =>
 
 export const isTopic = (data: any) =>
     server.post(`/tbea/receive/sand/topic/_validate`, data);
+
+// /device-instance/product/detail/_query/no-paging
+
+/**
+ * 查询已下发工厂
+ * @param productId 产品id
+ */
+
+export const queryFactoryIssued = (productId: any) =>
+    server.get(`/tbea/factory/${productId}/logs`);
+
+
+// /tbea/factory/sub/token
+/**
+ * 查询子工厂token
+ * @param data 
+ */
+export const getSubFactoryToken = (data: any) =>
+    server.post(`/tbea/factory/sub/token`,data);

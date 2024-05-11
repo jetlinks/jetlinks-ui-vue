@@ -445,10 +445,12 @@ const handleView = (data: any) => {
         {
             id: data.id,
             productId: data.productId,
+            ids: data.deviceIds,
         },
         {
             id: data.id,
             productId: data.productId,
+            ids: data.deviceIds,
         },
     );
 };
@@ -549,10 +551,12 @@ const getActions = (
                     {
                         id: data.id,
                         productId: data.productId,
+                        ids: data.deviceIds,
                     },
                     {
                         id: data.id,
                         productId: data.productId,
+                        ids: data.deviceIds,
                     },
                 );
             },
