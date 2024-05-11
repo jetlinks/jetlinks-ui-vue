@@ -126,6 +126,15 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
     return merged;
 };
 
+const getSelection = (data:any)=>{
+    if(data){
+        return `${data.targetName}(${data.targetId})`
+    }
+    else{
+        return undefined
+    }
+}
+
 const refresh = () => {
     Init();
 };
@@ -279,13 +288,11 @@ const Init = () => {
                     const dataDetailListLaster = dataMap.find(
                         (item1: any) => item1.originalId === item.originalId,
                     );
-                    if (dataDetailListLaster) {
+                    if (dataDetailListLaster && dataDetailListLaster.targetAttribute) {
                         return {
                             originalId: item.originalId,
                             originalName: item.originalName,
-                            select: dataDetailListLaster.targetAttribute
-                                ? `${dataDetailListLaster.targetAttribute.targetName}(${dataDetailListLaster.targetAttribute.targetId})`
-                                : undefined,
+                            select: `${dataDetailListLaster.targetAttribute.targetName}(${dataDetailListLaster.targetAttribute.targetId})`,
                             state: dataDetailListLaster.state.value,
                             targetAttribute:
                                 dataDetailListLaster.targetAttribute,
@@ -306,7 +313,7 @@ const Init = () => {
                                 (item1: any) => item1.originalId === item.originalId,
                             );
                             // console.log('deviceDetailListLaster',deviceDetailListLaster)
-                            if (deviceDetailListLaster) {
+                            if (deviceDetailListLaster && deviceDetailListLaster.targetAttribute) {
                                 //处理设备映射>>数据映射 已保存后数据加载
                                 const getDevDataLists =
                                     item.deviceTargetAttribute.map(
@@ -316,21 +323,17 @@ const Init = () => {
                                                     (item3: any) =>item3.originalId === item2.originalId,
                                                 );
                                             // console.log('getDevDataList',getDevDataList)
-                                            if (getDevDataList) {
+                                            if (getDevDataList && getDevDataList.targetAttribute) {
                                                 return {
                                                     originalId:
                                                         item2.originalId,
                                                     originalName:
                                                         item2.originalName,
-                                                    select: getDevDataList.targetAttribute
-                                                        ? `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`
-                                                        : undefined,
+                                                    select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
                                                     state:
-                                                        getDevDataList.state
-                                                            ?.value ||
-                                                        undefined,
+                                                        getDevDataList.state,
                                                     targetAttribute:
-                                                        getDevDataList.targetAttribute,
+                                                    getDevDataList.targetAttribute,
                                                 };
                                             } else {
                                                 return item2;
@@ -341,13 +344,10 @@ const Init = () => {
                                 return {
                                     originalId: item.originalId,
                                     originalName: item.originalName,
-                                    select: deviceDetailListLaster.targetAttribute
-                                        ? `${deviceDetailListLaster.targetAttribute?.targetName}(${deviceDetailListLaster.targetAttribute?.targetId})`
-                                        : undefined,
+                                    select: `${deviceDetailListLaster.targetAttribute?.targetName}(${deviceDetailListLaster.targetAttribute?.targetId})`,
                                     state:
-                                        deviceDetailListLaster.state?.value ||
-                                        undefined,
-                                    bln: deviceDetailListLaster?.bln || false,
+                                        deviceDetailListLaster.state?.value ,
+                                    bln: deviceDetailListLaster?.bln ,
                                     deviceTargetAttribute: getDevDataLists,
                                     deviceTargetAttributeMap:
                                         item.deviceTargetAttributeMap,

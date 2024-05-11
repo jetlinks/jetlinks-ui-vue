@@ -240,25 +240,30 @@ const beforeUpload = (file: any) => {
     return false;
 };
 
-// const handleClear = (index: any, dataIndex: string, event: any) => {
-//     console.log('index', index);
-//     console.log('dataIndex', dataIndex);
-//     console.log(event);
-//     if (event === undefined) {
-//     }
-// };
+const handleClear = (index: any, dataIndex: string, event: any) => {
+    console.log('index', index);
+    console.log('dataIndex', dataIndex);
+    console.log(event);
+    if (event === undefined) {
+    }
+};
 
 //修改设备table表数据
 const saveRowData = (index: any, dataIndex: string, event: any) => {
     if (dataIndex === 'select') {
         if (event) {
-            const getTargetAtt = props.deviceDetailList.find((item:any)=> item.select = event)
+            const getTargetAtt = props.deviceDetailList.find(
+                (item: any) => (item.select = event),
+            );
             // console.log(getTargetAtt)
-            props.deviceDetailList[index]['deviceTargetAttribute'] = getTargetAtt.deviceTargetAttribute;
-            props.deviceDetailList[index]['deviceTargetAttributeMap'] = getTargetAtt.deviceTargetAttributeMap;
+            props.deviceDetailList[index]['deviceTargetAttribute'] =
+                getTargetAtt.deviceTargetAttribute;
+            props.deviceDetailList[index]['deviceTargetAttributeMap'] =
+                getTargetAtt.deviceTargetAttributeMap;
             props.deviceDetailList[index][dataIndex] = event;
-            props.deviceDetailList[index]['targetAttribute'] = splitHumidity(event);
-        }else{
+            props.deviceDetailList[index]['targetAttribute'] =
+                splitHumidity(event);
+        } else {
             props.deviceDetailList[index][dataIndex] = event;
             props.deviceDetailList[index]['targetAttribute'] = undefined;
         }
@@ -301,7 +306,7 @@ const handleSave = () => {
         state: item.state,
     }));
     let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
-    console.log('senSaveDataMap',senSaveDataMap);
+    console.log('senSaveDataMap', senSaveDataMap);
     // console.log('props.sendId',props.sendId);
     getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
         if (res.status === 200) {
@@ -326,12 +331,34 @@ const splitHumidity = (data: any) => {
 };
 
 const handleMap = (data: any) => {
-    console.log('dataDetailList',props.dataDetailList)
-    console.log('data',data)
-
+    // console.log('dataDetailList', props.dataDetailList);
+    // console.log('data', data);
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
     mapOptions.value = data.record.deviceTargetAttributeMap;
+    if (!data.record.bln) {
+        if (data.record.deviceTargetAttribute.length > 0) {
+            const getDevTarAtt = data.record.deviceTargetAttribute.map(
+                (item: any) => {
+                    let item1 = props.dataDetailList.find(
+                        (item2: any) => item2.originalId === item.originalId,
+                    );
+                    if (item1) {
+                        const { targetAttribute, select, ...res } = item;
+                        return {
+                            ...res,
+                            select: item1.select,
+                            targetAttribute: item1.targetAttribute,
+                        };
+                    } else {
+                        return item;
+                    }
+                },
+            );
+            console.log('getDevTarAtt', getDevTarAtt);
+            deviceMapDetail.value = getDevTarAtt;
+        }
+    }
     State.openView = true;
 };
 
