@@ -115,6 +115,7 @@
                 <j-form-item
                     label="所属工厂"
                     name="factoryId"
+                    :required="isRequired('factoryId')"
                     v-show="isRequired('factoryId')"
                 >
                     <j-select

@@ -9,6 +9,15 @@ export const addDataSand = (data: any) =>
     server.post('/tbea/receive/sand/_add', data);
 
 /**
+ * 启用禁用
+ * @param id
+ * @param data 启用禁用
+ * @returns
+ */
+export const _deploy = (id: string, data: any) =>
+    server.put(`/tbea/receive/sand/${id}`, data);
+
+/**
  * 修改数据
  * @param id
  * @param data 修改数据
@@ -40,7 +49,7 @@ export const queryDataSendList = (data: any) =>
  * @returns
  */
 export const queryNoPagingPostDevice = (data?: Record<string, any>) =>
-    server.post('/device-instance/_query/no-paging?paging=false', data);
+    server.post('/device-instance/_query/no-paging', data);
 
 /**
  * 根据产品id和设备id获取物模型数据

@@ -104,16 +104,21 @@
                         </template>
                         <template #actions="item">
                             <PermissionButton
+                                :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
                             >
-                                <template #icon
-                                    ><AIcon :type="item.icon"
-                                /></template>
-                                {{ item.text }}
+                            <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
                             </PermissionButton>
                         </template>
                     </CardBox>
@@ -184,6 +189,7 @@
                                 </template>
                                 <j-select
                                     showSearch
+                                    :disabled="!!form?.id"
                                     v-model:value="form.productId"
                                     @change="curProductChange"
                                     placeholder="请选择状态为“正常”的产品"
@@ -203,6 +209,7 @@
                                 </template>
                                 <j-select
                                     showSearch
+                                    :disabled="!!form?.id"
                                     v-model:value="form.deviceIds"
                                     placeholder="请选择设备"
                                     mode="multiple"
@@ -242,12 +249,8 @@ import {
     queryDataReceiveList,
     queryNoPagingPostDevice,
     queryDeviceProductList,
+    _deploy
 } from '@/api/exchange/receive';
-import {
-    _deploy,
-    _undeploy,
-    queryNoPagingReceive,
-} from '@/api/device/instance';
 import { isTopic } from '@/api/factory/factory';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
@@ -659,27 +662,19 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'disabled' ? '禁用' : '启用',
+            text: data.state.value === 'enabled' ? '禁用' : '启用',
             tooltip: {
-                title: data.state?.value !== 'disabled' ? '禁用' : '启用',
+                title: data.state.value === 'enabled' ? '禁用' : '启用',
             },
-            icon:
-                data.state.value !== 'disabled'
-                    ? 'StopOutlined'
-                    : 'CheckCircleOutlined',
+            icon: data.state.value === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${
-                    data.state.value !== 'disabled' ? '禁用' : '启用'
-                }?`,
+                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'}?`,
                 onConfirm: async () => {
                     let response = undefined;
-                    let updateData = data;
-                    if (data.state.value !== 'disabled') {
-                        updateData.state = 'disabled';
-                        response = await editDataSand(updateData);
+                    if (data.state.value === 'enabled') {
+                        response = await _deploy(data.id,{state: 'disabled'});
                     } else {
-                        updateData.state = 'enabled';
-                        response = await editDataSand(updateData);
+                        response = await _deploy(data.id,{state: 'enabled'});
                     }
                     if (response && response.status === 200) {
                         onlyMessage('操作成功！');
@@ -692,17 +687,21 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            disabled: data.state.value === 'enabled',
             tooltip: {
-                title: '删除',
+                title: data.state.value === 'enabled'
+                        ? '已启用的设备不能删除'
+                        : '删除',
             },
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
                     deleteDataSand(data.id).then((response: any) => {
                         if (response.status === 200) {
-                            onlyMessage('删除成功！');
+                            onlyMessage('删除成功！')
                             tableRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
                         }
                     });
                 },
@@ -744,15 +743,23 @@ const curProductChange = (val: any) => {
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
-        const terms: any = [
-            {
-                column: 'productId',
-                termType: 'eq',
-                type: 'or',
-                value: `${newValue}`,
-            },
-        ];
-        queryNoPagingPostDevice({ terms }).then((resp) => {
+        const setData = {
+            paging: false,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'productId',
+                            termType: 'eq',
+                            type: 'or',
+                            value: `${newValue}`,
+                        },
+                    ],
+                },
+            ],
+        };
+        queryNoPagingPostDevice(setData).then((resp) => {
             if (resp.status === 200) {
                 deviceList.value = resp.result as Record<string, any>[];
             }
