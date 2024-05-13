@@ -195,7 +195,6 @@
                                 </template>
                                 <j-select
                                     showSearch
-                                    :disabled="!!form?.id"
                                     v-model:value="form.deviceIds"
                                     placeholder="请选择设备"
                                     mode="multiple"

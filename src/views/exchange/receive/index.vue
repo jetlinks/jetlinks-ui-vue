@@ -209,7 +209,6 @@
                                 </template>
                                 <j-select
                                     showSearch
-                                    :disabled="!!form?.id"
                                     v-model:value="form.deviceIds"
                                     placeholder="请选择设备"
                                     mode="multiple"
@@ -786,7 +785,6 @@ onMounted(() => {
         if (resp.status === 200) {
             productList.value = resp.result as Record<string, any>[];
             paramsProductID.value = resp.result[0]?.productId;
-            /tbea/receive/sand/productId/filter
         }
     });
 });

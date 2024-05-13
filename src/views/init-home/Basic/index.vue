@@ -352,7 +352,7 @@ const form = ref<formState>({
     background: '/images/login.png',
 });
 
-const isTypeChild = ref(false);
+const isTypeChild = ref(true);
 const facTypeRules = ref<any>();
 const isChild = ref(false);
 const isFactoryKeyRules = ref<any>([]);
@@ -464,19 +464,8 @@ watch(
         } else {
             isTypeChild.value = false;
             facTypeRules.value = [];
-            if (form.value.factoryType === 'sub') {
-                isChild.value = true;
-                isFactoryKeyRules.value = [
-                    {
-                        required: true,
-                        message: '请填写工厂Topic',
-                        trigger: 'blur',
-                    },
-                ];
-            } else {
-                isChild.value = false;
-                isFactoryKeyRules.value = [];
-            }
+            isChild.value = false;
+            isFactoryKeyRules.value = [];
         }
     },
 );

@@ -63,8 +63,8 @@
                                     </j-tooltip>
                                 </template>
                                 <j-radio-group
-                                    name="radioGroup"
-                                    :defaultValue="false"
+                                    name="isIOT"
+                                    defaultValue="false"
                                     v-model:value="formValue.isIOT"
                                 >
                                     <j-radio value="false">否</j-radio>
@@ -451,7 +451,7 @@ const form = reactive<formType>({
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
             backgroud: configInfo.front?.backgroud || '/images/login.png',
-            isIOT: configInfo.front?.isIOT || false,
+            isIOT: configInfo.front?.isIOT || 'false',
             factoryKey: configInfo.front?.factoryKey,
             factoryType: configInfo.front?.factoryType,
             apiKey: configInfo.amap?.apiKey,
@@ -510,7 +510,7 @@ const form = reactive<formType>({
 const { formValue, rulesFrom } = toRefs(form);
 const isChild = ref(false);
 const facRules = ref<any>();
-const isTypeChild = ref(false);
+const isTypeChild = ref(true);
 const facTypeRules = ref<any>();
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
@@ -569,19 +569,8 @@ watch(
         } else {
             isTypeChild.value = false;
             facTypeRules.value = [];
-            if (formValue.value.factoryType === 'sub') {
-                isChild.value = true;
-                facRules.value = [
-                    {
-                        required: true,
-                        trigger: 'blur',
-                        validator: vailTopic,
-                    },
-                ];
-            } else {
-                isChild.value = false;
-                facRules.value = [];
-            }
+            isChild.value = false;
+            facRules.value = [];
         }
     },
 );
