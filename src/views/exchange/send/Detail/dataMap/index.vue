@@ -5,6 +5,7 @@
             class="ant-table-striped"
             :columns="columns"
             :data-source="props.dataDetailList"
+            :height="560"
             :searchProps="{
                 placeholder: '请输入搜索文本',
                 onSearch: onSearch,
@@ -161,7 +162,7 @@ const beforeUpload = (file: any) => {
                 targetMapping: data,
             },
         ];
-        // console.log('saveData',saveData)
+        console.log('saveData',saveData)
         queryDeviceProductTarget(saveData).then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('导入成功！');

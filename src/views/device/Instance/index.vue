@@ -674,7 +674,9 @@ const handleView = (id: string) => {
     menuStory.jumpPage('device/Instance/Detail', { id });
 };
 
+const isIOT = ref();
 const factoryType = ref();
+isIOT.value = configInfo.front?.isIOT;
 factoryType.value = configInfo.front?.factoryType;
 const getActions = (
     data: Partial<Record<string, any>>,
@@ -791,7 +793,7 @@ const getActions = (
             },
         },
     };
-    if (factoryType.value !== 'sub') {
+    if (isIOT.value ==='false' || factoryType.value !== 'sub') {
         actions.splice(2, 0, distributeData);
     }
     if (type === 'card')

@@ -46,13 +46,35 @@
                                 />
                             </j-form-item>
                             <j-form-item
-                                name="factoryType"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请选择工厂类型',
+                                        message: '是否为联邦架构',
                                     },
                                 ]"
+                            >
+                                <template #label>
+                                    <span>是否为联邦架构</span>
+                                    <j-tooltip title="是否为联邦架构">
+                                        <img
+                                            class="img-style"
+                                            :src="'/images/init-home/mark.png'"
+                                        />
+                                    </j-tooltip>
+                                </template>
+                                <j-radio-group
+                                    name="radioGroup"
+                                    :defaultValue="false"
+                                    v-model:value="formValue.isIOT"
+                                >
+                                    <j-radio value="false">否</j-radio>
+                                    <j-radio value="true">是</j-radio>
+                                </j-radio-group>
+                            </j-form-item>
+                            <j-form-item
+                                name="factoryType"
+                                v-show="isTypeChild"
+                                :rules="facTypeRules"
                             >
                                 <template #label>
                                     <span>工厂类型 </span>
@@ -381,6 +403,7 @@ const form = reactive<formType>({
         title: '',
         headerTheme: 'light',
         apiKey: '',
+        isIOT: 'false',
         factoryKey: '',
         factoryType: '',
         'base-path': `${window.location.origin}/api`,
@@ -428,6 +451,7 @@ const form = reactive<formType>({
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
             backgroud: configInfo.front?.backgroud || '/images/login.png',
+            isIOT: configInfo.front?.isIOT || false,
             factoryKey: configInfo.front?.factoryKey,
             factoryType: configInfo.front?.factoryType,
             apiKey: configInfo.amap?.apiKey,
@@ -486,6 +510,8 @@ const form = reactive<formType>({
 const { formValue, rulesFrom } = toRefs(form);
 const isChild = ref(false);
 const facRules = ref<any>();
+const isTypeChild = ref(false);
+const facTypeRules = ref<any>();
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
         let oldValue = system.configInfo.front?.factoryKey;
@@ -513,6 +539,52 @@ const vailTopic = async (_: Record<string, any>, value: string) => {
         return Promise.resolve();
     }
 };
+
+watch(
+    () => formValue.value.isIOT,
+    (newValue: any) => {
+        console.log('newValue', newValue);
+        if (newValue === 'false') {
+            isTypeChild.value = true;
+            facTypeRules.value = [
+                {
+                    required: true,
+                    message: '请选择工厂类型',
+                    trigger: 'blur',
+                },
+            ];
+            if (formValue.value.factoryType === 'sub') {
+                isChild.value = true;
+                facRules.value = [
+                    {
+                        required: true,
+                        trigger: 'blur',
+                        validator: vailTopic,
+                    },
+                ];
+            } else {
+                isChild.value = false;
+                facRules.value = [];
+            }
+        } else {
+            isTypeChild.value = false;
+            facTypeRules.value = [];
+            if (formValue.value.factoryType === 'sub') {
+                isChild.value = true;
+                facRules.value = [
+                    {
+                        required: true,
+                        trigger: 'blur',
+                        validator: vailTopic,
+                    },
+                ];
+            } else {
+                isChild.value = false;
+                facRules.value = [];
+            }
+        }
+    },
+);
 watch(
     () => formValue.value.factoryType,
     (newValue: any) => {
@@ -520,11 +592,6 @@ watch(
         if (newValue === 'sub') {
             isChild.value = true;
             facRules.value = [
-                {
-                    max: 64,
-                    message: '最多可输入64位',
-                    trigger: 'change',
-                },
                 {
                     required: true,
                     trigger: 'blur',

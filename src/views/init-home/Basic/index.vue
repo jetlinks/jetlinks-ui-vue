@@ -39,19 +39,35 @@
                     />
                 </j-form-item>
                 <j-form-item
-                    name="factoryType"
                     :rules="[
                         {
-                            max: 64,
-                            message: '最多可输入64位',
-                            trigger: 'change',
-                        },
-                        {
                             required: true,
-                            message: '请输入工厂类型',
-                            trigger: 'blur',
+                            message: '是否为联邦架构',
                         },
                     ]"
+                >
+                    <template #label>
+                        <span>是否为联邦架构</span>
+                        <j-tooltip title="是否为联邦架构">
+                            <img
+                                class="img-style"
+                                :src="'/images/init-home/mark.png'"
+                            />
+                        </j-tooltip>
+                    </template>
+                    <j-radio-group
+                        name="radioGroup"
+                        :defaultValue="false"
+                        v-model:value="form.isIOT"
+                    >
+                        <j-radio value="false">否</j-radio>
+                        <j-radio value="true">是</j-radio>
+                    </j-radio-group>
+                </j-form-item>
+                <j-form-item
+                    name="factoryType"
+                    v-show="isTypeChild"
+                    :rules="facTypeRules"
                 >
                     <template #label>
                         <span>工厂类型 </span>
@@ -78,7 +94,7 @@
                     <template #label>
                         <span>Topic</span>
                     </template>
-                    <j-input v-model:value="form.factoryKey"/>
+                    <j-input v-model:value="form.factoryKey" />
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
@@ -327,6 +343,7 @@ const form = ref<formState>({
     title: '',
     headerTheme: 'light',
     apikey: '',
+    isIOT: 'false',
     basePath: `${window.location.origin}/api`,
     logo: '/logo.png',
     ico: '/favicon.ico',
@@ -335,6 +352,8 @@ const form = ref<formState>({
     background: '/images/login.png',
 });
 
+const isTypeChild = ref(false);
+const facTypeRules = ref<any>();
 const isChild = ref(false);
 const isFactoryKeyRules = ref<any>([]);
 const rulesFrom = ref({
@@ -390,6 +409,74 @@ watch(
         } else {
             isChild.value = false;
             isFactoryKeyRules.value = [];
+        }
+    },
+);
+watch(
+    () => form.value.isIOT,
+    (newValue: any) => {
+        if (newValue) {
+            isChild.value = true;
+            isFactoryKeyRules.value = [
+                {
+                    max: 64,
+                    message: '最多可输入64位',
+                    trigger: 'change',
+                },
+                {
+                    required: true,
+                    message: '请填写工厂Topic',
+                    trigger: 'blur',
+                },
+            ];
+        } else {
+            isChild.value = false;
+            isFactoryKeyRules.value = [];
+        }
+    },
+);
+watch(
+    () => form.value.isIOT,
+    (newValue: any) => {
+        console.log('newValue', newValue);
+        if (newValue === 'false') {
+            isTypeChild.value = true;
+            facTypeRules.value = [
+                {
+                    required: true,
+                    message: '请选择工厂类型',
+                    trigger: 'blur',
+                },
+            ];
+            if (form.value.factoryType === 'sub') {
+                isChild.value = true;
+                isFactoryKeyRules.value = [
+                    {
+                        required: true,
+                        message: '请填写工厂Topic',
+                        trigger: 'blur',
+                    },
+                ];
+            } else {
+                isChild.value = false;
+                isFactoryKeyRules.value = [];
+            }
+        } else {
+            isTypeChild.value = false;
+            facTypeRules.value = [];
+            if (form.value.factoryType === 'sub') {
+                isChild.value = true;
+                isFactoryKeyRules.value = [
+                    {
+                        required: true,
+                        message: '请填写工厂Topic',
+                        trigger: 'blur',
+                    },
+                ];
+            } else {
+                isChild.value = false;
+                isFactoryKeyRules.value = [];
+            }
         }
     },
 );

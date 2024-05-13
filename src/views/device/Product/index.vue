@@ -254,6 +254,8 @@ const title = ref<string>('');
 const params = ref<Record<string, any>>({});
 const allotsVisible = ref(false);
 const disProductId = ref();
+
+const isIOT = ref();
 const factoryType = ref();
 const columns = [
     {
@@ -311,6 +313,7 @@ const permission = usePermissionStore().hasPermission(`device/Product:import`);
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
 
+isIOT.value = configInfo.front?.isIOT;
 factoryType.value = configInfo.front?.factoryType;
 const getActions = (
     data: Partial<Record<string, any>>,
@@ -440,7 +443,7 @@ const getActions = (
         },
         icon: 'DeleteOutlined',
     };
-    if (factoryType.value !== 'sub') {
+    if (isIOT.value ==='false' && factoryType.value !== 'sub') {
         others.splice(1, 0, distributeData);
     }
     if (type === 'card') {

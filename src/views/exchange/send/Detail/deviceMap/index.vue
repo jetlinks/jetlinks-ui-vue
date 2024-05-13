@@ -7,6 +7,7 @@
         :searchProps="{
             placeholder: '请输入搜索名称',
         }"
+        :height="560"
         :row-class-name="(_record :any, index:any) => (index % 2 === 1 ? 'table-striped' : null)"
         bordered
     >
@@ -137,7 +138,7 @@ const State = reactive({
                     originalId: deviceMapDetailOne.value.originalId,
                     originalName: deviceMapDetailOne.value.originalName,
                     select: deviceMapDetailOne.value.select || undefined,
-                    state: deviceMapDetailOne.value.state || undefined,
+                    state: deviceMapDetailOne.value.state.value || undefined,
                     bln: true,
                     targetAttribute:
                         deviceMapDetailOne.value.targetAttribute || undefined,
@@ -336,6 +337,7 @@ const handleMap = (data: any) => {
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
     mapOptions.value = data.record.deviceTargetAttributeMap;
+    console.log('bln',  data.record.bln);
     if (!data.record.bln) {
         if (data.record.deviceTargetAttribute.length > 0) {
             const getDevTarAtt = data.record.deviceTargetAttribute.map(

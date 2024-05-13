@@ -786,6 +786,7 @@ onMounted(() => {
         if (resp.status === 200) {
             productList.value = resp.result as Record<string, any>[];
             paramsProductID.value = resp.result[0]?.productId;
+            /tbea/receive/sand/productId/filter
         }
     });
 });

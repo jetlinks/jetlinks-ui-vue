@@ -9,7 +9,15 @@
         okText="确定下发"
         :confirmLoading="loading"
     >
+        <j-spin
+            v-if="isLoading"
+            :spinning="isLoading"
+            :style="{ position: 'absolute', width: '100%', height: '100%' }"
+        >
+            加载数据中
+        </j-spin>
         <j-transfer
+            v-else
             v-model:target-keys="targetKeys"
             :data-source="factoryList"
             show-search
@@ -43,6 +51,7 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(['close']);
+const isLoading = ref(true);
 
 const openView = ref(true);
 const title = ref('下发');
@@ -87,17 +96,20 @@ const getMock = () => {
     }).then((response: any) => {
         if (response.status === 200) {
             factoryList.value = response.result.data;
-        }
-    });
-    queryFactoryIssued(props.disProductId).then((res: any) => {
-        if (res.status === 200) {
-            if (res.result.length > 0) {
-                targetKeys.value = res.result.map((item: any) => {
-                    return item.factoryId;
-                });
-            } else {
-                targetKeys.value = [];
-            }
+
+            queryFactoryIssued(props.disProductId).then((res: any) => {
+                if (res.status === 200) {
+                    if (res.result.length > 0) {
+                        targetKeys.value = res.result.map((item: any) => {
+                            return item.factoryId;
+                        });
+                        isLoading.value = false
+                    } else {
+                        targetKeys.value = [];
+                        isLoading.value = false
+                    }
+                }
+            });
         }
     });
 };

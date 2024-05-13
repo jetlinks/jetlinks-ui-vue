@@ -446,18 +446,15 @@ const handleUpdate = (data: any) => {
 
 //查看配置
 const handleView = (data: any) => {
-    console.log(data);
     menuStory.jumpPage(
         'exchange/send/Detail',
         {
             id: data.id,
-            productId: data.productId,
-            ids: data.deviceIds,
         },
         {
             id: data.id,
             productId: data.productId,
-            ids: data.deviceIds,
+            ids: JSON.stringify(data.deviceIds),
         },
     );
 };
@@ -557,13 +554,11 @@ const getActions = (
                     'exchange/send/Detail',
                     {
                         id: data.id,
-                        productId: data.productId,
-                        ids: data.deviceIds,
                     },
                     {
                         id: data.id,
                         productId: data.productId,
-                        ids: data.deviceIds,
+                        ids: JSON.stringify(data.deviceIds),
                     },
                 );
             },

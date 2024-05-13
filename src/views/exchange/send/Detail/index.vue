@@ -142,7 +142,7 @@ const refresh = () => {
 const Init = () => {
     //获取原设备和原属性
     const query = {
-        ids: route.query?.ids,
+        ids: JSON.parse(route.query?.ids as string),
         queryParam: {
             terms: [
                 {
@@ -206,7 +206,7 @@ const Init = () => {
                     column: 'id',
                     termType: 'eq',
                     type: 'or',
-                    value: `${route.query?.id}`,
+                    value: `${route.params?.id}`,
                 },
             ],
         }).then((res: any) => {
@@ -331,7 +331,7 @@ const Init = () => {
                                                         item2.originalName,
                                                     select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
                                                     state:
-                                                        getDevDataList.state,
+                                                        getDevDataList.state?.value,
                                                     targetAttribute:
                                                     getDevDataList.targetAttribute,
                                                 };
