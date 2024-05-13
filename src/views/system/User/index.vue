@@ -14,7 +14,10 @@
                     model="TABLE"
                     :params="queryParams"
                     :defaultParams="{
-                        sorts: [{ name: 'createTime', order: 'desc' }],
+                        sorts: [
+                        {name: 'username', order: 'asc',value:'admin' },
+                        { name: 'createTime', order: 'desc' }
+                    ],
                     }"
                 >
                     <template #headerTitle>
@@ -193,6 +196,7 @@ const columns = [
                     {
                         paging:false,
                         sorts: [
+                            {name: 'username', order: 'asc',value:'admin' },
                             { name: 'createTime', order: 'desc' },
                             { name: 'id', order: 'desc' },
                         ]
