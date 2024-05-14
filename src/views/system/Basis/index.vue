@@ -74,16 +74,6 @@
                                 </j-radio-group>
                             </j-form-item>
                             <j-form-item
-                                name="factoryId"
-                                v-show="isTypeChild"
-                                :rules="facIdRules"
-                            >
-                                <template #label>
-                                    <span>工厂ID</span>
-                                </template>
-                                <j-input v-model:value="formValue.factoryId" />
-                            </j-form-item>
-                            <j-form-item
                                 name="factoryType"
                                 v-show="isTypeChild"
                                 :rules="facTypeRules"
@@ -104,6 +94,16 @@
                                         >{{ item.name }}</j-select-option
                                     >
                                 </j-select>
+                            </j-form-item>
+                            <j-form-item
+                                name="factoryId"
+                                v-show="isChild"
+                                :rules="facIdRules"
+                            >
+                                <template #label>
+                                    <span>工厂ID</span>
+                                </template>
+                                <j-input v-model:value="formValue.factoryId" />
                             </j-form-item>
                             <j-form-item
                                 name="factoryKey"
@@ -523,7 +523,6 @@ const form = reactive<formType>({
 });
 const { formValue, rulesFrom } = toRefs(form);
 const isChild = ref(false);
-const facRules = ref<any>();
 const isTypeChild = ref(true);
 const facTypeRules = ref<any>([
     {
@@ -566,6 +565,13 @@ const vailTopic = async (_: Record<string, any>, value: string) => {
         return Promise.resolve();
     }
 };
+const facRules = ref<any>([
+    {
+        required: true,
+        trigger: 'blur',
+        validator: vailTopic,
+    },
+]);
 
 watch(
     () => formValue.value.isIOT,
@@ -580,15 +586,15 @@ watch(
                     trigger: 'blur',
                 },
             ];
-            facIdRules.value = [
-                {
-                    required: true,
-                    message: '请填写工厂ID',
-                    trigger: 'blur',
-                },
-            ];
             if (formValue.value.factoryType === 'sub') {
                 isChild.value = true;
+                facIdRules.value = [
+                    {
+                        required: true,
+                        message: '请填写工厂ID',
+                        trigger: 'blur',
+                    },
+                ];
                 facRules.value = [
                     {
                         required: true,
@@ -598,6 +604,7 @@ watch(
                 ];
             } else {
                 isChild.value = false;
+                facIdRules.value = [];
                 facRules.value = [];
             }
         } else {
@@ -615,6 +622,13 @@ watch(
         console.log('newValue', newValue);
         if (newValue === 'sub') {
             isChild.value = true;
+            facIdRules.value = [
+                {
+                    required: true,
+                    message: '请填写工厂ID',
+                    trigger: 'blur',
+                },
+            ];
             facRules.value = [
                 {
                     required: true,
@@ -625,6 +639,7 @@ watch(
         } else {
             isChild.value = false;
             facRules.value = [];
+            facIdRules.value = [];
         }
     },
 );

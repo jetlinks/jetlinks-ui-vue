@@ -48,7 +48,9 @@
                 >
                     <template #label>
                         <span>是否为联邦架构</span>
-                        <j-tooltip title="需先选择是否为联邦架构,配置后可生成对应必填配置项">
+                        <j-tooltip
+                            title="需先选择是否为联邦架构,配置后可生成对应必填配置项"
+                        >
                             <img
                                 class="img-style"
                                 :src="'/images/init-home/mark.png'"
@@ -63,16 +65,6 @@
                         <j-radio value="true">是</j-radio>
                         <j-radio value="false">否</j-radio>
                     </j-radio-group>
-                </j-form-item>
-                <j-form-item
-                    name="factoryId"
-                    v-show="isTypeChild"
-                    :rules="facIdRules"
-                >
-                    <template #label>
-                        <span>工厂ID</span>
-                    </template>
-                    <j-input v-model:value="form.factoryId" />
                 </j-form-item>
                 <j-form-item
                     name="factoryType"
@@ -95,6 +87,16 @@
                             >{{ item.name }}</j-select-option
                         >
                     </j-select>
+                </j-form-item>
+                <j-form-item
+                    name="factoryId"
+                    v-show="isChild"
+                    :rules="facIdRules"
+                >
+                    <template #label>
+                        <span>工厂ID</span>
+                    </template>
+                    <j-input v-model:value="form.factoryId" />
                 </j-form-item>
                 <j-form-item
                     name="factoryKey"
@@ -357,15 +359,25 @@ const form = ref<formState>({
     basePath: `${window.location.origin}/api`,
     logo: '/logo.png',
     ico: '/favicon.ico',
-    factoryId:'',
+    factoryId: '',
     factoryKey: '',
     factoryType: '',
     background: '/images/login.png',
 });
 
 const isTypeChild = ref(true);
-const facTypeRules = ref<any>();
-const facIdRules = ref<any>();
+const facTypeRules = ref<any>({
+    required: true,
+    message: '请选择工厂类型',
+    trigger: 'blur',
+});
+const facIdRules = ref<any>([
+    {
+        required: true,
+        message: '请填写工厂ID',
+        trigger: 'blur',
+    },
+]);
 const isChild = ref(false);
 const isFactoryKeyRules = ref<any>([]);
 const rulesFrom = ref({
@@ -408,11 +420,6 @@ watch(
             isChild.value = true;
             isFactoryKeyRules.value = [
                 {
-                    max: 64,
-                    message: '最多可输入64位',
-                    trigger: 'change',
-                },
-                {
                     required: true,
                     message: '请填写工厂Topic',
                     trigger: 'blur',
@@ -437,15 +444,15 @@ watch(
                     trigger: 'blur',
                 },
             ];
-            facIdRules.value = [
-                {
-                    required: true,
-                    message: '请填写工厂ID',
-                    trigger: 'blur',
-                },
-            ];
             if (form.value.factoryType === 'sub') {
                 isChild.value = true;
+                facIdRules.value = [
+                    {
+                        required: true,
+                        message: '请填写工厂ID',
+                        trigger: 'blur',
+                    },
+                ];
                 isFactoryKeyRules.value = [
                     {
                         required: true,
@@ -455,12 +462,13 @@ watch(
                 ];
             } else {
                 isChild.value = false;
+                facIdRules.value = []
                 isFactoryKeyRules.value = [];
             }
         } else {
             isTypeChild.value = false;
             facTypeRules.value = [];
-            facIdRules.value = []
+            facIdRules.value = [];
             isChild.value = false;
             isFactoryKeyRules.value = [];
         }

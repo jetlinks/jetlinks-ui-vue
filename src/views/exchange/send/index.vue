@@ -212,7 +212,7 @@
                                     placeholder="请选择状态为“正常”的产品"
                                 >
                                     <j-select-option
-                                        v-for="item in filteredItems"
+                                        v-for="item in paramsProductList"
                                         :value="item.id"
                                         :key="item.id"
                                         :label="item.name"
@@ -284,6 +284,7 @@ const SelProductList = ref<Record<string, any>[]>([]);
 
 const deviceList = ref<Record<string, any>[]>([]);
 const factoryList = ref<Record<string, any>[]>([]);
+const paramsProductList = ref<any>();
 
 const formRef = ref();
 const data = reactive({
@@ -315,6 +316,7 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
+                        paramsProductList.value = filteredItems.value
                         tableRef.value?.reload();
                     }
                 });
@@ -324,6 +326,7 @@ const modalState = reactive({
                         onlyMessage('修改成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
+                        paramsProductList.value = productList.value
                         tableRef.value?.reload();
                     }
                 });
@@ -332,6 +335,7 @@ const modalState = reactive({
     },
     cancel() {
         modalState.openView = false;
+        paramsProductList.value = productList.value
         formRef.value.resetFields();
     },
 });
@@ -468,7 +472,7 @@ const handleAdd = () => {
 
 //获取卡片字段产品名称
 const getProduct = (productId: string) => {
-    const getList: any = filteredItems.value.find(
+    const getList: any = productList.value.find(
         (item: any) => item.id === productId,
     );
     return getList?.name;
@@ -541,6 +545,7 @@ const getActions = (
                 modalState.title = '编辑';
                 modalState.openView = true;
                 form.value = data;
+                paramsProductList.value = productList.value
             },
         },
         {
@@ -690,8 +695,6 @@ const filteredItems = computed(() => {
     );
 });
 
-console.log(filteredItems)
-
 onMounted(() => {
     queryNoPagingPost({
         paging: false,
@@ -710,6 +713,7 @@ onMounted(() => {
     }).then((resp) => {
         if (resp.status === 200) {
             productList.value = resp.result;
+            paramsProductList.value = productList.value
 
             filterReSandProduct().then((res: any) => {
                 if (res.status === 200 && res.result.length > 0) {
@@ -731,7 +735,6 @@ onMounted(() => {
     }).then((response: any) => {
         if (response.status === 200) {
             factoryList.value = response.result.data;
-            console.log(response.result.data);
         }
     });
 });

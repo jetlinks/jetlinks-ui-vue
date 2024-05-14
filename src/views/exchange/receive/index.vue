@@ -337,7 +337,7 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = deviceList.value
+                        paramsProductList.value = productList.value
                         tableRef.value?.reload();
                     }
                 });
@@ -347,7 +347,7 @@ const modalState = reactive({
                         onlyMessage('修改成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = deviceList.value
+                        paramsProductList.value = productList.value
                         tableRef.value?.reload();
                     }
                 });
@@ -356,7 +356,7 @@ const modalState = reactive({
     },
     cancel() {
         modalState.openView = false;
-        paramsProductList.value = deviceList.value
+        paramsProductList.value = productList.value
         formRef.value.resetFields();
     },
 });
@@ -511,7 +511,7 @@ const handleAdd = () => {
     isAdd.value = 1;
     modalState.title = '新增';
     modalState.openView = true;
-    paramsProductList.value = filteredItems
+    paramsProductList.value = filteredItems.value
     reset();
 };
 
@@ -548,7 +548,6 @@ const handleExport = () => {
         };
         queryDeviceProductList(query).then((res: any) => {
             let result = res.result[0];
-            // console.log(result);
             if (result) {
                 const extra = omit(JSON.parse(JSON.stringify(result)), [
                     'transportProtocol',
@@ -675,8 +674,7 @@ const getActions = (
                 modalState.title = '编辑';
                 modalState.openView = true;
                 form.value = data;
-                paramsProductList.value = deviceList.value
-                console.log(paramsProductList.value)
+                paramsProductList.value = productList.value
             },
         },
         {
