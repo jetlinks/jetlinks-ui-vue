@@ -337,7 +337,7 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = productList.value
+                        paramsProductList.value = productList.value;
                         tableRef.value?.reload();
                     }
                 });
@@ -347,7 +347,7 @@ const modalState = reactive({
                         onlyMessage('修改成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = productList.value
+                        paramsProductList.value = productList.value;
                         tableRef.value?.reload();
                     }
                 });
@@ -356,7 +356,7 @@ const modalState = reactive({
     },
     cancel() {
         modalState.openView = false;
-        paramsProductList.value = productList.value
+        paramsProductList.value = productList.value;
         formRef.value.resetFields();
     },
 });
@@ -474,9 +474,9 @@ const reset = () => {
         name: '',
         url: '',
         topic: '',
-        productId: '',
+        productId: undefined,
         deviceIds: [],
-        factoryId: '',
+        factoryId: undefined,
         description: '',
         type: 'receive',
         state: 'enabled',
@@ -511,7 +511,7 @@ const handleAdd = () => {
     isAdd.value = 1;
     modalState.title = '新增';
     modalState.openView = true;
-    paramsProductList.value = filteredItems.value
+    paramsProductList.value = filteredItems.value;
     reset();
 };
 
@@ -674,7 +674,7 @@ const getActions = (
                 modalState.title = '编辑';
                 modalState.openView = true;
                 form.value = data;
-                paramsProductList.value = productList.value
+                paramsProductList.value = productList.value;
             },
         },
         {
@@ -768,27 +768,37 @@ const curProductChange = (val: any) => {
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
-        const setData = {
-            paging: false,
-            sorts: [{ name: 'createTime', order: 'desc' }],
-            terms: [
-                {
-                    terms: [
-                        {
-                            column: 'productId',
-                            termType: 'eq',
-                            type: 'or',
-                            value: `${newValue}`,
-                        },
-                    ],
-                },
-            ],
-        };
-        queryNoPagingPostDevice(setData).then((resp) => {
-            if (resp.status === 200) {
-                deviceList.value = resp.result as Record<string, any>[];
-            }
-        });
+        if (form.value.factoryId) {
+            const setData = {
+                paging: false,
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms: [
+                    {
+                        terms: [
+                            {
+                                column: 'productId',
+                                termType: 'eq',
+                                type: 'or',
+                                value: `${newValue}`,
+                            },
+                            {
+                                column: 'factoryId',
+                                termType: 'eq',
+                                type: 'or',
+                                value: `${form.value.factoryId}`,
+                            },
+                        ],
+                    },
+                ],
+            };
+            queryNoPagingPostDevice(setData).then((resp) => {
+                if (resp.status === 200) {
+                    deviceList.value = resp.result as Record<string, any>[];
+                }
+            });
+        } else {
+            onlyMessage('请选择工厂', 'error');
+        }
     },
 );
 
@@ -816,7 +826,7 @@ onMounted(() => {
     }).then((resp: any) => {
         if (resp.status === 200) {
             productList.value = resp.result;
-            paramsProductList.value = productList.value
+            paramsProductList.value = productList.value;
 
             filterReSandProduct().then((res: any) => {
                 SelProductList.value = res.result;

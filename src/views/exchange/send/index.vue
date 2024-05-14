@@ -172,24 +172,6 @@
                                     placeholder="请输入Topic"
                                 />
                             </j-form-item>
-                            <j-form-item name="factoryId">
-                                <template #label>
-                                    <span>工厂名称 </span>
-                                </template>
-                                <j-select
-                                    showSearch
-                                    v-model:value="form.factoryId"
-                                    placeholder="请选择工厂"
-                                >
-                                    <j-select-option
-                                        v-for="item in factoryList"
-                                        :value="item.id"
-                                        :key="item.id"
-                                        :label="item.name"
-                                        >{{ item.name }}</j-select-option
-                                    >
-                                </j-select>
-                            </j-form-item>
                             <j-form-item name="productId">
                                 <template #label>
                                     <span
@@ -316,7 +298,7 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = filteredItems.value
+                        paramsProductList.value = filteredItems.value;
                         tableRef.value?.reload();
                     }
                 });
@@ -326,7 +308,7 @@ const modalState = reactive({
                         onlyMessage('修改成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = productList.value
+                        paramsProductList.value = productList.value;
                         tableRef.value?.reload();
                     }
                 });
@@ -335,7 +317,7 @@ const modalState = reactive({
     },
     cancel() {
         modalState.openView = false;
-        paramsProductList.value = productList.value
+        paramsProductList.value = productList.value;
         formRef.value.resetFields();
     },
 });
@@ -402,10 +384,6 @@ const rules = {
             type: 'array',
         },
     ],
-    factoryId: [
-        { required: true, message: '请输入工厂ID', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
-    ],
     description: [
         { max: 200, message: '最多可输入200位字符', trigger: 'change' },
     ],
@@ -417,9 +395,9 @@ const reset = () => {
         name: '',
         url: '',
         topic: '',
-        productId: '',
+        productId: undefined,
         deviceIds: [],
-        groupId: '',
+        factoryId: undefined,
         description: '',
         type: 'sand',
         state: 'enabled',
@@ -545,7 +523,7 @@ const getActions = (
                 modalState.title = '编辑';
                 modalState.openView = true;
                 form.value = data;
-                paramsProductList.value = productList.value
+                paramsProductList.value = productList.value;
             },
         },
         {
@@ -713,7 +691,7 @@ onMounted(() => {
     }).then((resp) => {
         if (resp.status === 200) {
             productList.value = resp.result;
-            paramsProductList.value = productList.value
+            paramsProductList.value = productList.value;
 
             filterReSandProduct().then((res: any) => {
                 if (res.status === 200 && res.result.length > 0) {

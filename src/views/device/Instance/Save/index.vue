@@ -263,6 +263,7 @@ const handleSave = () => {
             if (!obj.id) {
                 delete obj.id;
             }
+            console.log(obj)
             const resp = await update(obj).finally(() => {
                 loading.value = false;
             });

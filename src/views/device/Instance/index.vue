@@ -1060,7 +1060,7 @@ const onRefresh = () => {
 
 onMounted(() => {
     query().then((res: any) => {
-        console.log(res);
+        console.log('res',res);
     });
 });
 </script>
