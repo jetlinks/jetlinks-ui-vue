@@ -441,6 +441,12 @@ const getProductList = async () => {
     };
     const { result } = await DeviceApi.queryProductList(params);
     productList.value = result;
+    if(!formData.value.others.access_pwd){
+            formData.value.others.access_pwd=productList.value.find((f: any) => f.id === formData.value.productId)
+            ?.configuration.access_pwd || '';
+            formData.value.streamMode=productList.value.find((f: any) => f.id === formData.value.productId)
+            ?.configuration.stream_mode || '';
+    }
 };
 getProductList();
 
