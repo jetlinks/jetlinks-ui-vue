@@ -55,7 +55,9 @@
                             >
                                 <template #label>
                                     <span>是否为联邦架构</span>
-                                    <j-tooltip title="需先选择是否为联邦架构,配置后可生成对应必填配置项">
+                                    <j-tooltip
+                                        title="需先选择是否为联邦架构,配置后可生成对应必填配置项"
+                                    >
                                         <img
                                             class="img-style"
                                             :src="'/images/init-home/mark.png'"
@@ -70,6 +72,16 @@
                                     <j-radio value="true">是</j-radio>
                                     <j-radio value="false">否</j-radio>
                                 </j-radio-group>
+                            </j-form-item>
+                            <j-form-item
+                                name="factoryId"
+                                v-show="isTypeChild"
+                                :rules="facIdRules"
+                            >
+                                <template #label>
+                                    <span>工厂ID</span>
+                                </template>
+                                <j-input v-model:value="formValue.factoryId" />
                             </j-form-item>
                             <j-form-item
                                 name="factoryType"
@@ -404,6 +416,7 @@ const form = reactive<formType>({
         headerTheme: 'light',
         apiKey: '',
         isIOT: 'true',
+        factoryId: '',
         factoryKey: '',
         factoryType: '',
         'base-path': `${window.location.origin}/api`,
@@ -452,6 +465,7 @@ const form = reactive<formType>({
             ico: configInfo.front?.ico || '/favicon.ico',
             backgroud: configInfo.front?.backgroud || '/images/login.png',
             isIOT: configInfo.front?.isIOT || 'false',
+            factoryId: configInfo.front?.factoryId,
             factoryKey: configInfo.front?.factoryKey,
             factoryType: configInfo.front?.factoryType,
             apiKey: configInfo.amap?.apiKey,
@@ -511,7 +525,20 @@ const { formValue, rulesFrom } = toRefs(form);
 const isChild = ref(false);
 const facRules = ref<any>();
 const isTypeChild = ref(true);
-const facTypeRules = ref<any>();
+const facTypeRules = ref<any>([
+    {
+        required: true,
+        message: '请选择工厂类型',
+        trigger: 'blur',
+    },
+]);
+const facIdRules = ref<any>([
+    {
+        required: true,
+        message: '请填写工厂ID',
+        trigger: 'blur',
+    },
+]);
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
         let oldValue = system.configInfo.front?.factoryKey;
@@ -553,6 +580,13 @@ watch(
                     trigger: 'blur',
                 },
             ];
+            facIdRules.value = [
+                {
+                    required: true,
+                    message: '请填写工厂ID',
+                    trigger: 'blur',
+                },
+            ];
             if (formValue.value.factoryType === 'sub') {
                 isChild.value = true;
                 facRules.value = [
@@ -569,6 +603,7 @@ watch(
         } else {
             isTypeChild.value = false;
             facTypeRules.value = [];
+            facIdRules.value = [];
             isChild.value = false;
             facRules.value = [];
         }

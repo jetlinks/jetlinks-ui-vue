@@ -65,6 +65,16 @@
                     </j-radio-group>
                 </j-form-item>
                 <j-form-item
+                    name="factoryId"
+                    v-show="isTypeChild"
+                    :rules="facIdRules"
+                >
+                    <template #label>
+                        <span>工厂ID</span>
+                    </template>
+                    <j-input v-model:value="form.factoryId" />
+                </j-form-item>
+                <j-form-item
                     name="factoryType"
                     v-show="isTypeChild"
                     :rules="facTypeRules"
@@ -347,6 +357,7 @@ const form = ref<formState>({
     basePath: `${window.location.origin}/api`,
     logo: '/logo.png',
     ico: '/favicon.ico',
+    factoryId:'',
     factoryKey: '',
     factoryType: '',
     background: '/images/login.png',
@@ -354,6 +365,7 @@ const form = ref<formState>({
 
 const isTypeChild = ref(true);
 const facTypeRules = ref<any>();
+const facIdRules = ref<any>();
 const isChild = ref(false);
 const isFactoryKeyRules = ref<any>([]);
 const rulesFrom = ref({
@@ -415,29 +427,6 @@ watch(
 watch(
     () => form.value.isIOT,
     (newValue: any) => {
-        if (newValue) {
-            isChild.value = true;
-            isFactoryKeyRules.value = [
-                {
-                    max: 64,
-                    message: '最多可输入64位',
-                    trigger: 'change',
-                },
-                {
-                    required: true,
-                    message: '请填写工厂Topic',
-                    trigger: 'blur',
-                },
-            ];
-        } else {
-            isChild.value = false;
-            isFactoryKeyRules.value = [];
-        }
-    },
-);
-watch(
-    () => form.value.isIOT,
-    (newValue: any) => {
         console.log('newValue', newValue);
         if (newValue === 'true') {
             isTypeChild.value = true;
@@ -445,6 +434,13 @@ watch(
                 {
                     required: true,
                     message: '请选择工厂类型',
+                    trigger: 'blur',
+                },
+            ];
+            facIdRules.value = [
+                {
+                    required: true,
+                    message: '请填写工厂ID',
                     trigger: 'blur',
                 },
             ];
@@ -464,6 +460,7 @@ watch(
         } else {
             isTypeChild.value = false;
             facTypeRules.value = [];
+            facIdRules.value = []
             isChild.value = false;
             isFactoryKeyRules.value = [];
         }

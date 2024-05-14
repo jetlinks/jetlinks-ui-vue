@@ -411,17 +411,7 @@ const handleUpdate = (data: any) => {
 
 //查看子工厂
 const handleSee = (data: any) => {
-    getSubFactoryToken(data).then((res: any) => {
-        if(res.result){
-            console.log(`${data.url}:${data.port}/api/token-set.html?token=` + res.result,)
-            window.open(
-            `${data.url}:${data.port}/api/token-set.html?token=` + res.result,
-            '_blank',
-        );
-        }
-    }).catch(()=>{
-        onlyMessage('地址错误,请检查！', 'error');
-    });
+    window.open( `${data.url}:${data.port}`)
 };
 
 //查看设备

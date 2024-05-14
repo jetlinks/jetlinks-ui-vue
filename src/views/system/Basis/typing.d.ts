@@ -6,7 +6,8 @@ export interface formValueType {
     headerTheme: string | undefined; // 主题色
     apiKey: string | undefined; // 高德 API key
     isIOT: string | undefined; //是否为联邦架构
-    factoryKey:string | undefined; //工厂id配置
+    factoryId: string | undefined; //工厂id
+    factoryKey:string | undefined; //工厂topic配置
     factoryType: string | undefined; //工厂类型
     'base-path': string | undefined; // 系统后台访问的URL
     logo: string | undefined;

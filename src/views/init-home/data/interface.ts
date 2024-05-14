@@ -15,7 +15,8 @@ export interface formState  {
   headerTheme: string; // 主题色
   apikey: string; // 高德 API key
   isIOT: string; //是否为联邦架构
-  factoryKey:string; //工厂id
+  factoryId: string;//工厂id
+  factoryKey:string; //工厂Topic
   factoryType:string; //工厂类型
   basePath: string; // 系统后台访问的URL
   logo: string; // 系统logo

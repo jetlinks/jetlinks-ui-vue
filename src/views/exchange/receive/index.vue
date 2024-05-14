@@ -130,7 +130,7 @@
                                 }"
                                 @click="item.onClick"
                             >
-                            <AIcon
+                                <AIcon
                                     type="DeleteOutlined"
                                     v-if="item.key === 'delete'"
                                 />
@@ -186,11 +186,23 @@
                                     placeholder="请输入Topic"
                                 />
                             </j-form-item>
-                            <j-form-item label="group.id" name="groupId">
-                                <j-input
-                                    v-model:value="form.groupId"
-                                    placeholder="请输入group.id"
-                                />
+                            <j-form-item name="factoryId">
+                                <template #label>
+                                    <span>工厂名称 </span>
+                                </template>
+                                <j-select
+                                    showSearch
+                                    v-model:value="form.factoryId"
+                                    placeholder="请选择工厂"
+                                >
+                                    <j-select-option
+                                        v-for="item in factoryList"
+                                        :value="item.id"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        >{{ item.name }}</j-select-option
+                                    >
+                                </j-select>
                             </j-form-item>
                             <j-form-item name="productId">
                                 <template #label>
@@ -214,7 +226,7 @@
                                     placeholder="请选择状态为“正常”的产品"
                                 >
                                     <j-select-option
-                                        v-for="item in filteredItems"
+                                        v-for="item in paramsProductList"
                                         :value="item.id"
                                         :key="item.id"
                                         :label="item.name"
@@ -267,9 +279,10 @@ import {
     queryDataReceiveList,
     queryNoPagingPostDevice,
     queryDeviceProductList,
-    _deploy,filterReSandProduct,
+    _deploy,
+    filterReSandProduct,
 } from '@/api/exchange/receive';
-import { isTopic } from '@/api/factory/factory';
+import { isTopic, queryFactoryList } from '@/api/factory/factory';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
@@ -285,7 +298,8 @@ const productList = ref<any>([]);
 const SelProductList = ref<Record<string, any>[]>([]);
 
 const deviceList = ref<Record<string, any>[]>([]);
-const paramsProductID = ref<any>();
+const paramsProductList = ref<any>();
+const factoryList = ref<Record<string, any>[]>([]);
 
 const selectedRowKeys = ref<string[]>([]);
 const selectedRow = ref<string[]>([]);
@@ -323,6 +337,7 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
+                        paramsProductList.value = deviceList.value
                         tableRef.value?.reload();
                     }
                 });
@@ -332,6 +347,7 @@ const modalState = reactive({
                         onlyMessage('修改成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
+                        paramsProductList.value = deviceList.value
                         tableRef.value?.reload();
                     }
                 });
@@ -340,6 +356,7 @@ const modalState = reactive({
     },
     cancel() {
         modalState.openView = false;
+        paramsProductList.value = deviceList.value
         formRef.value.resetFields();
     },
 });
@@ -445,10 +462,7 @@ const rules = {
             type: 'array',
         },
     ],
-    groupId: [
-        { required: true, message: '请输入group.id', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
-    ],
+    factoryId: [{ required: true, message: '请选择工厂', trigger: 'blur' }],
     description: [
         { max: 200, message: '最多可输入200位字符', trigger: 'change' },
     ],
@@ -462,7 +476,7 @@ const reset = () => {
         topic: '',
         productId: '',
         deviceIds: [],
-        groupId: '',
+        factoryId: '',
         description: '',
         type: 'receive',
         state: 'enabled',
@@ -497,6 +511,7 @@ const handleAdd = () => {
     isAdd.value = 1;
     modalState.title = '新增';
     modalState.openView = true;
+    paramsProductList.value = filteredItems
     reset();
 };
 
@@ -585,24 +600,6 @@ const handleExport = () => {
     }
 };
 
-// 编辑操作
-const handleUpdate = (data: any) => {
-    console.log(data);
-    isAdd.value = 2;
-    form.value = data;
-    modalState.title = '编辑';
-    modalState.openView = true;
-};
-
-//查看设备
-const handleView = (data: string) => {};
-// 删除操作
-const handleDelete = async (id: string) => {
-    deleteDataSand(id).then((response: any) => {
-        if (response.status === 200) onlyMessage('删除成功！');
-    });
-};
-
 //获取卡片字段产品名称
 const getProduct = (productId: string) => {
     let getList: any = productList.value.find(
@@ -678,6 +675,8 @@ const getActions = (
                 modalState.title = '编辑';
                 modalState.openView = true;
                 form.value = data;
+                paramsProductList.value = deviceList.value
+                console.log(paramsProductList.value)
             },
         },
         {
@@ -686,15 +685,22 @@ const getActions = (
             tooltip: {
                 title: data.state.value === 'enabled' ? '禁用' : '启用',
             },
-            icon: data.state.value === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
+            icon:
+                data.state.value === 'enabled'
+                    ? 'StopOutlined'
+                    : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'}?`,
+                title: `确认${
+                    data.state.value === 'enabled' ? '禁用' : '启用'
+                }?`,
                 onConfirm: async () => {
                     let response = undefined;
                     if (data.state.value === 'enabled') {
-                        response = await _deploy(data.id,{state: 'disabled'});
+                        response = await _deploy(data.id, {
+                            state: 'disabled',
+                        });
                     } else {
-                        response = await _deploy(data.id,{state: 'enabled'});
+                        response = await _deploy(data.id, { state: 'enabled' });
                     }
                     if (response && response.status === 200) {
                         onlyMessage('操作成功！');
@@ -709,7 +715,8 @@ const getActions = (
             key: 'delete',
             disabled: data.state.value === 'enabled',
             tooltip: {
-                title: data.state.value === 'enabled'
+                title:
+                    data.state.value === 'enabled'
                         ? '已启用的设备不能删除'
                         : '删除',
             },
@@ -718,7 +725,7 @@ const getActions = (
                 onConfirm: async () => {
                     deleteDataSand(data.id).then((response: any) => {
                         if (response.status === 200) {
-                            onlyMessage('删除成功！')
+                            onlyMessage('删除成功！');
                             tableRef.value?.reload();
                         } else {
                             onlyMessage('操作失败！', 'error');
@@ -788,8 +795,10 @@ watch(
 );
 
 const filteredItems = computed(() => {
-      return productList.value.filter((item: any) => !SelProductList.value.includes(item.id));
-    });
+    return productList.value.filter(
+        (item: any) => !SelProductList.value.includes(item.id),
+    );
+});
 
 onMounted(() => {
     queryNoPagingPost({
@@ -809,11 +818,27 @@ onMounted(() => {
     }).then((resp: any) => {
         if (resp.status === 200) {
             productList.value = resp.result;
-            paramsProductID.value = resp.result[0]?.productId;
+            paramsProductList.value = productList.value
 
-            filterReSandProduct().then((res:any)=>{
-                SelProductList.value = res.result
-            })
+            filterReSandProduct().then((res: any) => {
+                SelProductList.value = res.result;
+            });
+        }
+    });
+
+    queryFactoryList({
+        paging: false,
+        sorts: [
+            {
+                name: 'createTime',
+                order: 'desc',
+            },
+        ],
+        terms: [],
+    }).then((response: any) => {
+        if (response.status === 200) {
+            factoryList.value = response.result.data;
+            console.log(response.result.data);
         }
     });
 });
