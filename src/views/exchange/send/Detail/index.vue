@@ -15,6 +15,7 @@
                 </j-tab-pane>
                 <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
                     <DeviceMap
+                        :deviceIdsMap="deviceIdsMap"
                         :deviceIdsMapOpt="deviceIdsMapOpt"
                         :deviceDetailList="deviceDetailList"
                         :dataDetailList="dataDetailList"
@@ -268,6 +269,7 @@ const Init = () => {
                 };
             });
             deviceIdsMap.value = deviceTargetMap;
+            // console.log('deviceTargetMap',deviceTargetMap)
 
             deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
                 value: item.targetName + `(${item.targetId})`,

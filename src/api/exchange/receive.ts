@@ -90,3 +90,12 @@ export const getDataSandMap = (id: any, data: any) =>
  */
 export const queryGetSendData = (data: any) =>
     server.post('/tbea/receive/sand/_query/no-paging', data);
+
+// /tbea/receive/sand/productId/filter
+
+/**
+ * 过滤数据收发已选择过的产品
+ *
+ */
+export const filterReSandProduct = (data?: any) =>
+    server.get('/tbea/receive/sand/productId/filter');

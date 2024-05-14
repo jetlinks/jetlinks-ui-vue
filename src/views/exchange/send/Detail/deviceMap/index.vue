@@ -41,7 +41,7 @@
                 :allowClear="true"
                 :options="props.deviceIdsMapOpt"
                 placeholder="请选择目标设备"
-                @change="saveRowData(data.index, 'select', $event)"
+                @change="saveRowData(data.index, 'select', $event, data)"
             ></j-select>
         </template>
         <template #state="{ data }">
@@ -131,26 +131,31 @@ const State = reactive({
     title: '映射',
     confirmLoading: false,
     confirm() {
+        console.log('deviceMapDetailOne.value',deviceMapDetailOne.value)
+        console.log('props.deviceDetailList',props.deviceDetailList)
         deviceMapDetailOne.value.deviceTargetAttribute = deviceMapDetail.value;
+
+        const getDeviceMapDeOne = deviceMapDetailOne.value
         const arr = props.deviceDetailList.map((item: any) => {
-            if (item.originalId === deviceMapDetailOne.value.originalId) {
+            if (item.originalId === getDeviceMapDeOne.originalId) {
                 return {
-                    originalId: deviceMapDetailOne.value.originalId,
-                    originalName: deviceMapDetailOne.value.originalName,
-                    select: deviceMapDetailOne.value.select || undefined,
-                    state: deviceMapDetailOne.value.state.value || undefined,
+                    originalId: getDeviceMapDeOne.originalId,
+                    originalName: getDeviceMapDeOne.originalName,
+                    select: getDeviceMapDeOne?.select || undefined,
+                    state: getDeviceMapDeOne?.state.value || undefined,
                     bln: true,
-                    targetAttribute:
-                        deviceMapDetailOne.value.targetAttribute || undefined,
+                    targetAttribute: 
+                    getDeviceMapDeOne?.targetAttribute || undefined,
                     deviceTargetAttributeMap:
-                        deviceMapDetailOne.value.deviceTargetAttributeMap ||
+                    getDeviceMapDeOne?.deviceTargetAttributeMap ||
                         undefined,
                     deviceTargetAttribute:
-                        deviceMapDetailOne.value.deviceTargetAttribute ||
+                    getDeviceMapDeOne?.deviceTargetAttribute ||
                         undefined,
                 };
+            }else{
+                return item;
             }
-            return item;
         });
         emit('updateParentVar', arr);
         State.openView = false;
@@ -161,6 +166,10 @@ const State = reactive({
 });
 
 const props = defineProps({
+    deviceIdsMap:{
+        type: [String, Array] as PropType<string | string[]>,
+        default: [],
+    },
     deviceIdsMapOpt: {
         type: [String, Array] as PropType<string | string[]>,
         default: [],
@@ -241,29 +250,14 @@ const beforeUpload = (file: any) => {
     return false;
 };
 
-const handleClear = (index: any, dataIndex: string, event: any) => {
-    console.log('index', index);
-    console.log('dataIndex', dataIndex);
-    console.log(event);
-    if (event === undefined) {
-    }
-};
-
 //修改设备table表数据
-const saveRowData = (index: any, dataIndex: string, event: any) => {
+const saveRowData = (index: any, dataIndex: string, event: any, data?: any) => {
     if (dataIndex === 'select') {
         if (event) {
-            const getTargetAtt = props.deviceDetailList.find(
-                (item: any) => (item.select = event),
-            );
-            // console.log(getTargetAtt)
-            props.deviceDetailList[index]['deviceTargetAttribute'] =
-                getTargetAtt.deviceTargetAttribute;
-            props.deviceDetailList[index]['deviceTargetAttributeMap'] =
-                getTargetAtt.deviceTargetAttributeMap;
+            props.deviceDetailList[index]['deviceTargetAttribute'] = data.record?.deviceTargetAttribute;
+            props.deviceDetailList[index]['deviceTargetAttributeMap'] = data.record?.deviceTargetAttributeMap;
             props.deviceDetailList[index][dataIndex] = event;
-            props.deviceDetailList[index]['targetAttribute'] =
-                splitHumidity(event);
+            props.deviceDetailList[index]['targetAttribute'] = splitHumidity(event);
         } else {
             props.deviceDetailList[index][dataIndex] = event;
             props.deviceDetailList[index]['targetAttribute'] = undefined;
@@ -336,8 +330,16 @@ const handleMap = (data: any) => {
     // console.log('data', data);
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
-    mapOptions.value = data.record.deviceTargetAttributeMap;
-    console.log('bln',  data.record.bln);
+    // console.log('data',data)
+    // console.log('props.deviceIdsMap',props.deviceIdsMap)
+    if(data.record.targetAttribute){
+        let mapOptionDevice = props.deviceIdsMap.find(
+            (item: any) => item.targetId === data.record.targetAttribute.targetId,
+        )
+        mapOptions.value = mapOptionDevice.deviceTargetAttributeMap;
+    }else{
+        mapOptions.value = []
+    }
     if (!data.record.bln) {
         if (data.record.deviceTargetAttribute.length > 0) {
             const getDevTarAtt = data.record.deviceTargetAttribute.map(
@@ -357,7 +359,7 @@ const handleMap = (data: any) => {
                     }
                 },
             );
-            console.log('getDevTarAtt', getDevTarAtt);
+            // console.log('getDevTarAtt', getDevTarAtt);
             deviceMapDetail.value = getDevTarAtt;
         }
     }

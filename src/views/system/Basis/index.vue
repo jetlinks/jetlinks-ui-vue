@@ -55,7 +55,7 @@
                             >
                                 <template #label>
                                     <span>是否为联邦架构</span>
-                                    <j-tooltip title="是否为联邦架构">
+                                    <j-tooltip title="需先选择是否为联邦架构,配置后可生成对应必填配置项">
                                         <img
                                             class="img-style"
                                             :src="'/images/init-home/mark.png'"
@@ -64,11 +64,11 @@
                                 </template>
                                 <j-radio-group
                                     name="isIOT"
-                                    defaultValue="false"
+                                    defaultValue="true"
                                     v-model:value="formValue.isIOT"
                                 >
-                                    <j-radio value="false">否</j-radio>
                                     <j-radio value="true">是</j-radio>
+                                    <j-radio value="false">否</j-radio>
                                 </j-radio-group>
                             </j-form-item>
                             <j-form-item
@@ -403,7 +403,7 @@ const form = reactive<formType>({
         title: '',
         headerTheme: 'light',
         apiKey: '',
-        isIOT: 'false',
+        isIOT: 'true',
         factoryKey: '',
         factoryType: '',
         'base-path': `${window.location.origin}/api`,
@@ -544,7 +544,7 @@ watch(
     () => formValue.value.isIOT,
     (newValue: any) => {
         console.log('newValue', newValue);
-        if (newValue === 'false') {
+        if (newValue === 'true') {
             isTypeChild.value = true;
             facTypeRules.value = [
                 {

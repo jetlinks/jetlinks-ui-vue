@@ -35,15 +35,34 @@
                     </j-space>
                 </template>
                 <template #actions="slotProps">
-                    <a @click="handleUpdate(slotProps)">编辑</a>
-                    <j-divider type="vertical" />
-                    <a @click="handleView(slotProps)">禁用</a>
-                    <j-divider type="vertical" />
-                    <a
-                        style="color: #f53f3f"
-                        @click="handleDelete(slotProps.id)"
-                        >删除</a
-                    >
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'device/Product:' + i.key
+                                "
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                :danger="i.key === 'delete'"
+                            >
+                                <template #icon
+                                    ><AIcon
+                                        style="font-size: 13px"
+                                        :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
                 </template>
                 <template #state="slotProps">
                     <BadgeStatus
@@ -195,7 +214,7 @@
                                     placeholder="请选择状态为“正常”的产品"
                                 >
                                     <j-select-option
-                                        v-for="item in productList"
+                                        v-for="item in filteredItems"
                                         :value="item.id"
                                         :key="item.id"
                                         :label="item.name"
@@ -248,7 +267,7 @@ import {
     queryDataReceiveList,
     queryNoPagingPostDevice,
     queryDeviceProductList,
-    _deploy
+    _deploy,filterReSandProduct,
 } from '@/api/exchange/receive';
 import { isTopic } from '@/api/factory/factory';
 import { queryNoPagingPost } from '@/api/device/product';
@@ -262,7 +281,9 @@ const isAdd = ref<number>(0);
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 
-const productList = ref<Record<string, any>[]>([]);
+const productList = ref<any>([]);
+const SelProductList = ref<Record<string, any>[]>([]);
+
 const deviceList = ref<Record<string, any>[]>([]);
 const paramsProductID = ref<any>();
 
@@ -634,7 +655,7 @@ const columns = [
         title: '操作',
         dataIndex: 'actions',
         fixed: 'right',
-        width: 200,
+        width: 220,
         scopedSlots: true,
     },
 ];
@@ -766,6 +787,10 @@ watch(
     },
 );
 
+const filteredItems = computed(() => {
+      return productList.value.filter((item: any) => !SelProductList.value.includes(item.id));
+    });
+
 onMounted(() => {
     queryNoPagingPost({
         paging: false,
@@ -783,8 +808,12 @@ onMounted(() => {
         ],
     }).then((resp: any) => {
         if (resp.status === 200) {
-            productList.value = resp.result as Record<string, any>[];
+            productList.value = resp.result;
             paramsProductID.value = resp.result[0]?.productId;
+
+            filterReSandProduct().then((res:any)=>{
+                SelProductList.value = res.result
+            })
         }
     });
 });

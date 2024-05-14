@@ -4,6 +4,7 @@
         :title="title"
         width="650px"
         @ok="confirm"
+        :okButtonProps="{ disabled: confirmDisabled }"
         @cancel="cancel"
         cancelText="取消"
         okText="确定下发"
@@ -50,8 +51,8 @@ const props = defineProps({
         default: '',
     },
 });
-const emit = defineEmits(['close']);
 const isLoading = ref(true);
+const confirmDisabled = ref<boolean>(true);
 
 const openView = ref(true);
 const title = ref('下发');
@@ -60,7 +61,7 @@ const targetKeys = ref<string[]>([]);
 const factoryList = ref<any>([]);
 
 const confirm = () => {
-    loading.value = true;
+    loading.value = true
     let foundObjects = targetKeys.value.map((key) => {
         return factoryList.value.find((obj: any) => {
             delete obj.key;
@@ -104,9 +105,11 @@ const getMock = () => {
                             return item.factoryId;
                         });
                         isLoading.value = false
+                        confirmDisabled.value = false
                     } else {
                         targetKeys.value = [];
                         isLoading.value = false
+                        confirmDisabled.value = false
                     }
                 }
             });
@@ -114,6 +117,7 @@ const getMock = () => {
     });
 };
 
+const emit = defineEmits(['close']);
 onMounted(() => {
     getMock();
 });
