@@ -2,7 +2,7 @@
     <div>
         <j-spin :spinning="loading" :delay="500">
             <div class="container">
-                <div class="left" >
+                <div class="left">
                     <img
                         style="width: 100%; height: 100%"
                         :src="basis.background || getImage('/login.png')"
@@ -37,22 +37,16 @@
                                     :model="form"
                                     class="login-form"
                                     @finish="onFinish"
-                                    :rules='rules'
+                                    :rules="rules"
                                 >
-                                    <j-form-item
-                                        label="账号"
-                                        name="username"
-                                    >
+                                    <j-form-item label="账号" name="username">
                                         <j-input
                                             v-model:value="form.username"
                                             placeholder="请输入账号"
                                             :maxlength="64"
                                         ></j-input>
                                     </j-form-item>
-                                    <j-form-item
-                                        label="密码"
-                                        name="password"
-                                    >
+                                    <j-form-item label="密码" name="password">
                                         <j-input-password
                                             v-model:value="form.password"
                                             placeholder="请输入密码"
@@ -117,20 +111,25 @@
                                     </j-divider>
                                     <div class="other-button">
                                         <div
-                                          class='other-button-item'
-                                          v-for="(item, index) in bindings"
-                                          :key="index"
-                                          @click="handleClickOther(item)"
+                                            class="other-button-item"
+                                            v-for="(item, index) in bindings"
+                                            :key="index"
+                                            @click="handleClickOther(item)"
                                         >
-                                          <img
-                                            style="width: 32px; height: 32px"
-                                            :alt="item.name"
-                                            :src="
-                                                    item.logoUrl || iconMap.get(
-                                                        item.provider,
-                                                    ) || defaultImg
+                                            <img
+                                                style="
+                                                    width: 32px;
+                                                    height: 32px;
                                                 "
-                                          />
+                                                :alt="item.name"
+                                                :src="
+                                                    item.logoUrl ||
+                                                    iconMap.get(
+                                                        item.provider,
+                                                    ) ||
+                                                    defaultImg
+                                                "
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -163,22 +162,23 @@
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
 import {
-  config,
-  code,
-  authLogin,
-  getInitSet,
-  systemVersion,
-  bindInfo,
-  settingDetail, userDetail,
-  authLoginConfig
-} from '@/api/login'
+    config,
+    code,
+    authLogin,
+    getInitSet,
+    systemVersion,
+    bindInfo,
+    settingDetail,
+    userDetail,
+    authLoginConfig,
+} from '@/api/login';
 import { useUserInfo } from '@/store/userInfo';
-import { useSystem } from '@/store/system'
+import { useSystem } from '@/store/system';
 import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY, Version_Code } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
-import {encrypt} from '@/utils/encrypt'
-import { closeWs } from '@/utils/websocket'
+import { encrypt } from '@/utils/encrypt';
+import { closeWs } from '@/utils/websocket';
 
 const store = useUserInfo();
 const systemStore = useSystem();
@@ -202,44 +202,44 @@ const form = reactive({
     verifyKey: '',
 });
 
-const  RsaConfig = reactive<any>({
-    enabled:false, //是否加密
-    publicKey:'', //rsa公钥,使用此公钥对密码进行加密
-    id:'' //密钥ID
-})
+const RsaConfig = reactive<any>({
+    enabled: false, //是否加密
+    publicKey: '', //rsa公钥,使用此公钥对密码进行加密
+    id: '', //密钥ID
+});
 
 const rules = {
-  username: [
-    {
-      validator(_: any, value: string) {
-        if (!value) {
-          return Promise.reject('请输入账号!')
-        }
-        return Promise.resolve()
-      }
-    }
-  ],
-  password: [
-    {
-      validator(_: any, value: string) {
-        if (!value) {
-          return Promise.reject('请输入密码!')
-        }
-        return Promise.resolve()
-      }
-    }
-  ],
-  verifyCode: [
-    {
-      validator(_: any, value: string) {
-        if (!value) {
-          return Promise.reject('请输入验证码!')
-        }
-        return Promise.resolve()
-      }
-    }
-  ]
-}
+    username: [
+        {
+            validator(_: any, value: string) {
+                if (!value) {
+                    return Promise.reject('请输入账号!');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
+    password: [
+        {
+            validator(_: any, value: string) {
+                if (!value) {
+                    return Promise.reject('请输入密码!');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
+    verifyCode: [
+        {
+            validator(_: any, value: string) {
+                if (!value) {
+                    return Promise.reject('请输入验证码!');
+                }
+                return Promise.resolve();
+            },
+        },
+    ],
+};
 
 const codeUrl = ref('');
 const codeConfig = ref(false);
@@ -262,47 +262,53 @@ const onFinish = async () => {
 
         const data = {
             ...form,
-            password:RsaConfig.enabled?encrypt(form.password,RsaConfig.publicKey):form.password,
-            encryptId:RsaConfig.enabled?RsaConfig.id:undefined
-        }
+            password: RsaConfig.enabled
+                ? encrypt(form.password, RsaConfig.publicKey)
+                : form.password,
+            encryptId: RsaConfig.enabled ? RsaConfig.id : undefined,
+        };
 
         const res: any = await authLogin(data);
         loading.value = false;
         if (res.success) {
-          LocalStore.set(TOKEN_KEY, res?.result.token);
-          const userResp = await userDetail()
-          if (userResp.success) {
-            store.$patch({
-              userInfos: {
-                ...userResp.result,
-                token: res?.result.token,
-              },
-              isAdmin: userResp.username === "admin",
-            });
+            LocalStore.set(TOKEN_KEY, res?.result.token);
+            const userResp = await userDetail();
+            if (userResp.success) {
+                store.$patch({
+                    userInfos: {
+                        ...userResp.result,
+                        token: res?.result.token,
+                    },
+                    isAdmin: userResp.username === 'admin',
+                });
 
-            if (userResp.result?.username === 'admin') {
-              const resp: any = await getInitSet();
-              if (resp.status === 200 && !resp.result.length) {
-                window.location.href = '/#/init-home';
-                // router.push('/init-home')
-                return;
-              }
+                if (userResp.result?.username === 'admin') {
+                    const resp: any = await getInitSet();
+                    if (resp.status === 200 && !resp.result.length) {
+                        window.location.href = '/#/init-home';
+                        // router.push('/init-home')
+                        return;
+                    }
+                }
+            } else {
+                store.$patch({
+                    ...res.result,
+                });
             }
-          } else {
-            store.$patch({
-              ...res.result
-            });
-          }
             window.location.href = '/';
-          // router.push('/')
+            // router.push('/')
         }
     } catch (error) {
         form.verifyCode = '';
         getCode();
         loading.value = false;
-        getRsa()
+        getRsa();
     }
 };
+
+watch(bindings.value, (newValue) => {
+    console.log('newValue', newValue);
+});
 
 const getCode = async () => {
     const configRes: any = await config();
@@ -316,7 +322,6 @@ const getCode = async () => {
         form.verifyKey = res.result.key;
     }
 };
-
 
 const getOpen = () => {
     LocalStore.removeAll();
@@ -332,24 +337,24 @@ const getOpen = () => {
             }
         }
     });
-    systemStore.getFront()
+    systemStore.getFront();
 };
 
 //获取加密信息
-const getRsa =async () =>{
-    const res:any = await authLoginConfig()
-    if(res.status === 200){
-        if(res.result?.encrypt){
-            RsaConfig.enabled = res.result?.encrypt.enabled
-            RsaConfig.publicKey = res.result?.encrypt.publicKey
-            RsaConfig.id = res.result?.encrypt.id
+const getRsa = async () => {
+    const res: any = await authLoginConfig();
+    if (res.status === 200) {
+        if (res.result?.encrypt) {
+            RsaConfig.enabled = res.result?.encrypt.enabled;
+            RsaConfig.publicKey = res.result?.encrypt.publicKey;
+            RsaConfig.id = res.result?.encrypt.id;
         }
     }
-}
+};
 
 const basis = computed(() => {
-  return systemStore.configInfo['front'] || {}
-})
+    return systemStore.configInfo['front'] || {};
+});
 const handleClickOther = (item: any) => {
     LocalStore.set('onLogin', 'no');
     window.open(`${BASE_API_PATH}/application/sso/${item.id}/login`);
@@ -358,6 +363,11 @@ const handleClickOther = (item: any) => {
             window.location.href = '/';
         }
     };
+};
+
+const handleSubFactory = () => {
+    if (bindings.value) {
+    }
 };
 
 const screenRotation = (width: number, height: number) => {
@@ -379,15 +389,33 @@ watch(
     { deep: true },
 );
 
+watch(
+    () => bindings.value,
+    (value) => {
+        console.log('value',value);
+        LocalStore.set('onLogin', 'no');
+        const urlParams = new URLSearchParams(window.location.search);
+        const factory = urlParams.get('factory');
+        if (factory) {
+            window.open(`${BASE_API_PATH}/application/sso/${value[0].id}/login`);
+            window.onstorage = (e) => {
+                if (e.newValue) {
+                    window.location.href = '/';
+                }
+            };
+        }
+    },
+    { deep: true },
+);
+
 getOpen();
 getCode();
 screenRotation(screenWidth.value, screenHeight.value);
 
-closeWs()
-onMounted(()=>{
-    getRsa()
-})
-
+closeWs();
+onMounted(() => {
+    getRsa();
+});
 </script>
 
 <style scoped lang="less">
@@ -510,10 +538,9 @@ onMounted(()=>{
                             flex-wrap: wrap;
 
                             .other-button-item {
-                              cursor: pointer;
-                              padding: 4px;
+                                cursor: pointer;
+                                padding: 4px;
                             }
-
                         }
                     }
 
@@ -535,9 +562,9 @@ onMounted(()=>{
                         }
                     }
 
-                  .login-form-button {
-                    width: 100%;
-                  }
+                    .login-form-button {
+                        width: 100%;
+                    }
                 }
             }
         }

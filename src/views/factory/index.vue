@@ -411,7 +411,9 @@ const handleUpdate = (data: any) => {
 
 //查看子工厂
 const handleSee = (data: any) => {
-    window.open( `${data.url}:${data.port}`)
+    //http://192.168.33.53:9000/#/oauth
+    const url = `${data.url}:${data.port}?id=${encodeURIComponent(data.id)}`;
+    window.open(url, '_blank');
 };
 
 //查看设备
