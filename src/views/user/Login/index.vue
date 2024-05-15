@@ -395,7 +395,9 @@ watch(
         console.log('value',value);
         LocalStore.set('onLogin', 'no');
         const urlParams = new URLSearchParams(window.location.search);
+        console.log('urlParams',urlParams)
         const factory = urlParams.get('factory');
+        console.log(factory)
         if (factory) {
             window.open(`${BASE_API_PATH}/application/sso/${value[0].id}/login`);
             window.onstorage = (e) => {
