@@ -131,8 +131,8 @@ const State = reactive({
     title: '映射',
     confirmLoading: false,
     confirm() {
-        console.log('deviceMapDetailOne.value',deviceMapDetailOne.value)
-        console.log('props.deviceDetailList',props.deviceDetailList)
+        // console.log('deviceMapDetailOne.value',deviceMapDetailOne.value)
+        // console.log('props.deviceDetailList',props.deviceDetailList)
         deviceMapDetailOne.value.deviceTargetAttribute = deviceMapDetail.value;
 
         const getDeviceMapDeOne = deviceMapDetailOne.value
@@ -141,17 +141,15 @@ const State = reactive({
                 return {
                     originalId: getDeviceMapDeOne.originalId,
                     originalName: getDeviceMapDeOne.originalName,
-                    select: getDeviceMapDeOne?.select || undefined,
-                    state: getDeviceMapDeOne?.state.value || undefined,
+                    select: getDeviceMapDeOne?.select,
+                    state: getDeviceMapDeOne?.state,
                     bln: true,
                     targetAttribute: 
-                    getDeviceMapDeOne?.targetAttribute || undefined,
+                    getDeviceMapDeOne?.targetAttribute,
                     deviceTargetAttributeMap:
-                    getDeviceMapDeOne?.deviceTargetAttributeMap ||
-                        undefined,
+                    getDeviceMapDeOne?.deviceTargetAttributeMap,
                     deviceTargetAttribute:
-                    getDeviceMapDeOne?.deviceTargetAttribute ||
-                        undefined,
+                    getDeviceMapDeOne?.deviceTargetAttribute,
                 };
             }else{
                 return item;
@@ -330,7 +328,6 @@ const handleMap = (data: any) => {
     // console.log('data', data);
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
-    // console.log('data',data)
     // console.log('props.deviceIdsMap',props.deviceIdsMap)
     if(data.record.targetAttribute){
         let mapOptionDevice = props.deviceIdsMap.find(
@@ -340,27 +337,29 @@ const handleMap = (data: any) => {
     }else{
         mapOptions.value = []
     }
-    if (!data.record.bln) {
+    if (data.record.bln) {
         if (data.record.deviceTargetAttribute.length > 0) {
-            const getDevTarAtt = data.record.deviceTargetAttribute.map(
-                (item: any) => {
-                    let item1 = props.dataDetailList.find(
-                        (item2: any) => item2.originalId === item.originalId,
-                    );
-                    if (item1) {
-                        const { targetAttribute, select, ...res } = item;
-                        return {
-                            ...res,
-                            select: item1.select,
-                            targetAttribute: item1.targetAttribute,
-                        };
-                    } else {
-                        return item;
-                    }
-                },
-            );
+            // const getDevTarAtt = data.record.deviceTargetAttribute.map(
+            //     (item: any) => {
+            //         let item1 = props.dataDetailList.find(
+            //             (item2: any) => item2.originalId === item.originalId,
+            //         );
+            //         console.log('item',item)
+            //         console.log('item1',item1)
+            //         if (item1) {
+            //             const { targetAttribute, select, ...res } = item;
+            //             return {
+            //                 ...res,
+            //                 select: item1.select,
+            //                 targetAttribute: item1.targetAttribute,
+            //             };
+            //         } else {
+            //             return item;
+            //         }
+            //     },
+            // );
             // console.log('getDevTarAtt', getDevTarAtt);
-            deviceMapDetail.value = getDevTarAtt;
+            deviceMapDetail.value = data.record.deviceTargetAttribute;
         }
     }
     State.openView = true;

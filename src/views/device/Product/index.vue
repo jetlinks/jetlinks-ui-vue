@@ -443,7 +443,7 @@ const getActions = (
         },
         icon: 'DeleteOutlined',
     };
-    if (isIOT.value ==='true' && factoryType.value !== 'sub') {
+    if (isIOT.value ==='true' && factoryType.value === 'general') {
         others.splice(1, 0, distributeData);
     }
     if (type === 'card') {

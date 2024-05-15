@@ -192,6 +192,7 @@
                                 </template>
                                 <j-select
                                     showSearch
+                                    @change="curProductChange"
                                     v-model:value="form.factoryId"
                                     placeholder="请选择工厂"
                                 >
@@ -339,6 +340,7 @@ const modalState = reactive({
                         modalState.openView = false;
                         paramsProductList.value = productList.value;
                         tableRef.value?.reload();
+                        Init()
                     }
                 });
             } else {
@@ -349,6 +351,7 @@ const modalState = reactive({
                         modalState.openView = false;
                         paramsProductList.value = productList.value;
                         tableRef.value?.reload();
+                        Init()
                     }
                 });
             }
@@ -521,14 +524,6 @@ const handleExport = () => {
         deviceIds: item.deviceIds,
     }));
     if (myArr.length === 1) {
-        const terms: any = [
-            {
-                column: 'id',
-                termType: 'eq',
-                type: 'or',
-                value: `${myArr[0].productId}`,
-            },
-        ];
         const query = {
             ids: myArr[0].deviceIds,
             queryParam: {
@@ -715,7 +710,7 @@ const getActions = (
             tooltip: {
                 title:
                     data.state.value === 'enabled'
-                        ? '已启用的设备不能删除'
+                        ? '已启用的数据不能删除'
                         : '删除',
             },
             popConfirm: {
@@ -725,6 +720,7 @@ const getActions = (
                         if (response.status === 200) {
                             onlyMessage('删除成功！');
                             tableRef.value?.reload();
+                            Init()
                         } else {
                             onlyMessage('操作失败！', 'error');
                         }
@@ -768,7 +764,9 @@ const curProductChange = (val: any) => {
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
-        if (form.value.factoryId) {
+        if (newValue && form.value.factoryId) {
+            console.log('newValue',newValue)
+            console.log('factoryId',form.value.factoryId)
             const setData = {
                 paging: false,
                 sorts: [{ name: 'createTime', order: 'desc' }],
@@ -796,7 +794,7 @@ watch(
                     deviceList.value = resp.result as Record<string, any>[];
                 }
             });
-        } else {
+        } else if (newValue && !form.value.factoryId) {
             onlyMessage('请选择工厂', 'error');
         }
     },
@@ -808,7 +806,7 @@ const filteredItems = computed(() => {
     );
 });
 
-onMounted(() => {
+const Init = ()=>{
     queryNoPagingPost({
         paging: false,
         sorts: [{ name: 'createTime', order: 'desc' }],
@@ -849,6 +847,10 @@ onMounted(() => {
             console.log(response.result.data);
         }
     });
+}
+
+onMounted(() => {
+    Init()
 });
 </script>
 

@@ -122,6 +122,7 @@
                         showSearch
                         v-model:value="modelRef.factoryId"
                         :disabled="!!data?.id"
+                        @change="curFactoryChange"
                         placeholder="请选择所属工厂"
                     >
                         <j-select-option
@@ -182,6 +183,7 @@ const modelRef = reactive({
     id: undefined,
     name: '',
     describe: '',
+    factoryName: '',
     photoUrl: getImage('/device/instance/device-card.png'),
 });
 
@@ -200,8 +202,14 @@ const vailId = async (_: Record<string, any>, value: string) => {
 
 const isRequired = (field: string) => {
     const configInfo = system.configInfo;
-    if (configInfo.front?.factoryType === 'sub') return false;
-    return true;
+    if (configInfo.front?.factoryType === 'general' && configInfo.front?.isIOT === 'true' ) return true;
+    return false;
+};
+
+//监听工厂select选项变动
+const curFactoryChange = (val: any) => {
+    let factoryOne = factoryList.value.find(item => item.id === val);
+    modelRef.factoryName = factoryOne?.name
 };
 
 watch(
@@ -239,7 +247,6 @@ watch(
         }).then((response: any) => {
             if (response.status === 200) {
                 factoryList.value = response.result.data;
-                console.log(response.result.data);
             }
         });
         Object.assign(modelRef, newValue);
@@ -259,7 +266,7 @@ const handleSave = () => {
         .validate()
         .then(async (_data: any) => {
             loading.value = true;
-            const obj = { ..._data };
+            const obj = { ..._data , factoryName:modelRef.factoryName};
             if (!obj.id) {
                 delete obj.id;
             }

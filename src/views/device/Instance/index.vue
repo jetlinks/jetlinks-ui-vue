@@ -793,7 +793,7 @@ const getActions = (
             },
         },
     };
-    if (isIOT.value ==='true' || factoryType.value !== 'sub') {
+    if (isIOT.value ==='true' && factoryType.value === 'general') {
         actions.splice(2, 0, distributeData);
     }
     if (type === 'card')

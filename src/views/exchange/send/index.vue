@@ -298,8 +298,9 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
-                        paramsProductList.value = filteredItems.value;
+                        paramsProductList.value = productList.value;
                         tableRef.value?.reload();
+                        Init()
                     }
                 });
             } else {
@@ -310,6 +311,7 @@ const modalState = reactive({
                         modalState.openView = false;
                         paramsProductList.value = productList.value;
                         tableRef.value?.reload();
+                        Init()
                     }
                 });
             }
@@ -444,6 +446,7 @@ const onSearch = (e: any) => {
 const handleAdd = () => {
     isAdd.value = 1;
     modalState.title = '新增';
+    paramsProductList.value = filteredItems.value;
     modalState.openView = true;
     reset();
 };
@@ -585,7 +588,7 @@ const getActions = (
             tooltip: {
                 title:
                     data.state.value === 'enabled'
-                        ? '已启用的设备不能删除'
+                        ? '已启用的数据不能删除'
                         : '删除',
             },
             popConfirm: {
@@ -595,6 +598,7 @@ const getActions = (
                         if (response.status === 200) {
                             onlyMessage('删除成功！');
                             tableRef.value?.reload();
+                            Init();
                         } else {
                             onlyMessage('操作失败！', 'error');
                         }
@@ -673,7 +677,7 @@ const filteredItems = computed(() => {
     );
 });
 
-onMounted(() => {
+const Init = ()=>{
     queryNoPagingPost({
         paging: false,
         sorts: [{ name: 'createTime', order: 'desc' }],
@@ -715,6 +719,10 @@ onMounted(() => {
             factoryList.value = response.result.data;
         }
     });
+}
+
+onMounted(() => {
+    Init()
 });
 </script>
 
