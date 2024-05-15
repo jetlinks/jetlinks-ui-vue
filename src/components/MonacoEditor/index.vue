@@ -41,7 +41,7 @@ const emit = defineEmits(['update:modelValue']);
 const dom = ref();
 
 let instance;
-
+const shouldDisableEditorFormat = inject('shouldDisableEditorFormat', false);
 onMounted(() => {
     const _model = monaco.editor.createModel(props.modelValue, props.language);
 
@@ -64,15 +64,15 @@ onMounted(() => {
  * 代码格式化
  */
 const editorFormat = () => {
-    if (!instance) return;
+    if (!instance||shouldDisableEditorFormat.value) return;
     instance.getAction('editor.action.formatDocument')?.run();
 };
 
 watchEffect(() => {
-    setTimeout(() => {
-        editorFormat();
-    }, 300);
-});
+        setTimeout(() => {
+          editorFormat();
+        }, 300);
+    });
 
 /**
  * 光标位置插入内容

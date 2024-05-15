@@ -658,6 +658,7 @@
                                 />
                                 <div v-else style="height: 400px">
                                     <MonacoEditor
+                                    :disableAutoFormat="shouldDisableEditorFormat"
                                         theme="vs"
                                         v-model:modelValue="
                                             formData.template.body
@@ -1294,4 +1295,10 @@ watchEffect(() => {
         flag.value = true
     }
 })
+const shouldDisableEditorFormat = computed(() => {
+      return (
+        formData.value.variableDefinitions &&formData.value.variableDefinitions.length
+      );
+    });
+provide('shouldDisableEditorFormat', shouldDisableEditorFormat);
 </script>
