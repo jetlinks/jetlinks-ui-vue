@@ -127,15 +127,6 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
     return merged;
 };
 
-const getSelection = (data:any)=>{
-    if(data){
-        return `${data.targetName}(${data.targetId})`
-    }
-    else{
-        return undefined
-    }
-}
-
 const refresh = () => {
     Init();
 };
@@ -283,98 +274,107 @@ const Init = () => {
             if (dataMap) {
                 //处理数据映射 已保存后数据加载
                 //dataDetailList.value
-                console.log('dataMap',dataMap)
+                console.log('dataMap', dataMap);
                 dataDetailList.value = dataDetailList.value.map((item: any) => {
                     const dataDetailListLaster = dataMap.find(
                         (item1: any) => item1.originalId === item.originalId,
                     );
-                    if (dataDetailListLaster && dataDetailListLaster.targetAttribute) {
-                        return {
-                            originalId: item.originalId,
-                            originalName: item.originalName,
-                            select: `${dataDetailListLaster.targetAttribute.targetName}(${dataDetailListLaster.targetAttribute.targetId})`,
-                            state: dataDetailListLaster.state.value,
-                            targetAttribute:
-                                dataDetailListLaster.targetAttribute,
-                        };
+                    if (dataDetailListLaster) {
+                        if (dataDetailListLaster.targetAttribute) {
+                            return {
+                                originalId: item.originalId,
+                                originalName: item.originalName,
+                                select: `${dataDetailListLaster.targetAttribute?.targetName}(${dataDetailListLaster.targetAttribute?.targetId})`,
+                                state: dataDetailListLaster.state.value,
+                                targetAttribute:
+                                    dataDetailListLaster.targetAttribute,
+                            };
+                        } else {
+                            return {
+                                originalId: item.originalId,
+                                originalName: item.originalName,
+                                state: dataDetailListLaster.state?.value,
+                            };
+                        }
                     } else {
                         return item;
                     }
-                });  
+                });
             }
 
             //判断是否保存了设备映射
             if (deviceMap) {
-                    // console.log('deviceMap', deviceMap);
-                    // console.log('deviceDetailList', deviceDetailList.value);
-                    // deviceDetailList.value
-                    const getDevice = deviceDetailList.value.map(
-                        (item: any) => {
-                            const deviceDetailListLaster = deviceMap.find(
-                                (item1: any) => item1.originalId === item.originalId,
-                            );
-                            // console.log('deviceDetailListLaster',deviceDetailListLaster)
-                            if (deviceDetailListLaster) {
-                                //处理设备映射>>数据映射 已保存后数据加载
-                                const getDevDataLists =
-                                    item.deviceTargetAttribute.map(
-                                        (item2: any) => {
-                                            const getDevDataList =
-                                                deviceDetailListLaster.deviceTargetAttribute.find(
-                                                    (item3: any) =>item3.originalId === item2.originalId,
-                                                );
-                                                // console.log('getDevDataList',getDevDataList)
-                                            if (getDevDataList && getDevDataList.targetAttribute) {
-
-                                                return {
-                                                    originalId:
-                                                        item2.originalId,
-                                                    originalName:
-                                                        item2.originalName,
-                                                    select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
-                                                    state:
-                                                        getDevDataList.state?.value,
-                                                    targetAttribute:
-                                                    getDevDataList.targetAttribute,
-                                                };
-                                            } else {
-                                                return item2;
-                                            }
-                                        },
-                                    );
-
-                                const {originalId ,deviceTargetAttribute,state, ...deviceDeRes} = deviceDetailListLaster
-                                // console.log('deviceDeRes',deviceDeRes)
-                                // console.log('deviceState',state)
-                                if(deviceDeRes.targetAttribute){
-                                    return {
-                                    originalId: item.originalId,
-                                    originalName: item.originalName,
-                                    deviceTargetAttribute: getDevDataLists,
-                                    deviceTargetAttributeMap: item.deviceTargetAttributeMap,
-                                    select: `${deviceDetailListLaster.targetAttribute?.targetName}(${deviceDetailListLaster.targetAttribute?.targetId})`,
-                                    state: state?.value,
-                                    ...deviceDeRes,
-                                 };
-                                }else{
-                                    return {
-                                    originalId: item.originalId,
-                                    originalName: item.originalName,
-                                    deviceTargetAttribute: getDevDataLists,
-                                    deviceTargetAttributeMap: item.deviceTargetAttributeMap,
-                                    state: state?.value,
-                                    ...deviceDeRes,
-                                };
-                                }
-                                
-                            } else {
-                                return item;
-                            }
-                        },
+                // console.log('deviceMap', deviceMap);
+                // console.log('deviceDetailList', deviceDetailList.value);
+                // deviceDetailList.value
+                const getDevice = deviceDetailList.value.map((item: any) => {
+                    const deviceDetailListLaster = deviceMap.find(
+                        (item1: any) => item1.originalId === item.originalId,
                     );
+                    // console.log('deviceDetailListLaster',deviceDetailListLaster)
+                    if (deviceDetailListLaster) {
+                        //处理设备映射>>数据映射 已保存后数据加载
+                        const getDevDataLists = item.deviceTargetAttribute.map(
+                            (item2: any) => {
+                                const getDevDataList = deviceDetailListLaster.deviceTargetAttribute.find(
+                                        (item3: any) => item3.originalId === item2.originalId,
+                                    );
+                                // console.log('getDevDataList',getDevDataList)
+                                if ( getDevDataList) {
+                                    if(getDevDataList.targetAttribute){
+                                        return {
+                                        originalId: item2.originalId,
+                                        originalName: item2.originalName,
+                                        select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
+                                        state: getDevDataList.state?.value,
+                                        targetAttribute:
+                                            getDevDataList.targetAttribute,
+                                    };
+                                    }else{
+                                        return {
+                                        originalId: item2.originalId,
+                                        originalName: item2.originalName,
+                                        state: getDevDataList.state?.value,
+                                    };
+                                    }
+                                } else {
+                                    return item2;
+                                }
+                            },
+                        );
 
-                    deviceDetailList.value = getDevice
-                }
+                        const { originalId,deviceTargetAttribute,state, ...deviceDeRes} = deviceDetailListLaster;
+                        // console.log('deviceDeRes',deviceDeRes)
+                        // console.log('deviceState',state)
+                        if (deviceDeRes.targetAttribute) {
+                            return {
+                                originalId: item.originalId,
+                                originalName: item.originalName,
+                                deviceTargetAttribute: getDevDataLists,
+                                deviceTargetAttributeMap:
+                                    item.deviceTargetAttributeMap,
+                                select: `${deviceDetailListLaster.targetAttribute?.targetName}(${deviceDetailListLaster.targetAttribute?.targetId})`,
+                                state: state?.value,
+                                ...deviceDeRes,
+                            };
+                        } else {
+                            return {
+                                originalId: item.originalId,
+                                originalName: item.originalName,
+                                deviceTargetAttribute: getDevDataLists,
+                                deviceTargetAttributeMap:
+                                    item.deviceTargetAttributeMap,
+                                state: state?.value,
+                                ...deviceDeRes,
+                            };
+                        }
+                    } else {
+                        return item;
+                    }
+                });
+
+                deviceDetailList.value = getDevice;
+            }
         });
     });
 };
