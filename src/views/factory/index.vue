@@ -412,7 +412,9 @@ const handleUpdate = (data: any) => {
 //查看子工厂
 const handleSee = (data: any) => {
     //http://192.168.33.53:9000/#/oauth
-    const url = `${data.url}:${data.port}/#/user/login?factory=${encodeURIComponent(data.id)}`;
+    // http://192.168.33.57:9000/#/user/login
+    //http://192.168.32.147:5173/
+    const url = `${data.url}:${data.port}/#/user/login?id=${data.id}&factory=${data.id}`;
     window.open(url, '_blank');
 };
 

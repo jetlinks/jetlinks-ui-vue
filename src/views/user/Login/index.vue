@@ -392,19 +392,23 @@ watch(
 watch(
     () => bindings.value,
     (value) => {
-        console.log('value',value);
         LocalStore.set('onLogin', 'no');
-        const urlParams = new URLSearchParams(window.location.search);
-        console.log('urlParams',urlParams)
+        const urlParams = new URLSearchParams(window.location.href);
         const factory = urlParams.get('factory');
-        console.log(factory)
+        const id = urlParams.get('id');
+        console.log('id', id);
+        console.log('factory', factory);
         if (factory) {
-            window.open(`${BASE_API_PATH}/application/sso/${value[0].id}/login`);
-            window.onstorage = (e) => {
-                if (e.newValue) {
-                    window.location.href = '/';
-                }
-            };
+            if (value) {
+                window.open(
+                    `${BASE_API_PATH}/application/sso/${value[0].id}/login`,
+                );
+                window.onstorage = (e) => {
+                    if (e.newValue) {
+                        window.location.href = '/';
+                    }
+                };
+            }
         }
     },
     { deep: true },
