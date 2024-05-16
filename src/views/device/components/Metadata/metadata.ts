@@ -2,7 +2,7 @@ import { saveProductMetadata } from "@/api/device/product";
 import { saveMetadata } from "@/api/device/instance";
 import type { DeviceInstance } from "../../Instance/typings";
 import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "../../Product/typings";
-import { differenceBy } from "lodash-es";
+import { differenceBy , cloneDeep } from "lodash-es";
 
 const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   const ids = productMetaData.map((item: any) => item.id)
@@ -69,7 +69,28 @@ export const asyncUpdateMetadata = (
     case 'product':
       return saveProductMetadata(data);
     case 'device':
-      return saveMetadata(data.id, JSON.parse(data.metadata || '{}'));
+      const metadata = JSON.parse(data.metadata || '{}')
+      const dealMetadata = cloneDeep(metadata)
+      const productMetaData = JSON.parse(data?.productMetadata || '{}')
+      // 筛选出产品的物模型 剔除不传递给接口保存
+      const productMetaDataMap = new Map()
+      Object.keys(productMetaData).forEach((key:any)=>{
+        if(Array.isArray(productMetaData[key])){
+           const ids = productMetaData[key].map((item:any)=>{
+            return item.id
+          })
+          productMetaDataMap.set(key,ids)
+        }
+      })
+      Object.keys(metadata).forEach((key:any)=>{
+        if(Array.isArray(metadata[key])){
+          dealMetadata[key] =  metadata[key].filter((item:any,index:number)=>{
+            //判断产品物模型是否有该id
+            return !(productMetaDataMap.get(key) && productMetaDataMap.get(key).includes(item.id))
+          })
+        }
+      })
+      return saveMetadata(data.id, dealMetadata);
   }
 };
 

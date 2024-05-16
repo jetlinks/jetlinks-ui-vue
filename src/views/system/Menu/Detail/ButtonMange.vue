@@ -1,6 +1,6 @@
 <template>
     <div class="button-mange-container">
-        <j-pro-table
+            <j-pro-table
             ref="tableRef"
             :columns="table.columns"
             model="TABLE"
@@ -46,7 +46,7 @@
                     </PermissionButton>
                 </j-space>
             </template>
-        </j-pro-table>
+            </j-pro-table>
 
         <div class="dialog">
             <ButtonAddDialog
@@ -55,6 +55,7 @@
                 :menu-info="menuInfo"
                 :mode="dialogTitle"
                 :data="selectItem"
+                :menuData="table.tableData"
                 @confirm="table.getList"
             />
         </div>
@@ -84,8 +85,6 @@ const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
     if (!routeParams.id && !paramsId.value) {
         return onlyMessage('请先新增菜单基本信息', 'warning');
     }
-    console.log(3);
-
     selectItem.value = { ...row };
     dialogTitle.value = mode;
     dialogVisible.value = true;
@@ -111,6 +110,7 @@ const table = reactive({
             title: '说明',
             dataIndex: 'description',
             key: 'description',
+            ellipsis: true,
         },
         {
             title: '操作',

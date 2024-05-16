@@ -1274,6 +1274,10 @@
                                         required: true,
                                         message: '请输入用户名前缀',
                                     },
+                                   {
+                                        validator: checkCh,
+                                        trigger: 'change'
+                                    }
                                 ]"
                             >
                                 <j-input
@@ -1434,6 +1438,17 @@ import { Rule } from 'ant-design-vue/lib/form';
 import ApplyList from './ApplyList/index.vue';
 
 const emit = defineEmits(['changeApplyType']);
+
+const defaultImg = {
+    'internal-standalone': getImage('/apply/internal-standalone.png'),
+    'internal-integrated': getImage('/apply/internal-integrated.png'),
+    'wechat-webapp': getImage('/apply/wechat-webapp.png'),
+    'dingtalk-ent-app': getImage('/apply/dingtalk-ent-app.png'),
+    'third-party': getImage('/apply/third-party.png'),
+    'wechat-miniapp': getImage('/apply/wechat-miniapp.png'),
+};
+
+
 const routeQuery = useRoute().query;
 const menuStory = useMenuStore();
 
@@ -1548,7 +1563,14 @@ const form = reactive({
     uploadLoading: false,
 });
 
-// 请求头和参数必填验证
+
+const checkCh = (_rule:Rule,value:string): Promise<any> => 
+            new Promise((resolve,reject) => {
+                if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
+                else return resolve('')
+            })
+
+// 请求头和参数必填验
 const headerValid = ref(true);
 const paramsValid = ref(true);
 const headerValidator = () => {
@@ -1590,6 +1612,8 @@ onMounted(async () => {
         typeOptions.value = typeOptions.value.filter((i: any) => {
             return i.value === routeQuery.provider;
         });
+        console.log(typeOptions.value[0].value)
+        form.data.logoUrl = defaultImg[typeOptions.value[0].value]
     }
 });
 

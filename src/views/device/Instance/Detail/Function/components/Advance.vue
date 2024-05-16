@@ -9,9 +9,14 @@
             >
                 <j-tab-pane v-for="func in newFunctions" :key="func.id">
                     <template #tab>
-                        <div style="width: 100px; text-align: left">
-                            <j-ellipsis>{{ func.name }}</j-ellipsis>
-                        </div>
+                        <j-tooltip>
+                            <template #title>
+                                {{ func.name }}
+                            </template>
+                            <div style="max-width: 100px" class="tabTitle">
+                                {{ func.name }}
+                            </div>
+                        </j-tooltip>
                     </template>
                 </j-tab-pane>
             </j-tabs>
@@ -34,17 +39,14 @@
                             >
                                 执行
                             </j-button>
-                            <j-button
-                                type="default"
-                                @click="handleClear()"
-                            >
+                            <j-button type="default" @click="handleClear()">
                                 清空
                             </j-button>
                         </j-space>
                     </div>
                 </j-col>
                 <j-col :span="9">
-                    <h6>执行结果：</h6>
+                    <h4>执行结果：</h4>
                     <span class="execute-result">
                         {{ executeResult }}
                     </span>
@@ -76,7 +78,7 @@ const newFunctions = ref<any[]>([]);
  * @param type
  * @param json
  */
- const setInitValue = (type: string, json?: any) => {
+const setInitValue = (type: string, json?: any) => {
     let initVal: any = '';
     if (['int', 'long', 'float', 'double'].includes(type)) {
         initVal = 0;
@@ -122,8 +124,8 @@ watch(
     },
     {
         immediate: true,
-        deep: true
-    }
+        deep: true,
+    },
 );
 
 const onTabChange = (_key: string) => {
@@ -148,7 +150,8 @@ const handleExecute = async (func: any) => {
             loading.value = false;
         });
     if (resp.success) {
-        executeResult.value = resp?.result instanceof Array ? resp?.result?.[0] : resp.result;
+        executeResult.value =
+            resp?.result instanceof Array ? resp?.result?.[0] : resp.result;
         onlyMessage('操作成功');
     }
 };
@@ -180,5 +183,10 @@ const handleClear = () => {
         max-height: 450px;
         overflow: auto;
     }
+}
+.tabTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

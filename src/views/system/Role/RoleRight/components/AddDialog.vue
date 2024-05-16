@@ -53,10 +53,11 @@ import { FormInstance } from 'ant-design-vue';
 import { saveRole_api , queryRoleGroup , updateRole_api} from '@/api/system/role';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es'
 const route = useRoute();
 const { jumpPage } = useMenuStore();
 
-const emits = defineEmits(['update:visible']);
+const emits = defineEmits(['update:visible','refresh']);
 const props = defineProps({
     visible: {
         type:Boolean,
@@ -107,6 +108,7 @@ const confirm = async() => {
                 updateRole_api(form.value).then((resp:any)=>{
                     if (resp.status === 200) {
                     onlyMessage('操作成功');
+                    emits('refresh');
                     emits('update:visible', false);
                     }
                 }).catch(() => (loading.value = false));
@@ -131,7 +133,8 @@ onMounted(()=>{
     getGroupOptions()
     form.value.groupId = props.groupId
     if(props.modalType === 'edit'){
-        form.value = props.current
+        // Object.assign(form.value,props.current)
+        form.value=cloneDeep(props.current)
     }
 })
 </script>

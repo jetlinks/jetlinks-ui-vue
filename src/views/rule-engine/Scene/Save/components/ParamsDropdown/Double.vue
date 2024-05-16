@@ -1,17 +1,17 @@
 <template>
-  <ParamsDropdown
-    v-for="(i,index) in myValue"
-    v-model:value='myValue[index]'
-    v-model:source='mySource'
-    :valueName='valueName'
-    :labelName='labelName'
-    :options='options'
-    :icon='icon'
-    :placeholder='placeholder'
-    :tabs-options='tabsOptions'
-    :metricOptions='metricOptions'
-    @select='(v, l) => onSelect(v, l, index)'
-    @tabChange='tabChange'
+    <ParamsDropdown
+      v-for="(i,index) in myValue"
+      v-model:value='myValue[index]'
+      v-model:source='mySource'
+      :valueName='valueName'
+      :labelName='labelName'
+      :options='options'
+      :icon='icon'
+      :placeholder='placeholder'
+      :tabs-options='tabsOptions'
+      :metricOptions='metricOptions'
+      @select='(v, l) => onSelect(v, l, index)'
+      @tabChange='tabChange'
   />
   <!-- <ParamsDropdown
     v-model:value='myValue[1]'
@@ -33,6 +33,7 @@
 <script lang='ts' setup name='DoubleParamsDropdown'>
 import ParamsDropdown from './index.vue'
 import { defaultSetting, ValueType } from './typings'
+import Array from './Array.vue'
 
 type Emit = {
   (e: 'update:value', data: ValueType): void

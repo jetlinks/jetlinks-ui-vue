@@ -26,13 +26,13 @@ export const unDeploy = (cardId: string) => server.get(`/network/card/${cardId}/
 
 /**
  * 复机已停机物联卡
- * @param cardId 
+ * @param cardId
  */
 export const resumption = (cardId: string) => server.get(`/network/card/${cardId}/_resumption`);
 
 /**
  * 删除物联卡
- * @param id 
+ * @param id
  */
 export const del = (id: string) => server.remove(`/network/card/${id}`);
 
@@ -58,7 +58,7 @@ export const resumptionBatch = (data: any) => server.get(`/network/card/_resumpt
 /**
  * 同步物联卡状态
  */
-export const sync = () => server.get(`/network/card/state/_sync`);
+export const sync = (data: any) => server.get(`/network/card/state/_sync`,data);
 
 /**
  * 批量删除物联卡
@@ -140,3 +140,6 @@ export const queryRechargeList = (data: any) => server.post(`/network/card/recha
  * @param data
  */
 export const recharge = (data: any) => server.post(`/network/card/_recharge`, data)
+export const queryCount = (data: any) => server.post(`/network/card/_count`,data)
+
+export const queryDeactivate = (id: string) => server.get(`/network/card/${id}/stop/reason`)

@@ -6,7 +6,7 @@
                 <div class="import">
                     <a-upload-dragger v-model:fileList="fileList" name="file" :action="`${FILE_UPLOAD}?options=tempFile`"
                         :headers="{
-                            'X-Access-Token': LocalStore.get(TOKEN_KEY),
+                            [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                         }" :limit="1" :showUploadList="false" @change="uploadChange" :accept="['xlsx', 'xls', 'csv']"
                         :before-upload="beforeUpload">
                         <div class="dragger-box">

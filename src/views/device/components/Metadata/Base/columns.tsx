@@ -53,7 +53,7 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
     return Promise.reject('请添加参数')
   }
 
-  if (value.type === 'file' && (!value.fileType || (isObject(value.fileType) && !Object.keys(value.fileType).length))) {
+  if (value.type === 'file' && (!value.bodyType || (isObject(value.bodyType) && !Object.keys(value.bodyType).length))) {
     return Promise.reject('请选择文件类型')
   }
 
@@ -63,8 +63,19 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
 export const handleTypeValue = (type:string, value: any = {}) => {
   let obj: any = {}
   switch (type) {
+    //bug#22609
     case 'array':
-      obj.elementType = value
+      if(value.type === 'array'){
+      obj.elementType = {
+          ...value,
+          elementType:{
+        type: 'object',
+        properties: []
+      }
+        }
+      }else{
+        obj.elementType = value
+      }
       break;
     case 'object':
       obj.properties = (value || []).map((item: any) => {
@@ -76,7 +87,7 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.unit = value
       break;
     case 'file':
-      obj.fileType = value
+      obj.bodyType = value
       break;
     case 'date':
       obj.format = value
@@ -115,7 +126,7 @@ export const typeSelectChange = (type: string) => {
       obj.unit = undefined
       break;
     case 'file':
-      obj.fileType = undefined
+      obj.bodyType = undefined
       break;
     case 'date':
       obj.format = undefined
@@ -169,8 +180,8 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         },
           { max: 64, message: '最多可输入64个字符' },
           {
-            pattern: /^[a-zA-Z0-9_\-]+$/,
-            message: '标识只能由数字、字母、下划线、中划线组成',
+            pattern: /^[a-zA-Z0-9_]+$/,
+            message: '标识只能由数字、字母、下划线组成',
           },
         ]
       },

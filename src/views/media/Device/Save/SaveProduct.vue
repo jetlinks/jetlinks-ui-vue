@@ -231,8 +231,12 @@ const handleClick = async (e: any) => {
         e.protocol,
         e.transport,
     );
-
-    extendFormItem.value = result.properties.map((item: any) => ({
+    if(e.protocol === 'onvif' && !result.scopes.find((i)=>{
+      return  i === 'product'
+    })){
+        return ''
+    }
+    extendFormItem.value = result?.properties?.map((item: any) => ({
         name: ['configuration', item.property],
         label: item.name,
         type: item.type?.type,

@@ -83,9 +83,18 @@
                                 ? detail.residualFlow.toFixed(2) + ' M'
                                 : ''
                         }}</j-descriptions-item>
-                        <j-descriptions-item label="状态">{{
+                        <j-descriptions-item label="状态">
+                          {{
                             detail?.cardState?.text
-                        }}</j-descriptions-item>
+                          }}
+                          <span v-if="deactivateData.show" style="padding-left: 8px;">
+                            <a-tooltip
+                              :title="deactivateData.tip"
+                            >
+                              <AIcon type="ExclamationCircleOutlined" style="color: var(--ant-error-color);"/>
+                            </a-tooltip>
+                          </span>
+                        </j-descriptions-item>
                         <j-descriptions-item label="说明">{{
                             detail?.describe
                         }}</j-descriptions-item>
@@ -178,10 +187,10 @@
     </page-container>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="CardDetail">
 import moment from 'moment';
 import type { CardManagement } from '../typing';
-import { queryDetail } from '@/api/iot-card/cardManagement';
+import {queryDeactivate, queryDetail} from '@/api/iot-card/cardManagement';
 import Save from '../Save.vue';
 import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
@@ -203,6 +212,11 @@ const dayOptions = ref<any[]>([]);
 const monthOptions = ref<any[]>([]);
 const yearOptions = ref<any[]>([]);
 
+const deactivateData = reactive({
+  show: false,
+  tip: ''
+})
+
 const quickBtnList = [
     { label: '昨日', value: 'yesterday' },
     { label: '近一周', value: 'week' },
@@ -212,8 +226,18 @@ const quickBtnList = [
 
 const getDetail = () => {
     queryDetail(route.params.id).then((resp: any) => {
-        if (resp.status === 200) {
+        if (resp.success) {
             detail.value = resp.result;
+
+            if (resp.result.cardStateType?.value === 'deactivate') {
+                deactivateData.show = true
+              //   获取停机原因
+              queryDeactivate(route.params.id as string).then((deacResp: any) => {
+                if (deacResp.success && deacResp.result?.message) {
+                  deactivateData.tip = deacResp.result.message.toString()
+                }
+              })
+            }
         }
     });
 };
@@ -233,7 +257,7 @@ const saveChange = (val: any) => {
 const getData = (
     start: number,
     end: number,
-): Promise<{ sortArray: any[]; data: any[] }> => {
+): Promise<{ sortArray: any[]}> => {
     return new Promise((resolve) => {
         queryFlow(start, end, {
             orderBy: 'date',
@@ -250,13 +274,11 @@ const getData = (
                 );
                 resolve({
                     sortArray,
-                    data: sortArray.map(
-                        (item: any) => item.value && item.value.toFixed(2),
-                    ),
                 });
             }
         });
     });
+
 };
 
 /**
@@ -276,24 +298,25 @@ const getDataTotal = () => {
         moment().endOf('year').valueOf(),
     ];
     getData(dTime[0], dTime[1]).then((resp) => {
-        dayTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
+        dayTotal.value = resp.sortArray
+            .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         dayOptions.value = resp.sortArray;
     });
     getData(mTime[0], mTime[1]).then((resp) => {
-        monthTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
+        monthTotal.value = resp.sortArray
+            .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         monthOptions.value = resp.sortArray;
-    });
+    })
     getData(yTime[0], yTime[1]).then((resp) => {
-        yearTotal.value = resp.data
-            .reduce((r, n) => r + Number(n), 0)
+        yearTotal.value = resp.sortArray
+            .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
-        yearOptions.value = resp.sortArray;
+            yearOptions.value = resp.sortArray;
     });
 };
+
 
 /**
  * 流量统计

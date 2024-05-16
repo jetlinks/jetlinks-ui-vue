@@ -338,6 +338,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { useSystem } from '@/store/system';
+import TagSearch from './components/TagSearch.vue';
 
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -513,7 +514,15 @@ const columns = [
             type: 'select',
             options: () =>
                 new Promise((resolve) => {
-                    queryGatewayList({}).then((resp: any) => {
+                    queryGatewayList({
+                        paging: false,
+                        sorts: [
+                            {
+                                name: 'createTime',
+                                order: 'desc',
+                            },
+                        ],
+                    }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
@@ -544,6 +553,7 @@ const columns = [
         hideInTable: true,
         search: {
             type: 'treeSelect',
+            termOptions: ['eq'],
             // handleValue(v) {
             //   return {
             //     assetType: 'device',
@@ -582,6 +592,17 @@ const columns = [
                         resolve(formatValue(resp.result));
                     });
                 }),
+        },
+    },
+    {
+        key: 'id$dev-tag',
+        dataIndex: 'id$dev-tag',
+        title: '设备标签',
+        hideInTable: true,
+        search: {
+            type: 'component',
+            components: TagSearch,
+            termOptions: ['eq'],
         },
     },
     {
@@ -764,6 +785,12 @@ const getActions = (
                     const resp = await _delete(data.id);
                     if (resp.status === 200) {
                         onlyMessage('操作成功！');
+                        const index = _selectedRowKeys.value.findIndex(
+                            (id: any) => id === data.id,
+                        );
+                        if (index !== -1) {
+                            _selectedRowKeys.value.splice(index, 1);
+                        }
                         instanceRef.value?.reload();
                     } else {
                         onlyMessage('操作失败！', 'error');

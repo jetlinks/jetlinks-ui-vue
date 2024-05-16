@@ -33,7 +33,7 @@
                         </j-form-item>
                     </j-col>
                     <j-col flex="auto">
-                        <j-form-item name="id">
+                        <j-form-item name="id" :validateFirst="true">
                             <template #label>
                                 <span>ID</span>
                                 <j-tooltip
@@ -148,10 +148,10 @@ const photoValue = ref('/images/device-product.png');
 const imageTypes = reactive([
     'image/jpeg',
     'image/png',
-    'image/jpg',
+    // 'image/jpg',
     'image/jfif',
     'image/pjp',
-    'image/pjpeg',
+    // 'image/pjpeg',
 ]);
 const deviceList = ref([
     {
@@ -188,7 +188,6 @@ const form = reactive({
  */
 const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
-        console.log(value.split('').length);
         if (!isInput(value)) {
             return Promise.reject('请输入英文或者数字或者-或者_');
         } else {

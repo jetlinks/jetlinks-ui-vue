@@ -1,5 +1,16 @@
 <template>
   <div :class='WarpClass'>
+    <j-popconfirm
+      title='确认删除？'
+      v-if="showGroupDelete && isFirst"
+      placement="topRight"
+      :overlayStyle='{minWidth: "180px"}'
+      @confirm='deleteGroup'
+    >
+      <div v-if="showGroupDelete && isFirst" class="group-delete">
+        删除条件
+      </div>
+    </j-popconfirm>
     <div class='actions-terms-title'>
       {{ isFirst ? '当' : '否则' }}
     </div>
@@ -19,7 +30,7 @@
         @mouseout='mouseout'
       >
         <j-popconfirm
-          title='该操作将清空其它所有否则条件，确认删除？'
+          title='该操作将清空过滤条件，确认删除？'
           placement="topRight"
           @confirm='onDeleteAll'
         >
@@ -40,6 +51,7 @@
                   :isFirst='index === 0'
                   :isLast='index === whenData.length -1'
                   :branchName='name'
+                  :branches_Index='branches_Index'
                   :data='item'
                 />
 
@@ -102,8 +114,26 @@ const props = defineProps({
   name: {
     type: Number,
     default: 0
+  },
+  branches_Index: {
+    type: Number,
+    default: 0
+  },
+  groupLen: {
+    type: Number,
+    default: 0
+  },
+  groupIndex: {
+    type: Number,
+    default: 0
+  },
+  showGroupDelete: {
+    type: Boolean,
+    default: false
   }
 })
+
+const emit = defineEmits(['deleteGroup'])
 
 const showDelete = ref(false)
 const error = ref(false)
@@ -126,7 +156,7 @@ const WarpClass = computed(() => {
 
 const onDelete = () => {
   if (FormModel.value.branches?.length == 2) {
-    FormModel.value.branches?.splice(props.name, 1, null)
+    FormModel.value.branches?.splice(props.name, 1)
   } else {
     FormModel.value.branches?.splice(props.name, 1)
   }
@@ -134,8 +164,13 @@ const onDelete = () => {
 
 const onDeleteAll = () => {
   if (FormModel.value.branches) {
-    FormModel.value.branches.length = props.name
-    FormModel.value.branches.push(null as any)
+    // FormModel.value.branches.length = props.name
+    // FormModel.value.branches.push(null as any)
+    FormModel.value.branches[props.name].when = []
+    FormModel.value.options.when[props.branches_Index].terms = []
+    if(FormModel.value.branches[props.name + 1] === null){
+      FormModel.value.branches.splice(props.name + 1 , 1)
+    }
   }
 }
 
@@ -169,8 +204,10 @@ const addWhen = () => {
     key: `terms_${randomString()}`
   }
   FormModel.value.branches?.[props.name].when?.push(terms)
-  FormModel.value.branches?.push(null as any)
-  FormModel.value.options!.when[props.name]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
+  if(FormModel.value.branches?.length <= props.name + 1){
+    FormModel.value.branches?.splice(props.groupLen, 0, null)
+  }
+  FormModel.value.options!.when[props.branches_Index]?.terms.push({ termType: '并且', terms: [['','eq','','and']]})
 }
 
 const optionsClass = computed(() => {
@@ -192,6 +229,10 @@ const rules = [{
     return Promise.resolve();
   }
 }]
+
+const deleteGroup = () => {
+  emit('deleteGroup')
+}
 
 </script>
 

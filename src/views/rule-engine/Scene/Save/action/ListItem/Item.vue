@@ -28,7 +28,7 @@
                               style="padding: 0"
                               type="link"
                               @click.stop="triggerVisible = true"
-                              >关联此场景的告警</j-button
+                              >关联此条件的告警</j-button
                           >
                       </template>
                       <template v-else>
@@ -36,7 +36,7 @@
                               style="padding: 0"
                               type="link"
                               @click.stop="triggerVisible = true"
-                              >关联此场景的告警</j-button
+                              >关联此条件的告警</j-button
                           >
                       </template>
                   </div>
@@ -386,6 +386,7 @@
         </template>
         <TriggerAlarm
             :id="_data.id"
+            :branchId="_data.branches[branchesName].branchId"
             v-if="triggerVisible"
             @close="triggerVisible = false"
         />

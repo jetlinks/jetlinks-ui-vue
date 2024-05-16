@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal title="扫描" :visible="true" width="95%" @cancel="handleCancel">
         <div class="content">
             <Tree

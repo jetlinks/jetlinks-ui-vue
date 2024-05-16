@@ -20,7 +20,12 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     const { current: productCurrent } = storeToRefs(productStore)
 
     const handleMetadata = (_metadataStr: string) => {
-        const _metadata = JSON.parse(_metadataStr || '{}')
+
+        if(!_metadataStr) return
+
+        const fileTypeReg = new RegExp('"fileType":',"g")
+        const _dealMetadata = _metadataStr.replace(fileTypeReg,'"bodyType":')
+        const _metadata = JSON.parse(_dealMetadata || '{}')
         const newMetadata = (key ? _metadata?.[key] || [] : []) as any[]
 
 

@@ -87,16 +87,19 @@ const getDeviceList = async () => {
                     ...extra,
                 };
             });
-        getChildren(treeData.value[0].id,{
-            pageIndex: 0,
-            pageSize: 100,
-            terms: [
-                {
-                    column: 'deviceId',
-                    value: treeData.value[0].id,
-                },
-            ],
-        },true)
+            if (treeData.value.length > 0 && treeData.value[0]) {
+                getChildren(treeData.value[0].id,{
+                pageIndex: 0,
+                pageSize: 100,
+                terms: [
+                    {
+                        column: 'deviceId',
+                        value: treeData.value[0].id,
+                    },
+                ],
+            },true)
+                }
+
     }
 };
 getDeviceList();

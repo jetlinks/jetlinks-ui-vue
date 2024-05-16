@@ -2,6 +2,7 @@ import { BranchesThen } from '@/views/rule-engine/Scene/typings'
 
 export const ContextKey = 'columnOptions'
 export const arrayParamsKey = ['nbtw', 'btw', 'in', 'nin', 'contains_all', 'contains_any', 'not_contains']
+export const doubleParamsKey= ['nbtw','btw']
 export const timeTypeKeys = ['time_gt_now', 'time_lt_now']
 
 
@@ -24,3 +25,4 @@ export const thenRules = [{
     return Promise.resolve();
   }
 }]
+

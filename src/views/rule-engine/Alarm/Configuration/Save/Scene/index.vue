@@ -2,7 +2,7 @@
     <FullPage>
         <JProTable
             model="CARD"
-            :request="query"
+            :request="queryTable"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
                 terms,
@@ -31,6 +31,7 @@
                         started: 'processing',
                         disable: 'error',
                     }"
+                    @click="handleView(slotProps.id, slotProps.triggerType)"
                 >
                     <template #type>
                         <span
@@ -47,11 +48,15 @@
                         <img :src="typeMap.get(slotProps.triggerType)?.img" />
                     </template>
                     <template #content>
+                      <div style="height: 102px;">
                         <Ellipsis style="width: calc(100% - 100px)">
                             <span style="font-size: 16px; font-weight: 600">
                                 {{ slotProps.name }}
                             </span>
                         </Ellipsis>
+                        <div v-if="slotProps.branchName">
+                          {{ slotProps.branchName }}
+                        </div>
                         <Ellipsis :lineClamp="2">
                             <div class="subTitle">
                                 说明：{{
@@ -60,6 +65,7 @@
                                 }}
                             </div>
                         </Ellipsis>
+                      </div>
                     </template>
                     <template #actions="item">
                         <PermissionButton
@@ -95,7 +101,7 @@
 </template>
 
 <script lang="ts" setup>
-import { query } from '@/api/rule-engine/scene';
+import { queryBranch , query} from '@/api/rule-engine/scene';
 import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
@@ -103,6 +109,8 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
+import { useMenuStore } from 'store/menu';
+const menuStory = useMenuStore();
 const route = useRoute();
 const id = route.query?.id;
 
@@ -154,6 +162,7 @@ const getActions = (
             popConfirm: {
                 title: '确定解绑？',
                 onConfirm: async () => {
+                    // const res = await unbindScene(id, [data.id], data.branchIndex);
                     const res = await unbindScene(id, [data.id]);
                     if (res.status === 200) {
                         onlyMessage('操作成功');
@@ -165,6 +174,11 @@ const getActions = (
     ];
     return actions;
 };
+
+const queryTable = (_terms: any) => {
+  return query(_terms, id)
+}
+
 const visible = ref(false);
 const log = () => {
     console.log();
@@ -179,6 +193,18 @@ const closeSave = () => {
 const saveSuccess = () => {
     visible.value = false;
     actionRef.value.reload();
+};
+/**
+ * 查看
+ * @param id
+ * @param triggerType 触发类型
+ */
+ const handleView = (id: string, triggerType: string) => {
+    menuStory.jumpPage(
+        'rule-engine/Scene/Save',
+        {},
+        { triggerType: triggerType, id, type: 'view' },
+    );
 };
 </script>
 <style lang="less" scoped>

@@ -3,7 +3,7 @@
     <j-input-search @search="search" allow-clear placeholder="搜索关键字" />
     <div class="tree">
       <j-tree @select="selectTree" :field-names="{ title: 'name', key: 'id', }" auto-expand-parent
-        :tree-data="data"  
+        :tree-data="data"
         :showLine="{ showLeafIcon: false }"
         :show-icon="true">
         <template #title="node">
@@ -47,7 +47,7 @@ import type { OperatorItem } from './typings';
 import { treeFilter } from '@/utils/tree'
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product'
-import Markdown from 'vue3-markdown-it'
+import Markdown from '@/components/Markdown'
 
 const props = defineProps({
   id: String

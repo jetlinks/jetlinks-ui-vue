@@ -343,15 +343,15 @@
                                                 </div>
                                                 <div
                                                     class="upload-image"
-                                                    v-if="formValue.backgroud"
+                                                    v-if="formValue.background"
                                                     :style="
-                                                        formValue.backgroud
-                                                            ? `background-image: url(${formValue.backgroud});`
+                                                        formValue.background
+                                                            ? `background-image: url(${formValue.background});`
                                                             : ''
                                                     "
                                                 ></div>
                                                 <div
-                                                    v-if="formValue.backgroud"
+                                                    v-if="formValue.background"
                                                     class="upload-image-mask"
                                                 >
                                                     点击修改
@@ -422,7 +422,7 @@ const form = reactive<formType>({
         'base-path': `${window.location.origin}/api`,
         logo: '',
         ico: '',
-        backgroud: '',
+        background: '',
     },
     rulesFrom: {
         title: [
@@ -446,6 +446,16 @@ const form = reactive<formType>({
             {
                 required: true,
                 message: '请输入base-path',
+                trigger: 'blur',
+            },
+            {
+            validator: (rule, value, callback) => {
+                if (value && value.includes('localhost')) {
+                    callback('输入内容不能包含 localhost');
+                        } else {
+                            callback();
+                    }
+                },
                 trigger: 'blur',
             },
         ],
@@ -673,14 +683,14 @@ const uploader: uploaderType = {
             uploader.imageTypes
                 .map((m: string) => m.split('.')[1])
                 .filter((typeStr) => file.type.includes(typeStr)).length > 0;
-        const sizeBool = file.size / 1024 / 1024 < 2;
+        const sizeBool = file.size / 1024 / 1024 < 4;
         if (!typeBool) {
             onlyMessage(
                 `请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`,
                 'error',
             );
         } else if (!sizeBool) {
-            onlyMessage(`图片大小必须小于2M`, 'error');
+            onlyMessage(`图片大小必须小于4M`, 'error');
         }
         return typeBool && sizeBool;
     },
@@ -716,7 +726,7 @@ const uploader: uploaderType = {
         } else if (info.file.status === 'done') {
             info.file.url = info.file.response?.result;
             form.backLoading = false;
-            form.formValue.backgroud = info.file.response?.result;
+            form.formValue.background = info.file.response?.result;
         } else if (info.file.status === 'error') {
             form.logoLoading = false;
             onlyMessage('背景图上传失败，请稍后再试', 'error');

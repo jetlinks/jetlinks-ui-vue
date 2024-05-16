@@ -8,13 +8,13 @@
                         <div class="alert"><AIcon style="margin-right: 5px;" type="InfoCircleOutlined" />导入系统已存在的设备数据，不会更改已存在设备的所属产品信息</div>
                     </div>
                 </template>
-                
+
                 <a-upload-dragger
                     v-model:fileList="modelRef.upload"
                     name="file"
                     :action="FILE_UPLOAD"
                     :headers="{
-                        'X-Access-Token': LocalStore.get(TOKEN_KEY),
+                        [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
                     }"
                     :maxCount="1"
                     :showUploadList="false"
@@ -72,6 +72,7 @@
 </template>
 
 <script setup lang='ts' name='DeviceImportFile'>
+import {inject,Ref} from 'vue'
 import { FILE_UPLOAD } from '@/api/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
@@ -96,10 +97,10 @@ const modelRef = reactive({
 });
 
 const importLoading = ref<boolean>(false);
-const flag = ref<boolean>(false);
+const flag = inject("flag") as Ref<boolean>;
 const count = ref<number>(0);
-const errCount = ref<number>(0);
 
+const errCount = ref<number>(0);
 const errMessage = ref<string>('');
 const disabled = ref(false);
 
@@ -140,6 +141,7 @@ const submitData = async (fileUrl: string) => {
         errCount.value = 0;
         const autoDeploy = !!modelRef?.file?.autoDeploy || false;
         importLoading.value = true;
+        flag.value = true;
         let dt = 0;
         let et = 0;
         const source = new EventSourcePolyfill(
@@ -163,7 +165,7 @@ const submitData = async (fileUrl: string) => {
         };
         source.onerror = (e: { status: number }) => {
             if (e.status === 403) errMessage.value = '暂无权限，请联系管理员';
-            flag.value = false;
+            flag.value= false;
             disabled.value = false;
             source.close();
         };
@@ -182,6 +184,7 @@ const uploadChange = async (info: Record<string, any>) => {
         disabled.value = false;
     }
 };
+
 </script>
 
 <style scoped lang='less'>
@@ -219,7 +222,7 @@ const uploadChange = async (info: Record<string, any>) => {
         color: #666666;
 
         .icon {
-            font-size: 30px; 
+            font-size: 30px;
             color: @primary-color;
         }
     }

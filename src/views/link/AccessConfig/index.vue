@@ -198,13 +198,13 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import { accessConfigTypeFilter } from '@/utils/setting';
+import {  cloneDeep } from 'lodash-es';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 let providersList = ref<Record<string, any>>([]);
-const providersOptions = ref<Record<string, any>>([]);
 
 const statusMap = new Map();
 statusMap.set('enabled', 'success');
@@ -226,7 +226,13 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            options: providersOptions,
+            options: async() =>{
+                const res: any = await getProviders();
+               const providersOptions = accessConfigTypeFilter(res.result || []);
+                return providersOptions.filter((i:any)=>{
+                    return i.id !== 'modbus-tcp' && i.id !== 'opc-ua'
+                })
+            },
         },
     },
     {
@@ -330,7 +336,6 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 const getProvidersList = async () => {
     const res: any = await getProviders();
     providersList.value = res.result;
-    providersOptions.value = accessConfigTypeFilter(res.result || []);
 };
 getProvidersList();
 
@@ -363,7 +368,23 @@ const getStatus = (slotProps: Record<string, any>) =>
  * @param params
  */
 const handleSearch = (e: any) => {
-    params.value = e;
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if(b.column === 'provider'){
+                    if(b.value === 'collector-gateway'){
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
+                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
+                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                    }
+                }
+                return b;
+            });
+        });
+    }
+    params.value = newTerms;
 };
 </script>
 <style lang="less" scoped>

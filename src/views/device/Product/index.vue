@@ -236,6 +236,7 @@ import {
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
 import { omit, cloneDeep } from 'lodash-es';
+import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
@@ -561,7 +562,13 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data));
+                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
+                                    return (
+                                        i.id !== 'modbus-tcp' &&
+                                        i.id !== 'opc-ua'
+                                    );
+                                }));
+                            
                         });
                     });
                 },
@@ -638,7 +645,7 @@ const query = reactive({
             },
         },
         {
-            title: '分类',
+            title: '产品分类',
             key: 'classified',
             dataIndex: 'classifiedId',
             search: {
@@ -661,6 +668,7 @@ const query = reactive({
             search: {
                 first: true,
                 type: 'treeSelect',
+                termOptions:['eq'],
                 options: async () => {
                     return new Promise((res) => {
                         queryOrgThree({ paging: false }).then((resp: any) => {
@@ -723,6 +731,14 @@ const handleSearch = (e: any) => {
                             ],
                         },
                     };
+                }
+                if(b.column === 'accessProvider'){
+                    if(b.value === 'collector-gateway'){
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
+                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
+                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                    }
                 }
                 return b;
             });

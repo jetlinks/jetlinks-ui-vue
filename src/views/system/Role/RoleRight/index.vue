@@ -34,8 +34,10 @@
                 </j-pro-table>
             </FullPage>
 
-            <AddDialog v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
-                :current="current" />
+            <AddDialog  v-if="dialogVisible" v-model:visible="dialogVisible" :groupId="groupId" :modalType="modalType"
+                :current="current" 
+                @refresh="tableRef?.reload()"
+                />
         </div>
     
 </template>
@@ -44,7 +46,7 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddDialog from './components/AddDialog.vue';
 import { getRoleList_api, delRole_api } from '@/api/system/role';
-import type { ActionsType } from './typings';
+import type { ActionsType } from '@/components/Table';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 const props = defineProps({
@@ -140,6 +142,7 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
+                placement:'topRight',
                 onConfirm: async () => {
                     const res = await delRole_api(data.id)
                     if (res.status === 200) {

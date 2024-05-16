@@ -131,7 +131,67 @@
                                                 "
                                             />
                                         </div>
+                                        <j-popover
+                                            trigger="click"
+                                            v-model:visible="moreVisible"
+                                            placement="bottomRight"
+                                        >
+                                            <template #content>
+                                                <j-scrollbar :max-height="120">
+                                                    <div class="more-button">
+                                                        <div
+                                                            class="more-button-item"
+                                                            v-for="(
+                                                                item, index
+                                                            ) in bindings.slice(4,bindings.length-1)"
+                                                            :key="index"
+                                                            @click="
+                                                                handleClickOther(
+                                                                    item,
+                                                                )
+                                                            "
+                                                        >
+                                                            <img
+                                                                style="
+                                                                    width: 32px;
+                                                                    height: 32px;
+                                                                "
+                                                                :alt="item.name"
+                                                                :src="
+                                                                    item.logoUrl
+                                                                "
+                                                            />
+                                                            <Ellipsis
+                                                                style="
+                                                                    margin-top: 5px;
+                                                                    width: calc(
+                                                                        100%
+                                                                    );
+                                                                    margin: 0
+                                                                        auto;
+                                                                "
+                                                            >
+                                                                {{ item.name }}
+                                                            </Ellipsis>
+                                                        </div>
+                                                    </div>
+                                                </j-scrollbar>
+                                            </template>
+                                            <div
+                                                v-if="bindings.length > 4"
+                                                class="more"
+                                            >
+                                                <AIcon
+                                                    class="moreIcon"
+                                                    type="MoreOutlined"
+                                                    style="font-size: 20px"
+                                                ></AIcon>
+                                            </div>
+                                        </j-popover>
                                     </div>
+                                    <!-- <div class="more" v-if="bindings.length > 4" @click="moreVisible = true">
+                                        查看更多
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -157,6 +217,37 @@
             </div>
         </j-spin>
     </div>
+    <!-- <j-modal
+        title="更多登录"
+        :visible="moreVisible"
+        @cancel="() => (moreVisible = false)"
+        :footer="null"
+        :width="800"
+    >
+        <div class="more-button">
+            <div
+                class="more-button-item"
+                v-for="(item, index) in bindings"
+                :key="index"
+                @click="handleClickOther(item)"
+            >
+                <img
+                    style="width: 100px; height: 100px"
+                    :alt="item.name"
+                    :src="item.logoUrl"
+                />
+                <Ellipsis
+                    style="
+                        margin-top: 5px;
+                        width: calc(100% - 40px);
+                        margin: 0 auto;
+                    "
+                >
+                    {{ item.name }}
+                </Ellipsis>
+            </div>
+        </div>
+    </j-modal> -->
 </template>
 
 <script setup lang="ts">
@@ -189,7 +280,7 @@ const viewLogo = getImage('/view-logo.png');
 const LoginWarpStyle = reactive({
     backgroundImage: `url(${bgImage})`,
 });
-
+const moreVisible = ref(false);
 const screenWidth = ref(document.body.clientWidth);
 const screenHeight = ref(document.body.clientHeight);
 
@@ -547,6 +638,7 @@ onMounted(() => {
                                 cursor: pointer;
                                 padding: 4px;
                             }
+
                         }
                     }
 
@@ -632,6 +724,19 @@ onMounted(() => {
     .content {
         padding: 32px 0 24px !important;
         margin-top: 12% !important;
+    }
+}
+.more-button {
+    display: flex;
+    flex-wrap: wrap;
+    cursor: pointer;
+    overflow: auto;
+    width: 300px;
+    .more-button-item {
+        width: 62px;
+        text-align: center;
+        margin-bottom: 10px;
+        margin-left: 12px;
     }
 }
 </style>

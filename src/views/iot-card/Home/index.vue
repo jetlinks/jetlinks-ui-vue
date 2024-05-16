@@ -50,15 +50,15 @@
                             <div class="item-english">物联卡</div>
                             <div class="item-content">
                                 <div
-                                    v-for="iten in pieChartData"
-                                    :key="iten.key"
+                                    v-for="item in pieChartData"
+                                    :key="item.key"
                                     class="item-node"
                                 >
                                     <div class="item-node-text">
-                                        {{ iten.value }}
+                                        {{ item.value }}
                                     </div>
-                                    <div :class="`state ${iten.className}`">
-                                        {{ iten.name }}
+                                    <div :class="`state ${item.className}`">
+                                        {{ item.name }}
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@ const barChartData = ref<any[]>([]);
 const pieChartData = ref<any[]>([
     {
         key: 'using',
-        name: '正常',
+        name: '激活',
         value: 0,
         className: 'normal',
     },

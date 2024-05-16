@@ -7,65 +7,65 @@
                 placeholder="搜索关键字"
             />
             <div class="tree">
-              <j-scrollbar>
-                <j-tree
-                    @select="selectTree"
-                    :field-names="{ title: 'name', key: 'id' }"
-                    auto-expand-parent
-                    :tree-data="data"
-                    :showLine="{ showLeafIcon: false }"
-                    :show-icon="true"
-                >
-                    <template #title="node">
-                        <div class="node">
-                            <div style="max-width: 160px">
-                                <Ellipsis>{{ node.name }}</Ellipsis>
-                            </div>
-                            <div
-                                :class="
+                <j-scrollbar>
+                    <j-tree
+                        @select="selectTree"
+                        :field-names="{ title: 'name', key: 'id' }"
+                        auto-expand-parent
+                        :tree-data="data"
+                        :showLine="{ showLeafIcon: false }"
+                        :show-icon="true"
+                    >
+                        <template #title="node">
+                            <div class="node">
+                                <div style="max-width: 160px">
+                                    <Ellipsis>{{ node.name }}</Ellipsis>
+                                </div>
+                                <div
+                                    :class="
                                         node.children?.length > 0
                                             ? 'parent'
                                             : 'add'
-                                "
-                            >
-                                <j-popover
-                                    v-if="node.type === 'property'"
-                                    :overlayStyle="{
-                                            zIndex: 1200,
-                                    }"
-                                    placement="right"
-                                    title="请选择使用值"
+                                    "
                                 >
-                                    <template #content>
-                                        <j-space direction="vertical">
-                                            <j-tooltip
-                                                placement="right"
-                                                title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值"
-                                            >
-                                                <j-button
-                                                    type="text"
+                                    <j-popover
+                                        v-if="node.type === 'property'"
+                                        :overlayStyle="{
+                                            zIndex: 1200,
+                                        }"
+                                        placement="right"
+                                        title="请选择使用值"
+                                    >
+                                        <template #content>
+                                            <j-space direction="vertical">
+                                                <j-tooltip
+                                                    placement="right"
+                                                    title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值"
+                                                >
+                                                    <j-button
+                                                        type="text"
                                                         @click="
                                                             recentClick(node)
                                                         "
+                                                    >
+                                                        $recent实时值
+                                                    </j-button>
+                                                </j-tooltip>
+                                                <j-tooltip
+                                                    placement="right"
+                                                    title="实时值的上一有效值"
                                                 >
-                                                    $recent实时值
-                                                </j-button>
-                                            </j-tooltip>
-                                            <j-tooltip
-                                                placement="right"
-                                                title="实时值的上一有效值"
-                                            >
-                                                <j-button
-                                                    @click="lastClick(node)"
-                                                    type="text"
-                                                >
-                                                    上一值
-                                                </j-button>
-                                            </j-tooltip>
-                                        </j-space>
-                                    </template>
-                                    <a class="has-property">添加</a>
-                                </j-popover>
+                                                    <j-button
+                                                        @click="lastClick(node)"
+                                                        type="text"
+                                                    >
+                                                        上一值
+                                                    </j-button>
+                                                </j-tooltip>
+                                            </j-space>
+                                        </template>
+                                        <a class="has-property">添加</a>
+                                    </j-popover>
                                     <j-popover
                                         v-else-if="node.type === 'tags'"
                                         :overlayStyle="{
@@ -100,11 +100,11 @@
                                     >
                                         添加
                                     </a>
+                                </div>
                             </div>
-                        </div>
-                    </template>
-                </j-tree>
-              </j-scrollbar>
+                        </template>
+                    </j-tree>
+                </j-scrollbar>
             </div>
         </div>
         <div class="right">
@@ -118,9 +118,9 @@ import type { OperatorItem } from './typings';
 import { treeFilter } from '@/utils/tree';
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product';
-import Markdown from 'vue3-markdown-it';
 import { inject } from 'vue';
 import { Descriptions } from 'ant-design-vue';
+import Markdown from '@/components/Markdown'
 
 const props = defineProps({
     id: String,
@@ -248,7 +248,6 @@ watch(
         padding: 10px;
         margin-right: 10px;
         .tree {
-
             height: 300px;
             //overflow-y: auto;
 
@@ -265,12 +264,12 @@ watch(
     }
 
     .right {
-      padding: 20px;
+        padding: 20px;
     }
 }
 </style>
 <style>
 .rule-popover {
-  z-index: 1200;
+    z-index: 1200;
 }
 </style>

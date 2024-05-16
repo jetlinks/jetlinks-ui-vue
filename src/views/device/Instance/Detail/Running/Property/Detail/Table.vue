@@ -10,6 +10,7 @@
                 current: (dataSource?.pageIndex || 0) + 1,
                 pageSize: dataSource?.pageSize || 12,
                 showSizeChanger: true,
+                showLessItems:true,
                 total: dataSource?.total || 0,
                 pageSizeOptions: ['12', '24', '48', '96']
             }"
@@ -31,7 +32,7 @@
                             v-if="
                                 showLoad ||
                                 (!getType(record?.value) &&
-                                    data?.valueType?.fileType === 'base64')
+                                    data?.valueType?.bodyType === 'base64')
                             "
                             type="link"
                             @click="_download(record)"
@@ -127,7 +128,7 @@ const columns = computed(() => {
 const showLoad = computed(() => {
     return (
         _props.data.valueType?.type === 'file' &&
-        _props.data?.valueType?.fileType === 'Binary(二进制)'
+        _props.data?.valueType?.bodyType === 'Binary(二进制)'
     );
 });
 
@@ -194,6 +195,12 @@ const _download = (record: any) => {
 
 <style lang="less" scoped>
 :deep(.ant-pagination-item) {
+    display: none !important;
+}
+:deep(.ant-pagination-jump-next){
+    display: none !important;
+}
+:deep(.ant-pagination-jump-prev){
     display: none !important;
 }
 </style>

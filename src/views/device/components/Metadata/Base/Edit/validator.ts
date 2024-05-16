@@ -52,7 +52,7 @@ export const validateValueType = async (_rule: Rule, val: Record<any, any>, titl
   if (['object'].includes(val.type)) {
     await validateJson(_rule, val.properties)
   }
-  if (['file'].includes(val.type) && !val.fileType) {
+  if (['file'].includes(val.type) && !val.bodyType) {
     return Promise.reject(new Error('请选择文件类型'))
   }
   return Promise.resolve();

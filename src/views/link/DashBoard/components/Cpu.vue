@@ -99,7 +99,6 @@ const pickerTimeChange = () => {
 };
 
 const echartsOptions = computed(() => {
-  console.log(serverActive.value,'---')
   const series = serverActive.value.length
           ? serverActive.value.map((key) => setOptions(serverData.data, key))
           : typeDataLine

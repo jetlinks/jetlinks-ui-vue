@@ -41,9 +41,9 @@ export default defineConfig(({ mode}) => {
           assetsInlineLimit: 1000,
           rollupOptions: {
               output: {
-                  entryFileNames: `assets/[name].${new Date().getTime()}.js`,
-                  chunkFileNames: `assets/[name].${new Date().getTime()}.js`,
-                  assetFileNames: `assets/[name].${new Date().getTime()}.[ext]`,
+                  entryFileNames: `assets/[name]-${new Date().getTime()}.js`,
+                  chunkFileNames: `assets/[name]-${new Date().getTime()}.js`,
+                  assetFileNames: `assets/[name]-${new Date().getTime()}.[ext]`,
                   compact: true,
                   manualChunks: {
                       vue: ['vue', 'vue-router', 'pinia']
@@ -94,7 +94,7 @@ export default defineConfig(({ mode}) => {
               [env.VITE_APP_BASE_API]: {
                   // target: 'http://192.168.32.226:8844',
                   // target: 'http://192.168.32.244:8881',
-                //   target: 'http://192.168.32.163:8844', //张季本地
+                //   target: 'http://192.168.32.163:8844', //张本地
                 //   target: 'http://120.77.179.54:8844', // 120测试
                 // target: 'http://192.168.33.46:8844', // 本地开发环境
                 // target: 'http://192.168.33.1:8845', // 社区版开发环境

@@ -15,6 +15,7 @@
                 :rules="[
                     { required: true, message: '请输入编码' },
                     { max: 64, message: '最多可输入64个字符' },
+                    { validator: validateIdRepeat, trigger: 'blur' },
                 ]"
             >
                 <j-auto-complete
@@ -59,12 +60,15 @@
                     max-height="350px"
                     v-model:value="form.data.permissions"
                     :disabled="props.mode === '查看'"
-                    :btnId="form.data.id "
+                    :btnId="form.data.id"
                 />
             </j-form-item>
-            <j-form-item label="说明" name="describe">
+            <j-form-item label="说明" name="description"
+            :rules="[
+                    { max: 200, message: '最多可输入200个字符' },
+                ]">
                 <j-textarea
-                    v-model:value="form.data.describe"
+                    v-model:value="form.data.description"
                     :rows="4"
                     placeholder="请输入说明"
                     :disabled="props.mode === '查看'"
@@ -90,6 +94,10 @@ const props = defineProps<{
     visible: boolean;
     mode: '查看' | '新增' | '编辑';
     data: formType;
+    menuData: {
+        type: Array<any>;
+        default: [];
+    };
 }>();
 
 const loading = ref(false);
@@ -126,7 +134,7 @@ const initForm = {
     name: '',
     id: '',
     permissions: [],
-    describe: '',
+    description: '',
 } as formType;
 const formRef = ref<FormInstance>();
 const form = reactive({
@@ -141,12 +149,24 @@ const codeOptions = [
     { label: 'delete', value: 'delete', message: '删除' },
     { label: 'update', value: 'update', message: '更新' },
 ];
-
+const validateIdRepeat = (rule: any, val: any) => {
+    if (props.mode === '编辑'|| props.mode === '查看') {
+        return Promise.resolve('');
+    }
+    const isRepeat = props.menuData.find((i: any) => {
+        return i.id === val;
+    });
+    if (isRepeat) {
+        return Promise.reject('编码重复');
+    } else {
+        return Promise.resolve('');
+    }
+};
 type formType = {
     name: string;
     id: string;
     permissions: any[];
-    describe: string;
+    description: string;
 };
 </script>
 

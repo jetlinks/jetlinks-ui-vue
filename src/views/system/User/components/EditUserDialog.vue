@@ -142,14 +142,16 @@
                     <j-form-item
                         name="username"
                         label="用户名"
+                        :validateFirst="true"
                         :rules="[
-                            { required: true, message: '' },
+                            { required: true, message: '请输入用户名' },
+                            {
+                                validator: checkCh,
+                                trigger: ['change', 'blur'],
+                            },
                             {
                                 validator: form.rules.checkUserName,
                                 trigger: 'blur',
-                            },{
-                                validator: form.rules.checkCh,
-                                trigger: 'change'
                             }
                         ]"
                     >
@@ -265,17 +267,11 @@ const confirm = () => {
 const formRef = ref<FormInstance>();
 const form = reactive({
     data: {} as formType,
-
     rules: {
-        checkCh: (_rule:Rule,value:string): Promise<any> => 
-            new Promise((resolve,reject) => {
-                if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
-                else return resolve('')
-            }),
         checkUserName: (_rule: Rule, value: string): Promise<any> =>
             new Promise((resolve, reject) => {
-                if (props.type === 'edit') return resolve('');
-                if (!value) return reject('请输入用户名');
+                if(props.type==='edit') return resolve('')
+                else if(!value) return reject('请输入用户名');
                 else if (value.length > 64) return reject('最多可输入64个字符');
                 validateField_api('username', value).then((resp: any): any => {
                     resp.result.passed
@@ -297,7 +293,7 @@ const form = reactive({
                 });
             }),
         checkAgainPassword: (_rule: Rule, value: string): Promise<any> => {
-            if (!value) return Promise.reject('请输入8~64位的密码');
+            if (!value) return Promise.reject('请再次输入密码');
             return value === form.data.password
                 ? Promise.resolve()
                 : Promise.reject('两次密码输入不一致');
@@ -397,7 +393,10 @@ const form = reactive({
         };
     },
 });
-
+const checkCh = async(_rule:Rule,value:string) => {
+                if (/[\u4e00-\u9fa5]/.test(value)) return Promise.reject('用户名不能包含中文');
+                else return Promise.resolve('')
+            }
 const  dealRoleList = (data:any) =>{
     return data.map((item:any)=>{
         return {

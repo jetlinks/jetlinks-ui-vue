@@ -154,9 +154,9 @@
                 </template>
                 <template #registryTime="slotProps">
                     <span>{{
-                        dayjs(slotProps.registryTime).format(
+                       slotProps.registryTime ? dayjs(slotProps.registryTime).format(
                             'YYYY-MM-DD HH:mm:ss',
-                        )
+                        ) : ''
                     }}</span>
                 </template>
                 <template #action="slotProps">
@@ -269,6 +269,7 @@ const columns = [
             type: 'string',
             defaultTermType: 'eq',
         },
+        ellipsis:true
     },
     {
         title: '设备名称',
@@ -278,6 +279,7 @@ const columns = [
             type: 'string',
             first: true,
         },
+        ellipsis:true
     },
     {
         title: '产品名称',
@@ -298,6 +300,7 @@ const columns = [
                     });
                 }),
         },
+        ellipsis:true
     },
     {
         title: '注册时间',
@@ -375,6 +378,7 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
+        ellipsis:true,
         search: {
             type: 'string',
         },

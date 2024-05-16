@@ -96,9 +96,14 @@ const init = new Array(50).fill(0).map((_, index) => {
 
 const dataSource = ref<Item[]>(init);
 const loading = ref(false);
+const route = useRoute()
 
 const handleSearch = async (id: string, arr: Item[]) => {
-    const resp = await channelApi.opFunction(id, 'QueryPreset');
+  const params: Record<string, string> = {}
+  if (route.query.type === 'gb28181-2016') {
+    params.channel = props.data.channelId
+  }
+    const resp = await channelApi.opFunction(id, 'QueryPreset', params);
     if (resp.status === 200) {
         dataSource.value = unionBy([ ...arr, ...init], 'id').map((item) => {
             const _item = (resp.result?.[0] || []).find(
