@@ -115,7 +115,7 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                     }
                 },
             );
-            if(item2.targetAttribute){
+            if(item2.targetId){
                 return {
                     originalId,
                     originalName,
@@ -288,6 +288,7 @@ const Init = () => {
                 deviceIdsMap.value,
             );
             deviceDetailList.value = deviceIdsMapNew;
+            console.log('deviceDetailList',deviceDetailList.value)
 
             //判断是否保存了数据映射
             if (dataMap) {

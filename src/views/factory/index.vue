@@ -322,6 +322,8 @@ const modalState = reactive({
                         paramsAppList.value = queryAppList.value;
                         tableRef.value?.reload();
                     }
+                }).catch(()=>{
+                    modalState.confirmLoading = false;
                 });
             } else {
                 editFactory(form.value).then((res: any) => {
@@ -332,12 +334,15 @@ const modalState = reactive({
                         paramsAppList.value = queryAppList.value;
                         tableRef.value?.reload();
                     }
-                });
+                }).catch(()=>{
+                    modalState.confirmLoading = false;
+                });;
             }
         });
     },
     cancel() {
         modalState.openView = false;
+        modalState.confirmLoading = false;
         tableRef.value?.reload();
     },
 });
@@ -390,6 +395,7 @@ const handleAdd = () => {
     modalState.title = '新增';
     paramsAppList.value = filteredItems.value;
     modalState.openView = true;
+    modalState.confirmLoading = false;
     reset();
 };
 

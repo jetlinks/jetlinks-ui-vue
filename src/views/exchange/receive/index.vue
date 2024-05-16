@@ -340,7 +340,7 @@ const modalState = reactive({
                         modalState.openView = false;
                         paramsProductList.value = productList.value;
                         tableRef.value?.reload();
-                        Init()
+                        Init();
                     }
                 });
             } else {
@@ -351,7 +351,7 @@ const modalState = reactive({
                         modalState.openView = false;
                         paramsProductList.value = productList.value;
                         tableRef.value?.reload();
-                        Init()
+                        Init();
                     }
                 });
             }
@@ -515,6 +515,7 @@ const handleAdd = () => {
     modalState.title = '新增';
     modalState.openView = true;
     paramsProductList.value = filteredItems.value;
+    console.log(filteredItems.value)
     reset();
 };
 
@@ -670,6 +671,36 @@ const getActions = (
                 modalState.openView = true;
                 form.value = data;
                 paramsProductList.value = productList.value;
+                if (data.factoryId && data.productId) {
+                    const setData = {
+                        paging: false,
+                        sorts: [{ name: 'createTime', order: 'desc' }],
+                        terms: [
+                            {
+                                terms: [
+                                    {
+                                        column: 'productId',
+                                        termType: 'eq',
+                                        type: 'and',
+                                        value: `${data.productId}`,
+                                    },
+                                    {
+                                        column: 'factoryId',
+                                        termType: 'eq',
+                                        type: 'and',
+                                        value: `${data.factoryId}`,
+                                    },
+                                ],
+                            },
+                        ],
+                    };
+                    queryNoPagingPostDevice(setData).then((resp) => {
+                        if (resp.status === 200) {
+                            deviceList.value = resp.result as Record<string,any>[];
+                            console.log('dec',deviceList.value)
+                        }
+                    });
+                }
             },
         },
         {
@@ -720,7 +751,7 @@ const getActions = (
                         if (response.status === 200) {
                             onlyMessage('删除成功！');
                             tableRef.value?.reload();
-                            Init()
+                            Init();
                         } else {
                             onlyMessage('操作失败！', 'error');
                         }
@@ -774,13 +805,13 @@ watch(
                             {
                                 column: 'productId',
                                 termType: 'eq',
-                                type: 'or',
+                                type: 'and',
                                 value: `${newValue}`,
                             },
                             {
                                 column: 'factoryId',
                                 termType: 'eq',
-                                type: 'or',
+                                type: 'and',
                                 value: `${form.value.factoryId}`,
                             },
                         ],
@@ -792,8 +823,8 @@ watch(
                     deviceList.value = resp.result as Record<string, any>[];
                 }
             });
-        }else{
-            deviceList.value = []
+        } else {
+            deviceList.value = [];
         }
     },
 );
@@ -811,13 +842,13 @@ watch(
                             {
                                 column: 'productId',
                                 termType: 'eq',
-                                type: 'or',
+                                type: 'and',
                                 value: `${newValue}`,
                             },
                             {
                                 column: 'factoryId',
                                 termType: 'eq',
-                                type: 'or',
+                                type: 'and',
                                 value: `${form.value.factoryId}`,
                             },
                         ],
@@ -830,7 +861,7 @@ watch(
                 }
             });
         } else {
-            deviceList.value = []
+            deviceList.value = [];
         }
     },
 );
@@ -841,7 +872,7 @@ const filteredItems = computed(() => {
     );
 });
 
-const Init = ()=>{
+const Init = () => {
     queryNoPagingPost({
         paging: false,
         sorts: [{ name: 'createTime', order: 'desc' }],
@@ -882,10 +913,10 @@ const Init = ()=>{
             console.log(response.result.data);
         }
     });
-}
+};
 
 onMounted(() => {
-    Init()
+    Init();
 });
 </script>
 

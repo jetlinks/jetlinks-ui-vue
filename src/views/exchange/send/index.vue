@@ -447,6 +447,7 @@ const handleAdd = () => {
     isAdd.value = 1;
     modalState.title = '新增';
     paramsProductList.value = filteredItems.value;
+    console.log(filteredItems.value)
     modalState.openView = true;
     reset();
 };

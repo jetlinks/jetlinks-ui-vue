@@ -324,11 +324,11 @@ const splitHumidity = (data: any) => {
 };
 
 const handleMap = (data: any) => {
-    // console.log('dataDetailList', props.dataDetailList);
-    // console.log('data', data);
+    console.log('dataDetailList', props.dataDetailList);
+    console.log('data', data);
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
-    // console.log('props.deviceIdsMap',props.deviceIdsMap)
+    console.log('props.deviceIdsMap',props.deviceIdsMap)
     if(data.record.targetAttribute){
         let mapOptionDevice = props.deviceIdsMap.find(
             (item: any) => item.targetId === data.record.targetAttribute.targetId,
@@ -337,31 +337,30 @@ const handleMap = (data: any) => {
     }else{
         mapOptions.value = []
     }
-    if (data.record.bln) {
+    if (!data.record.bln) {
+        console.log('bln',data.record.bln)
         if (data.record.deviceTargetAttribute.length > 0) {
-            // const getDevTarAtt = data.record.deviceTargetAttribute.map(
-            //     (item: any) => {
-            //         let item1 = props.dataDetailList.find(
-            //             (item2: any) => item2.originalId === item.originalId,
-            //         );
-            //         console.log('item',item)
-            //         console.log('item1',item1)
-            //         if (item1) {
-            //             const { targetAttribute, select, ...res } = item;
-            //             return {
-            //                 ...res,
-            //                 select: item1.select,
-            //                 targetAttribute: item1.targetAttribute,
-            //             };
-            //         } else {
-            //             return item;
-            //         }
-            //     },
-            // );
-            // console.log('getDevTarAtt', getDevTarAtt);
-            deviceMapDetail.value = data.record.deviceTargetAttribute;
+            const getDevTarAtt = data.record.deviceTargetAttribute.map(
+                (item: any) => {
+                    let item1 = props.dataDetailList.find(
+                        (item2: any) => item2.originalId === item.originalId,
+                    );
+                    if (item1) {
+                        const { targetAttribute, select, ...res } = item;
+                        return {
+                            ...res,
+                            select: item1.select,
+                            targetAttribute: item1.targetAttribute,
+                        };
+                    } else {
+                        return item;
+                    }
+                },
+            );
+            console.log('getDevTarAtt', getDevTarAtt);
+            deviceMapDetail.value = getDevTarAtt;
         }
-    }
+    } 
     State.openView = true;
 };
 
