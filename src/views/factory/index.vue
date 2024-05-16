@@ -32,15 +32,34 @@
                     </j-space>
                 </template>
                 <template #actions="slotProps">
-                    <a @click="handleUpdate(slotProps)">编辑</a>
-                    <j-divider type="vertical" />
-                    <a @click="handleView(slotProps.id)">查看设备</a>
-                    <j-divider type="vertical" />
-                    <a
-                        style="color: #f53f3f"
-                        @click="handleDelete(slotProps.id)"
-                        >删除</a
-                    >
+                    <j-space>
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'device/Product:' + i.key
+                                "
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                :danger="i.key === 'delete'"
+                            >
+                                <template #icon
+                                    ><AIcon
+                                        style="font-size: 13px"
+                                        :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -139,29 +158,34 @@
                                     placeholder="请输入地理位置"
                                 />
                             </j-form-item>
-                            <j-form-item label="链接地址" name="url">
-                                <j-input
-                                    v-model:value="form.url"
-                                    placeholder="请输入链接地址"
-                                />
-                            </j-form-item>
-                            <j-form-item label="端口" name="port">
-                                <j-input
-                                    v-model:value="form.port"
-                                    placeholder="请输入端口"
-                                />
-                            </j-form-item>
-                            <j-form-item label="appId" name="appId">
-                                <j-input
-                                    v-model:value="form.appId"
-                                    placeholder="请输入appId"
-                                />
-                            </j-form-item>
-                            <j-form-item label="appKey" name="appKey">
-                                <j-input
-                                    v-model:value="form.appKey"
-                                    placeholder="请输入appKey"
-                                />
+                            <j-form-item name="applicationId">
+                                <template #label>
+                                    <span
+                                        >选择内部应用
+                                        <j-tooltip
+                                            title="选择配置好的应用管理,实现总工厂跳转子工厂功能"
+                                        >
+                                            <AIcon
+                                                type="QuestionCircleOutlined"
+                                                style="margin-left: 2px"
+                                            />
+                                        </j-tooltip>
+                                    </span>
+                                </template>
+                                <j-select
+                                    showSearch
+                                    :disabled="!!form?.id"
+                                    v-model:value="form.applicationId"
+                                    placeholder="请选择内部独立应用"
+                                >
+                                    <j-select-option
+                                        v-for="item in paramsAppList"
+                                        :value="item.id"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        >{{ item.name }}</j-select-option
+                                    >
+                                </j-select>
                             </j-form-item>
                             <j-form-item
                                 label="Topic"
@@ -213,10 +237,14 @@ import {
     getDeviceList_factory,
     isTopic,
     getSubFactoryToken,
+    getQueryApply,
+    getQueryFacApply,
 } from '@/api/factory/factory';
 import { omit, cloneDeep } from 'lodash-es';
-import { FormState, ActionsType } from './typings';
-import { isUrl, isPort } from '@/utils/regular';
+import { ActionsType } from './typings';
+// import { isUrl, isPort } from '@/utils/regular';
+import { BASE_API_PATH } from '@/utils/variable';
+import { LocalStore } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 
@@ -224,35 +252,11 @@ const isAdd = ref<number>(0);
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 
+const paramsAppList = ref<any>([]);
+const queryAppList = ref<any>([]);
+const SelFactoryList = ref<any>([]);
+
 const formRef = ref();
-
-const validatorUrl = (rule: any, value: any, callback: any) => {
-    if (value === undefined || value === '' || value === null) {
-        return Promise.reject('请输入链接地址');
-    } else {
-        if (!isUrl(value)) {
-            return Promise.reject(
-                '请输入正确的链接地址(例：http或https://www.baidu.com)',
-            );
-        }
-        return Promise.resolve();
-    }
-};
-
-const validatorPort = (rule: any, value: any, callback: any) => {
-    if (value === undefined || value === '' || value === null) {
-        return Promise.reject('请输入端口号');
-    } else {
-        if (
-            !(/^[1-9]\d*$/.test(value) && 1 <= 1 * value && 1 * value <= 65535)
-        ) {
-            return Promise.reject(
-                '请输入正确端口号(有效端口号范围(0到65535正整数))',
-            );
-        }
-        return Promise.resolve();
-    }
-};
 
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
@@ -292,21 +296,8 @@ const data = reactive({
         position: [
             { max: 64, message: '最多可输入64位字符', trigger: 'change' },
         ],
-        url: [
-            { required: true, trigger: 'blur', validator: validatorUrl },
-            { max: 256, message: '最多可输入256位字符', trigger: 'change' },
-        ],
-        port: [
-            { required: true, trigger: 'blur', validator: validatorPort },
-            { max: 8, message: '最多可输入8位字符', trigger: 'change' },
-        ],
-        appId: [
-            { required: true, message: '请输入appId', trigger: 'blur' },
-            { max: 64, message: '最多可输入64位字符', trigger: 'change' },
-        ],
-        appKey: [
-            { required: true, message: '请输入appKey', trigger: 'blur' },
-            { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        applicationId: [
+            { required: true, message: '请选择内部独立应用', trigger: 'blur' },
         ],
         description: [
             { max: 200, message: '最多可输入200位字符', trigger: 'change' },
@@ -328,6 +319,7 @@ const modalState = reactive({
                         onlyMessage('添加成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
+                        paramsAppList.value = queryAppList.value;
                         tableRef.value?.reload();
                     }
                 });
@@ -337,6 +329,7 @@ const modalState = reactive({
                         onlyMessage('修改成功！');
                         modalState.confirmLoading = false;
                         modalState.openView = false;
+                        paramsAppList.value = queryAppList.value;
                         tableRef.value?.reload();
                     }
                 });
@@ -355,10 +348,8 @@ const reset = () => {
         id: '',
         name: '',
         position: '',
-        url: '',
-        port: '',
-        appId: '',
-        appKey: '',
+        applicationId: '',
+        applicationName: '',
         topic: '',
         description: '',
     };
@@ -397,49 +388,24 @@ const onSearch = (e: any) => {
 const handleAdd = () => {
     isAdd.value = 1;
     modalState.title = '新增';
+    paramsAppList.value = filteredItems.value;
     modalState.openView = true;
     reset();
 };
 
-// 编辑操作
-const handleUpdate = (data: any) => {
-    isAdd.value = 2;
-    form.value = data;
-    modalState.title = '编辑';
-    modalState.openView = true;
-};
-
 //查看子工厂
 const handleSee = (data: any) => {
-    //http://192.168.33.53:9000/#/oauth
-    // http://192.168.33.57:9000/#/user/login
-    //http://192.168.32.147:5173/
-    const url = `${data.url}:${data.port}/#/user/login?id=${data.id}&factory=${data.id}`;
-    window.open(url, '_blank');
-};
-
-//查看设备
-const handleView = (id: string) => {
-    menuStory.jumpPage('factory/Detail', { id });
-};
-// 删除操作
-const handleDelete = async (id: string) => {
-    const terms = [
-        {
-            type: 'or',
-            value: `%${id}%`,
-            termType: 'like',
-            column: 'factoryId',
-        },
-    ];
-    let res: any = await getDeviceList_factory({ terms });
-    if (res.result.data?.length === 0) {
-        deleteFactory(id).then((response: any) => {
-            if (response.status === 200) onlyMessage('删除成功！');
-            tableRef.value?.reload();
-        });
-    } else {
-        onlyMessage('删除失败,工厂下还存在设备', 'warning');
+    if (data.applicationId) {
+        let getAppData = queryAppList.value.find((item: any) => item.id = data.applicationId);
+        if(getAppData.apiServer?.redirectUri){
+            const url = getAppData.apiServer?.redirectUri
+            const openUrl = `${url}/#/user/login?id=${data.id}&factory=${data.id}`;
+            // LocalStore.set('onLogin', 'no');
+            // window.open(`${url}${BASE_API_PATH}/application/sso/${getAppData.id}/login`,'_blank');
+            window.open(openUrl, '_blank');
+        } else {
+            onlyMessage('内部应用未配置正确,请检查','error')
+        }
     }
 };
 
@@ -488,7 +454,7 @@ const columns = [
         title: '操作',
         dataIndex: 'actions',
         fixed: 'right',
-        width: 200,
+        width: 220,
         scopedSlots: true,
     },
 ];
@@ -583,6 +549,25 @@ const query = (params: Record<string, any>) =>
             });
         });
     });
+
+const filteredItems = computed(() => {
+    return queryAppList.value.filter(
+        (item: any) => !SelFactoryList.value.includes(item.id),
+    );
+});
+
+onMounted(() => {
+    getQueryApply().then((res: any) => {
+        if (res.result) {
+            queryAppList.value = res.result;
+            paramsAppList.value = queryAppList.value;
+        }
+    });
+
+    getQueryFacApply().then((resp: any) => {
+        SelFactoryList.value = resp.result;
+    });
+});
 </script>
 
 <style lang="less" scoped></style>

@@ -35,7 +35,7 @@ export const _queryFactory = (data: any) =>
  * @param data 查询条件
  */
 export const queryFactoryList = (data: any) =>
-    server.post('/tbea/factory/_query', data);
+    server.post('/tbea/factory/detail/_query', data);
 
 /**
  * 查询工厂设备列表
@@ -84,3 +84,19 @@ export const queryFactoryIssued = (productId: any) =>
  */
 export const getSubFactoryToken = (data: any) =>
     server.post(`/tbea/factory/sub/token`,data);
+
+// 获取应用管理
+
+/**
+ * 获取应用管理
+ * @param data 
+ */
+export const getQueryApply = (data?: any) => server.get(`/application/_query/no-paging`)
+
+///tbea/factory/appid/filter
+
+/**
+ * 获取应用管理
+ * @param data 
+ */
+export const getQueryFacApply = (data?: any) => server.get(`/tbea/factory/appid/filter`)

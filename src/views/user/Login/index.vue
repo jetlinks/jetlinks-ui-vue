@@ -397,10 +397,6 @@ const onFinish = async () => {
     }
 };
 
-watch(bindings.value, (newValue) => {
-    console.log('newValue', newValue);
-});
-
 const getCode = async () => {
     const configRes: any = await config();
     if (!configRes.success || (configRes.success && !configRes.result.enabled))
@@ -456,10 +452,6 @@ const handleClickOther = (item: any) => {
     };
 };
 
-const handleSubFactory = () => {
-    if (bindings.value) {
-    }
-};
 
 const screenRotation = (width: number, height: number) => {
     LoginWarpStyle.backgroundImage = `url(${bgImage})`;

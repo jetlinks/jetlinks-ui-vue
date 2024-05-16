@@ -765,8 +765,6 @@ watch(
     () => form.value.productId,
     (newValue, oldValue) => {
         if (newValue && form.value.factoryId) {
-            console.log('newValue',newValue)
-            console.log('factoryId',form.value.factoryId)
             const setData = {
                 paging: false,
                 sorts: [{ name: 'createTime', order: 'desc' }],
@@ -794,8 +792,45 @@ watch(
                     deviceList.value = resp.result as Record<string, any>[];
                 }
             });
-        } else if (newValue && !form.value.factoryId) {
-            onlyMessage('请选择工厂', 'error');
+        }else{
+            deviceList.value = []
+        }
+    },
+);
+
+watch(
+    () => form.value.factoryId,
+    (newValue, oldValue) => {
+        if (newValue && form.value.productId) {
+            const setData = {
+                paging: false,
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms: [
+                    {
+                        terms: [
+                            {
+                                column: 'productId',
+                                termType: 'eq',
+                                type: 'or',
+                                value: `${newValue}`,
+                            },
+                            {
+                                column: 'factoryId',
+                                termType: 'eq',
+                                type: 'or',
+                                value: `${form.value.factoryId}`,
+                            },
+                        ],
+                    },
+                ],
+            };
+            queryNoPagingPostDevice(setData).then((resp) => {
+                if (resp.status === 200) {
+                    deviceList.value = resp.result as Record<string, any>[];
+                }
+            });
+        } else {
+            deviceList.value = []
         }
     },
 );

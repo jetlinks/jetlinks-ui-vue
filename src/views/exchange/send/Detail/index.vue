@@ -97,29 +97,45 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                         (item: any) => item.targetId === orgItem1.originalId,
                     );
                     if (orgItem2) {
-                        return {
-                            ...orgItem1,
-                            targetAttribute: orgItem2,
-                            select:
-                                orgItem2.targetName + `(${orgItem2.targetId})`,
-                            state: 'enabled',
-                        };
+                        if(orgItem2.targetId){
+                            return {
+                                ...orgItem1,
+                                targetAttribute: orgItem2,
+                                select:orgItem2.targetName + `(${orgItem2.targetId})`,
+                                state: 'enabled',
+                            };
+                        }else{
+                            return {
+                                ...orgItem1,
+                                state: 'enabled',
+                            }
+                        }
                     } else {
                         return orgItem1;
                     }
                 },
             );
-            return {
-                originalId,
-                originalName,
-                targetAttribute: {
-                    ...rest2,
-                },
-                deviceTargetAttribute: mergedDevDataMap,
-                deviceTargetAttributeMap: deviceTargetAttributeMap,
-                select: item2.targetName + `(${item2.targetId})`,
-                state: item2.state,
+            if(item2.targetAttribute){
+                return {
+                    originalId,
+                    originalName,
+                    targetAttribute: {
+                        ...rest2,
+                    },
+                    deviceTargetAttribute: mergedDevDataMap,
+                    deviceTargetAttributeMap: deviceTargetAttributeMap,
+                    select: item2.targetName + `(${item2.targetId})`,
+                    state: 'enabled',
             };
+            } else {
+                return {
+                    originalId,
+                    originalName,
+                    deviceTargetAttribute: mergedDevDataMap,
+                    deviceTargetAttributeMap: deviceTargetAttributeMap,
+                    state: 'enabled',
+                }
+            }
         } else {
             return item1;
         }
@@ -162,6 +178,7 @@ const Init = () => {
             let objectValues = attributeList?.properties.map((item: any) => ({
                 originalName: item.name,
                 originalId: item.id,
+                state: 'enabled',
             }));
             dataDetailList.value = objectValues;
         }
@@ -175,6 +192,7 @@ const Init = () => {
                 let yDevMetadatas = yDevMetadata.map((item: any) => ({
                     originalId: item.id,
                     originalName: item.name,
+                    state: 'enabled',
                 }));
                 let select = yDevMetadata.map(
                     (item: any) => item.name + `(${item.id})`,
@@ -183,6 +201,7 @@ const Init = () => {
                     originalId: item.id,
                     originalName: item.name,
                     bln: false,
+                    state: 'enabled',
                     deviceTargetAttribute: yDevMetadatas,
                 };
             });
@@ -258,7 +277,7 @@ const Init = () => {
                 };
             });
             deviceIdsMap.value = deviceTargetMap;
-            // console.log('deviceTargetMap',deviceTargetMap)
+            console.log('deviceTargetMap',deviceTargetMap)
 
             deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
                 value: item.targetName + `(${item.targetId})`,
