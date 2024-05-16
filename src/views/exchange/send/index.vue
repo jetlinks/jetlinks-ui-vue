@@ -445,9 +445,11 @@ const onSearch = (e: any) => {
 //新增
 const handleAdd = () => {
     isAdd.value = 1;
+    Init()
     modalState.title = '新增';
-    paramsProductList.value = filteredItems.value;
-    console.log(filteredItems.value)
+    paramsProductList.value = productList.value.filter(
+        (item: any) => !SelProductList.value.includes(item.id),
+    );
     modalState.openView = true;
     reset();
 };
@@ -672,12 +674,6 @@ watch(
     },
 );
 
-const filteredItems = computed(() => {
-    return productList.value.filter(
-        (item: any) => !SelProductList.value.includes(item.id),
-    );
-});
-
 const Init = ()=>{
     queryNoPagingPost({
         paging: false,
@@ -693,14 +689,17 @@ const Init = ()=>{
                 ],
             },
         ],
-    }).then((resp) => {
+    }).then((resp: any) => {
         if (resp.status === 200) {
             productList.value = resp.result;
-            paramsProductList.value = productList.value;
 
             filterReSandProduct().then((res: any) => {
-                if (res.status === 200 && res.result.length > 0) {
-                    SelProductList.value = res.result;
+                if (res.status === 200) {
+                    if(res.result.length > 0){
+                        SelProductList.value = res.result;
+                    } else{
+                        SelProductList.value = []
+                    }
                 }
             });
         }

@@ -512,10 +512,13 @@ const onSearch = (e: any) => {
 //新增
 const handleAdd = () => {
     isAdd.value = 1;
+    Init()
     modalState.title = '新增';
     modalState.openView = true;
-    paramsProductList.value = filteredItems.value;
-    console.log(filteredItems.value)
+    paramsProductList.value = productList.value.filter(
+        (item: any) => !SelProductList.value.includes(item.id),
+    );
+    console.log(paramsProductList.value)
     reset();
 };
 
@@ -790,11 +793,45 @@ const query = (params: Record<string, any>) =>
 
 //监听产品select选项变动,清空设备多选框
 const curProductChange = (val: any) => {
+    console.log('val',val)
+    if (form.value.productId && form.value.factoryId) {
+            const setData = {
+                paging: false,
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms: [
+                    {
+                        terms: [
+                            {
+                                column: 'productId',
+                                termType: 'eq',
+                                type: 'and',
+                                value: `${form.value.productId}`,
+                            },
+                            {
+                                column: 'factoryId',
+                                termType: 'eq',
+                                type: 'and',
+                                value: `${form.value.factoryId}`,
+                            },
+                        ],
+                    },
+                ],
+            };
+            queryNoPagingPostDevice(setData).then((resp) => {
+                if (resp.status === 200) {
+                    deviceList.value = resp.result as Record<string, any>[];
+                }
+            });
+        } else {
+            deviceList.value = [];
+        }
     form.value.deviceIds = [];
 };
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
+        console.log('newValue',newValue)
+        console.log('factoryId',form.value.factoryId)
         if (newValue && form.value.factoryId) {
             const setData = {
                 paging: false,
@@ -832,6 +869,8 @@ watch(
 watch(
     () => form.value.factoryId,
     (newValue, oldValue) => {
+        console.log('factoryId',newValue)
+        console.log('productId',form.value.productId)
         if (newValue && form.value.productId) {
             const setData = {
                 paging: false,
@@ -843,13 +882,13 @@ watch(
                                 column: 'productId',
                                 termType: 'eq',
                                 type: 'and',
-                                value: `${newValue}`,
+                                value: `${form.value.productId}`,
                             },
                             {
                                 column: 'factoryId',
                                 termType: 'eq',
                                 type: 'and',
-                                value: `${form.value.factoryId}`,
+                                value: `${newValue}`,
                             },
                         ],
                     },
@@ -866,11 +905,6 @@ watch(
     },
 );
 
-const filteredItems = computed(() => {
-    return productList.value.filter(
-        (item: any) => !SelProductList.value.includes(item.id),
-    );
-});
 
 const Init = () => {
     queryNoPagingPost({
@@ -893,7 +927,13 @@ const Init = () => {
             paramsProductList.value = productList.value;
 
             filterReSandProduct().then((res: any) => {
-                SelProductList.value = res.result;
+                if (res.status === 200) {
+                    if(res.result.length > 0) {
+                        SelProductList.value = res.result;
+                    } else{
+                        SelProductList.value = []
+                    }
+                }
             });
         }
     });
