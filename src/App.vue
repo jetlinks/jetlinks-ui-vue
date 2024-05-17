@@ -1,7 +1,8 @@
 <template>
-  <ConfigProvider :locale='zhCN'>
-    <router-view />
-  </ConfigProvider>
+<!--  <ConfigProvider :locale='zhCN'>-->
+<!--    <router-view />-->
+<!--  </ConfigProvider>-->
+  <Demo />
 </template>
 
 <script setup lang="ts">
@@ -9,9 +10,9 @@ import { ConfigProvider } from 'jetlinks-ui-components'
 import zhCN from 'jetlinks-ui-components/es/locale/zh_CN';
 import { storeToRefs } from 'pinia';
 import { useSystem } from './store/system';
-import DefaultSetting from '../config/config'
 import {LocalStore} from "@/utils/comm";
 import {TOKEN_KEY} from "@/utils/variable";
+import Demo from '@/components/Metadata/Table/demo.vue'
 
 const system = useSystem();
 const {configInfo} = storeToRefs(system);
