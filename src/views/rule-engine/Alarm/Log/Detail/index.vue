@@ -9,6 +9,7 @@
             <JProTable
                 :columns="columns"
                 model="TABLE"
+                ref="tableRef"
                 :request="queryList"
                 :params="params"
                 :defaultParams="{
@@ -45,7 +46,7 @@
             </JProTable>
         </FullPage>
         <Info
-            v-if="visiable"
+            v-if="visible"
             :data="current"
             @close="close"
             :description="description"
@@ -54,20 +55,19 @@
 </template>
 
 <script lang="ts" setup>
-import { detail, queryHistoryList } from '@/api/rule-engine/log';
+import {detail, queryHistoryLogList} from '@/api/rule-engine/log';
 import { detail as configurationDetail } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
-import type { ActionsType } from '@/components/Table/index.vue';
 import { useAlarmStore } from '@/store/alarm';
 import Info from './info.vue';
-import { storeToRefs } from 'pinia';
 import { useRouterParams } from '@/utils/hooks/useParams';
 const route = useRoute();
 const id = route.params?.id;
 const { params: routerParams } = useRouterParams();
-let visiable = ref(false);
+let visible = ref(false);
 let description = ref<string>();
+const tableRef = ref()
 const columns = [
     {
         title: '告警时间',
@@ -98,7 +98,7 @@ const columns = [
 const getActions = (
     data: Partial<Record<string, any>>,
     type?: 'table',
-): ActionsType[] => {
+): any[] => {
     if (!data) {
         return [];
     }
@@ -112,7 +112,7 @@ const getActions = (
             icon: 'SearchOutlined',
             onClick: () => {
                 current.value = data;
-                visiable.value = true;
+                visible.value = true;
             },
         },
     ];
@@ -135,56 +135,63 @@ let details = ref(); // 告警记录的详情
  * 获取详情列表
  */
 const queryList = async (params: any) => {
-    const res = await queryHistoryList({
-        ...params,
-        // sorts: [{ name: 'alarmTime', order: 'desc' }],
+  if(data.current?.alarmConfigId){
+    const res = await queryHistoryLogList(data.current?.alarmConfigId,{
+      ...params,
+      // sorts: [{ name: 'alarmTime', order: 'desc' }],
     });
     if (res.status === 200) {
-        details.value = res.result.data[0];
-        return {
-            code: res.message,
-            result: {
-                data: res.result.data,
-                pageIndex: res.result.pageIndex,
-                pageSize: res.result.pageSize,
-                total: res.result.total,
-            },
-            status: res.status,
-        };
-    } else {
-        return {
-            code: 200,
-            result: {
-                data: [],
-                pageIndex: 0,
-                pageSize: 0,
-                total: 0,
-            },
-            status: 200,
-        };
+      details.value = res.result.data[0];
+      return {
+        code: res.message,
+        result: {
+          data: res.result.data,
+          pageIndex: res.result.pageIndex,
+          pageSize: res.result.pageSize,
+          total: res.result.total,
+        },
+        status: res.status,
+      };
     }
+  } else {
+    return {
+      code: 200,
+      result: {
+        data: [],
+        pageIndex: 0,
+        pageSize: 0,
+        total: 0,
+      },
+      status: 200,
+    };
+  }
 };
 /**
  * 根据id初始化数据
  */
-watchEffect(async () => {
-    const res = await detail(id);
-    if (res.status === 200) {
-        data.current = res.result;
-        if (res.result.targetType === 'device') {
-            columns.splice(2, 0, {
-                dataIndex: 'targetName',
-                title: '告警设备',
-                key: 'targetName',
-            });
-        }
-        configurationDetail(res.result?.alarmConfigId).then((res: any) => {
-            if (res.status === 200) {
-                description.value = res.result?.description;
-            }
-        });
+
+watch(() => id, async () => {
+  const res = await detail(id);
+  if (res.status === 200) {
+    data.current = res.result || {};
+    tableRef.value?.reload()
+    if (res.result?.targetType === 'device') {
+      columns.splice(2, 0, {
+        dataIndex: 'targetName',
+        title: '告警设备',
+        key: 'targetName',
+      });
     }
-});
+    configurationDetail(res.result?.alarmConfigId).then((res: any) => {
+      if (res.status === 200) {
+        description.value = res.result?.description;
+      }
+    });
+  }
+}, {
+  deep: true,
+  immediate: true
+})
 const handleSearch = (_params: any) => {
     params.value = _params;
 };
@@ -193,13 +200,13 @@ const handleSearch = (_params: any) => {
  * 关闭模态弹窗
  */
 const close = () => {
-    visiable.value = false;
+    visible.value = false;
 };
 
 watchEffect(() => {
     current.value = details.value;
     if (routerParams.value.detail && details.value) {
-        visiable.value = true;
+        visible.value = true;
     }
 });
 </script>
