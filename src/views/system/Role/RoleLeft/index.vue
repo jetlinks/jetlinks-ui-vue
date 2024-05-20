@@ -51,6 +51,7 @@
                             >
                                 <PermissionButton
                                     type="text"
+                                    style="padding: 0"
                                     hasPermission="system/Role:groupDelete"
                                     :popConfirm="{
                                         title: `确定要删除？`,
