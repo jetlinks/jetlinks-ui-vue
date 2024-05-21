@@ -14,7 +14,9 @@
             :params="queryParams"
             :rowSelection="{
                 selectedRowKeys: selectedRowKeys,
-                onChange: (keys:string[])=>selectedRowKeys = keys,
+                onSelect: onSelectChange,
+                onSelectAll: selectAll,
+                onSelectNone: () => (selectedRowKeys = []),
             }"
             size="small"
         >
@@ -181,9 +183,37 @@ const table = {
     },
 };
 
+const onSelectChange = (item: any, state: boolean) => {
+    const arr = new Set(selectedRowKeys.value);
+    if (state) {
+        arr.add(item.id);
+    } else {
+        arr.delete(item.id);
+    }
+    selectedRowKeys.value = [...arr.values()];
+};
+
+const selectAll = (selected: Boolean, selectedRows: any, changeRows: any) => {
+    if (selected) {
+        changeRows.map((i: any) => {
+            if (!selectedRowKeys.value.includes(i.id)) {
+                selectedRowKeys.value.push(i.id);
+            }
+        });
+    } else {
+        const arr = changeRows.map((item: any) => item.id);
+        const _ids: string[] = [];
+        selectedRowKeys.value.map((i: any) => {
+            if (!arr.includes(i)) {
+                _ids.push(i);
+            }
+        });
+        selectedRowKeys.value = _ids;
+    }
+};
+
 // 弹窗相关
 const dialogVisible = ref(false);
-
 </script>
 
 <style lang="less" scoped>
