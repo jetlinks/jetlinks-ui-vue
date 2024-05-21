@@ -9,73 +9,101 @@
             <AIcon type="SearchOutlined" style="color: rgba(0, 0, 0, 0.45)" />
         </template>
     </j-input>
-    <j-button @click="onAdd" type="primary" class="btn">新增区域</j-button>
-    <j-tree
-        class="draggable-tree"
-        draggable
-        block-node
-        v-if="treeData.length"
-        :tree-data="_treeData"
-        @drop="onDrop"
-        :defaultExpandAll="true"
-        :height="700"
-        :show-line="{ showLeafIcon: false }"
-        :show-icon="true"
-    >
-        <template #title="_data">
-            <div class="tree-box">
-                <div class="name">
-                    <j-ellipsis>{{ _data?.name }}</j-ellipsis>
-                </div>
-                <div class="actions">
-                    <j-space :size="8">
-                        <j-tooltip title="重命名">
-                            <j-button
-                                @click.stop="onEdit(_data?.data)"
-                                class="actions-btn"
-                                type="link"
-                                ><AIcon type="EditOutlined"
-                            /></j-button>
-                        </j-tooltip>
-                        <j-tooltip title="新增子区域">
-                            <j-button
-                                @click.stop="onAdd(_data?.data)"
-                                class="actions-btn"
-                                type="link"
-                                ><AIcon type="PlusCircleOutlined"
-                            /></j-button>
-                        </j-tooltip>
-                        <j-tooltip title="删除">
-                            <j-popconfirm @confirm="onRemove(_data?.id)">
-                                <j-button
-                                    @click.stop
-                                    class="actions-btn"
-                                    type="link"
-                                    danger
-                                    ><AIcon type="DeleteOutlined"
-                                /></j-button>
-                            </j-popconfirm>
-                        </j-tooltip>
-                    </j-space>
-                </div>
+    <div style="display: flex; gap: 8px; margin: 18px 0">
+        <j-button type="primary" class="btn" @click="() => onAdd()"
+            >新增区域</j-button
+        >
+    </div>
+    <div class="tree-content">
+        <ResizeObserver v-if="_treeData.length" @resize="divResize">
+            <div style="height: 100%; width: 100%">
+                <a-tree
+                    class="draggable-tree"
+                    draggable
+                    block-node
+                    v-model:expandedKeys="expandedKeys"
+                    v-model:selectedKeys="selectedKeys"
+                    :tree-data="_treeData"
+                    :show-line="{ showLeafIcon: false }"
+                    :show-icon="true"
+                    :field-names="{ key: 'id' }"
+                    :virtual="true"
+                    :height="heightSize"
+                    @drop="onDrop"
+                    @select="areaSelect"
+                >
+                    <template #title="_data">
+                        <div class="tree-box">
+                            <div class="name">
+                                <j-ellipsis
+                                    >{{ _data?.name }} ({{
+                                        _data.code
+                                    }})</j-ellipsis
+                                >
+                            </div>
+                            <div class="actions">
+                                <j-space :size="8">
+                                    <j-tooltip title="编辑">
+                                        <j-button
+                                            @click.stop="onEdit(_data?.data)"
+                                            class="actions-btn"
+                                            type="link"
+                                        >
+                                            <AIcon type="EditOutlined" />
+                                        </j-button>
+                                    </j-tooltip>
+                                    <j-tooltip title="新增子区域">
+                                        <j-button
+                                            @click.stop="onAdd(_data?.data)"
+                                            class="actions-btn"
+                                            type="link"
+                                        >
+                                            <AIcon type="PlusCircleOutlined" />
+                                        </j-button>
+                                    </j-tooltip>
+                                    <j-tooltip title="删除">
+                                        <j-popconfirm
+                                            @confirm="onRemove(_data?.id)"
+                                        >
+                                            <j-button
+                                                @click.stop
+                                                class="actions-btn"
+                                                type="link"
+                                                danger
+                                            >
+                                                <AIcon type="DeleteOutlined" />
+                                            </j-button>
+                                        </j-popconfirm>
+                                    </j-tooltip>
+                                </j-space>
+                            </div>
+                        </div>
+                    </template>
+                </a-tree>
             </div>
-        </template>
-    </j-tree>
-    <j-empty v-else style="margin-top: 150px" />
+        </ResizeObserver>
+        <div v-else class="tree-empty">
+            <j-empty />
+        </div>
+    </div>
     <Save
         :mode="mode"
         v-if="visible"
         :data="current"
+        :treeData="_treeData"
+        :areaTree="areaTree"
         @save="onSave"
         @close="onClose"
     />
 </template>
 <script lang="ts" setup>
-import { onlyMessage } from '@/utils/comm';
-import { debounce } from 'lodash-es';
+import { cloneDeep, debounce } from 'lodash-es';
 import { onMounted, ref, watch } from 'vue';
 import Save from '../Save/index.vue';
 import { getRegionTree, delRegion } from '@/api/system/region';
+import { useArea } from '../hooks';
+import ResizeObserver from 'ant-design-vue/lib/vc-resize-observer';
+import { onlyMessage } from '@/utils/comm';
 
 const treeData = ref<any[]>([]);
 const _treeData = ref<any[]>([]);
@@ -83,12 +111,22 @@ const visible = ref<boolean>(false);
 const current = ref<any>({});
 const mode = ref<'add' | 'edit'>('add');
 const searchValue = ref<string>();
+const expandedKeys = ref<string[]>([]);
+const selectedKeys = ref<string[]>([]);
+
+const heightSize = ref(550);
+const type = ref<string | undefined>(undefined);
+
+const { areaTree } = useArea();
+
+const emit = defineEmits(['select']);
 
 const filterTreeNodes = (tree: any[], condition: string) => {
     return tree.filter((item) => {
-        if (item?.title && item.title.includes(condition)) {
+        if (item?.name && item.name.includes(condition)) {
             return true;
         }
+
         if (item?.code && item.code.includes(condition)) {
             return true;
         }
@@ -102,17 +140,41 @@ const filterTreeNodes = (tree: any[], condition: string) => {
     });
 };
 
+const getTreeId = (data: any[], cb: (id: string) => void) => {
+    data.forEach((item) => {
+        if (item.children) {
+            cb?.(item.id);
+            getTreeId(item.children, cb);
+        }
+    });
+};
+
 const onSearch = debounce((v: string) => {
-    _treeData.value = filterTreeNodes(treeData.value, v);
-});
+    _treeData.value = v
+        ? filterTreeNodes(cloneDeep(treeData.value), v)
+        : cloneDeep(treeData.value);
+    expandedKeys.value = [];
+    if (v) {
+        getTreeId(_treeData.value, (id: string) => {
+            expandedKeys.value.push(id);
+        });
+        expandedKeys.value = [...expandedKeys.value];
+    }
+}, 300);
 
 const onSave = () => {
     visible.value = false;
-    handleSearch()
+    handleSearch();
 };
 
 const onClose = () => {
     visible.value = false;
+};
+
+const divResize = ({ height }) => {
+    setTimeout(() => {
+        heightSize.value = height;
+    }, 300);
 };
 
 const onEdit = (_data: any) => {
@@ -131,7 +193,21 @@ const onRemove = async (id: string) => {
 
 const onAdd = (_data?: any) => {
     mode.value = 'add';
-    current.value = _data ? _data : {};
+    const _children = _data ? _data.children || [] : _treeData.value;
+    const lastItem = _children.length ? _children[_children.length - 1] : null;
+    const sortIndex = lastItem ? lastItem.sortIndex + 1 : 1;
+    current.value = _data
+        ? {
+              parentId: _data.id,
+              parentFullName: _data.fullName,
+              sortIndex: sortIndex,
+          }
+        : {
+              parentId: '',
+              parentFullName: '',
+              sortIndex: sortIndex,
+          };
+
     visible.value = true;
 };
 
@@ -206,10 +282,27 @@ watch(
     },
 );
 
+/**
+ * 区域选择
+ */
+const areaSelect = (key, { node }) => {
+    selectedKeys.value = key;
+    emit('select', node?.code);
+};
+
 const handleSearch = async () => {
-    const resp = await getRegionTree();
+    const resp = await getRegionTree({
+        paging: false,
+        sorts: [{ name: 'sortIndex', order: 'asc' }],
+    });
     if (resp.success) {
         treeData.value = resp?.result || [];
+        // 默认选择第一个数据
+        const dt = treeData.value?.[0];
+        if (dt) {
+            selectedKeys.value = dt?.id ? [dt?.id] : [];
+            emit('select', dt?.code);
+        }
     }
 };
 
@@ -220,15 +313,36 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .btn {
-    width: 100%;
-    margin: 18px 0;
+    flex: 1;
+    min-width: 0;
 }
+
+.tree-content {
+    display: flex;
+    flex-grow: 1;
+    height: 0;
+    width: 100%;
+
+    .tree-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 100px;
+        width: 100%;
+    }
+}
+:deep(.ant-tree-node-content-wrapper) {
+    transform: translateY(-4px) !important;
+}
+
 .tree-box {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     .actions {
+        padding-right: 4px;
+
         .actions-btn {
             margin: 0;
             padding: 0;
@@ -236,5 +350,3 @@ onMounted(() => {
     }
 }
 </style>
-  
-  

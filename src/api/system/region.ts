@@ -1,7 +1,7 @@
 import server from '@/utils/request';
 
 // 获取全部地区(树结构)
-export const getRegionTree = (): Promise<any> => server.post(`/area/_all/tree`);
+export const getRegionTree = (data?: any): Promise<any> => server.post(`/area/_all/tree`, data);
 
 // 校验名称是否存在
 export const validateName = (name: string, id?: string): Promise<any> => server.get(`/area/name/_validate?name=${name}${id ? `&id=${id}` : ''}`);
@@ -20,3 +20,5 @@ export const updateRegion = (data: any): Promise<any> => server.patch(`/area`, d
 
 // 获取全部内置地区(树结构)
 export const getBuiltinRegionTree = (data: any): Promise<any> => server.post(`/area/builtin/_all/tree`, data);
+
+export const queryAreaCount = (id: string) => server.get(`/ams/asset/area/${id}/_count`)
