@@ -242,17 +242,6 @@ const typeOptions = ref<any[]>([]);
 const visible = ref<boolean>(false);
 const addMenuVisible = ref<boolean>(false);
 
-onMounted(() => {
-    queryType().then((resp: any) => {
-        if (resp.status === 200) {
-            const arr = resp.result.map((item: any) => ({
-                label: item.name,
-                value: item.provider,
-            }));
-            typeOptions.value = arr;
-        }
-    });
-});
 const columns = [
     {
         title: '名称',
@@ -272,17 +261,17 @@ const columns = [
         search: {
             type: 'select',
             options: typeOptions,
-            // options: () =>
-            //     new Promise((resolve) => {
-            //         queryType().then((resp: any) => {
-            //             resolve(
-            //                 resp.result.map((item: any) => ({
-            //                     label: item.name,
-            //                     value: item.provider,
-            //                 })),
-            //             );
-            //         });
-            //     }),
+            options: () =>
+                new Promise((resolve) => {
+                    queryType().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.provider,
+                            })),
+                        );
+                    });
+                }),
         },
         scopedSlots: true,
     },
