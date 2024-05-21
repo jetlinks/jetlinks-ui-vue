@@ -442,7 +442,6 @@ const getProductList = async () => {
     const { result } = await DeviceApi.queryProductList(params);
     productList.value = result;
 };
-getProductList();
 
 const handleProductChange = () => {
     formData.value.others.access_pwd =
@@ -463,11 +462,24 @@ const getDetail = async () => {
     const res = await DeviceApi.detail(route.query.id as string);
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
-    console.log(formData.value,'formData')
+    if (formData.value.productId) {
+        const productData = productList.value.find((i: any) => {
+            return i.id === formData.value.productId;
+        });
+        if (productData) {
+            formData.value.others.access_pwd = formData.value.others.access_pwd
+                ? formData.value.others.access_pwd
+                : productData?.configuration?.access_pwd;
+            formData.value.streamMode = formData.value.streamMode
+                ? formData.value.streamMode
+                : productData?.configuration?.stream_mode;
+        }
+    }
 };
 
 onMounted(() => {
     getDetail();
+    getProductList();
 });
 
 /**
@@ -493,11 +505,7 @@ const handleSubmit = () => {
             : { id, streamMode, manufacturer, model, firmware, ...extraParams };
     } else if (formData.value.channel === 'gb28181-2016') {
         // 国标
-         others = omit(others, [
-            'onvifUrl',
-            'onvifPassword',
-            'onvifUsername',
-        ]);
+        others = omit(others, ['onvifUrl', 'onvifPassword', 'onvifUsername']);
         const getParmas = () => {
             if (others?.stream_mode) {
                 others.stream_mode = streamMode;
@@ -516,8 +524,16 @@ const handleSubmit = () => {
     } else {
         others = omit(others, ['access_pwd']);
         params = !id
-            ? {others,...extraParams}
-            : { id, streamMode, manufacturer, model, firmware,others, ...extraParams };
+            ? { others, ...extraParams }
+            : {
+                  id,
+                  streamMode,
+                  manufacturer,
+                  model,
+                  firmware,
+                  others,
+                  ...extraParams,
+              };
     }
 
     formRef.value
