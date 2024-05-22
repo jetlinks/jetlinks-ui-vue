@@ -266,7 +266,7 @@ export const handleMenus = (menuData: any[], components: any, level: number = 1)
         children: item.children
       }
 
-      route.component = findComponents(item.code, level, isApp, components, item.meta, !!item.chidlren?.length)
+      route.component = findComponents(item.code, level, isApp, components, item.meta, !!item.children?.length)
       const extraRoute = hasExtraChildren(item, extraRouteObj)
       const detail_components = findDetailRouteItem(item, components)
 

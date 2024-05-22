@@ -45,7 +45,7 @@
             </JProTable>
         </FullPage>
         <Info
-            v-if="visiable"
+            v-if="visible"
             :data="current"
             @close="close"
             :description="description"
@@ -54,20 +54,19 @@
 </template>
 
 <script lang="ts" setup>
-import { detail, queryHistoryList } from '@/api/rule-engine/log';
+import {detail, queryHistoryLogList} from '@/api/rule-engine/log';
 import { detail as configurationDetail } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import dayjs from 'dayjs';
-import type { ActionsType } from '@/components/Table/index.vue';
 import { useAlarmStore } from '@/store/alarm';
 import Info from './info.vue';
-import { storeToRefs } from 'pinia';
 import { useRouterParams } from '@/utils/hooks/useParams';
 const route = useRoute();
 const id = route.params?.id;
 const { params: routerParams } = useRouterParams();
-let visiable = ref(false);
+let visible = ref(false);
 let description = ref<string>();
+const tableRef = ref()
 const columns = [
     {
         title: '告警时间',
@@ -98,7 +97,7 @@ const columns = [
 const getActions = (
     data: Partial<Record<string, any>>,
     type?: 'table',
-): ActionsType[] => {
+): any[] => {
     if (!data) {
         return [];
     }
@@ -112,7 +111,7 @@ const getActions = (
             icon: 'SearchOutlined',
             onClick: () => {
                 current.value = data;
-                visiable.value = true;
+                visible.value = true;
             },
         },
     ];
@@ -135,7 +134,8 @@ let details = ref(); // 告警记录的详情
  * 获取详情列表
  */
 const queryList = async (params: any) => {
-    const res = await queryHistoryList({
+  if(data.current?.alarmConfigId){
+    const res = await queryHistoryLogList(data.current?.alarmConfigId,{
         ...params,
         // sorts: [{ name: 'alarmTime', order: 'desc' }],
     });
@@ -151,6 +151,7 @@ const queryList = async (params: any) => {
             },
             status: res.status,
         };
+    }
     } else {
         return {
             code: 200,
@@ -167,11 +168,13 @@ const queryList = async (params: any) => {
 /**
  * 根据id初始化数据
  */
-watchEffect(async () => {
+
+watch(() => id, async () => {
     const res = await detail(id);
     if (res.status === 200) {
-        data.current = res.result;
-        if (res.result.targetType === 'device') {
+    data.current = res.result || {};
+    tableRef.value?.reload()
+    if (res.result?.targetType === 'device') {
             columns.splice(2, 0, {
                 dataIndex: 'targetName',
                 title: '告警设备',
@@ -184,7 +187,10 @@ watchEffect(async () => {
             }
         });
     }
-});
+}, {
+  deep: true,
+  immediate: true
+})
 const handleSearch = (_params: any) => {
     params.value = _params;
 };
@@ -193,13 +199,13 @@ const handleSearch = (_params: any) => {
  * 关闭模态弹窗
  */
 const close = () => {
-    visiable.value = false;
+    visible.value = false;
 };
 
 watchEffect(() => {
     current.value = details.value;
     if (routerParams.value.detail && details.value) {
-        visiable.value = true;
+        visible.value = true;
     }
 });
 </script>
