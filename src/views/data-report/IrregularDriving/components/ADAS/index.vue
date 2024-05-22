@@ -31,7 +31,7 @@
                             >
                                 导出
                             </PermissionButton>
-                        </j-popconfirm>
+                        </j-popconfirm>        
                     </j-space>
                 </template>
                 <template #type="slotProps">
@@ -45,18 +45,23 @@
             </JProTable>
         </full-page>
     </div>
+
+
+    <Details v-if="visible"  v-model:visible="visible"></Details>
 </template>
 
 <script setup lang="ts">
 import TemplateApi from '@/api/notice/template';
 import { downloadObject } from '@/utils/utils';
-
+import Details from './Details.vue';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 
 let providerList: any = [];
 Object.keys(MSG_TYPE).forEach((key) => {
     providerList = [...providerList, ...MSG_TYPE[key]];
 });
+
+const visible = ref(true);
 
 const configRef = ref<Record<string, any>>({});
 /**

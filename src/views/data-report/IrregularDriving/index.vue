@@ -4,7 +4,6 @@
             <a-menu-item v-for="item in list" :key="item.key">{{
                 item.tab
             }}</a-menu-item>
-
         </a-menu>
         <component :is="componentList[current[0]]"></component>
     </page-container>
@@ -15,6 +14,7 @@ import Abnormal from './components/Abnormal.vue';
 import OverSpeed from './components/OverSpeed.vue';
 import Overload from './components/Overload.vue';
 import SDM from './components/SMD.vue';
+import ADAS from './components/ADAS/index.vue';
 
 interface listType {
     key: string;
@@ -25,7 +25,7 @@ const activeKey = ref('0');
 
 const current = ref<string[]>(['0']);
 
-const componentList = [Abnormal, OverSpeed, Overload, SDM];
+const componentList = [Abnormal, OverSpeed, Overload, ADAS, SDM];
 const list: listType[] = [
     {
         key: '0',
@@ -41,6 +41,10 @@ const list: listType[] = [
     },
     {
         key: '3',
+        tab: 'ADAS报警',
+    },
+    {
+        key: '4',
         tab: 'DSM报警',
     },
 ];
@@ -51,10 +55,7 @@ const onTabChange = (e: string) => {
 </script>
 
 <style scoped lang="scss">
-
 // :deep(.ant-menu-item-selected) {
 //     color: red !important;
 // }
-
-
 </style>
