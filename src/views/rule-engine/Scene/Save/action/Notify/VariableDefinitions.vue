@@ -213,7 +213,7 @@ const onSave = () =>
         const pass = props.variableDefinitions.filter(item => ['user', 'org', 'tag'].includes(getType(item))).some(item => {
             return modelRef[item.id]
         })
-        if(!pass) {
+        if(!pass && props.notify.notifyType === 'weixin') {
             onlyMessage('收信人，收信人部门，收信人标签至少填写一个', 'warning')
             return reject(false)
         }
