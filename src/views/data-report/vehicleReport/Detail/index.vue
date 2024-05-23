@@ -73,9 +73,9 @@
                 :pagination="paginationAss"
             >
                 <template #bodyCell="{ column, record }">
-                    <template v-if="column.key === 'type'">
+                    <template v-if="column.key === 'state'">
                         <button
-                            v-if="record.type === true"
+                            v-if="record.state === true"
                             style="
                                 width: 44px;
                                 height: 24px;
@@ -128,7 +128,7 @@ interface DataItemAss {
     id: string;
     name: string;
     productName: string;
-    type: boolean;
+    state: boolean;
     efficiency: string;
 }
 const columns = [
@@ -173,8 +173,8 @@ const columnsAss = [
     },
     {
         title: '状态',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'state',
+        key: 'state',
         ellipsis: true,
     },
     {
@@ -202,7 +202,7 @@ for (let i = 0; i < 50; i++) {
         id: '111222',
         name: `设备${i}`,
         productName: i % 2 === 0 ? '空调' : '喇叭',
-        type: i % 3 === 0 ? true : false,
+        state: i % 3 === 0 ? true : false,
         efficiency: `${i + 10} %`,
     });
 }
