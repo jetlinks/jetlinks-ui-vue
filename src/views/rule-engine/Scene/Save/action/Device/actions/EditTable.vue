@@ -72,7 +72,10 @@ watchEffect(() => {
         const _item = _props.value?.find((i) => i.name === item?.id) || {};
         return {
             ...item,
-            ..._item,
+            ...{
+               name: _item.id,
+               ..._item.value
+            },
             name: item.name,
         };
     });
