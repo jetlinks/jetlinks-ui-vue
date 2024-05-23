@@ -83,9 +83,11 @@ const onChange = () => {
     const arr = [...dataSource.value].map((item) => {
         return {
             name: item.id,
-            source: item.source,
-            upperKey: item.upperKey || item.value,
-            value: item.value,
+            value: {
+                source: item.source,
+                upperKey: item.upperKey || item.value,
+                value: item.value,
+            },
         };
     });
     emit('update:value', arr);

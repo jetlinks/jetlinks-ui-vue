@@ -229,7 +229,8 @@ const save = async (step?: number) => {
     } else {
         if (actionRef.value) {
             const _data = await actionRef.value?.onFormSave();
-            onSave(_data);
+            console.log(_data,'data')
+            // onSave(_data);
         }
     }
 };
