@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="request"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -48,9 +48,23 @@
 </template>
 
 <script setup lang="ts">
-
-import TemplateApi from '@/api/notice/template';
 import { downloadObject } from '@/utils/utils';
+
+const data = ref<any[]>([]);
+
+const request = async () => {
+    return {
+        code: 'Success',
+        status: 200,
+        result: {
+            data: data.value,
+            
+            pageIndex: 0,
+            pageSize: 12,
+            total: 100,
+        },
+    };
+};
 
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 
@@ -63,16 +77,16 @@ const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
- const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知模板数据`);
+const handleExport = () => {
+    downloadObject(configRef.value.selectedKeys, `异常震动数据`);
 };
 
 const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'provider',
-        key: 'provider',
+        dataIndex: 'vehicleType',
+        key: 'vehicleType',
         scopedSlots: true,
         search: {
             type: 'select',
@@ -84,8 +98,8 @@ const columns = [
     },
     {
         title: '出厂编号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'number',
+        key: 'number',
         ellipsis: true,
         search: {
             type: 'string',
@@ -102,8 +116,8 @@ const columns = [
     },
     {
         title: '速度限制',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'speedLimit',
+        key: 'speedLimit',
         ellipsis: true,
         search: {
             type: 'string',
@@ -111,21 +125,14 @@ const columns = [
     },
     {
         title: '开始速度',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'startSpeed',
+        key: 'startSpeed',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: NOTICE_METHOD,
-            handleValue: (v: any) => {
-                return v;
-            },
-        },
     },
     {
         title: '最大速度',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'maxSpeed',
+        key: 'maxSpeed',
         ellipsis: true,
         search: {
             type: 'string',
@@ -133,8 +140,8 @@ const columns = [
     },
     {
         title: '持续时间 ',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'duration',
+        key: 'duration',
         ellipsis: true,
         search: {
             type: 'string',
@@ -142,8 +149,8 @@ const columns = [
     },
     {
         title: '型号',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'model',
+        key: 'model',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -152,8 +159,8 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'organization',
+        key: 'organization',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -188,21 +195,18 @@ const rowSelection = {
     },
 };
 
-
 /**
  * 搜索
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
     params.value = e;
-    // console.log('params.value: ', params.value);
 };
 
 /**
  * 通知方式字段展示对应文字
  */
- const getMethodTxt = (type: string) => {
+const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
 };
 
@@ -211,9 +215,27 @@ const handleSearch = (e: any) => {
  * @param type
  * @param provider
  */
- const getProviderTxt = (type: string, provider: string) => {
+const getProviderTxt = (type: string, provider: string) => {
     return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
 };
+
+onMounted(() => {
+    for (let i = 0; i < 12; i++) {
+        data.value.push({
+            id: i,
+            vehicleType: '内燃车类型',
+            number: `2342355${i}`,
+            name: `name${i}`,
+            speedLimit: '50km/h',
+            startSpeed: '50km/h',
+            maxSpeed: '50km/h',
+            duration: '6分钟',
+            model: '型号',
+            organization: '所属组织',
+            time: '2024-05-04',
+        });
+    }
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="request"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -31,7 +31,7 @@
                             >
                                 导出
                             </PermissionButton>
-                        </j-popconfirm>        
+                        </j-popconfirm>
                     </j-space>
                 </template>
                 <template #type="slotProps">
@@ -42,16 +42,23 @@
                         {{ getProviderTxt(slotProps.type, slotProps.provider) }}
                     </span>
                 </template>
+                <template #action="slotProps">
+                    <a-button danger type="text" @click="onDetail(slotProps)">
+                        查看</a-button
+                    >
+                </template>
             </JProTable>
         </full-page>
     </div>
 
-
-    <Details v-if="visible"  v-model:visible="visible"></Details>
+    <Details
+        v-if="visible"
+        v-model:visible="visible"
+        :data="dataInfo"
+    />
 </template>
 
 <script setup lang="ts">
-import TemplateApi from '@/api/notice/template';
 import { downloadObject } from '@/utils/utils';
 import Details from './Details.vue';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
@@ -61,22 +68,45 @@ Object.keys(MSG_TYPE).forEach((key) => {
     providerList = [...providerList, ...MSG_TYPE[key]];
 });
 
-const visible = ref(true);
+const visible = ref(false);
+
+const data = ref<any[]>([]);
+
+const dataInfo = ref<Record<string, any>>();
+
+const request = async () => {
+    return {
+        code: 'Success',
+        status: 200,
+        result: {
+            data: data.value,
+
+            pageIndex: 0,
+            pageSize: 12,
+            total: 100,
+        },
+    };
+};
 
 const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知模板数据`);
+    downloadObject(configRef.value.selectedKeys, `异常震动数据`);
+};
+
+const onDetail = (data: Record<string, any>) => {
+    dataInfo.value = data;
+    visible.value = true;
 };
 
 const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'provider',
-        key: 'provider',
+        dataIndex: 'vehicleType',
+        key: 'vehicleType',
         scopedSlots: true,
         search: {
             type: 'select',
@@ -88,8 +118,8 @@ const columns = [
     },
     {
         title: '出厂编号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'number',
+        key: 'number',
         ellipsis: true,
         search: {
             type: 'string',
@@ -105,49 +135,25 @@ const columns = [
         },
     },
     {
-        title: '速度限制',
-        dataIndex: 'name',
-        key: 'name',
+        title: '报警类型',
+        dataIndex: 'alarmType',
+        key: 'alarmType',
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '开始速度',
-        dataIndex: 'type',
-        key: 'type',
+        title: '报警信息',
+        dataIndex: 'alarmInfo',
+        key: 'alarmInfo',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: NOTICE_METHOD,
-            handleValue: (v: any) => {
-                return v;
-            },
-        },
     },
-    {
-        title: '最大速度',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '持续时间 ',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
+
     {
         title: '型号',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'model',
+        key: 'model',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -156,23 +162,20 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'organization',
+        key: 'organization',
         scopedSlots: true,
         ellipsis: true,
         search: {
             type: 'string',
         },
-    },
+    }, 
     {
-        title: '时间',
-        dataIndex: 'time',
-        key: 'time',
+        title: '报警附件',
+        key: 'action',
+        fixed: 'right',
+        width: 250,
         scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
 ];
 
@@ -217,6 +220,23 @@ const getMethodTxt = (type: string) => {
 const getProviderTxt = (type: string, provider: string) => {
     return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
 };
+
+onMounted(() => {
+    for (let i = 0; i < 12; i++) {
+        data.value.push({
+            id: i,
+            vehicleType: '内燃车类型',
+            number: `2342355${i}`,
+            name: `name${i}`,
+            alarmType: `报警类型${i}`,
+            alarmInfo: '报警信息',
+            model: '型号',
+            organization: '所属组织',
+            time: '2024-05-04',
+            position: '报警位置',
+        });
+    }
+});
 </script>
 
 <style lang="scss" scoped></style>

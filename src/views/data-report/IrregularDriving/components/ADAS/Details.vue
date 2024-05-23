@@ -12,19 +12,19 @@
         <a-row :gutter="[24, 24]">
             <a-col :span="24"
                 ><span class="details-label">报警类型：</span>
-                <span class="details-desc">前方请刹车</span></a-col
+                <span class="details-desc">{{data.   alarmType}}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警时间：</span>
-                <span class="details-desc">2023-04-02 13:00:00</span></a-col
+                <span class="details-desc">{{ data.time }}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警信息：</span>
-                <span class="details-desc">3级警告</span></a-col
+                <span class="details-desc">{{data.alarmInfo}}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label"> 报警位置：</span>
-                <span class="details-desc">xxxxxxxxxx</span></a-col
+                <span class="details-desc">{{data.position}}</span></a-col
             >
         </a-row>
         <a-divider />
@@ -40,6 +40,12 @@
 
 <script setup lang="ts">
 import { getImage } from '@/utils/comm';
+
+const props = defineProps({
+    data: {
+        type: Object,
+    },
+});
 
 const emits = defineEmits(['refresh', 'update:visible']);
 
