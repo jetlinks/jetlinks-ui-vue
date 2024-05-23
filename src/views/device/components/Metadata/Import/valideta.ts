@@ -4,7 +4,6 @@ export const testProperties = (data:any) =>{
 }
 
 export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolean)=>{
-    console.log(data,index)
     if(data.type === 'boolean'){
         if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
