@@ -31,11 +31,7 @@
                                 <span>导出</span>
                             </PermissionButton>
                         </j-popconfirm>
-                        <PermissionButton
-                            type="primary"
-                            @click="handelDetails"
-                            hasPermission="device/Product:add"
-                        >
+                        <PermissionButton type="primary" @click="handelDetails">
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
@@ -154,12 +150,14 @@ const handleSearch = (e: any) => {
 };
 
 const handelDetails = () => {
-    menuStory.jumpPage('data-report/vehicleReport/Detail',{ id: 123 });
+    menuStory.jumpPage('data-report/vehicleReport/Detail', {
+        id: '123444',
+    });
 };
 
 const handelDetail = (slotProps: any) => {
     console.log('data', slotProps);
-    menuStory.jumpPage('data-report/vehicleReport/Detail', { id: 123 });
+    menuStory.jumpPage('data-report/vehicleReport/Detail', { id: '123' });
 };
 
 /**
@@ -167,14 +165,6 @@ const handelDetail = (slotProps: any) => {
  */
 const getMethodTxt = (type: string) => {
     return NOTICE_METHOD.find((f) => f.value === type)?.label;
-};
-/**
- * 根据类型展示对应文案
- * @param type
- * @param provider
- */
-const getProviderTxt = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
 };
 
 /**
