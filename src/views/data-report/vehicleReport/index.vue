@@ -171,7 +171,7 @@ const getMethodTxt = (type: string) => {
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `设备消息导出信息`);
+    downloadObject(configRef.value._dataSource, `车辆导出信息`);
 };
 
 const rowSelection = {
