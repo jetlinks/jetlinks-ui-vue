@@ -150,10 +150,10 @@ const handleImport = async (file: any) => {
     event.onmessage = (e) => {
         const  result  = JSON.parse(e.data);
         if (result.success) {
-            successNumber.value++;
+            successNumber.value += result.result?.total || 1;
         } else {
             if (result.rowNumber !== -1) {
-                failNumber.value++;
+                failNumber.value += result.result?.total || 1;
                 message.push({
                     rowNumber: `第${result.rowNumber}行`,
                     message: result.message,
