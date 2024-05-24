@@ -6,7 +6,9 @@
     <template #title>
       <span style="color: #1d2129">{{errorMap.message}}</span>
     </template>
-    <slot />
+    <div :id="eventKey">
+      <slot />
+    </div>
   </a-tooltip>
 </template>
 
@@ -14,20 +16,23 @@
 
 import {randomString} from "@/utils/utils";
 import {useInjectForm} from "./context";
-import {get, isArray, debounce} from 'lodash-es'
+import {get, isArray } from 'lodash-es'
+import {onBeforeUnmount} from "vue";
 
 const props = defineProps({
   name: {
     type: [String, Array],
     default: undefined
   },
-  rules: {
-    type: Array,
-    default: []
+  required: {
+    type: Boolean,
+    default: false
   }
 })
 
-const eventKey = `table-form-${randomString(4)}`
+const eventKey = computed(() => {
+  return filedName.value + '_' + randomString(12)
+})
 
 const context = useInjectForm()
 
@@ -51,29 +56,48 @@ const filedName = computed(() => {
 })
 
 const filedValue = computed(() => {
-  return get(context.dataSource.value, props.name)
+  return get(context.dataSource, props.name)
 })
 
-const validateRules = debounce(() => {
-  const promise = context.validateItem({ [filedName.value]: filedValue.value })
-  promise.then(res => {
+const validateRules = () => {
+  let index = 0
+  if (isArray(props.name)) {
+    index = props.name[0]
+  }
+  const promise = context.validateItem({ [filedName.value]: filedValue.value }, index)
+  promise.catch(res => {
     const error = res?.filter(item => item.field === filedName.value) || []
 
     errorMap.message = error[0]?.message || errorMap.message
     errorMap.visible = !!error.length
+    return errorMap.message
   })
 
   return promise
-}, 100)
+}
+
+const showErrorTip = (msg) => {
+  errorMap.message = msg
+  errorMap.visible = true
+}
+
+onBeforeUnmount(() => {
+  context.removeField(eventKey.value)
+  errorMap.message = ''
+  errorMap.visible = false
+})
 
 watch(() => filedValue.value ,() => {
   validateRules()
 })
 
-watch(() => filedName.value, () => {
-  context.addField(eventKey, {
-    filedName,
-    validateRules
+watch(() => [filedName.value, props.name], () => {
+  context.addField(eventKey.value, {
+    filedName: filedName.value,
+    eventKey: eventKey.value,
+    names: props.name,
+    validateRules,
+    showErrorTip
   })
 }, { immediate: true })
 

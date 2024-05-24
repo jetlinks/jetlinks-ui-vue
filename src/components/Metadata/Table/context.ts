@@ -1,5 +1,4 @@
 import { provide } from 'vue'
-import { TableProps } from 'ant-design-vue/lib/table'
 
 type FiledExpose = {
 
