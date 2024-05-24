@@ -148,7 +148,7 @@ import {
 } from '@/api/data-collect/collector';
 import Save from './Save/index.vue';
 import { onlyMessage } from '@/utils/comm';
-import _ from 'lodash';
+import _ from 'lodash-es';
 import { colorMap } from '../data.ts';
 
 const props = defineProps({

@@ -54,8 +54,7 @@ export const queryPointNoPaging = (data: any) =>
 
 export const scanOpcUAList = (data: any) =>
     server.get(
-        `/data-collect/opc/channel/${data.id}/nodes?nodeId=${
-            data?.nodeId || ''
+        `/data-collect/opc/channel/${data.id}/nodes?nodeId=${data?.nodeId || ''
         }`,
     );
 
@@ -64,3 +63,9 @@ export const queryTypeList = () => server.get(`/data-collect/opc/data-types`);
 export const getProviders = () => server.get('/data-collect/channel/gateway/codec/providers')
 
 export const getStates = () => server.get('/dictionary/running-state/items')
+
+export const getSnapTypes = () => server.get('/s7/client/s7codecs/list')
+
+export const getArea = () => server.get('/s7/client/s7area/list')
+
+export const exportTemplate = (provider: string, format: string) =>server.get(`/data-collect/point/${provider}/template.${format}`, {}, {responseType: 'blob'})

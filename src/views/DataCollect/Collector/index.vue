@@ -6,7 +6,7 @@
             </div>
             <div class="right">
                 <j-spin :spinning="spinning">
-                    <Point v-if="data || data === undefined" :data="data" />
+                    <Point v-if="data" :data="data" />
                     <j-empty style="margin-top: 20%" v-else />
                 </j-spin>
             </div>
