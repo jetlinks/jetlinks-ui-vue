@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="queryAlarm"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -20,27 +20,18 @@
             >
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
+                        <PermissionButton
+                            :popConfirm="{
+                                title: `确认导出？`,
+                                onConfirm: () => handleExport(),
+                            }"
                         >
-                            <PermissionButton
-                                hasPermission="notice/Template:export"
-                            >
-                                导出
-                            </PermissionButton>
-                        </j-popconfirm>
+                            导出
+                        </PermissionButton>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
-                </template>
-                <template #provider="slotProps">
-                    <span>
-                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                    </span>
+                <template #createTime="{ alarmTime }">
+                    {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </FullPage>
@@ -48,19 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import TemplateApi from '@/api/notice/template';
-import type { ActionsType } from '@/views/device/Instance/typings';
-import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
+import { queryAlarm } from '@/api/data-report/alarmSheet';
 import { downloadObject } from '@/utils/utils';
-import { useMenuStore } from 'store/menu';
-import { onlyMessage } from '@/utils/comm';
+import dayjs from 'dayjs';
 
-const menuStory = useMenuStore();
-
-let providerList: any = [];
-Object.keys(MSG_TYPE).forEach((key) => {
-    providerList = [...providerList, ...MSG_TYPE[key]];
-});
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -68,21 +50,14 @@ const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'provider',
-        key: 'provider',
+        dataIndex: '',
+        key: '',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: providerList,
-            handleValue: (v: any) => {
-                return v;
-            },
-        },
     },
     {
         title: '出厂编号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: '',
+        key: '',
         ellipsis: true,
         search: {
             type: 'string',
@@ -90,8 +65,8 @@ const columns = [
     },
     {
         title: '车辆简称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: '',
+        key: '',
         ellipsis: true,
         search: {
             type: 'string',
@@ -99,8 +74,8 @@ const columns = [
     },
     {
         title: '型号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: '',
+        key: '',
         ellipsis: true,
         search: {
             type: 'string',
@@ -108,39 +83,31 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: '',
+        key: '',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: NOTICE_METHOD,
-            handleValue: (v: any) => {
-                return v;
-            },
-        },
     },
     {
         title: '告警时间',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
+        dataIndex: 'alarmTime',
+        key: 'alarmTime',
+        scopedSlots: true,
+     
     },
     {
         title: '车辆位置',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'lngLat',
+        key: 'lngLat',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
     },
     {
         title: '告警设备',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'alarmDevice',
+        key: 'alarmDevice',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -148,9 +115,9 @@ const columns = [
         },
     },
     {
-        title: '告警说明',
-        dataIndex: 'description',
-        key: 'description',
+        title: '告警说明 ',
+        dataIndex: 'alarmDescription',
+        key: 'alarmDescription',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -164,37 +131,18 @@ const columns = [
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
+ 
     params.value = e;
-    // console.log('params.value: ', params.value);
+ 
 };
 
-/**
- * 根据通知方式展示对应logo
- */
-const getLogo = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.logo;
-};
-/**
- * 通知方式字段展示对应文字
- */
-const getMethodTxt = (type: string) => {
-    return NOTICE_METHOD.find((f) => f.value === type)?.label;
-};
-/**
- * 根据类型展示对应文案
- * @param type
- * @param provider
- */
-const getProviderTxt = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
-};
+
 
 /**
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知模板数据`);
+    downloadObject(configRef.value.selectedKeys, `车辆告警数据`);
 };
 
 const rowSelection = {
@@ -213,7 +161,6 @@ const rowSelection = {
     },
 };
 
-const currentConfig = ref<Partial<Record<string, any>>>();
 </script>
 
 <style lang="less" scoped></style>
