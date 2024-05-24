@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="request"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -31,23 +31,15 @@
                                 <span>导出</span>
                             </PermissionButton>
                         </j-popconfirm>
-                        <PermissionButton type="primary" @click="handelDetails">
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            详情
-                        </PermissionButton>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
+                <template #vehicleTypeEnum="slotProps">
+                    <span> {{ slotProps.vehicleTypeEnum.text }}</span>
                 </template>
                 <template #action="slotProps">
-                    <span
-                        @click="handelDetail(slotProps)"
-                        style="color: #f84914"
-                        >详情</span
-                    >
+                    <a @click="handelDetail(slotProps)" style="color: #f84914"
+                        >详情
+                    </a>
                 </template>
             </JProTable>
         </FullPage>
@@ -60,6 +52,7 @@ import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import { downloadObject } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { queryVehicleList } from '@/api/data-report/vehicleReport';
 
 const menuStory = useMenuStore();
 
@@ -74,18 +67,37 @@ const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'vehicleTypeEnum',
+        key: 'vehicleTypeEnum',
         width: 180,
+        scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
-        },
+                type: 'select',
+                options: [
+                    {
+                        label: '内燃柴油机',
+                        value: 'ICDieselEngine',
+                    },
+                    {
+                        label: '内燃汽油机',
+                        value: 'ICGasolineEngine',
+                    },
+                    {
+                        label: '机械柴油机',
+                        value: 'MachineDieselEngine',
+                    },
+                    {
+                        label: '内燃牵引车',
+                        value: 'ICTractor',
+                    }
+                ],
+            },
     },
     {
         title: '车辆编号',
-        dataIndex: 'number',
-        key: 'number',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -93,8 +105,8 @@ const columns = [
     },
     {
         title: '车辆简称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'simpleName',
+        key: 'simpleName',
         ellipsis: true,
         search: {
             type: 'string',
@@ -102,8 +114,8 @@ const columns = [
     },
     {
         title: '型号',
-        dataIndex: 'model',
-        key: 'model',
+        dataIndex: 'modelNumber',
+        key: 'modelNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -111,8 +123,8 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: 'status',
-        key: 'status',
+        dataIndex: 'orgName',
+        key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -149,15 +161,11 @@ const handleSearch = (e: any) => {
     // console.log('params.value: ', params.value);
 };
 
-const handelDetails = () => {
-    menuStory.jumpPage('data-report/vehicleReport/Detail', {
-        id: '123444',
-    });
-};
-
 const handelDetail = (slotProps: any) => {
     console.log('data', slotProps);
-    menuStory.jumpPage('data-report/vehicleReport/Detail', { id: '123' });
+    menuStory.jumpPage('data-report/vehicleReport/Detail', {
+        id: slotProps.id,
+    });
 };
 
 /**
@@ -189,6 +197,31 @@ const rowSelection = {
         console.log(selected, selectedRows, changeRows);
     },
 };
+
+const request = (params: Record<string, any>) =>
+    new Promise((resolve) => {
+        queryVehicleList({
+            pageIndex: params.pageIndex + 1,
+            pageSize: params.pageSize,
+            sorts: params.sorts,
+            terms: params.terms,
+        })
+            .then((response: any) => {
+                console.log('response', response);
+                resolve({
+                    result: {
+                        data: response.result?.data,
+                        pageIndex: params.pageIndex || 0,
+                        pageSize: params.pageSize || 20,
+                        total: response.result?.total,
+                    },
+                    status: response.status,
+                });
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    });
 
 const currentConfig = ref<Partial<Record<string, any>>>();
 </script>

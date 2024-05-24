@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="request"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -35,13 +35,55 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
-                </template>
-                <template #provider="slotProps">
-                    <span>
-                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                    </span>
+                <template #state="slotProps">
+                    <button
+                        v-if="slotProps.state.value === 'offline'"
+                        style="
+                            height: 24px;
+                            padding: 3px 8px 3px 8px;
+                            border-radius: 3px;
+                            background: #f99d311a;
+                            color: #f99d31;
+                            border: 1px solid #f99d3199;
+                            font-size: 14px;
+                            font-weight: 400;
+                            line-height: 18px;
+                        "
+                    >
+                        离线
+                    </button>
+                    <button
+                        v-else-if="slotProps.state.value === 'notActive'"
+                        style="
+                            height: 24px;
+                            padding: 3px 8px 3px 8px;
+                            border-radius: 3px;
+                            background: rgba(229, 0, 18, 0.1);
+                            color: rgba(229, 0, 18, 1);
+                            border: 1px solid rgba(229, 0, 18, 1);
+                            font-size: 14px;
+                            font-weight: 400;
+                            line-height: 18px;
+                        "
+                    >
+                        未启用
+                    </button>
+                    <button
+                        v-else
+                        style="
+                            height: 24px;
+                            padding: 3px 8px 3px 8px;
+                            border-radius: 3px;
+                            background: #0fce8c1a;
+                            color: #0fce8c;
+                            border: 1px solid #0fce8c99;
+                            font-size: 14px;
+                            font-weight: 400;
+                            line-height: 18px;
+                        "
+                    >
+                        在线
+                    </button>
                 </template>
             </JProTable>
         </FullPage>
@@ -49,13 +91,10 @@
 </template>
 
 <script setup lang="ts">
-import TemplateApi from '@/api/notice/template';
+import { queryDeviceList } from '@/api/data-report/deviceReport';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import { downloadObject } from '@/utils/utils';
-import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
-
-const menuStory = useMenuStore();
 
 let providerList: any = [];
 Object.keys(MSG_TYPE).forEach((key) => {
@@ -87,8 +126,8 @@ const columns = [
     },
     {
         title: '所属产品',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'productName',
+        key: 'productName',
         ellipsis: true,
         search: {
             type: 'string',
@@ -105,8 +144,8 @@ const columns = [
     },
     {
         title: '状态',
-        dataIndex: 'status',
-        key: 'status',
+        dataIndex: 'state',
+        key: 'state',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -115,13 +154,9 @@ const columns = [
     },
     {
         title: '说明',
-        dataIndex: 'description',
-        key: 'description',
-        scopedSlots: true,
+        dataIndex: 'describe',
+        key: 'describe',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
 ];
 
@@ -173,7 +208,30 @@ const rowSelection = {
     },
 };
 
-const currentConfig = ref<Partial<Record<string, any>>>();
+const request = (params: Record<string, any>) =>
+    new Promise((resolve) => {
+        queryDeviceList({
+            pageIndex: params.pageIndex + 1,
+            pageSize: params.pageSize,
+            sorts: params.sorts,
+            terms: params.terms,
+        })
+            .then((response: any) => {
+                console.log('response', response);
+                resolve({
+                    result: {
+                        data: response.result?.data,
+                        pageIndex: params.pageIndex || 0,
+                        pageSize: params.pageSize || 20,
+                        total: response.result?.total,
+                    },
+                    status: response.status,
+                });
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    });
 </script>
 
 <style lang="less" scoped></style>
