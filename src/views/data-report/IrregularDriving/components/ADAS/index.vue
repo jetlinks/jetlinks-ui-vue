@@ -1,72 +1,37 @@
 <template>
     <div>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        ></pro-search>
+        <pro-search :columns="columns" target="notice-config" @search="handleSearch"></pro-search>
         <full-page>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="request"
-                model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-                :gridColumn="3"
-                :row-selection="rowSelection"
-            >
+            <JProTable ref="configRef" :columns="columns" :request="request" model="table" :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }" :params="params" :gridColumn="3" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
-                        >
-                            <PermissionButton
-                                hasPermission="notice/Template:export"
-                            >
+                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
+                            <PermissionButton hasPermission="notice/Template:export">
                                 导出
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
-                </template>
-                <template #provider="slotProps">
-                    <span>
-                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                    </span>
-                </template>
                 <template #action="slotProps">
                     <a-button danger type="text" @click="onDetail(slotProps)">
-                        查看</a-button
-                    >
+                        查看</a-button>
+                </template>
+                <template #alarmTime="{ alarmTime}">
+                    {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </full-page>
     </div>
 
-    <Details
-        v-if="visible"
-        v-model:visible="visible"
-        :data="dataInfo"
-    />
+    <Details v-if="visible" v-model:visible="visible" :data="dataInfo" />
 </template>
 
 <script setup lang="ts">
 import { downloadObject } from '@/utils/utils';
 import Details from './Details.vue';
-import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
-
-let providerList: any = [];
-Object.keys(MSG_TYPE).forEach((key) => {
-    providerList = [...providerList, ...MSG_TYPE[key]];
-});
+import dayjs from 'dayjs';
 
 const visible = ref(false);
 
@@ -108,13 +73,7 @@ const columns = [
         dataIndex: 'vehicleType',
         key: 'vehicleType',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: providerList,
-            handleValue: (v: any) => {
-                return v;
-            },
-        },
+
     },
     {
         title: '出厂编号',
@@ -169,7 +128,14 @@ const columns = [
         search: {
             type: 'string',
         },
-    }, 
+    },
+    {
+        title: '告警时间 ',
+        dataIndex: 'alarmTime',
+        key: 'alarmTime',
+        scopedSlots: true,
+        ellipsis: true,
+    },
     {
         title: '报警附件',
         key: 'action',
@@ -200,26 +166,12 @@ const rowSelection = {
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
     params.value = e;
-    // console.log('params.value: ', params.value);
+
 };
 
-/**
- * 通知方式字段展示对应文字
- */
-const getMethodTxt = (type: string) => {
-    return NOTICE_METHOD.find((f) => f.value === type)?.label;
-};
 
-/**
- * 根据类型展示对应文案
- * @param type
- * @param provider
- */
-const getProviderTxt = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
-};
+
 
 onMounted(() => {
     for (let i = 0; i < 12; i++) {
@@ -232,11 +184,11 @@ onMounted(() => {
             alarmInfo: '报警信息',
             model: '型号',
             organization: '所属组织',
-            time: '2024-05-04',
+            alarmTime: '2024-05-04',
             position: '报警位置',
         });
     }
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped></style>

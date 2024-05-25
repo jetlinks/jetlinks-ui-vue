@@ -12,7 +12,7 @@
         <a-row :gutter="[24, 24]">
             <a-col :span="24"
                 ><span class="details-label">报警类型：</span>
-                <span class="details-desc">{{data.   alarmType}}</span></a-col
+                <span class="details-desc">{{data.alarmType}}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警时间：</span>
@@ -52,7 +52,7 @@ const emits = defineEmits(['refresh', 'update:visible']);
 const value = ref('2');
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .details-box {
     .details-label {
         font-family: 'HarmonyOS Sans SC';

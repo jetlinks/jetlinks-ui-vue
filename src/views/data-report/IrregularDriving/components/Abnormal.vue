@@ -34,14 +34,7 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
-                </template>
-                <template #provider="slotProps">
-                    <span>
-                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                    </span>
-                </template>
+             
             </JProTable>
         </full-page>
     </div>
@@ -238,4 +231,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less " scoped></style>
