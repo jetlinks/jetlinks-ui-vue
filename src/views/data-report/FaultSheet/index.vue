@@ -1,4 +1,4 @@
-<template>
+ <template>
     <page-container>
         <pro-search
             :columns="columns"
