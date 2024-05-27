@@ -20,9 +20,6 @@ interface listType {
     key: string;
     tab: string;
 }
-
-const activeKey = ref('0');
-
 const current = ref<string[]>(['0']);
 
 const componentList = [Abnormal, OverSpeed, Overload, ADAS, SDM];
@@ -49,13 +46,7 @@ const list: listType[] = [
     },
 ];
 
-const onTabChange = (e: string) => {
-    activeKey.value = e;
-};
 </script>
 
-<style scoped lang="scss">
-// :deep(.ant-menu-item-selected) {
-//     color: red !important;
-// }
+<style scoped lang="less">
 </style>

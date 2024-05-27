@@ -1,46 +1,18 @@
 <template>
     <div>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        ></pro-search>
+        <pro-search :columns="columns" target="notice-config" @search="handleSearch"></pro-search>
         <full-page>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="TemplateApi.list"
-                model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-                :gridColumn="3"
-                :row-selection="rowSelection"
-            >
+            <JProTable ref="configRef" :columns="columns" :request="TemplateApi.list" model="table" :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }" :params="params" :gridColumn="3" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
-                        >
-                            <PermissionButton
-                                hasPermission="notice/Template:export"
-                            >
+                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
+                            <PermissionButton hasPermission="notice/Template:export">
                                 导出
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
-                </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
-                </template>
-                <template #provider="slotProps">
-                    <span>
-                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                    </span>
                 </template>
             </JProTable>
         </full-page>
@@ -63,7 +35,7 @@ const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
- const handleExport = () => {
+const handleExport = () => {
     downloadObject(configRef.value._dataSource, `通知模板数据`);
 };
 
@@ -194,26 +166,14 @@ const rowSelection = {
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
+
     params.value = e;
-    // console.log('params.value: ', params.value);
+
 };
 
-/**
- * 通知方式字段展示对应文字
- */
- const getMethodTxt = (type: string) => {
-    return NOTICE_METHOD.find((f) => f.value === type)?.label;
-};
 
-/**
- * 根据类型展示对应文案
- * @param type
- * @param provider
- */
- const getProviderTxt = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
-};
+
+
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped></style>

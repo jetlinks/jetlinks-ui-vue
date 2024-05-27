@@ -34,14 +34,6 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
-                </template>
-                <template #provider="slotProps">
-                    <span>
-                        {{ getProviderTxt(slotProps.type, slotProps.provider) }}
-                    </span>
-                </template>
             </JProTable>
         </full-page>
     </div>
@@ -192,26 +184,11 @@ const rowSelection = {
  * @param params
  */
 const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
     params.value = e;
-    // console.log('params.value: ', params.value);
+    
 };
 
-/**
- * 通知方式字段展示对应文字
- */
-const getMethodTxt = (type: string) => {
-    return NOTICE_METHOD.find((f) => f.value === type)?.label;
-};
 
-/**
- * 根据类型展示对应文案
- * @param type
- * @param provider
- */
-const getProviderTxt = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
-};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="less" scoped></style>
