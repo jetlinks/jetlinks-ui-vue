@@ -2,20 +2,18 @@
     <page-container>
         <pro-search
             :columns="columns"
-            target="notice-config"
+            target="fault-config"
             @search="handleSearch"
         />
         <FullPage>
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="test"
+                :request="queryData"
                 model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
                 :params="params"
                 :gridColumn="3"
+                :row-selection="rowSelection"
             >
                 <template #headerTitle>
                     <j-space>
@@ -25,6 +23,7 @@
                                 onConfirm: () => handleExport(),
                             }"
                         >
+                            <AIcon type="ExportOutlined" />
                             导出
                         </PermissionButton>
                     </j-space>
@@ -47,72 +46,12 @@ import { PageIndex, query } from '@/api/data-report/commonApi';
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
-const test = () => {
-    return new Promise((resolve, reject) => {
-        resolve({
-            message: 'success',
-            result: {
-                pageIndex: 0,
-                pageSize: 0,
-                total: 0,
-                data: [
-                    {
-                        id: '1234567890',
-                        vehicleId: 'V001',
-                        vehicleTypeEnum: 'Truck',
-                        factoryNumber: 'FAB2023001',
-                        simpleName: 'Truck-01',
-                        faultDeviceName: 'Engine',
-                        faultCode: 'P0300',
-                        description: '发动机多重随机失火',
-                        modelNumber: 'T4500',
-                        orgName: 'Logistics Co., Ltd.',
-                        faultTime: 1654321000,
-                        lngLat: '116.404,39.904',
-                        alarmDeviceName: 'Diagnostic System',
-                        alarmDictionaryKey: 'misfire',
-                        alarmDictionaryValue: '失火',
-                    },
-                    {
-                        id: '2345678901',
-                        vehicleId: 'V002',
-                        vehicleTypeEnum: 'Bus',
-                        factoryNumber: 'FAB2022123',
-                        simpleName: 'Bus-07',
-                        faultDeviceName: 'Transmission',
-                        faultCode: 'U1000',
-                        description: '通信接口故障',
-                        modelNumber: 'B888',
-                        orgName: 'Public Transport Corp.',
-                        faultTime: 1654322000,
-                        lngLat: '121.4737,31.2304',
-                        alarmDeviceName: 'Transmission Control Module',
-                        alarmDictionaryKey: 'communication_error',
-                        alarmDictionaryValue: '通信错误',
-                    },
-                    {
-                        id: '3456789012',
-                        vehicleId: 'V003',
-                        vehicleTypeEnum: 'Van',
-                        factoryNumber: 'FAB2021009',
-                        simpleName: 'Van-C1',
-                        faultDeviceName: 'ABS',
-                        faultCode: 'C0255',
-                        description: 'ABS控制模块电源故障',
-                        modelNumber: 'V300',
-                        orgName: 'Delivery Express Inc.',
-                        faultTime: 1654323000,
-                        lngLat: '114.304,22.5431',
-                        alarmDeviceName: 'ABS Controller',
-                        alarmDictionaryKey: 'power_supply',
-                        alarmDictionaryValue: '电源供应',
-                    },
-                ],
-            },
-            status: 200,
-            timestamp: 1716796318076,
-        });
-    });
+/**
+ * @function queryData 请求数据
+ * @param data
+ */
+const queryData = (data: any) => {
+    return query(PageIndex.FaultSheet, data);
 };
 
 const columns = [
@@ -141,8 +80,8 @@ const columns = [
     },
     {
         title: '故障设备',
-        dataIndex: 'faultDeviceName',
-        key: 'faultDeviceName',
+        dataIndex: 'alarmDeviceName',
+        key: 'alarmDeviceName',
         ellipsis: true,
         search: {
             type: 'string',
@@ -153,6 +92,9 @@ const columns = [
         dataIndex: 'faultCode',
         key: 'faultCode',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '故障说明',
@@ -208,6 +150,23 @@ const columns = [
  */
 const handleSearch = (e: any) => {
     params.value = e;
+};
+
+const rowSelection = {
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        // console.log(
+        //     `selectedRowKeys: ${selectedRowKeys}`,
+        //     'selectedRows: ',
+        //     selectedRows,
+        // );
+        console.log('rowSelectionChange');
+    },
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {
+        console.log(toRaw(record), toRaw(selected), toRaw(selectedRows));
+    },
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
+        console.log(selected, selectedRows, changeRows);
+    },
 };
 
 /**

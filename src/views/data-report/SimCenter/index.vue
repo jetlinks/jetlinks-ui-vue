@@ -9,13 +9,14 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="handleQuery"
+                :request="querySim"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
                 :gridColumn="3"
+                :row-selection="rowSelection"
             >
                 <template #headerTitle>
                     <j-space>
@@ -25,15 +26,22 @@
                                 onConfirm: () => handleExport(),
                             }"
                         >
-                            <template #icon>
-                                <ExportOutlined />
-                            </template>
+                            <AIcon type="ExportOutlined" />
                             导出
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #totalFlow="{ totalFlow }">
+                    {{ formatFlow(totalFlow) }}
+                </template>
+                <template #usedFlow="{ usedFlow }">
+                    {{ formatFlow(usedFlow) }}
+                </template>
+                <template #residualFlow="{ residualFlow }">
+                    {{ formatFlow(residualFlow) }}
+                </template>
                 <template #cardType="{ cardType }">
-                    {{ handleCardType(cardType) }}
+                    {{ handleCardType(cardType.value) }}
                 </template>
                 <!-- 激活日期插槽 -->
                 <template #activationDate="{ activationDate }">
@@ -45,7 +53,7 @@
                 </template>
                 <template #cardStateType="{ cardStateType }">
                     <state-tag
-                        :text="cardStateType.label"
+                        :text="cardStateType.text"
                         :type="handleTagType(cardStateType.value)"
                     />
                 </template>
@@ -57,12 +65,13 @@
 <script setup lang="ts">
 import { querySim } from '@/api/data-report/sim';
 import { downloadObject } from '@/utils/utils';
-import { handleQuery } from './data';
 import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
 import dayjs from 'dayjs';
+import { onlyMessage } from '@/utils/comm';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
+
 /**
  * 搜索
  * @param params
@@ -74,8 +83,8 @@ const handleSearch = (e: any) => {
 const columns = [
     {
         title: '卡号',
-        dataIndex: 'cardId',
-        key: 'cardId',
+        dataIndex: 'id',
+        key: 'id',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -93,8 +102,8 @@ const columns = [
     },
     {
         title: '绑定车辆编号',
-        dataIndex: 'factoryNumber',
-        key: 'factoryNumber',
+        dataIndex: 'productId',
+        key: 'productId',
         ellipsis: true,
         search: {
             type: 'string',
@@ -116,25 +125,7 @@ const columns = [
         ellipsis: true,
         scopedSlots: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: 'OneLinkPB',
-                    value: 'OneLinkPB',
-                },
-                {
-                    label: 'OneLinkCT',
-                    value: 'OneLinkCT',
-                },
-                {
-                    label: 'CtwingCmp',
-                    value: 'CtwingCmp',
-                },
-                {
-                    label: 'UnicomCmp',
-                    value: 'UnicomCmp',
-                },
-            ],
+            type: 'string',
         },
     },
     {
@@ -147,19 +138,19 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '年卡',
+                    text: '年卡',
                     value: 'year',
                 },
                 {
-                    label: '季卡',
+                    text: '季卡',
                     value: 'season',
                 },
                 {
-                    label: '月卡',
+                    text: '月卡',
                     value: 'month',
                 },
                 {
-                    label: '其他',
+                    text: '其他',
                     value: 'other',
                 },
             ],
@@ -218,7 +209,7 @@ const columns = [
 
     {
         title: '状态',
-        dataIndex: 'cardStateType',
+        dataIndex: 'cardState',
         key: 'cardStateType',
         scopedSlots: true,
 
@@ -226,26 +217,34 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '未激活',
-                    value: 'notReady',
+                    text: '待激活',
+                    value: 'toBeActivated',
                 },
                 {
-                    label: '停机',
+                    text: '停机',
+                    value: 'deactivate',
+                },
+                {
+                    text: '激活',
+                    value: 'using',
+                },
+                {
+                    text: '其他',
+                    value: 'other',
+                },
+                {
+                    text: '错误',
                     value: 'error',
-                },
-                {
-                    label: '激活',
-                    value: 'success',
-                },
-                {
-                    label: '其他',
-                    value: 'processing',
                 },
             ],
         },
     },
 ];
 
+/**
+ * @function handleCardType 处理卡类型
+ * @param value
+ */
 const handleCardType = (value: string) => {
     switch (value) {
         case 'year':
@@ -259,25 +258,67 @@ const handleCardType = (value: string) => {
     }
 };
 
+/**
+ * @function handleTagType 处理tag类型
+ * @param value
+ */
 const handleTagType = (value: string) => {
     switch (value) {
-        case 'notReady':
+        case 'toBeActivated':
             return 'warning';
         case 'error':
+        case 'deactivate':
             return 'error';
         case 'using':
             return 'success';
         case 'activated':
-            return 'success';
+            return 'default';
         case 'other':
-            return 'error';
+            return 'processing';
     }
 };
+
+/**
+ * @function formatFlow 格式化流量
+ * @param flow
+ */
+const formatFlow = (flow: number) => {
+    if (flow >= 1024) {
+        return `${(flow / 1024).toFixed(2)}MB`;
+    } else if (flow >= 1048_576) {
+        return `${(flow / 1048_576).toFixed(2)}GB`;
+    } else {
+        return `${flow}KB`;
+    }
+};
+
 /**
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value.selectedKeys, `sim卡中心数据`);
+    const data = configRef.value?.selectedRows;
+    if (!data?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    downloadObject(data, `异常震动数据`);
+};
+
+const rowSelection = {
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        // console.log(
+        //     `selectedRowKeys: ${selectedRowKeys}`,
+        //     'selectedRows: ',
+        //     selectedRows,
+        // );
+        console.log('rowSelectionChange');
+    },
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {
+        console.log(toRaw(record), toRaw(selected), toRaw(selectedRows));
+    },
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
+        console.log(selected, selectedRows, changeRows);
+    },
 };
 </script>
 
