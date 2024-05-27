@@ -43,16 +43,17 @@ import { query, PageIndex } from '@/api/data-report/commonApi';
 const queryData = (data?: any) => query(PageIndex.OverloadAlarm, data);
 
 const configRef = ref<Record<string, any>>({});
+
+const selectedRowsData = ref();
 /**
  * 导出
  */
-const handleExport = () => {
-    const data = configRef.value?.selectedRows;
-    if (!data?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
+ const handleExport = () => {
+    if (selectedRowsData.value) {
+        downloadObject(selectedRowsData.value, `超载报警数据`);
         return;
     }
-    downloadObject(data, `超载报警数据`);
+    onlyMessage('请勾选需要导出的数据', 'error');
 };
 
 const params = ref<Record<string, any>>({});
@@ -117,6 +118,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
+        selectedRowsData.value = selectedRows;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);

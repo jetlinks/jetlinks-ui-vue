@@ -59,19 +59,19 @@ const visible = ref(false);
 
 const dataInfo = ref<Record<string, any>>();
 
+const selectedRowsData = ref();
+
 const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
 const handleExport = () => {
-    const data = configRef.value?.selectedRows;
-    if (!data?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
+    if (selectedRowsData.value) {
+        downloadObject(selectedRowsData.value, `ADAS报警数据`);
         return;
     }
-    downloadObject(data, `ADAS报警数据`);
+    onlyMessage('请勾选需要导出的数据', 'error');
 };
-
 const onDetail = (data: Record<string, any>) => {
     dataInfo.value = data;
     visible.value = true;
@@ -165,6 +165,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
+        selectedRowsData.value = selectedRows;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);

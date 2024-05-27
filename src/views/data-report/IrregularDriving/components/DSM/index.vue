@@ -55,6 +55,8 @@ const queryData = (data?: any) => query(PageIndex.DSMAlarm, data);
 
 const configRef = ref<Record<string, any>>({});
 
+const selectedRowsData = ref();
+
 const visible = ref(false);
 
 const dataInfo = ref<Record<string, any>>();
@@ -62,12 +64,11 @@ const dataInfo = ref<Record<string, any>>();
  * 导出
  */
 const handleExport = () => {
-    const data = configRef.value?.selectedRows;
-    if (!data?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
+    if (selectedRowsData.value) {
+        downloadObject(selectedRowsData.value, `DSM报警数据`);
         return;
     }
-    downloadObject(data, `SMD报警数据`);
+    onlyMessage('请勾选需要导出的数据', 'error');
 };
 
 const params = ref<Record<string, any>>({});
@@ -158,6 +159,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
+        selectedRowsData.value = selectedRows;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
