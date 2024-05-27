@@ -2,7 +2,13 @@
   <div class="metadata-edit-table-body-viewport" :style="{ ...style, maxHeight: height + 'px'}" ref="viewScrollRef">
     <div class="metadata-edit-table-body-container" :style="containerStyle">
       <div class="metadata-edit-table-center" :style="containerStyle">
-        <div class="metadata-edit-table-row" v-for="item in virtualData" :style="{height: `${cellHeight}px`, transform: `translateY(${item.__top}px)`}">
+        <div
+          v-for="(item, index) in virtualData"
+          :class="{
+            'metadata-edit-table-row': true,
+          }"
+          :style="{height: `${cellHeight}px`, transform: `translateY(${item.__top}px)`}"
+        >
           <div
             v-for="column in columns"
             class="metadata-edit-table-cell"
@@ -10,7 +16,6 @@
             :style="{
               width: `${column.width}px`,
               left: `${column.left}px`,
-
             }"
           >
             <div v-if="column.dataIndex === '__serial'" class="body-cell-box">
@@ -53,6 +58,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['update:dataSource', 'scrollDown'])
+
 const viewScrollRef = ref()
 
 const indexOf = reactive({
@@ -74,11 +81,12 @@ const dataSourceCache = computed(() => {
       const lastItem = prev[prev.length - 1]
       top = lastItem.__top + itemHeight
     }
-    prev.push({
-      ...next,
-      __serial: index,
-      __top: top
-    })
+
+    next.__top = top
+    next.__serial = index + 1
+
+    prev.push(next)
+
     return prev
   }, [])
 
@@ -96,6 +104,8 @@ const updateVirtualData = () => {
 
 const onScroll = () => {
   const height = viewScrollRef.value.scrollTop
+  const clientHeight = viewScrollRef.value.clientHeight
+  const scrollHeight = viewScrollRef.value.scrollHeight
 
   const start = Math.round(height / props.cellHeight) - 3
   const end = start + maxLen.value + 4
@@ -103,7 +113,12 @@ const onScroll = () => {
   indexOf.start = start >= 0 ? start : 0
   indexOf.end = end
 
-  updateVirtualData()
+  if (height + clientHeight === scrollHeight) { // 滚动到底
+    emit('scrollDown')
+  } else {
+    updateVirtualData()
+  }
+
 }
 
 onMounted(() => {
@@ -116,9 +131,14 @@ onBeforeUnmount(() => {
 })
 
 watch(() => props.dataSource.length, (len) => {
-  if (len && viewScrollRef.value) {
-    updateVirtualData()
+  if (len) {
+    if (viewScrollRef.value) {
+      updateVirtualData()
+    }
+  } else {
+
   }
+
 }, { immediate: true})
 
 </script>

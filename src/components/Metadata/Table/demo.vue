@@ -4,58 +4,35 @@
       :columns="columns"
       :dataSource="dataSource"
       :pagination="false"
+      @scroll-down="onScrollDown"
     >
-      <template #bodyCell="{ column, record, index }">
-        <StringParams v-if="column.dataIndex === 'string'" v-model:value="record[column.dataIndex]"/>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'double'"
-          :name="[index, column.dataIndex]"
-        >
-          <DoubleParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'integer'"
-          :name="[index, column.dataIndex]"
-        >
-          <IntegerParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'date'"
-          :name="[index, column.dataIndex]"
-        >
-          <DateParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'boolean'"
-          :name="[index, column.dataIndex]"
-        >
-          <BooleanParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'file'"
-          :name="[index, column.dataIndex]"
-        >
-          <FileParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'enum'"
-          :name="[index, column.dataIndex]"
-        >
-          <EnumParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'object'"
-          :name="[index, column.dataIndex]"
-        >
-          <ObjectParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-        <TableFormItem
-          v-else-if="column.dataIndex === 'array'"
-          :name="[index, column.dataIndex]"
-        >
-          <ArrayParams v-model:value="record[column.dataIndex]"/>
-        </TableFormItem>
-      </template>
+    <template #string="{record}">
+      <StringParams v-model:value="record.string"/>
+    </template>
+    <template #double="{record}">
+      <DoubleParams v-model:value="record.double"/>
+    </template>
+    <template #integer="{record}">
+      <IntegerParams v-model:value="record.integer"/>
+    </template>
+    <template #date="{record}">
+      <DateParams v-model:value="record.date"/>
+    </template>
+    <template #boolean="{record}">
+      <BooleanParams v-model:value="record.boolean"/>
+    </template>
+    <template #file="{record}">
+      <FileParams v-model:value="record.file"/>
+    </template>
+    <template #enum="{record}">
+      <EnumParams v-model:value="record.enum"/>
+    </template>
+    <template #object="{record}">
+      <ObjectParams v-model:value="record.object"/>
+    </template>
+    <template #array="{record}">
+      <ArrayParams v-model:value="record.array"/>
+    </template>
   </Table>
   <a-button @click="addItem">新增</a-button>
   <a-button @click="validate">校验</a-button>
@@ -77,17 +54,17 @@ import {
 } from './components'
 
 const tableRef = ref()
-const dataSource = ref(new Array(0).fill(0).map((_, index) => {
+const dataSource = ref(new Array(500).fill(0).map((_, index) => {
   return {
-    string: `string-${index}`,
-    double: `double-${index}`,
-    integer: `integer-${index}`,
-    object: `object-${index}`,
-    file: `file-${index}`,
-    date: `date-${index}`,
-    boolean: `boolean-${index}`,
-    enum: `enum-${index}`,
-    array: `array-${index}`,
+    string: undefined,
+    double: undefined,
+    integer: undefined,
+    object: undefined,
+    file: undefined,
+    date: undefined,
+    boolean: undefined,
+    enum: undefined,
+    array: undefined,
   }
 }))
 
@@ -236,6 +213,20 @@ const addItem = async () => {
     enum: undefined,
     array: undefined,
   })
+}
+
+const onScrollDown = () => {
+  dataSource.value.push(...(new Array(10).fill(1).map(() =>({
+    string: undefined,
+    double: undefined,
+    integer: undefined,
+    object: undefined,
+    file: undefined,
+    date: undefined,
+    boolean: undefined,
+    enum: undefined,
+    array: undefined,
+  }))))
 }
 
 const validate = async () => {

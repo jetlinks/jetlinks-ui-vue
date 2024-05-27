@@ -7,10 +7,11 @@
         <div class="metadata-edit-table-body" :style="{width: tableStyle.width, maxHeight: `${height}px`}">
           <Body
             v-if="dataSource.length"
+            v-model:dataSource="dataSource"
             :columns="columns"
-            :dataSource="dataSource"
             :cellHeight="cellHeight"
             :height="height"
+            @scroll-down="onScrollDown"
           >
             <template v-for="(_, name) in slots" #[name]="slotData">
               <slot :name="name" v-bind="slotData || {}" />
@@ -35,7 +36,7 @@ import { useFormContext } from './context'
 import Header from './header.vue'
 import Body from './body.vue'
 
-const slots = useSlots()
+const emit = defineEmits(['scrollDown'])
 
 const props = defineProps({
   ...tableProps(),
@@ -53,14 +54,38 @@ const props = defineProps({
   }
 })
 
+const slots = useSlots()
 const columns = ref([])
 const tableWrapper = ref()
 const tableStyle = reactive({
   width: 100
 })
 
-const onResize = ({ width = 0}) => {
+useResizeObserver(tableWrapper, onResize)
 
+const { rules, validateItem, validate, errorMap } = useValidate(
+  props.dataSource,
+  props.columns,
+)
+
+const fields = {}
+const addField = (key, field) => {
+  fields[key] = field
+}
+
+const removeField = (key) => {
+  delete fields[key]
+}
+
+const findField = (index, name) => {
+  const fieldId = Object.keys(fields).find(key => {
+    const { names } = fields[key]
+    return names[0] === index && names[1] === name
+  })
+  return fields[fieldId]
+}
+
+function onResize({ width = 0}) {
 
   const scrollWidth = (props.dataSource.length * props.cellHeight) > props.height ? 17 : 0
 
@@ -88,36 +113,8 @@ const onResize = ({ width = 0}) => {
   columns.value = handleColumnsWidth(newColumns, _width)
 }
 
-useResizeObserver(tableWrapper, onResize)
-
-const { rules, validateItem, validate, errorMap } = useValidate(
-  props.dataSource,
-  props.columns,
-  {
-    onError: (err) => {
-      const _errObj = err[0]
-      const field = findField(_errObj.__index, _errObj.field)
-      field?.showErrorTip(_errObj.message)
-      // TODO table滚动到指定位置
-    }
-  }
-)
-
-const fields = {}
-const addField = (key, field) => {
-  fields[key] = field
-}
-
-const removeField = (key) => {
-  delete fields[key]
-}
-
-const findField = (index, name) => {
-  const fieldId = Object.keys(fields).find(key => {
-    const { names } = fields[key]
-    return names[0] === index && names[1] === name
-  })
-  return fields[fieldId]
+const onScrollDown = () => {
+  emit('scrollDown')
 }
 
 useFormContext({

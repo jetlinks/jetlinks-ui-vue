@@ -43,6 +43,7 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
     let schemaInstance: any
     let rules = ref({})
 
+
     const validateItem = (data: Record<string, any>, index: number = 0): Promise<any> => {
         return new Promise((resolve, reject) => {
             schemaInstance.validate(data, { firstFields: true, index}, (err: any[]) => {
@@ -57,19 +58,26 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
 
     const validate = () => {
         return new Promise((resolve, reject) => {
-            const promiseList: Array<Promise<any>> = []
+            const len = dataSource.length
+            const error: any[] = []
+            const success: any[] = []
+
+            const end = () => {
+                if (error.length + success.length === len) {
+                    Object.keys(error).length ? reject(error) : resolve(success)
+                }
+            }
+
             dataSource.forEach((record, index) => {
-                promiseList.push(validateItem(record, index))
+                validateItem(record, index).then(res => {
+                    success.push(res)
+                    end()
+                }).catch(err => {
+                    error.push(err)
+                    end()
+                })
             })
 
-            Promise.all(promiseList).then(res => {
-                resolve(res)
-            }).catch(err => {
-                reject(err)
-                options?.onError(err)
-                console.warn(err)
-                return null
-            })
         })
     }
 
@@ -99,7 +107,7 @@ export const useResizeObserver = (tableWrapper: Ref<HTMLElement>, cb: Function) 
             rect = entry.contentRect;
         }
 
-        cb(rect)
+        cb(rect, e)
     }
 
     onMounted(() => {
