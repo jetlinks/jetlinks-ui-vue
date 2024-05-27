@@ -17,6 +17,8 @@ export const querySystemApi = (data?: object) =>
 export const task = (data: Record<string, unknown>) =>
     server.post(`/firmware/upgrade/task/detail/_query`, data);
 
+export const queryTaskPaginateNot = (data:any)=> server.post('/firmware/upgrade/task/_query/no-paging',data)
+
 export const taskById = (id: string) =>
     server.get(`/firmware/upgrade/task/${id}`);
 
