@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="querySim"
+                :request="handleQuery"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -25,16 +25,30 @@
                                 onConfirm: () => handleExport(),
                             }"
                         >
+                            <template #icon>
+                                <ExportOutlined />
+                            </template>
                             导出
                         </PermissionButton>
                     </j-space>
                 </template>
-                <!-- <template #cardStateType="{cardStateType}">
-                    <BadgeStatus
-                        :status="cardStateType"
-                        :text="cardStateType"
-                    ></BadgeStatus>
-                </template> -->
+                <template #cardType="{ cardType }">
+                    {{ handleCardType(cardType) }}
+                </template>
+                <!-- 激活日期插槽 -->
+                <template #activationDate="{ activationDate }">
+                    {{ dayjs(activationDate).format('YYYY-MM-DD') }}
+                </template>
+                <!-- 更新时间插槽 -->
+                <template #updateTime="{ updateTime }">
+                    {{ dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss') }}
+                </template>
+                <template #cardStateType="{ cardStateType }">
+                    <state-tag
+                        :text="cardStateType.label"
+                        :type="handleTagType(cardStateType.value)"
+                    />
+                </template>
             </JProTable>
         </FullPage>
     </page-container>
@@ -43,6 +57,9 @@
 <script setup lang="ts">
 import { querySim } from '@/api/data-report/sim';
 import { downloadObject } from '@/utils/utils';
+import { handleQuery } from './data';
+import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
+import dayjs from 'dayjs';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -57,12 +74,16 @@ const handleSearch = (e: any) => {
 const columns = [
     {
         title: '卡号',
-        dataIndex: 'id',
-        key: 'id',
+        dataIndex: 'cardId',
+        key: 'cardId',
         scopedSlots: true,
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
     {
-        title: 'ICCId',
+        title: 'ICCID',
         dataIndex: 'iccId',
         key: 'iccId',
         ellipsis: true,
@@ -72,8 +93,8 @@ const columns = [
     },
     {
         title: '绑定车辆编号',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -92,6 +113,7 @@ const columns = [
         title: '运营商',
         dataIndex: 'operatorName',
         key: 'operatorName',
+        ellipsis: true,
         scopedSlots: true,
         search: {
             type: 'select',
@@ -119,6 +141,7 @@ const columns = [
         title: '类型',
         dataIndex: 'cardType',
         key: 'cardType',
+        scopedSlots: true,
         ellipsis: true,
         search: {
             type: 'select',
@@ -210,27 +233,46 @@ const columns = [
                     label: '停机',
                     value: 'error',
                 },
-                // {
-                //     label: '',
-                //     value: 'deactivate',
-                // },
                 {
-                    label: '使用中',
-                    value: 'using',
-                },
-                {
-                    label: '已激活',
-                    value: 'toBeActivated',
+                    label: '激活',
+                    value: 'success',
                 },
                 {
                     label: '其他',
-                    value: 'other',
+                    value: 'processing',
                 },
             ],
         },
     },
 ];
 
+const handleCardType = (value: string) => {
+    switch (value) {
+        case 'year':
+            return '年卡';
+        case 'season':
+            return '季卡';
+        case 'month':
+            return '月卡';
+        case 'other':
+            return '其他';
+    }
+};
+
+const handleTagType = (value: string) => {
+    switch (value) {
+        case 'notReady':
+            return 'warning';
+        case 'error':
+            return 'error';
+        case 'using':
+            return 'success';
+        case 'activated':
+            return 'success';
+        case 'other':
+            return 'error';
+    }
+};
 /**
  * 导出
  */

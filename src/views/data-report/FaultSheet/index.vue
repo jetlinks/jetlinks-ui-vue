@@ -1,4 +1,4 @@
- <template>
+<template>
     <page-container>
         <pro-search
             :columns="columns"
@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="queryFault"
+                :request="test"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -40,24 +40,92 @@
 </template>
 
 <script setup lang="ts">
-import { queryFault } from '@/api/data-report/faultSheet';
 import dayjs from 'dayjs';
 import { downloadObject } from '@/utils/utils';
+import { PageIndex, query } from '@/api/data-report/commonApi';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
+const test = () => {
+    return new Promise((resolve, reject) => {
+        resolve({
+            message: 'success',
+            result: {
+                pageIndex: 0,
+                pageSize: 0,
+                total: 0,
+                data: [
+                    {
+                        id: '1234567890',
+                        vehicleId: 'V001',
+                        vehicleTypeEnum: 'Truck',
+                        factoryNumber: 'FAB2023001',
+                        simpleName: 'Truck-01',
+                        faultDeviceName: 'Engine',
+                        faultCode: 'P0300',
+                        description: '发动机多重随机失火',
+                        modelNumber: 'T4500',
+                        orgName: 'Logistics Co., Ltd.',
+                        faultTime: 1654321000,
+                        lngLat: '116.404,39.904',
+                        alarmDeviceName: 'Diagnostic System',
+                        alarmDictionaryKey: 'misfire',
+                        alarmDictionaryValue: '失火',
+                    },
+                    {
+                        id: '2345678901',
+                        vehicleId: 'V002',
+                        vehicleTypeEnum: 'Bus',
+                        factoryNumber: 'FAB2022123',
+                        simpleName: 'Bus-07',
+                        faultDeviceName: 'Transmission',
+                        faultCode: 'U1000',
+                        description: '通信接口故障',
+                        modelNumber: 'B888',
+                        orgName: 'Public Transport Corp.',
+                        faultTime: 1654322000,
+                        lngLat: '121.4737,31.2304',
+                        alarmDeviceName: 'Transmission Control Module',
+                        alarmDictionaryKey: 'communication_error',
+                        alarmDictionaryValue: '通信错误',
+                    },
+                    {
+                        id: '3456789012',
+                        vehicleId: 'V003',
+                        vehicleTypeEnum: 'Van',
+                        factoryNumber: 'FAB2021009',
+                        simpleName: 'Van-C1',
+                        faultDeviceName: 'ABS',
+                        faultCode: 'C0255',
+                        description: 'ABS控制模块电源故障',
+                        modelNumber: 'V300',
+                        orgName: 'Delivery Express Inc.',
+                        faultTime: 1654323000,
+                        lngLat: '114.304,22.5431',
+                        alarmDeviceName: 'ABS Controller',
+                        alarmDictionaryKey: 'power_supply',
+                        alarmDictionaryValue: '电源供应',
+                    },
+                ],
+            },
+            status: 200,
+            timestamp: 1716796318076,
+        });
+    });
+};
+
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'vehicleId',
-        key: 'vehicleId',
+        dataIndex: 'vehicleTypeEnum',
+        key: 'vehicleTypeEnum',
         scopedSlots: true,
     },
     {
         title: '出厂编号',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -65,16 +133,16 @@ const columns = [
     },
     {
         title: '车辆简称',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'simpleName',
+        key: 'simpleName',
         search: {
             type: 'string',
         },
     },
     {
         title: '故障设备',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'faultDeviceName',
+        key: 'faultDeviceName',
         ellipsis: true,
         search: {
             type: 'string',
@@ -88,8 +156,8 @@ const columns = [
     },
     {
         title: '故障说明',
-        dataIndex: 'faultDescription',
-        key: 'faultDescription',
+        dataIndex: 'description',
+        key: 'description',
         ellipsis: true,
         search: {
             type: 'string',
@@ -97,8 +165,8 @@ const columns = [
     },
     {
         title: '型号',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'modelNumber',
+        key: 'modelNumber',
         ellipsis: true,
         scopedSlots: true,
         search: {
@@ -107,8 +175,8 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'orgName',
+        key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
         search: {
