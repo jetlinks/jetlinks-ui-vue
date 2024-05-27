@@ -12,19 +12,21 @@
         <a-row :gutter="[24, 24]">
             <a-col :span="24"
                 ><span class="details-label">报警类型：</span>
-                <span class="details-desc">{{data.alarmType}}</span></a-col
+                <span class="details-desc">{{ data.reportType }}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警时间：</span>
-                <span class="details-desc">{{ data.time }}</span></a-col
+                <span class="details-desc">
+                    {{ dayjs(data.reportTime).format('YYYY-MM-DD HH:mm:ss') }}
+                </span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警信息：</span>
-                <span class="details-desc">{{data.alarmInfo}}</span></a-col
+                <span class="details-desc">{{ data.reportInfo }}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label"> 报警位置：</span>
-                <span class="details-desc">{{data.position}}</span></a-col
+                <span class="details-desc">{{ data.reportArea }}</span></a-col
             >
         </a-row>
         <a-divider />
@@ -33,19 +35,20 @@
             <a-radio-button value="2">报警图片</a-radio-button>
         </a-radio-group>
         <div class="detail-box">
-            <img :src="getImage('/img-miss.png')" alt="" />
+            <img :src="data.reportPicture" alt="" />
         </div>
     </j-modal>
 </template>
 
 <script setup lang="ts">
-import { getImage } from '@/utils/comm';
+import dayjs from 'dayjs';
 
-const props = defineProps({
-    data: {
-        type: Object,
-    },
-});
+withDefaults(
+    defineProps<{
+        data: any;
+    }>(),
+    {},
+);
 
 const emits = defineEmits(['refresh', 'update:visible']);
 
@@ -78,8 +81,8 @@ const value = ref('2');
         width: 100%;
         margin-top: 10px;
         img {
-            height: 100px;
-            width: 100px;
+            width: 512px;
+            height: 292px;
         }
     }
 }

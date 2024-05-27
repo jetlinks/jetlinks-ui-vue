@@ -1,18 +1,37 @@
 <template>
     <div>
-        <pro-search :columns="columns" target="notice-config" @search="handleSearch"></pro-search>
+        <pro-search
+            :columns="columns"
+            target="notice-config"
+            @search="handleSearch"
+        ></pro-search>
         <full-page>
-            <JProTable ref="configRef" :columns="columns" :request="TemplateApi.list" model="table" :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }" :params="params" :gridColumn="3" :row-selection="rowSelection">
+            <JProTable
+                ref="configRef"
+                :columns="columns"
+                :request="queryData"
+                model="table"
+                :params="params"
+                :gridColumn="3"
+                :row-selection="rowSelection"
+            >
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
-                            <PermissionButton hasPermission="notice/Template:export">
+                        <j-popconfirm
+                            title="确认导出？"
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="handleExport"
+                        >
+                            <PermissionButton>
+                                <AIcon type="ExportOutlined" />
                                 导出
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
+                </template>
+                <template #reportTime="{ reportTime }">
+                    {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </full-page>
@@ -20,44 +39,40 @@
 </template>
 
 <script setup lang="ts">
-
-import TemplateApi from '@/api/notice/template';
+import { onlyMessage } from '@/utils/comm';
 import { downloadObject } from '@/utils/utils';
-
-import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
-
-let providerList: any = [];
-Object.keys(MSG_TYPE).forEach((key) => {
-    providerList = [...providerList, ...MSG_TYPE[key]];
-});
-
+import { query, PageIndex } from '@/api/data-report/commonApi';
+import dayjs from 'dayjs';
 const configRef = ref<Record<string, any>>({});
+
+const queryData = (data?: any) => query(PageIndex.SpeedAlarm, data);
 /**
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知模板数据`);
+    const data = configRef.value?.selectedRows;
+    if (!data?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    downloadObject(data, `超速报警数据`);
 };
 
 const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'provider',
-        key: 'provider',
+        dataIndex: 'vehicleTypeEnum',
+        key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'select',
-            options: providerList,
-            handleValue: (v: any) => {
-                return v;
-            },
+            type: 'string',
         },
     },
     {
         title: '出厂编号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -65,8 +80,8 @@ const columns = [
     },
     {
         title: '车辆简称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'simpleName',
+        key: 'simpleName',
         ellipsis: true,
         search: {
             type: 'string',
@@ -74,8 +89,8 @@ const columns = [
     },
     {
         title: '速度限制',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'overSpeedInfoNewLimitSpeed',
+        key: 'overSpeedInfoNewLimitSpeed',
         ellipsis: true,
         search: {
             type: 'string',
@@ -83,21 +98,14 @@ const columns = [
     },
     {
         title: '开始速度',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'overSpeedInfoNewStartOverSpeed',
+        key: 'overSpeedInfoNewStartOverSpeed',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: NOTICE_METHOD,
-            handleValue: (v: any) => {
-                return v;
-            },
-        },
     },
     {
         title: '最大速度',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'overSpeedInfoNewMaximumOverSpeed',
+        key: 'overSpeedInfoNewMaximumOverSpeed',
         ellipsis: true,
         search: {
             type: 'string',
@@ -105,8 +113,8 @@ const columns = [
     },
     {
         title: '持续时间 ',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'duration',
+        key: 'duration',
         ellipsis: true,
         search: {
             type: 'string',
@@ -114,8 +122,8 @@ const columns = [
     },
     {
         title: '型号',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'modelNumber',
+        key: 'modelNumber',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -124,8 +132,8 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'orgName',
+        key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -134,8 +142,8 @@ const columns = [
     },
     {
         title: '时间',
-        dataIndex: 'time',
-        key: 'time',
+        dataIndex: 'reportTime',
+        key: 'reportTime',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -160,20 +168,13 @@ const rowSelection = {
     },
 };
 
-
 /**
  * 搜索
  * @param params
  */
 const handleSearch = (e: any) => {
-
     params.value = e;
-
 };
-
-
-
-
 </script>
 
 <style lang="less" scoped></style>

@@ -1,14 +1,30 @@
 <template>
     <div>
-        <pro-search :columns="columns" target="notice-config" @search="handleSearch"></pro-search>
+        <pro-search
+            :columns="columns"
+            target="notice-config"
+            @search="handleSearch"
+        ></pro-search>
         <full-page>
-            <JProTable ref="configRef" :columns="columns" :request="request" model="table" :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }" :params="params" :gridColumn="3" :row-selection="rowSelection">
+            <JProTable
+                ref="configRef"
+                :columns="columns"
+                :request="queryData"
+                model="table"
+                :params="params"
+                :gridColumn="3"
+                :row-selection="rowSelection"
+            >
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
-                            <PermissionButton hasPermission="notice/Template:export">
+                        <j-popconfirm
+                            title="确认导出？"
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="handleExport"
+                        >
+                            <PermissionButton>
+                                <AIcon type="ExportOutlined" />
                                 导出
                             </PermissionButton>
                         </j-popconfirm>
@@ -16,10 +32,12 @@
                 </template>
                 <template #action="slotProps">
                     <a-button danger type="text" @click="onDetail(slotProps)">
-                        查看</a-button>
+                        查看</a-button
+                    >
                 </template>
-                <template #alarmTime="{ alarmTime}">
-                    {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
+
+                <template #reportTime="{ reportTime }">
+                    {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </full-page>
@@ -30,35 +48,28 @@
 
 <script setup lang="ts">
 import { downloadObject } from '@/utils/utils';
-import Details from './Details.vue';
+import Details from './Detail.vue';
 import dayjs from 'dayjs';
+import { onlyMessage } from '@/utils/comm';
+import { query, PageIndex } from '@/api/data-report/commonApi';
+
+const queryData = (data?: any) => query(PageIndex.ADASAlarm, data);
 
 const visible = ref(false);
 
-const data = ref<any[]>([]);
-
 const dataInfo = ref<Record<string, any>>();
-
-const request = async () => {
-    return {
-        code: 'Success',
-        status: 200,
-        result: {
-            data: data.value,
-
-            pageIndex: 0,
-            pageSize: 12,
-            total: 100,
-        },
-    };
-};
 
 const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
 const handleExport = () => {
-    downloadObject(configRef.value.selectedKeys, `异常震动数据`);
+    const data = configRef.value?.selectedRows;
+    if (!data?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    downloadObject(data, `ADAS报警数据`);
 };
 
 const onDetail = (data: Record<string, any>) => {
@@ -70,15 +81,17 @@ const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'vehicleType',
-        key: 'vehicleType',
+        dataIndex: 'vehicleTypeEnum',
+        key: 'vehicleTypeEnum',
         scopedSlots: true,
-
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '出厂编号',
-        dataIndex: 'number',
-        key: 'number',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -86,8 +99,8 @@ const columns = [
     },
     {
         title: '车辆简称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'simpleName',
+        key: 'simpleName',
         ellipsis: true,
         search: {
             type: 'string',
@@ -95,8 +108,8 @@ const columns = [
     },
     {
         title: '报警类型',
-        dataIndex: 'alarmType',
-        key: 'alarmType',
+        dataIndex: 'reportType',
+        key: 'reportType',
         ellipsis: true,
         search: {
             type: 'string',
@@ -104,15 +117,15 @@ const columns = [
     },
     {
         title: '报警信息',
-        dataIndex: 'alarmInfo',
-        key: 'alarmInfo',
+        dataIndex: 'reportInfo',
+        key: 'reportInfo',
         scopedSlots: true,
     },
 
     {
         title: '型号',
-        dataIndex: 'model',
-        key: 'model',
+        dataIndex: 'modelNumber',
+        key: 'modelNumber',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -121,8 +134,8 @@ const columns = [
     },
     {
         title: '所属组织',
-        dataIndex: 'organization',
-        key: 'organization',
+        dataIndex: 'orgName',
+        key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -131,8 +144,8 @@ const columns = [
     },
     {
         title: '告警时间 ',
-        dataIndex: 'alarmTime',
-        key: 'alarmTime',
+        dataIndex: 'reportTime',
+        key: 'reportTime',
         scopedSlots: true,
         ellipsis: true,
     },
@@ -167,28 +180,7 @@ const rowSelection = {
  */
 const handleSearch = (e: any) => {
     params.value = e;
-
 };
-
-
-
-
-onMounted(() => {
-    for (let i = 0; i < 12; i++) {
-        data.value.push({
-            id: i,
-            vehicleType: '内燃车类型',
-            number: `2342355${i}`,
-            name: `name${i}`,
-            alarmType: `报警类型${i}`,
-            alarmInfo: '报警信息',
-            model: '型号',
-            organization: '所属组织',
-            alarmTime: '2024-05-04',
-            position: '报警位置',
-        });
-    }
-});
 </script>
 
 <style lang="less" scoped></style>

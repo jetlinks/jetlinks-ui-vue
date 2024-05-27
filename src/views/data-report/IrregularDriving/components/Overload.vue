@@ -9,11 +9,8 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="queryData"
                 model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -26,47 +23,53 @@
                             cancel-text="取消"
                             @confirm="handleExport"
                         >
-                            <PermissionButton
-                                hasPermission="notice/Template:export"
-                            >
+                            <PermissionButton>
+                                <AIcon type="ExportOutlined" />
                                 导出
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
                 </template>
-                
             </JProTable>
         </full-page>
     </div>
 </template>
 
 <script setup lang="ts">
-
-import TemplateApi from '@/api/notice/template';
+import { onlyMessage } from '@/utils/comm';
 import { downloadObject } from '@/utils/utils';
+import { query, PageIndex } from '@/api/data-report/commonApi';
 
+const queryData = (data?: any) => query(PageIndex.OverloadAlarm, data);
 
 const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
- const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知模板数据`);
+const handleExport = () => {
+    const data = configRef.value?.selectedRows;
+    if (!data?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    downloadObject(data, `超载报警数据`);
 };
 
 const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
-        dataIndex: 'provider',
-        key: 'provider',
+        dataIndex: 'vehicleTypeEnum',
+        key: 'vehicleTypeEnum',
         scopedSlots: true,
-       
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '出厂编号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         search: {
             type: 'string',
@@ -74,72 +77,32 @@ const columns = [
     },
     {
         title: '车辆简称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'simpleName',
+        key: 'simpleName',
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '速度限制',
-        dataIndex: 'name',
-        key: 'name',
+        title: '载荷',
+        dataIndex: 'overLoadInfoLoadRating',
+        key: 'overLoadInfoLoadRating',
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '开始速度',
-        dataIndex: 'type',
-        key: 'type',
+        title: '当前实际吊重',
+        dataIndex: 'overLoadInfoOverloadValue',
+        key: 'overLoadInfoOverloadValue',
         scopedSlots: true,
-       
     },
     {
-        title: '最大速度',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '持续时间 ',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '型号',
-        dataIndex: 'description',
-        key: 'description',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '所属组织',
-        dataIndex: 'description',
-        key: 'description',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '时间',
-        dataIndex: 'time',
-        key: 'time',
-        scopedSlots: true,
+        title: '持续时间',
+        dataIndex: 'duration',
+        key: 'duration',
         ellipsis: true,
         search: {
             type: 'string',
@@ -163,18 +126,13 @@ const rowSelection = {
     },
 };
 
-
 /**
  * 搜索
  * @param params
  */
 const handleSearch = (e: any) => {
-
     params.value = e;
-   
 };
-
-
 </script>
 
 <style lang="less" scoped></style>

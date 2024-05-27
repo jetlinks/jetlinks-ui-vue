@@ -13,7 +13,7 @@
 import Abnormal from './components/Abnormal.vue';
 import OverSpeed from './components/OverSpeed.vue';
 import Overload from './components/Overload.vue';
-import SDM from './components/SMD.vue';
+import DSM from './components/DSM/index.vue';
 import ADAS from './components/ADAS/index.vue';
 
 interface listType {
@@ -22,7 +22,7 @@ interface listType {
 }
 const current = ref<string[]>(['0']);
 
-const componentList = [Abnormal, OverSpeed, Overload, ADAS, SDM];
+const componentList = [Abnormal, OverSpeed, Overload, ADAS, DSM];
 const list: listType[] = [
     {
         key: '0',
@@ -45,8 +45,6 @@ const list: listType[] = [
         tab: 'DSM报警',
     },
 ];
-
 </script>
 
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

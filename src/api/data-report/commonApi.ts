@@ -41,6 +41,7 @@ export enum PageIndex {
      * @value 'adas_alarm'
      */
     'ADASAlarm' = 'adas_alarm',
+    'DSMAlarm' = 'dsm_alarm',
 }
 
 export const query = (index: PageIndex, data?: any) =>
