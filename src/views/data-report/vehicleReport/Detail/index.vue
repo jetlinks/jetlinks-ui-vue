@@ -35,7 +35,6 @@
                             <button
                                 v-if="record.state === true"
                                 style="
-                                    width: 44px;
                                     height: 24px;
                                     padding: 3px 8px 3px 8px;
                                     border-radius: 3px;
@@ -52,7 +51,6 @@
                             <button
                                 v-else
                                 style="
-                                    width: 44px;
                                     height: 24px;
                                     padding: 3px 8px 3px 8px;
                                     border-radius: 3px;
@@ -101,21 +99,6 @@ interface DataItemAss {
     state: boolean;
     efficiency: string;
 }
-
-const devices = [
-    {
-        name: '发动机',
-        isImportant: true,
-    },
-    {
-        name: '变速器',
-        isImportant: false,
-    },
-    {
-        name: '压力传感器',
-        isImportant: false,
-    },
-];
 
 const columns = [
     {

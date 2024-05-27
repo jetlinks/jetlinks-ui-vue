@@ -50,15 +50,7 @@
 import TemplateApi from '@/api/notice/template';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import { downloadObject } from '@/utils/utils';
-import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
-
-const menuStory = useMenuStore();
-
-let providerList: any = [];
-Object.keys(MSG_TYPE).forEach((key) => {
-    providerList = [...providerList, ...MSG_TYPE[key]];
-});
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});

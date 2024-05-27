@@ -96,11 +96,6 @@ import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import { downloadObject } from '@/utils/utils';
 import { onlyMessage } from '@/utils/comm';
 
-let providerList: any = [];
-Object.keys(MSG_TYPE).forEach((key) => {
-    providerList = [...providerList, ...MSG_TYPE[key]];
-});
-
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 

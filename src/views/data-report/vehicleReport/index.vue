@@ -47,7 +47,6 @@
 </template>
 
 <script setup lang="ts">
-import TemplateApi from '@/api/notice/template';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import { downloadObject } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
