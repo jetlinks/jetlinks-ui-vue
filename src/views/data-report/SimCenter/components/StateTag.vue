@@ -23,14 +23,22 @@ const foregroundColor = reactive([
     '#287AF560',
     '#F5282860',
     '#FF7A0060',
+    '#6B6F7F60',
 ]);
 const backgroundColor = reactive([
     '#0FCE8C10',
     '#287AF510',
     '#F5282810',
     '#FF7A0010',
+    '#6B6F7F10',
 ]);
-const fontColor = reactive(['#0FCE8C', '#287AF5', '#F52828', '#FF7A00']);
+const fontColor = reactive([
+    '#0FCE8C',
+    '#287AF5',
+    '#F52828',
+    '#FF7A00',
+    '#6B6F7F',
+]);
 const curFtColor = fontColor[types.indexOf(props.type)];
 const curBgColor = backgroundColor[types.indexOf(props.type)];
 const curFgColor = foregroundColor[types.indexOf(props.type)];
