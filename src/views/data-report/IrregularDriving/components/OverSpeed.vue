@@ -2,7 +2,7 @@
     <div>
         <pro-search
             :columns="columns"
-            target="notice-config"
+            target="overSpeed-config"
             @search="handleSearch"
         ></pro-search>
         <full-page>

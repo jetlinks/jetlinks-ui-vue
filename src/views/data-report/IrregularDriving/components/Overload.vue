@@ -2,7 +2,7 @@
     <div>
         <pro-search
             :columns="columns"
-            target="notice-config"
+            target="overload-target"
             @search="handleSearch"
         ></pro-search>
         <full-page>

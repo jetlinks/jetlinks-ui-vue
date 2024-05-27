@@ -2,7 +2,7 @@
     <div>
         <pro-search
             :columns="columns"
-            target="notice-config"
+            target="abnormal-config"
             @search="handleSearch"
         ></pro-search>
         <full-page>
