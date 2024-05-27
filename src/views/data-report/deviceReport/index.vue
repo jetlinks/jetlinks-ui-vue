@@ -15,7 +15,6 @@
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
-                :gridColumn="3"
                 :row-selection="rowSelection"
             >
                 <template #headerTitle>
@@ -206,13 +205,12 @@ const rowSelection = {
 const request = (params: Record<string, any>) =>
     new Promise((resolve) => {
         queryDeviceList({
-            pageIndex: params.pageIndex + 1,
+            pageIndex: params.pageIndex ,
             pageSize: params.pageSize,
             sorts: params.sorts,
             terms: params.terms,
         })
             .then((response: any) => {
-                console.log('response', response);
                 resolve({
                     result: {
                         data: response.result?.data,

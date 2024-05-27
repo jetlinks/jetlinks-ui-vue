@@ -8,7 +8,7 @@ export interface formValueType {
     'base-path': string | undefined; // 系统后台访问的URL
     logo: string | undefined;
     ico: string | undefined;
-    backgroud: string | undefined;
+    background: string | undefined;
 }
 
 export interface formType {

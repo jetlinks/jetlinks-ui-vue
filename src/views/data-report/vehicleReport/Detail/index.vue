@@ -81,7 +81,7 @@
     </page-container>
 </template>
 <script lang="ts" setup>
-import Title from './Title/index.vue'
+import Title from './Title/index.vue';
 import detailList from '../components/detailsList.vue';
 
 interface DataItem {
@@ -233,7 +233,7 @@ for (let i = 0; i < 100; i++) {
     data.push({
         key: i,
         type: `type ${i}`,
-        date: `2024-05-23`,
+        date: `2024-05-23 09:00:00`,
         position: `重庆市 no. ${i}`,
     });
 }
@@ -267,7 +267,7 @@ for (let i = 0; i < 49; i++) {
         startTime: '2024-05-22 12:00:00',
         endTime: '2024-05-22 13:00:00',
         travelTime: '1小时',
-        travel: `${20 + (i % 5) * 10}`,
+        travel: `${20 + (i % 5) * 10}km`,
         startPosition: '重庆市渝北区',
         endPosition: '重庆市南岸区',
         alarmNumber: i % 4 === 0 ? 5 : 3,
@@ -284,7 +284,6 @@ const pagination = {
     showQuickJumper: true,
     showSizeChanger: true,
     size: 'small',
-    hideOnSinglePage: true,
 };
 
 const paginationWork = {
@@ -297,7 +296,6 @@ const paginationWork = {
     showQuickJumper: true,
     showSizeChanger: true,
     size: 'small',
-    hideOnSinglePage: true,
 };
 
 const paginationAss = {
@@ -310,7 +308,6 @@ const paginationAss = {
     showQuickJumper: true,
     showSizeChanger: true,
     size: 'small',
-    hideOnSinglePage: true,
 };
 
 const paginationRecord = {
@@ -323,7 +320,6 @@ const paginationRecord = {
     showQuickJumper: true,
     showSizeChanger: true,
     size: 'small',
-    hideOnSinglePage: true,
 };
 </script>
 <style lang="less" scoped>

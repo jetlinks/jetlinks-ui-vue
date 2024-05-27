@@ -200,13 +200,13 @@ const rowSelection = {
 const request = (params: Record<string, any>) =>
     new Promise((resolve) => {
         queryVehicleList({
-            pageIndex: params.pageIndex + 1,
+            firstPageIndex: params.pageIndex,
+            pageIndex: params.pageIndex,
             pageSize: params.pageSize,
             sorts: params.sorts,
             terms: params.terms,
         })
             .then((response: any) => {
-                console.log('response', response);
                 resolve({
                     result: {
                         data: response.result?.data,
