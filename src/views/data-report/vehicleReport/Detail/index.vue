@@ -1,7 +1,7 @@
 <template>
     <page-container :showBack="true">
         <div class="detail">
-            <Title></Title>
+            <Title :data="vehicleData" />
             <div class="table above">
                 <detailList
                     :title="'在线离线表'"
@@ -81,8 +81,16 @@
     </page-container>
 </template>
 <script lang="ts" setup>
+import {
+    queryVehicleById,
+    queryVehicleEquipment,
+} from '@/api/data-report/vehicleReport';
 import Title from './Title/index.vue';
 import detailList from '../components/detailsList.vue';
+
+const route = useRoute();
+
+const vehicleData = ref();
 
 interface DataItem {
     key: number;
@@ -171,12 +179,6 @@ const columnsAss = [
         title: '状态',
         dataIndex: 'state',
         key: 'state',
-        ellipsis: true,
-    },
-    {
-        title: '工作效率',
-        dataIndex: 'efficiency',
-        key: 'efficiency',
         ellipsis: true,
     },
 ];
@@ -310,6 +312,27 @@ const paginationAss = {
     size: 'small',
 };
 
+const getDetailFn = async () => {
+    const _id = route.params?.id as string;
+    const res = await queryVehicleById(_id);
+    console.log(res.result);
+    if (res.status == 200) {
+        vehicleData.value = res.result;
+    }
+};
+//获取当前关联设备信息
+const getDeviceFn = async () => {
+    const _id = route.params?.id as string;
+    const res = await queryVehicleEquipment({ where: `vehicleId=${_id}` });
+    if (res.status == 200) {
+        const data = res.result?.data;
+        if(data?.length){
+            
+        }
+    }
+    console.log(res, 'res');
+};
+
 const paginationRecord = {
     showTotal: (num: number, range: number[]) => {
         return `总共 ${num} 条`;
@@ -321,6 +344,11 @@ const paginationRecord = {
     showSizeChanger: true,
     size: 'small',
 };
+
+onMounted(() => {
+    getDetailFn();
+    getDeviceFn();
+});
 </script>
 <style lang="less" scoped>
 .detail {

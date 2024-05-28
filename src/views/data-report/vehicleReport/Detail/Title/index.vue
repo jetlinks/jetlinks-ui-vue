@@ -2,7 +2,7 @@
     <div class="table title">
         <div class="title-left">
             <img
-                src="../../../../../../public/images/dataReport/vehicleDetail.png"
+                :src="getImage('/dataReport/vehicleDetail.png')"
                 alt="车辆报表详情图片"
             />
         </div>
@@ -10,28 +10,28 @@
             <j-descriptions
                 :column="{ xxl: 4, xl: 4, lg: 4, md: 3, sm: 3, xs: 1 }"
             >
-                <j-descriptions-item label="出厂编号"
-                    >12025YB</j-descriptions-item
-                >
-                <j-descriptions-item label="车辆简称"
-                    >1810000000</j-descriptions-item
-                >
-                <j-descriptions-item label="车辆类型"
-                    >内燃柴油机</j-descriptions-item
-                >
-                <j-descriptions-item label="型号"
-                    >QYCD25-QCG</j-descriptions-item
-                >
-                <j-descriptions-item label="日期"
-                    >2020-01-01</j-descriptions-item
-                >
+                <j-descriptions-item label="出厂编号">{{
+                    data?.factoryNumber
+                }}</j-descriptions-item>
+                <j-descriptions-item label="车辆简称">{{
+                    data?.simpleName
+                }}</j-descriptions-item>
+                <j-descriptions-item label="车辆类型">{{
+                    data?.vehicleTypeEnum.text
+                }}</j-descriptions-item>
+                <j-descriptions-item label="型号">{{
+                    data?.modelNumber
+                }}</j-descriptions-item>
+                <j-descriptions-item label="日期">{{
+                    data?.vehicleDate
+                }}</j-descriptions-item>
                 <j-descriptions-item label="闲置">一小时</j-descriptions-item>
-                <j-descriptions-item label="所属组织"
-                    >组织A</j-descriptions-item
-                >
-                <j-descriptions-item label="行驶里程"
-                    >12200</j-descriptions-item
-                >
+                <j-descriptions-item label="所属组织">{{
+                    data?.orgName
+                }}</j-descriptions-item>
+                <j-descriptions-item label="行驶里程">{{
+                    data?.mileage
+                }}</j-descriptions-item>
             </j-descriptions>
             <j-divider
                 style="height: 1px; background-color: #e7e9ef; margin: 14px 0"
@@ -82,6 +82,14 @@
 </template>
 
 <script lang="ts" setup>
+import { getImage } from '@/utils/comm';
+
+const props = withDefaults(
+    defineProps<{
+        data: any;
+    }>(),
+    {},
+);
 const devices = [
     {
         name: '发动机',

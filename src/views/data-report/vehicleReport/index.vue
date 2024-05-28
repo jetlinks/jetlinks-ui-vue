@@ -28,6 +28,7 @@
                         >
                             <PermissionButton>
                                 <AIcon type="ExportOutlined" />
+
                                 <span>导出</span>
                             </PermissionButton>
                         </j-popconfirm>
@@ -41,15 +42,20 @@
                         >详情
                     </a>
                 </template>
+                <template #vehicleDate="{ vehicleDate }">
+                    {{ dayjs(vehicleDate).format('YYYY-MM-DD') }}
+                </template>
             </JProTable>
         </FullPage>
     </page-container>
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs';
+
 import { downloadObject } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
-import { onlyMessage } from '@/utils/comm';
+
 import { queryVehicleList } from '@/api/data-report/vehicleReport';
 
 const menuStory = useMenuStore();
@@ -66,26 +72,26 @@ const columns = [
         scopedSlots: true,
         ellipsis: true,
         search: {
-                type: 'select',
-                options: [
-                    {
-                        label: '内燃柴油机',
-                        value: 'ICDieselEngine',
-                    },
-                    {
-                        label: '内燃汽油机',
-                        value: 'ICGasolineEngine',
-                    },
-                    {
-                        label: '机械柴油机',
-                        value: 'MachineDieselEngine',
-                    },
-                    {
-                        label: '内燃牵引车',
-                        value: 'ICTractor',
-                    }
-                ],
-            },
+            type: 'select',
+            options: [
+                {
+                    label: '内燃柴油机',
+                    value: 'ICDieselEngine',
+                },
+                {
+                    label: '内燃汽油机',
+                    value: 'ICGasolineEngine',
+                },
+                {
+                    label: '机械柴油机',
+                    value: 'MachineDieselEngine',
+                },
+                {
+                    label: '内燃牵引车',
+                    value: 'ICTractor',
+                },
+            ],
+        },
     },
     {
         title: '车辆编号',
@@ -126,8 +132,8 @@ const columns = [
     },
     {
         title: '日期',
-        dataIndex: 'description',
-        key: 'description',
+        dataIndex: 'vehicleDate',
+        key: 'vehicleDate',
         scopedSlots: true,
         ellipsis: true,
     },
@@ -152,7 +158,6 @@ const handleSearch = (e: any) => {
 };
 
 const handelDetail = (slotProps: any) => {
-    console.log('data', slotProps);
     menuStory.jumpPage('data-report/vehicleReport/Detail', {
         id: slotProps.id,
     });
@@ -205,8 +210,6 @@ const request = (params: Record<string, any>) =>
                 console.log(error);
             });
     });
-
-const currentConfig = ref<Partial<Record<string, any>>>();
 </script>
 
 <style lang="less" scoped></style>
