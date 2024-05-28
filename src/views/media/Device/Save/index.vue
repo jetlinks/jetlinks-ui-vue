@@ -156,26 +156,49 @@
                                     </j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
-                            <j-form-item label="设备厂商"  
+                            <j-form-item
+                                label="设备厂商"
                                 name="manufacturer"
-                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
+                                :rules="[
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="formData.manufacturer"
                                     placeholder="请输入设备厂商"
-                                   
                                 />
                             </j-form-item>
-                            <j-form-item label="设备型号" 
+                            <j-form-item
+                                label="设备型号"
                                 name="model"
-                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
+                                :rules="[
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="formData.model"
                                     placeholder="请输入设备型号"
                                 />
                             </j-form-item>
-                            <j-form-item label="固件版本"
+                            <j-form-item
+                                label="固件版本"
                                 name="firmware"
-                                :rules="[{ max: 64, message: '最多可输入64位字符', trigger: 'change' }]">
+                                :rules="[
+                                    {
+                                        max: 64,
+                                        message: '最多可输入64位字符',
+                                        trigger: 'change',
+                                    },
+                                ]"
+                            >
                                 <j-input
                                     v-model:value="formData.firmware"
                                     placeholder="请输入固件版本"
@@ -360,6 +383,9 @@ const handleProductChange = () => {
     formData.value.others.access_pwd =
         productList.value.find((f: any) => f.id === formData.value.productId)
             ?.configuration.access_pwd || '';
+    formData.value.streamMode =
+        productList.value.find((f: any) => f.id === formData.value.productId)
+            ?.configuration.stream_mode || '';
 };
 
 /**
@@ -404,46 +430,46 @@ const handleSubmit = () => {
             : { id, streamMode, manufacturer, model, firmware, ...extraParams };
     } else {
         // 国标
-        const getParmas = () =>{
-                if(others?.stream_mode){
-                    others.stream_mode = streamMode
-                }
-                return{
-                  others,
-                  id,
-                  streamMode,
-                  manufacturer,
-                  model,
-                  firmware,
-                  ...extraParams,
-              };
+        const getParmas = () => {
+            if (others?.stream_mode) {
+                others.stream_mode = streamMode;
             }
-        params = !id
-            ? { others, id, ...extraParams }
-            : getParmas()
+            return {
+                others,
+                id,
+                streamMode,
+                manufacturer,
+                model,
+                firmware,
+                ...extraParams,
+            };
+        };
+        params = !id ? { others, id, ...extraParams } : getParmas();
     }
 
     formRef.value
         ?.validate()
         .then(async () => {
-                btnLoading.value = true;
-                let res;
-                if(!route.query.id){
-                    const resp:any = await DeviceApi.validateId(id)
-                    if(resp.status === 200 && resp?.result?.passed){
-                            res = await DeviceApi.save(params)
-                    }else{
-                            notification.error({ key: 'error', message: '设备ID已重复'})
-                        }
-                }else{
-                    res = await DeviceApi.update(params);
+            btnLoading.value = true;
+            let res;
+            if (!route.query.id) {
+                const resp: any = await DeviceApi.validateId(id);
+                if (resp.status === 200 && resp?.result?.passed) {
+                    res = await DeviceApi.save(params);
+                } else {
+                    notification.error({
+                        key: 'error',
+                        message: '设备ID已重复',
+                    });
                 }
-                if (res?.success) {
-                    onlyMessage('保存成功');
-                    history.back();
-                }
+            } else {
+                res = await DeviceApi.update(params);
             }
-        )
+            if (res?.success) {
+                onlyMessage('保存成功');
+                history.back();
+            }
+        })
         .catch((err: any) => {
             console.log('err: ', err);
         })
