@@ -65,7 +65,7 @@
                             line-height: 18px;
                         "
                     >
-                        未启用
+                        禁用
                     </button>
                     <button
                         v-else
@@ -143,7 +143,12 @@ const columns = [
         scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [
+                { label: '禁用', value: 'notActive' },
+                { label: '离线', value: 'offline' },
+                { label: '在线', value: 'online' },
+            ],
         },
     },
     {
@@ -205,7 +210,7 @@ const rowSelection = {
 const request = (params: Record<string, any>) =>
     new Promise((resolve) => {
         queryDeviceList({
-            pageIndex: params.pageIndex ,
+            pageIndex: params.pageIndex,
             pageSize: params.pageSize,
             sorts: params.sorts,
             terms: params.terms,

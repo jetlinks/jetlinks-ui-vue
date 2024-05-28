@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="TemplateApi.list"
+                :request="request"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -35,11 +35,26 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #type="slotProps">
-                    <span> {{ getMethodTxt(slotProps.type) }}</span>
+                <!-- <template #deviceId="slotProps">
+                    {{
+                        slotProps.deviceId
+                            ? getDeviceName(slotProps.deviceId).value
+                            : ''
+                    }}
+                </template> -->
+                <template #createTime="slotProps">
+                    {{
+                        slotProps.createTime
+                            ? moment(slotProps.createTime).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}
                 </template>
                 <template #action="slotProps">
-                    <span style="color: #f84914">详情</span>
+                    <a @click="handelDetail(slotProps)" style="color: #f84914"
+                        >详情
+                    </a>
                 </template>
             </JProTable>
         </FullPage>
@@ -47,10 +62,16 @@
 </template>
 
 <script setup lang="ts">
-import TemplateApi from '@/api/notice/template';
-import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
+import {
+    getVehicleDevice,
+    queryDeviceList,
+} from '@/api/data-report/deviceReport';
+import { queryDeviceLogs } from '@/api/data-report/deviceMessages';
 import { downloadObject } from '@/utils/utils';
 import { onlyMessage } from '@/utils/comm';
+import moment from 'moment';
+import { useMenuStore } from 'store/menu';
+const menuStory = useMenuStore();
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -68,8 +89,8 @@ const columns = [
     },
     {
         title: '设备名称',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
         search: {
             type: 'string',
@@ -86,18 +107,18 @@ const columns = [
     },
     {
         title: '时间',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'date',
         },
     },
     {
         title: '内容',
-        dataIndex: 'description',
-        key: 'description',
-        scopedSlots: true,
+        dataIndex: 'content',
+        key: 'content',
         ellipsis: true,
         search: {
             type: 'string',
@@ -113,6 +134,12 @@ const columns = [
     },
 ];
 
+const handelDetail = (data: any) => {
+    menuStory.jumpPage('data-report/vehicleReport/Detail', {
+        id: data.id,
+    });
+};
+
 /**
  * 搜索
  * @param params
@@ -124,18 +151,16 @@ const handleSearch = (e: any) => {
 };
 
 /**
- * 通知方式字段展示对应文字
+ * 通知设备id获取设备名称
  */
-const getMethodTxt = (type: string) => {
-    return NOTICE_METHOD.find((f) => f.value === type)?.label;
-};
-/**
- * 根据类型展示对应文案
- * @param type
- * @param provider
- */
-const getProviderTxt = (type: string, provider: string) => {
-    return MSG_TYPE[type].find((f: any) => f.value === provider)?.label;
+const getDeviceName = (id: string) => {
+    const res: any =  getVehicleDevice(id);
+    console.log('result', res.result);
+    if (res.result) {
+        return res.result.name;
+    } else {
+        return '';
+    }
 };
 
 /**
@@ -161,7 +186,33 @@ const rowSelection = {
     },
 };
 
-const currentConfig = ref<Partial<Record<string, any>>>();
+const request = (params: Record<string, any>) =>
+    new Promise((resolve) => {
+        console.log('params', params);
+        queryDeviceLogs({
+            firstPageIndex: params.pageIndex,
+            pageIndex: params.pageIndex,
+            pageSize: params.pageSize,
+            sorts: params.sorts,
+            terms: params.terms,
+        })
+            .then((response: any) => {
+                console.log(response, 'response');
+                resolve({
+                    result: {
+                        data: response.result?.data,
+                        pageIndex: params.pageIndex || 0,
+                        pageSize: params.pageSize || 20,
+                        total: response.result?.total,
+                    },
+                    status: response.status,
+                });
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    });
+
 </script>
 
 <style lang="less" scoped></style>
