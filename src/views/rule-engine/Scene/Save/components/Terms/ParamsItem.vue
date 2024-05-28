@@ -411,7 +411,6 @@ const columnSelect = (option: any) => {
     nextTick(() => {
         formItemContext.onFieldChange();
     });
-    console.log(formModel.value.options,props)
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][0] = option.name;
@@ -468,7 +467,7 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
     paramsValue.value = newValue;
     emit('update:value', { ...paramsValue });
     formItemContext.onFieldChange();
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][1] = e.name;
 };
@@ -488,14 +487,14 @@ const valueSelect = (
     }
     emit('update:value', { ...newValues });
     formItemContext.onFieldChange();
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][2] = labelObj;
 };
 
 const typeSelect = (e: any) => {
     emit('update:value', { ...paramsValue });
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][3] = e.label;
 };
