@@ -234,10 +234,10 @@ const getDashBoard = () => {
             const _data = res.result as DashboardItem[];
             state.today = _data.find(
                 (item) => item.group === 'today',
-            )?.data.value;
+            )?.data.value || 0;
             state.thisMonth = _data.find(
                 (item) => item.group === 'thisMonth',
-            )?.data.value;
+            )?.data.value || 0;
             currentMonAlarm.value[0].value = state.thisMonth;
             const fifteenData = _data
                 .filter((item) => item.group === '15day')
