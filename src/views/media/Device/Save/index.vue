@@ -415,7 +415,7 @@ const formData = ref({
         onvifUsername: '',
     },
     // 编辑字段
-    streamMode: 'UDP',
+    streamMode: '',
     manufacturer: '',
     model: '',
     firmware: '',
@@ -447,6 +447,8 @@ const handleProductChange = () => {
     formData.value.others.access_pwd =
         productList.value.find((f: any) => f.id === formData.value.productId)
             ?.configuration.access_pwd || '';
+    formData.value.streamMode =  productList.value.find((f: any) => f.id === formData.value.productId)
+            ?.configuration.stream_mode || '';
 };
 
 /**
