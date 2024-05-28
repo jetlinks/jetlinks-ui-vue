@@ -192,19 +192,19 @@ const State = reactive({
 
 const props = defineProps({
     deviceIdsMap:{
-        type: [String, Array] as PropType<string | string[]>,
+        type: Object,
         default: [],
     },
     deviceIdsMapOpt: {
-        type: [String, Array] as PropType<string | string[]>,
+        type: Object,
         default: [],
     },
     dataDetailList: {
-        type: [String, Array] as PropType<string | string[]>,
+        type: Object,
         default: [],
     },
     deviceDetailList: {
-        type: [String, Array] as PropType<string | string[]>,
+        type: Object,
         default: [],
     },
     sendId: {
@@ -251,7 +251,7 @@ const beforeUpload = (file: any) => {
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = (result) => {
-        const text = result.target?.result;
+        const text:any = result.target?.result;
         if (!file.type.includes('json')) {
             onlyMessage('请上传json格式文件', 'error');
             return false;
