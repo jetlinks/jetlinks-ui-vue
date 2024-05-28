@@ -3,7 +3,7 @@
         <template #title> </template>
         <FullPage>
             <j-tabs v-model:activeKey="activeKey" class="tabs">
-                <j-tab-pane class="tab_con" key="DataMap" tab="数据映射">
+                <j-tab-pane class="tab_con" key="DataMap" tab="物模型映射">
                     <DataMap
                         :mapDataList="mapDataList"
                         :dataMapOpt="dataMapOpt"
@@ -34,6 +34,7 @@ import {
     queryDeviceProductList,
     queryDataSendList,
 } from '@/api/exchange/receive';
+import { getDataSandMap } from '@/api/exchange/receive';
 import DataMap from './dataMap/index.vue';
 import DeviceMap from './deviceMap/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
@@ -55,6 +56,35 @@ const sendId = ref<any>();
 sendId.value = route.query.id as string;
 const updateParentVar = (newValue: any) => {
     deviceDetailList.value = newValue;
+
+    let getDeviceData = deviceDetailList.value.map((item: any) => {
+        let deviceTargetAttribute = item.deviceTargetAttribute.map(
+            (item: any) => ({
+                originalId: item.originalId,
+                state: item.state,
+                targetAttribute: item.targetAttribute,
+            }),
+        );
+        return {
+            originalId: item.originalId,
+            bln: item.bln,
+            targetAttribute: item.targetAttribute,
+            deviceTargetAttribute: deviceTargetAttribute,
+            state: item.state,
+        };
+    });
+    let getData = dataDetailList.value.map((item: any) => ({
+        originalId: item.originalId,
+        targetAttribute: item.targetAttribute,
+        state: item.state,
+    }));
+    let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
+    console.log('senSaveDataMap', senSaveDataMap);
+    getDataSandMap(sendId.value, senSaveDataMap).then((res: any) => {
+        if (res.status === 200) {
+            onlyMessage('保存成功');
+        }
+    });
 };
 
 const mergeArraysById = (arr1: any, arr2: any) => {
@@ -69,7 +99,7 @@ const mergeArraysById = (arr1: any, arr2: any) => {
                 ...item1,
                 targetAttribute: { ...rest2 },
                 select: item2.targetName + `(${item2.targetId})`,
-                state: 'enabled',
+                state: 'disabled',
             };
         } else {
             return item1;
@@ -102,12 +132,12 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                                 ...orgItem1,
                                 targetAttribute: orgItem2,
                                 select:orgItem2.targetName + `(${orgItem2.targetId})`,
-                                state: 'enabled',
+                                state: 'disabled',
                             };
                         }else{
                             return {
                                 ...orgItem1,
-                                state: 'enabled',
+                                state: 'disabled',
                             }
                         }
                     } else {
@@ -117,6 +147,7 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
             );
             if(item2.targetId){
                 return {
+                    name: originalName,
                     originalId,
                     originalName,
                     targetAttribute: {
@@ -125,15 +156,16 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                     deviceTargetAttribute: mergedDevDataMap,
                     deviceTargetAttributeMap: deviceTargetAttributeMap,
                     select: item2.targetName + `(${item2.targetId})`,
-                    state: 'enabled',
+                    state: 'disabled',
             };
             } else {
                 return {
+                    name: originalName,
                     originalId,
                     originalName,
                     deviceTargetAttribute: mergedDevDataMap,
                     deviceTargetAttributeMap: deviceTargetAttributeMap,
-                    state: 'enabled',
+                    state: 'disabled',
                 }
             }
         } else {
@@ -176,9 +208,10 @@ const Init = () => {
         const attributeList = JSON.parse(getData.metadata);
         if (attributeList?.properties) {
             let objectValues = attributeList?.properties.map((item: any) => ({
+                name: item.name,
                 originalName: item.name,
                 originalId: item.id,
-                state: 'enabled',
+                state: 'disabled',
             }));
             dataDetailList.value = objectValues;
         }
@@ -190,18 +223,20 @@ const Init = () => {
                 }
                 let yDevMetadata = JSON.parse(item.metadata)?.properties;
                 let yDevMetadatas = yDevMetadata.map((item: any) => ({
+                    name: item.name,
                     originalId: item.id,
                     originalName: item.name,
-                    state: 'enabled',
+                    state: 'disabled',
                 }));
                 let select = yDevMetadata.map(
                     (item: any) => item.name + `(${item.id})`,
                 );
                 return {
+                    name: item.name,
                     originalId: item.id,
                     originalName: item.name,
                     bln: false,
-                    state: 'enabled',
+                    state: 'disabled',
                     deviceTargetAttribute: yDevMetadatas,
                 };
             });
@@ -302,6 +337,7 @@ const Init = () => {
                     if (dataDetailListLaster) {
                         if (dataDetailListLaster.targetAttribute) {
                             return {
+                                name: item.originalName,
                                 originalId: item.originalId,
                                 originalName: item.originalName,
                                 select: `${dataDetailListLaster.targetAttribute?.targetName}(${dataDetailListLaster.targetAttribute?.targetId})`,
@@ -311,6 +347,7 @@ const Init = () => {
                             };
                         } else {
                             return {
+                                name: item.originalName,
                                 originalId: item.originalId,
                                 originalName: item.originalName,
                                 state: dataDetailListLaster.state?.value,
@@ -343,6 +380,7 @@ const Init = () => {
                                 if ( getDevDataList) {
                                     if(getDevDataList.targetAttribute){
                                         return {
+                                        name: item2.originalName,
                                         originalId: item2.originalId,
                                         originalName: item2.originalName,
                                         select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
@@ -352,6 +390,7 @@ const Init = () => {
                                     };
                                     }else{
                                         return {
+                                        name: item2.originalName,
                                         originalId: item2.originalId,
                                         originalName: item2.originalName,
                                         state: getDevDataList.state?.value,
@@ -368,6 +407,7 @@ const Init = () => {
                         // console.log('deviceState',state)
                         if (deviceDeRes.targetAttribute) {
                             return {
+                                name: item.originalName,
                                 originalId: item.originalId,
                                 originalName: item.originalName,
                                 deviceTargetAttribute: getDevDataLists,
@@ -379,6 +419,7 @@ const Init = () => {
                             };
                         } else {
                             return {
+                                name: item.originalName,
                                 originalId: item.originalId,
                                 originalName: item.originalName,
                                 deviceTargetAttribute: getDevDataLists,

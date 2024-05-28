@@ -173,12 +173,6 @@
                                     placeholder="请输入名称"
                                 />
                             </j-form-item>
-                            <j-form-item label="链接地址" name="url">
-                                <j-input
-                                    v-model:value="form.url"
-                                    placeholder="请输入链接地址"
-                                />
-                            </j-form-item>
                             <j-form-item label="Topic" name="topic">
                                 <j-input
                                     v-model:value="form.topic"
@@ -287,7 +281,6 @@ import { isTopic, queryFactoryList } from '@/api/factory/factory';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
-import { isUrl } from '@/utils/regular';
 import { ActionsType } from '../typings';
 import { omit, cloneDeep } from 'lodash-es';
 
@@ -403,19 +396,6 @@ const onSelectAll = (selected: boolean, selectedRows: any, changeRows: any) => {
     }
 };
 
-const validatorUrl = (rule: any, value: any, callback: any) => {
-    if (value === undefined || value === '' || value === null) {
-        return Promise.reject('请输入链接地址');
-    } else {
-        if (!isUrl(value)) {
-            return Promise.reject(
-                '请输入正确的链接地址(例：http或https://www.baidu.com)',
-            );
-        }
-        return Promise.resolve();
-    }
-};
-
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
         let updateID = form.value.id;
@@ -449,7 +429,6 @@ const rules = {
         { required: true, message: '请输入名称', trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
-    url: [{ required: true, trigger: 'blur', validator: validatorUrl }],
     topic: [
         { required: true, trigger: 'blur', validator: vailTopic },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
@@ -475,7 +454,6 @@ const reset = () => {
     form.value = {
         id: '',
         name: '',
-        url: '',
         topic: '',
         productId: undefined,
         deviceIds: [],
@@ -611,16 +589,6 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
-        width: 220,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '链接地址',
-        dataIndex: 'url',
-        key: 'url',
         width: 220,
         ellipsis: true,
         search: {
@@ -793,7 +761,6 @@ const query = (params: Record<string, any>) =>
 
 //监听产品select选项变动,清空设备多选框
 const curProductChange = (val: any) => {
-    console.log('val',val)
     if (form.value.productId && form.value.factoryId) {
             const setData = {
                 paging: false,
@@ -830,8 +797,6 @@ const curProductChange = (val: any) => {
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
-        console.log('newValue',newValue)
-        console.log('factoryId',form.value.factoryId)
         if (newValue && form.value.factoryId) {
             const setData = {
                 paging: false,
@@ -869,8 +834,6 @@ watch(
 watch(
     () => form.value.factoryId,
     (newValue, oldValue) => {
-        console.log('factoryId',newValue)
-        console.log('productId',form.value.productId)
         if (newValue && form.value.productId) {
             const setData = {
                 paging: false,

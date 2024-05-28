@@ -6,10 +6,6 @@
             :columns="columns"
             :data-source="props.dataDetailList"
             :height="560"
-            :searchProps="{
-                placeholder: '请输入搜索文本',
-                onSearch: onSearch,
-            }"
             bordered
         >
             <template #expand>
@@ -38,6 +34,20 @@
                     保存
                 </PermissionButton>
             </template>
+            <template #headerCell="{ column }">
+                <template v-if="column.key === 'state'">
+                    <span> 状态 </span>
+                    <j-switch
+                        style="margin-left: 10px"
+                        v-model:checked="checkedAll"
+                        @change="updateAllRowData('state', $event)"
+                        checkedValue="enabled"
+                        unCheckedValue="disabled"
+                        checked-children="开启"
+                        un-checked-children="关闭"
+                    />
+                </template>
+            </template>
             <template #select="{ data }">
                 <j-select
                     v-model:value="data.record.select"
@@ -52,7 +62,7 @@
                     v-model:checked="data.record.state"
                     @change="saveRowData(data.index, 'state', $event)"
                     checkedValue="enabled"
-                    unCheckedValue="Disabled"
+                    unCheckedValue="disabled"
                     size="small"
                 />
             </template>
@@ -68,6 +78,7 @@ import {
     getDataSandMap,
 } from '@/api/exchange/receive';
 const tableRef = ref();
+const checkedAll = ref('disabled');
 
 const props = defineProps({
     mapDataList: {
@@ -105,6 +116,12 @@ const saveRowData = (index: any, dataIndex: string, event: any) => {
     }
 };
 
+const updateAllRowData = (dataIndex: string, event: any) => {
+    props.dataDetailList.forEach((item: any) => {
+        item.state = event === 'enabled' ? 'enabled' : 'disabled';
+    });
+};
+
 const splitHumidity = (data: any) => {
     const match = data.match(/^([^(]+)\((.*)\)$/);
     if (match) {
@@ -118,14 +135,6 @@ const splitHumidity = (data: any) => {
             targetId: '',
         };
     }
-};
-
-const onSearch = (value: any) => {
-    // const list = mapDeviceList
-    // const objectValue = list.filter((obj:any) => {
-    //     obj.originalId === value || obj.originalName === value
-    // });
-    // mapDeviceList = objectValue
 };
 
 /**
@@ -162,7 +171,7 @@ const beforeUpload = (file: any) => {
                 targetMapping: data,
             },
         ];
-        console.log('saveData',saveData)
+        console.log('saveData', saveData);
         queryDeviceProductTarget(saveData).then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('导入成功！');
@@ -175,12 +184,13 @@ const beforeUpload = (file: any) => {
 };
 
 const columns = [
-    { title: '原属性名称', dataIndex: 'originalName' },
-    { title: '原属性标识', dataIndex: 'originalId' },
-    { title: '目标属性', dataIndex: 'select' },
-    { title: '状态', dataIndex: 'state', width: 200 },
+    { title: '原属性名称', dataIndex: 'originalName', key: 'originalName' },
+    { title: '原属性标识', dataIndex: 'originalId', key: 'originalId' },
+    { title: '目标属性', dataIndex: 'select', key: 'select' },
+    { title: '状态', dataIndex: 'state', key: 'state', width: 200 },
 ];
 
+//映射保存
 const handleSave = () => {
     let getData = props.dataDetailList.map((item: any) => ({
         originalId: item.originalId,

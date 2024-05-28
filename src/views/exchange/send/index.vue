@@ -159,12 +159,6 @@
                                     placeholder="请输入名称"
                                 />
                             </j-form-item>
-                            <j-form-item label="链接地址" name="url">
-                                <j-input
-                                    v-model:value="form.url"
-                                    placeholder="请输入链接地址"
-                                />
-                            </j-form-item>
                             <j-form-item label="Topic" name="topic">
                                 <j-input
                                     v-model:value="form.topic"
@@ -253,7 +247,7 @@ import {
 import { isTopic, queryFactoryList } from '@/api/factory/factory';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import { isUrl } from '@/utils/regular';
+// import { isUrl } from '@/utils/regular';
 import { ActionsType } from '../typings';
 import { omit, cloneDeep } from 'lodash-es';
 
@@ -276,7 +270,6 @@ const data = reactive({
 const modelRef = reactive({
     id: undefined,
     name: '',
-    url: '',
     topic: '',
     productId: '',
     deviceIds: [],
@@ -327,18 +320,18 @@ const { form } = toRefs(data);
 
 const menuStory = useMenuStore();
 
-const validatorUrl = (rule: any, value: any, callback: any) => {
-    if (value === undefined || value === '' || value === null) {
-        return Promise.reject('请输入链接地址');
-    } else {
-        if (!isUrl(value)) {
-            return Promise.reject(
-                '请输入正确的链接地址(例：http或https://www.baidu.com)',
-            );
-        }
-        return Promise.resolve();
-    }
-};
+// const validatorUrl = (rule: any, value: any, callback: any) => {
+//     if (value === undefined || value === '' || value === null) {
+//         return Promise.reject('请输入链接地址');
+//     } else {
+//         if (!isUrl(value)) {
+//             return Promise.reject(
+//                 '请输入正确的链接地址(例：http或https://www.baidu.com)',
+//             );
+//         }
+//         return Promise.resolve();
+//     }
+// };
 
 const vailTopic = async (_: Record<string, any>, value: string) => {
     if (value) {
@@ -364,7 +357,7 @@ const vailTopic = async (_: Record<string, any>, value: string) => {
             }
         }
     } else {
-        return Promise.resolve();
+        return Promise.resolve('请输入topic');
     }
 };
 
@@ -373,7 +366,6 @@ const rules = {
         { required: true, message: '请输入名称', trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
-    url: [{ required: true, trigger: 'blur', validator: validatorUrl }],
     topic: [
         { required: true, trigger: 'blur', validator: vailTopic },
         { max: 32, message: '最多可输入32位字符', trigger: 'change' },
@@ -395,7 +387,6 @@ const reset = () => {
     form.value = {
         id: '',
         name: '',
-        url: '',
         topic: '',
         productId: undefined,
         deviceIds: [],
@@ -467,16 +458,6 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
-        width: 220,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '链接地址',
-        dataIndex: 'url',
-        key: 'url',
         width: 220,
         ellipsis: true,
         search: {

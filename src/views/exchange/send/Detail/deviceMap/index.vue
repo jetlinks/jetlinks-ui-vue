@@ -4,11 +4,7 @@
         ref="tableRef"
         :columns="columns"
         :data-source="props.deviceDetailList"
-        :searchProps="{
-            placeholder: '请输入搜索名称',
-        }"
         :height="560"
-        :row-class-name="(_record :any, index:any) => (index % 2 === 1 ? 'table-striped' : null)"
         bordered
     >
         <template #expand>
@@ -34,6 +30,20 @@
                 保存
             </PermissionButton>
         </template>
+        <template #headerCell="{ column }">
+                <template v-if="column.key === 'state'">
+                    <span> 状态 </span>
+                    <j-switch
+                        style="margin-left: 10px"
+                        v-model:checked="checkedAll"
+                        @change="updateAllRowData('state', $event)"
+                        checkedValue="enabled"
+                        unCheckedValue="disabled"
+                        checked-children="开启"
+                        un-checked-children="关闭"
+                    />
+                </template>
+            </template>
         <template #select="{ data }">
             <j-select
                 v-model:value="data.record.select"
@@ -49,7 +59,7 @@
                 v-model:checked="data.record.state"
                 @change="saveRowData(data.index, 'state', $event)"
                 checkedValue="enabled"
-                unCheckedValue="Disabled"
+                unCheckedValue="disabled"
                 size="small"
             />
         </template>
@@ -87,6 +97,20 @@
                 }"
                 bordered
             >
+            <template #headerCell="{ column }">
+                <template v-if="column.key === 'state'">
+                    <span> 状态 </span>
+                    <j-switch
+                        style="margin-left: 10px"
+                        v-model:checked="checkedDetail"
+                        @change="updateAllDetailData('state', $event)"
+                        checkedValue="enabled"
+                        unCheckedValue="disabled"
+                        checked-children="开启"
+                        un-checked-children="关闭"
+                    />
+                </template>
+            </template>
                 <template #select="{ data }">
                     <j-select
                         v-model:value="data.record.select"
@@ -101,7 +125,7 @@
                         v-model:checked="data.record.state"
                         @change="saveMapRowData(data.index, 'state', $event)"
                         checkedValue="enabled"
-                        unCheckedValue="Disabled"
+                        unCheckedValue="disabled"
                         size="small"
                     />
                 </template>
@@ -125,6 +149,8 @@ const DelTableRef = ref();
 const deviceMapDetail = ref<any>([]);
 const mapOptions = ref<any>([]);
 const deviceMapDetailOne = ref<any>();
+const checkedAll = ref('disabled')
+const checkedDetail = ref('disabled')
 
 const State = reactive({
     openView: false,
@@ -160,6 +186,7 @@ const State = reactive({
     },
     cancel() {
         State.openView = false;
+        checkedDetail.value = 'disabled';
     },
 });
 
@@ -188,19 +215,34 @@ const props = defineProps({
 // const deviceDetailList = ref<any>(props.deviceDetailList);
 
 const columns = [
-    { title: '原设备名称', dataIndex: 'originalName' },
-    { title: '原设备标识', dataIndex: 'originalId' },
-    { title: '目标设备', dataIndex: 'select' },
-    { title: '状态', dataIndex: 'state', width: 200 },
-    { title: '操作', dataIndex: 'action', width: 100 },
+    { title: '原设备名称', dataIndex: 'originalName',key: 'originalName' },
+    { title: '原设备标识', dataIndex: 'originalId',key: 'originalId' },
+    { title: '目标设备', dataIndex: 'select',key: 'select' },
+    { title: '状态', dataIndex: 'state' ,key: 'state', width: 200 },
+    { title: '操作', dataIndex: 'action' ,key: 'action', width: 100 },
 ];
 
 const DetailColumns = [
-    { title: '原属性名称', dataIndex: 'originalName' },
-    { title: '原属性标识', dataIndex: 'originalId' },
-    { title: '目标属性', dataIndex: 'select' },
-    { title: '状态', dataIndex: 'state', width: 200 },
+    { title: '原属性名称', dataIndex: 'originalName',key: 'originalName' },
+    { title: '原属性标识', dataIndex: 'originalId' ,key: 'originalId'},
+    { title: '总工厂下发属性', dataIndex: 'isDistribute' ,key: 'isDistribute'},
+    { title: '目标属性', dataIndex: 'select',key: 'select' },
+    { title: '状态', dataIndex: 'state' ,key: 'state', width: 200 },
 ];
+
+//设备状态管理
+const updateAllRowData = (dataIndex: string, event: any) => {
+    props.deviceDetailList.forEach((item: any) => {
+        item.state = event === 'enabled' ? 'enabled' : 'disabled';
+    });
+};
+
+//映射状态管理
+const updateAllDetailData = (dataIndex: string, event: any) => {
+    deviceMapDetail.value.forEach((item: any) => {
+        item.state = event === 'enabled' ? 'enabled' : 'disabled';
+    });
+};
 
 /**
  * 导入
@@ -324,11 +366,11 @@ const splitHumidity = (data: any) => {
 };
 
 const handleMap = (data: any) => {
-    console.log('dataDetailList', props.dataDetailList);
-    console.log('data', data);
+    // console.log('dataDetailList', props.dataDetailList);
+    // console.log('data', data);
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
-    console.log('props.deviceIdsMap',props.deviceIdsMap)
+    // console.log('props.deviceIdsMap',props.deviceIdsMap)
     if(data.record.targetAttribute){
         let mapOptionDevice = props.deviceIdsMap.find(
             (item: any) => item.targetId === data.record.targetAttribute.targetId,
@@ -338,7 +380,7 @@ const handleMap = (data: any) => {
         mapOptions.value = []
     }
     if (!data.record.bln) {
-        console.log('bln',data.record.bln)
+        // console.log('bln',data.record.bln)
         if (data.record.deviceTargetAttribute.length > 0) {
             const getDevTarAtt = data.record.deviceTargetAttribute.map(
                 (item: any) => {
@@ -349,15 +391,19 @@ const handleMap = (data: any) => {
                         const { targetAttribute, select, ...res } = item;
                         return {
                             ...res,
+                            isDistribute: '是',
                             select: item1.select,
                             targetAttribute: item1.targetAttribute,
                         };
                     } else {
-                        return item;
+                        return {
+                            ...item,
+                            isDistribute: '否',
+                        }
                     }
                 },
             );
-            console.log('getDevTarAtt', getDevTarAtt);
+            // console.log('getDevTarAtt', getDevTarAtt);
             deviceMapDetail.value = getDevTarAtt;
         }
     } 
