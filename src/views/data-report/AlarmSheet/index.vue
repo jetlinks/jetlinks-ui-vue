@@ -157,7 +157,6 @@ const columns = [
         dataIndex: 'alarmTime',
         key: 'alarmTime',
         scopedSlots: true,
-        ellipsis: true,
     },
     {
         title: '车辆位置',

@@ -45,7 +45,7 @@
                 </template>
                 <!-- 激活日期插槽 -->
                 <template #activationDate="{ activationDate }">
-                    {{ dayjs(activationDate).format('YYYY-MM-DD') }}
+                    {{ dayjs(activationDate).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <!-- 更新时间插槽 -->
                 <template #updateTime="{ updateTime }">
@@ -191,7 +191,6 @@ const columns = [
         dataIndex: 'activationDate',
         key: 'activationDate',
         scopedSlots: true,
-        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -201,7 +200,6 @@ const columns = [
         dataIndex: 'updateTime',
         key: 'updateTime',
         scopedSlots: true,
-        ellipsis: true,
         search: {
             type: 'string',
         },

@@ -186,7 +186,6 @@ const columns = [
         dataIndex: 'faultTime',
         key: 'faultTime',
         scopedSlots: true,
-        ellipsis: true,
     },
     {
         title: '车辆位置',
