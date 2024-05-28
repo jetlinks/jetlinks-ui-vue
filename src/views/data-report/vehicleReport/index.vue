@@ -47,18 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import { downloadObject } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
 import { queryVehicleList } from '@/api/data-report/vehicleReport';
 
 const menuStory = useMenuStore();
-
-let providerList: any = [];
-Object.keys(MSG_TYPE).forEach((key) => {
-    providerList = [...providerList, ...MSG_TYPE[key]];
-});
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -126,9 +120,9 @@ const columns = [
         key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
+        // search: {
+        //     type: 'string',
+        // },
     },
     {
         title: '日期',
@@ -136,9 +130,6 @@ const columns = [
         key: 'description',
         scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '操作',
@@ -165,13 +156,6 @@ const handelDetail = (slotProps: any) => {
     menuStory.jumpPage('data-report/vehicleReport/Detail', {
         id: slotProps.id,
     });
-};
-
-/**
- * 通知方式字段展示对应文字
- */
-const getMethodTxt = (type: string) => {
-    return NOTICE_METHOD.find((f) => f.value === type)?.label;
 };
 
 /**
