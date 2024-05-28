@@ -122,7 +122,7 @@ import {
     stopTask,
     startTask,
     startOneTask,
-    stopOneTask
+    stopOneTask,
 } from '@/api/device/firmware';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
@@ -132,7 +132,7 @@ const props = defineProps({
         default: {},
     },
 });
-const emit = defineEmits(['closeDetail']);
+const emit = defineEmits(['closeDetail','refresh']);
 const columns = [
     {
         title: '设备名称',
@@ -211,6 +211,7 @@ const startAll = async () => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
+        emit('refresh')
     }
 };
 //全部停止
@@ -219,6 +220,7 @@ const stopAll = async () => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
+        emit('refresh')
     }
 };
 //升级某个记录
@@ -227,16 +229,19 @@ const startUpgrades = async (id) => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
+        emit('refresh')
     }
 };
 //停止某个记录
-const stopUpgrades = async(id) =>{
+const stopUpgrades = async (id) => {
     const res = await stopOneTask([id]);
-    if(res.success){
+    if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
+        emit('refresh')
     }
-}
+};
+
 onMounted(() => {
     queryHistoryList();
 });

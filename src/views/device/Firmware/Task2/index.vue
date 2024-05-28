@@ -13,7 +13,11 @@
             <div class="taskTitle">
                 <div>{{ item?.mode?.text }}</div>
                 <div>{{ item?.name }}</div>
-                <div>完成比例<span class="progress"> {{(item?.progress || 0) + '%'}} </span></div>
+                <div>
+                    完成比例<span class="progress">
+                        {{ (item?.progress || 0) + '%' }}
+                    </span>
+                </div>
                 <a-button type="text" @click="() => taskDetail(item)"
                     >任务详情</a-button
                 >
@@ -41,7 +45,8 @@
     <Save v-if="visible" :data="current" @change="saveChange"></Save>
     <TaskDetail
         v-if="detailVisible"
-        @close-detail="detailVisible = false"
+        @close-detail="closeDetail"
+        @refresh="queryTaskList"
         :data="currentTask"
     />
 </template>
@@ -60,7 +65,7 @@ const props = defineProps({
 const taskList = ref();
 const visible = ref(false);
 const detailVisible = ref(false);
-const current = ref()
+const current = ref();
 //任务详情传参
 const currentTask = ref();
 const queryTaskList = async () => {
@@ -81,11 +86,16 @@ const queryTaskList = async () => {
     const res = await queryTaskPaginateNot(param);
     if (res.status === 200) {
         taskList.value = res.result;
+        if (currentTask.value?.id) {
+            currentTask.value = taskList.value.find(
+                (i) => i.id === currentTask.value.id,
+            );
+        }
     }
 };
 const handleAdd = () => {
     visible.value = true;
-    current.value = {}
+    current.value = {};
 };
 const saveChange = (value) => {
     visible.value = false;
@@ -99,6 +109,10 @@ const taskDetail = (data) => {
     detailVisible.value = true;
     currentTask.value = data;
 };
+const closeDetail = () =>{
+    detailVisible.value = false;
+    queryTaskList()
+}
 onMounted(() => {
     queryTaskList();
 });
@@ -110,7 +124,7 @@ onMounted(() => {
 .taskTitle {
     display: flex;
     justify-content: space-around;
-    .progress{
+    .progress {
         color: rgb(217, 0, 27);
         margin-left: 5px;
     }
