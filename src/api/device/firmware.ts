@@ -47,6 +47,8 @@ export const stopTask = (id: string) =>
 export const startOneTask = (data: string[]) =>
     server.post(`/firmware/upgrade/task/_start`, data);
 
+export const stopOneTask = (data: string[]) => 
+    server.post('/firmware/upgrade/task/_stop',data)
 // export const queryProduct = (data?: any) =>
 //     server.post(`/device-product/_query/no-paging`, data);
 export const queryProduct = (data?: any) =>

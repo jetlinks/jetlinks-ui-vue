@@ -68,6 +68,9 @@
                     <div v-if="text?.value === 'failed'">
                         {{ text?.text + '：' + record?.errorReason }}
                     </div>
+                    <div v-if="text?.value === 'waiting'">
+                        {{ text?.text }}
+                    </div>
                 </template>
                 <template v-if="column.dataIndex === 'action'">
                     <a-button
@@ -77,6 +80,7 @@
                         "
                         :disabled="record.state.value === 'processing'"
                         type="text"
+                        @click="() => stopUpgrades(record.id)"
                     >
                         <template #icon>
                             <AIcon type="PauseOutlined"></AIcon></template
@@ -118,8 +122,10 @@ import {
     stopTask,
     startTask,
     startOneTask,
+    stopOneTask
 } from '@/api/device/firmware';
 import dayjs from 'dayjs';
+import { onlyMessage } from '@/utils/comm';
 const props = defineProps({
     data: {
         type: Object,
@@ -223,6 +229,14 @@ const startUpgrades = async (id) => {
         queryHistoryList();
     }
 };
+//停止某个记录
+const stopUpgrades = async(id) =>{
+    const res = await stopOneTask([id]);
+    if(res.success){
+        onlyMessage('操作成功', 'success');
+        queryHistoryList();
+    }
+}
 onMounted(() => {
     queryHistoryList();
 });
