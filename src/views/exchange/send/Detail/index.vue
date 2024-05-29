@@ -392,6 +392,7 @@ const selectInit = () => {
                                     originalId: item2.originalId,
                                     originalName: item2.originalName,
                                     select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
+                                    isDistribute: '是',
                                     state: getDevDataList.state?.value,
                                     targetAttribute:
                                         getDevDataList.targetAttribute,
@@ -402,6 +403,7 @@ const selectInit = () => {
                                     originalId: item2.originalId,
                                     originalName: item2.originalName,
                                     state: getDevDataList.state?.value,
+                                    isDistribute: '否',
                                 };
                             }
                         } else {

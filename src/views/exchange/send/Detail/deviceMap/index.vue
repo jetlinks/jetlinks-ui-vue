@@ -111,6 +111,9 @@
                     />
                 </template>
             </template>
+                <template #isDistribute="{ data }">
+                    <span>{{ data.record.select ? '是':'否' }}</span>
+                </template>
                 <template #select="{ data }">
                     <j-select
                         v-model:value="data.record.select"
@@ -237,7 +240,7 @@ const columns = [
 const DetailColumns = [
     { title: '原属性名称', dataIndex: 'originalName',key: 'originalName' },
     { title: '原属性标识', dataIndex: 'originalId' ,key: 'originalId'},
-    { title: '总工厂下发属性', dataIndex: 'isDistribute' ,key: 'isDistribute'},
+    { title: '总工厂下发属性', dataIndex: 'isDistribute',key: 'isDistribute'},
     { title: '目标属性', dataIndex: 'select',key: 'select' },
     { title: '状态', dataIndex: 'state' ,key: 'state', width: 200 },
 ];
@@ -423,14 +426,12 @@ const handleMap = (data: any) => {
                         const { targetAttribute, select, ...res } = item;
                         return {
                             ...res,
-                            isDistribute: item1.select ? '是': '否',
                             select: item1.select,
                             targetAttribute: item1.targetAttribute,
                         };
                     } else {
                         return {
                             ...item,
-                            isDistribute: '否'
                         }
                     }
                 },
