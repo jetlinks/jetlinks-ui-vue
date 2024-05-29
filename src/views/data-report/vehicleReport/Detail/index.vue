@@ -9,6 +9,7 @@
                         model="table"
                         :data-source="data"
                         :pagination="pagination"
+                        :scroll="{ y: 246 }"
                     >
                         <template #bodyCell="{ column, text }">
                             <template v-if="column.dataIndex === 'timestamp'">
@@ -38,6 +39,11 @@
                                 v-if="column.dataIndex === 'workEfficiency'"
                             >
                                 {{ `${text}%` }}
+                            </template>
+                            <template
+                                v-if="column.dataIndex === 'operationTime'"
+                            >
+                                {{ `${((text/1000)/60)/60}小时` }}
                             </template>
                         </template>
                     </j-table>
@@ -191,8 +197,8 @@ const columnsWork = [
     },
     {
         title: '工作时长',
-        dataIndex: 'freeTime',
-        key: 'freeTime',
+        dataIndex: 'operationTime',
+        key: 'operationTime',
         ellipsis: true,
     },
     {
@@ -355,39 +361,39 @@ const queryDevice = async () => {
 //获取在线离线数据
 
 const queryVehicleStatus = async (params?: any) => {
-    const _deviceId = routerParams.params?.value.deviceId;
+    const _deviceId: any = route.query?.deviceId;
     const defaultParams = {
         terms: [
             {
                 column: 'deviceId',
-                value: `${_deviceId}`,
+                value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
         ],
         paging: false,
         sorts: [{ name: 'timestamp', order: 'desc' }],
     };
-    const res = await queryVehicleStatusList({ ...params, ...defaultParams });
+    const res: any = await queryVehicleStatusList({ ...params, ...defaultParams });
     if (res.status == 200) {
         data.value = res.result.data;
     }
 };
 //获取行驶记录数据
 const queryDataRecord = async (params?: any) => {
-    const _deviceId = routerParams.params?.value.deviceId;
+    const _deviceId: any = route.query?.deviceId;
 
     const defaultParams = {
         terms: [
             {
                 column: 'deviceId',
-                value: `${_deviceId}`,
+                value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
         ],
         paging: false,
         sorts: [{ name: 'shutStartMilli', order: 'desc' }],
     };
-    const res = await queryVehicleTravelList({ ...params, ...defaultParams });
+    const res: any = await queryVehicleTravelList({ ...params, ...defaultParams });
     if (res.status == 200) {
         dataRecord.value = res.result.data;
     }
@@ -406,7 +412,7 @@ const queryDataWork = async (params?: any) => {
         paging: false,
         sorts: [{ name: 'startTime', order: 'desc' }],
     };
-    const res = await queryVehicleWorkList({ ...params, ...defaultParams });
+    const res: any = await queryVehicleWorkList({ ...params, ...defaultParams });
     if (res.status == 200) {
         dataWork.value = res.result.data;
     }
