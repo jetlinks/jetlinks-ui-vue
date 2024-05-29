@@ -71,17 +71,17 @@
                         <j-descriptions-item label="总流量">{{
                             detail.totalFlow
                                 ? detail.totalFlow.toFixed(2) + ' M'
-                                : ''
+                                : '0 M'
                         }}</j-descriptions-item>
                         <j-descriptions-item label="使用流量">{{
                             detail.usedFlow
                                 ? detail.usedFlow.toFixed(2) + ' M'
-                                : ''
+                                : '0 M'
                         }}</j-descriptions-item>
                         <j-descriptions-item label="剩余流量">{{
                             detail.residualFlow
                                 ? detail.residualFlow.toFixed(2) + ' M'
-                                : ''
+                                : '0 M'
                         }}</j-descriptions-item>
                         <j-descriptions-item label="状态">
                           {{
