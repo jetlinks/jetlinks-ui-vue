@@ -120,13 +120,17 @@
                     {{ titleMap.get(slotProps.targetType) }}
                 </template>
                 <template #alarmTime="slotProps">
-                   {{ dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')}}
+                    {{
+                        dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
+                    }}
                 </template>
                 <template #level="slotProps">
                     <Ellipsis style="width: calc(100% - 20px)">
-                        {{ data.defaultLevel.find((i)=>{
-                            return i.level === slotProps.level
-                        }).title}}
+                        {{
+                            data.defaultLevel.find((i) => {
+                                return i.level === slotProps.level;
+                            }).title
+                        }}
                     </Ellipsis>
                 </template>
                 <template #state="slotProps">
@@ -229,26 +233,26 @@ titleMap.set('other', '其他');
 titleMap.set('org', '组织');
 const columns = [
     {
-        title:'配置名称',
-        dataIndex:'alarmName',
-        key:'alarmName',
-    },{
-        title:'类型',
-        dataIndex:'targetType',
-        key:'targetType',
-        scopedSlots:true
+        title: '配置名称',
+        dataIndex: 'alarmName',
+        key: 'alarmName',
     },
     {
-        title:'关联场景联动',
-        dataIndex:'sourceName',
-        key:'sourceName',
-
+        title: '类型',
+        dataIndex: 'targetType',
+        key: 'targetType',
+        scopedSlots: true,
+    },
+    {
+        title: '关联场景联动',
+        dataIndex: 'sourceName',
+        key: 'sourceName',
     },
     {
         title: '告警级别',
         dataIndex: 'level',
         key: 'level',
-        width:200,
+        width: 200,
         search: {
             type: 'select',
             options: data.value.defaultLevel.map((item: any) => {
@@ -258,7 +262,7 @@ const columns = [
                 };
             }),
         },
-        scopedSlots: true
+        scopedSlots: true,
     },
     {
         title: '最近告警时间',
@@ -300,49 +304,52 @@ const columns = [
 const newColumns = computed(() => {
     const otherColumns = {
         title: '产品名称',
-        dataIndex: 'targetId',
-        key: 'targetId',
+        dataIndex: 'targetName',
+        key: 'targetName',
+        // search: {
+        //     type: 'select',
+        //     options: async () => {
+        //         const termType = [
+        //             {
+        //                 column: 'targetType',
+        //                 termType: 'eq',
+        //                 type: 'and',
+        //                 value: props.type,
+        //             },
+        //         ];
+
+        //         if (props.id) {
+        //             termType.push({
+        //                 termType: 'eq',
+        //                 column: 'alarmConfigId',
+        //                 value: props.id,
+        //                 type: 'and',
+        //             });
+        //         }
+
+        //         const resp: any = await handleSearch({
+        //             sorts: [{ name: 'alarmTime', order: 'desc' }],
+        //             terms: termType,
+        //         });
+        //         const listMap: Map<string, any> = new Map();
+
+        //         if (resp.status === 200) {
+        //             resp.result.data.forEach((item) => {
+        //                 if (item.targetId) {
+        //                     listMap.set(item.targetId, {
+        //                         label: item.targetName,
+        //                         value: item.targetId,
+        //                     });
+        //                 }
+        //             });
+
+        //             return [...listMap.values()];
+        //         }
+        //         return [];
+        //     },
+        // },
         search: {
-            type: 'select',
-            options: async () => {
-                const termType = [
-                    {
-                        column: 'targetType',
-                        termType: 'eq',
-                        type: 'and',
-                        value: props.type,
-                    },
-                ];
-
-                if (props.id) {
-                    termType.push({
-                        termType: 'eq',
-                        column: 'alarmConfigId',
-                        value: props.id,
-                        type: 'and',
-                    });
-                }
-
-                const resp: any = await handleSearch({
-                    sorts: [{ name: 'alarmTime', order: 'desc' }],
-                    terms: termType,
-                });
-                const listMap: Map<string, any> = new Map();
-
-                if (resp.status === 200) {
-                    resp.result.data.forEach((item) => {
-                        if (item.targetId) {
-                            listMap.set(item.targetId, {
-                                label: item.targetName,
-                                value: item.targetId,
-                            });
-                        }
-                    });
-
-                    return [...listMap.values()];
-                }
-                return [];
-            },
+            type: 'string',
         },
     };
 
