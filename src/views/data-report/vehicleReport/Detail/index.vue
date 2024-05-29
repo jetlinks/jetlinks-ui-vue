@@ -3,22 +3,40 @@
         <div class="detail">
             <Title :data="vehicleData" />
             <div class="table above">
-                <detailList
-                    :title="'在线离线表'"
-                    :columns="columns"
-                    :data="data"
-                    :pagination="pagination"
-                    :scroll="{ y: 246 }"
-                />
+                <DetailsTitle :title="'在线离线表'">
+                    <j-table
+                        :columns="columns"
+                        model="table"
+                        :data-source="data"
+                        :pagination="pagination"
+                    >
+                        <template #bodyCell="{ column, text }">
+                            <template v-if="column.dataIndex === 'timestamp'">
+                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                            </template>
+                        </template>
+                    </j-table>
+                </DetailsTitle>
             </div>
             <div class="table middle">
-                <detailList
-                    :title="'工作效率表'"
-                    :columns="columnsWork"
-                    :data="dataWork"
-                    :pagination="paginationWork"
-                    :scroll="{ y: 246 }"
-                />
+                <DetailsTitle :title="'工作效率表'">
+                    <j-table
+                        :columns="columnsWork"
+                        model="table"
+                        :data-source="dataWork"
+                        :pagination="paginationWork"
+                        :scroll="{ y: 246 }"
+                    >
+                        <template #bodyCell="{ column, text }">
+                            <template v-if="column.dataIndex === 'startTime'">
+                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                            </template>
+                            <template v-if="column.dataIndex === 'endTime'">
+                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                            </template>
+                        </template>
+                    </j-table>
+                </DetailsTitle>
             </div>
             <div class="table content">
                 <div class="table-title">当前关联的设备</div>
@@ -69,13 +87,31 @@
                 </j-table>
             </div>
             <div class="table footer">
-                <detailList
-                    :title="'行驶记录明细'"
-                    :columns="columnsRecord"
-                    :data="dataRecord"
-                    :pagination="paginationRecord"
-                    :scroll="{ y: 246 }"
-                />
+                <DetailsTitle :title="'行驶记录明细'">
+                    <j-table
+                        :columns="columnsRecord"
+                        model="table"
+                        :data-source="dataRecord"
+                        :pagination="paginationRecord"
+                        :scroll="{ y: 246 }"
+                    >
+                        <template #bodyCell="{ column, text }">
+                            <template
+                                v-if="column.dataIndex === 'shutStartMilli'"
+                            >
+                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                            </template>
+                            <template
+                                v-if="column.dataIndex === 'shutDownMilli'"
+                            >
+                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                            </template>
+                            <template v-if="column.dataIndex === 'drivingTime'">
+                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                            </template>
+                        </template>
+                    </j-table>
+                </DetailsTitle>
             </div>
         </div>
     </page-container>
@@ -83,14 +119,15 @@
 <script lang="ts" setup>
 import {
     queryVehicleById,
-    queryVehicleEquipment,
+    queryVehicleEquipmentList,
+    queryVehicleTravelList,
+    queryVehicleWorkList,
+    queryVehicleStatusList,
 } from '@/api/data-report/vehicleReport';
+import dayjs from 'dayjs';
+import DetailsTitle from '../components/detailsTitle.vue';
 import Title from './Title/index.vue';
-import detailList from '../components/detailsList.vue';
-
-const route = useRoute();
-
-const vehicleData = ref();
+import { useRouterParams } from '@/utils/hooks/useParams';
 
 interface DataItem {
     key: number;
@@ -111,20 +148,20 @@ interface DataItemAss {
 const columns = [
     {
         title: '类型',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'status',
+        key: 'status',
         ellipsis: true,
     },
     {
         title: '日期',
-        dataIndex: 'date',
-        key: 'date',
-        ellipsis: true,
+        dataIndex: 'timestamp',
+        key: 'timestamp',
+        scopedSlots: true,
     },
     {
         title: '车辆位置',
-        dataIndex: 'position',
-        key: 'position',
+        dataIndex: 'address',
+        key: 'address',
         ellipsis: true,
     },
 ];
@@ -132,26 +169,26 @@ const columns = [
 const columnsWork = [
     {
         title: '开机时间',
-        dataIndex: 'startUpTime',
-        key: 'startUpTime',
+        dataIndex: 'startTime',
+        key: 'startTime',
         ellipsis: true,
     },
     {
         title: '熄火时间',
-        dataIndex: 'flameoutTime',
-        key: 'flameoutTime',
+        dataIndex: 'endTime',
+        key: 'endTime',
         ellipsis: true,
     },
     {
         title: '工作时长',
-        dataIndex: 'workTime',
-        key: 'workTime',
+        dataIndex: 'freeTime',
+        key: 'freeTime',
         ellipsis: true,
     },
     {
         title: '工作效率',
-        dataIndex: 'workEff',
-        key: 'workEff',
+        dataIndex: 'workEfficiency',
+        key: 'workEfficiency',
         ellipsis: true,
     },
 ];
@@ -186,102 +223,69 @@ const columnsAss = [
 const columnsRecord = [
     {
         title: '开始驾驶时间',
-        dataIndex: 'startTime',
-        key: 'startTime',
+        dataIndex: 'shutStartMilli',
+        key: 'shutStartMilli',
         width: 200,
         ellipsis: true,
     },
     {
         title: '结束驾驶时间',
-        dataIndex: 'endTime',
-        key: 'endTime',
+        dataIndex: 'shutDownMilli',
+        key: 'shutDownMilli',
         width: 200,
         ellipsis: true,
     },
     {
         title: '行驶时长',
-        dataIndex: 'travelTime',
-        key: 'travelTime',
+        dataIndex: 'drivingTime',
+        key: 'drivingTime',
         ellipsis: true,
     },
     {
         title: '行驶里程',
-        dataIndex: 'travel',
-        key: 'travel',
+        dataIndex: 'drivenDistance',
+        key: 'drivenDistance',
         ellipsis: true,
     },
     {
         title: '起点位置',
-        dataIndex: 'startPosition',
-        key: 'startPosition',
+        dataIndex: 'startAddress',
+        key: 'startAddress',
         ellipsis: true,
     },
     {
         title: '终点位置',
-        dataIndex: 'endPosition',
-        key: 'endPosition',
+        dataIndex: 'endAddress',
+        key: 'endAddress',
         ellipsis: true,
     },
     {
         title: '报警次数',
-        dataIndex: 'alarmNumber',
-        key: 'alarmNumber',
+        dataIndex: 'count',
+        key: 'count',
         ellipsis: true,
     },
 ];
+const route = useRoute();
 
-const data: DataItem[] = [];
-for (let i = 0; i < 100; i++) {
-    data.push({
-        key: i,
-        type: `type ${i}`,
-        date: `2024-05-23 09:00:00`,
-        position: `重庆市 no. ${i}`,
-    });
-}
+const routerParams = useRouterParams();
+
+const vehicleData = ref();
+
+const data = ref<DataItem[]>([]);
 
 const dataWork = ref<any>([]);
-for (let i = 0; i < 100; i++) {
-    dataWork.value.push({
-        startUpTime: '2024-05-23 09:00:00',
-        flameoutTime: `2024-05-23 10:${i % 6 === 0 ? '20' : '00'}:00`,
-        workTime: `${i % 6 === 0 ? '1小时20分钟' : '1小时'}`,
-        workEff: '80%',
-    });
-}
 
-const dataAss: DataItemAss[] = [];
-for (let i = 0; i < 50; i++) {
-    dataAss.push({
-        key: i,
-        id: '111222',
-        name: `设备${i}`,
-        productName: i % 2 === 0 ? '空调' : '喇叭',
-        state: i % 3 === 0 ? true : false,
-        efficiency: `${i + 10} %`,
-    });
-}
+const dataAss = ref<DataItemAss[]>([]);
 
 const dataRecord = ref<any>([]);
-for (let i = 0; i < 49; i++) {
-    dataRecord.value.push({
-        key: i,
-        startTime: '2024-05-22 12:00:00',
-        endTime: '2024-05-22 13:00:00',
-        travelTime: '1小时',
-        travel: `${20 + (i % 5) * 10}km`,
-        startPosition: '重庆市渝北区',
-        endPosition: '重庆市南岸区',
-        alarmNumber: i % 4 === 0 ? 5 : 3,
-    });
-}
 
 const pagination = {
     showTotal: (num: number, range: number[]) => {
         return `总共 ${num} 条`;
     },
     defaultPageSize: 4,
-    total: data?.length,
+    total: data?.value.length,
     pageSizeOptions: ['4', '10', '20', '50', '100'],
     showQuickJumper: true,
     showSizeChanger: true,
@@ -305,7 +309,7 @@ const paginationAss = {
         return `总共 ${num} 条`;
     },
     defaultPageSize: 4,
-    total: dataAss?.length,
+    total: dataAss.value?.length,
     pageSizeOptions: ['4', '10', '20', '50', '100'],
     showQuickJumper: true,
     showSizeChanger: true,
@@ -315,22 +319,83 @@ const paginationAss = {
 const getDetailFn = async () => {
     const _id = route.params?.id as string;
     const res = await queryVehicleById(_id);
-    console.log(res.result);
     if (res.status == 200) {
         vehicleData.value = res.result;
+
     }
 };
 //获取当前关联设备信息
-const getDeviceFn = async () => {
+const queryDevice = async () => {
     const _id = route.params?.id as string;
-    const res = await queryVehicleEquipment({ where: `vehicleId=${_id}` });
+    const params = {
+        terms: [
+            {
+                column: 'vehicleId',
+                value: `${_id}`,
+                termType: 'eq',
+            },
+        ],
+        paging: false,
+    };
+    const res = await queryVehicleEquipmentList(params);
     if (res.status == 200) {
-        const data = res.result?.data;
-        if(data?.length){
-            
-        }
+        dataAss.value = res.result.data;
     }
-    console.log(res, 'res');
+};
+//获取在线离线数据
+
+const queryVehicleStatus = async (params?: any) => {
+    const _deviceId = routerParams.params?.value.deviceId;
+    const defaultParams = {
+        terms: [
+            {
+                column: 'deviceId',
+                value: `${_deviceId}`,
+                termType: 'eq',
+            },
+        ],
+        paging: false,
+    };
+    const res = await queryVehicleStatusList({ ...params, ...defaultParams });
+    if (res.status == 200) {
+        data.value = res.result.data;
+    }
+};
+//获取行驶记录数据
+const queryDataRecord = async (params?: any) => {
+    const _deviceId = routerParams.params?.value.deviceId;
+    const defaultParams = {
+        terms: [
+            {
+                column: 'deviceId',
+                value: `${_deviceId}`,
+                termType: 'eq',
+            },
+        ],
+        paging: false,
+    };
+    const res = await queryVehicleTravelList({ ...params, ...defaultParams });
+    if (res.status == 200) {
+        dataRecord.value = res.result.data;
+    }
+};
+//获取工作效率数据
+const queryDataWork = async (params?: any) => {
+    const _deviceId = routerParams.params?.value.deviceId;
+    const defaultParams = {
+        terms: [
+            {
+                column: 'deviceId',
+                value: `${_deviceId}`,
+                termType: 'eq',
+            },
+        ],
+        paging: false,
+    };
+    const res = await queryVehicleWorkList({ ...params, ...defaultParams });
+    if (res.status == 200) {
+        dataWork.value = res.result.data;
+    }
 };
 
 const paginationRecord = {
@@ -347,7 +412,10 @@ const paginationRecord = {
 
 onMounted(() => {
     getDetailFn();
-    getDeviceFn();
+    queryDevice();
+    queryVehicleStatus();
+    queryDataWork();
+    queryDataRecord();
 });
 </script>
 <style lang="less" scoped>

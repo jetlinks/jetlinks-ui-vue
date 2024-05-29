@@ -11,9 +11,6 @@
                 :columns="columns"
                 :request="request"
                 model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -53,12 +50,19 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 
-import { downloadObject } from '@/utils/utils';
+import { downloadFileByUrl } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
 
-import { queryVehicleList } from '@/api/data-report/vehicleReport';
+import {
+    queryVehicleList,
+    vehicleExport,
+} from '@/api/data-report/vehicleReport';
+import moment from 'moment';
+import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
+
+const selectIds = ref<Array<number | string>>([]);
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -126,9 +130,6 @@ const columns = [
         key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
-        // search: {
-        //     type: 'string',
-        // },
     },
     {
         title: '日期',
@@ -149,27 +150,52 @@ const columns = [
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    // console.log('handleSearch:', e);
-    params.value = e;
-    // console.log('params.value: ', params.value);
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 
 const handelDetail = (slotProps: any) => {
     menuStory.jumpPage('data-report/vehicleReport/Detail', {
         id: slotProps.id,
+        deviceId: slotProps.deviceId,
     });
 };
 
 /**
  * 导出
  */
-const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `车辆导出信息`);
-};
 
+const type = ref<string>('xlsx');
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出得数据', 'error');
+        return;
+    }
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    vehicleExport(type.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `车辆列表数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
+};
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
         console.log(
@@ -177,6 +203,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
+        selectIds.value = selectedRowKeys;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);

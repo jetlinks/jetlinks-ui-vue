@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="queryData"
+                :request="querySpeed"
                 model="table"
                 :params="params"
                 :gridColumn="3"
@@ -40,23 +40,47 @@
 
 <script setup lang="ts">
 import { onlyMessage } from '@/utils/comm';
-import { downloadObject } from '@/utils/utils';
-import { query, PageIndex } from '@/api/data-report/commonApi';
+import { downloadFileByUrl } from '@/utils/utils';
 import dayjs from 'dayjs';
+import { querySpeed, speedExport } from '@/api/data-report/IrregularDriving';
+import moment from 'moment';
+
 const configRef = ref<Record<string, any>>({});
 
-const queryData = (data?: any) => query(PageIndex.SpeedAlarm, data);
+const selectIds = ref<Array<number | string>>([]);
 
-const selectedRowsData = ref();
 /**
  * 导出
  */
- const handleExport = () => {
-    if (selectedRowsData.value) {
-        downloadObject(selectedRowsData.value, `超速报警数据`);
+
+const type = ref<string>('xlsx');
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
         return;
     }
-    onlyMessage('请勾选需要导出的数据', 'error');
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    speedExport(type.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `超速异常数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
 };
 const params = ref<Record<string, any>>({});
 const columns = [
@@ -164,6 +188,7 @@ const columns = [
         key: 'reportTime',
         scopedSlots: true,
         ellipsis: true,
+        width: 180,
         search: {
             type: 'string',
         },
@@ -177,7 +202,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
-        selectedRowsData.value = selectedRows;
+        selectIds.value = selectedRowKeys;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
@@ -189,10 +214,10 @@ const rowSelection = {
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 </script>
 
