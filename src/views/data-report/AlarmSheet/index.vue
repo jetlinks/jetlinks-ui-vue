@@ -1,43 +1,49 @@
 <template>
-    <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
-        <FullPage>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="queryData"
-                model="table"
-                :params="params"
-                :gridColumn="3"
-                :row-selection="rowSelection"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            :popConfirm="{
+  <page-container>
+    <pro-search
+        :columns="columns"
+        target="notice-config"
+        @search="handleSearch"
+    />
+    <FullPage>
+      <JProTable
+          ref="configRef"
+          :columns="columns"
+          :request="queryData"
+          model="table"
+          :params="params"
+          :gridColumn="3"
+          :row-selection="rowSelection"
+      >
+        <template #headerTitle>
+          <j-space>
+            <PermissionButton
+                :popConfirm="{
                                 title: `确认导出？`,
                                 onConfirm: () => handleExport(),
                             }"
-                        >
-                            <AIcon type="ExportOutlined" />
-                            导出
-                        </PermissionButton>
-                    </j-space>
-                </template>
+            >
+              <AIcon type="ExportOutlined"/>
+              导出
+            </PermissionButton>
+          </j-space>
+        </template>
 
-                <template #alarmTime="{ alarmTime }">
-                    {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
-                </template>
-            </JProTable>
-        </FullPage>
-    </page-container>
+        <template #alarmTime="{ alarmTime }">
+          {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
+        </template>
+      </JProTable>
+    </FullPage>
+  </page-container>
 </template>
 
 <script setup lang="ts">
+import {downloadFileByUrl} from '@/utils/utils';
+import {PageIndex, query} from '@/api/data-report/commonApi';
+import dayjs from 'dayjs';
+import {FullPage} from 'components/Layout';
+import {getDicList, _export} from '@/api/data-report/alarmSheet';
+import moment from "moment";
 import { downloadObject } from '@/utils/utils';
 import { queryAlarmData } from '@/api/data-report/alarmSheet';
 import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
@@ -134,14 +140,30 @@ const columns = [
  * @param params
  */
 const handleSearch = (params: any) => {
-    params.value = params;
+  params.value = params;
 };
 
 /**
  * 导出
  */
-const handleExport = () => {
-    downloadObject(configRef.value.selectedKeys, `车辆告警数据`);
+
+const type = ref<string>('xlsx');
+
+const handleExport = async (_params: any) => {
+  const data = {..._params};
+  _export(type.value, data).then((res: any) => {
+    if (res) {
+      const blob = new Blob([res.data], {type: type.value});
+      const url = URL.createObjectURL(blob);
+      downloadFileByUrl(
+          url,
+          `车辆告警数据-${moment(new Date()).format(
+              'YYYY/MM/DD HH:mm:ss',
+          )}`,
+          type.value,
+      );
+    }
+  });
 };
 
 /**
