@@ -76,12 +76,14 @@
 </template>
 
 <script setup lang="ts">
-import { querySim } from '@/api/data-report/sim';
+import { querySim, simDataExport } from '@/api/data-report/sim';
 import { downloadFileByUrl } from '@/utils/utils';
 import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
 import dayjs from 'dayjs';
 import { _export } from '@/api/data-report/alarmSheet';
 import moment from 'moment';
+import { onlyMessage } from '@/utils/comm';
+import { faultDataExport } from '@/api/data-report/faultSheet';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -330,14 +332,35 @@ const formatFlow = (flow: number | undefined) => {
     }
 };
 
+// 选中的数据的id
+const selectIds = ref<Array<number | string>>([]);
+const rowSelection = {
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        selectIds.value = selectedRowKeys;
+    },
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
+};
+
 /**
  * 导出
  */
 const type = ref<string>('xlsx');
-
-const handleExport = async (_params: any) => {
-    const data = { ..._params };
-    _export(type.value, data).then((res: any) => {
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    simDataExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);
@@ -348,15 +371,6 @@ const handleExport = async (_params: any) => {
             );
         }
     });
-};
-
-/**
- * 选中行
- */
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {},
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
 };
 </script>
 

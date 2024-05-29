@@ -43,11 +43,11 @@
 
 <script setup lang="ts">
 import { downloadFileByUrl } from '@/utils/utils';
-import { queryFaultData } from '@/api/data-report/faultSheet';
+import { faultDataExport, queryFaultData } from '@/api/data-report/faultSheet';
 import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
-import { _export } from '@/api/data-report/alarmSheet';
 import moment from 'moment/moment';
 import dayjs from 'dayjs';
+import { onlyMessage } from '@/utils/comm';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -153,8 +153,12 @@ const handleSearch = (param: any) => {
     params.value = param;
 };
 
+// 选中的数据的id
+const selectIds = ref<Array<number | string>>([]);
 const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {},
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        selectIds.value = selectedRowKeys;
+    },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {},
     onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
 };
@@ -163,10 +167,21 @@ const rowSelection = {
  * 导出
  */
 const type = ref<string>('xlsx');
-
-const handleExport = async (_params: any) => {
-    const data = { ..._params };
-    _export(type.value, data).then((res: any) => {
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    faultDataExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);

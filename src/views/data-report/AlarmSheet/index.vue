@@ -149,14 +149,21 @@ const handleSearch = (param: any) => {
 // 选中的数据的id
 const selectIds = ref<Array<number | string>>([]);
 const type = ref<string>('xlsx');
-
-const handleExport = async (_params: any) => {
+const handleExport = async () => {
     if (!selectIds.value?.length) {
-        onlyMessage('请勾选需要导出得数据', 'error');
+        onlyMessage('请勾选需要导出的数据', 'error');
         return;
     }
-    const data = { ..._params };
-    _export(type.value, data).then((res: any) => {
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    _export(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);
