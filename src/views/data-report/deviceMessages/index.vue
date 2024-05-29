@@ -35,13 +35,6 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #deviceId="slotProps">
-                    {{
-                        slotProps.deviceId
-                            ? getDeviceName(slotProps.deviceId).value
-                            : ''
-                    }}
-                </template>
 
                 <template #createTime="slotProps">
                     {{
@@ -49,6 +42,13 @@
                             ? moment(slotProps.createTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
+                            : ''
+                    }}
+                </template>
+                <template #deviceId="slotProps">
+                    {{
+                        slotProps.deviceId
+                            ? getDeviceName(slotProps.deviceId).value
                             : ''
                     }}
                 </template>
@@ -67,16 +67,21 @@ import {
     getVehicleDevice,
     queryDeviceList,
 } from '@/api/data-report/deviceReport';
-import { queryDeviceLogs } from '@/api/data-report/deviceMessages';
-import { downloadObject } from '@/utils/utils';
+import {
+    queryDeviceLogs,
+    deviceLogsExport,
+} from '@/api/data-report/deviceMessages';
+import { downloadFileByUrl, downloadObject } from '@/utils/utils';
 import { onlyMessage } from '@/utils/comm';
 import moment from 'moment';
 import { useMenuStore } from 'store/menu';
-const menuStory = useMenuStore();
+
 import { Modal, Textarea } from 'jetlinks-ui-components';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
+
+const selectIds = ref<Array<number | string>>([]);
 
 const columns = [
     {
@@ -85,15 +90,12 @@ const columns = [
         key: 'id',
         width: 180,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '设备名称',
         dataIndex: 'deviceId',
         key: 'deviceId',
-        ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -103,6 +105,14 @@ const columns = [
         dataIndex: 'type.text',
         key: 'type.text',
         ellipsis: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '直连设备', value: 'device' },
+                { label: '网关子设备', value: 'childrenDevice' },
+                { label: '网关设备', value: 'gateway' },
+            ],
+        },
     },
     {
         title: '时间',
@@ -149,10 +159,6 @@ const handelDetail = (data: any) => {
             value: content,
         }),
     });
-    // menuStory.jumpPage('data-report/vehicleReport/Detail', {
-    //     id: data.id,
-    //     deviceId: data.deviceId,
-    // });
 };
 
 /**
@@ -166,8 +172,8 @@ const handleSearch = (param: any) => {
 /**
  * 通知设备id获取设备名称
  */
-const getDeviceName = (id: string) => {
-    const res: any = getVehicleDevice(id);
+const getDeviceName = async (id: string) => {
+    const res: any = await getVehicleDevice(id);
     console.log('result', res.result);
     if (res.result) {
         return res.result.name;
@@ -179,8 +185,34 @@ const getDeviceName = (id: string) => {
 /**
  * 导出
  */
-const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `设备消息导出信息`);
+const type = ref<string>('xlsx');
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    deviceLogsExport(type.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `设备消息数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
 };
 
 const rowSelection = {
@@ -190,6 +222,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
+        selectIds.value = selectedRowKeys;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);

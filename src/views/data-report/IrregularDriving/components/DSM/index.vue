@@ -10,6 +10,9 @@
                 ref="configRef"
                 :columns="columns"
                 :request="queryDSM"
+                defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
                 model="table"
                 :params="params"
                 :gridColumn="3"

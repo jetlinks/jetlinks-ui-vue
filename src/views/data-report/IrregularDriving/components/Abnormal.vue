@@ -11,6 +11,9 @@
                 :columns="columns"
                 :request="queryAbnormal"
                 model="table"
+                defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -29,6 +32,10 @@
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
+                </template>
+
+                <template #collisionAngle="{ collisionAngle }">
+                    {{ `${collisionAngle}&deg;` }}
                 </template>
             </JProTable>
         </full-page>
@@ -155,10 +162,8 @@ const columns = [
         title: '碰撞角度 ',
         dataIndex: 'collisionAngle',
         key: 'collisionAngle',
+        scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
 ];
 

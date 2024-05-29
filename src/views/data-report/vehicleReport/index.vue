@@ -10,6 +10,9 @@
                 ref="configRef"
                 :columns="columns"
                 :request="request"
+                defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
                 model="table"
                 :params="params"
                 :gridColumn="3"
@@ -40,7 +43,7 @@
                     </a>
                 </template>
                 <template #vehicleDate="{ vehicleDate }">
-                    {{ dayjs(vehicleDate).format('YYYY-MM-DD') }}
+                    {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </FullPage>
