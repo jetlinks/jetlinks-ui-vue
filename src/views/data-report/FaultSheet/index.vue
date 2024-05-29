@@ -39,76 +39,16 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs';
 import { downloadObject } from '@/utils/utils';
-import { PageIndex, query } from '@/api/data-report/commonApi';
-import { getDicList } from '@/api/data-report/alarmSheet';
+import { queryFaultData } from '@/api/data-report/faultSheet';
+import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
+import dayjs from 'dayjs';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
-// 存储告警信息
-const dicMap = new Map<string, any>();
-// 处理告警信息
-(async () => {
-    const res: any = await getDicList({
-        sorts: [
-            {
-                name: 'ordinal',
-                order: 'desc',
-            },
-        ],
-    });
-    if (res.status === 200) {
-        const data = res.result.data;
-        data &&
-            data.forEach((dic: any) => {
-                dicMap.set(dic.dictId, {
-                    id: dic.dictId,
-                    value: dic.value,
-                    desc: dic.text,
-                });
-            });
-    }
-})();
-
-/**
- * @function queryData 请求数据
- * @param _params
- */
-const queryData = async (_params: any) => {
-    // 1.处理表格组件传递的参数
-    const data = { ..._params };
-    const resp: any = await query(PageIndex.FaultSheet, data);
-    if (resp.status === 200) {
-        const records = resp.result.data;
-        // 为表格记录对象添加描述字段
-        records.forEach((record: any) => {
-            if (record.alarmDictionaryKey) {
-                record['description'] = dicMap.get(
-                    record.alarmDictionaryKey,
-                )?.desc;
-            }
-        });
-        return {
-            // 仿造请求结果返回给表格
-            code: resp.status,
-            result: resp.result,
-            status: resp.status,
-        };
-    } else {
-        return {
-            code: 200,
-            result: {
-                data: [],
-                pageIndex: 0,
-                pageSize: 0,
-                total: 0,
-            },
-            status: 200,
-        };
-    }
-};
+// 生成请求函数
+const queryData = useFilterAlarmDesc(queryFaultData);
 
 const columns = [
     {
@@ -203,25 +143,14 @@ const columns = [
  * 搜索
  * @param params
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (params: any) => {
+    params.value = params;
 };
 
 const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        // console.log(
-        //     `selectedRowKeys: ${selectedRowKeys}`,
-        //     'selectedRows: ',
-        //     selectedRows,
-        // );
-        console.log('rowSelectionChange');
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log(toRaw(record), toRaw(selected), toRaw(selectedRows));
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log(selected, selectedRows, changeRows);
-    },
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {},
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
 };
 
 /**

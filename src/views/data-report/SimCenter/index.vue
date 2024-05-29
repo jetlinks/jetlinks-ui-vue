@@ -302,21 +302,13 @@ const handleExport = () => {
     downloadObject(data, `异常震动数据`);
 };
 
+/**
+ * 选中行
+ */
 const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        // console.log(
-        //     `selectedRowKeys: ${selectedRowKeys}`,
-        //     'selectedRows: ',
-        //     selectedRows,
-        // );
-        console.log('rowSelectionChange');
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log(toRaw(record), toRaw(selected), toRaw(selectedRows));
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log(selected, selectedRows, changeRows);
-    },
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {},
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
 };
 </script>
 
