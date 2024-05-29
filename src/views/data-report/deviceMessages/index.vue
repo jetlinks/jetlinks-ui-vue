@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="request"
+                :request="queryDeviceLogs"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -35,13 +35,14 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <!-- <template #deviceId="slotProps">
+                <template #deviceId="slotProps">
                     {{
                         slotProps.deviceId
                             ? getDeviceName(slotProps.deviceId).value
                             : ''
                     }}
-                </template> -->
+                </template>
+
                 <template #createTime="slotProps">
                     {{
                         slotProps.createTime
@@ -72,6 +73,7 @@ import { onlyMessage } from '@/utils/comm';
 import moment from 'moment';
 import { useMenuStore } from 'store/menu';
 const menuStory = useMenuStore();
+import { Modal, Textarea } from 'jetlinks-ui-components';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -98,12 +100,9 @@ const columns = [
     },
     {
         title: '类型',
-        dataIndex: 'type',
-        key: 'type',
+        dataIndex: 'type.text',
+        key: 'type.text',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '时间',
@@ -135,18 +134,34 @@ const columns = [
 ];
 
 const handelDetail = (data: any) => {
-    menuStory.jumpPage('data-report/vehicleReport/Detail', {
-        id: data.id,
+    let content = '';
+    try {
+        content = JSON.stringify(JSON.parse(data.content), null, 2);
+    } catch (error) {
+        content = data.content;
+    }
+    Modal.info({
+        title: '详细信息',
+        width: 700,
+        content: h(Textarea, {
+            bordered: false,
+            rows: 15,
+            value: content,
+        }),
     });
+    // menuStory.jumpPage('data-report/vehicleReport/Detail', {
+    //     id: data.id,
+    //     deviceId: data.deviceId,
+    // });
 };
 
 /**
  * 搜索
  * @param params
  */
-const handleSearch = (e: any) => {
+const handleSearch = (params: any) => {
     // console.log('handleSearch:', e);
-    params.value = e;
+    params.value = params;
     // console.log('params.value: ', params.value);
 };
 
@@ -154,7 +169,7 @@ const handleSearch = (e: any) => {
  * 通知设备id获取设备名称
  */
 const getDeviceName = (id: string) => {
-    const res: any =  getVehicleDevice(id);
+    const res: any = getVehicleDevice(id);
     console.log('result', res.result);
     if (res.result) {
         return res.result.name;
@@ -186,33 +201,31 @@ const rowSelection = {
     },
 };
 
-const request = (params: Record<string, any>) =>
-    new Promise((resolve) => {
-        console.log('params', params);
-        queryDeviceLogs({
-            firstPageIndex: params.pageIndex,
-            pageIndex: params.pageIndex,
-            pageSize: params.pageSize,
-            sorts: params.sorts,
-            terms: params.terms,
-        })
-            .then((response: any) => {
-                console.log(response, 'response');
-                resolve({
-                    result: {
-                        data: response.result?.data,
-                        pageIndex: params.pageIndex || 0,
-                        pageSize: params.pageSize || 20,
-                        total: response.result?.total,
-                    },
-                    status: response.status,
-                });
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    });
-
+// const request = (params: Record<string, any>) =>
+//     new Promise((resolve) => {
+//         queryDeviceLogs({
+//             firstPageIndex: params.pageIndex,
+//             pageIndex: params.pageIndex,
+//             pageSize: params.pageSize,
+//             sorts: params.sorts,
+//             terms: params.terms,
+//         })
+//             .then((response: any) => {
+//                 console.log(response, 'response');
+//                 resolve({
+//                     result: {
+//                         data: response.result?.data,
+//                         pageIndex: params.pageIndex || 0,
+//                         pageSize: params.pageSize || 20,
+//                         total: response.result?.total,
+//                     },
+//                     status: response.status,
+//                 });
+//             })
+//             .catch((error: any) => {
+//                 console.log(error);
+//             });
+//     });
 </script>
 
 <style lang="less" scoped></style>
