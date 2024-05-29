@@ -518,10 +518,6 @@ const handleSaveClick = async (next?: Function) => {
         tableRef.value.cleanEditStatus()
         editStatus.value = false
         onlyMessage('操作成功！')
-        // 设备编辑标签后，返回实力信息页面，标签栏没有更新
-        if(_target === 'device'){
-          instanceStore.refresh(instanceStore.current.id)
-        }
         next?.()
       }
     }
