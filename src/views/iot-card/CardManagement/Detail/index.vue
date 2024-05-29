@@ -262,8 +262,8 @@ const getData = (
  */
 const getDataTotal = () => {
     const dTime = [
-        moment(new Date()).startOf('day').valueOf(),
-        moment(new Date()).endOf('day').valueOf(),
+        moment(new Date()).subtract(1, 'day').startOf('day').valueOf(),
+        moment(new Date()).subtract(1, 'day').endOf('day').valueOf(),
     ];
     const mTime = [
         moment().startOf('month').valueOf(),
