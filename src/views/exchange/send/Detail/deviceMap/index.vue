@@ -211,6 +211,18 @@ const props = defineProps({
         type: String,
         default: undefined,
     },
+    allDataMapping: {
+        type: Object,
+        default: [], 
+    },
+    allDeviceMapping: {
+        type: Object,
+        default: [], 
+    },
+    selectProductId: {
+        type: String,
+        default: '', 
+    },
 });
 // const deviceDetailList = ref<any>(props.deviceDetailList);
 
@@ -265,17 +277,10 @@ const beforeUpload = (file: any) => {
             onlyMessage('请上传正确格式文件', 'error');
             return false;
         }
-        if (
-            !data?.deviceDetails ||
-            JSON.stringify(data?.deviceDetails) === '{}'
-        ) {
-            onlyMessage('缺少deviceDetails字段或对应的值', 'error');
-            return false;
-        }
         let saveData = [
             {
                 id: props.sendId,
-                targetMapping: data,
+                targetMapping: {result: data},
             },
         ];
         console.log('saveData', saveData);
@@ -340,15 +345,42 @@ const handleSave = () => {
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
-    console.log('senSaveDataMap', senSaveDataMap);
-    // console.log('props.sendId',props.sendId);
-    getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
-        if (res.status === 200) {
-            onlyMessage('保存成功');
-        }
-    });
+    if (props.allDataMapping.id && props.allDeviceMapping.id) {
+        props.allDataMapping.map
+        const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
+        const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
+
+        let senSaveDataMap = { dataMapping: newDataMapping, deviceMapping: newDeviceMapping };
+        console.log('senSaveDataMap1', senSaveDataMap);
+        getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('保存成功');
+                emit('refresh');
+            }
+        });
+    } else {
+        let senSaveDataMap = { dataMapping: [{ id: props.selectProductId, configList: getData }], deviceMapping: [{ id: props.selectProductId, configList: getDeviceData }] };
+        console.log('senSaveDataMap2', senSaveDataMap);
+        getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('保存成功');
+                emit('refresh');
+            }
+        });
+    }
 };
+
+//更新或添加对象到映射中
+const upsert = (arr: any, obj: any) => {
+    const index = arr.findIndex((x: any) => x.id === obj.id);
+    if (index === -1) {
+        // 如果不存在，直接添加
+        return [...arr, obj];
+    } else {
+        // 如果存在，更新
+        return [...arr.slice(0, index), obj, ...arr.slice(index + 1)];
+    }
+}
 
 const splitHumidity = (data: any) => {
     const match = data.match(/^([^(]+)\((.*)\)$/);
@@ -391,22 +423,46 @@ const handleMap = (data: any) => {
                         const { targetAttribute, select, ...res } = item;
                         return {
                             ...res,
-                            isDistribute: '是',
+                            isDistribute: item1.select ? '是': '否',
                             select: item1.select,
                             targetAttribute: item1.targetAttribute,
                         };
                     } else {
                         return {
                             ...item,
-                            isDistribute: '否',
+                            isDistribute: '否'
                         }
                     }
                 },
             );
-            // console.log('getDevTarAtt', getDevTarAtt);
+            console.log('getDevTarAtt', getDevTarAtt);
             deviceMapDetail.value = getDevTarAtt;
         }
-    } 
+    } else {
+        const getDevTarAtt = data.record.deviceTargetAttribute.map(
+                (item: any) => {
+                    let item1 = props.dataDetailList.find(
+                        (item2: any) => item2.originalId === item.originalId,
+                    );
+                    if (item1) {
+                        const { targetAttribute, select, ...res } = item;
+                        return {
+                            ...res,
+                            isDistribute: item1.select ? '是': '否',
+                            select: item1.select,
+                            targetAttribute: item1.targetAttribute,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            isDistribute: '否'
+                        }
+                    }
+                },
+            );
+            console.log('getDevTarAtt1', getDevTarAtt);
+            deviceMapDetail.value = getDevTarAtt;
+    }
     State.openView = true;
 };
 

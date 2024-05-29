@@ -1,70 +1,33 @@
 <template>
     <j-form>
-        <j-data-table
-            ref="tableRef"
-            class="ant-table-striped"
-            :columns="columns"
-            :data-source="props.dataDetailList"
-            :height="560"
-            bordered
-        >
+        <j-data-table ref="tableRef" class="ant-table-striped" :columns="columns" :data-source="props.dataDetailList"
+            :height="560" bordered>
             <template #expand>
-                <PermissionButton
-                    style="margin-right: 20px"
-                    placement="topRight"
-                >
-                    <j-upload
-                        name="file"
-                        accept=".json"
-                        :showUploadList="false"
-                        :before-upload="beforeUpload"
-                        >导入</j-upload
-                    >
+                <PermissionButton style="margin-right: 20px" placement="topRight">
+                    <j-upload name="file" accept=".json" :showUploadList="false"
+                        :before-upload="beforeUpload">导入</j-upload>
                 </PermissionButton>
-                <PermissionButton
-                    key="save"
-                    style="margin-right: 20px"
-                    type="primary"
-                    :tooltip="{
-                        title: '保存',
-                    }"
-                    @click="handleSave"
-                    placement="topRight"
-                >
+                <PermissionButton key="save" style="margin-right: 20px" type="primary" :tooltip="{
+                    title: '保存',
+                }" @click="handleSave" placement="topRight">
                     保存
                 </PermissionButton>
             </template>
             <template #headerCell="{ column }">
                 <template v-if="column.key === 'state'">
                     <span> 状态 </span>
-                    <j-switch
-                        style="margin-left: 10px"
-                        v-model:checked="checkedAll"
-                        @change="updateAllRowData('state', $event)"
-                        checkedValue="enabled"
-                        unCheckedValue="disabled"
-                        checked-children="开启"
-                        un-checked-children="关闭"
-                    />
+                    <j-switch style="margin-left: 10px" v-model:checked="checkedAll"
+                        @change="updateAllRowData('state', $event)" checkedValue="enabled" unCheckedValue="disabled"
+                        checked-children="开启" un-checked-children="关闭" />
                 </template>
             </template>
             <template #select="{ data }">
-                <j-select
-                    v-model:value="data.record.select"
-                    style="width: 150px"
-                    :options="props.dataMapOpt"
-                    placeholder="请选择目标属性"
-                    @change="saveRowData(data.index, 'select', $event)"
-                ></j-select>
+                <j-select v-model:value="data.record.select" style="width: 150px" :options="props.dataMapOpt"
+                    placeholder="请选择目标属性" @change="saveRowData(data.index, 'select', $event)"></j-select>
             </template>
             <template #state="{ data }">
-                <j-switch
-                    v-model:checked="data.record.state"
-                    @change="saveRowData(data.index, 'state', $event)"
-                    checkedValue="enabled"
-                    unCheckedValue="disabled"
-                    size="small"
-                />
+                <j-switch v-model:checked="data.record.state" @change="saveRowData(data.index, 'state', $event)"
+                    checkedValue="enabled" unCheckedValue="disabled" size="small" />
             </template>
         </j-data-table>
     </j-form>
@@ -100,6 +63,18 @@ const props = defineProps({
     sendId: {
         type: String,
         default: undefined,
+    },
+    allDataMapping: {
+        type: Object,
+        default: [],
+    },
+    allDeviceMapping: {
+        type: Object,
+        default: [],
+    },
+    selectProductId: {
+        type: String,
+        default: '',
     },
 });
 
@@ -154,17 +129,10 @@ const beforeUpload = (file: any) => {
             onlyMessage('请上传正确格式文件', 'error');
             return false;
         }
-        if (
-            !data?.deviceDetails ||
-            JSON.stringify(data?.deviceDetails) === '{}'
-        ) {
-            onlyMessage('缺少deviceDetails字段或对应的值', 'error');
-            return false;
-        }
         let saveData = [
             {
                 id: props.sendId,
-                targetMapping: data,
+                targetMapping: { result: data },
             },
         ];
         console.log('saveData', saveData);
@@ -209,15 +177,42 @@ const handleSave = () => {
             state: item.state,
         };
     });
-    let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
-    console.log(senSaveDataMap);
-    getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
-        if (res.status === 200) {
-            onlyMessage('保存成功');
-            emit('refresh');
-        }
-    });
+    if (props.allDataMapping.id && props.allDataMapping.id) {
+        props.allDataMapping.map
+        const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
+        const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
+
+        let senSaveDataMap = { dataMapping: newDataMapping, deviceMapping: newDeviceMapping };
+        console.log('senSaveDataMap1', senSaveDataMap);
+        getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('保存成功');
+                emit('refresh');
+            }
+        });
+    } else {
+        let senSaveDataMap = { dataMapping: [{ id: props.selectProductId, configList: getData }], deviceMapping: [{ id: props.selectProductId, configList: getDeviceData }] };
+        console.log('senSaveDataMap2', senSaveDataMap);
+        getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('保存成功');
+                emit('refresh');
+            }
+        });
+    }
 };
+
+//更新或添加对象到映射中
+const upsert = (arr: any, obj: any) => {
+    const index = arr.findIndex((x: any) => x.id === obj.id);
+    if (index === -1) {
+        // 如果不存在，直接添加
+        return [...arr, obj];
+    } else {
+        // 如果存在，更新
+        return [...arr.slice(0, index), obj, ...arr.slice(index + 1)];
+    }
+}
 
 const emit = defineEmits(['refresh']);
 </script>
@@ -226,12 +221,15 @@ const emit = defineEmits(['refresh']);
 .j-data-table-full {
     display: none;
 }
+
 .j-data-table-search-result {
     display: none;
 }
+
 [data-doc-theme='light'] .ant-table-striped :deep(.table-striped) td {
     background-color: #7dd1e0;
 }
+
 [data-doc-theme='dark'] .ant-table-striped :deep(.table-striped) td {
     background-color: rgb(230, 228, 228);
 }

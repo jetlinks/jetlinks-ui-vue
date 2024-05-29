@@ -19,7 +19,6 @@ const props = defineProps({
 })
 
 const selectRow = (rowkey: any) => {
-    console.log('rowkey', rowkey)
     emit('selectData', rowkey);
 }
 
