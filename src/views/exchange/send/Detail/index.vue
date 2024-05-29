@@ -86,7 +86,8 @@ const updateParentVar = (newValue: any) => {
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    if (allDataMapping.value.id && allDeviceMapping.value.id) {
+    console.log('props.allDataMapping',allDataMapping.value)
+    if (allDataMapping.value.length > 0 && allDeviceMapping.value.length>0) {
         allDataMapping.value.map
         const newDataMapping = upsert(allDataMapping.value, { id: selectProductId.value, configList: getData })
         const newDeviceMapping = upsert(allDeviceMapping.value, { id: selectProductId.value, configList: getDeviceData })

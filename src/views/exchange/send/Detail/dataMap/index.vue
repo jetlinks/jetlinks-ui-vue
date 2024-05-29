@@ -177,7 +177,8 @@ const handleSave = () => {
             state: item.state,
         };
     });
-    if (props.allDataMapping[0].id && props.allDataMapping[0].id) {
+    console.log('props.allDataMapping',props.allDataMapping)
+    if (props.allDataMapping.length>0 && props.allDataMapping.length>0) {
         props.allDataMapping.map
         const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
         const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
