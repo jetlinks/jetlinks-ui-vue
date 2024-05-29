@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="queryData"
+                :request="querySim"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -44,15 +44,25 @@
                     {{ formatFlow(residualFlow) }}
                 </template>
                 <template #cardType="{ cardType }">
-                    {{ handleCardType(cardType.value) }}
+                    {{ cardType ? handleCardType(cardType.value) : ' ' }}
                 </template>
                 <!-- 激活日期插槽 -->
                 <template #activationDate="{ activationDate }">
-                    {{ dayjs(activationDate).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{
+                        activationDate
+                            ? dayjs(activationDate).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : '暂未激活'
+                    }}
                 </template>
                 <!-- 更新时间插槽 -->
                 <template #updateTime="{ updateTime }">
-                    {{ dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{
+                        updateTime
+                            ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
+                            : '无更新信息'
+                    }}
                 </template>
                 <template #cardStateType="{ cardStateType }">
                     <state-tag
@@ -79,7 +89,7 @@ const params = ref<Record<string, any>>({});
 const queryData = (_params: any) => {
     return querySim({
         ..._params,
-        sorts: [{ name: 'updateTime', order: 'desc' }],
+        // sorts: [{ name: 'updateTime', order: 'desc' }],
     });
 };
 
@@ -150,18 +160,22 @@ const columns = [
             type: 'select',
             options: [
                 {
+                    label: '年卡',
                     text: '年卡',
                     value: 'year',
                 },
                 {
+                    label: '季卡',
                     text: '季卡',
                     value: 'season',
                 },
                 {
+                    label: '月卡',
                     text: '月卡',
                     value: 'month',
                 },
                 {
+                    label: '其他',
                     text: '其他',
                     value: 'other',
                 },
@@ -218,10 +232,9 @@ const columns = [
             type: 'string',
         },
     },
-
     {
         title: '状态',
-        dataIndex: 'cardState',
+        dataIndex: 'cardStateType',
         key: 'cardStateType',
         scopedSlots: true,
         width: 100,
@@ -229,24 +242,34 @@ const columns = [
             type: 'select',
             options: [
                 {
+                    label: '待激活',
                     text: '待激活',
                     value: 'toBeActivated',
                 },
                 {
+                    label: '停机',
                     text: '停机',
                     value: 'deactivate',
                 },
                 {
+                    label: '激活',
                     text: '激活',
                     value: 'using',
                 },
                 {
+                    label: '其他',
                     text: '其他',
                     value: 'other',
                 },
                 {
-                    text: '错误',
+                    label: '同步失败',
+                    text: '同步失败',
                     value: 'error',
+                },
+                {
+                    label: '未同步',
+                    text: '未同步',
+                    value: 'notReady',
                 },
             ],
         },
@@ -279,11 +302,12 @@ const handleTagType = (value: string) => {
         case 'toBeActivated':
             return 'warning';
         case 'error':
-        case 'deactivate':
+        case 'notReady':
             return 'error';
         case 'using':
             return 'success';
         case 'activated':
+        case 'deactivate':
             return 'default';
         case 'other':
             return 'processing';
