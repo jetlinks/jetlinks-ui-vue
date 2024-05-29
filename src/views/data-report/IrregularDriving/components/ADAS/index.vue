@@ -185,6 +185,7 @@ const columns = [
         title: '告警时间 ',
         dataIndex: 'reportTime',
         key: 'reportTime',
+        width: 180,
         scopedSlots: true,
         ellipsis: true,
     },
@@ -216,10 +217,10 @@ const rowSelection = {
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 </script>
 

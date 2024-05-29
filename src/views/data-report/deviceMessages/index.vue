@@ -157,12 +157,10 @@ const handelDetail = (data: any) => {
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (params: any) => {
-    // console.log('handleSearch:', e);
-    params.value = params;
-    // console.log('params.value: ', params.value);
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 
 /**

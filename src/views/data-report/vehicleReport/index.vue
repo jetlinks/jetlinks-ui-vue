@@ -130,7 +130,6 @@ const columns = [
         key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
-
     },
     {
         title: '日期',
@@ -151,10 +150,10 @@ const columns = [
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (params: any) => {
-    params.value = params;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 
 const handelDetail = (slotProps: any) => {

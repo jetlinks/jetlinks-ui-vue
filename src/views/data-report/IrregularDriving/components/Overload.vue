@@ -172,10 +172,10 @@ const rowSelection = {
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 </script>
 

@@ -188,6 +188,7 @@ const columns = [
         key: 'reportTime',
         scopedSlots: true,
         ellipsis: true,
+        width: 180,
         search: {
             type: 'string',
         },
@@ -201,7 +202,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
-        selectedRowsData.value = selectedRows;
+        selectIds.value = selectedRowKeys;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
@@ -213,10 +214,10 @@ const rowSelection = {
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 </script>
 

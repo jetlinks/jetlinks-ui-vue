@@ -180,6 +180,7 @@ const columns = [
         dataIndex: 'reportTime',
         key: 'reportTime',
         scopedSlots: true,
+        width: 180,
         ellipsis: true,
     },
     {
@@ -214,10 +215,10 @@ const onDetail = (data: Record<string, any>) => {
 };
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 </script>
 

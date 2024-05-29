@@ -183,8 +183,8 @@ const rowSelection = {
  * 搜索
  * @param params
  */
-const handleSearch = (params: any) => {
-    params.value = params;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 </script>
 
