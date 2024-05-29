@@ -34,6 +34,11 @@
                             <template v-if="column.dataIndex === 'endTime'">
                                 {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
                             </template>
+                            <template
+                                v-if="column.dataIndex === 'workEfficiency'"
+                            >
+                                {{ `${text}%` }}
+                            </template>
                         </template>
                     </j-table>
                 </DetailsTitle>
@@ -339,7 +344,7 @@ const queryDevice = async () => {
                 termType: 'eq',
             },
         ],
-        sorts: [{ name: 'createTime', order: 'desc' }],
+
         paging: false,
     };
     const res = await queryVehicleEquipmentList(params);
@@ -360,7 +365,7 @@ const queryVehicleStatus = async (params?: any) => {
             },
         ],
         paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
+        sorts: [{ name: 'timestamp', order: 'desc' }],
     };
     const res = await queryVehicleStatusList({ ...params, ...defaultParams });
     if (res.status == 200) {
@@ -370,6 +375,7 @@ const queryVehicleStatus = async (params?: any) => {
 //获取行驶记录数据
 const queryDataRecord = async (params?: any) => {
     const _deviceId = routerParams.params?.value.deviceId;
+
     const defaultParams = {
         terms: [
             {
@@ -379,7 +385,7 @@ const queryDataRecord = async (params?: any) => {
             },
         ],
         paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
+        sorts: [{ name: 'shutStartMilli', order: 'desc' }],
     };
     const res = await queryVehicleTravelList({ ...params, ...defaultParams });
     if (res.status == 200) {
@@ -388,17 +394,17 @@ const queryDataRecord = async (params?: any) => {
 };
 //获取工作效率数据
 const queryDataWork = async (params?: any) => {
-    const _deviceId = routerParams.params?.value.deviceId;
+    const _id = route.params?.id as string;
     const defaultParams = {
         terms: [
             {
-                column: 'deviceId',
-                value: `${_deviceId}`,
+                column: 'vehicleId',
+                value: `${_id}`,
                 termType: 'eq',
             },
         ],
         paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
+        sorts: [{ name: 'startTime', order: 'desc' }],
     };
     const res = await queryVehicleWorkList({ ...params, ...defaultParams });
     if (res.status == 200) {

@@ -90,10 +90,11 @@
 </template>
 
 <script setup lang="ts">
-import { queryDeviceList } from '@/api/data-report/deviceReport';
-import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
-import { downloadObject } from '@/utils/utils';
+import { queryDeviceList, deviceExport } from '@/api/data-report/deviceReport';
 import { onlyMessage } from '@/utils/comm';
+
+import { downloadFileByUrl, downloadObject } from '@/utils/utils';
+import moment from 'moment';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -169,10 +170,37 @@ const handleSearch = (param: any) => {
 /**
  * 导出
  */
-const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `设备消息导出信息`);
-};
+const type = ref<string>('xlsx');
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
+        return;
+    }
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
 
+    console.log(selectIds.value, 'datalist');
+    deviceExport('设备消息数据', type.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `设备消息数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
+};
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
         console.log(
@@ -180,7 +208,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
-        selectIds.value=selectedRowKeys
+        selectIds.value = selectedRowKeys;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
