@@ -9,8 +9,17 @@ export const queryDeviceList = (data: any) =>
 
 ///vehicle/device/_query
 
- /**
-  * 查询设备
-  * @param id 查询条件
-  */
- export const getVehicleDevice = (id: any) => server.get(`/vehicle/device/${id}`)
+/**
+ * 查询设备
+ * @param id 查询条件
+ */
+export const getVehicleDevice = (id: any) =>
+    server.get(`/vehicle/device/${id}`);
+
+/**
+ * 设备中心导出
+ * @param format 格式
+ * @param data 数据
+ */
+export const deviceExport = (name: string, format: string, data: any) =>
+    server.postStream(`/vehicle/device/_export/${name}.${format}`, data);

@@ -45,13 +45,6 @@
                             : ''
                     }}
                 </template>
-                <template #deviceId="slotProps">
-                    {{
-                        slotProps.deviceId
-                            ? getDeviceName(slotProps.deviceId).value
-                            : ''
-                    }}
-                </template>
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914"
                         >详情
@@ -93,8 +86,8 @@ const columns = [
     },
     {
         title: '设备名称',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'deviceName',
+        key: 'deviceName',
         scopedSlots: true,
         search: {
             type: 'string',
@@ -169,18 +162,18 @@ const handleSearch = (param: any) => {
     params.value = param;
 };
 
-/**
- * 通知设备id获取设备名称
- */
-const getDeviceName = async (id: string) => {
-    const res: any = await getVehicleDevice(id);
-    console.log('result', res.result);
-    if (res.result) {
-        return res.result.name;
-    } else {
-        return '';
-    }
-};
+// /**
+//  * 通知设备id获取设备名称
+//  */
+// const getDeviceName = async (id: string) => {
+//     const res: any = await getVehicleDevice(id);
+//     console.log('result', res.result);
+//     if (res.result) {
+//         return res.result.name;
+//     } else {
+//         return '';
+//     }
+// };
 
 /**
  * 导出
@@ -200,6 +193,7 @@ const handleExport = async () => {
             },
         ],
     };
+
     deviceLogsExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
