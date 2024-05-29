@@ -282,12 +282,12 @@ const getData = (
 };
 
 /**
- * 查询今日、当月、本年数据
+ * 查询左日、当月、本年数据
  */
 const getDataTotal = () => {
     const dTime = [
-        moment(new Date()).startOf('day').valueOf(),
-        moment(new Date()).endOf('day').valueOf(),
+        moment(new Date()).subtract(1, 'day').startOf('day').valueOf(),
+        moment(new Date()).subtract(1, 'day').endOf('day').valueOf(),
     ];
     const mTime = [
         moment().startOf('month').valueOf(),
