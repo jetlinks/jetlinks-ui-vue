@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="queryData"
+                :request="queryAbnormal"
                 model="table"
                 :params="params"
                 :gridColumn="3"
@@ -37,25 +37,49 @@
 
 <script setup lang="ts">
 import { onlyMessage } from '@/utils/comm';
-import { downloadObject } from '@/utils/utils';
-import { query, PageIndex } from '@/api/data-report/commonApi';
+import { downloadFileByUrl } from '@/utils/utils';
+import {
+    queryAbnormal,
+    abnormalExport,
+} from '@/api/data-report/IrregularDriving';
+import moment from 'moment';
 
-const queryData = (data?: any) => query(PageIndex.AbnormalVibration, data);
-
-const selectedRowsData = ref();
+const selectIds = ref<Array<number | string>>([]);
 
 const configRef = ref<Record<string, any>>({});
 /**
  * 导出
  */
-const handleExport = () => {
-    if (selectedRowsData.value) {
-        downloadObject(selectedRowsData.value, `异常震动数据`);
+
+const type = ref<string>('xlsx');
+const handleExport = async () => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出的数据', 'error');
         return;
     }
-    onlyMessage('请勾选需要导出的数据', 'error');
+    const _params = {
+        terms: [
+            {
+                column: 'id',
+                value: selectIds.value,
+                termType: 'in',
+            },
+        ],
+    };
+    abnormalExport(type.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `震动异常数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
 };
-
 const params = ref<Record<string, any>>({});
 const columns = [
     {
@@ -145,7 +169,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
-        selectedRowsData.value = selectedRows;
+        selectIds.value = selectedRowKeys;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
@@ -159,8 +183,8 @@ const rowSelection = {
  * 搜索
  * @param params
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (params: any) => {
+    params.value = params;
 };
 </script>
 
