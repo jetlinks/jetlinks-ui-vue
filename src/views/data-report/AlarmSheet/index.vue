@@ -47,6 +47,7 @@ import { queryAlarmData } from '@/api/data-report/alarmSheet';
 import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
 import { FullPage } from 'components/Layout';
 import dayjs from 'dayjs';
+import { onlyMessage } from '@/utils/comm';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -142,9 +143,15 @@ const handleSearch = (param: any) => {
     params.value = param;
 };
 
+// 选中的数据的id
+const selectIds = ref<Array<number | string>>([]);
 const type = ref<string>('xlsx');
 
 const handleExport = async (_params: any) => {
+    if (!selectIds.value?.length) {
+        onlyMessage('请勾选需要导出得数据', 'error');
+        return;
+    }
     const data = { ..._params };
     _export(type.value, data).then((res: any) => {
         if (res) {
@@ -165,7 +172,9 @@ const handleExport = async (_params: any) => {
  * 选中行
  */
 const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {},
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        selectIds.value = selectedRowKeys;
+    },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {},
     onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
 };

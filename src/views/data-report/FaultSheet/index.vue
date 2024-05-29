@@ -172,7 +172,7 @@ const handleExport = async (_params: any) => {
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `车辆告警数据-${moment(new Date()).format(
+                `车辆故障数据-${moment(new Date()).format(
                     'YYYY/MM/DD HH:mm:ss',
                 )}`,
                 type.value,
