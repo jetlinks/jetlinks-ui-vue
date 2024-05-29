@@ -12,7 +12,7 @@
         <div class="listBox">
             <j-tree :tree-data="props.productListData" v-if="props.productListData.length"
                 :fieldNames="{ title: 'name', key: 'id', children: 'children' }"
-                :showLine="{ showLeafIcon: false }" @select="selectRow">
+                v-model:selected-keys="selectedKeys" @select="selectRow">
             </j-tree>
             <j-empty v-else style="margin-top: 100px" />
         </div>
@@ -29,6 +29,7 @@ const props = defineProps({
 
 const searchValue = ref()
 const productList = ref<any>([])
+const selectedKeys = ref<any>([])
 
 watch(props.productListData,(newValue: any)=>{
     productList.value = newValue
@@ -36,6 +37,7 @@ watch(props.productListData,(newValue: any)=>{
 
 const search = () => {
     emit('searchValue', searchValue.value);
+    selectedKeys.value = []
 };
 
 const selectRow = (rowkey: any) => {
