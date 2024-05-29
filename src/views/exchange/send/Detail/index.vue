@@ -449,6 +449,29 @@ const selectInit = () => {
 };
 
 const Init = () => {
+     //获取目标设备和属性
+     queryDataSendList({
+            terms: [
+                {
+                    column: 'id',
+                    termType: 'eq',
+                    type: 'or',
+                    value: `${route.params?.id}`,
+                },
+            ],
+        }).then((res: any) => {
+            console.log('mapping', res.result);
+            allTargetData.value = res.result;
+            allDataMapping.value = res.result[0].dataMapping;
+            allDeviceMapping.value = res.result[0].deviceMapping;
+
+            // console.log('allDataMapping', allDataMapping.value)
+            // console.log('allDeviceMapping', allDeviceMapping.value)
+            selectInit()
+        });
+};
+
+onMounted(() => {
     //获取原设备和原属性
     const query = {
         ids: JSON.parse(route.query?.ids as string),
@@ -484,34 +507,8 @@ const Init = () => {
         }));
         selectProductId.value = productListData.value[0].id
         allOriData.value = res.result
-
-        console.log('allOriData', allOriData.value)
-
-        //获取目标设备和属性
-        queryDataSendList({
-            terms: [
-                {
-                    column: 'id',
-                    termType: 'eq',
-                    type: 'or',
-                    value: `${route.params?.id}`,
-                },
-            ],
-        }).then((res: any) => {
-            console.log('mapping', res.result);
-            allTargetData.value = res.result;
-            allDataMapping.value = res.result[0].dataMapping;
-            allDeviceMapping.value = res.result[0].deviceMapping;
-
-            // console.log('allDataMapping', allDataMapping.value)
-            // console.log('allDeviceMapping', allDeviceMapping.value)
-            selectInit()
-        });
+        Init();
     });
-};
-
-onMounted(() => {
-    Init();
 });
 </script>
 
