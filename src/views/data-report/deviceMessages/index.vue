@@ -45,6 +45,9 @@
                             : ''
                     }}
                 </template>
+                <template #type="slotProps">
+                    {{ slotProps.type.text }}
+                </template>
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914"
                         >详情
@@ -95,9 +98,10 @@ const columns = [
     },
     {
         title: '类型',
-        dataIndex: 'type.text',
-        key: 'type.text',
+        dataIndex: 'type',
+        key: 'type',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'select',
             options: [
@@ -187,7 +191,7 @@ const handleExport = async () => {
     const _params = {
         terms: [
             {
-                column: 'id',
+                column: '_id',
                 value: selectIds.value,
                 termType: 'in',
             },

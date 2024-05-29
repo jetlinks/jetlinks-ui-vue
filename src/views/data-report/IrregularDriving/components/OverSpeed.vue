@@ -134,8 +134,8 @@ const columns = [
     },
     {
         title: '速度限制',
-        dataIndex: 'overSpeedInfoNewLimitSpeed',
-        key: 'overSpeedInfoNewLimitSpeed',
+        dataIndex: 'overSpeedInfoSpeedLimit',
+        key: 'overSpeedInfoSpeedLimit',
         ellipsis: true,
         search: {
             type: 'string',
@@ -143,14 +143,14 @@ const columns = [
     },
     {
         title: '开始速度',
-        dataIndex: 'overSpeedInfoNewStartOverSpeed',
-        key: 'overSpeedInfoNewStartOverSpeed',
+        dataIndex: 'overSpeedInfoStartOverSpeed',
+        key: 'overSpeedInfoStartOverSpeed',
         scopedSlots: true,
     },
     {
         title: '最大速度',
-        dataIndex: 'overSpeedInfoNewMaximumOverSpeed',
-        key: 'overSpeedInfoNewMaximumOverSpeed',
+        dataIndex: 'overSpeedInfoMaximumOverSpeed',
+        key: 'overSpeedInfoMaximumOverSpeed',
         ellipsis: true,
         search: {
             type: 'string',
