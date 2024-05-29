@@ -176,7 +176,9 @@ const queryInkling = () => {
 
 onMounted(() => {
     // 设备编辑标签后，返回实力信息页面，标签栏没有更新
-    instanceStore.refresh(instanceStore.current.id);
+    if (instanceStore?.current?.id) {
+        instanceStore.refresh(instanceStore.current.id);
+    }
 });
 watch(
     () => instanceStore.current?.id,
