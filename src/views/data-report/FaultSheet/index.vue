@@ -50,7 +50,7 @@ const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 // 生成请求函数
-const queryData = useFilterAlarmDesc(queryFaultData);
+const queryData = useFilterAlarmDesc(queryFaultData, 'faultTime');
 
 const columns = [
     {
@@ -127,6 +127,7 @@ const columns = [
         title: '故障时间 ',
         dataIndex: 'faultTime',
         key: 'faultTime',
+        width: 180,
         scopedSlots: true,
     },
     {
@@ -143,10 +144,10 @@ const columns = [
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (params: any) => {
-    params.value = params;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 
 const rowSelection = {

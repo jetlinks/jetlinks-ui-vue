@@ -31,6 +31,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #productId="{ productId }">
+                    {{ productId || '暂未绑定' }}
+                </template>
                 <template #totalFlow="{ totalFlow }">
                     {{ formatFlow(totalFlow) }}
                 </template>
@@ -76,10 +79,10 @@ const params = ref<Record<string, any>>({});
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (e: any) => {
-    params.value = e;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 
 const columns = [
@@ -107,6 +110,7 @@ const columns = [
         dataIndex: 'productId',
         key: 'productId',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -193,6 +197,7 @@ const columns = [
         dataIndex: 'activationDate',
         key: 'activationDate',
         scopedSlots: true,
+        width: 180,
         search: {
             type: 'string',
         },
@@ -202,6 +207,7 @@ const columns = [
         dataIndex: 'updateTime',
         key: 'updateTime',
         scopedSlots: true,
+        width: 180,
         search: {
             type: 'string',
         },
@@ -212,7 +218,7 @@ const columns = [
         dataIndex: 'cardState',
         key: 'cardStateType',
         scopedSlots: true,
-
+        width: 100,
         search: {
             type: 'select',
             options: [
@@ -288,7 +294,7 @@ const formatFlow = (flow: number) => {
     } else if (flow >= 1048_576) {
         return `${(flow / 1048_576).toFixed(2)}GB`;
     } else {
-        return `${flow}KB`;
+        return `${flow.toFixed(2)}KB`;
     }
 };
 

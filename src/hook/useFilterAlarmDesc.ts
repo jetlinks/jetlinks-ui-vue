@@ -33,11 +33,20 @@ const dicMap = new Map<string, any[]>();
 /**
  * @function useFilterAlarmDesc 过滤请求结果的告警信息
  * @param requestFunc 发送请求的函数
+ * @param orderProperty 排序字段
  */
-export const useFilterAlarmDesc = (requestFunc: any) => {
+export const useFilterAlarmDesc = (requestFunc: any, orderProperty: string) => {
     return async (_params: any) => {
         // 1.处理表格组件传递的参数
-        const data = { ..._params };
+        const data = {
+            ..._params,
+            sorts: [
+                {
+                    name: orderProperty,
+                    order: 'desc',
+                },
+            ],
+        };
         const resp: any = await requestFunc(data);
         if (resp.status === 200) {
             const records = resp.result.data;

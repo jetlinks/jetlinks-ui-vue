@@ -50,7 +50,7 @@ const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 // 生成请求函数
-const queryData = useFilterAlarmDesc(queryAlarmData);
+const queryData = useFilterAlarmDesc(queryAlarmData, 'alarmTime');
 
 const columns = [
     {
@@ -97,6 +97,7 @@ const columns = [
         title: '告警时间',
         dataIndex: 'alarmTime',
         key: 'alarmTime',
+        width: '180',
         scopedSlots: true,
     },
     {
@@ -133,10 +134,10 @@ const columns = [
 
 /**
  * 搜索
- * @param params
+ * @param param
  */
-const handleSearch = (params: any) => {
-    params.value = params;
+const handleSearch = (param: any) => {
+    params.value = param;
 };
 
 const type = ref<string>('xlsx');
