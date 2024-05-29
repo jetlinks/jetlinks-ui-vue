@@ -10,6 +10,9 @@
       mode="multiple"
       :options="options"
       :disabled="disabled"
+      :dropdownStyle="{
+        zIndex: 1071
+      }"
       placeholder="请选择读写类型"
       @change="onChange"
   />

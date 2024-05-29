@@ -1,8 +1,7 @@
 <template>
-<!--  <ConfigProvider :locale='zhCN'>-->
-<!--    <router-view />-->
-<!--  </ConfigProvider>-->
-  <Demo />
+  <ConfigProvider :locale='zhCN'>
+    <router-view />
+  </ConfigProvider>
 </template>
 
 <script setup lang="ts">
@@ -12,7 +11,6 @@ import { storeToRefs } from 'pinia';
 import { useSystem } from './store/system';
 import {LocalStore} from "@/utils/comm";
 import {TOKEN_KEY} from "@/utils/variable";
-import Demo from '@/components/Metadata/Table/demo.vue'
 
 const system = useSystem();
 const {configInfo} = storeToRefs(system);

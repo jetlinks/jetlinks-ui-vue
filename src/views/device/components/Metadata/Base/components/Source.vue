@@ -1,32 +1,34 @@
 <template>
     <div class="metadata-source">
-        <j-select
+        <a-select
             v-model:value="myValue"
             :options="PropertySource"
             placeholder="请选择来源"
+            style="flex: 1 1 0;min-width: 0"
+            :dropdownStyle="{
+              zIndex: 1071
+            }"
             :disabled="disabled"
-            :get-popup-container="(node) => fullRef || node"
             @change="onChange"
         >
-        </j-select>
-        <j-popconfirm-modal
+        </a-select>
+        <PopoverModal
             v-if="myValue != 'manual' && !showReset"
+            v-model:visible="modalVisible"
             :bodyStyle="{
                 width: '450px',
                 height: myValue === 'rule' ? '300px' : '90px',
             }"
-            :get-popup-container="(node) => fullRef || node"
             placement="bottomRight"
-            @confirm="confirm"
-            @visibleChange="visibleChange"
+            @ok="confirm"
         >
             <template #content>
                 <j-scrollbar v-if="myValue">
                     <div style="padding: 0 10px">
                         <VirtualRule
-                            v-if="visible"
-                            :value="value"
+                            v-if="modalVisible"
                             :source="myValue"
+                            :value="expands"
                             :dataSource="dataSource"
                             ref="virtualRuleRef"
                         />
@@ -34,32 +36,29 @@
                 </j-scrollbar>
             </template>
             <j-button style="padding: 4px 8px" type="link">
-                <AIcon type="EditOutlined" />
+                <AIcon type="EditTwoTone" />
             </j-button>
-        </j-popconfirm-modal>
-        <j-dropdown v-if="myValue === 'rule' && target === 'device' && showReset" :getPopupContainer="(node) => fullRef || node" placement="bottom">
+        </PopoverModal>
+        <j-dropdown v-if="myValue === 'rule' && target === 'device' && showReset" placement="bottom">
             <span style="width: 20px;" @click.prevent>
                 <AIcon type="MoreOutlined" />
             </span>
             <template #overlay>
                 <j-menu>
                     <j-menu-item>
-                        <j-popconfirm-modal
+                        <PopoverModal
                             :bodyStyle="{
                                 width: '450px',
                                 height: myValue === 'rule' ? '300px' : '80px',
                             }"
-                            :get-popup-container="(node) => fullRef || node"
                             placement="bottomRight"
-                            @confirm="confirm"
-                            @visibleChange="visibleChange"
+                            @ok="confirm"
                         >
                             <template #content>
                                 <j-scrollbar v-if="myValue">
                                     <div style="padding: 0 10px">
                                         <VirtualRule
-                                            v-if="visible"
-                                            :value="value"
+                                            v-if="modalVisible"
                                             :source="myValue"
                                             :dataSource="dataSource"
                                             ref="virtualRuleRef"
@@ -70,7 +69,7 @@
                             <j-button style="padding: 4px 8px" type="link">
                                 编辑
                             </j-button>
-                        </j-popconfirm-modal>
+                        </PopoverModal>
                     </j-menu-item>
                     <j-menu-divider/>
                     <j-menu-item>
@@ -94,7 +93,6 @@
 import { isNoCommunity } from '@/utils/utils';
 import VirtualRule from './VirtualRule/index.vue';
 import { Form } from 'jetlinks-ui-components';
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { useInstanceStore } from '@/store/instance';
 import { resetRule } from '@/api/device/instance';
 import { updata } from '@/api/rule-engine/configuration';
@@ -105,6 +103,8 @@ import {
     queryProductVirtualProperty
 } from '@/api/device/product';
 import { useProductStore } from '@/store/product';
+import { PopoverModal } from '@/components/Metadata/Table'
+
 const instanceStore = useInstanceStore();
 const productStore = useProductStore();
 const PropertySource: { label: string; value: string }[] = isNoCommunity
@@ -140,7 +140,6 @@ type Emit = {
 };
 
 
-const fullRef = inject(FULL_CODE);
 const showReset = ref(false);
 const props = defineProps({
     value: {
@@ -165,17 +164,16 @@ const props = defineProps({
     }
 });
 provide('target',props.target)
+
 const emit = defineEmits<Emit>();
+
 const formItemContext = Form.useInjectFormItemContext();
 
 const myValue = ref<SourceType>('');
 const type = ref<string>('');
 const virtualRuleRef = ref<any>(null);
-const visible = ref(false)
-
-const visibleChange = (e: boolean) => {
-    visible.value = e
-}
+const modalVisible = ref(false)
+const expands = ref(props.value || {})
 
 const disabled = computed(() => {
     // if (props.target === 'device') {
@@ -188,11 +186,8 @@ const disabled = computed(() => {
 
 const updateValue = (data: any) => {
     emit('update:value', {
-        ...props.value,
-        expands: {
-            ...(props.value?.expands || {}),
-            ...data,
-        },
+      ...(props.value || {}),
+      ...data,
     });
     formItemContext.onFieldChange();
 };
@@ -212,9 +207,11 @@ const confirm = async () => {
         });
         if (data) {
             updateValue({
+                ...expands.value,
                 source: myValue.value,
                 ...data,
             });
+            modalVisible.value = false
             resolve(true);
         } else {
             reject();
@@ -242,12 +239,12 @@ const resetRules = async() =>{
     }
 }
 const cancel = () => {
-    if (props.value.id && !props.value?.expands?.source) {
+    if (!props.value?.source) {
         myValue.value = 'device';
       } else {
-        myValue.value = props.value?.expands?.source || '';
+        myValue.value = props.value?.source || '';
       }
-        type.value = props.value?.expands?.type || [];
+        type.value = props.value?.type || [];
 }
 
 const handleSearch = async () => {
@@ -265,35 +262,37 @@ const handleSearch = async () => {
         );
       }
       if (resp && resp.status === 200 && resp.result) {
-        const _triggerProperties = props.value?.expands?.virtualRule?.triggerProperties?.length ? props.value?.expands?.virtualRule?.triggerProperties : resp.result.triggerProperties
+        const _triggerProperties = props.value?.virtualRule?.triggerProperties?.length ? props.value?.virtualRule?.triggerProperties : resp.result.triggerProperties
             updateValue({
                     source: myValue.value,
                     virtualRule:{
                     triggerProperties: _triggerProperties?.length ? _triggerProperties : ['*'],
                     ...resp.result.rule
-                }             
+                }
         });
       }
 };
 
 watch(
-    () => props.value,
+    () => JSON.stringify(props.value),
     () => {
-      if (props.value.id && !props.value?.expands?.source) {
+      if (!props.value?.source) {
         myValue.value = 'device';
       } else {
-        myValue.value = props.value?.expands?.source || '';
+        myValue.value = props.value?.source || '';
       }
-        type.value = props.value?.expands?.type || [];
+      expands.value = props.value
+      type.value = props.value?.type || [];
     },
     { immediate: true },
 );
+
 onMounted(()=>{
-    if(props.target === 'device'){
-        props.productNoEdit?.id?.forEach((item:any)=>{
-        item === props.value?.id ? showReset.value = true : ''
-    })
-    }
+    // if(props.target === 'device'){
+    //     props.productNoEdit?.id?.forEach((item:any)=>{
+    //     item === props.value?.id ? showReset.value = true : ''
+    // })
+    // }
     if(isNoCommunity && myValue.value === 'rule'){
         handleSearch()
     }

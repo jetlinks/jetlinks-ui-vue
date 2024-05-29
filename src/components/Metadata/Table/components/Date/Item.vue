@@ -15,6 +15,7 @@
       :options="options"
       mode="tags"
       placeholder="请选择时间格式"
+      :dropdownMenuStyle="{ zIndex: 1071}"
       @change="change"
     />
   </a-form-item>

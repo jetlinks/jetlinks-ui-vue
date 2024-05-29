@@ -4,6 +4,9 @@
     v-model:value="myValue"
     style="width: 100%"
     placeholder="请选择数据类型"
+    :dropdownStyle="{
+      zIndex: 1071
+    }"
     :options="options"
     @change="change"
   />

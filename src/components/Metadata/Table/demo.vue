@@ -7,7 +7,10 @@
       @scroll-down="onScrollDown"
     >
     <template #string="{record}">
-      <StringParams v-model:value="record.string"/>
+      <div>
+        <a-input />
+        <StringParams v-model:value="record.string"/>
+      </div>
     </template>
     <template #double="{record}">
       <DoubleParams v-model:value="record.double"/>
@@ -54,7 +57,7 @@ import {
 } from './components'
 
 const tableRef = ref()
-const dataSource = ref(new Array(500).fill(0).map((_, index) => {
+const dataSource = ref(new Array(10).fill(0).map((_, index) => {
   return {
     string: undefined,
     double: undefined,

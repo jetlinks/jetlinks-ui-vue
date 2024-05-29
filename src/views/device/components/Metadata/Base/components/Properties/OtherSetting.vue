@@ -1,11 +1,10 @@
 <template>
-    <j-popconfirm-modal
+    <PopoverModal
         v-if="!disabled"
         body-style="padding-top:4px;width:600px;"
         placement="bottomRight"
         :disabled="disabled"
-        :get-popup-container="(node) => fullRef || node"
-        @confirm="confirm"
+        @ok="confirm"
         @cancel="cancel"
         @visibleChange="visibleChange"
     >
@@ -39,9 +38,6 @@
                            label: a.text,
                            value: a.value,
                     }))"
-                                    :get-popup-container="
-                                        (node) => fullRef || node
-                                    "
                                 />
                             </template>
                         </j-table>
@@ -82,7 +78,7 @@
             <AIcon type="SettingOutlined" />
             配置
         </PermissionButton>
-    </j-popconfirm-modal>
+    </PopoverModal>
     <PermissionButton
         v-else
         key="setting"
@@ -106,8 +102,8 @@ import {
     getMetadataConfig,
     getMetadataDeviceConfig,
 } from '@/api/device/product';
-import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue';
 import { omit, cloneDeep } from 'lodash-es';
+import { PopoverModal } from '@/components/Metadata/Table'
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable';
 
 const props = defineProps({
@@ -134,8 +130,6 @@ const props = defineProps({
     hasPermission: String,
     tooltip: Object,
 });
-
-const fullRef = inject(FULL_CODE);
 
 const type = inject('_metadataType');
 
@@ -283,12 +277,11 @@ const cancel = () => {
 };
 
 watch(
-    () => props.value,
+    () => JSON.stringify(props.value),
     () => {
-        console.log(props.value);
         myValue.value = cloneDeep(props.value);
     },
-    { immediate: true, deep: true },
+    { immediate: true },
 );
 </script>
 

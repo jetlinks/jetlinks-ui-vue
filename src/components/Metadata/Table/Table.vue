@@ -1,17 +1,17 @@
 <template>
   <div class="metadata-edit-table-wrapper" ref="tableWrapper">
       <div class="metadata-edit-table">
-        <div class="metadata-edit-table-header" style="height: 56px" >
-          <Header :columns="columns" :style="{width: tableStyle.width}"/>
+        <div class="metadata-edit-table-header" style="height: 50px" >
+          <Header :columns="myColumns" :style="{width: tableStyle.width}"/>
         </div>
         <div class="metadata-edit-table-body" :style="{width: tableStyle.width, maxHeight: `${height}px`}">
           <Body
             v-if="dataSource.length"
             v-model:dataSource="dataSource"
-            :columns="columns"
+            :columns="myColumns"
             :cellHeight="cellHeight"
             :height="height"
-            @scroll-down="onScrollDown"
+            @scrollDown="onScrollDown"
           >
             <template v-for="(_, name) in slots" #[name]="slotData">
               <slot :name="name" v-bind="slotData || {}" />
@@ -46,7 +46,7 @@ const props = defineProps({
   },
   cellHeight: {
     type: Number,
-    default: 66
+    default: 50
   },
   height: {
     type: Number,
@@ -55,7 +55,7 @@ const props = defineProps({
 })
 
 const slots = useSlots()
-const columns = ref([])
+const myColumns = ref([])
 const tableWrapper = ref()
 const tableStyle = reactive({
   width: 100
@@ -90,7 +90,7 @@ function onResize({ width = 0}) {
   const scrollWidth = (props.dataSource.length * props.cellHeight) > props.height ? 17 : 0
 
   const _width = width - scrollWidth
-  console.log(width, _width, scrollWidth)
+
   tableStyle.width = width
 
   let newColumns = [...props.columns]
@@ -110,11 +110,11 @@ function onResize({ width = 0}) {
     newColumns  = [ serial, ...props.columns]
   }
 
-  columns.value = handleColumnsWidth(newColumns, _width)
+  myColumns.value = handleColumnsWidth(newColumns, _width)
 }
 
-const onScrollDown = () => {
-  emit('scrollDown')
+const onScrollDown = (len) => {
+  emit('scrollDown', len)
 }
 
 useFormContext({
@@ -156,6 +156,9 @@ defineExpose({
      flex-direction: row;
 
      .metadata-edit-table-body-empty {
+       display: flex;
+       width: 100%;
+       justify-content: center;
        padding-top: 24px;
      }
    }

@@ -160,7 +160,7 @@
         </template>
     </j-form>
 </template>
-    
+
 <script setup lang="ts" name="VirtualRule">
 import Rule from './Rule.vue';
 import { queryDeviceVirtualProperty } from '@/api/device/instance';
@@ -227,7 +227,7 @@ const formData = reactive<{
         };
     };
 }>({
-    type: [],
+    type: props.value?.type || [],
     virtualRule: undefined,
 });
 
@@ -313,16 +313,16 @@ onMounted(() => {
 });
 
 watch(
-    () => props.value,
+    () => JSON.stringify(props.value),
     () => {
-        formData.type = props.value.expands?.type;
+        formData.type = props.value?.type;
     },
-    { immediate: true, deep: true },
+    { immediate: true, },
 );
 
 watch(
     () => props.source,
-    (newVal: SourceType) => {
+    (newVal) => {
         if (newVal === 'rule') {
             formData.virtualRule = initData;
 
@@ -334,7 +334,6 @@ watch(
     },
     {
         immediate: true,
-        deep: true
     },
 );
 

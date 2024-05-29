@@ -174,6 +174,10 @@ const onCancel = () => {
   emit('cancel');
 }
 
+watch(() => JSON.stringify(props.value), () => {
+  initValue()
+})
+
 </script>
 
 <style scoped>

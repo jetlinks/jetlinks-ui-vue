@@ -50,12 +50,12 @@ const onOk = async () => {
 
 const onCancel = () => {
   formRef.value?.resetFields();
-  formData.maxLength = props.value;
+  formData.format = props.value;
   emit('cancel');
 }
 
 watch(() => props.value, (newValue) => {
-  formData.maxLength = newValue
+  formData.format = newValue
 })
 
 </script>

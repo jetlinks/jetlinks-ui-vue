@@ -1,227 +1,117 @@
 <template>
-  <j-data-table
+  <EditTable
         v-if="!heavyLoad"
         ref="tableRef"
         :data-source="dataSource"
         :columns="columns"
         :height="560"
-        :searchProps="{
-          placeholder: '请输入搜索名称'
-        }"
-        serial
-        @editStatus="editStatusChange"
-        @change="(data) => dataSourceCache = data"
+        @scrollDown="scrollDown"
     >
-        <template #expand>
-          <!-- <PermissionButton
-              type="primary"
-              v-if="!showSave"
-              :hasPermission="`${permission}:update`"
-              key="add"
-
-              :disabled="hasOperate('add', type)"
-              :tooltip="{
-                    placement: hasOperate('add', type) ? 'topRight' : 'top',
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : '新增',
-                        getPopupContainer: getPopupContainer,
-                }"
-              @click="handleAddClick()"
-              placement="topRight"
-          >
-            新增
-          </PermissionButton> -->
-          <PermissionButton
-              type="primary"
-              :hasPermission="`${permission}:update`"
-              key="update"
-              :loading="loading"
-              :disabled="hasOperate('add', type) || !editStatus"
-              :tooltip="{
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : !editStatus ? '暂无改动数据': '保存',
-                    placement: hasOperate('add', type) ? 'topRight' : 'top',
-                    getPopupContainer: getPopupContainer,
-                }"
-              @click="handleSaveClick()"
-              placement="topRight"
-          >
-            保存
-          </PermissionButton>
-        </template>
-        <template #valueType="{ data }">
-            {{ TypeStringMap[data.record.valueType?.type] }}
-        </template>
-        <template #inputs="{ data }">
-          <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
-          >
-<!--            <ModelButton :disabled="true"/>-->
-              <j-button :disabled="true" type="link" >
-                <AIcon type="SettingOutlined" />
-                配置
-              </j-button>
-
-          </j-tooltip>
-          <InputParams
-              v-else
-              v-model:value="data.record.inputs"
-              :has-permission="`${permission}:update`"
-          />
-        </template>
-        <template #output="{ data }">
-          {{ data.record.output?.type }}
-        </template>
-        <template #async="{ data }">
-          {{ data.record.async ? '是' : '否' }}
-        </template>
-        <template #expands="{ data }" v-if="type === 'events'">
-          {{ levelMap?.[data.record.expands?.level] || '-' }}
-        </template>
-      <template v-else-if="type === 'properties'" #expands="{ data }">
-        {{ data.record.id && !data.record?.expands?.source ? '设备' : sourceMap?.[data.record?.expands?.source] || '' }}
-      </template>
-        <template #properties="{ data }">
-          <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
-          >
-<!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link">
-              <AIcon type="SettingOutlined" />
-              配置
-            </j-button>
-          </j-tooltip>
-          <ConfigParams
-              v-else
-              v-model:value="data.record.valueType"
-              :has-permission="`${permission}:update`"
-          />
-        </template>
-        <template #outInput>
-          object
-        </template>
-        <template #readType="{data}">
-          <j-tag v-for="item in data.record?.expands?.type || []" :key="item">
-            {{ expandsType[item] }}
-          </j-tag>
-        </template>
-        <template #other="{ data }">
-          <!-- <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
-          > -->
-<!--            <ModelButton :disabled="true"/>-->
-            <!-- <j-button :disabled="true" type="link" style="padding-left: 0;">
-              <AIcon type="SettingOutlined" />
-              配置
-            </j-button> -->
-          <!-- </j-tooltip> -->
-          <OtherSetting
-              v-model:value="data.record.expands"
-              :id="data.record.id"
-              :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-              :record="data.record"
-              :type="data.record.valueType.type"
-              :has-permission="`${permission}:update`"
-              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
-                title: '继承自产品物模型的数据不支持删除',
-              } : undefined"
-          />
-
-        </template>
-        <template #action="{data}">
-          <j-space>
-            <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="edit"
-                style="padding: 0"
-                :disabled="!!operateLimits('add', type)"
-                @click="copyItem(data.record, data.index)"
-                :tooltip="{
-                  title: operateLimits('add', type) ? '当前的存储方式不支持复制' : '复制',
-                  getPopupContainer: getPopupContainer,
-                }"
-            >
-              <AIcon type="CopyOutlined" />
-            </PermissionButton>
-            <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="edit"
-                style="padding: 0"
-                :disabled="!!operateLimits('add', type)"
-                @click="handleAddClick(null, data.index)"
-                :tooltip="{
-                  title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
-                  getPopupContainer: getPopupContainer,
-                }"
-            >
-              <AIcon type="PlusSquareOutlined" />
-            </PermissionButton>
-            <PermissionButton
-                :has-permission="true"
-                type="link"
-                key="edit"
-                style="padding: 0"
-                @click="showDetail(data.record)"
-                :tooltip="{
-                  title: '详情',
-                  getPopupContainer: getPopupContainer,
-                }"
-            >
-              <AIcon type="FileSearchOutlined" />
-            </PermissionButton>
-            <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="delete"
-                style="padding: 0"
-                danger
-                :pop-confirm="{
-                  placement: 'topRight',
-                  title: showLastDelete ? '这是最后一条数据了，确认删除？' : '确认删除？',
-                  onConfirm: async () => {
-                      await removeItem(data.index);
-                    },
-                    getPopupContainer: getPopupContainer
-                  }"
-                :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-                :tooltip="{
-                  placement: 'topRight',
-                  getPopupContainer: getPopupContainer,
-                  title: target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? '继承自产品物模型的数据不支持删除' :'删除',
-                }"
-            >
-              <AIcon type="DeleteOutlined" />
-            </PermissionButton>
-          </j-space>
-        </template>
-  </j-data-table>
-    <PermissionButton
-              type="primary"
-              block
-              ghost
-              :hasPermission="`${permission}:update`"
-              key="add"
-              :disabled="hasOperate('add', type)"
-              :tooltip="{
-                    placement:'top',
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : '新增',
-                        getPopupContainer: getPopupContainer,
-                }"
-              @click="handleAddClick()"
-              placement="topRight"
-          >
-          <template #icon><AIcon type="PlusOutlined"/></template>
-            新增行
-    </PermissionButton>
+    <template #id="{ record }">
+      <a-input v-model:value="record.id" placeholder="请输入标识"/>
+    </template>
+    <template #name="{ record }">
+      <a-input v-model:value="record.name" placeholder="请输入名称"/>
+    </template>
+    <template #valueType="{ record }">
+      <div style="display: flex; gap: 12px; align-items: center" v-if="['properties', 'tags'].includes(type)">
+        <TypeSelect  v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" />
+        <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" />
+        <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType"/>
+        <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" />
+        <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format"/>
+        <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType"/>
+        <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements"/>
+        <BooleanParams
+          v-else-if="record.valueType.type === 'boolean'"
+          v-model:falseText="record.valueType.falseText"
+          v-model:falseValue="record.valueType.falseValue"
+          v-model:trueText="record.valueType.trueText"
+          v-model:trueValue="record.valueType.trueValue"
+        />
+        <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties" />
+        <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" />
+      </div>
+      <ObjectParams v-else-if="type === 'events'" v-model:value="record.valueType.properties" />
+    </template>
+    <template #expands="{ record }">
+      <Source
+        v-if="props.type === 'properties'"
+        v-model:value="record.expands"
+        :dataSource="dataSource"
+        :target="target"
+      />
+      <a-select
+        v-else-if="props.type === 'events'"
+        v-model:value="record.expands.level"
+        style="width: 100%"
+        :options="EventLevel"
+      />
+      <a-select
+        v-else-if="props.type === 'tags'"
+        v-model:value="record.expands.type"
+        mode="multiple"
+        style="width: 100%;"
+        :options="[
+          { label: '读', value: 'read'},
+          { label: '写', value: 'write'},
+          { label: '上报', value: 'report'},
+        ]"
+        placeholder="请选择读写类型"
+      />
+    </template>
+    <template #other="{ record }">
+      <OtherSetting
+        v-model:value="record.expands"
+        :type="record.valueType.type"
+      />
+    </template>
+    <template #async="{ record }">
+      <a-select
+        v-model:value="record.async"
+        style="width: 100%"
+        :options="[
+          { label: '是', value: true },
+          { label: '否', value: false }
+        ]"
+      />
+    </template>
+    <template #inputs="{ record }">
+      <ObjectParams v-model:value="record.inputs" />
+    </template>
+    <template #output="{ record }">
+      <div style="display: flex; gap: 12px; align-items: center">
+        <TypeSelect  v-model:value="record.output.type" style="flex: 1 1 0;min-width: 0" />
+        <IntegerParams v-if="['int', 'long'].includes(record.output.type)" v-model:value="record.output.unit" />
+        <DoubleParams v-else-if="['float', 'double'].includes(record.output.type)" v-model:value="record.output"/>
+        <StringParams v-else-if="record.output.type === 'string'" v-model:value="record.output.maxLength" />
+        <DateParams v-else-if="record.output.type === 'date'" v-model:value="record.output.format"/>
+        <FileParams v-else-if="record.output.type === 'file'" v-model:value="record.output.bodyType"/>
+        <EnumParams v-else-if="record.output.type === 'enum'" v-model:value="record.output.elements"/>
+        <BooleanParams
+          v-else-if="record.output.type === 'boolean'"
+          v-model:falseText="record.output.falseText"
+          v-model:falseValue="record.output.falseValue"
+          v-model:trueText="record.output.trueText"
+          v-model:trueValue="record.output.trueValue"
+        />
+        <ObjectParams v-else-if="record.output.type === 'object'" v-model:value="record.output.properties" />
+        <ArrayParams v-else-if="record.output.type === 'array'" v-model:value="record.output.elementType" />
+      </div>
+    </template>
+    <template #description="{ record }">
+      <a-input v-model:value="record.description" placeholder="请输入说明"/>
+    </template>
+    <template #outInput>
+      Object
+    </template>
+    <template #properties="{ record }">
+      <ObjectParams v-model:value="record.valueType.properties" />
+    </template>
+    <template #group="{ record }">
+      <GroupSelect v-model:value="record.expands.group" />
+    </template>
+  </EditTable>
     <PropertiesModal
         v-if="type === 'properties' && detailData.visible"
         :data="detailData.data"
@@ -257,10 +147,10 @@ import type {
 import type { PropType } from 'vue';
 import { TOKEN_KEY } from '@/utils/variable'
 import {useRouter, onBeforeRouteUpdate} from 'vue-router'
-import { useMetadata, useOperateLimits } from './hooks';
-import {TypeStringMap, useColumns} from './columns';
-import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
-import { Source, OtherSetting, InputParams, ConfigParams } from './components';
+import { useMetadata, useOperateLimits, useGroup } from './hooks';
+import { useColumns} from './columns';
+import { limitsMap } from './utils';
+import { Source, OtherSetting } from './components';
 import { saveProductVirtualProperty } from '@/api/device/product';
 import { saveDeviceVirtualProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
@@ -273,12 +163,12 @@ import { omit , cloneDeep} from "lodash-es";
 import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
 import { Modal } from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
-import {computed, watch} from "vue";
+import {watch} from "vue";
 import {useSystem} from "store/system";
 import {storeToRefs} from "pinia";
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { usePermissionStore } from '@/store/permission';
-import App from '@/App.vue';
+import { EditTable, TypeSelect, IntegerParams, StringParams, DateParams, FileParams, EnumParams, BooleanParams, ObjectParams, ArrayParams, DoubleParams, GroupSelect } from '@/components/Metadata/Table'
+import {EventLevel} from "@/views/device/data";
 
 const props = defineProps({
     target: {
@@ -316,8 +206,10 @@ const tableRef = ref();
 const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
 
+const { initOptions } = useGroup()
+
 // const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, _target, noEdit, productNoEdit)
+const {columns} = useColumns(dataSource, props.type, _target, noEdit, productNoEdit)
 
 const detailData = reactive({
   data: {},
@@ -328,19 +220,10 @@ const heavyLoad = ref<Boolean>(false)
 
 const showSave = ref(metadata.value.length !== 0)
 
-const dataSourceCache = ref<any[]>(metadata.value)
-const fullRef = inject(FULL_CODE);
-
 const getPopupContainer = (node: any) => {
-  const fullDom = tableRef.value?.fullRef?.()
-  return fullDom || node
+  return node
 }
 
-const showLastDelete = computed(() => {
-  return dataSourceCache.value.length === 1
-})
-
-provide('_dataSource', dataSourceCache);
 provide('_tagsDataSource',tagsMetadata)
 const showDetail = (data: any) => {
   detailData.data = data
@@ -417,6 +300,10 @@ const getDataByType = () => {
   }
 
   return _data
+}
+
+const scrollDown = (len: number = 5) => {
+  dataSource.value.push(...(new Array(len).fill(1).map(getDataByType)))
 }
 
 const handleAddClick = async (_data?: any, index?: number) => {
@@ -523,8 +410,6 @@ const handleSaveClick = async (next?: Function) => {
     }
 };
 
-const tabsChange = inject('tabsChange')
-
 const parentTabsChange = (next?: Function) => {
   if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`) && LocalStore.get(TOKEN_KEY)) {
     const modal = Modal.confirm({
@@ -560,7 +445,8 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
-
+  console.log(metadata.value)
+  initOptions(dataSource.value)
 }, { immediate: true })
 
 onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转

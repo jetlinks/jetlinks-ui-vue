@@ -7,20 +7,22 @@
       :pagination="false"
       :scroll="{ y: 300 }"
     >
-      <template #bodyCell="{ column, record, index }">
+      <template #value="{ record, index }">
         <EditableItem
-          v-if="column.dataIndex === 'value'"
-          :name="[index, column.dataIndex]"
+          :name="[index, 'value']"
         >
-          <a-input v-model:value="record[column.dataIndex]" />
+          <a-input v-model:value="record.value" />
         </EditableItem>
+      </template>
+      <template #text="{ record, index }">
         <EditableItem
-          v-else-if="column.dataIndex === 'text'"
-          :name="[index, column.dataIndex]"
+          :name="[index, 'text']"
         >
-          <a-input v-model:value="record[column.dataIndex]" />
+          <a-input v-model:value="record.text" />
         </EditableItem>
-        <a-button v-else-if="column.dataIndex === 'action'" type="link"  @click="() => deleteItem(index)">
+      </template>
+      <template #action="{ index }">
+        <a-button type="link"  @click="() => deleteItem(index)">
           <AIcon type="DeleteOutlined" />
         </a-button>
       </template>

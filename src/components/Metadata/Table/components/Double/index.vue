@@ -51,8 +51,14 @@ const onOk = async () => {
   const data = await formRef.value.validate()
   if (data) {
     visible.value = false
-    emit('update:value', formData);
-    emit('confirm', formData);
+    emit('update:value', {
+      ...props.value,
+      ...formData
+    });
+    emit('confirm', {
+      ...props.value,
+      ...formData
+    });
   }
 }
 

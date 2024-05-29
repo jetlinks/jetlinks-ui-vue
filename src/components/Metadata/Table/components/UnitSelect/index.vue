@@ -3,20 +3,18 @@
     mode="tags"
     placeholder="请选择单位"
     style="width: 100%"
+    :dropdownStyle="{
+      zIndex: 1071
+    }"
     v-model:value="myValue"
     @change="change"
   />
 </template>
 
 <script setup name="MetadataUnitSelect">
-import {isArray, isFunction} from 'lodash-es'
 import { Form } from 'ant-design-vue'
 
 const props = defineProps({
-  options: {
-    type: [Array, Function],
-    default: () => []
-  },
   value: {
     type: [String, Number],
     default: undefined
@@ -51,17 +49,17 @@ const change = (v) => {
   formItemContext.onFieldChange();
 };
 
-const initOptions = async () => {
-  if (isArray(props.options)) {
-    options.value = props.options;
-  } else if (isFunction(props.options)) {
-    options.value = await props.options();
-  }
-};
-
-onMounted(() => {
-  initOptions();
-})
+// const initOptions = async () => {
+//   if (isArray(props.options)) {
+//     options.value = props.options;
+//   } else if (isFunction(props.options)) {
+//     options.value = await props.options();
+//   }
+// };
+//
+// onMounted(() => {
+//   initOptions();
+// })
 
 watch(
   () => props.value,

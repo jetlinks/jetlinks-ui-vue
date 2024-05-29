@@ -35,6 +35,8 @@
 
 <script setup name="MetadataBaseTableBody">
 
+import {debounce} from "lodash-es";
+
 const props = defineProps({
   dataSource: {
     type: Array,
@@ -46,7 +48,7 @@ const props = defineProps({
   },
   cellHeight: {
     type: Number,
-    default: 66
+    default: 50
   },
   height: {
     type: Number,
@@ -61,21 +63,26 @@ const props = defineProps({
 const emit = defineEmits(['update:dataSource', 'scrollDown'])
 
 const viewScrollRef = ref()
+const dataSourceCache = ref([])
+const virtualData = ref([])
+const containerStyle = ref(0)
 
-const indexOf = reactive({
-  start: 0,
-  end: 10,
+let scrollLock = ref(false)
+
+const maxLen = computed(() => {
+  return Math.trunc(props.height / props.cellHeight)
 })
 
-const containerStyle = computed(() => {
-  return {
+const handleDataSourceCache = () => {
+  scrollLock.value = false
+
+  const itemHeight = props.cellHeight
+
+  containerStyle.value = {
     height: props.dataSource.length * props.cellHeight + 'px'
   }
-})
 
-const dataSourceCache = computed(() => {
-  const itemHeight = props.cellHeight
-  return props.dataSource.reduce((prev, next, index) => {
+  dataSourceCache.value = props.dataSource.reduce((prev, next, index) => {
     let top = 0
     if (index !== 0) {
       const lastItem = prev[prev.length - 1]
@@ -89,17 +96,10 @@ const dataSourceCache = computed(() => {
 
     return prev
   }, [])
+}
 
-})
-
-const maxLen = computed(() => {
-  return Math.trunc(props.height / props.cellHeight)
-})
-
-const virtualData = ref([])
-
-const updateVirtualData = () => {
-  virtualData.value = dataSourceCache.value.slice(indexOf.start, indexOf.end)
+const updateVirtualData = (start, end) => {
+  virtualData.value = dataSourceCache.value.slice(start, end)
 }
 
 const onScroll = () => {
@@ -107,22 +107,20 @@ const onScroll = () => {
   const clientHeight = viewScrollRef.value.clientHeight
   const scrollHeight = viewScrollRef.value.scrollHeight
 
-  const start = Math.round(height / props.cellHeight) - 3
+  const index = Math.round(height / props.cellHeight) - 3
+  const start = index < 0 ? 0 : index
   const end = start + maxLen.value + 4
 
-  indexOf.start = start >= 0 ? start : 0
-  indexOf.end = end
-
-  if (height + clientHeight === scrollHeight) { // 滚动到底
+  if (height + clientHeight >= scrollHeight && !scrollLock.value) { // 滚动到底
     emit('scrollDown')
-  } else {
-    updateVirtualData()
+    scrollLock.value = true
   }
 
+  virtualData.value = dataSourceCache.value.slice(start, end)
 }
 
 onMounted(() => {
-  onScroll()
+  updateVirtualData(0, maxLen.value)
   viewScrollRef.value.addEventListener('scroll', onScroll)
 })
 
@@ -130,15 +128,12 @@ onBeforeUnmount(() => {
   viewScrollRef.value.removeEventListener('scroll', onScroll)
 })
 
-watch(() => props.dataSource.length, (len) => {
-  if (len) {
-    if (viewScrollRef.value) {
-      updateVirtualData()
-    }
-  } else {
+watch(() => [props.dataSource.length, viewScrollRef.value], () => {
+  handleDataSourceCache()
 
+  if (props.dataSource.length <= maxLen.value) {
+    emit('scrollDown', maxLen.value - props.dataSource.length + 5)
   }
-
 }, { immediate: true})
 
 </script>
@@ -169,6 +164,10 @@ watch(() => props.dataSource.length, (len) => {
         position: absolute;
         transition: top .2s, height .2s, background-color .1s;
         border-bottom: 1px solid #ebebeb;
+
+        &:hover {
+          background-color: rgb(248, 248, 248);
+        }
 
         .body-cell-box {
           padding: 0 12px;

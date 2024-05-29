@@ -5,9 +5,11 @@
         visible
         width="70vw"
         title="编辑规则"
-        :getContainer="(node) => fullRef || node"
-        @cancel="handleCancel"
         :destroyOnClose="true"
+        :dialogStyle="{
+          zIndex: 1072
+        }"
+        @cancel="handleCancel"
     >
         <div class="header" v-if="virtualRule?.windowType && virtualRule?.windowType !== 'undefined'">
             <div class="header-item">
@@ -110,7 +112,7 @@ const getAllCrud = () => {
     console.log(item)
     const config = item
     tips.value.push({
-      label: `${config.name}$recent实时值`, 
+      label: `${config.name}$recent实时值`,
       insertText:`$recent ("${config.id}")`,
       kind: 18,
     })

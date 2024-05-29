@@ -6,7 +6,7 @@
     @cancel="onCancel"
   >
     <template #content>
-      <div style="width: 450px">
+      <div style="width: 450px" v-if="visible">
         <a-form ref="formRef" layout="vertical" :model="formData">
           <Item ref="tableRef" :value="formData.elements"/>
         </a-form>
@@ -25,8 +25,8 @@ const emit = defineEmits(['update:value', 'confirm', 'cancel']);
 
 const props = defineProps({
   value: {
-    type: Object,
-    default: () => ({}),
+    type: Array,
+    default: () => ([]),
   },
   placement: {
     type: String,
@@ -38,13 +38,12 @@ const formRef = ref();
 const tableRef = ref();
 const visible = ref(false)
 const formData = reactive({
-  type: props.value?.type || false,
-  elements: cloneDeep(props.value?.elements) || [],
+  elements: cloneDeep(props.value) || [],
 });
 
 const onCancel = () => {
   formRef.value?.resetFields();
-  formData.elements = cloneDeep(props.value?.elements) || [];
+  formData.elements = cloneDeep(props.value) || [];
   emit('cancel');
 };
 
@@ -53,16 +52,15 @@ const onOk = async () => {
   const tableData = await tableRef.value.validate()
   if (data && tableData) {
     visible.value = false
-    emit('update:value', formData)
-    emit('confirm', formData);
+    emit('update:value', formData.elements)
+    emit('confirm', formData.elements);
   }
 }
 
 watch(
   () => JSON.stringify(props.value),
   () => {
-    formData.type = props.value?.type;
-    formData.elements = cloneDeep(props.value?.elements) || [];
+    formData.elements = cloneDeep(props.value) || [];
   }
 );
 
