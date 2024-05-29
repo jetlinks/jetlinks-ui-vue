@@ -28,7 +28,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
-
+                <template #orgName="{ orgName }">
+                    {{ orgName || '暂未标记组织' }}
+                </template>
                 <template #alarmTime="{ alarmTime }">
                     {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>

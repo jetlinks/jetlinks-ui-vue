@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="querySim"
+                :request="queryData"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -32,7 +32,7 @@
                     </j-space>
                 </template>
                 <template #productId="{ productId }">
-                    {{ productId || '暂未绑定' }}
+                    {{ productId || '暂未绑定车辆' }}
                 </template>
                 <template #totalFlow="{ totalFlow }">
                     {{ formatFlow(totalFlow) }}
@@ -67,15 +67,21 @@
 
 <script setup lang="ts">
 import { querySim } from '@/api/data-report/sim';
-import { downloadFileByUrl, downloadObject } from '@/utils/utils';
+import { downloadFileByUrl } from '@/utils/utils';
 import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
 import dayjs from 'dayjs';
-import { onlyMessage } from '@/utils/comm';
 import { _export } from '@/api/data-report/alarmSheet';
 import moment from 'moment';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
+
+const queryData = (_params: any) => {
+    return querySim({
+        ..._params,
+        sorts: [{ name: 'updateTime', order: 'desc' }],
+    });
+};
 
 /**
  * 搜索
@@ -288,13 +294,15 @@ const handleTagType = (value: string) => {
  * @function formatFlow 格式化流量
  * @param flow
  */
-const formatFlow = (flow: number) => {
-    if (flow >= 1024) {
-        return `${(flow / 1024).toFixed(2)}MB`;
-    } else if (flow >= 1048_576) {
-        return `${(flow / 1048_576).toFixed(2)}GB`;
+const formatFlow = (flow: number | undefined) => {
+    if (flow === undefined || flow === 0) {
+        return '0M';
+    } else if (flow >= 1024 || flow <= -1024) {
+        return `${(flow / 1024).toFixed(2)}G`;
+    } else if ((flow > 0 && flow < 1) || (flow < 0 && flow > -1)) {
+        return `${flow.toFixed(2)}M`;
     } else {
-        return `${flow.toFixed(2)}KB`;
+        return `${flow.toFixed(2)}M`;
     }
 };
 

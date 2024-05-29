@@ -28,6 +28,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #orgName="{ orgName }">
+                    {{ orgName || '暂未标记组织' }}
+                </template>
                 <template #faultTime="{ faultTime }">
                     <span>
                         {{ dayjs(faultTime).format('YYYY-MM-DD HH:mm:ss') }}
