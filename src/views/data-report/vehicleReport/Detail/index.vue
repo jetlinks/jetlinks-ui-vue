@@ -109,6 +109,11 @@
                             <template v-if="column.dataIndex === 'drivingTime'">
                                 {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
                             </template>
+                            <template
+                                v-if="column.dataIndex === 'drivenDistance'"
+                            >
+                                {{ `${text}km` }}
+                            </template>
                         </template>
                     </j-table>
                 </DetailsTitle>
@@ -321,7 +326,6 @@ const getDetailFn = async () => {
     const res = await queryVehicleById(_id);
     if (res.status == 200) {
         vehicleData.value = res.result;
-
     }
 };
 //获取当前关联设备信息
@@ -335,6 +339,7 @@ const queryDevice = async () => {
                 termType: 'eq',
             },
         ],
+        sorts: [{ name: 'createTime', order: 'desc' }],
         paging: false,
     };
     const res = await queryVehicleEquipmentList(params);
@@ -355,6 +360,7 @@ const queryVehicleStatus = async (params?: any) => {
             },
         ],
         paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
     };
     const res = await queryVehicleStatusList({ ...params, ...defaultParams });
     if (res.status == 200) {
@@ -373,6 +379,7 @@ const queryDataRecord = async (params?: any) => {
             },
         ],
         paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
     };
     const res = await queryVehicleTravelList({ ...params, ...defaultParams });
     if (res.status == 200) {
@@ -391,6 +398,7 @@ const queryDataWork = async (params?: any) => {
             },
         ],
         paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
     };
     const res = await queryVehicleWorkList({ ...params, ...defaultParams });
     if (res.status == 200) {

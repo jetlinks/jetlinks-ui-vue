@@ -11,6 +11,9 @@
                 :columns="columns"
                 :request="querySpeed"
                 model="table"
+                defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"

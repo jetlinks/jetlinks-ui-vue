@@ -11,6 +11,9 @@
                 :columns="columns"
                 :request="queryOverLoad"
                 model="table"
+                defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"

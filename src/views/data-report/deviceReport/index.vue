@@ -107,9 +107,6 @@ const columns = [
         key: 'id',
         width: 180,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '设备名称',
@@ -183,6 +180,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
+        selectIds.value=selectedRowKeys
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
