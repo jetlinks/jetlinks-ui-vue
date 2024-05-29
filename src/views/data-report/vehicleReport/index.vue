@@ -1,31 +1,13 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
         <FullPage>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="request"
-                defaultParams="{
+            <JProTable ref="configRef" :columns="columns" :request="request" defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                model="table"
-                :params="params"
-                :gridColumn="3"
-                :row-selection="rowSelection"
-            >
+                }" model="table" :params="params" :gridColumn="3" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
-                        >
+                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
                             <PermissionButton>
                                 <AIcon type="ExportOutlined" />
 
@@ -38,12 +20,11 @@
                     <span> {{ slotProps.vehicleTypeEnum.text }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a @click="handelDetail(slotProps)" style="color: #f84914"
-                        >详情
+                    <a @click="handelDetail(slotProps)" style="color: #f84914">详情
                     </a>
                 </template>
-                <template #vehicleDate="{ vehicleDate }">
-                    {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
+                <template #createTime="{ createTime }">
+                    {{ dayjs(createTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </FullPage>
@@ -65,7 +46,8 @@ import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 
-const selectIds = ref<Array<number | string>>([]);
+const selects = ref<any>([]);
+
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -136,8 +118,8 @@ const columns = [
     },
     {
         title: '日期',
-        dataIndex: 'vehicleDate',
-        key: 'vehicleDate',
+        dataIndex: 'createTime',
+        key: 'createTime',
         scopedSlots: true,
         ellipsis: true,
     },
@@ -160,9 +142,11 @@ const handleSearch = (param: any) => {
 };
 
 const handelDetail = (slotProps: any) => {
-    menuStory.jumpPage('data-report/vehicleReport/Detail', {
+    menuStory.jumpPage('data-report/vehicleReport/Detail',
+     { id: slotProps.id, }, 
+     {
         id: slotProps.id,
-        deviceId: slotProps.deviceId,
+        deviceId: JSON.stringify(slotProps.deviceId),
     });
 };
 
@@ -172,20 +156,16 @@ const handelDetail = (slotProps: any) => {
 
 const type = ref<string>('xlsx');
 const handleExport = async () => {
-    if (!selectIds.value?.length) {
+    if (!selects.value?.length) {
         onlyMessage('请勾选需要导出得数据', 'error');
         return;
-    }
-    const _params = {
-        terms: [
-            {
-                column: 'id',
-                value: selectIds.value,
-                termType: 'in',
-            },
-        ],
-    };
-    vehicleExport(type.value, _params).then((res: any) => {
+    }else if (selects.value?.length > 1){
+        onlyMessage('只能勾选一条数据进行导出', 'error');
+        return;
+    } else {
+        const { id,deviceId } = selects.value[0]
+        console.log(selects.value[0])
+        vehicleExport(id,deviceId).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);
@@ -198,6 +178,7 @@ const handleExport = async () => {
             );
         }
     });
+    } 
 };
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
@@ -206,7 +187,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
-        selectIds.value = selectedRowKeys;
+        selects.value = selectedRows;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);
