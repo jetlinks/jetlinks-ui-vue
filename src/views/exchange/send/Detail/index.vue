@@ -86,14 +86,40 @@ const updateParentVar = (newValue: any) => {
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    let senSaveDataMap = { dataMapping: getData, deviceMapping: getDeviceData };
-    console.log('senSaveDataMap', senSaveDataMap);
-    getDataSandMap(sendId.value, senSaveDataMap).then((res: any) => {
-        if (res.status === 200) {
-            onlyMessage('保存成功');
-        }
-    });
+    if (allDataMapping.value.id && allDeviceMapping.value.id) {
+        allDataMapping.value.map
+        const newDataMapping = upsert(allDataMapping.value, { id: selectProductId.value, configList: getData })
+        const newDeviceMapping = upsert(allDeviceMapping.value, { id: selectProductId.value, configList: getDeviceData })
+
+        let senSaveDataMap = { dataMapping: newDataMapping, deviceMapping: newDeviceMapping };
+        console.log('senSaveDataMap1', senSaveDataMap);
+        getDataSandMap(sendId.value, senSaveDataMap).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('保存成功');
+            }
+        });
+    } else {
+        let senSaveDataMap = { dataMapping: [{ id: selectProductId.value, configList: getData }], deviceMapping: [{ id: selectProductId.value, configList: getDeviceData }] };
+        console.log('senSaveDataMap2', senSaveDataMap);
+        getDataSandMap(sendId.value, senSaveDataMap).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('保存成功');
+            }
+        });
+    }
 };
+
+//更新或添加对象到映射中
+const upsert = (arr: any, obj: any) => {
+    const index = arr.findIndex((x: any) => x.id === obj.id);
+    if (index === -1) {
+        // 如果不存在，直接添加
+        return [...arr, obj];
+    } else {
+        // 如果存在，更新
+        return [...arr.slice(0, index), obj, ...arr.slice(index + 1)];
+    }
+}
 
 const mergeArraysById = (arr1: any, arr2: any) => {
     const merged = arr1.map((item1: any) => {
@@ -232,19 +258,6 @@ const selectInit = () => {
         deviceDetailList.value = deviceDetail;
     }
 
-    const deviceMaps = allTargetData.value[0]?.deviceMapping?.find((item: any) => item.id === selectProductId.value);
-    const dataMaps = allTargetData.value[0]?.dataMapping?.find((item: any) => item.id === selectProductId.value);
-
-    if(!deviceMaps?.id){
-        onlyMessage('保存的映射数据错误，请检查', 'error');
-        return false; 
-    }
-    if(!dataMaps?.id){
-        onlyMessage('保存的映射数据错误，请检查', 'error');
-        return false; 
-    }
-    const deviceMap = deviceMaps.configList
-    const dataMap = dataMaps.configList
     if (!allTargetData.value[0].targetMapping) {
         onlyMessage('没有映射数据源，请检查', 'error');
         return false;
@@ -261,6 +274,13 @@ const selectInit = () => {
         onlyMessage('数据映射为空', 'error');
         return false;
     }
+
+    //处理已保存数据
+    const deviceMaps = allTargetData.value[0]?.deviceMapping?.find((item: any) => item.id === selectProductId.value);
+    const dataMaps = allTargetData.value[0]?.dataMapping?.find((item: any) => item.id === selectProductId.value);
+
+    const deviceMap = deviceMaps?.configList
+    const dataMap = dataMaps?.configList
     const dataTargetMap = JSON.parse(dataTargetMaps).properties;
     let TargetAttribute = dataTargetMap.map((item: any) => ({
         targetId: item.id,
