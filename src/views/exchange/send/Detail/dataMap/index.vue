@@ -177,14 +177,16 @@ const handleSave = () => {
             state: item.state,
         };
     });
-    console.log('props.allDataMapping',props.allDataMapping)
     if (props.allDataMapping.length>0 && props.allDataMapping.length>0) {
-        props.allDataMapping.map
+        if(!props.selectProductId){
+            onlyMessage('保存失败','error');
+            return
+        }
         const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
         const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
 
         let senSaveDataMap = { dataMapping: newDataMapping, deviceMapping: newDeviceMapping };
-        console.log('senSaveDataMap1', senSaveDataMap);
+        // console.log('senSaveDataMap1', senSaveDataMap);
         getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('保存成功');
@@ -192,8 +194,12 @@ const handleSave = () => {
             }
         });
     } else {
+        if(!props.selectProductId){
+            onlyMessage('保存失败','error');
+            return
+        }
         let senSaveDataMap = { dataMapping: [{ id: props.selectProductId, configList: getData }], deviceMapping: [{ id: props.selectProductId, configList: getDeviceData }] };
-        console.log('senSaveDataMap2', senSaveDataMap);
+        // console.log('senSaveDataMap2', senSaveDataMap);
         getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('保存成功');

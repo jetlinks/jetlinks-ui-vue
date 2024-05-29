@@ -112,7 +112,7 @@
                 </template>
             </template>
                 <template #isDistribute="{ data }">
-                    <span>{{ data.record.select ? '是':'否' }}</span>
+                    <span>{{ data.record.select && data.record?.targetAttribute.targetId === data.record.originalId ? '是':'否' }}</span>
                 </template>
                 <template #select="{ data }">
                     <j-select
@@ -348,14 +348,17 @@ const handleSave = () => {
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    console.log('props.allDataMapping',props.allDataMapping)
+    // console.log('props.allDataMapping',props.allDataMapping)
     if (props.allDataMapping.length>0 && props.allDeviceMapping.length>0) {
-        props.allDataMapping.map
+        if(!props.selectProductId){
+            onlyMessage('保存失败','error');
+            return
+        }
         const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
         const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
 
         let senSaveDataMap = { dataMapping: newDataMapping, deviceMapping: newDeviceMapping };
-        console.log('senSaveDataMap1', senSaveDataMap);
+        // console.log('senSaveDataMap1', senSaveDataMap);
         getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('保存成功');
@@ -363,8 +366,12 @@ const handleSave = () => {
             }
         });
     } else {
+        if(!props.selectProductId){
+            onlyMessage('保存失败','error');
+            return
+        }
         let senSaveDataMap = { dataMapping: [{ id: props.selectProductId, configList: getData }], deviceMapping: [{ id: props.selectProductId, configList: getDeviceData }] };
-        console.log('senSaveDataMap2', senSaveDataMap);
+        // console.log('senSaveDataMap2', senSaveDataMap);
         getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('保存成功');
@@ -437,7 +444,7 @@ const handleMap = (data: any) => {
                     }
                 },
             );
-            console.log('getDevTarAtt', getDevTarAtt);
+            // console.log('getDevTarAtt', getDevTarAtt);
             deviceMapDetail.value = getDevTarAtt;
         }
     }

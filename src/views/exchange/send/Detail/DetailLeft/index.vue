@@ -1,5 +1,14 @@
 <template>
     <div class="left-contain">
+        <j-input
+            placeholder="搜索"
+            v-model:value="searchValue"
+            @pressEnter="search"
+        >
+            <template #suffix>
+                <AIcon type="SearchOutlined" @click="search" />
+            </template>
+        </j-input>
         <div class="listBox">
             <j-tree :tree-data="props.productListData" v-if="props.productListData.length"
                 :fieldNames="{ title: 'name', key: 'id', children: 'children' }"
@@ -18,11 +27,22 @@ const props = defineProps({
     },
 })
 
+const searchValue = ref()
+const productList = ref<any>([])
+
+watch(props.productListData,(newValue: any)=>{
+    productList.value = newValue
+})
+
+const search = () => {
+    emit('searchValue', searchValue.value);
+};
+
 const selectRow = (rowkey: any) => {
     emit('selectData', rowkey);
 }
 
-const emit = defineEmits(['selectData']);
+const emit = defineEmits(['selectData','searchValue']);
 </script>
 <style lang="less" scoped>
 .controls {
