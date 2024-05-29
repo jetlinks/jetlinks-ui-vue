@@ -95,6 +95,9 @@ const columns = [
         dataIndex: 'orgName',
         key: 'orgName',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '告警时间',
