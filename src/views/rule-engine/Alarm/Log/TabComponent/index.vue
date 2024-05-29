@@ -221,49 +221,52 @@ const columns = [
 const newColumns = computed(() => {
     const otherColumns = {
         title: '产品名称',
-        dataIndex: 'targetId',
-        key: 'targetId',
+        dataIndex: 'targetName',
+        key: 'targetName',
+        // search: {
+        //     type: 'select',
+        //     options: async () => {
+        //         const termType = [
+        //             {
+        //                 column: 'targetType',
+        //                 termType: 'eq',
+        //                 type: 'and',
+        //                 value: props.type,
+        //             },
+        //         ];
+
+        //         if (props.id) {
+        //             termType.push({
+        //                 termType: 'eq',
+        //                 column: 'alarmConfigId',
+        //                 value: props.id,
+        //                 type: 'and',
+        //             });
+        //         }
+
+        //         const resp: any = await handleSearch({
+        //             sorts: [{ name: 'alarmTime', order: 'desc' }],
+        //             terms: termType,
+        //         });
+        //         const listMap: Map<string, any> = new Map();
+
+        //         if (resp.status === 200) {
+        //             resp.result.data.forEach((item) => {
+        //                 if (item.targetId) {
+        //                     listMap.set(item.targetId, {
+        //                         label: item.targetName,
+        //                         value: item.targetId,
+        //                     });
+        //                 }
+        //             });
+
+        //             return [...listMap.values()];
+        //         }
+        //         return [];
+        //     },
+        // },
         search: {
-            type: 'select',
-            options: async () => {
-                const termType = [
-                    {
-                        column: 'targetType',
-                        termType: 'eq',
-                        type: 'and',
-                        value: props.type,
-                    },
-                ];
-
-                if (props.id) {
-                    termType.push({
-                        termType: 'eq',
-                        column: 'alarmConfigId',
-                        value: props.id,
-                        type: 'and',
-                    });
-                }
-
-                const resp: any = await handleSearch({
-                    sorts: [{ name: 'alarmTime', order: 'desc' }],
-                    terms: termType,
-                });
-                const listMap: Map<string, any> = new Map();
-
-                if (resp.status === 200) {
-                    resp.result.data.forEach((item) => {
-                        if (item.targetId) {
-                            listMap.set(item.targetId, {
-                                label: item.targetName,
-                                value: item.targetId,
-                            });
-                        }
-                    });
-
-                    return [...listMap.values()];
-                }
-                return [];
-            },
+            type: 'string',
         },
     };
 
