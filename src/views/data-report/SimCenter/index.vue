@@ -64,10 +64,12 @@
 
 <script setup lang="ts">
 import { querySim } from '@/api/data-report/sim';
-import { downloadObject } from '@/utils/utils';
+import { downloadFileByUrl, downloadObject } from '@/utils/utils';
 import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
+import { _export } from '@/api/data-report/alarmSheet';
+import moment from 'moment';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -293,13 +295,23 @@ const formatFlow = (flow: number) => {
 /**
  * 导出
  */
-const handleExport = () => {
-    const data = configRef.value?.selectedRows;
-    if (!data?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
-        return;
-    }
-    downloadObject(data, `异常震动数据`);
+const type = ref<string>('xlsx');
+
+const handleExport = async (_params: any) => {
+    const data = { ..._params };
+    _export(type.value, data).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `车辆告警数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
 };
 
 /**

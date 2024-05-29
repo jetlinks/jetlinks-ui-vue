@@ -39,9 +39,11 @@
 </template>
 
 <script setup lang="ts">
-import { downloadObject } from '@/utils/utils';
+import { downloadFileByUrl } from '@/utils/utils';
 import { queryFaultData } from '@/api/data-report/faultSheet';
 import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
+import { _export } from '@/api/data-report/alarmSheet';
+import moment from 'moment/moment';
 import dayjs from 'dayjs';
 
 const configRef = ref<Record<string, any>>({});
@@ -156,8 +158,23 @@ const rowSelection = {
 /**
  * 导出
  */
-const handleExport = () => {
-    downloadObject(configRef.value._dataSource, `通知模板数据`);
+const type = ref<string>('xlsx');
+
+const handleExport = async (_params: any) => {
+    const data = { ..._params };
+    _export(type.value, data).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `车辆告警数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
 };
 </script>
 
