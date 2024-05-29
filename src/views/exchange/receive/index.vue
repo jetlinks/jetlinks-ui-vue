@@ -97,16 +97,12 @@
                             <j-row>
                                 <j-col :span="8">
                                     <div class="card-item-content-text">
-                                        产品名称
+                                        Topic
                                     </div>
                                     <j-ellipsis
                                         style="width: calc(100% - 10px)"
                                     >
-                                        <div>
-                                            {{
-                                                getProduct(slotProps.productId)
-                                            }}
-                                        </div>
+                                        <div>{{ slotProps.topic }}</div>
                                     </j-ellipsis>
                                 </j-col>
                                 <j-col :span="8">
@@ -219,9 +215,10 @@
                                     v-model:value="form.productId"
                                     @change="curProductChange"
                                     placeholder="请选择状态为“正常”的产品"
+                                    mode="multiple"
                                 >
                                     <j-select-option
-                                        v-for="item in paramsProductList"
+                                        v-for="item in productList"
                                         :value="item.id"
                                         :key="item.id"
                                         :label="item.name"
@@ -430,13 +427,11 @@ const rules = {
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
     topic: [
-        { required: true, trigger: 'blur', validator: vailTopic },
+        { required: true, message: '请输入Topic', trigger: 'blur' },
+        { trigger: 'blur', validator: vailTopic },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
-    productId: [
-        { required: true, message: '请选择产品', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
-    ],
+    productId: [{ required: true, message: '请选择产品', trigger: 'blur' }],
     deviceIds: [
         {
             required: true,
@@ -455,7 +450,7 @@ const reset = () => {
         id: '',
         name: '',
         topic: '',
-        productId: undefined,
+        productId: [],
         deviceIds: [],
         factoryId: undefined,
         description: '',
@@ -490,13 +485,13 @@ const onSearch = (e: any) => {
 //新增
 const handleAdd = () => {
     isAdd.value = 1;
-    Init()
+    Init();
     modalState.title = '新增';
     modalState.openView = true;
     paramsProductList.value = productList.value.filter(
         (item: any) => !SelProductList.value.includes(item.id),
     );
-    console.log(paramsProductList.value)
+    console.log('paramsProductList', paramsProductList.value);
     reset();
 };
 
@@ -514,9 +509,9 @@ const handleExport = () => {
                         terms: [
                             {
                                 column: 'id',
-                                termType: 'eq',
+                                termType: 'in',
                                 type: 'or',
-                                value: `${myArr[0].productId}`,
+                                value: myArr[0].productId,
                             },
                         ],
                     },
@@ -524,7 +519,7 @@ const handleExport = () => {
             },
         };
         queryDeviceProductList(query).then((res: any) => {
-            let result = res.result[0];
+            let result = res.result;
             if (result) {
                 const extra = omit(JSON.parse(JSON.stringify(result)), [
                     'transportProtocol',
@@ -549,7 +544,7 @@ const handleExport = () => {
                                     column: 'id',
                                     termType: 'eq',
                                     type: 'or',
-                                    value: `${element.productId}`,
+                                    value: element.productId,
                                 },
                             ],
                         },
@@ -574,14 +569,6 @@ const handleExport = () => {
     } else {
         onlyMessage('请先选择需要导出数据', 'error');
     }
-};
-
-//获取卡片字段产品名称
-const getProduct = (productId: string) => {
-    let getList: any = productList.value.find(
-        (item: any) => item.id === productId,
-    );
-    return getList?.name;
 };
 
 const columns = [
@@ -651,9 +638,9 @@ const getActions = (
                                 terms: [
                                     {
                                         column: 'productId',
-                                        termType: 'eq',
+                                        termType: 'in',
                                         type: 'and',
-                                        value: `${data.productId}`,
+                                        value: data.productId,
                                     },
                                     {
                                         column: 'factoryId',
@@ -667,8 +654,11 @@ const getActions = (
                     };
                     queryNoPagingPostDevice(setData).then((resp) => {
                         if (resp.status === 200) {
-                            deviceList.value = resp.result as Record<string,any>[];
-                            console.log('dec',deviceList.value)
+                            deviceList.value = resp.result as Record<
+                                string,
+                                any
+                            >[];
+                            console.log('dec', deviceList.value);
                         }
                     });
                 }
@@ -762,41 +752,53 @@ const query = (params: Record<string, any>) =>
 //监听产品select选项变动,清空设备多选框
 const curProductChange = (val: any) => {
     if (form.value.productId && form.value.factoryId) {
-            const setData = {
-                paging: false,
-                sorts: [{ name: 'createTime', order: 'desc' }],
-                terms: [
-                    {
-                        terms: [
-                            {
-                                column: 'productId',
-                                termType: 'eq',
-                                type: 'and',
-                                value: `${form.value.productId}`,
-                            },
-                            {
-                                column: 'factoryId',
-                                termType: 'eq',
-                                type: 'and',
-                                value: `${form.value.factoryId}`,
-                            },
-                        ],
-                    },
-                ],
-            };
-            queryNoPagingPostDevice(setData).then((resp) => {
-                if (resp.status === 200) {
-                    deviceList.value = resp.result as Record<string, any>[];
-                }
-            });
-        } else {
-            deviceList.value = [];
-        }
+        const setData = {
+            paging: false,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'productId',
+                            termType: 'eq',
+                            type: 'and',
+                            value: `${form.value.productId}`,
+                        },
+                        {
+                            column: 'factoryId',
+                            termType: 'eq',
+                            type: 'and',
+                            value: `${form.value.factoryId}`,
+                        },
+                    ],
+                },
+            ],
+        };
+        queryNoPagingPostDevice(setData).then((resp) => {
+            if (resp.status === 200) {
+                deviceList.value = resp.result as Record<string, any>[];
+            }
+        });
+    } else {
+        deviceList.value = [];
+    }
     form.value.deviceIds = [];
 };
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
+        filterReSandProduct().then((res: any) => {
+                if (res.status === 200) {
+                    if (res.result.length > 0) {
+                        SelProductList.value = res.result;
+                    } else {
+                        SelProductList.value = [];
+                    }
+                }
+            });
+        paramsProductList.value = productList.value.filter(
+            (item: any) => !SelProductList.value.includes(item.id),
+        );
         if (newValue && form.value.factoryId) {
             const setData = {
                 paging: false,
@@ -806,9 +808,9 @@ watch(
                         terms: [
                             {
                                 column: 'productId',
-                                termType: 'eq',
+                                termType: 'in',
                                 type: 'and',
-                                value: `${newValue}`,
+                                value: newValue,
                             },
                             {
                                 column: 'factoryId',
@@ -834,6 +836,18 @@ watch(
 watch(
     () => form.value.factoryId,
     (newValue, oldValue) => {
+        // filterReSandProduct().then((res: any) => {
+        //         if (res.status === 200) {
+        //             if (res.result.length > 0) {
+        //                 SelProductList.value = res.result;
+        //             } else {
+        //                 SelProductList.value = [];
+        //             }
+        //         }
+        //     });
+        // paramsProductList.value = productList.value.filter(
+        //     (item: any) => !SelProductList.value.includes(item.id),
+        // );
         if (newValue && form.value.productId) {
             const setData = {
                 paging: false,
@@ -843,9 +857,9 @@ watch(
                         terms: [
                             {
                                 column: 'productId',
-                                termType: 'eq',
+                                termType: 'in',
                                 type: 'and',
-                                value: `${form.value.productId}`,
+                                value: form.value.productId,
                             },
                             {
                                 column: 'factoryId',
@@ -867,7 +881,6 @@ watch(
         }
     },
 );
-
 
 const Init = () => {
     queryNoPagingPost({
@@ -891,10 +904,10 @@ const Init = () => {
 
             filterReSandProduct().then((res: any) => {
                 if (res.status === 200) {
-                    if(res.result.length > 0) {
+                    if (res.result.length > 0) {
                         SelProductList.value = res.result;
-                    } else{
-                        SelProductList.value = []
+                    } else {
+                        SelProductList.value = [];
                     }
                 }
             });

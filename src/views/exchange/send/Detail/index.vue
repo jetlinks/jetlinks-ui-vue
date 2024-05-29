@@ -2,29 +2,23 @@
     <page-container :showBack="true">
         <template #title> </template>
         <FullPage>
-            <j-tabs v-model:activeKey="activeKey" class="tabs">
-                <j-tab-pane class="tab_con" key="DataMap" tab="物模型映射">
-                    <DataMap
-                        :mapDataList="mapDataList"
-                        :dataMapOpt="dataMapOpt"
-                        :deviceDetailList="deviceDetailList"
-                        :dataDetailList="dataDetailList"
-                        :sendId="sendId"
-                        @refresh="refresh"
-                    />
-                </j-tab-pane>
-                <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
-                    <DeviceMap
-                        :deviceIdsMap="deviceIdsMap"
-                        :deviceIdsMapOpt="deviceIdsMapOpt"
-                        :deviceDetailList="deviceDetailList"
-                        :dataDetailList="dataDetailList"
-                        @updateParentVar="updateParentVar"
-                        :sendId="sendId"
-                        @refresh="refresh"
-                    />
-                </j-tab-pane>
-            </j-tabs>
+            <div class="detail">
+                <div class="sider">
+                    <Left :productListData="productListData" @select-data="selectData" />
+                </div>
+                <j-tabs v-model:activeKey="activeKey" class="tabs">
+                    <j-tab-pane class="tab_con" key="DataMap" tab="物模型映射">
+                        <DataMap :mapDataList="mapDataList" :dataMapOpt="dataMapOpt"
+                            :deviceDetailList="deviceDetailList" :dataDetailList="dataDetailList" :sendId="sendId"
+                            @refresh="refresh" />
+                    </j-tab-pane>
+                    <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
+                        <DeviceMap :deviceIdsMap="deviceIdsMap" :deviceIdsMapOpt="deviceIdsMapOpt"
+                            :deviceDetailList="deviceDetailList" :dataDetailList="dataDetailList"
+                            @updateParentVar="updateParentVar" :sendId="sendId" @refresh="refresh" />
+                    </j-tab-pane>
+                </j-tabs>
+            </div>
         </FullPage>
     </page-container>
 </template>
@@ -37,8 +31,11 @@ import {
 import { getDataSandMap } from '@/api/exchange/receive';
 import DataMap from './dataMap/index.vue';
 import DeviceMap from './deviceMap/index.vue';
+import Left from './DetailLeft/index.vue'
 import { getImage, onlyMessage } from '@/utils/comm';
 const route = useRoute();
+
+const productListData = ref<any>([])
 
 const mapDataList = ref<any>([]);
 const dataMapOption = ref<any>([]);
@@ -52,8 +49,13 @@ const activeKey = ref('DataMap');
 const dataDetailList = ref<any>([]);
 const deviceDetailList = ref<any>([]);
 const sendId = ref<any>();
+const selectProductId = ref<any>();
+const selectData = (data: any) => {
+    selectProductId.value = data[0]
+}
 
 sendId.value = route.query.id as string;
+
 const updateParentVar = (newValue: any) => {
     deviceDetailList.value = newValue;
 
@@ -127,14 +129,14 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                         (item: any) => item.targetId === orgItem1.originalId,
                     );
                     if (orgItem2) {
-                        if(orgItem2.targetId){
+                        if (orgItem2.targetId) {
                             return {
                                 ...orgItem1,
                                 targetAttribute: orgItem2,
-                                select:orgItem2.targetName + `(${orgItem2.targetId})`,
+                                select: orgItem2.targetName + `(${orgItem2.targetId})`,
                                 state: 'disabled',
                             };
-                        }else{
+                        } else {
                             return {
                                 ...orgItem1,
                                 state: 'disabled',
@@ -145,7 +147,7 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                     }
                 },
             );
-            if(item2.targetId){
+            if (item2.targetId) {
                 return {
                     name: originalName,
                     originalId,
@@ -157,7 +159,7 @@ const mergeArraysByArr = (arr1: any, arr2: any) => {
                     deviceTargetAttributeMap: deviceTargetAttributeMap,
                     select: item2.targetName + `(${item2.targetId})`,
                     state: 'disabled',
-            };
+                };
             } else {
                 return {
                     name: originalName,
@@ -189,9 +191,9 @@ const Init = () => {
                     terms: [
                         {
                             column: 'id',
-                            termType: 'eq',
+                            termType: 'in',
                             type: 'or',
-                            value: `${route.query?.productId}`,
+                            value: JSON.parse(route.query?.productId as string),
                         },
                     ],
                 },
@@ -200,7 +202,18 @@ const Init = () => {
     };
     queryDeviceProductList(query).then((res: any) => {
         console.log('res', res);
-        const getData = res.result[0];
+        if(!res.result){
+            onlyMessage('请重新创建数据接收，无数据', 'error');
+            return false;
+        }
+        productListData.value = res.result.map((item: any) => ({
+            id: item.id,
+            name: item.name
+        }));
+        selectProductId.value = productListData.value[0].id
+
+        //初始化获取第一个产品物模型和映射属性
+        const getData = res.result.find((item:any) => item.id === selectProductId.value);
         if (getData.metadata === undefined) {
             onlyMessage('请先为产品设置物模型信息', 'error');
             return false;
@@ -255,20 +268,20 @@ const Init = () => {
             ],
         }).then((res: any) => {
             console.log('mapping', res.result);
-            const deviceMap = res.result[0]?.deviceMapping;
-            const dataMap = res.result[0]?.dataMapping;
+            const deviceMap = res.result[0]?.deviceMapping.find((item:any) => item.id === selectProductId.value).configList;
+            const dataMap = res.result[0]?.dataMapping.find((item:any) => item.id === selectProductId.value).configList;
             if (!res.result[0].targetMapping) {
                 onlyMessage('没有映射数据源，请检查', 'error');
                 return false;
             }
-            const deviceTargetMaps = res.result[0].targetMapping?.deviceDetails;
+            const deviceTargetMaps = res.result[0].targetMapping?.find((item:any) => item.id === selectProductId.value).configList.deviceDetails;
             if (!deviceTargetMaps) {
                 onlyMessage('设备映射数据为空', 'error');
                 return false;
             }
 
             //处理数据映射
-            const dataTargetMaps = res.result[0].targetMapping?.metadata;
+            const dataTargetMaps = res.result[0].targetMapping?.find((item:any) => item.id === selectProductId.value).configList.metadata;
             if (!dataTargetMaps) {
                 onlyMessage('数据映射为空', 'error');
                 return false;
@@ -312,7 +325,7 @@ const Init = () => {
                 };
             });
             deviceIdsMap.value = deviceTargetMap;
-            console.log('deviceTargetMap',deviceTargetMap)
+            console.log('deviceTargetMap', deviceTargetMap)
 
             deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
                 value: item.targetName + `(${item.targetId})`,
@@ -323,7 +336,7 @@ const Init = () => {
                 deviceIdsMap.value,
             );
             deviceDetailList.value = deviceIdsMapNew;
-            console.log('deviceDetailList',deviceDetailList.value)
+            console.log('deviceDetailList', deviceDetailList.value)
 
             //判断是否保存了数据映射
             if (dataMap) {
@@ -374,27 +387,27 @@ const Init = () => {
                         const getDevDataLists = item.deviceTargetAttribute.map(
                             (item2: any) => {
                                 const getDevDataList = deviceDetailListLaster.deviceTargetAttribute.find(
-                                        (item3: any) => item3.originalId === item2.originalId,
-                                    );
+                                    (item3: any) => item3.originalId === item2.originalId,
+                                );
                                 // console.log('getDevDataList',getDevDataList)
-                                if ( getDevDataList) {
-                                    if(getDevDataList.targetAttribute){
+                                if (getDevDataList) {
+                                    if (getDevDataList.targetAttribute) {
                                         return {
-                                        name: item2.originalName,
-                                        originalId: item2.originalId,
-                                        originalName: item2.originalName,
-                                        select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
-                                        state: getDevDataList.state?.value,
-                                        targetAttribute:
-                                            getDevDataList.targetAttribute,
-                                    };
-                                    }else{
+                                            name: item2.originalName,
+                                            originalId: item2.originalId,
+                                            originalName: item2.originalName,
+                                            select: `${getDevDataList.targetAttribute?.targetName}(${getDevDataList.targetAttribute?.targetId})`,
+                                            state: getDevDataList.state?.value,
+                                            targetAttribute:
+                                                getDevDataList.targetAttribute,
+                                        };
+                                    } else {
                                         return {
-                                        name: item2.originalName,
-                                        originalId: item2.originalId,
-                                        originalName: item2.originalName,
-                                        state: getDevDataList.state?.value,
-                                    };
+                                            name: item2.originalName,
+                                            originalId: item2.originalId,
+                                            originalName: item2.originalName,
+                                            state: getDevDataList.state?.value,
+                                        };
                                     }
                                 } else {
                                     return item2;
@@ -402,7 +415,7 @@ const Init = () => {
                             },
                         );
 
-                        const { originalId,deviceTargetAttribute,state, ...deviceDeRes} = deviceDetailListLaster;
+                        const { originalId, deviceTargetAttribute, state, ...deviceDeRes } = deviceDetailListLaster;
                         // console.log('deviceDeRes',deviceDeRes)
                         // console.log('deviceState',state)
                         if (deviceDeRes.targetAttribute) {
@@ -446,10 +459,23 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.tabs {
-    margin: 15px;
-    .tab_con {
-        margin: 10px;
+.detail {
+    display: flex;
+    flex-direction: row;
+
+    .sider {
+        margin-top: 15px;
+        margin-left: 8px;
+        width: 17%;
+    }
+
+    .tabs {
+        margin-left: 30px;
+        width: 80%;
+
+        .tab_con {
+            margin: 10px;
+        }
     }
 }
 </style>

@@ -83,16 +83,12 @@
                             <j-row>
                                 <j-col :span="8">
                                     <div class="card-item-content-text">
-                                        产品名称
+                                        Topic
                                     </div>
                                     <j-ellipsis
                                         style="width: calc(100% - 10px)"
                                     >
-                                        <div>
-                                            {{
-                                                getProduct(slotProps.productId)
-                                            }}
-                                        </div>
+                                        <div>{{slotProps.topic}}</div>
                                     </j-ellipsis>
                                 </j-col>
                                 <j-col :span="8">
@@ -186,9 +182,10 @@
                                     @change="curProductChange"
                                     v-model:value="form.productId"
                                     placeholder="请选择状态为“正常”的产品"
+                                    mode="multiple"
                                 >
                                     <j-select-option
-                                        v-for="item in paramsProductList"
+                                        v-for="item in productList"
                                         :value="item.id"
                                         :key="item.id"
                                         :label="item.name"
@@ -271,7 +268,7 @@ const modelRef = reactive({
     id: undefined,
     name: '',
     topic: '',
-    productId: '',
+    productId: [],
     deviceIds: [],
     factoryId: '',
     description: '',
@@ -344,7 +341,7 @@ const vailTopic = async (_: Record<string, any>, value: string) => {
             if (resp.status === 200 && resp.result?.passed === false) {
                 return Promise.reject('Topic重复');
             } else {
-                return Promise.resolve();
+                return Promise.resolve('请输入topic');
             }
         } else {
             const resp: any = await isTopic({
@@ -353,7 +350,7 @@ const vailTopic = async (_: Record<string, any>, value: string) => {
             if (resp.status === 200 && resp.result?.passed === false) {
                 return Promise.reject('Topic重复');
             } else {
-                return Promise.resolve();
+                return Promise.resolve('请输入topic');
             }
         }
     } else {
@@ -367,8 +364,9 @@ const rules = {
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
     topic: [
-        { required: true, trigger: 'blur', validator: vailTopic },
-        { max: 32, message: '最多可输入32位字符', trigger: 'change' },
+    { required: true, message: '请输入Topic', trigger: 'blur' },
+        { trigger: 'blur', validator: vailTopic },
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
     productId: [{ required: true, message: '请选择产品', trigger: 'blur' }],
     deviceIds: [
@@ -387,8 +385,8 @@ const reset = () => {
     form.value = {
         id: '',
         name: '',
-        topic: '',
-        productId: undefined,
+        topic: undefined,
+        productId: [],
         deviceIds: [],
         factoryId: undefined,
         description: '',
@@ -528,7 +526,7 @@ const getActions = (
                     },
                     {
                         id: data.id,
-                        productId: data.productId,
+                        productId: JSON.stringify(data.productId),
                         ids: JSON.stringify(data.deviceIds),
                     },
                 );
@@ -631,6 +629,7 @@ const curProductChange = (val: any) => {
 watch(
     () => form.value.productId,
     (newValue, oldValue) => {
+        console.log('productId',newValue)
         const setData = {
             paging: false,
             sorts: [{ name: 'createTime', order: 'desc' }],
@@ -639,9 +638,9 @@ watch(
                     terms: [
                         {
                             column: 'productId',
-                            termType: 'eq',
+                            termType: 'in',
                             type: 'or',
-                            value: `${newValue}`,
+                            value: newValue,
                         },
                     ],
                 },
