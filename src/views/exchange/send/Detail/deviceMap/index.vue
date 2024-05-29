@@ -345,7 +345,7 @@ const handleSave = () => {
         targetAttribute: item.targetAttribute,
         state: item.state,
     }));
-    if (props.allDataMapping.id && props.allDeviceMapping.id) {
+    if (props.allDataMapping[0].id && props.allDeviceMapping[0].id) {
         props.allDataMapping.map
         const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
         const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
@@ -438,30 +438,6 @@ const handleMap = (data: any) => {
             console.log('getDevTarAtt', getDevTarAtt);
             deviceMapDetail.value = getDevTarAtt;
         }
-    } else {
-        const getDevTarAtt = data.record.deviceTargetAttribute.map(
-                (item: any) => {
-                    let item1 = props.dataDetailList.find(
-                        (item2: any) => item2.originalId === item.originalId,
-                    );
-                    if (item1) {
-                        const { targetAttribute, select, ...res } = item;
-                        return {
-                            ...res,
-                            isDistribute: item1.select ? '是': '否',
-                            select: item1.select,
-                            targetAttribute: item1.targetAttribute,
-                        };
-                    } else {
-                        return {
-                            ...item,
-                            isDistribute: '否'
-                        }
-                    }
-                },
-            );
-            console.log('getDevTarAtt1', getDevTarAtt);
-            deviceMapDetail.value = getDevTarAtt;
     }
     State.openView = true;
 };

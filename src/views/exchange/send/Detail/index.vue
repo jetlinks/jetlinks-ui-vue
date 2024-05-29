@@ -10,15 +10,15 @@
                     <j-tab-pane class="tab_con" key="DataMap" tab="物模型映射">
                         <DataMap :mapDataList="mapDataList" :dataMapOpt="dataMapOpt"
                             :deviceDetailList="deviceDetailList" :dataDetailList="dataDetailList" :sendId="sendId"
-                            :selectProductId="selectProductId"
-                            :allDataMapping="allDataMapping" :allDeviceMapping="allDeviceMapping" @refresh="refresh" />
+                            :selectProductId="selectProductId" :allDataMapping="allDataMapping"
+                            :allDeviceMapping="allDeviceMapping" @refresh="refresh" />
                     </j-tab-pane>
                     <j-tab-pane class="tab_con" key="DeviceMap" tab="设备映射">
                         <DeviceMap :deviceIdsMap="deviceIdsMap" :deviceIdsMapOpt="deviceIdsMapOpt"
                             :deviceDetailList="deviceDetailList" :dataDetailList="dataDetailList"
                             :allDataMapping="allDataMapping" :allDeviceMapping="allDeviceMapping"
-                            :selectProductId="selectProductId"
-                            @updateParentVar="updateParentVar" :sendId="sendId" @refresh="refresh" />
+                            :selectProductId="selectProductId" @updateParentVar="updateParentVar" :sendId="sendId"
+                            @refresh="refresh" />
                     </j-tab-pane>
                 </j-tabs>
             </div>
@@ -369,7 +369,7 @@ const selectInit = () => {
 
     //判断是否保存了设备映射
     if (deviceMap) {
-        // console.log('deviceMap', deviceMap);
+        console.log('deviceMap', deviceMap);
         // console.log('deviceDetailList', deviceDetailList.value);
         // deviceDetailList.value
         const getDevice = deviceDetailList.value.map((item: any) => {
@@ -463,8 +463,13 @@ const Init = () => {
                     ],
                 },
             ],
+            sorts: [
+                {
+                    name: "createTime", order: "desc"
+                }
+            ],
         },
-    };
+    }
     queryDeviceProductList(query).then((res: any) => {
         console.log('res', res);
         if (!res.result) {
@@ -477,6 +482,8 @@ const Init = () => {
         }));
         selectProductId.value = productListData.value[0].id
         allOriData.value = res.result
+
+        console.log('allOriData', allOriData.value)
 
         //获取目标设备和属性
         queryDataSendList({
@@ -494,8 +501,8 @@ const Init = () => {
             allDataMapping.value = res.result[0].dataMapping;
             allDeviceMapping.value = res.result[0].deviceMapping;
 
-            console.log('allDataMapping',allDataMapping.value)
-            console.log('allDeviceMapping',allDeviceMapping.value)
+            // console.log('allDataMapping', allDataMapping.value)
+            // console.log('allDeviceMapping', allDeviceMapping.value)
             selectInit()
         });
     });
