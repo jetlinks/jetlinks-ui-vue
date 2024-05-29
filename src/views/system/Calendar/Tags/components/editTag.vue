@@ -1,5 +1,10 @@
 <template>
-    <a-modal visible title="新增标签" @cancel="emit" @ok="addTag">
+    <a-modal
+        visible
+        title="新增标签"
+        @cancel="emit('closeEditTag')"
+        @ok="submit"
+    >
         <a-form :model="tagInfo" ref="form">
             <a-row :gutter="16">
                 <a-col>
@@ -36,7 +41,16 @@
 </template>
 
 <script setup name="EditTag">
-const emit = defineEmits(['closeEditTag'])
+import { saveTag } from '@/api/system/calendar';
+import { onlyMessage } from '@/utils/comm';
+import dayjs from 'dayjs';
+const props = defineProps({
+    editType: {
+        type: String,
+        default: 'add',
+    },
+});
+const emit = defineEmits(['closeEditTag', 'refresh']);
 const tagInfo = reactive({
     color: '#000000',
     name: '',
@@ -45,8 +59,22 @@ const form = ref();
 const changeColor = (event) => {
     tagInfo.color = event.target.value;
 };
-const addTag = () =>{
-    
-}
+const submit = () => {
+    form.value.validate().then(async () => {
+        let id;
+        if (props.editType === 'add') {
+            id = tagInfo.color + '-' + dayjs().valueOf();
+        }
+        const submitData = {
+            id,
+            name: tagInfo.name,
+        };
+        const res = await saveTag(submitData);
+        if (res.status === 200) {
+            onlyMessage('操作成功');
+            emit('refresh');
+        }
+    });
+};
 </script>
 <style lang="less" scoped></style>

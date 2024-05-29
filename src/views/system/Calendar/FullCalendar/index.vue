@@ -23,7 +23,6 @@ onMounted(() => {
         events: [],
         height: '780px',
         drop: function (info) {
-            // if so, remove the element from the "Draggable Events" list
             info.draggedEl.parentNode.removeChild(info.draggedEl);
         },
     });
@@ -32,6 +31,6 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 .calendar {
-    width: 70%;
+    width: 80%;
 }
 </style>
