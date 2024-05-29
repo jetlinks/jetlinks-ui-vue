@@ -102,17 +102,17 @@ const saveChange = (value) => {
     current.value = {};
     if (value) {
         onlyMessage('操作成功', 'success');
-        tableRef.value.reload();
+        queryTaskList();
     }
 };
 const taskDetail = (data) => {
     detailVisible.value = true;
     currentTask.value = data;
 };
-const closeDetail = () =>{
+const closeDetail = () => {
     detailVisible.value = false;
-    queryTaskList()
-}
+    queryTaskList();
+};
 onMounted(() => {
     queryTaskList();
 });

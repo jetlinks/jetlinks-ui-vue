@@ -73,7 +73,7 @@
                     </div>
                 </template>
                 <template v-if="column.dataIndex === 'action'">
-                    <a-button
+                    <!-- <a-button
                         v-if="
                             record.state.value === 'waiting' ||
                             record.state.value === 'processing'
@@ -84,14 +84,13 @@
                     >
                         <template #icon>
                             <AIcon type="PauseOutlined"></AIcon></template
-                    ></a-button>
+                    ></a-button> -->
                     <a-button
                         v-if="
-                            record.state.value === 'canceled' ||
-                            record.state.value === 'success' ||
+                            // record.state.value === 'canceled' ||
+                            // record.state.value === 'success' ||
                             record.state.value === 'failed'
                         "
-                        :disabled="record.state.value === 'success'"
                         type="text"
                         @click="() => startUpgrades(record.id)"
                     >
