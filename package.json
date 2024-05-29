@@ -14,6 +14,9 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@fullcalendar/core": "^6.1.13",
+    "@fullcalendar/daygrid": "^6.1.13",
+    "@fullcalendar/interaction": "^6.1.13",
     "@liveqing/liveplayer-v3": "^3.7.10",
     "@types/marked": "^4.0.8",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
