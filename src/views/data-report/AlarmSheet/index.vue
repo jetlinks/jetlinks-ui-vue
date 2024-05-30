@@ -62,6 +62,9 @@ const columns = [
         key: 'vehicleTypeEnum',
         ellipsis: true,
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '出厂编号',
@@ -103,7 +106,7 @@ const columns = [
         title: '告警时间',
         dataIndex: 'alarmTime',
         key: 'alarmTime',
-        width: '180',
+        width: 180,
         scopedSlots: true,
     },
     {

@@ -61,6 +61,9 @@ const columns = [
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '出厂编号',
