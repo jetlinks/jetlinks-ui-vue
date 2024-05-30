@@ -124,15 +124,19 @@ const beforeUpload = (file: any) => {
             onlyMessage('文件内容不能为空', 'error');
             return false;
         }
-        const data = JSON.parse(text);
+        const data = JSON.parse(JSON.stringify(JSON.parse(text)));
         if (Array.isArray(data)) {
             onlyMessage('请上传正确格式文件', 'error');
             return false;
         }
+        let arr = []
+        for (let key in data) {
+            arr.push(data[key]);
+        }
         let saveData = [
             {
                 id: props.sendId,
-                targetMapping: { result: data },
+                targetMapping: { result: arr },
             },
         ];
         console.log('saveData', saveData);
@@ -177,9 +181,10 @@ const handleSave = () => {
             state: item.state,
         };
     });
-    if (props.allDataMapping.length>0 && props.allDataMapping.length>0) {
-        if(!props.selectProductId){
-            onlyMessage('保存失败','error');
+    // console.log('props.allDataMapping',props.allDataMapping)
+    if (props.allDataMapping.length > 0 && props.allDataMapping.length > 0) {
+        if (!props.selectProductId) {
+            onlyMessage('保存失败', 'error');
             return
         }
         const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
@@ -194,8 +199,8 @@ const handleSave = () => {
             }
         });
     } else {
-        if(!props.selectProductId){
-            onlyMessage('保存失败','error');
+        if (!props.selectProductId) {
+            onlyMessage('保存失败', 'error');
             return
         }
         let senSaveDataMap = { dataMapping: [{ id: props.selectProductId, configList: getData }], deviceMapping: [{ id: props.selectProductId, configList: getDeviceData }] };

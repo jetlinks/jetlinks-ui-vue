@@ -519,7 +519,7 @@ const handleExport = () => {
             },
         };
         queryDeviceProductList(query).then((res: any) => {
-            let result = res.result;
+            const {result} = res;
             if (result) {
                 const extra = omit(JSON.parse(JSON.stringify(result)), [
                     'transportProtocol',

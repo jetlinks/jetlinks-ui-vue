@@ -18,7 +18,8 @@
                 :allDeviceMapping="allDeviceMapping" :selectProductId="selectProductId"
                 @updateParentVar="updateParentVar" :sendId="sendId" @refresh="refresh" />
             </j-tab-pane>
-          </j-tabs></div>
+          </j-tabs>
+        </div>
       </div>
     </FullPage>
   </page-container>
@@ -127,7 +128,7 @@ const updateParentVar = (newValue: any) => {
     state: item.state,
   }));
   // console.log('props.allDataMapping',allDataMapping.value)
-  if (allDataMapping.value.length > 0 && allDeviceMapping.value.length > 0) {
+  if (allDataMapping.value && allDeviceMapping.value) {
     if(!selectProductId.value){
       onlyMessage('保存失败','error');
       return
@@ -306,28 +307,27 @@ const selectInit = () => {
     deviceDetailList.value = deviceDetail;
   }
 
-  // console.log('allTargetData',allTargetData)
-
-  if (!allTargetData.value[0].targetMapping) {
+  const nowAllTargetData = allTargetData.value
+  if (!nowAllTargetData.targetMapping) {
     onlyMessage('没有映射数据源，请检查', 'error');
     return false;
   }
-  const deviceTargetMaps = allTargetData.value[0].targetMapping.result?.find((item: any) => item.id === selectProductId.value).deviceDetails;
+  const deviceTargetMaps = nowAllTargetData.targetMapping.result.find((item: any) => item.id === selectProductId.value).deviceDetails;
   if (!deviceTargetMaps) {
     onlyMessage('设备映射数据为空', 'error');
     return false;
   }
 
   //处理数据映射
-  const dataTargetMaps = allTargetData.value[0].targetMapping.result?.find((item: any) => item.id === selectProductId.value).metadata;
+  const dataTargetMaps = nowAllTargetData.targetMapping.result.find((item: any) => item.id === selectProductId.value).metadata;
   if (!dataTargetMaps) {
     onlyMessage('数据映射为空', 'error');
     return false;
   }
 
   //处理已保存数据
-  const deviceMaps = allTargetData.value[0]?.deviceMapping?.find((item: any) => item.id === selectProductId.value);
-  const dataMaps = allTargetData.value[0]?.dataMapping?.find((item: any) => item.id === selectProductId.value);
+  const deviceMaps = nowAllTargetData.deviceMapping?.find((item: any) => item.id === selectProductId.value);
+  const dataMaps = nowAllTargetData.dataMapping?.find((item: any) => item.id === selectProductId.value);
 
   const deviceMap = deviceMaps?.configList
   const dataMap = dataMaps?.configList
@@ -507,9 +507,9 @@ const Init = () => {
     ],
   }).then((res: any) => {
     console.log('mapping', res.result);
-    allTargetData.value = res.result;
-    allDataMapping.value = res.result[0].dataMapping;
-    allDeviceMapping.value = res.result[0].deviceMapping;
+    allTargetData.value = res.result[0];
+    allDataMapping.value = res.result[0]?.dataMapping;
+    allDeviceMapping.value = res.result[0]?.deviceMapping;
 
     // console.log('allDataMapping', allDataMapping.value)
     // console.log('allDeviceMapping', allDeviceMapping.value)
