@@ -1,53 +1,74 @@
 <template>
     <div class="tagsContainer" ref="tags">
-        <a-button type="text" @click="addTag"> +新增标签 </a-button>
+        <PermissionButton type="text" @click="addTag">
+            +新增标签
+        </PermissionButton>
         <div v-for="i in tagsList" class="tag">
             <div class="tagLeft">
                 <div
                     :style="{ background: i.color }"
                     class="colorExtractor"
                 ></div>
-                <div>{{ i.name }}</div>
+                <div class="tagName">{{ i.name }}</div>
             </div>
             <div>
-                <a-button type="text" :disabled="i.disabled">
+                <PermissionButton
+                    type="text"
+                    :disabled="i.disabled"
+                    @click="() => editData(i)"
+                >
                     <template #icon>
                         <AIcon type="FormOutlined" />
                     </template>
-                </a-button>
-                <a-button
+                </PermissionButton>
+                <PermissionButton
                     type="text"
                     :disabled="i.disabled"
-                    @click="() => deleteData(i.id)"
+                    :popConfirm="{
+                        title: `确定要删除？`,
+                        onConfirm: () => deleteData(i.id),
+                    }"
                 >
                     <template #icon>
                         <AIcon type="DeleteOutlined" />
                     </template>
-                </a-button>
+                </PermissionButton>
             </div>
         </div>
     </div>
     <EditTag
         v-if="editVisible"
+        :edit-type="editType"
+        :editData="currentTag"
         @close-edit-tag="editVisible = false"
         @refresh="refreshTags"
     />
 </template>
 
 <script setup name="CalendarTags">
-import { queryTags, deleteTags } from '@/api/system/calendar';
+import {
+    queryTags,
+    deleteTags,
+    getTagsColor,
+    saveTagsColor,
+} from '@/api/system/calendar';
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();
+const editType = ref();
+const currentTag = ref();
+const colorMap = new Map();
 const addTag = () => {
     editVisible.value = true;
+    editType.value = 'add';
 };
+const buildInTag = ['weekend', 'holiday', 'workday'];
 const createDrag = () => {
     new Draggable(tags.value, {
-        itemSelector: '.tag',
+        itemSelector: '.tagName',
         eventData: function (eventEl) {
             return {
                 title: eventEl.innerText,
@@ -55,47 +76,33 @@ const createDrag = () => {
         },
     });
 };
+//获取标签列表
 const queryTagsData = async () => {
     const res = await queryTags();
     if (res.status === 200) {
         //获取用户添加的标签颜色及权限
-        tagsList.value = res.result.map((i) => {
-            if (i.id.includes('-')) {
-                const color = i.id.split('-')[0];
+        const answer = await getTagsColor();
+        if (answer.status === 200) {
+            Object.keys(answer.result).forEach((i) => {
+                colorMap.set(i, answer.result[i]);
+            });
+            tagsList.value = res.result.map((i) => {
+                let color = '#000000';
+                let disabled = false;
+                if (colorMap.has(i.id)) {
+                    color = colorMap.get(i.id);
+                }
+                if (buildInTag.includes(i.id)) {
+                    disabled = true;
+                }
                 return {
                     ...i,
                     color,
+                    disabled,
                 };
-            }
-            //内置标签给颜色和权限
-            switch (i.id) {
-                case 'workday':
-                    return {
-                        ...i,
-                        color: '#81d3f8',
-                        disabled: true,
-                    };
-                case 'weekend':
-                    return {
-                        ...i,
-                        color: '#caf982',
-                        disabled: true,
-                    };
-                case 'holiday':
-                    return {
-                        ...i,
-                        color: '#4e5878',
-                        disabled: true,
-                    };
-                default:
-                    return {
-                        ...i,
-                        color: '#000000',
-                    };
-            }
-        });
+            });
+        }
     }
-    console.log(tagsList.value);
 };
 
 const refreshTags = () => {
@@ -106,9 +113,23 @@ const refreshTags = () => {
 const deleteData = async (id) => {
     const res = await deleteTags([id]);
     if (res.status === 200) {
+        if (colorMap.has(id)) {
+            colorMap.delete(id);
+            let color = new Object();
+            colorMap.forEach((item, key) => {
+                color[key] = item;
+            });
+            const deleteColor = await saveTagsColor(color);
+        }
         onlyMessage('操作成功');
         queryTagsData();
     }
+};
+
+const editData = (data) => {
+    editVisible.value = true;
+    editType.value = 'edit';
+    currentTag.value = data
 };
 onMounted(() => {
     queryTagsData();
