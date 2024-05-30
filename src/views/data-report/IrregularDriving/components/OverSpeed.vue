@@ -36,6 +36,28 @@
                 <template #reportTime="{ reportTime }">
                     {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
+                <template #orgName="{ orgName }">
+                    {{ orgName || '暂未标记组织' }}
+                </template>
+                <template
+                    #overSpeedInfoSpeedLimit="{ overSpeedInfoSpeedLimit }"
+                >
+                    {{ `${overSpeedInfoSpeedLimit || 0}km/h` }}
+                </template>
+                <template
+                    #overSpeedInfoStartOverSpeed="{
+                        overSpeedInfoStartOverSpeed,
+                    }"
+                >
+                    {{ `${overSpeedInfoStartOverSpeed || 0}km/h` }}
+                </template>
+                <template
+                    #overSpeedInfoMaximumOverSpeed="{
+                        overSpeedInfoMaximumOverSpeed,
+                    }"
+                >
+                    {{ `${overSpeedInfoMaximumOverSpeed || 0}km/h` }}
+                </template>
             </JProTable>
         </full-page>
     </div>
@@ -133,25 +155,27 @@ const columns = [
         },
     },
     {
-        title: '速度限制',
+        title: '限速值',
         dataIndex: 'overSpeedInfoSpeedLimit',
         key: 'overSpeedInfoSpeedLimit',
+        scopedSlots: true,
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '开始速度',
+        title: '开始超速值',
         dataIndex: 'overSpeedInfoStartOverSpeed',
         key: 'overSpeedInfoStartOverSpeed',
         scopedSlots: true,
     },
     {
-        title: '最大速度',
+        title: '最高超速值',
         dataIndex: 'overSpeedInfoMaximumOverSpeed',
         key: 'overSpeedInfoMaximumOverSpeed',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },

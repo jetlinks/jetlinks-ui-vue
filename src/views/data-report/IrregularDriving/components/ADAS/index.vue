@@ -42,6 +42,9 @@
                 <template #reportTime="{ reportTime }">
                     {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
+                <template #orgName="{ orgName }">
+                    {{ orgName || '暂未标记组织' }}
+                </template>
             </JProTable>
         </full-page>
     </div>
