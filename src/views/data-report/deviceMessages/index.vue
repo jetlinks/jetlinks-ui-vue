@@ -9,7 +9,7 @@
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="queryDeviceLogs"
+                :request="request"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -117,6 +117,7 @@ const columns = [
         title: '时间',
         dataIndex: 'createTime',
         key: 'createTime',
+        width: 200,
         scopedSlots: true,
         ellipsis: true,
         search: {
@@ -232,31 +233,30 @@ const rowSelection = {
     },
 };
 
-// const request = (params: Record<string, any>) =>
-//     new Promise((resolve) => {
-//         queryDeviceLogs({
-//             firstPageIndex: params.pageIndex,
-//             pageIndex: params.pageIndex,
-//             pageSize: params.pageSize,
-//             sorts: params.sorts,
-//             terms: params.terms,
-//         })
-//             .then((response: any) => {
-//                 console.log(response, 'response');
-//                 resolve({
-//                     result: {
-//                         data: response.result?.data,
-//                         pageIndex: params.pageIndex || 0,
-//                         pageSize: params.pageSize || 20,
-//                         total: response.result?.total,
-//                     },
-//                     status: response.status,
-//                 });
-//             })
-//             .catch((error: any) => {
-//                 console.log(error);
-//             });
-//     });
+const request = (params: Record<string, any>) =>
+    new Promise((resolve) => {
+        queryDeviceLogs({
+            firstPageIndex: params.pageIndex,
+            pageIndex: params.pageIndex,
+            pageSize: params.pageSize,
+            sorts: params.sorts,
+            terms: params.terms,
+        })
+            .then((response: any) => {
+                resolve({
+                    result: {
+                        data: response.result?.data,
+                        pageIndex: params.pageIndex || 0,
+                        pageSize: params.pageSize || 20,
+                        total: response.result?.total,
+                    },
+                    status: response.status,
+                });
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    });
 </script>
 
 <style lang="less" scoped></style>

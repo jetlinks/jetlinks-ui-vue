@@ -25,7 +25,7 @@
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914">详情
                     </a>
-                </template>
+                </template>       
                 <template #createTime="{ createTime }">
                     {{ dayjs(createTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
@@ -123,6 +123,7 @@ const columns = [
         title: '日期',
         dataIndex: 'createTime',
         key: 'createTime',
+        width: 200,
         scopedSlots: true,
         ellipsis: true,
         search: {
