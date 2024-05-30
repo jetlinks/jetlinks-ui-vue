@@ -19,6 +19,9 @@
                 <template #vehicleTypeEnum="slotProps">
                     <span> {{ slotProps.vehicleTypeEnum.text }}</span>
                 </template>
+                <template #orgName="slotProps">
+                    <span> {{ slotProps.orgName || '暂未标记组织' }}</span>
+                </template>
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914">详情
                     </a>
@@ -122,6 +125,9 @@ const columns = [
         key: 'createTime',
         scopedSlots: true,
         ellipsis: true,
+        search: {
+            type: 'date',
+        },
     },
     {
         title: '操作',
@@ -142,6 +148,10 @@ const handleSearch = (param: any) => {
 };
 
 const handelDetail = (slotProps: any) => {
+    if(!slotProps.deviceId){
+        onlyMessage('未绑定车辆设备，请先绑定再查看详情','error')
+        return
+    }
     menuStory.jumpPage('data-report/vehicleReport/Detail',
         { id: slotProps.id, },
         {
@@ -199,7 +209,6 @@ const rowSelection = {
 
 const request = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        console.log('params',params)
         queryVehicleList({
             firstPageIndex: params.pageIndex,
             pageIndex: params.pageIndex,

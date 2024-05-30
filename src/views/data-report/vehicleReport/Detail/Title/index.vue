@@ -28,7 +28,7 @@
           data?.mileage
           }}</j-descriptions-item>
       </j-descriptions>
-      <j-divider style="height: 1px; background-color: #e7e9ef; margin: 14px 0" />
+      <j-divider style="height: 1px; background-color: #e7e9ef; margin: 5px 0" />
       <div class="title-type">
         <span>子设备:</span>
         <div class="type-list" v-for="item in deviceData">
@@ -144,7 +144,7 @@ const devices = [
     margin-left: 15px;
 
     .title-type {
-      height: 20px;
+      margin-top: 15px;
       display: flex;
       flex-direction: row;
 
