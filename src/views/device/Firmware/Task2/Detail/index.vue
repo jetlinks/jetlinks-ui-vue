@@ -7,20 +7,22 @@
         :maskClosable="false"
     >
         <div class="allOperation">
-            <a-button
+            <PermissionButton
                 :disabled="
                     !(data?.waiting > 0 && data?.state?.value === 'processing')
                 "
                 @click="stopAll"
+                hasPermission="device/Firmware:update"
                 ><template #icon><AIcon type="PauseOutlined" /> </template
                 >全部暂停
-            </a-button>
-            <a-button
+            </PermissionButton>
+            <PermissionButton
                 style="margin-left: 20px"
                 :disabled="data?.state?.value !== 'canceled'"
+                hasPermission="device/Firmware:update"
                 @click="startAll"
                 ><template #icon><AIcon type="CaretRightOutlined" /> </template
-                >全部开始</a-button
+                >全部开始</PermissionButton
             >
         </div>
         <div class="generalInfo">
@@ -131,7 +133,7 @@ const props = defineProps({
         default: {},
     },
 });
-const emit = defineEmits(['closeDetail','refresh']);
+const emit = defineEmits(['closeDetail', 'refresh']);
 const columns = [
     {
         title: '设备名称',
@@ -210,7 +212,7 @@ const startAll = async () => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
-        emit('refresh')
+        emit('refresh');
     }
 };
 //全部停止
@@ -219,7 +221,7 @@ const stopAll = async () => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
-        emit('refresh')
+        emit('refresh');
     }
 };
 //升级某个记录
@@ -228,7 +230,7 @@ const startUpgrades = async (id) => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
-        emit('refresh')
+        emit('refresh');
     }
 };
 //停止某个记录
@@ -237,7 +239,7 @@ const stopUpgrades = async (id) => {
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
-        emit('refresh')
+        emit('refresh');
     }
 };
 

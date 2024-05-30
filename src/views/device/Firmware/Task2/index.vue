@@ -7,7 +7,12 @@
         @close="$emit('closeDrawer')"
     >
         <template #extra>
-            <a-button type="link" @click="handleAdd">+新增任务 </a-button>
+            <PermissionButton
+                type="link"
+                hasPermission="device/Firmware:add"
+                @click="handleAdd"
+                >+新增任务
+            </PermissionButton>
         </template>
         <div v-for="item in taskList" class="task">
             <div class="taskTitle">
@@ -18,8 +23,8 @@
                         {{ (item?.progress || 0) + '%' }}
                     </span>
                 </div>
-                <a-button type="text" @click="() => taskDetail(item)"
-                    >任务详情</a-button
+                <PermissionButton type="text" hasPermission="device/Firmware:view" @click="() => taskDetail(item)" 
+                    >任务详情</PermissionButton
                 >
             </div>
             <a-descriptions bordered :column="2">
