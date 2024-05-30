@@ -11,9 +11,6 @@
                 :columns="columns"
                 :request="queryAbnormal"
                 model="table"
-                defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -36,6 +33,12 @@
 
                 <template #collisionAngle="{ collisionAngle }">
                     {{ `${collisionAngle}&deg;` }}
+                </template>
+                <template #collisionThreshold="{ collisionThreshold }">
+                    {{ `${collisionThreshold}G` }}
+                </template>
+                <template #collisionActual="{ collisionActual }">
+                    {{ `${collisionActual}G` }}
                 </template>
             </JProTable>
         </full-page>
@@ -95,25 +98,26 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: '内燃柴油机',
-                    value: 'ICDieselEngine',
-                },
-                {
-                    label: '内燃汽油机',
-                    value: 'ICGasolineEngine',
-                },
-                {
-                    label: '机械柴油机',
-                    value: 'MachineDieselEngine',
-                },
-                {
-                    label: '内燃牵引车',
-                    value: 'ICTractor',
-                },
-            ],
+            type: 'string',
+          
+            // options: [
+            //     {
+            //         label: '内燃柴油机',
+            //         value: 'ICDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃汽油机',
+            //         value: 'ICGasolineEngine',
+            //     },
+            //     {
+            //         label: '机械柴油机',
+            //         value: 'MachineDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃牵引车',
+            //         value: 'ICTractor',
+            //     },
+            // ],
         },
     },
     {
@@ -153,6 +157,7 @@ const columns = [
         title: '碰撞实际值',
         dataIndex: 'collisionActual',
         key: 'collisionActual',
+        scopedSlots: true,
         ellipsis: true,
         search: {
             type: 'string',
@@ -191,6 +196,33 @@ const rowSelection = {
 const handleSearch = (param: any) => {
     params.value = param;
 };
+
+// const request = (params: Record<string, any>) =>
+//     new Promise((resolve) => {
+//         console.log('params',params)
+//         queryAbnormal({
+//             firstPageIndex: params.pageIndex,
+//             pageIndex: params.pageIndex,
+//             pageSize: params.pageSize,
+//             sorts: params.sorts,
+//             terms: params.terms,
+//         })
+//             .then((response: any) => {
+//                 console.log(response, 'response');
+//                 resolve({
+//                     result: {
+//                         data: response.result?.data,
+//                         pageIndex: params.pageIndex || 0,
+//                         pageSize: params.pageSize || 20,
+//                         total: response.result?.total,
+//                     },
+//                     status: response.status,
+//                 });
+//             })
+//             .catch((error: any) => {
+//                 console.log(error);
+//             });
+//     });
 </script>
 
 <style lang="less " scoped></style>

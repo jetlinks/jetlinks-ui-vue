@@ -10,8 +10,8 @@
                 ref="configRef"
                 :columns="columns"
                 :request="queryADAS"
-                defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
+                :defaultParams="{
+                    sorts: [{ name: 'reportTime', order: 'desc' }],
                 }"
                 model="table"
                 :params="params"
@@ -112,25 +112,25 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: '内燃柴油机',
-                    value: 'ICDieselEngine',
-                },
-                {
-                    label: '内燃汽油机',
-                    value: 'ICGasolineEngine',
-                },
-                {
-                    label: '机械柴油机',
-                    value: 'MachineDieselEngine',
-                },
-                {
-                    label: '内燃牵引车',
-                    value: 'ICTractor',
-                },
-            ],
+            type: 'string',
+            // options: [
+            //     {
+            //         label: '内燃柴油机',
+            //         value: 'ICDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃汽油机',
+            //         value: 'ICGasolineEngine',
+            //     },
+            //     {
+            //         label: '机械柴油机',
+            //         value: 'MachineDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃牵引车',
+            //         value: 'ICTractor',
+            //     },
+            // ],
         },
     },
     {
