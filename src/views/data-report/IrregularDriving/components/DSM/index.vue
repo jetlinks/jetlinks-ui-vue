@@ -41,6 +41,9 @@
                 <template #reportTime="{ reportTime }">
                     {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
+                <template #orgName="{ orgName }">
+                    {{ orgName || '暂未标记组织' }}
+                </template>
             </JProTable>
             <Detail v-if="visible" v-model:visible="visible" :data="dataInfo" />
         </full-page>
