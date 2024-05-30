@@ -20,6 +20,7 @@ export const getPrimissTree_api = (id: string): Promise<any> => server.get(`/men
 // 更新角色对应的权限树
 export const updatePrimissTree_api = (id: string, data:object): Promise<any> => server.put(`/menu/role/${id}/_grant`,data);
 
+export const clearPrimissTree_api = (id: string, data?:object): Promise<any> => server.put(`/menu/role/${id}/iot/clear-grant`,data);
 
 // 获取用户列表
 export const getUserByRole_api = (data: any): Promise<any> => server.post(`/user/_query/`, data);

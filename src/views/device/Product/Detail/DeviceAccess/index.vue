@@ -638,6 +638,7 @@ const getGuide = async (isDriver1: boolean = false) => {
 };
 
 const checkAccess = async (data: any) => {
+  console.log(data)
   visible.value = false
   accessId.value = data.access.id
   access.value = data.access
@@ -647,6 +648,20 @@ const checkAccess = async (data: any) => {
   productData.metadata = {}
   metadata.value = data.metadata?.[0] || {
     properties: []
+  }
+  if (metadata.value?.properties) {
+    metadata.value?.properties.forEach((item) => {
+      if (
+          item.name === '流传输模式' &&
+          (!productStore.current?.configuration ||
+              !productStore.current?.configuration.hasOwnProperty(
+                  item.property,
+              ))
+      ) {
+        formData.data[item.property] =
+            item.type.expands?.defaultValue;
+      }
+    });
   }
   if (data.access.channel === 'plugin') { // 插件设备
     markdownToHtml.value = ''
