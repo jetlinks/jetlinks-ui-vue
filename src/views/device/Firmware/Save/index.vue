@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal
         :title="data.id ? '编辑' : '新增'"
         ok-text="确认"
@@ -9,189 +9,190 @@
         @cancel="handleCancel"
         @ok="handleOk"
     >
-        <j-form
-            class="form"
-            layout="vertical"
-            :model="formData"
-            name="basic"
-            autocomplete="off"
-        >
+        <a-spin :spinning="_loading">
+          <j-form
+              class="form"
+              layout="vertical"
+              :model="formData"
+              name="basic"
+              autocomplete="off"
+          >
             <j-row :gutter="[24, 0]">
-                <j-col :span="24">
-                    <j-form-item label="名称" v-bind="validateInfos.name">
-                        <j-input
-                            placeholder="请输入名称"
-                            v-model:value="formData.name"
-                    /></j-form-item>
-                </j-col>
-                <j-col :span="24"
-                    ><j-form-item
-                        label="所属产品"
-                        v-bind="validateInfos.productId"
-                    >
-                        <j-select
-                            v-model:value="formData.productId"
-                            :options="productOptions"
-                            placeholder="请选择所属产品"
-                            allowClear
-                            show-search
-                            :filter-option="filterOption"
-                        /> </j-form-item
-                ></j-col>
-                <j-col :span="12"
-                    ><j-form-item label="版本号" v-bind="validateInfos.version">
-                        <j-input
-                            placeholder="请输入版本号"
-                            v-model:value="formData.version" /></j-form-item
-                ></j-col>
-                <j-col :span="12"
-                    ><j-form-item
-                        label="版本序号"
-                        v-bind="validateInfos.versionOrder"
-                    >
-                        <j-input-number
-                            placeholder="请输入版本序号"
-                            style="width: 100%"
-                            :min="1"
-                            :max="99999"
-                            v-model:value="
+              <j-col :span="24">
+                <j-form-item label="名称" v-bind="validateInfos.name">
+                  <j-input
+                      placeholder="请输入名称"
+                      v-model:value="formData.name"
+                  /></j-form-item>
+              </j-col>
+              <j-col :span="24"
+              ><j-form-item
+                  label="所属产品"
+                  v-bind="validateInfos.productId"
+              >
+                <j-select
+                    v-model:value="formData.productId"
+                    :options="productOptions"
+                    placeholder="请选择所属产品"
+                    allowClear
+                    show-search
+                    :filter-option="filterOption"
+                /> </j-form-item
+              ></j-col>
+              <j-col :span="12"
+              ><j-form-item label="版本号" v-bind="validateInfos.version">
+                <j-input
+                    placeholder="请输入版本号"
+                    v-model:value="formData.version" /></j-form-item
+              ></j-col>
+              <j-col :span="12"
+              ><j-form-item
+                  label="版本序号"
+                  v-bind="validateInfos.versionOrder"
+              >
+                <j-input-number
+                    placeholder="请输入版本序号"
+                    style="width: 100%"
+                    :min="1"
+                    :max="99999"
+                    v-model:value="
                                 formData.versionOrder
                             " /></j-form-item
-                ></j-col>
-                <j-col :span="12"
-                    ><j-form-item
-                        label="签名方式"
-                        v-bind="validateInfos.signMethod"
-                    >
-                        <j-select
-                            v-model:value="formData.signMethod"
-                            :options="[
+              ></j-col>
+              <j-col :span="12"
+              ><j-form-item
+                  label="签名方式"
+                  v-bind="validateInfos.signMethod"
+              >
+                <j-select
+                    v-model:value="formData.signMethod"
+                    :options="[
                                 { label: 'MD5', value: 'md5' },
                                 { label: 'SHA256', value: 'sha256' },
                             ]"
-                            placeholder="请选择签名方式"
-                            allowClear
-                            show-search
-                            :filter-option="filterOption"
-                            @change="changeSignMethod"
-                        />
-                    </j-form-item>
-                </j-col>
-                <j-col :span="12"
-                    ><j-form-item v-bind="validateInfos.sign">
-                        <template #label>
-                            签名
-                            <j-tooltip title="请输入本地文件进行签名加密后的值">
-                                <AIcon
-                                    type="QuestionCircleOutlined"
-                                    style="margin-left: 2px"
-                                />
-                            </j-tooltip>
-                        </template>
-                        <j-input
-                            placeholder="请输入签名"
-                            v-model:value="formData.sign" /></j-form-item
+                    placeholder="请选择签名方式"
+                    allowClear
+                    show-search
+                    :filter-option="filterOption"
+                    @change="changeSignMethod"
+                />
+              </j-form-item>
+              </j-col>
+              <j-col :span="12"
+              ><j-form-item v-bind="validateInfos.sign">
+                <template #label>
+                  签名
+                  <j-tooltip title="请输入本地文件进行签名加密后的值">
+                    <AIcon
+                        type="QuestionCircleOutlined"
+                        style="margin-left: 2px"
+                    />
+                  </j-tooltip>
+                </template>
+                <j-input
+                    placeholder="请输入签名"
+                    v-model:value="formData.sign" /></j-form-item
+              ></j-col>
+              <j-col :span="24">
+                <j-form-item label="固件上传" v-bind="validateInfos.url">
+                  <FileUpload
+                      v-model:modelValue="formData.url"
+                      v-model:extraValue="extraValue"
+                  /> </j-form-item
                 ></j-col>
-                <j-col :span="24">
-                    <j-form-item label="固件上传" v-bind="validateInfos.url">
-                        <FileUpload
-                            v-model:modelValue="formData.url"
-                            v-model:extraValue="extraValue"
-                        /> </j-form-item
-                ></j-col>
-                <j-col :span="24">
-                    <j-form-item
-                        label="其他配置"
-                        v-bind="validateInfos.properties"
-                    >
-                        <j-form
-                            :class="
+              <j-col :span="24">
+                <j-form-item
+                    label="其他配置"
+                    v-bind="validateInfos.properties"
+                >
+                  <j-form
+                      :class="
                                 dynamicValidateForm.properties.length !== 0 &&
                                 'formRef'
                             "
-                            ref="formRef"
-                            name="dynamic_form_nest_item"
-                            :model="dynamicValidateForm"
-                        >
-                            <div
-                                class="formRef-content"
-                                v-for="(
+                      ref="formRef"
+                      name="dynamic_form_nest_item"
+                      :model="dynamicValidateForm"
+                  >
+                    <div
+                        class="formRef-content"
+                        v-for="(
                                     propertie, index
                                 ) in dynamicValidateForm.properties"
-                                :key="propertie.keyid"
-                            >
-                                <j-form-item
-                                    :label="index === 0 && 'Key'"
-                                    class="formRef-form-item"
-                                    :name="['properties', index, 'id']"
-                                    :rules="{
+                        :key="propertie.keyid"
+                    >
+                      <j-form-item
+                          :label="index === 0 && 'Key'"
+                          class="formRef-form-item"
+                          :name="['properties', index, 'id']"
+                          :rules="{
                                         required: true,
                                         message: '请输入KEY',
                                     }"
-                                >
-                                    <j-input
-                                        v-model:value="propertie.id"
-                                        placeholder="请输入KEY"
-                                    />
-                                </j-form-item>
-                                <j-form-item
-                                    :label="index === 0 && 'Value'"
-                                    class="formRef-form-item"
-                                    :name="['properties', index, 'value']"
-                                    :rules="{
+                      >
+                        <j-input
+                            v-model:value="propertie.id"
+                            placeholder="请输入KEY"
+                        />
+                      </j-form-item>
+                      <j-form-item
+                          :label="index === 0 && 'Value'"
+                          class="formRef-form-item"
+                          :name="['properties', index, 'value']"
+                          :rules="{
                                         required: true,
                                         message: '请输入VALUE',
                                     }"
-                                >
-                                    <j-input
-                                        v-model:value="propertie.value"
-                                        placeholder="请输入VALUE"
-                                    />
-                                </j-form-item>
-                                <j-form-item
-                                    :label="index === 0 && '操作'"
-                                    class="formRef-form-item"
-                                    style="width: 10%"
-                                >
-                                    <j-popconfirm
-                                        title="确认删除吗？"
-                                        ok-text="确认"
-                                        cancel-text="取消"
-                                        @confirm="removeList(propertie)"
-                                    >
-                                        <AIcon type="DeleteOutlined" />
-                                    </j-popconfirm>
-                                </j-form-item>
-                            </div>
-                            <j-form-item class="formRef-form-item-add">
-                                <j-button type="dashed" block @click="addList">
-                                    <AIcon type="PlusOutlined" />
-                                    添加
-                                </j-button>
-                            </j-form-item>
-                        </j-form>
-                    </j-form-item></j-col
+                      >
+                        <j-input
+                            v-model:value="propertie.value"
+                            placeholder="请输入VALUE"
+                        />
+                      </j-form-item>
+                      <j-form-item
+                          :label="index === 0 && '操作'"
+                          class="formRef-form-item"
+                          style="width: 10%"
+                      >
+                        <j-popconfirm
+                            title="确认删除吗？"
+                            ok-text="确认"
+                            cancel-text="取消"
+                            @confirm="removeList(propertie)"
+                        >
+                          <AIcon type="DeleteOutlined" />
+                        </j-popconfirm>
+                      </j-form-item>
+                    </div>
+                    <j-form-item class="formRef-form-item-add">
+                      <j-button type="dashed" block @click="addList">
+                        <AIcon type="PlusOutlined" />
+                        添加
+                      </j-button>
+                    </j-form-item>
+                  </j-form>
+                </j-form-item></j-col
+              >
+              <j-col :span="24">
+                <j-form-item
+                    label="说明"
+                    v-bind="validateInfos.description"
                 >
-                <j-col :span="24">
-                    <j-form-item
-                        label="说明"
-                        v-bind="validateInfos.description"
-                    >
-                        <j-textarea
-                            placeholder="请输入说明"
-                            v-model:value="formData.description"
-                            :maxlength="200"
-                            :rows="3"
-                            showCount
-                        /> </j-form-item
+                  <j-textarea
+                      placeholder="请输入说明"
+                      v-model:value="formData.description"
+                      :maxlength="200"
+                      :rows="3"
+                      showCount
+                  /> </j-form-item
                 ></j-col>
             </j-row>
-        </j-form>
+          </j-form>
+        </a-spin>
     </j-modal>
 </template>
 <script lang="ts" setup>
-import { message, Form } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { Form } from 'jetlinks-ui-components';
 import FileUpload from './FileUpload.vue';
 import {
     save,
@@ -223,6 +224,7 @@ const addList = () => {
 };
 
 const loading = ref(false);
+const _loading = ref(false);
 const useForm = Form.useForm;
 const productOptions = ref([]);
 
@@ -282,6 +284,19 @@ const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
     }
 };
 
+const validatorProductExist = async (_: Record<string, any>, value: string) => {
+  if (!value) {
+    return Promise.resolve();
+  } else {
+    const dt = productOptions.value.find((i: any) => i.value === value)
+    if(dt){
+      return Promise.resolve();
+    } else {
+      return Promise.reject('当前产品不存在，请选择产品')
+    }
+  }
+};
+
 const validatorVersionValue = async (_rule:any,value:any) => { 
     return new Promise (async(resolve,reject)=>{
         const posReg = /^[1-9]\d*$/;
@@ -301,7 +316,10 @@ const { resetFields, validate, validateInfos } = useForm(
             { required: true, message: '请输入名称' },
             { max: 64, message: '最多可输入64个字符' },
         ],
-        productId: [{ required: true, message: '请选择所属产品' }],
+        productId: [
+            { required: true, message: '请选择所属产品' },
+            { validator: validatorProductExist, trigger: 'blur' }
+        ],
         version: [
             { required: true, message: '请输入版本号' },
             { max: 64, message: '最多可输入64个字符', trigger: 'change' },
@@ -368,11 +386,13 @@ const changeSignMethod = () => {
 };
 
 onMounted(() => {
+  _loading.value = true
     queryProduct({
         paging: false,
         terms: [{ column: 'state', value: 1 }],
         sorts: [{ name: 'createTime', order: 'desc' }],
     }).then((resp: any) => {
+      _loading.value = false
         productOptions.value = resp.result.map((item: any) => ({
             value: item.id,
             label: item.name,

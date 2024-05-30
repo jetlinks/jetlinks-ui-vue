@@ -203,6 +203,8 @@ const columns = [
     {
         title: '变量',
         dataIndex: 'id',
+        width: 100,
+        ellipsis: true,
         scopedSlots: { customRender: 'id' },
     },
     {

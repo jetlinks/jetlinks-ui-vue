@@ -14,7 +14,10 @@
                     model="TABLE"
                     :params="queryParams"
                     :defaultParams="{
-                        sorts: [{ name: 'createTime', order: 'desc' }],
+                        sorts: [
+                            { name: 'createTime', order: 'desc' },
+                            { name: 'username', order: 'asc', value: 'admin' },
+                        ],
                     }"
                 >
                     <template #headerTitle>
@@ -31,9 +34,13 @@
                     </template>
                     <template #roleList="slotProps">
                         <j-ellipsis>
-                            {{ slotProps?.roleList?.map((item)=>{
-                                return item.name
-                            }).join(',') }}
+                            {{
+                                slotProps?.roleList
+                                    ?.map((item) => {
+                                        return item.name;
+                                    })
+                                    .join(',')
+                            }}
                         </j-ellipsis>
                     </template>
                     <template #status="slotProps">
@@ -101,11 +108,10 @@
                                         : '删除',
                                 }"
                                 :popConfirm="{
-                                    title:'确认删除?',
+                                    title: '确认删除?',
                                     onConfirm: () =>
                                         table.clickDel(slotProps.id),
                                 }"
-
                                 :disabled="slotProps.status"
                             >
                                 <AIcon type="DeleteOutlined" />
@@ -134,7 +140,7 @@ import {
     getUserList_api,
     changeUserStatus_api,
     deleteUser_api,
-    queryRole_api
+    queryRole_api,
 } from '@/api/system/user';
 import { onlyMessage } from '@/utils/comm';
 
@@ -184,30 +190,28 @@ const columns = [
         title: '角色',
         dataIndex: 'roleList',
         key: 'roleList',
-        search:{
-            type:'select',
+        search: {
+            type: 'select',
             // rename:'id$in-dimension$role',
-            options:() => 
-            new Promise((resolve)=>{
-                queryRole_api(
-                    {
-                        paging:false,
+            options: () =>
+                new Promise((resolve) => {
+                    queryRole_api({
+                        paging: false,
                         sorts: [
                             { name: 'createTime', order: 'desc' },
                             { name: 'id', order: 'desc' },
-                        ]
-                    }
-                ).then((resp:any)=>{
-                    resolve(
+                        ],
+                    }).then((resp: any) => {
+                        resolve(
                             resp.result.map((item: dictType) => ({
                                 label: item.name,
                                 value: item.id,
                             })),
                         );
-                })
-            })
+                    });
+                }),
         },
-         scopedSlots: true,
+        scopedSlots: true,
     },
     {
         title: '状态',
@@ -304,13 +308,15 @@ type modalType = '' | 'add' | 'edit' | 'reset';
 
 const handleParams = (params: any) => {
     const newParams = (params?.terms as any[])?.map((termsGroupA) => {
-        let arr: any[] = []
+        let arr: any[] = [];
         termsGroupA.terms = termsGroupA.terms.map((termsItem: any) => {
-
             if (termsItem.column === 'id$in-dimension$role') {
-              let _termType = termsItem.termType === 'nin' ? 'not$in' : termsItem.termType
-              termsItem.column = `${termsItem.column}$${_termType}`
-              delete termsItem.termType
+                let _termType =
+                    termsItem.termType === 'nin'
+                        ? 'not$in'
+                        : termsItem.termType;
+                termsItem.column = `${termsItem.column}$${_termType}`;
+                delete termsItem.termType;
             }
             if (['telephone', 'email'].includes(termsItem.column)) {
                 return {
@@ -318,7 +324,10 @@ const handleParams = (params: any) => {
                     value: [termsItem],
                 };
             }
-            if (['type'].includes(termsItem.column) && termsItem.value === 'other') {
+            if (
+                ['type'].includes(termsItem.column) &&
+                termsItem.value === 'other'
+            ) {
                 arr = [
                     {
                         ...termsItem,
@@ -331,8 +340,26 @@ const handleParams = (params: any) => {
                         type: 'or',
                         termType: 'empty',
                         value: 1,
-                    }
-                ]
+                    },
+                ];
+            }
+            if (termsItem.column === 'roleList') {
+                if (
+                    termsItem.termType === 'eq' ||
+                    termsItem.termType === 'in'
+                ) {
+                    return {
+                        column: 'id$in-dimension$role',
+                        type: termsItem.type,
+                        value: termsItem.value,
+                    };
+                } else {
+                    return {
+                        column: 'id$in-dimension$role$not',
+                        type: termsItem.type,
+                        value: termsItem.value,
+                    };
+                }
             }
             if(termsItem.column === 'roleList'){
                 if(termsItem.termType === 'eq' || termsItem.termType === 'in'){
@@ -352,8 +379,8 @@ const handleParams = (params: any) => {
             return termsItem;
         });
 
-        if(arr.length){
-          termsGroupA.terms = [...termsGroupA.terms, ...arr]
+        if (arr.length) {
+            termsGroupA.terms = [...termsGroupA.terms, ...arr];
         }
 
         return termsGroupA;

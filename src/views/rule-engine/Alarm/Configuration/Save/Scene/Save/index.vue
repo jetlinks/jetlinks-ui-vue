@@ -147,39 +147,40 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     search: {
-      type: 'select',
-      options: async () => {
-        const res = await query(
-          {
-            sorts: [
-              {
-                name: 'createTime',
-                order: 'desc',
-              },
-            ],
-            terms: [
-              {
-                column: 'id',
-                termType: 'alarm-bind-rule$not',
-                value: props.id,
-                type: 'and',
-              },
-              {
-                column: 'triggerType',
-                termType: 'eq',
-                value: props.type === 'other' ? undefined : 'device',
-              },
-            ]
-          }
-        );
-        if (res.status === 200) {
-          return res.result.data.map((item: any) => ({
-            label: item.name,
-            value: item.id,
-          }));
-        }
-        return []
-      }
+      type: 'string',
+      // rename: "id",
+      // options: async () => {
+      //   const res = await query(
+      //     {
+      //       sorts: [
+      //         {
+      //           name: 'createTime',
+      //           order: 'desc',
+      //         },
+      //       ],
+      //       terms: [
+      //         {
+      //           column: 'id',
+      //           termType: 'alarm-bind-rule$not',
+      //           value: props.id,
+      //           type: 'and',
+      //         },
+      //         {
+      //           column: 'triggerType',
+      //           termType: 'eq',
+      //           value: props.type === 'other' ? undefined : 'device',
+      //         },
+      //       ]
+      //     }
+      //   );
+      //   if (res.status === 200) {
+      //     return res.result.data.map((item: any) => ({
+      //       label: item.name,
+      //       value: item.id,
+      //     }));
+      //   }
+      //   return []
+      // }
     },
   },
   {
