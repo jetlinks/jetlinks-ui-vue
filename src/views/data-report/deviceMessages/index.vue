@@ -68,6 +68,7 @@ import { onlyMessage } from '@/utils/comm';
 import moment from 'moment';
 
 import { Modal, Textarea } from 'jetlinks-ui-components';
+import { queryLogsType } from '@/api/device/instance';
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -99,10 +100,17 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: [
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
-            ],
+            options: () =>
+                new Promise((resolve) => {
+                    queryLogsType().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.text,
+                                value: item.value,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
