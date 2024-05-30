@@ -9,7 +9,7 @@
                     :style="{ background: i.color }"
                     class="colorExtractor"
                 ></div>
-                <div class="tagName">{{ i.name }}</div>
+                <div class="tagName" :id="i.id">{{ i.name }}</div>
             </div>
             <div>
                 <PermissionButton
@@ -55,6 +55,7 @@ import {
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
+import { randomString } from '@/utils/utils';
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();
@@ -71,7 +72,11 @@ const createDrag = () => {
         itemSelector: '.tagName',
         eventData: function (eventEl) {
             return {
+                id: randomString(),
                 title: eventEl.innerText,
+                backgroundColor: colorMap.get(eventEl.id) || '#000000',
+                color: '#000',
+                editable: false,
             };
         },
     });
@@ -129,7 +134,7 @@ const deleteData = async (id) => {
 const editData = (data) => {
     editVisible.value = true;
     editType.value = 'edit';
-    currentTag.value = data
+    currentTag.value = data;
 };
 onMounted(() => {
     queryTagsData();

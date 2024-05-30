@@ -1,13 +1,14 @@
 <template>
     <div class="calendarContainer">
         <CalendarTags/>
-        <FullCalendar />
+        <CalendarRight />
     </div>
 </template>
 
 <script setup>
-import FullCalendar from './FullCalendar/index.vue';
+
 import CalendarTags from './Tags/index.vue';
+import CalendarRight from './CalendarRight/index.vue'
 </script>
 <style lang="less" scoped>
 .calendarContainer {
