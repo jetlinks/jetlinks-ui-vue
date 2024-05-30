@@ -133,6 +133,7 @@ const editData = (data) => {
 };
 onMounted(() => {
     queryTagsData();
+    createDrag();
 });
 </script>
 <style lang="less" scoped>

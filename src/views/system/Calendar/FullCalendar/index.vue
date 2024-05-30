@@ -23,7 +23,7 @@ onMounted(() => {
         events: [],
         height: '780px',
         drop: function (info) {
-            info.draggedEl.parentNode.removeChild(info.draggedEl);
+            // info.draggedEl.parentNode.removeChild(info.draggedEl);
         },
     });
     calendar.render();

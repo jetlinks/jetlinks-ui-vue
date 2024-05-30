@@ -44,7 +44,6 @@
 import { saveTag, saveTagsColor, getTagsColor } from '@/api/system/calendar';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
-import dayjs from 'dayjs';
 const props = defineProps({
     editType: {
         type: String,
