@@ -2,9 +2,9 @@
     <page-container>
         <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
         <FullPage>
-            <JProTable ref="configRef" :columns="columns" :request="request" defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }" model="table" :params="params" :gridColumn="3" :row-selection="rowSelection">
+            <JProTable ref="configRef" :columns="columns" :request="request"
+                :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" model="table" :params="params"
+                :gridColumn="3" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
                         <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
@@ -143,11 +143,11 @@ const handleSearch = (param: any) => {
 
 const handelDetail = (slotProps: any) => {
     menuStory.jumpPage('data-report/vehicleReport/Detail',
-     { id: slotProps.id, }, 
-     {
-        id: slotProps.id,
-        deviceId: JSON.stringify(slotProps.deviceId),
-    });
+        { id: slotProps.id, },
+        {
+            id: slotProps.id,
+            deviceId: JSON.stringify(slotProps.deviceId),
+        });
 };
 
 /**
@@ -159,26 +159,26 @@ const handleExport = async () => {
     if (!selects.value?.length) {
         onlyMessage('请勾选需要导出得数据', 'error');
         return;
-    }else if (selects.value?.length > 1){
+    } else if (selects.value?.length > 1) {
         onlyMessage('只能勾选一条数据进行导出', 'error');
         return;
     } else {
-        const { id,deviceId } = selects.value[0]
+        const { id, deviceId } = selects.value[0]
         console.log(selects.value[0])
-        vehicleExport(id,deviceId).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `车辆列表数据-${moment(new Date()).format(
-                    'YYYY/MM/DD HH:mm:ss',
-                )}`,
-                type.value,
-            );
-        }
-    });
-    } 
+        vehicleExport(id, deviceId).then((res: any) => {
+            if (res) {
+                const blob = new Blob([res.data], { type: type.value });
+                const url = URL.createObjectURL(blob);
+                downloadFileByUrl(
+                    url,
+                    `车辆列表数据-${moment(new Date()).format(
+                        'YYYY/MM/DD HH:mm:ss',
+                    )}`,
+                    type.value,
+                );
+            }
+        });
+    }
 };
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
@@ -199,6 +199,7 @@ const rowSelection = {
 
 const request = (params: Record<string, any>) =>
     new Promise((resolve) => {
+        console.log('params',params)
         queryVehicleList({
             firstPageIndex: params.pageIndex,
             pageIndex: params.pageIndex,

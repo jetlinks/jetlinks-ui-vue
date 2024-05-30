@@ -5,7 +5,7 @@ import server from '@/utils/request';
  * @param data 查询条件
  */
 export const queryVehicleList = (data: any) =>
-    server.get('/vehicle/_query', data);
+    server.post('/vehicle/_query', data);
 
 /**
  * 车辆列表导出
