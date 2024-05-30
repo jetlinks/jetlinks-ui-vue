@@ -31,8 +31,14 @@
                         </PermissionButton>
                     </j-space>
                 </template>
-                <template #productId="{ productId }">
-                    {{ productId || '暂未绑定车辆' }}
+                <template #operatorName="{ operatorName }">
+                    {{ handleOperatorName(operatorName) }}
+                </template>
+                <template #cardType="{ cardType }">
+                    {{ cardType ? handleCardType(cardType.value) : ' ' }}
+                </template>
+                <template #deviceId="{ deviceId }">
+                    {{ deviceId || '' }}
                 </template>
                 <template #totalFlow="{ totalFlow }">
                     {{ formatFlow(totalFlow) }}
@@ -42,9 +48,6 @@
                 </template>
                 <template #residualFlow="{ residualFlow }">
                     {{ formatFlow(residualFlow) }}
-                </template>
-                <template #cardType="{ cardType }">
-                    {{ cardType ? handleCardType(cardType.value) : ' ' }}
                 </template>
                 <!-- 激活日期插槽 -->
                 <template #activationDate="{ activationDate }">
@@ -125,8 +128,8 @@ const columns = [
     },
     {
         title: '绑定车辆编号',
-        dataIndex: 'productId',
-        key: 'productId',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
         scopedSlots: true,
         search: {
@@ -149,7 +152,21 @@ const columns = [
         ellipsis: true,
         scopedSlots: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [
+                {
+                    label: '移动',
+                    value: 'OneLink',
+                },
+                {
+                    label: '电信',
+                    value: 'CtwingCmp',
+                },
+                {
+                    label: '联通',
+                    value: 'UnicomCmp',
+                },
+            ],
         },
     },
     {
@@ -313,6 +330,22 @@ const handleTagType = (value: string) => {
             return 'default';
         case 'other':
             return 'processing';
+    }
+};
+
+/**
+ * @function handleOperatorName 处理运营商
+ * @param value
+ */
+const handleOperatorName = (value: string) => {
+    value = value.toLocaleLowerCase();
+    switch (value) {
+        case 'onelink':
+            return '移动';
+        case 'ctwing':
+            return '电信';
+        case 'unicom':
+            return '联通';
     }
 };
 
