@@ -1,7 +1,7 @@
 <template>
     <page-container :showBack="true">
         <div class="detail">
-            <Title :data="vehicleData" />
+            <Title :data="vehicleData" :deviceData="dataAss"/>
             <div class="table above">
                 <DetailsTitle :title="'在线离线表'">
                     <j-table
@@ -9,6 +9,7 @@
                         model="table"
                         :data-source="data"
                         :pagination="pagination"
+                        :scroll="{ y: 246 }"
                     >
                         <template #bodyCell="{ column, text }">
                             <template v-if="column.dataIndex === 'timestamp'">
@@ -37,7 +38,12 @@
                             <template
                                 v-if="column.dataIndex === 'workEfficiency'"
                             >
-                                {{ `${text}%` }}
+                                {{ `${text > 0 ? (text*100).toFixed(2) : 0}%` }}
+                            </template>
+                            <template
+                                v-if="column.dataIndex === 'operationTime'"
+                            >
+                                {{ formatMillisecondsToHourMinute(text) }}
                             </template>
                         </template>
                     </j-table>
@@ -56,23 +62,38 @@
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key === 'state'">
                             <button
-                                v-if="record.state === true"
+                                v-if="record.state.value === 'offline'"
                                 style="
                                     height: 24px;
                                     padding: 3px 8px 3px 8px;
-                                    border-radius: 3px;
-                                    background: #f99d311a;
-                                    color: #f99d31;
-                                    border: 1px solid #f99d3199;
-                                    font-size: 14px;
-                                    font-weight: 400;
-                                    line-height: 18px;
+                                     border-radius: 3px;
+                                     background: #f99d311a;
+                                     color: #f99d31;
+                                     border: 1px solid #f99d3199;
+                                     font-size: 14px;
+                                     font-weight: 400;
+                                     line-height: 18px;
                                 "
                             >
                                 离线
                             </button>
                             <button
-                                v-else
+                                v-else-if="record.state.value === 'notActive'"
+                                style="
+                                    height: 24px;
+                                    padding: 3px 8px 3px 8px;
+                                    border-radius: 3px;
+                                    background: rgba(229, 0, 18, 0.1);
+                                    color: rgba(229, 0, 18, 1);
+                                    border: 1px solid rgba(229, 0, 18, 1);
+                                    font-weight: 400;
+                                    line-height: 18px;
+                                "
+                            >
+                                禁用
+                            </button>
+                            <button
+                               v-else
                                 style="
                                     height: 24px;
                                     padding: 3px 8px 3px 8px;
@@ -112,7 +133,7 @@
                                 {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
                             </template>
                             <template v-if="column.dataIndex === 'drivingTime'">
-                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                                {{ formatMillisecondsToHourMinute(text) }}
                             </template>
                             <template
                                 v-if="column.dataIndex === 'drivenDistance'"
@@ -137,7 +158,26 @@ import {
 import dayjs from 'dayjs';
 import DetailsTitle from '../components/detailsTitle.vue';
 import Title from './Title/index.vue';
-import { useRouterParams } from '@/utils/hooks/useParams';
+const route = useRoute();
+const vehicleData = ref();
+const data = ref<DataItem[]>([]);
+const dataWork = ref<any>([]);
+const dataAss = ref<DataItemAss[]>([]);
+const dataRecord = ref<any>([]);
+
+const formatMillisecondsToHourMinute = (milliseconds: number) => {
+  if (milliseconds < 0) {
+    return '0分';
+  }
+ 
+  const hours = Math.floor(milliseconds / 3600000);
+  const minutes = Math.floor((milliseconds % 3600000) / 60000);
+ 
+  return hours > 0 ? `${hours > 10 ? hours.toString().padStart(2, '0') : 
+  hours.toString().padStart(1, '0')}小时${minutes > 9 ? minutes.toString().padStart(2, '0') : 
+  minutes.toString().padStart(1, '0')}分` : `${minutes > 9 ? minutes.toString().padStart(2, '0'): 
+  minutes.toString().padStart(1, '0')}分`
+}
 
 interface DataItem {
     key: number;
@@ -191,8 +231,8 @@ const columnsWork = [
     },
     {
         title: '工作时长',
-        dataIndex: 'freeTime',
-        key: 'freeTime',
+        dataIndex: 'operationTime',
+        key: 'operationTime',
         ellipsis: true,
     },
     {
@@ -206,8 +246,8 @@ const columnsWork = [
 const columnsAss = [
     {
         title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
     },
     {
@@ -276,19 +316,6 @@ const columnsRecord = [
         ellipsis: true,
     },
 ];
-const route = useRoute();
-
-const routerParams = useRouterParams();
-
-const vehicleData = ref();
-
-const data = ref<DataItem[]>([]);
-
-const dataWork = ref<any>([]);
-
-const dataAss = ref<DataItemAss[]>([]);
-
-const dataRecord = ref<any>([]);
 
 const pagination = {
     showTotal: (num: number, range: number[]) => {
@@ -354,46 +381,46 @@ const queryDevice = async () => {
 };
 //获取在线离线数据
 
-const queryVehicleStatus = async (params?: any) => {
-    const _deviceId = routerParams.params?.value.deviceId;
+const queryVehicleStatus = async () => {
+    const _deviceId: any = route.query?.deviceId;
     const defaultParams = {
         terms: [
             {
                 column: 'deviceId',
-                value: `${_deviceId}`,
+                value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
         ],
         paging: false,
         sorts: [{ name: 'timestamp', order: 'desc' }],
     };
-    const res = await queryVehicleStatusList({ ...params, ...defaultParams });
+    const res: any = await queryVehicleStatusList({ ...defaultParams });
     if (res.status == 200) {
         data.value = res.result.data;
     }
 };
 //获取行驶记录数据
-const queryDataRecord = async (params?: any) => {
-    const _deviceId = routerParams.params?.value.deviceId;
+const queryDataRecord = async () => {
+    const _deviceId: any = route.query?.deviceId;
 
     const defaultParams = {
         terms: [
             {
                 column: 'deviceId',
-                value: `${_deviceId}`,
+                value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
         ],
         paging: false,
         sorts: [{ name: 'shutStartMilli', order: 'desc' }],
     };
-    const res = await queryVehicleTravelList({ ...params, ...defaultParams });
+    const res: any = await queryVehicleTravelList({ ...defaultParams });
     if (res.status == 200) {
         dataRecord.value = res.result.data;
     }
 };
 //获取工作效率数据
-const queryDataWork = async (params?: any) => {
+const queryDataWork = async () => {
     const _id = route.params?.id as string;
     const defaultParams = {
         terms: [
@@ -406,7 +433,7 @@ const queryDataWork = async (params?: any) => {
         paging: false,
         sorts: [{ name: 'startTime', order: 'desc' }],
     };
-    const res = await queryVehicleWorkList({ ...params, ...defaultParams });
+    const res: any = await queryVehicleWorkList({ ...defaultParams });
     if (res.status == 200) {
         dataWork.value = res.result.data;
     }

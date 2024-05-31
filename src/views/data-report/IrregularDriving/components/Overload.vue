@@ -11,9 +11,7 @@
                 :columns="columns"
                 :request="queryOverLoad"
                 model="table"
-                defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
+            
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -32,6 +30,17 @@
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
+                </template>
+                <template #duration="{ duration }">
+                    {{ formatMillisecondsToHourMinute(duration) }}
+                </template>
+                <template #overLoadInfoLoadRating="{ overLoadInfoLoadRating }">
+                    {{ `${overLoadInfoLoadRating}t` }}
+                </template>
+                <template
+                    #overLoadInfoOverloadValue="{ overLoadInfoOverloadValue }"
+                >
+                    {{ `${overLoadInfoOverloadValue}t` }}
                 </template>
             </JProTable>
         </full-page>
@@ -83,6 +92,34 @@ const handleExport = async () => {
     });
 };
 
+const formatMillisecondsToHourMinute = (milliseconds: number) => {
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    if (
+        typeof milliseconds === 'number' &&
+        isFinite(milliseconds) &&
+        milliseconds > 0
+    ) {
+        return hours > 0
+            ? `${
+                  hours > 10
+                      ? hours.toString().padStart(2, '0')
+                      : hours.toString().padStart(1, '0')
+              }小时${
+                  minutes > 9
+                      ? minutes.toString().padStart(2, '0')
+                      : minutes.toString().padStart(1, '0')
+              }分`
+            : `${
+                  minutes > 9
+                      ? minutes.toString().padStart(2, '0')
+                      : minutes.toString().padStart(1, '0')
+              }分`;
+    } else {
+        return '0分';
+    }
+};
+
 const params = ref<Record<string, any>>({});
 const columns = [
     {
@@ -90,26 +127,26 @@ const columns = [
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '内燃柴油机',
-                    value: 'ICDieselEngine',
-                },
-                {
-                    label: '内燃汽油机',
-                    value: 'ICGasolineEngine',
-                },
-                {
-                    label: '机械柴油机',
-                    value: 'MachineDieselEngine',
-                },
-                {
-                    label: '内燃牵引车',
-                    value: 'ICTractor',
-                },
-            ],
+        search: { 
+            type: 'string',
+            // options: [
+            //     {
+            //         label: '内燃柴油机',
+            //         value: 'ICDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃汽油机',
+            //         value: 'ICGasolineEngine',
+            //     },
+            //     {
+            //         label: '机械柴油机',
+            //         value: 'MachineDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃牵引车',
+            //         value: 'ICTractor',
+            //     },
+            // ],
         },
     },
     {
@@ -135,6 +172,7 @@ const columns = [
         dataIndex: 'overLoadInfoLoadRating',
         key: 'overLoadInfoLoadRating',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -150,6 +188,7 @@ const columns = [
         dataIndex: 'duration',
         key: 'duration',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -178,6 +217,7 @@ const rowSelection = {
  * @param param
  */
 const handleSearch = (param: any) => {
+    console.log(param,'param')
     params.value = param;
 };
 </script>

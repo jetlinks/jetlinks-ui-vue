@@ -11,8 +11,8 @@
                 :columns="columns"
                 :request="querySpeed"
                 model="table"
-                defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
+                :defaultParams="{
+                    sorts: [{ name: 'reportTime', order: 'desc' }],
                 }"
                 :params="params"
                 :gridColumn="3"
@@ -35,6 +35,31 @@
                 </template>
                 <template #reportTime="{ reportTime }">
                     {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
+                </template>
+                <template #orgName="{ orgName }">
+                    {{ orgName || '暂未标记组织' }}
+                </template>
+                <template
+                    #overSpeedInfoSpeedLimit="{ overSpeedInfoSpeedLimit }"
+                >
+                    {{ `${overSpeedInfoSpeedLimit || 0}km/h` }}
+                </template>
+                <template
+                    #overSpeedInfoStartOverSpeed="{
+                        overSpeedInfoStartOverSpeed,
+                    }"
+                >
+                    {{ `${overSpeedInfoStartOverSpeed || 0}km/h` }}
+                </template>
+                <template
+                    #overSpeedInfoMaximumOverSpeed="{
+                        overSpeedInfoMaximumOverSpeed,
+                    }"
+                >
+                    {{ `${overSpeedInfoMaximumOverSpeed || 0}km/h` }}
+                </template>
+                <template #duration="{ duration }">
+                    {{ formatMillisecondsToHourMinute(duration) }}
                 </template>
             </JProTable>
         </full-page>
@@ -85,6 +110,33 @@ const handleExport = async () => {
         }
     });
 };
+
+const formatMillisecondsToHourMinute = (milliseconds: number) => {
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    if (
+        (typeof milliseconds === 'number' && isFinite(milliseconds)) &&
+        milliseconds > 0
+    ) {
+        return hours > 0
+            ? `${
+                  hours > 10
+                      ? hours.toString().padStart(2, '0')
+                      : hours.toString().padStart(1, '0')
+              }小时${
+                  minutes > 9
+                      ? minutes.toString().padStart(2, '0')
+                      : minutes.toString().padStart(1, '0')
+              }分`
+            : `${
+                  minutes > 9
+                      ? minutes.toString().padStart(2, '0')
+                      : minutes.toString().padStart(1, '0')
+              }分`;
+    } else {
+        return '0分';
+    }
+};
 const params = ref<Record<string, any>>({});
 const columns = [
     {
@@ -93,25 +145,25 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: '内燃柴油机',
-                    value: 'ICDieselEngine',
-                },
-                {
-                    label: '内燃汽油机',
-                    value: 'ICGasolineEngine',
-                },
-                {
-                    label: '机械柴油机',
-                    value: 'MachineDieselEngine',
-                },
-                {
-                    label: '内燃牵引车',
-                    value: 'ICTractor',
-                },
-            ],
+            type: 'string',
+            // options: [
+            //     {
+            //         label: '内燃柴油机',
+            //         value: 'ICDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃汽油机',
+            //         value: 'ICGasolineEngine',
+            //     },
+            //     {
+            //         label: '机械柴油机',
+            //         value: 'MachineDieselEngine',
+            //     },
+            //     {
+            //         label: '内燃牵引车',
+            //         value: 'ICTractor',
+            //     },
+            // ],
         },
     },
     {
@@ -133,25 +185,27 @@ const columns = [
         },
     },
     {
-        title: '速度限制',
+        title: '限速值',
         dataIndex: 'overSpeedInfoSpeedLimit',
         key: 'overSpeedInfoSpeedLimit',
+        scopedSlots: true,
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '开始速度',
+        title: '开始超速值',
         dataIndex: 'overSpeedInfoStartOverSpeed',
         key: 'overSpeedInfoStartOverSpeed',
         scopedSlots: true,
     },
     {
-        title: '最大速度',
+        title: '最高超速值',
         dataIndex: 'overSpeedInfoMaximumOverSpeed',
         key: 'overSpeedInfoMaximumOverSpeed',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -159,6 +213,7 @@ const columns = [
     {
         title: '持续时间 ',
         dataIndex: 'duration',
+        scopedSlots: true,
         key: 'duration',
         ellipsis: true,
         search: {

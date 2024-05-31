@@ -34,6 +34,9 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
+                <template #number="slotProps">
+                    <span>{{ slotProps.number || '暂未绑定车辆编号' }}</span>
+                </template>
                 <template #state="slotProps">
                     <button
                         v-if="slotProps.state.value === 'offline'"
@@ -132,6 +135,7 @@ const columns = [
         dataIndex: 'number',
         key: 'number',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },

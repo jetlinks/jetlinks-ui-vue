@@ -1,31 +1,13 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
         <FullPage>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="request"
-                defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                model="table"
-                :params="params"
-                :gridColumn="3"
-                :row-selection="rowSelection"
-            >
+            <JProTable ref="configRef" :columns="columns" :request="request"
+                :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" model="table" :params="params"
+                :gridColumn="3" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
-                        >
+                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
                             <PermissionButton>
                                 <AIcon type="ExportOutlined" />
 
@@ -37,13 +19,15 @@
                 <template #vehicleTypeEnum="slotProps">
                     <span> {{ slotProps.vehicleTypeEnum.text }}</span>
                 </template>
-                <template #action="slotProps">
-                    <a @click="handelDetail(slotProps)" style="color: #f84914"
-                        >详情
-                    </a>
+                <template #orgName="slotProps">
+                    <span> {{ slotProps.orgName || '暂未标记组织' }}</span>
                 </template>
-                <template #vehicleDate="{ vehicleDate }">
-                    {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
+                <template #action="slotProps">
+                    <a @click="handelDetail(slotProps)" style="color: #f84914">详情
+                    </a>
+                </template>       
+                <template #createTime="{ createTime }">
+                    {{ dayjs(createTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </FullPage>
@@ -65,7 +49,8 @@ import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
 
-const selectIds = ref<Array<number | string>>([]);
+const selects = ref<any>([]);
+
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -136,10 +121,14 @@ const columns = [
     },
     {
         title: '日期',
-        dataIndex: 'vehicleDate',
-        key: 'vehicleDate',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        width: 200,
         scopedSlots: true,
         ellipsis: true,
+        search: {
+            type: 'date',
+        },
     },
     {
         title: '操作',
@@ -160,10 +149,16 @@ const handleSearch = (param: any) => {
 };
 
 const handelDetail = (slotProps: any) => {
-    menuStory.jumpPage('data-report/vehicleReport/Detail', {
-        id: slotProps.id,
-        deviceId: slotProps.deviceId,
-    });
+    if(!slotProps.deviceId){
+        onlyMessage('未绑定车辆设备，请先绑定再查看详情','error')
+        return
+    }
+    menuStory.jumpPage('data-report/vehicleReport/Detail',
+        { id: slotProps.id, },
+        {
+            id: slotProps.id,
+            deviceId: JSON.stringify(slotProps.deviceId),
+        });
 };
 
 /**
@@ -172,32 +167,29 @@ const handelDetail = (slotProps: any) => {
 
 const type = ref<string>('xlsx');
 const handleExport = async () => {
-    if (!selectIds.value?.length) {
+    if (!selects.value?.length) {
         onlyMessage('请勾选需要导出得数据', 'error');
         return;
+    } else if (selects.value?.length > 1) {
+        onlyMessage('只能勾选一条数据进行导出', 'error');
+        return;
+    } else {
+        const { id, deviceId } = selects.value[0]
+        console.log(selects.value[0])
+        vehicleExport(id, deviceId).then((res: any) => {
+            if (res) {
+                const blob = new Blob([res.data], { type: type.value });
+                const url = URL.createObjectURL(blob);
+                downloadFileByUrl(
+                    url,
+                    `车辆列表数据-${moment(new Date()).format(
+                        'YYYY/MM/DD HH:mm:ss',
+                    )}`,
+                    type.value,
+                );
+            }
+        });
     }
-    const _params = {
-        terms: [
-            {
-                column: 'id',
-                value: selectIds.value,
-                termType: 'in',
-            },
-        ],
-    };
-    vehicleExport(type.value, _params).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `车辆列表数据-${moment(new Date()).format(
-                    'YYYY/MM/DD HH:mm:ss',
-                )}`,
-                type.value,
-            );
-        }
-    });
 };
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
@@ -206,7 +198,7 @@ const rowSelection = {
             'selectedRows: ',
             selectedRows,
         );
-        selectIds.value = selectedRowKeys;
+        selects.value = selectedRows;
     },
     onSelect: (record: any, selected: boolean, selectedRows: any) => {
         console.log(record, selected, selectedRows);

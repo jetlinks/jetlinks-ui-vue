@@ -5,15 +5,15 @@ import server from '@/utils/request';
  * @param data 查询条件
  */
 export const queryVehicleList = (data: any) =>
-    server.get('/vehicle/_query', data);
+    server.post('/vehicle/_query', data);
 
 /**
  * 车辆列表导出
  * @param format 格式
  * @param data 数据
  */
-export const vehicleExport = (format: string, data: any) =>
-    server.postStream(`/vehicle/_export/${format}`, data);
+export const vehicleExport = (vehicleId: string, deviceId: any) =>
+    server.postStream(`/vehicle/_export/${vehicleId}/${deviceId}`);
 
 /**
  * 车辆查询
