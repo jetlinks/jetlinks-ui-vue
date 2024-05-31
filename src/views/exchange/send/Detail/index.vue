@@ -370,7 +370,7 @@ const selectInit = () => {
     };
   });
   deviceIdsMap.value = deviceTargetMap;
-  console.log('deviceTargetMap', deviceTargetMap)
+  // console.log('deviceTargetMap', deviceTargetMap)
 
   deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
     value: item.targetName + `(${item.targetId})`,
