@@ -11,7 +11,6 @@
                 :columns="columns"
                 :request="queryOverLoad"
                 model="table"
-            
                 :params="params"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -127,7 +126,7 @@ const columns = [
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
-        search: { 
+        search: {
             type: 'string',
             // options: [
             //     {
@@ -182,6 +181,9 @@ const columns = [
         dataIndex: 'overLoadInfoOverloadValue',
         key: 'overLoadInfoOverloadValue',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '持续时间',
@@ -217,7 +219,7 @@ const rowSelection = {
  * @param param
  */
 const handleSearch = (param: any) => {
-    console.log(param,'param')
+    console.log(param, 'param');
     params.value = param;
 };
 </script>

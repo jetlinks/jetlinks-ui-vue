@@ -82,6 +82,9 @@ const columns = [
         key: 'deviceId',
         width: 180,
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '设备名称',

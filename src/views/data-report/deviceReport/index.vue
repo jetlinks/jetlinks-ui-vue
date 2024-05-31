@@ -160,6 +160,9 @@ const columns = [
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
 ];
 

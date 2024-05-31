@@ -146,6 +146,7 @@
                 </DetailsTitle>
             </div>
         </div>
+        <float-back-btn />
     </page-container>
 </template>
 <script lang="ts" setup>
@@ -159,6 +160,8 @@ import {
 import dayjs from 'dayjs';
 import DetailsTitle from '../components/detailsTitle.vue';
 import Title from './Title/index.vue';
+import FloatBackBtn from './FloatBackBtn/index.vue';
+
 const route = useRoute();
 const vehicleData = ref();
 const data = ref<DataItem[]>([]);
@@ -475,10 +478,12 @@ onMounted(() => {
 .detail {
     width: 100%;
     height: 100%;
+    position: relative;
+
     .table {
         height: 393px;
-        padding: 10px;
-        margin: 10px;
+        padding: 16px;
+        margin-top: 16px;
         background: #ffffff;
         border-radius: 4px;
 
@@ -491,6 +496,10 @@ onMounted(() => {
 
         .ant-table-wrapper {
             padding-top: 10px;
+        }
+
+        &.footer {
+            margin-bottom: 16px;
         }
     }
 

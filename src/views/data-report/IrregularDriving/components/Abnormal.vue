@@ -99,7 +99,7 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'string',
-          
+
             // options: [
             //     {
             //         label: '内燃柴油机',
@@ -152,6 +152,9 @@ const columns = [
         dataIndex: 'collisionThreshold',
         key: 'collisionThreshold',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '碰撞实际值',
@@ -169,6 +172,9 @@ const columns = [
         key: 'collisionAngle',
         scopedSlots: true,
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
 ];
 

@@ -115,7 +115,8 @@ const formatMillisecondsToHourMinute = (milliseconds: number) => {
     const hours = Math.floor(milliseconds / 3600000);
     const minutes = Math.floor((milliseconds % 3600000) / 60000);
     if (
-        (typeof milliseconds === 'number' && isFinite(milliseconds)) &&
+        typeof milliseconds === 'number' &&
+        isFinite(milliseconds) &&
         milliseconds > 0
     ) {
         return hours > 0
@@ -199,6 +200,9 @@ const columns = [
         dataIndex: 'overSpeedInfoStartOverSpeed',
         key: 'overSpeedInfoStartOverSpeed',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '最高超速值',
@@ -248,7 +252,7 @@ const columns = [
         ellipsis: true,
         width: 180,
         search: {
-            type: 'string',
+            type: 'date',
         },
     },
 ];

@@ -159,6 +159,9 @@ const columns = [
         dataIndex: 'reportInfo',
         key: 'reportInfo',
         scopedSlots: true,
+        search: {
+            type: 'string',
+        },
     },
 
     {
@@ -188,6 +191,9 @@ const columns = [
         scopedSlots: true,
         width: 180,
         ellipsis: true,
+        search: {
+            type: 'date',
+        },
     },
     {
         title: '报警附件',
