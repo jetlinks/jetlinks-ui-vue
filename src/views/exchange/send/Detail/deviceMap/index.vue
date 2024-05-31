@@ -418,7 +418,7 @@ const handleMap = (data: any) => {
         let mapOptionDevice = props.deviceIdsMap.find(
             (item: any) => item.targetId === data.record.targetAttribute.targetId,
         )
-        mapOptions.value = mapOptionDevice.deviceTargetAttributeMap;
+        mapOptions.value = mapOptionDevice?.deviceTargetAttributeMap || [];
     }else{
         mapOptions.value = []
     }

@@ -312,7 +312,7 @@ const selectInit = () => {
     onlyMessage('没有映射数据源，请检查', 'error');
     return false;
   }
-  const deviceTargetMaps = nowAllTargetData.targetMapping.result.find((item: any) => item.id === selectProductId.value).deviceDetails;
+  const deviceTargetMaps = nowAllTargetData.targetMapping.result.find((item: any) => item.id === selectProductId.value);
   if (!deviceTargetMaps) {
     onlyMessage('设备映射数据为空', 'error');
     return false;
@@ -350,7 +350,7 @@ const selectInit = () => {
   }
 
   //处理设备映射及其数据映射
-  let deviceTargetMap = deviceTargetMaps.map((item: any) => {
+  let deviceTargetMap = deviceTargetMaps.deviceDetails.map((item: any) => {
     // console.log(item)
     let devicesMetadata = JSON.parse(item.metadata).properties;
     let deviceMapMetadata = devicesMetadata.map((item: any) => ({
@@ -370,7 +370,7 @@ const selectInit = () => {
     };
   });
   deviceIdsMap.value = deviceTargetMap;
-  // console.log('deviceTargetMap', deviceTargetMap)
+  console.log('deviceTargetMap', deviceTargetMap)
 
   deviceIdsMapOpt.value = deviceTargetMap.map((item: any) => ({
     value: item.targetName + `(${item.targetId})`,
