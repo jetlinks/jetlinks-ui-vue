@@ -63,8 +63,7 @@ export function getCodeText(
                 result[item.paramsName] = '';
                 break;
             default: {
-                const properties = schemas[item.paramsType]
-                    .properties as object;
+                const properties = schemas[item.paramsType]?.properties as object || {};
                 const newArr = Object.entries(properties).map(
                     (item: [string, any]) => ({
                         paramsName: item[0],

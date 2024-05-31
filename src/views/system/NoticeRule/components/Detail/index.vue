@@ -1,5 +1,5 @@
 <template>
-    <j-modal :width="644" visible title="配置详情" @cancel="emit('close')">
+    <j-modal :width="644" visible title="配置详情" @cancel="emit('close')" :maskClosable="false">
         <div class="detail">
             <div class="item">
                 <div class="label">通知方式</div>

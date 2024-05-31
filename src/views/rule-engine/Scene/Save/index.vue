@@ -82,7 +82,6 @@ const save = async () => {
 getDetail(route.query.id as string)
 
 onUnmounted(() => {
-  console.log('scene-onUnmounted')
   refresh?.()
 })
 

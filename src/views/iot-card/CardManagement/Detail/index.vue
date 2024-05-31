@@ -71,17 +71,17 @@
                         <j-descriptions-item label="总流量">{{
                             detail.totalFlow
                                 ? detail.totalFlow.toFixed(2) + ' M'
-                                : ''
+                                : '0 M'
                         }}</j-descriptions-item>
                         <j-descriptions-item label="使用流量">{{
                             detail.usedFlow
                                 ? detail.usedFlow.toFixed(2) + ' M'
-                                : ''
+                                : '0 M'
                         }}</j-descriptions-item>
                         <j-descriptions-item label="剩余流量">{{
                             detail.residualFlow
                                 ? detail.residualFlow.toFixed(2) + ' M'
-                                : ''
+                                : '0 M'
                         }}</j-descriptions-item>
                         <j-descriptions-item label="状态">
                           {{
@@ -282,12 +282,12 @@ const getData = (
 };
 
 /**
- * 查询今日、当月、本年数据
+ * 查询左日、当月、本年数据
  */
 const getDataTotal = () => {
     const dTime = [
-        moment(new Date()).startOf('day').valueOf(),
-        moment(new Date()).endOf('day').valueOf(),
+        moment(new Date()).subtract(1, 'day').startOf('day').valueOf(),
+        moment(new Date()).subtract(1, 'day').endOf('day').valueOf(),
     ];
     const mTime = [
         moment().startOf('month').valueOf(),

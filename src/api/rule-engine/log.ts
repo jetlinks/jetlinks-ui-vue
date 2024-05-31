@@ -38,7 +38,13 @@ export const detail = (id:string) => server.get(`/alarm/record/${id}`);
 /**
  * 告警历史记录
  */
+export const queryHistoryLogList = (alarmConfigId: string, data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data);
+
+/**
+ * 告警日志
+ */
 export const queryHistoryList = (data:any) => server.post('/alarm/history/_query',data);
+
 
 /**
  * 获取告警处理结果

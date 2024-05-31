@@ -1,13 +1,12 @@
 <template>
     <page-container>
-        <full-page>
+        <full-page fixed>
             <div class="region">
                 <div class="left">
-                    <LeftTree />
-                    <div class="mask" v-if="type === 'edit'"></div>
+                    <LeftTree @select="onSelect" />
                 </div>
                 <div class="right">
-                    <Map :path="path" :type="mapType" />
+                  <Map ref="mapRef" :selectCode="selectCode" />
                 </div>
             </div>
         </full-page>
@@ -17,18 +16,13 @@
 <script setup lang="ts" name="RegionMange">
 import LeftTree from './LeftTree/index.vue'
 import Map from './MapTool/map.vue'
-import FullPage from "components/Layout/FullPage.vue";
-import { provide } from 'vue'
+import FullPage from "@/components/Layout/FullPage.vue";
 
-const path = ref([[121.5273285, 31.21515044], [121.5293285, 31.21515044], [121.5293285, 31.21915044], [121.5273285, 31.21515044]])
-const type = ref<'view' | 'edit'>('view')
-const mapType = ref<string>('create')
+const selectCode = ref('')
 
-provide('system-region', {
-    type,
-    mapType: '',
-    path
-})
+const onSelect = (dt: string) => {
+  selectCode.value = dt
+}
 </script>
 
 <style lang="less" scoped>

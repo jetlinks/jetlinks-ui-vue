@@ -892,6 +892,17 @@ const handleImport = async () => {
                     //     _object as DeviceMetadata,
                     // );
                     // console.log(copyOperateLimits,_object); // 导入取并集逻辑
+                    Object.keys(_object).forEach((i: any) => {
+                        if (i === 'functions') {
+                            _object[i].forEach((a: any) => {
+                                a?.inputs?.forEach((item: any) => {
+                                    item.expands = {
+                                        required: false,
+                                    };
+                                });
+                            });
+                        }
+                    });
                     const params = {
                         id,
                         metadata: JSON.stringify(_object),

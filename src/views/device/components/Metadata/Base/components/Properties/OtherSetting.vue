@@ -131,6 +131,10 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    medataType: {
+        type: String,
+        default: undefined
+    },
     hasPermission: String,
     tooltip: Object,
 });
@@ -189,10 +193,20 @@ const columns = ref([
     },
 ]);
 
+const getType = () => {
+  const _typeMap = {
+    'propertys': 'property',
+    'functions': 'function',
+    'events': 'event',
+    'tags': 'tag',
+  }
+
+  return _typeMap[props.type] || 'property'
+}
+
 const getConfig = async () => {
     const id =
         type === 'product' ? productStore.current?.id : deviceStore.current.id;
-    console.log(props.id, id, props);
 
     if (!props.id || !id || !props.type) return;
 
@@ -212,7 +226,7 @@ const getConfig = async () => {
         deviceId: id,
         metadata: {
             id: props.id,
-            type: 'property',
+            type: getType(),
             dataType: props.type,
         },
     };
@@ -267,6 +281,7 @@ const confirm = () => {
 
 const visibleChange = (e: boolean) => {
     visible.value = e;
+  console.log('visibleChange',e)
     if (e) {
         configValue.value = omit(props.value, [
             'source',

@@ -108,10 +108,12 @@
                                     tooltip="填写访问其它平台的地址"
                                 />
                             </template>
-                            <j-input
+                            
+                            <!-- <j-input
                                 v-model:value="form.data.page.baseUrl"
                                 placeholder="请输入接入地址"
-                            />
+                            /> -->
+                            <InputGroup v-model:value="form.data.page.baseUrl" style="width: 100%;"/>
                         </j-form-item>
                         <j-form-item
                             label="路由方式"
@@ -1436,6 +1438,7 @@ import { cloneDeep, difference } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import ApplyList from './ApplyList/index.vue';
+import InputGroup from './InputGroup.vue'
 
 const emit = defineEmits(['changeApplyType']);
 

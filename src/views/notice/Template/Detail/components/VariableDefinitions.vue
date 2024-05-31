@@ -103,6 +103,7 @@ const columns = [
         title: '变量',
         dataIndex: 'id',
         width: 80,
+        ellipsis: true
     },
     {
         title: '名称',
@@ -151,6 +152,7 @@ const handleTypeChange = (record: IVariable) => {
 
 <style lang="less" scoped>
 .table-wrapper {
+  background-color: #1d39c4;
     .has-error {
         border-color: rgba(255, 77, 79);
         &:focus {

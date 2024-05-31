@@ -193,7 +193,7 @@ const addGroup = () => {
     then: [],
     executeAnyway: true,
     branchId: Math.floor(Math.random() * 100000000),
-    branchName:'条件'+ data.value.branches?.length
+    branchName:''
   }
   data.value.branches?.push(branchesItem)
   data.value.branches?.push(null as any)

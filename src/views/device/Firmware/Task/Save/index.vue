@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal
         :title="data.id ? '查看' : '新增' + '任务'"
         ok-text="确认"

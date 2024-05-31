@@ -575,10 +575,12 @@ const columns = [
         search: {
             type: 'select',
             options: [
+                { label: '未同步', value: 'notReady' },
+                { label: '同步失败', value: 'error' },
                 { label: '激活', value: 'using' },
                 { label: '未激活', value: 'toBeActivated' },
                 { label: '停机', value: 'deactivate' },
-                { label: '其它', value: 'using,toBeActivated,deactivate' },
+                { label: '其它', value: 'other' },
             ],
         },
     },
@@ -759,20 +761,7 @@ const getActions = (
 };
 
 const handleSearch = (e: any) => {
-    const newParams = (e?.terms as any[])?.map((item1) => {
-        item1.terms = item1.terms.map((item2: any) => {
-            if (
-                ['cardStateType'].includes(item2.column) &&
-                !['using', 'toBeActivated', 'deactivate'].includes(item2.value)
-            ) {
-                // 处理其它状态
-                item2.termType = item2.termType === 'not' ? 'in' : 'nin';
-            }
-            return item2;
-        });
-        return item1;
-    });
-    params.value = { terms: newParams || [] };
+    params.value = { terms: e?.terms || [] };
 };
 
 const onSelectChange = (keys: string[], rows: []) => {

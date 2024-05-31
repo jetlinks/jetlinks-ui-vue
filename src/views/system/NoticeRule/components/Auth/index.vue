@@ -5,6 +5,7 @@
         title="权限控制"
         @cancel="emit('close')"
         @ok="onSave"
+        :maskClosable="false"
     >
         <div class="alert">
             <AIcon type="InfoCircleOutlined" />

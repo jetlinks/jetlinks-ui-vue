@@ -278,6 +278,23 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
       },
     },
     {
+      title: '其它配置',
+      dataIndex: 'other',
+      width: 100,
+      control(newValue, oldValue) {
+        if (!oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          // 仅留下存储和指标值
+          const keys = ['source', 'type', 'virtualRule', 'required']
+          const newObj = omit(cloneDeep(newValue.expands), keys)
+          const oldObj = omit(cloneDeep(oldValue.expands), keys)
+          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
+        }
+        return false
+      },
+    },
+    {
       title: '说明',
       dataIndex: 'description',
       type: 'text',
@@ -375,6 +392,23 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           return true
         } else if (newValue && oldValue) {
           return JSON.stringify(newValue.output) !== JSON.stringify(oldValue.output)
+        }
+        return false
+      },
+    },
+    {
+      title: '其它配置',
+      dataIndex: 'other',
+      width: 100,
+      control(newValue, oldValue) {
+        if (!oldValue) {
+          return true
+        } else if (newValue && oldValue) {
+          // 仅留下存储和指标值
+          const keys = ['source', 'type', 'virtualRule', 'required']
+          const newObj = omit(cloneDeep(newValue.expands), keys)
+          const oldObj = omit(cloneDeep(oldValue.expands), keys)
+          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
         }
         return false
       },

@@ -124,6 +124,7 @@ const sceneStore = useSceneStore();
 const { data: formModel } = storeToRefs(sceneStore);
 const formItemContext = Form.useInjectFormItemContext();
 
+
 type Emit = {
     (e: 'update:value', data: TermsType): void;
 };
@@ -160,6 +161,10 @@ const props = defineProps({
         default: 0,
     },
     whenName: {
+        type: Number,
+        default: 0,
+    },
+    branches_Index:{
         type: Number,
         default: 0,
     },
@@ -401,16 +406,15 @@ const columnSelect = (option: any) => {
 
         paramsValue.value = newValue;
     }
-    console.log(paramsValue, hasTypeChange);
     handOptionByColumn(option);
     emit('update:value', { ...paramsValue });
     nextTick(() => {
         formItemContext.onFieldChange();
     });
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][0] = option.name;
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][1] = paramsValue.termType;
 };
@@ -463,7 +467,7 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
     paramsValue.value = newValue;
     emit('update:value', { ...paramsValue });
     formItemContext.onFieldChange();
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][1] = e.name;
 };
@@ -483,14 +487,14 @@ const valueSelect = (
     }
     emit('update:value', { ...newValues });
     formItemContext.onFieldChange();
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][2] = labelObj;
 };
 
 const typeSelect = (e: any) => {
     emit('update:value', { ...paramsValue });
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
+    formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][3] = e.label;
 };

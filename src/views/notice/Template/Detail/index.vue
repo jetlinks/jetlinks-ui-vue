@@ -662,6 +662,7 @@
                                         v-model:modelValue="
                                             formData.template.body
                                         "
+                                        language="JavaScript"
                                     />
                                 </div>
                             </j-form-item>

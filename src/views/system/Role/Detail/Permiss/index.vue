@@ -54,10 +54,10 @@ import { useMenuStore } from '@/store/menu';
 // import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
 
 import {
-    getRoleDetails_api,
-    updateRole_api,
-    editRole_api,
-    updatePrimissTree_api,
+  getRoleDetails_api,
+  updateRole_api,
+  editRole_api,
+  updatePrimissTree_api, clearPrimissTree_api,
 } from '@/api/system/role';
 import { onlyMessage } from '@/utils/comm';
 
@@ -85,13 +85,21 @@ const form = reactive({
     clickSave: () => {   
         // formRef.value?.validate().then(() => {
             // const updateRole = editRole_api(roleId, form.data);
+          if(form.menus?.length > 0){
             const updateTree = updatePrimissTree_api(roleId, {
-                menus: form.menus,
+              menus: form.menus,
             });
             Promise.all([ updateTree]).then((resp) => {
-                onlyMessage('操作成功');
-                // jumpPage(`system/Role`);
+              onlyMessage('操作成功');
+              // jumpPage(`system/Role`);
             })
+          } else {
+            clearPrimissTree_api(roleId).then(resp => {
+              if(resp.success){
+                onlyMessage('操作成功');
+              }
+            })
+          }
         // });
     },
 });

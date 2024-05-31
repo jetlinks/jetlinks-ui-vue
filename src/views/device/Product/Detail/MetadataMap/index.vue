@@ -369,12 +369,12 @@ onMounted(() => {
 
 onUnmounted(() => {
     if (_delTag.value && dataSourceCache.value.length) {
-        // 保存数据
-        const arr = dataSourceCache.value.filter((i: any) => i?.plugin).map((item: any) => {
+        // 保存数据.filter((i: any) => i?.plugin)
+        const arr = dataSourceCache.value.map((item: any) => {
             return {
                 metadataType: 'property',
                 metadataId: item.id,
-                originalId: item.plugin,
+                originalId: item.plugin || null,
             }
         })
         onMapData(arr)
