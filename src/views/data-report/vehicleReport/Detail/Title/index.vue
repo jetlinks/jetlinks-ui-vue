@@ -1,97 +1,115 @@
 <template>
-    <div class="t-table t-title">
-        <div class="title-left">
-            <img
-                :src="getImage('/dataReport/vehicleDetail.png')"
-                alt="车辆报表详情图片"
-            />
+    <div class="t-table">
+        <div class="hd">
+            <div class="back">
+                <a-button size="middle" @click="backVehicleCenterClick">
+                    <template #icon>
+                        <AIcon type="RollbackOutlined" />
+                    </template>
+                    车辆中心
+                </a-button>
+            </div>
         </div>
-        <div class="title-right">
-            <j-descriptions
-                :column="{ xxl: 4, xl: 4, lg: 4, md: 3, sm: 3, xs: 1 }"
-            >
-                <j-descriptions-item label="出厂编号">{{
-                    data?.factoryNumber
-                }}</j-descriptions-item>
-                <j-descriptions-item label="车辆简称">{{
-                    data?.simpleName
-                }}</j-descriptions-item>
-                <j-descriptions-item label="车辆类型">{{
-                    data?.vehicleTypeEnum.text
-                }}</j-descriptions-item>
-                <j-descriptions-item label="型号">{{
-                    data?.modelNumber
-                }}</j-descriptions-item>
-                <j-descriptions-item label="日期">{{
-                    dayjs(data?.vehicleDate).format('YYYY-MM-DD HH:mm:ss')
-                }}</j-descriptions-item>
-                <j-descriptions-item label="闲置">一小时</j-descriptions-item>
-                <j-descriptions-item label="所属组织">{{
-                    data?.orgName
-                }}</j-descriptions-item>
-                <j-descriptions-item label="行驶里程">{{
-                    data?.mileage
-                }}</j-descriptions-item>
-            </j-descriptions>
-            <j-divider
-                style="height: 1px; background-color: #e7e9ef; margin: 5px 0"
-            />
-            <div class="title-type">
-                <span>子设备:</span>
-                <div class="type-list" v-for="item in deviceData">
-                    <button
-                        v-if="item.state.value === 'offline'"
-                        style="
-                            height: 24px;
-                            padding: 2px 12px 2px 12px;
-                            gap: 8px;
-                            border-radius: 20px;
-                            border: 1px solid #f99d31;
-                            font-size: 14px;
-                            font-weight: 400;
-                            line-height: 18px;
-                            text-align: center;
-                            color: #f99d31;
-                            background: #ffffff;
-                        "
+        <div class="t-title">
+            <div class="title-left">
+                <img
+                    :src="getImage('/dataReport/vehicleDetail.png')"
+                    alt="车辆报表详情图片"
+                />
+            </div>
+            <div class="title-right">
+                <j-descriptions
+                    :column="{ xxl: 4, xl: 4, lg: 4, md: 3, sm: 3, xs: 1 }"
+                >
+                    <j-descriptions-item label="出厂编号">{{
+                        data?.factoryNumber
+                    }}</j-descriptions-item>
+                    <j-descriptions-item label="车辆简称">{{
+                        data?.simpleName
+                    }}</j-descriptions-item>
+                    <j-descriptions-item label="车辆类型">{{
+                        data?.vehicleTypeEnum.text
+                    }}</j-descriptions-item>
+                    <j-descriptions-item label="型号">{{
+                        data?.modelNumber
+                    }}</j-descriptions-item>
+                    <j-descriptions-item label="日期">{{
+                        dayjs(data?.vehicleDate).format('YYYY-MM-DD HH:mm:ss')
+                    }}</j-descriptions-item>
+                    <j-descriptions-item label="闲置"
+                        >一小时</j-descriptions-item
                     >
-                        {{ item.name }}
-                    </button>
-                    <button
-                        v-else-if="item.state.value === 'notActive'"
-                        style="
-                            height: 24px;
-                            padding: 2px 12px 2px 12px;
-                            gap: 8px;
-                            color: rgba(229, 0, 18, 1);
-                            border-radius: 20px;
-                            border: 1px solid rgba(229, 0, 18, 1);
-                            font-weight: 400;
-                            line-height: 18px;
-                            text-align: center;
-                            background: #ffffff;
-                        "
-                    >
-                        {{ item.name }}
-                    </button>
-                    <button
-                        v-else
-                        style="
-                            height: 24px;
-                            padding: 2px 12px 2px 12px;
-                            gap: 8px;
-                            border-radius: 20px;
-                            border: 1px solid #0fce8c;
-                            font-size: 14px;
-                            font-weight: 400;
-                            line-height: 18px;
-                            text-align: center;
-                            color: #0fce8c;
-                            background: #ffffff;
-                        "
-                    >
-                        {{ item.name }}
-                    </button>
+                    <j-descriptions-item label="所属组织">{{
+                        data?.orgName
+                    }}</j-descriptions-item>
+                    <j-descriptions-item label="行驶里程">{{
+                        data?.mileage
+                    }}</j-descriptions-item>
+                </j-descriptions>
+                <j-divider
+                    style="
+                        height: 1px;
+                        background-color: #e7e9ef;
+                        margin: 5px 0;
+                    "
+                />
+                <div class="title-type">
+                    <span>子设备:</span>
+                    <div class="type-list" v-for="item in deviceData">
+                        <button
+                            v-if="item.state.value === 'offline'"
+                            style="
+                                height: 24px;
+                                padding: 2px 12px 2px 12px;
+                                gap: 8px;
+                                border-radius: 20px;
+                                border: 1px solid #f99d31;
+                                font-size: 14px;
+                                font-weight: 400;
+                                line-height: 18px;
+                                text-align: center;
+                                color: #f99d31;
+                                background: #ffffff;
+                            "
+                        >
+                            {{ item.name }}
+                        </button>
+                        <button
+                            v-else-if="item.state.value === 'notActive'"
+                            style="
+                                height: 24px;
+                                padding: 2px 12px 2px 12px;
+                                gap: 8px;
+                                color: rgba(229, 0, 18, 1);
+                                border-radius: 20px;
+                                border: 1px solid rgba(229, 0, 18, 1);
+                                font-weight: 400;
+                                line-height: 18px;
+                                text-align: center;
+                                background: #ffffff;
+                            "
+                        >
+                            {{ item.name }}
+                        </button>
+                        <button
+                            v-else
+                            style="
+                                height: 24px;
+                                padding: 2px 12px 2px 12px;
+                                gap: 8px;
+                                border-radius: 20px;
+                                border: 1px solid #0fce8c;
+                                font-size: 14px;
+                                font-weight: 400;
+                                line-height: 18px;
+                                text-align: center;
+                                color: #0fce8c;
+                                background: #ffffff;
+                            "
+                        >
+                            {{ item.name }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,6 +119,7 @@
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import dayjs from 'dayjs';
+import { useMenuStore } from 'store/menu';
 
 const props = withDefaults(
     defineProps<{
@@ -123,18 +142,31 @@ const devices = [
         isImportant: false,
     },
 ];
+
+const menuStore = useMenuStore();
+
+const backVehicleCenterClick = () => {
+    menuStore.jumpPage(`data-report/vehicleReport`);
+};
 </script>
 <style lang="less" scoped>
 .t-table {
     margin-top: 8px;
-    padding: 16px;
     background: #ffffff;
     border-radius: 4px;
+    overflow: auto;
+    .hd {
+        background-color: #fafafa;
+        .back {
+            padding: 8px 16px;
+        }
+    }
 }
 
 .t-title {
     display: flex;
     flex-direction: row;
+    margin: 16px;
 
     .title-left {
         width: 132px;
