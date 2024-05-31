@@ -490,7 +490,7 @@ const factoryTypeList = [
  */
 const saveBasicInfo = () => {
     return new Promise(async (resolve, reject) => {
-        validate()
+        formBasicRef.value.validate()
             .then(async () => {
                 let formValues = {};
                 if (form.value.factoryType !== 'sub') {
@@ -521,6 +521,7 @@ const saveBasicInfo = () => {
                         },
                     },
                 ];
+                console.log('facTypeRules',facTypeRules.value)
                 const res = await save(item);
                 console.log(res);
                 if (res.status === 200) {
