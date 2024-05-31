@@ -28,9 +28,11 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <!-- 所属组织 -->
                 <template #orgName="{ orgName }">
-                    {{ orgName || '暂未标记组织' }}
+                    {{ orgName || '' }}
                 </template>
+                <!-- 告警时间 -->
                 <template #alarmTime="{ alarmTime }">
                     {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
@@ -108,6 +110,9 @@ const columns = [
         key: 'alarmTime',
         width: 180,
         scopedSlots: true,
+        search: {
+            type: 'date',
+        },
     },
     {
         title: '车辆位置',
@@ -121,8 +126,8 @@ const columns = [
     },
     {
         title: '告警设备',
-        dataIndex: 'alarmDeviceName',
-        key: 'alarmDeviceName',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         scopedSlots: true,
         ellipsis: true,
         search: {
