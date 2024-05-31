@@ -1,5 +1,7 @@
 <template>
-  <div class="metadata-edit-table-body-viewport" :style="{ ...style, maxHeight: height + 'px'}" ref="viewScrollRef">
+  <div
+    v-if="dataSource.length"
+    class="metadata-edit-table-body-viewport" :style="{ ...style, maxHeight: height + 'px'}" ref="viewScrollRef">
     <div class="metadata-edit-table-body-container" :style="containerStyle">
       <div class="metadata-edit-table-center" :style="containerStyle">
         <div
@@ -34,6 +36,13 @@
       </div>
     </div>
   </div>
+  <template v-else>
+    <slot name="empty">
+      <div class="metadata-edit-table-body-empty">
+        <j-empty />
+      </div>
+    </slot>
+  </template>
 </template>
 
 <script setup name="MetadataBaseTableBody">
@@ -142,12 +151,13 @@ onBeforeUnmount(() => {
 })
 
 watch(() => [props.dataSource.length, viewScrollRef.value], (val, oldVal) => {
+  console.log('watch length', props.dataSource.length)
   if (val[0] !== oldVal?.[0]) { // 长度不一致时更新内部缓存DataSource
     handleDataSourceCache()
   }
 
-  if (props.dataSource.length <= maxLen.value) {
-    emit('scrollDown', maxLen.value - props.dataSource.length + 5)
+  if (props.dataSource.length <= maxLen.value || props.dataSource.length === 0) {
+    emit('scrollDown', maxLen.value - props.dataSource.length + 3)
     updateVirtualData(0, maxLen.value)
   }
 

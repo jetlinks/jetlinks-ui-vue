@@ -12,7 +12,7 @@
         </div>
         <div class="metadata-edit-table-body" :style="{width: tableStyle.width, maxHeight: `${height}px`}">
           <Body
-            v-if="dataSource.length"
+
             v-model:dataSource="dataSource"
             :columns="myColumns"
             :cellHeight="cellHeight"
@@ -23,13 +23,6 @@
               <slot :name="name" v-bind="slotData || {}" />
             </template>
           </Body>
-          <template v-else>
-            <slot name="empty">
-              <div class="metadata-edit-table-body-empty">
-                <j-empty />
-              </div>
-            </slot>
-          </template>
         </div>
       </div>
   </div>

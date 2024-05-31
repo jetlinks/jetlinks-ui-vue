@@ -6,19 +6,19 @@
   >
     <a-menu @click="clickFunc">
       <a-menu-item key="add">
-        新增行
+        <AIcon type="PlusSquareOutlined" /> 新增行
       </a-menu-item>
       <a-menu-item key="copy">
-        复制行
+        <AIcon type="CopyOutlined" /> 复制行
       </a-menu-item>
       <a-menu-item key="paste">
         粘贴行
       </a-menu-item>
       <a-menu-item key="detail">
-        查看详情
+        <AIcon type="FileSearchOutlined" /> 查看详情
       </a-menu-item>
       <a-menu-item key="delete">
-        删除
+        <AIcon type="DeleteOutlined" />删除
       </a-menu-item>
     </a-menu>
   </div>

@@ -415,7 +415,14 @@ onUnmounted(() => {
 })
 
 watch(() => metadata.value, () => {
-  dataSource.value = metadata.value
+  dataSource.value = metadata.value.map(item => {
+    if (!item.expands) {
+      item['expands'] = {
+        group: undefined
+      }
+    }
+    return item
+  })
   console.log(JSON.parse(JSON.stringify(metadata.value)))
   initOptions(dataSource.value)
 }, { immediate: true })
