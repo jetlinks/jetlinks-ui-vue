@@ -20,7 +20,8 @@
                             <template #label>
                                 <span>工厂名称 </span>
                             </template>
-                            <j-select showSearch v-model:value="myForm.factoryId" @change="curProductChange" placeholder="请选择工厂">
+                            <j-select showSearch v-model:value="myForm.factoryId" @change="curProductChange"
+                                placeholder="请选择工厂">
                                 <j-select-option v-for="item in factoryList" :value="item.id" :key="item.id"
                                     :label="item.name">{{ item.name
                                     }}</j-select-option>
@@ -46,7 +47,18 @@
                             <j-table
                                 :row-selection="{ selectedRowKeys: myState.selectedRowKeys, onChange: onSelectChange }"
                                 :columns="columnsDevice" :data-source="deviceList" :rowKey="(record: any) => record.id"
-                                :pagination="pagination" :scroll="{ y: 280 }" />
+                                :pagination="pagination" :scroll="{ y: 280 }">
+                                <template #bodyCell="{ column, record }">
+                                    <template v-if="column.key === 'state'">
+                                        <BadgeStatus :status="record.state?.value" :text="record.state?.text"
+                                            :statusNames="{
+                                                online: 'processing',
+                                                offline: 'error',
+                                                notActive: 'warning',
+                                            }" />
+                                    </template>
+                                </template>
+                            </j-table>
                         </div>
                     </div>
                 </j-row>
@@ -63,6 +75,7 @@ import {
     _deploy,
 } from '@/api/exchange/receive';
 import { isTopic, queryFactoryList } from '@/api/factory/factory';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const formRef = ref();
 const divWidth = ref<number>(1920);
