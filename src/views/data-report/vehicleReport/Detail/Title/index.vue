@@ -126,8 +126,8 @@ const devices = [
 </script>
 <style lang="less" scoped>
 .t-table {
-    padding: 10px;
-    margin: 10px;
+    margin-top: 8px;
+    padding: 16px;
     background: #ffffff;
     border-radius: 4px;
 }

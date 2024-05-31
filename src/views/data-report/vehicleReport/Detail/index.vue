@@ -1,6 +1,18 @@
 <template>
     <page-container :showBack="true">
         <div class="detail">
+            <div class="back">
+                <a-button
+                    type="primary"
+                    size="small"
+                    @click="backVehicleCenterClick"
+                >
+                    <template #icon>
+                        <AIcon type="RollbackOutlined" />
+                    </template>
+                    车辆中心
+                </a-button>
+            </div>
             <Title :data="vehicleData" :deviceData="dataAss" />
             <div class="table above">
                 <DetailsTitle :title="'在线离线表'">
@@ -146,6 +158,7 @@
                 </DetailsTitle>
             </div>
         </div>
+        <float-back-btn />
     </page-container>
 </template>
 <script lang="ts" setup>
@@ -159,12 +172,20 @@ import {
 import dayjs from 'dayjs';
 import DetailsTitle from '../components/detailsTitle.vue';
 import Title from './Title/index.vue';
+import { useMenuStore } from 'store/menu';
+import FloatBackBtn from './FloatBackBtn/index.vue';
+
 const route = useRoute();
 const vehicleData = ref();
 const data = ref<DataItem[]>([]);
 const dataWork = ref<any>([]);
 const dataAss = ref<DataItemAss[]>([]);
 const dataRecord = ref<any>([]);
+const menuStore = useMenuStore();
+
+const backVehicleCenterClick = () => {
+    menuStore.jumpPage(`data-report/vehicleReport`);
+};
 
 const formatMillisecondsToHourMinute = (milliseconds: number) => {
     if (milliseconds < 0) {
@@ -475,10 +496,18 @@ onMounted(() => {
 .detail {
     width: 100%;
     height: 100%;
+    position: relative;
+
+    .back {
+        position: absolute;
+        left: 240px;
+        top: -40px;
+    }
+
     .table {
         height: 393px;
-        padding: 10px;
-        margin: 10px;
+        padding: 16px;
+        margin-top: 16px;
         background: #ffffff;
         border-radius: 4px;
 
@@ -491,6 +520,10 @@ onMounted(() => {
 
         .ant-table-wrapper {
             padding-top: 10px;
+        }
+
+        &.footer {
+            margin-bottom: 16px;
         }
     }
 
