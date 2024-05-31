@@ -135,7 +135,7 @@ const hideVirtualRule = (metadata: string) => {
   const _metadata = JSON.parse(metadata || '{}')
   if (_metadata.properties) {
     _metadata.properties = _metadata.properties.map((item: any) => {
-      if (item.expands.virtualRule) {
+      if (item.expands?.virtualRule) {
         item.expands = cloneDeep(omit(item.expands, ['virtualRule']))
       }
       return item
