@@ -72,7 +72,7 @@ const createDrag = () => {
         itemSelector: '.tagName',
         eventData: function (eventEl) {
             return {
-                id: randomString(),
+                id: eventEl.id,
                 title: eventEl.innerText,
                 backgroundColor: colorMap.get(eventEl.id) || '#000000',
                 color: '#000',

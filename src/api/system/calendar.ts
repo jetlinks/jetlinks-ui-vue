@@ -8,4 +8,5 @@ export const deleteTags = (ids:any) => server.remove('/calendar/tags',{},{data:i
 //保存标签颜色
 export const saveTagsColor = (data:any) => server.post('/system/config/calendar-tag-color',data) 
 //查询标签颜色
-export const getTagsColor = () => server.get('/system/config/calendar-tag-color')
+export const getTagsColor = () => server.get('/system/config/calendar-tag-color');
+//查询

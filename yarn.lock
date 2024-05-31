@@ -526,6 +526,11 @@
   resolved "https://registry.npmjs.org/@fullcalendar/interaction/-/interaction-6.1.13.tgz"
   integrity sha512-r1w+jqCRGZZyxKFquueDSFvbsFhJLhc1BX8Nlyz684lYxS1SiToYJW9Q8X/XkySCzpjO3KOnxEp2jVOn1Usyjg==
 
+"@fullcalendar/vue3@^6.1.13":
+  version "6.1.13"
+  resolved "https://registry.npmjs.org/@fullcalendar/vue3/-/vue3-6.1.13.tgz"
+  integrity sha512-m4pEeYXKo79lnLJAGRrNPxovZWXFXSS/5F+QXLN/eXljP/F2caFG/Bj24eFTXHlj1QykgJ56iwC8ZLpShMdANg==
+
 "@gar/promisify@^1.0.1":
   version "1.1.2"
 
@@ -7274,7 +7279,7 @@ vue-types@^3.0.0:
   dependencies:
     is-plain-object "3.0.1"
 
-"vue@^2.6.0 || ^3.2.0", "vue@^2.6.14 || ^3.2.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.0.1, vue@^3.2.0, vue@^3.2.2, vue@^3.2.25, vue@^3.2.37, vue@>=3.0.3, vue@>=3.2.0, "vue@2 || 3", vue@3.3.4:
+"vue@^2.6.0 || ^3.2.0", "vue@^2.6.14 || ^3.2.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.0.1, vue@^3.0.11, vue@^3.2.0, vue@^3.2.2, vue@^3.2.25, vue@^3.2.37, vue@>=3.0.3, vue@>=3.2.0, "vue@2 || 3", vue@3.3.4:
   version "3.3.4"
   resolved "https://registry.npmjs.org/vue/-/vue-3.3.4.tgz"
   integrity sha512-VTyEYn3yvIeY1Py0WaYGZsXnz3y5UnGi62GjVEqvEGPl6nxbOrCXbVOTQWBEJUqAyTUk2uJ5JLVnYJ6ZzGbrSw==
