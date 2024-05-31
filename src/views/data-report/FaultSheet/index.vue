@@ -135,6 +135,9 @@ const columns = [
         key: 'faultTime',
         width: 180,
         scopedSlots: true,
+        search: {
+            type: 'date',
+        },
     },
     {
         title: '车辆位置',

@@ -1,7 +1,7 @@
 <template>
     <page-container :showBack="true">
         <div class="detail">
-            <Title :data="vehicleData" :deviceData="dataAss"/>
+            <Title :data="vehicleData" :deviceData="dataAss" />
             <div class="table above">
                 <DetailsTitle :title="'在线离线表'">
                     <j-table
@@ -38,7 +38,9 @@
                             <template
                                 v-if="column.dataIndex === 'workEfficiency'"
                             >
-                                {{ `${text > 0 ? (text*100).toFixed(2) : 0}%` }}
+                                {{
+                                    `${text > 0 ? (text * 100).toFixed(2) : 0}%`
+                                }}
                             </template>
                             <template
                                 v-if="column.dataIndex === 'operationTime'"
@@ -66,13 +68,13 @@
                                 style="
                                     height: 24px;
                                     padding: 3px 8px 3px 8px;
-                                     border-radius: 3px;
-                                     background: #f99d311a;
-                                     color: #f99d31;
-                                     border: 1px solid #f99d3199;
-                                     font-size: 14px;
-                                     font-weight: 400;
-                                     line-height: 18px;
+                                    border-radius: 3px;
+                                    background: #f99d311a;
+                                    color: #f99d31;
+                                    border: 1px solid #f99d3199;
+                                    font-size: 14px;
+                                    font-weight: 400;
+                                    line-height: 18px;
                                 "
                             >
                                 离线
@@ -93,7 +95,7 @@
                                 禁用
                             </button>
                             <button
-                               v-else
+                                v-else
                                 style="
                                     height: 24px;
                                     padding: 3px 8px 3px 8px;
@@ -119,7 +121,6 @@
                         model="table"
                         :data-source="dataRecord"
                         :pagination="paginationRecord"
-                        :scroll="{ y: 246 }"
                     >
                         <template #bodyCell="{ column, text }">
                             <template
@@ -166,18 +167,29 @@ const dataAss = ref<DataItemAss[]>([]);
 const dataRecord = ref<any>([]);
 
 const formatMillisecondsToHourMinute = (milliseconds: number) => {
-  if (milliseconds < 0) {
-    return '0分';
-  }
- 
-  const hours = Math.floor(milliseconds / 3600000);
-  const minutes = Math.floor((milliseconds % 3600000) / 60000);
- 
-  return hours > 0 ? `${hours > 10 ? hours.toString().padStart(2, '0') : 
-  hours.toString().padStart(1, '0')}小时${minutes > 9 ? minutes.toString().padStart(2, '0') : 
-  minutes.toString().padStart(1, '0')}分` : `${minutes > 9 ? minutes.toString().padStart(2, '0'): 
-  minutes.toString().padStart(1, '0')}分`
-}
+    if (milliseconds < 0) {
+        return '0分';
+    }
+
+    const hours = Math.floor(milliseconds / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+
+    return hours > 0
+        ? `${
+              hours > 10
+                  ? hours.toString().padStart(2, '0')
+                  : hours.toString().padStart(1, '0')
+          }小时${
+              minutes > 9
+                  ? minutes.toString().padStart(2, '0')
+                  : minutes.toString().padStart(1, '0')
+          }分`
+        : `${
+              minutes > 9
+                  ? minutes.toString().padStart(2, '0')
+                  : minutes.toString().padStart(1, '0')
+          }分`;
+};
 
 interface DataItem {
     key: number;
@@ -519,6 +531,9 @@ onMounted(() => {
                 }
             }
         }
+    }
+    :deep(.ant-table-body) {
+        overflow-y: auto !important;
     }
 }
 </style>

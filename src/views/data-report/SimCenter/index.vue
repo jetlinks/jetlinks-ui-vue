@@ -238,7 +238,7 @@ const columns = [
         scopedSlots: true,
         width: 180,
         search: {
-            type: 'string',
+            type: 'date',
         },
     },
     {
@@ -248,7 +248,7 @@ const columns = [
         scopedSlots: true,
         width: 180,
         search: {
-            type: 'string',
+            type: 'date',
         },
     },
     {

@@ -158,19 +158,21 @@ const handleSearch = (param: any) => {
 const selectIds = ref<Array<number | string>>([]);
 const type = ref<string>('xlsx');
 const handleExport = async () => {
+    let _params: any = null;
     if (!selectIds.value?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
+        // todo 没有选中则导出全部
         return;
+    } else {
+        _params = {
+            terms: [
+                {
+                    column: 'id',
+                    value: selectIds.value,
+                    termType: 'in',
+                },
+            ],
+        };
     }
-    const _params = {
-        terms: [
-            {
-                column: 'id',
-                value: selectIds.value,
-                termType: 'in',
-            },
-        ],
-    };
     _export(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
