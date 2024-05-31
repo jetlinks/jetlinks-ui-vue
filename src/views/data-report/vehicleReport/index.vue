@@ -1,13 +1,31 @@
 <template>
     <page-container>
-        <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="notice-config"
+            @search="handleSearch"
+        />
         <FullPage>
-            <JProTable ref="configRef" :columns="columns" :request="request"
-                :defaultParams="{ sorts: [{ name: 'vehicleDate', order: 'desc' }] }" model="table" :params="params"
-                :gridColumn="3" :row-selection="rowSelection">
+            <JProTable
+                ref="configRef"
+                :columns="columns"
+                :request="request"
+                :defaultParams="{
+                    sorts: [{ name: 'vehicleDate', order: 'desc' }],
+                }"
+                model="table"
+                :params="params"
+                :gridColumn="3"
+                :row-selection="rowSelection"
+            >
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
+                        <j-popconfirm
+                            title="确认导出？"
+                            ok-text="确定"
+                            cancel-text="取消"
+                            @confirm="handleExport"
+                        >
                             <PermissionButton>
                                 <AIcon type="ExportOutlined" />
 
@@ -23,9 +41,10 @@
                     <span> {{ slotProps.orgName || '暂未标记组织' }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a @click="handelDetail(slotProps)" style="color: #f84914">详情
+                    <a @click="handelDetail(slotProps)" style="color: #f84914"
+                        >详情
                     </a>
-                </template>       
+                </template>
                 <template #vehicleDate="{ vehicleDate }">
                     {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
@@ -50,7 +69,6 @@ import { onlyMessage } from '@/utils/comm';
 const menuStory = useMenuStore();
 
 const selects = ref<any>([]);
-
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -118,6 +136,9 @@ const columns = [
         key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '日期',
@@ -149,16 +170,18 @@ const handleSearch = (param: any) => {
 };
 
 const handelDetail = (slotProps: any) => {
-    if(!slotProps.deviceId){
-        onlyMessage('未绑定车辆设备，请先绑定再查看详情','error')
-        return
+    if (!slotProps.deviceId) {
+        onlyMessage('未绑定车辆设备，请先绑定再查看详情', 'error');
+        return;
     }
-    menuStory.jumpPage('data-report/vehicleReport/Detail',
-        { id: slotProps.id, },
+    menuStory.jumpPage(
+        'data-report/vehicleReport/Detail',
+        { id: slotProps.id },
         {
             id: slotProps.id,
             deviceId: JSON.stringify(slotProps.deviceId),
-        });
+        },
+    );
 };
 
 /**
@@ -174,8 +197,8 @@ const handleExport = async () => {
         onlyMessage('只能勾选一条数据进行导出', 'error');
         return;
     } else {
-        const { id, deviceId } = selects.value[0]
-        console.log(selects.value[0])
+        const { id, deviceId } = selects.value[0];
+        console.log(selects.value[0]);
         vehicleExport(id, deviceId).then((res: any) => {
             if (res) {
                 const blob = new Blob([res.data], { type: type.value });
