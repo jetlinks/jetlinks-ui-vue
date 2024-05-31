@@ -3,11 +3,14 @@
     <div class="metadata-edit-table-body-container" :style="containerStyle">
       <div class="metadata-edit-table-center" :style="containerStyle">
         <div
+          v-if="virtualData.length"
           v-for="(item, index) in virtualData"
           :class="{
             'metadata-edit-table-row': true,
           }"
+          :key="`record_${item.__serial}`"
           :style="{height: `${cellHeight}px`, transform: `translateY(${item.__top}px)`}"
+          @click.right.native="(e) => showContextMenu(e,item)"
         >
           <div
             v-for="column in columns"
@@ -34,8 +37,7 @@
 </template>
 
 <script setup name="MetadataBaseTableBody">
-
-import {debounce} from "lodash-es";
+import ContextMenu from './components/ContextMenu'
 
 const props = defineProps({
   dataSource: {
@@ -63,8 +65,11 @@ const props = defineProps({
 const emit = defineEmits(['update:dataSource', 'scrollDown'])
 
 const viewScrollRef = ref()
-const dataSourceCache = ref([])
 const virtualData = ref([])
+const virtualRang = reactive({
+  start: 0
+})
+const dataSourceCache = ref([])
 const containerStyle = ref(0)
 
 let scrollLock = ref(false)
@@ -91,6 +96,7 @@ const handleDataSourceCache = () => {
 
     next.__top = top
     next.__serial = index + 1
+    next.__index = index
 
     prev.push(next)
 
@@ -111,12 +117,19 @@ const onScroll = () => {
   const start = index < 0 ? 0 : index
   const end = start + maxLen.value + 4
 
+  virtualRang.start = start
+
   if (height + clientHeight >= scrollHeight && !scrollLock.value) { // 滚动到底
     emit('scrollDown')
     scrollLock.value = true
   }
 
   virtualData.value = dataSourceCache.value.slice(start, end)
+}
+
+const showContextMenu = (e, record) => {
+  e.preventDefault()
+  ContextMenu(e, record)
 }
 
 onMounted(() => {
@@ -128,12 +141,16 @@ onBeforeUnmount(() => {
   viewScrollRef.value.removeEventListener('scroll', onScroll)
 })
 
-watch(() => [props.dataSource.length, viewScrollRef.value], () => {
-  handleDataSourceCache()
+watch(() => [props.dataSource.length, viewScrollRef.value], (val, oldVal) => {
+  if (val[0] !== oldVal?.[0]) { // 长度不一致时更新内部缓存DataSource
+    handleDataSourceCache()
+  }
 
   if (props.dataSource.length <= maxLen.value) {
     emit('scrollDown', maxLen.value - props.dataSource.length + 5)
+    updateVirtualData(0, maxLen.value)
   }
+
 }, { immediate: true})
 
 </script>

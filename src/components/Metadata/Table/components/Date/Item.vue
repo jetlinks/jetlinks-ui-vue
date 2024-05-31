@@ -16,6 +16,7 @@
       mode="tags"
       placeholder="请选择时间格式"
       :dropdownMenuStyle="{ zIndex: 1071}"
+      :getPopupContainer="(node) => tableWrapperRef || node"
       @change="change"
     />
   </a-form-item>
@@ -23,6 +24,7 @@
 
 <script setup name="MetadataDateItem">
 import { AutoComplete } from 'jetlinks-ui-components'
+import {useTableWrapper} from "components/Metadata/Table/utils";
 
 const props = defineProps({
   value: {
@@ -45,6 +47,7 @@ const options = [
 
 const date = ref(props.value);
 
+const tableWrapperRef = useTableWrapper()
 const change = () => {
   emit('update:value', date.value);
 };

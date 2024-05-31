@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        :zIndex="1030"
+        :zIndex="1072"
         :mask-closable="false"
         visible
         width="70vw"
@@ -9,6 +9,7 @@
         :dialogStyle="{
           zIndex: 1072
         }"
+        :getContainer="(node) => tableWrapperRef || node"
         @cancel="handleCancel"
     >
         <div class="header" v-if="virtualRule?.windowType && virtualRule?.windowType !== 'undefined'">
@@ -61,9 +62,8 @@
 import Editor from './Editor/index.vue';
 import Debug from './Debug/index.vue';
 import Operator from './Operator/index.vue';
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { cloneDeep } from 'lodash-es';
-import { PropertyMetadata } from '@/views/device/Product/typings';
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 interface Emits {
     (e: 'save', data: string | undefined): void;
     (e: 'close'): void;
@@ -79,8 +79,7 @@ const props = defineProps({
 });
 
 const _value = ref<string | undefined>(props.value);
-const _disabled = ref<boolean>(true);
-const fullRef = inject(FULL_CODE);
+const tableWrapperRef = useTableWrapper()
 const tips = ref<any[]>([])
 const handleCancel = () => {
     emit('close');

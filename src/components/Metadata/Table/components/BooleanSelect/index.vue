@@ -2,21 +2,19 @@
   <j-select
     v-model:value="myValue"
     style="width: 100%;"
-    :dropdownMenuStyle="{
-                zIndex: 1072
-              }"
     :options="[
         { label: '不必填', value: 'false'},
         { label: '必填', value: 'true'},
     ]"
+    :getPopupContainer="(node) => tableWrapperRef || node"
     @change="change"
   >
 
   </j-select>
 </template>
 
-<script setup name="ConstraintSelect">
-import {FULL_CODE} from "jetlinks-ui-components/es/DataTable";
+<script setup name="BooleanSelect">
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   value: {
@@ -26,7 +24,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:value'])
-const fullRef = inject(FULL_CODE);
+const tableWrapperRef = useTableWrapper()
 
 const myValue = ref()
 

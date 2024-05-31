@@ -8,7 +8,7 @@
     <j-popconfirm-modal
         :show-cancel="false"
         body-style="width: 300px"
-        :get-popup-container="(node) => fullRef || node"
+        :getPopupContainer="(node) => tableWrapperRef || node"
         @confirm="confirm"
     >
       <template #content>
@@ -42,8 +42,7 @@ import type { PropType } from 'vue';
 import Item from './item.vue'
 import {Form} from "jetlinks-ui-components";
 import { cloneDeep } from "lodash-es";
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
-import dayjs from "dayjs";
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -64,7 +63,7 @@ const props = defineProps({
 
 const emit = defineEmits<Emit>();
 const formItemContext = Form.useInjectFormItemContext();
-const fullRef = inject(FULL_CODE);
+const tableWrapperRef = useTableWrapper()
 const type = inject<string>('metricsType')
 
 const formData = reactive<{

@@ -18,7 +18,7 @@ export const useGroup = () => {
 
     const initOptions = (dataSource: any[]) => {
         cleanOptions()
-        dataSource.filter(item => item.id && item.extends?.group).map(item => ({
+        options.value = dataSource.filter(item => item.id && item.extends?.group).map(item => ({
             label: item.group,
             value: item.group
         }))

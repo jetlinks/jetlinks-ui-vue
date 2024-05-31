@@ -7,6 +7,7 @@
     :overlayStyle="{
       'zIndex': 1070
     }"
+    :getPopupContainer="(node) => tableWrapperRef || node"
     @visibleChange="() => {}"
   >
     <template #content>
@@ -30,6 +31,7 @@
 
 <script setup name="MetadataPopover">
 import { useMask } from '../utils'
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   placement: {
@@ -59,6 +61,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['ok', 'cancel', 'update:visible'])
+
+const tableWrapperRef = useTableWrapper()
 
 const { warpClassNames, visibleChange, visible } = useMask(props.visible, {
   visibleChange(v) {

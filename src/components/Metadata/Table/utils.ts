@@ -15,6 +15,9 @@ type OptionsType = {
     onError: (err: Array<{ message: string, __index: number, field: string, filedValue: any}>) => void
 }
 
+export const TABLE_WRAPPER = Symbol('table-wrapper')
+export const FULL_SCREEN = Symbol('full')
+
 
 /**
  * 规则收集器，收集columns中的rules和watch
@@ -58,7 +61,9 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
 
     const validate = () => {
         return new Promise((resolve, reject) => {
-            const len = dataSource.length
+            const filterDataSource = dataSource.filter(item => item.id)
+
+            const len = filterDataSource.length
             const error: any[] = []
             const success: any[] = []
 
@@ -68,8 +73,9 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
                 }
             }
 
-            dataSource.forEach((record, index) => {
+            filterDataSource.forEach((record, index) => {
                 validateItem(record, index).then(res => {
+                    console.log('validate',res)
                     success.push(res)
                     end()
                 }).catch(err => {
@@ -175,3 +181,7 @@ export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => 
     }, [])
 }
 
+export const useTableWrapper = () => {
+    return inject(TABLE_WRAPPER)
+
+}

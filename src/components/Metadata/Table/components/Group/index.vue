@@ -2,7 +2,9 @@
   <a-auto-complete
     v-model:value="myValue"
     :options="options"
+    placeholder="请选择分组"
     style="width: 100%;"
+    :getPopupContainer="(node) => tableWrapperRef || node"
     @search="onSearch"
     @select="onSelect"
   />
@@ -11,6 +13,7 @@
 <script setup name="MetadataGroup">
 
 import {METADATA_GROUP_OPTIONS} from "../../consts";
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   value: {
@@ -24,6 +27,7 @@ const myValue = ref(props.value)
 const searchValue = ref()
 
 const groupSetting = inject(METADATA_GROUP_OPTIONS, {})
+const tableWrapperRef = useTableWrapper()
 
 const options = computed(() => {
   if (searchValue.value) {
@@ -50,6 +54,7 @@ const onSearch = (value) => {
 
 const onSelect = (value) => {
   groupSetting.addOptions({ label: value, value })
+  emit('update:value', value)
 }
 
 watch(() => props.value, () => {

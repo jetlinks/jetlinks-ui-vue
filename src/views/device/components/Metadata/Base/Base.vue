@@ -7,6 +7,39 @@
         :height="560"
         @scrollDown="scrollDown"
     >
+    <template #extra="{ isFullscreen, fullScreenToggle }">
+      <div class="extra-header">
+        <div class="extra-left">
+          <a-space>
+            <a-input />
+            <AIcon
+              :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
+              @click="fullScreenToggle"
+            />
+          </a-space>
+        </div>
+        <div class="extra-right">
+          <PermissionButton
+            type="primary"
+            :hasPermission="`${permission}:update`"
+            key="update"
+            :loading="loading"
+            :disabled="hasOperate('add', type)"
+            :tooltip="{
+                    title: hasOperate('add', type)
+                        ? '当前的存储方式不支持新增'
+                        : '保存',
+                    placement: hasOperate('add', type) ? 'topRight' : 'top',
+                    getPopupContainer: getPopupContainer,
+                }"
+            @click="handleSaveClick()"
+            placement="topRight"
+          >
+            保存
+          </PermissionButton>
+        </div>
+      </div>
+    </template>
     <template #id="{ record }">
       <a-input v-model:value="record.id" placeholder="请输入标识"/>
     </template>
@@ -32,20 +65,30 @@
         <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties" />
         <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" />
       </div>
-      <ObjectParams v-else-if="type === 'events'" v-model:value="record.valueType.properties" />
+      <div v-else-if="type === 'events'">
+        <ObjectParams  v-model:value="record.valueType.properties" >
+          <a-button type="link" style="padding: 0">
+            <template #icon>
+              <AIcon type="SettingOutlined"/>
+            </template>
+            配置
+          </a-button>
+        </ObjectParams>
+      </div>
     </template>
     <template #expands="{ record }">
       <Source
         v-if="props.type === 'properties'"
         v-model:value="record.expands"
-        :dataSource="dataSource"
         :target="target"
+        :record="record"
       />
       <a-select
         v-else-if="props.type === 'events'"
         v-model:value="record.expands.level"
         style="width: 100%"
         :options="EventLevel"
+        :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
       />
       <a-select
         v-else-if="props.type === 'tags'"
@@ -57,6 +100,7 @@
           { label: '写', value: 'write'},
           { label: '上报', value: 'report'},
         ]"
+        :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
         placeholder="请选择读写类型"
       />
     </template>
@@ -74,10 +118,18 @@
           { label: '是', value: true },
           { label: '否', value: false }
         ]"
+        :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
       />
     </template>
     <template #inputs="{ record }">
-      <ObjectParams v-model:value="record.inputs" />
+      <ObjectParams v-model:value="record.inputs" :type="type" >
+        <a-button type="link" style="padding: 0">
+          <template #icon>
+            <AIcon type="SettingOutlined"/>
+          </template>
+          配置
+        </a-button>
+      </ObjectParams>
     </template>
     <template #output="{ record }">
       <div style="display: flex; gap: 12px; align-items: center">
@@ -95,15 +147,15 @@
           v-model:trueText="record.output.trueText"
           v-model:trueValue="record.output.trueValue"
         />
-        <ObjectParams v-else-if="record.output.type === 'object'" v-model:value="record.output.properties" />
+        <ObjectParams
+          v-else-if="record.output.type === 'object'"
+          v-model:value="record.output.properties"
+        />
         <ArrayParams v-else-if="record.output.type === 'array'" v-model:value="record.output.elementType" />
       </div>
     </template>
     <template #description="{ record }">
       <a-input v-model:value="record.description" placeholder="请输入说明"/>
-    </template>
-    <template #outInput>
-      Object
     </template>
     <template #properties="{ record }">
       <ObjectParams v-model:value="record.valueType.properties" />
@@ -149,7 +201,7 @@ import { TOKEN_KEY } from '@/utils/variable'
 import {useRouter, onBeforeRouteUpdate} from 'vue-router'
 import { useMetadata, useOperateLimits, useGroup } from './hooks';
 import { useColumns} from './columns';
-import { limitsMap } from './utils';
+import {getMetadataItemByType, limitsMap} from './utils';
 import { Source, OtherSetting } from './components';
 import { saveProductVirtualProperty } from '@/api/device/product';
 import { saveDeviceVirtualProperty } from '@/api/device/instance';
@@ -225,6 +277,7 @@ const getPopupContainer = (node: any) => {
 }
 
 provide('_tagsDataSource',tagsMetadata)
+provide('metadataSource', dataSource)
 const showDetail = (data: any) => {
   detailData.data = data
   detailData.visible = true
@@ -250,96 +303,13 @@ const handleSearch = (searchValue: string) => {
         : metadata.value;
 };
 
-const getDataByType = () => {
-  let _data: any = {
-    id: undefined,
-    name: undefined,
-    expands: {
-      source: 'device'
-    },
-    valueType: {
-      type: undefined
-    }
-  }
-
-  if (props.type === 'functions') {
-    _data = {
-      id: undefined,
-      name: undefined,
-      async: false,
-      inputs: [],
-      output: {
-        type: undefined
-      }
-    }
-  } else if (props.type === 'events') {
-    _data = {
-      id: undefined,
-      name: undefined,
-      async: false,
-      valueType: {
-        type: 'object',
-        properties: []
-      },
-      expands: {
-        level: 'ordinary'
-      }
-
-    }
-  } else if (props.type === 'tags') {
-    _data = {
-      id: undefined,
-      name: undefined,
-      valueType: {
-        type: undefined
-      },
-      expands: {
-        type: undefined
-      }
-    }
-  }
-
-  return _data
-}
-
 const scrollDown = (len: number = 5) => {
-  dataSource.value.push(...(new Array(len).fill(1).map(getDataByType)))
-}
-
-const handleAddClick = async (_data?: any, index?: number) => {
-
-  const newObject = _data || getDataByType()
-
-  const _addData = await tableRef.value.addItem(newObject, index)
-  nextTick(()=>{
-    if(tableContainer?.value?.classList?.value === 'tableContainer'){
-      tableContainer.value.classList.remove('tableContainer')
-    }
-  })
-  // if (_addData.length === 1) {
-  //   showLastDelete.value = true
-  // }
-  showSave.value = true
-};
-
-const copyItem = (record: any, index: number) => {
-  const copyData = cloneDeep(omit(record, ['_uuid', '_sortIndex']))
-  copyData.id = `copy_${copyData.id}`
-  handleAddClick(copyData, index)
+  dataSource.value.push(...(new Array(len).fill(1).map(() => getMetadataItemByType(props.type!))))
 }
 
 const removeItem = (index: number) => {
-  // const data = [...dataSource.value];
-  // data.splice(index, 1);
-  // dataSource.value = data
-  const _data = tableRef.value.removeItem(index)
-  // if (_data.length === 1) {
-  //   showLastDelete.value = true
-  // }
-  if (_data.length === 0) {
-    showSave.value = false
-    handleSaveClick()
-  }
+
+  dataSource.value.splice(index, 1)
 }
 
 const editStatusChange = (status: boolean) => {
@@ -348,9 +318,10 @@ const editStatusChange = (status: boolean) => {
 }
 
 const handleSaveClick = async (next?: Function) => {
-    let resp = await tableRef.value.getData().finally(() => {
-
+    let resp = await tableRef.value.validate().catch(err => {
+      console.log('handleSaveClick--err',err)
     });
+    console.log('handleSaveClick', resp)
     if(resp) {
 
       const virtual: any[] = [];
@@ -401,8 +372,8 @@ const handleSaveClick = async (next?: Function) => {
         loading.value = false
       })
       if(result.success) {
-        dataSource.value = resp
-        tableRef.value.cleanEditStatus()
+        // dataSource.value = resp
+        // tableRef.value.cleanEditStatus()
         editStatus.value = false
         onlyMessage('操作成功！')
         next?.()
@@ -445,7 +416,7 @@ onUnmounted(() => {
 
 watch(() => metadata.value, () => {
   dataSource.value = metadata.value
-  console.log(metadata.value)
+  console.log(JSON.parse(JSON.stringify(metadata.value)))
   initOptions(dataSource.value)
 }, { immediate: true })
 
@@ -459,8 +430,8 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
 
 </script>
 
-<style scoped>
-.table-header {
+<style scoped lang="less">
+.extra-header {
     display: flex;
     justify-content: space-between;
     padding-bottom: 16px;

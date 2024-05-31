@@ -8,6 +8,7 @@
       zIndex: 1071
     }"
     :options="options"
+    :getPopupContainer="(node) => tableWrapperRef || node"
     @change="change"
   />
 </template>
@@ -16,6 +17,7 @@
 import { selectProps } from 'ant-design-vue/lib/select';
 import defaultOptions from './data';
 import {difference} from "lodash-es";
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   ...selectProps(),
@@ -31,6 +33,7 @@ const myValue = ref(props.value)
 
 const options = computed(() => difference(defaultOptions, props.filter))
 
+const tableWrapperRef = useTableWrapper()
 const change = (key) => {
   myValue.value = key
   emit('update:value', key)

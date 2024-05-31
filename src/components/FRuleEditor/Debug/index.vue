@@ -79,6 +79,7 @@
                                 showSearch
                                 :options="options"
                                 v-model:value="record.id"
+                                :getPopupContainer="(node) => tableWrapperRef || node"
                                 size="small"
                                 style="width: 100%; z-index: 1400 !important"
                             />
@@ -132,6 +133,7 @@
                                 v-model:value="record.id"
                                 size="small"
                                 style="width: 100%; z-index: 1400 !important"
+                                :getPopupContainer="(node) => tableWrapperRef || node"
                             />
                         </template>
                         <template v-if="column.key === 'current'">
@@ -223,7 +225,7 @@ import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
-import { PropertyMetadata } from '@/views/device/Product/typings';
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
@@ -241,6 +243,8 @@ type propertyType = {
 };
 const property = ref<propertyType[]>([]);
 const tag = ref<Array<any>>([]);
+const tableWrapperRef = useTableWrapper()
+
 const headerOptions = [
     {
         key: 'property',

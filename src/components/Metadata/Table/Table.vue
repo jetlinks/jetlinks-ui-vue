@@ -1,7 +1,13 @@
 <template>
-  <div class="metadata-edit-table-wrapper" ref="tableWrapper">
+  <div :class="{
+    'metadata-edit-table-wrapper': true,
+    'table-full-screen': isFullscreen
+  }" ref="tableWrapper">
+      <div class="metadata-edit-table-extra">
+        <slot name="extra" :isFullscreen="isFullscreen" :fullScreenToggle="toggle"/>
+      </div>
       <div class="metadata-edit-table">
-        <div class="metadata-edit-table-header" style="height: 50px" >
+        <div class="metadata-edit-table-header" style="height: 50px" :style="{paddingRight: scrollWidth + 'px'}" >
           <Header :columns="myColumns" :style="{width: tableStyle.width}"/>
         </div>
         <div class="metadata-edit-table-body" :style="{width: tableStyle.width, maxHeight: `${height}px`}">
@@ -30,11 +36,13 @@
 </template>
 
 <script setup name="MetadataBaseTable">
-import {useValidate, useResizeObserver, handleColumnsWidth} from './utils'
+import {useValidate, useResizeObserver, handleColumnsWidth, TABLE_WRAPPER, FULL_SCREEN} from './utils'
 import { tableProps } from 'ant-design-vue/lib/table'
 import { useFormContext } from './context'
 import Header from './header.vue'
 import Body from './body.vue'
+import { useFullscreen } from '@vueuse/core';
+import { provide } from 'vue'
 
 const emit = defineEmits(['scrollDown'])
 
@@ -58,15 +66,21 @@ const slots = useSlots()
 const myColumns = ref([])
 const tableWrapper = ref()
 const tableStyle = reactive({
-  width: 100
+  width: 100,
+  height: props.height
 })
 
 useResizeObserver(tableWrapper, onResize)
+
+const { isFullscreen, toggle } = useFullscreen(tableWrapper);
 
 const { rules, validateItem, validate, errorMap } = useValidate(
   props.dataSource,
   props.columns,
 )
+
+provide(TABLE_WRAPPER, tableWrapper)
+provide(FULL_SCREEN, isFullscreen)
 
 const fields = {}
 const addField = (key, field) => {
@@ -85,13 +99,17 @@ const findField = (index, name) => {
   return fields[fieldId]
 }
 
-function onResize({ width = 0}) {
+const scrollWidth = computed(() => {
+  return (props.dataSource.length * props.cellHeight) > props.height ? 17 : 0
+})
 
-  const scrollWidth = (props.dataSource.length * props.cellHeight) > props.height ? 17 : 0
+function onResize({ width = 0, height}) {
 
-  const _width = width - scrollWidth
+  const _width = width - scrollWidth.value
 
   tableStyle.width = width
+
+  // tableStyle.height = height - 146
 
   let newColumns = [...props.columns]
 
@@ -113,6 +131,10 @@ function onResize({ width = 0}) {
   myColumns.value = handleColumnsWidth(newColumns, _width)
 }
 
+watch(() => scrollWidth.value, () => {
+  onResize({ width : tableStyle.width })
+})
+
 const onScrollDown = (len) => {
   emit('scrollDown', len)
 }
@@ -127,12 +149,20 @@ useFormContext({
 })
 
 defineExpose({
-  validate
+  validate,
+  tableWrapper
 })
 </script>
 
 <style scoped lang="less">
 .metadata-edit-table-wrapper {
+  background: #fff;
+  height: 100%;
+
+  &.table-full-screen {
+    padding: 24px;
+  }
+
  .metadata-edit-table {
    display: flex;
    flex-direction: column;

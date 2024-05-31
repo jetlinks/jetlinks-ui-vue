@@ -168,7 +168,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
             if (value) {
               const option = setting[2]
 
-              if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
+              if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.id === value)) {
                 return Promise.reject('该标识已存在')
               }
               return Promise.resolve()
@@ -226,7 +226,11 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       form: {
         rules: [
           {
-            asyncValidator: async (rule: any, value: any) => {
+            asyncValidator: async (rule: any, value: any, ...setting: any) => {
+              const option = setting[2]
+              const item = dataSource.value[option.index]
+              value = item.expands
+
               const virtualRule = value?.virtualRule
               const source = value.source
 
@@ -268,7 +272,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '输入参数',
       dataIndex: 'inputs',
-      width: 120,
+      width: 100,
     },
     {
       title: '输出参数',
@@ -307,13 +311,8 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     },
     {
       title: '输出参数',
-      dataIndex: 'outInput',
-      width: 100,
-    },
-    {
-      title: '配置参数',
       dataIndex: 'valueType',
-      width: 120,
+      width: 100,
       form: {
         rules: [{
           asyncValidator(rule: any, value: any, ) {
@@ -367,6 +366,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
         rules: [
           {
             asyncValidator(rule:any,value: any) {
+              console.log('expands',value)
             if (!value?.type?.length) {
               return Promise.reject('请选择读写类型')
             }

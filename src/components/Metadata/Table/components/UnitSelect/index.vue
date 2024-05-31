@@ -6,6 +6,7 @@
     :dropdownStyle="{
       zIndex: 1071
     }"
+    :getPopupContainer="(node) => tableWrapperRef || node"
     v-model:value="myValue"
     @change="change"
   />
@@ -13,6 +14,7 @@
 
 <script setup name="MetadataUnitSelect">
 import { Form } from 'ant-design-vue'
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   value: {
@@ -41,6 +43,7 @@ const options = ref([])
 
 const formItemContext = Form.useInjectFormItemContext();
 
+const tableWrapperRef = useTableWrapper()
 const change = (v) => {
   const newValue = v.length > 1 ? v.pop() : v?.[0];
   myValue.value = [newValue];

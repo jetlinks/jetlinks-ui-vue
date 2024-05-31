@@ -8,6 +8,7 @@
             :dropdownStyle="{
               zIndex: 1071
             }"
+            :getPopupContainer="(node) => tableWrapperRef || node"
             :disabled="disabled"
             @change="onChange"
         >
@@ -28,7 +29,7 @@
                         <VirtualRule
                             v-if="modalVisible"
                             :source="myValue"
-                            :value="expands"
+                            :value="record"
                             :dataSource="dataSource"
                             ref="virtualRuleRef"
                         />
@@ -39,7 +40,11 @@
                 <AIcon type="EditTwoTone" />
             </j-button>
         </PopoverModal>
-        <j-dropdown v-if="myValue === 'rule' && target === 'device' && showReset" placement="bottom">
+        <j-dropdown
+          v-if="myValue === 'rule' && target === 'device' && showReset"
+          placement="bottom"
+          :getPopupContainer="(node) => tableWrapperRef || node"
+        >
             <span style="width: 20px;" @click.prevent>
                 <AIcon type="MoreOutlined" />
             </span>
@@ -60,6 +65,7 @@
                                         <VirtualRule
                                             v-if="modalVisible"
                                             :source="myValue"
+                                            :value="record"
                                             :dataSource="dataSource"
                                             ref="virtualRuleRef"
                                         />
@@ -95,18 +101,20 @@ import VirtualRule from './VirtualRule/index.vue';
 import { Form } from 'jetlinks-ui-components';
 import { useInstanceStore } from '@/store/instance';
 import { resetRule } from '@/api/device/instance';
-import { updata } from '@/api/rule-engine/configuration';
 import { onlyMessage } from '@/utils/comm';
-import { provide } from 'vue';
+import {provide, Ref} from 'vue';
 import { queryDeviceVirtualProperty } from '@/api/device/instance';
 import {
     queryProductVirtualProperty
 } from '@/api/device/product';
 import { useProductStore } from '@/store/product';
 import { PopoverModal } from '@/components/Metadata/Table'
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const instanceStore = useInstanceStore();
 const productStore = useProductStore();
+const tableWrapperRef = useTableWrapper()
+
 const PropertySource: { label: string; value: string }[] = isNoCommunity
     ? [
           {
@@ -146,10 +154,6 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
-    dataSource: {
-        type: Array,
-        default: () => [],
-    },
     noEdit: {
         type: Array,
         default: () => [],
@@ -161,6 +165,10 @@ const props = defineProps({
     productNoEdit:{
         type:Array,
         default: []
+    },
+    record: {
+      type: Object,
+      default: () => ({})
     }
 });
 provide('target',props.target)
@@ -174,13 +182,14 @@ const type = ref<string>('');
 const virtualRuleRef = ref<any>(null);
 const modalVisible = ref(false)
 const expands = ref(props.value || {})
+const dataSource = inject<Ref<any[]>>('metadataSource')
 
 const disabled = computed(() => {
     // if (props.target === 'device') {
     //     return true;
     // }
     return props.noEdit?.length
-        ? props.noEdit.includes(props.value.id) && props?.target === 'device'
+        ? props.noEdit.includes(props.record.id) && props?.target === 'device'
         : false;
 });
 
@@ -233,7 +242,7 @@ const confirm = async () => {
 //     }
 // }
 const resetRules = async() =>{
-    let res:any = await resetRule(instanceStore.current?.productId,instanceStore.current?.id,[props.value?.id])
+    let res:any = await resetRule(instanceStore.current?.productId,instanceStore.current?.id,[props.record.id])
     if(res.status === 200){
         onlyMessage('操作成功！')
     }
@@ -252,13 +261,13 @@ const handleSearch = async () => {
       if (props.target === 'product') {
         resp = await queryProductVirtualProperty(
             productStore.current?.id,
-            props.value?.id,
+            props.record.id,
         );
       } else {
         resp = await queryDeviceVirtualProperty(
             instanceStore.current?.productId,
             instanceStore.current?.id,
-            props.value?.id,
+            props.record.id,
         );
       }
       if (resp && resp.status === 200 && resp.result) {
@@ -288,11 +297,7 @@ watch(
 );
 
 onMounted(()=>{
-    // if(props.target === 'device'){
-    //     props.productNoEdit?.id?.forEach((item:any)=>{
-    //     item === props.value?.id ? showReset.value = true : ''
-    // })
-    // }
+
     if(isNoCommunity && myValue.value === 'rule'){
         handleSearch()
     }

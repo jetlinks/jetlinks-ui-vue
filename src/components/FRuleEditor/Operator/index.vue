@@ -35,6 +35,7 @@
                                         }"
                                         placement="right"
                                         title="请选择使用值"
+                                        :getPopupContainer="(node) => tableWrapperRef || node"
                                     >
                                         <template #content>
                                             <j-space direction="vertical">
@@ -73,6 +74,7 @@
                                         }"
                                         placement="right"
                                         title="请选择使用值"
+                                        :getPopupContainer="(node) => tableWrapperRef || node"
                                     >
                                         <template #content>
                                             <j-space direction="vertical">
@@ -119,7 +121,7 @@ import { treeFilter } from '@/utils/tree';
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product';
 import { inject } from 'vue';
-import { Descriptions } from 'ant-design-vue';
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 import Markdown from '@/components/Markdown'
 
 const props = defineProps({
@@ -136,6 +138,8 @@ const item = ref<Partial<OperatorItem>>();
 const data = ref<OperatorItem[]>([]);
 const dataRef = ref<OperatorItem[]>([]);
 const tagsMetadata: any = inject('_tagsDataSource');
+const tableWrapperRef = useTableWrapper()
+
 const search = (value: string) => {
     if (value) {
         const nodes = treeFilter(

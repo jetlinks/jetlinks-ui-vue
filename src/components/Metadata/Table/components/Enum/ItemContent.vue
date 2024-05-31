@@ -5,7 +5,7 @@
       :columns="columns"
       :dataSource="dataSource"
       :pagination="false"
-      :scroll="{ y: 300 }"
+      :height="200"
     >
       <template #value="{ record, index }">
         <EditableItem
@@ -22,8 +22,10 @@
         </EditableItem>
       </template>
       <template #action="{ index }">
-        <a-button type="link"  @click="() => deleteItem(index)">
-          <AIcon type="DeleteOutlined" />
+        <a-button danger type="link"  @click="() => deleteItem(index)">
+          <template #icon>
+            <AIcon type="DeleteOutlined" />
+          </template>
         </a-button>
       </template>
     </EditTable>
@@ -55,7 +57,6 @@ const tableRef = ref()
 const columns = [{
   title: 'Value',
   dataIndex: 'value',
-  width: 150,
   form: {
     rules: [
       { max: 64, message: '最多可输入64个字符' },
