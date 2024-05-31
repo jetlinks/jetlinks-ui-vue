@@ -55,7 +55,6 @@ import {
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
-import { randomString } from '@/utils/utils';
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();
