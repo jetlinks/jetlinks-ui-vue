@@ -196,6 +196,7 @@ const onProductSelectChange = (selectedRowKeys: Key[]) => {
     productState.selectedRowKeys = selectedRowKeys;
     myForm.value.productId = productState.selectedRowKeys;
     myState.selectedRowKeys = []
+    myForm.value.deviceIds = myState.selectedRowKeys;
 };
 
 const onSelectChange = (selectedRowKeys: Key[]) => {
