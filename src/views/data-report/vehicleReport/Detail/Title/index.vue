@@ -1,39 +1,47 @@
 <template>
-  <div class="t-table t-title">
-    <div class="title-left">
-      <img :src="getImage('/dataReport/vehicleDetail.png')" alt="车辆报表详情图片" />
-    </div>
-    <div class="title-right">
-      <j-descriptions :column="{ xxl: 4, xl: 4, lg: 4, md: 3, sm: 3, xs: 1 }">
-        <j-descriptions-item label="出厂编号">{{
-          data?.factoryNumber
-          }}</j-descriptions-item>
-        <j-descriptions-item label="车辆简称">{{
-          data?.simpleName
-          }}</j-descriptions-item>
-        <j-descriptions-item label="车辆类型">{{
-          data?.vehicleTypeEnum.text
-          }}</j-descriptions-item>
-        <j-descriptions-item label="型号">{{
-          data?.modelNumber
-          }}</j-descriptions-item>
-        <j-descriptions-item label="日期">{{
-          dayjs(data?.createTime).format('YYYY-MM-DD HH:mm:ss')
-          }}</j-descriptions-item>
-        <j-descriptions-item label="闲置">一小时</j-descriptions-item>
-        <j-descriptions-item label="所属组织">{{
-          data?.orgName
-          }}</j-descriptions-item>
-        <j-descriptions-item label="行驶里程">{{
-          data?.mileage
-          }}</j-descriptions-item>
-      </j-descriptions>
-      <j-divider style="height: 1px; background-color: #e7e9ef; margin: 5px 0" />
-      <div class="title-type">
-        <span>子设备:</span>
-        <div class="type-list" v-for="item in deviceData">
-
-          <button v-if="item.state.value === 'offline'" style="
+    <div class="t-table t-title">
+        <div class="title-left">
+            <img
+                :src="getImage('/dataReport/vehicleDetail.png')"
+                alt="车辆报表详情图片"
+            />
+        </div>
+        <div class="title-right">
+            <j-descriptions
+                :column="{ xxl: 4, xl: 4, lg: 4, md: 3, sm: 3, xs: 1 }"
+            >
+                <j-descriptions-item label="出厂编号">{{
+                    data?.factoryNumber
+                }}</j-descriptions-item>
+                <j-descriptions-item label="车辆简称">{{
+                    data?.simpleName
+                }}</j-descriptions-item>
+                <j-descriptions-item label="车辆类型">{{
+                    data?.vehicleTypeEnum.text
+                }}</j-descriptions-item>
+                <j-descriptions-item label="型号">{{
+                    data?.modelNumber
+                }}</j-descriptions-item>
+                <j-descriptions-item label="日期">{{
+                    dayjs(data?.vehicleDate).format('YYYY-MM-DD HH:mm:ss')
+                }}</j-descriptions-item>
+                <j-descriptions-item label="闲置">一小时</j-descriptions-item>
+                <j-descriptions-item label="所属组织">{{
+                    data?.orgName
+                }}</j-descriptions-item>
+                <j-descriptions-item label="行驶里程">{{
+                    data?.mileage
+                }}</j-descriptions-item>
+            </j-descriptions>
+            <j-divider
+                style="height: 1px; background-color: #e7e9ef; margin: 5px 0"
+            />
+            <div class="title-type">
+                <span>子设备:</span>
+                <div class="type-list" v-for="item in deviceData">
+                    <button
+                        v-if="item.state.value === 'offline'"
+                        style="
                             height: 24px;
                             padding: 2px 12px 2px 12px;
                             gap: 8px;
@@ -45,10 +53,13 @@
                             text-align: center;
                             color: #f99d31;
                             background: #ffffff;
-                                ">
-            {{ item.name }}
-          </button>
-          <button v-else-if="item.state.value === 'notActive'" style="
+                        "
+                    >
+                        {{ item.name }}
+                    </button>
+                    <button
+                        v-else-if="item.state.value === 'notActive'"
+                        style="
                             height: 24px;
                             padding: 2px 12px 2px 12px;
                             gap: 8px;
@@ -59,10 +70,13 @@
                             line-height: 18px;
                             text-align: center;
                             background: #ffffff;
-                                ">
-            {{ item.name }}
-          </button>
-          <button v-else style="
+                        "
+                    >
+                        {{ item.name }}
+                    </button>
+                    <button
+                        v-else
+                        style="
                             height: 24px;
                             padding: 2px 12px 2px 12px;
                             gap: 8px;
@@ -74,13 +88,14 @@
                             text-align: center;
                             color: #0fce8c;
                             background: #ffffff;
-                                ">
-            {{ item.name }}
-          </button>
+                        "
+                    >
+                        {{ item.name }}
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
@@ -88,70 +103,70 @@ import { getImage } from '@/utils/comm';
 import dayjs from 'dayjs';
 
 const props = withDefaults(
-  defineProps<{
-    data: any;
-    deviceData: any;
-  }>(),
-  {},
+    defineProps<{
+        data: any;
+        deviceData: any;
+    }>(),
+    {},
 );
 const devices = [
-  {
-    name: '发动机',
-    isImportant: true,
-  },
-  {
-    name: '变速器',
-    isImportant: false,
-  },
-  {
-    name: '压力传感器',
-    isImportant: false,
-  },
+    {
+        name: '发动机',
+        isImportant: true,
+    },
+    {
+        name: '变速器',
+        isImportant: false,
+    },
+    {
+        name: '压力传感器',
+        isImportant: false,
+    },
 ];
 </script>
 <style lang="less" scoped>
 .t-table {
-  padding: 10px;
-  margin: 10px;
-  background: #ffffff;
-  border-radius: 4px;
+    padding: 10px;
+    margin: 10px;
+    background: #ffffff;
+    border-radius: 4px;
 }
 
 .t-title {
-  display: flex;
-  flex-direction: row;
-
-  .title-left {
-    width: 132px;
-    height: 132px;
-    border: 1px solid #e7e9ef;
     display: flex;
-    justify-content: center;
-    text-align: center;
+    flex-direction: row;
 
-    img {
-      display: inline-block;
-      width: 118.8px;
-      height: 94.05px;
-      margin-top: 18.98px;
-      margin-left: 6.6px;
+    .title-left {
+        width: 132px;
+        height: 132px;
+        border: 1px solid #e7e9ef;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+
+        img {
+            display: inline-block;
+            width: 118.8px;
+            height: 94.05px;
+            margin-top: 18.98px;
+            margin-left: 6.6px;
+        }
     }
-  }
 
-  .title-right {
-    width: 100%;
-    height: 95%;
-    margin-left: 15px;
+    .title-right {
+        width: 100%;
+        height: 95%;
+        margin-left: 15px;
 
-    .title-type {
-      margin-top: 15px;
-      display: flex;
-      flex-direction: row;
+        .title-type {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: row;
 
-      .type-list {
-        margin-left: 28px;
-      }
+            .type-list {
+                margin-left: 28px;
+            }
+        }
     }
-  }
 }
 </style>

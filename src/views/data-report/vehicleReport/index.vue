@@ -3,7 +3,7 @@
         <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
         <FullPage>
             <JProTable ref="configRef" :columns="columns" :request="request"
-                :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" model="table" :params="params"
+                :defaultParams="{ sorts: [{ name: 'vehicleDate', order: 'desc' }] }" model="table" :params="params"
                 :gridColumn="3" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
@@ -26,8 +26,8 @@
                     <a @click="handelDetail(slotProps)" style="color: #f84914">详情
                     </a>
                 </template>       
-                <template #createTime="{ createTime }">
-                    {{ dayjs(createTime).format('YYYY-MM-DD HH:mm:ss') }}
+                <template #vehicleDate="{ vehicleDate }">
+                    {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
             </JProTable>
         </FullPage>
@@ -121,8 +121,8 @@ const columns = [
     },
     {
         title: '日期',
-        dataIndex: 'createTime',
-        key: 'createTime',
+        dataIndex: 'vehicleDate',
+        key: 'vehicleDate',
         width: 200,
         scopedSlots: true,
         ellipsis: true,
