@@ -263,12 +263,6 @@ const rules = {
 
 const columnsAss = [
     {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        ellipsis: true,
-    },
-    {
         title: '产品名称',
         dataIndex: 'name',
         key: 'name',
@@ -435,12 +429,12 @@ onUnmounted(() => {
     flex-direction: row;
 
     .modal-left {
-        width: 30%;
+        width: 20%;
         height: 380px;
     }
 
     .modal-right {
-        width: 68%;
+        width: 78%;
         height: 380px;
         margin-left: 20px;
     }

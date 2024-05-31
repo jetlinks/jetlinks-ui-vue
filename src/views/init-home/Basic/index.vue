@@ -521,7 +521,6 @@ const saveBasicInfo = () => {
                         },
                     },
                 ];
-                console.log('facTypeRules',facTypeRules.value)
                 const res = await save(item);
                 console.log(res);
                 if (res.status === 200) {
