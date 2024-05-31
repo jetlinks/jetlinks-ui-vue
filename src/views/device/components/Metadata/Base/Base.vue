@@ -125,8 +125,9 @@
               :id="data.record.id"
               :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
               :record="data.record"
-              :type="data.record.valueType.type"
+              :type="type === 'properties' ? data.record.valueType?.type : 'object'"
               :has-permission="`${permission}:update`"
+              :medataType="type"
               :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
                 title: '继承自产品物模型的数据不支持删除',
               } : undefined"
