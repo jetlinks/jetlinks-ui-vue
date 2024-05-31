@@ -3,10 +3,7 @@
         <div class="hd">
             <div class="back">
                 <a-button size="middle" @click="backVehicleCenterClick">
-                    <template #icon>
-                        <AIcon type="RollbackOutlined" />
-                    </template>
-                    车辆中心
+                    返回
                 </a-button>
             </div>
         </div>
