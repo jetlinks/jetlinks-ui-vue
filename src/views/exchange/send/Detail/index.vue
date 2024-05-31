@@ -1,6 +1,16 @@
 <template>
   <page-container :showBack="true">
-    <template #title> </template>
+    <template #title> 
+      <PermissionButton>
+                <j-upload
+                    name="file"
+                    accept=".json"
+                    :showUploadList="false"
+                    :before-upload="beforeUpload"
+                    >导入</j-upload
+                >
+          </PermissionButton>
+    </template>
     <FullPage>
       <div class="detail">
         <div class="sider">
@@ -30,7 +40,7 @@ import {
   queryDeviceProductList,
   queryDataSendList,
 } from '@/api/exchange/receive';
-import { getDataSandMap } from '@/api/exchange/receive';
+import { getDataSandMap,queryDeviceProductTarget } from '@/api/exchange/receive';
 import DataMap from './dataMap/index.vue';
 import DeviceMap from './deviceMap/index.vue';
 import Left from './DetailLeft/index.vue'
@@ -102,6 +112,49 @@ const searchValue = (newValue: any) => {
     }
   });
 }
+
+/**
+ * 导入
+ */
+ const beforeUpload = (file: any) => {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = (result) => {
+        const text:any = result.target?.result;
+        if (!file.type.includes('json')) {
+            onlyMessage('请上传json格式文件', 'error');
+            return false;
+        }
+        if (!text) {
+            onlyMessage('文件内容不能为空', 'error');
+            return false;
+        }
+        const data = JSON.parse(text);
+        if (Array.isArray(data)) {
+            onlyMessage('请上传正确格式文件', 'error');
+            return false;
+        }
+        let arr = []
+        for (let key in data) {
+            arr.push(data[key]);
+        }
+        let saveData = [
+            {
+                id: sendId.value,
+                targetMapping: {result: arr},
+            },
+        ];
+        console.log('saveData', saveData);
+        queryDeviceProductTarget(saveData).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('导入成功！');
+                Init();
+            }
+        });
+        return true;
+    };
+    return false;
+};
 
 const updateParentVar = (newValue: any) => {
   deviceDetailList.value = newValue;

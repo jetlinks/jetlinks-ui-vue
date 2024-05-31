@@ -8,15 +8,6 @@
         bordered
     >
         <template #expand>
-            <PermissionButton style="margin-right: 20px" placement="topRight">
-                <j-upload
-                    name="file"
-                    accept=".json"
-                    :showUploadList="false"
-                    :before-upload="beforeUpload"
-                    >导入</j-upload
-                >
-            </PermissionButton>
             <PermissionButton
                 key="save"
                 style="margin-right: 20px"
@@ -257,45 +248,6 @@ const updateAllDetailData = (dataIndex: string, event: any) => {
     deviceMapDetail.value.forEach((item: any) => {
         item.state = event === 'enabled' ? 'enabled' : 'disabled';
     });
-};
-
-/**
- * 导入
- */
-const beforeUpload = (file: any) => {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = (result) => {
-        const text:any = result.target?.result;
-        if (!file.type.includes('json')) {
-            onlyMessage('请上传json格式文件', 'error');
-            return false;
-        }
-        if (!text) {
-            onlyMessage('文件内容不能为空', 'error');
-            return false;
-        }
-        const data = JSON.parse(text);
-        if (Array.isArray(data)) {
-            onlyMessage('请上传正确格式文件', 'error');
-            return false;
-        }
-        let saveData = [
-            {
-                id: props.sendId,
-                targetMapping: {result: data},
-            },
-        ];
-        console.log('saveData', saveData);
-        queryDeviceProductTarget(saveData).then((res: any) => {
-            if (res.status === 200) {
-                onlyMessage('导入成功！');
-                emit('refresh');
-            }
-        });
-        return true;
-    };
-    return false;
 };
 
 //修改设备table表数据

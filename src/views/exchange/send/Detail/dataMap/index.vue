@@ -3,10 +3,6 @@
         <j-data-table ref="tableRef" class="ant-table-striped" :columns="columns" :data-source="props.dataDetailList"
             :height="560" bordered>
             <template #expand>
-                <PermissionButton style="margin-right: 20px" placement="topRight">
-                    <j-upload name="file" accept=".json" :showUploadList="false"
-                        :before-upload="beforeUpload">导入</j-upload>
-                </PermissionButton>
                 <PermissionButton key="save" style="margin-right: 20px" type="primary" :tooltip="{
                     title: '保存',
                 }" @click="handleSave" placement="topRight">
@@ -106,49 +102,6 @@ const splitHumidity = (data: any) => {
             targetId: '',
         };
     }
-};
-
-/**
- * 导入
- */
-const beforeUpload = (file: any) => {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = (result) => {
-        const text: any = result.target?.result;
-        if (!file.type.includes('json')) {
-            onlyMessage('请上传json格式文件', 'error');
-            return false;
-        }
-        if (!text) {
-            onlyMessage('文件内容不能为空', 'error');
-            return false;
-        }
-        const data = JSON.parse(JSON.stringify(JSON.parse(text)));
-        if (Array.isArray(data)) {
-            onlyMessage('请上传正确格式文件', 'error');
-            return false;
-        }
-        let arr = []
-        for (let key in data) {
-            arr.push(data[key]);
-        }
-        let saveData = [
-            {
-                id: props.sendId,
-                targetMapping: { result: arr },
-            },
-        ];
-        console.log('saveData', saveData);
-        queryDeviceProductTarget(saveData).then((res: any) => {
-            if (res.status === 200) {
-                onlyMessage('导入成功！');
-                emit('refresh');
-            }
-        });
-        return true;
-    };
-    return false;
 };
 
 const columns = [
