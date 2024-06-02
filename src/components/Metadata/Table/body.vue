@@ -1,33 +1,34 @@
 <template>
   <div
     v-if="dataSource.length"
-    class="metadata-edit-table-body-viewport" :style="{ ...style, maxHeight: height + 'px'}" ref="viewScrollRef">
-    <div class="metadata-edit-table-body-container" :style="containerStyle">
-      <div class="metadata-edit-table-center" :style="containerStyle">
+    class="metadata-edit-table-body-viewport" :style="{ ...style, height: height + 'px'}" ref="viewScrollRef">
+    <div :style="{position: 'relative'}">
+      <div class="metadata-edit-scrollbar" :style="containerStyle"> </div>
+      <div class="metadata-edit-table-center" ref="tableCenterRef" >
         <div
-          v-if="virtualData.length"
-          v-for="(item, index) in virtualData"
-          :class="{
-            'metadata-edit-table-row': true,
-          }"
-          :key="`record_${item.__serial}`"
-          :style="{height: `${cellHeight}px`, transform: `translateY(${item.__top}px)`}"
-          @click.right.native="(e) => showContextMenu(e,item)"
+            v-if="virtualData.length"
+            v-for="(item, index) in virtualData"
+            :class="{
+              'metadata-edit-table-row': true,
+            }"
+            :key="`record_${item.__serial}`"
+            :style="{height: `${cellHeight}px`,}"
+            @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
         >
           <div
-            v-for="column in columns"
-            class="metadata-edit-table-cell"
-            :key="`_${columns.dataIndex}`"
-            :style="{
-              width: `${column.width}px`,
-              left: `${column.left}px`,
-            }"
+              v-for="column in columns"
+              class="metadata-edit-table-cell"
+              :key="`_${columns.dataIndex}`"
+              :style="{
+                width: `${column.width}px`,
+                left: `${column.left}px`,
+              }"
           >
             <div v-if="column.dataIndex === '__serial'" class="body-cell-box">
-              {{ item[column.dataIndex] }}
+              {{ virtualRang.start + index + 1 }}
             </div>
             <div v-else class="body-cell-box">
-              <slot :name="column.dataIndex" :record="item" :index="item.__index" :column="column" >
+              <slot :name="column.dataIndex" :record="item" :index="virtualRang.start + index" :column="column" >
                 {{ item[column.dataIndex] }}
               </slot>
             </div>
@@ -47,6 +48,7 @@
 
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
+import {useRightMenuContext} from "components/Metadata/Table/utils";
 
 const props = defineProps({
   dataSource: {
@@ -74,12 +76,14 @@ const props = defineProps({
 const emit = defineEmits(['update:dataSource', 'scrollDown'])
 
 const viewScrollRef = ref()
+const tableCenterRef = ref()
 const virtualData = ref([])
 const virtualRang = reactive({
-  start: 0
+  start: 0,
 })
 const dataSourceCache = ref([])
 const containerStyle = ref(0)
+const context = useRightMenuContext()
 
 let scrollLock = ref(false)
 
@@ -87,34 +91,11 @@ const maxLen = computed(() => {
   return Math.trunc(props.height / props.cellHeight)
 })
 
-const handleDataSourceCache = () => {
-  scrollLock.value = false
-
-  const itemHeight = props.cellHeight
-
-  containerStyle.value = {
-    height: props.dataSource.length * props.cellHeight + 'px'
-  }
-
-  dataSourceCache.value = props.dataSource.reduce((prev, next, index) => {
-    let top = 0
-    if (index !== 0) {
-      const lastItem = prev[prev.length - 1]
-      top = lastItem.__top + itemHeight
-    }
-
-    next.__top = top
-    next.__serial = index + 1
-    next.__index = index
-
-    prev.push(next)
-
-    return prev
-  }, [])
-}
-
 const updateVirtualData = (start, end) => {
-  virtualData.value = dataSourceCache.value.slice(start, end)
+  virtualData.value = props.dataSource.slice(start, end)
+  if (tableCenterRef.value) {
+    tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${start * props.cellHeight}px, 0)`
+  }
 }
 
 const onScroll = () => {
@@ -122,27 +103,38 @@ const onScroll = () => {
   const clientHeight = viewScrollRef.value.clientHeight
   const scrollHeight = viewScrollRef.value.scrollHeight
 
-  const index = Math.round(height / props.cellHeight) - 3
+  const index = Math.round(height / props.cellHeight)
+
+
   const start = index < 0 ? 0 : index
   const end = start + maxLen.value + 4
 
   virtualRang.start = start
 
-  if (height + clientHeight >= scrollHeight && !scrollLock.value) { // 滚动到底
+
+  console.log(height, scrollHeight, !scrollLock.value)
+  if (height + clientHeight >= props.dataSource.length * props.cellHeight && !scrollLock.value) { // 滚动到底
     emit('scrollDown')
     scrollLock.value = true
   }
-
-  virtualData.value = dataSourceCache.value.slice(start, end)
+  // virtualData.value = dataSourceCache.value.slice(start, end)
+  updateVirtualData(start, end)
 }
 
-const showContextMenu = (e, record) => {
+const showContextMenu = (e, record, index) => {
   e.preventDefault()
-  ContextMenu(e, record)
+  record = {
+    ...record,
+    __index: index
+  }
+  ContextMenu(e, record, context)
+}
+
+const updateView = () => {
+  updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
 }
 
 onMounted(() => {
-  updateVirtualData(0, maxLen.value)
   viewScrollRef.value.addEventListener('scroll', onScroll)
 })
 
@@ -150,55 +142,66 @@ onBeforeUnmount(() => {
   viewScrollRef.value.removeEventListener('scroll', onScroll)
 })
 
-watch(() => [props.dataSource.length, viewScrollRef.value], (val, oldVal) => {
-  console.log('watch length', props.dataSource.length)
-  if (val[0] !== oldVal?.[0]) { // 长度不一致时更新内部缓存DataSource
-    handleDataSourceCache()
+watch(() => props.dataSource, () => {
+  updateView()
+}, {
+  immediate: true,
+  deep: true
+})
+
+watch(() => props.dataSource.length, () => {
+  scrollLock.value = false
+  containerStyle.value = {
+    height: props.dataSource.length * props.cellHeight + 'px'
   }
 
   if (props.dataSource.length <= maxLen.value || props.dataSource.length === 0) {
     emit('scrollDown', maxLen.value - props.dataSource.length + 3)
-    updateVirtualData(0, maxLen.value)
   }
-
 }, { immediate: true})
 
 </script>
 
 <style scoped lang="less">
 .metadata-edit-table-body-viewport {
-  height: 100%;
   max-height: 100%;
   width: 100%;
-  //width: calc(100% - 17px);
   overflow: hidden auto;
+  position: relative;
+
+  .metadata-edit-scrollbar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: -1;
+  }
 
   .metadata-edit-table-body-container {
     overflow: hidden;
-    transform: translateZ(0px);
-    min-height: 100%;
+    height: 100%;
+  }
 
-    .metadata-edit-table-center {
-      position: relative;
-      flex: 1 1 auto;
-      min-width: 0;
-      min-height: 100%;
+  .metadata-edit-table-center {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
 
-      .metadata-edit-table-row {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        position: absolute;
-        transition: top .2s, height .2s, background-color .1s;
-        border-bottom: 1px solid #ebebeb;
+    .metadata-edit-table-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      //position: absolute;
+      transition: top .2s, height .2s, background-color .1s;
+      border-bottom: 1px solid #ebebeb;
 
-        &:hover {
-          background-color: rgb(248, 248, 248);
-        }
+      &:hover {
+        background-color: rgb(248, 248, 248);
+      }
 
-        .body-cell-box {
-          padding: 0 12px;
-        }
+      .body-cell-box {
+        padding: 0 12px;
       }
     }
   }

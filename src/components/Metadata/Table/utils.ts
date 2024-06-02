@@ -18,6 +18,8 @@ type OptionsType = {
 export const TABLE_WRAPPER = Symbol('table-wrapper')
 export const FULL_SCREEN = Symbol('full')
 
+export const RIGHT_MENU = Symbol('right-menu')
+
 
 /**
  * 规则收集器，收集columns中的rules和watch
@@ -185,3 +187,5 @@ export const useTableWrapper = () => {
     return inject(TABLE_WRAPPER)
 
 }
+
+export const useRightMenuContext = () => inject(RIGHT_MENU)

@@ -4,11 +4,12 @@ import { h, render } from 'vue'
 let curInstance: Record<string, any> | null = null
 let seed = 1
 
-const contextMenu = (e: Event, data: any) => {
+const contextMenu = (e: Event, data: any, context: any) => {
     if (curInstance) {
         curInstance.destroy()
     }
     curInstance = null
+
     let id = seed++
     // 创建一个临时的div，用于挂载我们的菜单
     const container = document.createElement('div') as HTMLElement
@@ -16,13 +17,16 @@ const contextMenu = (e: Event, data: any) => {
     const appendTo = document.body
     // 传给menu组件的props
     const props = {
-        data,
         onClose: () => {
             if(curInstance){
                 curInstance.destroy()
             }
         },
+        onClick: (type: string) => {
+            context.click(type, data)
+        }
     }
+
     // 渲染虚拟节点
     const vnode = h(
         MenuContext,

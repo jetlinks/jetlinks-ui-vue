@@ -28,15 +28,15 @@
 import { onMounted, ref, nextTick } from "vue";
 
 const props = defineProps({
-  data: { default: null },
   onClose: { type: Function, default: () => {} },
+  onClick: { type: Function, default: () => {} },
 });
 
 const contextMenu = ref(null);
 
 const clickFunc = ({ key }) => {
   props.onClose();
-  console.log(props.data)
+  props.onClick(key)
 };
 
 onMounted(async () => {
