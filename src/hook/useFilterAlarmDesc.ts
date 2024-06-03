@@ -34,8 +34,13 @@ const dicMap = new Map<string, any[]>();
  * @function useFilterAlarmDesc 过滤请求结果的告警信息
  * @param requestFunc 发送请求的函数
  * @param orderProperty 排序字段
+ * @param mockData 模拟数据，可选参数
  */
-export const useFilterAlarmDesc = (requestFunc: any, orderProperty: string) => {
+export const useFilterAlarmDesc = (
+    requestFunc: any,
+    orderProperty: string,
+    mockData: any = {},
+) => {
     return async (_params: any) => {
         // 1.处理表格组件传递的参数
         const data = {
@@ -50,7 +55,7 @@ export const useFilterAlarmDesc = (requestFunc: any, orderProperty: string) => {
         const resp: any = await requestFunc(data);
         if (resp.status === 200) {
             const records = resp.result.data;
-            // 2.为表格记录对象添加描述字段
+            // 2.为表格的每条数据对象添加描述（description）字段
             records.forEach((record: any) => {
                 const dicKey = record.alarmDictionaryKey;
                 const dicValue = record.alarmDictionaryValue;
@@ -66,7 +71,7 @@ export const useFilterAlarmDesc = (requestFunc: any, orderProperty: string) => {
             return {
                 // 3.仿造请求结果返回给表格
                 code: resp.status,
-                result: resp.result,
+                result: resp.result.data?.length > 0 ? resp.result : mockData,
                 status: resp.status,
             };
         } else {

@@ -6,74 +6,86 @@
             @search="handleSearch"
         />
         <FullPage>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="querySim"
-                model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-                :gridColumn="3"
-                :row-selection="rowSelection"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            :popConfirm="{
-                                title: `确认导出？`,
-                                onConfirm: () => handleExport(),
-                            }"
-                        >
-                            <AIcon type="ExportOutlined" />
-                            导出
-                        </PermissionButton>
-                    </j-space>
-                </template>
-                <template #operatorName="{ operatorName }">
-                    {{ handleOperatorName(operatorName) }}
-                </template>
-                <template #cardType="{ cardType }">
-                    {{ cardType ? handleCardType(cardType.value) : ' ' }}
-                </template>
-                <template #deviceId="{ deviceId }">
-                    {{ deviceId || '' }}
-                </template>
-                <template #totalFlow="{ totalFlow }">
-                    {{ formatFlow(totalFlow) }}
-                </template>
-                <template #usedFlow="{ usedFlow }">
-                    {{ formatFlow(usedFlow) }}
-                </template>
-                <template #residualFlow="{ residualFlow }">
-                    {{ formatFlow(residualFlow) }}
-                </template>
-                <!-- 激活日期插槽 -->
-                <template #activationDate="{ activationDate }">
-                    {{
-                        activationDate
-                            ? dayjs(activationDate).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : '暂未激活'
-                    }}
-                </template>
-                <!-- 更新时间插槽 -->
-                <template #updateTime="{ updateTime }">
-                    {{
-                        updateTime
-                            ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
-                            : '无更新信息'
-                    }}
-                </template>
-                <template #cardStateType="{ cardStateType }">
-                    <state-tag
-                        :text="cardStateType.text"
-                        :type="handleTagType(cardStateType.value)"
-                    />
-                </template>
-            </JProTable>
+            <div class="container">
+                <div class="export-wrap">
+                    <PermissionButton
+                        :popConfirm="{
+                            title: popTitle,
+                            onConfirm: () => handleExport(),
+                        }"
+                    >
+                        <AIcon type="ExportOutlined" />
+                        导出
+                    </PermissionButton>
+                </div>
+                <j-table
+                    :columns="columns"
+                    :data-source="dataSource"
+                    :pagination="paginationConf"
+                    :row-selection="rowSelection"
+                    rowKey="id"
+                >
+                    <template #bodyCell="{ text, record, index, column }">
+                        <template v-if="column.dataIndex === 'deviceId'">
+                            {{ record?.deviceId ? record.deviceId : ' ' }}
+                        </template>
+                        <template v-if="column.dataIndex === 'operatorName'">
+                            {{ handleOperatorName(record) }}
+                        </template>
+
+                        <template v-if="column.dataIndex === 'cardType'">
+                            {{ handleCardType(record) }}
+                        </template>
+                        <template v-if="column.dataIndex === 'totalFlow'">
+                            {{
+                                record?.totalFlow
+                                    ? formatFlow(record.totalFlow)
+                                    : ' '
+                            }}
+                        </template>
+                        <template v-if="column.dataIndex === 'usedFlow'">
+                            {{
+                                record?.usedFlow
+                                    ? formatFlow(record.usedFlow)
+                                    : ' '
+                            }}
+                        </template>
+                        <template v-if="column.dataIndex === 'residualFlow'">
+                            {{
+                                record?.residualFlow
+                                    ? formatFlow(record.residualFlow)
+                                    : ' '
+                            }}
+                        </template>
+                        <template v-if="column.dataIndex === 'activationDate'">
+                            {{
+                                record?.activationDate
+                                    ? dayjs(record.activationDate).format(
+                                          'YYYY-MM-DD HH:mm:ss',
+                                      )
+                                    : '暂未激活'
+                            }}
+                        </template>
+                        <template v-if="column.dataIndex === 'updateTime'">
+                            {{
+                                record?.updateTime
+                                    ? dayjs(record.updateTime).format(
+                                          'YYYY-MM-DD HH:mm:ss',
+                                      )
+                                    : ' '
+                            }}
+                        </template>
+                        <template v-if="column.dataIndex === 'cardStateType'">
+                            <state-tag
+                                :text="record?.cardStateType?.text"
+                                :type="
+                                    handleTagType(record?.cardStateType?.value)
+                                "
+                            />
+                        </template>
+                    </template>
+                </j-table>
+            </div>
         </FullPage>
     </page-container>
 </template>
@@ -83,223 +95,115 @@ import { querySim, simDataExport } from '@/api/data-report/sim';
 import { downloadFileByUrl } from '@/utils/utils';
 import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
 import dayjs from 'dayjs';
-import { _export } from '@/api/data-report/alarmSheet';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
-import { faultDataExport } from '@/api/data-report/faultSheet';
+import { columns } from './columnConfig';
 
-const configRef = ref<Record<string, any>>({});
-const params = ref<Record<string, any>>({});
+// 页面数据
+const dataSource = ref<any[]>();
 
-const queryData = (_params: any) => {
-    return querySim({
+// 数据总数
+const dataTotal = ref<number>(0);
+// 当前属于多少页
+const currentPage = ref<number>(1);
+// 页面每页显示多少条数据
+const pageSizeRef = ref<number>(12);
+// 全局保存搜索条件，用于分页器触发时携带
+let globSearchParam: any = null;
+
+// 选中的数据的id
+const selectIds = ref<Array<number | string>>([]);
+// todo 是否选中全部，用于处理翻页全选
+const isSelectAll = ref(false);
+// 导出文件的类型
+const type = ref<string>('xlsx');
+
+// 处理导出按钮的提示
+const popTitle = computed(() => {
+    if (dataTotal.value > 10000) {
+        return '系统最大导数为10,000，当前数据已超过10,000，请按条件筛选后导出！';
+    }
+    return selectIds.value.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
+
+/**
+ * @function queryData 请求数据函数
+ * @param _params
+ */
+const queryData = async (_params: any = { pageIndex: 0, pageSize: 12 }) => {
+    const res: any = await querySim({
         ..._params,
-        // sorts: [{ name: 'updateTime', order: 'desc' }],
+        sorts: [{ name: 'updateTime', order: 'desc' }],
     });
+    if (res.status === 200) {
+        dataTotal.value = res.result.total;
+        currentPage.value = res.result.pageIndex + 1;
+        pageSizeRef.value = res.result.pageSize;
+        dataSource.value = res.result.data;
+    }
 };
+
+// 分页器配置
+const paginationConf = computed(() => ({
+    current: currentPage.value,
+    total: dataTotal.value,
+    showQuickJumper: true,
+    isShowContent: true,
+    showSizeChanger: true,
+    pageSize: pageSizeRef.value,
+    defaultPageSize: 12,
+    pageSizeOptions: ['12', '24', '48', '96'],
+    showTotal: () => {
+        return `总共 ${dataTotal.value} 条`;
+    },
+    onChange: (num: number, pageSize: number) => {
+        const _params = {
+            ...globSearchParam,
+            // 因为分页器发生改变时会自动改变当前页码和每页条数
+            // 因此在这覆盖globSearchParam中的pageIndex和pageSize
+            pageIndex: num - 1,
+            pageSize: pageSize,
+        };
+        handleSearch(_params);
+    },
+}));
 
 /**
  * 搜索
- * @param param
+ * @param _params
  */
-const handleSearch = (param: any) => {
-    params.value = param;
+const handleSearch = (_params: any) => {
+    let params: any;
+    // 如果_params.pageIndex或者_params.pageSize为空，
+    // 则说明由proSearch的搜索或者重置来触发的函数
+    if (!_params.pageIndex || !_params.pageSize) {
+        // 如果是重置则需要重置pageSizeRef和currentPage来重置分页器
+        pageSizeRef.value = 12;
+        currentPage.value = 1;
+        params = {
+            pageIndex: 0,
+            pageSize: 12,
+            ..._params,
+        };
+    } else {
+        // 如果存在分页数据，则说明由分页器触发的函数，则直接使用_params
+        params = _params;
+    }
+    globSearchParam = params;
+    queryData(params);
 };
-
-const columns = [
-    {
-        title: '卡号',
-        dataIndex: 'id',
-        key: 'id',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: 'ICCID',
-        dataIndex: 'iccId',
-        key: 'iccId',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '绑定车辆编号',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
-        ellipsis: true,
-        scopedSlots: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '平台对接 ',
-        dataIndex: 'platformConfigName',
-        key: 'platformConfigName',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '运营商',
-        dataIndex: 'operatorName',
-        key: 'operatorName',
-        ellipsis: true,
-        scopedSlots: true,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '移动',
-                    value: 'OneLink',
-                },
-                {
-                    label: '电信',
-                    value: 'CtwingCmp',
-                },
-                {
-                    label: '联通',
-                    value: 'UnicomCmp',
-                },
-            ],
-        },
-    },
-    {
-        title: '类型',
-        dataIndex: 'cardType',
-        key: 'cardType',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '年卡',
-                    text: '年卡',
-                    value: 'year',
-                },
-                {
-                    label: '季卡',
-                    text: '季卡',
-                    value: 'season',
-                },
-                {
-                    label: '月卡',
-                    text: '月卡',
-                    value: 'month',
-                },
-                {
-                    label: '其他',
-                    text: '其他',
-                    value: 'other',
-                },
-            ],
-        },
-    },
-    {
-        title: '总流量  ',
-        dataIndex: 'totalFlow',
-        key: 'totalFlow',
-        ellipsis: true,
-        scopedSlots: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '使用流量',
-        dataIndex: 'usedFlow',
-        key: 'usedFlow',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '剩余流量',
-        dataIndex: 'residualFlow',
-        key: 'residualFlow',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '激活日期',
-        dataIndex: 'activationDate',
-        key: 'activationDate',
-        scopedSlots: true,
-        width: 180,
-        search: {
-            type: 'date',
-        },
-    },
-    {
-        title: '更新时间',
-        dataIndex: 'updateTime',
-        key: 'updateTime',
-        scopedSlots: true,
-        width: 180,
-        search: {
-            type: 'date',
-        },
-    },
-    {
-        title: '状态',
-        dataIndex: 'cardStateType',
-        key: 'cardStateType',
-        scopedSlots: true,
-        width: 100,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '待激活',
-                    text: '待激活',
-                    value: 'toBeActivated',
-                },
-                {
-                    label: '停机',
-                    text: '停机',
-                    value: 'deactivate',
-                },
-                {
-                    label: '激活',
-                    text: '激活',
-                    value: 'using',
-                },
-                {
-                    label: '其他',
-                    text: '其他',
-                    value: 'other',
-                },
-                {
-                    label: '同步失败',
-                    text: '同步失败',
-                    value: 'error',
-                },
-                {
-                    label: '未同步',
-                    text: '未同步',
-                    value: 'notReady',
-                },
-            ],
-        },
-    },
-];
 
 /**
  * @function handleCardType 处理卡类型
- * @param value
+ * @param record
  */
-const handleCardType = (value: string) => {
+const handleCardType = (record: any) => {
+    if (!record.cardType) {
+        return '';
+    }
+    const value = record.cardType.text;
     switch (value) {
         case 'year':
             return '年卡';
@@ -335,10 +239,14 @@ const handleTagType = (value: string) => {
 
 /**
  * @function handleOperatorName 处理运营商
- * @param value
+ * @param record 当前的这条数据对象
  */
-const handleOperatorName = (value: string) => {
-    value = value.toLocaleLowerCase();
+const handleOperatorName = (record: any) => {
+    if (!record.operatorPlatformType) {
+        return '';
+    }
+    const value = record.operatorPlatformType.text;
+
     switch (value) {
         case 'onelink':
             return '移动';
@@ -351,10 +259,13 @@ const handleOperatorName = (value: string) => {
 
 /**
  * @function formatFlow 格式化流量
- * @param flow
+ * @param flow 流量
  */
-const formatFlow = (flow: number | undefined) => {
-    if (flow === undefined || flow === 0) {
+const formatFlow = (flow: any) => {
+    // 只有undefined null '' 进行Number()处理时会是NaN，直接排除
+    if (!flow) return '';
+
+    if (flow === 0) {
         return '0M';
     } else if (flow >= 1024 || flow <= -1024) {
         return `${(flow / 1024).toFixed(2)}G`;
@@ -365,34 +276,24 @@ const formatFlow = (flow: number | undefined) => {
     }
 };
 
-// 选中的数据的id
-const selectIds = ref<Array<number | string>>([]);
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        selectIds.value = selectedRowKeys;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
-};
-
 /**
- * 导出
+ * @function handleExport 导出
  */
-const type = ref<string>('xlsx');
 const handleExport = async () => {
-    if (!selectIds.value?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
-        return;
+    let _params: any = {};
+    // 因为不选择是导出全部，所以只需要判断是否选中了数据
+    if (selectIds.value?.length > 0) {
+        _params = {
+            terms: [
+                {
+                    column: 'id',
+                    value: selectIds.value,
+                    termType: 'in',
+                },
+            ],
+        };
     }
-    const _params = {
-        terms: [
-            {
-                column: 'id',
-                value: selectIds.value,
-                termType: 'in',
-            },
-        ],
-    };
+    // 调用导出接口
     simDataExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
@@ -405,6 +306,22 @@ const handleExport = async () => {
         }
     });
 };
+
+// 表格中数据被选中的回调
+const rowSelection = {
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        selectIds.value = selectedRowKeys;
+    },
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
+};
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.container {
+    padding: 16px;
+    .export-wrap {
+        padding-bottom: 16px;
+    }
+}
+</style>

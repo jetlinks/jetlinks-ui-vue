@@ -41,6 +41,7 @@ export const columns = [
         dataIndex: 'orgName',
         key: 'orgName',
         scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -67,8 +68,8 @@ export const columns = [
     },
     {
         title: '告警设备',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'alarmDeviceName',
+        key: 'alarmDeviceName',
         scopedSlots: true,
         ellipsis: true,
         search: {
