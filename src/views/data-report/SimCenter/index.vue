@@ -98,6 +98,12 @@ import dayjs from 'dayjs';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
+import {
+    handleCardType,
+    handleTagType,
+    handleOperatorName,
+    formatFlow,
+} from './handleDataUtils';
 
 // 页面数据
 const dataSource = ref<any[]>();
@@ -118,7 +124,7 @@ const isSelectAll = ref(false);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
-// 处理导出按钮的提示
+// 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
     if (dataTotal.value > 10000) {
         return '系统最大导数为10,000，当前数据已超过10,000，请按条件筛选后导出！';
@@ -133,6 +139,7 @@ const popTitle = computed(() => {
  * @param _params
  */
 const queryData = async (_params: any = { pageIndex: 0, pageSize: 12 }) => {
+    // 注意只需要修改这里的请求，需更换为当前页的请求函数
     const res: any = await querySim({
         ..._params,
         sorts: [{ name: 'updateTime', order: 'desc' }],
@@ -145,7 +152,7 @@ const queryData = async (_params: any = { pageIndex: 0, pageSize: 12 }) => {
     }
 };
 
-// 分页器配置
+// 分页器配置，无需更改直接复制
 const paginationConf = computed(() => ({
     current: currentPage.value,
     total: dataTotal.value,
@@ -161,6 +168,7 @@ const paginationConf = computed(() => ({
     onChange: (num: number, pageSize: number) => {
         const _params = {
             ...globSearchParam,
+
             // 因为分页器发生改变时会自动改变当前页码和每页条数
             // 因此在这覆盖globSearchParam中的pageIndex和pageSize
             pageIndex: num - 1,
@@ -171,11 +179,12 @@ const paginationConf = computed(() => ({
 }));
 
 /**
- * 搜索
+ * @function handleSearch 搜索的回调，无需修改直接复制
  * @param _params
  */
 const handleSearch = (_params: any) => {
     let params: any;
+
     // 如果_params.pageIndex或者_params.pageSize为空，
     // 则说明由proSearch的搜索或者重置来触发的函数
     if (!_params.pageIndex || !_params.pageSize) {
@@ -193,87 +202,6 @@ const handleSearch = (_params: any) => {
     }
     globSearchParam = params;
     queryData(params);
-};
-
-/**
- * @function handleCardType 处理卡类型
- * @param record
- */
-const handleCardType = (record: any) => {
-    if (!record.cardType) {
-        return '';
-    }
-    const value = record.cardType.text;
-    switch (value) {
-        case 'year':
-            return '年卡';
-        case 'season':
-            return '季卡';
-        case 'month':
-            return '月卡';
-        case 'other':
-            return '其他';
-    }
-};
-
-/**
- * @function handleTagType 处理tag类型
- * @param value
- */
-const handleTagType = (value: string) => {
-    switch (value) {
-        case 'toBeActivated':
-            return 'warning';
-        case 'error':
-        case 'notReady':
-            return 'error';
-        case 'using':
-            return 'success';
-        case 'activated':
-        case 'deactivate':
-            return 'default';
-        case 'other':
-            return 'processing';
-    }
-};
-
-/**
- * @function handleOperatorName 处理运营商
- * @param record 当前的这条数据对象
- */
-const handleOperatorName = (record: any) => {
-    if (!record.operatorPlatformType) {
-        return '';
-    }
-    const value = record.operatorPlatformType.text;
-
-    switch (value) {
-        case 'onelink':
-            return '移动';
-        case 'ctwing':
-            return '电信';
-        case 'unicom':
-            return '联通';
-    }
-};
-
-/**
- * @function formatFlow 格式化流量
- * @param flow 流量
- */
-const formatFlow = (flow: any) => {
-    // 只有undefined null '' 进行Number()处理时会是NaN，直接排除
-    if (!flow) return '';
-
-    if (flow === 0) {
-        return '0M';
-    } else if (flow >= 1024 || flow <= -1024) {
-        return `${(flow / 1024).toFixed(2)}G`;
-    } else if ((flow > 0 && flow < 1) || (flow < 0 && flow > -1)) {
-        return `${flow.toFixed(2)}M`;
-    } else {
-        return `${flow.toFixed(2)}M`;
-    }
 };
 
 /**
@@ -299,7 +227,8 @@ const handleExport = async () => {
             _params.terms = [];
         }
     }
-    // 注意这里的请求函数要更换为当前页面的请求函数
+
+    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
     simDataExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });

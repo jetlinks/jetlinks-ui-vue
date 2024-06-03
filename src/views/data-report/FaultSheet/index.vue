@@ -50,7 +50,7 @@ import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
 import moment from 'moment/moment';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
-import { columns, mockData } from './columnConfig';
+import { columns } from './columnConfig';
 
 // 页面数据
 const dataSource = ref<any[]>();
@@ -86,7 +86,7 @@ const popTitle = computed(() => {
  * @function queryDataFn 请求数据的函数，由useFilterAlarmDesc返回的函数
  * @param _params 请求携带的参数
  */
-const queryDataFn = useFilterAlarmDesc(queryFaultData, 'faultTime', mockData);
+const queryDataFn = useFilterAlarmDesc(queryFaultData, 'faultTime');
 
 /**
  * @function queryData 获取数据
