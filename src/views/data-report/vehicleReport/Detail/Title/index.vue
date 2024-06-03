@@ -34,7 +34,7 @@
                         dayjs(data?.vehicleDate).format('YYYY-MM-DD HH:mm:ss')
                     }}</j-descriptions-item>
                     <j-descriptions-item label="闲置">
-                        {{ data.idleDuration || 0 }}小时
+                        {{ data?.idleDuration || 0 }}小时
                     </j-descriptions-item>
                     <j-descriptions-item label="所属组织">{{
                         data?.orgName
