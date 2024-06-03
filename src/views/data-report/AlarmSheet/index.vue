@@ -150,6 +150,7 @@ const handleSearch = (_params: any) => {
         params = _params;
     }
     globSearchParam = params;
+    console.log(globSearchParam);
     queryData(params);
 };
 
@@ -168,6 +169,13 @@ const handleExport = async () => {
                 },
             ],
         };
+    } else {
+        // 当全不选时，为导出接口添加筛选条件
+        if (globSearchParam.terms.length > 0) {
+            _params.terms = [globSearchParam.terms[0]?.terms[0]];
+        } else {
+            _params.terms = [];
+        }
     }
     _export(type.value, _params).then((res: any) => {
         if (res) {

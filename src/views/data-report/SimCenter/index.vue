@@ -281,7 +281,6 @@ const formatFlow = (flow: any) => {
  */
 const handleExport = async () => {
     let _params: any = {};
-    // 因为不选择是导出全部，所以只需要判断是否选中了数据
     if (selectIds.value?.length > 0) {
         _params = {
             terms: [
@@ -292,8 +291,15 @@ const handleExport = async () => {
                 },
             ],
         };
+    } else {
+        // 当全不选时，为导出接口添加筛选条件
+        if (globSearchParam.terms.length > 0) {
+            _params.terms = [globSearchParam.terms[0]?.terms[0]];
+        } else {
+            _params.terms = [];
+        }
     }
-    // 调用导出接口
+    // 注意这里的请求函数要更换为当前页面的请求函数
     simDataExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });

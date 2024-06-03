@@ -167,6 +167,13 @@ const handleExport = async () => {
                 },
             ],
         };
+    } else {
+        // 当全不选时，为导出接口添加筛选条件
+        if (globSearchParam.terms.length > 0) {
+            _params.terms = [globSearchParam.terms[0]?.terms[0]];
+        } else {
+            _params.terms = [];
+        }
     }
     faultDataExport(type.value, _params).then((res: any) => {
         if (res) {
@@ -174,7 +181,7 @@ const handleExport = async () => {
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `车辆故障数据-${moment(new Date()).format(
+                `车辆告警数据-${moment(new Date()).format(
                     'YYYY/MM/DD HH:mm:ss',
                 )}`,
                 type.value,
