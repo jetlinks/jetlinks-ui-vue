@@ -239,7 +239,7 @@ const handelDetail = (slotProps: any) => {
  */
 const handleOnChange = (num: number, pageSize: number) => {
     const _params = {
-        ...globParams,
+        ...globParams.value,
 
         // 因为分页器发生改变时会自动改变当前页码和每页条数
         // 因此在这覆盖globSearchParam中的pageIndex和pageSize
