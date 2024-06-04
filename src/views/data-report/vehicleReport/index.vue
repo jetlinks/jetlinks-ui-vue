@@ -100,11 +100,15 @@ const columns = [
                     label: '内燃牵引车',
                     value: 'ICTractor',
                 },
+                {
+                    label: '其他',
+                    value: 'other',
+                },
             ],
         },
     },
     {
-        title: '车辆编号',
+        title: '出场编号',
         dataIndex: 'factoryNumber',
         key: 'factoryNumber',
         ellipsis: true,

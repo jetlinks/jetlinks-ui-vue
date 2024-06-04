@@ -126,12 +126,24 @@
                             <template
                                 v-if="column.dataIndex === 'shutStartMilli'"
                             >
-                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                                {{
+                                    text
+                                        ? dayjs(Number(text)).format(
+                                              'YYYY-MM-DD HH:mm:ss',
+                                          )
+                                        : ''
+                                }}
                             </template>
                             <template
                                 v-if="column.dataIndex === 'shutDownMilli'"
                             >
-                                {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
+                                {{
+                                    text
+                                        ? dayjs(Number(text)).format(
+                                              'YYYY-MM-DD HH:mm:ss',
+                                          )
+                                        : ''
+                                }}
                             </template>
                             <template v-if="column.dataIndex === 'drivingTime'">
                                 {{ formatMillisecondsToHourMinute(text) }}
