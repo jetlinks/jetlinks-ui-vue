@@ -12,6 +12,9 @@
                 :request="queryData"
                 model="table"
                 :params="globParams"
+                :defaultParams="{
+                    sorts: [{ name: 'reportTime', order: 'desc' }],
+                }"
                 :gridColumn="3"
                 :row-selection="rowSelection"
             >
@@ -99,6 +102,26 @@ const queryData = async (_params: any) => {
             result: { data: [] },
             status: 200,
         };
+    }
+};
+
+/**
+ * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
+ * @param _params
+ */
+const handleSearchDate = (_params: any) => {
+    // 判断是否存在terms
+    if (_params.terms && _params.terms.length > 0) {
+        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
+        if (
+            _params.terms[0]?.terms &&
+            _params.terms[0]?.terms[0].column === 'duration'
+        ) {
+            const duration = _params.terms[0]?.terms[0].value;
+            const temp = duration * 60000;
+
+            _params.terms[0].terms[0].value = temp;
+        }
     }
 };
 
@@ -213,6 +236,7 @@ const rowSelection = {
  * @param param
  */
 const handleSearch = (param: any) => {
+    handleSearchDate(param);
     globParams.value = param;
 };
 
@@ -288,7 +312,10 @@ const columns = [
         ellipsis: true,
         scopedSlots: true,
         search: {
-            type: 'time',
+            type: 'number',
+            componentProps: {
+                placeholder: '默认持续时间单位为分钟',
+            },
         },
     },
 ];

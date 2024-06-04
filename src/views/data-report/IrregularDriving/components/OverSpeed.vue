@@ -40,7 +40,7 @@
                     }}
                 </template>
                 <template #orgName="{ orgName }">
-                    {{ orgName || '' }}
+                    {{ orgName || '--' }}
                 </template>
                 <template
                     #overSpeedInfoSpeedLimit="{ overSpeedInfoSpeedLimit }"
@@ -83,7 +83,6 @@
 </template>
 
 <script setup lang="ts">
-import { onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
 import dayjs from 'dayjs';
 import { querySpeed, speedExport } from '@/api/data-report/IrregularDriving';
@@ -217,6 +216,27 @@ const formatMillisecondsToHourMinute = (milliseconds: number) => {
         return '0分';
     }
 };
+
+/**
+ * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
+ * @param _params
+ */
+const handleSearchDate = (_params: any) => {
+    // 判断是否存在terms
+    if (_params.terms && _params.terms.length > 0) {
+        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
+        if (
+            _params.terms[0]?.terms &&
+            _params.terms[0]?.terms[0].column === 'duration'
+        ) {
+            const duration = _params.terms[0]?.terms[0].value;
+            const temp = duration * 60000;
+
+            _params.terms[0].terms[0].value = temp;
+        }
+    }
+};
+
 const columns = [
     {
         title: '车辆类型',
@@ -299,7 +319,10 @@ const columns = [
         key: 'duration',
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'number',
+            componentProps: {
+                placeholder: '默认持续时间单位为分钟',
+            },
         },
     },
     {
@@ -330,7 +353,7 @@ const columns = [
         ellipsis: true,
         width: 180,
         search: {
-            type: 'time',
+            type: 'date',
         },
     },
 ];
@@ -357,6 +380,7 @@ const rowSelection = {
  * @param param
  */
 const handleSearch = (param: any) => {
+    handleSearchDate(param);
     globParams.value = param;
 };
 </script>
