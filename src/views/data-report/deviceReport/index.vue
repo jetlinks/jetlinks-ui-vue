@@ -35,7 +35,7 @@
                     </j-space>
                 </template>
                 <template #number="slotProps">
-                    <span>{{ slotProps.number || '暂未绑定车辆编号' }}</span>
+                    <span>{{ slotProps.number }}</span>
                 </template>
                 <template #state="slotProps">
                     <button
