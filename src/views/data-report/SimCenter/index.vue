@@ -1,10 +1,6 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" @search="handleSearch" />
         <FullPage>
             <JProTable
                 ref="configRef"
@@ -122,6 +118,9 @@ const selectIds = ref<Array<number | string>>([]);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
+// 全局选中的数据
+const rowSelectedMap = new Map<number, number>();
+
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
     const resp: any = await querySim(_params);
@@ -158,7 +157,7 @@ const handleShowTotal = () => {
  */
 const handleOnChange = (num: number, pageSize: number) => {
     const _params = {
-        ...globParams,
+        ...globParams.value,
 
         // 因为分页器发生改变时会自动改变当前页码和每页条数
         // 因此在这覆盖globSearchParam中的pageIndex和pageSize
@@ -169,13 +168,42 @@ const handleOnChange = (num: number, pageSize: number) => {
 };
 
 /**
- * 搜索
+ * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
+ * @param _params
+ */
+const handleSearchDate = (_params: any) => {
+    // 判断是否存在terms
+    if (_params.terms && _params.terms.length > 0) {
+        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
+        if (
+            _params.terms[0]?.terms &&
+            _params.terms[0]?.terms[0].value !== 'number'
+        )
+            if (_params.terms[0]?.terms[0].termType === 'lte') {
+                // 时间为小于等于
+                const date = _params.terms[0]?.terms[0].value;
+                let timeStamp: string | number = dayjs(date).unix();
+                timeStamp = Number(String(timeStamp) + '999');
+                _params.terms[0].terms[0].value = timeStamp;
+                // 时间为大于等于
+            } else if (_params.terms[0]?.terms[0].termType === 'gte') {
+                const date = _params.terms[0]?.terms[0].value;
+                let timeStamp: string | number = dayjs(date).unix();
+                timeStamp = Number(String(timeStamp) + '000');
+                _params.terms[0].terms[0].value = timeStamp;
+            }
+        // 其他小于和大于未做处理，因为后端能够直接处理
+    }
+};
+
+/**
+ * @function handleSearch 搜索组件的搜索事件
  * @param _params
  */
 const handleSearch = (_params: any) => {
+    handleSearchDate(_params);
     globParams.value = _params;
 };
-
 /**
  * @function handleExport 导出
  */
@@ -220,9 +248,14 @@ const handleExport = async () => {
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
         selectIds.value = selectedRowKeys;
+        console.log('onChange trigger', selectedRowKeys, selectedRows);
     },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {
+        console.log('onSelected trigger', selected, selectedRows, record);
+    },
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
+        console.log('onSelectAll trigger');
+    },
 };
 </script>
 
