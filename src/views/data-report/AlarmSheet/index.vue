@@ -14,11 +14,15 @@
                 :params="globParams"
                 :gridColumn="3"
                 :row-selection="rowSelection"
-                :pagination="false"
             >
                 <template #headerTitle>
                     <j-space>
-                        <PermissionButton :popConfirm="popTitle">
+                        <PermissionButton
+                            :popConfirm="{
+                                title: popTitle,
+                                onConfirm: () => handleExport(),
+                            }"
+                        >
                             <AIcon type="ExportOutlined" />
                             导出
                         </PermissionButton>
@@ -32,7 +36,7 @@
                 <template #alarmTime="{ alarmTime }">
                     {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
-                <template #paginationRender="{ paginationRender }">
+                <template #paginationRender>
                     <a-pagination
                         :showQuickJumper="true"
                         :isShowContent="true"
@@ -60,7 +64,6 @@ import { FullPage } from 'components/Layout';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
-import ThirdMenu from '@/views/system/Apply/componenets/ThirdMenu.vue';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -117,7 +120,7 @@ const handleShowTotal = () => {
  */
 const handleOnChange = (num: number, pageSize: number) => {
     const _params = {
-        ...globParams,
+        ...globParams.value,
 
         // 因为分页器发生改变时会自动改变当前页码和每页条数
         // 因此在这覆盖globSearchParam中的pageIndex和pageSize
@@ -138,10 +141,40 @@ const popTitle = computed(() => {
 });
 
 /**
- * 搜索
+ * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
+ * @param _params
+ */
+const handleSearchDate = (_params: any) => {
+    // 判断是否存在terms
+    if (_params.terms && _params.terms.length > 0) {
+        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
+        if (
+            _params.terms[0]?.terms &&
+            _params.terms[0]?.terms[0].value !== 'number'
+        )
+            if (_params.terms[0]?.terms[0].termType === 'lte') {
+                // 时间为小于等于
+                const date = _params.terms[0]?.terms[0].value;
+                let timeStamp: string | number = dayjs(date).unix();
+                timeStamp = Number(String(timeStamp) + '999');
+                _params.terms[0].terms[0].value = timeStamp;
+                // 时间为大于等于
+            } else if (_params.terms[0]?.terms[0].termType === 'gte') {
+                const date = _params.terms[0]?.terms[0].value;
+                let timeStamp: string | number = dayjs(date).unix();
+                timeStamp = Number(String(timeStamp) + '000');
+                _params.terms[0].terms[0].value = timeStamp;
+            }
+        // 其他小于和大于未做处理，因为后端能够直接处理
+    }
+};
+
+/**
+ * @function handleSearch 搜索组件的搜索事件
  * @param _params
  */
 const handleSearch = (_params: any) => {
+    handleSearchDate(_params);
     globParams.value = _params;
 };
 
@@ -176,7 +209,9 @@ const handleExport = async () => {
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `sim卡数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+                `车辆告警数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
                 type.value,
             );
         }

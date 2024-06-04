@@ -6,6 +6,8 @@ const dicMap = new Map<string, any[]>();
 // 处理告警信息为dictId: [{dicValue, dicDesc},{dicValue, dicDesc},...]的格式
 (async () => {
     const res: any = await getDicList({
+        pageSize: 9999,
+        pageNum: 0,
         sorts: [
             {
                 name: 'ordinal',
