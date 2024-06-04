@@ -83,89 +83,7 @@ const selectIds = ref<Array<number | string>>([]);
 
 const configRef = ref<Record<string, any>>({});
 
-/**
- * @function handleOnChange 分页器改变的回调事件
- * @param num
- * @param pageSize
- */
-const handleOnChange = (num: number, pageSize: number) => {
-    const _params = {
-        ...globParams,
-
-        // 因为分页器发生改变时会自动改变当前页码和每页条数
-        // 因此在这覆盖globSearchParam中的pageIndex和pageSize
-        pageIndex: num - 1,
-        pageSize: pageSize,
-    };
-    handleSearch(_params);
-};
-
-// 为了能够取到请求的条件，需要对请求再包装一层请求
-const queryData = async (_params: any) => {
-    const resp: any = await queryAbnormal(_params);
-    if (resp.status === 200) {
-        dataTotal.value = resp.result.total;
-        currentPage.value = resp.result.pageIndex + 1;
-        pageSize.value = resp.result.pageSize;
-        return {
-            // 3.仿造请求结果返回给表格
-            code: resp.status,
-            result: resp.result,
-            status: resp.status,
-        };
-    } else {
-        return {
-            code: 200,
-            result: { data: [] },
-            status: 200,
-        };
-    }
-};
-
-/**
- * 导出
- */
-
 const type = ref<string>('xlsx');
-/**
- * @function handleExport 导出
- */
-const handleExport = async () => {
-    let _params: any = {};
-    if (selectIds.value?.length > 0) {
-        _params = {
-            terms: [
-                {
-                    column: 'id',
-                    value: selectIds.value,
-                    termType: 'in',
-                },
-            ],
-        };
-    } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            _params.terms = [];
-        }
-    }
-
-    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
-    abnormalExport(type.value, _params).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `震动异常数据-${moment(new Date()).format(
-                    'YYYY/MM/DD HH:mm:ss',
-                )}`,
-                type.value,
-            );
-        }
-    });
-};
 
 const columns = [
     {
@@ -234,6 +152,90 @@ const columns = [
         },
     },
 ];
+
+/**
+ * @function handleOnChange 分页器改变的回调事件
+ * @param num
+ * @param pageSize
+ */
+const handleOnChange = (num: number, pageSize: number) => {
+    const _params = {
+        ...globParams,
+
+        // 因为分页器发生改变时会自动改变当前页码和每页条数
+        // 因此在这覆盖globSearchParam中的pageIndex和pageSize
+        pageIndex: num - 1,
+        pageSize: pageSize,
+    };
+    handleSearch(_params);
+};
+
+// 为了能够取到请求的条件，需要对请求再包装一层请求
+const queryData = async (_params: any) => {
+    const resp: any = await queryAbnormal(_params);
+    if (resp.status === 200) {
+        dataTotal.value = resp.result.total;
+        currentPage.value = resp.result.pageIndex + 1;
+        pageSize.value = resp.result.pageSize;
+        return {
+            // 3.仿造请求结果返回给表格
+            code: resp.status,
+            result: resp.result,
+            status: resp.status,
+        };
+    } else {
+        return {
+            code: 200,
+            result: { data: [] },
+            status: 200,
+        };
+    }
+};
+
+/**
+ * 导出
+ */
+
+
+/**
+ * @function handleExport 导出
+ */
+const handleExport = async () => {
+    let _params: any = {};
+    if (selectIds.value?.length > 0) {
+        _params = {
+            terms: [
+                {
+                    column: 'id',
+                    value: selectIds.value,
+                    termType: 'in',
+                },
+            ],
+        };
+    } else {
+        // 当全不选时，为导出接口添加筛选条件
+        if (globParams.value.terms.length > 0) {
+            _params.terms = [globParams.value.terms[0]?.terms[0]];
+        } else {
+            _params.terms = [];
+        }
+    }
+
+    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
+    abnormalExport(type.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: type.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `震动异常数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                type.value,
+            );
+        }
+    });
+};
 
 const rowSelection = {
     onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {

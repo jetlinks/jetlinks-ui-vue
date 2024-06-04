@@ -119,7 +119,8 @@ const queryData = async (_params: any) => {
 };
 
 /**
- * @function handleExport 导出
+ * @function handleExport 导出 设备消息的导出要用 _id
+ * 
  */
 const handleExport = async () => {
     let _params: any = {};
@@ -127,7 +128,7 @@ const handleExport = async () => {
         _params = {
             terms: [
                 {
-                    column: 'id',
+                    column: '_id',
                     value: selectIds.value,
                     termType: 'in',
                 },
