@@ -12,6 +12,9 @@
                 :request="queryData"
                 model="table"
                 :params="globParams"
+                :defaultParams="{
+                    sorts: [{ name: 'reportTime', order: 'desc' }],
+                }"
                 :gridColumn="3"
                 :row-selection="rowSelection"
             >

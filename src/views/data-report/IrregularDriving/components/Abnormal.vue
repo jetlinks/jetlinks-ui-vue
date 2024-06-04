@@ -13,7 +13,7 @@
                 model="table"
                 :params="globParams"
                 :defaultParams="{
-                    sorts: [{ name: 'timestamp', order: 'desc' }],
+                    sorts: [{ name: 'reportTime', order: 'desc' }],
                 }"
                 :gridColumn="3"
                 :row-selection="rowSelection"
@@ -167,34 +167,6 @@ const handleExport = async () => {
     });
 };
 
-// const handleExport = async () => {
-//     if (!selectIds.value?.length) {
-//         onlyMessage('请勾选需要导出的数据', 'error');
-//         return;
-//     }
-//     const _params = {
-//         terms: [
-//             {
-//                 column: 'id',
-//                 value: selectIds.value,
-//                 termType: 'in',
-//             },
-//         ],
-//     };
-//     abnormalExport(type.value, _params).then((res: any) => {
-//         if (res) {
-//             const blob = new Blob([res.data], { type: type.value });
-//             const url = URL.createObjectURL(blob);
-//             downloadFileByUrl(
-//                 url,
-//                 `震动异常数据-${moment(new Date()).format(
-//                     'YYYY/MM/DD HH:mm:ss',
-//                 )}`,
-//                 type.value,
-//             );
-//         }
-//     });
-// };
 const columns = [
     {
         title: '车辆类型',
