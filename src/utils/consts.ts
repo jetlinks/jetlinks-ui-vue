@@ -3,61 +3,68 @@
  */
 export const STATE_COLOR = {
     /** 已停止 */
-    'disabled': '#EB5757',
+    disabled: '#EB5757',
     /** 已启用 */
-    'enabled': '#00CCA5',
+    enabled: '#00CCA5',
     /** 禁用 */
-    'notActive': '#F2994A',
+    notActive: '#F2994A',
     // 运行中
-    'running': '#00CCA5',
+    running: '#00CCA5',
     // 部分错误
-    'partialError': '#EB5757',
+    partialError: '#EB5757',
     // 错误
-    'failed': '#F2994A',
+    failed: '#F2994A',
     // 已停止
-    'stopped': '#F2994A'
-}
+    stopped: '#F2994A',
+};
 
 /**
  * 卡片组件状态
  */
 export const StatusColorEnum = {
-  'success': 'success',
-  'error': 'error',
-  'processing': 'processing',
-  'warning': 'warning',
-  'default': 'default',
-}
+    success: 'success',
+    error: 'error',
+    processing: 'processing',
+    warning: 'warning',
+    default: 'default',
+};
 
 export const SystemConst = {
-  API_BASE: 'api',
-  SYSTEM_NAME: 'Jetlinks',
-  LOGIN: 'LOGIN-STATUS',
-  DOC_URL: 'http://doc.jetlinks.cn',
-  BASE_CURD_MODAL_VISIBLE: 'BASE_CURD_MODAL_VISIBLE',
-  BASE_CURD_CURRENT: 'BASE_CURD_CURRENT',
-  BASE_CURD_MODEL: 'BASE_CURD_MODEL',
-  BASE_UPDATE_DATA: 'BASE_UPDATE_DATA',
-  GLOBAL_WEBSOCKET: 'GLOBAL-WEBSOCKET',
-  BIND_USER_STATE: 'false',
-  REFRESH_METADATA: 'refresh_metadata',
-  REFRESH_METADATA_TABLE: 'refresh_metadata_table',
-  GET_METADATA: 'get_metadata',
-  REFRESH_DEVICE: 'refresh_device',
-  VERSION_CODE: 'version_code',
-  AMAP_KEY : 'amap_key',
-}
+    API_BASE: 'api',
+    SYSTEM_NAME: 'Jetlinks',
+    LOGIN: 'LOGIN-STATUS',
+    DOC_URL: 'http://doc.jetlinks.cn',
+    BASE_CURD_MODAL_VISIBLE: 'BASE_CURD_MODAL_VISIBLE',
+    BASE_CURD_CURRENT: 'BASE_CURD_CURRENT',
+    BASE_CURD_MODEL: 'BASE_CURD_MODEL',
+    BASE_UPDATE_DATA: 'BASE_UPDATE_DATA',
+    GLOBAL_WEBSOCKET: 'GLOBAL-WEBSOCKET',
+    BIND_USER_STATE: 'false',
+    REFRESH_METADATA: 'refresh_metadata',
+    REFRESH_METADATA_TABLE: 'refresh_metadata_table',
+    GET_METADATA: 'get_metadata',
+    REFRESH_DEVICE: 'refresh_device',
+    VERSION_CODE: 'version_code',
+    AMAP_KEY: 'amap_key',
+};
 
-export const USER_CENTER_MENU_CODE = 'account-center'
-export const USER_CENTER_MENU_BUTTON_CODE = 'user-center-passwd-update'
-export const messageSubscribe  = 'message-subscribe'
+export const USER_CENTER_MENU_CODE = 'account-center';
+export const USER_CENTER_MENU_BUTTON_CODE = 'user-center-passwd-update';
+export const messageSubscribe = 'message-subscribe';
 
 /**协议列表 */
 export const protocolList = [
     { label: 'OPC_UA', value: 'OPC_UA', alias: 'opc-ua' },
     { label: 'MODBUS_TCP', value: 'MODBUS_TCP', alias: 'Modbus/TCP' },
-    { label: 'COLLECTOR_GATEWAY', value: 'COLLECTOR_GATEWAY', alias: 'GATEWAY' },
+    {
+        label: 'COLLECTOR_GATEWAY',
+        value: 'COLLECTOR_GATEWAY',
+        alias: 'GATEWAY',
+    },
     { label: 'S7', value: 'snap7', alias: 'snap7' },
     { label: 'IEC104', value: 'iec104', alias: 'IEC104' },
-    { label: 'BACNetIp', value: 'BACNetIp', alias: 'BACNet/IP' }
-]
+    { label: 'BACNetIp', value: 'BACNetIp', alias: 'BACNet/IP' },
+];
+
+export const EXPORT_TIPS =
+    '当前系统仅能导出10,000条，期望导出数据超过10,000条，正在导出最大数据，请耐心等待导出完成！';
