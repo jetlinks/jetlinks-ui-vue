@@ -16,22 +16,24 @@
                 model="table"
                 :params="globParams"
                 :gridColumn="3"
-                :row-selection="rowSelection"
+                :rowSelection="{
+                    selectedRowKeys: state.selectedRowKeys,
+                    onChange: selectedRowChange,
+                    onSelect: handleRowSelected,
+                    onSelectAll: handleSelectAll,
+                }"
             >
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
+                        <PermissionButton
+                            :popConfirm="{
+                                title: popTitle,
+                                onConfirm: () => handleExport(),
+                            }"
                         >
-                            <PermissionButton>
-                                <AIcon type="ExportOutlined" />
-
-                                <span>导出</span>
-                            </PermissionButton>
-                        </j-popconfirm>
+                            <AIcon type="ExportOutlined" />
+                            导出
+                        </PermissionButton>
                     </j-space>
                 </template>
                 <template #vehicleTypeEnum="slotProps">
@@ -80,8 +82,6 @@ import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 
 const menuStory = useMenuStore();
-
-const selects = ref<any>([]);
 
 const configRef = ref<Record<string, any>>({});
 
@@ -187,6 +187,16 @@ const columns = [
     },
 ];
 
+// 处理导出按钮的提示，无需修改复制即可
+const popTitle = computed(() => {
+    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
+        return '系统最大导数为10,000，当前数据已超过10,000！';
+    }
+    return state.selectedRowKeys.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
+
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
     const resp: any = await queryVehicleList(_params);
@@ -256,8 +266,7 @@ const handleOnChange = (num: number, pageSize: number) => {
 const type = ref<string>('xlsx');
 
 const handleExport = async () => {
-    console.log(selects.value.length, 'length');
-    if (!selects.value?.length) {
+    if (!state.selectedRows?.length) {
         vehicleExport('zip', []).then((res: any) => {
             if (res) {
                 const blob = new Blob([res.data], { type: type.value });
@@ -272,9 +281,9 @@ const handleExport = async () => {
             }
         });
         return;
-    } else if (selects.value.length === 1) {
+    } else if (state.selectedRows?.length === 1) {
         //只勾选一条的情况
-        const { id, deviceId } = selects.value[0];
+        const { id, deviceId } = state.selectedRows[0];
         vehicleExport(type.value, [{ vehicleId: id, deviceId }]).then(
             (res: any) => {
                 if (res) {
@@ -293,10 +302,8 @@ const handleExport = async () => {
         return;
     } else {
         //导出多条
-
-        console.log('多条');
         const params: any[] = [];
-        selects.value.forEach((item: any) => {
+        state.selectedRows.forEach((item: any) => {
             const temp = {
                 vehicleId: item.id,
                 deviceId: item.deviceId,
@@ -318,21 +325,87 @@ const handleExport = async () => {
         });
     }
 };
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            'selectedRows: ',
-            selectedRows,
+// 当前分页表格选中的数据项的id
+const state = reactive<{ selectedRowKeys: string[]; selectedRows: any[] }>({
+    selectedRowKeys: [],
+    selectedRows: [],
+});
+
+/**
+ * @function selectedRowChange table组件的rowSelection的onChange事件
+ * @param selectedRowKeys
+ * @param selectedRows
+ */
+const selectedRowChange = (selectedRowKeys: string[], selectedRows?: any[]) => {
+    if (selectedRowKeys.length === 0 || selectedRows?.length === 0) {
+        state.selectedRowKeys = [];
+        state.selectedRows = [];
+    }
+};
+
+/**
+ * @function handleRowSelected table组件的rowSelection的onSelect事件
+ * @param record
+ * @param selected
+ * @param selectedRows
+ */
+const handleRowSelected = (
+    record: any,
+    selected: boolean,
+    selectedRows: any,
+) => {
+    if (selected) {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
         );
-        selects.value = selectedRows;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log(selected, selectedRows, changeRows);
-    },
+        if (index === -1) {
+            state.selectedRowKeys.push(record.id);
+            state.selectedRows.push(record);
+        }
+    } else {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        if (index !== -1) {
+            state.selectedRowKeys.splice(index, 1);
+            state.selectedRows.splice(index, 1);
+        }
+    }
+};
+
+/**
+ * @function handleSelectAll table组件的rowSelection的onSelectAll事件
+ * @param selected
+ * @param selectedRows
+ * @param changeRows
+ */
+const handleSelectAll = (
+    selected: boolean,
+    selectedRows: any,
+    changeRows: any,
+) => {
+    if (selected) {
+        for (let i = 0; i < changeRows.length; i++) {
+            let flag = true;
+            state.selectedRowKeys.forEach((item: any) => {
+                if (item === changeRows[i].id) flag = false;
+            });
+            if (flag) {
+                state.selectedRowKeys.push(changeRows[i].id);
+                state.selectedRows.push(changeRows[i]);
+            }
+        }
+    } else {
+        for (let i = 0; i < changeRows.length; i++) {
+            const index = state.selectedRowKeys.findIndex(
+                (item) => item === changeRows[i].id,
+            );
+            if (index !== -1) {
+                state.selectedRowKeys.splice(index, 1);
+                state.selectedRows.splice(index, 1);
+            }
+        }
+    }
 };
 </script>
 
