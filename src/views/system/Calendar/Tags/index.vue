@@ -9,7 +9,7 @@
                     :style="{ background: i.color }"
                     class="colorExtractor"
                 ></div>
-                <div class="tagName" :id="i.id">{{ i.name }}</div>
+                <Ellipsis class="tagName" style="max-width: 90px;" :id="i.id">{{ i.name }}</Ellipsis>
             </div>
             <div>
                 <PermissionButton
@@ -55,6 +55,9 @@ import {
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
+import { inject } from 'vue';
+import { omit } from 'lodash-es';
+const tagsMap = inject('tagsMap')
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();
@@ -105,6 +108,9 @@ const queryTagsData = async () => {
                     disabled,
                 };
             });
+            tagsMap.value =  tagsList.value.map((i)=>{
+                return omit(i,['disabled'])
+            })
         }
     }
 };

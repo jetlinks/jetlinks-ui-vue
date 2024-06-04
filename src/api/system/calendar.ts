@@ -11,3 +11,5 @@ export const saveTagsColor = (data:any) => server.post('/system/config/calendar-
 export const getTagsColor = () => server.get('/system/config/calendar-tag-color');
 //查询指定日期内的日历
 export const queryEvents = (dateFrom:any,dateTo:any) => server.get(`/calendar/${dateFrom}/${dateTo}`)
+//批量保存指定日期的日历
+export const saveEvents = (data:any) => server.patch('/calendar',data)

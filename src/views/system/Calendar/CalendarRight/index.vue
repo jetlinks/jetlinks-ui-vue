@@ -5,16 +5,78 @@
                 >将左侧标签拖拽至右侧日历中，日历中的标签在场景联动中可以被引用作为执行动作的触发条件</span
             >
             <permissionButton type="text">
-                <template #icon><AIcon type="ClearOutlined" style="font-size: 16px;"/></template
+                <template #icon
+                    ><AIcon
+                        type="ClearOutlined"
+                        style="font-size: 16px" /></template
                 >清空</permissionButton
             >
         </div>
-        <FullCalendar />
+        <FullCalendar
+            ref="Calendar"
+            :selectable="rapidChecked"
+            @resetRapid="resetRapid"
+            @selectDate="selectDate"
+            @rapidAction="rapidAction"
+        />
+        <div class="rapidAction">
+            <div class="rapidSwitch">
+                <a-tooltip>
+                    <template #title
+                        >开启后以周/月为最小单位制定日期模板，确认后可快速覆盖日历生效期</template
+                    >
+                    <AIcon type="QuestionCircleOutlined"></AIcon>
+                </a-tooltip>
+                快速作用：<a-switch v-model:checked="rapidChecked" />
+            </div>
+            <div class="rapidActionControl" v-if="rapidChecked">
+                <div>
+                    已选择模板
+                    <a-input
+                        style="width: 300px"
+                        v-model:value="selectedDate"
+                        :disabled="true"
+                    ></a-input>
+                </div>
+                <div style="margin-left: 10px">
+                    将模板快速作用于后续的
+                    <a-input-number style="width: 100px" v-model:value="effectDays" :min="effectMin" :precision="0" :controls="false"></a-input-number>
+                    日内
+                </div>
+                <div>
+                    <a-button type="text" @click="reelect">重选</a-button>
+                    <a-button type="link" @click="rapid">快速作用</a-button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup name="Calendar">
 import FullCalendar from '../FullCalendar/index.vue';
+const Calendar = ref();
+const rapidChecked = ref(false);
+const selectedDate = ref();
+const effectDays = ref();
+const effectMin = ref()
+const selectDate = (data) => {
+    selectedDate.value = data?.start + '~' + data?.end;
+    effectDays.value = data?.days;
+    effectMin.value = data?.days
+};
+const reelect = () =>{
+    Calendar.value.reselection()
+    selectedDate.value = ''
+    effectDays.value = undefined
+    effectMin.value = undefined
+}
+const resetRapid =() =>{
+    reelect()
+    rapidChecked.value = false
+}
+const rapid = () =>{
+    Calendar.value.rapidAction(effectDays.value)
+}
 </script>
 <style lang="less" scoped>
 .calendarRight {
@@ -24,6 +86,22 @@ import FullCalendar from '../FullCalendar/index.vue';
     .tips {
         display: flex;
         justify-content: space-between;
+    }
+    .rapidAction {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        .rapidSwitch {
+            padding: 15px 0;
+        }
+        .rapidActionControl {
+            display: flex;
+            width: 70%;
+            margin-left: 20%;
+            background-color: rgb(239, 249, 254);
+            padding: 10px;
+            justify-content: space-around;
+        }
     }
 }
 </style>

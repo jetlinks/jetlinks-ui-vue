@@ -6,9 +6,11 @@
 </template>
 
 <script setup>
-
 import CalendarTags from './Tags/index.vue';
 import CalendarRight from './CalendarRight/index.vue'
+import { provide } from 'vue';
+const tags = ref()
+provide('tagsMap',tags)
 </script>
 <style lang="less" scoped>
 .calendarContainer {

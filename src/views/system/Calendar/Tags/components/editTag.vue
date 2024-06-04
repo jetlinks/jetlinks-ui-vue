@@ -49,10 +49,10 @@ const props = defineProps({
         type: String,
         default: 'add',
     },
-    editData:{
-        type:Object,
-        default: {}
-    }
+    editData: {
+        type: Object,
+        default: {},
+    },
 });
 const emit = defineEmits(['closeEditTag', 'refresh']);
 const tagInfo = reactive({
@@ -69,8 +69,8 @@ const submit = () => {
         let id;
         if (props.editType === 'add') {
             id = randomString();
-        }else{
-            id = props.editData?.id
+        } else {
+            id = props.editData?.id;
         }
         const submitData = {
             id,
@@ -96,9 +96,9 @@ const queryTagsColor = async () => {
 };
 onMounted(() => {
     queryTagsColor();
-    if(props.editType === 'edit'){
+    if (props.editType === 'edit') {
         tagInfo.color = props.editData?.color || '#000000';
-        tagInfo.name = props.editData?.name || ''
+        tagInfo.name = props.editData?.name || '';
     }
 });
 </script>
