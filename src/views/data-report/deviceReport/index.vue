@@ -1,46 +1,28 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
         <FullPage>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="request"
-                model="table"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
-                :params="params"
-                :row-selection="rowSelection"
-            >
+            <JProTable ref="configRef" :columns="columns" :request="request" model="table" :defaultParams="{
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            }" :params="params" :row-selection="rowSelection">
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
-                        >
-                            <PermissionButton
-                                hasPermission="notice/Template:export"
-                            >
+                        <j-popconfirm title="确认导出？" ok-text="确定" cancel-text="取消" @confirm="handleExport">
+                            <PermissionButton hasPermission="notice/Template:export">
                                 <AIcon type="ExportOutlined" />
                                 <span>导出</span>
                             </PermissionButton>
                         </j-popconfirm>
                     </j-space>
                 </template>
-                <template #number="slotProps">
-                    <span>{{ slotProps.number || '暂未绑定车辆编号' }}</span>
+                <template #factoryNumber="slotProps">
+                    <span>{{ slotProps.factoryNumber || '--' }}</span>
+                </template>
+                <template #describe="slotProps">
+                    <span>{{ slotProps.describe || '--' }}</span>
                 </template>
                 <template #state="slotProps">
-                    <button
-                        v-if="slotProps.state.value === 'offline'"
-                        style="
+                    <button v-if="slotProps.state.value === 'offline'" style="
                             height: 24px;
                             padding: 3px 8px 3px 8px;
                             border-radius: 3px;
@@ -50,13 +32,10 @@
                             font-size: 14px;
                             font-weight: 400;
                             line-height: 18px;
-                        "
-                    >
+                        ">
                         离线
                     </button>
-                    <button
-                        v-else-if="slotProps.state.value === 'notActive'"
-                        style="
+                    <button v-else-if="slotProps.state.value === 'notActive'" style="
                             height: 24px;
                             padding: 3px 8px 3px 8px;
                             border-radius: 3px;
@@ -66,13 +45,10 @@
                             font-size: 14px;
                             font-weight: 400;
                             line-height: 18px;
-                        "
-                    >
+                        ">
                         禁用
                     </button>
-                    <button
-                        v-else
-                        style="
+                    <button v-else style="
                             height: 24px;
                             padding: 3px 8px 3px 8px;
                             border-radius: 3px;
@@ -82,8 +58,7 @@
                             font-size: 14px;
                             font-weight: 400;
                             line-height: 18px;
-                        "
-                    >
+                        ">
                         在线
                     </button>
                 </template>
@@ -111,6 +86,9 @@ const columns = [
         key: 'id',
         width: 180,
         ellipsis: true,
+        search: {
+            type: 'string',
+        },
     },
     {
         title: '设备名称',
@@ -132,8 +110,8 @@ const columns = [
     },
     {
         title: '所属车辆编号',
-        dataIndex: 'number',
-        key: 'number',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         scopedSlots: true,
         search: {
@@ -159,6 +137,7 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
+        scopedSlots: true,
         ellipsis: true,
         search: {
             type: 'string',

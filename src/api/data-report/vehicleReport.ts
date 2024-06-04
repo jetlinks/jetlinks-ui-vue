@@ -45,3 +45,8 @@ export const queryVehicleTravelList = (data?: any) =>
  */
 export const queryVehicleStatusList = (data?: any) =>
     server.post(`/vehicle/es/status`, data);
+
+//deviceId
+
+export const getVehicleMileage = (deviceId: any) =>
+    server.get(`/vehicle/_query/mileage?deviceId=` + deviceId);

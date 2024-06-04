@@ -38,7 +38,7 @@
                     <span> {{ slotProps.vehicleTypeEnum.text }}</span>
                 </template>
                 <template #orgName="slotProps">
-                    <span> {{ slotProps.orgName || '暂未标记组织' }}</span>
+                    <span> {{ slotProps.orgName || '--' }}</span>
                 </template>
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914"

@@ -1,7 +1,7 @@
 <template>
     <page-container :showBack="true">
         <div class="detail">
-            <Title :data="vehicleData" :deviceData="dataAss" />
+            <Title :data="vehicleData" :deviceData="dataAss" :vehicleMileage="vehicleMileage" />
             <div class="table above">
                 <DetailsTitle :title="'在线离线表'">
                     <j-table
@@ -156,6 +156,7 @@ import {
     queryVehicleTravelList,
     queryVehicleWorkList,
     queryVehicleStatusList,
+    getVehicleMileage,
 } from '@/api/data-report/vehicleReport';
 import dayjs from 'dayjs';
 import DetailsTitle from '../components/detailsTitle.vue';
@@ -168,6 +169,7 @@ const data = ref<DataItem[]>([]);
 const dataWork = ref<any>([]);
 const dataAss = ref<DataItemAss[]>([]);
 const dataRecord = ref<any>([]);
+const vehicleMileage = ref<any>()
 
 const formatMillisecondsToHourMinute = (milliseconds: number) => {
     if (milliseconds < 0) {
@@ -395,23 +397,11 @@ const queryDevice = async () => {
     }
 };
 //获取在线离线数据
-
-const queryVehicleStatus = async () => {
+const getMileage = async () => {
     const _deviceId: any = route.query?.deviceId;
-    const defaultParams = {
-        terms: [
-            {
-                column: 'deviceId',
-                value: JSON.parse(_deviceId),
-                termType: 'eq',
-            },
-        ],
-        paging: false,
-        sorts: [{ name: 'timestamp', order: 'desc' }],
-    };
-    const res: any = await queryVehicleStatusList({ ...defaultParams });
+    const res: any = await getVehicleMileage(JSON.parse(_deviceId));
     if (res.status == 200) {
-        data.value = res.result.data;
+        vehicleMileage.value = res.result.mileage;
     }
 };
 //获取行驶记录数据
@@ -453,6 +443,25 @@ const queryDataWork = async () => {
         dataWork.value = res.result.data;
     }
 };
+//获取在线离线数据
+const queryVehicleStatus = async () => {
+    const _deviceId: any = route.query?.deviceId;
+    const defaultParams = {
+        terms: [
+            {
+                column: 'deviceId',
+                value: JSON.parse(_deviceId),
+                termType: 'eq',
+            },
+        ],
+        paging: false,
+        sorts: [{ name: 'timestamp', order: 'desc' }],
+    };
+    const res: any = await queryVehicleStatusList({ ...defaultParams });
+    if (res.status == 200) {
+        data.value = res.result.data;
+    }
+};
 
 const paginationRecord = {
     showTotal: (num: number, range: number[]) => {
@@ -472,6 +481,7 @@ onMounted(() => {
     queryVehicleStatus();
     queryDataWork();
     queryDataRecord();
+    getMileage();
 });
 </script>
 <style lang="less" scoped>

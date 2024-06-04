@@ -5,7 +5,7 @@ import server from '@/utils/request';
  * @param data 查询条件
  */
 export const queryDeviceList = (data: any) =>
-    server.post('/vehicle/device/_query', data);
+    server.post('/vehicle/device/_detail/_query', data);
 
 ///vehicle/device/_query
 
