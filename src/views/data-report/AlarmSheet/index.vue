@@ -30,7 +30,7 @@
                 </template>
                 <!-- 所属组织 -->
                 <template #orgName="{ orgName }">
-                    {{ orgName || '' }}
+                    {{ orgName || '--' }}
                 </template>
                 <!-- 告警时间 -->
                 <template #alarmTime="{ alarmTime }">
@@ -64,6 +64,7 @@ import { FullPage } from 'components/Layout';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
+import { mapKeys } from 'lodash-es';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -176,6 +177,7 @@ const handleSearchDate = (_params: any) => {
 const handleSearch = (_params: any) => {
     handleSearchDate(_params);
     globParams.value = _params;
+    console.log('after handle', _params);
 };
 
 /**

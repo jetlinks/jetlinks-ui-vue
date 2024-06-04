@@ -12,13 +12,19 @@
                 }"
                 :params="globParams"
                 :gridColumn="3"
-                :row-selection="rowSelection"
+                :rowKey="(record: any) => record.id"
+                :rowSelection="{
+                    selectedRowKeys: state.selectedRowKeys,
+                    onChange: selectedRowChange,
+                    onSelect: handleRowSelected,
+                    onSelectAll: handleSelectAll,
+                }"
             >
                 <template #headerTitle>
                     <j-space>
                         <PermissionButton
                             :popConfirm="{
-                                title: `确认导出？`,
+                                title: popTitle,
                                 onConfirm: () => handleExport(),
                             }"
                         >
@@ -31,10 +37,10 @@
                     {{ handleOperatorName(operatorName) }}
                 </template>
                 <template #cardType="{ cardType }">
-                    {{ cardType ? handleCardType(cardType.value) : ' ' }}
+                    {{ cardType ? handleCardType(cardType.value) : '--' }}
                 </template>
                 <template #deviceId="{ deviceId }">
-                    {{ deviceId || '' }}
+                    {{ deviceId || '--' }}
                 </template>
                 <template #totalFlow="{ totalFlow }">
                     {{ formatFlow(totalFlow) }}
@@ -52,7 +58,7 @@
                             ? dayjs(activationDate).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
-                            : ' '
+                            : '--'
                     }}
                 </template>
                 <!-- 更新时间插槽 -->
@@ -60,7 +66,7 @@
                     {{
                         updateTime
                             ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
-                            : ' '
+                            : '--'
                     }}
                 </template>
                 <template #cardStateType="{ cardStateType }">
@@ -82,6 +88,7 @@
                         @change="handleOnChange"
                     />
                 </template>
+                <template #alertRender> xxx </template>
             </JProTable>
         </FullPage>
     </page-container>
@@ -113,13 +120,21 @@ const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSize = ref<number>(12);
 
-// 选中的数据的id
-const selectIds = ref<Array<number | string>>([]);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
-// 全局选中的数据
-const rowSelectedMap = new Map<number, number>();
+// 每次请求后的数据
+const dataSource = ref<any[]>([]);
+
+// 处理导出按钮的提示，无需修改复制即可
+const popTitle = computed(() => {
+    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
+        return '系统最大导数为10,000，当前数据已超过10,000！';
+    }
+    return state.selectedRowKeys.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -128,6 +143,7 @@ const queryData = async (_params: any) => {
         dataTotal.value = resp.result.total;
         currentPage.value = resp.result.pageIndex + 1;
         pageSize.value = resp.result.pageSize;
+        dataSource.value = resp.result.data;
         return {
             // 3.仿造请求结果返回给表格
             code: resp.status,
@@ -201,6 +217,7 @@ const handleSearchDate = (_params: any) => {
  * @param _params
  */
 const handleSearch = (_params: any) => {
+    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
     handleSearchDate(_params);
     globParams.value = _params;
 };
@@ -209,12 +226,19 @@ const handleSearch = (_params: any) => {
  */
 const handleExport = async () => {
     let _params: any = {};
-    if (selectIds.value?.length > 0) {
+    // 当部分选中时
+    if (state.selectedRowKeys.length > 0) {
+        if (state.selectedRowKeys.length > 10) {
+            onlyMessage(
+                '当前系统仅能导出10,000条，期望导出数据超过10,000条，正在导出最大数据，请耐心等待导出完成！',
+                'warning',
+            );
+        }
         _params = {
             terms: [
                 {
                     column: 'id',
-                    value: selectIds.value,
+                    value: state.selectedRowKeys,
                     termType: 'in',
                 },
             ],
@@ -224,6 +248,12 @@ const handleExport = async () => {
         if (globParams.value.terms.length > 0) {
             _params.terms = [globParams.value.terms[0]?.terms[0]];
         } else {
+            if (dataTotal.value > 10) {
+                onlyMessage(
+                    '当前系统仅能导出10,000条，期望导出数据超过10,000条，正在导出最大数据，请耐心等待导出完成！',
+                    'warning',
+                );
+            }
             _params.terms = [];
         }
     }
@@ -242,20 +272,73 @@ const handleExport = async () => {
     });
 };
 
+// 当前分页表格选中的数据项的id
+const state = reactive<{ selectedRowKeys: string[] }>({
+    selectedRowKeys: [],
+});
+
 /**
- * 选中行
+ * @function selectedRowChange table组件的rowSelection的onChange事件
+ * @param selectedRowKeys
+ * @param selectedRows
  */
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        selectIds.value = selectedRowKeys;
-        console.log('onChange trigger', selectedRowKeys, selectedRows);
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log('onSelected trigger', selected, selectedRows, record);
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log('onSelectAll trigger');
-    },
+const selectedRowChange = (selectedRowKeys: string[], selectedRows?: any) => {
+    if (selectedRowKeys.length === 0 || selectedRows.length === 0) {
+        state.selectedRowKeys = [];
+    }
+};
+
+/**
+ * @function handleRowSelected table组件的rowSelection的onSelect事件
+ * @param record
+ * @param selected
+ * @param selectedRows
+ */
+const handleRowSelected = (
+    record: any,
+    selected: boolean,
+    selectedRows: any,
+) => {
+    if (selected) {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        index === -1 && state.selectedRowKeys.push(record.id);
+    } else {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        index !== -1 && state.selectedRowKeys.splice(index, 1);
+    }
+};
+
+/**
+ * @function handleSelectAll table组件的rowSelection的onSelectAll事件
+ * @param selected
+ * @param selectedRows
+ * @param changeRows
+ */
+const handleSelectAll = (
+    selected: boolean,
+    selectedRows: any,
+    changeRows: any,
+) => {
+    if (selected) {
+        for (let i = 0; i < changeRows.length; i++) {
+            let flag = true;
+            state.selectedRowKeys.forEach((item: any) => {
+                if (item === changeRows[i].id) flag = false;
+            });
+            flag && state.selectedRowKeys.push(changeRows[i].id);
+        }
+    } else {
+        for (let i = 0; i < changeRows.length; i++) {
+            const index = state.selectedRowKeys.findIndex(
+                (item) => item === changeRows[i].id,
+            );
+            index !== -1 && state.selectedRowKeys.splice(index, 1);
+        }
+    }
 };
 </script>
 
