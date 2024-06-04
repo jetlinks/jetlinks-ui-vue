@@ -100,7 +100,7 @@ export const columns = [
         ellipsis: true,
         scopedSlots: true,
         search: {
-            type: 'string',
+            type: 'number',
         },
     },
     {
@@ -110,7 +110,7 @@ export const columns = [
         scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'number',
         },
     },
     {
@@ -120,7 +120,7 @@ export const columns = [
         scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'number',
         },
     },
     {

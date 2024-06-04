@@ -64,7 +64,6 @@ import { FullPage } from 'components/Layout';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
-import { mapKeys } from 'lodash-es';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数

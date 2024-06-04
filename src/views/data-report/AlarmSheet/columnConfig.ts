@@ -68,8 +68,8 @@ export const columns = [
     },
     {
         title: '告警设备',
-        dataIndex: 'alarmDeviceName',
-        key: 'alarmDeviceName',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         scopedSlots: true,
         ellipsis: true,
         search: {
