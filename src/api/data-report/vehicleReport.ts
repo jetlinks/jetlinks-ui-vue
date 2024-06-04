@@ -12,8 +12,8 @@ export const queryVehicleList = (data: any) =>
  * @param format 格式
  * @param data 数据
  */
-export const vehicleExport = (vehicleId: string, deviceId: any) =>
-    server.postStream(`/vehicle/_export/${vehicleId}/${deviceId}`);
+export const vehicleExport = (format: string, data?: any[]) =>
+    server.postStream(`/vehicle/download-excel/${format}`, data);
 
 /**
  * 车辆查询

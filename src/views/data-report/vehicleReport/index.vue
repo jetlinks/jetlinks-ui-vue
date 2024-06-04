@@ -256,16 +256,9 @@ const handleOnChange = (num: number, pageSize: number) => {
 const type = ref<string>('xlsx');
 
 const handleExport = async () => {
+    console.log(selects.value.length, 'length');
     if (!selects.value?.length) {
-        onlyMessage('请勾选需要导出得数据', 'error');
-        return;
-    } else if (selects.value?.length > 1) {
-        onlyMessage('只能勾选一条数据进行导出', 'error');
-        return;
-    } else {
-        const { id, deviceId } = selects.value[0];
-        console.log(selects.value[0]);
-        vehicleExport(id, deviceId).then((res: any) => {
+        vehicleExport('zip', []).then((res: any) => {
             if (res) {
                 const blob = new Blob([res.data], { type: type.value });
                 const url = URL.createObjectURL(blob);
@@ -274,7 +267,52 @@ const handleExport = async () => {
                     `车辆列表数据-${moment(new Date()).format(
                         'YYYY/MM/DD HH:mm:ss',
                     )}`,
-                    type.value,
+                    'zip',
+                );
+            }
+        });
+        return;
+    } else if (selects.value.length === 1) {
+        //只勾选一条的情况
+        const { id, deviceId } = selects.value[0];
+        vehicleExport(type.value, [{ vehicleId: id, deviceId }]).then(
+            (res: any) => {
+                if (res) {
+                    const blob = new Blob([res.data], { type: type.value });
+                    const url = URL.createObjectURL(blob);
+                    downloadFileByUrl(
+                        url,
+                        `车辆列表数据-${moment(new Date()).format(
+                            'YYYY/MM/DD HH:mm:ss',
+                        )}`,
+                        type.value,
+                    );
+                }
+            },
+        );
+        return;
+    } else {
+        //导出多条
+
+        console.log('多条');
+        const params: any[] = [];
+        selects.value.forEach((item: any) => {
+            const temp = {
+                vehicleId: item.id,
+                deviceId: item.deviceId,
+            };
+            params.push(temp);
+        });
+        vehicleExport('zip', params).then((res: any) => {
+            if (res) {
+                const blob = new Blob([res.data], { type: type.value });
+                const url = URL.createObjectURL(blob);
+                downloadFileByUrl(
+                    url,
+                    `车辆列表数据-${moment(new Date()).format(
+                        'YYYY/MM/DD HH:mm:ss',
+                    )}`,
+                    'zip',
                 );
             }
         });
