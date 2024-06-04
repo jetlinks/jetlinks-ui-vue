@@ -1,20 +1,16 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" @search="handleSearch" />
         <FullPage>
             <JProTable
                 ref="configRef"
                 :columns="columns"
-                :request="querySim"
+                :request="queryData"
                 model="table"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
-                :params="params"
+                :params="globParams"
                 :gridColumn="3"
                 :row-selection="rowSelection"
             >
@@ -56,7 +52,7 @@
                             ? dayjs(activationDate).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
-                            : '暂未激活'
+                            : ' '
                     }}
                 </template>
                 <!-- 更新时间插槽 -->
@@ -64,13 +60,26 @@
                     {{
                         updateTime
                             ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
-                            : '无更新信息'
+                            : ' '
                     }}
                 </template>
                 <template #cardStateType="{ cardStateType }">
                     <state-tag
                         :text="cardStateType.text"
                         :type="handleTagType(cardStateType.value)"
+                    />
+                </template>
+                <template #paginationRender="{ paginationRender }">
+                    <a-pagination
+                        :showQuickJumper="true"
+                        :isShowContent="true"
+                        :showSizeChanger="true"
+                        :pageSize="pageSize"
+                        :pageSizeOptions="['12', '24', '48', '96']"
+                        :current="currentPage"
+                        :total="dataTotal"
+                        :show-total="handleShowTotal"
+                        @change="handleOnChange"
                     />
                 </template>
             </JProTable>
@@ -83,316 +92,143 @@ import { querySim, simDataExport } from '@/api/data-report/sim';
 import { downloadFileByUrl } from '@/utils/utils';
 import StateTag from '@/views/data-report/SimCenter/components/StateTag.vue';
 import dayjs from 'dayjs';
-import { _export } from '@/api/data-report/alarmSheet';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
-import { faultDataExport } from '@/api/data-report/faultSheet';
+import { columns } from './columnConfig';
+import {
+    handleCardType,
+    handleTagType,
+    handleOperatorName,
+    formatFlow,
+} from './handleDataUtils';
 
 const configRef = ref<Record<string, any>>({});
-const params = ref<Record<string, any>>({});
+// 全局的搜索参数
+const globParams = ref<Record<string, any>>({});
 
-const queryData = (_params: any) => {
-    return querySim({
-        ..._params,
-        // sorts: [{ name: 'updateTime', order: 'desc' }],
-    });
-};
-
-/**
- * 搜索
- * @param param
- */
-const handleSearch = (param: any) => {
-    params.value = param;
-};
-
-const columns = [
-    {
-        title: '卡号',
-        dataIndex: 'id',
-        key: 'id',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: 'ICCID',
-        dataIndex: 'iccId',
-        key: 'iccId',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '绑定车辆编号',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
-        ellipsis: true,
-        scopedSlots: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '平台对接 ',
-        dataIndex: 'platformConfigName',
-        key: 'platformConfigName',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '运营商',
-        dataIndex: 'operatorName',
-        key: 'operatorName',
-        ellipsis: true,
-        scopedSlots: true,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '移动',
-                    value: 'OneLink',
-                },
-                {
-                    label: '电信',
-                    value: 'CtwingCmp',
-                },
-                {
-                    label: '联通',
-                    value: 'UnicomCmp',
-                },
-            ],
-        },
-    },
-    {
-        title: '类型',
-        dataIndex: 'cardType',
-        key: 'cardType',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '年卡',
-                    text: '年卡',
-                    value: 'year',
-                },
-                {
-                    label: '季卡',
-                    text: '季卡',
-                    value: 'season',
-                },
-                {
-                    label: '月卡',
-                    text: '月卡',
-                    value: 'month',
-                },
-                {
-                    label: '其他',
-                    text: '其他',
-                    value: 'other',
-                },
-            ],
-        },
-    },
-    {
-        title: '总流量  ',
-        dataIndex: 'totalFlow',
-        key: 'totalFlow',
-        ellipsis: true,
-        scopedSlots: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '使用流量',
-        dataIndex: 'usedFlow',
-        key: 'usedFlow',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '剩余流量',
-        dataIndex: 'residualFlow',
-        key: 'residualFlow',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '激活日期',
-        dataIndex: 'activationDate',
-        key: 'activationDate',
-        scopedSlots: true,
-        width: 180,
-        search: {
-            type: 'date',
-        },
-    },
-    {
-        title: '更新时间',
-        dataIndex: 'updateTime',
-        key: 'updateTime',
-        scopedSlots: true,
-        width: 180,
-        search: {
-            type: 'date',
-        },
-    },
-    {
-        title: '状态',
-        dataIndex: 'cardStateType',
-        key: 'cardStateType',
-        scopedSlots: true,
-        width: 100,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '待激活',
-                    text: '待激活',
-                    value: 'toBeActivated',
-                },
-                {
-                    label: '停机',
-                    text: '停机',
-                    value: 'deactivate',
-                },
-                {
-                    label: '激活',
-                    text: '激活',
-                    value: 'using',
-                },
-                {
-                    label: '其他',
-                    text: '其他',
-                    value: 'other',
-                },
-                {
-                    label: '同步失败',
-                    text: '同步失败',
-                    value: 'error',
-                },
-                {
-                    label: '未同步',
-                    text: '未同步',
-                    value: 'notReady',
-                },
-            ],
-        },
-    },
-];
-
-/**
- * @function handleCardType 处理卡类型
- * @param value
- */
-const handleCardType = (value: string) => {
-    switch (value) {
-        case 'year':
-            return '年卡';
-        case 'season':
-            return '季卡';
-        case 'month':
-            return '月卡';
-        case 'other':
-            return '其他';
-    }
-};
-
-/**
- * @function handleTagType 处理tag类型
- * @param value
- */
-const handleTagType = (value: string) => {
-    switch (value) {
-        case 'toBeActivated':
-            return 'warning';
-        case 'error':
-        case 'notReady':
-            return 'error';
-        case 'using':
-            return 'success';
-        case 'activated':
-        case 'deactivate':
-            return 'default';
-        case 'other':
-            return 'processing';
-    }
-};
-
-/**
- * @function handleOperatorName 处理运营商
- * @param value
- */
-const handleOperatorName = (value: string) => {
-    value = value.toLocaleLowerCase();
-    switch (value) {
-        case 'onelink':
-            return '移动';
-        case 'ctwing':
-            return '电信';
-        case 'unicom':
-            return '联通';
-    }
-};
-
-/**
- * @function formatFlow 格式化流量
- * @param flow
- */
-const formatFlow = (flow: number | undefined) => {
-    if (flow === undefined || flow === 0) {
-        return '0M';
-    } else if (flow >= 1024 || flow <= -1024) {
-        return `${(flow / 1024).toFixed(2)}G`;
-    } else if ((flow > 0 && flow < 1) || (flow < 0 && flow > -1)) {
-        return `${flow.toFixed(2)}M`;
-    } else {
-        return `${flow.toFixed(2)}M`;
-    }
-};
+// 表格数据总数
+const dataTotal = ref<number>(0);
+// 表格当前属于多少页
+const currentPage = ref<number>(1);
+// 表格每页显示多少条数据
+const pageSize = ref<number>(12);
 
 // 选中的数据的id
 const selectIds = ref<Array<number | string>>([]);
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        selectIds.value = selectedRowKeys;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
+// 导出文件的类型
+const type = ref<string>('xlsx');
+
+// 全局选中的数据
+const rowSelectedMap = new Map<number, number>();
+
+// 为了能够取到请求的条件，需要对请求再包装一层请求
+const queryData = async (_params: any) => {
+    const resp: any = await querySim(_params);
+    if (resp.status === 200) {
+        dataTotal.value = resp.result.total;
+        currentPage.value = resp.result.pageIndex + 1;
+        pageSize.value = resp.result.pageSize;
+        return {
+            // 3.仿造请求结果返回给表格
+            code: resp.status,
+            result: resp.result,
+            status: resp.status,
+        };
+    } else {
+        return {
+            code: 200,
+            result: { data: [] },
+            status: 200,
+        };
+    }
 };
 
 /**
- * 导出
+ * @function handleShowTotal 处理分页器的显示总数的格式
  */
-const type = ref<string>('xlsx');
-const handleExport = async () => {
-    if (!selectIds.value?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
-        return;
-    }
+const handleShowTotal = () => {
+    return `总共 ${dataTotal.value} 条`;
+};
+
+/**
+ * @function handleOnChange 分页器改变的回调事件
+ * @param num
+ * @param pageSize
+ */
+const handleOnChange = (num: number, pageSize: number) => {
     const _params = {
-        terms: [
-            {
-                column: 'id',
-                value: selectIds.value,
-                termType: 'in',
-            },
-        ],
+        ...globParams.value,
+
+        // 因为分页器发生改变时会自动改变当前页码和每页条数
+        // 因此在这覆盖globSearchParam中的pageIndex和pageSize
+        pageIndex: num - 1,
+        pageSize: pageSize,
     };
+    handleSearch(_params);
+};
+
+/**
+ * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
+ * @param _params
+ */
+const handleSearchDate = (_params: any) => {
+    // 判断是否存在terms
+    if (_params.terms && _params.terms.length > 0) {
+        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
+        if (
+            _params.terms[0]?.terms &&
+            _params.terms[0]?.terms[0].value !== 'number'
+        )
+            if (_params.terms[0]?.terms[0].termType === 'lte') {
+                // 时间为小于等于
+                const date = _params.terms[0]?.terms[0].value;
+                let timeStamp: string | number = dayjs(date).unix();
+                timeStamp = Number(String(timeStamp) + '999');
+                _params.terms[0].terms[0].value = timeStamp;
+                // 时间为大于等于
+            } else if (_params.terms[0]?.terms[0].termType === 'gte') {
+                const date = _params.terms[0]?.terms[0].value;
+                let timeStamp: string | number = dayjs(date).unix();
+                timeStamp = Number(String(timeStamp) + '000');
+                _params.terms[0].terms[0].value = timeStamp;
+            }
+        // 其他小于和大于未做处理，因为后端能够直接处理
+    }
+};
+
+/**
+ * @function handleSearch 搜索组件的搜索事件
+ * @param _params
+ */
+const handleSearch = (_params: any) => {
+    handleSearchDate(_params);
+    globParams.value = _params;
+};
+/**
+ * @function handleExport 导出
+ */
+const handleExport = async () => {
+    let _params: any = {};
+    if (selectIds.value?.length > 0) {
+        _params = {
+            terms: [
+                {
+                    column: 'id',
+                    value: selectIds.value,
+                    termType: 'in',
+                },
+            ],
+        };
+    } else {
+        // 当全不选时，为导出接口添加筛选条件
+        if (globParams.value.terms.length > 0) {
+            _params.terms = [globParams.value.terms[0]?.terms[0]];
+        } else {
+            _params.terms = [];
+        }
+    }
+
+    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
     simDataExport(type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
@@ -404,6 +240,22 @@ const handleExport = async () => {
             );
         }
     });
+};
+
+/**
+ * 选中行
+ */
+const rowSelection = {
+    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
+        selectIds.value = selectedRowKeys;
+        console.log('onChange trigger', selectedRowKeys, selectedRows);
+    },
+    onSelect: (record: any, selected: boolean, selectedRows: any) => {
+        console.log('onSelected trigger', selected, selectedRows, record);
+    },
+    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
+        console.log('onSelectAll trigger');
+    },
 };
 </script>
 
