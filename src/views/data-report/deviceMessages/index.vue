@@ -16,23 +16,24 @@
                 }"
                 :params="globParams"
                 :gridColumn="3"
-                :row-selection="rowSelection"
+                :rowSelection="{
+                    selectedRowKeys: state.selectedRowKeys,
+                    onChange: selectedRowChange,
+                    onSelect: handleRowSelected,
+                    onSelectAll: handleSelectAll,
+                }"
             >
                 <template #headerTitle>
                     <j-space>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
+                        <PermissionButton
+                            :popConfirm="{
+                                title: popTitle,
+                                onConfirm: () => handleExport(),
+                            }"
                         >
-                            <PermissionButton
-                                hasPermission="notice/Template:export"
-                            >
-                                <AIcon type="ExportOutlined" />
-                                <span>导出</span>
-                            </PermissionButton>
-                        </j-popconfirm>
+                            <AIcon type="ExportOutlined" />
+                            导出
+                        </PermissionButton>
                     </j-space>
                 </template>
 
@@ -78,6 +79,12 @@ import {
 } from '@/api/data-report/deviceMessages';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
+import { onlyMessage } from '@/utils/comm';
+import { EXPORT_TIPS } from '@/utils/consts';
+import { useSelect } from '@/utils/hooks/useSelect';
+
+const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
+    useSelect();
 
 import { Modal, Textarea } from 'jetlinks-ui-components';
 import { queryLogsType } from '@/api/device/instance';
@@ -118,18 +125,31 @@ const queryData = async (_params: any) => {
     }
 };
 
+// 处理导出按钮的提示，无需修改复制即可
+const popTitle = computed(() => {
+    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
+        return '系统最大导数为10,000，当前数据已超过10,000！';
+    }
+    return state.selectedRowKeys.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
+
 /**
  * @function handleExport 导出 设备消息的导出要用 _id
  *
  */
 const handleExport = async () => {
     let _params: any = {};
-    if (selectIds.value?.length > 0) {
+    if (state.selectedRowKeys.length > 0) {
+        if (state.selectedRowKeys.length > 10000) {
+            onlyMessage(EXPORT_TIPS, 'warning');
+        }
         _params = {
             terms: [
                 {
-                    column: '_id',
-                    value: selectIds.value,
+                    column: 'id',
+                    value: state.selectedRowKeys,
                     termType: 'in',
                 },
             ],
@@ -139,6 +159,9 @@ const handleExport = async () => {
         if (globParams.value.terms.length > 0) {
             _params.terms = [globParams.value.terms[0]?.terms[0]];
         } else {
+            if (dataTotal.value > 10000) {
+                onlyMessage(EXPORT_TIPS, 'warning');
+            }
             _params.terms = [];
         }
     }
@@ -271,18 +294,6 @@ const handelDetail = (data: any) => {
  */
 const handleSearch = (param: any) => {
     globParams.value = param;
-};
-
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        selectIds.value = selectedRowKeys;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log(selected, selectedRows, changeRows);
-    },
 };
 </script>
 
