@@ -1,12 +1,8 @@
 /**
  * @function handleCardType 处理卡类型
- * @param record
+ * @param value
  */
-export const handleCardType = (record: any) => {
-    if (!record.cardType) {
-        return '';
-    }
-    const value = record.cardType.text;
+export const handleCardType = (value: string) => {
     switch (value) {
         case 'year':
             return '年卡';
@@ -42,14 +38,10 @@ export const handleTagType = (value: string) => {
 
 /**
  * @function handleOperatorName 处理运营商
- * @param record 当前的这条数据对象
+ * @param value
  */
-export const handleOperatorName = (record: any) => {
-    if (!record.operatorPlatformType) {
-        return '';
-    }
-    const value = record.operatorPlatformType.text;
-
+export const handleOperatorName = (value: string) => {
+    value = value.toLocaleLowerCase();
     switch (value) {
         case 'onelink':
             return '移动';
@@ -62,13 +54,10 @@ export const handleOperatorName = (record: any) => {
 
 /**
  * @function formatFlow 格式化流量
- * @param flow 流量
+ * @param flow
  */
-export const formatFlow = (flow: any) => {
-    // 只有undefined null '' 进行Number()处理时会是NaN，直接排除
-    if (!flow) return '';
-
-    if (flow === 0) {
+export const formatFlow = (flow: number | undefined) => {
+    if (flow === undefined || flow === 0) {
         return '0M';
     } else if (flow >= 1024 || flow <= -1024) {
         return `${(flow / 1024).toFixed(2)}G`;
