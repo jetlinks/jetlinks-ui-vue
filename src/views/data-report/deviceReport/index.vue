@@ -192,8 +192,6 @@ const handleExport = async () => {
             },
         ],
     };
-
-    console.log(selectIds.value, 'datalist');
     deviceExport('设备消息数据', type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });

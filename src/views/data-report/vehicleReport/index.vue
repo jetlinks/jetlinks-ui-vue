@@ -38,7 +38,7 @@
                     <span> {{ slotProps.vehicleTypeEnum.text }}</span>
                 </template>
                 <template #orgName="slotProps">
-                    <span> {{ slotProps.orgName }}</span>
+                    <span> {{ slotProps.orgName||'--' }}</span>
                 </template>
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914"
