@@ -6,6 +6,7 @@ export interface formValueType {
     headerTheme: string | undefined; // 主题色
     apiKey: string | undefined; // 高德 API key
     'base-path': string | undefined; // 系统后台访问的URL
+    reportPath: string | undefined; 
     logo: string | undefined;
     ico: string | undefined;
     background: string | undefined;

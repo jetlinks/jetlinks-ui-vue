@@ -3,21 +3,10 @@
     <j-form layout="vertical" :model="form" ref="formBasicRef">
         <j-row :span="24" :gutter="24">
             <j-col :span="12">
-                <j-form-item
-                    label="系统名称"
-                    name="title"
-                    v-bind="validateInfos.title"
-                >
-                    <j-input
-                        v-model:value="form.title"
-                        placeholder="请输入系统名称"
-                    />
+                <j-form-item label="系统名称" name="title" v-bind="validateInfos.title">
+                    <j-input v-model:value="form.title" placeholder="请输入系统名称" />
                 </j-form-item>
-                <j-form-item
-                    label="主题色"
-                    name="headerTheme"
-                    v-bind="validateInfos.headerTheme"
-                >
+                <j-form-item label="主题色" name="headerTheme" v-bind="validateInfos.headerTheme">
                     <j-select v-model:value="form.headerTheme">
                         <j-select-option value="light">白色</j-select-option>
                         <j-select-option value="dark">黑色</j-select-option>
@@ -27,16 +16,10 @@
                     <template #label>
                         <span>高德API Key</span>
                         <j-tooltip title="配置后平台可调用高德地图GIS服务">
-                            <img
-                                class="img-style"
-                                :src="'/images/init-home/mark.png'"
-                            />
+                            <img class="img-style" :src="'/images/init-home/mark.png'" />
                         </j-tooltip>
                     </template>
-                    <j-input
-                        v-model:value="form.apikey"
-                        placeholder="请输入高德API Key"
-                    />
+                    <j-input v-model:value="form.apikey" placeholder="请输入高德API Key" />
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
                     <template #label>
@@ -45,86 +28,61 @@
                             <template #title>
                                 <div style='word-break: break-all;'>
                                     <div>
-                                    系统后台访问的url。
+                                        系统后台访问的url。
                                     </div>
                                     <div>
-                                    格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                        格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
                                     </div>
                                 </div>
                             </template>
-                            <img
-                                class="img-style"
-                                :src="'/images/init-home/mark.png'"
-                            />
+                            <img class="img-style" :src="'/images/init-home/mark.png'" />
                         </j-tooltip>
                     </template>
-                    <j-input
-                        v-model:value="form.basePath"
-                        placeholder="格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api"
-                    />
+                    <j-input v-model:value="form.basePath"
+                        placeholder="格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api" />
+                </j-form-item>
+                <j-form-item name="reportPath" v-bind="validateInfos.reportPath">
+                    <template #label>
+                        <span>报表系统ip地址</span>
+                    </template>
+                    <j-input v-model:value="form.reportPath"
+                        placeholder="格式：{http/https}: //{报表系统前端所在服务器IP地址}" />
                 </j-form-item>
                 <j-row :gutter="24" :span="24">
                     <j-col>
                         <j-form-item label="系统logo">
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
-                                    <j-upload
-                                        name="file"
-                                        :action="FILE_UPLOAD"
-                                        :headers="headers"
-                                        :showUploadList="false"
-                                        :beforeUpload="beforeLogoUpload"
-                                        @change="handleChangeLogo"
-                                        :accept="
-                                            imageTypes && imageTypes.length
+                                    <j-upload name="file" :action="FILE_UPLOAD" :headers="headers"
+                                        :showUploadList="false" :beforeUpload="beforeLogoUpload"
+                                        @change="handleChangeLogo" :accept="imageTypes && imageTypes.length
                                                 ? imageTypes.toString()
                                                 : ''
-                                        "
-                                    >
+                                            ">
                                         <div class="upload-image-content-logo">
-                                            <div
-                                                class="loading-logo"
-                                                v-if="logoLoading"
-                                            >
-                                                <LoadingOutlined
-                                                    style="font-size: 28px"
-                                                />
+                                            <div class="loading-logo" v-if="logoLoading">
+                                                <LoadingOutlined style="font-size: 28px" />
                                             </div>
-                                            <div
-                                                class="upload-image"
-                                                v-if="form.logo"
-                                                :style="
-                                                    form.logo
-                                                        ? `background-image: url(${form.logo});`
-                                                        : ''
-                                                "
-                                            ></div>
-                                            <div
-                                                v-if="form.logo"
-                                                class="upload-image-mask"
-                                            >
+                                            <div class="upload-image" v-if="form.logo" :style="form.logo
+                                                    ? `background-image: url(${form.logo});`
+                                                    : ''
+                                                "></div>
+                                            <div v-if="form.logo" class="upload-image-mask">
                                                 点击修改
                                             </div>
                                             <div v-else>
                                                 <div v-if="logoLoading">
-                                                    <LoadingOutlined
-                                                        style="font-size: 28px"
-                                                    />
+                                                    <LoadingOutlined style="font-size: 28px" />
                                                 </div>
                                                 <div v-else>
-                                                    <PlusOutlined
-                                                        style="font-size: 28px"
-                                                    />
+                                                    <PlusOutlined style="font-size: 28px" />
                                                 </div>
                                             </div>
                                         </div>
                                     </j-upload>
                                     <div v-if="logoLoading">
                                         <div class="upload-loading-mask">
-                                            <LoadingOutlined
-                                                v-if="logoLoading"
-                                                style="font-size: 28px"
-                                            />
+                                            <LoadingOutlined v-if="logoLoading" style="font-size: 28px" />
                                         </div>
                                     </div>
                                 </div>
@@ -139,56 +97,31 @@
                             <template #label>
                                 <span>浏览器页签</span>
                                 <j-tooltip title="浏览器tab页中显示的图片元素">
-                                    <img
-                                        class="img-style"
-                                        :src="'/images/init-home/mark.png'"
-                                    />
+                                    <img class="img-style" :src="'/images/init-home/mark.png'" />
                                 </j-tooltip>
                             </template>
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
-                                    <j-upload
-                                        name="file"
-                                        :action="FILE_UPLOAD"
-                                        :headers="headers"
-                                        :showUploadList="false"
-                                        :beforeUpload="beforeIconUpload"
-                                        @change="changeIconUpload"
-                                        :accept="
-                                            iconTypes && iconTypes.length
+                                    <j-upload name="file" :action="FILE_UPLOAD" :headers="headers"
+                                        :showUploadList="false" :beforeUpload="beforeIconUpload"
+                                        @change="changeIconUpload" :accept="iconTypes && iconTypes.length
                                                 ? iconTypes.toString()
                                                 : ''
-                                        "
-                                    >
+                                            ">
                                         <div class="upload-image-content-logo">
-                                            <div
-                                                v-if="iconLoading"
-                                                class="loading-icon"
-                                            >
-                                                <LoadingOutlined
-                                                    style="font-size: 28px"
-                                                />
+                                            <div v-if="iconLoading" class="loading-icon">
+                                                <LoadingOutlined style="font-size: 28px" />
                                             </div>
-                                            <div
-                                                class="upload-image-icon"
-                                                v-if="form.ico"
-                                                :style="
-                                                    form.ico
-                                                        ? `background-image: url(${form.ico});`
-                                                        : ''
-                                                "
-                                            ></div>
-                                            <div
-                                                v-if="form.ico"
-                                                class="upload-image-mask"
-                                            >
+                                            <div class="upload-image-icon" v-if="form.ico" :style="form.ico
+                                                    ? `background-image: url(${form.ico});`
+                                                    : ''
+                                                "></div>
+                                            <div v-if="form.ico" class="upload-image-mask">
                                                 点击修改
                                             </div>
                                             <div v-else>
                                                 <div>
-                                                    <PlusOutlined
-                                                        style="font-size: 28px"
-                                                    />
+                                                    <PlusOutlined style="font-size: 28px" />
                                                 </div>
                                             </div>
                                         </div>
@@ -206,48 +139,26 @@
                 <j-form-item label="登录背景图">
                     <div class="upload-image-warp-back">
                         <div class="upload-image-border-back">
-                            <j-upload
-                                name="file"
-                                :action="FILE_UPLOAD"
-                                :headers="headers"
-                                :beforeUpload="beforeBackUpload"
-                                :showUploadList="false"
-                                @change="changeBackUpload"
-                                :accept="
-                                    imageTypes && imageTypes.length
+                            <j-upload name="file" :action="FILE_UPLOAD" :headers="headers"
+                                :beforeUpload="beforeBackUpload" :showUploadList="false" @change="changeBackUpload"
+                                :accept="imageTypes && imageTypes.length
                                         ? imageTypes.toString()
                                         : ''
-                                "
-                            >
+                                    ">
                                 <div class="upload-image-content-back">
-                                    <div
-                                        v-if="backLoading"
-                                        class="loading-back"
-                                    >
-                                        <LoadingOutlined
-                                            style="font-size: 28px"
-                                        />
+                                    <div v-if="backLoading" class="loading-back">
+                                        <LoadingOutlined style="font-size: 28px" />
                                     </div>
-                                    <div
-                                        class="upload-image"
-                                        v-if="form.background"
-                                        :style="
-                                            form.background
-                                                ? `background-image: url(${form.background});`
-                                                : ''
-                                        "
-                                    ></div>
-                                    <div
-                                        v-if="form.background"
-                                        class="upload-image-mask"
-                                    >
+                                    <div class="upload-image" v-if="form.background" :style="form.background
+                                            ? `background-image: url(${form.background});`
+                                            : ''
+                                        "></div>
+                                    <div v-if="form.background" class="upload-image-mask">
                                         点击修改
                                     </div>
                                     <div v-else>
                                         <div>
-                                            <PlusOutlined
-                                                style="font-size: 28px"
-                                            />
+                                            <PlusOutlined style="font-size: 28px" />
                                         </div>
                                     </div>
                                 </div>
@@ -271,6 +182,7 @@ import {
 import { LocalStore, getImage, onlyMessage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
+import { isUrl } from '@/utils/regular';
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
@@ -289,6 +201,7 @@ const form = ref<formState>({
     headerTheme: 'light',
     apikey: '',
     basePath: `${window.location.origin}/api`,
+    reportPath: '',
     logo: '/logo.png',
     ico: '/favicon.ico',
     background: '/images/login.png',
@@ -315,6 +228,13 @@ const rulesFrom = ref({
             trigger: 'blur',
         },
     ],
+    reportPath: [
+        {
+            required: true,
+            message: '请输入报表系统地址',
+            trigger: 'blur',
+        },
+    ]
 });
 const { resetFields, validate, validateInfos } = useForm(
     form.value,
@@ -324,7 +244,7 @@ const { resetFields, validate, validateInfos } = useForm(
  * 提交数据
  */
 const saveBasicInfo = () => {
-    return new Promise(async (resolve,reject) => {
+    return new Promise(async (resolve, reject) => {
         validate()
             .then(async () => {
                 const item = [
@@ -467,15 +387,18 @@ defineExpose({
     background-image: url(/images/init-home/background.png);
     background-repeat: no-repeat;
     background-size: 100% 100%;
+
     .container-text {
         font-weight: 700;
         font-size: 16px;
+
         .container-title {
             position: relative;
             padding-left: 10px;
             color: rgba(0, 0, 0, 0.8);
             font-weight: 600;
             line-height: 1;
+
             &:before {
                 position: absolute;
                 top: 0;
@@ -488,22 +411,27 @@ defineExpose({
             }
         }
     }
+
     .container-box {
         width: 100%;
         height: 100%;
         padding: 24px;
         background: #fff;
+
         .container-main {
             display: flex;
             justify-content: space-between;
             width: 100%;
             height: 100%;
             overflow-y: auto;
+
             .container-right {
                 width: calc(100% - 70px);
+
                 .title {
                     font-size: 15px;
                 }
+
                 .sub-title {
                     margin-top: 2px;
                     margin-left: 8px;
@@ -511,33 +439,41 @@ defineExpose({
                     font-size: 12px;
                     opacity: 0.85;
                 }
+
                 .img-style {
                     width: 16px;
                     height: 16px;
                     margin-left: 5px;
                 }
+
                 .menu-style {
                     display: flex;
                     align-items: center;
+
                     .menu-img {
                         margin-right: 16px;
                     }
                 }
+
                 .init-home-role {
                     .init-home-role-content {
                         display: flex;
                         grid-gap: 24px;
                         gap: 24px;
                     }
+
                     .role-item-1 {
                         background-image: url(/images/init-home/role1.png);
                     }
+
                     .role-item-2 {
                         background-image: url(/images/init-home/role2.png);
                     }
+
                     .role-item-3 {
                         background-image: url(/images/init-home/role3.png);
                     }
+
                     .role-item {
                         position: relative;
                         display: flex;
@@ -549,19 +485,23 @@ defineExpose({
                         background-position: 50%;
                         background-size: 370px;
                         border: 1px solid #f5f5f5;
+
                         .role-item-title {
                             display: flex;
+
                             .role-title {
                                 flex: 1 1 auto;
                                 font-weight: 700;
                                 font-size: 16px;
                             }
                         }
+
                         .role-item-content {
                             width: 250px;
                             height: 260px;
                             margin-top: 24px;
                         }
+
                         .role-item-footer {
                             position: absolute;
                             bottom: -30px;
@@ -573,6 +513,7 @@ defineExpose({
                         }
                     }
                 }
+
                 .init-data-img {
                     width: 300px;
                 }
@@ -580,6 +521,7 @@ defineExpose({
                 .upload-image-warp-logo {
                     display: flex;
                     justify-content: flex-start;
+
                     .upload-image-border-logo {
                         position: relative;
                         overflow: hidden;
@@ -587,10 +529,12 @@ defineExpose({
                         transition: all 0.3s;
                         width: 160px;
                         height: 150px;
+
                         &:hover {
                             border: 1px dashed #1890ff;
                             display: flex;
                         }
+
                         .upload-image-content-logo {
                             align-items: center;
                             justify-content: center;
@@ -602,13 +546,16 @@ defineExpose({
                             padding: 8px;
                             background-color: rgba(0, 0, 0, 0.06);
                             cursor: pointer;
+
                             .loading-logo {
                                 position: absolute;
                                 top: 50%;
                             }
+
                             .loading-icon {
                                 position: absolute;
                             }
+
                             .upload-image {
                                 width: 100%;
                                 height: 100%;
@@ -616,6 +563,7 @@ defineExpose({
                                 background-position: 50%;
                                 background-size: cover;
                             }
+
                             .upload-image-icon {
                                 width: 100%;
                                 height: 100%;
@@ -623,6 +571,7 @@ defineExpose({
                                 background-position: 50%;
                                 background-size: inherit;
                             }
+
                             .upload-image-mask {
                                 align-items: center;
                                 justify-content: center;
@@ -636,6 +585,7 @@ defineExpose({
                                 font-size: 16px;
                                 background-color: rgba(0, 0, 0, 0.35);
                             }
+
                             &:hover .upload-image-mask {
                                 display: flex;
                             }
@@ -646,6 +596,7 @@ defineExpose({
                 .upload-image-warp-back {
                     display: flex;
                     justify-content: flex-start;
+
                     .upload-image-border-back {
                         position: relative;
                         overflow: hidden;
@@ -653,10 +604,12 @@ defineExpose({
                         transition: all 0.3s;
                         width: 570px;
                         height: 415px;
+
                         &:hover {
                             border: 1px dashed #1890ff;
                             display: flex;
                         }
+
                         .upload-image-content-back {
                             align-items: center;
                             justify-content: center;
@@ -668,9 +621,11 @@ defineExpose({
                             padding: 8px;
                             background-color: rgba(0, 0, 0, 0.06);
                             cursor: pointer;
+
                             .loading-back {
                                 position: absolute;
                             }
+
                             .upload-image {
                                 width: 100%;
                                 height: 100%;
@@ -678,6 +633,7 @@ defineExpose({
                                 background-position: 50%;
                                 background-size: cover;
                             }
+
                             .upload-image-mask {
                                 align-items: center;
                                 justify-content: center;
@@ -691,17 +647,20 @@ defineExpose({
                                 font-size: 16px;
                                 background-color: rgba(0, 0, 0, 0.35);
                             }
+
                             &:hover .upload-image-mask {
                                 display: flex;
                             }
                         }
                     }
                 }
+
                 .upload-tips {
                     color: rgba(0, 0, 0, 0.45);
                     font-size: 14px;
                     line-height: 1.5715;
                 }
+
                 // .uplod-style {
                 //     :deep(.ant-upload.ant-upload-select-picture-card) {
                 //         width: 180px;
@@ -717,14 +676,17 @@ defineExpose({
             }
         }
     }
+
     .modal-style {
         .data-content {
             background: rgb(236, 237, 238);
+
             .data-p-style {
                 padding: 10px;
             }
         }
     }
+
     ::-webkit-scrollbar {
         width: 12px;
     }
