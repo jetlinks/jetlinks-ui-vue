@@ -33,8 +33,11 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
+
                 <template #reportTime="{ reportTime }">
-                    {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{
+                        dayjs(Number(reportTime)).format('YYYY-MM-DD HH:mm:ss')
+                    }}
                 </template>
                 <template #orgName="{ orgName }">
                     {{ orgName || '暂未标记组织' }}
