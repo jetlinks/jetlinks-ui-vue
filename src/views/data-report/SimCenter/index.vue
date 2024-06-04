@@ -52,7 +52,7 @@
                             ? dayjs(activationDate).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
-                            : '暂未激活'
+                            : ' '
                     }}
                 </template>
                 <!-- 更新时间插槽 -->
@@ -60,7 +60,7 @@
                     {{
                         updateTime
                             ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
-                            : '无更新信息'
+                            : ' '
                     }}
                 </template>
                 <template #cardStateType="{ cardStateType }">
