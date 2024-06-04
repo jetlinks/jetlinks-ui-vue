@@ -1,36 +1,29 @@
 <template>
-    <j-pro-layout
-        v-bind="layoutConf"
-        v-model:collapsed="basicLayout.collapsed"
-        v-model:openKeys="basicLayout.openKeys"
-        :selectedKeys="basicLayout.selectedKeys"
-        :breadcrumb="basicLayout.pure ? undefined : { routes: breadcrumbs }"
-        :headerHeight='basicLayout.pure ? 1 : layout.headerHeight'
-        :pure="basicLayout.pure"
-        @backClick='routerBack'
-    >
-        <template #breadcrumbRender="slotProps">
-            <a
-              v-if="slotProps.route.index !== 0 && !slotProps.route.isLast"
-              @click='jump(slotProps.route)'
-            >
-              {{ slotProps.route.breadcrumbName }}
-            </a>
-            <span v-else style='cursor: default' >{{ slotProps.route.breadcrumbName }}</span>
-        </template>
-        <template #rightContentRender>
-            <div class="right-content">
-                <AIcon type="QuestionCircleOutlined" @click="toDoc" />
-                <Notice style="margin: 0 24px" />
-                <UserInfo />
-            </div>
-        </template>
-      <slot>
-        <router-view v-slot="{ Component }">
-          <component :is="components || Component" />
-        </router-view>
-      </slot>
-    </j-pro-layout>
+  <j-pro-layout v-bind="layoutConf" v-model:collapsed="basicLayout.collapsed" v-model:openKeys="basicLayout.openKeys"
+    :selectedKeys="basicLayout.selectedKeys" :breadcrumb="basicLayout.pure ? undefined : { routes: breadcrumbs }"
+    :headerHeight='basicLayout.pure ? 1 : layout.headerHeight' :pure="basicLayout.pure" @backClick='routerBack'>
+    <template #breadcrumbRender="slotProps">
+      <a v-if="slotProps.route.index !== 0 && !slotProps.route.isLast" @click='jump(slotProps.route)'>
+        {{ slotProps.route.breadcrumbName }}
+      </a>
+      <span v-else style='cursor: default'>{{ slotProps.route.breadcrumbName }}</span>
+    </template>
+    <template #rightContentRender>
+      <div class="right-content">
+        <j-tooltip title="大屏" @click="onReport">
+          <AIcon type="ProfileOutlined" style="font-size: 16px" />
+        </j-tooltip>
+        <AIcon type="QuestionCircleOutlined" @click="toDoc" style="font-size: 16px;margin-left: 24px;" />
+        <Notice style="margin: 0 24px" />
+        <UserInfo />
+      </div>
+    </template>
+    <slot>
+      <router-view v-slot="{ Component }">
+        <component :is="components || Component" />
+      </router-view>
+    </slot>
+  </j-pro-layout>
 </template>
 
 <script setup lang="ts" name="BasicLayoutPage">
@@ -38,17 +31,16 @@ import UserInfo from './components/UserInfo.vue';
 import Notice from './components/Notice.vue';
 import DefaultSetting from '../../../config/config';
 import { useMenuStore } from '@/store/menu';
-import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util';
 import { AccountMenu } from '@/router/menu'
 import { useSystem } from '@/store/system';
 import { storeToRefs } from 'pinia';
 import { useSlots } from 'vue'
 
 type StateType = {
-    collapsed: boolean;
-    openKeys: string[];
-    selectedKeys: string[];
-    pure: boolean;
+  collapsed: boolean;
+  openKeys: string[];
+  selectedKeys: string[];
+  pure: boolean;
 };
 
 const router = useRouter();
@@ -57,22 +49,29 @@ const route = useRoute();
 const menu = useMenuStore();
 
 const system = useSystem();
-const {configInfo,layout, basicLayout} = storeToRefs(system);
+const { configInfo, layout, basicLayout } = storeToRefs(system);
 const slots = useSlots()
 const layoutConf = reactive({
-    theme: DefaultSetting.layout.theme,
-    siderWidth: layout.value.siderWidth,
-    logo: DefaultSetting.layout.logo,
-    title: DefaultSetting.layout.title,
-    menuData: menu.siderMenus,
-    // menuData: menu.siderMenus,
-    splitMenus: true,
+  theme: DefaultSetting.layout.theme,
+  siderWidth: layout.value.siderWidth,
+  logo: DefaultSetting.layout.logo,
+  title: DefaultSetting.layout.title,
+  menuData: menu.siderMenus,
+  // menuData: menu.siderMenus,
+  splitMenus: true,
 });
 
+const onReport = async () => {
+  const reportUrl = configInfo.value.front?.reportPath
+  const openUrl = `${reportUrl}/#/user/login?id=:id&report=report`;
+  console.log('openUrl',openUrl)
+  window.open(openUrl, '_blank');
+};
+
 watchEffect(() => {
-    layoutConf.theme = configInfo.value.front?.headerTheme || DefaultSetting.layout.theme;
-    layoutConf.title = configInfo.value.front?.title || DefaultSetting.layout.title;
-    layoutConf.logo = configInfo.value.front?.logo || DefaultSetting.layout.logo;
+  layoutConf.theme = configInfo.value.front?.headerTheme || DefaultSetting.layout.theme;
+  layoutConf.title = configInfo.value.front?.title || DefaultSetting.layout.title;
+  layoutConf.logo = configInfo.value.front?.logo || DefaultSetting.layout.logo;
 })
 
 const components = computed(() => {
@@ -86,19 +85,18 @@ const components = computed(() => {
 /**
  * 面包屑
  */
-const breadcrumbs = computed(() =>
-    {
-      const paths = router.currentRoute.value.matched
+const breadcrumbs = computed(() => {
+  const paths = router.currentRoute.value.matched
 
-      return paths.map((item, index) => {
-        return {
-          index,
-          isLast: index === (paths.length -1),
-          path: item.path,
-          breadcrumbName: (item.meta as any).title || '',
-        }
-      })
+  return paths.map((item, index) => {
+    return {
+      index,
+      isLast: index === (paths.length - 1),
+      path: item.path,
+      breadcrumbName: (item.meta as any).title || '',
     }
+  })
+}
 );
 
 const routerBack = () => {
@@ -128,8 +126,8 @@ const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');
 
 <style scoped>
 .right-content {
-    margin-right: 24px;
-    display: flex;
-    align-items: center;
+  margin-right: 24px;
+  display: flex;
+  align-items: center;
 }
 </style>

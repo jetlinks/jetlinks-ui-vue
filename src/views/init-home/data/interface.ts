@@ -15,6 +15,7 @@ export interface formState  {
   headerTheme: string; // 主题色
   apikey: string; // 高德 API key
   basePath: string; // 系统后台访问的URL
+  reportPath: string; //报表系统地址
   logo: string; // 系统logo
   ico: string; // 浏览器页签
   background:string; //登录背景
