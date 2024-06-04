@@ -57,7 +57,10 @@ export const handleOperatorName = (value: string) => {
  * @param flow
  */
 export const formatFlow = (flow: number | undefined) => {
-    if (flow === undefined || flow === 0) {
+    if (!flow) {
+        return '--';
+    }
+    if (flow === 0) {
         return '0M';
     } else if (flow >= 1024 || flow <= -1024) {
         return `${(flow / 1024).toFixed(2)}G`;

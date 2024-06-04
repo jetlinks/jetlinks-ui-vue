@@ -29,7 +29,7 @@
                     </j-space>
                 </template>
                 <template #orgName="{ orgName }">
-                    {{ orgName || '' }}
+                    {{ orgName || '--' }}
                 </template>
                 <template #faultTime="{ faultTime }">
                     <span>

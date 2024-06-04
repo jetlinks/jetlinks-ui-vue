@@ -48,15 +48,15 @@ export const columns = [
             options: [
                 {
                     label: '移动',
-                    value: 'OneLink',
+                    value: 'onelink',
                 },
                 {
                     label: '电信',
-                    value: 'CtwingCmp',
+                    value: 'ctwing',
                 },
                 {
                     label: '联通',
-                    value: 'UnicomCmp',
+                    value: 'unicom',
                 },
             ],
         },
