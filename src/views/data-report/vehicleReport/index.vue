@@ -1,36 +1,21 @@
 <template>
     <page-container>
-        <pro-search
-            :columns="columns"
-            target="notice-config"
-            @search="handleSearch"
-        />
+        <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
         <FullPage>
-            <JProTable
-                ref="configRef"
-                :columns="columns"
-                :request="queryData"
-                :defaultParams="{
-                    sorts: [{ name: 'vehicleDate', order: 'desc' }],
-                }"
-                model="table"
-                :params="globParams"
-                :gridColumn="3"
-                :rowSelection="{
+            <JProTable ref="configRef" :columns="columns" :request="queryData" :defaultParams="{
+                sorts: [{ name: 'vehicleDate', order: 'desc' }],
+            }" model="table" :params="globParams" :gridColumn="3" :rowSelection="{
                     selectedRowKeys: state.selectedRowKeys,
                     onChange: selectedRowChange,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
-                }"
-            >
+                }">
                 <template #headerTitle>
                     <j-space>
-                        <PermissionButton
-                            :popConfirm="{
-                                title: popTitle,
-                                onConfirm: () => handleExport(),
-                            }"
-                        >
+                        <PermissionButton :popConfirm="{
+                            title: popTitle,
+                            onConfirm: () => handleExport(),
+                        }">
                             <AIcon type="ExportOutlined" />
                             导出
                         </PermissionButton>
@@ -43,25 +28,16 @@
                     <span> {{ slotProps.orgName || '--' }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a @click="handelDetail(slotProps)" style="color: #f84914"
-                        >详情
+                    <a @click="handelDetail(slotProps)" style="color: #f84914">详情
                     </a>
                 </template>
                 <template #vehicleDate="{ vehicleDate }">
                     {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <template #paginationRender>
-                    <a-pagination
-                        showQuickJumper
-                        isShowContent
-                        showSizeChanger
-                        :pageSize="pageSize"
-                        :pageSizeOptions="['12', '24', '48', '96']"
-                        :current="currentPage"
-                        :total="dataTotal"
-                        :show-total="() => `总共 ${dataTotal} 条`"
-                        @change="handleOnChange"
-                    />
+                    <a-pagination showQuickJumper isShowContent showSizeChanger :pageSize="pageSize"
+                        :pageSizeOptions="['12', '24', '48', '96']" :current="currentPage" :total="dataTotal"
+                        :show-total="() => `总共 ${dataTotal} 条`" @change="handleOnChange" />
                 </template>
             </JProTable>
         </FullPage>
@@ -255,61 +231,51 @@ const handleOnChange = (num: number, pageSize: number) => {
  */
 
 const handleExport = async () => {
-    //勾选一条的情况
-    if (state.selectedRowKeys?.length === 1) {
-        const { id, deviceId } = state.selectedRows[0];
-        vehicleExport(xlsx.value, [{ vehicleId: id, deviceId }]).then(
-            (res: any) => {
-                if (res) {
-                    const blob = new Blob([res.data], { type: xlsx.value });
-                    const url = URL.createObjectURL(blob);
-                    downloadFileByUrl(
-                        url,
-                        `车辆列表数据-${moment(new Date()).format(
-                            'YYYY/MM/DD HH:mm:ss',
-                        )}`,
-                        xlsx.value,
-                    );
-                    onlyMessage(EXPORT_TIPS);
-                }
-            },
-        );
-
-        return;
+    let _params: any = {};
+    // 当部分选中时
+    if (state.selectedRowKeys.length > 0) {
+        _params = {
+            paging: false,
+            pageSize: state.selectedRowKeys?.length,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: [
+                {
+                    column: 'id',
+                    value: state.selectedRowKeys,
+                    termType: 'in',
+                },
+            ],
+        };
     } else {
-        //没有勾选或者勾选多条的情况
-        //导出多条
-        const params: any[] = [];
-        state?.selectedRows?.forEach((item: any) => {
-            const temp = {
-                vehicleId: item.id,
-                deviceId: item.deviceId,
-            };
-            params.push(temp);
-        });
-        vehicleExport(zip.value, params).then((res: any) => {
-            if (res) {
-                const blob = new Blob([res.data], { type: zip.value });
-                const url = URL.createObjectURL(blob);
-                downloadFileByUrl(
-                    url,
-                    `车辆列表数据-${moment(new Date()).format(
-                        'YYYY/MM/DD HH:mm:ss',
-                    )}`,
-                    zip.value,
-                );
-                if (
-                    state.selectedRowKeys?.length > 10000 ||
-                    (state.selectedRowKeys?.length == 0 &&
-                        dataTotal.value > 10000)
-                ) {
-                    onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
-                } else {
-                    onlyMessage(EXPORT_TIPS);
-                }
-            }
-        });
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
+    vehicleExport('车辆中心数据', xlsx.value, _params).then((res: any) => {
+        if (res) {
+            const blob = new Blob([res.data], { type: xlsx.value });
+            const url = URL.createObjectURL(blob);
+            downloadFileByUrl(
+                url,
+                `车辆列表数据-${moment(new Date()).format(
+                    'YYYY/MM/DD HH:mm:ss',
+                )}`,
+                xlsx.value,
+            );
+            if (
+                state.selectedRowKeys?.length > 10000 ||
+                (state.selectedRowKeys?.length == 0 &&
+                    dataTotal.value > 10000)
+            ) {
+                onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+            } else {
+                onlyMessage(EXPORT_TIPS);
+            }
+        }
+    });
 };
 // 当前分页表格选中的数据项的id
 const state = reactive<{ selectedRowKeys: string[]; selectedRows: any[] }>({
