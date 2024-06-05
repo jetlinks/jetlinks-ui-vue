@@ -80,7 +80,7 @@ import {
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
-import { EXPORT_TIPS } from '@/utils/consts';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelect } from '@/utils/hooks/useSelect';
 
 const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
@@ -127,43 +127,34 @@ const queryData = async (_params: any) => {
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000！';
-    }
     return state.selectedRowKeys.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
 
 /**
- * @function handleExport 导出 设备消息的导出要用 _id
+ * @function handleExport 导出 设备消息选中的导出要用 _id !!!
  *
  */
 const handleExport = async () => {
     let _params: any = {};
     if (state.selectedRowKeys.length > 0) {
-        if (state.selectedRowKeys.length > 10000) {
-            onlyMessage(EXPORT_TIPS, 'warning');
-        }
         _params = {
             terms: [
                 {
-                    column: 'id',
+                    column: '_id',
                     value: state.selectedRowKeys,
                     termType: 'in',
                 },
             ],
         };
     } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            if (dataTotal.value > 10000) {
-                onlyMessage(EXPORT_TIPS, 'warning');
-            }
-            _params.terms = [];
-        }
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
 
     // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
@@ -178,6 +169,14 @@ const handleExport = async () => {
                 )}`,
                 type.value,
             );
+            if (
+                state.selectedRowKeys?.length > 10000 ||
+                (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)
+            ) {
+                onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+            } else {
+                onlyMessage(EXPORT_TIPS);
+            }
         }
     });
 };

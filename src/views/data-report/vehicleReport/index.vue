@@ -80,6 +80,7 @@ import {
 } from '@/api/data-report/vehicleReport';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 
 const menuStory = useMenuStore();
 
@@ -94,6 +95,9 @@ const dataTotal = ref<number>(0);
 const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSize = ref<number>(12);
+
+const xlsx = ref<string>('xlsx');
+const zip = ref<string>('zip');
 
 const columns = [
     {
@@ -130,7 +134,7 @@ const columns = [
         },
     },
     {
-        title: '出场编号',
+        title: '出厂编号',
         dataIndex: 'factoryNumber',
         key: 'factoryNumber',
         ellipsis: true,
@@ -167,17 +171,6 @@ const columns = [
         },
     },
     {
-        title: '日期',
-        dataIndex: 'vehicleDate',
-        key: 'vehicleDate',
-        width: 200,
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'date',
-        },
-    },
-    {
         title: '操作',
         key: 'action',
         fixed: 'right',
@@ -189,9 +182,6 @@ const columns = [
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000！';
-    }
     return state.selectedRowKeys.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
@@ -261,66 +251,62 @@ const handleOnChange = (num: number, pageSize: number) => {
 
 /**
  * 导出
+ * @function当选中一条的时候导出xlsx，其他情况导出zip
  */
 
-const type = ref<string>('xlsx');
-
 const handleExport = async () => {
-    if (!state.selectedRows?.length) {
-        vehicleExport('zip', []).then((res: any) => {
-            if (res) {
-                const blob = new Blob([res.data], { type: type.value });
-                const url = URL.createObjectURL(blob);
-                downloadFileByUrl(
-                    url,
-                    `车辆列表数据-${moment(new Date()).format(
-                        'YYYY/MM/DD HH:mm:ss',
-                    )}`,
-                    'zip',
-                );
-            }
-        });
-        return;
-    } else if (state.selectedRows?.length === 1) {
-        //只勾选一条的情况
+    //勾选一条的情况
+    if (state.selectedRowKeys?.length === 1) {
         const { id, deviceId } = state.selectedRows[0];
-        vehicleExport(type.value, [{ vehicleId: id, deviceId }]).then(
+        vehicleExport(xlsx.value, [{ vehicleId: id, deviceId }]).then(
             (res: any) => {
                 if (res) {
-                    const blob = new Blob([res.data], { type: type.value });
+                    const blob = new Blob([res.data], { type: xlsx.value });
                     const url = URL.createObjectURL(blob);
                     downloadFileByUrl(
                         url,
                         `车辆列表数据-${moment(new Date()).format(
                             'YYYY/MM/DD HH:mm:ss',
                         )}`,
-                        type.value,
+                        xlsx.value,
                     );
+                    onlyMessage(EXPORT_TIPS);
                 }
             },
         );
+
         return;
     } else {
+        //没有勾选或者勾选多条的情况
         //导出多条
         const params: any[] = [];
-        state.selectedRows.forEach((item: any) => {
+        state?.selectedRows?.forEach((item: any) => {
             const temp = {
                 vehicleId: item.id,
                 deviceId: item.deviceId,
             };
             params.push(temp);
         });
-        vehicleExport('zip', params).then((res: any) => {
+        vehicleExport(zip.value, params).then((res: any) => {
             if (res) {
-                const blob = new Blob([res.data], { type: type.value });
+                const blob = new Blob([res.data], { type: zip.value });
                 const url = URL.createObjectURL(blob);
                 downloadFileByUrl(
                     url,
                     `车辆列表数据-${moment(new Date()).format(
                         'YYYY/MM/DD HH:mm:ss',
                     )}`,
-                    'zip',
+                    zip.value,
                 );
+                if (
+                    state.selectedRowKeys?.length > 10000 ||
+                    (state.selectedRowKeys?.length == 0 &&
+                        dataTotal.value > 10000)
+                ) {
+                    onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+                } else {
+                    onlyMessage(EXPORT_TIPS);
+                }
             }
         });
     }

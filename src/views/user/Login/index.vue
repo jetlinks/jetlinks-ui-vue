@@ -473,32 +473,6 @@ watch(
     { deep: true },
 );
 
-watch(
-    () => bindings.value,
-    (value) => {
-        LocalStore.set('onLogin', 'no');
-        const urlParams = new URLSearchParams(window.location.href);
-        const report = urlParams.get('report');
-        const id = urlParams.get('id');
-        console.log('id', id);
-        console.log('report', report);
-        if (report) {
-            if (value) {
-                console.log('value',value)
-                window.open(
-                    `${BASE_API_PATH}/application/sso/${value[0].id}/login`,
-                );
-                window.onstorage = (e) => {
-                    if (e.newValue) {
-                        window.location.href = '/';
-                    }
-                };
-            }
-        }
-    },
-    { deep: true },
-);
-
 getOpen();
 getCode();
 screenRotation(screenWidth.value, screenHeight.value);

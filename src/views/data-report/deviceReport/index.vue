@@ -113,7 +113,7 @@
 import { queryDeviceList, deviceExport } from '@/api/data-report/deviceReport';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
-import { EXPORT_TIPS } from '@/utils/consts';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelect } from '@/utils/hooks/useSelect';
 import { onlyMessage } from '@/utils/comm';
 
@@ -203,9 +203,6 @@ const columns = [
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000！';
-    }
     return state.selectedRowKeys.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
@@ -265,9 +262,6 @@ const handleExport = async () => {
     let _params: any = {};
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
-        if (state.selectedRowKeys.length > 10000) {
-            onlyMessage(EXPORT_TIPS, 'warning');
-        }
         _params = {
             terms: [
                 {
@@ -278,43 +272,36 @@ const handleExport = async () => {
             ],
         };
     } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            if (dataTotal.value > 10000) {
-                onlyMessage(EXPORT_TIPS, 'warning');
-            }
-            _params.terms = [];
-        }
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
 
     // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
-    deviceExport('设备消息数据', type.value, _params).then((res: any) => {
+    deviceExport('设备中心数据', type.value, _params).then((res: any) => {
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `设备消息数据-${moment(new Date()).format(
+                `设备中心数据-${moment(new Date()).format(
                     'YYYY/MM/DD HH:mm:ss',
                 )}`,
                 type.value,
             );
+            if (
+                state.selectedRowKeys?.length > 10000 ||
+                (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)
+            ) {
+                onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+            } else {
+                onlyMessage(EXPORT_TIPS);
+            }
         }
     });
-};
-
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        selectIds.value = selectedRowKeys;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log(selected, selectedRows, changeRows);
-    },
 };
 </script>
 
