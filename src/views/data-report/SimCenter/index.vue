@@ -88,7 +88,6 @@
                         @change="handleOnChange"
                     />
                 </template>
-                <template #alertRender> xxx </template>
             </JProTable>
         </FullPage>
     </page-container>
@@ -128,9 +127,6 @@ const dataSource = ref<any[]>([]);
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000！';
-    }
     return state.selectedRowKeys.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
@@ -228,12 +224,6 @@ const handleExport = async () => {
     let _params: any = {};
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
-        if (state.selectedRowKeys.length > 10) {
-            onlyMessage(
-                '当前系统仅能导出10,000条，期望导出数据超过10,000条，正在导出最大数据，请耐心等待导出完成！',
-                'warning',
-            );
-        }
         _params = {
             terms: [
                 {
@@ -244,18 +234,12 @@ const handleExport = async () => {
             ],
         };
     } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            if (dataTotal.value > 10) {
-                onlyMessage(
-                    '当前系统仅能导出10,000条，期望导出数据超过10,000条，正在导出最大数据，请耐心等待导出完成！',
-                    'warning',
-                );
-            }
-            _params.terms = [];
-        }
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
 
     // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名

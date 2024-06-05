@@ -1,14 +1,14 @@
 <template>
     <page-container>
         <pro-search
-            :columns="columns"
+            :columns="tableColumns"
             target="notice-config"
             @search="handleSearch"
         />
         <FullPage>
             <JProTable
                 ref="configRef"
-                :columns="columns"
+                :columns="tableColumns"
                 :request="queryData"
                 model="table"
                 :params="globParams"
@@ -56,10 +56,9 @@
 
 <script setup lang="ts">
 import { downloadFileByUrl } from '@/utils/utils';
-import { _export } from '@/api/data-report/alarmSheet';
 import moment from 'moment';
-import { queryAlarmData } from '@/api/data-report/alarmSheet';
-import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
+import { queryAlarmData, _export } from '@/api/data-report/alarmSheet';
+import useFilterAlarmDesc from '@/hook/useFilterAlarmDesc';
 import { FullPage } from 'components/Layout';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
@@ -82,7 +81,9 @@ const selectIds = ref<Array<number | string>>([]);
 const type = ref<string>('xlsx');
 
 // 生成请求函数
-const queryDataFn = useFilterAlarmDesc(queryAlarmData, 'alarmTime');
+const { queryDataFactory, dicMap, tableColumns } = useFilterAlarmDesc(columns);
+
+const queryDataFn = queryDataFactory(queryAlarmData, 'alarmTime');
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -141,31 +142,62 @@ const popTitle = computed(() => {
 });
 
 /**
- * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
+ * @function handleSearchTerms 处理搜索条件
  * @param _params
  */
-const handleSearchDate = (_params: any) => {
-    // 判断是否存在terms
+const handleSearchTerms = (_params: any) => {
+    // 判断是否存在terms,
     if (_params.terms && _params.terms.length > 0) {
         // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
         if (
             _params.terms[0]?.terms &&
             _params.terms[0]?.terms[0].value !== 'number'
-        )
+        ) {
             if (_params.terms[0]?.terms[0].termType === 'lte') {
                 // 时间为小于等于
                 const date = _params.terms[0]?.terms[0].value;
+                // 转换为秒钟级别的时间戳
                 let timeStamp: string | number = dayjs(date).unix();
+                // 为时间戳需要加上毫秒999吗，这里最简单的方法就是后端取消所有的毫秒时间戳就不会用前端来处理误差
                 timeStamp = Number(String(timeStamp) + '999');
                 _params.terms[0].terms[0].value = timeStamp;
-                // 时间为大于等于
             } else if (_params.terms[0]?.terms[0].termType === 'gte') {
+                // 时间为大于等于
                 const date = _params.terms[0]?.terms[0].value;
                 let timeStamp: string | number = dayjs(date).unix();
                 timeStamp = Number(String(timeStamp) + '000');
                 _params.terms[0].terms[0].value = timeStamp;
+            } else if (_params.terms[0]?.terms[0].column === 'description') {
+                // 处理请求的参数为告警或故障描述的情况
+                // 这个查询条件是因为后端未处理，所以全部交由前端来处理字典和故障描述的映射关系，不要怪我写得烂
+                const { termType, value } = _params.terms[0]?.terms[0];
+                tableColumns.forEach((column: any) => {
+                    if (column.dataIndex === 'description') {
+                        column.search.options.forEach((item: any) => {
+                            if (item.value === value) {
+                                // 替换原本的搜索条件
+                                _params.terms[0] = {
+                                    terms: [
+                                        {
+                                            type: 'and',
+                                            value: item.alarmDictionaryValue,
+                                            termType: termType,
+                                            column: 'alarmDictionaryValue',
+                                        },
+                                        {
+                                            type: 'and',
+                                            value: item.alarmDictionaryKey,
+                                            termType: termType,
+                                            column: 'alarmDictionaryKey',
+                                        },
+                                    ],
+                                };
+                            }
+                        });
+                    }
+                });
             }
-        // 其他小于和大于未做处理，因为后端能够直接处理
+        }
     }
 };
 
@@ -174,7 +206,7 @@ const handleSearchDate = (_params: any) => {
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    handleSearchDate(_params);
+    handleSearchTerms(_params);
     globParams.value = _params;
     console.log('after handle', _params);
 };

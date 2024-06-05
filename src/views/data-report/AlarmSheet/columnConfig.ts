@@ -77,13 +77,14 @@ export const columns = [
         },
     },
     {
-        title: '告警说明 ',
+        title: '告警说明',
         dataIndex: 'description',
         key: 'description',
         scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [],
         },
     },
 ];

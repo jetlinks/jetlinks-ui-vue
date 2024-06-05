@@ -49,7 +49,8 @@ export const columns = [
         key: 'description',
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [],
         },
     },
     {
