@@ -173,6 +173,9 @@ const handleExport = async () => {
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
         _params = {
+            paging: false,
+            sorts: [{ name: 'reportTime', order: 'desc' }],
+            pageSize: state.selectedRowKeys.length,
             terms: [
                 {
                     column: 'id',
