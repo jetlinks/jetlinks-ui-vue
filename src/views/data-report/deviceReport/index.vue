@@ -203,7 +203,8 @@ const columns = [
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
+    console.log(state.selectedRowKeys)
+    if (dataTotal.value > 10000 && state.selectedRowKeys.length > 10000) {
         return '系统最大导数为10,000，当前数据已超过10,000！';
     }
     return state.selectedRowKeys.length === 0
@@ -275,22 +276,27 @@ const handleExport = async () => {
             ],
         };
     } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            _params.terms = [];
+        if(dataTotal.value > 10000){
+            onlyMessage('最多只能导出10000条数据', 'warning');
         }
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms
+        };
     }
 
+    // console.log('_params',_params)
     // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
-    deviceExport('设备消息数据', type.value, _params).then((res: any) => {
+    deviceExport('设备中心数据', type.value, _params).then((res: any) => {
+        console.log('导出res',res)
         if (res) {
             const blob = new Blob([res.data], { type: type.value });
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `设备消息数据-${moment(new Date()).format(
+                `设备中心数据-${moment(new Date()).format(
                     'YYYY/MM/DD HH:mm:ss',
                 )}`,
                 type.value,

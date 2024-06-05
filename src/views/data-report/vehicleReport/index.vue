@@ -193,7 +193,7 @@ const columns = [
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
+    if (dataTotal.value > 10000 && state.selectedRowKeys.length > 10000) {
         return '系统最大导数为10,000，当前数据已超过10,000！';
     }
     return state.selectedRowKeys.length === 0
