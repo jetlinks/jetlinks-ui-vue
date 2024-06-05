@@ -76,7 +76,7 @@ import { useSelect } from '@/utils/hooks/useSelect';
 const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
     useSelect();
 import moment from 'moment';
-import { EXPORT_TIPS } from '@/utils/consts';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { onlyMessage } from '@/utils/comm';
 
 // 全局的搜索参数
@@ -205,9 +205,6 @@ const handleExport = async () => {
     let _params: any = {};
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
-        if (state.selectedRowKeys.length > 10000) {
-            onlyMessage(EXPORT_TIPS, 'warning');
-        }
         _params = {
             terms: [
                 {
@@ -222,9 +219,6 @@ const handleExport = async () => {
         if (globParams.value.terms.length > 0) {
             _params.terms = [globParams.value.terms[0]?.terms[0]];
         } else {
-            if (dataTotal.value > 10000) {
-                onlyMessage(EXPORT_TIPS, 'warning');
-            }
             _params.terms = [];
         }
     }
@@ -241,10 +235,17 @@ const handleExport = async () => {
                 )}`,
                 type.value,
             );
+            if (
+                state.selectedRowKeys?.length > 10000 ||
+                dataTotal.value > 10000
+            ) {
+                onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+            } else {
+                onlyMessage(EXPORT_TIPS);
+            }
         }
     });
 };
-
 
 /**
  * 搜索

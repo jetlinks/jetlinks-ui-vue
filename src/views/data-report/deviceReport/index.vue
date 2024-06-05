@@ -113,7 +113,7 @@
 import { queryDeviceList, deviceExport } from '@/api/data-report/deviceReport';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
-import { EXPORT_TIPS } from '@/utils/consts';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelect } from '@/utils/hooks/useSelect';
 import { onlyMessage } from '@/utils/comm';
 
@@ -265,9 +265,6 @@ const handleExport = async () => {
     let _params: any = {};
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
-        if (state.selectedRowKeys.length > 10000) {
-            onlyMessage(EXPORT_TIPS, 'warning');
-        }
         _params = {
             terms: [
                 {
@@ -282,9 +279,6 @@ const handleExport = async () => {
         if (globParams.value.terms.length > 0) {
             _params.terms = [globParams.value.terms[0]?.terms[0]];
         } else {
-            if (dataTotal.value > 10000) {
-                onlyMessage(EXPORT_TIPS, 'warning');
-            }
             _params.terms = [];
         }
     }
@@ -301,6 +295,14 @@ const handleExport = async () => {
                 )}`,
                 type.value,
             );
+            if (
+                state.selectedRowKeys?.length > 10000 ||
+                (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
+            ) {
+                onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+            } else {
+                onlyMessage(EXPORT_TIPS);
+            }
         }
     });
 };

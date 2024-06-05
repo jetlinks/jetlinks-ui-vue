@@ -66,5 +66,5 @@ export const protocolList = [
     { label: 'BACNetIp', value: 'BACNetIp', alias: 'BACNet/IP' },
 ];
 
-export const EXPORT_TIPS =
-    '当前系统仅能导出10,000条，期望导出数据超过10,000条，正在导出最大数据，请耐心等待导出完成！';
+export const EXPORT_TIPS = '导出成功';
+export const EXCEED_EXPORT_TIPS = '超出上限，已导出10000条';
