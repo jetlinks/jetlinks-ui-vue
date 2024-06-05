@@ -214,6 +214,9 @@ const handleExport = async () => {
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
         _params = {
+            paging: false,
+            sorts: [{ name: 'reportTime', order: 'desc' }],
+            pageSize: state.selectedRowKeys.length,
             terms: [
                 {
                     column: 'id',
@@ -242,7 +245,7 @@ const handleExport = async () => {
             `震动异常数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
             type.value,
         );
-        //勾选总数大于10000或者没有勾选，但总数大于10000
+
         if (
             state.selectedRowKeys?.length > 10000 ||
             (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)

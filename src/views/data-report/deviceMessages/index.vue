@@ -140,6 +140,9 @@ const handleExport = async () => {
     let _params: any = {};
     if (state.selectedRowKeys.length > 0) {
         _params = {
+            paging: false,
+            pageSize: state.selectedRowKeys?.length,
+            sorts: [{ name: 'createTime', order: 'desc' }],
             terms: [
                 {
                     column: '_id',
@@ -149,6 +152,9 @@ const handleExport = async () => {
             ],
         };
     } else {
+        if(dataTotal.value > 10000){
+            onlyMessage('大于10000条数据,只能导出前10000条数据', 'warning');
+        }
         _params = {
             paging: false,
             pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
@@ -200,7 +206,7 @@ const handleOnChange = (num: number, pageSize: number) => {
 
 const columns = [
     {
-        title: 'ID',
+        title: '设备ID',
         dataIndex: 'deviceId',
         key: 'deviceId',
         width: 180,
