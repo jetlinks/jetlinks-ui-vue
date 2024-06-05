@@ -13,7 +13,13 @@
                 model="table"
                 :params="globParams"
                 :gridColumn="3"
-                :row-selection="rowSelection"
+                :rowKey="(record: any) => record.id"
+                :rowSelection="{
+                    selectedRowKeys: state.selectedRowKeys,
+                    onChange: selectedRowChange,
+                    onSelect: handleRowSelected,
+                    onSelectAll: handleSelectAll,
+                }"
             >
                 <template #headerTitle>
                     <j-space>
@@ -75,10 +81,20 @@ const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSize = ref<number>(12);
 
-// 选中的数据的id
-const selectIds = ref<Array<number | string>>([]);
 // 导出文件的类型
 const type = ref<string>('xlsx');
+
+// 当前分页表格选中的数据项的id
+const state = reactive<{ selectedRowKeys: string[] }>({
+    selectedRowKeys: [],
+});
+
+// 处理导出按钮的提示，无需修改复制即可
+const popTitle = computed(() => {
+    return state.selectedRowKeys.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
 
 // 生成请求函数
 const { queryDataFactory, dicMap, tableColumns } = useFilterAlarmDesc(columns);
@@ -131,16 +147,6 @@ const handleOnChange = (num: number, pageSize: number) => {
     handleSearch(_params);
 };
 
-// 处理导出按钮的提示，无需修改复制即可
-const popTitle = computed(() => {
-    if (dataTotal.value > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000，请按条件筛选后导出！';
-    }
-    return selectIds.value.length === 0
-        ? '确认导出全部数据？'
-        : '确认导出选中数据？';
-});
-
 /**
  * @function handleSearchTerms 处理搜索条件
  * @param _params
@@ -171,6 +177,8 @@ const handleSearchTerms = (_params: any) => {
                 // 处理请求的参数为告警或故障描述的情况
                 // 这个查询条件是因为后端未处理，所以全部交由前端来处理字典和故障描述的映射关系，不要怪我写得烂
                 const { termType, value } = _params.terms[0]?.terms[0];
+                // 这里直接取tableColumns中的description字段的search的options来循环取值
+                // 因为这里options已经将树状结构扁平化，因此直接取value来判断即可
                 tableColumns.forEach((column: any) => {
                     if (column.dataIndex === 'description') {
                         column.search.options.forEach((item: any) => {
@@ -206,9 +214,9 @@ const handleSearchTerms = (_params: any) => {
  * @param _params
  */
 const handleSearch = (_params: any) => {
+    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
     handleSearchTerms(_params);
     globParams.value = _params;
-    console.log('after handle', _params);
 };
 
 /**
@@ -216,50 +224,116 @@ const handleSearch = (_params: any) => {
  */
 const handleExport = async () => {
     let _params: any = {};
-    if (selectIds.value?.length > 0) {
+    // 当部分选中时
+    if (state.selectedRowKeys.length > 0) {
         _params = {
+            paging: false,
+            pageSize:
+                state.selectedRowKeys.length > 10000
+                    ? 10000
+                    : state.selectedRowKeys.length,
             terms: [
                 {
                     column: 'id',
-                    value: selectIds.value,
+                    value: state.selectedRowKeys,
                     termType: 'in',
                 },
             ],
+            sorts: [{ name: 'alarmTime', order: 'desc' }],
         };
     } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            _params.terms = [];
-        }
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'alarmTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
 
-    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
-    _export(type.value, _params).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `车辆告警数据-${moment(new Date()).format(
-                    'YYYY/MM/DD HH:mm:ss',
-                )}`,
-                type.value,
-            );
-        }
-    });
+    const res = await _export(type.value, _params);
+    if (res.status === 200) {
+        const blob = new Blob([res.data], { type: type.value });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(
+            url,
+            `车辆告警数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            type.value,
+        );
+        if (
+            state.selectedRowKeys?.length > 10000 ||
+            (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
+        )
+            onlyMessage('超出10000条:超出上限，已导出10000条', 'warning');
+        else onlyMessage('导出成功');
+    }
 };
 
 /**
- * 选中行
+ * @function selectedRowChange table组件的rowSelection的onChange事件
+ * @param selectedRowKeys 选中的数据项的id数组
+ * @param selectedRows 选中的数据项的对象数组
  */
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        selectIds.value = selectedRowKeys;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {},
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {},
+const selectedRowChange = (selectedRowKeys: string[], selectedRows: any[]) => {
+    if (selectedRowKeys.length === 0 || selectedRows.length === 0) {
+        state.selectedRowKeys = [];
+    }
+};
+
+/**
+ * @function handleRowSelected table组件的rowSelection的onSelect事件
+ * @param record 当前选中的数据项的对象
+ * @param selected 是否选中，用于判断选中还是取消选中
+ * @param selectedRows 选中的所有数据项的对象数组
+ */
+const handleRowSelected = (
+    record: any,
+    selected: boolean,
+    selectedRows: any,
+) => {
+    if (selected) {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        index === -1 && state.selectedRowKeys.push(record.id);
+    } else {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        index !== -1 && state.selectedRowKeys.splice(index, 1);
+    }
+};
+
+/**
+ * @function handleSelectAll table组件的rowSelection的onSelectAll事件
+ * @param selected 是否全选，用于判断全选还是取消全选
+ * @param selectedRows 选中的所有数据项的对象数组
+ * @param changeRows 发生变化的数据项的对象数组
+ */
+const handleSelectAll = (
+    selected: boolean,
+    selectedRows: any,
+    changeRows: any,
+) => {
+    if (selected) {
+        changeRows.forEach((row: any) => {
+            const len = state.selectedRowKeys.length;
+            let flag = true;
+            for (let i = 0; i < len; i++) {
+                if (row.id === state.selectedRowKeys[i]) {
+                    flag = false;
+                    break;
+                }
+            }
+            flag && state.selectedRowKeys.push(row.id);
+        });
+    } else {
+        changeRows.forEach((row: any) => {
+            const index = state.selectedRowKeys.findIndex(
+                (item) => item === row.id,
+            );
+            index !== -1 && state.selectedRowKeys.splice(index, 1);
+        });
+    }
 };
 </script>
 

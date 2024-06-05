@@ -39,8 +39,8 @@
                 <template #cardType="{ cardType }">
                     {{ cardType ? handleCardType(cardType.value) : '--' }}
                 </template>
-                <template #deviceId="{ deviceId }">
-                    {{ deviceId || '--' }}
+                <template #factoryNumber="{ factoryNumber }">
+                    {{ factoryNumber || '--' }}
                 </template>
                 <template #totalFlow="{ totalFlow }">
                     {{ formatFlow(totalFlow) }}
@@ -124,6 +124,11 @@ const type = ref<string>('xlsx');
 
 // 每次请求后的数据
 const dataSource = ref<any[]>([]);
+
+// 当前分页表格选中的数据项的id
+const state = reactive<{ selectedRowKeys: string[] }>({
+    selectedRowKeys: [],
+});
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
@@ -217,6 +222,7 @@ const handleSearch = (_params: any) => {
     handleSearchDate(_params);
     globParams.value = _params;
 };
+
 /**
  * @function handleExport 导出
  */
@@ -225,6 +231,11 @@ const handleExport = async () => {
     // 当部分选中时
     if (state.selectedRowKeys.length > 0) {
         _params = {
+            paging: false,
+            pageSize:
+                state.selectedRowKeys.length > 10000
+                    ? 10000
+                    : state.selectedRowKeys.length,
             terms: [
                 {
                     column: 'id',
@@ -232,6 +243,7 @@ const handleExport = async () => {
                     termType: 'in',
                 },
             ],
+            sorts: [{ name: 'createTime', order: 'desc' }],
         };
     } else {
         _params = {
@@ -242,31 +254,30 @@ const handleExport = async () => {
         };
     }
 
-    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
-    simDataExport(type.value, _params).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `sim卡数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
-                type.value,
-            );
-        }
-    });
+    const res = await simDataExport(type.value, _params);
+    if (res.status === 200) {
+        const blob = new Blob([res.data], { type: type.value });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(
+            url,
+            `sim卡数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            type.value,
+        );
+        if (
+            state.selectedRowKeys?.length > 10000 ||
+            (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
+        )
+            onlyMessage('超出10000条:超出上限，已导出10000条', 'warning');
+        else onlyMessage('导出成功');
+    }
 };
-
-// 当前分页表格选中的数据项的id
-const state = reactive<{ selectedRowKeys: string[] }>({
-    selectedRowKeys: [],
-});
 
 /**
  * @function selectedRowChange table组件的rowSelection的onChange事件
- * @param selectedRowKeys
- * @param selectedRows
+ * @param selectedRowKeys 选中的数据项的id数组
+ * @param selectedRows 选中的数据项的对象数组
  */
-const selectedRowChange = (selectedRowKeys: string[], selectedRows?: any) => {
+const selectedRowChange = (selectedRowKeys: string[], selectedRows: any[]) => {
     if (selectedRowKeys.length === 0 || selectedRows.length === 0) {
         state.selectedRowKeys = [];
     }
@@ -274,9 +285,9 @@ const selectedRowChange = (selectedRowKeys: string[], selectedRows?: any) => {
 
 /**
  * @function handleRowSelected table组件的rowSelection的onSelect事件
- * @param record
- * @param selected
- * @param selectedRows
+ * @param record 当前选中的数据项的对象
+ * @param selected 是否选中，用于判断选中还是取消选中
+ * @param selectedRows 选中的所有数据项的对象数组
  */
 const handleRowSelected = (
     record: any,
@@ -298,9 +309,9 @@ const handleRowSelected = (
 
 /**
  * @function handleSelectAll table组件的rowSelection的onSelectAll事件
- * @param selected
- * @param selectedRows
- * @param changeRows
+ * @param selected 是否全选，用于判断全选还是取消全选
+ * @param selectedRows 选中的所有数据项的对象数组
+ * @param changeRows 发生变化的数据项的对象数组
  */
 const handleSelectAll = (
     selected: boolean,
@@ -308,20 +319,24 @@ const handleSelectAll = (
     changeRows: any,
 ) => {
     if (selected) {
-        for (let i = 0; i < changeRows.length; i++) {
+        changeRows.forEach((row: any) => {
+            const len = state.selectedRowKeys.length;
             let flag = true;
-            state.selectedRowKeys.forEach((item: any) => {
-                if (item === changeRows[i].id) flag = false;
-            });
-            flag && state.selectedRowKeys.push(changeRows[i].id);
-        }
+            for (let i = 0; i < len; i++) {
+                if (row.id === state.selectedRowKeys[i]) {
+                    flag = false;
+                    break;
+                }
+            }
+            flag && state.selectedRowKeys.push(row.id);
+        });
     } else {
-        for (let i = 0; i < changeRows.length; i++) {
+        changeRows.forEach((row: any) => {
             const index = state.selectedRowKeys.findIndex(
-                (item) => item === changeRows[i].id,
+                (item) => item === row.id,
             );
             index !== -1 && state.selectedRowKeys.splice(index, 1);
-        }
+        });
     }
 };
 </script>

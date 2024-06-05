@@ -20,8 +20,8 @@ export const columns = [
     },
     {
         title: '绑定车辆编号',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'factoryNumber',
+        key: 'factoryNumber',
         ellipsis: true,
         scopedSlots: true,
         search: {
