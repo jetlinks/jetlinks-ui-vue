@@ -23,7 +23,10 @@
                         {{ (item?.progress || 0) + '%' }}
                     </span>
                 </div>
-                <PermissionButton type="text" hasPermission="device/Firmware:view" @click="() => taskDetail(item)" 
+                <PermissionButton
+                    type="text"
+                    hasPermission="device/Firmware:view"
+                    @click="() => taskDetail(item)"
                     >任务详情</PermissionButton
                 >
             </div>
@@ -46,6 +49,7 @@
                 }}</a-descriptions-item>
             </a-descriptions>
         </div>
+        <JEmpty v-if="taskList.length === 0"></JEmpty>
     </a-drawer>
     <Save v-if="visible" :data="current" @change="saveChange"></Save>
     <TaskDetail
@@ -67,7 +71,7 @@ const props = defineProps({
         default: '',
     },
 });
-const taskList = ref();
+const taskList = ref([]);
 const visible = ref(false);
 const detailVisible = ref(false);
 const current = ref();
