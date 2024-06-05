@@ -61,10 +61,11 @@ const layoutConf = reactive({
   splitMenus: true,
 });
 
+//跳转大屏系统
 const onReport = async () => {
+  const report = '9100';
   const reportUrl = configInfo.value.front?.reportPath
-  const openUrl = `${reportUrl}/#/user/login?id=:id&report=report`;
-  console.log('openUrl',openUrl)
+  const openUrl = `${reportUrl}/#/login?id=id&report=${report}`;
   window.open(openUrl, '_blank');
 };
 
