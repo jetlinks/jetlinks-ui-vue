@@ -134,7 +134,7 @@ const columns = [
         },
     },
     {
-        title: '出场编号',
+        title: '出厂编号',
         dataIndex: 'factoryNumber',
         key: 'factoryNumber',
         ellipsis: true,
@@ -171,17 +171,6 @@ const columns = [
         },
     },
     {
-        title: '日期',
-        dataIndex: 'vehicleDate',
-        key: 'vehicleDate',
-        width: 200,
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'date',
-        },
-    },
-    {
         title: '操作',
         key: 'action',
         fixed: 'right',
@@ -193,9 +182,6 @@ const columns = [
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 && state.selectedRowKeys.length > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000！';
-    }
     return state.selectedRowKeys.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
@@ -269,7 +255,6 @@ const handleOnChange = (num: number, pageSize: number) => {
  */
 
 const handleExport = async () => {
-    console.log(state.selectedRows, 'selectedRows');
     //勾选一条的情况
     if (state.selectedRowKeys?.length === 1) {
         const { id, deviceId } = state.selectedRows[0];

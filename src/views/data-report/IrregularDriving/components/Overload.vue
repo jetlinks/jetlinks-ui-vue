@@ -90,7 +90,6 @@ const currentPage = ref<number>(1);
 const pageSize = ref<number>(12);
 
 const configRef = ref<Record<string, any>>({});
-const selectIds = ref<Array<number | string>>([]);
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -116,9 +115,6 @@ const queryData = async (_params: any) => {
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    if (dataTotal.value > 10000 || state.selectedRowKeys.length > 10000) {
-        return '系统最大导数为10,000，当前数据已超过10,000！';
-    }
     return state.selectedRowKeys.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
@@ -215,12 +211,12 @@ const handleExport = async () => {
             ],
         };
     } else {
-        // 当全不选时，为导出接口添加筛选条件
-        if (globParams.value.terms.length > 0) {
-            _params.terms = [globParams.value.terms[0]?.terms[0]];
-        } else {
-            _params.terms = [];
-        }
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'reportTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
 
     // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
