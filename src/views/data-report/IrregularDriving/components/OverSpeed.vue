@@ -204,7 +204,7 @@ const handleExport = async () => {
             );
             if (
                 state.selectedRowKeys?.length > 10000 ||
-                dataTotal.value > 10000
+                (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)
             ) {
                 onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
             } else {

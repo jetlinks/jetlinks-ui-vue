@@ -243,7 +243,10 @@ const handleExport = async () => {
             type.value,
         );
         //勾选总数大于10000或者没有勾选，但总数大于10000
-        if (state.selectedRowKeys?.length > 10000 || dataTotal.value > 10000) {
+        if (
+            state.selectedRowKeys?.length > 10000 ||
+            (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)
+        ) {
             onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
         } else {
             onlyMessage(EXPORT_TIPS);
