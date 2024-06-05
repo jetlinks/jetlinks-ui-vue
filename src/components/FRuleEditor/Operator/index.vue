@@ -240,17 +240,21 @@ watch(
 .operator-box {
     width: 100%;
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
 
     .left,
     .right {
-        width: 50%;
-        height: 350px;
+        //width: 50%;
+        //height: 350px;
+      height: calc(50% - 7px);
         border: 1px solid lightgray;
     }
 
     .left {
         padding: 10px;
-        margin-right: 10px;
+        //margin-right: 10px;
         .tree {
             height: 300px;
             //overflow-y: auto;

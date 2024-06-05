@@ -33,6 +33,7 @@
                     :dropdownStyle="{
                           zIndex: 1071
                        }"
+                    :virtual="true"
                 >
                     <j-select-option
                         :disabled="

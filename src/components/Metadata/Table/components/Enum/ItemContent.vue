@@ -2,10 +2,12 @@
   <div>
     <EditTable
       ref="tableRef"
+      rowKey="value"
       :columns="columns"
       :dataSource="dataSource"
       :pagination="false"
       :height="200"
+      :disableMenu="false"
     >
       <template #value="{ record, index }">
         <EditableItem
@@ -63,9 +65,6 @@ const columns = [{
       {
         asyncValidator: (rule, value, ...setting) => {
           const option = setting[2]
-          if (!value) {
-            return Promise.reject('请输入Value')
-          }
           console.log(dataSource.value, value, option)
           if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
             return Promise.reject('该Value值已存在')
@@ -111,8 +110,13 @@ const addItem = () => {
   formItemContext.onFieldChange()
 }
 
+const validate = async () => {
+  const res = await tableRef.value?.validate()
+  return res
+}
+
 defineExpose({
-  validate: () => tableRef.value?.validate()
+  validate
 })
 
 watch(

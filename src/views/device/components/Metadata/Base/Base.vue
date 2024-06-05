@@ -12,7 +12,7 @@
       <div class="extra-header">
         <div class="extra-left">
           <a-space>
-            <a-input/>
+            <a-input-search @search="handleSearch" />
             <AIcon
                 :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
                 @click="fullScreenToggle"
@@ -22,8 +22,9 @@
         <div class="extra-right">
           <PermissionButton
               type="primary"
-              :hasPermission="`${permission}:update`"
               key="update"
+              placement="topRight"
+              :hasPermission="`${permission}:update`"
               :loading="loading"
               :disabled="hasOperate('add', type)"
               :tooltip="{
@@ -34,81 +35,94 @@
                     getPopupContainer: getPopupContainer,
                 }"
               @click="handleSaveClick()"
-              placement="topRight"
           >
             保存
           </PermissionButton>
         </div>
       </div>
     </template>
-    <template #id="{ record }">
-      <a-input v-model:value="record.id" placeholder="请输入标识"/>
+    <template #id="{ record, index }">
+      <EditTableFormItem :name="[index, 'id']">
+        <a-input v-model:value="record.id" placeholder="请输入标识" :disabled="record.expands?.isProduct"/>
+      </EditTableFormItem>
     </template>
-    <template #name="{ record }">
-      <a-input v-model:value="record.name" placeholder="请输入名称"/>
+    <template #name="{ record, index }">
+      <EditTableFormItem :name="[index, 'name']">
+        <a-input v-model:value="record.name" placeholder="请输入名称" :disabled="record.expands?.isProduct"/>
+      </EditTableFormItem>
     </template>
-    <template #valueType="{ record }">
-      <div style="display: flex; gap: 12px; align-items: center" v-if="['properties', 'tags'].includes(type)">
-        <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0"/>
-        <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit"/>
-        <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType"/>
-        <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength"/>
-        <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format"/>
-        <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType"/>
-        <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements"/>
-        <BooleanParams
-            v-else-if="record.valueType.type === 'boolean'"
-            v-model:falseText="record.valueType.falseText"
-            v-model:falseValue="record.valueType.falseValue"
-            v-model:trueText="record.valueType.trueText"
-            v-model:trueValue="record.valueType.trueValue"
+    <template #valueType="{ record, index }">
+      <EditTableFormItem :name="[index, 'valueType']">
+        <div style="display: flex; align-items: center" v-if="['properties', 'tags'].includes(type)">
+          <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
+          <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" :disabled="record.expands?.isProduct"/>
+          <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" :disabled="record.expands?.isProduct"/>
+          <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" :disabled="record.expands?.isProduct"/>
+          <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" :disabled="record.expands?.isProduct"/>
+          <BooleanParams
+              v-else-if="record.valueType.type === 'boolean'"
+              v-model:falseText="record.valueType.falseText"
+              v-model:falseValue="record.valueType.falseValue"
+              v-model:trueText="record.valueType.trueText"
+              v-model:trueValue="record.valueType.trueValue"
+              :disabled="record.expands?.isProduct"
+          />
+          <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties" :disabled="record.expands?.isProduct"/>
+          <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" :disabled="record.expands?.isProduct"/>
+        </div>
+        <div v-else-if="type === 'events'">
+          <ObjectParams v-model:value="record.valueType.properties">
+            <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+              <template #icon>
+                <AIcon type="SettingOutlined"/>
+              </template>
+              配置
+            </a-button>
+          </ObjectParams>
+        </div>
+      </EditTableFormItem>
+    </template>
+    <template #expands="{ record, index }">
+      <EditTableFormItem :name="[index, 'expands']">
+        <Source
+            v-if="props.type === 'properties'"
+            v-model:value="record.expands"
+            :target="target"
+            :record="record"
+            :disabled="record.expands?.isProduct"
         />
-        <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties"/>
-        <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType"/>
-      </div>
-      <div v-else-if="type === 'events'">
-        <ObjectParams v-model:value="record.valueType.properties">
-          <a-button type="link" style="padding: 0">
-            <template #icon>
-              <AIcon type="SettingOutlined"/>
-            </template>
-            配置
-          </a-button>
-        </ObjectParams>
-      </div>
-    </template>
-    <template #expands="{ record }">
-      <Source
-          v-if="props.type === 'properties'"
-          v-model:value="record.expands"
-          :target="target"
-          :record="record"
-      />
-      <a-select
-          v-else-if="props.type === 'events'"
-          v-model:value="record.expands.level"
-          style="width: 100%"
-          :options="EventLevel"
-          :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
-      />
-      <a-select
-          v-else-if="props.type === 'tags'"
-          v-model:value="record.expands.type"
-          mode="multiple"
-          style="width: 100%;"
-          :options="[
-          { label: '读', value: 'read'},
-          { label: '写', value: 'write'},
-          { label: '上报', value: 'report'},
-        ]"
-          :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
-          placeholder="请选择读写类型"
-      />
+        <a-select
+            v-else-if="props.type === 'events'"
+            v-model:value="record.expands.level"
+            style="width: 100%"
+            :options="EventLevel"
+            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
+            :disabled="record.expands?.isProduct"
+        />
+        <a-select
+            v-else-if="props.type === 'tags'"
+            v-model:value="record.expands.type"
+            mode="multiple"
+            style="width: 100%;"
+            :options="[
+              { label: '读', value: 'read'},
+              { label: '写', value: 'write'},
+              { label: '上报', value: 'report'},
+            ]"
+            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
+            :disabled="record.expands?.isProduct"
+            placeholder="请选择读写类型"
+        />
+      </EditTableFormItem>
     </template>
     <template #other="{ record }">
       <OtherSetting
           v-model:value="record.expands"
-          :type="record.valueType.type"
+          :type="record.valueType?.type"
+          :id="record.id"
+          :disabled="record.expands?.isProduct"
       />
     </template>
     <template #async="{ record }">
@@ -116,59 +130,69 @@
           v-model:value="record.async"
           style="width: 100%"
           :options="[
-          { label: '是', value: true },
-          { label: '否', value: false }
-        ]"
+            { label: '是', value: true },
+            { label: '否', value: false }
+          ]"
+          :disabled="record.expands?.isProduct"
           :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
       />
     </template>
-    <template #inputs="{ record }">
-      <ObjectParams v-model:value="record.inputs" :type="type">
-        <a-button type="link" style="padding: 0">
-          <template #icon>
-            <AIcon type="SettingOutlined"/>
-          </template>
-          配置
-        </a-button>
-      </ObjectParams>
+    <template #inputs="{ record, index }">
+      <EditTableFormItem :name="[index, 'inputs']">
+        <ObjectParams v-model:value="record.inputs" :type="type">
+          <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+            <template #icon>
+              <AIcon type="SettingOutlined"/>
+            </template>
+            配置
+          </a-button>
+        </ObjectParams>
+      </EditTableFormItem>
     </template>
-    <template #output="{ record }">
-      <div style="display: flex; gap: 12px; align-items: center">
-        <TypeSelect v-model:value="record.output.type" style="flex: 1 1 0;min-width: 0"/>
-        <IntegerParams v-if="['int', 'long'].includes(record.output.type)" v-model:value="record.output.unit"/>
-        <DoubleParams v-else-if="['float', 'double'].includes(record.output.type)" v-model:value="record.output"/>
-        <StringParams v-else-if="record.output.type === 'string'" v-model:value="record.output.maxLength"/>
-        <DateParams v-else-if="record.output.type === 'date'" v-model:value="record.output.format"/>
-        <FileParams v-else-if="record.output.type === 'file'" v-model:value="record.output.bodyType"/>
-        <EnumParams v-else-if="record.output.type === 'enum'" v-model:value="record.output.elements"/>
-        <BooleanParams
-            v-else-if="record.output.type === 'boolean'"
-            v-model:falseText="record.output.falseText"
-            v-model:falseValue="record.output.falseValue"
-            v-model:trueText="record.output.trueText"
-            v-model:trueValue="record.output.trueValue"
-        />
-        <ObjectParams
-            v-else-if="record.output.type === 'object'"
-            v-model:value="record.output.properties"
-        />
-        <ArrayParams v-else-if="record.output.type === 'array'" v-model:value="record.output.elementType"/>
-      </div>
+    <template #output="{ record, index }">
+      <EditTableFormItem :name="[index, 'output']">
+        <div style="display: flex; align-items: center">
+          <TypeSelect v-model:value="record.output.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <IntegerParams v-if="['int', 'long'].includes(record.output.type)" v-model:value="record.output.unit" :disabled="record.expands?.isProduct"/>
+          <DoubleParams v-else-if="['float', 'double'].includes(record.output.type)" v-model:value="record.output" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.output.type === 'string'" v-model:value="record.output.maxLength" :disabled="record.expands?.isProduct"/>
+          <DateParams v-else-if="record.output.type === 'date'" v-model:value="record.output.format" :disabled="record.expands?.isProduct"/>
+          <FileParams v-else-if="record.output.type === 'file'" v-model:value="record.output.bodyType" :disabled="record.expands?.isProduct"/>
+          <EnumParams v-else-if="record.output.type === 'enum'" v-model:value="record.output.elements" :disabled="record.expands?.isProduct"/>
+          <BooleanParams
+              v-else-if="record.output.type === 'boolean'"
+              v-model:falseText="record.output.falseText"
+              v-model:falseValue="record.output.falseValue"
+              v-model:trueText="record.output.trueText"
+              v-model:trueValue="record.output.trueValue"
+              :disabled="record.expands?.isProduct"
+          />
+          <ObjectParams
+              v-else-if="record.output.type === 'object'"
+              v-model:value="record.output.properties"
+              :disabled="record.expands?.isProduct"
+          />
+          <ArrayParams v-else-if="record.output.type === 'array'" v-model:value="record.output.elementType" :disabled="record.expands?.isProduct"/>
+        </div>
+      </EditTableFormItem>
     </template>
     <template #description="{ record }">
-      <a-input v-model:value="record.description" placeholder="请输入说明"/>
+      <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct"/>
     </template>
-    <template #properties="{ record }">
-      <ObjectParams v-model:value="record.valueType.properties"/>
+    <template #properties="{ record, index }">
+      <EditTableFormItem :name="[index, 'properties']">
+        <ObjectParams v-model:value="record.valueType.properties" :disabled="record.expands?.isProduct"/>
+      </EditTableFormItem>
     </template>
     <template #group="{ record }">
-      <GroupSelect v-model:value="record.expands.group"/>
+      <GroupSelect v-model:value="record.expands.group" :disabled="record.expands?.isProduct"/>
     </template>
   </EditTable>
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
       :data="detailData.data"
       :getPopupContainer="getPopupContainer"
+      :unitOptions="unitOptions"
       @cancel="cancelDetailModal"
   />
   <FunctionModal
@@ -187,6 +211,7 @@
       v-else-if="type === 'tags' && detailData.visible"
       :data="detailData.data"
       :getPopupContainer="getPopupContainer"
+      :unitOptions="unitOptions"
       @cancel="cancelDetailModal"
   />
 </template>
@@ -201,7 +226,7 @@ import type {PropType} from 'vue';
 import {TOKEN_KEY} from '@/utils/variable'
 import {useRouter, onBeforeRouteUpdate} from 'vue-router'
 import {useMetadata, useOperateLimits, useGroup} from './hooks';
-import {useColumns} from './columns';
+import {useColumns, useSaveUnit} from './columns';
 import {getMetadataItemByType, limitsMap} from './utils';
 import {Source, OtherSetting} from './components';
 import {saveProductVirtualProperty} from '@/api/device/product';
@@ -212,7 +237,7 @@ import {asyncUpdateMetadata, updateMetadata} from '../metadata';
 import {useMetadataStore} from '@/store/metadata';
 import {DeviceInstance} from '@/views/device/Instance/typings';
 import {onlyMessage, LocalStore} from '@/utils/comm';
-import {omit, cloneDeep} from "lodash-es";
+import {omit} from "lodash-es";
 import {PropertiesModal, FunctionModal, EventModal, TagsModal} from './DetailModal'
 import {Modal} from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
@@ -232,10 +257,10 @@ import {
   ObjectParams,
   ArrayParams,
   DoubleParams,
-  GroupSelect
+  GroupSelect,
+  EditTableFormItem
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
-import {message} from "ant-design-vue/es";
 
 const props = defineProps({
   target: {
@@ -254,10 +279,11 @@ const props = defineProps({
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
 
-const tableContainer = ref()
 const system = useSystem();
 const {basicLayout} = storeToRefs(system);
 const router = useRouter()
+
+const { unitOptions } = useSaveUnit()
 
 const {data: metadata, noEdit, productNoEdit} = useMetadata(_target, props.type);
 const {data: tagsMetadata} = useMetadata(_target, 'tags')
@@ -272,11 +298,9 @@ const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
-let copyRecordCache: Record<string, any> | undefined = undefined
 
 const {initOptions} = useGroup()
 
-// const columns = computed(() => MetadataMapping.get(props.type!));
 const {columns} = useColumns(dataSource, props.type, _target, noEdit, productNoEdit)
 
 const detailData = reactive({
@@ -286,18 +310,12 @@ const detailData = reactive({
 
 const heavyLoad = ref<Boolean>(false)
 
-const showSave = ref(metadata.value.length !== 0)
-
 const getPopupContainer = (node: any) => {
-  return node
+  return node || document.body
 }
 
 provide('_tagsDataSource', tagsMetadata)
 provide('metadataSource', dataSource)
-const showDetail = (data: any) => {
-  detailData.data = data
-  detailData.visible = true
-}
 
 const cancelDetailModal = () => {
   detailData.data = {}
@@ -323,7 +341,6 @@ const handleSearch = (searchValue: string) => {
 };
 
 const scrollDown = (len: number = 5) => {
-  console.log('到底了')
   dataSource.value.push(...(new Array(len).fill(1).map(() => getMetadataItemByType(props.type!))))
 }
 
@@ -333,43 +350,40 @@ const removeItem = (index: number) => {
 }
 
 const editStatusChange = (status: boolean) => {
-  console.log('editStatusChange', status)
   editStatus.value = status
 }
 
-const rightMenuClick = (type: string, record: Record<string, any>) => {
-  console.log(type, record)
+const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  Record<string, any>) => {
   const _index = record.__index
   switch (type) {
     case 'add':
       dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
       break;
-    case 'copy':
-      let _record = JSON.parse(JSON.stringify(record))
-      _record.id = `copy_${_record.id}`
-      copyRecordCache = _record
-      break;
+    // case 'copy':
+    //   let _record = JSON.parse(JSON.stringify(record))
+    //   _record.id = `copy_${_record.id}`
+    //   copyRecordCache = _record
+    //   break;
     case 'paste':
-      console.log('paste', _index, record)
-      if (Object.keys(copyRecordCache).length) {
-        let cloneRecord = JSON.parse(JSON.stringify(copyRecordCache))
-        if (record.id) {
-          Modal.confirm({
-            title: '当前行存在数据',
-            onOk() {
-              dataSource.value.splice(_index, 1, cloneRecord)
-            },
-            onCancel() {
-              console.log('Cancel');
-            },
-          })
-        } else {
-          dataSource.value.splice(_index, 1, cloneRecord)
-        }
+      const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
+      cloneRecord.id = `copy_${cloneRecord.id}`
+      if (record.id) {
+        Modal.confirm({
+          title: '当前行存在数据',
+          onOk() {
+            dataSource.value.splice(_index, 1, cloneRecord)
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        })
+      } else {
+        dataSource.value.splice(_index, 1, cloneRecord)
       }
       break;
     case 'detail':
-      console.log('detail', record)
+      detailData.data = record
+      detailData.visible = true
       break;
     case 'delete':
       dataSource.value.splice(_index, 1)
@@ -381,7 +395,7 @@ const handleSaveClick = async (next?: Function) => {
   let resp = await tableRef.value.validate().catch(err => {
     console.log('handleSaveClick--err', err)
   });
-  console.log('handleSaveClick', resp)
+  console.log('handleSaveClick', dataSource.value)
   if (resp) {
 
     const virtual: any[] = [];
@@ -404,6 +418,7 @@ const handleSaveClick = async (next?: Function) => {
       }
       // return item
     })
+    console.log(virtual, arr)
     // 保存规则
     if (virtual.length) {
       let res = undefined
@@ -428,6 +443,7 @@ const handleSaveClick = async (next?: Function) => {
     const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
     let _data = updateMetadata(props.type!, arr, _detail, updateStore)
     loading.value = true
+
     const result = await asyncUpdateMetadata(_target, _data).finally(() => {
       loading.value = false
     })

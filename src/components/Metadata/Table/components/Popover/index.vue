@@ -8,7 +8,7 @@
       'zIndex': 1070
     }"
     :getPopupContainer="(node) => tableWrapperRef || node"
-    @visibleChange="() => {}"
+    @visibleChange="null"
   >
     <template #content>
       <div v-if="visible">
@@ -80,7 +80,6 @@ const submit = async () => {
 }
 
 watch(() => props.visible, (newValue) => {
-  console.log('visibleChange', newValue)
   visibleChange(newValue)
 })
 

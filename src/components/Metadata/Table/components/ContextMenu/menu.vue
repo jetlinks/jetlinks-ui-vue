@@ -2,7 +2,8 @@
   <div
     class="metadata-context-menu"
     ref="contextMenu"
-    @blur="onClose"
+    tabindex="-1"
+    @blur="close"
   >
     <a-menu @click="clickFunc">
       <a-menu-item key="add">
@@ -11,10 +12,10 @@
       <a-menu-item key="copy">
         <AIcon type="CopyOutlined" /> 复制行
       </a-menu-item>
-      <a-menu-item key="paste">
+      <a-menu-item key="paste" :disabled="showPaste">
         粘贴行
       </a-menu-item>
-      <a-menu-item key="detail">
+      <a-menu-item key="detail" :disabled="showDetail">
         <AIcon type="FileSearchOutlined" /> 查看详情
       </a-menu-item>
       <a-menu-item key="delete">
@@ -28,16 +29,35 @@
 import { onMounted, ref, nextTick } from "vue";
 
 const props = defineProps({
+  data: {type: Object, default: () => ({})},
   onClose: { type: Function, default: () => {} },
   onClick: { type: Function, default: () => {} },
+  onCopy: { type: Function, default: () => {} },
+  paste: { type: Object, default: () => ({}) }
 });
 
 const contextMenu = ref(null);
 
+const showDetail = computed(() => {
+  return !props.data.id
+})
+
+const showPaste = computed(() => {
+  return !props.paste
+})
+
 const clickFunc = ({ key }) => {
-  props.onClose();
+  if (key === 'copy') {
+    props.onCopy(props.data)
+  }
   props.onClick(key)
 };
+
+const close = (e) => {
+  setTimeout(() => {
+    props.onClose()
+  }, 300)
+}
 
 onMounted(async () => {
 // 确保组件已经渲染

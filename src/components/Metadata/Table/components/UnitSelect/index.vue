@@ -1,20 +1,22 @@
 <template>
-  <a-select
+  <Select
     mode="tags"
     placeholder="请选择单位"
     style="width: 100%"
+    v-model:value="myValue"
     :dropdownStyle="{
       zIndex: 1071
     }"
     :getPopupContainer="(node) => tableWrapperRef || node"
-    v-model:value="myValue"
+    :options="options"
     @change="change"
   />
 </template>
 
 <script setup name="MetadataUnitSelect">
-import { Form } from 'ant-design-vue'
+import { Form, Select } from 'ant-design-vue'
 import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useGetUnit} from "@/views/device/components/Metadata/Base/columns";
 
 const props = defineProps({
   value: {
@@ -39,7 +41,7 @@ const emit = defineEmits(['update:value', 'change'])
 
 const myValue = ref(props.value)
 
-const options = ref([])
+const options = useGetUnit()
 
 const formItemContext = Form.useInjectFormItemContext();
 
@@ -51,18 +53,6 @@ const change = (v) => {
   emit('change', newValue);
   formItemContext.onFieldChange();
 };
-
-// const initOptions = async () => {
-//   if (isArray(props.options)) {
-//     options.value = props.options;
-//   } else if (isFunction(props.options)) {
-//     options.value = await props.options();
-//   }
-// };
-//
-// onMounted(() => {
-//   initOptions();
-// })
 
 watch(
   () => props.value,

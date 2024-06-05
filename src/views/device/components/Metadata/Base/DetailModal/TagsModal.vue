@@ -52,6 +52,10 @@ const props = defineProps({
   getPopupContainer: {
     type: Function,
     default: undefined
+  },
+  unitOptions: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -73,7 +77,14 @@ const readTypeText = computed(() => {
   return props.data?.expands?.type?.map?.((key: string) => type[key]).join('、')
 })
 
-const unitLabel = ref('')
+const unitLabel = computed(() => {
+  let label = props.data.valueType?.unit
+  const item = props.unitOptions?.find(item => item.value === label)
+  if (item) {
+    label = item.label
+  }
+  return label
+})
 
 const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
   columns: [],
@@ -128,17 +139,17 @@ watch(() => props.data.valueType.type, () => {
   const type = props.data.valueType.type
   handleDataTable(props.data.valueType.type)
 
-  if (['float', 'double', 'int', 'long'].includes(type)) {
-    getUnit().then((res) => {
-      if (res.success) {
-        res.result.map((item) => {
-          if (item.id === props.data.valueType?.unit) {
-            unitLabel.value = item.description
-          }
-        })
-      }
-    });
-  }
+  // if (['float', 'double', 'int', 'long'].includes(type)) {
+  //   getUnit().then((res) => {
+  //     if (res.success) {
+  //       res.result.map((item) => {
+  //         if (item.id === props.data.valueType?.unit) {
+  //           unitLabel.value = item.description
+  //         }
+  //       })
+  //     }
+  //   });
+  // }
 }, { immediate: true })
 
 const cancel = () => {

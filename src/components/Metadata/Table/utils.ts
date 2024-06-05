@@ -1,8 +1,8 @@
 import Schema from 'async-validator';
 import type { ColumnType } from 'ant-design-vue/lib/table'
-import { Ref, onBeforeUnmount } from 'vue'
+import { Ref, onBeforeUnmount, watch } from 'vue'
 import ResizeObserver from "resize-observer-polyfill";
-import {debounce} from "lodash-es";
+import {debounce, omit} from "lodash-es";
 
 type DataSourceType = Array<Record<string, any> & { __validate_id?: string, __validate_index?: number}>
 type ColumnsFormType = {
@@ -37,7 +37,10 @@ const collectValidateRules = (columns: ColumnsType):  Record<string, any> => {
     return rules
 }
 
-export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, options?: OptionsType): {
+export const handlePureRecord = (record: Record<string, any>) => {
+    return omit(record, ['__serial', '__index', '__top'])
+}
+export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options?: OptionsType): {
     validate: () => Promise<any>
     validateItem: (data: Record<string, any> ) => Promise<any>
     errorMap: Ref<Record<string, any>>
@@ -47,6 +50,7 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
 
     let schemaInstance: any
     let rules = ref({})
+    let validateDataSource = ref(dataSource)
 
 
     const validateItem = (data: Record<string, any>, index: number = 0): Promise<any> => {
@@ -63,27 +67,35 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
 
     const validate = () => {
         return new Promise((resolve, reject) => {
-            const filterDataSource = dataSource.filter(item => item.id)
+            const filterDataSource = dataSource.value
 
             const len = filterDataSource.length
             const error: any[] = []
             const success: any[] = []
-
+            let validateLen = 0
             const end = () => {
-                if (error.length + success.length === len) {
+                console.log(validateLen, len)
+                if (validateLen === len) {
                     Object.keys(error).length ? reject(error) : resolve(success)
                 }
             }
 
             filterDataSource.forEach((record, index) => {
-                validateItem(record, index).then(res => {
-                    console.log('validate',res)
-                    success.push(res)
-                    end()
-                }).catch(err => {
-                    error.push(err)
-                    end()
-                })
+                console.log(record, rowKey, record[rowKey])
+                if (record[rowKey]) {
+                    validateItem(record, index).then(res => {
+                        success.push(handlePureRecord(res))
+                        validateLen += 1
+                        end()
+                    }).catch(err => {
+                        options?.onError(err)
+                        error.push(err)
+                        validateLen += 1
+                        end()
+                    })
+                } else {
+                    validateLen += 1
+                }
             })
 
         })
@@ -93,6 +105,10 @@ export const useValidate = (dataSource: DataSourceType, columns: ColumnsType, op
         rules.value = collectValidateRules(columns)
         schemaInstance = new Schema(rules.value)
     }
+
+    watch(() => dataSource.value, () => {
+        validateDataSource.value = dataSource.value
+    }, { deep: true })
 
     createValidate()
 

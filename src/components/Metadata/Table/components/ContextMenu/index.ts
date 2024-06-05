@@ -1,9 +1,10 @@
 import MenuContext from './menu.vue'
 import { h, render } from 'vue'
+import {handlePureRecord} from "@/components/Metadata/Table/utils";
 
 let curInstance: Record<string, any> | null = null
 let seed = 1
-
+let copyValue: any
 const contextMenu = (e: Event, data: any, context: any) => {
     if (curInstance) {
         curInstance.destroy()
@@ -14,17 +15,22 @@ const contextMenu = (e: Event, data: any, context: any) => {
     // 创建一个临时的div，用于挂载我们的菜单
     const container = document.createElement('div') as HTMLElement
     // 获取body标签，用于挂载整个菜单
-    const appendTo = document.body
+    const appendTo = context.getPopupContainer() || document.body
     // 传给menu组件的props
     const props = {
+        data: data,
         onClose: () => {
             if(curInstance){
                 curInstance.destroy()
             }
         },
         onClick: (type: string) => {
-            context.click(type, data)
-        }
+            context.click(type, data, handlePureRecord(copyValue))
+        },
+        onCopy: (data: any) => {
+            copyValue = data
+        },
+        paste: !!copyValue
     }
 
     // 渲染虚拟节点

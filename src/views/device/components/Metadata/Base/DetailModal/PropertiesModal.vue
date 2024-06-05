@@ -1,5 +1,5 @@
 <template>
-  <j-modal
+  <a-modal
       visible
       :maskClosable="false"
       title="属性详情"
@@ -53,11 +53,10 @@
     <template #footer>
       <j-button type="primary" @click="ok">确认</j-button>
     </template>
-  </j-modal>
+  </a-modal>
 </template>
 
 <script setup lang="ts" name="PropertiesModal">
-import {OtherConfigInfo} from "@/views/device/components/Metadata/Base/components";
 import {omit} from "lodash-es";
 import {watch} from "vue";
 import JsonView from './JsonView.vue'
@@ -72,6 +71,10 @@ const props = defineProps({
   getPopupContainer: {
     type: Function,
     default: undefined
+  },
+  unitOptions: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -93,7 +96,14 @@ const readTypeText = computed(() => {
   return props.data?.expands?.type?.map?.((key: string) => type[key]).join('、')
 })
 
-const unitLabel = ref('')
+const unitLabel = computed(() => {
+  let label = props.data.valueType?.unit
+  const item = props.unitOptions?.find(item => item.value === label)
+  if (item) {
+    label = item.label
+  }
+  return label
+})
 
 const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
   columns: [],
@@ -160,17 +170,17 @@ watch(() => props.data.valueType.type, () => {
   const type = props.data.valueType.type
   handleDataTable(props.data.valueType.type)
 
-  if (['float', 'double', 'int', 'long'].includes(type)) {
-    getUnit().then((res) => {
-      if (res.success) {
-        res.result.map((item) => {
-          if (item.id === props.data.valueType?.unit) {
-            unitLabel.value = item.description
-          }
-        })
-      }
-    });
-  }
+  // if (['float', 'double', 'int', 'long'].includes(type)) {
+  //   getUnit().then((res) => {
+  //     if (res.success) {
+  //       res.result.map((item) => {
+  //         if (item.id === props.data.valueType?.unit) {
+  //           unitLabel.value = item.description
+  //         }
+  //       })
+  //     }
+  //   });
+  // }
 }, { immediate: true })
 
 const cancel = () => {

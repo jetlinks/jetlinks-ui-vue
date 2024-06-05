@@ -1,7 +1,8 @@
 <template>
   <a-tooltip
-    :visible="errorMap.visible"
     color="#ffffff"
+    :visible="errorMap.visible"
+    :get-popup-container="popContainer"
   >
     <template #title>
       <span style="color: #1d2129">{{errorMap.message}}</span>
@@ -13,11 +14,11 @@
 </template>
 
 <script setup name="TableFormItem">
-
-import {randomString} from "@/utils/utils";
 import {useInjectForm} from "./context";
-import {get, isArray } from 'lodash-es'
-import {onBeforeUnmount} from "vue";
+import {get, isArray, throttle } from 'lodash-es'
+import {onBeforeUnmount, computed} from "vue";
+import {useTableWrapper} from "./utils";
+import { useProvideFormItemContext } from 'ant-design-vue/es/form/FormItemContext'
 
 const props = defineProps({
   name: {
@@ -30,15 +31,22 @@ const props = defineProps({
   }
 })
 
-const eventKey = computed(() => {
-  return filedName.value + '_' + randomString(12)
-})
-
+const tableWrapperRef = useTableWrapper()
 const context = useInjectForm()
+
+const eventKey = computed(() => {
+  const names = isArray(props.name) ? props.name : [props.name]
+  return names.join('-')
+})
 
 const errorMap = reactive({
   message: '',
   visible: false
+})
+
+const filedId = computed(() => {
+  const names = isArray(props.name) ? props.name : [props.name]
+  return names.join('_')
 })
 
 const filedName = computed(() => {
@@ -56,9 +64,22 @@ const filedName = computed(() => {
 })
 
 const filedValue = computed(() => {
-  return get(context.dataSource, props.name)
+  return get(context.dataSource.value, props.name)
 })
 
+const popContainer = (e) => {
+  return e.parentNode
+}
+
+const showErrorTip = (msg) => {
+  errorMap.message = msg
+  errorMap.visible = true
+}
+
+const hideErrorTip = () => {
+  errorMap.visible = false
+  errorMap.message = ''
+}
 const validateRules = () => {
   let index = 0
   if (isArray(props.name)) {
@@ -67,29 +88,40 @@ const validateRules = () => {
   const promise = context.validateItem({ [filedName.value]: filedValue.value }, index)
   promise.catch(res => {
     const error = res?.filter(item => item.field === filedName.value) || []
-
-    errorMap.message = error[0]?.message || errorMap.message
-    errorMap.visible = !!error.length
+    if (error.length === 0) {
+      hideErrorTip()
+    } else {
+      errorMap.message = error[0]?.message || errorMap.message
+      errorMap.visible = !!error.length
+    }
     return errorMap.message
   })
 
   return promise
 }
 
-const showErrorTip = (msg) => {
-  errorMap.message = msg
-  errorMap.visible = true
+const onFieldBlur = () => {
+  // validateRules()
 }
+
+const onFieldChange = () => {
+  validateRules()
+}
+
+useProvideFormItemContext({
+  id: filedId,
+  onFieldChange,
+  onFieldBlur,
+}, computed(() => filedValue.value))
 
 onBeforeUnmount(() => {
   context.removeField(eventKey.value)
-  errorMap.message = ''
-  errorMap.visible = false
 })
 
-watch(() => filedValue.value ,() => {
-  validateRules()
-})
+// watch(() => filedValue.value ,() => {
+//   console.log('tableFormItem--watch',filedValue.value)
+//   validateRules()
+// }, { deep: true })
 
 watch(() => [filedName.value, props.name], () => {
   context.addField(eventKey.value, {

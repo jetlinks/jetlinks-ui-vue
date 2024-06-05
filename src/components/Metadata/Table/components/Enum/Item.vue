@@ -51,14 +51,19 @@ const change = () => {
   emit('update:value', dataSource.value)
 }
 
+const validate = async () => {
+  const res = await tableRef.value?.validate()
+  return res
+}
+
 defineExpose({
-  validate: () => tableRef.value?.validate()
+  validate
 })
 
 watch(
   () => JSON.stringify(props.value),
-  () => {
-    dataSource.value = props.value || [];
+  (val) => {
+    dataSource.value = val ? JSON.parse(val) : [];
   },
 );
 </script>

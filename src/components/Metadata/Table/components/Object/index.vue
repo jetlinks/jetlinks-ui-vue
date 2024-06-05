@@ -17,34 +17,39 @@
 <!--          <template v-for="(_, key) in slots" :key="key" #[key]="slotData">-->
 <!--            <slot :name="key" v-bind="slotData"/>-->
 <!--          </template>-->
-          <template #id="{ record }">
-            <a-input v-model:value="record.id" placeholder="请输入标识"/>
+          <template #id="{ record, index }">
+            <EditTableFormItem :name="[index, 'id']">
+              <a-input v-model:value="record.id" placeholder="请输入标识"/>
+            </EditTableFormItem>
           </template>
-          <template #name="{ record }">
-            <a-input v-model:value="record.name" placeholder="请输入名称"/>
+          <template #name="{ record, index }">
+            <EditTableFormItem :name="[index, 'name']">
+              <a-input v-model:value="record.name" placeholder="请输入名称"/>
+            </EditTableFormItem>
           </template>
           <template #expands="{ record }">
             <BooleanSelect v-model:value="record.expands.required"/>
           </template>
-          <template #valueType="{ record }">
-            <div style="display: flex; gap: 12px; align-items: center">
-              <TypeSelect  v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" />
-<!--              <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" />-->
-              <DoubleParams v-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType"/>
-              <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" />
-              <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format"/>
-              <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType"/>
-              <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements"/>
-              <BooleanParams
-                v-else-if="record.valueType.type === 'boolean'"
-                v-model:falseText="record.valueType.falseText"
-                v-model:falseValue="record.valueType.falseValue"
-                v-model:trueText="record.valueType.trueText"
-                v-model:trueValue="record.valueType.trueValue"
-              />
-<!--              <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties" />-->
-              <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" />
-            </div>
+          <template #valueType="{ record, index }">
+            <EditTableFormItem :name="[index, 'valueType']">
+              <div style="display: flex; gap: 12px; align-items: center">
+                <TypeSelect  v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" />
+                <DoubleParams v-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" placement="topRight"/>
+                <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" placement="topRight"/>
+                <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" placement="topRight"/>
+                <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" placement="topRight"/>
+                <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" placement="topRight"/>
+                <BooleanParams
+                  v-else-if="record.valueType.type === 'boolean'"
+                  v-model:falseText="record.valueType.falseText"
+                  v-model:falseValue="record.valueType.falseValue"
+                  v-model:trueText="record.valueType.trueText"
+                  v-model:trueValue="record.valueType.trueValue"
+                  placement="topRight"
+                />
+                <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" placement="topRight"/>
+              </div>
+            </EditTableFormItem>
           </template>
           <template #action="{ index }">
             <a-button danger type="link" style="padding: 0 5px" @click="() => deleteItem(index)">
@@ -60,14 +65,20 @@
         </a-button>
       </div>
     </template>
-    <slot><AIcon type="EditTwoTone"/></slot>
+    <slot>
+      <a-button type="link" :disabled="disabled" style="padding: 0">
+        <template #icon>
+          <AIcon type="EditOutlined"/>
+        </template>
+      </a-button>
+    </slot>
   </PopoverModal>
 </template>
 
 <script setup name="MetadataObject">
 import { PopoverModal } from '../index'
 import BooleanSelect from "../BooleanSelect/index.vue";
-import { EditTable, TypeSelect, IntegerParams, StringParams, DateParams, FileParams, EnumParams, BooleanParams, ObjectParams, ArrayParams, DoubleParams } from '@/components/Metadata/Table'
+import { EditTable, TypeSelect, EditTableFormItem, StringParams, DateParams, FileParams, EnumParams, BooleanParams, ObjectParams, ArrayParams, DoubleParams } from '@/components/Metadata/Table'
 
 const props = defineProps({
   value: {
@@ -81,6 +92,10 @@ const props = defineProps({
   type: {
     type: String,
     default: 'properties'
+  },
+  disabled: {
+    type: Boolean,
+    default:false
   }
 });
 
@@ -89,7 +104,7 @@ const emit = defineEmits(['update:value', 'confirm', 'cancel']);
 const slots = useSlots()
 
 const tableRef = ref()
-const dataSource = ref(props.value)
+const dataSource = ref([])
 const visible = ref(false)
 
 const defaultColumns = [
@@ -171,6 +186,7 @@ const onOk = async () => {
   const data = await tableRef.value.validate()
   if (data) {
     visible.value = false
+    console.log('onOk',data)
     emit('update:value', data)
     emit('confirm', data)
   }
@@ -186,8 +202,8 @@ const deleteItem = (index) => {
 
 const addItem = () => {
   dataSource.value.push({
-    value: undefined,
-    text: undefined,
+    id: undefined,
+    name: undefined,
     expands: {
       required: false
     },
@@ -197,7 +213,7 @@ const addItem = () => {
 
 watch(() => JSON.stringify(props.value), (val) => {
   dataSource.value = JSON.parse(val || '[]')
-})
+}, { immediate: true })
 
 </script>
 

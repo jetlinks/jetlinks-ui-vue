@@ -16,7 +16,6 @@
 <script setup name="MetadataType">
 import { selectProps } from 'ant-design-vue/lib/select';
 import defaultOptions from './data';
-import {difference} from "lodash-es";
 import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
@@ -25,13 +24,19 @@ const props = defineProps({
     type: Array ,
     default: () => [],
   },
+  value: {
+    type: Array,
+    default: () => [],
+  }
 });
 
 const emit = defineEmits(['update:value']);
 
 const myValue = ref(props.value)
 
-const options = computed(() => difference(defaultOptions, props.filter))
+const options = computed(() => {
+  return defaultOptions.filter(item => !props.filter.includes(item.value) )
+})
 
 const tableWrapperRef = useTableWrapper()
 const change = (key) => {

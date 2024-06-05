@@ -1,13 +1,9 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source, InputParams, OtherSetting, OutputParams, ConfigParams, TagsType } from './components'
-import SelectColumn from './components/Events/SelectColumn.vue';
-import AsyncSelect from './components/Function/AsyncSelect.vue';
-import { EventLevel } from "@/views/device/data";
+import { DataType } from './components'
 import {MetadataItem, MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
-import {omit, pick, isObject, cloneDeep} from "lodash-es";
-import { message } from 'jetlinks-ui-components'
+import {omit, isObject } from "lodash-es";
 import { onlyMessage } from "@/utils/comm";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
@@ -35,6 +31,8 @@ const type = {
   write: '写',
   report: '上报',
 };
+
+const METADATA_UNIT = 'metadata-unit'
 
 export const validatorConfig = (value: any, _isObject: boolean = false) => {
 
@@ -168,12 +166,12 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
             if (value) {
               const option = setting[2]
 
-              if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.id === value)) {
+              if (dataSource.value.filter((item, index) => index !== option.index && item.id).some(item => item.id === value)) {
                 return Promise.reject('该标识已存在')
               }
-              return Promise.resolve()
             }
-            return Promise.reject('请输入标识')
+              return Promise.resolve()
+            // return Promise.reject('请输入标识')
           },
         },
           { max: 64, message: '最多可输入64个字符' },
@@ -190,11 +188,18 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       form: {
         required: true,
         rules: [
-            {
-            required: true,
-            message: '请输入名称'
-          },
-          { max: 64, message: '最多可输入64个字符' },
+          {
+            asyncValidator(_: any, value: any) {
+
+              if (!value) {
+                return Promise.reject('请输入名称')
+              } else if (value.length > 64) {
+                return Promise.reject('最多可输入64个字符')
+              }
+
+              return Promise.resolve()
+            }
+          }
         ]
       },
     },
@@ -211,6 +216,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       form: {
         rules: [{
           asyncValidator(_: any, value: any) {
+
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
@@ -218,7 +224,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
-      width: 240,
+      width: 260,
     },
     {
       title: '属性来源',
@@ -226,19 +232,13 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       form: {
         rules: [
           {
-            asyncValidator: async (rule: any, value: any, ...setting: any) => {
-              const option = setting[2]
-              const item = dataSource.value[option.index]
-              value = item.expands
+            asyncValidator: async (rule: any, value: any) => {
 
-              const virtualRule = value?.virtualRule
               const source = value.source
 
               if (source) {
                 if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');
-                } else if( source === 'rule' && !virtualRule){
-                  return Promise.reject('请配置规则');
                 }
 
                 return Promise.resolve()
@@ -249,17 +249,17 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           },
         ]
       },
-      width: 180
+      width: 220
     },
-    {
-      title: '属性分组',
-      dataIndex: 'group',
-      width: 140,
-    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 100,
+      width: 120,
     },
   ]);
 
@@ -280,22 +280,21 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       width: 240,
       form: {
         rules: [{
-          asyncValidator(rule:any,value: any, ) {
-
+          asyncValidator: async (rule: any, value: any) => {
             return validatorConfig(value)
           }
         }]
       },
     },
-    {
-      title: '属性分组',
-      dataIndex: 'group',
-      width: 140,
-    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
     {
       title: '说明',
       dataIndex: 'description',
-      width: 200,
+      width: 220,
       form: {
         rules: [
           { max: 20, message: '最多可输入20个字符' },
@@ -315,7 +314,8 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       width: 100,
       form: {
         rules: [{
-          asyncValidator(rule: any, value: any, ) {
+          asyncValidator: async (rule: any, value: any) => {
+
             if (!value.properties?.length) {
               return Promise.reject('请添加配置参数')
             }
@@ -325,15 +325,15 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
         }]
       },
     },
-    {
-      title: '属性分组',
-      dataIndex: 'group',
-      width: 140,
-    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
     {
       title: '说明',
       dataIndex: 'description',
-      width: 200,
+      width: 220,
       form: {
         rules: [
           { max: 20, message: '最多可输入20个字符' },
@@ -349,7 +349,8 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       form: {
         required: true,
         rules: [{
-          asyncValidator(_: any, value: any) {
+          asyncValidator: async (rule: any, value: any) => {
+
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
@@ -365,21 +366,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       form: {
         rules: [
           {
-            asyncValidator(rule:any,value: any) {
-              console.log('expands',value)
-            if (!value?.type?.length) {
-              return Promise.reject('请选择读写类型')
-            }
-            return Promise.resolve()
+            asyncValidator: async (rule: any, value: any) => {
+              if (!value?.type?.length) {
+                return Promise.reject('请选择读写类型')
+              }
+              return Promise.resolve()
           }
         }]
       },
     },
-    {
-      title: '属性分组',
-      dataIndex: 'group',
-      width: 140,
-    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
     {
       title: '说明',
       dataIndex: 'description',
@@ -429,9 +429,29 @@ export const useUnit = (type: Ref<string>) => {
     }
   }, { immediate: true })
 
-
   return { unitOptions }
 }
+
+export const useSaveUnit = () => {
+  const unitOptions = ref<Array<{ label: string, value: any }>>([])
+
+  provide(METADATA_UNIT, unitOptions)
+
+  getUnit().then((res) => {
+    if (res.success) {
+      unitOptions.value = res.result.map((item: any) => ({
+        label: item.description,
+        value: item.id,
+      }));
+    }
+  });
+
+  return {
+    unitOptions
+  }
+}
+
+export const useGetUnit = () => inject(METADATA_UNIT)
 
 
 export const TypeStringMap = {

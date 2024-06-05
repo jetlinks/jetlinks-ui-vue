@@ -9,12 +9,18 @@
       <div style="width: 200px">
         <a-form ref="formRef" layout="vertical" :model="formData">
           <a-form-item label="单位" name="unit" :rules="[{ max: 64, message: '最多可输入64个字符' }]">
-            <UnitSelect v-model:value="formData.unit" :options="options"/>
+            <UnitSelect v-model:value="formData.unit" />
           </a-form-item>
         </a-form>
       </div>
     </template>
-    <slot><AIcon type="EditTwoTone"/></slot>
+    <slot>
+      <a-button type="link" :disabled="disabled" style="padding: 0">
+        <template #icon>
+          <AIcon type="EditOutlined"/>
+        </template>
+      </a-button>
+    </slot>
   </PopoverModal>
 </template>
 
@@ -24,10 +30,6 @@ import { UnitSelect, PopoverModal } from '../index'
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 
 const props = defineProps({
-  options: {
-    type: [Array, Function],
-    default: () => []
-  },
   value: {
     type: String,
     default: undefined,
@@ -36,6 +38,10 @@ const props = defineProps({
     type: String,
     default: 'top',
   },
+  disabled: {
+    type: Boolean,
+    default:false
+  }
 });
 
 const formRef = ref()

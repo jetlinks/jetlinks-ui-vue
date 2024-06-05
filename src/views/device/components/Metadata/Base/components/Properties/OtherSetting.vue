@@ -1,16 +1,17 @@
 <template>
     <PopoverModal
         v-if="!disabled"
+        v-model:visible="modalVisible"
         body-style="padding-top:4px;width:600px;"
         placement="bottomRight"
         :disabled="disabled"
         @ok="confirm"
         @cancel="cancel"
-        @visibleChange="visibleChange"
     >
-        <template v-if="visible" #content>
+        <template #content>
+
             <j-scrollbar height="350" v-if="showMetrics || config.length > 0">
-                <j-collapse v-model:activeKey="activeKey">
+                <j-collapse v-model:activeKey="activeKey" v-if="visible">
                     <j-collapse-panel
                         v-for="(item, index) in config"
                         :key="'store_' + index"
@@ -34,10 +35,16 @@
                                     :itemType="
                                         item.properties[index].type?.type
                                     "
-                                    :options="(item.properties[index].type?.elements || []).map((a:any) => ({
-                           label: a.text,
-                           value: a.value,
-                    }))"
+                                    :extra="{
+                                      dropdownStyle: {
+                                        zIndex: 1071
+                                      }
+                                    }"
+                                    :getPopupContainer="(node) => tableWrapperRef || node"
+                                    :options="(item.properties[index].type?.elements || []).map((a) => ({
+                                           label: a.text,
+                                           value: a.value,
+                                    }))"
                                 />
                             </template>
                         </j-table>
@@ -60,6 +67,49 @@
                             :type="props.type"
                             :value="myValue.metrics"
                         />
+                    </j-collapse-panel>
+                    <j-collapse-panel key="extra" header="拓展配置">
+                      <div class="extra-tip">
+                        <div>反显协议包中设定的数据处理规范</div>
+                        <div>上报数据处理规则包含：四舍五入、向上取整、向下取整…</div>
+                        <div>阈值限制如： 10&lt;上报数值&lt;80</div>
+                      </div>
+                      <div class="extra-limit extra-check-group">
+                        <div class="extra-title">阈值限制</div>
+                        <CardSelect
+                          v-model:value="extraForm.type"
+                          :options="[
+                            { label: '上限', value: 'upper'},
+                            { label: '下限', value: 'lower'}
+                          ]"
+                          :showImage="false"
+                          :multiple="true"
+                          @select="limitSelect"
+                        />
+                      </div>
+                      <div class="extra-limit-input" v-if="extraForm.type.length !== 0">
+                        <div class="extra-title">阈值</div>
+                        <a-space>
+                          <a-input-number v-if="extraForm.type.includes('upper')" v-model:value="extraForm.upperLimit" style="width: 178px" placeholder="请输入下限"/>
+                          <span v-if="extraForm.type.length === 2">~</span>
+                          <a-input-number v-if="extraForm.type.includes('lower')" v-model:value="extraForm.lowerLimit" style="width: 178px" placeholder="请输入上限"/>
+                        </a-space>
+                      </div>
+                      <div class="extra-handle extra-check-group" v-if="extraForm.type.length !== 0">
+                        <div class="extra-title">超出阈值数据处理方式</div>
+                        <CardSelect
+                          v-model:value="extraForm.handle"
+                          :options="[
+                            { label: '忽略', value: 'ignore'},
+                            { label: '仅记录', value: 'record'},
+                            { label: '记录并发送告警', value: 'alarm'},
+                          ]"
+                          :showImage="false"
+                        />
+                        <div style="margin: 8px 0">
+                          {{ handleTip }}
+                        </div>
+                      </div>
                     </j-collapse-panel>
                 </j-collapse>
             </j-scrollbar>
@@ -102,9 +152,9 @@ import {
     getMetadataConfig,
     getMetadataDeviceConfig,
 } from '@/api/device/product';
-import { omit, cloneDeep } from 'lodash-es';
+import {omit, cloneDeep, keys} from 'lodash-es';
 import { PopoverModal } from '@/components/Metadata/Table'
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable';
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
     value: {
@@ -135,18 +185,35 @@ const type = inject('_metadataType');
 
 const productStore = useProductStore();
 const deviceStore = useInstanceStore();
+const tableWrapperRef = useTableWrapper()
 
 const emit = defineEmits(['update:value']);
 
 const activeKey = ref();
-const storageRef = ref();
 const metricsRef = ref();
 
 const myValue = ref(props.value);
 const visible = ref(false);
+const modalVisible = ref(false);
 
 const config = ref<any>([]);
 const configValue = ref(props.value?.expands);
+
+const extraForm = reactive({
+  upperLimit: 0,
+  lowerLimit: 0,
+  handle: 'ignore',
+  type: ['upper', 'lower']
+})
+
+const handleTip = computed(() => {
+  if (extraForm.handle === 'ignore') {
+    return '平台将忽略超出阈值的数据，无法查看上报记录'
+  } else if (extraForm.handle === 'record') {
+    return '您可以在告警记录-无效数据页面查看超出阈值的数据上报记录'
+  }
+  return '您可以在设备详情-告警记录 页面查看告警情况'
+})
 
 const showMetrics = computed(() => {
     return [
@@ -183,10 +250,31 @@ const columns = ref([
     },
 ]);
 
+// const limitChange = (e: string[]) => {
+//   if (e.length !== 0 ) {
+//     extraForm.type = e
+//   } else {
+//     extraForm.type = [...extraForm.type]
+//   }
+// }
+
+const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
+  if (!isSelected) { // 删除
+    if (key === 'upper') {
+      extraForm.upperLimit = 0
+    } else {
+      extraForm.lowerLimit = 0
+    }
+  }
+
+  if (keys.length === 0) {
+    extraForm.handle = 'ignore'
+  }
+}
+
 const getConfig = async () => {
     const id =
         type === 'product' ? productStore.current?.id : deviceStore.current.id;
-    console.log(props.id, id, props);
 
     if (!props.id || !id || !props.type) return;
 
@@ -233,6 +321,7 @@ const getConfig = async () => {
             });
         }
     }
+    visible.value = true
 };
 
 const confirm = () => {
@@ -252,6 +341,7 @@ const confirm = () => {
                 ...props.value,
                 ...expands,
             });
+            modalVisible.value = false
             resolve(true);
         } catch (err) {
             reject(false);
@@ -259,18 +349,18 @@ const confirm = () => {
     });
 };
 
-const visibleChange = (e: boolean) => {
-    visible.value = e;
-    if (e) {
-        configValue.value = omit(props.value, [
-            'source',
-            'type',
-            'metrics',
-            'required',
-        ]);
-        getConfig();
-    }
-};
+
+watch(() => modalVisible.value, () => {
+  if (modalVisible.value) {
+    configValue.value = omit(props.value, [
+      'source',
+      'type',
+      'metrics',
+      'required',
+    ]);
+    getConfig()
+  }
+}, { immediate: true })
 
 const cancel = () => {
     myValue.value = cloneDeep(props.value);
@@ -285,4 +375,20 @@ watch(
 );
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.extra-tip {
+  padding: 8px;
+  background-color: rgba(#000, .05);
+}
+
+.extra-title {
+  font-size: 16px;
+  margin: 12px 0;
+}
+
+.extra-check-group {
+  :deep(.j-card-item) {
+    padding: 12px 14px;
+  }
+}
+</style>

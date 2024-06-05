@@ -27,27 +27,26 @@
         <div class="box">
             <div class="left">
                 <div>
-                    <Operator :id="id" :propertiesOptions="propertiesOptions" @add-operator-value="addOperatorValue" />
+                  <Editor
+                    ref="editor"
+                    mode="advance"
+                    key="advance"
+                    v-model:value="_value"
+                    :tips="tips"
+                  />
                 </div>
                 <div style="margin-top: 10px;">
-                    <Editor
-                        ref="editor"
-                        mode="advance"
-                        key="advance"
-                        v-model:value="_value"
-                        :tips="tips"
-                    />
-                </div>
-            </div>
-            <div class="right">
-                <Debug
+                  <Debug
                     :virtualRule="{
                         ...virtualRule,
                         script: _value,
                     }"
                     :id="id"
-                    @success="onSuccess"
-                />
+                  />
+                </div>
+            </div>
+            <div class="right">
+              <Operator :id="id" :propertiesOptions="propertiesOptions" @add-operator-value="addOperatorValue" />
             </div>
         </div>
         <template #footer>

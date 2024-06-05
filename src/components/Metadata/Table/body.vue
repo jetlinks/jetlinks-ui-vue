@@ -11,14 +11,13 @@
             :class="{
               'metadata-edit-table-row': true,
             }"
-            :key="`record_${item.__serial}`"
+            :key="`record_${virtualRang.start + index + 1}`"
             :style="{height: `${cellHeight}px`,}"
             @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
         >
           <div
               v-for="column in columns"
               class="metadata-edit-table-cell"
-              :key="`_${columns.dataIndex}`"
               :style="{
                 width: `${column.width}px`,
                 left: `${column.left}px`,
@@ -48,7 +47,7 @@
 
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
-import {useRightMenuContext} from "components/Metadata/Table/utils";
+import {useRightMenuContext} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   dataSource: {
@@ -70,6 +69,10 @@ const props = defineProps({
   style: {
     type: Object,
     default: () => ({})
+  },
+  disableMenu: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -81,11 +84,11 @@ const virtualData = ref([])
 const virtualRang = reactive({
   start: 0,
 })
-const dataSourceCache = ref([])
 const containerStyle = ref(0)
 const context = useRightMenuContext()
 
 let scrollLock = ref(false)
+let menuInstance
 
 const maxLen = computed(() => {
   return Math.trunc(props.height / props.cellHeight)
@@ -103,31 +106,38 @@ const onScroll = () => {
   const clientHeight = viewScrollRef.value.clientHeight
   const scrollHeight = viewScrollRef.value.scrollHeight
 
-  const index = Math.round(height / props.cellHeight)
+  const _index = Math.round(height / props.cellHeight)
 
 
-  const start = index < 0 ? 0 : index
+  const start = _index < 0 ? 0 : _index
   const end = start + maxLen.value + 4
 
   virtualRang.start = start
 
-
-  console.log(height, scrollHeight, !scrollLock.value)
   if (height + clientHeight >= props.dataSource.length * props.cellHeight && !scrollLock.value) { // 滚动到底
     emit('scrollDown')
     scrollLock.value = true
   }
-  // virtualData.value = dataSourceCache.value.slice(start, end)
   updateVirtualData(start, end)
 }
 
-const showContextMenu = (e, record, index) => {
-  e.preventDefault()
-  record = {
-    ...record,
-    __index: index
+const scrollTo = (index) => {
+  if (viewScrollRef.value) {
+    let top = index * props.cellHeight
+    console.log('scrollTo', top, viewScrollRef.value)
+    viewScrollRef.value.scrollTop = top
   }
-  ContextMenu(e, record, context)
+}
+
+const showContextMenu = (e, record, _index) => {
+  e.preventDefault()
+  if (props.disableMenu) {
+    record = {
+      ...record,
+      __index: _index
+    }
+    menuInstance = ContextMenu(e, record, context)
+  }
 }
 
 const updateView = () => {
@@ -135,11 +145,14 @@ const updateView = () => {
 }
 
 onMounted(() => {
-  viewScrollRef.value.addEventListener('scroll', onScroll)
+  nextTick(() => {
+    viewScrollRef.value?.addEventListener('scroll', onScroll)
+  })
 })
 
 onBeforeUnmount(() => {
-  viewScrollRef.value.removeEventListener('scroll', onScroll)
+  viewScrollRef.value?.removeEventListener('scroll', onScroll)
+  menuInstance?.destroy()
 })
 
 watch(() => props.dataSource, () => {
@@ -159,6 +172,10 @@ watch(() => props.dataSource.length, () => {
     emit('scrollDown', maxLen.value - props.dataSource.length + 3)
   }
 }, { immediate: true})
+
+defineExpose({
+  scrollTo
+})
 
 </script>
 
@@ -205,5 +222,11 @@ watch(() => props.dataSource.length, () => {
       }
     }
   }
+}
+.metadata-edit-table-body-empty {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding-top: 24px;
 }
 </style>

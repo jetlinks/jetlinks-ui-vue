@@ -16,10 +16,19 @@
           <BooleanItem v-else-if="showBoolean" v-model:value="formData.boolean" name="boolean"/>
           <DateItem v-else-if="showDate" v-model:value="formData.format"/>
           <EnumItem ref="enumTableRef" v-else-if="showEnum" v-model:value="formData.enum.elements"/>
+          <a-form-item v-else-if="showArray" label="子元素类型" required :name="['elementType','type']" :rules="[{ required: true, message: '请选择子元素类型'}]">
+            <TypeSelect  v-model:value="formData.elementType.type" :filter="['array']" />
+          </a-form-item>
         </a-form>
       </div>
     </template>
-    <slot><AIcon type="EditTwoTone"/></slot>
+    <slot>
+      <a-button type="link" :disabled="disabled" style="padding: 0">
+        <template #icon>
+          <AIcon type="EditOutlined"/>
+        </template>
+      </a-button>
+    </slot>
   </PopoverModal>
 </template>
 
@@ -47,6 +56,10 @@ const props = defineProps({
     type: String,
     default: 'top',
   },
+  disabled: {
+    type: Boolean,
+    default:false
+  }
 });
 
 const formRef = ref()
@@ -67,6 +80,9 @@ const formData = reactive({
     multiple: props.value?.multiple,
     elements: props.value?.elements || [],
   },
+  elementType: {
+    type: undefined
+  }
 });
 
 const showDouble = computed(() => {
@@ -87,6 +103,10 @@ const showDate = computed(() => {
 
 const showEnum = computed(() => {
   return formData.type === 'enum'
+})
+
+const showArray = computed(() => {
+  return formData.type === 'array'
 })
 
 const rules = [
@@ -122,6 +142,9 @@ const initValue = () => {
     multiple: props.value?.multiple,
     elements: props.value?.elements,
   };
+  formData.elementType = {
+    type: undefined
+  }
 };
 
 const handleValue = (type, data) => {
@@ -144,6 +167,8 @@ const handleValue = (type, data) => {
     case 'date':
       newObject = pick(data, 'format');
       break;
+    case 'array':
+      newObject = pick(data, 'elementType')
   }
 
   return {

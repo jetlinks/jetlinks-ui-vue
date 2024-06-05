@@ -13,10 +13,11 @@
       <div class="metadata-edit-table-body" :style="{width: tableStyle.width, height: `${height}px`}">
         <Body
             ref="tableBody"
-            v-model:dataSource="dataSource"
+            :dataSource="dataSource"
             :columns="myColumns"
             :cellHeight="cellHeight"
             :height="height"
+            :disableMenu="disableMenu"
             @scrollDown="onScrollDown"
         >
         <template v-for="(_, name) in slots" #[name]="slotData">
@@ -52,6 +53,14 @@ const props = defineProps({
   height: {
     type: Number,
     default: 500
+  },
+  disableMenu: {
+    type: Boolean,
+    default: true
+  },
+  rowKey: {
+    type: String,
+    default: 'id'
   }
 })
 
@@ -67,18 +76,32 @@ const tableStyle = reactive({
 
 const fields = {}
 
+const _dataSource = computed(() => {
+  return props.dataSource
+})
+
 useResizeObserver(tableWrapper, onResize)
 
 const {isFullscreen, toggle} = useFullscreen(tableWrapper);
 
 const {rules, validateItem, validate, errorMap} = useValidate(
-    props.dataSource,
+    _dataSource,
     props.columns,
+    props.rowKey,
+  {
+      onError: (err) => {
+        const _errObj = err[0]
+        const field = findField(_errObj.__index, _errObj.field)
+        field?.showErrorTip(_errObj.message)
+        // TODO table滚动到指定位置
+        tableBody.value.scrollTo(_errObj.__index)
+      }
+    }
 )
 
 provide(TABLE_WRAPPER, tableWrapper)
 provide(FULL_SCREEN, isFullscreen)
-provide(RIGHT_MENU, {click: rightMenu})
+provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value })
 
 
 const addField = (key, field) => {
@@ -89,7 +112,7 @@ const removeField = (key) => {
   delete fields[key]
 }
 
-const findField = (index, name) => {
+function findField(index, name) {
   const fieldId = Object.keys(fields).find(key => {
     const {names} = fields[key]
     return names[0] === index && names[1] === name
@@ -105,7 +128,7 @@ function onResize({width = 0, height}) {
 
   const _width = width - scrollWidth.value
 
-  tableStyle.width = width
+  tableStyle.width = width || '100%'
 
   // tableStyle.height = height - 146
 
@@ -133,8 +156,8 @@ const onScrollDown = (len) => {
   emit('scrollDown', len)
 }
 
-function rightMenu(menuType, record) {
-  emit('rightMenuClick', menuType, record)
+function rightMenu(menuType, record, copyValue) {
+  emit('rightMenuClick', menuType, record, copyValue)
 }
 
 watch(() => scrollWidth.value, () => {
@@ -142,7 +165,9 @@ watch(() => scrollWidth.value, () => {
 })
 
 useFormContext({
-  dataSource: props.dataSource,
+  dataSource: computed(() => {
+    return props.dataSource
+  }),
   errorMap,
   rules,
   addField,
@@ -186,13 +211,6 @@ defineExpose({
       width: 100%;
       flex: 1 1 auto;
       flex-direction: row;
-
-      .metadata-edit-table-body-empty {
-        display: flex;
-        width: 100%;
-        justify-content: center;
-        padding-top: 24px;
-      }
     }
   }
 }

@@ -12,7 +12,13 @@
         </a-form>
       </div>
     </template>
-    <slot><AIcon type="EditTwoTone"/></slot>
+    <slot>
+      <a-button type="link" :disabled="disabled" style="padding: 0">
+        <template #icon>
+          <AIcon type="EditOutlined"/>
+        </template>
+      </a-button>
+    </slot>
   </PopoverModal>
 </template>
 
@@ -32,6 +38,10 @@ const props = defineProps({
     type: String,
     default: 'top',
   },
+  disabled: {
+    type: Boolean,
+    default:false
+  }
 });
 
 const formRef = ref();
@@ -49,9 +59,12 @@ const onCancel = () => {
 
 const onOk = async () => {
   const data = await formRef.value.validate()
+  console.log(data, tableRef.value.validate)
   const tableData = await tableRef.value.validate()
+  console.log(tableData)
   if (data && tableData) {
     visible.value = false
+    formData.elements = tableData
     emit('update:value', formData.elements)
     emit('confirm', formData.elements);
   }
