@@ -36,6 +36,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    {{ handleVehicleType(vehicleTypeEnum) }}
+                </template>
 
                 <template #reportTime="{ reportTime }">
                     {{
@@ -93,13 +96,14 @@ import moment from 'moment';
 import { useSelect } from '@/utils/hooks/useSelect';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+
 
 const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
     useSelect();
 
 const configRef = ref<Record<string, any>>({});
 
-const selectIds = ref<Array<number | string>>([]);
 // 表格数据总数
 const dataTotal = ref<number>(0);
 // 表格当前属于多少页
@@ -112,6 +116,13 @@ const type = ref<string>('xlsx');
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
+
+const vehicleType = ref<{ label: string; value: string }[]>();
+
+const handleVehicleType = (type: string) => {
+    const item = vehicleType.value?.find((item) => item.value === type);
+    return item?.label || type;
+};
 
 /**
  * @function handleShowTotal 处理分页器的显示总数的格式
@@ -271,25 +282,17 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'string',
-            // options: [
-            //     {
-            //         label: '内燃柴油机',
-            //         value: 'ICDieselEngine',
-            //     },
-            //     {
-            //         label: '内燃汽油机',
-            //         value: 'ICGasolineEngine',
-            //     },
-            //     {
-            //         label: '机械柴油机',
-            //         value: 'MachineDieselEngine',
-            //     },
-            //     {
-            //         label: '内燃牵引车',
-            //         value: 'ICTractor',
-            //     },
-            // ],
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        vehicleType.value = resp.result.map((item: any) => ({
+                            label: item.text,
+                            value: item.value,
+                        }));
+                        resolve(vehicleType.value);
+                    });
+                }),
         },
     },
     {

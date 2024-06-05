@@ -36,6 +36,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    {{ handleVehicleType(vehicleTypeEnum) }}
+                </template>
                 <template #duration="{ duration }">
                     {{ formatMillisecondsToHourMinute(duration) }}
                 </template>
@@ -78,6 +81,7 @@ const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
 import moment from 'moment';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { onlyMessage } from '@/utils/comm';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
@@ -90,6 +94,13 @@ const currentPage = ref<number>(1);
 const pageSize = ref<number>(12);
 
 const configRef = ref<Record<string, any>>({});
+
+const vehicleType = ref<{ label: string; value: string }[]>();
+
+const handleVehicleType = (type: string) => {
+    const item = vehicleType.value?.find((item) => item.value === type);
+    return item?.label || type;
+};
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -262,7 +273,17 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        vehicleType.value = resp.result.map((item: any) => ({
+                            label: item.text,
+                            value: item.value,
+                        }));
+                        resolve(vehicleType.value);
+                    });
+                }),
         },
     },
     {

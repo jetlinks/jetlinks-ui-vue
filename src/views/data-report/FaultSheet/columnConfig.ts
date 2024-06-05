@@ -1,3 +1,5 @@
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+
 export const columns = [
     {
         title: '车辆类型',
@@ -5,7 +7,18 @@ export const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.text,
+                                value: item.value,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {

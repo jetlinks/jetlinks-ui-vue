@@ -34,6 +34,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    {{ handleVehicleType(vehicleTypeEnum) }}
+                </template>
                 <template #orgName="{ orgName }">
                     {{ orgName || '--' }}
                 </template>
@@ -68,6 +71,7 @@ import moment from 'moment/moment';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -82,6 +86,23 @@ const pageSize = ref<number>(12);
 
 // 导出文件的类型
 const type = ref<string>('xlsx');
+
+const vehicleType = ref<{ label: string; value: string }[]>();
+
+const handleVehicleType = (type: string) => {
+    const item = vehicleType.value?.find((item) => item.value === type);
+    return item?.label || type;
+};
+
+const queryVehicleType = async () => {
+    const res = await vehicleTypeEnum();
+    if (res.status == 200) {
+        vehicleType.value = res.result.map((item: any) => ({
+            label: item.text,
+            value: item.value,
+        }));
+    }
+};
 
 // 当前分页表格选中的数据项的id
 const state = reactive<{ selectedRowKeys: string[] }>({
@@ -333,6 +354,8 @@ const handleSelectAll = (
         });
     }
 };
+
+onMounted(() => queryVehicleType());
 </script>
 
 <style lang="less" scoped></style>

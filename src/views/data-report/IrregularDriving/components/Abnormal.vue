@@ -40,6 +40,9 @@
                 <template #collisionAngle="{ collisionAngle }">
                     {{ `${collisionAngle}&deg;` }}
                 </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    {{ handleVehicleType(vehicleTypeEnum) }}
+                </template>
                 <template #collisionThreshold="{ collisionThreshold }">
                     {{ `${collisionThreshold}G` }}
                 </template>
@@ -74,6 +77,7 @@ import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelect } from '@/utils/hooks/useSelect';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 
 const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
     useSelect();
@@ -92,6 +96,13 @@ const configRef = ref<Record<string, any>>({});
 
 const type = ref<string>('xlsx');
 
+const vehicleType = ref<{ label: string; value: string }[]>();
+
+const handleVehicleType = (type: string) => {
+    const item = vehicleType.value?.find((item) => item.value === type);
+    return item?.label || type;
+};
+
 const columns = [
     {
         title: '车辆类型',
@@ -99,7 +110,17 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        vehicleType.value = resp.result.map((item: any) => ({
+                            label: item.text,
+                            value: item.value,
+                        }));
+                        resolve(vehicleType.value);
+                    });
+                }),
         },
     },
     {

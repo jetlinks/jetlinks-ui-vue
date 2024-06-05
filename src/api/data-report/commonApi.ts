@@ -50,3 +50,9 @@ export const query = (index: PageIndex, data?: any) =>
 
 export const getDicList = (data?: any) =>
     server.post(`/dictionary-item/_query`, data);
+
+/**
+ * 车辆类型
+ */
+export const vehicleTypeEnum = () =>
+    server.get<any>(`/dictionary/vehicle-type-enum/items`);

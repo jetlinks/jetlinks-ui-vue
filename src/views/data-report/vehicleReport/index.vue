@@ -1,21 +1,36 @@
 <template>
     <page-container>
-        <pro-search :columns="columns" target="notice-config" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="notice-config"
+            @search="handleSearch"
+        />
         <FullPage>
-            <JProTable ref="configRef" :columns="columns" :request="queryData" :defaultParams="{
-                sorts: [{ name: 'vehicleDate', order: 'desc' }],
-            }" model="table" :params="globParams" :gridColumn="3" :rowSelection="{
+            <JProTable
+                ref="configRef"
+                :columns="columns"
+                :request="queryData"
+                :defaultParams="{
+                    sorts: [{ name: 'vehicleDate', order: 'desc' }],
+                }"
+                model="table"
+                :params="globParams"
+                :gridColumn="3"
+                :rowSelection="{
                     selectedRowKeys: state.selectedRowKeys,
                     onChange: selectedRowChange,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
-                }">
+                }"
+            >
                 <template #headerTitle>
                     <j-space>
-                        <PermissionButton :popConfirm="{
-                            title: popTitle,
-                            onConfirm: () => handleExport(),
-                        }">
+                        <PermissionButton
+                            :popConfirm="{
+                                title: popTitle,
+                                onConfirm: () => handleExport(),
+                            }"
+                        >
                             <AIcon type="ExportOutlined" />
                             导出
                         </PermissionButton>
@@ -28,16 +43,25 @@
                     <span> {{ slotProps.orgName || '--' }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a @click="handelDetail(slotProps)" style="color: #f84914">详情
+                    <a @click="handelDetail(slotProps)" style="color: #f84914"
+                        >详情
                     </a>
                 </template>
                 <template #vehicleDate="{ vehicleDate }">
                     {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <template #paginationRender>
-                    <a-pagination showQuickJumper isShowContent showSizeChanger :pageSize="pageSize"
-                        :pageSizeOptions="['12', '24', '48', '96']" :current="currentPage" :total="dataTotal"
-                        :show-total="() => `总共 ${dataTotal} 条`" @change="handleOnChange" />
+                    <a-pagination
+                        showQuickJumper
+                        isShowContent
+                        showSizeChanger
+                        :pageSize="pageSize"
+                        :pageSizeOptions="['12', '24', '48', '96']"
+                        :current="currentPage"
+                        :total="dataTotal"
+                        :show-total="() => `总共 ${dataTotal} 条`"
+                        @change="handleOnChange"
+                    />
                 </template>
             </JProTable>
         </FullPage>
@@ -57,7 +81,7 @@ import {
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
-
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 const menuStory = useMenuStore();
 
 const configRef = ref<Record<string, any>>({});
@@ -85,28 +109,17 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'select',
-            options: [
-                {
-                    label: '内燃柴油机',
-                    value: 'ICDieselEngine',
-                },
-                {
-                    label: '内燃汽油机',
-                    value: 'ICGasolineEngine',
-                },
-                {
-                    label: '机械柴油机',
-                    value: 'MachineDieselEngine',
-                },
-                {
-                    label: '内燃牵引车',
-                    value: 'ICTractor',
-                },
-                {
-                    label: '其他',
-                    value: 'other',
-                },
-            ],
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.text,
+                                value: item.value,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
@@ -267,8 +280,7 @@ const handleExport = async () => {
             );
             if (
                 state.selectedRowKeys?.length > 10000 ||
-                (state.selectedRowKeys?.length == 0 &&
-                    dataTotal.value > 10000)
+                (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
             ) {
                 onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
             } else {
