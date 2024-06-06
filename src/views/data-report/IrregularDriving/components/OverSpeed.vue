@@ -42,9 +42,7 @@
 
                 <template #reportTime="{ reportTime }">
                     {{
-                        dayjs(Number(reportTime)).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        )
+                        dayjs(Number(reportTime)).format('YYYY-MM-DD HH:mm:ss')
                     }}
                 </template>
                 <template #orgName="{ orgName }">
@@ -99,6 +97,7 @@ import { useSelect } from '@/utils/hooks/useSelect';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+import { handleSearchByDate } from '@/utils/dataReportUtils';
 
 const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
     useSelect();
@@ -395,6 +394,8 @@ const columns = [
 const handleSearch = (_params: any) => {
     if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
     handleSearchDate(_params);
+    // 下方函数用于处理日期型时间的搜索
+    handleSearchByDate(_params, ['reportTime']);
     globParams.value = _params;
 };
 </script>

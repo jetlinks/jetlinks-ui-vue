@@ -88,6 +88,7 @@ const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
 
 import { Modal, Textarea } from 'jetlinks-ui-components';
 import { queryLogsType } from '@/api/device/instance';
+import { handleSearchByDate } from '@/utils/dataReportUtils';
 
 const type = ref<string>('xlsx');
 
@@ -296,6 +297,7 @@ const handelDetail = (data: any) => {
  */
 const handleSearch = (_params: any) => {
     if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    handleSearchByDate(_params, ['createTime']);
     globParams.value = _params;
 };
 </script>

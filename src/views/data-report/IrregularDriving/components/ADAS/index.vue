@@ -59,6 +59,7 @@ import { onlyMessage } from '@/utils/comm';
 import { queryADAS, adasExport } from '@/api/data-report/IrregularDriving';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
+import { handleSearchByDate } from '@/utils/dataReportUtils';
 
 const visible = ref(false);
 
@@ -232,6 +233,7 @@ const rowSelection = {
  * @param param
  */
 const handleSearch = (param: any) => {
+    handleSearchByDate(param, ['reportTime']);
     params.value = param;
 };
 </script>

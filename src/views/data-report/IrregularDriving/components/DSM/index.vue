@@ -57,6 +57,7 @@ import { downloadFileByUrl } from '@/utils/utils';
 import Detail from './Detail.vue';
 import { queryDSM, dsmExport } from '@/api/data-report/IrregularDriving';
 import moment from 'moment';
+import { handleSearchByDate } from '@/utils/dataReportUtils';
 
 const configRef = ref<Record<string, any>>({});
 
@@ -230,6 +231,7 @@ const onDetail = (data: Record<string, any>) => {
  * @param param
  */
 const handleSearch = (param: any) => {
+    handleSearchByDate(param, ['reportTime']);
     params.value = param;
 };
 </script>
