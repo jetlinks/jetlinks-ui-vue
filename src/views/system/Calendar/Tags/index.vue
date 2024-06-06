@@ -1,6 +1,6 @@
 <template>
     <div class="tagsContainer" ref="tags">
-        <PermissionButton type="text" @click="addTag">
+        <PermissionButton type="text" @click="addTag" :disabled="rapidOn">
             +新增标签
         </PermissionButton>
         <div v-for="i in tagsList" class="tag">
@@ -14,7 +14,7 @@
             <div>
                 <PermissionButton
                     type="text"
-                    :disabled="i.disabled"
+                    :disabled="i.disabled || rapidOn"
                     @click="() => editData(i)"
                 >
                     <template #icon>
@@ -23,7 +23,7 @@
                 </PermissionButton>
                 <PermissionButton
                     type="text"
-                    :disabled="i.disabled"
+                    :disabled="i.disabled || rapidOn"
                     :popConfirm="{
                         title: `确定要删除？`,
                         onConfirm: () => deleteData(i.id),
@@ -58,6 +58,7 @@ import { onlyMessage } from '@/utils/comm';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
 const tagsMap = inject('tagsMap')
+const rapidOn = inject('rapidOn')
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();

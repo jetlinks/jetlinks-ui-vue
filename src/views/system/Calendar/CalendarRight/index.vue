@@ -4,7 +4,15 @@
             <span
                 >将左侧标签拖拽至右侧日历中，日历中的标签在场景联动中可以被引用作为执行动作的触发条件</span
             >
-            <permissionButton type="text">
+            <permissionButton
+                type="text"
+                :disabled="rapidChecked"
+                :popConfirm="{
+                    placement:'bottomRight',
+                    title: `确认清空？`,
+                    onConfirm: clearEvent,
+                }"
+            >
                 <template #icon
                     ><AIcon
                         type="ClearOutlined"
@@ -40,7 +48,13 @@
                 </div>
                 <div style="margin-left: 10px">
                     将模板快速作用于后续的
-                    <a-input-number style="width: 100px" v-model:value="effectDays" :min="effectMin" :precision="0" :controls="false"></a-input-number>
+                    <a-input-number
+                        style="width: 100px"
+                        v-model:value="effectDays"
+                        :min="effectMin"
+                        :precision="0"
+                        :controls="false"
+                    ></a-input-number>
                     日内
                 </div>
                 <div>
@@ -54,29 +68,49 @@
 
 <script setup name="Calendar">
 import FullCalendar from '../FullCalendar/index.vue';
+import { inject } from 'vue';
+import { clearAll } from '@/api/system/calendar';
+import { onlyMessage } from '@/utils/comm';
 const Calendar = ref();
 const rapidChecked = ref(false);
+const rapidOn = inject('rapidOn');
 const selectedDate = ref();
 const effectDays = ref();
-const effectMin = ref()
+const effectMin = ref();
 const selectDate = (data) => {
     selectedDate.value = data?.start + '~' + data?.end;
     effectDays.value = data?.days;
-    effectMin.value = data?.days
+    effectMin.value = data?.days;
 };
-const reelect = () =>{
-    Calendar.value.reselection()
-    selectedDate.value = ''
-    effectDays.value = undefined
-    effectMin.value = undefined
-}
-const resetRapid =() =>{
-    reelect()
-    rapidChecked.value = false
-}
-const rapid = () =>{
-    Calendar.value.rapidAction(effectDays.value)
-}
+const reelect = () => {
+    Calendar.value.reselection();
+    selectedDate.value = '';
+    effectDays.value = undefined;
+    effectMin.value = undefined;
+};
+const resetRapid = () => {
+    reelect();
+    rapidChecked.value = false;
+};
+const rapid = () => {
+    Calendar.value.rapidAction(effectDays.value);
+};
+const clearEvent = async () => {
+    const res = await clearAll();
+    if (res.status === 200) {
+        onlyMessage('操作成功');
+        Calendar.value?.refresh();
+    }
+};
+watch(
+    () => rapidChecked.value,
+    () => {
+        rapidOn.value = rapidChecked.value;
+    },
+    {
+        immediate: true,
+    },
+);
 </script>
 <style lang="less" scoped>
 .calendarRight {

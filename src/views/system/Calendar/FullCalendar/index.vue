@@ -9,19 +9,34 @@
                 <div class="event">
                     <i>{{ arg.event.title }}</i>
                     <a-button
+                        v-if="!selectable"
                         type="text"
                         class="closeBtn"
                         @click="() => deleteEvent(arg)"
                         >x</a-button
                     >
                 </div>
-            </template></FullCalendar
-        >
+            </template>
+        </FullCalendar>
+        <div class="calenderButton">
+            <a-button @click="handleCustomPrev" :disabled="selectable"
+                >上月</a-button
+            >
+            <a-button @click="handleCustomToday" :disabled="selectable"
+                >今天</a-button
+            >
+            <a-button @click="handleCustomNext" :disabled="selectable"
+                >下月</a-button
+            >
+        </div>
         <div class="compareTip" v-if="eventChange">
             点击确认完成本次日历维护
         </div>
         <div class="compareSave" v-if="eventChange">
-            <PermissionButton type="link" @click="saveCalendar"
+            <PermissionButton
+                type="link"
+                @click="saveCalendar"
+                :disabled="selectable"
                 >确认</PermissionButton
             >
         </div>
@@ -62,6 +77,8 @@ const colorMap = new Map();
 const choiceStart = ref();
 //多选结束日期
 const choiceEnd = ref();
+//上次悬停改变过的数据
+const lastHoverDate = ref([]);
 // 事件点击删除逻辑
 const deleteEvent = (data) => {
     const event = data.event;
@@ -139,7 +156,6 @@ const handleViewDidMount = async (arg) => {
                     });
                 });
             });
-            // initialData.value = cloneDeep(eventsData.value);
             initialEventData.value = eventsData.value.map((i) => {
                 return {
                     id: i.id,
@@ -165,6 +181,9 @@ const handleCustomPrev = () => {
 };
 const handleCustomNext = () => {
     calendarApi.value.next();
+};
+const handleCustomToday = () => {
+    calendarApi.value.today();
 };
 //保存编辑后的日历
 const saveCalendar = async () => {
@@ -206,7 +225,7 @@ const getDatesBetween = (start, end) => {
     }
     return dates;
 };
-//多选日期处理数据
+//多选日期处理数据(原生拖拽逻辑)
 const handleSelect = (selectionInfo) => {
     choiceStart.value = dayjs(selectionInfo.startStr);
     choiceEnd.value = dayjs(selectionInfo.endStr);
@@ -216,41 +235,83 @@ const handleSelect = (selectionInfo) => {
         days: choiceEnd.value.diff(choiceStart.value, 'day'),
     });
 };
+//多选日期处理数据(点击逻辑)
+const handleDateClick = (selectInfo) => {
+    if (!props.selectable) {
+        return;
+    }
+    if (!choiceStart.value) {
+        choiceStart.value = dayjs(selectInfo.dateStr);
+        const selectedDate = document.querySelector(
+            `.fc-day[data-date="${selectInfo.dateStr}"]`,
+        );
+        selectedDate.classList.add('selectedDate');
+    } else {
+        if (dayjs(selectInfo.dateStr).isBefore(choiceStart.value)) {
+            onlyMessage('结束时间必须大于开始时间');
+            return;
+        }
+        choiceEnd.value = dayjs(selectInfo.dateStr).add(1, 'day');
+        emit('selectDate', {
+            start: choiceStart.value.format('YYYY.MM.DD'),
+            end: choiceEnd.value.subtract(1, 'day').format('YYYY.MM.DD'),
+            days: choiceEnd.value.diff(choiceStart.value, 'day'),
+        });
+    }
+};
+//多选背景颜色渲染逻辑
+const handleCellDidMount = (info) => {
+    info.el.addEventListener('mouseenter', () => {
+        const currentDate = dayjs(info.date);
+        //每次移动清空之前所有的颜色
+        if (lastHoverDate.value && !choiceEnd.value) {
+            lastHoverDate.value.forEach((i) => {
+                const selectedDate = document.querySelector(
+                    `.fc-day[data-date="${i}"]`,
+                );
+                selectedDate.classList.remove('selectedDate');
+            });
+        }
+        if (
+            choiceStart.value &&
+            currentDate.isAfter(choiceStart.value) &&
+            !choiceEnd.value
+        ) {
+            const dateArr = getDatesBetween(
+                choiceStart.value,
+                currentDate.add(1, 'day'),
+            );
+            dateArr.forEach((i) => {
+                const selectedDate = document.querySelector(
+                    `.fc-day[data-date="${i}"]`,
+                );
+                selectedDate.classList.add('selectedDate');
+            });
+            lastHoverDate.value = dateArr;
+            lastHoverDate.value.shift();
+        }
+    });
+};
 //插件配置项
 const calendarOptions = {
     plugins: [interactionPlugin, dayGridPlugin],
     initialView: 'dayGridMonth',
-    customButtons: {
-        customPrev: {
-            text: '上月',
-            click: handleCustomPrev,
-        },
-        customNext: {
-            text: '下月',
-            click: handleCustomNext,
-        },
-    },
     headerToolbar: {
-        start: 'customPrev,today,customNext',
-        center: 'title',
+        start: 'title',
+        center: '',
         end: '',
     },
-    views: {
-        doubleMonth: {
-            type: 'dayGridMonth',
-            duration: { months: 2 }, // Show two months
-        },
-    },
     events: initialEventData.value,
-    selectable: props.selectable,
+    // selectable: props.selectable,
     unselectAuto: false,
     locale: locale,
     droppable: true,
     height: '740px',
-    drop: function (info) {},
-    select: handleSelect,
+    // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,
+    dateClick: handleDateClick,
+    dayCellDidMount: handleCellDidMount,
 };
 // //编辑标签后刷新日历数据
 // const refreshCalendar = () => {
@@ -294,16 +355,7 @@ const queryRapidDateEvent = async (startDate, endDate) => {
                 });
             });
         });
-        initialEventData.value = eventsData.value.map((i) => {
-            return {
-                id: i.id,
-                title: i.name,
-                start: i.date,
-                backgroundColor: colorMap.get(i.id) || '#000000',
-            };
-        });
     }
-    console.log(interfaceData.value);
 };
 //快速作用
 const rapidAction = async (effectDays) => {
@@ -351,18 +403,42 @@ const rapidAction = async (effectDays) => {
     calendarApi.value.addEventSource(addEvents);
     emit('resetRapid');
 };
-//取消多选
+//取消多选(原生)
+// const reselection = () => {
+//     calendarApi.value.unselect();
+// };
+//取消多选自定义
 const reselection = () => {
-    calendarApi.value.unselect();
+    if (choiceStart.value) {
+        lastHoverDate.value.push(dayjs(choiceStart.value).format('YYYY-MM-DD'));
+    }
+    if (choiceEnd.value) {
+        lastHoverDate.value.push(dayjs(choiceStart.value).format('YYYY-MM-DD'));
+    }
+    lastHoverDate.value.forEach((i) => {
+        const selectedDate = document.querySelector(
+            `.fc-day[data-date="${i}"]`,
+        );
+        selectedDate.classList.remove('selectedDate');
+    });
+    (choiceStart.value = ''), (choiceEnd.value = '');
+};
+//重新获取数据
+const refresh = () => {
+    eventsData.value = [];
+    initialData.value = [];
+    interfaceData.value = [];
+    handleViewDidMount(calendarApi.value);
 };
 defineExpose({
     reselection,
     rapidAction,
+    refresh,
 });
 watch(
     () => props.selectable,
     (val) => {
-        calendarApi.value.setOption('selectable', val);
+        calendarApi.value.setOption('droppable', !val);
         if (!val) {
             emit('resetRapid');
         }
@@ -371,7 +447,7 @@ watch(
 watch(
     () => tagsList.value,
     (val, oldVal) => {
-        if (val?.length === oldVal?.length) {
+        if (val?.length <= oldVal?.length) {
             const tagsMap = new Map();
             tagsList.value.forEach((i) => {
                 tagsMap.set(i.id, {
@@ -419,23 +495,36 @@ onMounted(() => {
         right: 0;
         top: 2px;
     }
-}
-.event {
-    position: relative;
-    height: 30px;
-    line-height: 30px;
-
-    .closeBtn {
+    .calenderButton {
         position: absolute;
-        right: 0;
-        top: -5;
-        color: #fff;
-        display: none;
+        left: 10%;
+        top: 2px;
+    }
+    .event {
+        position: relative;
+        height: 30px;
+        line-height: 30px;
+
+        .closeBtn {
+            position: absolute;
+            right: 0;
+            top: -5;
+            color: #fff;
+            display: none;
+        }
+    }
+    .event:hover {
+        .closeBtn {
+            display: inline-block;
+        }
     }
 }
-.event:hover {
-    .closeBtn {
-        display: inline-block;
-    }
+:deep(.fc-highlight) {
+    background-color: transparent;
+}
+</style>
+<style>
+.selectedDate {
+    background-color: rgb(234, 234, 255) !important;
 }
 </style>
