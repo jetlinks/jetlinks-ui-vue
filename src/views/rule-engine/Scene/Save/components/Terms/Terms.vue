@@ -1,6 +1,6 @@
 <template>
   <div class='actions-terms'>
-    <TitleComponent data='触发条件' style='font-size: 14px;' >
+    <TitleComponent data='执行动作' style='font-size: 14px;' >
       <template #extra>
         <j-switch
           v-model:checked='open'
@@ -11,7 +11,7 @@
         />
       </template>
     </TitleComponent>
-    <template v-if='open'>
+<!--    <template v-if='open'>-->
       <div>
         <j-tabs type="editable-card" v-model:activeKey="activeKey" @edit="addGroup" @tabClick="showEditCondition">
           <j-tab-pane
@@ -50,21 +50,29 @@
         </j-tabs>
       </div>
 
-    </template>
-    <div v-else class='actions-branches-item'>
-      <j-form-item
-        :name='["branches", 0, "then"]'
-        :rules='thenRules'
-      >
-        <Action
-          :name='0'
-          :openShakeLimit="true"
-          :thenOptions='data.branches[0]?.then'
-        />
-      </j-form-item>
-    </div>
+<!--    </template>-->
+<!--    <div v-else class='actions-branches-item'>-->
+<!--      <j-form-item-->
+<!--        :name='["branches", 0, "then"]'-->
+<!--        :rules='thenRules'-->
+<!--      >-->
+<!--        <Action-->
+<!--          :name='0'-->
+<!--          :openShakeLimit="true"-->
+<!--          :thenOptions='data.branches[0]?.then'-->
+<!--        />-->
+<!--      </j-form-item>-->
+<!--    </div>-->
   </div>
-  <j-modal v-if="editConditionVisible"  title="编辑" visible @cancel="editConditionVisible = false" @ok="changeBranchName">
+  <j-modal
+    v-if="editConditionVisible"
+    visible
+    title="编辑"
+    :keyboard="false"
+    :maskClosable="false"
+    @cancel="editConditionVisible = false"
+    @ok="changeBranchName"
+  >
     <j-form layout='vertical'>
       <j-form-item label="条件名称：" :required="true">
         <j-input v-model:value="conditionName"></j-input>
@@ -164,6 +172,11 @@ const branchesDelete = (index: number) => {
 }
 
 const addGroup = () => {
+  const lastGroup = group.value[group.value.length - 1]
+  const lastIndex = (lastGroup?.groupIndex || group.value.length) + 1
+  const branchName =  '条件' +  lastIndex
+  const key = `branches_${randomString()}`
+
   const branchesItem: any = {
     when: [
       {
@@ -183,7 +196,7 @@ const addGroup = () => {
         key: `terms_${randomString()}`,
       },
     ],
-    key: `branches_${randomString()}`,
+    key: key,
     shakeLimit: {
       enabled: false,
       time: 1,
@@ -193,15 +206,19 @@ const addGroup = () => {
     then: [],
     executeAnyway: true,
     branchId: Math.floor(Math.random() * 100000000),
-    branchName:''
+    branchName
   }
-  data.value.branches?.push(branchesItem)
-  data.value.branches?.push(null as any)
+  data.value.branches?.push(branchesItem, null)
+  // data.value.branches?.push(null as any)
   activeKey.value = `group_${branchesItem.key}`
   data.value.options!.when.push({
     terms: [{
       terms: [['','eq','','and']],
-    }]
+    }],
+    branchName,
+    key,
+    executeAnyway: true,
+    groupIndex: lastIndex
   })
 }
 
@@ -230,12 +247,19 @@ const showEditCondition = (key:any) =>{
 }
 
 const changeBranchName = () =>{
-  console.log(data.value)
+  let _activeKey = activeKey.value.replace('group_', '')
   data.value.branches?.forEach((item:any)=>{
-     if(item?.key === activeKey.value.slice(6)){
+     if(item?.key === _activeKey){
       item.branchName = conditionName.value
      }
   })
+
+  data.value.options!.when.forEach(item => {
+    if (item.key === _activeKey) {
+      item.branchName = conditionName.value
+    }
+  })
+
   editConditionVisible.value =false
 }
 watchEffect(() => {
@@ -265,13 +289,15 @@ watchEffect(() => {
       // }
 
       const lastIndex = _group.length - 1
+      const whenItem = data.value.options!.when.find(whenItem => item && whenItem.key === item.key)
 
       if (index === 0 || item?.executeAnyway) {
         _group[lastIndex + 1] = {
           id: `group_${item.key}`,
           len: 1,
           start: index,
-          branchName:item.branchName
+          branchName: item.branchName,
+          groupIndex: whenItem?.groupIndex
         }
       } else {
         _group[lastIndex].len += 1

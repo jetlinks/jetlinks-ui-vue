@@ -1,5 +1,6 @@
 <template>
   <div :class='WarpClass'>
+    <j-switch />
     <j-popconfirm
       title='确认删除？'
       v-if="showGroupDelete && isFirst"

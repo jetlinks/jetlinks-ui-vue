@@ -1,5 +1,6 @@
 <template>
   <div class='rule-button-warp' :style='style'>
+    <slot name="extra"/>
     <div class='rule-button add-button' @click='click'>
       <slot />
     </div>

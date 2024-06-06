@@ -12,6 +12,7 @@
           { label: "按周", value: "week" },
           { label: "按月", value: "month" },
           { label: "cron表达式", value: "cron" },
+          { label: "自定义日历", value: "multi" },
         ]'
         option-type='button'
         button-style='solid'
@@ -20,6 +21,9 @@
     </j-form-item>
     <j-form-item v-if='showCron' name='cron' :rules="cronRules">
       <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
+    </j-form-item>
+    <j-form-item v-else-if="showMulti" :rules="multiRules">
+      <Calendar v-model:value="formModel.multi" />
     </j-form-item>
     <template v-else>
       <j-form-item name='when'>
@@ -38,7 +42,7 @@
         />
       </j-form-item>
     </template>
-    <j-space v-if='showOnce' style='display: flex;gap: 24px'>
+    <j-space v-if='showOnce && !showMulti' style='display: flex;gap: 24px'>
       <j-form-item :name="['once', 'time']">
         <j-time-picker
           valueFormat='HH:mm:ss'
@@ -50,7 +54,7 @@
       </j-form-item>
       <j-form-item> 执行一次</j-form-item>
     </j-space>
-    <j-space v-if='showPeriod' style='display: flex;gap: 24px'>
+    <j-space v-if='showPeriod && !showMulti' style='display: flex;gap: 24px'>
       <j-form-item>
         <j-time-range-picker
           valueFormat='HH:mm:ss'
@@ -105,6 +109,7 @@ import {cloneDeep, pick} from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
 import { isCron } from '@/utils/regular'
 import { defineExpose } from 'vue'
+import Calendar from './Calendar.vue'
 
 type NameType = string[] | string
 
@@ -142,6 +147,15 @@ const cronRules = [
   }
 ]
 
+const multiRules = [
+  {
+    validator: async (_: any, v: string) => {
+      console.log(v)
+      return Promise.resolve();
+    }
+  }
+]
+
 const formModel = reactive<OperationTimer>({
   trigger: 'week',
   when: props.value.when || [],
@@ -161,6 +175,9 @@ const timerForm = ref()
 
 const showCron = computed(() => {
   return formModel.trigger === 'cron'
+})
+const showMulti = computed(() => {
+  return formModel.trigger === 'multi'
 })
 
 const showOnce = computed(() => {

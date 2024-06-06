@@ -5,7 +5,8 @@
         :name="['trigger', 'timer']"
       >
         <template #label>
-          <TitleComponent data='触发规则' style='font-size: 14px;' />
+          <TitleComponent data='触发规则' style='font-size: 14px;' >
+          </TitleComponent>
         </template>
         <AddButton
             style='width: 100%'

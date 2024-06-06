@@ -1,6 +1,6 @@
 <template>
   <div :class='["trigger-options-content", isAdd ? "is-add" : ""]'>
-    <span v-if='!isAdd'> 点击配置定时触发 </span>
+    <span v-if='!isAdd'> 点击设定时间 </span>
     <template v-else>
       <div v-if='options.when'>
         <span className='trigger-options-when'>{{ options.when }}</span>
