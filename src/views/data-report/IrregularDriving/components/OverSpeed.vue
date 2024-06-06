@@ -98,7 +98,6 @@ import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 
-
 const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
     useSelect();
 
@@ -390,11 +389,12 @@ const columns = [
 
 /**
  * 搜索
- * @param param
+ * @param _params
  */
-const handleSearch = (param: any) => {
-    handleSearchDate(param);
-    globParams.value = param;
+const handleSearch = (_params: any) => {
+    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    handleSearchDate(_params);
+    globParams.value = _params;
 };
 </script>
 

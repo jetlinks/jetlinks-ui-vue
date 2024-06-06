@@ -152,9 +152,6 @@ const handleExport = async () => {
             ],
         };
     } else {
-        if(dataTotal.value > 10000){
-            onlyMessage('大于10000条数据,只能导出前10000条数据', 'warning');
-        }
         _params = {
             paging: false,
             pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
@@ -295,10 +292,11 @@ const handelDetail = (data: any) => {
 
 /**
  * 搜索
- * @param param
+ * @param _params
  */
-const handleSearch = (param: any) => {
-    globParams.value = param;
+const handleSearch = (_params: any) => {
+    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    globParams.value = _params;
 };
 </script>
 
