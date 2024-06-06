@@ -152,9 +152,6 @@ const handleExport = async () => {
             ],
         };
     } else {
-        if(dataTotal.value > 10000){
-            onlyMessage('大于10000条数据,只能导出前10000条数据', 'warning');
-        }
         _params = {
             paging: false,
             pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
