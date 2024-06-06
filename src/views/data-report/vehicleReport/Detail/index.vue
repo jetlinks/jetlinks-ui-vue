@@ -437,7 +437,7 @@ const queryDevice = async () => {
 };
 //获取在线离线数据
 const getMileage = async () => {
-    const _deviceId: any = route.query?.deviceId;
+    const _deviceId: any = route.query?.id;
     const res: any = await getVehicleMileage(JSON.parse(_deviceId));
     if (res.status == 200) {
         vehicleMileage.value = res.result.mileage;
@@ -445,12 +445,12 @@ const getMileage = async () => {
 };
 //获取行驶记录数据
 const queryDataRecord = async () => {
-    const _deviceId: any = route.query?.deviceId;
+    const _deviceId: any = route.query?.id;
 
     const defaultParams = {
         terms: [
             {
-                column: 'deviceId',
+                column: 'vehicleId',
                 value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
@@ -469,7 +469,7 @@ const queryDataWork = async () => {
     const defaultParams = {
         terms: [
             {
-                column: 'vehicleId',
+                column: 'deviceId',
                 value: `${_id}`,
                 termType: 'eq',
             },
