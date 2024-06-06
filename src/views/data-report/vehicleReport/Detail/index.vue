@@ -469,7 +469,7 @@ const queryDataWork = async () => {
     const defaultParams = {
         terms: [
             {
-                column: 'deviceId',
+                column: 'vehicleId',
                 value: `${_id}`,
                 termType: 'eq',
             },
