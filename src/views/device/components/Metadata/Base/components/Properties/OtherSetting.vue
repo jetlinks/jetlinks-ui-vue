@@ -279,14 +279,6 @@ const columns = ref([
     },
 ]);
 
-// const limitChange = (e: string[]) => {
-//   if (e.length !== 0 ) {
-//     extraForm.type = e
-//   } else {
-//     extraForm.type = [...extraForm.type]
-//   }
-// }
-
 const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
   if (!isSelected) { // 删除
     if (key === 'upper') {
@@ -382,7 +374,6 @@ const confirm = () => {
         }
     });
 };
-
 
 watch(() => modalVisible.value, () => {
   if (modalVisible.value) {

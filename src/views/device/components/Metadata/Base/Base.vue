@@ -6,6 +6,7 @@
       :columns="columns"
       :height="560"
       :selectedRowKeys="selectedRowKeys"
+      :disableMenu="!hasOperate('add', type)"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
       @editChange="editStatusChange"
@@ -40,7 +41,7 @@
               :disabled="hasOperate('add', type)"
               :tooltip="{
                     title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
+                        ? '当前的存储方式不支持删改、新增'
                         : '保存',
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                     getPopupContainer: getPopupContainer,
@@ -49,6 +50,16 @@
           >
             保存
           </PermissionButton>
+        </div>
+      </div>
+    </template>
+    <template #bodyExtra v-if="hasOperate('add', type)">
+      <div class="noEdit-tip">
+        <div>
+         该设备受所属产品的存储策略影响，无法进行删改、新增操作
+        </div>
+        <div>
+          <a-button type="link" @click="jumpProduct" style="font-size: 20px;">修改存储策略</a-button>
         </div>
       </div>
     </template>
@@ -133,8 +144,8 @@
           v-model:value="record.expands"
           :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
           :id="record.id"
-          :disabled="record.expands?.isProduct"
           :metadataType="props.type"
+          :isProduct="record.expands?.isProduct"
       />
     </template>
     <template #async="{ record }">
@@ -246,7 +257,6 @@ import {saveDeviceVirtualProperty} from '@/api/device/instance';
 import {useInstanceStore} from '@/store/instance';
 import {useProductStore} from '@/store/product';
 import {asyncUpdateMetadata, updateMetadata} from '../metadata';
-import {useMetadataStore} from '@/store/metadata';
 import {DeviceInstance} from '@/views/device/Instance/typings';
 import {onlyMessage, LocalStore} from '@/utils/comm';
 import {omit} from "lodash-es";
@@ -254,7 +264,8 @@ import {PropertiesModal, FunctionModal, EventModal, TagsModal} from './DetailMod
 import {Modal} from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
 import {watch} from "vue";
-import {useSystem} from "store/system";
+import {useSystem} from "@/store/system";
+import {useMenuStore} from "@/store/menu";
 import {storeToRefs} from "pinia";
 import {usePermissionStore} from '@/store/permission';
 import {
@@ -369,7 +380,9 @@ const handleSearch = (searchValue: string) => {
 };
 
 const scrollDown = (len: number = 5) => {
-  dataSource.value.push(...(new Array(len).fill(1).map(() => getMetadataItemByType(props.type!))))
+  if (!hasOperate('add', props.type)) {
+    dataSource.value.push(...(new Array(len).fill(1).map(() => getMetadataItemByType(props.type!))))
+  }
 }
 
 const removeItem = (index: number) => {
@@ -485,6 +498,12 @@ const handleSaveClick = async (next?: Function) => {
   }
 };
 
+const jumpProduct = () => {
+  useMenuStore().jumpPage(
+    'device/Product/Detail', { id: instanceStore.detail.productId, tab: 'Device' }
+  )
+}
+
 const parentTabsChange = (next?: Function) => {
   if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`) && LocalStore.get(TOKEN_KEY)) {
     const modal = Modal.confirm({
@@ -546,5 +565,25 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   display: flex;
   justify-content: space-between;
   padding-bottom: 16px;
+}
+
+.extra-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.noEdit-tip {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 22px;
+  color: #6f6f6f;
+  justify-content: center;
+  align-items: center
 }
 </style>
