@@ -99,9 +99,6 @@ export const columns = [
         key: 'totalFlow',
         ellipsis: true,
         scopedSlots: true,
-        search: {
-            type: 'number',
-        },
     },
     {
         title: '使用流量',
@@ -109,9 +106,6 @@ export const columns = [
         key: 'usedFlow',
         scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'number',
-        },
     },
     {
         title: '剩余流量',
@@ -119,9 +113,6 @@ export const columns = [
         key: 'residualFlow',
         scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'number',
-        },
     },
     {
         title: '激活日期',

@@ -14,7 +14,6 @@ interface IDicMap {
 const useFilterAlarmDesc = (columns: any[]) => {
     // 存储告警信息
     const dicMap = reactive<IDicMap[]>([]);
-    //
     const tableColumns = reactive([...columns]);
 
     // 处理告警信息为dictId: [{dicValue, dicDesc},{dicValue, dicDesc},...]的格式
