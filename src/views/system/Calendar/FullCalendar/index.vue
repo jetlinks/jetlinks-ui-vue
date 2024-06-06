@@ -187,18 +187,19 @@ const handleCustomToday = () => {
 };
 //保存编辑后的日历
 const saveCalendar = async () => {
-    let submitDate = [];
+    let formatEventData = [];
+    let submitData = [];
     eventsData.value.forEach((i) => {
-        const existIndex = submitDate.findIndex((item) => {
+        const existIndex = formatEventData.findIndex((item) => {
             return item.date === i.date;
         });
         if (existIndex !== -1) {
-            submitDate[existIndex]?.tags?.push({
+            formatEventData[existIndex]?.tags?.push({
                 id: i.id,
                 name: i.name,
             });
         } else {
-            submitDate.push({
+            formatEventData.push({
                 date: i.date,
                 tags: [
                     {
@@ -209,7 +210,20 @@ const saveCalendar = async () => {
             });
         }
     });
-    const res = await saveEvents(submitDate);
+    const formatEventDataMap = new Map();
+    formatEventData.map((i) => {
+        formatEventDataMap.set(i.date, i);
+    });
+    submitData = cloneDeep(formatEventData);
+    interfaceData.value?.forEach((i) => {
+        if (!formatEventDataMap.has(i.date)) {
+            submitData.push({
+                date: i.date,
+                tags: [],
+            });
+        }
+    });
+    const res = await saveEvents(submitData);
     if (res.status === 200) {
         onlyMessage('操作成功');
         initialData.value = cloneDeep(eventsData.value);
@@ -476,6 +490,11 @@ watch(
 );
 onMounted(() => {
     calendarApi.value = calendarEl.value.getApi();
+    document?.addEventListener('mousemove', (event) => {
+        if (props.selectable) {
+            console.log(event);
+        }
+    });
 });
 </script>
 <style lang="less" scoped>
