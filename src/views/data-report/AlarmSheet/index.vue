@@ -43,7 +43,7 @@
                 </template>
                 <!-- 告警时间 -->
                 <template #alarmTime="{ alarmTime }">
-                    {{ dayjs(alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{ dayjs(Number(alarmTime)).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <template #paginationRender>
                     <a-pagination

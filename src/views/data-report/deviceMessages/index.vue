@@ -40,7 +40,7 @@
                 <template #createTime="slotProps">
                     {{
                         slotProps.createTime
-                            ? moment(slotProps.createTime).format(
+                            ? moment(Number(slotProps.createTime)).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : ''

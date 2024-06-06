@@ -42,7 +42,11 @@
                 </template>
                 <template #faultTime="{ faultTime }">
                     <span>
-                        {{ dayjs(faultTime).format('YYYY-MM-DD HH:mm:ss') }}
+                        {{
+                            dayjs(Number(faultTime)).format(
+                                'YYYY-MM-DD HH:mm:ss',
+                            )
+                        }}
                     </span>
                 </template>
                 <template #paginationRender>

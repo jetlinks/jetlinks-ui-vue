@@ -55,7 +55,7 @@
                 <template #activationDate="{ activationDate }">
                     {{
                         activationDate
-                            ? dayjs(activationDate).format(
+                            ? dayjs(Number(activationDate)).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : '--'
@@ -65,7 +65,9 @@
                 <template #updateTime="{ updateTime }">
                     {{
                         updateTime
-                            ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
+                            ? dayjs(Number(updateTime)).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
                             : '--'
                     }}
                 </template>

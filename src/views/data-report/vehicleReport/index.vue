@@ -48,7 +48,9 @@
                     </a>
                 </template>
                 <template #vehicleDate="{ vehicleDate }">
-                    {{ dayjs(vehicleDate).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{
+                        dayjs(Number(vehicleDate)).format('YYYY-MM-DD HH:mm:ss')
+                    }}
                 </template>
                 <template #paginationRender>
                     <a-pagination
