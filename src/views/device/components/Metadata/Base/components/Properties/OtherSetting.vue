@@ -15,8 +15,19 @@
                     <j-collapse-panel
                         v-for="(item, index) in config"
                         :key="'store_' + index"
-                        :header="item.name"
                     >
+                      <template #header>
+                        {{ item.name }}
+                        <j-tooltip
+                          v-if="item.description"
+                          :title="item.description"
+                        >
+                          <AIcon
+                            type="ExclamationCircleOutlined"
+                            style="padding-left: 12px; padding-top: 4px"
+                          />
+                        </j-tooltip>
+                      </template>
                         <j-table
                             :columns="columns"
                             :data-source="item.properties"
@@ -37,6 +48,9 @@
                                     "
                                     :extra="{
                                       dropdownStyle: {
+                                        zIndex: 1071
+                                      },
+                                      popupStyle: {
                                         zIndex: 1071
                                       }
                                     }"
@@ -68,12 +82,7 @@
                             :value="myValue.metrics"
                         />
                     </j-collapse-panel>
-                    <j-collapse-panel key="extra" header="拓展配置">
-                      <div class="extra-tip">
-                        <div>反显协议包中设定的数据处理规范</div>
-                        <div>上报数据处理规则包含：四舍五入、向上取整、向下取整…</div>
-                        <div>阈值限制如： 10&lt;上报数值&lt;80</div>
-                      </div>
+                    <j-collapse-panel key="extra" header="拓展配置"  v-if="showExtra">
                       <div class="extra-limit extra-check-group">
                         <div class="extra-title">阈值限制</div>
                         <CardSelect
@@ -179,6 +188,10 @@ const props = defineProps({
     },
     hasPermission: String,
     tooltip: Object,
+    metadataType: {
+      type: String,
+      default: 'properties'
+    }
 });
 
 const type = inject('_metadataType');
@@ -206,6 +219,13 @@ const extraForm = reactive({
   type: ['upper', 'lower']
 })
 
+const typeMap = {
+  'properties': 'property',
+  'functions': 'function',
+  'events': 'event',
+  'tags': 'tag',
+}
+
 const handleTip = computed(() => {
   if (extraForm.handle === 'ignore') {
     return '平台将忽略超出阈值的数据，无法查看上报记录'
@@ -226,6 +246,15 @@ const showMetrics = computed(() => {
         'date',
     ].includes(props.type as any);
 });
+
+const showExtra = computed(() => {
+  return [
+    'int',
+    'long',
+    'float',
+    'double',
+  ].includes(props.type as any) && props.metadataType === 'properties'
+})
 
 const booleanOptions = ref([
     { label: '否', value: 'false' },
@@ -294,7 +323,7 @@ const getConfig = async () => {
         deviceId: id,
         metadata: {
             id: props.id,
-            type: 'property',
+            type: typeMap[props.metadataType],
             dataType: props.type,
         },
     };
@@ -337,6 +366,11 @@ const confirm = () => {
             if (metrics) {
                 expands.metrics = metrics;
             }
+
+            if (showExtra.value) {
+              expands.threshold = extraForm
+            }
+
             emit('update:value', {
                 ...props.value,
                 ...expands,
@@ -370,6 +404,14 @@ watch(
     () => JSON.stringify(props.value),
     () => {
         myValue.value = cloneDeep(props.value);
+
+        if (props.value.threshold) {
+          const threshold = props.value.threshold
+          extraForm.handle = threshold.handle
+          extraForm.type = threshold.type
+          extraForm.lowerLimit = threshold.lowerLimit
+          extraForm.upperLimit = threshold.upperLimit
+        }
     },
     { immediate: true },
 );

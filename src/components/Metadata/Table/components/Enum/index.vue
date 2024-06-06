@@ -59,9 +59,7 @@ const onCancel = () => {
 
 const onOk = async () => {
   const data = await formRef.value.validate()
-  console.log(data, tableRef.value.validate)
   const tableData = await tableRef.value.validate()
-  console.log(tableData)
   if (data && tableData) {
     visible.value = false
     formData.elements = tableData

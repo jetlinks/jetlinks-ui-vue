@@ -186,7 +186,6 @@ const onOk = async () => {
   const data = await tableRef.value.validate()
   if (data) {
     visible.value = false
-    console.log('onOk',data)
     emit('update:value', data)
     emit('confirm', data)
   }

@@ -18,6 +18,8 @@
             :cellHeight="cellHeight"
             :height="height"
             :disableMenu="disableMenu"
+            :rowKey="rowKey"
+            :selectedRowKeys="selectedRowKeys"
             @scrollDown="onScrollDown"
         >
         <template v-for="(_, name) in slots" #[name]="slotData">
@@ -38,7 +40,7 @@ import Body from './body.vue'
 import {useFullscreen} from '@vueuse/core';
 import {provide, useAttrs, useSlots} from 'vue'
 
-const emit = defineEmits(['scrollDown', 'rightMenuClick'])
+const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange'])
 
 const props = defineProps({
   ...tableProps(),
@@ -61,6 +63,10 @@ const props = defineProps({
   rowKey: {
     type: String,
     default: 'id'
+  },
+  selectedRowKeys: {
+    type: [Array],
+    default: () => []
   }
 })
 
@@ -95,6 +101,9 @@ const {rules, validateItem, validate, errorMap} = useValidate(
         field?.showErrorTip(_errObj.message)
         // TODO table滚动到指定位置
         tableBody.value.scrollTo(_errObj.__index)
+      },
+      onEdit: () => {
+          emit('editChange', true)
       }
     }
 )
@@ -160,6 +169,11 @@ function rightMenu(menuType, record, copyValue) {
   emit('rightMenuClick', menuType, record, copyValue)
 }
 
+const scrollToById = (key) => {
+  const _index = _dataSource.value.findIndex(item => item[props.rowKey] === key)
+  tableBody.value.scrollTo(_index)
+}
+
 watch(() => scrollWidth.value, () => {
   onResize({width: tableStyle.width})
 })
@@ -177,7 +191,8 @@ useFormContext({
 
 defineExpose({
   validate,
-  tableWrapper
+  tableWrapper,
+  scrollToById
 })
 </script>
 

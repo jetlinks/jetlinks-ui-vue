@@ -13,6 +13,7 @@ type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
 
 type OptionsType = {
     onError: (err: Array<{ message: string, __index: number, field: string, filedValue: any}>) => void
+    onEdit: (item: any) => void
 }
 
 export const TABLE_WRAPPER = Symbol('table-wrapper')
@@ -38,7 +39,7 @@ const collectValidateRules = (columns: ColumnsType):  Record<string, any> => {
 }
 
 export const handlePureRecord = (record: Record<string, any>) => {
-    return omit(record, ['__serial', '__index', '__top'])
+    return omit(record, ['__serial', '__index', '__top', '__selected'])
 }
 export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options?: OptionsType): {
     validate: () => Promise<any>
@@ -74,14 +75,12 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
             const success: any[] = []
             let validateLen = 0
             const end = () => {
-                console.log(validateLen, len)
                 if (validateLen === len) {
                     Object.keys(error).length ? reject(error) : resolve(success)
                 }
             }
 
             filterDataSource.forEach((record, index) => {
-                console.log(record, rowKey, record[rowKey])
                 if (record[rowKey]) {
                     validateItem(record, index).then(res => {
                         success.push(handlePureRecord(res))

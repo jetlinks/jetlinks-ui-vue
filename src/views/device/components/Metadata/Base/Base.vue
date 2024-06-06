@@ -5,18 +5,29 @@
       :data-source="dataSource"
       :columns="columns"
       :height="560"
+      :selectedRowKeys="selectedRowKeys"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
+      @editChange="editStatusChange"
   >
     <template #extra="{ isFullscreen, fullScreenToggle }">
       <div class="extra-header">
         <div class="extra-left">
           <a-space>
-            <a-input-search @search="handleSearch" />
+            <a-input-search
+              allowClear
+              placeholder="请输入搜索名称"
+              @search="handleSearch"
+            />
             <AIcon
                 :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
                 @click="fullScreenToggle"
             />
+            <span v-if="searchData.show">
+              已查询到
+              <span style="color: #ff7875">{{ searchData.len}}</span>
+              条相关数据
+            </span>
           </a-space>
         </div>
         <div class="extra-right">
@@ -120,9 +131,10 @@
     <template #other="{ record }">
       <OtherSetting
           v-model:value="record.expands"
-          :type="record.valueType?.type"
+          :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
           :id="record.id"
           :disabled="record.expands?.isProduct"
+          :metadataType="props.type"
       />
     </template>
     <template #async="{ record }">
@@ -290,7 +302,6 @@ const {data: tagsMetadata} = useMetadata(_target, 'tags')
 const {hasOperate} = useOperateLimits(_target);
 
 const permissionStore = usePermissionStore()
-const metadataStore = useMetadataStore()
 const instanceStore = useInstanceStore()
 const productStore = useProductStore()
 
@@ -298,6 +309,12 @@ const dataSource = ref<MetadataItem[]>(metadata.value || []);
 const tableRef = ref();
 const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
+const selectedRowKeys = ref<string[]>([])
+
+const searchData = reactive({
+  len: 0,
+  show: false
+})
 
 const {initOptions} = useGroup()
 
@@ -333,11 +350,22 @@ const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
 };
 
 const handleSearch = (searchValue: string) => {
-  dataSource.value = searchValue
-      ? metadata.value
-          .filter((item) => item.name!.indexOf(searchValue) > -1)
-          .sort((a, b) => b?.sortsIndex - a?.sortsIndex)
-      : metadata.value;
+  const keys: string[] = []
+  if (searchValue) {
+    dataSource.value.forEach(item => {
+      if (item.name && item.name.includes(searchValue)) {
+        keys.push(item.id)
+      }
+    })
+  }
+
+  if (keys.length) {
+    tableRef.value.scrollToById(keys[0])
+  }
+  selectedRowKeys.value = keys
+
+  searchData.len = keys.length
+  searchData.show = true
 };
 
 const scrollDown = (len: number = 5) => {

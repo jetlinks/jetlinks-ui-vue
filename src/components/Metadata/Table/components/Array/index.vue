@@ -187,7 +187,6 @@ const onOk = async () => {
 
     visible.value = false
     const _value = handleValue(formData.type, formData)
-    console.log(_value)
     emit('update:value', _value);
     emit('confirm', _value);
   }

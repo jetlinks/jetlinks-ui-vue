@@ -65,7 +65,6 @@ const columns = [{
       {
         asyncValidator: (rule, value, ...setting) => {
           const option = setting[2]
-          console.log(dataSource.value, value, option)
           if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
             return Promise.reject('该Value值已存在')
           }

@@ -4,11 +4,11 @@
         <j-select
             v-if="typeMap.get(itemType) === 'select'"
             v-model:value="myValue"
-            v-bind="extra"
-            :mode="mode"
-            :options="options"
-            allowClear
             style="width: 100%"
+            allowClear
+            :mode="mode"
+            v-bind="extra"
+            :options="options"
             :getPopupContainer="getPopupContainer"
             @change='selectChange'
         />
@@ -29,7 +29,7 @@
             allowClear
             showTime
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%"
+            style="width: 100%;z-index: 1071"
             :getPopupContainer="getPopupContainer"
             @change='dateChange'
         />

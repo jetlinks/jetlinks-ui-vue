@@ -10,9 +10,11 @@
             v-for="(item, index) in virtualData"
             :class="{
               'metadata-edit-table-row': true,
+              'metadata-edit-table-row-selected': selectedRowKeys.includes(item[rowKey] || virtualRang.start + index + 1)
             }"
             :key="`record_${virtualRang.start + index + 1}`"
             :style="{height: `${cellHeight}px`,}"
+            :data-row-key="item[rowKey] || virtualRang.start + index + 1"
             @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
         >
           <div
@@ -73,6 +75,14 @@ const props = defineProps({
   disableMenu: {
     type: Boolean,
     default: true
+  },
+  rowKey: {
+    type: String,
+    default: 'id'
+  },
+  selectedRowKeys: {
+    type: [Array],
+    default: () => []
   }
 })
 
@@ -124,7 +134,6 @@ const onScroll = () => {
 const scrollTo = (index) => {
   if (viewScrollRef.value) {
     let top = index * props.cellHeight
-    console.log('scrollTo', top, viewScrollRef.value)
     viewScrollRef.value.scrollTop = top
   }
 }
@@ -215,6 +224,10 @@ defineExpose({
 
       &:hover {
         background-color: rgb(248, 248, 248);
+      }
+
+      &.metadata-edit-table-row-selected {
+        background-color: var(--ant-primary-1);
       }
 
       .body-cell-box {
