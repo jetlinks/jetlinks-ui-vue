@@ -38,16 +38,16 @@
                 </template>
 
                 <template #collisionAngle="{ collisionAngle }">
-                    {{ `${collisionAngle}&deg;` }}
+                    {{ `${collisionAngle || 0}&deg;` }}
                 </template>
                 <template #vehicleTypeEnum="{ vehicleTypeEnum }">
                     {{ handleVehicleType(vehicleTypeEnum) }}
                 </template>
                 <template #collisionThreshold="{ collisionThreshold }">
-                    {{ `${collisionThreshold}G` }}
+                    {{ `${collisionThreshold || 0}G` }}
                 </template>
                 <template #collisionActual="{ collisionActual }">
-                    {{ `${collisionActual}G` }}
+                    {{ `${collisionActual || 0}G` }}
                 </template>
                 <template #paginationRender>
                     <a-pagination
