@@ -295,10 +295,11 @@ const handelDetail = (data: any) => {
 
 /**
  * 搜索
- * @param param
+ * @param _params
  */
-const handleSearch = (param: any) => {
-    globParams.value = param;
+const handleSearch = (_params: any) => {
+    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    globParams.value = _params;
 };
 </script>
 

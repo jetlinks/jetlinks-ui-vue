@@ -259,11 +259,12 @@ const handleExport = async () => {
 
 /**
  * 搜索
- * @param param
+ * @param _params
  */
-const handleSearch = (param: any) => {
-    handleSearchDate(param);
-    globParams.value = param;
+const handleSearch = (_params: any) => {
+    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    handleSearchDate(_params);
+    globParams.value = _params;
 };
 
 const columns = [
