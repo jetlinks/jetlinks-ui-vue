@@ -72,7 +72,10 @@ watchEffect(() => {
         const _item = _props.value?.find((i) => i.name === item?.id) || {};
         return {
             ...item,
-            ..._item,
+            ...{
+               name: _item.id,
+               ..._item.value
+            },
             name: item.name,
         };
     });
@@ -83,9 +86,11 @@ const onChange = () => {
     const arr = [...dataSource.value].map((item) => {
         return {
             name: item.id,
-            source: item.source,
-            upperKey: item.upperKey || item.value,
-            value: item.value,
+            value: {
+                source: item.source,
+                upperKey: item.upperKey || item.value,
+                value: item.value,
+            },
         };
     });
     emit('update:value', arr);

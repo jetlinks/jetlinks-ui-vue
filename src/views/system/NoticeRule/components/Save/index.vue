@@ -5,6 +5,7 @@
         title="配置通知方式"
         @cancel="emit('close')"
         :bodyStyle="{ padding: 0 }"
+        :maskClosable="false"
     >
         <div style="background-color: #f8f9fc; padding: 25px 100px">
             <j-steps :current="current" size="small" @change="onChange">
