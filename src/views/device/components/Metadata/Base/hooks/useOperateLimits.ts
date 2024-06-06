@@ -3,9 +3,9 @@ import type {MetadataType} from "@/views/device/Product/typings";
 
 const limitsMap = new Map<string, any>();
 limitsMap.set('events-add', 'eventNotInsertable');
-limitsMap.set('events-updata', 'eventNotModifiable');
+limitsMap.set('events-update', 'eventNotModifiable');
 limitsMap.set('properties-add', 'propertyNotInsertable');
-limitsMap.set('properties-updata', 'propertyNotModifiable');
+limitsMap.set('properties-update', 'propertyNotModifiable');
 
 const useOperateLimits = (target: 'device' | 'product') => {
 

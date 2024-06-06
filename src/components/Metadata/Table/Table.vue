@@ -26,6 +26,7 @@
           <slot :name="name" v-bind="slotData || {}"/>
         </template>
         </Body>
+        <slot name="bodyExtra"></slot>
       </div>
     </div>
   </div>

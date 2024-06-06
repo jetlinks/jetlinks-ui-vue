@@ -50,7 +50,7 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
             const productIds = metaArray?.map((item:any) => item.id) || []
             metadata.value.forEach((metaItem: any) => {
                 if (productIds.includes(metaItem.id)) {
-                    metaItem.expands = Object.assign(metaItem.expands, { isProduct: true })
+                    metaItem.expands = Object.assign(metaItem.expands || {}, { isProduct: true })
                 }
             })
             // productNoEdit.value.ids = metaArray?.map((item: any) => item.id) || []
