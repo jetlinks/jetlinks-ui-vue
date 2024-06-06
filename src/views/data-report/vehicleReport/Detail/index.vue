@@ -480,17 +480,6 @@ const queryDataWork = async () => {
     const res: any = await queryVehicleWorkList({ ...defaultParams });
     if (res.status == 200) {
         dataWork.value = res.result.data;
-        console.log('res', res.result.data);
-        console.log(
-            'startTime',
-            dayjs(parseInt(res.result.data[0].startTime)).format(
-                'YYYY-MM-DD HH:mm:ss',
-            ),
-        );
-        console.log(
-            'startTime111',
-            new Date(parseInt(res.result.data[0].startTime)),
-        );
     }
 };
 //获取在线离线数据
