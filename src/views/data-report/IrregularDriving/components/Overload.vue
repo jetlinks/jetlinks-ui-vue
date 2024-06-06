@@ -40,15 +40,15 @@
                     {{ handleVehicleType(vehicleTypeEnum) }}
                 </template>
                 <template #duration="{ duration }">
-                    {{ formatMillisecondsToHourMinute(duration) }}
+                    {{ formatMillisecondsToHourMinute(Number(duration)) }}
                 </template>
                 <template #overLoadInfoLoadRating="{ overLoadInfoLoadRating }">
-                    {{ `${overLoadInfoLoadRating}t` }}
+                    {{ `${overLoadInfoLoadRating || 0}t` }}
                 </template>
                 <template
                     #overLoadInfoOverloadValue="{ overLoadInfoOverloadValue }"
                 >
-                    {{ `${overLoadInfoOverloadValue}t` }}
+                    {{ `${overLoadInfoOverloadValue||0}t` }}
                 </template>
                 <template #paginationRender>
                     <a-pagination
