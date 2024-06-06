@@ -41,9 +41,7 @@
                     {{ orgName || '--' }}
                 </template>
                 <template #faultTime="{ faultTime }">
-                    <span>
-                        {{ dayjs(faultTime).format('YYYY-MM-DD HH:mm:ss') }}
-                    </span>
+                    {{ formatDate(faultTime) }}
                 </template>
                 <template #paginationRender>
                     <a-pagination
@@ -72,6 +70,12 @@ import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+import {
+    formatDate,
+    handleSearchByDate,
+    handleSearchByDescription,
+} from '@/utils/dataReportUtils';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -130,7 +134,6 @@ const queryData = async (_params: any) => {
         currentPage.value = resp.result.pageIndex + 1;
         pageSize.value = resp.result.pageSize;
         return {
-            // 3.仿造请求结果返回给表格
             code: resp.status,
             result: resp.result,
             status: resp.status,
@@ -169,72 +172,16 @@ const handleOnChange = (num: number, pageSize: number) => {
 };
 
 /**
- * @function handleSearchTerms 处理搜索条件
- * @param _params
- */
-const handleSearchTerms = (_params: any) => {
-    // 判断是否存在terms,
-    if (_params.terms && _params.terms.length > 0) {
-        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
-        if (
-            _params.terms[0]?.terms &&
-            _params.terms[0]?.terms[0].value !== 'number'
-        ) {
-            if (_params.terms[0]?.terms[0].termType === 'lte') {
-                // 时间为小于等于
-                const date = _params.terms[0]?.terms[0].value;
-                // 转换为秒钟级别的时间戳
-                let timeStamp: string | number = dayjs(date).unix();
-                // 为时间戳需要加上毫秒999吗，这里最简单的方法就是后端取消所有的毫秒时间戳就不会用前端来处理误差
-                timeStamp = Number(String(timeStamp) + '999');
-                _params.terms[0].terms[0].value = timeStamp;
-            } else if (_params.terms[0]?.terms[0].termType === 'gte') {
-                // 时间为大于等于
-                const date = _params.terms[0]?.terms[0].value;
-                let timeStamp: string | number = dayjs(date).unix();
-                timeStamp = Number(String(timeStamp) + '000');
-                _params.terms[0].terms[0].value = timeStamp;
-            } else if (_params.terms[0]?.terms[0].column === 'description') {
-                // 处理请求的参数为告警或故障描述的情况
-                // 这个查询条件是因为后端未处理，所以全部交由前端来处理字典和故障描述的映射关系，不要怪我写得烂
-                const { termType, value } = _params.terms[0]?.terms[0];
-                tableColumns.forEach((column: any) => {
-                    if (column.dataIndex === 'description') {
-                        column.search.options.forEach((item: any) => {
-                            if (item.value === value) {
-                                // 替换原本的搜索条件
-                                _params.terms[0] = {
-                                    terms: [
-                                        {
-                                            type: 'and',
-                                            value: item.alarmDictionaryValue,
-                                            termType: termType,
-                                            column: 'alarmDictionaryValue',
-                                        },
-                                        {
-                                            type: 'and',
-                                            value: item.alarmDictionaryKey,
-                                            termType: termType,
-                                            column: 'alarmDictionaryKey',
-                                        },
-                                    ],
-                                };
-                            }
-                        });
-                    }
-                });
-            }
-        }
-    }
-};
-
-/**
  * @function handleSearch 搜索组件的搜索事件
  * @param _params
  */
 const handleSearch = (_params: any) => {
+    // 如果携带搜索条件时，清空选中的数据项
     if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
-    handleSearchTerms(_params);
+    // 处理搜索的字段是时间类型的情况
+    handleSearchByDate(_params, ['faultTime']);
+    // 处理搜索的字段是故障描述类型的情况
+    handleSearchByDescription(_params, tableColumns);
     globParams.value = _params;
 };
 
@@ -281,9 +228,11 @@ const handleExport = async () => {
         if (
             state.selectedRowKeys?.length > 10000 ||
             (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
-        )
-            onlyMessage('超出10000条:超出上限，已导出10000条', 'warning');
-        else onlyMessage('导出成功');
+        ) {
+            onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+        } else {
+            onlyMessage(EXPORT_TIPS);
+        }
     }
 };
 

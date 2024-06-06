@@ -16,7 +16,10 @@ const useFilterAlarmDesc = (columns: any[]) => {
     const dicMap = reactive<IDicMap[]>([]);
     const tableColumns = reactive([...columns]);
 
-    // 处理告警信息为dictId: [{dicValue, dicDesc},{dicValue, dicDesc},...]的格式
+    /**
+     * @description 设置字典
+     * @description 将接口返回的字典处理为[{字典id，[{字典value, 字典描述}, {字典value, 字典描述},...]}]的格式
+     */
     const setDicMap = async () => {
         const res: any = await getDicList({
             pageSize: 9999,
@@ -80,7 +83,7 @@ const useFilterAlarmDesc = (columns: any[]) => {
                 ],
             };
 
-            // 每次请求时，获取字典数据，以确保字典数据是最新的
+            // 每次请求时，获取字典数据，以确保查询的字典数据是最新的
             await setDicMap();
 
             // 包装实际的请求函数，添加字典数据对应的描述
@@ -157,6 +160,7 @@ const useFilterAlarmDesc = (columns: any[]) => {
             }
         });
     });
+
     return {
         queryDataFactory,
         dicMap,

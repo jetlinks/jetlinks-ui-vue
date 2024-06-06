@@ -53,21 +53,11 @@
                 </template>
                 <!-- 激活日期插槽 -->
                 <template #activationDate="{ activationDate }">
-                    {{
-                        activationDate
-                            ? dayjs(activationDate).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : '--'
-                    }}
+                    {{ formatDate(activationDate) }}
                 </template>
                 <!-- 更新时间插槽 -->
                 <template #updateTime="{ updateTime }">
-                    {{
-                        updateTime
-                            ? dayjs(updateTime).format('YYYY-MM-DD HH:mm:ss')
-                            : '--'
-                    }}
+                    {{ formatDate(updateTime) }}
                 </template>
                 <template #cardStateType="{ cardStateType }">
                     <state-tag
@@ -107,6 +97,9 @@ import {
     handleOperatorName,
     formatFlow,
 } from './handleDataUtils';
+import { formatDate, handleSearchByDate } from '@/utils/dataReportUtils';
+import search from 'components/Search';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -185,41 +178,13 @@ const handleOnChange = (num: number, pageSize: number) => {
 };
 
 /**
- * @function handleSearchDate 处理搜索条件为时间格式的情况，如果时间为大于等于或小于等于，则需要将时间戳转换为毫秒
- * @param _params
- */
-const handleSearchDate = (_params: any) => {
-    // 判断是否存在terms
-    if (_params.terms && _params.terms.length > 0) {
-        // 判断时间是否已经格式化，避免通过分页器触发的是否再次处理时间戳引发错误
-        if (
-            _params.terms[0]?.terms &&
-            _params.terms[0]?.terms[0].value !== 'number'
-        )
-            if (_params.terms[0]?.terms[0].termType === 'lte') {
-                // 时间为小于等于
-                const date = _params.terms[0]?.terms[0].value;
-                let timeStamp: string | number = dayjs(date).unix();
-                timeStamp = Number(String(timeStamp) + '999');
-                _params.terms[0].terms[0].value = timeStamp;
-                // 时间为大于等于
-            } else if (_params.terms[0]?.terms[0].termType === 'gte') {
-                const date = _params.terms[0]?.terms[0].value;
-                let timeStamp: string | number = dayjs(date).unix();
-                timeStamp = Number(String(timeStamp) + '000');
-                _params.terms[0].terms[0].value = timeStamp;
-            }
-        // 其他小于和大于未做处理，因为后端能够直接处理
-    }
-};
-
-/**
  * @function handleSearch 搜索组件的搜索事件
  * @param _params
  */
 const handleSearch = (_params: any) => {
     if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
-    handleSearchDate(_params);
+    // 处理搜索条件为时间的情况
+    handleSearchByDate(_params, ['activationDate', 'updateTime']);
     globParams.value = _params;
 };
 
@@ -266,9 +231,11 @@ const handleExport = async () => {
         if (
             state.selectedRowKeys?.length > 10000 ||
             (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
-        )
-            onlyMessage('超出10000条:超出上限，已导出10000条', 'warning');
-        else onlyMessage('导出成功');
+        ) {
+            onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+        } else {
+            onlyMessage(EXPORT_TIPS);
+        }
     }
 };
 
