@@ -39,8 +39,11 @@
         placeholder="请选择"
         v-model:value="myValue"
         style="width: 100%"
+        :dropdownStyle="{
+          zIndex: 1071
+        }"
         :options="options"
-        :get-popup-container="(node) => fullRef || node"
+        :get-popup-container="(node) => tableWrapperRef || node"
         @change="change"
     />
     <j-date-picker
@@ -48,16 +51,17 @@
         v-model:value="myValue"
         show-time
         format="YYYY-MM-DD HH:mm:ss"
-        style="width: 100%"
+        style="width: 100%;z-index: 1071"
+        :popupStyle="{ zIndex: 1072}"
         placeholder="请选择"
-        :get-popup-container="(node) => fullRef || node"
+        :get-popup-container="(node) => tableWrapperRef || node"
         valueFormat="YYYY-MM-DD HH:mm:ss"
         @change="change"
     />
 </template>
 <script setup name="MetricValueItem">
 import { Form } from 'jetlinks-ui-components'
-import {FULL_CODE} from "jetlinks-ui-components/es/DataTable";
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
     value: {
@@ -75,7 +79,7 @@ const formItemContext = Form.useInjectFormItemContext();
 
 const type = inject('metricsType')
 const myValue = ref(props.value)
-const fullRef = inject(FULL_CODE);
+const tableWrapperRef = useTableWrapper()
 
 const change = () => {
     emit('update:value', myValue.value)

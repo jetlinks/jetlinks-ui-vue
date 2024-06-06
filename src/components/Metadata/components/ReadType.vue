@@ -10,6 +10,10 @@
       mode="multiple"
       :options="options"
       :disabled="disabled"
+      :dropdownStyle="{
+        zIndex: 1071
+      }"
+      :getPopupContainer="(node) => tableWrapperRef || node"
       placeholder="请选择读写类型"
       @change="onChange"
   />
@@ -19,6 +23,7 @@
 <script setup lang="ts" name="ReadType">
 
 import type {PropType} from "vue";
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 type Emit = {
   (e: 'update:value', data: Array<string>): void
@@ -43,6 +48,7 @@ const props = defineProps({
 const emit = defineEmits<Emit>()
 
 const myValue = ref<Array<string>>([])
+const tableWrapperRef = useTableWrapper()
 
 const onChange = (keys: Array<string>) =>{
   myValue.value = keys

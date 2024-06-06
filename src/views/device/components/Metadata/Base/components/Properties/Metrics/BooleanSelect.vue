@@ -5,35 +5,35 @@
           { label: '固定值', value: 'false' },
           { label: '范围值', value: 'true' },
       ]"
-      :get-popup-container="(node) => fullRef || node"
+      :dropdownStyle="{
+        zIndex: 1071
+      }"
+      :getPopupContainer="(node) => tableWrapperRef || node"
       @select="select"
   />
 </template>
 
 <script name="BooleanSelect" setup>
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 const props = defineProps({
   value: {
-    type: Object,
-    default: () => ({})
+    type: String,
+    default: 'false'
   }
 })
 
-const emit = defineEmits(['update:value'])
+const emit = defineEmits(['update:value', 'select'])
 
-const fullRef = inject(FULL_CODE);
+const tableWrapperRef = useTableWrapper()
 const myValue = ref()
 const select = (e) => {
-  emit('update:value', {
-    ...props.value,
-    range: e === 'true',
-    value: e === 'true' ? [undefined, undefined] : undefined
-  })
+  emit('update:value', e === 'true')
+  emit('select', e === 'true')
 }
 
 watch(() => JSON.stringify(props.value), () => {
-  myValue.value = `${props.value?.range}`
+  myValue.value = props.value ? 'true' : 'false'
 }, { immediate: true })
 
 </script>

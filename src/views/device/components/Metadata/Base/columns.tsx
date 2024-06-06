@@ -1,13 +1,9 @@
 import { ColumnProps } from "ant-design-vue/es/table";
-import { DataType, Source, InputParams, OtherSetting, OutputParams, ConfigParams, TagsType } from './components'
-import SelectColumn from './components/Events/SelectColumn.vue';
-import AsyncSelect from './components/Function/AsyncSelect.vue';
-import { EventLevel } from "@/views/device/data";
-import {MetadataType} from "@/views/device/Product/typings";
+import { DataType } from './components'
+import {MetadataItem, MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
-import {omit, pick, isObject, cloneDeep} from "lodash-es";
-import { message } from 'jetlinks-ui-components'
+import {omit, isObject } from "lodash-es";
 import { onlyMessage } from "@/utils/comm";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
@@ -35,6 +31,8 @@ const type = {
   write: '写',
   report: '上报',
 };
+
+const METADATA_UNIT = 'metadata-unit'
 
 export const validatorConfig = (value: any, _isObject: boolean = false) => {
 
@@ -155,27 +153,25 @@ const isExtendsProduct = (id: string, productKeys: string, type: string) => {
   return false
 }
 
-export const useColumns = (type?: MetadataType, target?: 'device' | 'product', noEdit?: Ref<any>, productNoEdit?: Ref<any>) => {
+export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType, target?: 'device' | 'product', noEdit?: Ref<any>, productNoEdit?: Ref<any>) => {
 
   const BaseColumns: DataTableColumnProps[] = [
     {
       title: '标识',
       dataIndex: 'id',
-      type: 'text',
       form: {
         required: true,
         rules: [{
-          callback(rule:any,value: any, dataSource: any[]) {
+          asyncValidator(rule:any,value: any, ...setting: any) {
             if (value) {
-              const field = rule.field.split('.')
-              const fieldIndex = Number(field[1])
-              const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
-              if (hasId) {
+              const option = setting[2]
+
+              if (dataSource.value.filter((item, index) => index !== option.index && item.id).some(item => item.id === value)) {
                 return Promise.reject('该标识已存在')
               }
-              return Promise.resolve()
             }
-            return Promise.reject('请输入标识')
+              return Promise.resolve()
+            // return Promise.reject('请输入标识')
           },
         },
           { max: 64, message: '最多可输入64个字符' },
@@ -185,260 +181,29 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           },
         ]
       },
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'id')) {
-          return false
-        }
-        const ids = (noEdit?.value?.id || []) as any[]
-        return !ids.includes(record.id)
-      }
     },
     {
       title: '名称',
       dataIndex: 'name',
-      width: 300,
-      type: 'text',
       form: {
         required: true,
         rules: [
-            {
-            required: true,
-            message: '请输入名称'
-          },
-          { max: 64, message: '最多可输入64个字符' },
+          {
+            asyncValidator(_: any, value: any) {
+
+              if (!value) {
+                return Promise.reject('请输入名称')
+              } else if (value.length > 64) {
+                return Promise.reject('最多可输入64个字符')
+              }
+
+              return Promise.resolve()
+            }
+          }
         ]
-        // rules:[{
-        //   callback(rule:any,value: any, dataSource: any[]) {
-        //     console.log(rule,value,dataSource,123)
-        //     return value
-        //   }
-        // }]
       },
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'name')) {
-          return false
-        }
-        return true
-      }
     },
   ];
-
-  const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
-    {
-      title: '事件级别',
-      dataIndex: 'expands',
-      type: 'components',
-      components: {
-        name: SelectColumn,
-        props: {
-          options: EventLevel
-        }
-      },
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'expands')) {
-          return false
-        }
-        return true
-      },
-      control(newValue, oldValue) {
-        return newValue.expands.level !== oldValue?.expands?.level
-      },
-    },
-    {
-      title: '输出参数',
-      dataIndex: 'outInput',
-    },
-    {
-      title: '配置参数',
-      dataIndex: 'properties',
-      width: 100,
-      form: {
-        required: true,
-        rules: [{
-          callback(rule: any, value: any, dataSource: any[]) {
-            const field = rule.field.split('.')
-            const fieldIndex = Number(field[1])
-            const record = dataSource.find((item, index) => index === fieldIndex)
-
-            if (!record.valueType.properties.length) {
-              return Promise.reject('请添加配置参数')
-            }
-
-            return Promise.resolve()
-          }
-        }]
-      },
-      control(newValue, oldValue) {
-        if (newValue && !oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          return JSON.stringify(newValue.valueType) !== JSON.stringify(oldValue.valueType)
-        }
-        return false
-      },
-    },
-    {
-      title: '其它配置',
-      dataIndex: 'other',
-      width: 100,
-      control(newValue, oldValue) {
-        if (!oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          // 仅留下存储和指标值
-          const keys = ['source', 'type', 'virtualRule', 'required']
-          const newObj = omit(cloneDeep(newValue.expands), keys)
-          const oldObj = omit(cloneDeep(oldValue.expands), keys)
-          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
-        }
-        return false
-      },
-    },
-    {
-      title: '说明',
-      dataIndex: 'description',
-      type: 'text',
-      form: {
-        rules: [
-          { max: 20, message: '最多可输入20个字符' },
-      ]},
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
-          return false
-        }
-        return true
-      }
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      width: 120
-    }
-  ]);
-
-  const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
-    {
-      title: '是否异步',
-      dataIndex: 'async',
-      type: 'components',
-      components: {
-        name: AsyncSelect,
-        props: {
-          options: [
-            { label: '是', value: true },
-            { label: '否', value: false }
-          ]
-        }
-      },
-      doubleClick(record) {
-        return !isExtendsProduct(record.id, productNoEdit?.value, 'async');
-
-      },
-      control(newValue, oldValue) {
-        return newValue.async !== oldValue?.async
-      },
-    },
-    {
-      title: '输入参数',
-      dataIndex: 'inputs',
-      width: 120,
-      // form: {
-      //   required: true,
-      //   rules: [{
-      //     callback(rule:any,value: any, dataSource: any[]) {
-      //       const field = rule.field.split('.')
-      //       const fieldIndex = Number(field[1])
-      //
-      //       const values = dataSource.find((item, index) => index === fieldIndex)
-      //
-      //       return validatorConfig({
-      //         type: 'object',
-      //         properties: values.inputs
-      //       }, true)
-      //     }
-      //   }]
-      // },
-      control(newValue, oldValue) {
-        if (newValue && !oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          return JSON.stringify(newValue.inputs) !== JSON.stringify(oldValue.inputs)
-        }
-        return false
-      },
-    },
-    {
-      title: '输出参数',
-      dataIndex: 'output',
-      type: 'components',
-      components: {
-        name: OutputParams
-      },
-      form: {
-        rules: [{
-          callback(rule:any,value: any, dataSource: any[]) {
-            const field = rule.field.split('.')
-            const fieldIndex = Number(field[1])
-            const values = dataSource.find((item, index) => index === fieldIndex)
-            return validatorConfig(values?.output)
-          }
-        }]
-      },
-      doubleClick(record) {
-        return !isExtendsProduct(record.id, productNoEdit?.value, 'output');
-      },
-      control(newValue, oldValue) {
-        if (newValue && !oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          return JSON.stringify(newValue.output) !== JSON.stringify(oldValue.output)
-        }
-        return false
-      },
-    },
-    {
-      title: '其它配置',
-      dataIndex: 'other',
-      width: 100,
-      control(newValue, oldValue) {
-        if (!oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          // 仅留下存储和指标值
-          const keys = ['source', 'type', 'virtualRule', 'required']
-          const newObj = omit(cloneDeep(newValue.expands), keys)
-          const oldObj = omit(cloneDeep(oldValue.expands), keys)
-          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
-        }
-        return false
-      },
-    },
-    {
-      title: '说明',
-      dataIndex: 'description',
-      type: 'text',
-      form: {
-        rules: [
-          { max: 20, message: '最多可输入20个字符' },
-      ]},
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
-          return false
-        }
-        return true
-      }
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      width: 120
-    }
-    // {
-    //   title: '读写类型',
-    //   dataIndex: 'expands',
-    //   render: (text: any) => (text?.type || []).map((item: string | number) => <Tag>{type[item]}</Tag>),
-    // },
-  ]);
 
   const PropertyColumns: DataTableColumnProps[] = BaseColumns.concat([
     {
@@ -449,9 +214,9 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
         name: DataType
       },
       form: {
-        required: true,
         rules: [{
-          validator(_: any, value: any) {
+          asyncValidator(_: any, value: any) {
+
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
@@ -459,49 +224,21 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           }
         }]
       },
-      width: 230,
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'valueType')) {
-          return false
-        }
-        return true
-      }
+      width: 260,
     },
     {
       title: '属性来源',
       dataIndex: 'expands',
-      type: 'components',
-      components: {
-        name: Source,
-        props: {
-          noEdit: noEdit?.value?.source || [],
-          target: target,
-          productNoEdit: productNoEdit?.value
-        }
-      },
-      doubleClick(record){
-        if (record.expands.source === 'rule') {
-          return true
-        }
-        return !isExtendsProduct(record.id, productNoEdit?.value, 'expands')
-      },
       form: {
-        required: true,
         rules: [
           {
-            callback: async (rule: any, value: any, dataSource: any[]) => {
-              const field = rule.field.split('.')
-              const fieldIndex = Number(field[1])
+            asyncValidator: async (rule: any, value: any) => {
 
-              const values = dataSource.find((item, index) => index === fieldIndex)
-              const virtualRule = values.expands?.virtualRule
               const source = value.source
-              console.log(source, value)
+
               if (source) {
                 if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');
-                } else if( source === 'rule' && !virtualRule){
-                  return Promise.reject('请配置规则');
                 }
 
                 return Promise.resolve()
@@ -512,55 +249,118 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           },
         ]
       },
-      control(newValue, oldValue) {
-        if (newValue && !oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          const keys = ['source', 'type', 'virtualRule']
-          const newObj = pick(cloneDeep(newValue.expands), keys)
-          const oldObj = pick(cloneDeep(oldValue.expands), keys)
-          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
-        }
-        return false
-      },
-      width: 150
+      width: 220
     },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 100,
-      control(newValue, oldValue) {
-        if (!oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          // 仅留下存储和指标值
-          const keys = ['source', 'type', 'virtualRule', 'required']
-          const newObj = omit(cloneDeep(newValue.expands), keys)
-          const oldObj = omit(cloneDeep(oldValue.expands), keys)
-          return JSON.stringify(newObj) !== JSON.stringify(oldObj)
-        }
-        return false
-      },
+      width: 120,
+    },
+  ]);
+
+  const FunctionColumns: DataTableColumnProps[] = BaseColumns.concat([
+    {
+      title: '是否异步',
+      dataIndex: 'async',
+      width: 120,
     },
     {
-      title: '操作',
-      dataIndex: 'action',
-      width: 120
-    }
+      title: '输入参数',
+      dataIndex: 'inputs',
+      width: 100,
+    },
+    {
+      title: '输出参数',
+      dataIndex: 'output',
+      width: 240,
+      form: {
+        rules: [{
+          asyncValidator: async (rule: any, value: any) => {
+            return validatorConfig(value)
+          }
+        }]
+      },
+    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
+    {
+      title: '其它配置',
+      dataIndex: 'other',
+      width: 120,
+    },
+    {
+      title: '说明',
+      dataIndex: 'description',
+      width: 220,
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+      ]},
+    },
+  ]);
+
+  const EventColumns: DataTableColumnProps[] = BaseColumns.concat([
+    {
+      title: '事件级别',
+      dataIndex: 'expands',
+      width: 150,
+    },
+    {
+      title: '输出参数',
+      dataIndex: 'valueType',
+      width: 100,
+      form: {
+        rules: [{
+          asyncValidator: async (rule: any, value: any) => {
+
+            if (!value.properties?.length) {
+              return Promise.reject('请添加配置参数')
+            }
+
+            return Promise.resolve()
+          }
+        }]
+      },
+    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
+    {
+      title: '其它配置',
+      dataIndex: 'other',
+      width: 120,
+    },
+    {
+      title: '说明',
+      dataIndex: 'description',
+      width: 220,
+      form: {
+        rules: [
+          { max: 20, message: '最多可输入20个字符' },
+        ]},
+    },
   ]);
 
   const TagColumns: DataTableColumnProps[] = BaseColumns.concat([
     {
       title: '数据类型',
       dataIndex: 'valueType',
-      type: 'components',
-      components: {
-        name: DataType,
-      },
+      width: 240,
       form: {
         required: true,
         rules: [{
-          validator(_: any, value: any) {
+          asyncValidator: async (rule: any, value: any) => {
+
             if (!value?.type) {
               return Promise.reject('请选择数据类型')
             }
@@ -568,78 +368,42 @@ export const useColumns = (type?: MetadataType, target?: 'device' | 'product', n
           }
         }]
       },
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'valueType')) {
-          return false
-        }
-        return true
-      },
-      control(newValue, oldValue) {
-        if (newValue && !oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          return JSON.stringify(newValue.valueType) !== JSON.stringify(oldValue.valueType)
-        }
-        return false
-      },
     },
     {
       title: '读写类型',
-      dataIndex: 'readType',
-      type: 'components',
-      components: {
-        name: TagsType
-      },
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'readType')) {
-          return false
-        }
-        return true
-      },
+      dataIndex: 'expands',
+      width: 190,
       form: {
-        required: true,
         rules: [
           {
-          callback(rule:any,value: any, dataSource: any[]) {
-            const field = rule.field.split('.')
-            const fieldIndex = Number(field[1])
-            const values = dataSource.find((item, index) => index === fieldIndex)
-            if (!values?.expands?.type?.length) {
-              return Promise.reject('请选择读写类型')
-            }
-            return Promise.resolve()
+            asyncValidator: async (rule: any, value: any) => {
+              if (!value?.type?.length) {
+                return Promise.reject('请选择读写类型')
+              }
+              return Promise.resolve()
           }
         }]
       },
-      control(newValue, oldValue) {
-        if (newValue && !oldValue) {
-          return true
-        } else if (newValue && oldValue) {
-          return JSON.stringify(newValue.expands) !== JSON.stringify(oldValue.expands)
-        }
-        return false
-      },
+    },
+    // {
+    //   title: '属性分组',
+    //   dataIndex: 'group',
+    //   width: 140,
+    // },
+    {
+      title: '其它配置',
+      dataIndex: 'other',
+      width: 120,
     },
     {
       title: '说明',
       dataIndex: 'description',
-      type: 'text',
+      width: 200,
       form: {
         rules: [
           { max: 20, message: '最多可输入20个字符' },
       ]},
-      doubleClick(record) {
-        if (isExtendsProduct(record.id, productNoEdit?.value, 'description')) {
-          return false
-        }
-        return true
-      }
     },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      width: 120
-    }
   ]);
 
   const columns = ref<any[]>([])
@@ -680,9 +444,29 @@ export const useUnit = (type: Ref<string>) => {
     }
   }, { immediate: true })
 
-
   return { unitOptions }
 }
+
+export const useSaveUnit = () => {
+  const unitOptions = ref<Array<{ label: string, value: any }>>([])
+
+  provide(METADATA_UNIT, unitOptions)
+
+  getUnit().then((res) => {
+    if (res.success) {
+      unitOptions.value = res.result.map((item: any) => ({
+        label: item.description,
+        value: item.id,
+      }));
+    }
+  });
+
+  return {
+    unitOptions
+  }
+}
+
+export const useGetUnit = () => inject(METADATA_UNIT)
 
 
 export const TypeStringMap = {

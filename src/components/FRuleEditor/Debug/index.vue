@@ -79,8 +79,13 @@
                                 showSearch
                                 :options="options"
                                 v-model:value="record.id"
+                                :getPopupContainer="(node) => tableWrapperRef || node"
                                 size="small"
-                                style="width: 100%; z-index: 1400 !important"
+                                style="width: 100%;"
+                                :virtual="true"
+                                :dropdownStyle="{
+                                  zIndex: 1072
+                                }"
                             />
                         </template>
                         <template v-if="column.key === 'current'">
@@ -131,7 +136,12 @@
                                 :options="tagOptions"
                                 v-model:value="record.id"
                                 size="small"
-                                style="width: 100%; z-index: 1400 !important"
+                                style="width: 100%;"
+                                :virtual="true"
+                                :getPopupContainer="(node) => tableWrapperRef || node"
+                                :dropdownStyle="{
+                                  zIndex: 1072
+                                }"
                             />
                         </template>
                         <template v-if="column.key === 'current'">
@@ -223,12 +233,13 @@ import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
-import { PropertyMetadata } from '@/views/device/Product/typings';
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 import { onlyMessage } from '@/utils/comm';
 
 const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
     id: String,
+    propertiesOptions: Array,
 });
 const emits = defineEmits(['success']);
 
@@ -241,6 +252,8 @@ type propertyType = {
 };
 const property = ref<propertyType[]>([]);
 const tag = ref<Array<any>>([]);
+const tableWrapperRef = useTableWrapper()
+
 const headerOptions = [
     {
         key: 'property',
@@ -310,7 +323,7 @@ const deleteTagItem = (index: number) => {
 const ws = ref();
 
 const virtualIdRef = ref(new Date().getTime());
-const medataSource = inject<Ref<any[]>>('_dataSource');
+const medataSource = inject<Ref<any[]>>('metadataSource');
 const tagsSource = inject<Ref<any[]>>('_tagsDataSource');
 const productStore = useProductStore();
 const ruleEditorStore = useRuleEditorStore();
@@ -441,7 +454,7 @@ onUnmounted(() => {
 
 const options = computed(() => {
     return (medataSource.value || [])
-        .filter((p) => p.id !== props.id)
+        .filter((p) => p.id && p.id !== props.id)
         .map((item) => ({
             label: item.name,
             value: item.id,
@@ -465,7 +478,7 @@ const tagOptions = computed(() => {
 </script>
 <style lang="less" scoped>
 .debug-container {
-    // display: flex;
+     display: flex;
     // width: 100%;
     // height: 340px;
     // margin-top: 20px;
@@ -476,7 +489,7 @@ const tagOptions = computed(() => {
         // overflow-y: auto;
         height: 350px;
         border: 1px solid lightgray;
-        margin-bottom: 10px;
+        //margin-bottom: 10px;
 
         .header {
             display: flex;
