@@ -1,5 +1,4 @@
-import { getDicList } from '@/api/data-report/commonApi';
-import { columns } from '@/views/data-report/AlarmSheet/columnConfig';
+import { getDicList, vehicleTypeEnum } from '@/api/data-report/commonApi';
 
 interface IAlarmDesc {
     alarmValue: string;
@@ -15,6 +14,23 @@ const useFilterAlarmDesc = (columns: any[]) => {
     // 存储告警信息
     const dicMap = reactive<IDicMap[]>([]);
     const tableColumns = reactive([...columns]);
+
+    const vehicleType = ref<{ label: string; value: string }[]>();
+
+    const handleVehicleType = (type: string) => {
+        const item = vehicleType.value?.find((item) => item.value === type);
+        return item?.label || type;
+    };
+
+    (async () => {
+        const res = await vehicleTypeEnum();
+        if (res.status == 200) {
+            vehicleType.value = res.result.map((item: any) => ({
+                label: item.text,
+                value: item.value,
+            }));
+        }
+    })();
 
     /**
      * @description 设置字典
@@ -158,6 +174,9 @@ const useFilterAlarmDesc = (columns: any[]) => {
             if (item.key === 'description') {
                 item.search.options = options;
             }
+            if (item.key === 'vehicleTypeEnum') {
+                item.search.options = vehicleType.value;
+            }
         });
     });
 
@@ -165,6 +184,7 @@ const useFilterAlarmDesc = (columns: any[]) => {
         queryDataFactory,
         dicMap,
         tableColumns,
+        handleVehicleType,
     };
 };
 

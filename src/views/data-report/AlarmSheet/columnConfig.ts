@@ -1,4 +1,3 @@
-import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 
 export const columns = [
     {
@@ -9,17 +8,7 @@ export const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: () =>
-                new Promise((resolve) => {
-                    vehicleTypeEnum().then((resp: any) => {
-                        resolve(
-                            resp.result.map((item: any) => ({
-                                label: item.text,
-                                value: item.value,
-                            })),
-                        );
-                    });
-                }),
+            options: [],
         },
     },
     {

@@ -66,10 +66,9 @@ import { downloadFileByUrl } from '@/utils/utils';
 import { faultDataExport, queryFaultData } from '@/api/data-report/faultSheet';
 import useFilterAlarmDesc from '@/hook/useFilterAlarmDesc';
 import moment from 'moment/moment';
-import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
-import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+
 import {
     formatDate,
     handleSearchByDate,
@@ -91,23 +90,6 @@ const pageSize = ref<number>(12);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
-const vehicleType = ref<{ label: string; value: string }[]>();
-
-const handleVehicleType = (type: string) => {
-    const item = vehicleType.value?.find((item) => item.value === type);
-    return item?.label || type;
-};
-
-const queryVehicleType = async () => {
-    const res = await vehicleTypeEnum();
-    if (res.status == 200) {
-        vehicleType.value = res.result.map((item: any) => ({
-            label: item.text,
-            value: item.value,
-        }));
-    }
-};
-
 // 当前分页表格选中的数据项的id
 const state = reactive<{ selectedRowKeys: string[] }>({
     selectedRowKeys: [],
@@ -121,7 +103,12 @@ const popTitle = computed(() => {
 });
 
 // 生成请求函数
-const { queryDataFactory, dicMap, tableColumns } = useFilterAlarmDesc(columns);
+const {
+    queryDataFactory,
+    dicMap,
+    tableColumns,
+    handleVehicleType,
+} = useFilterAlarmDesc(columns);
 
 // 生成请求函数
 const queryDataFn = queryDataFactory(queryFaultData, 'faultTime');
@@ -303,8 +290,6 @@ const handleSelectAll = (
         });
     }
 };
-
-onMounted(() => queryVehicleType());
 </script>
 
 <style lang="less" scoped></style>
