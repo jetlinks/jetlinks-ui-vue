@@ -18,6 +18,7 @@ import AMapComponent from './AMapComponent/index.vue'
 import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 import ValueItem from './ValueItem/index.vue'
 import RowPagination from './RowPagination/index.vue'
+import Calendar from './Calendar/index.vue'
 
 export default  {
     install(app: App) {
@@ -43,5 +44,6 @@ export default  {
             .component('FullPage', FullPage)
             .component('RadioCard', RadioCard)
             .component('MarkDown', MarkDown)
+            .component('Calendar',Calendar)
     }
 }
