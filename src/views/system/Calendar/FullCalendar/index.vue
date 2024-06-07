@@ -40,6 +40,13 @@
                 >确认</PermissionButton
             >
         </div>
+        <div
+            v-if="selectable && !choiceEnd && showTips"
+            class="tips"
+            :style="{ top: mouseY + 'px', left: mouseX + 20 + 'px' }"
+        >
+            {{ choiceStart ? '点击选中模板结束日期' : '点击选中模板开始日期' }}
+        </div>
     </div>
 </template>
 
@@ -62,6 +69,10 @@ const props = defineProps({
 });
 const emit = defineEmits(['selectDate', 'resetRapid']);
 const tagsList = inject('tagsMap');
+const mouseY = ref();
+const mouseX = ref();
+//是否显示提示
+const showTips = ref();
 const calendarEl = ref();
 const calendarApi = ref();
 // 最新的事件数据
@@ -490,9 +501,17 @@ watch(
 );
 onMounted(() => {
     calendarApi.value = calendarEl.value.getApi();
-    document?.addEventListener('mousemove', (event) => {
+    const calendarBody = document.querySelector(`.fc-view-harness`);
+    calendarBody?.addEventListener('mousemove', (event) => {
         if (props.selectable) {
-            console.log(event);
+            showTips.value = true;
+            mouseX.value = event.clientX;
+            mouseY.value = event.clientY;
+        }
+    });
+    calendarBody?.addEventListener('mouseout', () => {
+        if (props.selectable) {
+            showTips.value = false;
         }
     });
 });
@@ -540,6 +559,14 @@ onMounted(() => {
 }
 :deep(.fc-highlight) {
     background-color: transparent;
+}
+.tips {
+    position: fixed;
+    z-index: 99999;
+    padding: 5px 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    color: white;
 }
 </style>
 <style>

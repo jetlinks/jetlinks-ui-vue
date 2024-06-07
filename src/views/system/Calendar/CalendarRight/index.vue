@@ -8,7 +8,7 @@
                 type="text"
                 :disabled="rapidChecked"
                 :popConfirm="{
-                    placement:'bottomRight',
+                    placement: 'bottomRight',
                     title: `确认清空？`,
                     onConfirm: clearEvent,
                 }"
@@ -52,6 +52,7 @@
                         style="width: 100px"
                         v-model:value="effectDays"
                         :min="effectMin"
+                        :max="999"
                         :precision="0"
                         :controls="false"
                     ></a-input-number>
