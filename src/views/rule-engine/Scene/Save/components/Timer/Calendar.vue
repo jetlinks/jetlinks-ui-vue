@@ -1,12 +1,13 @@
 <template>
   <div class="calendar-form-item-content">
     <div class="header">
-      <a-button type="link" @click="onView">预览日历</a-button>
+      <a-button type="link" @click="onView" style="padding-right: 2px">预览日历</a-button>
     </div>
     <div class="calendar-items">
+      <j-scrollbar :maxHeight="350">
         <div class="calendar-item" v-for="(item, index) in myValue.spec">
-          <div class="calendar-item-top">
-            <div>
+          <div class="calendar-item-tags">
+            <div class="calendar-item-name">
               规则：{{ index + 1 }}
             </div>
             <div>
@@ -16,71 +17,77 @@
                 :options="options"
               />
             </div>
-            <div>
-              <j-radio-group
-                v-model:value='item.mod'
-                :options='[
-                  { label: "周期执行", value: "period" },
-                  { label: "执行一次", value: "once" },
-                ]'
-                option-type='button'
-                button-style='solid'
-                @change='(e) => modChange(e, index)'
-              />
-            </div>
-            <div class="calendar-item-delete">
-              <AIcon type="DeleteOutlined" style="" @click="() => deleteItem(index)"/>
-            </div>
           </div>
-          <div class="calendar-item-bottom">
-            <template v-if="item.mod !== 'period'">
-              <j-time-picker
-                valueFormat='HH:mm:ss'
-                v-model:value='item.once.time'
-                style='width: 180px'
-                format='HH:mm:ss'
-                @change='updateValue'
-              />
-              <div>执行一次</div>
-            </template>
-            <template v-else>
-              <j-time-range-picker
-                valueFormat='HH:mm:ss'
-                :value='[
-                  item.period.from,
-                  item.period.to,
-                ]'
-                @change='(v) => {
-                        item.period.from = v[0]
-                        item.period.to = v[1]
-                        updateValue()
-                  }'
-              />
-              <span>每</span>
-              <j-input-number
-                placeholder='请输入时间'
-                style='max-width: 170px'
-                :precision='0'
-                :min='1'
-                :max="item.period.unit === 'hours' ? 99999 : 99 "
-                v-model:value='item.period.every'
-                @change='updateValue'
-              >
-                <template #addonAfter>
-                  <j-select
-                    v-model:value='item.period.unit'
-                    :options='[
-                      { label: "秒", value: "seconds" },
-                      { label: "分", value: "minutes" },
-                      { label: "小时", value: "hours" },
-                    ]'
-                    @select='e => periodUnitChange(e, index)'
-                  />
-                </template>
-              </j-input-number>
-            </template>
+          <div class="calendar-item-content">
+            <div class="calendar-item-top">
+              <div>
+                <j-radio-group
+                  v-model:value='item.mod'
+                  :options='[
+                    { label: "周期执行", value: "period" },
+                    { label: "执行一次", value: "once" },
+                  ]'
+                  option-type='button'
+                  button-style='solid'
+                  @change='(e) => modChange(e, index)'
+                />
+              </div>
+              <div class="calendar-item-delete">
+                <AIcon type="DeleteOutlined" style="" @click="() => deleteItem(index)"/>
+              </div>
+            </div>
+            <div class="calendar-item-bottom">
+              <template v-if="item.mod !== 'period'">
+                <j-time-picker
+                  valueFormat='HH:mm:ss'
+                  v-model:value='item.once.time'
+                  style='width: 180px'
+                  format='HH:mm:ss'
+                  @change='updateValue'
+                />
+                <div>执行一次</div>
+              </template>
+              <template v-else>
+                <j-time-range-picker
+                  valueFormat='HH:mm:ss'
+                  :value='[
+                    item.period.from,
+                    item.period.to,
+                  ]'
+                  @change='(v) => {
+                          item.period.from = v[0]
+                          item.period.to = v[1]
+                          updateValue()
+                    }'
+                />
+                <span>每</span>
+                <j-input-number
+                  placeholder='请输入时间'
+                  style='max-width: 170px'
+                  :precision='0'
+                  :min='1'
+                  :max="item.period.unit === 'hours' ? 99999 : 99 "
+                  v-model:value='item.period.every'
+                  @change='updateValue'
+                >
+                  <template #addonAfter>
+                    <j-select
+                      v-model:value='item.period.unit'
+                      :options='[
+                        { label: "秒", value: "seconds" },
+                        { label: "分", value: "minutes" },
+                        { label: "小时", value: "hours" },
+                      ]'
+                      @select='e => periodUnitChange(e, index)'
+                    />
+                  </template>
+                </j-input-number>
+              </template>
+            </div>
+
           </div>
         </div>
+      </j-scrollbar>
     </div>
     <a-button @click="addItem" style="width: 100%;">
       新增规则
@@ -146,17 +153,23 @@ const periodUnitChange = (e, index) => {
   updateValue()
 }
 
+watch(() => props.value, () => {
+  myValue.spec = props.value?.spec || []
+}, { immediate: true, deep: true})
+
 </script>
 
 <style scoped lang="less">
 .calendar-form-item-content {
+  position: relative;
   .header {
-
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translateY(-120%);
   }
   .calendar-items {
-    padding-top: 12px;
     max-height: 350px;
-    overflow-y: auto;
 
     .calendar-item {
       position: relative;
@@ -164,6 +177,15 @@ const periodUnitChange = (e, index) => {
       border: 1px solid #cfcfcf;
       border-radius: 4px;
       padding: 12px;
+      display: flex;
+      gap: 16px;
+
+      .calendar-item-tags {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        height: max-content;
+      }
 
       .calendar-item-delete {
         position: absolute;
