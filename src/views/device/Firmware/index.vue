@@ -20,7 +20,7 @@
                     <template #headerTitle>
                         <PermissionButton
                             type="primary"
-                            @click="handlAdd"
+                            @click="handleAdd"
                             hasPermission="device/Firmware:add"
                         >
                             <template #icon
@@ -68,11 +68,17 @@
             </FullPage>
         </div>
         <Save v-if="visible" :data="current" @change="saveChange" />
+        <TaskDrawer
+            v-if="showTask"
+            :firmwareId="firmwareId"
+            @close-drawer="showTask = false"
+        />
     </page-container>
 </template>
 <script lang="ts" setup name="FirmwarePage">
 import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
+import TaskDrawer from './Task2/index.vue';
 import dayjs from 'dayjs';
 import _ from 'lodash-es';
 import Save from './Save/index.vue';
@@ -88,6 +94,8 @@ const params = ref<Record<string, any>>({});
 const productOptions = ref([]);
 const visible = ref(false);
 const current = ref({});
+const showTask = ref(false);
+const firmwareId = ref('');
 
 const columns = [
     {
@@ -184,7 +192,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'FileTextOutlined',
             onClick: async () => {
-                handlUpdate(data);
+                handleUpdate(data);
             },
         },
         {
@@ -195,7 +203,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EditOutlined',
             onClick: async () => {
-                handlEdit(data);
+                handleEdit(data);
             },
         },
         {
@@ -210,7 +218,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 placement: 'topLeft',
                 cancelText: '取消',
                 onConfirm: async () => {
-                    handlDelete(data.id);
+                    handleDelete(data.id);
                 },
             },
             icon: 'DeleteOutlined',
@@ -218,22 +226,24 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     ];
 };
 
-const handlUpdate = (data: Partial<Record<string, any>>) => {
-    menuStory.jumpPage(
-        'device/Firmware/Task',
-        {},
-        {
-            id: data.id,
-            productId: data.productId,
-        },
-    );
+const handleUpdate = (data: Partial<Record<string, any>>) => {
+    // menuStory.jumpPage(
+    //     'device/Firmware/Task',
+    //     {},
+    //     {
+    //         id: data.id,
+    //         productId: data.productId,
+    //     },
+    // );
+    showTask.value = true;
+    firmwareId.value = data.id;
 };
 
-const handlAdd = () => {
+const handleAdd = () => {
     current.value = {};
     visible.value = true;
 };
-const handlEdit = (data: Partial<Record<string, any>>) => {
+const handleEdit = (data: Partial<Record<string, any>>) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
 };
@@ -247,7 +257,7 @@ const saveChange = (value: FormDataType) => {
     }
 };
 
-const handlDelete = async (id: string) => {
+const handleDelete = async (id: string) => {
     const res = await remove(id);
     if (res.status === 200) {
         onlyMessage('操作成功', 'success');

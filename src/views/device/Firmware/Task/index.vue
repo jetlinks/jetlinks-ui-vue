@@ -14,7 +14,7 @@
             <template #headerTitle>
                 <PermissionButton
                     type="primary"
-                    @click="handlAdd"
+                    @click="handleAdd"
                     hasPermission="device/Firmware:add"
                 >
                     <template #icon><AIcon type="PlusOutlined" /></template>
@@ -152,7 +152,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'icon-details',
             onClick: async () => {
-                handlDetails(data.id);
+                handleDetails(data.id);
             },
         },
         {
@@ -163,7 +163,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EyeOutlined',
             onClick: async () => {
-                handlEye(data);
+                handleEye(data);
             },
         },
     ];
@@ -205,17 +205,17 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     return Actions;
 };
 
-const handlAdd = () => {
+const handleAdd = () => {
     current.value = {};
     visible.value = true;
 };
 
-const handlEye = (data: object) => {
+const handleEye = (data: object) => {
     current.value = toRaw({ ...data, view: true });
     visible.value = true;
 };
 
-const handlDetails = (id: string) => {
+const handleDetails = (id: string) => {
     menuStory.jumpPage('device/Firmware/Task/Detail', { id });
 };
 const saveChange = (value: boolean) => {
