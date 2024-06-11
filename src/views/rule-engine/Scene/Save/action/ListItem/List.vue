@@ -21,17 +21,17 @@
         </div>
         <Modal
             v-if="visible"
-            @cancel="onCancel"
             :parallel="parallel"
             :name="actions.length"
             :branchGroup="thenName"
-            @save="onSave"
             :branchesName="branchesName"
+            @save="onSave"
+            @cancel="onCancel"
         />
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="ActionList">
 import { PropType } from 'vue';
 import { ActionsType, ParallelType } from '../../../typings';
 import Modal from '../Modal/index.vue';

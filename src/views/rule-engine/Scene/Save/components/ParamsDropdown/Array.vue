@@ -33,6 +33,7 @@
                                 :labelName="labelName"
                                 :options="options"
                                 :component="item.component"
+                                :extra="props"
                                 @select="(v, l) => onSelect(v, l, index)"
                             />
                         </div>

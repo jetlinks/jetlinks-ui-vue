@@ -8,12 +8,7 @@
     <j-form-item name='trigger'>
       <j-radio-group
         v-model:value='formModel.trigger'
-        :options='[
-          { label: "按周", value: "week" },
-          { label: "按月", value: "month" },
-          { label: "cron表达式", value: "cron" },
-          { label: "自定义日历", value: "multi" },
-        ]'
+        :options='triggerOptions'
         option-type='button'
         button-style='solid'
         @change='triggerChange'
@@ -125,6 +120,10 @@ const props = defineProps({
   value: {
     type: Object,
     default: () => ({})
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -155,6 +154,21 @@ const multiRules = [
     }
   }
 ]
+
+const triggerOptions = computed(() => {
+  let _options = [
+    { label: "按周", value: "week" },
+    { label: "按月", value: "month" },
+    { label: "cron表达式", value: "cron" },
+  ]
+
+  if (props.type === 'timer') {
+    _options = [..._options, {
+      label: "自定义日历", value: "multi"
+    }]
+  }
+  return _options
+})
 
 const formModel = reactive<OperationTimer>({
   trigger: 'week',

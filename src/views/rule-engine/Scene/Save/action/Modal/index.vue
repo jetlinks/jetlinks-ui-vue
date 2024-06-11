@@ -40,7 +40,7 @@ import Device from '../Device/index.vue';
 import { PropType } from 'vue';
 import { ActionsType } from '../../../typings';
 import ActionTypeComponent from './ActionTypeComponent.vue';
-import { randomString } from '@/utils/utils';
+import { randomNumber } from '@/utils/utils';
 import CardSelect from '../../components/CardSelect.vue'
 
 const props = defineProps({
@@ -59,7 +59,7 @@ const props = defineProps({
     data: {
         type: Object as PropType<ActionsType>,
         default: () => ({
-            key: randomString(),
+            key: randomNumber(),
         }),
     },
     parallel: {
@@ -159,4 +159,5 @@ const onPropsOk = (data: any, options?: any) => {
 const onPropsCancel = () => {
     actionType.value = '';
 };
+
 </script>

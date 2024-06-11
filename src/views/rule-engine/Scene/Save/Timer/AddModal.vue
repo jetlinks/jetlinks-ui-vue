@@ -7,7 +7,7 @@
       @cancel='cancel'
   >
     <Timer
-        ref='timerRef' v-model:value='addModel.timer'
+        ref='timerRef' v-model:value='addModel.timer' type="timer"
     />
   </j-modal>
 </template>

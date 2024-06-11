@@ -28,7 +28,7 @@
                               style="padding: 0"
                               type="link"
                               @click.stop="triggerVisible = true"
-                              >关联此条件的告警</j-button
+                              >关联告警</j-button
                           >
                       </template>
                       <template v-else>
@@ -36,7 +36,7 @@
                               style="padding: 0"
                               type="link"
                               @click.stop="triggerVisible = true"
-                              >关联此条件的告警</j-button
+                              >关联告警</j-button
                           >
                       </template>
                   </div>
@@ -387,13 +387,14 @@
         <TriggerAlarm
             :id="_data.id"
             :branchId="_data.branches[branchesName].branchId"
+            :actionId="_data.branches[branchesName].then[thenName].actions[name].key"
             v-if="triggerVisible"
             @close="triggerVisible = false"
         />
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="ActionItem">
 import { isBoolean } from 'lodash-es';
 import { PropType } from 'vue';
 import { ActionsType, ParallelType } from '../../../typings';
@@ -451,6 +452,12 @@ const eventEmitterKey = ref(EventEmitterKeys({
   branchGroup: props.thenName,
   action: props.name
 }))
+
+const triggerData = reactive({
+  visible: false,
+  actionId: undefined
+})
+
 const termsOptions = computed(() => {
     if (!props.parallel) {
         // 串行
