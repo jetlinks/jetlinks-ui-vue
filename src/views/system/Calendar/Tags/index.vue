@@ -87,10 +87,10 @@ const createDrag = () => {
 //获取标签列表
 const queryTagsData = async () => {
     const res = await queryTags();
-    if (res.status === 200) {
+    if (res.success) {
         //获取用户添加的标签颜色及权限
         const answer = await getTagsColor();
-        if (answer.status === 200) {
+        if (answer.success) {
             Object.keys(answer.result).forEach((i) => {
                 colorMap.set(i, answer.result[i]);
             });
@@ -123,7 +123,7 @@ const refreshTags = () => {
 
 const deleteData = async (id) => {
     const res = await deleteTags([id]);
-    if (res.status === 200) {
+    if (res.success) {
         if (colorMap.has(id)) {
             colorMap.delete(id);
             let color = new Object();

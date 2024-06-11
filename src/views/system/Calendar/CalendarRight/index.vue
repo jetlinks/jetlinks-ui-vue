@@ -59,7 +59,7 @@
                     日内
                 </div>
                 <div>
-                    <a-button type="text" @click="reelect">重选</a-button>
+                    <a-button type="text" @click="reselect">重选</a-button>
                     <a-button type="link" @click="rapid">快速作用</a-button>
                 </div>
             </div>
@@ -83,14 +83,14 @@ const selectDate = (data) => {
     effectDays.value = data?.days;
     effectMin.value = data?.days;
 };
-const reelect = () => {
+const reselect = () => {
     Calendar.value.reselection();
     selectedDate.value = '';
     effectDays.value = undefined;
     effectMin.value = undefined;
 };
 const resetRapid = () => {
-    reelect();
+    reselect();
     rapidChecked.value = false;
 };
 const rapid = () => {
@@ -98,7 +98,7 @@ const rapid = () => {
 };
 const clearEvent = async () => {
     const res = await clearAll();
-    if (res.status === 200) {
+    if (res.success) {
         onlyMessage('操作成功');
         Calendar.value?.refresh();
     }

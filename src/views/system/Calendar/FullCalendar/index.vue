@@ -19,6 +19,7 @@
             </template>
         </FullCalendar>
         <div class="calenderButton">
+            <a-date-picker v-model:value="current"  format='YYYY-MM' picker="month" @change="changeDate" valueFormat="YYYY-MM"/>
             <a-button @click="handleCustomPrev" :disabled="selectable"
                 >上月</a-button
             >
@@ -71,6 +72,8 @@ const emit = defineEmits(['selectDate', 'resetRapid']);
 const tagsList = inject('tagsMap');
 //请求接口的结束时间（请求过的日期就不再请求接口了）
 const queryEndDate = ref([]);
+//当前日历展示日期
+const current = ref(dayjs().format('YYYY-MM'));
 const mouseY = ref();
 const mouseX = ref();
 //是否显示提示
@@ -92,6 +95,44 @@ const choiceStart = ref();
 const choiceEnd = ref();
 //上次悬停改变过的数据
 const lastHoverDate = ref([]);
+//请求数据逻辑
+const queryEventsData = async (startDate, endDate, updateView) => {
+    const res = await queryEvents(startDate, endDate);
+    if (res.success) {
+        const data = res.result.filter((i) => {
+            const nonentity = !interfaceData.value.find((item) => {
+                return item.date === i.date;
+            });
+            if (nonentity) {
+                i.tags.forEach((item) => {
+                    eventsData.value.push({
+                        date: i.date,
+                        id: item.id,
+                        name: item.name,
+                    });
+                    initialData.value.push({
+                        date: i.date,
+                        id: item.id,
+                        name: item.name,
+                    });
+                });
+            }
+        });
+        interfaceData.value = [...interfaceData.value, ...data];
+        if (updateView) {
+            initialEventData.value = eventsData.value.map((i) => {
+                return {
+                    id: i.id,
+                    title: i.name,
+                    start: i.date,
+                    backgroundColor: colorMap.get(i.id) || '#000000',
+                };
+            });
+            calendarApi.value.removeAllEvents();
+            calendarApi.value.addEventSource(initialEventData.value);
+        }
+    }
+};
 // 事件点击删除逻辑
 const deleteEvent = (data) => {
     const event = data.event;
@@ -146,45 +187,12 @@ const handleViewDidMount = async (arg) => {
     }
     queryEndDate.value.push(endDate);
     const answer = await getTagsColor();
-    if (answer.status === 200) {
+    if (answer.success) {
         Object.keys(answer.result).forEach((i) => {
             colorMap.set(i, answer.result[i]);
         });
     }
-    queryEvents(startDate, endDate).then((res) => {
-        if (res.status === 200) {
-            const data = res.result.filter((i) => {
-                return !interfaceData.value.find((item) => {
-                    return item.date === i.date;
-                });
-            });
-            interfaceData.value = [...interfaceData.value, ...data];
-            data.forEach((i) => {
-                i.tags.forEach((item) => {
-                    eventsData.value.push({
-                        date: i.date,
-                        id: item.id,
-                        name: item.name,
-                    });
-                    initialData.value.push({
-                        date: i.date,
-                        id: item.id,
-                        name: item.name,
-                    });
-                });
-            });
-            initialEventData.value = eventsData.value.map((i) => {
-                return {
-                    id: i.id,
-                    title: i.name,
-                    start: i.date,
-                    backgroundColor: colorMap.get(i.id) || '#000000',
-                };
-            });
-            calendarApi.value.removeAllEvents();
-            calendarApi.value.addEventSource(initialEventData.value);
-        }
-    });
+    queryEventsData(startDate, endDate, true);
 };
 // 事件是否发生变化
 const eventChange = computed(() => {
@@ -195,11 +203,14 @@ const eventChange = computed(() => {
 // 自定义切换月份逻辑
 const handleCustomPrev = () => {
     calendarApi.value.prev();
+    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM')
 };
 const handleCustomNext = () => {
+    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM')
     calendarApi.value.next();
 };
 const handleCustomToday = () => {
+    current.value = dayjs().format('YYYY-MM')
     calendarApi.value.today();
 };
 //保存编辑后的日历
@@ -241,7 +252,7 @@ const saveCalendar = async () => {
         }
     });
     const res = await saveEvents(submitData);
-    if (res.status === 200) {
+    if (res.success) {
         onlyMessage('操作成功');
         initialData.value = cloneDeep(eventsData.value);
     }
@@ -328,7 +339,7 @@ const calendarOptions = {
     plugins: [interactionPlugin, dayGridPlugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
-        start: 'title',
+        start: '',
         center: '',
         end: '',
     },
@@ -337,7 +348,7 @@ const calendarOptions = {
     unselectAuto: false,
     locale: locale,
     droppable: true,
-    height: '740px',
+    height: '720px',
     // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,
@@ -361,32 +372,6 @@ const compare = (effectData, eventsData) => {
         return !equality && !exceed;
     });
     return addEvents;
-};
-//请求需要快速作用的日期的数据作比较
-const queryRapidDateEvent = async (startDate, endDate) => {
-    const res = await queryEvents(startDate, endDate);
-    if (res.status === 200) {
-        const data = res.result.filter((i) => {
-            return !interfaceData.value.find((item) => {
-                return item.date === i.date;
-            });
-        });
-        interfaceData.value = [...interfaceData.value, ...data];
-        data.forEach((i) => {
-            i.tags.forEach((item) => {
-                eventsData.value.push({
-                    date: i.date,
-                    id: item.id,
-                    name: item.name,
-                });
-                initialData.value.push({
-                    date: i.date,
-                    id: item.id,
-                    name: item.name,
-                });
-            });
-        });
-    }
 };
 //快速作用
 const rapidAction = async (effectDays) => {
@@ -414,11 +399,12 @@ const rapidAction = async (effectDays) => {
     //二维数组扁平成一维数组
     const effectDataArr = flatten(effectData);
     //查询所影响的日期的数据，做对比等逻辑处理（数据是只请求了页面显示过的日期所以需要请求影响的日期，以防没有数据导致重复事件）
-    await queryRapidDateEvent(
+    await queryEventsData(
         dayjs(choiceEnd.value).format('YYYY-MM-DD'),
         dayjs(choiceEnd.value)
             .add(effectDays - 1, 'day')
             .format('YYYY-MM-DD'),
+        false,
     );
     const imparity = compare(effectDataArr, eventsData.value);
     eventsData.value = [...eventsData.value, ...imparity];
@@ -462,6 +448,10 @@ const refresh = () => {
     queryEndDate.value = [];
     handleViewDidMount(calendarApi.value);
 };
+//日期切换
+const changeDate = (date) =>{
+    calendarApi.value.gotoDate(date)
+}
 defineExpose({
     reselection,
     rapidAction,
@@ -529,6 +519,7 @@ onMounted(() => {
 }
 .calendarContainer {
     position: relative;
+    padding-top: 20px;
     .compareTip {
         position: absolute;
         right: 20%;
@@ -542,7 +533,6 @@ onMounted(() => {
     }
     .calenderButton {
         position: absolute;
-        left: 10%;
         top: 2px;
     }
     .event {

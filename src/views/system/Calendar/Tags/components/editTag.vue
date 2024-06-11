@@ -77,10 +77,10 @@ const submit = () => {
             name: tagInfo.name,
         };
         const res = await saveTag(submitData);
-        if (res.status === 200) {
+        if (res.success) {
             colorData.value[id] = tagInfo.color;
             const saveRes = await saveTagsColor(colorData.value);
-            if (saveRes.status === 200) {
+            if (saveRes.success) {
                 onlyMessage('操作成功');
                 emit('refresh');
             }
@@ -90,7 +90,7 @@ const submit = () => {
 //获取全量标签颜色 保存接口是覆盖
 const queryTagsColor = async () => {
     const res = await getTagsColor();
-    if (res.status === 200) {
+    if (res.success) {
         colorData.value = res.result;
     }
 };

@@ -45,7 +45,6 @@ export default  {
             .component('FullPage', FullPage)
             .component('RadioCard', RadioCard)
             .component('MarkDown', MarkDown)
-            .component('Calendar',Calendar)
             .component('CardSelect', CardSelect)
     }
 }
