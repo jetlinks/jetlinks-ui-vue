@@ -42,6 +42,9 @@
             :columns="columns"
             :data-source="historyList"
             :pagination="false"
+            :scroll="{
+                y: 400
+            }"
         >
             <template #bodyCell="{ column, text, record }">
                 <template v-if="column.dataIndex === 'createTime'">{{
