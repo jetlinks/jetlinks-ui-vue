@@ -3,17 +3,19 @@
     <div class="value-item-warp">
         <j-select
             v-if="typeMap.get(itemType) === 'select'"
-            :mode="mode"
             v-model:value="myValue"
-            :options="options"
-            allowClear
             style="width: 100%"
+            allowClear
+            :mode="mode"
+            v-bind="extra"
+            :options="options"
             :getPopupContainer="getPopupContainer"
             @change='selectChange'
         />
         <j-time-picker
           v-else-if="typeMap.get(itemType) === 'time'"
           v-model:value="myValue"
+          v-bind="extra"
           allowClear
           valueFormat="HH:mm:ss"
           style="width: 100%"
@@ -23,16 +25,18 @@
         <j-date-picker
             v-else-if="typeMap.get(itemType) === 'date'"
             v-model:value="myValue"
+            v-bind="extra"
             allowClear
             showTime
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%"
+            style="width: 100%;z-index: 1071"
             :getPopupContainer="getPopupContainer"
             @change='dateChange'
         />
         <j-input-number
             v-else-if="typeMap.get(itemType) === 'inputNumber'"
             v-model:value="myValue"
+            v-bind="extra"
             allowClear
             style="width: 100%"
             @change='inputChange'
@@ -41,6 +45,7 @@
             allowClear
             v-else-if="typeMap.get(itemType) === 'object'"
             v-model:value="myValue"
+            v-bind="extra"
             @change='inputChange'
         >
             <template #addonAfter>
@@ -50,11 +55,13 @@
         <GeoComponent
             v-else-if="typeMap.get(itemType) === 'geoPoint'"
             v-model:point="myValue"
+            v-bind="extra"
             @change='inputChange'
         />
         <j-input
             v-else-if="typeMap.get(itemType) === 'file'"
             v-model:value="myValue"
+            v-bind="extra"
             placeholder="请输入链接"
             allowClear
             @change='inputChange'
@@ -75,6 +82,7 @@
             v-else-if="typeMap.get(itemType) === 'password'"
             allowClear
             type="password"
+            v-bind="extra"
             v-model:value="myValue"
             style="width: 100%"
             @change='inputChange'
@@ -85,6 +93,7 @@
             allowClear
             type="text"
             v-model:value="myValue"
+            v-bind="extra"
             style="width: 100%"
             @change='inputChange'
         />
@@ -157,6 +166,10 @@ const props = defineProps({
     getPopupContainer: {
         type: Function,
         default: undefined
+    },
+    extra: {
+      type: Object,
+      default: () => ({})
     }
 });
 // type Props = {
