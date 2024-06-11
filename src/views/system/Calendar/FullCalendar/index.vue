@@ -69,6 +69,8 @@ const props = defineProps({
 });
 const emit = defineEmits(['selectDate', 'resetRapid']);
 const tagsList = inject('tagsMap');
+//请求接口的结束时间（请求过的日期就不再请求接口了）
+const queryEndDate = ref([]);
 const mouseY = ref();
 const mouseX = ref();
 //是否显示提示
@@ -139,6 +141,10 @@ const handleViewDidMount = async (arg) => {
     const endDate = dayjs(arg.view.activeEnd)
         .subtract(1, 'day')
         .format('YYYY-MM-DD');
+    if (queryEndDate.value.includes(endDate)) {
+        return;
+    }
+    queryEndDate.value.push(endDate);
     const answer = await getTagsColor();
     if (answer.status === 200) {
         Object.keys(answer.result).forEach((i) => {
@@ -453,6 +459,7 @@ const refresh = () => {
     eventsData.value = [];
     initialData.value = [];
     interfaceData.value = [];
+    queryEndDate.value = [];
     handleViewDidMount(calendarApi.value);
 };
 defineExpose({
