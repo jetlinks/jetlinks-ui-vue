@@ -1,5 +1,16 @@
 <template>
-    <JProTable :request="queryData" :params="params" v-bind="$attrs">
+    <JProTable
+        ref="proTableRef"
+        :request="queryData"
+        :params="params"
+        v-bind="$attrs"
+        :rowSelection="{
+            selectedRowKeys: state.selectedRowKeys,
+            onChange: selectedRowChange,
+            onSelect: handleRowSelected,
+            onSelectAll: handleSelectAll,
+        }"
+    >
         <template v-for="(_value, name) in $slots" #[name]="slotData">
             <slot :name="name" v-bind="slotData || {}" />
         </template>
@@ -24,10 +35,13 @@ const props = withDefaults(
     defineProps<{
         request: (...args: any) => any;
         params: Record<string, any>;
+
         handleSearch: (params: Record<string, any>) => any;
     }>(),
     {},
 );
+
+const proTableRef = ref();
 // 表格数据总数
 const dataTotal = ref<number>(0);
 // 表格当前属于多少页
@@ -49,8 +63,14 @@ const handleOnChange = (num: number, pageSize: number) => {
         pageIndex: num - 1,
         pageSize: pageSize,
     };
+    //需要从外部改变 table中params的值，
     props.handleSearch(_params);
 };
+
+// 当前分页表格选中的数据项的id
+const state = reactive<{ selectedRowKeys: string[] }>({
+    selectedRowKeys: [],
+});
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -72,6 +92,84 @@ const queryData = async (_params: any) => {
         };
     }
 };
+
+/**
+ * @function selectedRowChange table组件的rowSelection的onChange事件
+ * @param selectedRowKeys 选中的数据项的id数组
+ * @param selectedRows 选中的数据项的对象数组
+ */
+const selectedRowChange = (selectedRowKeys: string[], selectedRows: any[]) => {
+    if (selectedRowKeys.length === 0 || selectedRows.length === 0) {
+        state.selectedRowKeys = [];
+    }
+};
+
+/**
+ * @function handleRowSelected table组件的rowSelection的onSelect事件
+ * @param record 当前选中的数据项的对象
+ * @param selected 是否选中，用于判断选中还是取消选中
+ * @param selectedRows 选中的所有数据项的对象数组
+ */
+const handleRowSelected = (
+    record: any,
+    selected: boolean,
+    selectedRows: any,
+) => {
+    if (selected) {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        index === -1 && state.selectedRowKeys.push(record.id);
+    } else {
+        const index = state.selectedRowKeys.findIndex(
+            (item) => item === record.id,
+        );
+        index !== -1 && state.selectedRowKeys.splice(index, 1);
+    }
+};
+
+/**
+ * @function handleSelectAll table组件的rowSelection的onSelectAll事件
+ * @param selected 是否全选，用于判断全选还是取消全选
+ * @param selectedRows 选中的所有数据项的对象数组
+ * @param changeRows 发生变化的数据项的对象数组
+ */
+const handleSelectAll = (
+    selected: boolean,
+    selectedRows: any,
+    changeRows: any,
+) => {
+    if (selected) {
+        changeRows.forEach((row: any) => {
+            const len = state.selectedRowKeys.length;
+            let flag = true;
+            for (let i = 0; i < len; i++) {
+                if (row.id === state.selectedRowKeys[i]) {
+                    flag = false;
+                    break;
+                }
+            }
+            flag && state.selectedRowKeys.push(row.id);
+        });
+    } else {
+        changeRows.forEach((row: any) => {
+            const index = state.selectedRowKeys.findIndex(
+                (item) => item === row.id,
+            );
+            index !== -1 && state.selectedRowKeys.splice(index, 1);
+        });
+    }
+};
+
+/**
+ * 清空已
+ * @param _params
+ */
+const EmptySelectKeys = () => {
+    state.selectedRowKeys = [];
+};
+
+defineExpose({ selectedRowKeys: state.selectedRowKeys, EmptySelectKeys });
 </script>
 
 <style lang="less" scoped></style>
