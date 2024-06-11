@@ -29,6 +29,11 @@
                     placeholder="请选择触发属性"
                     show-search
                     max-tag-count="responsive"
+                    :getPopupContainer="(node) => tableWrapperRef || node"
+                    :dropdownStyle="{
+                          zIndex: 1071
+                       }"
+                    :virtual="true"
                 >
                     <j-select-option
                         :disabled="
@@ -74,14 +79,18 @@
                 }]"
             >
                 <j-select
+                    show-search
+                    placeholder="请选择窗口类型"
                     v-model:value="formData.virtualRule.windowType"
                     :options="[
                         { label: '无', value: 'undefined' },
                         { label: '时间窗口', value: 'time' },
                         { label: '频次窗口', value: 'num' },
                     ]"
-                    show-search
-                    placeholder="请选择窗口类型"
+                    :getPopupContainer="(node) => tableWrapperRef || node"
+                    :dropdownStyle="{
+                        zIndex: 1071
+                     }"
                     @select="windowTypeChange"
                 />
             </j-form-item>
@@ -97,9 +106,13 @@
                     }]"
                 >
                     <j-select
+                        placeholder="请选择聚合函数"
                         v-model:value="formData.virtualRule.aggType"
                         :options="aggList"
-                        placeholder="请选择聚合函数"
+                        :getPopupContainer="(node) => tableWrapperRef || node"
+                        :dropdownStyle="{
+                          zIndex: 1071
+                       }"
                     />
                 </j-form-item>
                 <j-form-item
@@ -160,7 +173,7 @@
         </template>
     </j-form>
 </template>
-    
+
 <script setup lang="ts" name="VirtualRule">
 import Rule from './Rule.vue';
 import { queryDeviceVirtualProperty } from '@/api/device/instance';
@@ -172,6 +185,7 @@ import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import {PropType, Ref} from 'vue';
 import { ReadType } from '@/components/Metadata/components';
+import {useTableWrapper} from "@/components/Metadata/Table/utils";
 
 type SourceType = 'device' | 'manual' | 'rule';
 
@@ -188,6 +202,10 @@ const props = defineProps({
         type: String as PropType<SourceType>,
         default: 'device',
     },
+    record: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
 const initData = {
@@ -205,6 +223,7 @@ const initData = {
 
 const instanceStore = useInstanceStore();
 const productStore = useProductStore();
+const tableWrapperRef = useTableWrapper()
 
 const aggList = ref<any[]>([]);
 
@@ -227,11 +246,11 @@ const formData = reactive<{
         };
     };
 }>({
-    type: [],
+    type: props.value?.expands.type || [],
     virtualRule: undefined,
 });
 
-const dataSource = inject<Ref<any[]>>('_dataSource')
+const dataSource = inject<Ref<any[]>>('metadataSource')
 
 const windowTypeChange = () => {
   formData.virtualRule!.window = {
@@ -255,7 +274,7 @@ const typeOptions = computed(() => {
 });
 
 const options = computed(() => {
-    return (dataSource?.value || []).filter((item: any) => item?.id !== props.value?.id);
+    return (dataSource?.value || []).filter((item: any) => (item?.id !== props.value?.id) && item.id);
 });
 
 const setInitVirtualRule = () => {
@@ -313,16 +332,16 @@ onMounted(() => {
 });
 
 watch(
-    () => props.value,
+    () => JSON.stringify(props.value),
     () => {
-        formData.type = props.value.expands?.type;
+        formData.type = props.value?.expands.type
     },
-    { immediate: true, deep: true },
+    { immediate: true, },
 );
 
 watch(
     () => props.source,
-    (newVal: SourceType) => {
+    (newVal) => {
         if (newVal === 'rule') {
             formData.virtualRule = initData;
 
@@ -334,7 +353,6 @@ watch(
     },
     {
         immediate: true,
-        deep: true
     },
 );
 

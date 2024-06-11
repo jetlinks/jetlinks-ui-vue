@@ -1,19 +1,14 @@
 <template>
   <div class="metrics-item-value">
-    <div class="metrics-item-text">
-      <j-ellipsis>
-        {{ showText }}
-      </j-ellipsis>
-    </div>
-    <j-popconfirm-modal
+    <PopoverModal
+        v-model:visible="visible"
         :show-cancel="false"
         body-style="width: 300px"
-        :get-popup-container="(node) => fullRef || node"
-        @confirm="confirm"
+        @ok="confirm"
     >
       <template #content>
         <j-form ref="formRef" :model="formData">
-          <j-form-item v-if="value.range === false" :rules="[{ validator: typeValidator}]" name="value">
+          <j-form-item v-if="range === false" :rules="[{ validator: typeValidator}]" name="value">
             <Item v-model:value="formData.value" :options="options" />
           </j-form-item>
           <div v-else class="data-table-boolean-item">
@@ -31,8 +26,13 @@
           </div>
         </j-form>
       </template>
-      <j-button my-icon="EditOutlined" type="link" style="padding: 4px 8px"></j-button>
-    </j-popconfirm-modal>
+      <a-button type="link" style="padding: 0">
+        <template #icon>
+          <AIcon type="SettingOutlined"/>
+        </template>
+        配置
+      </a-button>
+    </PopoverModal>
   </div>
 </template>
 
@@ -42,8 +42,7 @@ import type { PropType } from 'vue';
 import Item from './item.vue'
 import {Form} from "jetlinks-ui-components";
 import { cloneDeep } from "lodash-es";
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
-import dayjs from "dayjs";
+import { PopoverModal } from '@/components/Metadata/Table'
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -59,13 +58,18 @@ const props = defineProps({
   options: {
     type: Array,
     default: () => []
+  },
+  range: {
+    type: Boolean,
+    default: false
   }
 });
 
 const emit = defineEmits<Emit>();
 const formItemContext = Form.useInjectFormItemContext();
-const fullRef = inject(FULL_CODE);
 const type = inject<string>('metricsType')
+
+const visible = ref(false)
 
 const formData = reactive<{
   value: ValueType;
@@ -79,9 +83,8 @@ const formData = reactive<{
 
 const formRef = ref()
 
-
 const showText = computed(() => {
-  if (props.value.range === false) {
+  if (props.range === false) {
     switch (type) {
       case 'date':
         return props.value?.value;
@@ -113,7 +116,7 @@ const validatorTip = () =>{
 
 const validator = (_: any, value: any) => {
 
-  if (props.value.range && formData.rangeValue![0] >= formData.rangeValue![1]) {
+  if (props.range && formData.rangeValue![0] >= formData.rangeValue![1]) {
     return Promise.reject('需大于左侧数值')
   }
   return Promise.resolve()
@@ -147,17 +150,14 @@ const handleValueByType = (value: any, isRange: boolean = false) => {
 const confirm = () => {
   return new Promise((resolve, reject) => {
     formRef.value.validate().then((res) => {
-      let value = props.value.range === true ? formData.rangeValue : formData.value
+      let value = props.range === true ? formData.rangeValue : formData.value
 
       if (['int', 'long'].includes(type)) {
-        value = handleValueByType(value, props.value.range)
-        console.log('confirm',value, type)
+        value = handleValueByType(value, props.range)
       }
+      visible.value = false
 
-      emit('update:value', {
-        ...props.value,
-        value: value
-      });
+      emit('update:value', value);
       formItemContext.onFieldChange()
       resolve(true)
     }).catch(() => {
@@ -167,15 +167,11 @@ const confirm = () => {
 
 };
 
-watch(() => props.value.range,(value, oldValue) => {
+watch(() => props.range, (value, oldValue) => {
   if (value !== oldValue  ) {
-    if (value === false) {
-      formData.value = undefined
-    } else {
-      formData.rangeValue = [undefined, undefined]
-    }
+    formData.rangeValue = value ? [undefined, undefined] : undefined
   }
-})
+}, { immediate: true})
 </script>
 
 <style scoped lang="less">
