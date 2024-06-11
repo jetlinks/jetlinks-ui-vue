@@ -66,7 +66,9 @@ const onReport = async () => {
   const report = '9100';
   const reportUrl = configInfo.value.front?.reportPath
   const openUrl = `${reportUrl}/#/login?id=id&report=${report}`;
-  window.open(openUrl, '_blank');
+  setTimeout(() => {
+    window.open(openUrl, '_blank');
+  }, 300);
 };
 
 watchEffect(() => {
