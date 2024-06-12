@@ -51,7 +51,13 @@
         </div>
         <JEmpty v-if="taskList.length === 0"></JEmpty>
     </a-drawer>
-    <Save v-if="visible" :data="current" @change="saveChange"></Save>
+    <Save
+        v-if="visible"
+        :data="current"
+        :productId="productId"
+        :firmwareId="firmwareId"
+        @change="saveChange"
+    ></Save>
     <TaskDetail
         v-if="detailVisible"
         @close-detail="closeDetail"
@@ -64,9 +70,14 @@
 import { queryTaskPaginateNot } from '@/api/device/firmware';
 import Save from './Save/index.vue';
 import TaskDetail from './Detail/index.vue';
+import { onlyMessage } from '@/utils/comm';
 const emit = defineEmits(['closeDrawer']);
 const props = defineProps({
     firmwareId: {
+        type: String,
+        default: '',
+    },
+    productId: {
         type: String,
         default: '',
     },
