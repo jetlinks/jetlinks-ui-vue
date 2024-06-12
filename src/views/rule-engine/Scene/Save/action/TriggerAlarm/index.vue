@@ -1,20 +1,23 @@
 <template>
     <j-modal
-        :width="1000"
-        @cancel="emit('close')"
-        @ok="emit('close')"
         visible
         title="关联告警"
+        :width="1000"
+        :keyboard="false"
+        :maskClosable="false"
+        @cancel="emit('close')"
+        @ok="emit('close')"
     >
-        <a-button type="primary">
+        <a-button type="primary" @click="showAlarm">
           添加告警
         </a-button>
         <div style="margin-bottom: 8px">关联告警数量：{{ count }}</div>
         <div style="margin-bottom: 12px">注意：关联的告警配置处于“禁用”状态时会导致场景联动无法完成执行动作</div>
         <JProTable
+            ref="tableRef"
+            model="TABLE"
             :columns="columns"
             :request="queryAlarmList"
-            model="TABLE"
             :bodyStyle="{ padding: 0 }"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
@@ -23,32 +26,15 @@
                         terms: [
                             {
                                 column: 'id$rule-bind-alarm',
-                                value: `${id}:${actionId}`,
+                                value: `${id}:${actionId || branchId}`,
                             },
-{
-                          column: 'branchIndex$rule-bind-alarm',
-                          value: `${id}:${-1}`,
-                        },
+                            {
+                              column: 'branchIndex$rule-bind-alarm',
+                              value: `${id}:${-1}`,
+                              type: 'or'
+                            },
                         ],
                     },
-                    // {
-                    //   type: 'and',
-                    //   terms: [
-                    //     {
-                    //       column: 'features',
-                    //       termType: 'in',
-                    //       value: [
-                    //         'alarmTrigger', 'alarmReliever'
-                    //       ]
-                    //     },
-                    //     {
-                    //       column: 'features',
-                    //       termType: 'in',
-                    //       value: 1,
-                    //       type: 'or'
-                    //     }
-                    //   ]
-                    // }
                 ],
             }"
         >
@@ -70,14 +56,33 @@
                     "
                 />
             </template>
-          <template #actions>
-            <a-button type="link" danger>
-              取消关联
-            </a-button>
+            <template #action="slotProps">
+              <PermissionButton
+                danger
+                type="link"
+                style="padding: 0;"
+                :popConfirm="{
+                  title: '确认取消关联',
+                  onConfirm: () => {
+                    unBind(slotProps)
+                  }
+                }"
+                :tooltip="{
+                  title: '取消关联'
+                }"
+              >
+                <AIcon type="DisconnectOutlined" />
+              </PermissionButton>
 
-          </template>
+            </template>
         </JProTable>
     </j-modal>
+  <AlarmModal
+    v-if="visible"
+    v-bind="props"
+    @ok="onOk"
+    @cancel="visible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -86,25 +91,32 @@ import {
     getAlarmLevel,
     getAlarmConfigCount,
 } from '@/api/rule-engine/dashboard';
+import AlarmModal from "./AlarmModal.vue";
+import {unBindAlarm} from "@/api/rule-engine/configuration";
+import {onlyMessage} from "@/utils/comm";
 
 const props = defineProps({
     id: {
-        type: String,
-        default: '',
+      type: String,
+      default: '',
     },
     actionId: {
       type: String,
       default: undefined
     },
     branchId: {
-    type: String,
-    default: '',
-  },
+      type: String,
+      default: '',
+    },
 });
+
 const emit = defineEmits(['close']);
 
 const count = ref<number>(0);
 const levelList = ref<any[]>([]);
+
+const visible = ref(false)
+const tableRef = ref()
 
 const map = {
     product: '产品',
@@ -141,11 +153,30 @@ const columns = [
         ellipsis: true,
     },
     {
-      dataIndex: 'actions',
+      dataIndex: 'action',
       title: '操作',
-      width: 120
+      width: 80,
+      scopedSlots: true,
     }
 ];
+
+const onOk = () => {
+  visible.value = false
+  tableRef.value.reload()
+}
+
+const showAlarm = () => {
+  visible.value = true
+}
+
+const unBind = async (record: any) => {
+  const res = await unBindAlarm(props.id, record.id, [props.actionId])
+  if (res.success) {
+    tableRef.value.reload()
+    onlyMessage('操作成功！')
+  }
+}
+
 watch(
     () => props.id,
     (newId) => {

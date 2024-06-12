@@ -82,6 +82,7 @@ const onSave = (data: any, options?: any) => {
     const item: ActionsType = {
         ...extra,
         key: data.key,
+        actionId: data.actionId,
         options: {
           ...options,
           columns: options.otherColumns?.filter((item?: string) => item) || []

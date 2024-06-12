@@ -300,6 +300,8 @@ export interface ActionsType {
   terms?: TermsType[];
   /** map中的key，用于删除 */
   key?: string;
+
+  actionId?: number
   options?: Record<string, any>;
 }
 
