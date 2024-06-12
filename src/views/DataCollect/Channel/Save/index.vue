@@ -171,6 +171,56 @@
                     v-model:value="formData.configuration.password"
                 />
             </j-form-item>
+            <template v-if="formData.provider === 'BACNetIp'">
+                <j-form-item label="BACNet实例号" :name="['configuration', 'instanceNumber']" :rules="{
+                    required: true,
+                    trigger:'blur',
+                    validator: validate,
+                }">
+                    <j-input-number
+                        style="width: 100%"
+                        v-model:value="formData.configuration.instanceNumber"
+                        :min="0"
+                        :precision="0"
+                        :max="999999999999"
+                        placeholder="请输入BACNet实例号"
+                    ></j-input-number>
+                </j-form-item>
+                <j-form-item
+                    label="网卡"
+                    :name="['configuration', 'overIp', 'localBindAddress']"
+                    :rules="{
+                        required: true,
+                        trigger:'blur',
+                        message: '请选择网卡'
+                    }"
+                >
+                    <j-input
+                        v-model:value="formData.configuration.overIp.localBindAddress"
+                    >
+                    </j-input>
+                </j-form-item>
+                <j-form-item label="广播端口" :name="['configuration', 'overIp', 'port']" :rules="{
+                    required: true,
+                    trigger: 'blur',
+                    message: '请输入广播端口'
+                }">
+                    <j-input-number
+                        v-model:value="formData.configuration.overIp.port"
+                        style="width: 100%"
+                        :min="0"
+                        :max="65535"
+                        :precision="0"
+                        placeholder="请输入广播端口"
+                    ></j-input-number>
+                </j-form-item>
+            </template>
+            <!-- <j-form-item
+                v-if="formData.provider === 'snap7'"
+                :name="['configuration', 'connect']"
+            >
+                <j-input v-model:value="formData.configuration.connect"/>
+            </j-form-item> -->
             <j-form-item label="说明" name="description">
                 <j-textarea
                     placeholder="请输入说明"
@@ -260,6 +310,18 @@ const handleOk = async () => {
     formRef.value?.resetFields();
 };
 
+const validate = async (_rule: any, value: string) => {
+  if (!value) {
+    return Promise.reject('请输入BACnet实例号');
+  } else {
+    const reg = new RegExp(/^[0-9]*$/)
+    if(!reg.test(value) || parseInt(value) < 0) {
+      return Promise.reject('请输入正确的BACnet实例号');
+    }
+    return Promise.resolve()
+  }
+}
+
 const handleCancel = () => {
     emit('change', false);
     formRef.value?.resetFields();
@@ -311,8 +373,15 @@ const getProvidersList = async () => {
     const resp: any = await getProviders();
     if (resp.status === 200) {
         const arr = resp.result
-            .filter(
-                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7', 'IEC104'].includes(item.name),
+            .filter((item: any) =>
+                [
+                    'GATEWAY',
+                    'Modbus/TCP',
+                    'opc-ua',
+                    'snap7',
+                    'IEC104',
+                    'BACNet/IP',
+                ].includes(item.name),
             )
             .map((it: any) => it.name);
         const providers: any = protocolList.filter((item: any) =>
