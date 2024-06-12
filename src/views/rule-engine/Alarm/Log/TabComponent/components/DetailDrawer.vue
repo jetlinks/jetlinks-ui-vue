@@ -1,5 +1,10 @@
 <template>
-    <a-drawer :visible="true" width="700" :closable="false">
+    <a-drawer
+        :visible="true"
+        width="700"
+        :closable="false"
+        @close="closeDrawer"
+    >
         <div class="alarmInfo">
             <div>
                 <div>
@@ -62,9 +67,13 @@ const props = defineProps({
         default: {},
     },
 });
+const emit = defineEmits(['closeDrawer']);
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const activeKey = ref('record');
+const closeDrawer = () => {
+    emit('closeDrawer');
+};
 </script>
 <style lang="less" scoped>
 .alarmInfo {

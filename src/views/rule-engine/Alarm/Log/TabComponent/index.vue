@@ -154,7 +154,7 @@
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
         />
-        <LogDrawer v-if="visibleDrawer" :logData="drawerData" :typeMap="titleMap"/>
+        <LogDrawer v-if="visibleDrawer" :logData="drawerData" :typeMap="titleMap" @closeDrawer="visibleDrawer = false"/>
     </div>
 </template>
 
