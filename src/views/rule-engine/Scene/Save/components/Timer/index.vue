@@ -2,8 +2,8 @@
   <j-form
     ref='timerForm'
     :model='formModel'
-    layout='vertical'
     :colon='false'
+    layout='vertical'
   >
     <j-form-item name='trigger'>
       <j-radio-group
@@ -18,7 +18,7 @@
       <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
     </j-form-item>
     <j-form-item v-else-if="showMulti" :rules="multiRules">
-      <Calendar v-model:value="formModel.multi" />
+      <Calendar v-model:value="formModel.multi" @change='updateValue'/>
     </j-form-item>
     <template v-else>
       <j-form-item name='when'>
@@ -183,6 +183,10 @@ const formModel = reactive<OperationTimer>({
     to: dayjs(new Date()).endOf('day').format('HH:mm:ss'),
     every: 1,
     unit: 'seconds'
+  },
+  multi: {
+    type: "and",
+    spec: []
   }
 })
 const timerForm = ref()
@@ -208,6 +212,8 @@ const updateValue = () => {
   let keys: string[] = ['trigger']
   if (cloneValue.trigger === 'cron') {
     keys.push('cron')
+  } else if (cloneValue.trigger === 'multi') {
+    keys.push('multi')
   } else {
     keys = keys.concat(['mod', 'when'])
 
@@ -217,7 +223,7 @@ const updateValue = () => {
       keys.push('once')
     }
   }
-
+  console.log( pick(cloneValue, keys), keys)
   emit('update:value', pick(cloneValue, keys))
 }
 

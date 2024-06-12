@@ -6,15 +6,25 @@
     <div class="calendar-items">
       <j-scrollbar :maxHeight="350">
         <div class="calendar-item" v-for="(item, index) in myValue.spec">
+          <div class="calendar-item-delete">
+            <AIcon type="DeleteOutlined" style="" @click="() => deleteItem(index)"/>
+          </div>
           <div class="calendar-item-tags">
             <div class="calendar-item-name">
               规则：{{ index + 1 }}
             </div>
-            <div>
+            <div style="flex: 1 1 0;min-width: 0">
               <j-select
                 placeholder="请选择日期类型"
                 v-model:value="item.scheduleTags"
+                style="width: calc(100% - 30px)"
+                mode="multiple"
                 :options="options"
+                :fieldNames="{
+                    label: 'name',
+                    value: 'id'
+                  }"
+                @change='updateValue'
               />
             </div>
           </div>
@@ -22,7 +32,7 @@
             <div class="calendar-item-top">
               <div>
                 <j-radio-group
-                  v-model:value='item.mod'
+                  :value='item.mod'
                   :options='[
                     { label: "周期执行", value: "period" },
                     { label: "执行一次", value: "once" },
@@ -32,12 +42,9 @@
                   @change='(e) => modChange(e, index)'
                 />
               </div>
-              <div class="calendar-item-delete">
-                <AIcon type="DeleteOutlined" style="" @click="() => deleteItem(index)"/>
-              </div>
             </div>
             <div class="calendar-item-bottom">
-              <template v-if="item.mod !== 'period'">
+              <template v-if="item.mod === 'once'">
                 <j-time-picker
                   valueFormat='HH:mm:ss'
                   v-model:value='item.once.time'
@@ -47,7 +54,7 @@
                 />
                 <div>执行一次</div>
               </template>
-              <template v-else>
+              <template v-if="item.mod === 'period'">
                 <j-time-range-picker
                   valueFormat='HH:mm:ss'
                   :value='[
@@ -92,11 +99,25 @@
     <a-button @click="addItem" style="width: 100%;">
       新增规则
     </a-button>
+    <j-modal
+      title=""
+      v-model:visible="visible"
+      :width="1000"
+      :footer="null"
+    >
+      <div>
+        正在预览日历
+      </div>
+      <FullCalendar />
+    </j-modal>
   </div>
 </template>
 
 <script setup name="Calendar">
 import dayjs from "dayjs";
+import { useRequest } from '@/hook'
+import {queryTags} from "@/api/system/calendar";
+import FullCalendar from '@/views/system/Calendar/FullCalendar/index.vue'
 
 const props = defineProps({
   value: {
@@ -104,21 +125,22 @@ const props = defineProps({
     default: () => ({})
   }
 })
-const emit = defineEmits(['update:value'])
+const emit = defineEmits(['update:value', 'change'])
+const { data:options } = useRequest(queryTags)
+const visible = ref(false)
 
 const myValue = reactive({
   type: 'and',
   spec: []
 })
 
-const options = ref([])
-
 const updateValue = () => {
   emit('update:value', myValue)
+  emit('change', myValue)
 }
 
 const onView = () => {
-
+  visible.value = true
 }
 
 const addItem = () => {
@@ -126,9 +148,9 @@ const addItem = () => {
     trigger: "calender",
     scheduleTags: [],
     mod: "period",
-    once: {
-      time: dayjs(new Date()).format('HH:mm:ss')
-    },
+    // once: {
+    //   time: dayjs(new Date()).format('HH:mm:ss')
+    // },
     period: {
       from: dayjs(new Date()).startOf('day').format('HH:mm:ss'),
       to: dayjs(new Date()).endOf('day').format('HH:mm:ss'),
@@ -145,7 +167,24 @@ const deleteItem = (index) => {
 }
 
 const modChange = (e, index) => {
+  let mod = e.target.value
 
+  if (mod === 'once') {
+    myValue.spec[index].once = {
+      time: dayjs(new Date()).format('HH:mm:ss')
+    }
+    delete myValue.spec[index].period
+  } else {
+    myValue.spec[index].period = {
+      from: dayjs(new Date()).startOf('day').format('HH:mm:ss'),
+      to: dayjs(new Date()).endOf('day').format('HH:mm:ss'),
+      every: 1,
+      unit: 'seconds'
+    }
+    delete myValue.spec[index].once
+  }
+  myValue.spec[index].mod = mod
+  updateValue()
 }
 
 const periodUnitChange = (e, index) => {
@@ -179,12 +218,13 @@ watch(() => props.value, () => {
       padding: 12px;
       display: flex;
       gap: 16px;
+      flex-direction: column;
 
       .calendar-item-tags {
         display: flex;
         gap: 12px;
         align-items: center;
-        height: max-content;
+        //height: max-content;
       }
 
       .calendar-item-delete {
@@ -193,11 +233,16 @@ watch(() => props.value, () => {
         color: #e50012;
       }
 
+      .calendar-item-content {
+        display: flex;
+        gap: 24px;
+      }
+
       .calendar-item-top {
         display: flex;
         gap: 12px;
         align-items: center;
-        margin-bottom: 12px;
+        //margin-bottom: 12px;
       }
       .calendar-item-bottom {
         display: flex;

@@ -3,6 +3,8 @@
       title='触发规则'
       visible
       :width='820'
+      :maskClosable="false"
+      :keyboard="false"
       @ok='save'
       @cancel='cancel'
   >

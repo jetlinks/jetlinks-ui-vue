@@ -8,11 +8,17 @@
         @cancel="emit('close')"
         @ok="emit('close')"
     >
-        <a-button type="primary" @click="showAlarm">
-          添加告警
-        </a-button>
-        <div style="margin-bottom: 8px">关联告警数量：{{ count }}</div>
-        <div style="margin-bottom: 12px">注意：关联的告警配置处于“禁用”状态时会导致场景联动无法完成执行动作</div>
+      <div class="related-alarms-content">
+        <div class="related-alarms-add-btn">
+          <a-button type="link" @click="showAlarm">
+            <template #icon>
+              <AIcon type="PlusOutlined"/>
+            </template>
+            关联告警
+          </a-button>
+        </div>
+        <div class="related-alarms-total" style="margin-bottom: 8px">关联告警数量：<span>{{ count }}</span></div>
+        <div class="related-alarms-tip" >注意：关联的告警配置处于“禁用”状态时会导致场景联动无法完成执行动作</div>
         <JProTable
             ref="tableRef"
             model="TABLE"
@@ -76,6 +82,8 @@
 
             </template>
         </JProTable>
+      </div>
+
     </j-modal>
   <AlarmModal
     v-if="visible"
@@ -207,3 +215,29 @@ onMounted(() => {
     });
 });
 </script>
+<style scoped lang="less">
+.related-alarms-content {
+  position: relative;
+
+  .related-alarms-add-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .related-alarms-total {
+    font-size: 16px;
+    color: #1a1a1a;
+
+    >span {
+      color: #1677FF;
+    }
+  }
+
+  .related-alarms-tip {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 12px
+  }
+}
+</style>
