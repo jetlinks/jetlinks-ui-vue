@@ -1,8 +1,9 @@
 <template>
     <a-drawer
         :visible="true"
-        width="700"
+        width="1000"
         :closable="false"
+        :destroyInactiveTabPane="true"
         @close="closeDrawer"
     >
         <div class="alarmInfo">
@@ -13,8 +14,8 @@
                         typeMap.get(logData?.targetType)
                     }}</span>
                 </div>
-                <div v-if="logData?.description">
-                    {{ logData.description }}
+                <div>
+                    {{ logData.description || '暂无说明' }}
                 </div>
             </div>
             <div class="alarmInfoRight">
@@ -39,24 +40,34 @@
                     <a-button
                         v-if="logData.state.value === 'warning'"
                         type="link"
+                        @click="dealAlarm"
                         >处理</a-button
                     >
                 </div>
             </div>
         </div>
         <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="record" tab="处理记录"><Record /></a-tab-pane>
-            <a-tab-pane key="logs" tab="告警日志" force-render
-                >Content of Tab Pane 2</a-tab-pane
-            >
+            <a-tab-pane key="record" tab="处理记录"
+                ><Record :currentId="logData.id"
+            /></a-tab-pane>
+            <a-tab-pane key="logs" tab="告警日志"
+                ><Log :currentId="logData.id" :configId="logData.alarmConfigId"
+            /></a-tab-pane>
         </a-tabs>
     </a-drawer>
+    <SolveComponent
+        v-if="solveVisible"
+        @closeSolve="closeSolve"
+        :data="logData"
+    />
 </template>
 
-<script lang="ts" setup name="LogDrawer">
+<script setup name="LogDrawer">
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import Record from './Record.vue';
+import Log from './Log.vue';
+import SolveComponent from '../../SolveComponent/index.vue';
 const props = defineProps({
     logData: {
         type: Object,
@@ -68,11 +79,18 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(['closeDrawer']);
+const solveVisible = ref(false);
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const activeKey = ref('record');
 const closeDrawer = () => {
     emit('closeDrawer');
+};
+const dealAlarm = () => {
+    solveVisible.value = true;
+};
+const closeSolve = () => {
+    solveVisible.value = false;
 };
 </script>
 <style lang="less" scoped>

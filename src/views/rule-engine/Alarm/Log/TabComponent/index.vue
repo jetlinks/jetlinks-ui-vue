@@ -35,7 +35,7 @@
                             5: 'level5',
                         }"
                         :customBadge="true"
-                        @click="()=>showDrawer(slotProps)"
+                        @click="() => showDrawer(slotProps)"
                     >
                         <template #img>
                             <img
@@ -92,20 +92,20 @@
                                             {{
                                                 slotProps?.state?.value ===
                                                 'warning'
-                                                    ? dayjs().diff(
+                                                    ? calculateDuration(
                                                           dayjs(
                                                               slotProps?.alarmTime,
                                                           ),
-                                                          'minute',
-                                                      ) + 'min'
-                                                    : dayjs(
-                                                          slotProps?.handleTime,
-                                                      ).diff(
+                                                          dayjs(),
+                                                      )
+                                                    : calculateDuration(
                                                           dayjs(
                                                               slotProps?.alarmTime,
                                                           ),
-                                                          'minute',
-                                                      ) + 'min'
+                                                          dayjs(
+                                                              slotProps.handleTime,
+                                                          ),
+                                                      )
                                             }}
                                         </div></Ellipsis
                                     >
@@ -154,7 +154,14 @@
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
         />
-        <LogDrawer v-if="visibleDrawer" :logData="drawerData" :typeMap="titleMap" @closeDrawer="visibleDrawer = false"/>
+        <LogDrawer
+            v-if="visibleDrawer"
+            :logData="drawerData"
+            :typeMap="titleMap"
+            :currentId="currentId"
+            :configId="configId"
+            @closeDrawer="visibleDrawer = false"
+        />
     </div>
 </template>
 
@@ -168,13 +175,15 @@ import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
 import { useMenuStore } from '@/store/menu';
-import LogDrawer from './components/DetailDrawer.vue'
+import LogDrawer from './components/DetailDrawer.vue';
 const menuStory = useMenuStore();
 const tableRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
-const drawerData = ref()
-const visibleDrawer = ref(false)
+const drawerData = ref();
+const visibleDrawer = ref(false);
+const currentId = ref();
+const configId = ref();
 const getDefaultLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
@@ -455,10 +464,25 @@ const closeSolve = () => {
     data.value.solveVisible = false;
     tableRef.value.reload(params.value);
 };
-const showDrawer = (data:any) =>{
-    drawerData.value = data
-    visibleDrawer.value = true
-}
+const showDrawer = (data: any) => {
+    drawerData.value = data;
+    visibleDrawer.value = true;
+    currentId.value = data.id;
+    configId.value = data.alarmConfigId;
+};
+const calculateDuration = (startTime, endTime) => {
+    const diffInSeconds = endTime.diff(startTime, 'second');
+    let result;
+
+    if (diffInSeconds < 60) {
+        result = `${diffInSeconds.toFixed(1)} s`;
+    } else if (diffInSeconds < 3600) {
+        result = `${(diffInSeconds / 60).toFixed(1)} min`;
+    } else {
+        result = `${(diffInSeconds / 3600).toFixed(1)} h`;
+    }
+    return result;
+};
 onMounted(() => {
     if (props.type !== 'all' && !props.id) {
         params.value.terms = [
