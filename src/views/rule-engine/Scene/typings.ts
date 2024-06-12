@@ -65,6 +65,8 @@ export enum TimerTrigger {
   'week' = 'week',
   'month' = 'month',
   'cron' = 'cron',
+
+  'multi' = 'multi',
 }
 
 export enum TimeUnit {
@@ -105,6 +107,11 @@ export interface OperationTimer {
   when?: string[];
   period?: OperationTimerPeriod;
   once?: Record<string, any>;
+
+  multi?: {
+    type: string,
+    spec: Array<Record<string, any>>
+  };
 }
 
 export interface TriggerDeviceOptions {

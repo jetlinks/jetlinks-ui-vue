@@ -24,6 +24,7 @@
                     label: 'name',
                     value: 'id'
                   }"
+                :filterOption="filterOption"
                 @change='updateValue'
               />
             </div>
@@ -141,6 +142,10 @@ const updateValue = () => {
 
 const onView = () => {
   visible.value = true
+}
+
+const filterOption = (value, option) => {
+  return option.name?.includes(value)
 }
 
 const addItem = () => {
