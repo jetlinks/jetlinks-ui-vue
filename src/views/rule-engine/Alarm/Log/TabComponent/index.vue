@@ -11,8 +11,9 @@
                 :columns="columns"
                 :request="handleSearch"
                 :params="params"
-                :gridColumns="[1, 1, 2]"
-                :gridColumn="2"
+                :gridColumns="[1, 1, 1]"
+                :gridColumn="1"
+                model="CARD"
                 ref="tableRef"
             >
                 <template #card="slotProps">
@@ -34,6 +35,7 @@
                             5: 'level5',
                         }"
                         :customBadge="true"
+                        @click="()=>showDrawer(slotProps)"
                     >
                         <template #img>
                             <img
@@ -48,32 +50,81 @@
                                 </span>
                             </Ellipsis>
                             <j-row :gutter="24">
-                                <j-col :span="8" class="content-left">
-                                    <div class="content-left-title">
-                                        {{ titleMap.get(slotProps.targetType) }}
-                                    </div>
+                                <j-col
+                                    :span="props.type === 'device' ? 6 : 8"
+                                    class="content-left"
+                                >
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.targetName }}
                                         </div></Ellipsis
                                     >
+                                    <div class="content-title">告警维度</div>
                                 </j-col>
-                                <j-col :span="8">
-                                    <div class="content-right-title">
-                                        最近告警时间
-                                    </div>
+                                <j-col :span="props.type === 'device' ? 6 : 8">
                                     <Ellipsis
                                         ><div>
                                             {{
                                                 dayjs(
                                                     slotProps?.alarmTime,
-                                                ).format('YYYY-MM-DD HH:mm:ss')
+                                                ).format(
+                                                    'YYYY-MM-DD HH:mm:ss',
+                                                ) +
+                                                '至' +
+                                                (slotProps?.state?.value ===
+                                                'warning'
+                                                    ? '当前时间'
+                                                    : dayjs(
+                                                          slotProps?.handleTime,
+                                                      ).format(
+                                                          'YYYY-MM-DD HH:mm:ss',
+                                                      ))
                                             }}
                                         </div></Ellipsis
                                     >
+                                    <div class="content-title">
+                                        最近告警时间
+                                    </div>
                                 </j-col>
-                                <j-col :span="8">
-                                    <div class="content-right-title">状态</div>
+                                <j-col :span="props.type === 'device' ? 6 : 8">
+                                    <Ellipsis
+                                        ><div>
+                                            {{
+                                                slotProps?.state?.value ===
+                                                'warning'
+                                                    ? dayjs().diff(
+                                                          dayjs(
+                                                              slotProps?.alarmTime,
+                                                          ),
+                                                          'minute',
+                                                      ) + 'min'
+                                                    : dayjs(
+                                                          slotProps?.handleTime,
+                                                      ).diff(
+                                                          dayjs(
+                                                              slotProps?.alarmTime,
+                                                          ),
+                                                          'minute',
+                                                      ) + 'min'
+                                            }}
+                                        </div></Ellipsis
+                                    >
+                                    <div class="content-title">
+                                        告警持续时长
+                                    </div>
+                                </j-col>
+                                <j-col :span="6" v-if="props.type === 'device'">
+                                    <Ellipsis
+                                        ><div>
+                                            {{ slotProps?.actualDesc || '--' }}
+                                        </div></Ellipsis
+                                    >
+                                    <div class="content-title">
+                                        告警原因
+                                    </div></j-col
+                                >
+                                <!-- <j-col :span="8">
+                                    <div class="content-title">状态</div>
                                     <BadgeStatus
                                         :status="slotProps.state.value"
                                         :statusName="{
@@ -91,95 +142,10 @@
                                     >
                                         {{ slotProps.state.text }}
                                     </span>
-                                </j-col>
+                                </j-col> -->
                             </j-row>
                         </template>
-                        <template #actions="item">
-                            <PermissionButton
-                                :disabled="
-                                    item.key === 'solve' &&
-                                    slotProps.state.value === 'normal'
-                                "
-                                :tooltip="{
-                                    ...item.tooltip,
-                                }"
-                                @click="item.onClick"
-                                :hasPermission="
-                                    item.key == 'solve'
-                                        ? 'rule-engine/Alarm/Log:action'
-                                        : 'rule-engine/Alarm/Log:view'
-                                "
-                            >
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </PermissionButton>
-                        </template>
                     </CardBox>
-                </template>
-                <template #targetType="slotProps">
-                    {{ titleMap.get(slotProps.targetType) }}
-                </template>
-                <template #alarmTime="slotProps">
-                    {{
-                        dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
-                    }}
-                </template>
-                <template #level="slotProps">
-                    <Ellipsis style="width: calc(100% - 20px)">
-                        {{
-                            data.defaultLevel.find((i) => {
-                                return i.level === slotProps.level;
-                            }).title
-                        }}
-                    </Ellipsis>
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state.value"
-                        :statusName="{
-                            warning: 'warning',
-                            normal: 'default',
-                        }"
-                    >
-                    </BadgeStatus
-                    ><span
-                        :style="
-                            slotProps.state.value === 'warning'
-                                ? 'color: #E50012'
-                                : 'color:black'
-                        "
-                    >
-                        {{ slotProps.state.text }}
-                    </span>
-                </template>
-                <template #actions="slotProps">
-                    <j-space>
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                type="link"
-                                :disabled="
-                                    i.key === 'solve' &&
-                                    slotProps.state.value === 'normal'
-                                "
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                :hasPermission="
-                                    i.key == 'solve'
-                                        ? 'rule-engine/Alarm/Log:action'
-                                        : 'rule-engine/Alarm/Log:view'
-                                "
-                            >
-                                <template #icon>
-                                    <AIcon :type="i.icon" />
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
                 </template>
             </JProTable>
         </FullPage>
@@ -188,6 +154,7 @@
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
         />
+        <LogDrawer v-if="visibleDrawer" :logData="drawerData" :typeMap="titleMap"/>
     </div>
 </template>
 
@@ -201,12 +168,13 @@ import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
 import { useMenuStore } from '@/store/menu';
-import { usePermissionStore } from '@/store/permission';
+import LogDrawer from './components/DetailDrawer.vue'
 const menuStory = useMenuStore();
 const tableRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
-
+const drawerData = ref()
+const visibleDrawer = ref(false)
 const getDefaultLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
@@ -306,48 +274,6 @@ const newColumns = computed(() => {
         title: '产品名称',
         dataIndex: 'targetName',
         key: 'targetName',
-        // search: {
-        //     type: 'select',
-        //     options: async () => {
-        //         const termType = [
-        //             {
-        //                 column: 'targetType',
-        //                 termType: 'eq',
-        //                 type: 'and',
-        //                 value: props.type,
-        //             },
-        //         ];
-
-        //         if (props.id) {
-        //             termType.push({
-        //                 termType: 'eq',
-        //                 column: 'alarmConfigId',
-        //                 value: props.id,
-        //                 type: 'and',
-        //             });
-        //         }
-
-        //         const resp: any = await handleSearch({
-        //             sorts: [{ name: 'alarmTime', order: 'desc' }],
-        //             terms: termType,
-        //         });
-        //         const listMap: Map<string, any> = new Map();
-
-        //         if (resp.status === 200) {
-        //             resp.result.data.forEach((item) => {
-        //                 if (item.targetId) {
-        //                     listMap.set(item.targetId, {
-        //                         label: item.targetName,
-        //                         value: item.targetId,
-        //                     });
-        //                 }
-        //             });
-
-        //             return [...listMap.values()];
-        //         }
-        //         return [];
-        //     },
-        // },
         search: {
             type: 'string',
         },
@@ -490,15 +416,6 @@ const getActions = (
                 data.value.current = currentData;
                 data.value.solveVisible = true;
             },
-            // popConfirm: {
-            //     title: !usePermissionStore().hasPermission(
-            //         'rule-engine/Alarm/Log:action',
-            //     )
-            //         ? '暂无权限，请联系管理员'
-            //         : data.state?.value === 'normal'
-            //         ? '无告警'
-            //         : '',
-            // },
         },
         {
             key: 'log',
@@ -538,6 +455,10 @@ const closeSolve = () => {
     data.value.solveVisible = false;
     tableRef.value.reload(params.value);
 };
+const showDrawer = (data:any) =>{
+    drawerData.value = data
+    visibleDrawer.value = true
+}
 onMounted(() => {
     if (props.type !== 'all' && !props.id) {
         params.value.terms = [
@@ -565,14 +486,8 @@ onMounted(() => {
 });
 </script>
 <style lang="less" scoped>
-.content-left {
-    border-right: 0.2px solid rgba(0, 0, 0, 0.2);
-}
-.content-right-title {
+.content-title {
     color: #666;
     font-size: 12px;
-}
-.content-left-title {
-    font-size: 18px;
 }
 </style>
