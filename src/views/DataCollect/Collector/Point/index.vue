@@ -42,7 +42,7 @@
                                 批量导入
                             </PermissionButton>
                             <PermissionButton
-                                v-if="data?.provider === 'OPC_UA'"
+                                v-if="data?.provider === 'OPC_UA' || data?.provider === 'BACNetIp'"
                                 type="primary"
                                 @click="handlScan"
                                 hasPermission="DataCollect/Collector:add"
@@ -53,8 +53,7 @@
                                 扫描
                             </PermissionButton>
                             <j-dropdown
-                                v-if="data?.provider === 'OPC_UA'"
-                                :trigger="['click']"
+                                v-if="data?.provider === 'OPC_UA' || data?.provider === 'BACNetIp'"
                             >
                                 <j-button @click.prevent="clickBatch"
                                     >批量操作 <AIcon type="DownOutlined"
@@ -92,7 +91,7 @@
                             </j-dropdown>
                         </j-space>
                         <div
-                            v-if="data?.provider === 'OPC_UA'"
+                            v-if="data?.provider === 'OPC_UA' || data?.provider === 'BACNetIp'"
                             style="margin-top: 15px"
                         >
                             <j-checkbox
@@ -321,11 +320,14 @@
         <BatchUpdate
             v-if="visible.batchUpdate"
             :data="current"
+            :provider="data.provider"
             @change="saveChange"
         />
         <SaveS7 v-if="visible.saveS7"  :data="current" @change="saveChange"/>
         <SaveIEC104 v-if="visible.saveIEC104" :data="current" @change="saveChange"/>
+        <SaveBACNet v-if="visible.saveBACNet" :data="current" @change="saveChange"/>
         <Scan v-if="visible.scan" :data="current" @change="saveChange" />
+        <ScanBacnet v-if="visible.scanBacnet" :data="current" @change="saveChange" />
         <Import v-if="visible.import" :data="current" @close-import="closeImport"/>
     </j-spin>
 </template>
@@ -346,6 +348,8 @@ import BatchUpdate from './components/BatchUpdate/index.vue';
 import SaveModBus from './Save/SaveModBus.vue';
 import SaveOPCUA from './Save/SaveOPCUA.vue';
 import Scan from './Scan/index.vue';
+import ScanBacnet from './ScanBacnet/index.vue';
+import SaveBACNet from './Save/SaveBACNet.vue';
 import { colorMap } from '../data';
 import { cloneDeep, isBoolean, isNumber, throttle } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
@@ -385,7 +389,9 @@ const visible = reactive({
     scan: false,
     saveS7:false,
     import:false,
-    saveIEC104: false
+    saveIEC104: false,
+    scanBacnet: false,
+    saveBACNet: false,
 });
 const current: any = ref({});
 const accessModesOption = ref();
@@ -527,12 +533,14 @@ const handlEdit = (data: any) => {
         visible.saveS7 = true
     } else if(data?.provider === 'iec104') {
         visible.saveIEC104 = true
+    } else if (data?.provider === 'BACNetIp') {
+        visible.saveBACNet = true
     } else {
         visible.saveModBus = true;
     }
     current.value = cloneDeep({
         ...data,
-        deviceType:props.data?.configuration.type,
+        deviceType:props.data?.configuration?.type || props.data?.configuration?.valueType,
     });
 };
 
@@ -563,7 +571,11 @@ const handlBatchUpdate = () => {
     visible.batchUpdate = true;
 };
 const handlScan = () => {
+    if(props.data?.provider === 'OPC_UA'){
     visible.scan = true;
+    } else if(props.data?.provider === 'BACNetIp'){
+        visible.scanBacnet = true
+    }
     current.value = cloneDeep(props.data);
 };
 const handleImport = () =>{
@@ -655,7 +667,7 @@ const cancelSelect = () => {
 };
 
 const handleClick = (dt: any) => {
-    if (props.data?.provider !== 'OPC_UA') return;
+    if (props.data?.provider !== 'OPC_UA' && props.data?.provider !== 'BACNetIp') return;
     if (_selectedRowKeys.value.includes(dt.id)) {
         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
         _selectedRowKeys.value.splice(_index, 1);
