@@ -11,8 +11,8 @@
             onSelectAll: handleSelectAll,
         }"
     >
-        <template v-for="(_value, name) in $slots" #[name]="slotData">
-            <slot :name="name" v-bind="slotData || {}" />
+        <template v-for="(_value, name) in $slots" #[name]="slotProps">
+            <slot :name="name" v-bind="slotProps || {}" />
         </template>
         <template #paginationRender>
             <a-pagination
@@ -35,11 +35,13 @@ const props = withDefaults(
     defineProps<{
         request: (...args: any) => any;
         params: Record<string, any>;
-
-        handleSearch: (params: Record<string, any>) => any;
     }>(),
     {},
 );
+
+const emits = defineEmits<{
+    (e: 'update:params', params: any): void;
+}>();
 
 const proTableRef = ref();
 // 表格数据总数
@@ -63,8 +65,7 @@ const handleOnChange = (num: number, pageSize: number) => {
         pageIndex: num - 1,
         pageSize: pageSize,
     };
-    //需要从外部改变 table中params的值，
-    props.handleSearch(_params);
+    emits('update:params', _params);
 };
 
 // 当前分页表格选中的数据项的id
@@ -162,14 +163,18 @@ const handleSelectAll = (
 };
 
 /**
- * 清空已
+ * 清空已选
  * @param _params
  */
 const EmptySelectKeys = () => {
     state.selectedRowKeys = [];
 };
 
-defineExpose({ selectedRowKeys: state.selectedRowKeys, EmptySelectKeys });
+defineExpose({
+    selectedRowKeys: state.selectedRowKeys,
+    EmptySelectKeys,
+    dataTotal,
+});
 </script>
 
 <style lang="less" scoped></style>
