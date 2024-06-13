@@ -1,11 +1,11 @@
 import {
   USER_CENTER_MENU_BUTTON_CODE,
-  USER_CENTER_MENU_CODE
-} from '@/utils/consts'
+  USER_CENTER_MENU_CODE,
+} from '@/utils/consts';
 
 export const USER_CENTER_MENU_DATA = {
   id: '19a1f2c763e1231f1e1',
-  accessSupport: { value: 'unsupported', label: '不支持'},
+  accessSupport: { value: 'unsupported', label: '不支持' },
   supportDataAccess: false,
   code: USER_CENTER_MENU_CODE,
   name: '个人中心',
@@ -29,16 +29,16 @@ export const USER_CENTER_MENU_DATA = {
       permissions: [
         {
           permission: 'user',
-          actions: ['update-self-pwd']
+          actions: ['update-self-pwd'],
         },
         {
           permission: 'system_config',
           actions: ['query'],
         },
-      ]
-    }
-  ]
-}
+      ],
+    },
+  ],
+};
 
 export default [
   // 物联网
@@ -84,8 +84,8 @@ export default [
             actions: ['query'],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'notice',
@@ -109,7 +109,12 @@ export default [
             icon: 'icon-tongzhiguanli',
             sortIndex: 1,
             showPage: ['notifier'],
-            permissions: [{ permission: 'notifier', actions: ['query', 'save', 'delete', 'send'] }],
+            permissions: [
+              {
+                permission: 'notifier',
+                actions: ['query', 'save', 'delete', 'send'],
+              },
+            ],
             buttons: [
               {
                 id: 'bind',
@@ -226,9 +231,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'notifyConfig'
+            assetType: 'notifyConfig',
           },
           {
             code: 'notice/Template',
@@ -348,9 +353,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             assetType: 'notifyTemplate',
-            supportDataAccess: true
+            supportDataAccess: true,
           },
         ],
       },
@@ -398,8 +403,8 @@ export default [
                 actions: ['query'],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'device/Product',
@@ -590,8 +595,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
-            supportDataAccess: true
+            accessSupport: { text: '支持', value: 'support' },
+            supportDataAccess: true,
           },
           {
             code: 'device/Instance',
@@ -602,7 +607,7 @@ export default [
             url: '/iot/device/Instance',
             icon: 'icon-shebei',
             sortIndex: 3,
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
             assetType: 'device',
             showPage: ['device-instance'],
@@ -709,7 +714,11 @@ export default [
                   },
                   {
                     permission: 'device-opt-api',
-                    actions: ['read-property', 'invoke-function', 'write-property'],
+                    actions: [
+                      'read-property',
+                      'invoke-function',
+                      'write-property',
+                    ],
                   },
                   {
                     permission: 'device-gateway',
@@ -814,7 +823,7 @@ export default [
             sortIndex: 4,
             url: '/iot/device/Category',
             icon: 'icon-chanpinfenlei',
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
             assetType: 'deviceCategory',
             showPage: ['device-category'],
@@ -895,8 +904,8 @@ export default [
                 actions: ['query'],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'link/AccessConfig',
@@ -1021,8 +1030,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'link/Protocol',
@@ -1093,8 +1102,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'Log',
@@ -1117,8 +1126,8 @@ export default [
               },
             ],
             buttons: [],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'link/Type',
@@ -1195,8 +1204,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'link/Certificate',
@@ -1251,8 +1260,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'media/Stream',
@@ -1317,8 +1326,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'device/Firmware',
@@ -1416,11 +1425,10 @@ export default [
                   },
                 ],
               },
-
             ],
-            accessSupport: { text: "间接支持", value: "indirect" },
+            accessSupport: { text: '间接支持', value: 'indirect' },
             supportDataAccess: false,
-            indirectMenus: ['8ddbb67de5f65514105d47b448bfd70e']
+            indirectMenus: ['8ddbb67de5f65514105d47b448bfd70e'],
           },
           {
             code: 'link/plugin',
@@ -1479,9 +1487,8 @@ export default [
                   },
                 ],
               },
-
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: '不支持', value: 'unsupported' },
             supportDataAccess: false,
           },
         ],
@@ -1519,8 +1526,8 @@ export default [
               { permission: 'things-collector', actions: ['query'] },
             ],
             buttons: [],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'DataCollect/Channel',
@@ -1653,9 +1660,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'dataCollectChannel'
+            assetType: 'dataCollectChannel',
           },
           {
             code: 'DataCollect/Collector',
@@ -1674,203 +1681,139 @@ export default [
             permissions: [],
             buttons: [
               {
-                "id": "view",
-                "name": "查看",
-                "permissions": [
+                id: 'view',
+                name: '查看',
+                permissions: [
                   {
-                    "permission": "data-collect-channel",
-                    "actions": [
-                      "query"
-                    ]
+                    permission: 'data-collect-channel',
+                    actions: ['query'],
                   },
                   {
-                    "permission": "data-collector",
-                    "actions": [
-                      "query"
-                    ]
+                    permission: 'data-collector',
+                    actions: ['query'],
                   },
                   {
-                    "permission": "data-collect-opc",
-                    "actions": [
-                      "query"
-                    ]
+                    permission: 'data-collect-opc',
+                    actions: ['query'],
                   },
                   {
-                    "permission": "things-collector",
-                    "actions": [
-                      "query"
-                    ]
+                    permission: 'things-collector',
+                    actions: ['query'],
                   },
                   {
-                    "permission": "s7-client",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
+                    permission: 's7-client',
+                    actions: ['query'],
+                  },
+                ],
               },
               {
-                "id": "add",
-                "name": "新增",
-                "permissions": [
+                id: 'add',
+                name: '新增',
+                permissions: [
                   {
-                    "permission": "data-collect-channel",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collect-channel',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "data-collector",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collector',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "data-collect-opc",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collect-opc',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "things-collector",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'things-collector',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "s7-client",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
+                    permission: 's7-client',
+                    actions: ['query'],
+                  },
+                ],
               },
               {
-                "id": "update",
-                "name": "编辑",
-                "permissions": [
+                id: 'update',
+                name: '编辑',
+                permissions: [
                   {
-                    "permission": "data-collect-channel",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collect-channel',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "data-collector",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collector',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "data-collect-opc",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collect-opc',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "things-collector",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'things-collector',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "certificate",
-                    "actions": [
-                      "query"
-                    ]
+                    permission: 'certificate',
+                    actions: ['query'],
                   },
                   {
-                    "permission": "s7-client",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
+                    permission: 's7-client',
+                    actions: ['query'],
+                  },
+                ],
               },
               {
-                "id": "action",
-                "name": "禁用/启用",
-                "permissions": [
+                id: 'action',
+                name: '禁用/启用',
+                permissions: [
                   {
-                    "permission": "data-collect-channel",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collect-channel',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "data-collector",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collector',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "data-collect-opc",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'data-collect-opc',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "things-collector",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
+                    permission: 'things-collector',
+                    actions: ['query', 'save'],
                   },
                   {
-                    "permission": "s7-client",
-                    "actions": []
-                  }
-                ]
+                    permission: 's7-client',
+                    actions: [],
+                  },
+                ],
               },
               {
-                "id": "delete",
-                "name": "删除",
-                "permissions": [
+                id: 'delete',
+                name: '删除',
+                permissions: [
                   {
-                    "permission": "data-collect-channel",
-                    "actions": [
-                      "query",
-                      "delete"
-                    ]
+                    permission: 'data-collect-channel',
+                    actions: ['query', 'delete'],
                   },
                   {
-                    "permission": "data-collector",
-                    "actions": [
-                      "query",
-                      "delete"
-                    ]
+                    permission: 'data-collector',
+                    actions: ['query', 'delete'],
                   },
                   {
-                    "permission": "data-collect-opc",
-                    "actions": [
-                      "query",
-                      "delete"
-                    ]
+                    permission: 'data-collect-opc',
+                    actions: ['query', 'delete'],
                   },
                   {
-                    "permission": "things-collector",
-                    "actions": [
-                      "query",
-                      "delete"
-                    ]
-                  }
-                ]
-              }
+                    permission: 'things-collector',
+                    actions: ['query', 'delete'],
+                  },
+                ],
+              },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'dataCollectCollector'
+            assetType: 'dataCollectCollector',
           },
         ],
       },
@@ -1903,8 +1846,8 @@ export default [
               { permission: 'alarm-record', actions: ['query'] },
             ],
             buttons: [],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'rule-engine/Alarm/Config',
@@ -1927,8 +1870,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
           {
             code: 'rule-engine/Alarm/Configuration',
@@ -2040,9 +1983,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'alarmConfig'
+            assetType: 'alarmConfig',
           },
           {
             code: 'rule-engine/Alarm/Log',
@@ -2093,8 +2036,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "间接支持", value: "indirect" },
-            supportDataAccess: false
+            accessSupport: { text: '间接支持', value: 'indirect' },
+            supportDataAccess: false,
           },
         ],
       },
@@ -2186,9 +2129,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'dueros'
+            assetType: 'dueros',
           },
           {
             code: 'Northbound/AliCloud',
@@ -2265,9 +2208,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'aliyunNorthOutput'
+            assetType: 'aliyunNorthOutput',
           },
         ],
       },
@@ -2426,9 +2369,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'ruleInstance'
+            assetType: 'ruleInstance',
           },
           {
             code: 'rule-engine/Scene',
@@ -2579,9 +2522,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: '支持', value: 'support' },
             supportDataAccess: true,
-            assetType: 'scene'
+            assetType: 'scene',
           },
         ],
       },
@@ -2705,9 +2648,9 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "间接支持", value: "indirect" },
+            accessSupport: { text: '间接支持', value: 'indirect' },
             supportDataAccess: false,
-            indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d']
+            indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d'],
           },
           {
             code: 'edge/Resource',
@@ -2784,8 +2727,8 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
-            supportDataAccess: false
+            accessSupport: { text: '不支持', value: 'unsupported' },
+            supportDataAccess: false,
           },
         ],
       },
@@ -2816,8 +2759,8 @@ export default [
         permissions: [],
         buttons: [],
         showPage: ['media-device'],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'media/DashBoard',
@@ -2836,8 +2779,8 @@ export default [
         ],
         buttons: [],
         showPage: ['media-device'],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'media/Device',
@@ -2872,7 +2815,15 @@ export default [
           },
           {
             permission: 'gb28181-cascade',
-            actions: ['bind', 'unbind', 'enable', 'disable', 'query', 'save', 'delete'],
+            actions: [
+              'bind',
+              'unbind',
+              'enable',
+              'disable',
+              'query',
+              'save',
+              'delete',
+            ],
           },
           {
             permission: 'device-product',
@@ -2880,7 +2831,15 @@ export default [
           },
           {
             permission: 'media-device',
-            actions: ['stop', 'ptz', 'record', 'query', 'start', 'save', 'delete'],
+            actions: [
+              'stop',
+              'ptz',
+              'record',
+              'query',
+              'start',
+              'save',
+              'delete',
+            ],
           },
         ],
         buttons: [
@@ -2958,9 +2917,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: '间接支持', value: 'indirect' },
         supportDataAccess: false,
-        indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d']
+        indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d'],
       },
       {
         code: 'media/SplitScreen',
@@ -2979,7 +2938,15 @@ export default [
           },
           {
             permission: 'media-device',
-            actions: ['stop', 'ptz', 'record', 'query', 'start', 'save', 'delete'],
+            actions: [
+              'stop',
+              'ptz',
+              'record',
+              'query',
+              'start',
+              'save',
+              'delete',
+            ],
           },
         ],
         buttons: [
@@ -2995,9 +2962,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: '间接支持', value: 'indirect' },
         supportDataAccess: false,
-        indirectMenus: ['c4d640af0a00ce619a429e7d1c2d2bb8']
+        indirectMenus: ['c4d640af0a00ce619a429e7d1c2d2bb8'],
       },
       {
         code: 'media/Cascade',
@@ -3012,7 +2979,15 @@ export default [
         permissions: [
           {
             permission: 'gb28181-cascade',
-            actions: ['bind', 'unbind', 'enable', 'disable', 'query', 'save', 'delete'],
+            actions: [
+              'bind',
+              'unbind',
+              'enable',
+              'disable',
+              'query',
+              'save',
+              'delete',
+            ],
           },
         ],
         buttons: [
@@ -3107,9 +3082,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'gbCascade'
+        assetType: 'gbCascade',
       },
     ],
   },
@@ -3163,8 +3138,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/User',
@@ -3214,7 +3189,12 @@ export default [
             permissions: [
               {
                 permission: 'user',
-                actions: ['query', 'save', 'update-self-info', 'update-self-pwd'],
+                actions: [
+                  'query',
+                  'save',
+                  'update-self-info',
+                  'update-self-pwd',
+                ],
               },
               {
                 permission: 'role',
@@ -3253,9 +3233,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'user'
+        assetType: 'user',
       },
       {
         code: 'system/Department',
@@ -3452,9 +3432,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'organization'
+        assetType: 'organization',
       },
       {
         code: 'system/Role',
@@ -3529,8 +3509,8 @@ export default [
               },
               {
                 permission: 'role-group',
-                actions: ['query']
-              }
+                actions: ['query'],
+              },
             ],
           },
           {
@@ -3539,8 +3519,8 @@ export default [
             permissions: [
               {
                 permission: 'role-group',
-                actions: ['query','save']
-              }
+                actions: ['query', 'save'],
+              },
             ],
           },
           {
@@ -3549,14 +3529,14 @@ export default [
             permissions: [
               {
                 permission: 'role-group',
-                actions: ['query','delete']
-              }
+                actions: ['query', 'delete'],
+              },
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'role'
+        assetType: 'role',
       },
       {
         code: 'system/Menu',
@@ -3639,8 +3619,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/Permission',
@@ -3729,8 +3709,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/Relationship',
@@ -3785,8 +3765,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/DataSource',
@@ -3869,9 +3849,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'datasource'
+        assetType: 'datasource',
       },
       {
         code: 'system/Platforms/Setting',
@@ -3919,8 +3899,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/Apply',
@@ -4013,8 +3993,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/NoticeRule',
@@ -4116,8 +4096,8 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/Dictionary',
@@ -4131,80 +4111,68 @@ export default [
         permissions: [],
         buttons: [
           {
-            id: "add",
-            name: "新增",
+            id: 'add',
+            name: '新增',
             permissions: [
               {
-                permission: "dictionary",
-                actions: [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'dictionary',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            id: "delete",
-            name: "删除",
+            id: 'delete',
+            name: '删除',
             permissions: [
               {
-                permission: "dictionary",
-                actions: [
-                  "delete"
-                ]
-              }
-            ]
+                permission: 'dictionary',
+                actions: ['delete'],
+              },
+            ],
           },
           {
-            id: "update",
-            name: "编辑",
+            id: 'update',
+            name: '编辑',
             permissions: [
               {
-                permission: "dictionary",
-                actions: [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'dictionary',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            id: "import",
-            name: "导入",
+            id: 'import',
+            name: '导入',
             permissions: [
               {
-                permission: "dictionary",
-                actions: [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'dictionary',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            id: "down",
-            name: "下载",
+            id: 'down',
+            name: '下载',
             permissions: [
               {
-                permission: "dictionary",
-                actions: [
-                  "query"
-                ]
-              }
-            ]
+                permission: 'dictionary',
+                actions: ['query'],
+              },
+            ],
           },
           {
-            id: "action",
-            name: "启用/禁用",
+            id: 'action',
+            name: '启用/禁用',
             permissions: [
               {
-                permission: "dictionary",
-                actions: [
-                  "save"
-                ]
-              }
-            ]
-          }
+                permission: 'dictionary',
+                actions: ['save'],
+              },
+            ],
+          },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
       {
         code: 'system/Region',
@@ -4218,89 +4186,55 @@ export default [
         permissions: [],
         buttons: [
           {
-            id: "add",
-            name: "新增",
+            id: 'add',
+            name: '新增',
             permissions: [
               {
-                permission: "area",
-                actions: [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'area',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            id: "delete",
-            name: "删除",
+            id: 'delete',
+            name: '删除',
             permissions: [
               {
-                permission: "area",
-                actions: [
-                  "delete"
-                ]
-              }
-            ]
+                permission: 'area',
+                actions: ['delete'],
+              },
+            ],
           },
           {
-            id: "update",
-            name: "编辑",
+            id: 'update',
+            name: '编辑',
             permissions: [
               {
-                permission: "area",
-                actions: [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'area',
+                actions: ['save'],
+              },
+            ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
-      // {
-      //   code: 'system/License',
-      //   name: 'License管理',
-      //   owner: 'iot',
-      //   //parentId: '3',
-      //   id: '3-12',
-      //   sortIndex: 12,
-      //   url: '/system/License',
-      //   icon: 'icon-zidingyiguize',
-      //   showPage: ['license'],
-      //   permissions: [
-      //     {
-      //       permission: 'license',
-      //       actions: ['query', 'save'],
-      //     },
-      //   ],
-      //   buttons: [
-      //     {
-      //       id: 'update',
-      //       name: '编辑',
-      //       description: null,
-      //       permissions: [
-      //         {
-      //           permission: 'license',
-      //           actions: ['query', 'save'],
-      //         },
-      //       ],
-      //       options: null,
-      //     },
-      //
-      //     {
-      //       id: 'view',
-      //       name: '查看',
-      //       description: null,
-      //       permissions: [
-      //         {
-      //           permission: 'license"',
-      //           actions: ['query'],
-      //         },
-      //       ],
-      //       options: null,
-      //     },
-      //   ],
-      // },
+      {
+        code: 'system/Push',
+        name: '推送配置',
+        owner: 'iot',
+        id: 'c55359bbcd298e863db0df69a42d57f1',
+        sortIndex: 14,
+        url: '/system/Push',
+        icon: 'SwapOutlined',
+        option: {
+          isShow: false,
+        },
+        showPage: ['menu'],
+        permissions: [],
+        button: [],
+        accessSupport: { text: '不支持', value: 'unsupported' },
+      },
     ],
   },
   //物联卡
@@ -4338,9 +4272,9 @@ export default [
             actions: ['query'],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: '间接支持', value: 'indirect' },
         supportDataAccess: false,
-        indirectMenus: ['1deaa9efc0fc37a8e8e81fa9d6540bc3']
+        indirectMenus: ['1deaa9efc0fc37a8e8e81fa9d6540bc3'],
       },
       {
         path: '5Hpl-4VFS',
@@ -4354,9 +4288,9 @@ export default [
         icon: 'icon-keshihua',
         showPage: ['network-flow'],
         permissions: [{ permission: 'network-flow', actions: ['query'] }],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: '间接支持', value: 'indirect' },
         supportDataAccess: false,
-        indirectMenus: ['1deaa9efc0fc37a8e8e81fa9d6540bc3']
+        indirectMenus: ['1deaa9efc0fc37a8e8e81fa9d6540bc3'],
       },
       {
         path: '5Hpl-O2m8',
@@ -4522,9 +4456,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'networkCard'
+        assetType: 'networkCard',
       },
       {
         path: '5Hpl-ZjAG',
@@ -4570,9 +4504,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: '间接支持', value: 'indirect' },
         supportDataAccess: false,
-        indirectMenus: ['febd4c4b452ece6bb1d760c25b37b75f']
+        indirectMenus: ['febd4c4b452ece6bb1d760c25b37b75f'],
       },
       {
         path: '5Hpl-eS9h',
@@ -4644,9 +4578,9 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: '支持', value: 'support' },
         supportDataAccess: true,
-        assetType: 'networkCardPlatform'
+        assetType: 'networkCardPlatform',
       },
       {
         path: '5Hpl-cL34',
@@ -4666,91 +4600,85 @@ export default [
             actions: ['query'],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
-        supportDataAccess: false
+        accessSupport: { text: '不支持', value: 'unsupported' },
+        supportDataAccess: false,
       },
     ],
   },
   {
-    "path": "3n23",
-    "sortIndex": 5,
-    "level": 1,
-    "owner": "iot",
-    "name": "WEB IDE",
-    "code": "web_ide",
-    "url": "/web_ide",
-    "icon": "MenuUnfoldOutlined",
-    showPage: ["low-code-info", "low-code-editor"],
-    "options": {
+    path: '3n23',
+    sortIndex: 5,
+    level: 1,
+    owner: 'iot',
+    name: 'WEB IDE',
+    code: 'web_ide',
+    url: '/web_ide',
+    icon: 'MenuUnfoldOutlined',
+    showPage: ['low-code-info', 'low-code-editor'],
+    options: {
       isShow: false,
     },
-    "accessSupport": {
-      "text": "不支持",
-      "value": "unsupported"
+    accessSupport: {
+      text: '不支持',
+      value: 'unsupported',
     },
-    "indirectMenus": [],
+    indirectMenus: [],
     permissions: [
       {
-        "permission": "low-code-info",
-        "actions": [
-          "add", "query", "save", "delete"
-        ]
+        permission: 'low-code-info',
+        actions: ['add', 'query', 'save', 'delete'],
       },
       {
-        "permission": "low-code-editor",
-        "actions": [
-          "query", "deploy"
-        ]
-      }
+        permission: 'low-code-editor',
+        actions: ['query', 'deploy'],
+      },
     ],
-    "creatorId": "1199596756811550720",
-    "createTime": 1698735482730,
-    "supportDataAccess": false
+    creatorId: '1199596756811550720',
+    createTime: 1698735482730,
+    supportDataAccess: false,
   },
   {
-    "path": "3nkE",
-    "sortIndex": 6,
-    "level": 1,
-    "owner": "iot",
-    "name": "流程引擎",
-    "code": "process",
-    "url": "/workflow",
-    "icon": "MenuUnfoldOutlined",
-    showPage: ["process-form","process-deployment", "process-runtime"],
-    "options": {
-      "show": true,
-      "isShow": false
+    path: '3nkE',
+    sortIndex: 6,
+    level: 1,
+    owner: 'iot',
+    name: '流程引擎',
+    code: 'process',
+    url: '/workflow',
+    icon: 'MenuUnfoldOutlined',
+    showPage: ['process-form', 'process-deployment', 'process-runtime'],
+    options: {
+      show: true,
+      isShow: false,
     },
-    "permissions": [
+    permissions: [
       {
-        "permission": "low-code-info",
-        "actions": [
-          "query"
-        ]
+        permission: 'low-code-info',
+        actions: ['query'],
       },
       {
-        "permission": "process-runtime",
-        "actions": [
-          "transfer",
-          "reject",
-          "query",
-          "start",
-          "save",
-          "self",
-          "claim",
-          "delete-ready",
-          "complete",
-          "createAndStart",
-          "repeal"
-        ]
-      }
+        permission: 'process-runtime',
+        actions: [
+          'transfer',
+          'reject',
+          'query',
+          'start',
+          'save',
+          'self',
+          'claim',
+          'delete-ready',
+          'complete',
+          'createAndStart',
+          'repeal',
+        ],
+      },
     ],
-    "accessSupport": {
-      "text": "不支持",
-      "value": "unsupported"
+    accessSupport: {
+      text: '不支持',
+      value: 'unsupported',
     },
-    "indirectMenus": [],
-    "children": [
+    indirectMenus: [],
+    children: [
       // {
       //   "path": "3nkE-n7lJ",
       //   "sortIndex": 1,
@@ -4789,1268 +4717,1097 @@ export default [
       //   "supportDataAccess": false
       // },
       {
-        "path": "3nkE-n7lJ",
-        "sortIndex": 2,
-        "level": 2,
-        "name": "表单",
-        "code": "process/form",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/form",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-form"],
-        "permissions": [
+        path: '3nkE-n7lJ',
+        sortIndex: 2,
+        level: 2,
+        name: '表单',
+        code: 'process/form',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/form',
+        icon: 'UpCircleOutlined',
+        showPage: ['process-form'],
+        permissions: [
           {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-form',
+            actions: ['query'],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "buttons": [
+        indirectMenus: [],
+        buttons: [
           {
-            "id": "add",
-            "name": "新增",
-            "permissions": [
+            id: 'add',
+            name: '新增',
+            permissions: [
               {
-                "permission": "process-form",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-form',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "save",
-            "name": "保存",
-            "permissions": [
+            id: 'save',
+            name: '保存',
+            permissions: [
               {
-                "permission": "process-form",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-form',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "update",
-            "name": "编辑",
-            "permissions": [
+            id: 'update',
+            name: '编辑',
+            permissions: [
               {
-                "permission": "process-form",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-form',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "delete",
-            "name": "删除",
-            "permissions": [
+            id: 'delete',
+            name: '删除',
+            permissions: [
               {
-                "permission": "process-form",
-                "actions": [
-                  "delete"
-                ]
-              }
-            ]
-          }
+                permission: 'process-form',
+                actions: ['delete'],
+              },
+            ],
+          },
         ],
-        "options": {
-          "show": true
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699263818795,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699263818795,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-ysKb",
-        "sortIndex": 3,
-        "level": 2,
-        "name": "流程模型",
-        "code": "process/model",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/model",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-definition"],
-        "permissions": [
+        path: '3nkE-ysKb',
+        sortIndex: 3,
+        level: 2,
+        name: '流程模型',
+        code: 'process/model',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/model',
+        icon: 'UpCircleOutlined',
+        showPage: ['process-definition'],
+        permissions: [
           {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-definition',
+            actions: ['query'],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "buttons": [
+        indirectMenus: [],
+        buttons: [
           {
-            "id": "add",
-            "name": "新增",
-            "permissions": [
+            id: 'add',
+            name: '新增',
+            permissions: [
               {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-definition',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "delete",
-            "name": "删除",
-            "permissions": [
+            id: 'delete',
+            name: '删除',
+            permissions: [
               {
-                "permission": "process-definition",
-                "actions": [
-                  "delete"
-                ]
-              }
-            ]
+                permission: 'process-definition',
+                actions: ['delete'],
+              },
+            ],
           },
           {
-            "id": "update",
-            "name": "编辑",
-            "permissions": [
+            id: 'update',
+            name: '编辑',
+            permissions: [
               {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-definition',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "save",
-            "name": "保存",
-            "permissions": [
+            id: 'save',
+            name: '保存',
+            permissions: [
               {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-definition',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "deploy",
-            "name": "部署",
-            "permissions": [
+            id: 'deploy',
+            name: '部署',
+            permissions: [
               {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          }
+                permission: 'process-definition',
+                actions: ['save'],
+              },
+            ],
+          },
         ],
-        "options": {
-          "show": true
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699264341009,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699264341009,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-fJkR",
-        "sortIndex": 4,
-        "level": 2,
-        "name": "流程实例",
-        "code": "process/instance",
-        "describe": "",
-        "owner": "iot",
-        showPage: ["process-deployment"],
-        "url": "/workflow/instance",
-        "icon": "UpCircleOutlined",
-        "status": 1,
-        "permissions": [
+        path: '3nkE-fJkR',
+        sortIndex: 4,
+        level: 2,
+        name: '流程实例',
+        code: 'process/instance',
+        describe: '',
+        owner: 'iot',
+        showPage: ['process-deployment'],
+        url: '/workflow/instance',
+        icon: 'UpCircleOutlined',
+        status: 1,
+        permissions: [
           {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-deployment',
+            actions: ['query'],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "buttons": [
+        indirectMenus: [],
+        buttons: [
           {
-            "id": "action",
-            "name": "启/禁用",
-            "permissions": [
+            id: 'action',
+            name: '启/禁用',
+            permissions: [
               {
-                "permission": "process-deployment",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-deployment',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "auth",
-            "name": "权限控制",
-            "permissions": [
+            id: 'auth',
+            name: '权限控制',
+            permissions: [
               {
-                "permission": "process-deployment",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
+                permission: 'process-deployment',
+                actions: ['save'],
+              },
+            ],
           },
           {
-            "id": "delete",
-            "name": "删除",
-            "permissions": [
+            id: 'delete',
+            name: '删除',
+            permissions: [
               {
-                "permission": "process-deployment",
-                "actions": [
-                  "delete"
-                ]
-              }
-            ]
-          }
+                permission: 'process-deployment',
+                actions: ['delete'],
+              },
+            ],
+          },
         ],
-        "options": {
-          "show": true
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699264485954,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699264485954,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-i2nG",
-        "sortIndex": 5,
-        "level": 2,
-        "name": "发起流程",
-        "code": "process/initiate",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/initiate",
-        "icon": "UpOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
+        path: '3nkE-i2nG',
+        sortIndex: 5,
+        level: 2,
+        name: '发起流程',
+        code: 'process/initiate',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/initiate',
+        icon: 'UpOutlined',
+        showPage: ['process-runtime'],
+        permissions: [
           {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-definition',
+            actions: ['query'],
           },
           {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-deployment',
+            actions: ['query'],
           },
           {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-form',
+            actions: ['query'],
           },
           {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
+            permission: 'process-runtime',
+            actions: [
+              'transfer',
+              'reject',
+              'query',
+              'start',
+              'save',
+              'self',
+              'claim',
+              'delete-ready',
+              'complete',
+              'createAndStart',
+              'repeal',
+            ],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "options": {
-          "show": true
+        indirectMenus: [],
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269393605,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699269393605,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-4T1D",
-        "sortIndex": 6,
-        "level": 2,
-        "name": "待办事项",
-        "code": "process/me/todo",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/todo",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
+        path: '3nkE-4T1D',
+        sortIndex: 6,
+        level: 2,
+        name: '待办事项',
+        code: 'process/me/todo',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/me/todo',
+        icon: 'UpCircleOutlined',
+        showPage: ['process-runtime'],
+        permissions: [
           {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-definition',
+            actions: ['query'],
           },
           {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-deployment',
+            actions: ['query'],
           },
           {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-form',
+            actions: ['query'],
           },
           {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
+            permission: 'process-runtime',
+            actions: [
+              'transfer',
+              'reject',
+              'query',
+              'start',
+              'save',
+              'self',
+              'claim',
+              'delete-ready',
+              'complete',
+              'createAndStart',
+              'repeal',
+            ],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "options": {
-          "show": true
+        indirectMenus: [],
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269425041,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699269425041,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-RXP3",
-        "sortIndex": 7,
-        "level": 2,
-        "name": "已办事项",
-        "code": "process/me/finished",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/finished",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
+        path: '3nkE-RXP3',
+        sortIndex: 7,
+        level: 2,
+        name: '已办事项',
+        code: 'process/me/finished',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/me/finished',
+        icon: 'UpCircleOutlined',
+        showPage: ['process-runtime'],
+        permissions: [
           {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-definition',
+            actions: ['query'],
           },
           {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-deployment',
+            actions: ['query'],
           },
           {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-form',
+            actions: ['query'],
           },
           {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
+            permission: 'process-runtime',
+            actions: [
+              'transfer',
+              'reject',
+              'query',
+              'start',
+              'save',
+              'self',
+              'claim',
+              'delete-ready',
+              'complete',
+              'createAndStart',
+              'repeal',
+            ],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "options": {
-          "show": true
+        indirectMenus: [],
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269455412,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699269455412,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-ibau",
-        "sortIndex": 8,
-        "level": 2,
-        "name": "我发起的",
-        "code": "process/me/initiate",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/initiate",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
+        path: '3nkE-ibau',
+        sortIndex: 8,
+        level: 2,
+        name: '我发起的',
+        code: 'process/me/initiate',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/me/initiate',
+        icon: 'UpCircleOutlined',
+        showPage: ['process-runtime'],
+        permissions: [
           {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-definition',
+            actions: ['query'],
           },
           {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-deployment',
+            actions: ['query'],
           },
           {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-form',
+            actions: ['query'],
           },
           {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
+            permission: 'process-runtime',
+            actions: [
+              'transfer',
+              'reject',
+              'query',
+              'start',
+              'save',
+              'self',
+              'claim',
+              'delete-ready',
+              'complete',
+              'createAndStart',
+              'repeal',
+            ],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "options": {
-          "show": true
+        indirectMenus: [],
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269488928,
-        "supportDataAccess": false
+        creatorId: '1199596756811550720',
+        createTime: 1699269488928,
+        supportDataAccess: false,
       },
       {
-        "path": "3nkE-vCQb",
-        "sortIndex": 9,
-        "level": 2,
-        "name": "抄送给我",
-        "code": "process/me/cc",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/cc",
-        "icon": "BorderInnerOutlined",
-        "status": 1,
-        showPage: ["process-runtime"],
-        "permissions": [
+        path: '3nkE-vCQb',
+        sortIndex: 9,
+        level: 2,
+        name: '抄送给我',
+        code: 'process/me/cc',
+        describe: '',
+        owner: 'iot',
+        url: '/workflow/me/cc',
+        icon: 'BorderInnerOutlined',
+        status: 1,
+        showPage: ['process-runtime'],
+        permissions: [
           {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-definition',
+            actions: ['query'],
           },
           {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
+            permission: 'process-runtime',
+            actions: [
+              'transfer',
+              'reject',
+              'query',
+              'start',
+              'save',
+              'self',
+              'claim',
+              'delete-ready',
+              'complete',
+              'createAndStart',
+              'repeal',
+            ],
           },
           {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-deployment',
+            actions: ['query'],
           },
           {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
+            permission: 'process-form',
+            actions: ['query'],
           },
           {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
+            permission: 'role',
+            actions: ['query'],
           },
           {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'role-group',
+            actions: ['query'],
           },
           {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
+            permission: 'user',
+            actions: ['query'],
           },
           {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-third-party-manager',
+            actions: ['query'],
           },
           {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
+            permission: 'user-token',
+            actions: ['query'],
           },
           {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-category',
+            actions: ['query'],
           },
           {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'edge-product',
+            actions: ['query'],
           },
           {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
+            permission: 'dueros-product',
+            actions: ['query'],
           },
           {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-gateway',
+            actions: ['query'],
           },
           {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-msg-task',
+            actions: ['query'],
           },
           {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-group',
+            actions: ['query'],
           },
           {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
+            permission: 'opc-point',
+            actions: ['query'],
           },
           {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
+            permission: 'device-mapping',
+            actions: ['query'],
           },
           {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
+            permission: 'dictionary',
+            actions: ['query'],
+          },
         ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
         },
-        "indirectMenus": [],
-        "options": {
-          "show": true
+        indirectMenus: [],
+        options: {
+          show: true,
         },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699348851779,
-        "supportDataAccess": false
-      }
+        creatorId: '1199596756811550720',
+        createTime: 1699348851779,
+        supportDataAccess: false,
+      },
     ],
-    "creatorId": "8004214f8141f29cb951befdca3615f0",
-    "createTime": 1699262480040,
-    "supportDataAccess": false
-  }
+    creatorId: '8004214f8141f29cb951befdca3615f0',
+    createTime: 1699262480040,
+    supportDataAccess: false,
+  },
+  {
+    code: 'data-report',
+    name: '数据报表',
+    owner: 'iot',
+    id: '8d0124b33fc3d9590ca7ae00e182edd4',
+    icon: 'PieChartOutlined',
+    url: '/data-report',
+    sortIndex: 5,
+    children: [
+      {
+        id: 'f0bb99569278a22636ecd2c9450cd0da',
+        sortIndex: 1,
+        owner: 'iot',
+        name: '车辆告警中心',
+        code: 'data-report/AlarmSheet',
+        icon: 'ExclamationCircleOutlined',
+        url: '/data-report/AlarmSheet',
+        showPage: ['alarm'],
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
+        },
+        // assetAccesses: [],
+        options: {
+          show: true,
+        },
+      },
+      {
+        id: 'b34111ed77e56a458597951faeca9529',
+        sortIndex: 2,
+        owner: 'iot',
+        name: '车辆故障中心',
+        code: 'data-report/FaultSheet',
+        icon: 'WarningOutlined',
+        url: '/data-report/FaultSheet',
+        showPage: ['fault'],
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
+        },
+        assetAccesses: [],
+        options: {
+          show: true,
+        },
+      },
+      {
+        id: 'd46eff35d81d9629d53bce5e160df813',
+        sortIndex: 3,
+        owner: 'iot',
+        name: '车辆中心',
+        code: 'data-report/vehicleReport',
+        icon: 'ForwardOutlined',
+        url: '/data-report/vehicleReport',
+        showPage: ['vehicle'],
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
+        },
+        options: {
+          show: true,
+        },
+      },
+      {
+        id: '3084f9b445a0dedac59c35285e16cb40',
+        sortIndex: 4,
+        level: 2,
+        owner: 'iot',
+        name: '设备中心',
+        showPage: ['menu'],
+        code: 'data-report/deviceReport',
+        icon: 'BoxPlotOutlined',
+        url: '/data-report/deviceReport',
+        options: {
+          show: true,
+        },
+      },
+      {
+        id: '4784c23a2192189ce8b911113dc8bce1',
+        sortIndex: 4,
+        owner: 'iot',
+        name: '不规范驾驶',
+        code: 'data-report/IrregularDriving',
+        icon: 'MinusSquareOutlined',
+        url: '/data-report/IrregularDriving',
+        showPage: ['menu'],
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
+        },
+        options: {
+          show: true,
+        },
+      },
+      {
+        id: '4ea68f672c285de23f005c96cfe521c0',
+        sortIndex: 6,
+        owner: 'iot',
+        name: 'sim卡中心',
+        code: 'data-report/SimCenter',
+        icon: 'CopyOutlined',
+        url: '/data-report/SimCenter',
+        showPage: ['menu'],
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
+        },
+        options: {
+          show: true,
+        },
+      },
+      {
+        id: '1036a00bb91f221bd2e5da62446be7df',
+        sortIndex: 7,
+        owner: 'iot',
+        name: '设备消息',
+        code: 'data-report/deviceMessages',
+        icon: 'PicCenterOutlined',
+        url: '/data-report/deviceMessages',
+        showPage: ['menu'],
+        accessSupport: {
+          text: '不支持',
+          value: 'unsupported',
+        },
+        options: {
+          show: true,
+        },
+      },
+    ],
+  },
 ];

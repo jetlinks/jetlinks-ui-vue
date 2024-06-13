@@ -10,12 +10,24 @@ interface IDicMap {
     alarmDescArr: IAlarmDesc[];
 }
 
-const useFilterAlarmDesc = (columns: any[]) => {
+/**
+ * @param columns 表格列的配置项，用于浅拷贝并为其加上告警和车辆的下拉选项
+ * @param dicIds 字典id数组，用于查询告警信息
+ */
+const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
     // 存储告警信息
     const dicMap = reactive<IDicMap[]>([]);
     const tableColumns = reactive([...columns]);
 
     const vehicleType = ref<{ label: string; value: string }[]>();
+
+    // 确保数据渲染完成
+    const vehicleTypeComputed = computed(() => {
+        return vehicleType.value?.map((item) => ({
+            label: item.label,
+            value: item.value,
+        }));
+    });
 
     const handleVehicleType = (type: string) => {
         const item = vehicleType.value?.find((item) => item.value === type);
@@ -37,6 +49,15 @@ const useFilterAlarmDesc = (columns: any[]) => {
      * @description 将接口返回的字典处理为[{字典id，[{字典value, 字典描述}, {字典value, 字典描述},...]}]的格式
      */
     const setDicMap = async () => {
+        // 如果存在条件
+        let term: any = {};
+        if (dicIds) {
+            term = {
+                column: 'dictId',
+                value: dicIds,
+                termType: 'in',
+            };
+        }
         const res: any = await getDicList({
             pageSize: 9999,
             pageNum: 0,
@@ -46,6 +67,7 @@ const useFilterAlarmDesc = (columns: any[]) => {
                     order: 'desc',
                 },
             ],
+            terms: [term],
         });
         if (res.status === 200) {
             const dicList = res.result.data;
@@ -78,8 +100,40 @@ const useFilterAlarmDesc = (columns: any[]) => {
                             });
                     }
                 });
+            return true;
         }
     };
+
+    /**
+     * @description 将字典的
+     */
+    (async () => {
+        // 请求告警的字典数据
+        const resp = await setDicMap();
+        if (resp) {
+            const options: any[] = [];
+            // 展开树结构的告警字典，用于搜索的下拉框显示
+            dicMap.forEach((dicItem) => {
+                const alarmKey = dicItem.alarmKey;
+                dicItem.alarmDescArr.forEach((alarmDesc: any) => {
+                    options.push({
+                        label: alarmDesc.dicDesc,
+                        alarmDictionaryValue: alarmDesc.alarmValue,
+                        alarmDictionaryKey: alarmKey,
+                        value: alarmDesc.dicDesc,
+                    });
+                });
+            });
+            tableColumns.forEach((item) => {
+                if (item.key === 'description') {
+                    item.search.options = options;
+                }
+                if (item.key === 'vehicleTypeEnum') {
+                    item.search.options = vehicleTypeComputed;
+                }
+            });
+        }
+    })();
 
     /**
      * @function queryDataFactory 请求函数工厂
@@ -98,9 +152,6 @@ const useFilterAlarmDesc = (columns: any[]) => {
                     },
                 ],
             };
-
-            // 每次请求时，获取字典数据，以确保查询的字典数据是最新的
-            await setDicMap();
 
             // 包装实际的请求函数，添加字典数据对应的描述
             const resp: any = await requestFunc(data);
@@ -156,29 +207,29 @@ const useFilterAlarmDesc = (columns: any[]) => {
     };
 
     // 监听字典变化，更新搜索下拉框
-    watch(dicMap, (newDicMap) => {
-        const options: any[] = [];
-        // 展开树结构的告警字典，用于搜索的下拉框显示
-        newDicMap.forEach((dicItem) => {
-            const alarmKey = dicItem.alarmKey;
-            dicItem.alarmDescArr.forEach((alarmDesc: any) => {
-                options.push({
-                    label: alarmDesc.dicDesc,
-                    alarmDictionaryValue: alarmDesc.alarmValue,
-                    alarmDictionaryKey: alarmKey,
-                    value: alarmDesc.dicDesc,
-                });
-            });
-        });
-        tableColumns.forEach((item) => {
-            if (item.key === 'description') {
-                item.search.options = options;
-            }
-            if (item.key === 'vehicleTypeEnum') {
-                item.search.options = vehicleType.value;
-            }
-        });
-    });
+    // watch(dicMap, (newDicMap) => {
+    //     const options: any[] = [];
+    //     // 展开树结构的告警字典，用于搜索的下拉框显示
+    //     newDicMap.forEach((dicItem) => {
+    //         const alarmKey = dicItem.alarmKey;
+    //         dicItem.alarmDescArr.forEach((alarmDesc: any) => {
+    //             options.push({
+    //                 label: alarmDesc.dicDesc,
+    //                 alarmDictionaryValue: alarmDesc.alarmValue,
+    //                 alarmDictionaryKey: alarmKey,
+    //                 value: alarmDesc.dicDesc,
+    //             });
+    //         });
+    //     });
+    //     tableColumns.forEach((item) => {
+    //         if (item.key === 'description') {
+    //             item.search.options = options;
+    //         }
+    //         if (item.key === 'vehicleTypeEnum') {
+    //             item.search.options = vehicleType.value;
+    //         }
+    //     });
+    // });
 
     return {
         queryDataFactory,

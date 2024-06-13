@@ -103,12 +103,8 @@ const popTitle = computed(() => {
 });
 
 // 生成请求函数
-const {
-    queryDataFactory,
-    dicMap,
-    tableColumns,
-    handleVehicleType,
-} = useFilterAlarmDesc(columns);
+const { queryDataFactory, dicMap, tableColumns, handleVehicleType } =
+    useFilterAlarmDesc(columns, ['dd']);
 
 // 生成请求函数
 const queryDataFn = queryDataFactory(queryFaultData, 'faultTime');
