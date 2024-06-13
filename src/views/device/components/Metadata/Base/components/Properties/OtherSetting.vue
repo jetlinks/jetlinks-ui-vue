@@ -10,7 +10,7 @@
     >
         <template #content>
 
-            <j-scrollbar height="350" v-if="showMetrics || config.length > 0">
+            <j-scrollbar height="350" v-if="showContent">
                 <j-collapse v-model:activeKey="activeKey" v-if="visible">
                     <j-collapse-panel
                         v-if="!(props.isProduct && target === 'device')"
@@ -263,6 +263,14 @@ const handleTip = computed(() => {
   return '您可以在设备详情-告警记录 页面查看告警情况'
 })
 
+const showContent = computed(() => {
+  if (props.isProduct && props.target === 'device') { // 继承的物模型
+    return showExtra.value
+  }
+
+  return showMetrics.value || config.value.length > 0
+})
+
 const showMetrics = computed(() => {
     return [
         'int',
@@ -391,6 +399,8 @@ const confirm = () => {
               // expands.threshold = extraForm
               await thresholdUpdate(extraForm)
             }
+
+            expands.otherEdit = true
 
             emit('update:value', {
                 ...props.value,

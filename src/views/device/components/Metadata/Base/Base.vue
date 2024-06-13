@@ -139,16 +139,20 @@
       </EditTableFormItem>
     </template>
     <template #other="{ record }">
-      <OtherSetting
-          v-model:value="record.expands"
-          :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
-          :id="record.id"
-          :name="record.name"
-          :metadataType="props.type"
-          :isProduct="record.expands?.isProduct"
-          :target="props.target"
-          @change="metadataChange"
-      />
+      <div>
+        <a-tag v-if="showTag(record)">已配置</a-tag>
+        <OtherSetting
+            v-model:value="record.expands"
+            :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
+            :id="record.id"
+            :name="record.name"
+            :metadataType="props.type"
+            :isProduct="record.expands?.isProduct"
+            :target="props.target"
+            :record="record"
+            @change="metadataChange"
+        />
+      </div>
     </template>
     <template #async="{ record }">
       <a-select
@@ -521,6 +525,10 @@ const parentTabsChange = (next?: Function) => {
   } else {
     (next as Function)?.()
   }
+}
+
+const showTag = (record: Record<string, any>) => {
+  return record.expands?.otherEdit || Object.keys(omit(record.expands, ['source', 'type', 'isProduct', 'group', 'otherEdit'])).length
 }
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)

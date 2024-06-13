@@ -259,7 +259,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 120,
+      width: 160,
     },
   ]);
 
@@ -294,7 +294,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 120,
+      width: 160,
     },
     {
       title: '说明',
@@ -338,7 +338,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 120,
+      width: 160,
     },
     {
       title: '说明',
@@ -393,7 +393,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 120,
+      width: 160,
     },
     {
       title: '说明',
