@@ -32,6 +32,11 @@
                                 value: `${id}:${-1}`,
                                 type: 'and'
                               },
+                              {
+                                column: 'targetType$in',
+                                value: targetType === 'device' ? [] : ['other'],
+                                type: 'and'
+                              }
                           ],
                       },
                   ],
@@ -102,6 +107,9 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  targetType: {
+    type: String
+  }
 });
 
 const emit = defineEmits(['cancel', 'ok'])
