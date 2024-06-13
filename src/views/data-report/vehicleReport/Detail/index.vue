@@ -200,7 +200,6 @@ import dayjs from 'dayjs';
 import DetailsTitle from '../components/detailsTitle.vue';
 import Title from './Title/index.vue';
 import FloatBackBtn from './FloatBackBtn/index.vue';
-import { number } from 'echarts';
 
 const route = useRoute();
 const vehicleData = ref();
@@ -435,9 +434,9 @@ const queryDevice = async () => {
         dataAss.value = res.result.data;
     }
 };
-//获取在线离线数据
+//获取车辆里程
 const getMileage = async () => {
-    const _deviceId: any = route.query?.id;
+    const _deviceId: any = route.query?.deviceId;
     const res: any = await getVehicleMileage(JSON.parse(_deviceId));
     if (res.status == 200) {
         vehicleMileage.value = res.result.mileage;
@@ -454,7 +453,7 @@ const queryDataRecord = async () => {
                 value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
-        ],
+        ],  
         paging: false,
         sorts: [{ name: 'shutStartMilli', order: 'desc' }],
     };

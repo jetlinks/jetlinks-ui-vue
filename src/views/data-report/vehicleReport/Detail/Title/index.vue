@@ -159,20 +159,7 @@ const props = withDefaults(
     }>(),
     {},
 );
-const devices = [
-    {
-        name: '发动机',
-        isImportant: true,
-    },
-    {
-        name: '变速器',
-        isImportant: false,
-    },
-    {
-        name: '压力传感器',
-        isImportant: false,
-    },
-];
+
 
 const menuStore = useMenuStore();
 

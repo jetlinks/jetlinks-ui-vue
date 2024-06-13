@@ -14,7 +14,7 @@
                     sorts: [{ name: 'reportTime', order: 'desc' }],
                 }"
                 model="table"
-                :params="globParams"
+                v-model:params="globParams"
                 :gridColumn="3"
             >
                 <template #headerTitle>
