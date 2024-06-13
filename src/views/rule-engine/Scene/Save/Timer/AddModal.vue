@@ -19,6 +19,7 @@ import Timer from '../components/Timer'
 import type { OperationTimer } from '@/views/rule-engine/Scene/typings'
 import { PropType} from "vue";
 import {handleTimerOptions} from "@/views/rule-engine/Scene/Save/components/Timer/util";
+import {cloneDeep} from "lodash-es";
 
 type Emit = {
   (e: 'cancel'): void
@@ -40,7 +41,7 @@ interface AddModelType {
 }
 
 const addModel = reactive<AddModelType>({
-  timer: props.value
+  timer: cloneDeep(props.value)
 })
 
 const save = async () => {
