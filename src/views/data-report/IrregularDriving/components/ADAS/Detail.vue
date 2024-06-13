@@ -12,36 +12,38 @@
         <a-row :gutter="[24, 24]">
             <a-col :span="24"
                 ><span class="details-label">报警类型：</span>
-                <span class="details-desc">{{ data.reportType }}</span></a-col
+                <span class="details-desc">{{ data?.reportType }}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警时间：</span>
                 <span class="details-desc">
-                    {{ dayjs(data.reportTime).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{ dayjs(data?.reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label">报警信息：</span>
-                <span class="details-desc">{{ data.reportInfo }}</span></a-col
+                <span class="details-desc">{{ data?.reportInfo }}</span></a-col
             >
             <a-col :span="24"
                 ><span class="details-label"> 报警位置：</span>
-                <span class="details-desc">{{ data.reportArea }}</span></a-col
+                <span class="details-desc">{{ data?.reportArea }}</span></a-col
             >
         </a-row>
         <a-divider />
-        <a-radio-group v-model:value="value">
-            <a-radio-button value="1">报警视频</a-radio-button>
-            <a-radio-button value="2">报警图片</a-radio-button>
+        <a-radio-group v-model:value="current">
+            <a-radio-button value="video">报警视频</a-radio-button>
+            <a-radio-button value="image">报警图片</a-radio-button>
         </a-radio-group>
         <div class="detail-box">
-            <img :src="data.reportPicture" alt="" />
+            <img v-if="current == 'image'" :src="data?.picture" alt="" />
+            <LivePlayer v-else :url="data?.video" autoplay />
         </div>
     </j-modal>
 </template>
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
+import LivePlayer from '@/components/Player/index.vue';
 
 withDefaults(
     defineProps<{
@@ -52,7 +54,7 @@ withDefaults(
 
 const emits = defineEmits(['refresh', 'update:visible']);
 
-const value = ref('2');
+const current = ref<'image' | 'video'>('image');
 </script>
 
 <style lang="less" scoped>

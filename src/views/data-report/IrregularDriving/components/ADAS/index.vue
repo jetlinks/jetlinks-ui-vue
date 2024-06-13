@@ -6,7 +6,7 @@
             @search="handleSearch"
         ></pro-search>
         <full-page>
-            <JProTable
+            <PTable
                 ref="configRef"
                 :columns="columns"
                 :request="queryADAS"
@@ -14,9 +14,8 @@
                     sorts: [{ name: 'reportTime', order: 'desc' }],
                 }"
                 model="table"
-                :params="params"
+                :params="globParams"
                 :gridColumn="3"
-                :row-selection="rowSelection"
             >
                 <template #headerTitle>
                     <j-space>
@@ -33,19 +32,23 @@
                         </j-popconfirm>
                     </j-space>
                 </template>
+
                 <template #action="slotProps">
                     <a-button danger type="text" @click="onDetail(slotProps)">
                         查看</a-button
                     >
+                </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    {{ handleVehicleType(vehicleTypeEnum) }}
                 </template>
 
                 <template #reportTime="{ reportTime }">
                     {{ dayjs(reportTime).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <template #orgName="{ orgName }">
-                    {{ orgName || '暂未标记组织' }}
+                    {{ orgName || '--' }}
                 </template>
-            </JProTable>
+            </PTable>
         </full-page>
     </div>
 
@@ -53,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import PTable from '@/components/PTable/index.vue';
 import Details from './Detail.vue';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
@@ -60,52 +64,87 @@ import { queryADAS, adasExport } from '@/api/data-report/IrregularDriving';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 
 const visible = ref(false);
 
 const dataInfo = ref<Record<string, any>>();
 
-const selectIds = ref<Array<number | string>>([]);
+const vehicleType = ref<{ label: string; value: string }[]>();
 
 const configRef = ref<Record<string, any>>({});
+
+const globParams = ref<Record<string, any>>({});
+const type = ref<string>('xlsx');
+const handleVehicleType = (type: string) => {
+    const item = vehicleType.value?.find((item) => item.value === type);
+    return item?.label || type;
+};
 /**
  * 导出
  */
-const type = ref<string>('xlsx');
+
+/**
+ * @function handleExport 导出
+ */
 const handleExport = async () => {
-    if (!selectIds.value?.length) {
-        onlyMessage('请勾选需要导出的数据', 'error');
-        return;
+    let _params: any = {};
+
+    const selectedRowKeys = configRef.value?.selectedRowKeys || [];
+
+    const dataTotal = configRef.value?.dataTotal || 0;
+    // 当部分选中时
+    if (selectedRowKeys?.length > 0) {
+        _params = {
+            paging: false,
+            sorts: [{ name: 'reportTime', order: 'desc' }],
+            pageSize: selectedRowKeys?.length,
+            terms: [
+                {
+                    column: 'id',
+                    value: selectedRowKeys,
+                    termType: 'in',
+                },
+            ],
+        };
+    } else {
+        _params = {
+            paging: false,
+            pageSize: dataTotal > 10000 ? 10000 : dataTotal,
+            sorts: [{ name: 'reportTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
     }
-    const _params = {
-        terms: [
-            {
-                column: 'id',
-                value: selectIds.value,
-                termType: 'in',
-            },
-        ],
-    };
-    adasExport(type.value, _params).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `ADAS异常数据-${moment(new Date()).format(
-                    'YYYY/MM/DD HH:mm:ss',
-                )}`,
-                type.value,
-            );
+
+    // 注意这里的请求函数要更换为当前页面的请求函数，以及下方导出的文件名
+    const res = await adasExport(type.value, _params);
+
+    if (res) {
+        const blob = new Blob([res.data], { type: type.value });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(
+            url,
+            `ADAS异常数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            type.value,
+        );
+
+        if (
+            selectedRowKeys.length > 10000 ||
+            (selectedRowKeys.length === 0 && dataTotal > 10000)
+        ) {
+            onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+        } else {
+            onlyMessage(EXPORT_TIPS);
         }
-    });
+    }
 };
+
 const onDetail = (data: Record<string, any>) => {
     dataInfo.value = data;
     visible.value = true;
 };
 
-const params = ref<Record<string, any>>({});
 const columns = [
     {
         title: '车辆类型',
@@ -113,25 +152,17 @@ const columns = [
         key: 'vehicleTypeEnum',
         scopedSlots: true,
         search: {
-            type: 'string',
-            // options: [
-            //     {
-            //         label: '内燃柴油机',
-            //         value: 'ICDieselEngine',
-            //     },
-            //     {
-            //         label: '内燃汽油机',
-            //         value: 'ICGasolineEngine',
-            //     },
-            //     {
-            //         label: '机械柴油机',
-            //         value: 'MachineDieselEngine',
-            //     },
-            //     {
-            //         label: '内燃牵引车',
-            //         value: 'ICTractor',
-            //     },
-            // ],
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        vehicleType.value = resp.result.map((item: any) => ({
+                            label: item.text,
+                            value: item.value,
+                        }));
+                        resolve(vehicleType.value);
+                    });
+                }),
         },
     },
     {
@@ -211,30 +242,13 @@ const columns = [
     },
 ];
 
-const rowSelection = {
-    onChange: (selectedRowKeys: (string | number)[], selectedRows: any) => {
-        console.log(
-            `selectedRowKeys: ${selectedRowKeys}`,
-            'selectedRows: ',
-            selectedRows,
-        );
-        selectIds.value = selectedRowKeys;
-    },
-    onSelect: (record: any, selected: boolean, selectedRows: any) => {
-        console.log(record, selected, selectedRows);
-    },
-    onSelectAll: (selected: boolean, selectedRows: any, changeRows: any) => {
-        console.log(selected, selectedRows, changeRows);
-    },
-};
-
 /**
  * 搜索
  * @param param
  */
 const handleSearch = (param: any) => {
     handleSearchByDate(param, ['reportTime']);
-    params.value = param;
+    globParams.value = param;
 };
 </script>
 
