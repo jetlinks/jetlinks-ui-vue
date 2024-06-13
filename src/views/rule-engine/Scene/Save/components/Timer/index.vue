@@ -2,17 +2,13 @@
   <j-form
     ref='timerForm'
     :model='formModel'
-    layout='vertical'
     :colon='false'
+    layout='vertical'
   >
     <j-form-item name='trigger'>
       <j-radio-group
         v-model:value='formModel.trigger'
-        :options='[
-          { label: "按周", value: "week" },
-          { label: "按月", value: "month" },
-          { label: "cron表达式", value: "cron" },
-        ]'
+        :options='triggerOptions'
         option-type='button'
         button-style='solid'
         @change='triggerChange'
@@ -20,6 +16,9 @@
     </j-form-item>
     <j-form-item v-if='showCron' name='cron' :rules="cronRules">
       <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
+    </j-form-item>
+    <j-form-item v-else-if="showMulti" :rules="multiRules">
+      <Calendar v-model:value="formModel.multi" @change='updateValue'/>
     </j-form-item>
     <template v-else>
       <j-form-item name='when'>
@@ -38,7 +37,7 @@
         />
       </j-form-item>
     </template>
-    <j-space v-if='showOnce' style='display: flex;gap: 24px'>
+    <j-space v-if='showOnce && !showMulti' style='display: flex;gap: 24px'>
       <j-form-item :name="['once', 'time']">
         <j-time-picker
           valueFormat='HH:mm:ss'
@@ -50,7 +49,7 @@
       </j-form-item>
       <j-form-item> 执行一次</j-form-item>
     </j-space>
-    <j-space v-if='showPeriod' style='display: flex;gap: 24px'>
+    <j-space v-if='showPeriod && !showMulti' style='display: flex;gap: 24px'>
       <j-form-item>
         <j-time-range-picker
           valueFormat='HH:mm:ss'
@@ -105,6 +104,7 @@ import {cloneDeep, pick} from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
 import { isCron } from '@/utils/regular'
 import { defineExpose } from 'vue'
+import Calendar from './Calendar.vue'
 
 type NameType = string[] | string
 
@@ -120,6 +120,10 @@ const props = defineProps({
   value: {
     type: Object,
     default: () => ({})
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -142,6 +146,30 @@ const cronRules = [
   }
 ]
 
+const multiRules = [
+  {
+    validator: async (_: any, v: string) => {
+      console.log(v)
+      return Promise.resolve();
+    }
+  }
+]
+
+const triggerOptions = computed(() => {
+  let _options = [
+    { label: "按周", value: "week" },
+    { label: "按月", value: "month" },
+    { label: "cron表达式", value: "cron" },
+  ]
+
+  if (props.type === 'timer') {
+    _options = [..._options, {
+      label: "自定义日历", value: "multi"
+    }]
+  }
+  return _options
+})
+
 const formModel = reactive<OperationTimer>({
   trigger: 'week',
   when: props.value.when || [],
@@ -155,12 +183,19 @@ const formModel = reactive<OperationTimer>({
     to: dayjs(new Date()).endOf('day').format('HH:mm:ss'),
     every: 1,
     unit: 'seconds'
+  },
+  multi: {
+    type: "and",
+    spec: []
   }
 })
 const timerForm = ref()
 
 const showCron = computed(() => {
   return formModel.trigger === 'cron'
+})
+const showMulti = computed(() => {
+  return formModel.trigger === 'multi'
 })
 
 const showOnce = computed(() => {
@@ -177,6 +212,8 @@ const updateValue = () => {
   let keys: string[] = ['trigger']
   if (cloneValue.trigger === 'cron') {
     keys.push('cron')
+  } else if (cloneValue.trigger === 'multi') {
+    keys.push('multi')
   } else {
     keys = keys.concat(['mod', 'when'])
 
@@ -186,7 +223,7 @@ const updateValue = () => {
       keys.push('once')
     }
   }
-
+  console.log( pick(cloneValue, keys), keys)
   emit('update:value', pick(cloneValue, keys))
 }
 

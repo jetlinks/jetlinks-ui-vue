@@ -1,5 +1,9 @@
 <template>
   <div class='type'>
+    <div class="alert">
+      <AIcon type="InfoCircleOutlined"/>
+      <span style="padding-left: 10px;">只能依据产品物模型进行配置</span>
+    </div>
     <j-form ref='typeForm' :model='formModel' layout='vertical' :colon='false'>
       <j-form-item
         required
@@ -104,6 +108,7 @@ const writeRef = ref()
 const invokeRef = ref()
 
 const topOptions = computed(() => {
+  const cloneTypeEnum = cloneDeep(TypeEnum)
   const baseOptions = [
     {
       label: '设备上线',
@@ -114,11 +119,17 @@ const topOptions = computed(() => {
       label: '设备离线',
       value: 'offline',
       img: getImage('/scene/offline.png')
-    }
+    },
+    cloneTypeEnum.reportEvent,
+    cloneTypeEnum.readProperty,
+    cloneTypeEnum.writeProperty,
+    cloneTypeEnum.reportProperty,
+    cloneTypeEnum.invokeFunction
   ]
 
   if (props.metadata.events?.length) {
-    baseOptions.push(TypeEnum.reportEvent)
+    // baseOptions.push(TypeEnum.reportEvent)
+    cloneTypeEnum.reportEvent.disabled = false
     eventOptions.value = props.metadata.events.map(item => ({ ...item, label: item.name, value: item.id }))
   }
 
@@ -141,20 +152,24 @@ const topOptions = computed(() => {
     }))
 
     if (readProperties.value.length) {
-      baseOptions.push(TypeEnum.readProperty)
+      // baseOptions.push(TypeEnum.readProperty)
+      cloneTypeEnum.readProperty.disabled = false
     }
 
     if (writeProperties.value.length) {
-      baseOptions.push(TypeEnum.writeProperty)
+      // baseOptions.push(TypeEnum.writeProperty)
+      cloneTypeEnum.writeProperty.disabled = false
     }
 
     if (reportProperties.length) {
-      baseOptions.push(TypeEnum.reportProperty)
+      // baseOptions.push(TypeEnum.reportProperty)
+      cloneTypeEnum.reportProperty.disabled = false
     }
   }
 
   if (props.metadata.functions?.length) {
-    baseOptions.push(TypeEnum.invokeFunction)
+    cloneTypeEnum.invokeFunction.disabled = false
+    // baseOptions.push(TypeEnum.invokeFunction)
     functionOptions.value = props.metadata.functions.map(item => ({ ...item, label: item.name, value: item.id }))
   }
 
@@ -238,5 +253,13 @@ defineExpose({
 <style scoped lang='less'>
 .type {
   margin-top: 24px;
+
+  .alert {
+    height: 40px;
+    padding-left: 10px;
+    color: rgba(0, 0, 0, 0.55);
+    line-height: 40px;
+    background-color: #f6f6f6;
+  }
 }
 </style>

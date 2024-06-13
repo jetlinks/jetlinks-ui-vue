@@ -1,16 +1,5 @@
 <template>
   <div :class='WarpClass'>
-    <j-popconfirm
-      title='确认删除？'
-      v-if="showGroupDelete && isFirst"
-      placement="topRight"
-      :overlayStyle='{minWidth: "180px"}'
-      @confirm='deleteGroup'
-    >
-      <div v-if="showGroupDelete && isFirst" class="group-delete">
-        删除条件
-      </div>
-    </j-popconfirm>
     <div class='actions-terms-title'>
       {{ isFirst ? '当' : '否则' }}
     </div>

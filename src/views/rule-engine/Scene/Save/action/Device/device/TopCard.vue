@@ -12,14 +12,13 @@
         >
             <div class="'way-item-title">
                 <span class="way-item-label">{{ item.label }}</span>
-                <j-popover v-if="item.tip">
-                    <j-tooltip :title="item.tip">
-                        <AIcon
-                            type="QuestionCircleOutlined"
-                            class="way-item-icon"
-                        />
-                    </j-tooltip>
-                </j-popover>
+              <j-tooltip v-if="item.tip" :title="item.tip">
+                <AIcon
+                  type="QuestionCircleOutlined"
+                  class="way-item-icon"
+                  style="padding-left: 8px;"
+                />
+              </j-tooltip>
             </div>
             <div class="way-item-image">
                 <img :width="48" :src="item.image" />
@@ -78,10 +77,12 @@ const onSelect = (_type: string) => {
     width: 100%;
 
     .trigger-way-item {
+        flex: 1 1 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 237px;
+        min-width: 0;
+        //width: 237px;
         padding: 12px 16px;
         border: 1px solid #e0e4e8;
         border-radius: 2px;
@@ -99,6 +100,7 @@ const onSelect = (_type: string) => {
 
             .way-item-icon {
                 color: rgba(#000, 0.5);
+                padding-left: 8px;
             }
         }
 

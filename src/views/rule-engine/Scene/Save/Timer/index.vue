@@ -15,10 +15,14 @@
         </AddButton>
       </j-form-item>
       <div class='actions-branches-item' >
+
         <j-form-item
           :rules="actionRules"
           :name="['branches', 0, 'then']"
         >
+          <template #label>
+            <TitleComponent data='执行动作' style='font-size: 14px;' />
+          </template>
           <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"
             :name="0"

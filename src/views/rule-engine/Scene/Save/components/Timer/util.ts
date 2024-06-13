@@ -83,6 +83,12 @@ export const handleTimerOptions = (timer: OperationTimer):TimerOption => {
     extraTime = `每${timer.period.every}${timeUnitEnum[timer.period.unit]}执行1次`;
   }
 
+  if (timer.trigger === 'multi') {
+    const len = timer.multi!.spec.length
+    when = ''
+    extraTime = `自定义日历 共${len}个规则`
+  }
+
   return {
     when,
     time,

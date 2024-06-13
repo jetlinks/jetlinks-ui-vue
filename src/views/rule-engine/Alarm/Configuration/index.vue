@@ -135,11 +135,7 @@
                     </template>
                     <template #level="slotProps">
                         <Ellipsis>
-                            {{
-                                (defaultLevel || []).find(
-                                    (item) => item?.level === slotProps.level,
-                                )?.title || slotProps.level
-                            }}
+                          {{ levelMap[slotProps.level] || slotProps.level }}
                         </Ellipsis>
                     </template>
                     <template #scene="slotProps">
@@ -211,18 +207,19 @@ import {
     remove,
     getScene,
 } from '@/api/rule-engine/configuration';
-import { queryLevel } from '@/api/rule-engine/config';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
-import encodeQuery from '@/utils/encodeQuery';
 import HandTrigger from './HandTrigger/index.vue';
+import { useAlarmLevel } from '@/hook'
 
 const params = ref<Record<string, any>>({});
 let isAdd = ref<number>(0);
 let title = ref<string>('');
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
+const { levelMap, levelList } = useAlarmLevel()
+
 const columns = [
     {
         title: '配置名称',
@@ -270,16 +267,7 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-                const res = await queryLevel();
-                if (res.status === 200) {
-                    return (res?.result?.levels || [])
-                        .filter((i: any) => i?.level && i?.title)
-                        .map((item: any) => ({
-                            label: item.title,
-                            value: item.level,
-                        }));
-                }
-                return [];
+              return levelList.value
             },
         },
         width: 200,
@@ -396,14 +384,7 @@ const handleSearch = (e: any) => {
         terms: _terms,
     };
 };
-const queryDefaultLevel = () => {
-    queryLevel().then((res) => {
-        if (res.status === 200) {
-            defaultLevel.value = res.result?.levels || [];
-        }
-    });
-};
-queryDefaultLevel();
+
 const getActions = (
     data: Partial<Record<string, any>>,
     type?: 'card' | 'table',
