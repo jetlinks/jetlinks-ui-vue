@@ -22,7 +22,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:value'])
+const emit = defineEmits(['update:value', 'change'])
 const myValue = ref(props.value)
 const searchValue = ref()
 
@@ -55,6 +55,7 @@ const onSearch = (value) => {
 const onSelect = (value) => {
   groupSetting.addOptions({ label: value, value })
   emit('update:value', value)
+  emit('change', value)
 }
 
 watch(() => props.value, () => {
