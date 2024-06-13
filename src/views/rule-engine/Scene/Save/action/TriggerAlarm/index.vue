@@ -116,6 +116,9 @@ const props = defineProps({
       type: String,
       default: '',
     },
+    targetType: {
+      type: String
+    }
 });
 
 const emit = defineEmits(['close']);

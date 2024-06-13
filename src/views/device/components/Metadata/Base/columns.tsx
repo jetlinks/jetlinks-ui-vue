@@ -235,7 +235,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
             asyncValidator: async (rule: any, value: any) => {
 
               const source = value.source
-
+              console.log(value)
               if (source) {
                 if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');

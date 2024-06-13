@@ -43,8 +43,6 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
 
         if (type === 'device' && instanceCurrent.value.productMetadata) {
             const productMetadata: any = JSON.parse(instanceCurrent.value.productMetadata)
-        console.log(metadata.value, productMetadata)
-
 
             const metaArray = key ? productMetadata[key] : []
             const productIds = metaArray?.map((item:any) => item.id) || []

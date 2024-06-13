@@ -388,6 +388,7 @@
             :id="_data.id"
             :branchId="_data.branches[branchesName].branchId"
             :actionId="_data.branches[branchesName].then[thenName].actions[name].actionId"
+            :targetType="_data.triggerType"
             v-if="triggerVisible"
             @close="triggerVisible = false"
         />

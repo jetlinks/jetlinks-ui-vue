@@ -13,6 +13,7 @@
             <j-scrollbar height="350" v-if="showMetrics || config.length > 0">
                 <j-collapse v-model:activeKey="activeKey" v-if="visible">
                     <j-collapse-panel
+                        v-if="!(props.isProduct && target === 'device')"
                         v-for="(item, index) in config"
                         :key="'store_' + index"
                     >
@@ -63,7 +64,7 @@
                             </template>
                         </j-table>
                     </j-collapse-panel>
-                    <j-collapse-panel key="metrics" v-if="showMetrics">
+                    <j-collapse-panel key="metrics" v-if="showMetrics && !(props.isProduct && target === 'device')">
                         <template #header>
                             指标配置
                             <j-tooltip
@@ -82,14 +83,28 @@
                             :value="myValue.metrics"
                         />
                     </j-collapse-panel>
-                    <j-collapse-panel key="extra" header="拓展配置"  v-if="showExtra">
+                    <j-collapse-panel key="extra" v-if="showExtra">
+                      <template #header>
+                        <a-space>
+                          <div>
+                            拓展配置
+                          </div>
+
+                          <a-button v-if="props.isProduct && target === 'device'" type="link" style="padding: 0 4px;height: 22px;" @click="thresholdRest">
+                            <template #icon>
+                              <AIcon type="RedoOutlined"/>
+                            </template>
+                            重置
+                          </a-button>
+                        </a-space>
+                      </template>
                       <div class="extra-limit extra-check-group">
                         <div class="extra-title">阈值限制</div>
                         <CardSelect
                           v-model:value="extraForm.type"
                           :options="[
-                            { label: '上限', value: 'upper'},
-                            { label: '下限', value: 'lower'}
+                            { label: '下限', value: 'lower'},
+                            { label: '上限', value: 'upper'}
                           ]"
                           :showImage="false"
                           :multiple="true"
@@ -99,15 +114,15 @@
                       <div class="extra-limit-input" v-if="extraForm.type.length !== 0">
                         <div class="extra-title">阈值</div>
                         <a-space>
-                          <a-input-number v-if="extraForm.type.includes('upper')" v-model:value="extraForm.upperLimit" style="width: 178px" placeholder="请输入下限"/>
+                          <a-input-number v-if="extraForm.type.includes('lower')" v-model:value="extraForm.lowerLimit" style="width: 178px" placeholder="请输入下限"/>
                           <span v-if="extraForm.type.length === 2">~</span>
-                          <a-input-number v-if="extraForm.type.includes('lower')" v-model:value="extraForm.lowerLimit" style="width: 178px" placeholder="请输入上限"/>
+                          <a-input-number v-if="extraForm.type.includes('upper')" v-model:value="extraForm.upperLimit" style="width: 178px" placeholder="请输入上限"/>
                         </a-space>
                       </div>
                       <div class="extra-handle extra-check-group" v-if="extraForm.type.length !== 0">
                         <div class="extra-title">超出阈值数据处理方式</div>
                         <CardSelect
-                          v-model:value="extraForm.handle"
+                          v-model:value="extraForm.mode"
                           :options="[
                             { label: '忽略', value: 'ignore'},
                             { label: '仅记录', value: 'record'},
@@ -161,9 +176,10 @@ import {
     getMetadataConfig,
     getMetadataDeviceConfig,
 } from '@/api/device/product';
-import {omit, cloneDeep, keys} from 'lodash-es';
+import {omit, cloneDeep} from 'lodash-es';
 import { PopoverModal } from '@/components/Metadata/Table'
 import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import { useThreshold } from './hooks'
 
 const props = defineProps({
     value: {
@@ -182,6 +198,10 @@ const props = defineProps({
         type: String,
         default: undefined,
     },
+    name: {
+      type: String,
+      default: undefined,
+    },
     record: {
         type: Object,
         default: () => ({}),
@@ -191,8 +211,14 @@ const props = defineProps({
     metadataType: {
       type: String,
       default: 'properties'
+    },
+    target: String,
+    isProduct: {
+      type: Boolean,
+      default: false
     }
 });
+
 
 const type = inject('_metadataType');
 
@@ -200,7 +226,9 @@ const productStore = useProductStore();
 const deviceStore = useInstanceStore();
 const tableWrapperRef = useTableWrapper()
 
-const emit = defineEmits(['update:value']);
+const { thresholdUpdate, thresholdRest, thresholdDetail, thresholdDetailQuery } = useThreshold(props)
+
+const emit = defineEmits(['update:value', 'change']);
 
 const activeKey = ref();
 const metricsRef = ref();
@@ -215,7 +243,7 @@ const configValue = ref(props.value?.expands);
 const extraForm = reactive({
   upperLimit: 0,
   lowerLimit: 0,
-  handle: 'ignore',
+  mode: 'ignore',
   type: ['upper', 'lower']
 })
 
@@ -227,9 +255,9 @@ const typeMap = {
 }
 
 const handleTip = computed(() => {
-  if (extraForm.handle === 'ignore') {
+  if (extraForm.mode === 'ignore') {
     return '平台将忽略超出阈值的数据，无法查看上报记录'
-  } else if (extraForm.handle === 'record') {
+  } else if (extraForm.mode === 'record') {
     return '您可以在告警记录-无效数据页面查看超出阈值的数据上报记录'
   }
   return '您可以在设备详情-告警记录 页面查看告警情况'
@@ -289,7 +317,7 @@ const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
   }
 
   if (keys.length === 0) {
-    extraForm.handle = 'ignore'
+    extraForm.mode = 'ignore'
   }
 }
 
@@ -360,13 +388,15 @@ const confirm = () => {
             }
 
             if (showExtra.value) {
-              expands.threshold = extraForm
+              // expands.threshold = extraForm
+              await thresholdUpdate(extraForm)
             }
 
             emit('update:value', {
                 ...props.value,
                 ...expands,
             });
+            emit('change')
             modalVisible.value = false
             resolve(true);
         } catch (err) {
@@ -384,6 +414,10 @@ watch(() => modalVisible.value, () => {
       'required',
     ]);
     getConfig()
+
+    if (showExtra.value) {
+      thresholdDetailQuery()
+    }
   }
 }, { immediate: true })
 
@@ -391,18 +425,27 @@ const cancel = () => {
     myValue.value = cloneDeep(props.value);
 };
 
+watch(() => thresholdDetail, () => {
+  if (thresholdDetail.value) {
+    extraForm.mode = thresholdDetail.value?.mode
+    extraForm.type = thresholdDetail.value?.type || []
+    extraForm.lowerLimit = thresholdDetail.value?.lowerLimit
+    extraForm.upperLimit = thresholdDetail.value?.upperLimit
+  }
+}, { immediate: true, deep: true })
+
 watch(
     () => JSON.stringify(props.value),
     () => {
         myValue.value = cloneDeep(props.value);
 
-        if (props.value.threshold) {
-          const threshold = props.value.threshold
-          extraForm.handle = threshold.handle
-          extraForm.type = threshold.type
-          extraForm.lowerLimit = threshold.lowerLimit
-          extraForm.upperLimit = threshold.upperLimit
-        }
+        // if (props.value.threshold) {
+        //   const threshold = props.value.threshold
+        //   extraForm.handle = threshold.handle
+        //   extraForm.type = threshold.type
+        //   extraForm.lowerLimit = threshold.lowerLimit
+        //   extraForm.upperLimit = threshold.upperLimit
+        // }
     },
     { immediate: true },
 );
@@ -421,7 +464,7 @@ watch(
 
 .extra-check-group {
   :deep(.j-card-item) {
-    padding: 12px 14px;
+    padding: 12px 14px !important;
   }
 }
 </style>
