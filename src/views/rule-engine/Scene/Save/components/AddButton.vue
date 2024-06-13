@@ -1,7 +1,7 @@
 <template>
   <div class='rule-button-warp' :style='style'>
     <slot name="extra"/>
-    <div class='rule-button add-button' @click='click'>
+    <div class='rule-button add-button' :class="{'add-circular': showCircular}" @click='click'>
       <slot />
     </div>
   </div>
@@ -18,6 +18,10 @@ const props = defineProps({
   style: {
     type: Object as PropType<CSSProperties>,
     default: () => ({})
+  },
+  showCircular: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -40,16 +44,18 @@ const click = () => {
 
 .rule-button {
   display: inline-block;
-  padding: 6px 20px;
   font-size: 14px;
   line-height: 22px;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 22px;
 }
+  .add-circular {
+    padding: 6px 20px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 22px;
+  }
 
 .add-button {
-  color: #bdbdbd;
+  color: #777;
 
 &:hover,
 &:active {

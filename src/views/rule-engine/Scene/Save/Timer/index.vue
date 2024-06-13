@@ -5,8 +5,7 @@
         :name="['trigger', 'timer']"
       >
         <template #label>
-          <TitleComponent data='触发规则' style='font-size: 14px;' >
-          </TitleComponent>
+          <TitleComponent data='触发规则' style='font-size: 14px;' />
         </template>
         <AddButton
             style='width: 100%'
@@ -16,10 +15,14 @@
         </AddButton>
       </j-form-item>
       <div class='actions-branches-item' >
+
         <j-form-item
           :rules="actionRules"
           :name="['branches', 0, 'then']"
         >
+          <template #label>
+            <TitleComponent data='执行动作' style='font-size: 14px;' />
+          </template>
           <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"
             :name="0"
