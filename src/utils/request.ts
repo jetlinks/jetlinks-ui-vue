@@ -5,6 +5,7 @@ import router from '@/router'
 import { LoginPath } from '@/router/menu'
 import { cleanToken, getToken, LocalStore } from '@/utils/comm'
 import type { AxiosInstance, AxiosResponse } from 'axios'
+import qs from 'qs'
 
 export interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
   result: T
@@ -49,7 +50,7 @@ export const post = function <T>(url: string, data = {}, params = {}, ext = {}) 
     params,
     method: 'POST',
     url,
-    data
+    data,
   })
 }
 
