@@ -12,14 +12,7 @@
                 {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template v-if="column.dataIndex === 'duration'">
-                {{
-                    record?.handleTime
-                        ? calculateDuration(
-                              dayjs(record.alarmTime),
-                              dayjs(record?.handleTime),
-                          )
-                        : calculateDuration(dayjs(record.alarmTime), dayjs())
-                }}
+                <Duration :data="record"/>
             </template>
             <template v-if="column.dataIndex === 'handleType'">
                 {{ text.text }}
@@ -47,6 +40,7 @@ import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import { defineExpose } from 'vue';
+import Duration  from '../../components/Duration.vue';
 const props = defineProps({
     currentId: {
         type: String,
@@ -106,19 +100,6 @@ const queryList = async () => {
             dataSource.value = res.result.data;
         }
     }
-};
-const calculateDuration = (startTime, endTime) => {
-    const diffInSeconds = endTime.diff(startTime, 'second');
-    let result;
-
-    if (diffInSeconds < 60) {
-        result = `${diffInSeconds.toFixed(1)} s`;
-    } else if (diffInSeconds < 3600) {
-        result = `${(diffInSeconds / 60).toFixed(1)} min`;
-    } else {
-        result = `${(diffInSeconds / 3600).toFixed(1)} h`;
-    }
-    return result;
 };
 const gotoAlarmRecord = () => {
     menuStory.jumpPage(

@@ -79,13 +79,13 @@ const route = useRoute();
 const id = route.params?.id;
 const menuStory = useMenuStore();
 const { params: routerParams } = useRouterParams();
-let visible = ref(false);
+const visible = ref(false);
 const tableRef = ref();
-let params = ref({});
+const params = ref({});
 const alarmStore = useAlarmStore();
 const { data } = alarmStore;
-let current = ref(); // 当前告警记录信息
-let details = ref(); // 告警记录的详情
+const current = ref(); // 当前告警记录信息
+const details = ref(); // 告警记录的详情
 const alarmType = ref();
 const columns = ref([
     {
@@ -154,7 +154,7 @@ const queryList = async (params: any) => {
             ...params,
             // sorts: [{ name: 'alarmTime', order: 'desc' }],
         });
-        if (res.status === 200) {
+        if (res.status === 200 && res.result?.data) {
             details.value = res.result.data[0];
             return {
                 code: res.message,
@@ -181,10 +181,7 @@ const queryList = async (params: any) => {
     }
 };
 const gotoDevice = (id) => {
-    menuStory.jumpPage(
-        'device/Instance/Detail',
-        { id , tab: 'Running'},
-    );
+    menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
 };
 /**
  * 根据id初始化数据
