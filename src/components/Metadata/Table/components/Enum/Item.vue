@@ -34,6 +34,7 @@ const tableRef = ref()
 const rules = [
   {
     validator: async (_, value) =>{
+      console.log(value, dataSource.value)
       if (!dataSource.value?.length) {
         return Promise.reject('请添加枚举项');
       }
