@@ -39,8 +39,10 @@ const collectValidateRules = (columns: ColumnsType):  Record<string, any> => {
 }
 
 export const handlePureRecord = (record: Record<string, any>) => {
+    if (!record) return {}
+
     if (record.expands) {
-        record.expands = omit(record, ['isProduct'])
+        record.expands = omit(record.expands, ['isProduct'])
     }
     return omit(record, ['__serial', '__index', '__top', '__selected'])
 }
@@ -83,23 +85,26 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
                 }
             }
 
-            filterDataSource.forEach((record, index) => {
-                if (record[rowKey]) {
-                    validateItem(record, index).then(res => {
-                        success.push(handlePureRecord(res))
+            if (filterDataSource.length) {
+                filterDataSource.forEach((record, index) => {
+                    if (record[rowKey]) {
+                        validateItem(record, index).then(res => {
+                            success.push(handlePureRecord(res))
+                            validateLen += 1
+                            end()
+                        }).catch(err => {
+                            options?.onError(err)
+                            error.push(err)
+                            validateLen += 1
+                            end()
+                        })
+                    } else {
                         validateLen += 1
-                        end()
-                    }).catch(err => {
-                        options?.onError(err)
-                        error.push(err)
-                        validateLen += 1
-                        end()
-                    })
-                } else {
-                    validateLen += 1
-                }
-            })
-
+                    }
+                })
+            } else {
+                resolve(filterDataSource)
+            }
         })
     }
 

@@ -31,6 +31,8 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(['change'])
+
 const tableWrapperRef = useTableWrapper()
 const context = useInjectForm()
 
@@ -106,6 +108,7 @@ const onFieldBlur = () => {
 
 const onFieldChange = () => {
   validateRules()
+  emit('change')
 }
 
 useProvideFormItemContext({

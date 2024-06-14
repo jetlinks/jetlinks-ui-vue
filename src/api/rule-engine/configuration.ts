@@ -46,6 +46,7 @@ export const detail = (id:string) => server.get(`/alarm/config/${id}`);
 
 export const unbindScene = (id:string,data:any) => server.post(`/alarm/rule/bind/${id}/_delete`,data);
 
+export const unBindAlarm = (id: string, alarmId: string, data: any) => server.post(`/alarm/rule/bind/${alarmId}/${id}/_delete`, data)
 /**
  * 保存关联场景
  */

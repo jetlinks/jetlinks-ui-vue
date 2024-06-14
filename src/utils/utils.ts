@@ -85,6 +85,13 @@ export const randomString = (length?: number) => {
   return pwd;
 };
 
+export const randomNumber = () => {
+  const randomStr = Math.random().toString().substring(2, 10)
+  const time = (new Date().getTime()).toString().substring(8)
+
+  return Number(randomStr) + Number(time)
+}
+
 /**
  * 时间戳转时分秒文本
  * @param time

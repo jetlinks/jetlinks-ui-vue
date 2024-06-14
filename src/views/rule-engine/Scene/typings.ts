@@ -65,6 +65,8 @@ export enum TimerTrigger {
   'week' = 'week',
   'month' = 'month',
   'cron' = 'cron',
+
+  'multi' = 'multi',
 }
 
 export enum TimeUnit {
@@ -105,6 +107,11 @@ export interface OperationTimer {
   when?: string[];
   period?: OperationTimerPeriod;
   once?: Record<string, any>;
+
+  multi?: {
+    type: string,
+    spec: Array<Record<string, any>>
+  };
 }
 
 export interface TriggerDeviceOptions {
@@ -300,6 +307,8 @@ export interface ActionsType {
   terms?: TermsType[];
   /** map中的key，用于删除 */
   key?: string;
+
+  actionId?: number
   options?: Record<string, any>;
 }
 

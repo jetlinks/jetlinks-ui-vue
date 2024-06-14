@@ -209,7 +209,7 @@ const sourceChangeEvent = async () => {
 };
 
 const filterType = async (newVal: any) => {
-    const _list = TypeList.filter((item) => item.value === 'fixed');
+    const _list = TypeList.filter((item) => item.value === 'fixed' || item.value === 'tag');
     if (unref(data)?.trigger?.type === 'device') {
         //关系
         const res = await NoticeApi.getRelationUsers({
@@ -219,7 +219,7 @@ const filterType = async (newVal: any) => {
                 { termType: 'eq', column: 'objectTypeName', value: '设备' },
             ],
         });
-        if (res.status === 200 && res.result.length !== 0) {
+        if (res.success && res.result.length !== 0) {
             const array = TypeList.filter((item) => item.value === 'relation');
             _list.push(...array);
         }
@@ -227,8 +227,8 @@ const filterType = async (newVal: any) => {
         const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
         if (tag && tag.length !== 0) {
             tagList.value = tag || [];
-            const array = TypeList.filter((item) => item.value === 'tag');
-            _list.push(...array);
+            // const array = TypeList.filter((item) => item.value === 'tag');
+            // _list.push(...array);
         }
         //变量
         if (

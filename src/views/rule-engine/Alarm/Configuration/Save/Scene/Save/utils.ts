@@ -111,8 +111,8 @@ const handleActions = (then: any): any[] => {
         if (item.executor === 'alarm') {
             actionsArr.push(
                 item.alarm.mode === 'trigger' ?
-                    '满足条件后将触发关联此条件的告警' :
-                    '满足条件后将解除关联此条件的告警'
+                    '满足条件后将触发关联告警' :
+                    '满足条件后将解除关联告警'
             )
         }
 

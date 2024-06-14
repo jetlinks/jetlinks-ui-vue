@@ -64,7 +64,7 @@
                 <ParamsDropdown
                     v-else
                     icon="icon-canshu"
-                    placeholder="参数值"
+                    :placeholder="tabsOptions[0]?.component === 'array' ? '多个值以英文逗号隔开':'参数值'"
                     :options="valueOptions"
                     :metricOptions="metricOption"
                     :tabsOptions="tabsOptions"
@@ -345,7 +345,7 @@ const showArray = computed(()=>{
         }
         return true;
     }
-    return false;                  
+    return false;
 })
 
 const mouseover = () => {

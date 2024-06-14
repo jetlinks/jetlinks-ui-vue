@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import { detail } from '@/api/rule-engine/scene'
 import {cloneDeep, isArray, isObject} from 'lodash-es'
-import { randomString } from '@/utils/utils'
+import {randomNumber, randomString} from '@/utils/utils'
 
 type DataType = {
   data: FormModelType | any
@@ -12,7 +12,6 @@ type DataType = {
 const assignmentKey = (data: any[]): any[] => {
   const onlyKey = ['when', 'then', 'terms', 'actions'];
   if (!data) return [];
-
   return data.map((item: any) => {
     if (item) {
       item.key = randomString();
@@ -156,7 +155,21 @@ export const useSceneStore = defineStore('scene', () => {
         //   branches.push(null);
         // }
       }
-      console.log('result.options',branches)
+
+      branches = branches.map(item => {
+        if (item?.then) {
+          item?.then.forEach(thenItem => {
+            if (thenItem.actions) {
+              thenItem.actions.forEach(actionItem => {
+                if (!actionItem.actionId) {
+                  actionItem.actionId = randomNumber()
+                }
+              })
+            }
+          })
+        }
+        return item
+      })
       data.value = {
         ...result,
         trigger: result.trigger || {},

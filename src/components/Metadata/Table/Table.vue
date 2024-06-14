@@ -100,7 +100,6 @@ const {rules, validateItem, validate, errorMap} = useValidate(
         const _errObj = err[0]
         const field = findField(_errObj.__index, _errObj.field)
         field?.showErrorTip(_errObj.message)
-        // TODO table滚动到指定位置
         tableBody.value.scrollTo(_errObj.__index)
       },
       onEdit: () => {
@@ -112,7 +111,6 @@ const {rules, validateItem, validate, errorMap} = useValidate(
 provide(TABLE_WRAPPER, tableWrapper)
 provide(FULL_SCREEN, isFullscreen)
 provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value })
-
 
 const addField = (key, field) => {
   fields[key] = field

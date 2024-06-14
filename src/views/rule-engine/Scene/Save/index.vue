@@ -2,7 +2,7 @@
   <page-container>
     <FullPage>
       <div class='scene-warp'>
-        <div class='header'>
+        <div class='header' v-if="data.name">
           <Ellipsis :tooltip='data.name' style='max-width: 50%'>
             <span class='title'>{{ data.name }}</span>
           </Ellipsis>
@@ -10,24 +10,27 @@
             <img :src='TriggerHeaderIcon[data.triggerType]' />
             {{ keyByLabel[data.triggerType] }}
           </div>
+          <div style='flex: 1 1 0;min-width: 0;margin-left: 8px'>
+            <Description v-model:value="data.description" />
+          </div>
         </div>
         <j-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
           <Device v-if='data.triggerType === "device"' />
           <Manual v-else-if='data.triggerType === "manual"' />
           <Timer v-else-if='data.triggerType === "timer"' />
-          <j-form-item
-          >
-            <template #label>
-              <TitleComponent data='说明' style='font-size: 14px;' />
-            </template>
-            <j-textarea
-                v-model:value="data.description"
-                placeholder='请输入说明'
-                :rows="4"
-                show-count
-                :maxLength="200"
-            />
-          </j-form-item>
+<!--          <j-form-item-->
+<!--          >-->
+<!--            <template #label>-->
+<!--              <TitleComponent data='说明' style='font-size: 14px;' />-->
+<!--            </template>-->
+<!--            <j-textarea-->
+<!--                v-model:value="data.description"-->
+<!--                placeholder='请输入说明'-->
+<!--                :rows="4"-->
+<!--                show-count-->
+<!--                :maxLength="200"-->
+<!--            />-->
+<!--          </j-form-item>-->
         </j-form>
         <PermissionButton
           type='primary'
@@ -53,6 +56,7 @@ import Timer from './Timer/index.vue'
 import { modify } from '@/api/rule-engine/scene'
 import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@/utils/comm';
+import Description from './components/Description.vue'
 
 const sceneStore = useSceneStore()
 const menuStore = useMenuStore()

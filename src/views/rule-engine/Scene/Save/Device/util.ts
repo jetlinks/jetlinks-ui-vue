@@ -15,26 +15,31 @@ export const TypeEnum = {
     label: '属性上报',
     value: 'reportProperty',
     img: getImage('/scene/reportProperty.png'),
+    disabled: true
   },
   reportEvent: {
     label: '事件上报',
     value: 'reportEvent',
     img: getImage('/scene/reportProperty.png'),
+    disabled: true
   },
   readProperty: {
     label: '读取属性',
     value: 'readProperty',
     img: getImage('/scene/readProperty.png'),
+    disabled: true
   },
   writeProperty: {
     label: '修改属性',
     value: 'writeProperty',
     img: getImage('/scene/writeProperty.png'),
+    disabled: true
   },
   invokeFunction: {
     label: '功能调用',
     value: 'invokeFunction',
     img: getImage('/scene/invokeFunction.png'),
+    disabled: true
   },
 };
 

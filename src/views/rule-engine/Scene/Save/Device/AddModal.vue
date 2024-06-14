@@ -2,7 +2,7 @@
   <j-modal
     title='触发规则'
     visible
-    :width='820'
+    :width='910'
     @ok='save'
     @cancel='cancel'
     :maskClosable="false"
@@ -20,26 +20,28 @@
     </j-steps>
     <j-divider style='margin-bottom: 0px' />
     <div class='steps-content'>
-      <Product
-        v-if='addModel.stepNumber === 0'
-        v-model:rowKey='addModel.productId'
-        v-model:detail='addModel.productDetail'
-        @change='productChange'
-      />
-      <DeviceSelect
-        v-else-if='addModel.stepNumber === 1'
-        :productId='addModel.productId'
-        v-model:deviceKeys='addModel.deviceKeys'
-        v-model:orgId='addModel.orgId'
-        v-model:selector='addModel.selector'
-        v-model:selectorValues='addModel.selectorValues'
-      />
-      <Type
-        ref='typeRef'
-        v-else-if='addModel.stepNumber === 2'
-        :metadata='addModel.metadata'
-        :operator='addModel.operator'
-      />
+      <j-scrollbar :maxHeight="500">
+        <Product
+          v-if='addModel.stepNumber === 0'
+          v-model:rowKey='addModel.productId'
+          v-model:detail='addModel.productDetail'
+          @change='productChange'
+        />
+        <DeviceSelect
+          v-else-if='addModel.stepNumber === 1'
+          :productId='addModel.productId'
+          v-model:deviceKeys='addModel.deviceKeys'
+          v-model:orgId='addModel.orgId'
+          v-model:selector='addModel.selector'
+          v-model:selectorValues='addModel.selectorValues'
+        />
+        <Type
+          ref='typeRef'
+          v-else-if='addModel.stepNumber === 2'
+          :metadata='addModel.metadata'
+          :operator='addModel.operator'
+        />
+      </j-scrollbar>
     </div>
     <template #footer>
       <div class='steps-action'>
@@ -278,8 +280,8 @@ nextTick(() => {
 <style scoped>
 .steps-content {
   width: 100%;
-  max-height: 500px;
-  overflow-y: auto;
-  overflow-x: hidden;
+  /*max-height: 500px;*/
+  /*overflow-y: auto;*/
+  /*overflow-x: hidden;*/
 }
 </style>

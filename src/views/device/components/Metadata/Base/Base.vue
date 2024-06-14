@@ -9,7 +9,6 @@
       :disableMenu="!hasOperate('add', type)"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
-      @editChange="editStatusChange"
   >
     <template #extra="{ isFullscreen, fullScreenToggle }">
       <div class="extra-header">
@@ -64,17 +63,17 @@
       </div>
     </template>
     <template #id="{ record, index }">
-      <EditTableFormItem :name="[index, 'id']">
+      <EditTableFormItem :name="[index, 'id']" @change="metadataChange">
         <a-input v-model:value="record.id" placeholder="请输入标识" :disabled="record.expands?.isProduct"/>
       </EditTableFormItem>
     </template>
     <template #name="{ record, index }">
-      <EditTableFormItem :name="[index, 'name']">
+      <EditTableFormItem :name="[index, 'name']" @change="metadataChange">
         <a-input v-model:value="record.name" placeholder="请输入名称" :disabled="record.expands?.isProduct"/>
       </EditTableFormItem>
     </template>
     <template #valueType="{ record, index }">
-      <EditTableFormItem :name="[index, 'valueType']">
+      <EditTableFormItem :name="[index, 'valueType']" @change="metadataChange">
         <div style="display: flex; align-items: center" v-if="['properties', 'tags'].includes(type)">
           <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
@@ -107,7 +106,7 @@
       </EditTableFormItem>
     </template>
     <template #expands="{ record, index }">
-      <EditTableFormItem :name="[index, 'expands']">
+      <EditTableFormItem :name="[index, 'expands']" @change="metadataChange">
         <Source
             v-if="props.type === 'properties'"
             v-model:value="record.expands"
@@ -140,13 +139,20 @@
       </EditTableFormItem>
     </template>
     <template #other="{ record }">
-      <OtherSetting
-          v-model:value="record.expands"
-          :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
-          :id="record.id"
-          :metadataType="props.type"
-          :isProduct="record.expands?.isProduct"
-      />
+      <div>
+        <a-tag v-if="showTag(record)">已配置</a-tag>
+        <OtherSetting
+            v-model:value="record.expands"
+            :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
+            :id="record.id"
+            :name="record.name"
+            :metadataType="props.type"
+            :isProduct="record.expands?.isProduct"
+            :target="props.target"
+            :record="record"
+            @change="metadataChange"
+        />
+      </div>
     </template>
     <template #async="{ record }">
       <a-select
@@ -158,10 +164,11 @@
           ]"
           :disabled="record.expands?.isProduct"
           :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
+          @change="metadataChange"
       />
     </template>
     <template #inputs="{ record, index }">
-      <EditTableFormItem :name="[index, 'inputs']">
+      <EditTableFormItem :name="[index, 'inputs']" @change="metadataChange">
         <ObjectParams v-model:value="record.inputs" :type="type">
           <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
             <template #icon>
@@ -173,7 +180,7 @@
       </EditTableFormItem>
     </template>
     <template #output="{ record, index }">
-      <EditTableFormItem :name="[index, 'output']">
+      <EditTableFormItem :name="[index, 'output']" @change="metadataChange">
         <div style="display: flex; align-items: center">
           <TypeSelect v-model:value="record.output.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.output.type)" v-model:value="record.output.unit" :disabled="record.expands?.isProduct"/>
@@ -200,15 +207,15 @@
       </EditTableFormItem>
     </template>
     <template #description="{ record }">
-      <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct"/>
+      <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct" @change="metadataChange"/>
     </template>
     <template #properties="{ record, index }">
-      <EditTableFormItem :name="[index, 'properties']">
+      <EditTableFormItem :name="[index, 'properties']" @change="metadataChange">
         <ObjectParams v-model:value="record.valueType.properties" :disabled="record.expands?.isProduct"/>
       </EditTableFormItem>
     </template>
     <template #group="{ record }">
-      <GroupSelect v-model:value="record.expands.group" :disabled="record.expands?.isProduct"/>
+      <GroupSelect v-model:value="record.expands.group" :disabled="record.expands?.isProduct" @change="metadataChange"/>
     </template>
   </EditTable>
   <PropertiesModal
@@ -316,7 +323,7 @@ const permissionStore = usePermissionStore()
 const instanceStore = useInstanceStore()
 const productStore = useProductStore()
 
-const dataSource = ref<MetadataItem[]>(metadata.value || []);
+const dataSource = ref<MetadataItem[]>(JSON.parse(JSON.stringify(metadata.value || '[]')) || []);
 const tableRef = ref();
 const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
@@ -385,26 +392,12 @@ const scrollDown = (len: number = 5) => {
   }
 }
 
-const removeItem = (index: number) => {
-
-  dataSource.value.splice(index, 1)
-}
-
-const editStatusChange = (status: boolean) => {
-  editStatus.value = status
-}
-
 const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  Record<string, any>) => {
   const _index = record.__index
   switch (type) {
     case 'add':
       dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
       break;
-    // case 'copy':
-    //   let _record = JSON.parse(JSON.stringify(record))
-    //   _record.id = `copy_${_record.id}`
-    //   copyRecordCache = _record
-    //   break;
     case 'paste':
       const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
       cloneRecord.id = `copy_${cloneRecord.id}`
@@ -436,7 +429,7 @@ const handleSaveClick = async (next?: Function) => {
   let resp = await tableRef.value.validate().catch(err => {
     console.log('handleSaveClick--err', err)
   });
-  console.log('handleSaveClick', dataSource.value)
+
   if (resp) {
 
     const virtual: any[] = [];
@@ -459,7 +452,6 @@ const handleSaveClick = async (next?: Function) => {
       }
       // return item
     })
-    console.log(virtual, arr)
     // 保存规则
     if (virtual.length) {
       let res = undefined
@@ -498,6 +490,10 @@ const handleSaveClick = async (next?: Function) => {
   }
 };
 
+const metadataChange = () => {
+  editStatus.value = true
+}
+
 const jumpProduct = () => {
   useMenuStore().jumpPage(
     'device/Product/Detail', { id: instanceStore.detail.productId, tab: 'Device' }
@@ -531,6 +527,10 @@ const parentTabsChange = (next?: Function) => {
   }
 }
 
+const showTag = (record: Record<string, any>) => {
+  return record.expands?.otherEdit || Object.keys(omit(record.expands, ['source', 'type', 'isProduct', 'group', 'otherEdit'])).length
+}
+
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
 onUnmounted(() => {
@@ -538,7 +538,7 @@ onUnmounted(() => {
 })
 
 watch(() => metadata.value, () => {
-  dataSource.value = metadata.value.map(item => {
+  dataSource.value = JSON.parse(JSON.stringify(metadata.value || '[]')).map(item => {
     if (!item.expands) {
       item['expands'] = {
         group: undefined
@@ -546,7 +546,6 @@ watch(() => metadata.value, () => {
     }
     return item
   })
-  console.log(JSON.parse(JSON.stringify(metadata.value)))
   initOptions(dataSource.value)
 }, {immediate: true})
 

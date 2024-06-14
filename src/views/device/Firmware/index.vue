@@ -71,6 +71,7 @@
         <TaskDrawer
             v-if="showTask"
             :firmwareId="firmwareId"
+            :productId="productId"
             @close-drawer="showTask = false"
         />
     </page-container>
@@ -96,6 +97,7 @@ const visible = ref(false);
 const current = ref({});
 const showTask = ref(false);
 const firmwareId = ref('');
+const productId = ref();
 
 const columns = [
     {
@@ -237,6 +239,8 @@ const handleUpdate = (data: Partial<Record<string, any>>) => {
     // );
     showTask.value = true;
     firmwareId.value = data.id;
+    productId.value = data.productId;
+    console.log(data);
 };
 
 const handleAdd = () => {
