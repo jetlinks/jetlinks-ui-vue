@@ -35,9 +35,8 @@
               v-model:expandedKeys="treeOpenKeys"
               :selectedKeys='selectValue ? [selectValue] : []'
               :treeData='options'
-              :height='450'
+              :height='350'
               :virtual='true'
-              :fieldNames="{ key: 'code' }"
               @select='treeSelect'
             >
               <template #title="{ name, description }">

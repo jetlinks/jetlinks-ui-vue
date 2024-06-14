@@ -5,126 +5,115 @@
       :class="{ active: active ? 'active' : '', 'disabled': disabled }"
       @click="handleClick"
     >
-      <div class="card-type" v-if="slots.type">
+      <div class="card-type" >
         <div class="card-type-text">
-          <slot name="type"></slot>
+          <img
+            :height="16"
+            :src="itemType.icon"
+            style="margin-right: 5px"
+          />
+          {{itemType.text}}
         </div>
       </div>
       <div
         class="card-content"
-        :class="{'card-content-top-line': !slots.type}"
-        :style="{ paddingTop: slots.type ? '40px' : '30px' }"
+        :style="{ paddingTop: '40px'}"
       >
-        <div
-          class="card-content-bg1"
-          :style="{
-                        background: getBackgroundColor(statusNames[status]),
-                    }"
-        ></div>
-        <div
-          class="card-content-bg2"
-          :style="{
-                        background: getBackgroundColor(statusNames[status]),
-                    }"
-        ></div>
+        <div class="card-content-bg-item card-content-bg1" :style="bgcColor"></div>
+        <div class="card-content-bg-item card-content-bg2" :style="bgcColor" ></div>
         <div style="display: flex">
           <!-- 图片 -->
           <div class="card-item-avatar">
-            <slot name="img"></slot>
+            <img :src="itemType.img" />
           </div>
 
           <!-- 内容 -->
           <div class="card-item-body">
-            <slot name="content"></slot>
+            <div>
+              <Ellipsis style="width: calc(100% - 100px)">
+                <span style="font-size: 16px; font-weight: 600">
+                  {{ value.name }}
+                </span>
+              </Ellipsis>
+              <Ellipsis :lineClamp="2">
+                <div class="subTitle">
+                  说明：{{
+                    value?.description ||
+                    itemType.tip
+                  }}
+                </div>
+              </Ellipsis>
+              <div>
+
+              </div>
+            </div>
+            <div class="condition-name">
+              <AddButton
+                v-if="value.options || value.triggerType === 'manual'"
+                style='width: 100%;padding: 8px 12px; border-radius: 4px'
+                :showCircular="false"
+              >
+                <DeviceTitle v-if="value.triggerType === 'device'" :options='value.options?.trigger'/>
+                <TimerTitle v-if="value.triggerType === 'timer'" :options='value.options?.trigger'/>
+                <span v-if="value.triggerType === 'manual'">
+                  系统在接收到手动触发指令时，触发场景
+                </span>
+              </AddButton>
+            </div>
           </div>
         </div>
-        <!-- 勾选 -->
-        <div v-if="active" class="checked-icon">
-          <div>
-            <AIcon type="CheckOutlined"/>
-          </div>
+        <div class="card-content-tabs">
+          <a-tabs
+          >
+            <a-tab-pane
+              v-for="item in branches"
+              :tab="item.branchName"
+            >
+
+            </a-tab-pane>
+          </a-tabs>
         </div>
-        <!-- 状态 -->
         <div
-          v-if="showStatus"
           class="card-state"
-          :style="{
-                        backgroundColor: getHexColor(statusNames[status]),
-                    }"
+          :style="{ backgroundColor: getHexColor(statusNames[status]) }"
         >
           <div class="card-state-content">
             <BadgeStatus
-              v-if="!customBadge"
               :status="status"
               :text="statusText"
               :statusNames="statusNames"
             ></BadgeStatus>
-            <CustomBadgeStatus
-              v-else
-              :status="status"
-              :text="statusText"
-              :statusNames="statusNames">
-            </CustomBadgeStatus>
           </div>
         </div>
       </div>
-      <div class="card-mask" v-if="props.hasMark">
+      <div class="card-mask" v-if="showMask">
         <div class="mask-content">
-          <slot name="mark"/>
+
         </div>
       </div>
     </div>
-
-    <!-- 按钮 -->
-    <slot name="bottom-tool">
-      <div
-        v-if="showTool && actions && actions.length"
-        class="card-tools"
-      >
-        <div
-          v-for="item in actions"
-          :key="item.key"
-          class="card-button"
-          :class="{
-                        delete: item.key === 'delete',
-                    }"
-        >
-          <slot name="actions" v-bind="item"></slot>
-        </div>
-      </div>
-    </slot>
   </div>
 </template>
 
 <script setup lang="ts" name="SceneCardBox">
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import CustomBadgeStatus from '@/components/BadgeStatus/CustomBadgeStatus.vue'
 import color, {getHexColor} from '@/components/BadgeStatus/color';
-import type {ActionsType} from '@/components/Table';
+import DeviceTitle from '@/views/rule-engine/Scene/Save/components/Title.vue'
+import TimerTitle from '@/views/rule-engine/Scene/Save/Timer/Title.vue'
+import AddButton from '@/views/rule-engine/Scene/Save/components/AddButton.vue'
 import {PropType} from 'vue';
+import { typeMap } from './utils'
 
 type EmitProps = {
-  // (e: 'update:modelValue', data: Record<string, any>): void;
   (e: 'click', data: Record<string, any>): void;
 };
 
-type TableActionsType = Partial<ActionsType>;
-
 const emit = defineEmits<EmitProps>();
-const slots = useSlots();
 
 const props = defineProps({
   value: {
     type: Object as PropType<Record<string, any>>,
     default: () => ({}),
-  },
-  showStatus: {
-    type: Boolean,
-    default: true,
-  },
-  showTool: {
-    type: Boolean,
-    default: true,
   },
   statusText: {
     type: String,
@@ -136,42 +125,52 @@ const props = defineProps({
   },
   statusNames: {
     type: Object as PropType<Record<any, any>>,
-    default: () => ({'default': 'default'})
-  },
-  actions: {
-    type: Array as PropType<TableActionsType[]>,
-    default: () => [],
-  },
-  active: {
-    type: Boolean,
-    default: false,
-  },
-  hasMark: {
-    type: Boolean,
-    default: false,
+    default: () => ({
+      started: 'processing',
+      disable: 'error',
+    })
   },
   disabled: {
     type: Boolean,
     default: false,
-  },
-  customBadge: {
-    type: Boolean,
-    default: false
   }
 });
 
-const getBackgroundColor = (code: string | number) => {
-  const _color = color[code] || color.default;
-  return `linear-gradient(
+
+const bgcColor = computed(() => {
+  const key = props.statusNames[props.status]
+  const _color = color[key] || color.default;
+  return {
+    background: `linear-gradient(
                 188.4deg,
                 rgba(${_color}, 0.03) 30%,
                 rgba(${_color}, 0) 80%
-            )`;
-};
+            )`
+  }
+})
+
+const itemType = computed(() => {
+  return typeMap.get(props.value.triggerType) || {}
+})
+
+const showMask = computed(() => {
+  return false
+})
+
+const branches = computed(() => {
+  const when = props.value.options?.when || []
+  if (!props.value.branches?.length) return []
+
+  return props.value.branches.map((item, index) => {
+    item.branchName = when[index]?.branchName || '条件' + (index + 1)
+    return item
+  })
+})
 
 const handleClick = () => {
   emit('click', props.value);
 };
+
 </script>
 
 <style scoped lang="less">
@@ -267,6 +266,10 @@ const handleClick = () => {
         .ant-row {
           margin-top: 19px;
         }
+
+        .condition-name {
+          margin-top: 10px;
+        }
       }
 
       .card-state {
@@ -336,29 +339,25 @@ const handleClick = () => {
       }
     }
 
-    .card-content-bg1 {
+    .card-content-bg-item {
       position: absolute;
       right: -5%;
       height: 100%;
-      width: 44.65%;
       top: 0;
       background: linear-gradient(188.4deg,
       rgba(229, 0, 18, 0.03) 22.94%,
       rgba(229, 0, 18, 0) 94.62%);
       transform: skewX(-15deg);
+
+      &.card-content-bg1 {
+        width: 44.65%;
+      }
+
+      &.card-content-bg2 {
+        width: calc(44.65% + 34px);
+      }
     }
 
-    .card-content-bg2 {
-      position: absolute;
-      right: -5%;
-      height: 100%;
-      width: calc(44.65% + 34px);
-      top: 0;
-      background: linear-gradient(188.4deg,
-      rgba(229, 0, 18, 0.03) 22.94%,
-      rgba(229, 0, 18, 0) 94.62%);
-      transform: skewX(-15deg);
-    }
 
     .card-mask {
       position: absolute;

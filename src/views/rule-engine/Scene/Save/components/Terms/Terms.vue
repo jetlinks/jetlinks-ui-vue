@@ -141,7 +141,7 @@ const queryColumn = (dataModel: FormModelType) => {
   const cloneDevice = cloneDeep(dataModel)
   cloneDevice.branches = cloneDevice.branches?.filter(item => !!item)
   getParseTerm(cloneDevice).then(res => {
-      columnOptions.value = handleParamsData(res.result as any[])
+      columnOptions.value = handleParamsData(res.result as any[], 'column', '0')
   })
 }
 

@@ -38,45 +38,8 @@
             :value="slotProps"
             :status="slotProps.state?.value"
             :statusText="slotProps.state?.text"
-            :active="_selectedRowKeys.includes(slotProps.id)"
-
-            :statusNames="{
-                            started: 'processing',
-                            disable: 'error',
-                        }"
             @click="handleClick"
-          >
-            <template #type>
-              <span>
-                <img
-                  :height="16"
-                  :src="typeMap.get(slotProps.triggerType)?.icon"
-                  style="margin-right: 5px"
-                />
-                  {{typeMap.get(slotProps.triggerType)?.text}}
-              </span>
-            </template>
-            <template #img>
-              <img
-                :src="typeMap.get(slotProps.triggerType)?.img"
-              />
-            </template>
-            <template #content>
-              <Ellipsis style="width: calc(100% - 100px)">
-                                <span style="font-size: 16px; font-weight: 600">
-                                    {{ slotProps.name }}
-                                </span>
-              </Ellipsis>
-              <Ellipsis :lineClamp="2">
-                <div class="subTitle">
-                  说明：{{
-                    slotProps?.description ||
-                    typeMap.get(slotProps.triggerType)?.tip
-                  }}
-                </div>
-              </Ellipsis>
-            </template>
-          </SceneCardBox>
+          />
         </template>
       </JProTable>
     </div>
@@ -132,7 +95,7 @@
 <script lang="ts" setup>
 import {query} from '@/api/rule-engine/scene';
 import {bindScene} from '@/api/rule-engine/configuration';
-import {getImage, onlyMessage} from '@/utils/comm';
+import { onlyMessage} from '@/utils/comm';
 import SceneCardBox from './CardBox.vue'
 
 const columns = [
@@ -270,25 +233,7 @@ const terms = [
   },
 ];
 const params = ref();
-const typeMap = new Map();
-typeMap.set('manual', {
-  text: '手动触发',
-  img: getImage('/scene/scene-hand.png'),
-  icon: getImage('/scene/trigger-type-icon/manual.png'),
-  tip: '适用于第三方平台向物联网平台下发指令控制设备',
-});
-typeMap.set('timer', {
-  text: '定时触发',
-  img: getImage('/scene/scene-timer.png'),
-  icon: getImage('/scene/trigger-type-icon/timing.png'),
-  tip: '适用于定期执行固定任务',
-});
-typeMap.set('device', {
-  text: '设备触发',
-  img: getImage('/scene/scene-device.png'),
-  icon: getImage('/scene/trigger-type-icon/device.png'),
-  tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
-});
+
 const _selectedRowKeys = ref<string[]>([]);
 const handleClick = (dt: any) => {
   if (_selectedRowKeys.value.includes(dt.id)) {

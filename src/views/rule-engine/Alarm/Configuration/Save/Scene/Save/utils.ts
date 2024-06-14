@@ -1,6 +1,7 @@
 import {send} from "vite";
 import {isArray, isBoolean, isObject} from "lodash-es";
 import {randomString} from "@/utils/utils";
+import {getImage} from "@/utils/comm";
 
 const TypeMap = {
     'and': '并且',
@@ -239,3 +240,23 @@ export const handleSceneBranches = (data: any): any[] => {
 
     return group
 }
+
+export const typeMap = new Map();
+typeMap.set('manual', {
+    text: '手动触发',
+    img: getImage('/scene/scene-hand.png'),
+    icon: getImage('/scene/trigger-type-icon/manual.png'),
+    tip: '适用于第三方平台向物联网平台下发指令控制设备',
+});
+typeMap.set('timer', {
+    text: '定时触发',
+    img: getImage('/scene/scene-timer.png'),
+    icon: getImage('/scene/trigger-type-icon/timing.png'),
+    tip: '适用于定期执行固定任务',
+});
+typeMap.set('device', {
+    text: '设备触发',
+    img: getImage('/scene/scene-device.png'),
+    icon: getImage('/scene/trigger-type-icon/device.png'),
+    tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
+});
