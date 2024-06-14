@@ -31,6 +31,23 @@
                 <template #handleType="slotProps">
                     <span>{{ slotProps.handleType.text }}</span>
                 </template>
+                <template #alarmDuration="slotProps">
+                    <Ellipsis
+                        ><div>
+                            {{
+                                slotProps?.state?.value === 'warning'
+                                    ? calculateDuration(
+                                          dayjs(slotProps?.alarmTime),
+                                          dayjs(),
+                                      )
+                                    : calculateDuration(
+                                          dayjs(slotProps?.alarmTime),
+                                          dayjs(slotProps.handleTime),
+                                      )
+                            }}
+                        </div></Ellipsis
+                    >
+                </template>
                 <template #alarmTime="slotProps">
                     <span>
                         {{
@@ -98,7 +115,14 @@ const columns = [
         search: {
             type: 'date',
         },
-        width:180,
+        width: 180,
+    },
+    {
+        title: '告警持续时长',
+        dataIndex: 'alarmDuration',
+        key: 'alarmDuration',
+        scopedSlots: true,
+        width: 180,
     },
     {
         title: '告警处理',
@@ -119,6 +143,18 @@ const emit = defineEmits(['closeLog']);
 const handleSearch = (e: any) => {
     params.value = e;
 };
+const calculateDuration = (startTime, endTime) => {
+    const diffInSeconds = endTime.diff(startTime, 'second');
+    let result;
+
+    if (diffInSeconds < 60) {
+        result = `${diffInSeconds.toFixed(1)} s`;
+    } else if (diffInSeconds < 3600) {
+        result = `${(diffInSeconds / 60).toFixed(1)} min`;
+    } else {
+        result = `${(diffInSeconds / 3600).toFixed(1)} h`;
+    }
+    return result;
+};
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

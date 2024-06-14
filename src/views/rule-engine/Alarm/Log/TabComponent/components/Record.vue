@@ -32,36 +32,30 @@
         </template>
     </a-table>
     <div class="tableBottom">
-        <a-button v-if="exceed" class="moreBtn" type="text">查看更多 ></a-button>
+        <a-button
+            v-if="exceed"
+            class="moreBtn"
+            type="text"
+            @click="gotoAlarmRecord"
+            >查看更多 ></a-button
+        >
     </div>
 </template>
 
 <script setup>
 import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
+import { useMenuStore } from 'store/menu';
+import { defineExpose } from 'vue';
 const props = defineProps({
     currentId: {
         type: String,
         default: '',
     },
 });
-const isLastRow = (index) => {
-    // Calculate if the row is the last row based on the current scroll position
-    const tableBody = document.querySelector('.ant-table-body');
-    if (tableBody) {
-        const scrollPosition = tableBody.scrollTop;
-        const totalHeight = tableBody.scrollHeight;
-        const visibleHeight = tableBody.clientHeight;
-        const bottomOffset = totalHeight - visibleHeight;
-        return (
-            scrollPosition >= bottomOffset &&
-            index === this.dataSource.length - 1
-        );
-    }
-    return false;
-};
 const exceed = ref();
 const dataSource = ref([]);
+const menuStory = useMenuStore();
 const columns = [
     {
         title: '告警时间',
@@ -126,6 +120,19 @@ const calculateDuration = (startTime, endTime) => {
     }
     return result;
 };
+const gotoAlarmRecord = () => {
+    menuStory.jumpPage(
+        'rule-engine/Alarm/Log/Record',
+        {},
+        { id: props.currentId },
+    );
+};
+const refreshRecord= () =>{
+    queryList()
+}
+defineExpose({
+    refreshRecord
+})
 onMounted(() => {
     queryList();
 });

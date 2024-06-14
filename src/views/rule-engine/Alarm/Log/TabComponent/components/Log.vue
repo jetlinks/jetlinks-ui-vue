@@ -6,9 +6,14 @@
         :scroll="{ y: 'calc(100vh - 260px)' }"
     >
         <template #bodyCell="{ column, text, record }">
-            <template v-if="column.dataIndex === 'alarmTime'">{{
-                dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-            }}</template>
+            <template v-if="column.dataIndex === 'alarmTime'"
+                ><span
+                    >{{ dayjs(text).format('YYYY-MM-DD HH:mm:ss')
+                    }}<a-button type="text" @click="() => showDetail(record)">
+                        <template #icon>
+                            <AIcon type="FileSearchOutlined"></AIcon>
+                        </template> </a-button></span
+            ></template>
             <template v-if="column.dataIndex === 'sourceId'"
                 >设备ID：<a-button
                     type="link"
@@ -19,16 +24,22 @@
         </template></a-table
     >
     <div class="tableBottom">
-        <a-button v-if="exceed" class="moreBtn" type="text"
+        <a-button
+            v-if="exceed"
+            class="moreBtn"
+            type="text"
+            @click="gotoAlarmLog"
             >查看更多 ></a-button
         >
     </div>
+    <LogDetail v-if="visibleDetail" :data="current" @close="close" />
 </template>
 
 <script setup>
 import { queryLogList } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
+import LogDetail from './LogDetail.vue';
 const props = defineProps({
     currentId: {
         type: String,
@@ -41,7 +52,9 @@ const props = defineProps({
 });
 const menuStory = useMenuStore();
 const exceed = ref();
+const visibleDetail = ref(false);
 const dataSource = ref([]);
+const current = ref();
 const columns = [
     {
         title: '告警时间',
@@ -96,6 +109,18 @@ const queryData = async () => {
 
 const gotoDevice = (id) => {
     menuStory.jumpPage('device/Instance/Detail', { id });
+};
+const showDetail = (data) => {
+    visibleDetail.value = true;
+    current.value = data;
+};
+const close = () => {
+    visibleDetail.value = false;
+};
+const gotoAlarmLog = () => {
+    menuStory.jumpPage(`rule-engine/Alarm/Log/Detail`, {
+        id: props.currentId,
+    });
 };
 onMounted(() => {
     queryData();

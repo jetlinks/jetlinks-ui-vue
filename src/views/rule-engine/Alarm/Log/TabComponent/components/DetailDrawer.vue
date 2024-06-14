@@ -9,25 +9,26 @@
         <div class="alarmInfo">
             <div>
                 <div>
-                    <span>{{ logData?.alarmName }}</span>
+                    <span>{{ AlarmData?.alarmName }}</span>
                     <span class="alarmType">{{
-                        typeMap.get(logData?.targetType)
+                        typeMap.get(AlarmData?.targetType)
                     }}</span>
                 </div>
                 <div>
-                    {{ logData.description || '暂无说明' }}
+                    {{ AlarmData?.description || '暂无说明' }}
                 </div>
             </div>
             <div class="alarmInfoRight">
                 <div>
                     {{
-                        data.defaultLevel.find((i) => i.level === logData.level)
-                            ?.title || logData.level
+                        data.defaultLevel.find(
+                            (i) => i.level === AlarmData?.level,
+                        )?.title || AlarmData?.level
                     }}
                 </div>
                 <div>
                     <BadgeStatus
-                        :status="logData.state.value"
+                        :status="AlarmData?.state.value"
                         :statusNames="{
                             warning: 'error',
                             normal: 'default',
@@ -35,10 +36,10 @@
                     >
                     </BadgeStatus
                     ><span>
-                        {{ logData.state.text }}
+                        {{ AlarmData?.state.text }}
                     </span>
                     <a-button
-                        v-if="logData.state.value === 'warning'"
+                        v-if="AlarmData?.state.value === 'warning'"
                         type="link"
                         @click="dealAlarm"
                         >处理</a-button
@@ -48,23 +49,27 @@
         </div>
         <a-tabs v-model:activeKey="activeKey">
             <a-tab-pane key="record" tab="处理记录"
-                ><Record :currentId="logData.id"
+                ><Record :currentId="AlarmData.id" ref="RecordRef"
             /></a-tab-pane>
             <a-tab-pane key="logs" tab="告警日志"
-                ><Log :currentId="logData.id" :configId="logData.alarmConfigId"
+                ><Log
+                    :currentId="AlarmData.id"
+                    :configId="AlarmData.alarmConfigId"
             /></a-tab-pane>
         </a-tabs>
     </a-drawer>
     <SolveComponent
         v-if="solveVisible"
         @closeSolve="closeSolve"
-        :data="logData"
+        @refresh="refresh"
+        :data="AlarmData"
     />
 </template>
 
 <script setup name="LogDrawer">
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
+import { query } from '@/api/rule-engine/log';
 import Record from './Record.vue';
 import Log from './Log.vue';
 import SolveComponent from '../../SolveComponent/index.vue';
@@ -78,10 +83,12 @@ const props = defineProps({
         default: {},
     },
 });
-const emit = defineEmits(['closeDrawer']);
+const emit = defineEmits(['closeDrawer','refreshTable']);
 const solveVisible = ref(false);
+const RecordRef = ref();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
+const AlarmData = ref(props.logData);
 const activeKey = ref('record');
 const closeDrawer = () => {
     emit('closeDrawer');
@@ -91,6 +98,26 @@ const dealAlarm = () => {
 };
 const closeSolve = () => {
     solveVisible.value = false;
+};
+
+const refresh = async () => {
+    solveVisible.value = false;
+    const res = await query({
+        terms: [
+            {
+                column: 'id',
+                value: props.logData.id,
+                type: 'and',
+            },
+        ],
+    });
+    if (res.success) {
+        AlarmData.value = res.result.data[0];
+        if (activeKey.value === 'record') {
+            RecordRef?.value.refreshRecord();
+        }
+    }
+    emit('refreshTable')
 };
 </script>
 <style lang="less" scoped>

@@ -51,7 +51,12 @@
                             </Ellipsis>
                             <j-row :gutter="24">
                                 <j-col
-                                    :span="props.type === 'device' ? 6 : 8"
+                                    :span="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                            ? 6
+                                            : 8
+                                    "
                                     class="content-left"
                                 >
                                     <Ellipsis
@@ -61,7 +66,14 @@
                                     >
                                     <div class="content-title">告警维度</div>
                                 </j-col>
-                                <j-col :span="props.type === 'device' ? 6 : 8">
+                                <j-col
+                                    :span="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                            ? 6
+                                            : 8
+                                    "
+                                >
                                     <Ellipsis
                                         ><div>
                                             {{
@@ -86,7 +98,14 @@
                                         最近告警时间
                                     </div>
                                 </j-col>
-                                <j-col :span="props.type === 'device' ? 6 : 8">
+                                <j-col
+                                    :span="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                            ? 6
+                                            : 8
+                                    "
+                                >
                                     <Ellipsis
                                         ><div>
                                             {{
@@ -113,7 +132,13 @@
                                         告警持续时长
                                     </div>
                                 </j-col>
-                                <j-col :span="6" v-if="props.type === 'device'">
+                                <j-col
+                                    :span="6"
+                                    v-if="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                    "
+                                >
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.actualDesc || '--' }}
@@ -145,14 +170,35 @@
                                 </j-col> -->
                             </j-row>
                         </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="
+                                    item.key === 'solve' &&
+                                    slotProps.state.value === 'normal'
+                                "
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="
+                                    item.key == 'solve'
+                                        ? 'rule-engine/Alarm/Log:action'
+                                        : 'rule-engine/Alarm/Log:view'
+                                "
+                            >
+                                <AIcon :type="item.icon" />
+                                <span>{{ item?.text }}</span>
+                            </PermissionButton>
+                        </template>
                     </CardBox>
                 </template>
             </JProTable>
         </FullPage>
         <SolveComponent
-            :data="data"
+            :data="data.current"
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
+            @refresh="refresh"
         />
         <LogDrawer
             v-if="visibleDrawer"
@@ -161,6 +207,7 @@
             :currentId="currentId"
             :configId="configId"
             @closeDrawer="visibleDrawer = false"
+            @refreshTable="refreshTable"
         />
     </div>
 </template>
@@ -462,13 +509,22 @@ const getActions = (
  */
 const closeSolve = () => {
     data.value.solveVisible = false;
+};
+const refresh = () => {
+    data.value.solveVisible = false;
     tableRef.value.reload(params.value);
 };
+
+const refreshTable = () =>{
+    tableRef.value.reload(params.value);
+}
 const showDrawer = (data: any) => {
-    drawerData.value = data;
-    visibleDrawer.value = true;
-    currentId.value = data.id;
-    configId.value = data.alarmConfigId;
+    if (data.targetType === 'device') {
+        drawerData.value = data;
+        visibleDrawer.value = true;
+        currentId.value = data.id;
+        configId.value = data.alarmConfigId;
+    }
 };
 const calculateDuration = (startTime, endTime) => {
     const diffInSeconds = endTime.diff(startTime, 'second');
