@@ -181,7 +181,10 @@ const queryList = async (params: any) => {
     }
 };
 const gotoDevice = (id) => {
-    menuStory.jumpPage('device/Instance/Detail', { id });
+    menuStory.jumpPage(
+        'device/Instance/Detail',
+        { id , tab: 'Running'},
+    );
 };
 /**
  * 根据id初始化数据

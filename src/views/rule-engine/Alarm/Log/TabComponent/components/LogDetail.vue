@@ -58,7 +58,7 @@ const closeModal = () => {
     emit('close');
 };
 const gotoDevice = (id) => {
-    menuStory.jumpPage('device/Instance/Detail', { id });
+    menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
 };
 </script>
 <style lang="less" scoped>

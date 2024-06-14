@@ -108,7 +108,10 @@ const queryData = async () => {
 };
 
 const gotoDevice = (id) => {
-    menuStory.jumpPage('device/Instance/Detail', { id });
+    menuStory.jumpPage(
+        'device/Instance/Detail',
+        { id, tab: 'Running'}
+    );
 };
 const showDetail = (data) => {
     visibleDetail.value = true;
