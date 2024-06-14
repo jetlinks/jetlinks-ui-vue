@@ -45,7 +45,7 @@ const form = reactive({
     describe: '',
 });
 let visible = ref(true);
-const emit = defineEmits(['closeSolve'])
+const emit = defineEmits(['closeSolve','refresh'])
 const handleCancel = () => {
     emit('closeSolve');
 };
@@ -58,13 +58,13 @@ const handleSave = () => {
                 describe: form.describe,
                 type: 'user',
                 state: 'normal',
-                alarmRecordId: props.data?.current?.id || '',
-                alarmConfigId: props.data?.current?.alarmConfigId || '',
-                alarmTime: props?.data?.current?.alarmTime || '',
+                alarmRecordId: props.data?.id || '',
+                alarmConfigId: props.data?.alarmConfigId || '',
+                alarmTime: props?.data?.alarmTime || '',
             });
             if (res.status === 200) {
                 onlyMessage('操作成功！');
-                emit('closeSolve');
+                emit('refresh');
             } else {
                 onlyMessage('操作失败！', 'error');
             }

@@ -50,3 +50,8 @@ export const queryHistoryList = (data:any) => server.post('/alarm/history/_query
  * 获取告警处理结果
  */
 export const queryHandleHistory = (data:any) => server.post('/alarm/record/handle-history/_query',data);
+
+/**
+ * 获取告警日志（新）
+ */
+export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data)
