@@ -91,25 +91,8 @@
                                     "
                                 >
                                     <Ellipsis
-                                        ><div>
-                                            {{
-                                                dayjs(
-                                                    slotProps?.alarmTime,
-                                                ).format(
-                                                    'YYYY-MM-DD HH:mm:ss',
-                                                ) +
-                                                '至' +
-                                                (slotProps?.state?.value ===
-                                                'warning'
-                                                    ? '当前时间'
-                                                    : dayjs(
-                                                          slotProps?.handleTime,
-                                                      ).format(
-                                                          'YYYY-MM-DD HH:mm:ss',
-                                                      ))
-                                            }}
-                                        </div></Ellipsis
-                                    >
+                                        ><Duration :data="slotProps"
+                                    /></Ellipsis>
                                     <div class="content-title">
                                         最近告警时间
                                     </div>
@@ -122,28 +105,7 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis
-                                        ><div>
-                                            {{
-                                                slotProps?.state?.value ===
-                                                'warning'
-                                                    ? calculateDuration(
-                                                          dayjs(
-                                                              slotProps?.alarmTime,
-                                                          ),
-                                                          dayjs(),
-                                                      )
-                                                    : calculateDuration(
-                                                          dayjs(
-                                                              slotProps?.alarmTime,
-                                                          ),
-                                                          dayjs(
-                                                              slotProps.handleTime,
-                                                          ),
-                                                      )
-                                            }}
-                                        </div></Ellipsis
-                                    >
+                                    <Ellipsis></Ellipsis>
                                     <div class="content-title">
                                         告警持续时长
                                     </div>
@@ -239,6 +201,7 @@ import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
 import { useMenuStore } from '@/store/menu';
 import LogDrawer from './components/DetailDrawer.vue';
+import Duration from '../components/Duration.vue';
 const menuStory = useMenuStore();
 const tableRef = ref();
 const alarmStore = useAlarmStore();

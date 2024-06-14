@@ -32,21 +32,7 @@
                     <span>{{ slotProps.handleType.text }}</span>
                 </template>
                 <template #alarmDuration="slotProps">
-                    <Ellipsis
-                        ><div>
-                            {{
-                                slotProps?.state?.value === 'warning'
-                                    ? calculateDuration(
-                                          dayjs(slotProps?.alarmTime),
-                                          dayjs(),
-                                      )
-                                    : calculateDuration(
-                                          dayjs(slotProps?.alarmTime),
-                                          dayjs(slotProps.handleTime),
-                                      )
-                            }}
-                        </div></Ellipsis
-                    >
+                    <Ellipsis><Duration :data="slotProps" /></Ellipsis>
                 </template>
                 <template #alarmTime="slotProps">
                     <span>
@@ -66,6 +52,7 @@
 import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
+import Duration from '../components/Duration.vue';
 const route = useRoute();
 const id = route.query?.id;
 const terms = [
