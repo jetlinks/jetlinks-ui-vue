@@ -18,7 +18,7 @@
       <a-menu-item key="detail" :disabled="showDetail">
         <AIcon type="FileSearchOutlined" /> 查看详情
       </a-menu-item>
-      <a-menu-item key="delete">
+      <a-menu-item key="delete" :disabled="showDelete">
         <AIcon type="DeleteOutlined" />删除
       </a-menu-item>
     </a-menu>
@@ -44,6 +44,10 @@ const showDetail = computed(() => {
 
 const showPaste = computed(() => {
   return !props.paste
+})
+
+const showDelete = computed(() => {
+  return props.data.expands?.isProduct
 })
 
 const clickFunc = ({ key }) => {
