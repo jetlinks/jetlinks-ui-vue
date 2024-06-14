@@ -17,7 +17,7 @@
                 <Item v-model:value="formData.rangeValue[0]" />
               </j-form-item>
             </div>
-            <div>-</div>
+            <div style="line-height: 32px">-</div>
             <div class="data-table-boolean-item--value">
               <j-form-item :name="['rangeValue', 1]" :rules="[{ required: true, message: '请输入指标值'}, { validator: validator}]">
                 <Item v-model:value="formData.rangeValue[1]" />
@@ -184,5 +184,10 @@ watch(() => props.range, (value, oldValue) => {
   .metrics-item-text {
     flex: 1;
   }
+}
+
+.data-table-boolean-item {
+  display: flex;
+  gap: 12px;
 }
 </style>

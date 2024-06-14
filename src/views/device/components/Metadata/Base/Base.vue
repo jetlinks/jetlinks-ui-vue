@@ -155,15 +155,14 @@
       </div>
     </template>
     <template #async="{ record }">
-      <a-select
+      <BooleanSelect
           v-model:value="record.async"
           style="width: 100%"
-          :options="[
-            { label: '是', value: true },
-            { label: '否', value: false }
-          ]"
+          trueLabel="是"
+          falseLabel="否"
+          :true-value="true"
+          :false-value="false"
           :disabled="record.expands?.isProduct"
-          :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
           @change="metadataChange"
       />
     </template>
@@ -288,7 +287,8 @@ import {
   ArrayParams,
   DoubleParams,
   GroupSelect,
-  EditTableFormItem
+  EditTableFormItem,
+  BooleanSelect
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
 
