@@ -21,20 +21,12 @@
                         :value="slotProps"
                         v-bind="slotProps"
                         :actions="getActions(slotProps, 'card')"
-                        :statusText="
-                            data.defaultLevel.find(
-                                (i) => i.level === slotProps.level,
-                            )?.title || slotProps.level
-                        "
-                        :status="slotProps.level"
+                        :status="slotProps.state.value"
                         :statusNames="{
-                            1: 'level1',
-                            2: 'level2',
-                            3: 'level3',
-                            4: 'level4',
-                            5: 'level5',
+                            warning: 'error',
+                            normal: 'default',
                         }"
-                        :customBadge="true"
+                        :statusText="slotProps.state.text"
                         @click="() => showDrawer(slotProps)"
                     >
                         <template #img>
@@ -44,11 +36,35 @@
                             />
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px)">
-                                <span style="font-weight: 500">
-                                    {{ slotProps.alarmName }}
-                                </span>
-                            </Ellipsis>
+                            <div class="alarmTitle">
+                                <div class="alarmName">
+                                    <Ellipsis style="width: calc(100% - 100px)">
+                                        <span style="font-weight: 500">
+                                            {{ slotProps.alarmName }}
+                                        </span>
+                                    </Ellipsis>
+                                </div>
+                                <div
+                                    class="alarmLevel"
+                                    :style="{
+                                        backgroundColor: levelColorMap.get(
+                                            'level' + slotProps.level,
+                                        ),
+                                    }"
+                                >
+                                    <Ellipsis>
+                                        <span>
+                                            {{
+                                                data.defaultLevel.find(
+                                                    (i) =>
+                                                        i.level ===
+                                                        slotProps.level,
+                                                )?.title || slotProps.level
+                                            }}
+                                        </span>
+                                    </Ellipsis>
+                                </div>
+                            </div>
                             <j-row :gutter="24">
                                 <j-col
                                     :span="
@@ -255,6 +271,14 @@ titleMap.set('product', '产品');
 titleMap.set('device', '设备');
 titleMap.set('other', '其他');
 titleMap.set('org', '组织');
+
+const levelColorMap = new Map();
+levelColorMap.set('level1', 'rgba(229, 0,  18 )');
+levelColorMap.set('level2', 'rgba(255, 148,  87)');
+levelColorMap.set('level3', 'rgba(250, 189,  71)');
+levelColorMap.set('level4', 'rgba(153, 153, 153)');
+levelColorMap.set('level5', 'rgba(196, 196,  196)');
+
 const columns = [
     {
         title: '配置名称',
@@ -515,9 +539,9 @@ const refresh = () => {
     tableRef.value.reload(params.value);
 };
 
-const refreshTable = () =>{
+const refreshTable = () => {
     tableRef.value.reload(params.value);
-}
+};
 const showDrawer = (data: any) => {
     if (data.targetType === 'device') {
         drawerData.value = data;
@@ -569,5 +593,18 @@ onMounted(() => {
 .content-title {
     color: #666;
     font-size: 12px;
+}
+.alarmTitle {
+    display: flex;
+    width: 30%;
+
+    .alarmLevel {
+        width: 30%;
+        text-align: center;
+        padding: 5px;
+    }
+    .alarmName {
+        width: 50%;
+    }
 }
 </style>

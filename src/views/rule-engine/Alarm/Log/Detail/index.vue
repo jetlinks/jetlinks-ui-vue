@@ -201,6 +201,10 @@ watch(
                         title: '告警时间',
                         dataIndex: 'alarmTime',
                         key: 'alarmTime',
+                        scopedSlots: true,
+                        search: {
+                            type: 'date',
+                        },
                     },
                     {
                         title: '触发条件',
@@ -211,6 +215,7 @@ watch(
                         title: '告警源',
                         dataIndex: 'sourceId',
                         key: 'sourceId',
+                        scopedSlots: true,
                     },
                     {
                         title: '告警原因',
