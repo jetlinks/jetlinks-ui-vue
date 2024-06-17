@@ -1,7 +1,8 @@
 export const PROVIDER_OPTIONS = [
     { label: 'GB/T28181', value: 'gb28181-2016' },
     { label: '固定地址', value: 'fixed-media' },
-    { label: 'Onvif', value: 'onvif'}
+    { label: 'Onvif', value: 'onvif'},
+    { label: '插件', value: 'plug-in'}
 ]
 export const streamMode = [
     { label: 'UDP', value: 'UDP' },

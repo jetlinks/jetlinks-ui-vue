@@ -288,7 +288,7 @@
                     </j-form>
                 </j-col>
                 <j-col :span="12">
-                    <div v-if="1" class="doc" style="height: 800">
+                    <div v-if="formData.channel === 'gb28181-2016'" class="doc" style="height: 800">
                         <h1>1.概述</h1>
                         <div>
                             视频设备通过GB/T28181接入平台整体分为2部分，包括平台端配置和设备端配置，不同的设备端配置的路径或页面存在差异，但配置项基本大同小异。
@@ -397,7 +397,6 @@ import SaveProduct from './SaveProduct.vue';
 import { notification } from 'jetlinks-ui-components';
 import { omit } from 'lodash-es';
 
-const router = useRouter();
 const route = useRoute();
 
 // 表单数据
