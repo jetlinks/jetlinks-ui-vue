@@ -55,3 +55,8 @@ export const queryHandleHistory = (data:any) => server.post('/alarm/record/handl
  * 获取告警日志（新）
  */
 export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data)
+
+/**
+ * 查询无效数据
+ */
+export const queryInvalidData = (data:any) => server.post('/threshold/invalid/record/_query/pager',data)

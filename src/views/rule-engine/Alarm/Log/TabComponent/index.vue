@@ -90,9 +90,26 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis
-                                        ><Duration :data="slotProps"
-                                    /></Ellipsis>
+                                    <Ellipsis>
+                                        <div>
+                                            {{
+                                                dayjs(
+                                                    slotProps?.alarmTime,
+                                                ).format(
+                                                    'YYYY-MM-DD HH:mm:ss',
+                                                ) +
+                                                '至' +
+                                                (slotProps?.state?.value ===
+                                                'warning'
+                                                    ? '当前时间'
+                                                    : dayjs(
+                                                          slotProps?.handleTime,
+                                                      ).format(
+                                                          'YYYY-MM-DD HH:mm:ss',
+                                                      ))
+                                            }}
+                                        </div>
+                                    </Ellipsis>
                                     <div class="content-title">
                                         最近告警时间
                                     </div>
@@ -105,7 +122,9 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis></Ellipsis>
+                                    <Ellipsis
+                                        ><Duration :data="slotProps"></Duration
+                                    ></Ellipsis>
                                     <div class="content-title">
                                         告警持续时长
                                     </div>
@@ -182,8 +201,6 @@
             v-if="visibleDrawer"
             :logData="drawerData"
             :typeMap="titleMap"
-            :currentId="currentId"
-            :configId="configId"
             @closeDrawer="visibleDrawer = false"
             @refreshTable="refreshTable"
         />
@@ -208,8 +225,6 @@ const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const drawerData = ref();
 const visibleDrawer = ref(false);
-const currentId = ref();
-const configId = ref();
 const getDefaultLevel = () => {
     queryLevel().then((res) => {
         if (res.status === 200) {
@@ -509,8 +524,7 @@ const showDrawer = (data: any) => {
     if (data.targetType === 'device') {
         drawerData.value = data;
         visibleDrawer.value = true;
-        currentId.value = data.id;
-        configId.value = data.alarmConfigId;
+
     }
 };
 const calculateDuration = (startTime, endTime) => {
