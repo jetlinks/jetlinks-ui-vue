@@ -5,8 +5,9 @@
         :metricOptions="upperOptions"
         v-model:value="_value"
         v-model:source="_source"
-        @select="onChange"
         valueName="id"
+        treeKey="id"
+        @select="onChange"
     >
         <template v-slot="{ label }">
             <j-input :value="label" readonly placeholder="请选择" />

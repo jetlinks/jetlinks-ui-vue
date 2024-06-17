@@ -57,5 +57,9 @@ export const defaultSetting = {
   metric: {
     type: String,
     default: undefined
+  },
+  treeKey: {
+    type: String,
+    default: 'key'
   }
 }
