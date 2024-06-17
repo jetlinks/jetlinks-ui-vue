@@ -228,20 +228,24 @@ const tabs = {
     Device,
     DataAnalysis,
     MetadataMap,
-    AlarmRecord
+    AlarmRecord,
 };
 
-watch(
-    () => route.params.id,
-    (newId) => {
-        if (newId && route.name === 'device/Product/Detail') {
-            productStore.reSet();
-            productStore.tabActiveKey = 'Info';
-            productStore.refresh(newId as string);
-        }
-    },
-    { immediate: true, deep: true },
-);
+// watch(
+//     () => route.params.id,
+//     (newId) => {
+//         if (newId && route.name === 'device/Product/Detail') {
+//             productStore.reSet();
+//             productStore.tabActiveKey = 'Info';
+//             productStore.refresh(newId as string);
+//         }
+//     },
+//     { immediate: true, deep: true },
+// );
+onMounted(() => {
+    productStore.refresh(route.params.id as string);
+});
+
 watch(
     () => productStore.current,
     () => {
@@ -356,7 +360,7 @@ const getProtocol = async () => {
                     {
                         key: 'AlarmRecord',
                         tab: '告警记录',
-                    }
+                    },
                 ];
             }
         }
