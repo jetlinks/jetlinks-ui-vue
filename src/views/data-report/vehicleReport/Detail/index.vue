@@ -444,16 +444,16 @@ const getMileage = async () => {
 };
 //获取行驶记录数据
 const queryDataRecord = async () => {
-    const _deviceId: any = route.query?.id;
+    const _deviceId: any = route.query?.deviceId;
 
     const defaultParams = {
         terms: [
             {
-                column: 'vehicleId',
+                column: 'deviceId',
                 value: JSON.parse(_deviceId),
                 termType: 'eq',
             },
-        ],  
+        ],
         paging: false,
         sorts: [{ name: 'shutStartMilli', order: 'desc' }],
     };

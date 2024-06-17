@@ -22,7 +22,7 @@
         </template>
         <template #rightContentRender>
             <div class="right-content">
-                <j-tooltip title="大屏" @click="onReport">
+                <j-tooltip title="大屏" @click="onReport" placement="bottom">
                     <AIcon type="AreaChartOutlined" style="font-size: 16px" />
                 </j-tooltip>
                 <AIcon
