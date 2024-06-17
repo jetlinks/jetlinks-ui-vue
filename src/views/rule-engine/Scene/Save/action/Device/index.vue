@@ -63,7 +63,7 @@
     </j-modal>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="ActionDeviceModal">
 import { DeviceModelType, DeviceOptionType } from './typings';
 import Product from './Product.vue';
 import Device from './device/index.vue';

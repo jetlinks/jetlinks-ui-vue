@@ -38,8 +38,9 @@
                         :metricOptions="upperOptions"
                         v-model:value="propertyModelRef.propertiesValue"
                         v-model:source="propertyModelRef.source"
-                        @select="onValueChange"
                         valueName="id"
+                        treeKey="id"
+                        @select="onValueChange"
                     >
                         <template v-slot="{ label }">
                             <j-input readonly :value="label" placeholder="请选择" />
@@ -186,6 +187,8 @@ const onValueChange = (val: any, label: string) => {
     const obj = {
         [`${propertyModelRef.properties}`]: objectValue
     };
+
+    console.log('onValueChange',val , label)
     emit('update:value', obj);
     emit('change', label || val, optionColumn)
 };

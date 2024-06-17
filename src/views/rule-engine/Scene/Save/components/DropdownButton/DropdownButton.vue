@@ -37,7 +37,6 @@
               :treeData='options'
               :height='450'
               :virtual='true'
-              :fieldNames="{ key: 'code' }"
               @select='treeSelect'
             >
               <template #title="{ name, description }">
