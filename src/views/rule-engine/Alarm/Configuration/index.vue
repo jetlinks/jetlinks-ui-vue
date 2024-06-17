@@ -97,11 +97,7 @@
                                         </div>
                                         <Ellipsis>
                                             {{
-                                                (defaultLevel || []).find(
-                                                    (item: any) =>
-                                                        item?.level ===
-                                                        slotProps.level,
-                                                )?.title || slotProps.level
+                                                levelMap?.[slotProps.level] ||  slotProps.level
                                             }}
                                         </Ellipsis>
                                     </j-col>
@@ -214,8 +210,6 @@ import HandTrigger from './HandTrigger/index.vue';
 import { useAlarmLevel } from '@/hook'
 
 const params = ref<Record<string, any>>({});
-let isAdd = ref<number>(0);
-let title = ref<string>('');
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
 const { levelMap, levelList } = useAlarmLevel()
@@ -299,18 +293,6 @@ const columns = [
 
                     return [...sceneDataMap.values()];
                 }
-
-                // const res = await getScene(
-                //     encodeQuery({
-                //         sorts: { createTime: 'desc' },
-                //     }),
-                // );
-                // if (res.status === 200) {
-                //     return res.result.map((item: any) => ({
-                //         label: item.name,
-                //         value: item.id,
-                //     }));
-                // }
                 return [];
             },
         },
@@ -356,8 +338,6 @@ const columns = [
 ];
 const visible = ref<boolean>(false);
 const current = ref<any>({});
-
-const defaultLevel = ref<any[]>([]);
 
 const map = {
     product: '产品',

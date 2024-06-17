@@ -12,6 +12,7 @@
         <j-form :rules="rules" layout="vertical" ref="formRef" :model="form">
             <j-form-item label="处理结果" name="describe">
                 <j-textarea
+                    :disabled="solveType === 'view'"
                     :rows="8"
                     :maxlength="200"
                     showCount
@@ -30,6 +31,14 @@ const props = defineProps({
     data: {
         type: Object,
     },
+    solveType: {
+        type: String,
+        default: 'handle',
+    },
+    handleDes: {
+        type: String,
+        default: '',
+    },
 });
 const loading = ref<boolean>(false);
 const formRef = ref();
@@ -44,12 +53,15 @@ const rules = {
 const form = reactive({
     describe: '',
 });
-let visible = ref(true);
-const emit = defineEmits(['closeSolve','refresh'])
+const emit = defineEmits(['closeSolve', 'refresh']);
 const handleCancel = () => {
     emit('closeSolve');
 };
 const handleSave = () => {
+    if (props.solveType === 'view') {
+        emit('closeSolve');
+        return;
+    }
     loading.value = true;
     formRef.value
         .validate()
@@ -75,6 +87,8 @@ const handleSave = () => {
             loading.value = false;
         });
 };
+onMounted(() => {
+    props.solveType === 'view' ? form.describe = props.handleDes : '';
+});
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

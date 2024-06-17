@@ -16,13 +16,10 @@
                 dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
             }}</j-descriptions-item>
             <j-descriptions-item label="告警级别" :span="1">
-                <j-tooltip
-                    placement="topLeft"
-                    :title="_level"
-                >
+                <j-tooltip placement="topLeft" :title="levelMap?.[data?.level] || data?.level">
                     <Ellipsis>
                         <span>
-                            {{_level}}
+                           {{ levelMap?.[data?.level] || data?.level}}
                         </span>
                     </Ellipsis>
                 </j-tooltip>
@@ -38,7 +35,8 @@
                 ><div style="max-height: 500px; overflow-y: auto">
                     <JsonViewer
                         :value="runningWater"
-                        :expanded="true" :expandDepth="4" 
+                        :expanded="true"
+                        :expandDepth="4"
                     ></JsonViewer></div
             ></j-descriptions-item>
         </j-descriptions>
@@ -46,33 +44,21 @@
 </template>
 
 <script lang="ts" setup>
-import { queryLevel } from '@/api/rule-engine/config';
 import dayjs from 'dayjs';
 import JsonViewer from 'vue-json-viewer';
+import { useAlarmLevel } from '@/hook';
 const props = defineProps({
     data: Object,
 });
-const runningWater = computed(()=>{
+const runningWater = computed(() => {
     return JSON.parse(props.data?.alarmInfo);
-})
-const defaultLevel = ref<any[]>([])
+});
+const { levelMap } = useAlarmLevel();
 
 const emit = defineEmits(['close']);
 const closeModal = () => {
     emit('close');
 };
 
-const _level = computed(() => {
-    return (defaultLevel.value || []).find((item: any) => item?.level === props.data?.level)?.title || props.data?.level
-})
-
-onMounted(() => {
-    queryLevel().then((res)=>{
-        if(res.status === 200 ){
-            defaultLevel.value = res.result?.levels || [];
-        }
-    })
-})
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
