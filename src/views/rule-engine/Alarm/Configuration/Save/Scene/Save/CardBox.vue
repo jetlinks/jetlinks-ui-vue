@@ -3,7 +3,6 @@
     <div
       class="card-warp"
       :class="{ active: active ? 'active' : '', 'disabled': disabled }"
-      @click="handleClick"
     >
       <div class="card-type" >
         <div class="card-type-text">
@@ -63,15 +62,7 @@
           </div>
         </div>
         <div class="card-content-tabs">
-          <a-tabs
-          >
-            <a-tab-pane
-              v-for="item in branches"
-              :tab="item.branchName"
-            >
-
-            </a-tab-pane>
-          </a-tabs>
+          <BranchesTabs :branches="branches" :alarmId="id" :branchesId="value.id"/>
         </div>
         <div
           class="card-state"
@@ -101,6 +92,7 @@ import color, {getHexColor} from '@/components/BadgeStatus/color';
 import DeviceTitle from '@/views/rule-engine/Scene/Save/components/Title.vue'
 import TimerTitle from '@/views/rule-engine/Scene/Save/Timer/Title.vue'
 import AddButton from '@/views/rule-engine/Scene/Save/components/AddButton.vue'
+import BranchesTabs from './BranchesTabs.vue'
 import {PropType} from 'vue';
 import { typeMap } from './utils'
 
@@ -133,6 +125,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  alarmId: {
+    type: String,
+    default: undefined
   }
 });
 
@@ -161,8 +157,23 @@ const branches = computed(() => {
   const when = props.value.options?.when || []
   if (!props.value.branches?.length) return []
 
+
+
   return props.value.branches.map((item, index) => {
     item.branchName = when[index]?.branchName || '条件' + (index + 1)
+
+    if (item.then[0]?.actions.length) {
+      item.serial = item.then[0]?.actions.filter(actionItem => {
+        return actionItem.executor === 'alarm'
+      })
+    }
+
+    if (item.then[1]?.actions.length) {
+      item.parallel = item.then[1]?.actions.filter(actionItem => {
+        return actionItem.executor === 'alarm'
+      })
+    }
+    console.log('branches', item)
     return item
   })
 })

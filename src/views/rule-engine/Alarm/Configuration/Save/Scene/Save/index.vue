@@ -38,6 +38,7 @@
             :value="slotProps"
             :status="slotProps.state?.value"
             :statusText="slotProps.state?.text"
+            :alarmId="id"
             @click="handleClick"
           />
         </template>
