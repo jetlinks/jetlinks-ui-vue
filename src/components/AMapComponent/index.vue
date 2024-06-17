@@ -34,8 +34,8 @@ const amapKey = system.$state.configInfo.amap?.apiKey;
 const secretKey = system.$state.configInfo.amap?.secretKey;
 
 initAMapApiLoader({
-    key: amapKey || 'c86c1b22c6b223e3ed08815532676445',
-    securityJsCode: secretKey || 'b0efcf1ce14cbf2d56d3cde630cd19cf',
+    key: amapKey,
+    securityJsCode: secretKey,
     plugins: ['AMap.DistrictSearch'],
 });
 
