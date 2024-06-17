@@ -6,7 +6,6 @@ export const useAlarmStore = defineStore('alarm', () => {
     current: {},
     solveVisible: false,
     logVisible: false,
-    defaultLevel: [],
     columns: [
       {
         dataIndex: 'alarmConfigName',

@@ -10,10 +10,7 @@
             <div class="title">告警日志</div>
             <div class="alarmInfoRight">
                 <div>
-                    {{
-                        defaultLevel.find((i) => i.level === AlarmData?.level)
-                            ?.title || AlarmData?.level
-                    }}
+                    {{ levelMap?.[AlarmData?.level] || AlarmData?.level }}
                 </div>
                 <div>
                     <BadgeStatus
@@ -50,6 +47,7 @@
 import { queryLevel } from '@/api/rule-engine/config';
 import Log from '@/views/rule-engine/Alarm/Log/TabComponent/components/Log.vue';
 import SolveComponent from '@/views/rule-engine/Alarm/Log/SolveComponent/index.vue';
+import { useAlarmLevel } from '@/hook';
 const props = defineProps({
     data: {
         type: Object,
@@ -57,31 +55,21 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(['closeDrawer', 'refreshTable']);
+const { levelMap } = useAlarmLevel();
 const AlarmData = ref(props.data);
 const solveVisible = ref(false);
-const defaultLevel = ref([]);
 const closeDrawer = () => {
     emit('closeDrawer');
 };
 const closeSolve = () => {
     solveVisible.value = false;
 };
-const getDefaultLevel = () => {
-    queryLevel().then((res) => {
-        if (res.success) {
-            defaultLevel.value = res.result?.levels || [];
-        }
-    });
-};
 const refresh = () => {
     emit('refreshTable');
 };
-const dealAlarm = () =>{
-    solveVisible.value = true
-}
-onMounted(() => {
-    getDefaultLevel();
-});
+const dealAlarm = () => {
+    solveVisible.value = true;
+};
 </script>
 <style lang="less" scoped>
 .alarmInfo {
