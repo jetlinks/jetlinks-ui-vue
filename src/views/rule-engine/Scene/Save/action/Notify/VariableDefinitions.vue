@@ -113,6 +113,7 @@ const checkValue = (_rule: any, value: any, item: any) => {
         return Promise.resolve();
     }
     const type = item.expands?.businessType || item?.type;
+    console.log(type, props.notify)
     if (type === 'file') {
         return Promise.resolve();
     } else if (type === 'link') {
@@ -142,7 +143,11 @@ const checkValue = (_rule: any, value: any, item: any) => {
             }
         }
     } else if (value?.source === 'fixed' && !value?.value) {
-        return Promise.reject(new Error('请输入' + item.name));
+      let tip = '请输入' + item.name
+      if (props.notify.notifyType === 'email') {
+        tip = '请输入收件人'
+      }
+        return Promise.reject(new Error(tip));
     } else if (
         value?.source === 'relation' &&
         !value?.value &&

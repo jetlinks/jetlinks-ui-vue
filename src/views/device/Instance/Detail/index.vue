@@ -98,7 +98,7 @@
             />
         </template>
         <FullPage>
-            <div style="padding: 24px;height: 100%">
+            <div style="padding: 24px; height: 100%">
                 <component
                     :is="tabs[instanceStore.tabActiveKey]"
                     v-bind="{ type: 'device' }"
@@ -122,14 +122,15 @@ import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue';
-import GateWay from './GateWay/index.vue'
+import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
+import AlarmRecord from './AlarmRecord/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import { EventEmitter } from '@/utils/utils'
+import { EventEmitter } from '@/utils/utils';
 
 const menuStory = useMenuStore();
 
@@ -166,6 +167,10 @@ const initList = [
         key: 'Log',
         tab: '日志管理',
     },
+    {
+        key: 'AlarmRecord',
+        tab: '告警记录',
+    },
 ];
 
 const list = ref([...initList]);
@@ -183,7 +188,8 @@ const tabs = {
     Parsing,
     Log,
     MetadataMap,
-  GateWay
+    GateWay,
+    AlarmRecord,
 };
 
 const getStatus = (id: string) => {
@@ -193,8 +199,10 @@ const getStatus = (id: string) => {
         {
             deviceId: id,
         },
-    ).subscribe((message:any) => {
-        if(message.payload?.value?.type !== instanceStore.current?.state.value){
+    ).subscribe((message: any) => {
+        if (
+            message.payload?.value?.type !== instanceStore.current?.state.value
+        ) {
             instanceStore.refresh(id);
         }
     });
@@ -245,10 +253,10 @@ const getDetail = () => {
         instanceStore.current?.protocol === 'collector-gateway' &&
         !keys.includes('GateWay')
     ) {
-      list.value.push({
-        key: 'GateWay',
-        tab: '数采映射',
-      });
+        list.value.push({
+            key: 'GateWay',
+            tab: '数采映射',
+        });
     }
     if (
         instanceStore.current?.deviceType?.value === 'gateway' &&
@@ -277,24 +285,26 @@ const getDetail = () => {
         ) &&
         !keys.includes('MetadataMap')
     ) {
-        list.value.push({ key: 'MetadataMap', tab: '物模型映射'});
+        list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
     }
 };
 
 const initPage = async (newId: any) => {
-  await instanceStore.refresh(String(newId));
-  getStatus(String(newId));
-  list.value = [...initList];
-  getDetail();
-  instanceStore.tabActiveKey = 'Info';
-}
+    await instanceStore.refresh(String(newId));
+    getStatus(String(newId));
+    list.value = [...initList];
+    getDetail();
+    instanceStore.tabActiveKey = 'Info';
+};
 
 onBeforeRouteUpdate((to: any) => {
-  if (to.params?.id!==instanceStore.current.id && to.name === 'device/Instance/Detail') {
-    initPage(to.params?.id)
-  }
-})
-
+    if (
+        to.params?.id !== instanceStore.current.id &&
+        to.name === 'device/Instance/Detail'
+    ) {
+        initPage(to.params?.id);
+    }
+});
 
 const getDetailFn = async () => {
     const _id = route.params?.id;
@@ -313,11 +323,11 @@ onMounted(() => {
 
 const onTabChange = (e: string) => {
     if (instanceStore.tabActiveKey === 'Metadata') {
-      EventEmitter.emit('MetadataTabs', () => {
-        instanceStore.tabActiveKey = e;
-      })
+        EventEmitter.emit('MetadataTabs', () => {
+            instanceStore.tabActiveKey = e;
+        });
     } else {
-      instanceStore.tabActiveKey = e;
+        instanceStore.tabActiveKey = e;
     }
 };
 
@@ -355,7 +365,7 @@ const jumpProduct = () => {
 };
 
 onUnmounted(() => {
-    instanceStore.current = {} as any
+    instanceStore.current = {} as any;
     statusRef.value && statusRef.value.unsubscribe();
 });
 </script>

@@ -8,12 +8,13 @@
                         :src="basis.background || getImage('/login.png')"
                     />
                     <a
+                        v-if="basis.showRecordNumber"
                         href="https://beian.miit.gov.cn/#/Integrated/index"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="records"
                     >
-                        备案：渝ICP备19017719号-1
+                        备案：{{ basis.recordNumber || '渝ICP备19017719号-1' }}
                     </a>
                 </div>
                 <div class="right">
@@ -441,7 +442,7 @@ const getRsa = async () => {
     }
 };
 
-const basis = computed(() => {
+const basis:any = computed(() => {
     return systemStore.configInfo['front'] || {};
 });
 const handleClickOther = (item: any) => {

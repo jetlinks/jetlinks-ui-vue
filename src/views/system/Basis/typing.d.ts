@@ -5,6 +5,10 @@ export interface formValueType {
     title: string | undefined; // 系统名称
     headerTheme: string | undefined; // 主题色
     apiKey: string | undefined; // 高德 API key
+    secretKey: string | undefined; // 高德 API 密钥;
+    webKey: string | undefined; //高德web API key,
+    showRecordNumber: boolean | undefined; //是否显示备案号，
+    recordNumber: string | undefined; //备案号
     'base-path': string | undefined; // 系统后台访问的URL
     logo: string | undefined;
     ico: string | undefined;
@@ -45,6 +49,8 @@ export type PathType = {
 
 export type AMapKey = {
     apiKey: string;
+    secretKey: string;
+    webKey: string
 }
 
 export type ConfigInfoType = {

@@ -55,11 +55,8 @@
                                     <Ellipsis>
                                         <span>
                                             {{
-                                                data.defaultLevel.find(
-                                                    (i) =>
-                                                        i.level ===
-                                                        slotProps.level,
-                                                )?.title || slotProps.level
+                                                levelMap?.[slotProps.level] ||
+                                                slotProps.level
                                             }}
                                         </span>
                                     </Ellipsis>
@@ -90,9 +87,26 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis
-                                        ><Duration :data="slotProps"
-                                    /></Ellipsis>
+                                    <Ellipsis>
+                                        <div>
+                                            {{
+                                                dayjs(
+                                                    slotProps?.alarmTime,
+                                                ).format(
+                                                    'YYYY-MM-DD HH:mm:ss',
+                                                ) +
+                                                '至' +
+                                                (slotProps?.state?.value ===
+                                                'warning'
+                                                    ? '当前时间'
+                                                    : dayjs(
+                                                          slotProps?.handleTime,
+                                                      ).format(
+                                                          'YYYY-MM-DD HH:mm:ss',
+                                                      ))
+                                            }}
+                                        </div>
+                                    </Ellipsis>
                                     <div class="content-title">
                                         最近告警时间
                                     </div>
@@ -105,7 +119,9 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis></Ellipsis>
+                                    <Ellipsis
+                                        ><Duration :data="slotProps"></Duration
+                                    ></Ellipsis>
                                     <div class="content-title">
                                         告警持续时长
                                     </div>
@@ -126,26 +142,6 @@
                                         告警原因
                                     </div></j-col
                                 >
-                                <!-- <j-col :span="8">
-                                    <div class="content-title">状态</div>
-                                    <BadgeStatus
-                                        :status="slotProps.state.value"
-                                        :statusName="{
-                                            warning: 'warning',
-                                            normal: 'default',
-                                        }"
-                                    >
-                                    </BadgeStatus
-                                    ><span
-                                        :style="
-                                            slotProps.state.value === 'warning'
-                                                ? 'color: #E50012'
-                                                : 'color:black'
-                                        "
-                                    >
-                                        {{ slotProps.state.text }}
-                                    </span>
-                                </j-col> -->
                             </j-row>
                         </template>
                         <template #actions="item">
@@ -182,8 +178,7 @@
             v-if="visibleDrawer"
             :logData="drawerData"
             :typeMap="titleMap"
-            :currentId="currentId"
-            :configId="configId"
+            :levelMap="levelMap"
             @closeDrawer="visibleDrawer = false"
             @refreshTable="refreshTable"
         />
@@ -202,22 +197,14 @@ import SolveComponent from '../SolveComponent/index.vue';
 import { useMenuStore } from '@/store/menu';
 import LogDrawer from './components/DetailDrawer.vue';
 import Duration from '../components/Duration.vue';
+import { useAlarmLevel } from '@/hook';
 const menuStory = useMenuStore();
 const tableRef = ref();
+const { levelMap, levelList } = useAlarmLevel();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const drawerData = ref();
 const visibleDrawer = ref(false);
-const currentId = ref();
-const configId = ref();
-const getDefaultLevel = () => {
-    queryLevel().then((res) => {
-        if (res.status === 200) {
-            data.value.defaultLevel = res.result?.levels || [];
-        }
-    });
-};
-getDefaultLevel();
 const props = defineProps<{
     type: string;
     id?: string;
@@ -266,12 +253,9 @@ const columns = [
         width: 200,
         search: {
             type: 'select',
-            options: data.value.defaultLevel.map((item: any) => {
-                return {
-                    label: item.title,
-                    value: item.level,
-                };
-            }),
+            options: async () => {
+                return levelList.value;
+            },
         },
         scopedSlots: true,
     },
@@ -509,8 +493,6 @@ const showDrawer = (data: any) => {
     if (data.targetType === 'device') {
         drawerData.value = data;
         visibleDrawer.value = true;
-        currentId.value = data.id;
-        configId.value = data.alarmConfigId;
     }
 };
 onMounted(() => {
