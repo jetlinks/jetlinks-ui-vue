@@ -97,11 +97,7 @@
                                         </div>
                                         <Ellipsis>
                                             {{
-                                                (defaultLevel || []).find(
-                                                    (item: any) =>
-                                                        item?.level ===
-                                                        slotProps.level,
-                                                )?.title || slotProps.level
+                                            levelMap[slotProps.level] || slotProps.level
                                             }}
                                         </Ellipsis>
                                     </j-col>

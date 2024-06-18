@@ -51,3 +51,9 @@ export const unBindAlarm = (id: string, alarmId: string, data: any) => server.po
  * 保存关联场景
  */
 export const bindScene = (data:any) => server.patch("/alarm/rule/bind",data)
+
+/**
+ * 查询关联的场景执行动作id
+ * @param data
+ */
+export const queryBindScene = (data:any) => server.post("/alarm/rule/bind/_query",data)

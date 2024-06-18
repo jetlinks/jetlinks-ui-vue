@@ -260,3 +260,37 @@ typeMap.set('device', {
     icon: getImage('/scene/trigger-type-icon/device.png'),
     tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
 });
+
+export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
+    const group: any[] = []
+
+    if (!branches) return []
+
+    branches.forEach((item, index) => {
+        if (index === 0 || item.executeAnyway) {
+            group.push({
+                branchName: item.branchName || `条件${group.length + 1}`,
+                key: item.key || item.branchId,
+                children: []
+            })
+        }
+
+        const lastItem = group[group.length - 1]
+
+        if (item.then[0]?.actions.length) {
+            item.serial = item.then[0]?.actions
+        }
+
+        if (item.then[1]?.actions.length) {
+            item.parallel = item.then[1]?.actions
+        }
+
+        if (when) {
+            item.when = when[index]
+        }
+
+        lastItem.children.push(item)
+    })
+
+    return group
+}

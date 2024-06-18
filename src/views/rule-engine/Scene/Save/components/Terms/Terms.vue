@@ -93,7 +93,7 @@ import { ContextKey, handleParamsData } from './util'
 import { getParseTerm } from '@/api/rule-engine/scene'
 import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import Branches from './Branches.vue'
-import {randomString} from "@/utils/utils";
+import {randomNumber, randomString} from "@/utils/utils";
 import TermsTabPane from './TermsTabPane.vue'
 
 
@@ -210,7 +210,7 @@ const addGroup = (targetKey: string, action: string) => {
       },
       then: [],
       executeAnyway: true,
-      branchId: Math.floor(Math.random() * 100000000),
+      branchId: randomNumber(),
       branchName
     }
     data.value.branches?.push(branchesItem, null)

@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="card-content-tabs">
-          <BranchesTabs :branches="branches" :alarmId="id" :branchesId="value.id"/>
+          <BranchesTabs :branchesGroup="branchesGroup" :alarmId="alarmId" :branchesId="value.id" :activeKeys="activeKeys" :selectedKeys="selectedKeys" @change="bindAlarm"/>
         </div>
         <div
           class="card-state"
@@ -94,10 +94,11 @@ import TimerTitle from '@/views/rule-engine/Scene/Save/Timer/Title.vue'
 import AddButton from '@/views/rule-engine/Scene/Save/components/AddButton.vue'
 import BranchesTabs from './BranchesTabs.vue'
 import {PropType} from 'vue';
-import { typeMap } from './utils'
+import {handleGroupAndFilter, typeMap} from './utils'
 
 type EmitProps = {
   (e: 'click', data: Record<string, any>): void;
+  (e: 'change', key: string, selected: boolean): void;
 };
 
 const emit = defineEmits<EmitProps>();
@@ -129,6 +130,14 @@ const props = defineProps({
   alarmId: {
     type: String,
     default: undefined
+  },
+  activeKeys: { // 后端返回已关联的执行动作
+    type: Array,
+    default: () => ([])
+  },
+  selectedKeys: { // 当前modal中选中的执行动作
+    type: Array,
+    default: () => ([])
   }
 });
 
@@ -153,34 +162,34 @@ const showMask = computed(() => {
   return false
 })
 
-const branches = computed(() => {
-  const when = props.value.options?.when || []
-  if (!props.value.branches?.length) return []
-
-
-
-  return props.value.branches.map((item, index) => {
-    item.branchName = when[index]?.branchName || '条件' + (index + 1)
-
-    if (item.then[0]?.actions.length) {
-      item.serial = item.then[0]?.actions.filter(actionItem => {
-        return actionItem.executor === 'alarm'
-      })
-    }
-
-    if (item.then[1]?.actions.length) {
-      item.parallel = item.then[1]?.actions.filter(actionItem => {
-        return actionItem.executor === 'alarm'
-      })
-    }
-    console.log('branches', item)
-    return item
-  })
+const branchesGroup = computed(() => {
+  // const when = props.value.options?.when || []
+  // if (!props.value.branches?.length) return []
+  //
+  // // TODO 分组 store公用分组
+  // return props.value.branches.map((item, index) => {
+  //   item.branchName = when[index]?.branchName || '条件' + (index + 1)
+  //
+  //   if (item.then[0]?.actions.length) {
+  //     item.serial = item.then[0]?.actions.filter(actionItem => {
+  //       return actionItem.executor === 'alarm'
+  //     })
+  //   }
+  //
+  //   if (item.then[1]?.actions.length) {
+  //     item.parallel = item.then[1]?.actions.filter(actionItem => {
+  //       return actionItem.executor === 'alarm'
+  //     })
+  //   }
+  //   return item
+  // })
+  return handleGroupAndFilter(props.value.branches, props.value.options?.when || [])
 })
 
-const handleClick = () => {
-  emit('click', props.value);
-};
+const bindAlarm = (key: string, selected: boolean) => {
+  emit('change', key, selected)
+}
+
 
 </script>
 

@@ -1,50 +1,44 @@
 <template>
   <a-tabs v-model:activeKey="activeKey">
+    <template #rightExtra>
+      <a-button @click="show = !show">
+        {{ show ? '隐藏条件' : '显示条件'}}
+      </a-button>
+    </template>
     <a-tab-pane
-      v-for="item in branches"
-      :tab="item.branchName"
-      :key="item.branchId"
+      v-for="group in branchesGroup"
+      :tab="group.branchName"
+      :key="group.key"
     >
-      <template v-if="item.serial?.length">
+      <div v-for="(branch, index) in group.children">
+        <div style="display: flex;align-items: center" v-if="show">
+          <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
+          <Terms :when="branch.when" />
+        </div>
+      <template v-if="branch.serial?.length">
         <div class="branches-tabs-title">
           串行
         </div>
-        <div v-for="actionItem in item.serial" class="branches-tabs-alarm">
-          <span>
-            满足条件后将{{ actionItem.alarm.mode === 'trigger' ? '触发' : '解除'}}当前告警
-          </span>
-          <a-button type="link" @click="onBind(actionItem)">
-            <template #icon>
-              <AIcon type="icon-bangding" />
-            </template>
-            关联
-          </a-button>
-        </div>
+        <Actions :actions="branch.serial" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" :serial="true" @change="change" />
       </template>
-      <template v-if="item.parallel?.length">
+      <template v-if="branch.parallel?.length">
         <div class="branches-tabs-title">
           并行
         </div>
-        <div v-for="actionItem in item.parallel" class="branches-tabs-alarm">
-          <span>
-            满足条件后将{{ actionItem.alarm.mode === 'trigger' ? '触发' : '解除'}}当前告警
-          </span>
-          <a-button type="link" @click="onBind(actionItem)">
-            <template #icon>
-              <AIcon type="icon-bangding" />
-            </template>
-            关联
-          </a-button>
-        </div>
+        <Actions :actions="branch.parallel" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" @change="change" />
       </template>
+
+      </div>
     </a-tab-pane>
   </a-tabs>
 </template>
 
 <script setup name="BranchesTabs">
+import Terms from './Terms/Terms.vue'
+import Actions from './Actions.vue'
 
 const props = defineProps({
-  branches: {
+  branchesGroup: {
     type: Array,
     default: () => ([])
   },
@@ -56,16 +50,23 @@ const props = defineProps({
     type: String,
     default: undefined
   },
-  selectedKeys: {
+  activeKeys: { // 后端返回已关联的执行动作
+    type: Array,
+    default: () => ([])
+  },
+  selectedKeys: { // 当前modal中选中的执行动作
     type: Array,
     default: () => ([])
   }
 })
 
-const activeKey = ref(props.branches?.length ? props.branches[0].branchId : '')
+const emit = defineEmits(['change'])
 
-const onBind = (record) => {
-  // emit('check')
+const activeKey = ref(props.branchesGroup?.length ? props.branchesGroup[0].key : '')
+const show = ref(false)
+
+const change = (id, selected) => {
+  emit('change', id, selected)
 }
 
 </script>
