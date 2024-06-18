@@ -107,6 +107,7 @@ const TypeMap = new Map([
     ['fixed-media', 'media'],
     ['gb28181-2016', 'media'],
     ['onvif', 'media'],
+    ['media-plugin', 'media'],
     ['OneNet', 'cloud'],
     ['Ctwing', 'cloud'],
     ['modbus-tcp', 'channel'],
@@ -120,6 +121,7 @@ const DataMap = new Map();
 DataMap.set('fixed-media', { type: 'media', title: '视频类设备接入' });
 DataMap.set('gb28181-2016', { type: 'media', title: '视频类设备接入' });
 DataMap.set('onvif',{ type: 'media' , title:'视频类设备接入'});
+DataMap.set('media-plugin', { type: 'media', title: '视频类设备接入' });
 DataMap.set('OneNet', { type: 'cloud', title: '云平台接入' });
 DataMap.set('Ctwing', { type: 'cloud', title: '云平台接入' });
 DataMap.set('modbus-tcp', { type: 'channel', title: '通道类设备接入' });
@@ -136,7 +138,7 @@ const getTypeList = (result: Record<string, any>) => {
     const channel: any[] = [];
     const edge: any[] = [];
     result.map((item: any) => {
-        if (item.id === 'fixed-media' || item.id === 'gb28181-2016' || item.id ==='onvif') {
+        if (item.id === 'fixed-media' || item.id === 'gb28181-2016' || item.id ==='onvif' || item.id === 'media-plugin') {
             item.type = 'media';
             media.push(item);
         } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
@@ -193,11 +195,6 @@ const queryProviders = async () => {
     if (resp.status === 200) {
         const _data = resp.result || [];
         dataSource.value = getTypeList(accessConfigTypeFilter(_data as any[]));
-        console.log(dataSource.value)
-        // dataSource.value = getTypeList(resp.result)[0].list.filter(
-        //     (item) => item.name !== '插件设备接入',
-        // );
-
         // 快速添加接入网关
         if (route.query.save && route.query?.type) {
             const type = route.query.type;

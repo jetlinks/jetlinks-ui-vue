@@ -195,6 +195,67 @@
                                 ></j-input-password>
                             </j-form-item>
                         </template>
+                        <template v-if="formData.channel === 'media-plugin'">
+                            <j-form-item
+                                :name="['others', item.property]"
+                                v-for="item in metadata?.properties || []"
+                                :key="item"
+                                :label="item.name"
+                                :rules="[
+                                    {
+                                        required:
+                                            !!item?.type?.expands?.required,
+                                        message: `${
+                                            item.type.type === 'enum' ||
+                                            'boolean'
+                                                ? '请选择'
+                                                : '请输入'
+                                        }${item.name}`,
+                                    },
+                                ]"
+                            >
+                                <j-input
+                                    placeholder="请输入"
+                                    v-if="item.type.type === 'string'"
+                                    v-model:value="
+                                        formData.others[item.property]
+                                    "
+                                ></j-input>
+                                <j-input-password
+                                    placeholder="请输入"
+                                    v-if="item.type.type === 'password'"
+                                    v-model:value="
+                                        formData.others[item.property]
+                                    "
+                                ></j-input-password>
+                                <j-select
+                                    placeholder="请选择"
+                                    v-if="
+                                        item.type.type === 'enum' ||
+                                        item.type.type === 'boolean'
+                                    "
+                                    v-model:value="
+                                        formData.others[item.property]
+                                    "
+                                    :options="getOptions(item)"
+                                >
+                                </j-select>
+                                <j-input-number
+                                    v-if="
+                                        [
+                                            'int',
+                                            'float',
+                                            'double',
+                                            'long',
+                                        ].includes(item.type.type)
+                                    "
+                                    v-model:value="
+                                        formData.others[item.property]
+                                    "
+                                    placeholder="请输入"
+                                ></j-input-number>
+                            </j-form-item>
+                        </template>
                         <template v-if="!!route.query.id">
                             <j-form-item
                                 v-if="formData.channel === 'gb28181-2016'"
@@ -266,7 +327,6 @@
                                 />
                             </j-form-item>
                         </template>
-
                         <j-form-item label="说明">
                             <j-textarea
                                 v-model:value="formData.description"
@@ -288,7 +348,11 @@
                     </j-form>
                 </j-col>
                 <j-col :span="12">
-                    <div v-if="formData.channel === 'gb28181-2016'" class="doc" style="height: 800">
+                    <div
+                        v-if="formData.channel === 'gb28181-2016'"
+                        class="doc"
+                        style="height: 800"
+                    >
                         <h1>1.概述</h1>
                         <div>
                             视频设备通过GB/T28181接入平台整体分为2部分，包括平台端配置和设备端配置，不同的设备端配置的路径或页面存在差异，但配置项基本大同小异。
@@ -396,11 +460,12 @@ import type { ProductType } from '@/views/media/Device/typings';
 import SaveProduct from './SaveProduct.vue';
 import { notification } from 'jetlinks-ui-components';
 import { omit } from 'lodash-es';
+import { queryDeviceConfig } from '@/api/device/instance';
 
 const route = useRoute();
 
 // 表单数据
-const formData = ref({
+const formData = ref<any>({
     id: '',
     name: '',
     channel: 'gb28181-2016',
@@ -420,6 +485,9 @@ const formData = ref({
     firmware: '',
 });
 
+const metadata = ref<any>({
+    properties: [],
+});
 const handleChannelChange = () => {
     formData.value.productId = undefined;
     getProductList();
@@ -446,10 +514,34 @@ const handleProductChange = () => {
     formData.value.others.access_pwd =
         productList.value.find((f: any) => f.id === formData.value.productId)
             ?.configuration.access_pwd || '';
-    formData.value.streamMode =  productList.value.find((f: any) => f.id === formData.value.productId)
+    formData.value.streamMode =
+        productList.value.find((f: any) => f.id === formData.value.productId)
             ?.configuration.stream_mode || '';
 };
 
+//获取物模型下拉选项
+const getOptions = (i: any) => {
+    if (i.type.type === 'enum') {
+        return (i.type?.elements || []).map((item) => {
+            return {
+                label: item?.text,
+                value: item?.value,
+            };
+        });
+    } else if (i.type.type === 'boolean') {
+        return [
+            {
+                label: i.type?.falseText,
+                value: i.type?.falseValue,
+            },
+            {
+                label: i.type?.trueText,
+                value: i.type?.trueValue,
+            },
+        ];
+    }
+    return undefined;
+};
 /**
  * 新增产品
  */
@@ -459,15 +551,15 @@ const saveProductVis = ref(false);
  * 获取详情
  */
 const getDetail = async () => {
-    if (!route.query.id) return;
     const res = await DeviceApi.detail(route.query.id as string);
     Object.assign(formData.value, res.result);
     formData.value.channel = res.result.provider;
+    await getProductList();
     if (formData.value.productId) {
         const productData = productList.value.find((i: any) => {
             return i.id === formData.value.productId;
         });
-        if (productData) {
+        if (productData && formData.value.channel !== 'media-plugin') {
             formData.value.others.access_pwd = formData.value.others.access_pwd
                 ? formData.value.others.access_pwd
                 : productData?.configuration?.access_pwd;
@@ -475,12 +567,26 @@ const getDetail = async () => {
                 ? formData.value.streamMode
                 : productData?.configuration?.stream_mode;
         }
+        if (productData && formData.value.channel === 'media-plugin') {
+            if(!res.result.others){
+                formData.value.others = productData?.configuration;
+            }
+            const resp: any = await queryDeviceConfig(formData.value.id);
+            if (resp.success) {
+                metadata.value = resp?.result[0] || {
+                    properties: [],
+                };
+            }
+        }
     }
 };
 
-onMounted(() => {
-    getDetail();
-    getProductList();
+onMounted(async () => {
+    if (!route.query.id) {
+        getProductList();
+    } else {
+        getDetail();
+    }
 });
 
 /**
@@ -507,7 +613,7 @@ const handleSubmit = () => {
     } else if (formData.value.channel === 'gb28181-2016') {
         // 国标
         others = omit(others, ['onvifUrl', 'onvifPassword', 'onvifUsername']);
-        const getParmas = () => {
+        const getParams = () => {
             if (others?.stream_mode) {
                 others.stream_mode = streamMode;
             }
@@ -521,11 +627,23 @@ const handleSubmit = () => {
                 ...extraParams,
             };
         };
-        params = !id ? { others, id, ...extraParams } : getParmas();
-    } else {
+        params = !id ? { others, id, ...extraParams } : getParams();
+    } else if (formData.value.channel === 'onvif') {
         others = omit(others, ['access_pwd']);
         params = !id
             ? { others, ...extraParams }
+            : {
+                  id,
+                  streamMode,
+                  manufacturer,
+                  model,
+                  firmware,
+                  others,
+                  ...extraParams,
+              };
+    } else if (formData.value.channel === 'media-plugin') {
+        params = !id
+            ? extraParams
             : {
                   id,
                   streamMode,
