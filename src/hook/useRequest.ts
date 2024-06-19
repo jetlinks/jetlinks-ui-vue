@@ -22,7 +22,7 @@ interface RequestOptions<T, S> {
 
     handleResponse: (data: any) => any
 
-    defaultValue?: any
+    defaultValue?: S
 }
 
 const defaultOptions: any = {
@@ -40,7 +40,7 @@ export const useRequest = <T = any, S = any>(
     loading: Ref<boolean>,
     run: Run
 } => {
-    const data = ref<S>(options.defaultValue)
+    const data = ref<S | undefined>(options.defaultValue)
     const loading = ref(false)
     const _options = {
         ...defaultOptions,
@@ -70,12 +70,16 @@ export const useRequest = <T = any, S = any>(
         }
     }
 
-    if (_options.immediate) { // 主动触发
+    function reload () { // 重新触发
         if (_options.defaultParams) {
             isArray(_options.defaultParams) ? run(..._options.defaultParams) : run(_options.defaultParams)
         } else {
             run()
         }
+    }
+
+    if (_options.immediate) { // 主动触发
+        reload()
     }
 
     onUnmounted(() => {
@@ -89,6 +93,7 @@ export const useRequest = <T = any, S = any>(
     return {
         data,
         loading,
-        run
+        run,
+        reload
     }
 }
