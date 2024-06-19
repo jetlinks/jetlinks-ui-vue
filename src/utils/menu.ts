@@ -153,6 +153,9 @@ const extraRouteObj = {
   },
   'rule-engine/Alarm/Log': {
     children: [{ code: 'Record', name: '处理记录' }]
+  },
+  'vehicle/unknownDevice': {
+    children: [{ code: 'AbnormalRecord', name: '异常记录' }]
   }
 };
 
