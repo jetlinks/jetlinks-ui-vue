@@ -26,6 +26,7 @@
 import { PopoverModal } from '../index'
 import { cloneDeep } from 'lodash-es'
 import Item from './Item.vue'
+import {Form} from "ant-design-vue";
 
 const emit = defineEmits(['update:value', 'confirm', 'cancel']);
 
@@ -44,6 +45,8 @@ const props = defineProps({
   }
 });
 
+const formItemContext = Form.useInjectFormItemContext();
+
 const formRef = ref();
 const tableRef = ref();
 const visible = ref(false)
@@ -60,11 +63,13 @@ const onCancel = () => {
 const onOk = async () => {
   const data = await formRef.value.validate()
   const tableData = await tableRef.value.validate()
+  console.log(data, tableData)
   if (data && tableData) {
     visible.value = false
     formData.elements = tableData
     emit('update:value', formData.elements)
     emit('confirm', formData.elements);
+    formItemContext.onFieldChange()
   }
 }
 

@@ -23,7 +23,7 @@
             ref="tableRef"
             model="TABLE"
             :columns="columns"
-            :request="queryAlarmList"
+            :request="queryData"
             :bodyStyle="{ padding: 0 }"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
@@ -35,7 +35,7 @@
                                 value: `${id}:${actionId || branchId}`,
                             },
                             {
-                              column: 'branchIndex$rule-bind-alarm',
+                              column: 'id$rule-bind-alarm',
                               value: `${id}:${-1}`,
                               type: 'or'
                             },
@@ -188,27 +188,40 @@ const unBind = async (record: any) => {
   }
 }
 
-watch(
-    () => props.id,
-    (newId) => {
-        if (newId) {
-            getAlarmConfigCount({
-                terms: [
-                    {
-                        column: 'id$rule-bind-alarm',
-                        // value: newId,
-                        value: props.branchId ? `${newId}:${props.branchId}` : newId,
-                    },
-                ],
-            }).then((resp) => {
-                if (resp.status === 200) {
-                    count.value = (resp.result || 0) as number;
-                }
-            });
-        }
-    },
-    { immediate: true },
-);
+const queryData = async (terms: any) => {
+
+  const resp = await queryAlarmList(terms)
+
+  count.value = resp.result.total
+
+  return {
+    code: resp.status,
+    result: resp.result,
+    status: resp.status,
+  };
+}
+
+// watch(
+//     () => props.id,
+//     (newId) => {
+//         if (newId) {
+//             getAlarmConfigCount({
+//                 terms: [
+//                     {
+//                         column: 'id$rule-bind-alarm',
+//                         // value: newId,
+//                         value: props.branchId ? `${newId}:${props.branchId}` : newId,
+//                     },
+//                 ],
+//             }).then((resp) => {
+//                 if (resp.status === 200) {
+//                     count.value = (resp.result || 0) as number;
+//                 }
+//             });
+//         }
+//     },
+//     { immediate: true },
+// );
 
 onMounted(() => {
     getAlarmLevel().then((resp) => {

@@ -36,6 +36,8 @@ const emit = defineEmits(['change'])
 const tableWrapperRef = useTableWrapper()
 const context = useInjectForm()
 
+let hideTimer
+
 const eventKey = computed(() => {
   const names = isArray(props.name) ? props.name : [props.name]
   return names.join('-')
@@ -73,14 +75,23 @@ const popContainer = (e) => {
   return e.parentNode
 }
 
+const removeTimer = () => {
+  if (hideTimer) {
+    hideTimer = null
+  }
+}
 const showErrorTip = (msg) => {
+  removeTimer()
   errorMap.message = msg
   errorMap.visible = true
 }
 
 const hideErrorTip = () => {
   errorMap.visible = false
-  errorMap.message = ''
+  removeTimer()
+  hideTimer = setTimeout(() => {
+    errorMap.message = ''
+  }, 300)
 }
 const validateRules = () => {
   let index = 0

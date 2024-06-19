@@ -356,6 +356,7 @@ const termAdd = () => {
     key: `params_${new Date().getTime()}`
   }
   formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].terms?.[props.termsName].terms?.push(terms)
+  formModel.value.branches?.[props.branchName]?.then?.[props.thenName]?.actions?.[props.actionName].options?.terms?.[props.termsName].terms?.push(['','eq','','and'])
 }
 
 const onDelete = () => {
