@@ -7,7 +7,7 @@
         >
             <template v-slot:eventContent="arg">
                 <div class="event">
-                    <i>{{ arg.event.title }}</i>
+                    <div class="event-title">{{ arg.event.title }}</div>
                     <a-button
                         v-if="!selectable"
                         type="text"
@@ -19,7 +19,14 @@
             </template>
         </FullCalendar>
         <div class="calenderButton">
-            <a-date-picker v-model:value="current"  format='YYYY-MM' picker="month" @change="changeDate" valueFormat="YYYY-MM"/>
+            <a-date-picker
+                v-model:value="current"
+                :disabled="selectable"
+                format="YYYY-MM"
+                picker="month"
+                @change="changeDate"
+                valueFormat="YYYY-MM"
+            />
             <a-button @click="handleCustomPrev" :disabled="selectable"
                 >上月</a-button
             >
@@ -203,14 +210,14 @@ const eventChange = computed(() => {
 // 自定义切换月份逻辑
 const handleCustomPrev = () => {
     calendarApi.value.prev();
-    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM')
+    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM');
 };
 const handleCustomNext = () => {
-    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM')
+    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM');
     calendarApi.value.next();
 };
 const handleCustomToday = () => {
-    current.value = dayjs().format('YYYY-MM')
+    current.value = dayjs().format('YYYY-MM');
     calendarApi.value.today();
 };
 //保存编辑后的日历
@@ -418,6 +425,7 @@ const rapidAction = async (effectDays) => {
     });
     //在已有事件基础上添加事件展示
     calendarApi.value.addEventSource(addEvents);
+    onlyMessage('操作成功');
     emit('resetRapid');
 };
 //取消多选(原生)
@@ -449,9 +457,9 @@ const refresh = () => {
     handleViewDidMount(calendarApi.value);
 };
 //日期切换
-const changeDate = (date) =>{
-    calendarApi.value.gotoDate(date)
-}
+const changeDate = (date) => {
+    calendarApi.value.gotoDate(date);
+};
 defineExpose({
     reselection,
     rapidAction,
@@ -543,7 +551,7 @@ onMounted(() => {
         .closeBtn {
             position: absolute;
             right: 0;
-            top: -5;
+            top: -5px;
             color: #fff;
             display: none;
         }
@@ -552,6 +560,12 @@ onMounted(() => {
         .closeBtn {
             display: inline-block;
         }
+    }
+    .event-title {
+        white-space: nowrap; /* 不换行 */
+        overflow: hidden; /* 超出部分隐藏 */
+        text-overflow: ellipsis; /* 显示省略号 */
+        width: calc(100% - 30px);
     }
 }
 :deep(.fc-highlight) {

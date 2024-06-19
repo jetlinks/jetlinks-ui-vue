@@ -9,7 +9,9 @@
                     :style="{ background: i.color }"
                     class="colorExtractor"
                 ></div>
-                <Ellipsis class="tagName" style="max-width: 90px;" :id="i.id">{{ i.name }}</Ellipsis>
+                <Ellipsis class="tagName" style="max-width: 90px;cursor: move;" :id="i.id">{{
+                    i.name
+                }}</Ellipsis>
             </div>
             <div>
                 <PermissionButton
@@ -57,8 +59,8 @@ import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
-const tagsMap = inject('tagsMap')
-const rapidOn = inject('rapidOn')
+const tagsMap = inject('tagsMap');
+const rapidOn = inject('rapidOn');
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();
@@ -109,9 +111,9 @@ const queryTagsData = async () => {
                     disabled,
                 };
             });
-            tagsMap.value =  tagsList.value.map((i)=>{
-                return omit(i,['disabled'])
-            })
+            tagsMap.value = tagsList.value.map((i) => {
+                return omit(i, ['disabled']);
+            });
         }
     }
 };
