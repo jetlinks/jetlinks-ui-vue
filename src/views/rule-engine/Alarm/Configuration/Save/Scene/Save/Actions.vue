@@ -21,11 +21,11 @@
                 </template>
                 {{ selectedKeys.some(selectKey => selectKey === item.actionId) ? '已关联' : '关联' }}
               </a-button>
-              <a-button v-else type="link" @click="onSelect(item)">
+              <a-button v-else-if="activeKeys.some(active => active === item.actionId)" type="link" @click="onSelect(item)">
                 <template #icon>
-                  <AIcon :type="activeKeys.some(active => active === item.actionId) ? 'icon-jiebang' : 'icon-bangding'"/>
+                  <AIcon type="icon-jiebang"/>
                 </template>
-                {{ activeKeys.some(active => active === item.actionId) ? '取消关联' : '关联' }}
+                取消关联
               </a-button>
             </template>
             <template v-if="item.executor === 'notify' && show">

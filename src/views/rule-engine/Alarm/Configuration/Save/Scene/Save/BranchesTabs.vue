@@ -36,7 +36,7 @@
 
     </div>
     <div v-else>
-      <div style="margin: 8px 0; text-align: right">
+      <div style="margin: 8px 0; text-align: right" v-if="showDetailBtn">
         <a-button @click="show = !show">
           {{ show ? '收起' : '点击查看详情'}}
         </a-button>
