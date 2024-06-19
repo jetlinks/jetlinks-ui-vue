@@ -54,6 +54,7 @@
                     :treeData='item.key === "upper" ?  metricOptions : options'
                     :height='450'
                     :virtual='true'
+                      :fieldNames="{ key: treeKey }"
                     @select='treeSelect'
                   >
                     <template #title="{ name, description }">
@@ -130,7 +131,8 @@ const tabsChange = (e: string) => {
 const treeSelect = (v: any, option: any) => {
   const node = option.node
   visible.value = false
-  label.value = node[props.labelName] || node.name
+  label.value = node[props.labelName] || node.name || node.fullName
+  console.log('treeSelect', node, label.value)
   emit('update:value', node[props.valueName])
   emit('select', node, label.value, { 0: label.value })
 }
@@ -169,7 +171,7 @@ watchEffect(() => {
   myValue.value = isMetric ? props.metric : props.value
   mySource.value = props.source
   if (option) {
-    label.value = option[props.labelName] || option.name
+    label.value = option[props.labelName] || option.name || option.fullName
     treeOpenKeys.value = openKeysByTree(_options, props.value, props.valueName)
   } else {
     if (isMetric) { // 处理指标值回显

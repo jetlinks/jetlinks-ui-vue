@@ -25,8 +25,10 @@
                 </j-form-item>
                 <j-form-item>
                     <template #label>
-                        <span>高德API Key</span>
-                        <j-tooltip title="配置后平台可调用高德地图GIS服务">
+                        <span>高德地图 web服务api</span>
+                        <j-tooltip
+                            title="开发者可通过接口使用各类型的地理数据服务,返回结果支持JSON和XML格式"
+                        >
                             <img
                                 class="img-style"
                                 :src="'/images/init-home/mark.png'"
@@ -34,8 +36,38 @@
                         </j-tooltip>
                     </template>
                     <j-input
-                        v-model:value="form.apikey"
+                        v-model:value="form.webKey"
+                        placeholder="请输入高德WebApi Key"
+                    />
+                </j-form-item>
+                <j-form-item>
+                    <template #label>
+                        <span>高德地图 JSapi</span>
+                        <j-tooltip title="提供浏览器精准定位">
+                            <img
+                                class="img-style"
+                                :src="'/images/init-home/mark.png'"
+                            />
+                        </j-tooltip>
+                    </template>
+                    <j-input
+                        v-model:value="form.apiKey"
                         placeholder="请输入高德API Key"
+                    />
+                </j-form-item>
+                <j-form-item>
+                    <template #label>
+                        <span>高德地图 密钥</span>
+                        <j-tooltip title="降低明文传输被窃取的风险">
+                            <img
+                                class="img-style"
+                                :src="'/images/init-home/mark.png'"
+                            />
+                        </j-tooltip>
+                    </template>
+                    <j-input
+                        v-model:value="form.secretKey"
+                        placeholder="请输入高德API 密钥"
                     />
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
@@ -43,12 +75,11 @@
                         <span>base-path</span>
                         <j-tooltip>
                             <template #title>
-                                <div style='word-break: break-all;'>
+                                <div style="word-break: break-all">
+                                    <div>系统后台访问的url。</div>
                                     <div>
-                                    系统后台访问的url。
-                                    </div>
-                                    <div>
-                                    格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                        格式：{http/https}:
+                                        //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
                                     </div>
                                 </div>
                             </template>
@@ -62,6 +93,23 @@
                         v-model:value="form.basePath"
                         placeholder="格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api"
                     />
+                </j-form-item>
+                <j-form-item
+                    name="showRecordNumber"
+                    label="展示备案号"
+                    :required="true"
+                >
+                    <a-switch
+                        v-model:checked="form.showRecordNumber"
+                    ></a-switch>
+                </j-form-item>
+                <j-form-item
+                    v-if="form.showRecordNumber"
+                    name="recordNumber"
+                    label="备案号内容"
+                    :required="true"
+                >
+                    <a-input v-model:value="form.recordNumber"></a-input>
                 </j-form-item>
                 <j-row :gutter="24" :span="24">
                     <j-col>
@@ -265,12 +313,11 @@
 import { modalState, formState, logoState } from '../data/interface';
 import { Form } from 'jetlinks-ui-components';
 import { FILE_UPLOAD } from '@/api/comm';
-import {
-    save,
-} from '@/api/initHome';
+import { save } from '@/api/initHome';
 import { LocalStore, getImage, onlyMessage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
+import { omit } from 'lodash-es';
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
@@ -287,7 +334,11 @@ const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 const form = ref<formState>({
     title: '',
     headerTheme: 'light',
-    apikey: '',
+    showRecordNumber: true,
+    recordNumber: '',
+    apiKey: '',
+    webKey: '',
+    secretKey: '',
     basePath: `${window.location.origin}/api`,
     logo: '/logo.png',
     ico: '/favicon.ico',
@@ -324,22 +375,27 @@ const { resetFields, validate, validateInfos } = useForm(
  * 提交数据
  */
 const saveBasicInfo = () => {
-    return new Promise(async (resolve,reject) => {
+    return new Promise(async (resolve, reject) => {
         validate()
             .then(async () => {
                 const item = [
                     {
                         scope: 'front',
                         properties: {
-                            ...form.value,
-                            apikey: '',
-                            'base-path': '',
+                            ...omit(form.value, [
+                                'apiKey',
+                                'webKey',
+                                'secretKey',
+                                'base-path',
+                            ]),
                         },
                     },
                     {
                         scope: 'amap',
                         properties: {
-                            apiKey: form.value.apikey,
+                            apiKey: form.value.apiKey,
+                            webKey: form.value.webKey,
+                            secretKey: form.value.secretKey,
                         },
                     },
                     {
@@ -354,7 +410,7 @@ const saveBasicInfo = () => {
                     resolve(true);
                     localStorage.setItem(
                         SystemConst.AMAP_KEY,
-                        form.value.apikey,
+                        form.value.apiKey,
                     );
                     const ico: any = document.querySelector('link[rel="icon"]');
                     if (ico !== null) {

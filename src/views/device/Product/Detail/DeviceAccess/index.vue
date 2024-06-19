@@ -774,7 +774,6 @@ const submitDevice = async () => {
     const id = productStore.current?.id;
     // 该产品是否有物模型，有则弹窗进行处理
     const _metadata = JSON.parse(productStore.current?.metadata || '{}')
-    console.log(_metadata.properties, productData.metadata)
     if (
       (_metadata.properties?.length ||
       _metadata.events?.length ||
@@ -801,8 +800,9 @@ const submitDevice = async () => {
 
 const updateAccessData = async (id: string, values: any) => {
   const result: any = {};
-  flatObj(values, result);
-  const { storePolicy, ...extra } = result;
+//   flatObj(values, result);
+//   const { storePolicy, ...extra } = result;
+    const { storePolicy, ...extra } = values
   // 产品有物模型，设备接入没有，取产品物模型；设备接入有物模型，产品没有，取设备接入的物模型；否则取空字符串；不能为undefined或者null
   let _metadata = ''
   if (productStore.current?.metadata) {

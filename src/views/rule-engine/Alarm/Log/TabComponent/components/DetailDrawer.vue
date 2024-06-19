@@ -21,9 +21,7 @@
             <div class="alarmInfoRight">
                 <div>
                     {{
-                        data.defaultLevel.find(
-                            (i) => i.level === AlarmData?.level,
-                        )?.title || AlarmData?.level
+                        levelMap?.[AlarmData?.level] || AlarmData?.level
                     }}
                 </div>
                 <div>
@@ -67,8 +65,6 @@
 </template>
 
 <script setup name="LogDrawer">
-import { useAlarmStore } from '@/store/alarm';
-import { storeToRefs } from 'pinia';
 import { query } from '@/api/rule-engine/log';
 import Record from './Record.vue';
 import Log from './Log.vue';
@@ -82,12 +78,14 @@ const props = defineProps({
         type: Object,
         default: {},
     },
+    levelMap: {
+        type: Object,
+        default: {},
+    },
 });
-const emit = defineEmits(['closeDrawer','refreshTable']);
+const emit = defineEmits(['closeDrawer', 'refreshTable']);
 const solveVisible = ref(false);
 const RecordRef = ref();
-const alarmStore = useAlarmStore();
-const { data } = storeToRefs(alarmStore);
 const AlarmData = ref(props.logData);
 const activeKey = ref('record');
 const closeDrawer = () => {
@@ -117,7 +115,7 @@ const refresh = async () => {
             RecordRef?.value.refreshRecord();
         }
     }
-    emit('refreshTable')
+    emit('refreshTable');
 };
 </script>
 <style lang="less" scoped>

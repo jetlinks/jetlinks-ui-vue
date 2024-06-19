@@ -130,5 +130,18 @@ const emit = defineEmits(['closeLog']);
 const handleSearch = (e: any) => {
     params.value = e;
 };
+const calculateDuration = (startTime, endTime) => {
+    const diffInSeconds = endTime.diff(startTime, 'second');
+    let result;
+
+    if (diffInSeconds < 60) {
+        result = `${diffInSeconds.toFixed(1)} s`;
+    } else if (diffInSeconds < 3600) {
+        result = `${(diffInSeconds / 60).toFixed(1)} min`;
+    } else {
+        result = `${(diffInSeconds / 3600).toFixed(1)} h`;
+    }
+    return result;
+};
 </script>
 <style lang="less" scoped></style>

@@ -21,6 +21,13 @@
                     >{{ text }}</a-button
                 ></template
             >
+            <template
+                v-if="
+                    column.dataIndex === 'triggerDesc' ||
+                    column.dataIndex === 'actualDesc'
+                "
+                ><Ellipsis>{{ text }}</Ellipsis></template
+            >
         </template></a-table
     >
     <div class="tableBottom">
@@ -108,10 +115,7 @@ const queryData = async () => {
 };
 
 const gotoDevice = (id) => {
-    menuStory.jumpPage(
-        'device/Instance/Detail',
-        { id, tab: 'Running'}
-    );
+    menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
 };
 const showDetail = (data) => {
     visibleDetail.value = true;

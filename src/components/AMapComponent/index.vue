@@ -22,7 +22,7 @@ import '@vuemap/vue-amap/dist/style.css';
 import { getAMapUiPromise } from './utils';
 import { useSystem } from '@/store/system';
 
-const emit = defineEmits(['init'])
+const emit = defineEmits(['init']);
 
 const system = useSystem();
 interface AMapProps {
@@ -31,10 +31,11 @@ interface AMapProps {
     AMapUI?: string | boolean;
 }
 const amapKey = system.$state.configInfo.amap?.apiKey;
+const secretKey = system.$state.configInfo.amap?.secretKey;
 
 initAMapApiLoader({
-    key: amapKey || 'c86c1b22c6b223e3ed08815532676445',
-    securityJsCode: 'b0efcf1ce14cbf2d56d3cde630cd19cf',
+    key: amapKey,
+    securityJsCode: secretKey,
     plugins: ['AMap.DistrictSearch'],
 });
 
@@ -69,9 +70,12 @@ const initMap = (e: any) => {
     if (isOpenUi.value) {
         getAMapUI();
     }
-    emit('init', e)
+    emit('init', e);
 };
+
+onMounted(()=>{
+    console.log(secretKey,'secretKey')
+})
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
