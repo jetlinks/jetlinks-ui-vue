@@ -4,6 +4,7 @@
         title="升级任务"
         placement="right"
         :width="700"
+        :maskClosable="false"
         @close="$emit('closeDrawer')"
     >
         <template #extra>
@@ -17,7 +18,9 @@
         <div v-for="item in taskList" class="task">
             <div class="taskTitle">
                 <div>{{ item?.mode?.text }}</div>
-                <div>{{ item?.name }}</div>
+                <div>
+                    <Ellipsis>{{ item?.name }}</Ellipsis>
+                </div>
                 <div>
                     完成比例<span class="progress">
                         {{ (item?.progress || 0) + '%' }}
@@ -91,7 +94,9 @@ const currentTask = ref();
 const queryTaskList = async () => {
     const param = {
         paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
+        sorts: [
+            { name: 'createTime', order: 'desc' }
+        ],
         terms: [
             {
                 terms: [
@@ -144,6 +149,9 @@ onMounted(() => {
 .taskTitle {
     display: flex;
     justify-content: space-around;
+    div {
+        width: 20%;
+    }
     .progress {
         color: rgb(217, 0, 27);
         margin-left: 5px;
