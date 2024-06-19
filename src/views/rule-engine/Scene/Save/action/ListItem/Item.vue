@@ -531,7 +531,7 @@ const onType = (_type: string) => {
  * @param options
  */
 const onSave = (data: ActionsType, options: any) => {
-  const { key, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
+  const { key, actionId, terms } = _data.value.branches![props.branchesName].then?.[props.thenName].actions?.[props.name]
 
   const columns = new Set([...(props.options?.termsColumns || []), ...(options?.otherColumns?.filter?.((item?: string) => item) || [])])
 
@@ -539,6 +539,7 @@ const onSave = (data: ActionsType, options: any) => {
     ...data,
     options: {...props.options, ...options, columns: [...columns.values()]},
     key,
+    actionId,
     terms
   }
 
@@ -554,6 +555,7 @@ const onSave = (data: ActionsType, options: any) => {
  * @param options
  */
 const onPropsOk = (data: ActionsType, options?: any) => {
+  console.log('onPropsOk', data)
   onSave(data, options);
   actionType.value = '';
 };

@@ -39,7 +39,7 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
   if (!value) {
     return Promise.resolve()
   }
-
+  console.log(value)
   if (value.type === 'enum' && !value.elements?.length) {
     return Promise.reject('请添加枚举项')
   }
@@ -49,6 +49,10 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
 
   if (_isObject && value.type === 'object' && !value.properties?.length) {
     return Promise.reject('请添加参数')
+  }
+
+  if (value.type === 'date' && !value.format) {
+    return Promise.reject('请选择时间格式')
   }
 
   if (value.type === 'file' && (!value.bodyType || (isObject(value.bodyType) && !Object.keys(value.bodyType).length))) {
@@ -235,7 +239,6 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
             asyncValidator: async (rule: any, value: any) => {
 
               const source = value.source
-              console.log(value)
               if (source) {
                 if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');

@@ -77,7 +77,12 @@ const save = async () => {
     })
     loading.value = false
     if (resp.success) {
-      menuStore.jumpPage('rule-engine/Scene');
+      if ((window as any).onTabSaveSuccess) {
+        (window as any).onTabSaveSuccess(resp);
+        setTimeout(() => window.close(), 300);
+      } else {
+        menuStore.jumpPage('rule-engine/Scene');
+      }
       onlyMessage('操作成功');
     }
   }

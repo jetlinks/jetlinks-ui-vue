@@ -97,7 +97,7 @@
                                         </div>
                                         <Ellipsis>
                                             {{
-                                                levelMap?.[slotProps.level] ||  slotProps.level
+                                            levelMap[slotProps.level] || slotProps.level
                                             }}
                                         </Ellipsis>
                                     </j-col>

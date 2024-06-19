@@ -15,7 +15,7 @@
       :options="options"
       mode="tags"
       placeholder="请选择时间格式"
-      :dropdownMenuStyle="{ zIndex: 1071}"
+      :dropdownStyle="{ zIndex: 1072}"
       :getPopupContainer="(node) => tableWrapperRef || node"
       @change="change"
     />
