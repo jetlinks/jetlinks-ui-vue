@@ -83,17 +83,22 @@
                                 ? detail.residualFlow.toFixed(2) + ' M'
                                 : '0 M'
                         }}</j-descriptions-item>
-                        <j-descriptions-item label="状态">
-                          {{
-                            detail?.cardState?.text
-                          }}
-                          <span v-if="deactivateData.show" style="padding-left: 8px;">
-                            <a-tooltip
-                              :title="deactivateData.tip"
+                        <j-descriptions-item label="运营商状态">
+                            {{ detail?.cardState?.text }}
+                            <span
+                                v-if="deactivateData.show"
+                                style="padding-left: 8px"
                             >
-                              <AIcon type="ExclamationCircleOutlined" style="color: var(--ant-error-color);"/>
-                            </a-tooltip>
-                          </span>
+                                <a-tooltip :title="deactivateData.tip">
+                                    <AIcon
+                                        type="ExclamationCircleOutlined"
+                                        style="color: var(--ant-error-color)"
+                                    />
+                                </a-tooltip>
+                            </span>
+                        </j-descriptions-item>
+                        <j-descriptions-item label="平台状态">
+                            {{ detail?.cardStateType?.text }}
                         </j-descriptions-item>
                         <j-descriptions-item label="说明">{{
                             detail?.describe
@@ -190,12 +195,19 @@
 <script setup lang="ts" name="CardDetail">
 import moment from 'moment';
 import type { CardManagement } from '../typing';
-import {queryDeactivate, queryDetail} from '@/api/iot-card/cardManagement';
+import { queryDeactivate, queryDetail, query} from '@/api/iot-card/cardManagement';
 import Save from '../Save.vue';
 import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
 import { queryFlow } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
+
+const props = defineProps({
+    deviceId: {
+        type: String,
+        default: '',
+    },
+});
 
 const route = useRoute();
 
@@ -213,9 +225,9 @@ const monthOptions = ref<any[]>([]);
 const yearOptions = ref<any[]>([]);
 
 const deactivateData = reactive({
-  show: false,
-  tip: ''
-})
+    show: false,
+    tip: '',
+});
 
 const quickBtnList = [
     { label: '昨日', value: 'yesterday' },
@@ -230,13 +242,16 @@ const getDetail = () => {
             detail.value = resp.result;
 
             if (resp.result.cardStateType?.value === 'deactivate') {
-                deactivateData.show = true
-              //   获取停机原因
-              queryDeactivate(route.params.id as string).then((deacResp: any) => {
-                if (deacResp.success && deacResp.result?.message) {
-                  deactivateData.tip = deacResp.result.message.toString()
-                }
-              })
+                deactivateData.show = true;
+                //   获取停机原因
+                queryDeactivate(route.params.id as string).then(
+                    (deacResp: any) => {
+                        if (deacResp.success && deacResp.result?.message) {
+                            deactivateData.tip =
+                                deacResp.result.message.toString();
+                        }
+                    },
+                );
             }
         }
     });
@@ -254,18 +269,17 @@ const saveChange = (val: any) => {
     }
 };
 
-const getData = (
-    start: number,
-    end: number,
-): Promise<{ sortArray: any[]}> => {
+const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
     return new Promise((resolve) => {
         queryFlow(start, end, {
             orderBy: 'date',
-            terms: [{
-              column : "cardId",
-              termType: "eq",
-              value: route.params.id
-            }]
+            terms: [
+                {
+                    column: 'cardId',
+                    termType: 'eq',
+                    value: route.params.id,
+                },
+            ],
         }).then((resp: any) => {
             if (resp.status === 200) {
                 const sortArray = resp.result.sort(
@@ -278,7 +292,6 @@ const getData = (
             }
         });
     });
-
 };
 
 /**
@@ -308,15 +321,14 @@ const getDataTotal = () => {
             .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         monthOptions.value = resp.sortArray;
-    })
+    });
     getData(yTime[0], yTime[1]).then((resp) => {
         yearTotal.value = resp.sortArray
             .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
-            yearOptions.value = resp.sortArray;
+        yearOptions.value = resp.sortArray;
     });
 };
-
 
 /**
  * 流量统计
@@ -334,8 +346,32 @@ const getEcharts = (data: any) => {
     });
 };
 
-getDetail();
-getDataTotal();
+/**
+ * 获取绑定设备的物联卡的信息
+ */
+const queryCard = async() =>{
+    const res:any = query({
+        terms:[
+            {
+                column:'deviceId',
+                termType: 'eq',
+                value: props.deviceId
+            }
+        ]
+    })
+    if(res.success){
+
+    }
+}
+
+
+onMounted(async() => {
+    if(props.deviceId){
+        queryCard()
+    }
+    getDetail();
+    getDataTotal();
+});
 </script>
 <style scoped lang="less">
 .card {

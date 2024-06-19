@@ -171,6 +171,10 @@ const initList = [
         key: 'AlarmRecord',
         tab: '告警记录',
     },
+    {
+        key: 'CardManagement',
+        tab: '物联网卡'
+    }
 ];
 
 const list = ref([...initList]);
