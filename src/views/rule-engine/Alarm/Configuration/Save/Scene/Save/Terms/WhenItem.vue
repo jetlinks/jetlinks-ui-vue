@@ -1,7 +1,7 @@
 <template>
   <div class="terms-when-item">
     <div v-if="showType"  class="dropdown-button type">
-      {{ value[3] }}
+      {{ TermTypeMap[value[3]] || value[3] }}
     </div>
     <div class="dropdown-button column">
       <AIcon type='icon-zhihangdongzuoxie-1' />
@@ -23,6 +23,7 @@
 </template>
 
 <script setup name="WhenItem">
+import { TermTypeMap } from '../utils'
 
 const TermsTypeMap = {
   eq: '等于',

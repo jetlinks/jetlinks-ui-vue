@@ -14,11 +14,18 @@
               <span>
                 满足条件后将{{ item.alarm.mode === 'trigger' ? '触发' : '解除' }}当前告警
               </span>
-              <a-button type="link" @click="onBind(item)" :disabled="activeKeys.some(active => active === item.actionId)">
+
+              <a-button v-if="!showUnbindBtn" type="link" @click="onBind(item)" :disabled="activeKeys.some(active => active === item.actionId)">
                 <template #icon>
                   <AIcon type="icon-bangding"/>
                 </template>
                 {{ selectedKeys.some(selectKey => selectKey === item.actionId) ? '已关联' : '关联' }}
+              </a-button>
+              <a-button v-else type="link" @click="onSelect(item)">
+                <template #icon>
+                  <AIcon :type="activeKeys.some(active => active === item.actionId) ? 'icon-jiebang' : 'icon-bangding'"/>
+                </template>
+                {{ activeKeys.some(active => active === item.actionId) ? '取消关联' : '关联' }}
               </a-button>
             </template>
             <template v-if="item.executor === 'notify' && show">
@@ -231,15 +238,25 @@ const props = defineProps({
   serial: {
     type: Boolean,
     default: false
+  },
+  showUnbindBtn: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change', 'select'])
 
 const onBind = (record) => {
   const selected = props.selectedKeys.some(item => item === record.actionId)
   emit('change', record.actionId, !selected)
 }
+
+const onSelect = (record) => {
+  const selected = props.activeKeys.some(item => item === record.actionId)
+  emit('select', record.actionId, !selected)
+}
+
 
 </script>
 

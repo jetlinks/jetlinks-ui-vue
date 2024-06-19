@@ -1,36 +1,68 @@
 <template>
-  <a-tabs v-model:activeKey="activeKey">
-    <template #rightExtra>
-      <a-button @click="show = !show">
-        {{ show ? '隐藏条件' : '显示条件'}}
-      </a-button>
-    </template>
-    <a-tab-pane
-      v-for="group in branchesGroup"
-      :tab="group.branchName"
-      :key="group.key"
-    >
-      <div v-for="(branch, index) in group.children">
-        <div style="display: flex;align-items: center" v-if="show">
-          <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
-          <Terms :when="branch.when" />
-        </div>
-      <template v-if="branch.serial?.length">
-        <div class="branches-tabs-title">
-          串行
-        </div>
-        <Actions :actions="branch.serial" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" :serial="true" @change="change" />
-      </template>
-      <template v-if="branch.parallel?.length">
-        <div class="branches-tabs-title">
-          并行
-        </div>
-        <Actions :actions="branch.parallel" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" @change="change" />
-      </template>
+  <div>
+    <div v-if="triggerType ==='device'">
+      <a-tabs v-if="branchesGroup.length" v-model:activeKey="activeKey">
+        <template v-if="showDetailBtn" #rightExtra>
+          <a-button @click="show = !show">
+            {{ show ? '收起' : '点击查看详情'}}
+          </a-button>
+        </template>
+        <a-tab-pane
+          v-for="group in branchesGroup"
+          :tab="group.branchName"
+          :key="group.key"
+        >
+          <div v-for="(branch, index) in group.children">
+            <div style="display: flex;align-items: center" v-if="show">
+              <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
+              <Terms :when="branch.when" />
+            </div>
+          <template v-if="branch.serial?.length">
+            <div v-if="show" class="branches-tabs-title">
+              串行
+            </div>
+            <Actions :actions="branch.serial" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" :serial="true" :showUnbindBtn="showUnbindBtn" @change="change" @select="select" />
+          </template>
+          <template v-if="branch.parallel?.length">
+            <div v-if="show" class="branches-tabs-title">
+              并行
+            </div>
+            <Actions :actions="branch.parallel" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" :showUnbindBtn="showUnbindBtn" @change="change" @select="select" />
+          </template>
 
+          </div>
+        </a-tab-pane>
+      </a-tabs>
+
+    </div>
+    <div v-else>
+      <div style="margin: 8px 0; text-align: right">
+        <a-button @click="show = !show">
+          {{ show ? '收起' : '点击查看详情'}}
+        </a-button>
       </div>
-    </a-tab-pane>
-  </a-tabs>
+      <div  v-for="group in branchesGroup">
+        <div v-for="(branch, index) in group.children">
+          <div style="display: flex;align-items: center" v-if="show">
+            <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
+            <Terms :when="branch.when" />
+          </div>
+          <template v-if="branch.serial?.length">
+            <div v-if="show" class="branches-tabs-title">
+              串行
+            </div>
+            <Actions :actions="branch.serial" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" :serial="true" :showUnbindBtn="showUnbindBtn" @change="change" @select="select" />
+          </template>
+          <template v-if="branch.parallel?.length">
+            <div v-if="show" class="branches-tabs-title">
+              并行
+            </div>
+            <Actions :actions="branch.parallel" :activeKeys="activeKeys" :selectedKeys="selectedKeys" :show="show" :showUnbindBtn="showUnbindBtn" @change="change" @select="select" />
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup name="BranchesTabs">
@@ -57,16 +89,36 @@ const props = defineProps({
   selectedKeys: { // 当前modal中选中的执行动作
     type: Array,
     default: () => ([])
+  },
+  show: {
+    type: Boolean,
+    default: false
+  },
+  showDetailBtn: {
+    type: Boolean,
+    default: true
+  },
+  showUnbindBtn: {
+    type: Boolean,
+    default: false
+  },
+  triggerType: {
+    type: String,
+    default: undefined
   }
 })
 
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change', 'select'])
 
 const activeKey = ref(props.branchesGroup?.length ? props.branchesGroup[0].key : '')
-const show = ref(false)
+const show = ref(props.show)
 
 const change = (id, selected) => {
   emit('change', id, selected)
+}
+
+const select = (id, selected) => {
+  emit('select', id, selected)
 }
 
 </script>

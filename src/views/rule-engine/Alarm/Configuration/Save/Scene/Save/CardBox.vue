@@ -62,7 +62,16 @@
           </div>
         </div>
         <div class="card-content-tabs">
-          <BranchesTabs :branchesGroup="branchesGroup" :alarmId="alarmId" :branchesId="value.id" :activeKeys="activeKeys" :selectedKeys="selectedKeys" @change="bindAlarm"/>
+          <BranchesTabs
+            :branchesGroup="branchesGroup"
+            :alarmId="alarmId"
+            :branchesId="value.id"
+            :activeKeys="activeKeys"
+            :selectedKeys="selectedKeys"
+            :triggerType="value.triggerType"
+            :key="value.id"
+            @change="bindAlarm"
+          />
         </div>
         <div
           class="card-state"
@@ -77,10 +86,20 @@
           </div>
         </div>
       </div>
-      <div class="card-mask" v-if="showMask">
+      <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" >
         <div class="mask-content">
-
+          <div>
+            当前告警已关联：
+          </div>
+          <div>
+            <j-ellipsis>
+              {{ activeBranches.join(',')}}
+            </j-ellipsis>
+          </div>
         </div>
+      </div>
+      <div v-if="isInvalid" class="card-mask" style="background-color: rgba(0, 0, 0, 0.2);" >
+        <a-button style="font-size: 16px;" type="link" @click="jumpView">无效数据，请重新保存场景</a-button>
       </div>
     </div>
   </div>
@@ -94,11 +113,13 @@ import TimerTitle from '@/views/rule-engine/Scene/Save/Timer/Title.vue'
 import AddButton from '@/views/rule-engine/Scene/Save/components/AddButton.vue'
 import BranchesTabs from './BranchesTabs.vue'
 import {PropType} from 'vue';
-import {handleGroupAndFilter, typeMap} from './utils'
+import {handleActiveBranches, handleGroupAndFilter, typeMap} from './utils'
+import {useMenuStore} from "@/store/menu";
 
 type EmitProps = {
   (e: 'click', data: Record<string, any>): void;
   (e: 'change', key: string, selected: boolean): void;
+  (e: 'reload'): void;
 };
 
 const emit = defineEmits<EmitProps>();
@@ -138,10 +159,15 @@ const props = defineProps({
   selectedKeys: { // 当前modal中选中的执行动作
     type: Array,
     default: () => ([])
+  },
+  showMask: {
+    type: Boolean,
+    default: false
   }
 });
 
-
+const isInvalid = ref(false)
+const menuStory = useMenuStore();
 const bgcColor = computed(() => {
   const key = props.statusNames[props.status]
   const _color = color[key] || color.default;
@@ -158,38 +184,34 @@ const itemType = computed(() => {
   return typeMap.get(props.value.triggerType) || {}
 })
 
-const showMask = computed(() => {
-  return false
+const branchesGroup = computed(() => {
+  return handleGroupAndFilter(props.value.branches, props.value.options?.when || [])
 })
 
-const branchesGroup = computed(() => {
-  // const when = props.value.options?.when || []
-  // if (!props.value.branches?.length) return []
-  //
-  // // TODO 分组 store公用分组
-  // return props.value.branches.map((item, index) => {
-  //   item.branchName = when[index]?.branchName || '条件' + (index + 1)
-  //
-  //   if (item.then[0]?.actions.length) {
-  //     item.serial = item.then[0]?.actions.filter(actionItem => {
-  //       return actionItem.executor === 'alarm'
-  //     })
-  //   }
-  //
-  //   if (item.then[1]?.actions.length) {
-  //     item.parallel = item.then[1]?.actions.filter(actionItem => {
-  //       return actionItem.executor === 'alarm'
-  //     })
-  //   }
-  //   return item
-  // })
-  return handleGroupAndFilter(props.value.branches, props.value.options?.when || [])
+const activeBranches = computed(() => {
+  const { data, invalid } = handleActiveBranches(branchesGroup.value, props.activeKeys)
+
+  isInvalid.value = invalid
+  return data
 })
 
 const bindAlarm = (key: string, selected: boolean) => {
   emit('change', key, selected)
 }
 
+const jumpView = () => {
+
+  const url = menuStory.menus['rule-engine/Scene/Save']?.path;
+  const tab: any = window.open(
+    `${window.location.origin + window.location.pathname}#${url}?triggerType=${props.value.triggerType}&id=${props.value.id}`,
+  );
+  tab.onTabSaveSuccess = (value: any) => {
+    console.log('', value)
+    if (value.success) {
+      emit('reload')
+    }
+  };
+}
 
 </script>
 
@@ -228,14 +250,6 @@ const bindAlarm = (key: string, selected: boolean) => {
     border: 1px solid #e6e6e6;
     overflow: hidden;
     cursor: pointer;
-
-    &:hover {
-      box-shadow: 0 0 24px rgba(#000, 0.1);
-
-      .card-mask {
-        visibility: visible;
-      }
-    }
 
     &.disabled {
       filter: grayscale(100%);
@@ -385,15 +399,21 @@ const bindAlarm = (key: string, selected: boolean) => {
       left: 0;
       z-index: 2;
       display: flex;
-      align-items: center;
       justify-content: center;
       width: 100%;
-      height: 100%;
+      font-size: 16px;
+      height: 136px;
       color: #fff;
-      background-color: rgba(#000, 0.5);
-      visibility: hidden;
+      padding-top: 30px;
+      background-color: rgba(#000, 0.45);
       cursor: pointer;
-      transition: all 0.3s;
+      transition: background-color 0.3s;
+
+
+      &.mask-hover:hover {
+        background-color: rgba(#000, 0.01);
+        color: transparent;
+      }
 
       .mask-content {
         display: flex;
@@ -401,7 +421,8 @@ const bindAlarm = (key: string, selected: boolean) => {
         justify-content: center;
         width: 100%;
         height: 100%;
-        padding: 0 !important;
+        padding: 24px !important;
+        flex-direction: column;
       }
     }
   }

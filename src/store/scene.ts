@@ -174,6 +174,7 @@ export const useSceneStore = defineStore('scene', () => {
         }
         return item
       })
+
       data.value = {
         ...result,
         trigger: result.trigger || {},

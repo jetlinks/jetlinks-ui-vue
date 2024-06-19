@@ -1,9 +1,8 @@
-import {send} from "vite";
 import {isArray, isBoolean, isObject} from "lodash-es";
 import {randomString} from "@/utils/utils";
 import {getImage} from "@/utils/comm";
 
-const TypeMap = {
+export const TermTypeMap = {
     'and': '并且',
     'or': '或者'
 }
@@ -293,4 +292,29 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
     })
 
     return group
+}
+
+export const handleActiveBranches = (branches: any[], activeKeys: any[]) => {
+    const branchesNames: string[] = []
+    let invalid = false
+
+    branches.forEach((item) => {
+        let hasAlarmId = false
+
+        item.children.forEach(child => {
+            invalid = child.serial?.some(serial => !serial.actionId)
+            hasAlarmId = child.serial?.some(serial => activeKeys.includes(serial.actionId)) || child.parallel?.some(parallel => activeKeys.includes(parallel.actionId))
+        })
+
+        if (hasAlarmId) {
+            branchesNames.push(item.branchName)
+        }
+
+    })
+
+
+    return {
+        data: branchesNames,
+        invalid
+    }
 }

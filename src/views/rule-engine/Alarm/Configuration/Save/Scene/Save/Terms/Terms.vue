@@ -19,6 +19,7 @@
 <script setup name="Terms">
 import WhenItem from "./WhenItem.vue";
 
+
 const props = defineProps({
   when: {
     type: Object,
@@ -46,6 +47,8 @@ const props = defineProps({
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-shrink: 0;
+  user-select: none;
 
   .terms-group-content {
     position: relative;

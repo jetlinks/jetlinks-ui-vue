@@ -14,6 +14,7 @@
     <div style="height: 500px; overflow-y: auto">
       <JProTable
         model="CARD"
+        ref="tableRef"
         :request="query"
         :gridColumns="[1, 1, 1]"
         :defaultParams="{
@@ -34,7 +35,9 @@
             :alarmId="id"
             :activeKeys="activeKeys[slotProps.id]"
             :selectedKeys="selectedKeysMap[slotProps.id]"
+            :showMask="true"
             @change="(key, selected) => onAlarmChange(key, selected, slotProps)"
+            @reload="reload"
           />
         </template>
       </JProTable>
@@ -126,7 +129,9 @@ const terms = [
     type: 'and',
   },
 ];
+
 const params = ref();
+const tableRef = ref();
 
 const selectedKeysMap = reactive({})
 const loading = ref(false)
@@ -134,9 +139,8 @@ const loading = ref(false)
 const { data: activeKeys } = useRequest(queryBindScene, {
   defaultParams: { terms: [{ column: 'alarmId', value: props.id}]},
   onSuccess(res) {
-    console.log(res.result.data)
     const activeMap = res.result.data.reduce((prev, next) => {
-      console.log(prev)
+
       if (prev[next.ruleId]) {
         prev[next.ruleId].push(next.branchIndex)
       } else {
@@ -184,6 +188,9 @@ const closeModal = () => {
   emit('closeSave');
 };
 
+const reload = () => {
+  tableRef.value?.reload()
+}
 
 const onAlarmChange = (key: string, selected: boolean, record: Record<string, any>) => {
   const keys = selectedKeysMap[record.id]

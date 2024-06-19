@@ -276,7 +276,6 @@ watch(
                             metadata.value = JSON.parse(
                                 resp.result?.metadata || '{}',
                             );
-                          console.log(metadata.value, resp.result?.metadata)
                         }
                     });
                 }

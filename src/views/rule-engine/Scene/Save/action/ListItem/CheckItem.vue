@@ -7,7 +7,7 @@ import { ActionsType, FormModelType, PlatformRelation } from '@/views/rule-engin
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { queryProductList } from '@/api/device/product'
-import { query as deviceQuery } from '@/api/device/instance'
+import { query as deviceQuery, detail as getDeviceDetail } from '@/api/device/instance'
 import noticeConfig from '@/api/notice/config'
 import noticeTemplate from '@/api/notice/template'
 import { Form } from 'jetlinks-ui-components'
@@ -66,8 +66,9 @@ const checkDeviceDelete = async () => {
       hasDevice = deviceResp.success && (deviceResp.result as any)?.total === (item!.selectorValues?.length || 0)
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
-        const deviceDetail = deviceResp?.result?.data?.[0]
-        metadata = JSON.parse(deviceDetail?.deriveMetadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
+        // const deviceDetail = deviceResp?.result?.data?.[0]
+        const deviceDetailResp = await getDeviceDetail(deviceList[0])
+        metadata = JSON.parse(deviceDetailResp.result?.deriveMetadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }
     if (!hasDevice) { // 某一个设备被删除
