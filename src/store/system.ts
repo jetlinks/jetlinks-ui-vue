@@ -5,6 +5,9 @@ import {getDetails_api, settingDetail} from '@/api/system/basis';
 import type { ConfigInfoType } from '@/views/system/Basis/typing';
 import { LocalStore } from '@/utils/comm'
 import { SystemConst } from '@/utils/consts'
+import {
+    getTagsColor,  
+} from '@/api/system/calendar'
 
 type SystemStateType = {
     isCommunity: boolean;
@@ -20,6 +23,7 @@ type SystemStateType = {
         collapsed: boolean
         pure: boolean
     }
+    calendarTagColor:Map<string,string>
 }
 
 export const useSystem = defineStore('system', {
@@ -37,7 +41,8 @@ export const useSystem = defineStore('system', {
             openKeys: [],
             collapsed: false,
             pure: false
-        }
+        },
+        calendarTagColor:new Map()
     }),
     actions: {
         getSystemVersion(): Promise<any[]> {
@@ -86,6 +91,14 @@ export const useSystem = defineStore('system', {
                     // }
                     this.setDocumentTitle()
                 })
+            }
+        },
+        async getTagsColor(){
+            const answer:any = await getTagsColor();
+            if (answer.success) {
+                Object.keys(answer.result).forEach((i) => {
+                    this.calendarTagColor.set(i, answer.result[i]);
+                });
             }
         }
     }

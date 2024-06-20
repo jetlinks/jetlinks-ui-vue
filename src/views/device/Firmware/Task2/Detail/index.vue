@@ -8,9 +8,6 @@
     >
         <div class="allOperation">
             <PermissionButton
-                :disabled="
-                    !(data?.waiting > 0 && data?.state?.value === 'processing')
-                "
                 @click="stopAll"
                 hasPermission="device/Firmware:update"
                 ><template #icon><AIcon type="PauseOutlined" /> </template
@@ -18,12 +15,27 @@
             </PermissionButton>
             <PermissionButton
                 style="margin-left: 20px"
-                :disabled="data?.state?.value !== 'canceled'"
                 hasPermission="device/Firmware:update"
                 @click="startAll"
                 ><template #icon><AIcon type="CaretRightOutlined" /> </template
                 >全部开始</PermissionButton
             >
+            <PermissionButton
+                v-if="data?.mode?.value === 'push'"
+                style="margin-left: 20px"
+                hasPermission="device/Firmware:update"
+                @click="batchRetry"
+                ><template #icon><AIcon type="RedoOutlined" /> </template>
+                批量重试
+            </PermissionButton>
+            <PermissionButton
+                style="float: right"
+                type="text"
+                hasPermission="device/Firmware:update"
+                @click="refreshState"
+                ><template #icon><AIcon type="RedoOutlined" /> </template>
+                刷新状态
+            </PermissionButton>
         </div>
         <div class="generalInfo">
             <div style="width: 80%">
@@ -43,7 +55,7 @@
             :data-source="historyList"
             :pagination="false"
             :scroll="{
-                y: 400
+                y: 400,
             }"
         >
             <template #bodyCell="{ column, text, record }">
@@ -76,38 +88,6 @@
                     <div v-if="text?.value === 'waiting'">
                         {{ text?.text }}
                     </div>
-                </template>
-                <template v-if="column.dataIndex === 'action'">
-                    <!-- <a-button
-                        v-if="
-                            record.state.value === 'waiting' ||
-                            record.state.value === 'processing'
-                        "
-                        :disabled="record.state.value === 'processing'"
-                        type="text"
-                        @click="() => stopUpgrades(record.id)"
-                    >
-                        <template #icon>
-                            <AIcon type="PauseOutlined"></AIcon></template
-                    ></a-button> -->
-                    <a-button
-                        v-if="
-                            // record.state.value === 'canceled' ||
-                            // record.state.value === 'success' ||
-                            record.state.value === 'failed'
-                        "
-                        type="text"
-                        @click="() => startUpgrades(record.id)"
-                    >
-                        <template #icon>
-                            <AIcon
-                                :type="
-                                    record.state.value === 'failed'
-                                        ? 'RedoOutlined'
-                                        : 'CaretRightOutlined'
-                                "
-                            ></AIcon></template
-                    ></a-button>
                 </template>
             </template>
         </j-table>
@@ -164,13 +144,6 @@ const columns = [
         dataIndex: 'state',
         key: 'state',
     },
-
-    {
-        title: '操作',
-        key: 'action',
-        dataIndex: 'action',
-        fixed: 'right',
-    },
 ];
 //列表数据
 const historyList = ref();
@@ -183,7 +156,10 @@ const general = reactive({
 const queryHistoryList = async () => {
     const params = {
         paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
+        sorts: [
+            { name: 'createTime', order: 'desc' },
+            { name: 'upgradeTime', order: 'desc' },
+        ],
         terms: [
             {
                 terms: [
@@ -199,11 +175,17 @@ const queryHistoryList = async () => {
     if (res.status === 200) {
         historyList.value = res.result;
         general.total = res.result.length;
-        const successArr = res.result.filter(
-            (i) => i?.state?.value === 'success',
-        );
-        general.percent = (successArr.length / general.total) * 100;
+        let progress = 0;
+        res.result.forEach((item) => {
+            progress += item.progress;
+        });
+        general.percent = ((progress / (general.total * 100)) * 100).toFixed(2);
     }
+};
+const refreshState = async () => {
+    emit('refresh');
+    await queryHistoryList();
+    onlyMessage('操作成功');
 };
 //全部开始
 const startAll = async () => {
@@ -212,6 +194,15 @@ const startAll = async () => {
             ? ['canceled', 'failed']
             : ['canceled'];
     const res = await startTask(props.data.id, state);
+    if (res.success) {
+        onlyMessage('操作成功', 'success');
+        queryHistoryList();
+        emit('refresh');
+    }
+};
+//全部重试
+const batchRetry = async () => {
+    const res = await startTask(props.data.id, ['failed']);
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();

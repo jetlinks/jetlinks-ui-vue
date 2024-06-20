@@ -109,7 +109,7 @@
       <div>
         正在预览日历
       </div>
-      <FullCalendar />
+      <FullCalendar  :preview="true"/>
     </j-modal>
   </div>
 </template>

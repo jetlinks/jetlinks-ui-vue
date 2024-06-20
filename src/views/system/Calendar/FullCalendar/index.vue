@@ -7,9 +7,9 @@
         >
             <template v-slot:eventContent="arg">
                 <div class="event">
-                    <i>{{ arg.event.title }}</i>
+                    <div class="event-title">{{ arg.event.title }}</div>
                     <a-button
-                        v-if="!selectable"
+                        v-if="!selectable && !preview"
                         type="text"
                         class="closeBtn"
                         @click="() => deleteEvent(arg)"
@@ -19,7 +19,14 @@
             </template>
         </FullCalendar>
         <div class="calenderButton">
-            <a-date-picker v-model:value="current"  format='YYYY-MM' picker="month" @change="changeDate" valueFormat="YYYY-MM"/>
+            <a-date-picker
+                v-model:value="current"
+                :disabled="selectable"
+                format="YYYY-MM"
+                picker="month"
+                @change="changeDate"
+                valueFormat="YYYY-MM"
+            />
             <a-button @click="handleCustomPrev" :disabled="selectable"
                 >上月</a-button
             >
@@ -30,6 +37,9 @@
                 >下月</a-button
             >
         </div>
+        <a-button v-if="preview" class="skip" type="link" @click="gotoCalendar"
+            >日历维护</a-button
+        >
         <div class="compareTip" v-if="eventChange">
             点击确认完成本次日历维护
         </div>
@@ -62,13 +72,22 @@ import { queryEvents, getTagsColor, saveEvents } from '@/api/system/calendar';
 import { cloneDeep, flatten } from 'lodash-es';
 import { defineExpose } from 'vue';
 import { inject } from 'vue';
+import { useMenuStore } from 'store/menu';
+import { useSystem } from '@/store/system';
 const props = defineProps({
     selectable: {
         type: String,
         default: false,
     },
+    preview: {
+        type: Boolean,
+        default: false,
+    },
 });
 const emit = defineEmits(['selectDate', 'resetRapid']);
+const menuStory = useMenuStore();
+const system = useSystem();
+const calendarTagColor = system.$state.calendarTagColor;
 const tagsList = inject('tagsMap');
 //请求接口的结束时间（请求过的日期就不再请求接口了）
 const queryEndDate = ref([]);
@@ -88,7 +107,6 @@ const initialData = ref([]);
 const initialEventData = ref([]);
 //接口获取到的数据
 const interfaceData = ref([]);
-const colorMap = new Map();
 //多选开始日期
 const choiceStart = ref();
 //多选结束日期
@@ -125,7 +143,7 @@ const queryEventsData = async (startDate, endDate, updateView) => {
                     id: i.id,
                     title: i.name,
                     start: i.date,
-                    backgroundColor: colorMap.get(i.id) || '#000000',
+                    backgroundColor: calendarTagColor.get(i.id) || '#000000',
                 };
             });
             calendarApi.value.removeAllEvents();
@@ -186,12 +204,7 @@ const handleViewDidMount = async (arg) => {
         return;
     }
     queryEndDate.value.push(endDate);
-    const answer = await getTagsColor();
-    if (answer.success) {
-        Object.keys(answer.result).forEach((i) => {
-            colorMap.set(i, answer.result[i]);
-        });
-    }
+    await system.getTagsColor();
     queryEventsData(startDate, endDate, true);
 };
 // 事件是否发生变化
@@ -203,14 +216,14 @@ const eventChange = computed(() => {
 // 自定义切换月份逻辑
 const handleCustomPrev = () => {
     calendarApi.value.prev();
-    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM')
+    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM');
 };
 const handleCustomNext = () => {
-    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM')
+    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM');
     calendarApi.value.next();
 };
 const handleCustomToday = () => {
-    current.value = dayjs().format('YYYY-MM')
+    current.value = dayjs().format('YYYY-MM');
     calendarApi.value.today();
 };
 //保存编辑后的日历
@@ -413,11 +426,12 @@ const rapidAction = async (effectDays) => {
             id: i.id,
             title: i.name,
             start: i.date,
-            backgroundColor: colorMap.get(i.id) || '#000000',
+            backgroundColor: calendarTagColor.get(i.id) || '#000000',
         };
     });
     //在已有事件基础上添加事件展示
     calendarApi.value.addEventSource(addEvents);
+    onlyMessage('操作成功');
     emit('resetRapid');
 };
 //取消多选(原生)
@@ -449,9 +463,13 @@ const refresh = () => {
     handleViewDidMount(calendarApi.value);
 };
 //日期切换
-const changeDate = (date) =>{
-    calendarApi.value.gotoDate(date)
-}
+const changeDate = (date) => {
+    calendarApi.value.gotoDate(date);
+};
+
+const gotoCalendar = () => {
+    menuStory.jumpPage('system/Calendar');
+};
 defineExpose({
     reselection,
     rapidAction,
@@ -467,7 +485,7 @@ watch(
     },
 );
 watch(
-    () => tagsList.value,
+    () => tagsList?.value,
     (val, oldVal) => {
         if (val?.length <= oldVal?.length) {
             const tagsMap = new Map();
@@ -526,6 +544,11 @@ onMounted(() => {
         top: 7px;
         transform: translateX(50%);
     }
+    .skip {
+        position: absolute;
+        right: 0;
+        top: 7px;
+    }
     .compareSave {
         position: absolute;
         right: 0;
@@ -543,7 +566,7 @@ onMounted(() => {
         .closeBtn {
             position: absolute;
             right: 0;
-            top: -5;
+            top: -5px;
             color: #fff;
             display: none;
         }
@@ -552,6 +575,12 @@ onMounted(() => {
         .closeBtn {
             display: inline-block;
         }
+    }
+    .event-title {
+        white-space: nowrap; /* 不换行 */
+        overflow: hidden; /* 超出部分隐藏 */
+        text-overflow: ellipsis; /* 显示省略号 */
+        width: calc(100% - 30px);
     }
 }
 :deep(.fc-highlight) {
