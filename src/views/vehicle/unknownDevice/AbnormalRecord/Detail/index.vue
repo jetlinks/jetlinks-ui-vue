@@ -1,16 +1,6 @@
 <template>
-    <j-modal
-        title="详情"
-        visible
-        :width="800"
-        @cancel="cancel"
-        :maskClosable="false"
-    >
-        <a-descriptions
-            bordered
-            :column="2"
-
-        >
+    <j-modal title="详情" v-model:visible="visible" :width="800">
+        <a-descriptions bordered :column="2">
             <a-descriptions-item label="车辆类型">{{
                 data?.vehicleTypeEnum
             }}</a-descriptions-item>
@@ -43,18 +33,29 @@
                 data?.orgName
             }}</a-descriptions-item>
         </a-descriptions>
+        <template #footer>
+            <j-button type="primary" @click="close">关闭</j-button>
+        </template>
     </j-modal>
 </template>
 
 <script setup lang="ts">
 import dayjs from 'dayjs';
-const emit = defineEmits(['cancel']);
+const emit = defineEmits<{
+    (e: 'update:modelValue', data: boolean): void;
+}>();
 const props = defineProps<{
     data: any;
+    modelValue: boolean;
 }>();
 
-const cancel = () => {
-    emit('cancel');
+const visible = computed({
+    get: () => props.modelValue,
+    set: () => emit('update:modelValue', false),
+});
+
+const close = () => {
+    emit('update:modelValue', false);
 };
 </script>
 

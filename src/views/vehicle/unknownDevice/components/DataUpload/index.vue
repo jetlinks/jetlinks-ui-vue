@@ -12,38 +12,43 @@
             :defaultParams="{
                 sorts: [{ name: 'reportTime', order: 'desc' }],
             }"
+            :rowSelection="
+                isCheck
+                    ? {
+                          selectedRowKeys: _selectedRowKeys,
+                          onChange: onSelectChange,
+                      }
+                    : false
+            "
             params="globParams"
             :gridColumn="3"
         >
             <template #headerTitle>
                 <j-space>
-                    <PermissionButton type="primary" @click="handleClick">
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        批量操作
-                    </PermissionButton>
+                    <BatchDropdown
+                        v-model:isCheck="isCheck"
+                        :actions="batchActions"
+                        @change="onCheckChange"
+                    />
                 </j-space>
             </template>
             <template #state="slotProps">
                 <BadgeStatus
                     :text="slotProps.state?.text"
                     :status="slotProps.state?.value"
-                    :statusNames="{
-                        known: 'processing',
-                        unknown: 'error',
-                    }"
+                    :statusNames="statusType"
                 />
             </template>
             <template #card="slotProps">
                 <CardBox
                     :value="slotProps"
                     :actions="getActions(slotProps, 'card')"
+                    @click="handleClick"
                     v-bind="slotProps"
                     :status="slotProps.state?.value"
+                    :active="_selectedRowKeys.includes(slotProps.id)"
                     :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        known: 'processing',
-                        unknown: 'error',
-                    }"
+                    :statusNames="statusType"
                 >
                     <template #img>
                         <slot name="img">
@@ -94,7 +99,6 @@
                     </template>
                     <template #actions="item">
                         <PermissionButton
-                          
                             :popConfirm="item.popConfirm"
                             :tooltip="{
                                 ...item.tooltip,
@@ -140,14 +144,38 @@
 </template>
 
 <script setup lang="ts">
-const tableRef = ref<InstanceType<typeof PTable>>();
-import { getImage } from '@/utils/comm';
-import PTable from '@/components/PTable/index.vue';
+
+import { getImage, onlyMessage } from '@/utils/comm';
 import { ActionsType } from '@/components/Table';
 import { useMenuStore } from 'store/menu';
+
+import BatchDropdown from '@/components/BatchDropdown/index.vue';
+import { BatchActionsType } from '@/components/BatchDropdown/types';
 const menuStory = useMenuStore();
+
+const tableRef = ref<Record<string, any>>({});
+
+const isCheck = ref<boolean>(false);
+
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
+
+const statusType = {
+    known: 'processing',
+    unknown: 'error',
+};
+
+const _selectedRowKeys = ref<string[]>([]);
+
+const onSelectChange = (keys: string[], rows: []) => {
+    _selectedRowKeys.value = [...keys];
+};
+
+const onCheckChange = () => {
+    _selectedRowKeys.value = [];
+};
+
+
 const columns = [
     {
         title: '名称',
@@ -205,12 +233,22 @@ const columns = [
     },
 ];
 
-const handleClick = () => {};
+const handleClick = (dt: any) => {
+    if (isCheck.value) {
+        if (_selectedRowKeys.value.includes(dt.id)) {
+            const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
+            _selectedRowKeys.value.splice(_index, 1);
+        } else {
+            _selectedRowKeys.value = [..._selectedRowKeys.value, dt.id];
+        }
+    }
+};
 
 const queryData = async () => {
     const data = [];
     for (let i = 0; i < 12; i++) {
         data.push({
+            id: `${i}`,
             title: `边缘网关${i}`,
             deviceId: `0000${i}`,
             state:
@@ -288,6 +326,35 @@ const getActions = (
     ];
     return actions;
 };
+
+const handelRemove = async () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('请选择数据', 'error');
+        return;
+    }
+    //删除
+
+    onlyMessage('操作成功');
+    //清空已选择
+    _selectedRowKeys.value = [];
+    //恢复状态
+    isCheck.value = false;
+    tableRef.value?.reload();
+};
+
+const batchActions: BatchActionsType[] = [
+    {
+        key: 'export',
+        text: '批量删除',
+        icon: 'ExportOutlined',
+        selected: {
+            popConfirm: {
+                title: '确认删除吗？',
+                onConfirm: handelRemove,
+            },
+        },
+    },
+];
 </script>
 
 <style lang="less" scoped></style>

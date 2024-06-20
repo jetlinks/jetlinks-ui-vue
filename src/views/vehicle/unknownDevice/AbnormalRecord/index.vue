@@ -57,12 +57,7 @@
                 </PTable>
             </Full-page>
         </page-container>
-        <Detail
-            v-if="visible"
-            @cancel="cancel"
-            @ok="visible = false"
-            :data="dataInfo"
-        />
+        <Detail v-model="visible" :data="dataInfo" />
     </div>
 </template>
 
@@ -71,13 +66,13 @@ import PTable from '@/components/PTable/index.vue';
 import dayjs from 'dayjs';
 import Detail from './Detail/index.vue';
 
+
+
 const dataInfo = ref();
 
 const visible = ref(false);
 
-const cancel = () => {
-    visible.value = false;
-};
+
 
 const globParams = ref<Record<string, any>>({});
 const columns = [
