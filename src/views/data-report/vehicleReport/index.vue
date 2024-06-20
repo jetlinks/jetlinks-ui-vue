@@ -17,10 +17,10 @@
                 :params="globParams"
                 :gridColumn="3"
                 :rowSelection="{
-                    selectedRowKeys: state.selectedRowKeys,
-                    onChange: selectedRowChange,
+                    selectedRowKeys: selectedRowKeys,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
+                    onSelectNone: handleClearSelected,
                 }"
             >
                 <template #headerTitle>
@@ -84,6 +84,7 @@ import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+import { useSelectableTable } from '@/hook/useSelectableTable';
 const menuStory = useMenuStore();
 
 const configRef = ref<Record<string, any>>({});
@@ -100,6 +101,13 @@ const pageSize = ref<number>(12);
 
 const xlsx = ref<string>('xlsx');
 const zip = ref<string>('zip');
+
+const {
+    selectedRowKeys,
+    handleRowSelected,
+    handleSelectAll,
+    handleClearSelected,
+} = useSelectableTable();
 
 const columns = [
     {
@@ -173,7 +181,7 @@ const columns = [
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    return state.selectedRowKeys.length === 0
+    return selectedRowKeys.value.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
@@ -205,7 +213,7 @@ const queryData = async (_params: any) => {
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    if (_params.terms && _params.terms.length > 0) handleClearSelected();
     globParams.value = _params;
 };
 
@@ -249,15 +257,15 @@ const handleOnChange = (num: number, pageSize: number) => {
 const handleExport = async () => {
     let _params: any = {};
     // 当部分选中时
-    if (state.selectedRowKeys.length > 0) {
+    if (selectedRowKeys.value.length > 0) {
         _params = {
             paging: false,
-            pageSize: state.selectedRowKeys?.length,
+            pageSize: selectedRowKeys.value?.length,
             sorts: [{ name: 'createTime', order: 'desc' }],
             terms: [
                 {
                     column: 'id',
-                    value: state.selectedRowKeys,
+                    value: selectedRowKeys.value,
                     termType: 'in',
                 },
             ],
@@ -282,8 +290,8 @@ const handleExport = async () => {
                 xlsx.value,
             );
             if (
-                state.selectedRowKeys?.length > 10000 ||
-                (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
+                selectedRowKeys.value?.length > 10000 ||
+                (selectedRowKeys.value?.length == 0 && dataTotal.value > 10000)
             ) {
                 onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
             } else {
@@ -291,88 +299,6 @@ const handleExport = async () => {
             }
         }
     });
-};
-// 当前分页表格选中的数据项的id
-const state = reactive<{ selectedRowKeys: string[]; selectedRows: any[] }>({
-    selectedRowKeys: [],
-    selectedRows: [],
-});
-
-/**
- * @function selectedRowChange table组件的rowSelection的onChange事件
- * @param selectedRowKeys
- * @param selectedRows
- */
-const selectedRowChange = (selectedRowKeys: string[], selectedRows?: any[]) => {
-    if (selectedRowKeys.length === 0 || selectedRows?.length === 0) {
-        state.selectedRowKeys = [];
-        state.selectedRows = [];
-    }
-};
-
-/**
- * @function handleRowSelected table组件的rowSelection的onSelect事件
- * @param record
- * @param selected
- * @param selectedRows
- */
-const handleRowSelected = (
-    record: any,
-    selected: boolean,
-    selectedRows: any,
-) => {
-    if (selected) {
-        const index = state.selectedRowKeys.findIndex(
-            (item) => item === record.id,
-        );
-        if (index === -1) {
-            state.selectedRowKeys.push(record.id);
-            state.selectedRows.push(record);
-        }
-    } else {
-        const index = state.selectedRowKeys.findIndex(
-            (item) => item === record.id,
-        );
-        if (index !== -1) {
-            state.selectedRowKeys.splice(index, 1);
-            state.selectedRows.splice(index, 1);
-        }
-    }
-};
-
-/**
- * @function handleSelectAll table组件的rowSelection的onSelectAll事件
- * @param selected
- * @param selectedRows
- * @param changeRows
- */
-const handleSelectAll = (
-    selected: boolean,
-    selectedRows: any,
-    changeRows: any,
-) => {
-    if (selected) {
-        for (let i = 0; i < changeRows.length; i++) {
-            let flag = true;
-            state.selectedRowKeys.forEach((item: any) => {
-                if (item === changeRows[i].id) flag = false;
-            });
-            if (flag) {
-                state.selectedRowKeys.push(changeRows[i].id);
-                state.selectedRows.push(changeRows[i]);
-            }
-        }
-    } else {
-        for (let i = 0; i < changeRows.length; i++) {
-            const index = state.selectedRowKeys.findIndex(
-                (item) => item === changeRows[i].id,
-            );
-            if (index !== -1) {
-                state.selectedRowKeys.splice(index, 1);
-                state.selectedRows.splice(index, 1);
-            }
-        }
-    }
 };
 </script>
 

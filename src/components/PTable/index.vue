@@ -5,10 +5,10 @@
         :params="params"
         v-bind="$attrs"
         :rowSelection="{
-            selectedRowKeys: state.selectedRowKeys,
-            onChange: selectedRowChange,
+            selectedRowKeys: selectedRowKeys,
             onSelect: handleRowSelected,
             onSelectAll: handleSelectAll,
+            onSelectNone: handleClearSelected,
         }"
     >
         <template v-for="(_value, name) in $slots" #[name]="slotProps">
@@ -31,6 +31,8 @@
 </template>
 
 <script setup lang="ts" name="PTable">
+import { useSelectableTable } from '@/hook/useSelectableTable';
+
 const props = withDefaults(
     defineProps<{
         request: (...args: any) => any;
@@ -68,10 +70,12 @@ const handleOnChange = (num: number, pageSize: number) => {
     emits('update:params', _params);
 };
 
-// 当前分页表格选中的数据项的id
-const state = reactive<{ selectedRowKeys: string[] }>({
-    selectedRowKeys: [],
-});
+const {
+    selectedRowKeys,
+    handleRowSelected,
+    handleSelectAll,
+    handleClearSelected,
+} = useSelectableTable();
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -95,83 +99,15 @@ const queryData = async (_params: any) => {
 };
 
 /**
- * @function selectedRowChange table组件的rowSelection的onChange事件
- * @param selectedRowKeys 选中的数据项的id数组
- * @param selectedRows 选中的数据项的对象数组
- */
-const selectedRowChange = (selectedRowKeys: string[], selectedRows: any[]) => {
-    if (selectedRowKeys.length === 0 || selectedRows.length === 0) {
-        state.selectedRowKeys = [];
-    }
-};
-
-/**
- * @function handleRowSelected table组件的rowSelection的onSelect事件
- * @param record 当前选中的数据项的对象
- * @param selected 是否选中，用于判断选中还是取消选中
- * @param selectedRows 选中的所有数据项的对象数组
- */
-const handleRowSelected = (
-    record: any,
-    selected: boolean,
-    selectedRows: any,
-) => {
-    if (selected) {
-        const index = state.selectedRowKeys.findIndex(
-            (item) => item === record.id,
-        );
-        index === -1 && state.selectedRowKeys.push(record.id);
-    } else {
-        const index = state.selectedRowKeys.findIndex(
-            (item) => item === record.id,
-        );
-        index !== -1 && state.selectedRowKeys.splice(index, 1);
-    }
-};
-
-/**
- * @function handleSelectAll table组件的rowSelection的onSelectAll事件
- * @param selected 是否全选，用于判断全选还是取消全选
- * @param selectedRows 选中的所有数据项的对象数组
- * @param changeRows 发生变化的数据项的对象数组
- */
-const handleSelectAll = (
-    selected: boolean,
-    selectedRows: any,
-    changeRows: any,
-) => {
-    if (selected) {
-        changeRows.forEach((row: any) => {
-            const len = state.selectedRowKeys.length;
-            let flag = true;
-            for (let i = 0; i < len; i++) {
-                if (row.id === state.selectedRowKeys[i]) {
-                    flag = false;
-                    break;
-                }
-            }
-            flag && state.selectedRowKeys.push(row.id);
-        });
-    } else {
-        changeRows.forEach((row: any) => {
-            const index = state.selectedRowKeys.findIndex(
-                (item) => item === row.id,
-            );
-            index !== -1 && state.selectedRowKeys.splice(index, 1);
-        });
-    }
-};
-
-/**
  * 清空已选
  * @param _params
  */
 const EmptySelectKeys = () => {
-    state.selectedRowKeys = [];
+    handleClearSelected();
 };
 
 defineExpose({
-    selectedRowKeys: state.selectedRowKeys,
+    selectedRowKeys: selectedRowKeys.value,
     EmptySelectKeys,
     dataTotal,
 });

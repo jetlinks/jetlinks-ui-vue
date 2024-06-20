@@ -17,10 +17,10 @@
                 :params="globParams"
                 :gridColumn="3"
                 :rowSelection="{
-                    selectedRowKeys: state.selectedRowKeys,
-                    onChange: selectedRowChange,
+                    selectedRowKeys: selectedRowKeys,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
+                    onSelectNone: handleClearSelected,
                 }"
             >
                 <template #headerTitle>
@@ -81,14 +81,17 @@ import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
-import { useSelect } from '@/utils/hooks/useSelect';
-
-const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
-    useSelect();
-
 import { Modal, Textarea } from 'jetlinks-ui-components';
 import { queryLogsType } from '@/api/device/instance';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
+import { useSelectableTable } from '@/hook/useSelectableTable';
+
+const {
+    selectedRowKeys,
+    handleRowSelected,
+    handleSelectAll,
+    handleClearSelected,
+} = useSelectableTable();
 
 const type = ref<string>('xlsx');
 
@@ -128,7 +131,7 @@ const queryData = async (_params: any) => {
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    return state.selectedRowKeys.length === 0
+    return selectedRowKeys.value.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
@@ -139,15 +142,15 @@ const popTitle = computed(() => {
  */
 const handleExport = async () => {
     let _params: any = {};
-    if (state.selectedRowKeys.length > 0) {
+    if (selectedRowKeys.value.length > 0) {
         _params = {
             paging: false,
-            pageSize: state.selectedRowKeys?.length,
+            pageSize: selectedRowKeys.value?.length,
             sorts: [{ name: 'createTime', order: 'desc' }],
             terms: [
                 {
                     column: '_id',
-                    value: state.selectedRowKeys,
+                    value: selectedRowKeys.value,
                     termType: 'in',
                 },
             ],
@@ -174,8 +177,8 @@ const handleExport = async () => {
                 type.value,
             );
             if (
-                state.selectedRowKeys?.length > 10000 ||
-                (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)
+                selectedRowKeys.value?.length > 10000 ||
+                (selectedRowKeys.value?.length === 0 && dataTotal.value > 10000)
             ) {
                 onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
             } else {
@@ -296,7 +299,7 @@ const handelDetail = (data: any) => {
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    if (_params.terms && _params.terms.length > 0) handleClearSelected();
     handleSearchByDate(_params, ['createTime']);
     globParams.value = _params;
 };

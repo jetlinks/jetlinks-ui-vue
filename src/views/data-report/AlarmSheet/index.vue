@@ -18,7 +18,7 @@
                     selectedRowKeys: selectedRowKeys,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
-                    onSelectNone: handleReload,
+                    onSelectNone: handleClearSelected,
                 }"
             >
                 <template #headerTitle>
@@ -69,19 +69,15 @@ import moment from 'moment';
 import { queryAlarmData, _export } from '@/api/data-report/alarmSheet';
 import useFilterAlarmDesc from '@/hook/useFilterAlarmDesc';
 import { FullPage } from 'components/Layout';
-import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
-import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import {
     formatDate,
     handleSearchByDate,
     handleSearchByDescription,
 } from '@/utils/dataReportUtils';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
-import { Ref } from 'vue';
 import { useSelectableTable } from '@/hook/useSelectableTable';
-import { ReactiveSet } from '@/utils/reactiveSet';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -97,8 +93,12 @@ const pageSize = ref<number>(12);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
-const { selectedRowKeys, handleRowSelected, handleSelectAll, handleReload } =
-    useSelectableTable();
+const {
+    selectedRowKeys,
+    handleRowSelected,
+    handleSelectAll,
+    handleClearSelected,
+} = useSelectableTable();
 
 // 处理导出按钮的提示
 const popTitle = computed(() => {
@@ -162,7 +162,7 @@ const handleOnChange = (num: number, pageSize: number) => {
  */
 const handleSearch = (_params: any) => {
     // 如果携带搜索条件时，清空选中的数据项
-    if (_params.terms && _params.terms.length > 0) handleReload();
+    if (_params.terms && _params.terms.length > 0) handleClearSelected();
     // 处理搜索的字段是时间类型的情况
     handleSearchByDate(_params, ['alarmTime']);
     // 处理搜索的字段是故障描述类型的情况

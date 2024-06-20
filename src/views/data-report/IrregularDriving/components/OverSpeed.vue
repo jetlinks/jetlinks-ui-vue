@@ -17,10 +17,10 @@
                 :params="globParams"
                 :gridColumn="3"
                 :rowSelection="{
-                    selectedRowKeys: state.selectedRowKeys,
-                    onChange: selectedRowChange,
+                    selectedRowKeys: selectedRowKeys,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
+                    onSelectNone: handleClearSelected,
                 }"
             >
                 <template #headerTitle>
@@ -98,9 +98,14 @@ import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
+import { useSelectableTable } from '@/hook/useSelectableTable';
 
-const { state, selectedRowChange, handleRowSelected, handleSelectAll } =
-    useSelect();
+const {
+    selectedRowKeys,
+    handleRowSelected,
+    handleSelectAll,
+    handleClearSelected,
+} = useSelectableTable();
 
 const configRef = ref<Record<string, any>>({});
 
@@ -133,7 +138,7 @@ const handleShowTotal = () => {
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
-    return state.selectedRowKeys.length === 0
+    return selectedRowKeys.value.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
@@ -182,15 +187,15 @@ const queryData = async (_params: any) => {
 const handleExport = async () => {
     let _params: any = {};
     // 当部分选中时
-    if (state.selectedRowKeys.length > 0) {
+    if (selectedRowKeys.value.length > 0) {
         _params = {
             paging: false,
             sorts: [{ name: 'reportTime', order: 'desc' }],
-            pageSize: state.selectedRowKeys.length,
+            pageSize: selectedRowKeys.value.length,
             terms: [
                 {
                     column: 'id',
-                    value: state.selectedRowKeys,
+                    value: selectedRowKeys.value,
                     termType: 'in',
                 },
             ],
@@ -217,8 +222,8 @@ const handleExport = async () => {
                 type.value,
             );
             if (
-                state.selectedRowKeys?.length > 10000 ||
-                (state.selectedRowKeys?.length === 0 && dataTotal.value > 10000)
+                selectedRowKeys.value?.length > 10000 ||
+                (selectedRowKeys.value?.length === 0 && dataTotal.value > 10000)
             ) {
                 onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
             } else {
@@ -392,7 +397,7 @@ const columns = [
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    if (_params.terms && _params.terms.length > 0) handleClearSelected();
     handleSearchDate(_params);
     // 下方函数用于处理日期型时间的搜索
     handleSearchByDate(_params, ['reportTime']);

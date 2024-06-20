@@ -1,5 +1,4 @@
 import { ReactiveSet } from '@/utils/reactiveSet';
-import type { Ref } from 'vue';
 
 /**
  * @function useSelectableTable
@@ -14,7 +13,6 @@ export function useSelectableTable() {
 
     const selectedRowKeys = computed(() => {
         let keys = setLength.value;
-        console.log(idSet.value);
         return Array.from(idSet.value);
     });
 
@@ -59,9 +57,9 @@ export function useSelectableTable() {
     };
 
     /**
-     * @function handleReload 重置选中的数据项，对应rowSelection的onSelectNone事件
+     * @function handleClearSelected 清空选中的数据项，对应rowSelection的onSelectNone事件
      */
-    const handleReload = () => {
+    const handleClearSelected = () => {
         idSet.reset();
     };
 
@@ -69,6 +67,6 @@ export function useSelectableTable() {
         selectedRowKeys,
         handleRowSelected,
         handleSelectAll,
-        handleReload,
+        handleClearSelected,
     };
 }
