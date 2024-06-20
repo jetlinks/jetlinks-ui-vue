@@ -23,14 +23,6 @@
                             /></template>
                             新增
                         </PermissionButton>
-                        <j-upload
-                            name="file"
-                            accept=".json"
-                            :showUploadList="false"
-                            :before-upload="beforeUpload"
-                        >
-                            <PermissionButton>导入</PermissionButton>
-                        </j-upload>
                     </j-space>
                 </template>
                 <template #deviceType="slotProps">
@@ -42,12 +34,13 @@
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
                         :active="_selectedRowKeys.includes(slotProps.id)"
-                        :status="slotProps.state"
+                        :status="slotProps.vehicleStatus"
                         @click="handleView(slotProps.id)"
-                        :statusText="slotProps.state === 1 ? '正常' : '禁用'"
+                        :statusText="listStatusText(slotProps.vehicleStatus)"
                         :statusNames="{
-                            1: 'processing',
-                            0: 'error',
+                            0: 'processing',
+                            1: 'error',
+                            2: 'warning',
                         }"
                     >
                         <template #img>
@@ -91,7 +84,37 @@
                             </j-row>
                         </template>
                         <template #actions="item">
+                            <j-dropdown
+                                placement="bottomRight"
+                                v-if="item.key === 'more'"
+                            >
+                                <j-button>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item.text }}</span>
+                                </j-button>
+                                <template #overlay>
+                                    <j-menu>
+                                        <j-menu-item
+                                            v-for="(o, i) in item.children"
+                                            :key="i"
+                                        >
+                                            <PermissionButton
+                                                :disabled="item.disabled"
+                                                :popConfirm="o.popConfirm"
+                                                :tooltip="{
+                                                    ...o.tooltip,
+                                                }"
+                                                @click="o.onClick"
+                                            >
+                                                <AIcon :type="o.icon" />
+                                                <span>{{ o?.text }}</span>
+                                            </PermissionButton>
+                                        </j-menu-item>
+                                    </j-menu>
+                                </template>
+                            </j-dropdown>
                             <PermissionButton
+                                v-else
                                 :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{
@@ -111,15 +134,29 @@
                         </template>
                     </CardBox>
                 </template>
-                <template #state="slotProps">
+                <template #status="slotProps">
                     <BadgeStatus
-                        :text="slotProps.state === 1 ? '正常' : '禁用'"
-                        :status="slotProps.state"
+                        :text="slotProps.status === 0 ? '在线' : '离线'"
+                        :status="slotProps.status"
                         :statusNames="{
-                            1: 'processing',
-                            0: 'error',
+                            0: 'success',
+                            1: 'error',
                         }"
                     />
+                </template>
+                <template #vehicleStatus="slotProps">
+                    <BadgeStatus
+                        :text="listStatusText(slotProps.vehicleStatus)"
+                        :status="slotProps.vehicleStatus"
+                        :statusNames="{
+                            0: 'processing',
+                            1: 'error',
+                            2: 'warning',
+                        }"
+                    />
+                </template>
+                <template #vehicleTypeEnum="slotProps">
+                    {{ slotProps.vehicleTypeEnum.text }}
                 </template>
                 <template #action="slotProps">
                     <j-space :size="16">
@@ -135,7 +172,7 @@
                                 }"
                                 @click="i.onClick"
                                 type="link"
-                                style="padding: 0px"
+                                style="padding: 0 5px"
                                 :danger="i.key === 'delete'"
                             >
                                 <template #icon
@@ -153,8 +190,8 @@
 </template>
 
 <script setup lang="ts">
+import { queryVehicleList } from '@/api/vehicle/vehicleManagement';
 import { useMenuStore } from 'store/menu';
-import { queryList } from '@/api/device/product';
 import { getImage, onlyMessage } from '@/utils/comm';
 import type { ActionsType } from './typings';
 import Save from './save/index.vue';
@@ -165,11 +202,11 @@ const currentForm = ref({});
 const query = reactive({
     columns: [
         {
-            title: '名称',
-            dataIndex: 'name',
-            key: 'name',
+            title: '车辆简称',
+            dataIndex: 'modelNumber',
+            key: 'modelNumber',
+            ellipsis: true,
             search: {
-                first: true,
                 type: 'string',
             },
         },
@@ -177,23 +214,57 @@ const query = reactive({
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
+            ellipsis: true,
             search: {
                 type: 'string',
             },
         },
         {
-            title: '状态',
-            key: 'state',
-            dataIndex: 'state',
+            title: '车辆类型',
+            dataIndex: 'vehicleTypeEnum',
+            key: 'vehicleTypeEnum',
+            scopedSlots: true,
+            search: {
+                type: 'string',
+            },
+        },
+        {
+            title: '车辆状态',
+            key: 'vehicleStatus',
+            dataIndex: 'vehicleStatus',
+            scopedSlots: true,
             search: {
                 type: 'select',
                 options: [
                     {
                         label: '正常',
+                        value: 0,
+                    },
+                    {
+                        label: '停用',
                         value: 1,
                     },
                     {
-                        label: '禁用',
+                        label: '维修',
+                        value: 2,
+                    },
+                ],
+            },
+        },
+        {
+            title: '状态',
+            key: 'status',
+            dataIndex: 'status',
+            scopedSlots: true,
+            search: {
+                type: 'select',
+                options: [
+                    {
+                        label: '离线',
+                        value: 1,
+                    },
+                    {
+                        label: '在线',
                         value: 0,
                     },
                 ],
@@ -203,6 +274,7 @@ const query = reactive({
             title: '说明',
             key: 'describe',
             dataIndex: 'describe',
+            ellipsis: true,
             search: {
                 type: 'string',
             },
@@ -211,20 +283,13 @@ const query = reactive({
             title: '操作',
             key: 'action',
             fixed: 'right',
-            width: 250,
+            width: 270,
             scopedSlots: true,
         },
     ],
 });
 
-const paramsData = [
-    { id: '1111', name: '吉利星瑞', state: 1, describe: '测试数据' },
-    { id: '2222', name: '吉利星瑞', state: 0, describe: '测试数据' },
-    { id: '3333', name: '吉利星瑞', state: 1, describe: '测试数据' },
-    { id: '4444', name: '吉利星瑞', state: 1, describe: '测试数据' },
-];
 const saveRef = ref();
-const menuStory = useMenuStore();
 const isAdd = ref<number>(0);
 const title = ref<string>('');
 const params = ref<Record<string, any>>({});
@@ -243,13 +308,6 @@ const add = () => {
 };
 
 /**
- * 导入
- */
-const beforeUpload = (file: any) => {
-    const reader = new FileReader();
-    reader.readAsText(file);
-};
-/**
  * 查看
  */
 const handleView = (id: string) => {
@@ -261,6 +319,16 @@ const handleView = (id: string) => {
  */
 const refresh = () => {
     tableRef.value?.reload();
+};
+
+const listStatusText = (text: number) => {
+    if (text === 0) {
+        return '正常';
+    } else if (text === 2) {
+        return '维修';
+    } else {
+        return '停用';
+    }
 };
 
 const getActions = (
@@ -298,50 +366,91 @@ const getActions = (
             },
         },
         {
+            key: 'action',
+            text: data.vehicleStatus !== 1 ? '禁用' : '启用',
+            tooltip: {
+                title: data.vehicleStatus !== 1 ? '禁用' : '启用',
+            },
+            icon:
+                data.vehicleStatus !== 1
+                    ? 'StopOutlined'
+                    : 'CheckCircleOutlined',
+            popConfirm: {
+                title: `确认${data.vehicleStatus !== 1 ? '禁用' : '启用'}?`,
+                onConfirm: async () => {
+                    onlyMessage('操作成功！');
+                },
+            },
+        },
+    ];
+
+    const others = [
+        {
+            key: 'firstLock',
+            text: '一级锁车',
+            tooltip: {
+                title: '一级锁车',
+            },
+
+            icon: 'LockOutlined',
+            onClick: () => {
+                console.log('一级锁车');
+            },
+        },
+        {
+            key: 'secondLock',
+            text: '二级锁车',
+            tooltip: {
+                title: '二级锁车',
+            },
+
+            icon: 'DisconnectOutlined',
+            onClick: () => {
+                console.log('二级锁车');
+            },
+        },
+        {
             key: 'viewMonitor',
             text: '查看监控',
             tooltip: {
                 title: '查看监控',
             },
-
             icon: 'VideoCameraOutlined',
             onClick: () => {
                 console.log('查看监控');
             },
         },
-        {
-            key: 'action',
-            text: data.state !== 0 ? '禁用' : '启用',
-            tooltip: {
-                title: data.state !== 0 ? '禁用' : '启用',
-            },
-            icon: data.state !== 0 ? 'StopOutlined' : 'CheckCircleOutlined',
-            popConfirm: {
-                title: `确认${data.state !== 0 ? '禁用' : '启用'}?`,
-                onConfirm: async () => {
-                    onlyMessage('操作成功！');
-                },
-            },
-        },
-        {
-            key: 'delete',
-            text: '删除',
-            disabled: data.state !== 0,
-            tooltip: {
-                title: data.state !== 0 ? '已启用的车辆不能删除' : '删除',
-            },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    onlyMessage('操作成功！');
-                },
-            },
-            icon: 'DeleteOutlined',
-        },
     ];
-    if (type === 'card')
-        return actions.filter((i: ActionsType) => i.key !== 'view');
-    return actions;
+    const deleteItem = {
+        key: 'delete',
+        text: '删除',
+        disabled: data.vehicleStatus !== 1,
+        tooltip: {
+            title: data.vehicleStatus !== 1 ? '已启用的车辆不能删除' : '删除',
+        },
+        popConfirm: {
+            title: '确认删除?',
+            onConfirm: async () => {
+                onlyMessage('操作成功！');
+            },
+        },
+        icon: 'DeleteOutlined',
+    };
+    if (type === 'card') {
+        let noDelItem = actions.filter((i: ActionsType) => i.key !== 'view');
+        return [
+            ...noDelItem,
+            {
+                key: 'more',
+                text: '其他',
+                icon: 'EllipsisOutlined',
+                children: [...others],
+            },
+            deleteItem,
+        ];
+    } else {
+        return [...actions, ...others, deleteItem];
+    }
 };
 
 const handleSearch = (e: any) => {
@@ -350,19 +459,20 @@ const handleSearch = (e: any) => {
 
 const queryData = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        queryList({
+        queryVehicleList({
             pageIndex: params.pageIndex + 1,
             pageSize: params.pageSize,
             sorts: params.sorts,
             terms: params.terms,
         })
             .then((response: any) => {
+                console.log('response', response);
                 resolve({
                     result: {
-                        data: paramsData,
-                        pageIndex: 0,
-                        pageSize: 20,
-                        total: paramsData.length,
+                        data: response.result?.data,
+                        pageIndex: response.result?.pageIndex || 0,
+                        pageSize: response.result?.pageSize || 12,
+                        total: response.result?.total,
                     },
                     status: 200,
                 });
@@ -373,4 +483,9 @@ const queryData = (params: Record<string, any>) =>
     });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+td.ant-table-cell.ant-table-cell-fix-right.ant-table-cell-fix-right-first
+    > div {
+    gap: 2px !important;
+}
+</style>
