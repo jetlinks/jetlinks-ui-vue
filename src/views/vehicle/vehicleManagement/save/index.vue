@@ -27,7 +27,7 @@
                                 :accept="
                                     imageTypes && imageTypes.length
                                         ? imageTypes.toString()
-                                        : ''
+                                        : 'typeImageTypes'
                                 "
                             />
                         </j-form-item>
@@ -48,26 +48,21 @@
                         </j-form-item>
                     </j-col>
                 </j-row>
-                <j-form-item label="所属大类" name="classifiedId">
+                <j-form-item label="所属大类" name="category">
                     <j-radio-group
-                        name="classifiedId"
-                        v-model:value="form.classifiedId"
+                        name="category"
+                        v-model:value="form.category"
                     >
-                        <j-radio value="1">燃油车</j-radio>
-                        <j-radio value="2">电车</j-radio>
+                        <j-radio :value="0">燃油车</j-radio>
+                        <j-radio :value="1">电车</j-radio>
                     </j-radio-group>
                 </j-form-item>
                 <j-form-item label="车辆类型" name="vehicleTypeEnum">
-                    <!-- <j-select showSearch v-model:value="form.vehicleTypeEnum"
-                                placeholder="请选择工厂">
-                                <j-select-option v-for="item in factoryList" :value="item.id" :key="item.id"
-                                    :label="item.name">{{ item.name
-                                    }}</j-select-option>
-                            </j-select> -->
-                </j-form-item>
-                <j-form-item label="所属组织" name="orgName"> </j-form-item>
-                <j-form-item label="主设备" name="deviceId">
-                    <j-select showSearch v-model:value="form.deviceId">
+                    <j-select
+                        showSearch
+                        v-model:value="form.vehicleTypeEnum"
+                        placeholder="请选择车辆类型"
+                    >
                         <j-select-option
                             v-for="item in vehicleTypeList"
                             :value="item.value"
@@ -77,28 +72,79 @@
                         >
                     </j-select>
                 </j-form-item>
-                <j-form-item label="状态" name="status">
-                    <j-radio-group name="status" v-model:value="form.status">
-                        <j-radio value="1">正常</j-radio>
-                        <j-radio value="0">停用</j-radio>
-                        <j-radio value="2">维修</j-radio>
-                    </j-radio-group>
+                <j-form-item label="所属组织" name="orgName">
+                    <j-tree-select
+                        showSearch
+                        v-model:value="form.orgName"
+                        placeholder="请选择产品分类"
+                        :tree-data="treeList"
+                        @change="valueChange"
+                        allow-clear
+                        :fieldNames="{
+                            label: 'name',
+                            value: 'id',
+                            children: 'children',
+                        }"
+                        :filterTreeNode="
+                            (v:any, option:any) => filterSelectNode(v, option, 'name')
+                        "
+                    >
+                        <template> </template>
+                    </j-tree-select>
                 </j-form-item>
-                <j-form-item label="出厂日期" name="ccDate">
-                    <j-date-picker
-                        style="width: 100%"
-                        v-model:value="form.ccDate"
-                        value-format="YYYY-MM-DD"
+                <j-form-item label="设备号" name="deviceId">
+                    <j-input
+                        v-model:value="form.deviceId"
+                        placeholder="请输入设备号(=车辆简称)"
                     />
                 </j-form-item>
-                <j-form-item label="保修到期" name="description"> </j-form-item>
-                <j-form-item label="车牌号" name="description"> </j-form-item>
-                <j-form-item label="发动机编号" name="description">
+                <j-form-item label="车辆状态" name="vehicleStatus">
+                    <j-radio-group
+                        name="vehicleStatus"
+                        v-model:value="form.vehicleStatus"
+                    >
+                        <j-radio :value="0">正常</j-radio>
+                        <j-radio :value="1">停用</j-radio>
+                        <j-radio :value="2">维修</j-radio>
+                    </j-radio-group>
                 </j-form-item>
-                <j-form-item label="年审日期" name="description"> </j-form-item>
-                <j-form-item label="SIM卡" name="description">
+                <j-form-item label="出厂日期" name="vehicleDate">
+                    <j-date-picker
+                        style="width: 100%"
+                        placeholder="请选择出厂日期"
+                        v-model:value="form.vehicleDate"
+                        value-format="x"
+                    />
+                </j-form-item>
+                <j-form-item label="保修到期" name="warrantyDate">
+                    <j-date-picker
+                        style="width: 100%"
+                        v-model:value="form.warrantyDate"
+                        value-format="x"
+                    />
+                </j-form-item>
+                <j-form-item label="车牌号" name="vehicleNumber">
                     <j-input
-                        v-model:value="form.simNumber"
+                        v-model:value="form.vehicleNumber"
+                        placeholder="请输入车牌号"
+                    />
+                </j-form-item>
+                <j-form-item label="发动机编号" name="engineNumber">
+                    <j-input
+                        v-model:value="form.engineNumber"
+                        placeholder="请输入发动机编号"
+                    />
+                </j-form-item>
+                <j-form-item label="年审日期" name="annualReviewDate">
+                    <j-date-picker
+                        style="width: 100%"
+                        v-model:value="form.annualReviewDate"
+                        value-format="x"
+                    />
+                </j-form-item>
+                <j-form-item label="SIM卡" name="networkCardId">
+                    <j-input
+                        v-model:value="form.networkCardId"
                         placeholder="请填写SIM卡号"
                     />
                 </j-form-item>
@@ -118,13 +164,11 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import { useProductStore } from '@/store/product';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
-import { queryProductId, addProduct, editProduct } from '@/api/device/product';
+import { getDepartmentList, addVehicle } from '@/api/vehicle/vehicleManagement';
+import dayjs, { Dayjs } from 'dayjs';
 
-const productStore = useProductStore();
 const emit = defineEmits(['success']);
-
 const props = defineProps({
     title: {
         type: String,
@@ -138,22 +182,31 @@ const props = defineProps({
 
 const vehicleTypeList = [
     {
-        name: '正常',
-        value: 1,
+        name: '内燃柴油机',
+        value: 'ICDieselEngine',
     },
     {
-        name: '停用',
-        value: 0,
+        name: '内燃汽油机',
+        value: 'ICGasolineEngine',
     },
     {
-        name: '维修',
-        value: 2,
+        name: '内燃牵引车',
+        value: 'ICTractor',
+    },
+    {
+        name: '机械柴油机',
+        value: 'MachineDieselEngine',
+    },
+    {
+        name: '其他',
+        value: 'other',
     },
 ];
 const loading = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const formRef = ref();
 const idDisabled = ref<boolean>(false);
+const treeList = ref<Record<string, any>[]>([]);
 const imageTypes = reactive([
     'image/jpeg',
     'image/png',
@@ -175,30 +228,99 @@ const rules = reactive({
         { required: true, message: '请输入车辆简称', trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
-    classifiedId: [
-        { required: true, message: '请选择所属大类', trigger: 'blur' },
+    category: [{ required: true, message: '请选择所属大类', trigger: 'blur' }],
+    vehicleTypeEnum: [
+        { required: true, message: '请选择车辆类型', trigger: 'blur' },
     ],
-    ccDate: [{ required: true, message: '请选择出厂日期', trigger: 'blur' }],
+    orgName: [{ required: true, message: '请选择所属组织', trigger: 'blur' }],
+    vehicleDate: [
+        { required: true, message: '请选择出厂日期', trigger: 'blur' },
+    ],
+    deviceId: [
+        { required: true, message: '请输入设备号(=车辆简称)', trigger: 'blur' },
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    ],
+    vehicleStatus: [
+        { required: true, message: '请选择车辆状态', trigger: 'blur' },
+    ],
+    networkCardId: [
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    ],
+    vehicleNumber: [
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    ],
+    engineNumber: [
+        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    ],
+    describe: [{ max: 250, message: '最多可输入250位字符', trigger: 'change' }],
 });
+
+/**
+ * 查询产品分类
+ */
+const queryOrgTree = async () => {
+    getDepartmentList({ paging: false }).then((resp: any) => {
+        if (resp.status === 200) {
+            treeList.value = resp.result;
+            treeList.value = dealOrgTree(treeList.value);
+        }
+    });
+};
+/**
+ * 处理产品分类key
+ */
+const dealOrgTree = (arr: any) => {
+    return arr.map((element: any) => {
+        element.key = element.id;
+        if (element.children) {
+            element.children = dealOrgTree(element.children);
+        }
+        return element;
+    });
+};
+
+const valueChange = (value: string, label: string) => {
+    form.value.orgName = label[0];
+    form.value.orgId = value;
+};
+
+const ccChange = (date: Dayjs) => {
+    if (date) {
+        form.value.vehicleDate = setTimestamp(date);
+    } else {
+        const nowDate = new Date();
+        form.value.vehicleDate = setTimestamp(nowDate);
+    }
+};
+
+const setTimestamp = (date: any) => {
+    const dayjsDate = dayjs(date);
+    // 转换为时间戳（毫秒）
+    const timestamp = dayjsDate.valueOf();
+    return timestamp;
+};
 
 const reset = () => {
     form.value = {
         id: '',
-        factoryNumber: undefined, //出厂编号
+        factoryNumber: '', //出厂编号
         photoUrl: getImage('/device/instance/device-card.png'),
         simpleName: '', //车辆简称
+        vehicleNumber: '', //车牌号
+        engineNumber: '', //发动机编号
+        category: 0, //所属大类 0-燃油车 1-电车
         modelNumber: '', //型号
-        orgName: '', //所属组织
-        vehicleDate: '', //日期
-        deviceId: '', //主设备id
-        status: 1, //状态 0-在线 1-离线
         orgId: '', //所属组织id
+        orgName: '', //所属组织
+        vehicleDate: setTimestamp(new Date()), //出厂日期
+        deviceId: '', //主设备id
+        vehicleStatus: 0, //车辆状态0-正常 1-停用 2-维修
+        status: 1, //状态 0-在线 1-离线
         vehicleTypeEnum: '', //车辆类型,可用值:ICDieselEngine,ICGasolineEngine,ICTractor,MachineDieselEngine,other
-        mileage: 0, //行驶里程
-        idleDuration: 0, //闲置
-        simNumber: '', //SIM
-        ccDate: '', //出厂日期
-        description: '',
+        networkCardId: '', //SIM
+        warrantyDate: setTimestamp(new Date()), //保修到期
+        annualReviewDate: setTimestamp(new Date()), //年审日期
+        describe: '',
     };
 };
 /**
@@ -207,6 +329,7 @@ const reset = () => {
 const show = (data: any) => {
     console.log('data', data);
     if (props.isAdd === 2) {
+        form.value = data;
         idDisabled.value = true;
     } else if (props.isAdd === 1) {
         reset();
@@ -231,30 +354,35 @@ const submitData = () => {
             // 新增
             loading.value = true;
             if (props.isAdd === 1) {
-                if (form.value.id === '') {
-                    form.value.id = undefined;
-                }
-                const res: any = await addProduct(form).finally(() => {
-                    loading.value = false;
-                });
-                if (res.status === 200) {
-                    onlyMessage('保存成功！');
-                    visible.value = false;
-                    emit('success');
-                } else {
-                    onlyMessage('操作失败', 'error');
-                }
+                const { photoUrl, ...params } = form.value;
+                console.log('params', params);
+                addVehicle(params)
+                    .then((res: any) => {
+                        if (res.code === 200) {
+                            onlyMessage('添加成功！');
+                        }
+                        loading.value = false;
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        onlyMessage('添加成功！', 'error');
+                    });
+                //新增
             } else if (props.isAdd === 2) {
+                console.log('params update', form.value);
+                //更新
+                loading.value = false;
             }
         })
         .catch((err: any) => {});
 };
 
-const changeDeviceType = (value: Array<string>) => {
-    // form.deviceType = value[0];
-};
 defineExpose({
     show: show,
+});
+
+onMounted(() => {
+    queryOrgTree();
 });
 </script>
 <style scoped lang="less">
