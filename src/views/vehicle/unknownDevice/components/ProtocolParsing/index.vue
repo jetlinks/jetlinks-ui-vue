@@ -36,10 +36,7 @@
                 <BadgeStatus
                     :text="slotProps.state?.text"
                     :status="slotProps.state?.value"
-                    :statusNames="{
-                        known: 'processing',
-                        unknown: 'error',
-                    }"
+                    :statusNames="{ known: 'processing', unknown: 'error' }"
                 />
             </template>
             <template #card="slotProps">
@@ -51,10 +48,7 @@
                     :status="slotProps.state?.value"
                     :active="_selectedRowKeys.includes(slotProps.id)"
                     :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        known: 'processing',
-                        unknown: 'error',
-                    }"
+                    :statusNames="{ known: 'processing', unknown: 'error' }"
                 >
                     <template #img>
                         <slot name="img">
@@ -74,7 +68,7 @@
                                 {{ slotProps.title }}
                             </span>
                         </Ellipsis>
-                        <j-row :gutter="[24, 24]">
+                        <j-row :gutter="[24, 12]">
                             <j-col :span="6">
                                 <Ellipsis>
                                     <div>设备id</div>
@@ -87,8 +81,6 @@
                                     </div>
                                 </Ellipsis>
                             </j-col>
-                        </j-row>
-                        <j-row :gutter="[24, 24]">
                             <j-col :span="6">
                                 <Ellipsis>
                                     <div>所属车辆</div>
@@ -107,9 +99,7 @@
                         <PermissionButton
                             :disabled="item.disabled"
                             :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
+                            :tooltip="{ ...item.tooltip }"
                             @click="item.onClick"
                         >
                             <AIcon
@@ -133,9 +123,7 @@
                         <PermissionButton
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
+                            :tooltip="{ ...i.tooltip }"
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
@@ -219,7 +207,7 @@ const columns = [
                     value: 'known',
                 },
                 {
-                    label: '已知',
+                    label: '无法解析',
                     value: 'unknown',
                 },
             ],
@@ -245,7 +233,7 @@ const columns = [
 ];
 
 const queryData = async () => {
-    const data = [];
+    const data: any[] = [];
     for (let i = 0; i < 12; i++) {
         data.push({
             id: `${i}`,
@@ -258,17 +246,19 @@ const queryData = async () => {
             vehicleId: `所属车辆${i}`,
         });
     }
-    return {
-        message: 'success',
-        result: {
-            pageIndex: 0,
-            pageSize: 12,
-            total: 100,
-            data: data,
-        },
-        status: 200,
-        timestamp: 1718783580064,
-    };
+    return new Promise((resolve) => {
+        resolve({
+            message: 'success',
+            result: {
+                pageIndex: 0,
+                pageSize: 12,
+                total: 100,
+                data: data,
+            },
+            status: 200,
+            timestamp: 1718783580064,
+        });
+    });
 };
 
 const handleSearch = (params: any) => {
@@ -327,20 +317,24 @@ const getActions = (
             },
             icon: 'MonitorOutlined',
             onClick: () => {
-                menuStory.jumpPage('vehicle/unknownDevice/AbnormalRecord', {
-                    id: '12312',
-                });
+                menuStory.jumpPage(
+                    'vehicle/unknownDevice/AbnormalRecord',
+                    {},
+                    {
+                        id: data.id,
+                    },
+                );
             },
         },
 
         {
             key: 'delete',
-            text: '移除',
+            text: '删除',
             tooltip: {
-                title: '移除',
+                title: '删除',
             },
             popConfirm: {
-                title: '确认移除?',
+                title: '确认删除?',
                 onConfirm: async () => {},
             },
             icon: 'DeleteOutlined',

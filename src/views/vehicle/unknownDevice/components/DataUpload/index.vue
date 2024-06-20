@@ -68,7 +68,7 @@
                                 {{ slotProps.title }}
                             </span>
                         </Ellipsis>
-                        <j-row :gutter="[24, 24]">
+                        <j-row :gutter="[24, 12]">
                             <j-col :span="6">
                                 <Ellipsis>
                                     <div>设备id</div>
@@ -81,8 +81,6 @@
                                     </div>
                                 </Ellipsis>
                             </j-col>
-                        </j-row>
-                        <j-row :gutter="[24, 24]">
                             <j-col :span="6">
                                 <Ellipsis>
                                     <div>所属车辆</div>
@@ -100,9 +98,7 @@
                     <template #actions="item">
                         <PermissionButton
                             :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
+                            :tooltip="{ ...item.tooltip }"
                             @click="item.onClick"
                         >
                             <AIcon
@@ -126,9 +122,7 @@
                         <PermissionButton
                             :disabled="i.disabled"
                             :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
-                            }"
+                            :tooltip="{ ...i.tooltip }"
                             @click="i.onClick"
                             type="link"
                             style="padding: 0px"
@@ -144,13 +138,12 @@
 </template>
 
 <script setup lang="ts">
-
 import { getImage, onlyMessage } from '@/utils/comm';
 import { ActionsType } from '@/components/Table';
 import { useMenuStore } from 'store/menu';
-
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
+
 const menuStory = useMenuStore();
 
 const tableRef = ref<Record<string, any>>({});
@@ -174,7 +167,6 @@ const onSelectChange = (keys: string[], rows: []) => {
 const onCheckChange = () => {
     _selectedRowKeys.value = [];
 };
-
 
 const columns = [
     {
@@ -245,7 +237,7 @@ const handleClick = (dt: any) => {
 };
 
 const queryData = async () => {
-    const data = [];
+    const data: any[] = [];
     for (let i = 0; i < 12; i++) {
         data.push({
             id: `${i}`,
@@ -264,16 +256,19 @@ const queryData = async () => {
             vehicleId: `所属车辆${i}`,
         });
     }
-    return {
-        message: 'success',
-        result: {
-            pageIndex: 0,
-            pageSize: 12,
-            total: 12,
-            data: data,
-        },
-        status: 200,
-    };
+
+    return new Promise((resolve, reject) => {
+        resolve({
+            message: 'success',
+            result: {
+                pageIndex: 0,
+                pageSize: 12,
+                total: 12,
+                data: data,
+            },
+            status: 200,
+        });
+    });
 };
 
 const handleSearch = (params: any) => {
@@ -305,20 +300,24 @@ const getActions = (
             },
             icon: 'MonitorOutlined',
             onClick: () => {
-                menuStory.jumpPage('vehicle/unknownDevice/AbnormalRecord', {
-                    id: '12312',
-                });
+                menuStory.jumpPage(
+                    'vehicle/unknownDevice/AbnormalRecord',
+                    {},
+                    {
+                        id: data.id,
+                    },
+                );
             },
         },
 
         {
             key: 'delete',
-            text: '移除',
+            text: '删除',
             tooltip: {
-                title: '移除',
+                title: '删除',
             },
             popConfirm: {
-                title: '确认移除?',
+                title: '确认删除?',
                 onConfirm: async () => {},
             },
             icon: 'DeleteOutlined',

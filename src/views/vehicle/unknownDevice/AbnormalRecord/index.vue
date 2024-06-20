@@ -1,17 +1,28 @@
 <template>
     <div>
         <page-container>
+            <pro-search
+                :columns="columns"
+                target="dataUpload-config"
+                @search="handleSearch"
+            ></pro-search>
             <Full-page>
-                <pro-search
-                    :columns="columns"
-                    target="dataUpload-config"
-                    @search="handleSearch"
-                ></pro-search>
                 <PTable
                     ref="configRef"
                     :columns="columns"
                     :request="queryData"
                     :defaultParams="{
+                        // terms: [
+                        //     {
+                        //         terms: [
+                        //             {
+                        //                 termType: 'eq',
+                        //                 column: 'deviceId',
+                        //                 value: route.query.id,
+                        //             },
+                        //         ],
+                        //     },
+                        // ],
                         sorts: [{ name: 'reportTime', order: 'desc' }],
                     }"
                     model="table"
@@ -38,7 +49,7 @@
                         <a-button
                             danger
                             type="text"
-                            @click="onDetail(slotProps)"
+                            @click="handelDetail(slotProps)"
                         >
                             查看</a-button
                         >
@@ -57,21 +68,20 @@
                 </PTable>
             </Full-page>
         </page-container>
-        <Detail v-model="visible" :data="dataInfo" />
     </div>
 </template>
 
 <script setup lang="ts">
 import PTable from '@/components/PTable/index.vue';
 import dayjs from 'dayjs';
-import Detail from './Detail/index.vue';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+import { Modal, Textarea } from 'jetlinks-ui-components';
 
-
+// const route = useRoute();
 
 const dataInfo = ref();
 
 const visible = ref(false);
-
 
 
 const globParams = ref<Record<string, any>>({});
@@ -82,7 +92,18 @@ const columns = [
         key: 'vehicleTypeEnum',
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.text,
+                                value: item.value,
+                            })),
+                        );
+                    });
+                }),
         },
     },
 
@@ -203,10 +224,25 @@ const handleSearch = (e: any) => {};
 
 const handleExport = () => {};
 
-const onDetail = (data: any) => {
-    dataInfo.value = data;
-    visible.value = true;
+const handelDetail = (data: any) => {
+    let content = '';
+    try {
+        content = JSON.stringify(data, null, 2);
+    } catch (error) {
+        console.log('error');
+        content = data.content;
+    }
+    Modal.info({
+        title: '详细信息',
+        width: 700,
+        content: h(Textarea, {
+            bordered: false,
+            rows: 15,
+            value: content,
+        }),
+    });
 };
+
 </script>
 
 <style lang="less" scoped></style>
