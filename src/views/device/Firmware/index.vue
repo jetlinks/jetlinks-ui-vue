@@ -67,7 +67,7 @@
                 </j-pro-table>
             </FullPage>
         </div>
-        <Save v-if="visible" :data="current" @change="saveChange" />
+        <Save v-if="visible" :data="current" :productOptions="productOptions" @change="saveChange" />
         <TaskDrawer
             v-if="showTask"
             :firmwareId="firmwareId"
