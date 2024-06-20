@@ -15,10 +15,10 @@
                 :gridColumn="3"
                 :rowKey="(record: any) => record.id"
                 :rowSelection="{
-                    selectedRowKeys: state.selectedRowKeys,
-                    onChange: selectedRowChange,
+                    selectedRowKeys: selectedRowKeys,
                     onSelect: handleRowSelected,
                     onSelectAll: handleSelectAll,
+                    onSelectNone: handleReload,
                 }"
             >
                 <template #headerTitle>
@@ -79,6 +79,9 @@ import {
     handleSearchByDescription,
 } from '@/utils/dataReportUtils';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
+import { Ref } from 'vue';
+import { useSelectableTable } from '@/hook/useSelectableTable';
+import { ReactiveSet } from '@/utils/reactiveSet';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -94,14 +97,12 @@ const pageSize = ref<number>(12);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
-// 当前分页表格选中的数据项的id
-const state = reactive<{ selectedRowKeys: string[] }>({
-    selectedRowKeys: [],
-});
+const { selectedRowKeys, handleRowSelected, handleSelectAll, handleReload } =
+    useSelectableTable();
 
-// 处理导出按钮的提示，无需修改复制即可
+// 处理导出按钮的提示
 const popTitle = computed(() => {
-    return state.selectedRowKeys.length === 0
+    return selectedRowKeys.value.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
@@ -147,7 +148,6 @@ const handleShowTotal = () => {
 const handleOnChange = (num: number, pageSize: number) => {
     const _params = {
         ...globParams.value,
-
         // 因为分页器发生改变时会自动改变当前页码和每页条数
         // 因此在这覆盖globSearchParam中的pageIndex和pageSize
         pageIndex: num - 1,
@@ -162,7 +162,7 @@ const handleOnChange = (num: number, pageSize: number) => {
  */
 const handleSearch = (_params: any) => {
     // 如果携带搜索条件时，清空选中的数据项
-    if (_params.terms && _params.terms.length > 0) state.selectedRowKeys = [];
+    if (_params.terms && _params.terms.length > 0) handleReload();
     // 处理搜索的字段是时间类型的情况
     handleSearchByDate(_params, ['alarmTime']);
     // 处理搜索的字段是故障描述类型的情况
@@ -175,18 +175,18 @@ const handleSearch = (_params: any) => {
  */
 const handleExport = async () => {
     let _params: any = {};
-    if (state.selectedRowKeys.length > 0) {
+    if (selectedRowKeys.value.length > 0) {
         // 当部分选中时
         _params = {
             paging: false,
             pageSize:
-                state.selectedRowKeys.length > 10000
+                selectedRowKeys.value.length > 10000
                     ? 10000
-                    : state.selectedRowKeys.length,
+                    : selectedRowKeys.value.length,
             terms: [
                 {
                     column: 'id',
-                    value: state.selectedRowKeys,
+                    value: selectedRowKeys.value,
                     termType: 'in',
                 },
             ],
@@ -212,81 +212,13 @@ const handleExport = async () => {
             type.value,
         );
         if (
-            state.selectedRowKeys?.length > 10000 ||
-            (state.selectedRowKeys?.length == 0 && dataTotal.value > 10000)
+            selectedRowKeys.value.length > 10000 ||
+            (selectedRowKeys.value.length == 0 && dataTotal.value > 10000)
         ) {
             onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
         } else {
             onlyMessage(EXPORT_TIPS);
         }
-    }
-};
-
-/**
- * @function selectedRowChange table组件的rowSelection的onChange事件
- * @param selectedRowKeys 选中的数据项的id数组
- * @param selectedRows 选中的数据项的对象数组
- */
-const selectedRowChange = (selectedRowKeys: string[], selectedRows: any[]) => {
-    if (selectedRowKeys.length === 0 || selectedRows.length === 0) {
-        state.selectedRowKeys = [];
-    }
-};
-
-/**
- * @function handleRowSelected table组件的rowSelection的onSelect事件
- * @param record 当前选中的数据项的对象
- * @param selected 是否选中，用于判断选中还是取消选中
- * @param selectedRows 选中的所有数据项的对象数组
- */
-const handleRowSelected = (
-    record: any,
-    selected: boolean,
-    selectedRows: any,
-) => {
-    if (selected) {
-        const index = state.selectedRowKeys.findIndex(
-            (item) => item === record.id,
-        );
-        index === -1 && state.selectedRowKeys.push(record.id);
-    } else {
-        const index = state.selectedRowKeys.findIndex(
-            (item) => item === record.id,
-        );
-        index !== -1 && state.selectedRowKeys.splice(index, 1);
-    }
-};
-
-/**
- * @function handleSelectAll table组件的rowSelection的onSelectAll事件
- * @param selected 是否全选，用于判断全选还是取消全选
- * @param selectedRows 选中的所有数据项的对象数组
- * @param changeRows 发生变化的数据项的对象数组
- */
-const handleSelectAll = (
-    selected: boolean,
-    selectedRows: any,
-    changeRows: any,
-) => {
-    if (selected) {
-        changeRows.forEach((row: any) => {
-            const len = state.selectedRowKeys.length;
-            let flag = true;
-            for (let i = 0; i < len; i++) {
-                if (row.id === state.selectedRowKeys[i]) {
-                    flag = false;
-                    break;
-                }
-            }
-            flag && state.selectedRowKeys.push(row.id);
-        });
-    } else {
-        changeRows.forEach((row: any) => {
-            const index = state.selectedRowKeys.findIndex(
-                (item) => item === row.id,
-            );
-            index !== -1 && state.selectedRowKeys.splice(index, 1);
-        });
     }
 };
 </script>

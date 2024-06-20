@@ -105,9 +105,9 @@ const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
     };
 
     /**
-     * @description 将字典的
+     * @description 将字典数据映射为下拉框option的结构
      */
-    (async () => {
+    const setAlarmDesc = async () => {
         // 请求告警的字典数据
         const resp = await setDicMap();
         if (resp) {
@@ -133,7 +133,8 @@ const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
                 }
             });
         }
-    })();
+    };
+    setAlarmDesc();
 
     /**
      * @function queryDataFactory 请求函数工厂
@@ -230,6 +231,10 @@ const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
     //         }
     //     });
     // });
+
+    onActivated(() => {
+        setAlarmDesc();
+    });
 
     return {
         queryDataFactory,
