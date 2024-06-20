@@ -125,6 +125,7 @@ import Parsing from './Parsing/index.vue';
 import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
 import AlarmRecord from './AlarmRecord/index.vue';
+import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue'
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
@@ -171,6 +172,10 @@ const initList = [
         key: 'AlarmRecord',
         tab: '告警记录',
     },
+    {
+        key: 'CardManagement',
+        tab: '物联网卡'
+    }
 ];
 
 const list = ref([...initList]);
@@ -190,6 +195,7 @@ const tabs = {
     MetadataMap,
     GateWay,
     AlarmRecord,
+    CardManagement
 };
 
 const getStatus = (id: string) => {

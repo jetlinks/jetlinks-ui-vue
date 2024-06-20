@@ -166,7 +166,7 @@
                                 </Ellipsis>
                             </span>
                             <j-row style="margin-top: 20px">
-                                <j-col :span="8">
+                                <j-col :span="6">
                                     <div class="card-item-content-text">
                                         平台对接
                                     </div>
@@ -189,6 +189,20 @@
                                     <Ellipsis>{{
                                         slotProps.deviceName
                                     }}</Ellipsis>
+                                </j-col>
+                                <j-col :span="6">
+                                    <div class="card-item-content-text">
+                                        运营商状态
+                                    </div>
+                                    <BadgeStatus
+                                        :status="slotProps.cardState?.value"
+                                        :text="slotProps.cardState?.text"
+                                        :statusNames="{
+                                            using: 'processing',
+                                            toBeActivated: 'default',
+                                            deactivate: 'error',
+                                        }"
+                                    />
                                 </j-col>
                             </j-row>
                             <j-divider style="margin: 12px 0" />
@@ -296,6 +310,17 @@
                         }"
                     />
                 </template>
+                <template #cardState="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.cardState?.value"
+                        :text="slotProps.cardState?.text"
+                        :statusNames="{
+                            using: 'processing',
+                            toBeActivated: 'default',
+                            deactivate: 'error',
+                        }"
+                    />
+                </template>
                 <template #activationDate="slotProps">
                     {{
                         slotProps.activationDate
@@ -371,11 +396,7 @@
             @change="saveChange"
         />
         <!--   批量同步     -->
-        <SyncModal
-          v-if="syncVisible"
-          :params="params"
-          @close="syncClose"
-        />
+        <SyncModal v-if="syncVisible" :params="params" @close="syncClose" />
     </page-container>
 </template>
 
@@ -409,7 +430,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { usePermissionStore } from 'store/permission';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
-import SyncModal from './Sync.vue'
+import SyncModal from './Sync.vue';
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -425,7 +446,7 @@ const cardId = ref<any>();
 const current = ref<Partial<CardManagement>>({});
 const saveType = ref<string>('');
 const isCheck = ref<boolean>(false);
-const syncVisible = ref(false)
+const syncVisible = ref(false);
 
 const columns = [
     {
@@ -567,9 +588,27 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: '平台状态',
         dataIndex: 'cardStateType',
         key: 'cardStateType',
+        width: 180,
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            options: [
+                { label: '未同步', value: 'notReady' },
+                { label: '同步失败', value: 'error' },
+                { label: '激活', value: 'using' },
+                { label: '未激活', value: 'toBeActivated' },
+                { label: '停机', value: 'deactivate' },
+                { label: '其它', value: 'other' },
+            ],
+        },
+    },
+    {
+        title: '运营商状态',
+        dataIndex: 'cardState',
+        key: 'cardState',
         width: 180,
         scopedSlots: true,
         search: {
@@ -897,8 +936,8 @@ const handleResumption = () => {
 /**
  * 同步状态
  */
- const handleSync = async() => {
-  syncVisible.value = true
+const handleSync = async () => {
+    syncVisible.value = true;
     // if (!_selectedRowKeys.value.length) {
     //     onlyMessage('请选择数据', 'error');
     //     return;
@@ -959,18 +998,6 @@ const batchActions: BatchActionsType[] = [
             importVisible.value = true;
         },
     },
-    // {
-    //     key: 'active',
-    //     text: '批量激活',
-    //     permission: 'iot-card/CardManagement:active',
-    //     icon: 'CheckCircleOutlined',
-    //     selected: {
-    //         popConfirm: {
-    //             title: '确认激活吗？',
-    //             onConfirm: handleActive,
-    //         },
-    //     },
-    // },
     {
         key: 'stop',
         text: '批量停用',
@@ -1004,7 +1031,7 @@ const batchActions: BatchActionsType[] = [
         type: 'primary',
         permission: 'iot-card/CardManagement:sync',
         icon: 'SwapOutlined',
-        onClick: handleSync
+        onClick: handleSync,
     },
     {
         key: 'delete',
@@ -1022,9 +1049,9 @@ const batchActions: BatchActionsType[] = [
 ];
 
 const syncClose = () => {
-  syncVisible.value = false
-  cardManageRef.value?.reload();
-}
+    syncVisible.value = false;
+    cardManageRef.value?.reload();
+};
 
 onMounted(() => {
     if (routerParams.params.value.type === 'add' && paltformPermission) {
