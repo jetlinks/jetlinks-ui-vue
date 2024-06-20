@@ -21,6 +21,8 @@ interface RequestOptions<T, S> {
     defaultParams: S | any | any[]
 
     handleResponse: (data: any) => any
+
+    defaultValue?: any
 }
 
 const defaultOptions: any = {
@@ -38,7 +40,7 @@ export const useRequest = <T = any, S = any>(
     loading: Ref<boolean>,
     run: Run
 } => {
-    const data = ref<S>()
+    const data = ref<S>(options.defaultValue)
     const loading = ref(false)
     const _options = {
         ...defaultOptions,

@@ -40,6 +40,7 @@ import BooleanItem from '../Boolean/Item.vue'
 import DateItem from '../Date/Item.vue'
 import EnumItem from '../Enum/Item.vue'
 import { pick } from 'lodash-es'
+import {Form} from "ant-design-vue";
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 
@@ -61,6 +62,8 @@ const props = defineProps({
     default:false
   }
 });
+
+const formItemContext = Form.useInjectFormItemContext();
 
 const formRef = ref()
 const enumTableRef = ref()
@@ -189,6 +192,7 @@ const onOk = async () => {
     const _value = handleValue(formData.type, formData)
     emit('update:value', _value);
     emit('confirm', _value);
+    formItemContext.onFieldChange()
   }
 }
 

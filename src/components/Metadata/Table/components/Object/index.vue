@@ -79,6 +79,7 @@
 import { PopoverModal } from '../index'
 import BooleanSelect from "../BooleanSelect/index.vue";
 import { EditTable, TypeSelect, EditTableFormItem, StringParams, DateParams, FileParams, EnumParams, BooleanParams, ObjectParams, ArrayParams, DoubleParams } from '@/components/Metadata/Table'
+import {Form} from "ant-design-vue";
 
 const props = defineProps({
   value: {
@@ -100,6 +101,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['update:value', 'confirm', 'cancel']);
+const formItemContext = Form.useInjectFormItemContext();
 
 const slots = useSlots()
 
@@ -188,6 +190,7 @@ const onOk = async () => {
     visible.value = false
     emit('update:value', data)
     emit('confirm', data)
+    formItemContext.onFieldChange()
   }
 }
 

@@ -25,7 +25,6 @@ const props = defineProps({
 })
 
 const isAdd = computed(() => {
-  console.log(props.options, Object.keys(props.options).length)
   return !!Object.keys(props.options).length
 })
 

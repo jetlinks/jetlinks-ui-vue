@@ -31,7 +31,7 @@
                         started: 'processing',
                         disable: 'error',
                     }"
-                    @click="handleView(slotProps.id, slotProps.triggerType)"
+                    @click="handleView(slotProps)"
                 >
                     <template #type>
                         <span
@@ -92,16 +92,24 @@
         </JProTable>
     </FullPage>
     <Save
+        v-if="visible"
         :id="id"
         :type="configurationData.current?.targetType"
         @close-save="closeSave"
         @save-scene="saveSuccess"
-        v-if="visible"
     ></Save>
+
+  <SceneDrawer
+    v-if="scene.visible"
+    :detail="scene.detail"
+    :id="id"
+    @cancel="sceneCancel"
+  />
+
 </template>
 
 <script lang="ts" setup>
-import { queryBranch , query} from '@/api/rule-engine/scene';
+import { query} from '@/api/rule-engine/scene';
 import { unbindScene } from '@/api/rule-engine/configuration';
 import { useRoute } from 'vue-router';
 import type { ActionsType } from '@/components/Table';
@@ -110,12 +118,19 @@ import Save from './Save/index.vue';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import { useMenuStore } from 'store/menu';
+import SceneDrawer from './SceneDrawer.vue'
+import { typeMap } from './Save/utils'
+
 const menuStory = useMenuStore();
 const route = useRoute();
 const id = route.query?.id;
 
 const alarmConfigurationStore = useAlarmConfigurationStore();
 const { configurationData } = storeToRefs(alarmConfigurationStore);
+const scene = reactive({
+  visible: false,
+  detail: undefined
+})
 
 const terms = [
     {
@@ -130,25 +145,7 @@ const terms = [
     },
 ];
 const actionRef = ref();
-const typeMap = new Map();
-typeMap.set('manual', {
-    text: '手动触发',
-    img: getImage('/scene/scene-hand.png'),
-    icon: getImage('/scene/trigger-type-icon/manual.png'),
-    tip: '适用于第三方平台向物联网平台下发指令控制设备',
-});
-typeMap.set('timer', {
-    text: '定时触发',
-    img: getImage('/scene/scene-timer.png'),
-    icon: getImage('/scene/trigger-type-icon/timing.png'),
-    tip: '适用于定期执行固定任务',
-});
-typeMap.set('device', {
-    text: '设备触发',
-    img: getImage('/scene/scene-device.png'),
-    icon: getImage('/scene/trigger-type-icon/device.png'),
-    tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
-});
+
 const getActions = (
     data: Partial<Record<string, any>>,
     type: 'card' | 'table',
@@ -180,10 +177,8 @@ const queryTable = (_terms: any) => {
 }
 
 const visible = ref(false);
-const log = () => {
-    console.log();
-};
-log();
+
+
 const showModal = () => {
     visible.value = true;
 };
@@ -196,16 +191,18 @@ const saveSuccess = () => {
 };
 /**
  * 查看
- * @param id
- * @param triggerType 触发类型
+ * @param record
  */
- const handleView = (id: string, triggerType: string) => {
-    menuStory.jumpPage(
-        'rule-engine/Scene/Save',
-        {},
-        { triggerType: triggerType, id, type: 'view' },
-    );
+ const handleView = (record: Record<string, any>) => {
+   scene.detail = record
+   scene.visible = true
 };
+
+ const sceneCancel = () => {
+   scene.visible = false
+   scene.detail = undefined
+   actionRef.value?.reload()
+ }
 </script>
 <style lang="less" scoped>
 .subTitle {

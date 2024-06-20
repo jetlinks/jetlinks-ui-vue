@@ -36,7 +36,7 @@
                 v-model:value="paramsValue.termType"
                 @select="termsTypeSelect"
             />
-            <div v-if="!['notnull', 'isnull'].includes(paramsValue.termType)">
+            <div v-if="!['notnull', 'isnull'].includes(paramsValue.termType)" style="display: flex">
                 <DoubleParamsDropdown
                     v-if="showDouble"
                     icon="icon-canshu"
@@ -411,9 +411,10 @@ const columnSelect = (option: any) => {
     nextTick(() => {
         formItemContext.onFieldChange();
     });
+
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
-    ][0] = option.name;
+    ][0] = option.name || option.fullName;
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][1] = paramsValue.termType;
@@ -500,7 +501,7 @@ const typeSelect = (e: any) => {
 };
 
 const termAdd = () => {
-    const terms = {
+    const termsData = {
         column: undefined,
         value: {
             source: 'manual',
@@ -512,10 +513,9 @@ const termAdd = () => {
     };
     formModel.value.branches?.[props.branchName]?.when?.[
         props.whenName
-    ]?.terms?.push(terms);
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ].push(['', '', '', '并且']);
+    ]?.terms?.push(termsData);
+
+    formModel.value.options!.when[props.branchName].terms[props.whenName].terms.push(['', '', '', '并且']);
 };
 
 const onDelete = () => {
