@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts" setup>
-import AmapComponent from '@/components/AMapComponent/index.vue';
+import AmapComponent from 'components/AMapComponent/AMap.vue';
 import { getGo } from '@/api/device/dashboard';
 import { getImage } from '@/utils/comm';
 let point = ref();

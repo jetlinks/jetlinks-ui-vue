@@ -1,8 +1,8 @@
 <template>
-  <div class="card j-table-card-box">
+  <div class="card j-table-card-box" @click="click">
     <div
       class="card-warp"
-      :class="{ active: active ? 'active' : '', 'disabled': disabled }"
+      :class="{ 'disabled': disabled }"
     >
       <div class="card-type" >
         <div class="card-type-text">
@@ -34,7 +34,14 @@
                   {{ value.name }}
                 </span>
               </Ellipsis>
-              <Ellipsis :lineClamp="2">
+              <div v-if="showBindTags && activeBranches.length">
+                <a-tag v-for="tag in activeBranches">
+                  <Ellipsis style='max-width: 120px;'>
+                    {{ tag }}
+                  </Ellipsis>
+                </a-tag>
+              </div>
+              <Ellipsis v-else>
                 <div class="subTitle">
                   说明：{{
                     value?.description ||
@@ -42,9 +49,7 @@
                   }}
                 </div>
               </Ellipsis>
-              <div>
 
-              </div>
             </div>
             <div class="condition-name">
               <AddButton
@@ -61,7 +66,7 @@
             </div>
           </div>
         </div>
-        <div class="card-content-tabs">
+        <div class="card-content-tabs" v-if="showBranches">
           <BranchesTabs
             :branchesGroup="branchesGroup"
             :alarmId="alarmId"
@@ -86,21 +91,24 @@
           </div>
         </div>
       </div>
-      <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" >
+      <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" :style="maskStyle">
         <div class="mask-content">
-          <div>
-            当前告警已关联：
-          </div>
-          <div>
-            <j-ellipsis>
-              {{ activeBranches.join(',')}}
-            </j-ellipsis>
-          </div>
+          <slot name="mask">
+            <div>
+              当前告警已关联：
+            </div>
+            <div>
+              <j-ellipsis>
+                {{ activeBranches.join(',')}}
+              </j-ellipsis>
+            </div>
+          </slot>
         </div>
       </div>
-      <div v-if="isInvalid" class="card-mask" style="background-color: rgba(0, 0, 0, 0.2);" >
+      <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" >
         <a-button style="font-size: 16px;" type="link" @click="jumpView">无效数据，请重新保存场景</a-button>
       </div>
+      <slot></slot>
     </div>
   </div>
 </template>
@@ -117,7 +125,7 @@ import {handleActiveBranches, handleGroupAndFilter, typeMap} from './utils'
 import {useMenuStore} from "@/store/menu";
 
 type EmitProps = {
-  (e: 'click', data: Record<string, any>): void;
+  (e: 'click'): void;
   (e: 'change', key: string, selected: boolean): void;
   (e: 'reload'): void;
 };
@@ -163,6 +171,18 @@ const props = defineProps({
   showMask: {
     type: Boolean,
     default: false
+  },
+  showBranches: {
+    type: Boolean,
+    default: true
+  },
+  showBindTags: {
+    type: Boolean,
+    default: false
+  },
+  maskStyle: {
+    type: Object,
+    default: undefined
   }
 });
 
@@ -197,6 +217,10 @@ const activeBranches = computed(() => {
 
 const bindAlarm = (key: string, selected: boolean) => {
   emit('change', key, selected)
+}
+
+const click = () => {
+  emit('click')
 }
 
 const jumpView = () => {
@@ -413,6 +437,10 @@ const jumpView = () => {
       &.mask-hover:hover {
         background-color: rgba(#000, 0.01);
         color: transparent;
+      }
+
+      &.mask-full {
+        height: 100%;
       }
 
       .mask-content {
