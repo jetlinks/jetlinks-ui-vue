@@ -9,9 +9,12 @@
                     :style="{ background: i.color }"
                     class="colorExtractor"
                 ></div>
-                <Ellipsis class="tagName" style="max-width: 90px;cursor: move;" :id="i.id">{{
-                    i.name
-                }}</Ellipsis>
+                <Ellipsis
+                    class="tagName"
+                    style="max-width: 90px; cursor: move"
+                    :id="i.id"
+                    >{{ i.name }}</Ellipsis
+                >
             </div>
             <div>
                 <PermissionButton
@@ -51,7 +54,6 @@
 import {
     queryTags,
     deleteTags,
-    getTagsColor,
     saveTagsColor,
 } from '@/api/system/calendar';
 import { Draggable } from '@fullcalendar/interaction';
@@ -59,6 +61,9 @@ import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
+import { useSystem } from '@/store/system'
+const system = useSystem()
+const calendarTagColor = system.$state.calendarTagColor
 const tagsMap = inject('tagsMap');
 const rapidOn = inject('rapidOn');
 const editVisible = ref(false);
@@ -66,7 +71,6 @@ const tags = ref();
 const tagsList = ref();
 const editType = ref();
 const currentTag = ref();
-const colorMap = new Map();
 const addTag = () => {
     editVisible.value = true;
     editType.value = 'add';
@@ -79,7 +83,7 @@ const createDrag = () => {
             return {
                 id: eventEl.id,
                 title: eventEl.innerText,
-                backgroundColor: colorMap.get(eventEl.id) || '#000000',
+                backgroundColor: calendarTagColor.get(eventEl.id) || '#000000',
                 color: '#000',
                 editable: false,
             };
@@ -89,32 +93,27 @@ const createDrag = () => {
 //获取标签列表
 const queryTagsData = async () => {
     const res = await queryTags();
-    if (res.success) {
+if (res.success) {
         //获取用户添加的标签颜色及权限
-        const answer = await getTagsColor();
-        if (answer.success) {
-            Object.keys(answer.result).forEach((i) => {
-                colorMap.set(i, answer.result[i]);
-            });
-            tagsList.value = res.result.map((i) => {
-                let color = '#000000';
-                let disabled = false;
-                if (colorMap.has(i.id)) {
-                    color = colorMap.get(i.id);
-                }
-                if (buildInTag.includes(i.id)) {
-                    disabled = true;
-                }
-                return {
-                    ...i,
-                    color,
-                    disabled,
-                };
-            });
-            tagsMap.value = tagsList.value.map((i) => {
-                return omit(i, ['disabled']);
-            });
-        }
+        await system.getTagsColor();
+        tagsList.value = res.result.map((i) => {
+            let color = '#000000';
+            let disabled = false;
+            if (calendarTagColor.has(i.id)) {
+                color = calendarTagColor.get(i.id);
+            }
+            if (buildInTag.includes(i.id)) {
+                disabled = true;
+            }
+            return {
+                ...i,
+                color,
+                disabled,
+            };
+        });
+        tagsMap.value = tagsList.value.map((i) => {
+            return omit(i, ['disabled']);
+        });
     }
 };
 
@@ -126,10 +125,10 @@ const refreshTags = () => {
 const deleteData = async (id) => {
     const res = await deleteTags([id]);
     if (res.success) {
-        if (colorMap.has(id)) {
-            colorMap.delete(id);
+        if (calendarTagColor.has(id)) {
+            calendarTagColor.delete(id);
             let color = new Object();
-            colorMap.forEach((item, key) => {
+            calendarTagColor.forEach((item, key) => {
                 color[key] = item;
             });
             const deleteColor = await saveTagsColor(color);
