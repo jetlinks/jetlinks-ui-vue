@@ -21,7 +21,7 @@
     "@liveqing/liveplayer-v3": "^3.7.10",
     "@types/marked": "^4.0.8",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
-    "@vuemap/vue-amap": "^1.1.20",
+    "@vuemap/vue-amap": "^2.1.2",
     "@vueuse/core": "^9.10.0",
     "ant-design-vue": "^3.2.15",
     "async-validator": "^4.2.5",

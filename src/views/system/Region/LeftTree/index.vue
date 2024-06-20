@@ -87,8 +87,8 @@
         </div>
     </div>
     <Save
-        :mode="mode"
         v-if="visible"
+        :mode="mode"
         :data="current"
         :treeData="_treeData"
         :areaTree="areaTree"
@@ -101,10 +101,11 @@ import { cloneDeep, debounce } from 'lodash-es';
 import { onMounted, ref, watch } from 'vue';
 import Save from '../Save/index.vue';
 import { getRegionTree, delRegion } from '@/api/system/region';
-import { useArea } from '../hooks';
+import {useArea, useRegion} from '../hooks';
 import ResizeObserver from 'ant-design-vue/lib/vc-resize-observer';
 import { onlyMessage } from '@/utils/comm';
 
+const regionState = useRegion()
 const treeData = ref<any[]>([]);
 const _treeData = ref<any[]>([]);
 const visible = ref<boolean>(false);
@@ -287,7 +288,7 @@ watch(
  */
 const areaSelect = (key, { node }) => {
     selectedKeys.value = key;
-    emit('select', node?.code);
+    emit('select', node?.code, node);
 };
 
 const handleSearch = async () => {
@@ -306,6 +307,19 @@ const handleSearch = async () => {
     }
 };
 
+const openSave = (geoJson: Record<string, any>) => {
+  if (geoJson) {
+    regionState.saveCache.geoJson = geoJson
+  }
+  current.value = regionState.saveCache
+  visible.value = true
+  regionState.treeMask = false
+}
+
+defineExpose({
+  openSave: openSave
+})
+
 onMounted(() => {
     handleSearch();
 });
@@ -318,9 +332,8 @@ onMounted(() => {
 }
 
 .tree-content {
-    display: flex;
-    flex-grow: 1;
-    height: 0;
+    flex: 1 1 0;
+    min-height: 0;
     width: 100%;
 
     .tree-empty {
