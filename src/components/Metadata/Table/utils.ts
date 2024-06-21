@@ -41,9 +41,9 @@ const collectValidateRules = (columns: ColumnsType):  Record<string, any> => {
 export const handlePureRecord = (record: Record<string, any>) => {
     if (!record) return {}
 
-    if (record.expands) {
-        record.expands = omit(record.expands, ['isProduct'])
-    }
+    // if (record.expands) {
+    //     record.expands = omit(record.expands, ['isProduct'])
+    // }
     return omit(record, ['__serial', '__index', '__top', '__selected'])
 }
 export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options?: OptionsType): {

@@ -140,7 +140,6 @@
     </template>
     <template #other="{ record }">
       <div>
-        <a-tag v-if="showTag(record)">已配置</a-tag>
         <OtherSetting
             v-model:value="record.expands"
             :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
@@ -150,6 +149,7 @@
             :isProduct="record.expands?.isProduct"
             :target="props.target"
             :record="record"
+            :disabled="record.expands?.isProduct && !['int','long','float','double',].includes(record.valueType?.type)"
             @change="metadataChange"
         />
       </div>
@@ -431,7 +431,6 @@ const handleSaveClick = async (next?: Function) => {
   });
 
   if (resp) {
-
     const virtual: any[] = [];
     const arr = resp.map((item: any) => {
       if (item.expands?.virtualRule) {
@@ -473,6 +472,7 @@ const handleSaveClick = async (next?: Function) => {
         productStore.setCurrent(detail)
       }
     }
+
     const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
     let _data = updateMetadata(props.type!, arr, _detail, updateStore)
     loading.value = true
@@ -525,10 +525,6 @@ const parentTabsChange = (next?: Function) => {
   } else {
     (next as Function)?.()
   }
-}
-
-const showTag = (record: Record<string, any>) => {
-  return record.expands?.otherEdit || Object.keys(omit(record.expands, ['source', 'type', 'isProduct', 'group', 'otherEdit'])).length
 }
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
