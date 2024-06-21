@@ -170,7 +170,7 @@ onBeforeMount(() => {
                 left: 0;
                 width: 4px;
                 height: 100%;
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 0 3px 3px 0;
                 content: '';
             }
@@ -339,8 +339,8 @@ onBeforeMount(() => {
                 .btn-style {
                     margin-top: 20px;
                     color: #fff;
-                    border-color: #1d39c4;
-                    background: #1d39c4;
+                    border-color: @primary-color;
+                    background: @primary-color;
                 }
             }
         }

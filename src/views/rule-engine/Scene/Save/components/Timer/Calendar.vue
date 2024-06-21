@@ -101,15 +101,19 @@
       新增规则
     </a-button>
     <j-modal
-      title=""
       v-model:visible="visible"
       :width="1000"
-      :footer="null"
+      okText="关闭"
     >
       <div>
         正在预览日历
       </div>
       <FullCalendar  :preview="true"/>
+      <template #footer>
+        <a-button type="primary" @click="visible = false">
+          关闭
+        </a-button>
+      </template>
     </j-modal>
   </div>
 </template>

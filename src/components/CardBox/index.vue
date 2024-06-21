@@ -25,7 +25,7 @@
                         background: getBackgroundColor(statusNames[status]),
                     }"
                 ></div>
-                <div style="display: flex">
+                <div class="card-content-body">
                     <!-- 图片 -->
                     <div class="card-item-avatar">
                         <slot name="img"> </slot>
@@ -57,8 +57,8 @@
                             :text="statusText"
                             :statusNames="statusNames"
                         ></BadgeStatus>
-                        <CustomBadgeStatus 
-                            v-else 
+                        <CustomBadgeStatus
+                            v-else
                             :status="status"
                             :text="statusText"
                             :statusNames="statusNames">
@@ -176,7 +176,7 @@ const handleClick = () => {
 .card {
     width: 100%;
     background-color: #fff;
-    
+
     .checked-icon {
         position: absolute;
         right: -22px;
@@ -249,6 +249,12 @@ const handleClick = () => {
             padding: 30px 12px 30px 30px;
             overflow: hidden;
 
+            .card-content-body {
+              display: flex;
+              position: relative;
+              z-index: 99;
+            }
+
             .card-item-avatar {
                 margin-right: 16px;
               display: flex;
@@ -316,6 +322,7 @@ const handleClick = () => {
                 font-size: 12px;
             }
         }
+
 
         .card-content-top-line {
             &::before {

@@ -35,7 +35,7 @@
                                         </span>
                                         <AIcon
                                             type="PlusOutlined"
-                                            style="color: #1d39c4"
+                                            style="color: #1677FF"
                                             @click="addTable"
                                         />
                                     </div>
