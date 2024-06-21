@@ -94,7 +94,7 @@ export const asyncUpdateMetadata = (
       })
 
       const newMetadata = Object.keys(metadata).reduce((prev, key) => {
-        const productIds = new Set(productMetaData[key].map(item => item.id))
+        const productIds = new Set(productMetaData[key]?.map(item => item.id) || [])
         console.log(metadata[key])
         prev[key] = metadata[key].filter(item => !productIds.has(item.id))
         return prev
