@@ -44,6 +44,7 @@
                             <j-input
                                 v-model:value="form.simpleName"
                                 placeholder="请输入车辆简称"
+                                :disabled="idDisabled"
                             />
                         </j-form-item>
                     </j-col>
@@ -52,6 +53,7 @@
                     <j-radio-group
                         name="category"
                         v-model:value="form.category"
+                        :disabled="idDisabled"
                     >
                         <j-radio :value="0">燃油车</j-radio>
                         <j-radio :value="1">电车</j-radio>
@@ -62,6 +64,7 @@
                         showSearch
                         v-model:value="form.vehicleTypeEnum"
                         placeholder="请选择车辆类型"
+                        :disabled="idDisabled"
                     >
                         <j-select-option
                             v-for="item in vehicleTypeList"
@@ -76,6 +79,7 @@
                     <j-tree-select
                         showSearch
                         v-model:value="form.orgName"
+                        :disabled="idDisabled"
                         placeholder="请选择产品分类"
                         :tree-data="treeList"
                         @change="valueChange"
@@ -96,12 +100,14 @@
                     <j-input
                         v-model:value="form.deviceId"
                         placeholder="请输入设备号(=车辆简称)"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="车辆状态" name="vehicleStatus">
                     <j-radio-group
                         name="vehicleStatus"
                         v-model:value="form.vehicleStatus"
+                        :disabled="idDisabled"
                     >
                         <j-radio :value="0">正常</j-radio>
                         <j-radio :value="1">停用</j-radio>
@@ -114,6 +120,7 @@
                         placeholder="请选择出厂日期"
                         v-model:value="form.vehicleDate"
                         value-format="x"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="保修到期" name="warrantyDate">
@@ -121,18 +128,21 @@
                         style="width: 100%"
                         v-model:value="form.warrantyDate"
                         value-format="x"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="车牌号" name="vehicleNumber">
                     <j-input
                         v-model:value="form.vehicleNumber"
                         placeholder="请输入车牌号"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="发动机编号" name="engineNumber">
                     <j-input
                         v-model:value="form.engineNumber"
                         placeholder="请输入发动机编号"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="年审日期" name="annualReviewDate">
@@ -140,12 +150,14 @@
                         style="width: 100%"
                         v-model:value="form.annualReviewDate"
                         value-format="x"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="SIM卡" name="networkCardId">
                     <j-input
                         v-model:value="form.networkCardId"
                         placeholder="请填写SIM卡号"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
                 <j-form-item label="说明" name="description">
@@ -155,10 +167,14 @@
                         :auto-size="{ minRows: 4, maxRows: 5 }"
                         v-model:value="form.description"
                         placeholder="请输入说明"
+                        :disabled="idDisabled"
                     />
                 </j-form-item>
             </j-form>
         </div>
+        <template #footer>
+            <j-button @click="close">取消</j-button>
+        </template>
     </j-modal>
 </template>
 
