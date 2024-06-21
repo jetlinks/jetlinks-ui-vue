@@ -21,7 +21,7 @@
             />
             <AIcon
                 :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
-                @click="fullScreenToggle"
+                @click="() => fullToggle(isFullscreen, fullScreenToggle)"
             />
             <span v-if="searchData.show">
               已查询到
@@ -329,6 +329,8 @@ const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
 const selectedRowKeys = ref<string[]>([])
 
+const _isFullscreen = ref(false)
+
 const searchData = reactive({
   len: 0,
   show: false
@@ -346,6 +348,9 @@ const detailData = reactive({
 const heavyLoad = ref<Boolean>(false)
 
 const getPopupContainer = (node: any) => {
+  if (_isFullscreen.value) {
+    return tableRef.value.getTableWrapperRef() || node
+  }
   return node || document.body
 }
 
@@ -525,6 +530,11 @@ const parentTabsChange = (next?: Function) => {
   } else {
     (next as Function)?.()
   }
+}
+
+const fullToggle = (type: boolean, cb: Function) => {
+  cb()
+  _isFullscreen.value = !type
 }
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
