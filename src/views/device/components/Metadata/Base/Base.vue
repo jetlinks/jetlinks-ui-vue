@@ -291,6 +291,7 @@ import {
   BooleanSelect
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
+import {message} from "ant-design-vue";
 
 const props = defineProps({
   target: {
@@ -347,11 +348,11 @@ const detailData = reactive({
 
 const heavyLoad = ref<Boolean>(false)
 
-const getPopupContainer = (node: any) => {
+const getPopupContainer = () => {
   if (_isFullscreen.value) {
-    return tableRef.value.getTableWrapperRef() || node
+    return tableRef.value.getTableWrapperRef() || document.body
   }
-  return node || document.body
+  return document.body
 }
 
 provide('_tagsDataSource', tagsMetadata)
@@ -489,6 +490,11 @@ const handleSaveClick = async (next?: Function) => {
       // dataSource.value = resp
       // tableRef.value.cleanEditStatus()
       editStatus.value = false
+      message.config({
+        getContainer() {
+          return getPopupContainer()
+        }
+      })
       onlyMessage('操作成功！')
       next?.()
     }
