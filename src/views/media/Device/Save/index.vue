@@ -568,7 +568,7 @@ const getDetail = async () => {
                 : productData?.configuration?.stream_mode;
         }
         if (productData && formData.value.channel === 'media-plugin') {
-            if(!res.result.others){
+            if(!res.result.others || JSON.stringify(res.result?.others) === "{}"){
                 formData.value.others = productData?.configuration;
             }
             const resp: any = await queryDeviceConfig(formData.value.id);

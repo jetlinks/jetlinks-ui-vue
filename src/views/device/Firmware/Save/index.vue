@@ -6,6 +6,7 @@
         :visible="true"
         width="700px"
         :confirm-loading="loading"
+        :maskClosable='false'
         @cancel="handleCancel"
         @ok="handleOk"
     >

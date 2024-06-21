@@ -26,6 +26,7 @@
     "ant-design-vue": "^3.2.15",
     "async-validator": "^4.2.5",
     "axios": "^1.2.1",
+    "colorpicker-v3": "^2.10.2",
     "driver.js": "^0.9.8",
     "echarts": "^5.4.1",
     "event-source-polyfill": "^1.0.31",

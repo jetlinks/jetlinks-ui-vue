@@ -65,9 +65,7 @@
                             <j-form-item>
                                 <template #label>
                                     <span>高德地图 密钥</span>
-                                    <j-tooltip
-                                        title="降低明文传输被窃取的风险"
-                                    >
+                                    <j-tooltip title="降低明文传输被窃取的风险">
                                         <img
                                             class="img-style"
                                             :src="
@@ -438,6 +436,12 @@ const form = reactive<formType>({
                     }
                 },
                 trigger: 'blur',
+            },
+        ],
+        recordNumber: [
+            {
+                max: 64,
+                message: '最多可输入64个字符',
             },
         ],
     },
