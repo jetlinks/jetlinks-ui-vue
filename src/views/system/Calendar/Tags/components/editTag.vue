@@ -9,9 +9,10 @@
             <a-row :gutter="16">
                 <a-col>
                     <a-form-item name="color">
-                        <input
+                        <ColorPicker
                             type="color"
-                            :value="tagInfo.color"
+                            :hex="tagInfo.color"
+                            :themeColor="themeColor" 
                             @change="changeColor"
                         />
                     </a-form-item>
@@ -44,6 +45,8 @@
 import { saveTag, saveTagsColor, getTagsColor } from '@/api/system/calendar';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
+import ColorPicker from 'colorpicker-v3';
+import 'colorpicker-v3/style.css';
 const props = defineProps({
     editType: {
         type: String,
@@ -61,9 +64,21 @@ const tagInfo = reactive({
 });
 const form = ref();
 const colorData = ref();
-const changeColor = (event) => {
-    tagInfo.color = event.target.value;
+const changeColor = ({rgba}) => {
+    tagInfo.color = rgba;
 };
+const themeColor =  [
+    '#69B1FF',
+    '#5CDBD3',
+    '#FFAF6E',
+    '#85A5FF',
+    '#F4D160',
+    '#95DE64',
+    '#B37FEB',
+    '#FFEC3D',
+    '#FF7875',
+    '#FF85C0'
+]
 const submit = () => {
     form.value.validate().then(async () => {
         let id;
