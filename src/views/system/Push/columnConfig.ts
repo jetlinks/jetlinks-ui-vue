@@ -3,7 +3,7 @@ export const columnsConfig = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        width: 120,
+        width: 200,
         fixed: 'left',
         ellipsis: true,
         search: {

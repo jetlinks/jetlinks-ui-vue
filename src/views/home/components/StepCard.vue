@@ -6,19 +6,22 @@
                 <template #title>
                     <span>{{ props.tooltip }}</span>
                 </template>
-                <AIcon type="QuestionCircleOutlined" style="padding-top: 8px;font-size: 14px;color: #666;" />
+                <AIcon
+                    type="QuestionCircleOutlined"
+                    style="padding-top: 8px; font-size: 14px; color: #666"
+                />
             </j-tooltip>
         </h5>
 
         <div class="box-list">
             <div class="list-item" v-for="item in props.dataList">
-              <div class="item-content">
-                <div class="box-top" @click="jumpPage(item)">
-                    <img :src="item.iconUrl" alt="" />
-                    <span class="top-title">{{ item.title }}</span>
+                <div class="item-content">
+                    <div class="box-top" @click="jumpPage(item)">
+                        <img :src="item.iconUrl" alt="" />
+                        <span class="top-title">{{ item.title }}</span>
+                    </div>
+                    <div class="box-details">{{ item.details }}</div>
                 </div>
-                <div class="box-details">{{ item.details }}</div>
-              </div>
             </div>
         </div>
     </div>
@@ -67,8 +70,8 @@ const jumpPage = (row: recommendList) => {
             left: 0;
             width: 8px;
             height: 8px;
-            background-color: #1d39c4;
-            border: 1px solid #b4c0da;
+            background-color: var(--boot-card-icon-primary);
+            border: 1px solid var(--boot-card-icon-border);
             transform: translateY(-50%);
             content: ' ';
         }
@@ -85,17 +88,17 @@ const jumpPage = (row: recommendList) => {
             flex: 1;
             position: relative;
             .item-content {
-              display: flex;
-              flex-direction: column;
-              height: 100%;
-              &:hover {
-               box-shadow: @shadow-1-down;
-              }
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                &:hover {
+                    box-shadow: @shadow-1-down;
+                }
             }
             .box-top {
                 position: relative;
                 padding: 16px 24px;
-                background-color: #f8f9fd;
+                background-color: #fff9f7;
                 color: #333;
                 font-weight: 700;
                 font-size: 14px;
@@ -109,8 +112,8 @@ const jumpPage = (row: recommendList) => {
                     height: 100%;
                 }
                 span {
-                  position: relative;
-                  z-index: 2;
+                    position: relative;
+                    z-index: 2;
                 }
             }
             .box-details {
@@ -135,18 +138,18 @@ const jumpPage = (row: recommendList) => {
 }
 
 @media (min-width: @screen-md-min) {
-  .step-container {
-    .box-list {
-      .list-item {
-        .box-top {
-          font-size: 12px;
-          padding: 12px 18px;
+    .step-container {
+        .box-list {
+            .list-item {
+                .box-top {
+                    font-size: 12px;
+                    padding: 12px 18px;
+                }
+                .box-details {
+                    padding: 12px;
+                }
+            }
         }
-        .box-details {
-          padding: 12px;
-        }
-      }
     }
-  }
 }
 </style>

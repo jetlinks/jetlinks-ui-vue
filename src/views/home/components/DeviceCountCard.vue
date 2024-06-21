@@ -64,14 +64,14 @@ getData();
             left: 0;
             width: 8px;
             height: 8px;
-            background-color: #1d39c4;
-            border: 1px solid #b4c0da;
+            background-color: var(--boot-card-icon-primary);
+            border: 1px solid var(--boot-card-icon-border);
             transform: translateY(-50%);
             content: ' ';
         }
     }
     .detail {
-        color: #1d39c4;
+        color: var(--theme-color-primary);
         cursor: pointer;
         position: absolute;
         right: 12px;
@@ -88,11 +88,7 @@ getData();
         .box-item {
             position: relative;
             padding: 16px;
-            background: linear-gradient(
-                135.62deg,
-                #f6f7fd 22.27%,
-                hsla(0, 0%, 100%, 0.86) 91.82%
-            );
+            background: var(--card-bg-linear);
             border-radius: 2px;
             box-shadow: 0 4px 18px #efefef;
 

@@ -11,7 +11,7 @@
                     class="chart"
                     :value="cpu"
                     chart-ref="cpuChart"
-                    :color-arr="['#ebebeb', '#d3adf7']"
+                    :color-arr="['#ffe3db', '#F84914']"
                     image="/images/home/top-3.svg"
                 />
             </div>
@@ -22,7 +22,7 @@
                     class="chart"
                     chart-ref="jvmChart"
                     :value="jvm"
-                    :color-arr="['#d6e4ff', '#85a5ff']"
+                    :color-arr="['#ffe3db', '#F84914']"
                     image="/images/home/top-4.svg"
                 />
             </div>
@@ -80,7 +80,7 @@ onUnmounted(() => {
     padding: 24px 14px;
     position: relative;
     .detail {
-        color: #1d39c4;
+        color: var(--theme-color-primary);
         cursor: pointer;
         position: absolute;
         right: 12px;
@@ -103,8 +103,8 @@ onUnmounted(() => {
             left: 0;
             width: 8px;
             height: 8px;
-            background-color: #1d39c4;
-            border: 1px solid #b4c0da;
+            background-color: var(--boot-card-icon-primary);
+            border: 1px solid var(--boot-card-icon-border);
             transform: translateY(-50%);
             content: ' ';
         }
@@ -119,11 +119,7 @@ onUnmounted(() => {
         .box-item {
             position: relative;
             padding: 16px;
-            background: linear-gradient(
-                135.62deg,
-                #f6f7fd 22.27%,
-                hsla(0, 0%, 100%, 0.86) 91.82%
-            );
+            background: var(--card-bg-linear);
             border-radius: 2px;
             box-shadow: 0 4px 18px #efefef;
 

@@ -1,0 +1,11 @@
+body{
+    --boot-card-icon-primary: #eb3c07;
+    --boot-card-icon-border: #ffded5;
+    --boot-card-shadow: #FB9677;
+
+    --theme-color-primary: #F84914;
+
+
+
+    --card-bg-linear:linear-gradient(135.62deg, #FFFAF9 22.27%, rgba(255, 255, 255, 0.86) 91.82%);
+}
