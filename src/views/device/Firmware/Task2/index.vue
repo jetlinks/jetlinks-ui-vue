@@ -45,11 +45,13 @@
                     item?.timeoutSeconds + 's'
                 }}</a-descriptions-item>
                 <a-descriptions-item label="升级设备">{{
-                    item?.deviceId?.length ? '所有设备' : '选择设备'
+                    item?.deviceId?.length ? '选择设备' : '所有设备'
                 }}</a-descriptions-item>
-                <a-descriptions-item label="说明">{{
-                    item?.description || '--'
-                }}</a-descriptions-item>
+                <a-descriptions-item label="说明"
+                    ><Ellipsis>
+                        {{ item?.description || '--' }}
+                    </Ellipsis></a-descriptions-item
+                >
             </a-descriptions>
         </div>
         <JEmpty v-if="taskList.length === 0"></JEmpty>
@@ -94,9 +96,7 @@ const currentTask = ref();
 const queryTaskList = async () => {
     const param = {
         paging: false,
-        sorts: [
-            { name: 'createTime', order: 'desc' }
-        ],
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [
             {
                 terms: [

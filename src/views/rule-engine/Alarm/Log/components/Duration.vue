@@ -26,12 +26,12 @@ const calculateDuration = (startTime, endTime) => {
 };
 onMounted(() => {
     duration.value =
-        props.data?.state?.value === 'normal'
-            ? calculateDuration(
+        props.data?.state?.value === 'warning'
+            ? calculateDuration(dayjs(props.data.alarmTime), dayjs())
+            : calculateDuration(
                   dayjs(props.data.alarmTime),
                   dayjs(props.data?.handleTime),
-              )
-            : calculateDuration(dayjs(props.data.alarmTime), dayjs());
+              );
 });
 </script>
 <style lang="less" scoped></style>
