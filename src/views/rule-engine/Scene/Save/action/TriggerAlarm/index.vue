@@ -5,6 +5,7 @@
         :width="1000"
         :keyboard="false"
         :maskClosable="false"
+        :footer="null"
         @cancel="emit('close')"
         @ok="emit('close')"
     >
