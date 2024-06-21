@@ -10,7 +10,7 @@
             >
                 <template #url="slotProps">
                     <span
-                        style="color: #1d39c4; cursor: pointer"
+                        style="color: #1677FF; cursor: pointer"
                         @click="emits('update:clickApi', slotProps)"
                         >{{ slotProps.url }}</span
                     >

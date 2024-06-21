@@ -282,7 +282,7 @@ const handleSearch = (e: any) => {
 </script>
 <style scoped lang="less">
 .userName{
-    color: #1d39c4;
+    color: #1677FF;
     background: #f0f5ff;
     border-color: #adc6ff;
     list-style: none;

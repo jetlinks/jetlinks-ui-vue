@@ -195,7 +195,7 @@ function addRow() {
         color: #000000d9;
 
         &:hover {
-            color: #1d39c4;
+            color: @primary-color;
         }
     }
     .add-btn {
