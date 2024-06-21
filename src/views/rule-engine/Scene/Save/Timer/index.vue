@@ -11,6 +11,11 @@
             style='width: 100%'
             @click='visible = true'
         >
+          <template #extra>
+            <span style="padding-right: 10px;">
+              系统时间到达
+            </span>
+          </template>
           <Title :options='data.options.trigger' />
         </AddButton>
       </j-form-item>
