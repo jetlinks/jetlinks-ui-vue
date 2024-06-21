@@ -33,8 +33,8 @@
                                 type: 'and'
                               },
                               {
-                                column: 'targetType$in',
-                                value: targetType === 'device' ? [] : ['other'],
+                                column: targetType === 'device' ? 'targetType$in' : 'targetType',
+                                value: targetType === 'device' ? [] : 'other',
                                 type: 'and'
                               }
                           ],
@@ -68,16 +68,11 @@
               </slot>
             </template>
             <template #content>
-              <div style="width: calc(100% - 100px)">
-                <Ellipsis>
-                  {{ slotProps.name }}
-                </Ellipsis>
-              </div>
-              <div>
-                <div class="content-des-title">
-                  告警级别
+              <div style="margin-top: 36px; display: flex;gap: 6px;line-height: 1">
+                <LevelIcon :level="slotProps.level" />
+                <div style="flex: 1 1 0;min-width: 0">
                   <Ellipsis>
-                    {{ levelMap[slotProps.level] || slotProps.level }}
+                    {{ slotProps.name }}
                   </Ellipsis>
                 </div>
               </div>
@@ -94,6 +89,7 @@ import {queryAlarmList} from '@/api/rule-engine/scene';
 import { useAlarmLevel, useRequest } from '@/hook'
 import {bindScene} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
+import LevelIcon from '@/views/rule-engine/Alarm/Config/LevelIcon.vue'
 
 const props = defineProps({
   id: {
@@ -140,7 +136,7 @@ const columns = [
     ellipsis: true,
   },
   {
-    title: '告警级别',
+    title: '级别',
     dataIndex: 'level',
     key: 'level',
     scopedSlots: true,
