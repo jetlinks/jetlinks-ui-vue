@@ -16,7 +16,7 @@
     </template>
   </j-tree-select>
   <j-checkbox
-      v-model:checked="_checked"
+      v-model:checked="mySync"
       @change="onCheckChange"
       style="margin-top: 5px"
   >同步添加下一级区域</j-checkbox
@@ -43,13 +43,17 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  sync: {
+    type: Boolean,
+    default: true
+  }
 });
 
-const emits = defineEmits(['update:value', 'update:name', 'update:children']);
+const emits = defineEmits(['update:value', 'update:name', 'update:children', 'update:sync']);
 
 const features = ref<any>({});
 const _value = ref<string>();
-const _checked = ref<boolean>(props.children?.length ?? false);
+const mySync = ref<boolean>(props.sync);
 
 
 const findChildren = (data: any, code: string) => {
@@ -73,7 +77,6 @@ const findChildren = (data: any, code: string) => {
 }
 
 const onCheckChange = (e: any) => {
-  console.log('e',props.children, e.target.checked)
   if (e.target.checked) {
     const children = features.value?.children ? features.value?.children : findChildren(props.areaTree, _value.value)
     emits('update:children', children.map((item, index) => {
@@ -85,6 +88,7 @@ const onCheckChange = (e: any) => {
   } else {
     emits('update:children', []);
   }
+  emits('update:sync', e.target.checked)
 };
 
 const getObj = (node: any): any => {
@@ -110,7 +114,7 @@ const onSelect = (val: string, node: any) => {
   emits('update:name', features.value?.name);
   emits('update:value', features.value?.code);
 
-  if (_checked.value) {
+  if (mySync.value) {
     emits('update:children', node?.children.map(item => ({
       code: item.code,
       name: item.name,
@@ -135,4 +139,8 @@ watch(
       immediate: true,
     },
 );
+
+watch(() => props.sync, () => {
+  mySync.value = props.sync
+}, { immediate: true})
 </script>

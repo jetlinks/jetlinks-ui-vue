@@ -36,7 +36,7 @@ const secretKey = system.$state.configInfo.amap?.secretKey;
 initAMapApiLoader({
     key: amapKey,
     securityJsCode: secretKey,
-    plugins: ['AMap.DistrictSearch'],
+    plugins: ['AMap.DistrictSearch', 'AMap.GeoJSON'],
 });
 
 const props = defineProps({
