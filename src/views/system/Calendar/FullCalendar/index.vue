@@ -1,5 +1,5 @@
 <template>
-    <div class="calendarContainer">
+    <div class="calendarContainer" v-if="showCalendar">
         <FullCalendar
             ref="calendarEl"
             class="calendar"
@@ -87,6 +87,7 @@ const props = defineProps({
 const emit = defineEmits(['selectDate', 'resetRapid']);
 const menuStory = useMenuStore();
 const system = useSystem();
+const showCalendar = ref(false);
 const calendarTagColor = system.$state.calendarTagColor;
 const tagsList = inject('tagsMap');
 //请求接口的结束时间（请求过的日期就不再请求接口了）
@@ -534,7 +535,10 @@ watch(
     },
 );
 onMounted(() => {
-    calendarApi.value = calendarEl.value.getApi();
+    showCalendar.value = true;
+});
+nextTick(() => {
+    calendarApi.value = calendarEl.value?.getApi();
     const calendarBody = document.querySelector(`.fc-view-harness`);
     calendarBody?.addEventListener('mousemove', (event) => {
         if (props.selectable) {
