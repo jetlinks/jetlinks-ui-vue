@@ -81,9 +81,7 @@ const handleVehicleType = (type: string) => {
     const item = vehicleType.value?.find((item) => item.value === type);
     return item?.label || type;
 };
-/**
- * 导出
- */
+
 
 /**
  * @function handleExport 导出
