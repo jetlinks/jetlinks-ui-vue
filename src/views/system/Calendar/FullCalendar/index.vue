@@ -536,21 +536,21 @@ watch(
 );
 onMounted(() => {
     showCalendar.value = true;
-});
-nextTick(() => {
-    calendarApi.value = calendarEl.value?.getApi();
-    const calendarBody = document.querySelector(`.fc-view-harness`);
-    calendarBody?.addEventListener('mousemove', (event) => {
-        if (props.selectable) {
-            showTips.value = true;
-            mouseX.value = event.clientX;
-            mouseY.value = event.clientY;
-        }
-    });
-    calendarBody?.addEventListener('mouseout', () => {
-        if (props.selectable) {
-            showTips.value = false;
-        }
+    nextTick(() => {
+        calendarApi.value = calendarEl.value?.getApi();
+        const calendarBody = document.querySelector(`.fc-view-harness`);
+        calendarBody?.addEventListener('mousemove', (event) => {
+            if (props.selectable) {
+                showTips.value = true;
+                mouseX.value = event.clientX;
+                mouseY.value = event.clientY;
+            }
+        });
+        calendarBody?.addEventListener('mouseout', () => {
+            if (props.selectable) {
+                showTips.value = false;
+            }
+        });
     });
 });
 </script>

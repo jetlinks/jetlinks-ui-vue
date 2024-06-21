@@ -25,13 +25,12 @@ const calculateDuration = (startTime, endTime) => {
     return result;
 };
 onMounted(() => {
-    duration.value =
+    duration.value = calculateDuration(
+        dayjs(props.data.alarmTime),
         props.data?.state?.value === 'warning'
-            ? calculateDuration(dayjs(props.data.alarmTime), dayjs())
-            : calculateDuration(
-                  dayjs(props.data.alarmTime),
-                  dayjs(props.data?.handleTime),
-              );
+            ? dayjs()
+            : dayjs(props.data?.handleTime),
+    );
 });
 </script>
 <style lang="less" scoped></style>
