@@ -193,7 +193,7 @@
 import { queryVehicleList } from '@/api/vehicle/vehicleManagement';
 import { useMenuStore } from 'store/menu';
 import { getImage, onlyMessage } from '@/utils/comm';
-import type { ActionsType } from './typings';
+import type { ActionsType } from '../typings';
 import Save from './save/index.vue';
 
 const typeList = ref([]);
@@ -225,9 +225,32 @@ const query = reactive({
             key: 'vehicleTypeEnum',
             scopedSlots: true,
             search: {
-                type: 'string',
+                type: 'select',
+                options: [
+                    {
+                        label: '内燃柴油机',
+                        value: 'ICDieselEngine',
+                    },
+                    {
+                        label: '内燃汽油机',
+                        value: 'ICGasolineEngine',
+                    },
+                    {
+                        label: '内燃牵引车',
+                        value: 'ICTractor',
+                    },
+                    {
+                        label: '机械柴油机',
+                        value: 'MachineDieselEngine',
+                    },
+                    {
+                        label: '其他',
+                        value: 'other',
+                    },
+                ],
             },
         },
+        //
         {
             title: '车辆状态',
             key: 'vehicleStatus',
@@ -283,7 +306,7 @@ const query = reactive({
             title: '操作',
             key: 'action',
             fixed: 'right',
-            width: 270,
+            width: 160,
             scopedSlots: true,
         },
     ],
@@ -340,17 +363,6 @@ const getActions = (
     }
     const actions = [
         {
-            key: 'view',
-            text: '详情',
-            tooltip: {
-                title: '详情',
-            },
-            icon: 'EyeOutlined',
-            onClick: () => {
-                handleView(data.id);
-            },
-        },
-        {
             key: 'update',
             text: '编辑',
             tooltip: {
@@ -382,75 +394,25 @@ const getActions = (
                 },
             },
         },
+        {
+            key: 'delete',
+            text: '删除',
+            disabled: data.vehicleStatus !== 1,
+            tooltip: {
+                title:
+                    data.vehicleStatus !== 1 ? '已启用的车辆不能删除' : '删除',
+            },
+            popConfirm: {
+                title: '确认删除?',
+                onConfirm: async () => {
+                    onlyMessage('操作成功！');
+                },
+            },
+            icon: 'DeleteOutlined',
+        },
     ];
 
-    const others = [
-        {
-            key: 'firstLock',
-            text: '一级锁车',
-            tooltip: {
-                title: '一级锁车',
-            },
-
-            icon: 'LockOutlined',
-            onClick: () => {
-                console.log('一级锁车');
-            },
-        },
-        {
-            key: 'secondLock',
-            text: '二级锁车',
-            tooltip: {
-                title: '二级锁车',
-            },
-
-            icon: 'DisconnectOutlined',
-            onClick: () => {
-                console.log('二级锁车');
-            },
-        },
-        {
-            key: 'viewMonitor',
-            text: '查看监控',
-            tooltip: {
-                title: '查看监控',
-            },
-            icon: 'VideoCameraOutlined',
-            onClick: () => {
-                console.log('查看监控');
-            },
-        },
-    ];
-    const deleteItem = {
-        key: 'delete',
-        text: '删除',
-        disabled: data.vehicleStatus !== 1,
-        tooltip: {
-            title: data.vehicleStatus !== 1 ? '已启用的车辆不能删除' : '删除',
-        },
-        popConfirm: {
-            title: '确认删除?',
-            onConfirm: async () => {
-                onlyMessage('操作成功！');
-            },
-        },
-        icon: 'DeleteOutlined',
-    };
-    if (type === 'card') {
-        let noDelItem = actions.filter((i: ActionsType) => i.key !== 'view');
-        return [
-            ...noDelItem,
-            {
-                key: 'more',
-                text: '其他',
-                icon: 'EllipsisOutlined',
-                children: [...others],
-            },
-            deleteItem,
-        ];
-    } else {
-        return [...actions, ...others, deleteItem];
-    }
+    return actions;
 };
 
 const handleSearch = (e: any) => {

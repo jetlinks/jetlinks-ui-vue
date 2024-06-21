@@ -2,7 +2,7 @@
     <div class="card j-table-card-box">
         <div
             class="card-warp"
-            :class="{ active: active ? 'active' : '', 'disabled': disabled }"
+            :class="{ active: active ? 'active' : '', disabled: disabled }"
             @click="handleClick"
         >
             <div class="card-type" v-if="slots.type">
@@ -10,7 +10,7 @@
             </div>
             <div
                 class="card-content"
-                :class="{'card-content-top-line': !slots.type}"
+                :class="{ 'card-content-top-line': !slots.type }"
                 :style="{ paddingTop: slots.type ? '40px' : '30px' }"
             >
                 <div
@@ -57,11 +57,12 @@
                             :text="statusText"
                             :statusNames="statusNames"
                         ></BadgeStatus>
-                        <CustomBadgeStatus 
-                            v-else 
+                        <CustomBadgeStatus
+                            v-else
                             :status="status"
                             :text="statusText"
-                            :statusNames="statusNames">
+                            :statusNames="statusNames"
+                        >
                         </CustomBadgeStatus>
                     </div>
                 </div>
@@ -94,9 +95,9 @@
     </div>
 </template>
 
-<script setup lang="ts" name='CardBox'>
+<script setup lang="ts" name="CardBox">
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import CustomBadgeStatus from '@/components/BadgeStatus/CustomBadgeStatus.vue'
+import CustomBadgeStatus from '@/components/BadgeStatus/CustomBadgeStatus.vue';
 import color, { getHexColor } from '../BadgeStatus/color';
 import type { ActionsType } from '@/components/Table';
 import { PropType } from 'vue';
@@ -134,7 +135,7 @@ const props = defineProps({
     },
     statusNames: {
         type: Object as PropType<Record<any, any>>,
-        default:()=>({'default':'default'})
+        default: () => ({ default: 'default' }),
     },
     actions: {
         type: Array as PropType<TableActionsType[]>,
@@ -152,10 +153,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    customBadge:{
+    customBadge: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
 const getBackgroundColor = (code: string | number) => {
@@ -176,7 +177,7 @@ const handleClick = () => {
 .card {
     width: 100%;
     background-color: #fff;
-    
+
     .checked-icon {
         position: absolute;
         right: -22px;
@@ -186,7 +187,7 @@ const handleClick = () => {
         height: 44px;
         color: #fff;
         background-color: red;
-        background-color: #2f54eb;
+        background-color: #f84914;
         transform: rotate(-45deg);
 
         > div {
@@ -223,7 +224,7 @@ const handleClick = () => {
 
         &.active {
             position: relative;
-            border: 1px solid #2f54eb;
+            border: 1px solid #f84914;
         }
 
         .card-type {
@@ -251,8 +252,8 @@ const handleClick = () => {
 
             .card-item-avatar {
                 margin-right: 16px;
-              display: flex;
-              align-items: center;
+                display: flex;
+                align-items: center;
             }
 
             .card-item-body {
@@ -261,9 +262,9 @@ const handleClick = () => {
                 flex-grow: 1;
                 width: 0;
 
-              .ant-row{
-                margin-top: 19px;
-              }
+                .ant-row {
+                    margin-top: 19px;
+                }
             }
 
             .card-state {
@@ -274,7 +275,7 @@ const handleClick = () => {
                 justify-content: center;
                 width: 100px;
                 padding: 2px 0;
-                background-color: rgba(#5995f5, 0.15);
+                background-color: rgba(#f7a372, 0.15);
                 transform: skewX(45deg);
 
                 &.success {
@@ -389,14 +390,14 @@ const handleClick = () => {
 
     &.item-active {
         position: relative;
-        color: #2f54eb;
+        color: #f84914;
 
         .checked-icon {
             display: block;
         }
 
         .card-warp {
-            border: 1px solid #2f54eb;
+            border: 1px solid #f84914;
         }
     }
 
@@ -418,7 +419,7 @@ const handleClick = () => {
                 border-radius: 0;
                 background: #f6f6f6;
                 border: 1px solid #e6e6e6;
-                color: #2f54eb;
+                color: #f84914;
 
                 &:hover {
                     background-color: @primary-color-hover;
