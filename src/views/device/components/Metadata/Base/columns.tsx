@@ -372,22 +372,22 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
         }]
       },
     },
-    {
-      title: '读写类型',
-      dataIndex: 'expands',
-      width: 190,
-      form: {
-        rules: [
-          {
-            asyncValidator: async (rule: any, value: any) => {
-              if (!value?.type?.length) {
-                return Promise.reject('请选择读写类型')
-              }
-              return Promise.resolve()
-          }
-        }]
-      },
-    },
+    // {
+    //   title: '读写类型',
+    //   dataIndex: 'expands',
+    //   width: 190,
+    //   form: {
+    //     rules: [
+    //       {
+    //         asyncValidator: async (rule: any, value: any) => {
+    //           if (!value?.type?.length) {
+    //             return Promise.reject('请选择读写类型')
+    //           }
+    //           return Promise.resolve()
+    //       }
+    //     }]
+    //   },
+    // },
     // {
     //   title: '属性分组',
     //   dataIndex: 'group',
