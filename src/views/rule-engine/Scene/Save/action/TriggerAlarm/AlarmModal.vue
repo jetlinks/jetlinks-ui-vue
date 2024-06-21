@@ -45,6 +45,7 @@
           selectedRowKeys: selectKeys,
           onSelectNone: cancelSelect
         }"
+        :params="params"
       >
         <template #card="slotProps">
           <CardBox
