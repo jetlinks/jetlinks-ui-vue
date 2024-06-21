@@ -20,7 +20,7 @@
       >
         <div class="card-content-bg-item card-content-bg1" :style="bgcColor"></div>
         <div class="card-content-bg-item card-content-bg2" :style="bgcColor" ></div>
-        <div style="display: flex">
+        <div class="card-content-body">
           <!-- 图片 -->
           <div class="card-item-avatar">
             <img :src="itemType.img" />
@@ -414,6 +414,12 @@ const jumpView = () => {
       &.card-content-bg2 {
         width: calc(44.65% + 34px);
       }
+    }
+
+    .card-content-body {
+      display: flex;
+      position: relative;
+      z-index: 99;
     }
 
 
