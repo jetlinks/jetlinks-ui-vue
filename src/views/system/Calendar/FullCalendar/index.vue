@@ -1,5 +1,5 @@
 <template>
-    <div class="calendarContainer">
+    <div class="calendarContainer" v-if="showCalendar">
         <FullCalendar
             ref="calendarEl"
             class="calendar"
@@ -87,6 +87,7 @@ const props = defineProps({
 const emit = defineEmits(['selectDate', 'resetRapid']);
 const menuStory = useMenuStore();
 const system = useSystem();
+const showCalendar = ref(false);
 const calendarTagColor = system.$state.calendarTagColor;
 const tagsList = inject('tagsMap');
 //请求接口的结束时间（请求过的日期就不再请求接口了）
@@ -135,6 +136,7 @@ const queryEventsData = async (startDate, endDate, updateView) => {
                     });
                 });
             }
+            return nonentity;
         });
         interfaceData.value = [...interfaceData.value, ...data];
         if (updateView) {
@@ -374,6 +376,7 @@ const calendarOptions = {
 // };
 //对比函数(判断出日期相等但是标签id不同的事件和日期事件数量少于5的)
 const compare = (effectData, eventsData) => {
+    //获取新增的事件
     const addEvents = effectData.filter((i) => {
         const equality = eventsData.find((item) => {
             return i.date === item.date && i.id === item.id;
@@ -384,7 +387,24 @@ const compare = (effectData, eventsData) => {
             }).length >= 5;
         return !equality && !exceed;
     });
-    return addEvents;
+    const filterDate = [];
+    //比对新增事件 + 原本事件 > 5 的日期
+    interfaceData.value.forEach((i) => {
+        const addEventNumber = addEvents.filter((item) => {
+            return i.date === item.date;
+        }).length;
+        const eventNumber = eventsData.filter((item) => {
+            return i.date === item.date;
+        }).length;
+        if (addEventNumber + eventNumber > 5) {
+            filterDate.push(i.date);
+        }
+    });
+    // 过滤掉日期影响后 >5 的新增事件
+    const filteredEvents = addEvents.filter((i) => {
+        return !filterDate.includes(i.date);
+    });
+    return filteredEvents;
 };
 //快速作用
 const rapidAction = async (effectDays) => {
@@ -515,19 +535,22 @@ watch(
     },
 );
 onMounted(() => {
-    calendarApi.value = calendarEl.value.getApi();
-    const calendarBody = document.querySelector(`.fc-view-harness`);
-    calendarBody?.addEventListener('mousemove', (event) => {
-        if (props.selectable) {
-            showTips.value = true;
-            mouseX.value = event.clientX;
-            mouseY.value = event.clientY;
-        }
-    });
-    calendarBody?.addEventListener('mouseout', () => {
-        if (props.selectable) {
-            showTips.value = false;
-        }
+    showCalendar.value = true;
+    nextTick(() => {
+        calendarApi.value = calendarEl.value?.getApi();
+        const calendarBody = document.querySelector(`.fc-view-harness`);
+        calendarBody?.addEventListener('mousemove', (event) => {
+            if (props.selectable) {
+                showTips.value = true;
+                mouseX.value = event.clientX;
+                mouseY.value = event.clientY;
+            }
+        });
+        calendarBody?.addEventListener('mouseout', () => {
+            if (props.selectable) {
+                showTips.value = false;
+            }
+        });
     });
 });
 </script>
