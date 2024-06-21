@@ -136,19 +136,6 @@ const columns = [
     ellipsis: true,
   },
   {
-    title: '级别',
-    dataIndex: 'level',
-    key: 'level',
-    scopedSlots: true,
-    search: {
-      type: 'select',
-      options: async () => {
-        return levelList.value
-      },
-    },
-    width: 200,
-  },
-  {
     title: '状态',
     dataIndex: 'state',
     key: 'state',
@@ -167,6 +154,19 @@ const columns = [
       ],
     },
     width: 90,
+  },
+  {
+    title: '等级',
+    dataIndex: 'level',
+    key: 'level',
+    scopedSlots: true,
+    search: {
+      type: 'select',
+      options: async () => {
+        return levelList.value
+      },
+    },
+    width: 200,
   },
 ]
 
