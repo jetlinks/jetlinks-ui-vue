@@ -9,10 +9,10 @@
         @cancel="close"
         okText="确定"
         cancelText="取消"
-        width="650px"
+        width="690px"
         :confirmLoading="loading"
     >
-        <div style="margin-top: 10px">
+        <div style="margin-top: 5px">
             <j-form
                 layout="vertical"
                 :model="form"
@@ -116,6 +116,70 @@
                         value-format="x"
                     />
                 </j-form-item>
+                <j-form-item label="关联设备" name="deviceIds">
+                    <div class="j-select-but">
+                        <j-select
+                            v-model:value="form.deviceIds"
+                            mode="multiple"
+                            placeholder="请选择关联设备"
+                            :options="deviceIdsOptions"
+                            :open="false"
+                        >
+                        </j-select>
+                        <j-button
+                            style="width: 90px"
+                            class="input-but"
+                            @click="funSelectDevices"
+                            type="primary"
+                            block
+                            >选择设备</j-button
+                        >
+                    </div>
+                    <!-- <j-input
+                        v-model:value="form.deviceIds"
+                        placeholder="请选择关联设备"
+                    >
+                        <template #addonAfter>
+                            <j-button
+                                class="input-but"
+                                @click="funSelectDevices"
+                                type="primary"
+                                block
+                                >选择设备</j-button
+                            >
+                        </template>
+                    </j-input> -->
+                </j-form-item>
+                <j-form-item label="关联零部件" name="spareParts">
+                    <div class="j-select-but">
+                        <j-select
+                            v-model:value="form.spareParts"
+                            mode="multiple"
+                            label-in-value
+                            placeholder="请选择关联零部件"
+                            :options="deviceIdsOptions"
+                            :open="false"
+                        >
+                        </j-select>
+                        <j-button
+                            style="width: 110px"
+                            class="input-but"
+                            type="primary"
+                            block
+                            >选择零部件</j-button
+                        >
+                    </div>
+                    <!-- <j-input
+                        v-model:value="form.spareParts"
+                        placeholder="请选择关联零部件"
+                    >
+                        <template #addonAfter>
+                            <j-button class="input-but" type="primary" block
+                                >选择零部件</j-button
+                            >
+                        </template>
+                    </j-input> -->
+                </j-form-item>
                 <j-form-item label="保修到期" name="warrantyDate">
                     <j-date-picker
                         style="width: 100%"
@@ -160,13 +224,17 @@
             </j-form>
         </div>
     </j-modal>
+    <Modal ref="deviceRef" @success="updateDevices" />
 </template>
 
 <script lang="ts" setup>
+import Modal from './Modal/index.vue';
 import { getImage } from '@/utils/comm';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import { getDepartmentList, addVehicle } from '@/api/vehicle/vehicleManagement';
 import dayjs, { Dayjs } from 'dayjs';
+
+const deviceIdsOptions = ref<any>([]);
 
 const emit = defineEmits(['success']);
 const props = defineProps({
@@ -214,6 +282,8 @@ const imageTypes = reactive([
     'image/pjp',
 ]);
 
+const deviceRef = ref();
+
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
 });
@@ -255,6 +325,18 @@ const rules = reactive({
     describe: [{ max: 250, message: '最多可输入250位字符', trigger: 'change' }],
 });
 
+const funSelectDevices = () => {
+    nextTick(() => {
+        deviceRef.value.show(form.value.deviceIds);
+    });
+};
+
+//更新关联设备
+const updateDevices = (data: any) => {
+    console.log('deviceData', data);
+    form.value.deviceIds = data || [];
+};
+
 /**
  * 查询产品分类
  */
@@ -284,15 +366,15 @@ const valueChange = (value: string, label: string) => {
     form.value.orgId = value;
 };
 
-const ccChange = (date: Dayjs) => {
-    if (date) {
-        form.value.vehicleDate = setTimestamp(date);
-    } else {
-        const nowDate = new Date();
-        form.value.vehicleDate = setTimestamp(nowDate);
-    }
+const deviceIdsOption = () => {
+    deviceIdsOptions.value = [
+        { value: '1233', label: '设备1' },
+        { value: '2345', label: '设备2' },
+        { value: '3456', label: '设备3' },
+    ];
 };
 
+//时间格式转为时间戳
 const setTimestamp = (date: any) => {
     const dayjsDate = dayjs(date);
     // 转换为时间戳（毫秒）
@@ -314,6 +396,8 @@ const reset = () => {
         orgName: '', //所属组织
         vehicleDate: setTimestamp(new Date()), //出厂日期
         deviceId: '', //主设备id
+        deviceIds: [], //关联设备
+        spareParts: [], //关联零部件
         vehicleStatus: 0, //车辆状态0-正常 1-停用 2-维修
         status: 1, //状态 0-在线 1-离线
         vehicleTypeEnum: '', //车辆类型,可用值:ICDieselEngine,ICGasolineEngine,ICTractor,MachineDieselEngine,other
@@ -330,9 +414,19 @@ const show = (data: any) => {
     console.log('data', data);
     if (props.isAdd === 2) {
         form.value = data;
+        deviceIdsOptions.value = [
+            { value: '1234', label: '设备1' },
+            { value: '2345', label: '设备2' },
+            { value: '3456', label: '设备3' },
+        ];
         idDisabled.value = true;
     } else if (props.isAdd === 1) {
         reset();
+        deviceIdsOptions.value = [
+            { value: '1234', label: '设备1' },
+            { value: '2345', label: '设备2' },
+            { value: '3456', label: '设备3' },
+        ];
         idDisabled.value = false;
     }
     visible.value = true;
@@ -344,6 +438,7 @@ const show = (data: any) => {
 const close = () => {
     visible.value = false;
 };
+
 /**
  * 提交表单数据
  */
@@ -390,70 +485,14 @@ onMounted(() => {
     position: relative;
     top: 19px;
 }
-.upload-image-warp-logo {
+.j-select-but {
     display: flex;
-    justify-content: flex-start;
-    .upload-image-border-logo {
-        position: relative;
-        overflow: hidden;
-        border: 1px dashed #d9d9d9;
-        transition: all 0.3s;
-        width: 160px;
-        height: 150px;
-        &:hover {
-            border: 1px dashed #1890ff;
-            display: flex;
-        }
-        .upload-image-content-logo {
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            width: 160px;
-            height: 150px;
-            padding: 8px;
-            background-color: rgba(0, 0, 0, 0.06);
-            cursor: pointer;
-            .loading-logo {
-                position: absolute;
-                top: 50%;
-            }
-            .loading-icon {
-                position: absolute;
-            }
-            .upload-image {
-                width: 100%;
-                height: 100%;
-                background-repeat: no-repeat;
-                background-position: 50%;
-                background-size: cover;
-            }
-            .upload-image-icon {
-                width: 100%;
-                height: 100%;
-                background-repeat: no-repeat;
-                background-position: 50%;
-                background-size: inherit;
-            }
-            .upload-image-mask {
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                top: 0;
-                left: 0;
-                display: none;
-                width: 100%;
-                height: 100%;
-                color: #fff;
-                font-size: 16px;
-                background-color: rgba(0, 0, 0, 0.35);
-            }
-            &:hover .upload-image-mask {
-                display: flex;
-            }
-        }
-    }
+    flex-direction: row;
+}
+.input-but {
+    margin: 0;
+    padding: 3px 0px;
+    height: 100%;
 }
 .button-style {
     background-color: #fff;
