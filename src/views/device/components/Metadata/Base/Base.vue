@@ -292,7 +292,7 @@ import {
   BooleanSelect
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
-import {message} from "ant-design-vue";
+import {message } from "ant-design-vue";
 
 const props = defineProps({
   target: {
@@ -427,6 +427,15 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       detailData.visible = true
       break;
     case 'delete':
+      // Modal.confirm({
+      //   title: `确认删除【${record.id}】？`,
+      //   onOk() {
+      //     dataSource.value.splice(_index, 1)
+      //   },
+      //   onCancel() {
+      //     console.log('Cancel');
+      //   },
+      // })
       dataSource.value.splice(_index, 1)
       break;
   }
