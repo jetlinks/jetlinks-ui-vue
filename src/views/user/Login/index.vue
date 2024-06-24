@@ -7,14 +7,6 @@
                         style="width: 100%; height: 100%"
                         :src="basis.background || getImage('/login.png')"
                     />
-                    <a
-                        href="https://beian.miit.gov.cn/#/Integrated/index"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="records"
-                    >
-                        备案：渝ICP备19017719号-1
-                    </a>
                 </div>
                 <div class="right">
                     <div class="content">
@@ -196,23 +188,6 @@
                                     </div> -->
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div v-if="basis.recommend === 'true'" class="bottom">
-                        <div class="view">
-                            JETLINKS团队全新力作可视化大屏系统
-                        </div>
-                        <div class="url">
-                            <div style="height: 33px">
-                                <img :src="viewLogo" />
-                            </div>
-                            <a
-                                href="https://view.jetlinks.cn/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                体验DEMO
-                            </a>
                         </div>
                     </div>
                 </div>
