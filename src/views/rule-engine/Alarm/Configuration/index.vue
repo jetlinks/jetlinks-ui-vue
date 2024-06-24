@@ -63,45 +63,21 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <Ellipsis style="width: calc(100% - 100px)">
-                                    <span
-                                        style="
-                                            font-weight: 600;
-                                            font-size: 16px;
-                                        "
-                                    >
-                                        {{ slotProps.name }}
-                                    </span>
-                                </Ellipsis>
-                                <j-row>
-                                    <j-col :span="12">
-                                        <div class="content-des-title">
-                                            关联场景联动
-                                        </div>
-                                        <Ellipsis style="margin-bottom: 18px"
-                                            ><div>
-                                                {{
-                                                    (slotProps?.scene || [])
-                                                        .map(
-                                                            (item: any) =>
-                                                                item?.name,
-                                                        )
-                                                        .join(',') || ''
-                                                }}
-                                            </div></Ellipsis
+                                <div class="alarmInfo">
+                                    <LevelIcon
+                                        :level="slotProps.level"
+                                    ></LevelIcon>
+                                    <Ellipsis style="width: calc(100% - 100px)">
+                                        <span
+                                            style="
+                                                font-weight: 600;
+                                                font-size: 16px;
+                                            "
                                         >
-                                    </j-col>
-                                    <j-col :span="12">
-                                        <div class="content-des-title">
-                                            告警级别
-                                        </div>
-                                        <Ellipsis>
-                                            {{
-                                            levelMap[slotProps.level] || slotProps.level
-                                            }}
-                                        </Ellipsis>
-                                    </j-col>
-                                </j-row>
+                                            {{ slotProps.name }}
+                                        </span>
+                                    </Ellipsis>
+                                </div>
                             </template>
                             <template #actions="item">
                                 <PermissionButton
@@ -129,18 +105,7 @@
                     <template #targetType="slotProps">
                         <span>{{ map[slotProps.targetType] }}</span>
                     </template>
-                    <template #level="slotProps">
-                        <Ellipsis>
-                          {{ levelMap[slotProps.level] || slotProps.level }}
-                        </Ellipsis>
-                    </template>
-                    <template #scene="slotProps">
-                        <span>{{
-                            (slotProps?.scene || [])
-                                .map((item) => item?.name)
-                                .join(',') || ''
-                        }}</span>
-                    </template>
+
                     <template #state="slotProps">
                         <BadgeStatus
                             :text="
@@ -193,6 +158,7 @@
         v-if="visible"
         :data="current"
     />
+    <Delete v-if="visibleDelete" :id="configId" @close="visibleDelete = false" @refreshTable="refreshTable"/>
 </template>
 
 <script lang="ts" setup>
@@ -201,19 +167,19 @@ import {
     _enable,
     _disable,
     remove,
-    getScene,
 } from '@/api/rule-engine/configuration';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
-import { useAlarmLevel } from '@/hook'
+import LevelIcon from '../Config/LevelIcon.vue';
+import Delete from './Delete/index.vue'
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
-const { levelMap, levelList } = useAlarmLevel()
-
+const visibleDelete = ref(false);
+const configId = ref()
 const columns = [
     {
         title: '配置名称',
@@ -259,45 +225,9 @@ const columns = [
         key: 'level',
         scopedSlots: true,
         search: {
-            type: 'select',
-            options: async () => {
-              return levelList.value
-            },
+            type: 'number',
         },
         width: 200,
-    },
-    {
-        title: '关联场景联动',
-        dataIndex: 'scene',
-        scopedSlots: true,
-        key: 'scene',
-        search: {
-            type: 'select',
-            // defaultTermType: 'rule-bind-alarm',
-            options: async () => {
-                const allData = await queryList({
-                    paging: false,
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                });
-                const result = allData.result?.data as any[];
-                if (allData.success && result && result.length) {
-                    const sceneDataMap = new Map(); // 用于去重
-                    result.forEach((item) => {
-                        item.scene.forEach((a: any) => {
-                            sceneDataMap.set(a.id, {
-                                label: a.name,
-                                value: a.id,
-                            });
-                        });
-                    });
-
-                    return [...sceneDataMap.values()];
-                }
-                return [];
-            },
-        },
-        width: 220,
-        ellipsis: true,
     },
     {
         title: '状态',
@@ -346,23 +276,7 @@ const map = {
     other: '其他',
 };
 const handleSearch = (e: any) => {
-    const _terms = (e?.terms || []).map((item: any) => {
-        item.terms = item.terms.map((i: any) => {
-            if (i.column === 'scene') {
-                return {
-                    ...i,
-                    termType: 'rule-bind-alarm',
-                    column: 'id',
-                };
-            }
-            return i;
-        });
-        return item;
-    });
-    params.value = {
-        ...e,
-        terms: _terms,
-    };
+    params.value = e;
 };
 
 const getActions = (
@@ -448,18 +362,22 @@ const getActions = (
                         : '删除',
                 placement: 'topLeft',
             },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await remove(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
-                },
+            onClick: () => {
+                visibleDelete.value = true;
+                configId.value = data.id;
             },
+            // popConfirm: {
+            //     title: '确认删除?',
+            //     onConfirm: async () => {
+            //         const resp = await remove(data.id);
+            //         if (resp.status === 200) {
+            //             onlyMessage('操作成功！');
+            //             tableRef.value?.reload();
+            //         } else {
+            //             onlyMessage('操作失败！', 'error');
+            //         }
+            //     },
+            // },
             icon: 'DeleteOutlined',
         },
     ];
@@ -474,9 +392,18 @@ const onSave = () => {
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };
+
+const refreshTable = () =>{
+    visibleDelete.value = false;
+    tableRef.value.reload()
+}
 </script>
 <style lang="less" scoped>
 .content-des-title {
     font-size: 12px;
+}
+.alarmInfo {
+    padding-top: 30px;
+    display: flex;
 }
 </style>

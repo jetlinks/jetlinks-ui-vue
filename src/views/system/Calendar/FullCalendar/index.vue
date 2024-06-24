@@ -375,7 +375,7 @@ const calendarOptions = {
 //     handleViewDidMount(calendarApi.value);
 // };
 //对比函数(判断出日期相等但是标签id不同的事件和日期事件数量少于5的)
-const compare = (effectData, eventsData) => {
+const compare = (effectData, eventsData,effectDates) => {
     //获取新增的事件
     const addEvents = effectData.filter((i) => {
         const equality = eventsData.find((item) => {
@@ -389,15 +389,15 @@ const compare = (effectData, eventsData) => {
     });
     const filterDate = [];
     //比对新增事件 + 原本事件 > 5 的日期
-    interfaceData.value.forEach((i) => {
+    effectDates.forEach((i) => {
         const addEventNumber = addEvents.filter((item) => {
-            return i.date === item.date;
+            return i === item.date;
         }).length;
         const eventNumber = eventsData.filter((item) => {
-            return i.date === item.date;
+            return i === item.date;
         }).length;
         if (addEventNumber + eventNumber > 5) {
-            filterDate.push(i.date);
+            filterDate.push(i);
         }
     });
     // 过滤掉日期影响后 >5 的新增事件
@@ -409,6 +409,7 @@ const compare = (effectData, eventsData) => {
 //快速作用
 const rapidAction = async (effectDays) => {
     const dates = getDatesBetween(choiceStart.value, choiceEnd.value);
+    const effectDates = getDatesBetween(choiceEnd.value,choiceEnd.value.add(effectDays,'day'))
     //获取所选日期中所有的标签事件组成二维数组
     const selectData = dates.map((i) => {
         return eventsData.value.filter((item) => {
@@ -439,7 +440,7 @@ const rapidAction = async (effectDays) => {
             .format('YYYY-MM-DD'),
         false,
     );
-    const imparity = compare(effectDataArr, eventsData.value);
+    const imparity = compare(effectDataArr, eventsData.value,effectDates);
     eventsData.value = [...eventsData.value, ...imparity];
     const addEvents = imparity.map((i) => {
         return {
