@@ -77,6 +77,7 @@ const popContainer = (e) => {
 
 const removeTimer = () => {
   if (hideTimer) {
+    window.clearTimeout(hideTimer)
     hideTimer = null
   }
 }
@@ -104,6 +105,7 @@ const validateRules = () => {
     if (error.length === 0) {
       hideErrorTip()
     } else {
+      removeTimer()
       errorMap.message = error[0]?.message || errorMap.message
       errorMap.visible = !!error.length
     }
