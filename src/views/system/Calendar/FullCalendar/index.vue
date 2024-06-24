@@ -366,7 +366,7 @@ const calendarOptions = {
     unselectAuto: false,
     locale: locale,
     droppable: true,
-    height: '720px',
+    height: props.preview ? '600px' : '720px',
     // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,
@@ -559,7 +559,7 @@ setTimeout(() => {
             }
         });
     });
-});
+},300);
 </script>
 <style lang="less" scoped>
 :deep(.fc-header-toolbar) {
