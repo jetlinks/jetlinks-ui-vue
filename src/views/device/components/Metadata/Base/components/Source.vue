@@ -18,7 +18,7 @@
       v-model:visible="modalVisible"
       :bodyStyle="{
                 width: '450px',
-                height: myValue === 'rule' ? '300px' : '90px',
+                height: myValue === 'rule' ? '300px' : '92px',
             }"
       placement="bottomRight"
       @ok="confirm"
@@ -30,6 +30,7 @@
               v-if="modalVisible"
               :source="myValue"
               :value="record"
+              :isProduct="isProduct"
               :dataSource="dataSource"
               ref="virtualRuleRef"
             />
@@ -71,6 +72,7 @@
                     <VirtualRule
                       :source="myValue"
                       :value="record"
+                      :isProduct="isProduct"
                       :dataSource="dataSource"
                       ref="virtualRuleRef"
                     />

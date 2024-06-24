@@ -213,8 +213,10 @@ const addItem = () => {
   })
 }
 
-watch(() => JSON.stringify(props.value), (val) => {
-  dataSource.value = JSON.parse(val || '[]')
+watch(() => [JSON.stringify(props.value), visible.value], (val) => {
+  if (visible.value) {
+    dataSource.value = JSON.parse(val[0] || '[]')
+  }
 }, { immediate: true })
 
 </script>
