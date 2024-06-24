@@ -7,7 +7,7 @@
     <template #title>
       <span style="color: #1d2129">{{errorMap.message}}</span>
     </template>
-    <div :id="eventKey">
+    <div :id="eventKey" style="position: relative">
       <slot />
     </div>
   </a-tooltip>
@@ -72,7 +72,7 @@ const filedValue = computed(() => {
 })
 
 const popContainer = (e) => {
-  return e.parentNode
+  return e
 }
 
 const removeTimer = () => {
@@ -129,13 +129,9 @@ useProvideFormItemContext({
 }, computed(() => filedValue.value))
 
 onBeforeUnmount(() => {
+  hideErrorTip()
   context.removeField(eventKey.value)
 })
-
-// watch(() => filedValue.value ,() => {
-//   console.log('tableFormItem--watch',filedValue.value)
-//   validateRules()
-// }, { deep: true })
 
 watch(() => [filedName.value, props.name], () => {
   context.addField(eventKey.value, {

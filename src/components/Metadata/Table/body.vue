@@ -20,6 +20,7 @@
           <div
               v-for="column in columns"
               class="metadata-edit-table-cell"
+              :key="`record_${item.__key}`"
               :style="{
                 width: `${column.width}px`,
                 left: `${column.left}px`,
@@ -50,6 +51,7 @@
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
 import {useRightMenuContext} from "@/components/Metadata/Table/utils";
+import {randomString} from "@/utils/utils";
 
 const props = defineProps({
   dataSource: {
@@ -165,6 +167,13 @@ onBeforeUnmount(() => {
 })
 
 watch(() => props.dataSource, () => {
+
+  props.dataSource.forEach(item => {
+    if (!item.__key) {
+      item.__key = randomString()
+    }
+  })
+
   updateView()
 }, {
   immediate: true,
