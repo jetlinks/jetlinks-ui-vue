@@ -11,7 +11,7 @@
                 :request="queryData"
                 ref="tableRef"
                 :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
+                    sorts: [{ name: 'vehicleDate', order: 'desc' }],
                 }"
                 :params="params"
                 :rowSelection="
@@ -32,13 +32,13 @@
                             新增
                         </PermissionButton>
                     </j-space>
-                    <j-space style="margin-left: 10px">
+                    <!-- <j-space style="margin-left: 10px">
                         <BatchDropdown
                             v-model:isCheck="isCheck"
                             :actions="batchActions"
                             @change="onCheckChange"
                         />
-                    </j-space>
+                    </j-space> -->
                 </template>
                 <template #deviceType="slotProps">
                     <div>{{ slotProps.deviceType.text }}</div>
@@ -49,9 +49,15 @@
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
                         :active="_selectedRowKeys.includes(slotProps.id)"
-                        :status="slotProps.vehicleStatus"
+                        :status="slotProps.status"
                         @click="handleView(slotProps)"
-                        :statusText="listStatusText(slotProps.vehicleStatus)"
+                        :statusText="
+                            slotProps.status === 0
+                                ? '在线'
+                                : slotProps.status === 1
+                                ? '离线'
+                                : '禁用'
+                        "
                         :statusNames="{
                             0: 'processing',
                             1: 'error',
@@ -62,7 +68,7 @@
                             <slot name="img">
                                 <img
                                     :src="
-                                        slotProps?.photoUrl ||
+                                        getServerImgPath(slotProps.pictureUrl) ||
                                         getImage('/device-product.png')
                                     "
                                     class="productImg"
@@ -78,7 +84,7 @@
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
-                                    {{ slotProps.modelNumber || '--' }}
+                                    {{ slotProps.simpleName }}
                                 </span></Ellipsis
                             >
                             <div>
@@ -110,11 +116,13 @@
                                     >
                                 </j-row>
                                 <j-row>
-                                    <j-col :span="12"><div>说明:</div></j-col>
+                                    <j-col :span="12"><div>子设备:</div></j-col>
                                     <j-col :span="12"
                                         ><Ellipsis
                                             ><div>
-                                                {{ slotProps?.describe }}
+                                                {{
+                                                    slotProps?.devices.length
+                                                }}个
                                             </div></Ellipsis
                                         ></j-col
                                     >
@@ -174,11 +182,18 @@
                 </template>
                 <template #status="slotProps">
                     <BadgeStatus
-                        :text="slotProps.status === 0 ? '在线' : '离线'"
+                        :text="
+                            slotProps.status === 0
+                                ? '在线'
+                                : slotProps.status === 1
+                                ? '离线'
+                                : '禁用'
+                        "
                         :status="slotProps.status"
                         :statusNames="{
-                            0: 'success',
+                            0: 'processing',
                             1: 'error',
+                            2: 'warning',
                         }"
                     />
                 </template>
@@ -192,6 +207,18 @@
                             2: 'warning',
                         }"
                     />
+                </template>
+                <template #vehicleDate="slotProps">
+                    {{
+                        slotProps.createTime
+                            ? moment(Number(slotProps.createTime)).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}
+                </template>
+                <template #devices="slotProps">
+                    {{ slotProps.devices.length }}个
                 </template>
                 <template #vehicleTypeEnum="slotProps">
                     <Ellipsis>{{ slotProps.vehicleTypeEnum.text }}</Ellipsis>
@@ -228,13 +255,18 @@
 </template>
 
 <script setup lang="ts">
-import { queryVehicleList } from '@/api/vehicle/vehicleManagement';
+import {
+    queryVehicleList,
+    updateVehicleStatus,
+    deleteVehicle,
+} from '@/api/vehicle/vehicleManagement';
 import { useMenuStore } from 'store/menu';
-import { getImage, onlyMessage } from '@/utils/comm';
+import { getImage, onlyMessage, getServerImgPath } from '@/utils/comm';
 import type { ActionsType } from '../typings';
 import Save from './save/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
+import moment from 'moment';
 
 const tableRef = ref<Record<string, any>>({});
 const currentForm = ref({});
@@ -243,8 +275,8 @@ const query = reactive({
     columns: [
         {
             title: '车辆简称',
-            dataIndex: 'modelNumber',
-            key: 'modelNumber',
+            dataIndex: 'simpleName',
+            key: 'simpleName',
             ellipsis: true,
             search: {
                 type: 'string',
@@ -323,15 +355,36 @@ const query = reactive({
                 type: 'select',
                 options: [
                     {
+                        label: '在线',
+                        value: 0,
+                    },
+                    {
                         label: '离线',
                         value: 1,
                     },
                     {
-                        label: '在线',
-                        value: 0,
+                        label: '禁用',
+                        value: 2,
                     },
                 ],
             },
+        },
+        {
+            title: '出厂日期',
+            key: 'vehicleDate',
+            dataIndex: 'vehicleDate',
+            scopedSlots: true,
+            width: 200,
+            search: {
+                type: 'date',
+            },
+        },
+        {
+            title: '子设备',
+            key: 'devices',
+            dataIndex: 'devices',
+            scopedSlots: true,
+            ellipsis: true,
         },
         {
             title: '说明',
@@ -374,7 +427,6 @@ const add = () => {
  * 查看
  */
 const handleView = (data: any) => {
-    console.log('data', data);
     if (isCheck.value) {
         if (_selectedRowKeys.value.includes(data.id)) {
             const _index = _selectedRowKeys.value.findIndex(
@@ -431,33 +483,55 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.vehicleStatus !== 1 ? '禁用' : '启用',
+            text: data.status !== 2 ? '禁用' : '启用',
             tooltip: {
-                title: data.vehicleStatus !== 1 ? '禁用' : '启用',
+                title: data.status !== 2 ? '禁用' : '启用',
             },
-            icon:
-                data.vehicleStatus !== 1
-                    ? 'StopOutlined'
-                    : 'CheckCircleOutlined',
+            icon: data.status !== 2 ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.vehicleStatus !== 1 ? '禁用' : '启用'}?`,
+                title: `确认${data.status !== 2 ? '禁用' : '启用'}?`,
                 onConfirm: async () => {
-                    onlyMessage('操作成功！');
+                    const { status, ...params } = data;
+                    const deviceIds = data.devices?.map((item: any) => {
+                        return item.id;
+                    });
+                    updateVehicleStatus({
+                        vehicleEntity: {
+                            ...params,
+                            status: data.status !== 2 ? 2 : 1,
+                        },
+                        deviceIds,
+                    }).then((res: any) => {
+                        console.log('res', res);
+                        if (res.status === 200) {
+                            onlyMessage('操作成功！');
+                            tableRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
                 },
             },
         },
         {
             key: 'delete',
             text: '删除',
-            disabled: data.vehicleStatus !== 1,
+            disabled: data.status !== 2,
             tooltip: {
-                title:
-                    data.vehicleStatus !== 1 ? '已启用的车辆不能删除' : '删除',
+                title: data.status !== 2 ? '已启用的车辆不能删除' : '删除',
             },
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: async () => {
-                    onlyMessage('操作成功！');
+                    deleteVehicle(data.id).then((res: any) => {
+                        console.log('res', res);
+                        if (res.status === 200) {
+                            onlyMessage('操作成功！');
+                            tableRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
                 },
             },
             icon: 'DeleteOutlined',
@@ -511,7 +585,7 @@ const handleSearch = (e: any) => {
 const queryData = (params: Record<string, any>) =>
     new Promise((resolve) => {
         queryVehicleList({
-            pageIndex: params.pageIndex + 1,
+            pageIndex: params.pageIndex,
             pageSize: params.pageSize,
             sorts: params.sorts,
             terms: params.terms,

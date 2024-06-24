@@ -29,6 +29,7 @@ export function useSelectableTable() {
     ) => {
         if (selected) {
             idSet.setItem(record.id);
+            console.log(record);
         } else {
             idSet.removeItem(record.id);
         }

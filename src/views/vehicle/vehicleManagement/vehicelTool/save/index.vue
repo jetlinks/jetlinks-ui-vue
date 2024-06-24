@@ -9,10 +9,10 @@
         @cancel="close"
         okText="确定"
         cancelText="取消"
-        width="650px"
+        width="690px"
         :confirmLoading="loading"
     >
-        <div style="margin-top: 10px">
+        <div style="margin-top: 5px">
             <j-form
                 layout="vertical"
                 :model="form"
@@ -21,9 +21,9 @@
             >
                 <j-row type="flex">
                     <j-col flex="180px">
-                        <j-form-item name="photoUrl">
+                        <j-form-item name="pictureUrl">
                             <j-pro-upload
-                                v-model="form.photoUrl"
+                                v-model="form.pictureUrl"
                                 :accept="
                                     imageTypes && imageTypes.length
                                         ? imageTypes.toString()
@@ -53,8 +53,8 @@
                         name="category"
                         v-model:value="form.category"
                     >
-                        <j-radio :value="0">燃油车</j-radio>
-                        <j-radio :value="1">电车</j-radio>
+                        <j-radio value="0">燃油车</j-radio>
+                        <j-radio value="1">电车</j-radio>
                     </j-radio-group>
                 </j-form-item>
                 <j-form-item label="车辆类型" name="vehicleTypeEnum">
@@ -116,6 +116,46 @@
                         value-format="x"
                     />
                 </j-form-item>
+                <j-form-item label="关联设备" name="deviceIds">
+                    <div class="j-select-but">
+                        <j-select
+                            v-model:value="form.deviceIds"
+                            mode="multiple"
+                            placeholder="请选择关联设备"
+                            :options="deviceIdsOptions"
+                            :open="false"
+                        >
+                        </j-select>
+                        <j-button
+                            style="width: 90px"
+                            class="input-but"
+                            @click="funSelectDevices"
+                            type="primary"
+                            block
+                            >选择设备</j-button
+                        >
+                    </div>
+                </j-form-item>
+                <j-form-item label="关联零部件" name="spareParts">
+                    <div class="j-select-but">
+                        <j-select
+                            v-model:value="form.spareParts"
+                            mode="multiple"
+                            label-in-value
+                            placeholder="请选择关联零部件"
+                            :options="deviceIdsOptions"
+                            :open="false"
+                        >
+                        </j-select>
+                        <j-button
+                            style="width: 110px"
+                            class="input-but"
+                            type="primary"
+                            block
+                            >选择零部件</j-button
+                        >
+                    </div>
+                </j-form-item>
                 <j-form-item label="保修到期" name="warrantyDate">
                     <j-date-picker
                         style="width: 100%"
@@ -160,13 +200,22 @@
             </j-form>
         </div>
     </j-modal>
+    <Modal ref="deviceRef" @success="updateDevices" />
 </template>
 
 <script lang="ts" setup>
+import {
+    getDepartmentList,
+    addVehicle,
+    saveVehicleDevices,
+    queryNoPagingPostDevice,
+} from '@/api/vehicle/vehicleManagement';
+import Modal from './Modal/index.vue';
 import { getImage } from '@/utils/comm';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
-import { getDepartmentList, addVehicle } from '@/api/vehicle/vehicleManagement';
 import dayjs, { Dayjs } from 'dayjs';
+
+const deviceIdsOptions = ref<any>([]);
 
 const emit = defineEmits(['success']);
 const props = defineProps({
@@ -214,6 +263,8 @@ const imageTypes = reactive([
     'image/pjp',
 ]);
 
+const deviceRef = ref();
+
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
 });
@@ -255,8 +306,19 @@ const rules = reactive({
     describe: [{ max: 250, message: '最多可输入250位字符', trigger: 'change' }],
 });
 
+const funSelectDevices = () => {
+    nextTick(() => {
+        deviceRef.value.show(form.value.deviceIds);
+    });
+};
+
+//更新关联设备
+const updateDevices = (data: any) => {
+    form.value.deviceIds = data || [];
+};
+
 /**
- * 查询产品分类
+ * 查询组织
  */
 const queryOrgTree = async () => {
     getDepartmentList({ paging: false }).then((resp: any) => {
@@ -284,15 +346,7 @@ const valueChange = (value: string, label: string) => {
     form.value.orgId = value;
 };
 
-const ccChange = (date: Dayjs) => {
-    if (date) {
-        form.value.vehicleDate = setTimestamp(date);
-    } else {
-        const nowDate = new Date();
-        form.value.vehicleDate = setTimestamp(nowDate);
-    }
-};
-
+//时间格式转为时间戳
 const setTimestamp = (date: any) => {
     const dayjsDate = dayjs(date);
     // 转换为时间戳（毫秒）
@@ -304,16 +358,19 @@ const reset = () => {
     form.value = {
         id: '',
         factoryNumber: '', //出厂编号
-        photoUrl: getImage('/device/instance/device-card.png'),
+        pictureUrl: getImage('/device/instance/device-card.png'),
         simpleName: '', //车辆简称
         vehicleNumber: '', //车牌号
         engineNumber: '', //发动机编号
-        category: 0, //所属大类 0-燃油车 1-电车
+        category: '0', //所属大类 0-燃油车 1-电车
         modelNumber: '', //型号
         orgId: '', //所属组织id
         orgName: '', //所属组织
         vehicleDate: setTimestamp(new Date()), //出厂日期
         deviceId: '', //主设备id
+        devices: [],
+        deviceIds: [], //关联设备
+        spareParts: [], //关联零部件
         vehicleStatus: 0, //车辆状态0-正常 1-停用 2-维修
         status: 1, //状态 0-在线 1-离线
         vehicleTypeEnum: '', //车辆类型,可用值:ICDieselEngine,ICGasolineEngine,ICTractor,MachineDieselEngine,other
@@ -329,8 +386,14 @@ const reset = () => {
 const show = (data: any) => {
     console.log('data', data);
     if (props.isAdd === 2) {
-        form.value = data;
+        form.value = {
+            ...data,
+            deviceIds: data.devices?.map((item: any) => {
+                return item.id;
+            }),
+        };
         idDisabled.value = true;
+        console.log('form', form.value);
     } else if (props.isAdd === 1) {
         reset();
         idDisabled.value = false;
@@ -344,6 +407,7 @@ const show = (data: any) => {
 const close = () => {
     visible.value = false;
 };
+
 /**
  * 提交表单数据
  */
@@ -354,24 +418,41 @@ const submitData = () => {
             // 新增
             loading.value = true;
             if (props.isAdd === 1) {
-                const { photoUrl, ...params } = form.value;
-                console.log('params', params);
-                addVehicle(params)
+                const { deviceIds, ...params } = form.value;
+                console.log('params', { vehicleEntity: params, deviceIds });
+                saveVehicleDevices({ vehicleEntity: params, deviceIds })
                     .then((res: any) => {
-                        if (res.code === 200) {
+                        if (res.status === 200) {
                             onlyMessage('添加成功！');
                         }
                         loading.value = false;
+                        visible.value = false;
+                        emit('success');
                     })
                     .catch((err) => {
                         console.log(err);
-                        onlyMessage('添加成功！', 'error');
+                        onlyMessage('添加失败！', 'error');
+                        loading.value = false;
                     });
                 //新增
             } else if (props.isAdd === 2) {
                 console.log('params update', form.value);
+                const { deviceIds, ...params } = form.value;
+                saveVehicleDevices({ vehicleEntity: params, deviceIds })
+                    .then((res: any) => {
+                        if (res.status === 200) {
+                            onlyMessage('修改成功！');
+                        }
+                        loading.value = false;
+                        visible.value = false;
+                        emit('success');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        onlyMessage('修改失败！', 'error');
+                        loading.value = false;
+                    });
                 //更新
-                loading.value = false;
             }
         })
         .catch((err: any) => {});
@@ -383,6 +464,22 @@ defineExpose({
 
 onMounted(() => {
     queryOrgTree();
+    const setData = {
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+    };
+    queryNoPagingPostDevice(setData).then((resp: any) => {
+        if (resp.status === 200) {
+            if (resp.result.length > 0) {
+                deviceIdsOptions.value = resp.result.map((item: any) => {
+                    return {
+                        value: item.id,
+                        label: item.name,
+                    };
+                });
+            }
+        }
+    });
 });
 </script>
 <style scoped lang="less">
@@ -390,70 +487,14 @@ onMounted(() => {
     position: relative;
     top: 19px;
 }
-.upload-image-warp-logo {
+.j-select-but {
     display: flex;
-    justify-content: flex-start;
-    .upload-image-border-logo {
-        position: relative;
-        overflow: hidden;
-        border: 1px dashed #d9d9d9;
-        transition: all 0.3s;
-        width: 160px;
-        height: 150px;
-        &:hover {
-            border: 1px dashed #1890ff;
-            display: flex;
-        }
-        .upload-image-content-logo {
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            width: 160px;
-            height: 150px;
-            padding: 8px;
-            background-color: rgba(0, 0, 0, 0.06);
-            cursor: pointer;
-            .loading-logo {
-                position: absolute;
-                top: 50%;
-            }
-            .loading-icon {
-                position: absolute;
-            }
-            .upload-image {
-                width: 100%;
-                height: 100%;
-                background-repeat: no-repeat;
-                background-position: 50%;
-                background-size: cover;
-            }
-            .upload-image-icon {
-                width: 100%;
-                height: 100%;
-                background-repeat: no-repeat;
-                background-position: 50%;
-                background-size: inherit;
-            }
-            .upload-image-mask {
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                top: 0;
-                left: 0;
-                display: none;
-                width: 100%;
-                height: 100%;
-                color: #fff;
-                font-size: 16px;
-                background-color: rgba(0, 0, 0, 0.35);
-            }
-            &:hover .upload-image-mask {
-                display: flex;
-            }
-        }
-    }
+    flex-direction: row;
+}
+.input-but {
+    margin: 0;
+    padding: 3px 0px;
+    height: 100%;
 }
 .button-style {
     background-color: #fff;
