@@ -62,7 +62,7 @@
                             <slot name="img">
                                 <img
                                     :src="
-                                        getServerImgPath(slotProps.photoUrl) ||
+                                        slotProps?.photoUrl ||
                                         getImage('/device-product.png')
                                     "
                                     class="productImg"
@@ -179,7 +179,7 @@
 <script setup lang="ts">
 import server from '@/utils/request';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { getImage, getServerImgPath, onlyMessage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     getProviders,
     category,

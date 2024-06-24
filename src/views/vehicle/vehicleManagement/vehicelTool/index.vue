@@ -62,7 +62,7 @@
                             <slot name="img">
                                 <img
                                     :src="
-                                        slotProps.photoUrl ||
+                                        slotProps?.photoUrl ||
                                         getImage('/device-product.png')
                                     "
                                     class="productImg"
@@ -78,7 +78,7 @@
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
-                                    {{ slotProps.modelNumber }}
+                                    {{ slotProps.modelNumber || '--' }}
                                 </span></Ellipsis
                             >
                             <div>
@@ -374,7 +374,7 @@ const add = () => {
  * 查看
  */
 const handleView = (data: any) => {
-    console.log('data',data)
+    console.log('data', data);
     if (isCheck.value) {
         if (_selectedRowKeys.value.includes(data.id)) {
             const _index = _selectedRowKeys.value.findIndex(

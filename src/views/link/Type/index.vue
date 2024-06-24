@@ -45,7 +45,12 @@
                         >
                             <template #img>
                                 <slot name="img">
-                                    <img :src="getImage('/network.png')" />
+                                    <img
+                                        :src="
+                                            slotProps?.photoUrl ||
+                                            getImage('/network.png')
+                                        "
+                                    />
                                 </slot>
                             </template>
                             <template #content>
@@ -209,12 +214,12 @@ const columns = [
         width: 150,
         search: {
             type: 'select',
-            options: async() => {
+            options: async () => {
                 const res: any = await supports();
-              return  options.value = res.result.map((item: any) => ({
+                return (options.value = res.result.map((item: any) => ({
                     value: item.id,
                     label: item.name,
-                }));
+                })));
             },
         },
         scopedSlots: true,

@@ -1,6 +1,10 @@
 <template>
     <div>
-        <pro-search :columns="columns" target="search-access" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="search-access"
+            @search="handleSearch"
+        />
         <j-pro-table
             ref="tableRef"
             model="TABLE"
@@ -20,22 +24,20 @@
                 {{ slotProps.action }}
             </template>
             <template #responseTime="slotProps">
-                <j-tag color="purple">
+                <j-tag>
                     {{ slotProps.responseTime - slotProps.requestTime }} ms
                 </j-tag>
             </template>
             <template #username="slotProps">
-
-                    <!-- <j-tag color="geekblue"> -->
+                <template v-if="slotProps.context.userName">
                     <div class="userName">
-                        <Ellipsis style="max-width: 100px;">
-                        {{ slotProps.context.userName }}
-                    </Ellipsis>
-                     <!-- </j-tag> -->
-                </div>
+                        <Ellipsis style="max-width: 100px">
+                            {{ slotProps.context.userName }}
+                        </Ellipsis>
+                    </div>
+                </template>
+                <template v-else> -- </template>
             </template>
-
-
 
             <template #action="slotProps">
                 <j-space :size="16">
@@ -281,19 +283,20 @@ const handleSearch = (e: any) => {
 };
 </script>
 <style scoped lang="less">
-.userName{
-    color: #1d39c4;
-    background: #f0f5ff;
-    border-color: #adc6ff;
-    list-style: none;
-    font-feature-settings: 'tnum';
-    display: inline-block;
-    height: auto;
+.userName {
+    color: #00b87a;
+    background: #38ffbc30;
     margin-right: 8px;
-    padding: 0 7px;
+    padding: 0 8px;
     font-size: 12px;
-    line-height: 20px;border: 1px solid #d9d9d9;
-    border-radius: 2px;
-    opacity: 1;
+    line-height: 22px;
+    border: 1px solid #06a675;
+    border-radius: 3px;
+    width: fit-content;
+}
+:deep(.ant-tag) {
+    background-color: #fca99030;
+    border-color: #fa835e;
+    color: #f84914;
 }
 </style>

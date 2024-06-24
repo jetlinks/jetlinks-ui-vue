@@ -2,14 +2,18 @@
     <page-container>
         <FullPage>
             <div class="content">
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 15px">
                     <div class="alert">
                         <AIcon type="InfoCircleOutlined" />
                         启用通知类型后，你可以为每种通知类型配置不同的通知方式、通知模板、接收人。
                     </div>
                 </div>
                 <div class="content-collapse">
-                    <j-collapse :bordered="false" v-model:activeKey="activeKey" expand-icon-position="right">
+                    <j-collapse
+                        :bordered="false"
+                        v-model:activeKey="activeKey"
+                        expand-icon-position="right"
+                    >
                         <template #expandIcon="{ isActive }">
                             <AIcon
                                 type="CaretRightOutlined"
@@ -27,7 +31,12 @@
                             <template #header>
                                 <div>
                                     {{ item.name }}
-                                    <span style="margin-left: 10px;" class="alert" v-if="item.provider === 'alarm'">注意：接收人需要有告警配置页面查询权限，才能收到告警类通知</span>
+                                    <span
+                                        style="margin-left: 10px"
+                                        class="alert"
+                                        v-if="item.provider === 'alarm'"
+                                        >注意：接收人需要有告警配置页面查询权限，才能收到告警类通知</span
+                                    >
                                 </div>
                             </template>
                             <div>
@@ -38,7 +47,9 @@
                                     <Item
                                         :data="child"
                                         @refresh="onRefresh"
-                                        :isLast="index === item.children?.length"
+                                        :isLast="
+                                            index === item.children?.length
+                                        "
                                         :provider="item.provider"
                                     />
                                 </template>
@@ -56,7 +67,7 @@ import { queryChannelConfig } from '@/api/system/noticeRule';
 import Item from './components/Item/index.vue';
 import { useMenuStore } from '@/store/menu';
 const menuStore = useMenuStore();
-let dataSource:any[] =[] 
+let dataSource: any[] = [];
 const systemNotice = [
     {
         provider: 'alarm',
@@ -128,11 +139,11 @@ const lowCodeNotice = [
             },
             {
                 provider: 'workflow-task-transfer-todo',
-                name: '转办通知'
-            }
+                name: '转办通知',
+            },
         ],
     },
-]
+];
 
 const activeKey = ref<string[]>();
 
@@ -140,7 +151,7 @@ const dataMap = new Map();
 
 const data = ref<any[]>([]);
 
-const tabs = ref<any[]>([])
+const tabs = ref<any[]>([]);
 const handleSearch = () => {
     queryChannelConfig().then((resp) => {
         if (resp.status === 200) {
@@ -175,14 +186,14 @@ const handleSearch = () => {
                         children: item.children.filter((lt: any) => lt?.id),
                     };
                 });
-                tabs.value  = arr
+            tabs.value = arr;
         }
     });
 };
 
 const onRefresh = () => {
-    handleSearch()
-}
+    handleSearch();
+};
 
 onMounted(() => {
     // dataMap.clear();
@@ -194,12 +205,17 @@ onMounted(() => {
     // data.value = Array.from(dataMap).map((item) => {
     //     return item?.[1];
     // });
-    if(menuStore.hasMenu('process')){
-        dataSource = [...systemNotice,...lowCodeNotice]
-        activeKey.value = ['alarm', 'system-monitor', 'system-business','workflow-notification']
-    }else{
-        dataSource = [...systemNotice]
-        activeKey.value = ['alarm', 'system-monitor', 'system-business']
+    if (menuStore.hasMenu('process')) {
+        dataSource = [...systemNotice, ...lowCodeNotice];
+        activeKey.value = [
+            'alarm',
+            'system-monitor',
+            'system-business',
+            'workflow-notification',
+        ];
+    } else {
+        dataSource = [...systemNotice];
+        activeKey.value = ['alarm', 'system-monitor', 'system-business'];
     }
     handleSearch();
 });
@@ -226,16 +242,16 @@ onMounted(() => {
 
 .content-collapse {
     :deep(.ant-collapse) {
-        border-color: #EBEEF3;
+        border-color: #ebeef3;
         background-color: #fff;
 
         .ant-collapse-item {
-            border: 1px solid #EBEEF3;
+            border: 1px solid #ebeef3;
             margin-bottom: 24px;
         }
 
         .ant-collapse-header {
-            background-color: #F7F8FA;
+            background-color: #f7f8fa;
             height: 42px;
         }
         .ant-collapse-content {
@@ -245,6 +261,11 @@ onMounted(() => {
         .ant-collapse-content-box {
             padding: 0;
         }
+    }
+}
+:deep(.ant-spin-container) {
+    .child-item {
+        background: linear-gradient(270deg, #ffffff 0%, #fff7f1 99%);
     }
 }
 </style>

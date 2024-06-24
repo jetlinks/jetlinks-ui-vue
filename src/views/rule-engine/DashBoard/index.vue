@@ -232,12 +232,11 @@ const getDashBoard = () => {
     dashboard([today, thisMonth, fifteen]).then((res) => {
         if (res.status == 200) {
             const _data = res.result as DashboardItem[];
-            state.today = _data.find(
-                (item) => item.group === 'today',
-            )?.data.value || 0;
-            state.thisMonth = _data.find(
-                (item) => item.group === 'thisMonth',
-            )?.data.value || 0;
+            state.today =
+                _data.find((item) => item.group === 'today')?.data.value || 0;
+            state.thisMonth =
+                _data.find((item) => item.group === 'thisMonth')?.data.value ||
+                0;
             currentMonAlarm.value[0].value = state.thisMonth;
             const fifteenData = _data
                 .filter((item) => item.group === '15day')
@@ -270,7 +269,7 @@ const getDashBoard = () => {
                         name: '告警数',
                         data: fifteenData.map((item) => item.value),
                         type: 'line',
-                        color: '#FF595E',
+                        color: '#FF3325',
                         smooth: true,
                         symbolSize: 0,
                         areaStyle: {
@@ -283,7 +282,7 @@ const getDashBoard = () => {
                                 colorStops: [
                                     {
                                         offset: 0,
-                                        color: '#FF595E', // 100% 处的颜色
+                                        color: '#FF3325', // 100% 处的颜色
                                     },
                                     {
                                         offset: 1,
@@ -369,12 +368,12 @@ const selectChange = () => {
     const month = day * 30;
     const year = 365 * day;
 
-    if (dt <= (hour + 10)) {
-      limit = 60
-      format = 'HH:mm';
+    if (dt <= hour + 10) {
+        limit = 60;
+        format = 'HH:mm';
     } else if (dt > hour && dt <= day) {
-      time = '1h'
-      limit = 24;
+        time = '1h';
+        limit = 24;
     } else if (dt > day && dt < year) {
         limit = Math.abs(Math.ceil(dt / day)) + 1;
         time = '1d';
@@ -438,17 +437,18 @@ const selectChange = () => {
             res.result
                 .filter((item: any) => item.group === 'alarmTrend')
                 .forEach((item: any) => {
-                    if(time === '1d'){
-                        item.data.timeString = item.data.timeString.split(' ')[0]
+                    if (time === '1d') {
+                        item.data.timeString =
+                            item.data.timeString.split(' ')[0];
                     }
                     xData.push(item.data.timeString);
                     sData.push(item.data.value);
                 });
-            const data:any = JSON.parse(JSON.stringify(sData))
-            if (data && data.length > 0 ) {
-                    const maxY = data.sort((a,b)=>{
-                    return b-a
-                })[0]
+            const data: any = JSON.parse(JSON.stringify(sData));
+            if (data && data.length > 0) {
+                const maxY = data.sort((a, b) => {
+                    return b - a;
+                })[0];
                 alarmStatisticsOption.value = {
                     xAxis: {
                         type: 'category',
@@ -467,7 +467,7 @@ const selectChange = () => {
                     grid: {
                         top: '2%',
                         bottom: '5%',
-                        left:  maxY < 1000 ? 50 : maxY.toString().length * 10,
+                        left: maxY < 1000 ? 50 : maxY.toString().length * 10,
                         right: '48px',
                     },
                     series: [
@@ -500,8 +500,8 @@ const selectChange = () => {
                         },
                     ],
                 };
-            }else{
-                console.log('data is empty ')
+            } else {
+                console.log('data is empty ');
             }
             state.ranking = res.result
                 ?.filter(

@@ -169,7 +169,7 @@
                                 :width="80"
                                 :height="80"
                                 :src="
-                                    getServerImgPath(slotProps?.photoUrl) ||
+                                    slotProps?.photoUrl ||
                                     getImage('/device/instance/device-card.png')
                                 "
                             />
@@ -313,12 +313,7 @@ import {
     batchDeployDevice,
     batchDeleteDevice,
 } from '@/api/device/instance';
-import {
-    getImage,
-    getServerImgPath,
-    LocalStore,
-    onlyMessage,
-} from '@/utils/comm';
+import { getImage, LocalStore, onlyMessage } from '@/utils/comm';
 import Import from './Import/modal.vue';
 import Export from './Export/index.vue';
 import Process from './Process/index.vue';

@@ -37,14 +37,17 @@
                         >
                             <template #img>
                                 <slot name="img">
-                                    <img :src="getImage('/protocol.png')" />
+                                    <img
+                                        :src="
+                                            slotProps?.photoUrl ||
+                                            getImage('/protocol.png')
+                                        "
+                                    />
                                 </slot>
                             </template>
                             <template #content>
                                 <div class="card-item-content">
-                                    <Ellipsis
-                                        style="margin-bottom: 18px;"
-                                    >
+                                    <Ellipsis style="margin-bottom: 18px">
                                         <span
                                             style="
                                                 font-size: 16px;

@@ -62,7 +62,7 @@
                                         margin-bottom: 8px;
                                     "
                                 >
-                                        {{ slotProps.name }}
+                                    {{ slotProps.name }}
                                 </Ellipsis>
                                 <j-row>
                                     <j-col :span="12">
@@ -483,6 +483,11 @@ const selectProvider = ref<any>('');
         .ant-btn-link {
             padding: 0;
         }
+    }
+}
+:deep(.j-table-card-box) {
+    .j-ellipsis {
+        color: var(--theme-color-primary) !important;
     }
 }
 </style>

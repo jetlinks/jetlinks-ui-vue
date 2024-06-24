@@ -20,7 +20,7 @@
                                 </j-tooltip>
                             </div>
                             <LineChart
-                                color="#FBA500"
+                                color="#531BFA"
                                 :chartData="dayOptions"
                             />
                         </div>
@@ -39,7 +39,10 @@
                                     </div>
                                 </j-tooltip>
                             </div>
-                            <LineChart :chartData="monthOptions" />
+                            <LineChart
+                                color="#4DC0F4"
+                                :chartData="monthOptions"
+                            />
                         </div>
                     </j-col>
                     <j-col :span="8">
@@ -57,7 +60,7 @@
                                 </j-tooltip>
                             </div>
                             <LineChart
-                                color="#58E1D3"
+                                color="#00B87A"
                                 :chartData="yearOptions"
                             />
                         </div>
@@ -82,6 +85,7 @@
                                 :showX="true"
                                 :showY="true"
                                 style="min-height: 490px"
+                                color="#F95C2D"
                                 :chartData="flowData"
                             />
                         </FullPage>
@@ -101,43 +105,45 @@
                                     @change="getTopRang"
                             /></template>
                         </Guide>
-                      <FullPage v-if="topList.length !== 0">
-                        <div
-                            v-if="topList.length !== 0"
-                            class="rankingList"
-
-                        >
+                        <FullPage v-if="topList.length !== 0">
                             <div
-                                v-for="(item, index) in topList"
-                                :key="item.cardNum"
-                                class="rankItem"
+                                v-if="topList.length !== 0"
+                                class="rankingList"
                             >
                                 <div
-                                    class="number"
-                                    :class="`number-item-${index + 1}`"
+                                    v-for="(item, index) in topList"
+                                    :key="item.cardNum"
+                                    class="rankItem"
                                 >
-                                    {{ index + 1 }}
-                                </div>
-                                <div class="cardNum">{{ item.cardNum }}</div>
-                                <div class="progress">
-                                    <j-progress
-                                        :strokeColor="'#ADC6FF'"
-                                        :trailColor="'#E0E4E8'"
-                                        :strokeLinecap="'butt'"
-                                        :showInfo="false"
-                                        :percent="
-                                            Math.ceil(
-                                                (item.value / topTotal) * 100,
-                                            )
-                                        "
-                                    ></j-progress>
-                                </div>
-                                <div class="total">
-                                    {{ item?.value?.toFixed(2) }} M
+                                    <div
+                                        class="number"
+                                        :class="`number-item-${index + 1}`"
+                                    >
+                                        {{ index + 1 }}
+                                    </div>
+                                    <div class="cardNum">
+                                        {{ item.cardNum }}
+                                    </div>
+                                    <div class="progress">
+                                        <j-progress
+                                            :strokeColor="'#ADC6FF'"
+                                            :trailColor="'#E0E4E8'"
+                                            :strokeLinecap="'butt'"
+                                            :showInfo="false"
+                                            :percent="
+                                                Math.ceil(
+                                                    (item.value / topTotal) *
+                                                        100,
+                                                )
+                                            "
+                                        ></j-progress>
+                                    </div>
+                                    <div class="total">
+                                        {{ item?.value?.toFixed(2) }} M
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                      </FullPage>
+                        </FullPage>
                         <div class="empty-body" v-else>
                             <j-empty :image="Empty.PRESENTED_IMAGE_SIMPLE" />
                         </div>
@@ -174,10 +180,7 @@ const quickBtnList = [
     { label: '近一年', value: 'year' },
 ];
 
-const getData = (
-    start: number,
-    end: number,
-): Promise<{ sortArray: any[]}> => {
+const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
     return new Promise((resolve) => {
         queryFlow(start, end, {
             orderBy: 'date',
@@ -200,16 +203,16 @@ const getData = (
  */
 const getDataTotal = () => {
     const dTime = [
-      dayjs(new Date()).startOf('day').valueOf(),
-      dayjs(new Date()).endOf('day').valueOf(),
+        dayjs(new Date()).startOf('day').valueOf(),
+        dayjs(new Date()).endOf('day').valueOf(),
     ];
     const mTime = [
-      dayjs().startOf('month').valueOf(),
-      dayjs().endOf('month').valueOf(),
+        dayjs().startOf('month').valueOf(),
+        dayjs().endOf('month').valueOf(),
     ];
     const yTime = [
-      dayjs().startOf('year').valueOf(),
-      dayjs().endOf('year').valueOf(),
+        dayjs().startOf('year').valueOf(),
+        dayjs().endOf('year').valueOf(),
     ];
     getData(dTime[0], dTime[1]).then((resp) => {
         dayTotal.value = resp.sortArray

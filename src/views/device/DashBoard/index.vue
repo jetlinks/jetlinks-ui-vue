@@ -463,7 +463,7 @@ const setDevMesChartOption = (
                 type: 'line',
                 smooth: true,
                 symbolSize: 0, // 拐点大小
-                color: '#4DC0F4',
+                color: '#F96F45',
                 areaStyle: {
                     color: {
                         type: 'linear',
@@ -474,7 +474,7 @@ const setDevMesChartOption = (
                         colorStops: [
                             {
                                 offset: 0,
-                                color: '#4DC0F4', // 100% 处的颜色
+                                color: '#F96F45', // 100% 处的颜色
                             },
                             {
                                 offset: 1,

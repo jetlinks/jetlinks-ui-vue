@@ -215,14 +215,3 @@ export const getBase64 = (img: File, callback: (base64Url: string) => void) => {
         callback(result.target.result);
     };
 };
-
-/**
- * 获取本地图片路径
- * @param url
- */
-export const getServerImgPath = (url: string) => {
-    const resArr = url.split('/');
-    const index = resArr.findIndex((item) => item === 'images');
-    const target = resArr.splice(index + 1).join('/');
-    return getImage(`/${target}`);
-};
