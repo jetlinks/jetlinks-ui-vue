@@ -1,53 +1,70 @@
 <template>
-    <FullPage>
-        <JProTable
-            model="CARD"
-            :request="queryTable"
-            :gridColumns="[1, 1, 2]"
-            :defaultParams="{
+  <FullPage>
+    <JProTable
+      model="CARD"
+      :request="queryTable"
+      :gridColumns="[1, 1, 2]"
+      :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
-                terms,
+                terms: [
+                  {
+                      terms: [
+                          {
+                              column: 'id',
+                              termType: 'alarm-bind-rule',
+                              value: id,
+                          },
+                          {
+                            column: 'triggerType',
+                            value: configurationData.current?.targetType === 'other' ? null : 'device'
+                          }
+                      ],
+                      type: 'and',
+                  },
+              ],
             }"
-            ref="actionRef"
+      ref="actionRef"
+    >
+      <template #headerTitle>
+        <j-space>
+          <PermissionButton
+            type="primary"
+            @click="showModal"
+            hasPermission="rule-engine/Alarm/Configuration:add"
+          >
+            <template #icon>
+              <AIcon type="PlusOutlined"/>
+            </template>
+            新增
+          </PermissionButton>
+        </j-space>
+      </template>
+      <template #card="slotProps">
+        <SceneCardBox
+          :value="slotProps"
+          :status="slotProps.state?.value"
+          :statusText="slotProps.state?.text"
+          :alarmId="id"
+          :activeKeys="activeKeys[slotProps.id]"
+          :showMask="false"
+          :showBranches="false"
+          :showBindTags="true"
+          @click="handleView(slotProps)"
         >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="showModal"
-                        hasPermission="rule-engine/Alarm/Configuration:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </j-space>
-            </template>
-            <template #card="slotProps">
-              <SceneCardBox
-                :value="slotProps"
-                :status="slotProps.state?.value"
-                :statusText="slotProps.state?.text"
-                :alarmId="id"
-                :activeKeys="activeKeys[slotProps.id]"
-                :showMask="false"
-                :showBranches="false"
-                :showBindTags="true"
-                @click="handleView(slotProps)"
-              >
-                <div class="scene-view">
-                  查看详情
-                </div>
-              </SceneCardBox>
-            </template>
-        </JProTable>
-    </FullPage>
-    <Save
-        v-if="visible"
-        :id="id"
-        :type="configurationData.current?.targetType"
-        @close-save="closeSave"
-        @save-scene="saveSuccess"
-    ></Save>
+          <div class="scene-view">
+            查看详情
+          </div>
+        </SceneCardBox>
+      </template>
+    </JProTable>
+  </FullPage>
+  <Save
+    v-if="visible"
+    :id="id"
+    :type="configurationData.current?.targetType"
+    @close-save="closeSave"
+    @save-scene="saveSuccess"
+  ></Save>
 
   <SceneDrawer
     v-if="scene.visible"
@@ -59,15 +76,15 @@
 </template>
 
 <script lang="ts" setup>
-import { query} from '@/api/rule-engine/scene';
+import {query} from '@/api/rule-engine/scene';
 import {queryBindScene, unbindScene} from '@/api/rule-engine/configuration';
-import { useRoute } from 'vue-router';
-import type { ActionsType } from '@/components/Table';
-import { onlyMessage } from '@/utils/comm';
+import {useRoute} from 'vue-router';
+import type {ActionsType} from '@/components/Table';
+import {onlyMessage} from '@/utils/comm';
 import Save from './Save/index.vue';
-import { useAlarmConfigurationStore } from '@/store/alarm';
-import { storeToRefs } from 'pinia';
-import { useMenuStore } from 'store/menu';
+import {useAlarmConfigurationStore} from '@/store/alarm';
+import {storeToRefs} from 'pinia';
+import {useMenuStore} from 'store/menu';
 import SceneDrawer from './SceneDrawer.vue'
 import SceneCardBox from './Save/CardBox.vue'
 import {useRequest} from "@/hook";
@@ -77,32 +94,16 @@ const route = useRoute();
 const id = route.query?.id;
 
 const alarmConfigurationStore = useAlarmConfigurationStore();
-const { configurationData } = storeToRefs(alarmConfigurationStore);
+const {configurationData} = storeToRefs(alarmConfigurationStore);
 const scene = reactive({
   visible: false,
   detail: undefined
 })
 
-const terms = [
-    {
-        terms: [
-            {
-                column: 'id',
-                termType: 'alarm-bind-rule',
-                value: id,
-            },
-            {
-              column: 'triggerType',
-              value: configurationData.current?.targetType === 'orter' ? '' : 'device'
-            }
-        ],
-        type: 'and',
-    },
-];
 const actionRef = ref();
 
-const { data: activeKeys, reload } = useRequest(queryBindScene, {
-  defaultParams: { terms: [{ column: 'alarmId', value: id}]},
+const {data: activeKeys, reload} = useRequest(queryBindScene, {
+  defaultParams: {terms: [{column: 'alarmId', value: id}]},
   onSuccess(res) {
     const activeMap = res.result.data.reduce((prev, next) => {
 
@@ -119,29 +120,29 @@ const { data: activeKeys, reload } = useRequest(queryBindScene, {
 })
 
 const getActions = (
-    data: Partial<Record<string, any>>,
-    type: 'card' | 'table',
+  data: Partial<Record<string, any>>,
+  type: 'card' | 'table',
 ): ActionsType[] => {
-    if (!data) return [];
-    const actions: ActionsType[] = [
-        {
-            key: 'action',
-            text: '解绑',
-            icon: 'DisconnectOutlined',
-            popConfirm: {
-                title: '确定解绑？',
-                onConfirm: async () => {
-                    // const res = await unbindScene(id, [data.id], data.branchIndex);
-                    const res = await unbindScene(id, [data.id]);
-                    if (res.status === 200) {
-                        onlyMessage('操作成功');
-                        actionRef.value.reload();
-                    }
-                },
-            },
+  if (!data) return [];
+  const actions: ActionsType[] = [
+    {
+      key: 'action',
+      text: '解绑',
+      icon: 'DisconnectOutlined',
+      popConfirm: {
+        title: '确定解绑？',
+        onConfirm: async () => {
+          // const res = await unbindScene(id, [data.id], data.branchIndex);
+          const res = await unbindScene(id, [data.id]);
+          if (res.status === 200) {
+            onlyMessage('操作成功');
+            actionRef.value.reload();
+          }
         },
-    ];
-    return actions;
+      },
+    },
+  ];
+  return actions;
 };
 
 const queryTable = (_terms: any) => {
@@ -152,35 +153,35 @@ const visible = ref(false);
 
 
 const showModal = () => {
-    visible.value = true;
+  visible.value = true;
 };
 const closeSave = () => {
-    visible.value = false;
+  visible.value = false;
 };
 const saveSuccess = () => {
-    visible.value = false;
-    actionRef.value.reload();
+  visible.value = false;
+  actionRef.value.reload();
 };
 /**
  * 查看
  * @param record
  */
- const handleView = (record: Record<string, any>) => {
-   scene.detail = record
-   scene.visible = true
+const handleView = (record: Record<string, any>) => {
+  scene.detail = record
+  scene.visible = true
 };
 
- const sceneCancel = () => {
-   scene.visible = false
-   scene.detail = undefined
-   actionRef.value?.reload()
- }
+const sceneCancel = () => {
+  scene.visible = false
+  scene.detail = undefined
+  actionRef.value?.reload()
+}
 </script>
 <style lang="less" scoped>
 .subTitle {
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-    margin-top: 10px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  margin-top: 10px;
 }
 
 .scene-view {
