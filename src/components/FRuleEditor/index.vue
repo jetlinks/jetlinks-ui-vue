@@ -41,6 +41,7 @@
                         ...virtualRule,
                         script: _value,
                     }"
+                    :propertiesOptions="propertiesOptions"
                     :id="id"
                   />
                 </div>

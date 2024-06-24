@@ -33,7 +33,7 @@
         {{ sourceMap[data.expands.source] }}
       </a-descriptions-item>
       <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
-      <a-descriptions-item v-if="showSetting" label="存储方式">{{ data.id }}</a-descriptions-item>
+      <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
       <a-descriptions-item v-if="showMetrics" label="指标配置"></a-descriptions-item>
       <a-descriptions-item v-if="showMetrics">
         <j-table
@@ -60,8 +60,8 @@
 import {omit} from "lodash-es";
 import {watch} from "vue";
 import JsonView from './JsonView.vue'
-import {getUnit} from "@/api/device/instance";
 import {TypeStringMap} from "@/views/device/components/Metadata/Base/columns";
+import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
 
 const props = defineProps({
   data: {
@@ -75,10 +75,17 @@ const props = defineProps({
   unitOptions: {
     type: Array,
     default: () => []
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
 const emit = defineEmits(['cancel'])
+
+const route = useRoute()
+const { settingData } = useStoreType(props.type)
 
 const sourceMap = {
     'device': '设备',
@@ -98,6 +105,7 @@ const readTypeText = computed(() => {
 
 const unitLabel = computed(() => {
   let label = props.data.valueType?.unit
+
   const item = props.unitOptions?.find(item => item.value === label)
   if (item) {
     label = item.label
@@ -132,11 +140,6 @@ const showSetting = computed(() => {
   return Object.values(setting).length
 })
 
-const settingValue = computed(() => {
-  console.log(showSetting.value)
-  return ''
-})
-
 const handleDataTable = (type: string) => {
   switch (type) {
     case 'enum':
@@ -165,24 +168,6 @@ const handleDataTable = (type: string) => {
   }
 }
 
-
-watch(() => props.data.valueType.type, () => {
-  const type = props.data.valueType.type
-  handleDataTable(props.data.valueType.type)
-
-  // if (['float', 'double', 'int', 'long'].includes(type)) {
-  //   getUnit().then((res) => {
-  //     if (res.success) {
-  //       res.result.map((item) => {
-  //         if (item.id === props.data.valueType?.unit) {
-  //           unitLabel.value = item.description
-  //         }
-  //       })
-  //     }
-  //   });
-  // }
-}, { immediate: true })
-
 const cancel = () => {
   emit('cancel')
 }
@@ -190,6 +175,10 @@ const cancel = () => {
 const ok = () => {
   cancel()
 }
+
+watch(() => props.data.valueType.type, (val) => {
+  handleDataTable(val)
+}, { immediate: true })
 
 </script>
 

@@ -30,6 +30,7 @@
         <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
       <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
+      <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
     </j-descriptions>
     <template #footer>
       <j-button type="primary" @click="ok">确认</j-button>
@@ -43,6 +44,7 @@ import {omit} from "lodash-es";
 import {watch} from "vue";
 import JsonView from './JsonView.vue'
 import {getUnit} from "@/api/device/instance";
+import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
 
 const props = defineProps({
   data: {
@@ -56,6 +58,10 @@ const props = defineProps({
   unitOptions: {
     type: Array,
     default: () => []
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -66,6 +72,8 @@ const sourceMap = {
   'manual': '手动',
   'rule': '规则',
 }
+
+const { settingData } = useStoreType(props.type)
 
 const readTypeText = computed(() => {
   const type = {

@@ -221,6 +221,7 @@
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
       :data="detailData.data"
+      :type="target"
       :getPopupContainer="getPopupContainer"
       :unitOptions="unitOptions"
       @cancel="cancelDetailModal"

@@ -64,7 +64,7 @@ const instanceStore = useInstanceStore()
 const productStore = useProductStore()
 const metadata = computed(() => {
   const metadataMap = {
-    product: productStore.current?.metadata as string,
+    product: productStore.detail?.metadata as string,
     device: instanceStore.current?.metadata as string,
   };
   return metadataMap[props.type];

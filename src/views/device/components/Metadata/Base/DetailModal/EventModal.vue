@@ -23,6 +23,7 @@
       <a-descriptions-item>
         <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
+      <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
     </j-descriptions>
     <template #footer>
       <j-button type="primary" @click="ok">确认</j-button>
@@ -32,6 +33,7 @@
 
 <script setup lang="ts" name="EventModal">
 import JsonView from "./JsonView.vue";
+import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
 
 const props = defineProps({
   data: {
@@ -41,6 +43,14 @@ const props = defineProps({
   getPopupContainer: {
     type: Function,
     default: undefined
+  },
+  unitOptions: {
+    type: Array,
+    default: () => []
+  },
+  type: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -49,6 +59,12 @@ const EventLevel = {
   warn: '警告',
   urgent: '紧急'
 }
+
+const { settingData } = useStoreType(props.type)
+
+const showSetting = computed(() => {
+
+})
 
 const dataTypeTable = reactive<{ dataSource: any }>({
   dataSource: props.data?.valueType?.properties || []

@@ -1,6 +1,6 @@
 <template>
   <Select
-    mode="tags"
+    showSearch
     placeholder="请选择单位"
     style="width: 100%"
     v-model:value="myValue"
@@ -9,6 +9,7 @@
     }"
     :getPopupContainer="(node) => tableWrapperRef || node"
     :options="options"
+    :filterOption="filterOption"
     @change="change"
   />
 </template>
@@ -53,6 +54,10 @@ const change = (v) => {
   emit('change', newValue);
   formItemContext.onFieldChange();
 };
+
+const filterOption = (v, option) => {
+  return option.label.includes(v)
+}
 
 watch(
   () => props.value,

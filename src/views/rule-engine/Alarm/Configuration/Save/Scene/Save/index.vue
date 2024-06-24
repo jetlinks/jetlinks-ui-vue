@@ -26,7 +26,7 @@
                     ],
                     terms: [{
                       column: 'triggerType',
-                      value: props.type === 'orter' ? '' : 'device'
+                      value: props.type === 'other' ? null : 'device'
                     }]
                 }"
         :params="params"

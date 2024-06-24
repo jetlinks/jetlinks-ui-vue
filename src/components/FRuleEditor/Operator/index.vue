@@ -186,6 +186,7 @@ const getData = async (id?: string) => {
                 id: p.id,
                 name: p.name,
                 description: `### ${p.name}
+        \n 标识: ${p.id}
         \n 数据类型: ${p.valueType?.type}
         \n 是否只读: ${p.expands?.readOnly || 'false'}
         \n 可写数值范围: `,

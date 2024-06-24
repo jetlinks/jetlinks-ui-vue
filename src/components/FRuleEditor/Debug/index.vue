@@ -3,6 +3,11 @@
         <div class="top">
             <div class="header">
                 <j-tabs v-model:activeKey="headerType">
+                  <template #rightExtra>
+                    <a v-if="virtualRule?.script && isBeginning" @click="beginAction">
+                      开始运行
+                    </a>
+                  </template>
                     <j-tab-pane key="property">
                         <template #tab>
                             <span class="title">
@@ -18,44 +23,6 @@
                         </template>
                     </j-tab-pane>
                 </j-tabs>
-                <!-- <div>
-                    <j-dropdown>
-                        <div class="title" @click.prevent>
-                            {{
-                                headerType === 'property'
-                                    ? '属性赋值'
-                                    : '标签赋值'
-                            }}
-                            <div class="description">
-                                {{
-                                    `请对上方规则使用的${
-                                        headerType === 'property'
-                                            ? '属性'
-                                            : '标签'
-                                    }进行赋值`
-                                }}
-                            </div>
-                        </div>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <a
-                                        href="javascript:;"
-                                        @click="headerType = 'property'"
-                                        >属性赋值</a
-                                    >
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <a
-                                        href="javascript:;"
-                                        @click="headerType = 'tag'"
-                                        >标签赋值</a
-                                    >
-                                </j-menu-item>
-                            </j-menu>
-                        </template>
-                    </j-dropdown>
-                </div> -->
             </div>
             <div class="description">
                 {{
@@ -71,7 +38,7 @@
                     :pagination="false"
                     bordered
                     size="small"
-                    :scroll="{ y: 200 }"
+                    :scroll="{ y: 180 }"
                 >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.key === 'id'">
@@ -187,11 +154,11 @@
                     >
                         <a style="margin-left: 75px">发送数据</a>
                     </div>
-                    <div v-if="virtualRule?.script">
-                        <a v-if="isBeginning" @click="beginAction">
-                            开始运行
-                        </a>
-                        <a v-else @click="stopAction"> 停止运行 </a>
+                    <div v-if="virtualRule?.script && !isBeginning">
+<!--                        <a v-if="isBeginning" @click="beginAction">-->
+<!--                            开始运行-->
+<!--                        </a>-->
+                        <a v-if="!isBeginning" @click="stopAction"> 停止运行 </a>
                     </div>
                     <div>
                         <a @click="clearAction"> 清空 </a>
@@ -427,6 +394,9 @@ const getTime = () => {
 };
 
 const beginAction = () => {
+  if (property.value.some(item => !item.id || !(item.current || item.last) )) {
+    return onlyMessage('请添加规则属性')
+  }
     isBeginning.value = false;
     runScript();
     getTime();
@@ -453,8 +423,7 @@ onUnmounted(() => {
 });
 
 const options = computed(() => {
-    return (medataSource.value || [])
-        .filter((p) => p.id && p.id !== props.id)
+    return (props.propertiesOptions || [])
         .map((item) => ({
             label: item.name,
             value: item.id,
@@ -468,6 +437,9 @@ const tagOptions = computed(() => {
     }));
 });
 
+defineExpose({
+  beginAction
+})
 // const getProperty = () => {
 //     // const metadata = productStore.current.metadata || '{}';
 //     // const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
@@ -492,38 +464,44 @@ const tagOptions = computed(() => {
         //margin-bottom: 10px;
 
         .header {
-            display: flex;
-            align-items: center;
+            //display: flex;
+            //align-items: center;
             width: 100%;
-            height: 40px;
+            height: 46px;
             border-bottom: 1px solid lightgray;
+            padding: 0 12px;
             //justify-content: space-around;
 
-            div {
-                display: flex;
-                //width: 100%;
-                align-items: center;
-                justify-content: flex-start;
-                height: 100%;
-
-                .title {
-                    margin: 0 10px;
-                    font-weight: 600;
-                    font-size: 16px;
-                }
-
-                .description {
-                    margin-left: 10px;
-                    color: lightgray;
-                    font-size: 12px;
-                }
-            }
+            //div {
+            //    display: flex;
+            //    //width: 100%;
+            //    align-items: center;
+            //    justify-content: flex-start;
+            //    height: 100%;
+            //
+            //    .title {
+            //        margin: 0 10px;
+            //        font-weight: 600;
+            //        font-size: 16px;
+            //    }
+            //
+            //    .description {
+            //        margin-left: 10px;
+            //        color: lightgray;
+            //        font-size: 12px;
+            //    }
+            //}
 
             .action {
                 width: 150px;
                 font-size: 14px;
             }
         }
+
+          .description {
+              margin-left: 10px;
+              font-size: 12px;
+          }
 
         .top-bottom {
             padding: 10px;

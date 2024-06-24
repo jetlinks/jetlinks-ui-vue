@@ -360,7 +360,7 @@ const getConfig = async () => {
         type === 'product'
             ? await getMetadataConfig(params)
             : await getMetadataDeviceConfig(params);
-    if (resp.status === 200) {
+    if (resp.success) {
         config.value = resp.result;
         if (resp.result.length) {
             activeKey.value = ['store_0'];
