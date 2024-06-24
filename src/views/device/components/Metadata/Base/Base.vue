@@ -405,6 +405,7 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
   switch (type) {
     case 'add':
       dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
+      editStatus.value = true
       break;
     case 'paste':
       const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
@@ -423,6 +424,7 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       } else {
         dataSource.value.splice(_index, 1, cloneRecord)
       }
+      editStatus.value = true
       break;
     case 'detail':
       detailData.data = record
@@ -439,8 +441,10 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       //   },
       // })
       dataSource.value.splice(_index, 1)
+      editStatus.value = true
       break;
   }
+
 }
 
 const handleSaveClick = async (next?: Function) => {
