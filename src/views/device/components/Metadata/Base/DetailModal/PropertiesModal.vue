@@ -42,7 +42,10 @@
             :pagination="false"
             size="small"
         >
-          <template #bodyCell="{column, record}">
+          <template #bodyCell="{column, record, index}">
+            <span v-if="column.dataIndex === 'serial' ">
+              {{ index + 1 }}
+            </span>
             <span v-if="column.dataIndex === 'value'">
               {{ record.range === true ? record.value?.join('-') : record.value }}
             </span>
@@ -120,6 +123,7 @@ const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
 
 const metrics = reactive<{ columns: any[], dataSource: any }>({
   columns: [
+    { title: '序号', dataIndex: 'serial', width: 60 },
     { title: '指标标识', dataIndex: 'id' },
     { title: '指标名称', dataIndex: 'name' },
     { title: '指标值', dataIndex: 'value' },
