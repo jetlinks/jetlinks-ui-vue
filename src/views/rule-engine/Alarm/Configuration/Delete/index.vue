@@ -1,7 +1,15 @@
 <template>
-    <a-modal visible title="提醒" @cancel="$emit('close')" @ok="deleteConfig">
+    <a-modal
+        visible
+        title="提醒"
+        :confirmLoading="loading"
+        @cancel="$emit('close')"
+        @ok="deleteConfig"
+    >
         {{
-            `删除告警配置将同步删除相关联的${alarmRecordNumber}条告警记录确认删除？`
+            alarmRecordNumber
+                ? `删除告警配置将同步删除相关联的${alarmRecordNumber}条告警记录,确认删除？`
+                : '确认删除？'
         }}
     </a-modal>
 </template>
@@ -18,9 +26,13 @@ const props = defineProps({
 });
 const emit = defineEmits(['close']);
 const alarmRecordNumber = ref(0);
+const loading = ref(false);
 const deleteConfig = async () => {
-    const resp = await remove(props.id);
-    if (resp.status === 200) {
+    loading.value = true;
+    const resp = await remove(props.id).finally(() => {
+        loading.value = false;
+    });
+    if (resp.success) {
         onlyMessage('操作成功！');
         emit('refreshTable');
     } else {
