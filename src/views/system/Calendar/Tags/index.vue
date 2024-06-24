@@ -11,7 +11,10 @@
                 ></div>
                 <Ellipsis
                     class="tagName"
-                    style="max-width: 90px; cursor: move"
+                    style="
+                        width: 90px;
+                        cursor: url('/images/calendar/hover.png'), pointer;
+                    "
                     :id="i.id"
                     >{{ i.name }}</Ellipsis
                 >
@@ -51,19 +54,15 @@
 </template>
 
 <script setup name="CalendarTags">
-import {
-    queryTags,
-    deleteTags,
-    saveTagsColor,
-} from '@/api/system/calendar';
+import { queryTags, deleteTags, saveTagsColor } from '@/api/system/calendar';
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
-import { useSystem } from '@/store/system'
-const system = useSystem()
-const calendarTagColor = system.$state.calendarTagColor
+import { useSystem } from '@/store/system';
+const system = useSystem();
+const calendarTagColor = system.$state.calendarTagColor;
 const tagsMap = inject('tagsMap');
 const rapidOn = inject('rapidOn');
 const editVisible = ref(false);
@@ -93,7 +92,7 @@ const createDrag = () => {
 //获取标签列表
 const queryTagsData = async () => {
     const res = await queryTags();
-if (res.success) {
+    if (res.success) {
         //获取用户添加的标签颜色及权限
         await system.getTagsColor();
         tagsList.value = res.result.map((i) => {
