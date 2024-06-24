@@ -110,6 +110,7 @@
         <Source
             v-if="props.type === 'properties'"
             v-model:value="record.expands"
+            :isProduct="record.expands?.isProduct"
             :target="target"
             :record="record"
             :disabled="record.expands?.isProduct"

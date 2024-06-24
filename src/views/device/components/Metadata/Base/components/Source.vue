@@ -150,7 +150,10 @@ type Emit = {
 };
 
 
-const showReset = ref(false);
+const showReset = computed(() => {
+  return myValue.value === 'rule' && props.target === 'device' && props.isProduct
+})
+
 const props = defineProps({
   value: {
     type: Object,
@@ -174,6 +177,10 @@ const props = defineProps({
     default: () => ({})
   },
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  isProduct: {
     type: Boolean,
     default: false
   }
@@ -298,14 +305,6 @@ watch(
   {immediate: true},
 );
 
-onMounted(() => {
-  if (props.disabled) {
-    showReset.value = true
-  }
-  // if(isNoCommunity && myValue.value === 'rule'){
-  //     handleSearch()
-  // }
-})
 </script>
 
 <style scoped>
