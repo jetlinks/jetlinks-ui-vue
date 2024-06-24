@@ -423,8 +423,7 @@ onUnmounted(() => {
 });
 
 const options = computed(() => {
-    return (medataSource.value || [])
-        .filter((p) => p.id && p.id !== props.id)
+    return (props.propertiesOptions || [])
         .map((item) => ({
             label: item.name,
             value: item.id,
