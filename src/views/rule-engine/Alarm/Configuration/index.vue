@@ -63,11 +63,8 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <div class="alarmInfo">
-                                    <LevelIcon
-                                        :level="slotProps.level"
-                                    ></LevelIcon>
-                                    <Ellipsis style="width: calc(100% - 100px)">
+                                <a-row>
+                                    <Ellipsis style="max-width: 100px">
                                         <span
                                             style="
                                                 font-weight: 600;
@@ -77,7 +74,10 @@
                                             {{ slotProps.name }}
                                         </span>
                                     </Ellipsis>
-                                </div>
+                                    <LevelIcon
+                                        :level="slotProps.level"
+                                    ></LevelIcon>
+                                </a-row>
                             </template>
                             <template #actions="item">
                                 <PermissionButton
@@ -120,6 +120,9 @@
                             }"
                         />
                     </template>
+                    <template #level="slotProps">
+                        <LevelIcon :level="slotProps.level"></LevelIcon>
+                    </template>
                     <template #action="slotProps">
                         <j-space :size="16">
                             <template
@@ -158,7 +161,12 @@
         v-if="visible"
         :data="current"
     />
-    <Delete v-if="visibleDelete" :id="configId" @close="visibleDelete = false" @refreshTable="refreshTable"/>
+    <Delete
+        v-if="visibleDelete"
+        :id="configId"
+        @close="visibleDelete = false"
+        @refreshTable="refreshTable"
+    />
 </template>
 
 <script lang="ts" setup>
@@ -173,13 +181,13 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
 import LevelIcon from '../Config/LevelIcon.vue';
-import Delete from './Delete/index.vue'
+import Delete from './Delete/index.vue';
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
 const visibleDelete = ref(false);
-const configId = ref()
+const configId = ref();
 const columns = [
     {
         title: '配置名称',
@@ -227,7 +235,7 @@ const columns = [
         search: {
             type: 'number',
         },
-        width: 200,
+        width: 100,
     },
     {
         title: '状态',
@@ -393,17 +401,13 @@ const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };
 
-const refreshTable = () =>{
+const refreshTable = () => {
     visibleDelete.value = false;
-    tableRef.value.reload()
-}
+    tableRef.value.reload();
+};
 </script>
 <style lang="less" scoped>
 .content-des-title {
     font-size: 12px;
-}
-.alarmInfo {
-    padding-top: 30px;
-    display: flex;
 }
 </style>

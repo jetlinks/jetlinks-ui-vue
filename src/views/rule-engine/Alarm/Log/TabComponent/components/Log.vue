@@ -14,13 +14,14 @@
                             <AIcon type="FileSearchOutlined"></AIcon>
                         </template> </a-button></span
             ></template>
-            <template v-if="column.dataIndex === 'sourceId'"
-                >设备ID：<a-button
-                    type="link"
-                    @click="() => gotoDevice(text)"
-                    >{{ text }}</a-button
-                ></template
-            >
+            <template v-if="column.dataIndex === 'sourceId'">
+                <Ellipsis>
+                    设备ID：
+                    <span class="deviceId" @click="() => gotoDevice(text)">{{
+                        text
+                    }}</span></Ellipsis
+                >
+            </template>
             <template
                 v-if="
                     column.dataIndex === 'triggerDesc' ||
@@ -143,5 +144,9 @@ onMounted(() => {
         right: 0;
         top: 10px;
     }
+}
+.deviceId {
+    cursor: pointer;
+    color:#4096FF;
 }
 </style>

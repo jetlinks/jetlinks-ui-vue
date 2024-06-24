@@ -46,6 +46,8 @@ BackMap.set('mqtt-client-gateway', getImage('/access/mqtt-broke.png'));
 BackMap.set('edge-child-device', getImage('/access/child-device.png'));
 BackMap.set('official-edge-gateway', getImage('/access/edge.png'));
 BackMap.set('collector-gateway', getImage('/access/collector-gateway.png'));
+BackMap.set('onvif',getImage('/access/onvif.png'));
+BackMap.set('media-plugin',getImage('/access/media-plugin.png'))
 
 const descriptionList = {
     'udp-device-gateway':

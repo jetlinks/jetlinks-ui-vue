@@ -68,7 +68,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import locale from '@fullcalendar/core/locales/zh-cn';
 import { onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
-import { queryEvents, getTagsColor, saveEvents } from '@/api/system/calendar';
+import { queryEvents, saveEvents } from '@/api/system/calendar';
 import { cloneDeep, flatten } from 'lodash-es';
 import { defineExpose } from 'vue';
 import { inject } from 'vue';
@@ -206,7 +206,9 @@ const handleViewDidMount = async (arg) => {
         return;
     }
     queryEndDate.value.push(endDate);
-    await system.getTagsColor();
+    if (!calendarTagColor) {
+        await system.getTagsColor();
+    }
     queryEventsData(startDate, endDate, true);
 };
 // 事件是否发生变化
@@ -269,7 +271,8 @@ const saveCalendar = async () => {
     const res = await saveEvents(submitData);
     if (res.success) {
         onlyMessage('操作成功');
-        initialData.value = cloneDeep(eventsData.value);
+        // initialData.value = cloneDeep(eventsData.value);
+        refresh();
     }
 };
 //获取两个时间段之间的所有日期
@@ -363,7 +366,7 @@ const calendarOptions = {
     unselectAuto: false,
     locale: locale,
     droppable: true,
-    height: '720px',
+    height: props.preview ? '600px' : '720px',
     // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,
@@ -375,7 +378,7 @@ const calendarOptions = {
 //     handleViewDidMount(calendarApi.value);
 // };
 //对比函数(判断出日期相等但是标签id不同的事件和日期事件数量少于5的)
-const compare = (effectData, eventsData,effectDates) => {
+const compare = (effectData, eventsData, effectDates) => {
     //获取新增的事件
     const addEvents = effectData.filter((i) => {
         const equality = eventsData.find((item) => {
@@ -409,7 +412,10 @@ const compare = (effectData, eventsData,effectDates) => {
 //快速作用
 const rapidAction = async (effectDays) => {
     const dates = getDatesBetween(choiceStart.value, choiceEnd.value);
-    const effectDates = getDatesBetween(choiceEnd.value,choiceEnd.value.add(effectDays,'day'))
+    const effectDates = getDatesBetween(
+        choiceEnd.value,
+        choiceEnd.value.add(effectDays, 'day'),
+    );
     //获取所选日期中所有的标签事件组成二维数组
     const selectData = dates.map((i) => {
         return eventsData.value.filter((item) => {
@@ -421,14 +427,22 @@ const rapidAction = async (effectDays) => {
     //循环数组添加日期和标签时间等数据
     for (let i = 0; i < effectData.length; i++) {
         effectData[i] = cloneDeep(selectData[i % selectData.length]);
-        effectData[i]?.forEach((item) => {
-            item.date = dayjs(item.date)
-                .add(
-                    selectData.length * Math.ceil((i + 1) / selectData.length),
-                    'day',
-                )
-                .format('YYYY-MM-DD');
-        });
+        if (effectData[i].length) {
+            effectData[i].forEach((item) => {
+                item.date = dayjs(item.date)
+                    .add(
+                        selectData.length *
+                            Math.ceil((i + 1) / selectData.length),
+                        'day',
+                    )
+                    .format('YYYY-MM-DD');
+            });
+        } else {
+            eventsData.value = eventsData.value.filter((item) => {
+                console.log(effectData[i])
+                return item.date !== effectDates[i];
+            });
+        }
     }
     //二维数组扁平成一维数组
     const effectDataArr = flatten(effectData);
@@ -440,9 +454,9 @@ const rapidAction = async (effectDays) => {
             .format('YYYY-MM-DD'),
         false,
     );
-    const imparity = compare(effectDataArr, eventsData.value,effectDates);
+    const imparity = compare(effectDataArr, eventsData.value, effectDates);
     eventsData.value = [...eventsData.value, ...imparity];
-    const addEvents = imparity.map((i) => {
+    initialEventData.value = eventsData.value.map((i) => {
         return {
             id: i.id,
             title: i.name,
@@ -450,8 +464,8 @@ const rapidAction = async (effectDays) => {
             backgroundColor: calendarTagColor.get(i.id) || '#000000',
         };
     });
-    //在已有事件基础上添加事件展示
-    calendarApi.value.addEventSource(addEvents);
+    calendarApi.value.removeAllEvents();
+    calendarApi.value.addEventSource(initialEventData.value);
     onlyMessage('操作成功');
     emit('resetRapid');
 };
@@ -535,7 +549,7 @@ watch(
         deep: true,
     },
 );
-onMounted(() => {
+setTimeout(() => {
     showCalendar.value = true;
     nextTick(() => {
         calendarApi.value = calendarEl.value?.getApi();
@@ -553,7 +567,7 @@ onMounted(() => {
             }
         });
     });
-});
+}, 300);
 </script>
 <style lang="less" scoped>
 :deep(.fc-header-toolbar) {
