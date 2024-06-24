@@ -77,6 +77,9 @@ const contextMenu = (e: Event, data: any, context: any) => {
             curInstance = null
             render(null, container)
         },
+        cleanCopy: () => {
+            copyValue = null
+        }
     }
     curInstance = instance
 
