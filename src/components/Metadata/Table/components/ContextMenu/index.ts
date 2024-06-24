@@ -1,6 +1,7 @@
 import MenuContext from './menu.vue'
 import { h, render } from 'vue'
 import {handlePureRecord} from "@/components/Metadata/Table/utils";
+import {omit} from "lodash-es";
 
 let curInstance: Record<string, any> | null = null
 let seed = 1
@@ -25,7 +26,11 @@ const contextMenu = (e: Event, data: any, context: any) => {
             }
         },
         onClick: (type: string) => {
-            context.click(type, data, handlePureRecord(copyValue))
+            const copyRecord = handlePureRecord(copyValue)
+            if (copyRecord.expands) {
+                copyRecord.expands = omit(copyRecord.expands, ['isProduct'])
+            }
+            context.click(type, data, handlePureRecord(copyRecord))
         },
         onCopy: (data: any) => {
             copyValue = data
