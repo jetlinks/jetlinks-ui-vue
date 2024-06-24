@@ -21,9 +21,9 @@
             >
                 <j-row type="flex">
                     <j-col flex="180px">
-                        <j-form-item name="photoUrl">
+                        <j-form-item name="pictureUrl">
                             <j-pro-upload
-                                v-model="form.photoUrl"
+                                v-model="form.pictureUrl"
                                 :accept="
                                     imageTypes && imageTypes.length
                                         ? imageTypes.toString()
@@ -53,8 +53,8 @@
                         name="category"
                         v-model:value="form.category"
                     >
-                        <j-radio :value="0">燃油车</j-radio>
-                        <j-radio :value="1">电车</j-radio>
+                        <j-radio value="0">燃油车</j-radio>
+                        <j-radio value="1">电车</j-radio>
                     </j-radio-group>
                 </j-form-item>
                 <j-form-item label="车辆类型" name="vehicleTypeEnum">
@@ -135,20 +135,6 @@
                             >选择设备</j-button
                         >
                     </div>
-                    <!-- <j-input
-                        v-model:value="form.deviceIds"
-                        placeholder="请选择关联设备"
-                    >
-                        <template #addonAfter>
-                            <j-button
-                                class="input-but"
-                                @click="funSelectDevices"
-                                type="primary"
-                                block
-                                >选择设备</j-button
-                            >
-                        </template>
-                    </j-input> -->
                 </j-form-item>
                 <j-form-item label="关联零部件" name="spareParts">
                     <div class="j-select-but">
@@ -169,16 +155,6 @@
                             >选择零部件</j-button
                         >
                     </div>
-                    <!-- <j-input
-                        v-model:value="form.spareParts"
-                        placeholder="请选择关联零部件"
-                    >
-                        <template #addonAfter>
-                            <j-button class="input-but" type="primary" block
-                                >选择零部件</j-button
-                            >
-                        </template>
-                    </j-input> -->
                 </j-form-item>
                 <j-form-item label="保修到期" name="warrantyDate">
                     <j-date-picker
@@ -228,10 +204,15 @@
 </template>
 
 <script lang="ts" setup>
+import {
+    getDepartmentList,
+    addVehicle,
+    saveVehicleDevices,
+    queryNoPagingPostDevice,
+} from '@/api/vehicle/vehicleManagement';
 import Modal from './Modal/index.vue';
 import { getImage } from '@/utils/comm';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
-import { getDepartmentList, addVehicle } from '@/api/vehicle/vehicleManagement';
 import dayjs, { Dayjs } from 'dayjs';
 
 const deviceIdsOptions = ref<any>([]);
@@ -333,12 +314,11 @@ const funSelectDevices = () => {
 
 //更新关联设备
 const updateDevices = (data: any) => {
-    console.log('deviceData', data);
     form.value.deviceIds = data || [];
 };
 
 /**
- * 查询产品分类
+ * 查询组织
  */
 const queryOrgTree = async () => {
     getDepartmentList({ paging: false }).then((resp: any) => {
@@ -366,14 +346,6 @@ const valueChange = (value: string, label: string) => {
     form.value.orgId = value;
 };
 
-const deviceIdsOption = () => {
-    deviceIdsOptions.value = [
-        { value: '1233', label: '设备1' },
-        { value: '2345', label: '设备2' },
-        { value: '3456', label: '设备3' },
-    ];
-};
-
 //时间格式转为时间戳
 const setTimestamp = (date: any) => {
     const dayjsDate = dayjs(date);
@@ -386,16 +358,17 @@ const reset = () => {
     form.value = {
         id: '',
         factoryNumber: '', //出厂编号
-        photoUrl: getImage('/device/instance/device-card.png'),
+        pictureUrl: getImage('/device/instance/device-card.png'),
         simpleName: '', //车辆简称
         vehicleNumber: '', //车牌号
         engineNumber: '', //发动机编号
-        category: 0, //所属大类 0-燃油车 1-电车
+        category: '0', //所属大类 0-燃油车 1-电车
         modelNumber: '', //型号
         orgId: '', //所属组织id
         orgName: '', //所属组织
         vehicleDate: setTimestamp(new Date()), //出厂日期
         deviceId: '', //主设备id
+        devices: [],
         deviceIds: [], //关联设备
         spareParts: [], //关联零部件
         vehicleStatus: 0, //车辆状态0-正常 1-停用 2-维修
@@ -413,20 +386,16 @@ const reset = () => {
 const show = (data: any) => {
     console.log('data', data);
     if (props.isAdd === 2) {
-        form.value = data;
-        deviceIdsOptions.value = [
-            { value: '1234', label: '设备1' },
-            { value: '2345', label: '设备2' },
-            { value: '3456', label: '设备3' },
-        ];
+        form.value = {
+            ...data,
+            deviceIds: data.devices?.map((item: any) => {
+                return item.id;
+            }),
+        };
         idDisabled.value = true;
+        console.log('form', form.value);
     } else if (props.isAdd === 1) {
         reset();
-        deviceIdsOptions.value = [
-            { value: '1234', label: '设备1' },
-            { value: '2345', label: '设备2' },
-            { value: '3456', label: '设备3' },
-        ];
         idDisabled.value = false;
     }
     visible.value = true;
@@ -437,6 +406,7 @@ const show = (data: any) => {
  */
 const close = () => {
     visible.value = false;
+    emit('success');
 };
 
 /**
@@ -449,24 +419,41 @@ const submitData = () => {
             // 新增
             loading.value = true;
             if (props.isAdd === 1) {
-                const { photoUrl, ...params } = form.value;
-                console.log('params', params);
-                addVehicle(params)
+                const { deviceIds, ...params } = form.value;
+                console.log('params', { vehicleEntity: params, deviceIds });
+                saveVehicleDevices({ vehicleEntity: params, deviceIds })
                     .then((res: any) => {
-                        if (res.code === 200) {
+                        if (res.status === 200) {
                             onlyMessage('添加成功！');
                         }
                         loading.value = false;
+                        visible.value = false;
+                        emit('success');
                     })
                     .catch((err) => {
                         console.log(err);
-                        onlyMessage('添加成功！', 'error');
+                        onlyMessage('添加失败！', 'error');
+                        loading.value = false;
                     });
                 //新增
             } else if (props.isAdd === 2) {
                 console.log('params update', form.value);
+                const { deviceIds, ...params } = form.value;
+                saveVehicleDevices({ vehicleEntity: params, deviceIds })
+                    .then((res: any) => {
+                        if (res.status === 200) {
+                            onlyMessage('修改成功！');
+                        }
+                        loading.value = false;
+                        visible.value = false;
+                        emit('success');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        onlyMessage('修改失败！', 'error');
+                        loading.value = false;
+                    });
                 //更新
-                loading.value = false;
             }
         })
         .catch((err: any) => {});
@@ -478,6 +465,22 @@ defineExpose({
 
 onMounted(() => {
     queryOrgTree();
+    const setData = {
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+    };
+    queryNoPagingPostDevice(setData).then((resp: any) => {
+        if (resp.status === 200) {
+            if (resp.result.length > 0) {
+                deviceIdsOptions.value = resp.result.map((item: any) => {
+                    return {
+                        value: item.id,
+                        label: item.name,
+                    };
+                });
+            }
+        }
+    });
 });
 </script>
 <style scoped lang="less">

@@ -40,8 +40,8 @@
                             : ''
                     }}
                 </template>
-                <template #type="slotProps">
-                    {{ slotProps.type.text }}
+                <template #state="slotProps">
+                    {{ slotProps.state.text }}
                 </template>
                 <template #paginationRender>
                     <a-pagination
@@ -61,24 +61,21 @@
     </j-modal>
 </template>
 <script lang="ts" setup>
-import {
-    deviceLogsExport,
-    queryDeviceLogs,
-} from '@/api/data-report/deviceMessages';
+import { queryDevices } from '@/api/vehicle/vehicleManagement';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
-import { Modal, Textarea } from 'jetlinks-ui-components';
-import { queryLogsType } from '@/api/device/instance';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+const sbVisible = ref<boolean>(false);
 
 const {
     selectedRowKeys,
     handleRowSelected,
     handleSelectAll,
     handleClearSelected,
+    handleDefaultSelected,
 } = useSelectableTable();
 
 const type = ref<string>('xlsx');
@@ -97,7 +94,7 @@ const pageSize = ref<number>(5);
 const selectIds = ref<Array<number | string>>([]);
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
-    const resp: any = await queryDeviceLogs(_params);
+    const resp: any = await queryDevices(_params);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total;
         currentPage.value = resp.result.pageIndex + 1;
@@ -137,8 +134,8 @@ const handleOnChange = (num: number, pageSize: number) => {
 const columns = [
     {
         title: 'ID',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'id',
+        key: 'id',
         width: 180,
         ellipsis: true,
         search: {
@@ -147,8 +144,8 @@ const columns = [
     },
     {
         title: '设备名称',
-        dataIndex: 'deviceName',
-        key: 'deviceName',
+        dataIndex: 'name',
+        key: 'name',
         scopedSlots: true,
         search: {
             type: 'string',
@@ -187,27 +184,29 @@ const handleSearch = (_params: any) => {
     handleSearchByDate(_params, ['createTime']);
     globParams.value = _params;
 };
-const sbVisible = ref<boolean>(false);
 
 /**
  * 显示弹窗
  */
 const show = (data: any) => {
-    console.log('data', data);
     sbVisible.value = true;
+    handleDefaultSelected(data);
 };
 
 const emit = defineEmits(['success']);
 
 const sbSubmit = () => {
-    emit('success', ['1234', '2345']);
+    const devices = toRaw(selectedRowKeys.value);
+    emit('success', devices);
+    handleDefaultSelected([]);
     sbVisible.value = false;
 };
 /**
  * 关闭弹窗
  */
 const sbClose = () => {
-    emit('success', []);
+    // emit('success', []);
+    handleDefaultSelected([]);
     sbVisible.value = false;
 };
 

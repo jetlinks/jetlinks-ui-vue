@@ -78,7 +78,7 @@
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
-                                    {{ slotProps.modelNumber }}
+                                    {{ slotProps.simpleName }}
                                 </span></Ellipsis
                             >
                             <div>
@@ -110,11 +110,13 @@
                                     >
                                 </j-row>
                                 <j-row>
-                                    <j-col :span="12"><div>说明:</div></j-col>
+                                    <j-col :span="12"><div>子设备:</div></j-col>
                                     <j-col :span="12"
                                         ><Ellipsis
                                             ><div>
-                                                {{ slotProps?.describe }}
+                                                {{
+                                                    slotProps?.devices.length
+                                                }}个
                                             </div></Ellipsis
                                         ></j-col
                                     >
@@ -193,6 +195,9 @@
                         }"
                     />
                 </template>
+                <template #devices="slotProps">
+                    {{ slotProps.devices.length }}个
+                </template>
                 <template #vehicleTypeEnum="slotProps">
                     <Ellipsis>{{ slotProps.vehicleTypeEnum.text }}</Ellipsis>
                 </template>
@@ -243,8 +248,8 @@ const query = reactive({
     columns: [
         {
             title: '车辆简称',
-            dataIndex: 'modelNumber',
-            key: 'modelNumber',
+            dataIndex: 'simpleName',
+            key: 'simpleName',
             ellipsis: true,
             search: {
                 type: 'string',
@@ -334,6 +339,13 @@ const query = reactive({
             },
         },
         {
+            title: '子设备',
+            key: 'devices',
+            dataIndex: 'devices',
+            scopedSlots: true,
+            ellipsis: true,
+        },
+        {
             title: '说明',
             key: 'describe',
             dataIndex: 'describe',
@@ -374,7 +386,7 @@ const add = () => {
  * 查看
  */
 const handleView = (data: any) => {
-    console.log('data',data)
+    console.log('data', data);
     if (isCheck.value) {
         if (_selectedRowKeys.value.includes(data.id)) {
             const _index = _selectedRowKeys.value.findIndex(
@@ -511,7 +523,7 @@ const handleSearch = (e: any) => {
 const queryData = (params: Record<string, any>) =>
     new Promise((resolve) => {
         queryVehicleList({
-            pageIndex: params.pageIndex + 1,
+            pageIndex: params.pageIndex,
             pageSize: params.pageSize,
             sorts: params.sorts,
             terms: params.terms,
