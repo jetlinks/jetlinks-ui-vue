@@ -383,9 +383,10 @@ const onFinish = async () => {
     }
   }
 
-  const data = Object.assign(form, passwordConfig)
-
-  loginFn(data)
+  loginFn({
+    ...form,
+    ...passwordConfig
+  })
 };
 
 const removeTimer = () => {
