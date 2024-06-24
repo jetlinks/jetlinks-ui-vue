@@ -410,15 +410,16 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
       cloneRecord.id = `copy_${cloneRecord.id}`
       if (record.id) {
-        Modal.confirm({
-          title: '当前行存在数据',
-          onOk() {
-            dataSource.value.splice(_index, 1, cloneRecord)
-          },
-          onCancel() {
-            console.log('Cancel');
-          },
-        })
+        dataSource.value.splice(_index + 1, 0, cloneRecord)
+        // Modal.confirm({
+        //   title: '当前行存在数据',
+        //   onOk() {
+        //     dataSource.value.splice(_index, 1, cloneRecord)
+        //   },
+        //   onCancel() {
+        //     console.log('Cancel');
+        //   },
+        // })
       } else {
         dataSource.value.splice(_index, 1, cloneRecord)
       }
