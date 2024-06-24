@@ -11,6 +11,7 @@
     >
         <div class="modal-all">
             <pro-search
+                type="simple"
                 :columns="columns"
                 target="notice-config"
                 @search="handleSearch"
@@ -41,7 +42,15 @@
                     }}
                 </template>
                 <template #state="slotProps">
-                    {{ slotProps.state.text }}
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                            notActive: 'warning',
+                        }"
+                    />
                 </template>
                 <template #paginationRender>
                     <a-pagination
@@ -62,10 +71,9 @@
 </template>
 <script lang="ts" setup>
 import { queryDevices } from '@/api/vehicle/vehicleManagement';
-import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { onlyMessage } from '@/utils/comm';
-import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
 const sbVisible = ref<boolean>(false);
@@ -170,7 +178,12 @@ const columns = [
         scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [
+                { label: '禁用', value: 'notActive' },
+                { label: '离线', value: 'offline' },
+                { label: '在线', value: 'online' },
+            ],
         },
     },
 ];

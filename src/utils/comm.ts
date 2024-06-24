@@ -221,8 +221,12 @@ export const getBase64 = (img: File, callback: (base64Url: string) => void) => {
  * @param url
  */
 export const getServerImgPath = (url: string) => {
-    const resArr = url.split('/');
-    const index = resArr.findIndex((item) => item === 'images');
-    const target = resArr.splice(index + 1).join('/');
-    return getImage(`/${target}`);
+    if (url) {
+        const resArr = url.split('/');
+        const index = resArr.findIndex((item) => item === 'images');
+        const target = resArr.splice(index + 1).join('/');
+        return getImage(`/${target}`);
+    } else {
+        getImage(`/`);
+    }
 };

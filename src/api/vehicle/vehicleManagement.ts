@@ -39,3 +39,19 @@ export const queryDevices = (data?: Record<string, any>) =>
  */
 export const queryNoPagingPostDevice = (data?: Record<string, any>) =>
     server.post('/device-instance/_query/no-paging', data);
+
+/**
+ * 更新车辆状态
+ * @param params
+ *
+ */
+export const updateVehicleStatus = (params: any) =>
+    server.post(`/vehicle/save/device`, params);
+///vehicle/{id}
+
+/**
+ * 删除车辆
+ * @param id
+ *
+ */
+export const deleteVehicle = (id: any) => server.remove(`/vehicle/` + id);

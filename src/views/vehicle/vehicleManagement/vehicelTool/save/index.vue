@@ -406,7 +406,6 @@ const show = (data: any) => {
  */
 const close = () => {
     visible.value = false;
-    emit('success');
 };
 
 /**
