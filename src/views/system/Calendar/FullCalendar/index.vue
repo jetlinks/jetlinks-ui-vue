@@ -68,7 +68,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import locale from '@fullcalendar/core/locales/zh-cn';
 import { onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
-import { queryEvents , saveEvents } from '@/api/system/calendar';
+import { queryEvents, saveEvents } from '@/api/system/calendar';
 import { cloneDeep, flatten } from 'lodash-es';
 import { defineExpose } from 'vue';
 import { inject } from 'vue';
@@ -206,7 +206,7 @@ const handleViewDidMount = async (arg) => {
         return;
     }
     queryEndDate.value.push(endDate);
-    if(!calendarTagColor){
+    if (!calendarTagColor) {
         await system.getTagsColor();
     }
     queryEventsData(startDate, endDate, true);
@@ -272,7 +272,7 @@ const saveCalendar = async () => {
     if (res.success) {
         onlyMessage('操作成功');
         // initialData.value = cloneDeep(eventsData.value);
-        refresh()
+        refresh();
     }
 };
 //获取两个时间段之间的所有日期
@@ -427,14 +427,22 @@ const rapidAction = async (effectDays) => {
     //循环数组添加日期和标签时间等数据
     for (let i = 0; i < effectData.length; i++) {
         effectData[i] = cloneDeep(selectData[i % selectData.length]);
-        effectData[i]?.forEach((item) => {
-            item.date = dayjs(item.date)
-                .add(
-                    selectData.length * Math.ceil((i + 1) / selectData.length),
-                    'day',
-                )
-                .format('YYYY-MM-DD');
-        });
+        if (effectData[i].length) {
+            effectData[i].forEach((item) => {
+                item.date = dayjs(item.date)
+                    .add(
+                        selectData.length *
+                            Math.ceil((i + 1) / selectData.length),
+                        'day',
+                    )
+                    .format('YYYY-MM-DD');
+            });
+        } else {
+            eventsData.value = eventsData.value.filter((item) => {
+                console.log(effectData[i])
+                return item.date !== effectDates[i];
+            });
+        }
     }
     //二维数组扁平成一维数组
     const effectDataArr = flatten(effectData);
@@ -448,7 +456,7 @@ const rapidAction = async (effectDays) => {
     );
     const imparity = compare(effectDataArr, eventsData.value, effectDates);
     eventsData.value = [...eventsData.value, ...imparity];
-    const addEvents = imparity.map((i) => {
+    initialEventData.value = eventsData.value.map((i) => {
         return {
             id: i.id,
             title: i.name,
@@ -456,8 +464,8 @@ const rapidAction = async (effectDays) => {
             backgroundColor: calendarTagColor.get(i.id) || '#000000',
         };
     });
-    //在已有事件基础上添加事件展示
-    calendarApi.value.addEventSource(addEvents);
+    calendarApi.value.removeAllEvents();
+    calendarApi.value.addEventSource(initialEventData.value);
     onlyMessage('操作成功');
     emit('resetRapid');
 };
@@ -559,7 +567,7 @@ setTimeout(() => {
             }
         });
     });
-},300);
+}, 300);
 </script>
 <style lang="less" scoped>
 :deep(.fc-header-toolbar) {
