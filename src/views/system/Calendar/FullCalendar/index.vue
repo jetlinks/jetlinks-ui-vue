@@ -68,7 +68,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import locale from '@fullcalendar/core/locales/zh-cn';
 import { onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
-import { queryEvents, getTagsColor, saveEvents } from '@/api/system/calendar';
+import { queryEvents , saveEvents } from '@/api/system/calendar';
 import { cloneDeep, flatten } from 'lodash-es';
 import { defineExpose } from 'vue';
 import { inject } from 'vue';
@@ -206,7 +206,9 @@ const handleViewDidMount = async (arg) => {
         return;
     }
     queryEndDate.value.push(endDate);
-    await system.getTagsColor();
+    if(!calendarTagColor){
+        await system.getTagsColor();
+    }
     queryEventsData(startDate, endDate, true);
 };
 // 事件是否发生变化
@@ -269,7 +271,8 @@ const saveCalendar = async () => {
     const res = await saveEvents(submitData);
     if (res.success) {
         onlyMessage('操作成功');
-        initialData.value = cloneDeep(eventsData.value);
+        // initialData.value = cloneDeep(eventsData.value);
+        refresh()
     }
 };
 //获取两个时间段之间的所有日期
@@ -375,7 +378,7 @@ const calendarOptions = {
 //     handleViewDidMount(calendarApi.value);
 // };
 //对比函数(判断出日期相等但是标签id不同的事件和日期事件数量少于5的)
-const compare = (effectData, eventsData,effectDates) => {
+const compare = (effectData, eventsData, effectDates) => {
     //获取新增的事件
     const addEvents = effectData.filter((i) => {
         const equality = eventsData.find((item) => {
@@ -409,7 +412,10 @@ const compare = (effectData, eventsData,effectDates) => {
 //快速作用
 const rapidAction = async (effectDays) => {
     const dates = getDatesBetween(choiceStart.value, choiceEnd.value);
-    const effectDates = getDatesBetween(choiceEnd.value,choiceEnd.value.add(effectDays,'day'))
+    const effectDates = getDatesBetween(
+        choiceEnd.value,
+        choiceEnd.value.add(effectDays, 'day'),
+    );
     //获取所选日期中所有的标签事件组成二维数组
     const selectData = dates.map((i) => {
         return eventsData.value.filter((item) => {
@@ -440,7 +446,7 @@ const rapidAction = async (effectDays) => {
             .format('YYYY-MM-DD'),
         false,
     );
-    const imparity = compare(effectDataArr, eventsData.value,effectDates);
+    const imparity = compare(effectDataArr, eventsData.value, effectDates);
     eventsData.value = [...eventsData.value, ...imparity];
     const addEvents = imparity.map((i) => {
         return {
@@ -535,7 +541,7 @@ watch(
         deep: true,
     },
 );
-onMounted(() => {
+setTimeout(() => {
     showCalendar.value = true;
     nextTick(() => {
         calendarApi.value = calendarEl.value?.getApi();
