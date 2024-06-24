@@ -13,10 +13,10 @@
                     :columns="columns"
                     :request="list"
                     :defaultParams="{
-                        sorts: [{ name: 'createTime', order: 'desc' }]
+                        sorts: [{ name: 'createTime', order: 'desc' }],
                     }"
-                    gridColumn="2"
-                    :gridColumns="[1, 2]"
+                    gridColumn="3"
+                    :gridColumns="[1, 2, 3]"
                     :params="params"
                 >
                     <template #headerTitle>
@@ -54,11 +54,7 @@
                             </template>
                             <template #content>
                                 <div class="card-item-content">
-                                    <Ellipsis
-                                        style="
-                                            width: calc(100% - 100px);
-                                        "
-                                    >
+                                    <Ellipsis style="width: calc(100% - 100px)">
                                         <span class="card-title">
                                             {{ slotProps.name }}
                                         </span>
@@ -69,16 +65,19 @@
                                             v-if="slotProps.channelInfo"
                                             class="card-item-content-text"
                                         >
-                                        <Ellipsis
-                                        style="
-                                            width: calc(100% - 100px);
-                                        "
-                                    >
-                                            <div
-                                                class="card-item-content-text-title"
+                                            <Ellipsis
+                                                style="
+                                                    width: calc(100% - 100px);
+                                                "
                                             >
-                                                {{ slotProps.channelInfo.name }}
-                                            </div>
+                                                <div
+                                                    class="card-item-content-text-title"
+                                                >
+                                                    {{
+                                                        slotProps.channelInfo
+                                                            .name
+                                                    }}
+                                                </div>
                                             </Ellipsis>
                                             <Ellipsis
                                                 style="
@@ -116,9 +115,7 @@
                                                 协议
                                             </div>
                                             <Ellipsis
-                                                style="
-                                                    width: calc(100% - 10px);
-                                                "
+                                                style="width: calc(100% - 10px)"
                                                 :lineClamp="2"
                                             >
                                                 <div>
@@ -198,7 +195,7 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import { accessConfigTypeFilter } from '@/utils/setting';
-import {  cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -226,12 +223,14 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            options: async() =>{
+            options: async () => {
                 const res: any = await getProviders();
-               const providersOptions = accessConfigTypeFilter(res.result || []);
-                return providersOptions.filter((i:any)=>{
-                    return i.id !== 'modbus-tcp' && i.id !== 'opc-ua'
-                })
+                const providersOptions = accessConfigTypeFilter(
+                    res.result || [],
+                );
+                return providersOptions.filter((i: any) => {
+                    return i.id !== 'modbus-tcp' && i.id !== 'opc-ua';
+                });
             },
         },
     },
@@ -372,12 +371,15 @@ const handleSearch = (e: any) => {
     if (newTerms.terms?.length) {
         newTerms.terms.forEach((a: any) => {
             a.terms = a.terms.map((b: any) => {
-                if(b.column === 'provider'){
-                    if(b.value === 'collector-gateway'){
+                if (b.column === 'provider') {
+                    if (b.value === 'collector-gateway') {
                         b.termType = b.termType === 'eq' ? 'in' : 'nin';
-                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
-                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
-                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                        b.value = ['opc-ua', 'modbus-tcp', 'collector-gateway'];
+                    } else if (
+                        Array.isArray(b.value) &&
+                        b.value.includes('collector-gateway')
+                    ) {
+                        b.value = ['opc-ua', 'modbus-tcp', ...b.value];
                     }
                 }
                 return b;

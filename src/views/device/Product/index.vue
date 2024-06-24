@@ -62,7 +62,7 @@
                             <slot name="img">
                                 <img
                                     :src="
-                                        slotProps.photoUrl ||
+                                        getServerImgPath(slotProps.photoUrl) ||
                                         getImage('/device-product.png')
                                     "
                                     class="productImg"
@@ -179,7 +179,7 @@
 <script setup lang="ts">
 import server from '@/utils/request';
 import type { ActionsType } from '@/components/Table/index.vue';
-import { getImage, onlyMessage } from '@/utils/comm';
+import { getImage, getServerImgPath, onlyMessage } from '@/utils/comm';
 import {
     getProviders,
     category,
@@ -473,13 +473,16 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
-                                    return (
-                                        i.id !== 'modbus-tcp' &&
-                                        i.id !== 'opc-ua'
-                                    );
-                                }));
-                            
+                            resolve(
+                                accessConfigTypeFilter(data).filter(
+                                    (i: any) => {
+                                        return (
+                                            i.id !== 'modbus-tcp' &&
+                                            i.id !== 'opc-ua'
+                                        );
+                                    },
+                                ),
+                            );
                         });
                     });
                 },
@@ -579,7 +582,7 @@ const query = reactive({
             search: {
                 first: true,
                 type: 'treeSelect',
-                termOptions:['eq'],
+                termOptions: ['eq'],
                 options: async () => {
                     return new Promise((res) => {
                         queryOrgThree({ paging: false }).then((resp: any) => {
@@ -643,12 +646,15 @@ const handleSearch = (e: any) => {
                         },
                     };
                 }
-                if(b.column === 'accessProvider'){
-                    if(b.value === 'collector-gateway'){
+                if (b.column === 'accessProvider') {
+                    if (b.value === 'collector-gateway') {
                         b.termType = b.termType === 'eq' ? 'in' : 'nin';
-                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
-                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
-                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                        b.value = ['opc-ua', 'modbus-tcp', 'collector-gateway'];
+                    } else if (
+                        Array.isArray(b.value) &&
+                        b.value.includes('collector-gateway')
+                    ) {
+                        b.value = ['opc-ua', 'modbus-tcp', ...b.value];
                     }
                 }
                 return b;

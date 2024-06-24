@@ -372,7 +372,7 @@ const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
                 type: 'line',
                 smooth: true, // 是否平滑曲线
                 symbolSize: 0, // 拐点大小
-                color: '#F29B55',
+                color: '#FF9100',
                 areaStyle: {
                     color: {
                         type: 'linear',
@@ -383,7 +383,7 @@ const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
                         colorStops: [
                             {
                                 offset: 0,
-                                color: '#FBBB87', // 100% 处的颜色
+                                color: '#FF9100', // 100% 处的颜色
                             },
                             {
                                 offset: 1,
@@ -463,7 +463,7 @@ const setDevMesChartOption = (
                 type: 'line',
                 smooth: true,
                 symbolSize: 0, // 拐点大小
-                color: '#ADC6FF',
+                color: '#4DC0F4',
                 areaStyle: {
                     color: {
                         type: 'linear',
@@ -474,7 +474,7 @@ const setDevMesChartOption = (
                         colorStops: [
                             {
                                 offset: 0,
-                                color: '#ADC6FF', // 100% 处的颜色
+                                color: '#4DC0F4', // 100% 处的颜色
                             },
                             {
                                 offset: 1,

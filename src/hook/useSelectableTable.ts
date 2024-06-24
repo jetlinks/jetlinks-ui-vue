@@ -63,8 +63,19 @@ export function useSelectableTable() {
         idSet.reset();
     };
 
+    /**
+     * @function handleDefaultSelected 设置默认选中的数据项
+     * @param idList
+     */
+    const handleDefaultSelected = (idList: (string | number)[]) => {
+        idList.forEach((id: string | number) => {
+            idSet.setItem(id);
+        });
+    };
+
     return {
         selectedRowKeys,
+        handleDefaultSelected,
         handleRowSelected,
         handleSelectAll,
         handleClearSelected,
