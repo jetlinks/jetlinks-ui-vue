@@ -2,9 +2,7 @@
     <div class="device-count-container">
         <h5 class="title">
             <span>基础统计</span>
-            <a style="font-size: 12px;" @click="jumpPage">
-                详情
-            </a>
+            <a style="font-size: 12px" @click="jumpPage"> 详情 </a>
         </h5>
         <div class="box-list">
             <div class="box-item">
@@ -74,8 +72,8 @@ const jumpPage = () => {
             left: 0;
             width: 8px;
             height: 8px;
-            background-color: #1d39c4;
-            border: 1px solid #b4c0da;
+            background-color: var(--boot-card-icon-primary);
+            border: 1px solid var(--boot-card-icon-border);
             transform: translateY(-50%);
             content: ' ';
         }

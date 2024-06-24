@@ -88,8 +88,8 @@ import TopCard from '@/views/device/DashBoard/components/TopCard.vue';
 import { useMenuStore } from '@/store/menu';
 import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
-import dayjs from 'dayjs'
-import { isNoCommunity } from '@/utils/utils'
+import dayjs from 'dayjs';
+import { isNoCommunity } from '@/utils/utils';
 
 const system = useSystem();
 const AmapKey = system.$state.configInfo.amap?.apiKey;
@@ -151,35 +151,35 @@ const menuStore = useMenuStore();
  */
 const getProductData = () => {
     // if (menuStore.hasMenu('device/Product')) {
-        productCount().then((res) => {
-            if (res.status == 200) {
-                productTotal.value = res.result;
-            }
-        });
-        productCount({
-            terms: [
-                {
-                    column: 'state',
-                    value: '1',
-                },
-            ],
-        }).then((res) => {
-            if (res.status == 200) {
-                productFooter.value[0].value = res.result;
-            }
-        });
-        productCount({
-            terms: [
-                {
-                    column: 'state',
-                    value: '0',
-                },
-            ],
-        }).then((res) => {
-            if (res.status == 200) {
-                productFooter.value[1].value = res.result;
-            }
-        });
+    productCount().then((res) => {
+        if (res.status == 200) {
+            productTotal.value = res.result;
+        }
+    });
+    productCount({
+        terms: [
+            {
+                column: 'state',
+                value: '1',
+            },
+        ],
+    }).then((res) => {
+        if (res.status == 200) {
+            productFooter.value[0].value = res.result;
+        }
+    });
+    productCount({
+        terms: [
+            {
+                column: 'state',
+                value: '0',
+            },
+        ],
+    }).then((res) => {
+        if (res.status == 200) {
+            productFooter.value[1].value = res.result;
+        }
+    });
     // }
 };
 getProductData();
@@ -188,24 +188,22 @@ getProductData();
  */
 const getDeviceData = () => {
     // if (menuStore.hasMenu('device/Instance')) {
-        deviceCount().then((res) => {
-            if (res.status == 200) {
-                deviceTotal.value = res.result;
-            }
-        });
-        deviceCount(encodeQuery({ terms: { state: 'online' } })).then((res) => {
-            if (res.status == 200) {
-                deviceFooter.value[0].value = res.result;
-                deviceOnline.value = res.result;
-            }
-        });
-        deviceCount(encodeQuery({ terms: { state: 'offline' } })).then(
-            (res) => {
-                if (res.status == 200) {
-                    deviceFooter.value[1].value = res.result;
-                }
-            },
-        );
+    deviceCount().then((res) => {
+        if (res.status == 200) {
+            deviceTotal.value = res.result;
+        }
+    });
+    deviceCount(encodeQuery({ terms: { state: 'online' } })).then((res) => {
+        if (res.status == 200) {
+            deviceFooter.value[0].value = res.result;
+            deviceOnline.value = res.result;
+        }
+    });
+    deviceCount(encodeQuery({ terms: { state: 'offline' } })).then((res) => {
+        if (res.status == 200) {
+            deviceFooter.value[1].value = res.result;
+        }
+    });
     // }
 };
 getDeviceData();
@@ -213,7 +211,10 @@ getDeviceData();
  * 获取在线数量
  */
 const getOnline = () => {
-    const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const startTime = dayjs()
+        .subtract(0, 'days')
+        .startOf('day')
+        .format('YYYY-MM-DD HH:mm:ss');
     const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
@@ -241,10 +242,10 @@ const getOnline = () => {
             const x: string[] = [];
             const y: number[] = [];
             (res.result as any)?.forEach((item: any) => {
-              x.push(item.data.timeString)
-              y.push(item.data.value)
-            })
-            x.reverse()
+                x.push(item.data.timeString);
+                y.push(item.data.value);
+            });
+            x.reverse();
             const onlineYdata = y;
             onlineYdata.reverse();
             setOnlineChartOption(x, onlineYdata);
@@ -256,31 +257,37 @@ const getOnline = () => {
  * 昨日在线
  */
 const getYesterdayOnline = () => {
-  const startTime = dayjs().subtract(1, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const endTime = dayjs().subtract(1, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss');
+    const startTime = dayjs()
+        .subtract(1, 'days')
+        .startOf('day')
+        .format('YYYY-MM-DD HH:mm:ss');
+    const endTime = dayjs()
+        .subtract(1, 'days')
+        .endOf('day')
+        .format('YYYY-MM-DD HH:mm:ss');
 
-  dashboard([
-    {
-      dashboard: 'device',
-      object: 'session',
-      measurement: 'online',
-      dimension: 'agg',
-      group: 'aggOnline',
-      params: {
-        state: 'online',
-        limit: 24,
-        from: startTime,
-        to: endTime,
-        time: '1d',
-        format: 'yyyy-MM-dd HH:mm:ss',
-      },
-    },
-  ]).then((res) => {
-    if (res.status == 200) {
-      onlineFooter.value[0].value = res.result?.[0]?.data.value || 0
-    }
-  });
-}
+    dashboard([
+        {
+            dashboard: 'device',
+            object: 'session',
+            measurement: 'online',
+            dimension: 'agg',
+            group: 'aggOnline',
+            params: {
+                state: 'online',
+                limit: 24,
+                from: startTime,
+                to: endTime,
+                time: '1d',
+                format: 'yyyy-MM-dd HH:mm:ss',
+            },
+        },
+    ]).then((res) => {
+        if (res.status == 200) {
+            onlineFooter.value[0].value = res.result?.[0]?.data.value || 0;
+        }
+    });
+};
 
 const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
     onlineOptions.value = {
@@ -311,7 +318,7 @@ const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
                 smooth: true, // 是否平滑曲线
                 symbolSize: 0, // 拐点大小
                 showBackground: true,
-                color: '#D3ADF7',
+                color: '#00B87A',
                 areaStyle: {
                     color: {
                         type: 'linear',
@@ -322,7 +329,7 @@ const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
                         colorStops: [
                             {
                                 offset: 0,
-                                color: '#D3ADF7', // 100% 处的颜色
+                                color: '#00B87A', // 100% 处的颜色
                             },
                             {
                                 offset: 1,
@@ -365,7 +372,7 @@ const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
                 type: 'line',
                 smooth: true, // 是否平滑曲线
                 symbolSize: 0, // 拐点大小
-                color: '#F29B55',
+                color: '#FF9100',
                 areaStyle: {
                     color: {
                         type: 'linear',
@@ -376,7 +383,7 @@ const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
                         colorStops: [
                             {
                                 offset: 0,
-                                color: '#FBBB87', // 100% 处的颜色
+                                color: '#FF9100', // 100% 处的颜色
                             },
                             {
                                 offset: 1,
@@ -395,7 +402,7 @@ const setDevMesChartOption = (
     y: Array<number>,
     maxY: number,
 ): void => {
-  const yLen = String(Math.ceil(maxY)).length
+    const yLen = String(Math.ceil(maxY)).length;
     devMegOptions.value = {
         xAxis: {
             type: 'category',
@@ -413,7 +420,10 @@ const setDevMesChartOption = (
         grid: {
             top: '2%',
             bottom: '5%',
-            left: maxY < 900000 ? '60px' : (yLen * 7.5 +  Math.floor(yLen/3) * 1.2 + 10) + 'px',
+            left:
+                maxY < 900000
+                    ? '60px'
+                    : yLen * 7.5 + Math.floor(yLen / 3) * 1.2 + 10 + 'px',
             right: '50px',
         },
         series: [
@@ -453,7 +463,7 @@ const setDevMesChartOption = (
                 type: 'line',
                 smooth: true,
                 symbolSize: 0, // 拐点大小
-                color: '#ADC6FF',
+                color: '#4DC0F4',
                 areaStyle: {
                     color: {
                         type: 'linear',
@@ -464,7 +474,7 @@ const setDevMesChartOption = (
                         colorStops: [
                             {
                                 offset: 0,
-                                color: '#ADC6FF', // 100% 处的颜色
+                                color: '#4DC0F4', // 100% 处的颜色
                             },
                             {
                                 offset: 1,
@@ -481,8 +491,11 @@ const setDevMesChartOption = (
 
 //今日设备消息量
 const getDevice = () => {
-  const startTime = dayjs().subtract(0, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss');
-  const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    const startTime = dayjs()
+        .subtract(0, 'days')
+        .startOf('day')
+        .format('YYYY-MM-DD HH:mm:ss');
+    const endTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
     dashboard([
         {
@@ -496,7 +509,7 @@ const getDevice = () => {
                 format: 'yyyy-MM-dd HH:mm:ss',
                 limit: 24,
                 from: startTime,
-                to: endTime
+                to: endTime,
             },
         },
         {
@@ -553,13 +566,12 @@ const getEcharts = (data: any) => {
     const days = hour * 24;
     const months = days * 30;
     const year = 365 * days;
-    if (dt <= (hour + 10)) {
-        limit = 60
+    if (dt <= hour + 10) {
+        limit = 60;
         format = 'HH:mm';
     } else if (dt > hour && dt <= days) {
-        _time = '1h'
+        _time = '1h';
         limit = 24;
-
     } else if (dt > days && dt < year) {
         limit = Math.abs(Math.ceil(dt / days)) + 1;
         _time = '1d';
@@ -595,10 +607,7 @@ const getEcharts = (data: any) => {
                 )
                 .reverse();
             const y = res.result.map((item: any) => item.data.value).reverse();
-            const maxY = Math.max.apply(
-                null,
-                y.length ? y : [0],
-            );
+            const maxY = Math.max.apply(null, y.length ? y : [0]);
 
             setDevMesChartOption(x, y, maxY);
         }
@@ -606,9 +615,8 @@ const getEcharts = (data: any) => {
 };
 
 getOnline();
-getYesterdayOnline()
+getYesterdayOnline();
 getDevice();
-
 </script>
 <style lang="less" scoped>
 .message-card,

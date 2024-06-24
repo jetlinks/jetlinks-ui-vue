@@ -4,11 +4,15 @@
             <span>平台架构图</span>
             <p>PLATFORM ARCHITECTURE DIAGRAM</p>
         </div>
-      <div class='plaid'></div>
-      <div
-        class='bj'
-        :style='{ backgroundImage: `url(${props.image || "/images/home/content.png"})`}'
-      ></div>
+        <div class="plaid"></div>
+        <div
+            class="bj"
+            :style="{
+                backgroundImage: `url(${
+                    props.image || '/images/home/content.png'
+                })`,
+            }"
+        ></div>
     </div>
 </template>
 
@@ -24,18 +28,28 @@ const props = defineProps({
     width: 100%;
     overflow: hidden;
     background-color: #fff;
-    border-bottom: 1px solid #2f54eb;
+    border-bottom: 1px solid var(--theme-color-primary);
     height: 458px;
 
     .plaid {
-      background: repeating-linear-gradient(90deg, transparent, transparent 35px, rgba(#000, .1) 36px),
-              repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(#000, .1) 36px);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height:100%;
-      z-index: 1;
+        background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 35px,
+                rgba(#000, 0.1) 36px
+            ),
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 35px,
+                rgba(#000, 0.1) 36px
+            );
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
     }
 
     .bj {
@@ -76,8 +90,8 @@ const props = defineProps({
             left: 24px;
             width: 8px;
             height: 8px;
-            background-color: #1d39c4;
-            border: 1px solid #b4c0da;
+            background-color: var(--boot-card-icon-primary);
+            border: 1px solid var(--boot-card-icon-border);
             transform: translateY(-50%);
             content: ' ';
         }

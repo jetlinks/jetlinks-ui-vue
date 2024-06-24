@@ -65,8 +65,8 @@ const jumpPage = (item: bootConfig) => {
             left: 0;
             width: 8px;
             height: 8px;
-            background-color: #1d39c4;
-            border: 1px solid #b4c0da;
+            background-color: var(--boot-card-icon-primary);
+            border: 1px solid var(--boot-card-icon-border);
             transform: translateY(-50%);
             content: ' ';
         }
@@ -82,9 +82,14 @@ const jumpPage = (item: bootConfig) => {
             //    rgb(238, 238, 238) rgb(133, 165, 255);
             border: 1px solid #e6e6e6;
             padding: 11px;
-            background: linear-gradient(0deg, #FFFFFF, #FFFFFF), linear-gradient(135.62deg, rgba(47, 84, 235, 0.07) 22.27%, rgba(47, 84, 235, 0.01) 91.82%);
+            background: linear-gradient(0deg, #ffffff, #ffffff),
+                linear-gradient(
+                    135.62deg,
+                    rgba(47, 84, 235, 0.07) 22.27%,
+                    rgba(47, 84, 235, 0.01) 91.82%
+                );
             border-radius: 2px;
-            box-shadow: -2px 0 #85A5FF;
+            box-shadow: -2px 0 var(--boot-card-shadow);
             &:not(:first-child) {
                 margin-top: 12px;
             }

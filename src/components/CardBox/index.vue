@@ -16,13 +16,13 @@
                 <div
                     class="card-content-bg1"
                     :style="{
-                        background: getBackgroundColor(statusNames[status]),
+                        background: getBackgroundColor('bg_orange'),
                     }"
                 ></div>
                 <div
                     class="card-content-bg2"
                     :style="{
-                        background: getBackgroundColor(statusNames[status]),
+                        background: getBackgroundColor('bg_orange'),
                     }"
                 ></div>
                 <div style="display: flex">
@@ -186,7 +186,7 @@ const handleClick = () => {
         width: 44px;
         height: 44px;
         color: #fff;
-        background-color: red;
+        //background-color: red;
         background-color: #f84914;
         transform: rotate(-45deg);
 
@@ -341,9 +341,9 @@ const handleClick = () => {
             width: 44.65%;
             top: 0;
             background: linear-gradient(
-                188.4deg,
-                rgba(229, 0, 18, 0.03) 22.94%,
-                rgba(229, 0, 18, 0) 94.62%
+                187.04deg,
+                rgba(249, 111, 69, 0.03) 21.28%,
+                rgba(249, 111, 69, 0) 94.51%
             );
             transform: skewX(-15deg);
         }
@@ -355,9 +355,9 @@ const handleClick = () => {
             width: calc(44.65% + 34px);
             top: 0;
             background: linear-gradient(
-                188.4deg,
-                rgba(229, 0, 18, 0.03) 22.94%,
-                rgba(229, 0, 18, 0) 94.62%
+                187.04deg,
+                rgba(249, 111, 69, 0.03) 21.28%,
+                rgba(249, 111, 69, 0) 94.51%
             );
             transform: skewX(-15deg);
         }

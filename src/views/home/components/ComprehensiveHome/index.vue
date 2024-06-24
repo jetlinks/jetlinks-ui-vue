@@ -88,7 +88,7 @@ const deviceBootConfig: bootConfig[] = [
         label: '创建设备',
         link: 'device/Instance',
         auth: devicePermission('add'),
-        image: '/images/home/guide-home1.png',
+        image: '/images/home/guide-home2.png',
         params: {
             type: 'add',
         },
