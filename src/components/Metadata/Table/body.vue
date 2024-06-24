@@ -12,7 +12,7 @@
               'metadata-edit-table-row': true,
               'metadata-edit-table-row-selected': selectedRowKeys.includes(item[rowKey] || virtualRang.start + index + 1)
             }"
-            :key="`record_${virtualRang.start + index + 1}`"
+            :key="`record_${item.__key}`"
             :style="{height: `${cellHeight}px`,}"
             :data-row-key="item[rowKey] || virtualRang.start + index + 1"
             @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
@@ -20,7 +20,6 @@
           <div
               v-for="column in columns"
               class="metadata-edit-table-cell"
-              :key="`record_${item.__key}`"
               :style="{
                 width: `${column.width}px`,
                 left: `${column.left}px`,

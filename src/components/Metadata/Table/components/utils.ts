@@ -48,6 +48,9 @@ const getMaskNode = (id: string, warpClassNames: string) => {
     })
 
     const warpNode = document.querySelector(`.${warpClassNames}`) as HTMLDivElement
+
+    if (!warpNode) return undefined
+
     warpNode.insertAdjacentElement('beforebegin', maskNode)
 
     return maskNode
@@ -121,10 +124,13 @@ export const useMask = (propVisible: boolean, options: { visibleChange: (visible
         showLastMask()
 
         const index = maskIds.findIndex(key => key === maskDomId) // 当前遮罩层下标
+
+        maskIds.splice(index, 1)
         if (index === 0) {
             document.body.style = ''
             maskIds = []
         }
+
         updateStyle(maskNode, {
             display: 'none'
         })
