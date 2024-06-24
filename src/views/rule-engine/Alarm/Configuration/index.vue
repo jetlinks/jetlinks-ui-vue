@@ -63,7 +63,7 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <j-row>
+                                <div class="alarmInfo">
                                     <LevelIcon
                                         :level="slotProps.level"
                                     ></LevelIcon>
@@ -77,7 +77,7 @@
                                             {{ slotProps.name }}
                                         </span>
                                     </Ellipsis>
-                                </j-row>
+                                </div>
                             </template>
                             <template #actions="item">
                                 <PermissionButton
@@ -158,6 +158,7 @@
         v-if="visible"
         :data="current"
     />
+    <Delete v-if="visibleDelete" :id="configId" @close="visibleDelete = false" @refreshTable="refreshTable"/>
 </template>
 
 <script lang="ts" setup>
@@ -172,11 +173,13 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
 import LevelIcon from '../Config/LevelIcon.vue';
+import Delete from './Delete/index.vue'
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
-
+const visibleDelete = ref(false);
+const configId = ref()
 const columns = [
     {
         title: '配置名称',
@@ -359,18 +362,22 @@ const getActions = (
                         : '删除',
                 placement: 'topLeft',
             },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await remove(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
-                },
+            onClick: () => {
+                visibleDelete.value = true;
+                configId.value = data.id;
             },
+            // popConfirm: {
+            //     title: '确认删除?',
+            //     onConfirm: async () => {
+            //         const resp = await remove(data.id);
+            //         if (resp.status === 200) {
+            //             onlyMessage('操作成功！');
+            //             tableRef.value?.reload();
+            //         } else {
+            //             onlyMessage('操作失败！', 'error');
+            //         }
+            //     },
+            // },
             icon: 'DeleteOutlined',
         },
     ];
@@ -385,9 +392,18 @@ const onSave = () => {
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };
+
+const refreshTable = () =>{
+    visibleDelete.value = false;
+    tableRef.value.reload()
+}
 </script>
 <style lang="less" scoped>
 .content-des-title {
     font-size: 12px;
+}
+.alarmInfo {
+    padding-top: 30px;
+    display: flex;
 }
 </style>
