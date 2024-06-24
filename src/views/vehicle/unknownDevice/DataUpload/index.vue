@@ -160,7 +160,7 @@ const statusType = {
 
 const _selectedRowKeys = ref<string[]>([]);
 
-const onSelectChange = (keys: string[], rows: []) => {
+const onSelectChange = (keys: string[]) => {
     _selectedRowKeys.value = [...keys];
 };
 

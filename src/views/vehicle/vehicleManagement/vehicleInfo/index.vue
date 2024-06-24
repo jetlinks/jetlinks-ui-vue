@@ -15,19 +15,6 @@
                 }"
                 :params="params"
             >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton type="primary" @click="add">
-                            <template #icon
-                                ><AIcon type="PlusOutlined"
-                            /></template>
-                            新增
-                        </PermissionButton>
-                    </j-space>
-                </template>
-                <template #deviceType="slotProps">
-                    <div>{{ slotProps.deviceType.text }}</div>
-                </template>
                 <template #card="slotProps">
                     <CardBox
                         :value="slotProps"
@@ -35,7 +22,7 @@
                         v-bind="slotProps"
                         :active="_selectedRowKeys.includes(slotProps.id)"
                         :status="slotProps.vehicleStatus"
-                        @click="handleView(slotProps.id)"
+                        @click="handleView(slotProps)"
                         :statusText="listStatusText(slotProps.vehicleStatus)"
                         :statusNames="{
                             0: 'processing',
@@ -63,25 +50,48 @@
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
-                                    {{ slotProps.name }}
+                                    {{ slotProps.modelNumber }}
                                 </span></Ellipsis
                             >
-                            <j-row>
-                                <j-col :span="12">
-                                    <div class="card-item-content-text">ID</div>
-                                    <div>{{ slotProps?.id }}</div>
-                                </j-col>
-                                <j-col :span="12">
-                                    <div class="card-item-content-text">
-                                        说明
-                                    </div>
-                                    <Ellipsis
-                                        ><div>
-                                            {{ slotProps?.describe }}
-                                        </div></Ellipsis
+                            <div>
+                                <j-row>
+                                    <j-col :span="12"
+                                        ><div>出厂编号:</div></j-col
                                     >
-                                </j-col>
-                            </j-row>
+                                    <j-col :span="12"
+                                        ><Ellipsis
+                                            ><div>
+                                                {{ slotProps?.factoryNumber }}
+                                            </div></Ellipsis
+                                        ></j-col
+                                    >
+                                </j-row>
+                                <j-row>
+                                    <j-col :span="12"
+                                        ><div>车辆类型:</div></j-col
+                                    >
+                                    <j-col :span="12"
+                                        ><Ellipsis
+                                            ><div>
+                                                {{
+                                                    slotProps?.vehicleTypeEnum
+                                                        .text
+                                                }}
+                                            </div></Ellipsis
+                                        ></j-col
+                                    >
+                                </j-row>
+                                <j-row>
+                                    <j-col :span="12"><div>说明:</div></j-col>
+                                    <j-col :span="12"
+                                        ><Ellipsis
+                                            ><div>
+                                                {{ slotProps?.describe }}
+                                            </div></Ellipsis
+                                        ></j-col
+                                    >
+                                </j-row>
+                            </div>
                         </template>
                         <template #actions="item">
                             <PermissionButton
@@ -102,6 +112,9 @@
                             </PermissionButton>
                         </template>
                     </CardBox>
+                </template>
+                <template #deviceType="slotProps">
+                    <div>{{ slotProps.deviceType.text }}</div>
                 </template>
                 <template #status="slotProps">
                     <BadgeStatus
@@ -125,7 +138,7 @@
                     />
                 </template>
                 <template #vehicleTypeEnum="slotProps">
-                    {{ slotProps.vehicleTypeEnum.text }}
+                    <Ellipsis>{{ slotProps.vehicleTypeEnum.text }}</Ellipsis>
                 </template>
                 <template #action="slotProps">
                     <j-space :size="16">
@@ -183,6 +196,15 @@ const query = reactive({
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
+            ellipsis: true,
+            search: {
+                type: 'string',
+            },
+        },
+        {
+            title: '出厂编号',
+            dataIndex: 'factoryNumber',
+            key: 'factoryNumber',
             ellipsis: true,
             search: {
                 type: 'string',
@@ -266,21 +288,14 @@ const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
 
 /**
- * 新增
- */
-const add = () => {
-    isAdd.value = 1;
-    title.value = '新增';
-    nextTick(() => {
-        saveRef.value.show(currentForm.value);
-    });
-};
-
-/**
  * 查看
  */
-const handleView = (id: string) => {
-    console.log('查看详情');
+const handleView = (data: string) => {
+    title.value = '编辑';
+    isAdd.value = 2;
+    nextTick(() => {
+        saveRef.value.show(data);
+    });
 };
 
 /**
@@ -316,7 +331,7 @@ const getActions = (
             },
             icon: 'EyeOutlined',
             onClick: () => {
-                handleView(data.id);
+                console.log('查看详情');
             },
         },
         {
@@ -372,7 +387,6 @@ const queryData = (params: Record<string, any>) =>
             terms: params.terms,
         })
             .then((response: any) => {
-                console.log('response', response);
                 resolve({
                     result: {
                         data: response.result?.data,

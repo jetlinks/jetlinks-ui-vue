@@ -14,6 +14,14 @@
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
+                :rowSelection="
+                    isCheck
+                        ? {
+                              selectedRowKeys: _selectedRowKeys,
+                              onChange: onSelectChange,
+                          }
+                        : false
+                "
             >
                 <template #headerTitle>
                     <j-space>
@@ -23,6 +31,13 @@
                             /></template>
                             新增
                         </PermissionButton>
+                    </j-space>
+                    <j-space style="margin-left: 10px">
+                        <BatchDropdown
+                            v-model:isCheck="isCheck"
+                            :actions="batchActions"
+                            @change="onCheckChange"
+                        />
                     </j-space>
                 </template>
                 <template #deviceType="slotProps">
@@ -35,7 +50,7 @@
                         v-bind="slotProps"
                         :active="_selectedRowKeys.includes(slotProps.id)"
                         :status="slotProps.vehicleStatus"
-                        @click="handleView(slotProps.id)"
+                        @click="handleView(slotProps)"
                         :statusText="listStatusText(slotProps.vehicleStatus)"
                         :statusNames="{
                             0: 'processing',
@@ -63,25 +78,48 @@
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
-                                    {{ slotProps.name }}
+                                    {{ slotProps.modelNumber }}
                                 </span></Ellipsis
                             >
-                            <j-row>
-                                <j-col :span="12">
-                                    <div class="card-item-content-text">ID</div>
-                                    <div>{{ slotProps?.id }}</div>
-                                </j-col>
-                                <j-col :span="12">
-                                    <div class="card-item-content-text">
-                                        说明
-                                    </div>
-                                    <Ellipsis
-                                        ><div>
-                                            {{ slotProps?.describe }}
-                                        </div></Ellipsis
+                            <div>
+                                <j-row>
+                                    <j-col :span="12"
+                                        ><div>出厂编号:</div></j-col
                                     >
-                                </j-col>
-                            </j-row>
+                                    <j-col :span="12"
+                                        ><Ellipsis
+                                            ><div>
+                                                {{ slotProps?.factoryNumber }}
+                                            </div></Ellipsis
+                                        ></j-col
+                                    >
+                                </j-row>
+                                <j-row>
+                                    <j-col :span="12"
+                                        ><div>车辆类型:</div></j-col
+                                    >
+                                    <j-col :span="12"
+                                        ><Ellipsis
+                                            ><div>
+                                                {{
+                                                    slotProps?.vehicleTypeEnum
+                                                        .text
+                                                }}
+                                            </div></Ellipsis
+                                        ></j-col
+                                    >
+                                </j-row>
+                                <j-row>
+                                    <j-col :span="12"><div>说明:</div></j-col>
+                                    <j-col :span="12"
+                                        ><Ellipsis
+                                            ><div>
+                                                {{ slotProps?.describe }}
+                                            </div></Ellipsis
+                                        ></j-col
+                                    >
+                                </j-row>
+                            </div>
                         </template>
                         <template #actions="item">
                             <j-dropdown
@@ -156,7 +194,7 @@
                     />
                 </template>
                 <template #vehicleTypeEnum="slotProps">
-                    {{ slotProps.vehicleTypeEnum.text }}
+                    <Ellipsis>{{ slotProps.vehicleTypeEnum.text }}</Ellipsis>
                 </template>
                 <template #action="slotProps">
                     <j-space :size="16">
@@ -195,10 +233,12 @@ import { useMenuStore } from 'store/menu';
 import { getImage, onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '../typings';
 import Save from './save/index.vue';
+import BatchDropdown from '@/components/BatchDropdown/index.vue';
+import { BatchActionsType } from '@/components/BatchDropdown/types';
 
-const typeList = ref([]);
 const tableRef = ref<Record<string, any>>({});
 const currentForm = ref({});
+const isCheck = ref<boolean>(false);
 const query = reactive({
     columns: [
         {
@@ -333,8 +373,20 @@ const add = () => {
 /**
  * 查看
  */
-const handleView = (id: string) => {
-    console.log('查看详情');
+const handleView = (data: any) => {
+    console.log('data',data)
+    if (isCheck.value) {
+        if (_selectedRowKeys.value.includes(data.id)) {
+            const _index = _selectedRowKeys.value.findIndex(
+                (i) => i === data.id,
+            );
+            _selectedRowKeys.value.splice(_index, 1);
+        } else {
+            _selectedRowKeys.value = [..._selectedRowKeys.value, data.id];
+        }
+    } else {
+        console.log('查看详情');
+    }
 };
 
 /**
@@ -415,6 +467,43 @@ const getActions = (
     return actions;
 };
 
+const onSelectChange = (keys: string[], rows: []) => {
+    _selectedRowKeys.value = [...keys];
+};
+
+const handelRemove = async () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('请选择数据', 'error');
+        return;
+    }
+    //删除
+
+    onlyMessage('操作成功');
+    //清空已选择
+    _selectedRowKeys.value = [];
+    //恢复状态
+    isCheck.value = false;
+    tableRef.value?.reload();
+};
+
+const batchActions: BatchActionsType[] = [
+    {
+        key: 'export',
+        text: '批量删除',
+        icon: 'ExportOutlined',
+        selected: {
+            popConfirm: {
+                title: '确认删除吗？',
+                onConfirm: handelRemove,
+            },
+        },
+    },
+];
+
+const onCheckChange = () => {
+    _selectedRowKeys.value = [];
+};
+
 const handleSearch = (e: any) => {
     params.value = e;
 };
@@ -428,7 +517,6 @@ const queryData = (params: Record<string, any>) =>
             terms: params.terms,
         })
             .then((response: any) => {
-                console.log('response', response);
                 resolve({
                     result: {
                         data: response.result?.data,
