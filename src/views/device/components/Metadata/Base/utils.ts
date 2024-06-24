@@ -1,3 +1,5 @@
+import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
+
 export const levelMap = ref({
     ordinary: '普通',
     warn: '警告',
@@ -71,4 +73,52 @@ export const getMetadataItemByType = (type: string) => {
     }
 
     return item
+}
+
+export const useStoreType = (type: string) => {
+    const route = useRoute()
+    const settingData = ref({})
+
+    const getData = async () => {
+        const id = route.params.id;
+
+        if (!id || !type) return;
+
+        const params: any = {
+            deviceId: id,
+            metadata: {
+                id: id,
+                type: 'property',
+                dataType: type,
+            },
+        };
+
+        const resp =
+            type === 'product'
+                ? await getMetadataConfig(params)
+                : await getMetadataDeviceConfig(params);
+        if (resp.success) {
+
+            if (resp.result.length) {
+                resp.result.forEach((a) => {
+                    if (a.properties) {
+                        a.properties.some(item => {
+                            if (item.property === 'storageType') {
+                                settingData.value = item.type.elements.reduce((prev, next) => {
+                                    prev[next.value] = next.text
+                                    return prev
+                                }, {})
+                            }
+                        })
+                    }
+                });
+            }
+        }
+    }
+
+    getData()
+
+    return {
+        settingData
+    }
 }
