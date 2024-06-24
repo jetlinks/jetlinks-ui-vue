@@ -21,7 +21,7 @@
             />
             <AIcon
                 :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
-                @click="fullScreenToggle"
+                @click="() => fullToggle(isFullscreen, fullScreenToggle)"
             />
             <span v-if="searchData.show">
               已查询到
@@ -110,6 +110,7 @@
         <Source
             v-if="props.type === 'properties'"
             v-model:value="record.expands"
+            :isProduct="record.expands?.isProduct"
             :target="target"
             :record="record"
             :disabled="record.expands?.isProduct"
@@ -140,7 +141,6 @@
     </template>
     <template #other="{ record }">
       <div>
-        <a-tag v-if="showTag(record)">已配置</a-tag>
         <OtherSetting
             v-model:value="record.expands"
             :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
@@ -150,6 +150,7 @@
             :isProduct="record.expands?.isProduct"
             :target="props.target"
             :record="record"
+            :disabled="record.expands?.isProduct && !['int','long','float','double',].includes(record.valueType?.type)"
             @change="metadataChange"
         />
       </div>
@@ -291,6 +292,7 @@ import {
   BooleanSelect
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
+import {message } from "ant-design-vue";
 
 const props = defineProps({
   target: {
@@ -329,6 +331,8 @@ const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
 const selectedRowKeys = ref<string[]>([])
 
+const _isFullscreen = ref(false)
+
 const searchData = reactive({
   len: 0,
   show: false
@@ -345,8 +349,11 @@ const detailData = reactive({
 
 const heavyLoad = ref<Boolean>(false)
 
-const getPopupContainer = (node: any) => {
-  return node || document.body
+const getPopupContainer = () => {
+  if (_isFullscreen.value) {
+    return tableRef.value.getTableWrapperRef() || document.body
+  }
+  return document.body
 }
 
 provide('_tagsDataSource', tagsMetadata)
@@ -420,6 +427,15 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       detailData.visible = true
       break;
     case 'delete':
+      // Modal.confirm({
+      //   title: `确认删除【${record.id}】？`,
+      //   onOk() {
+      //     dataSource.value.splice(_index, 1)
+      //   },
+      //   onCancel() {
+      //     console.log('Cancel');
+      //   },
+      // })
       dataSource.value.splice(_index, 1)
       break;
   }
@@ -431,7 +447,6 @@ const handleSaveClick = async (next?: Function) => {
   });
 
   if (resp) {
-
     const virtual: any[] = [];
     const arr = resp.map((item: any) => {
       if (item.expands?.virtualRule) {
@@ -473,6 +488,7 @@ const handleSaveClick = async (next?: Function) => {
         productStore.setCurrent(detail)
       }
     }
+
     const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
     let _data = updateMetadata(props.type!, arr, _detail, updateStore)
     loading.value = true
@@ -484,6 +500,11 @@ const handleSaveClick = async (next?: Function) => {
       // dataSource.value = resp
       // tableRef.value.cleanEditStatus()
       editStatus.value = false
+      message.config({
+        getContainer() {
+          return getPopupContainer()
+        }
+      })
       onlyMessage('操作成功！')
       next?.()
     }
@@ -527,8 +548,9 @@ const parentTabsChange = (next?: Function) => {
   }
 }
 
-const showTag = (record: Record<string, any>) => {
-  return record.expands?.otherEdit || Object.keys(omit(record.expands, ['source', 'type', 'isProduct', 'group', 'otherEdit'])).length
+const fullToggle = (type: boolean, cb: Function) => {
+  cb()
+  _isFullscreen.value = !type
 }
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)

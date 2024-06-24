@@ -104,10 +104,11 @@ export const modifySearchColumnValue = (e: any, column: object) => {
  * @param msg 消息内容
  * @param type 消息类型
  */
-export const onlyMessage = (msg: string, type: 'success' | 'error' | 'warning' = 'success') => {
+export const onlyMessage = (msg: string, type: 'success' | 'error' | 'warning' = 'success', extra?: any) => {
   message[type]({
     content: msg,
-    key: type
+    key: type,
+    ...extra
   })
 }
 

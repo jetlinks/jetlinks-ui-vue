@@ -12,7 +12,7 @@
               'metadata-edit-table-row': true,
               'metadata-edit-table-row-selected': selectedRowKeys.includes(item[rowKey] || virtualRang.start + index + 1)
             }"
-            :key="`record_${virtualRang.start + index + 1}`"
+            :key="`record_${item.__key}`"
             :style="{height: `${cellHeight}px`,}"
             :data-row-key="item[rowKey] || virtualRang.start + index + 1"
             @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
@@ -50,6 +50,7 @@
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
 import {useRightMenuContext} from "@/components/Metadata/Table/utils";
+import {randomString} from "@/utils/utils";
 
 const props = defineProps({
   dataSource: {
@@ -165,6 +166,13 @@ onBeforeUnmount(() => {
 })
 
 watch(() => props.dataSource, () => {
+
+  props.dataSource.forEach(item => {
+    if (!item.__key) {
+      item.__key = randomString()
+    }
+  })
+
   updateView()
 }, {
   immediate: true,

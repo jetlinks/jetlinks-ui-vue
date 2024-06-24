@@ -2,7 +2,7 @@ import { saveProductMetadata } from "@/api/device/product";
 import { saveMetadata } from "@/api/device/instance";
 import type { DeviceInstance } from "../../Instance/typings";
 import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "../../Product/typings";
-import { differenceBy , cloneDeep } from "lodash-es";
+import { omit } from "lodash-es";
 
 const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   const ids = productMetaData.map((item: any) => item.id)
@@ -51,9 +51,10 @@ const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   // }
   // console.log(metadata, type)
   metadata[type] = (item || []).sort((a, b) => b?.sortsIndex - a?.sortsIndex) as any[]
-  console.log('useMetadata', metadata)
+
   data.metadata = JSON.stringify(metadata);
   onEvent?.(data.metadata)
+
   return data;
 };
 

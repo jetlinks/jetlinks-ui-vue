@@ -23,7 +23,11 @@
                             name: 'createTime',
                             order: 'desc',
                         },
-                    ]
+                    ],
+                    terms: [{
+                      column: 'triggerType',
+                      value: props.type === 'orter' ? '' : 'device'
+                    }]
                 }"
         :params="params"
       >

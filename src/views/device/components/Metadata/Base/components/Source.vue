@@ -18,7 +18,7 @@
       v-model:visible="modalVisible"
       :bodyStyle="{
                 width: '450px',
-                height: myValue === 'rule' ? '300px' : '90px',
+                height: myValue === 'rule' ? '300px' : '92px',
             }"
       placement="bottomRight"
       @ok="confirm"
@@ -30,6 +30,7 @@
               v-if="modalVisible"
               :source="myValue"
               :value="record"
+              :isProduct="isProduct"
               :dataSource="dataSource"
               ref="virtualRuleRef"
             />
@@ -71,6 +72,7 @@
                     <VirtualRule
                       :source="myValue"
                       :value="record"
+                      :isProduct="isProduct"
                       :dataSource="dataSource"
                       ref="virtualRuleRef"
                     />
@@ -150,7 +152,10 @@ type Emit = {
 };
 
 
-const showReset = ref(false);
+const showReset = computed(() => {
+  return myValue.value === 'rule' && props.target === 'device' && props.isProduct
+})
+
 const props = defineProps({
   value: {
     type: Object,
@@ -174,6 +179,10 @@ const props = defineProps({
     default: () => ({})
   },
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  isProduct: {
     type: Boolean,
     default: false
   }
@@ -298,14 +307,6 @@ watch(
   {immediate: true},
 );
 
-onMounted(() => {
-  if (props.disabled) {
-    showReset.value = true
-  }
-  // if(isNoCommunity && myValue.value === 'rule'){
-  //     handleSearch()
-  // }
-})
 </script>
 
 <style scoped>

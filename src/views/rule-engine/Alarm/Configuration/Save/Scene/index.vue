@@ -91,6 +91,10 @@ const terms = [
                 termType: 'alarm-bind-rule',
                 value: id,
             },
+            {
+              column: 'triggerType',
+              value: configurationData.current?.targetType === 'orter' ? '' : 'device'
+            }
         ],
         type: 'and',
     },

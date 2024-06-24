@@ -173,6 +173,10 @@ const scrollToById = (key) => {
   tableBody.value.scrollTo(_index)
 }
 
+const getTableWrapperRef = () => {
+  return tableWrapper.value
+}
+
 watch(() => scrollWidth.value, () => {
   onResize({width: tableStyle.width})
 })
@@ -191,7 +195,8 @@ useFormContext({
 defineExpose({
   validate,
   tableWrapper,
-  scrollToById
+  scrollToById,
+  getTableWrapperRef
 })
 </script>
 

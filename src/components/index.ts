@@ -20,6 +20,7 @@ import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 import ValueItem from './ValueItem/index.vue'
 import RowPagination from './RowPagination/index.vue'
 import Calendar from './Calendar/index.vue'
+import CheckButton from "./CheckButton";
 
 export default  {
     install(app: App) {
@@ -46,5 +47,6 @@ export default  {
             .component('RadioCard', RadioCard)
             .component('MarkDown', MarkDown)
             .component('CardSelect', CardSelect)
+            .component('CheckButton', CheckButton)
     }
 }
