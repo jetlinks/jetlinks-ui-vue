@@ -394,9 +394,9 @@ const getTime = () => {
 };
 
 const beginAction = () => {
-  // if (!property.value.every(item => item.id)) {
-  //   return onlyMessage('请添加规则属性')
-  // }
+  if (property.value.some(item => !item.id || !(item.current || item.last) )) {
+    return onlyMessage('请添加规则属性')
+  }
     isBeginning.value = false;
     runScript();
     getTime();
