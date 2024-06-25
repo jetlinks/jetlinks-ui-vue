@@ -22,7 +22,7 @@
             {{ dayjs(slotProps.handleTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
         <template #handleType="slotProps">
-            {{ slotProps?.handleType || '--' }}
+            {{ slotProps?.handleType?.text || '--' }}
         </template>
         <template #state="slotProps">
             {{ slotProps?.state?.text }}
@@ -96,6 +96,15 @@ const columns = [
         scopedSlots: true,
     },
     {
+        title: '原始值',
+        dataIndex: 'originalValue',
+        key: 'originalValue',
+        hidden: true,
+        search: {
+            type: 'number',
+        },
+    },
+    {
         title: '告警持续时长',
         dataIndex: 'duration',
         key: 'duration',
@@ -120,6 +129,7 @@ const columns = [
         },
         scopedSlots: true,
     },
+
     {
         title: '处理类型',
         dataIndex: 'handleType',
@@ -129,9 +139,11 @@ const columns = [
             options: [
                 {
                     label: '人工',
+                    value: 'user',
                 },
                 {
                     label: '系统',
+                    value: 'system',
                 },
             ],
         },
