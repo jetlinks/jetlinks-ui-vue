@@ -41,7 +41,8 @@
                                 :width="80"
                                 :height="80"
                                 :src="
-                                    slotProps?.photoUrl || getImage('/plug.png')
+                                    slotProps?.photoUrl ||
+                                    getImage('/plugin.png')
                                 "
                             />
                         </template>

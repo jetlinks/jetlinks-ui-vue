@@ -78,6 +78,7 @@
                         title="平台架构图"
                         english="PLATFORM ARCHITECTURE DIAGRAM"
                     />
+                    <div class="mask"></div>
                     <div class="home-body-img">
                         <img :src="getImage('/iot-card/iotcard-home.png')" />
                     </div>
@@ -450,6 +451,29 @@ getStateCard();
 }
 
 .home-body {
+    position: relative;
+
+    .mask {
+        background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 35px,
+                rgba(0, 0, 0, 0.1) 36px
+            ),
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 35px,
+                rgba(0, 0, 0, 0.1) 36px
+            );
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+
     .home-base;
 
     min-height: 444px;
@@ -457,7 +481,7 @@ getStateCard();
     // padding-bottom: 26.5%;
     padding-bottom: 30%;
     overflow: hidden;
-    border-bottom: 1px solid #2f54eb;
+    border-bottom: 1px solid var(--theme-color-primary);
 
     .home-body-img {
         position: absolute;
@@ -466,9 +490,14 @@ getStateCard();
         z-index: 1;
         width: 100%;
         height: 100%;
+        overflow: hidden;
 
-        > img {
-            width: 100%;
+        img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: auto;
             height: 100%;
         }
     }

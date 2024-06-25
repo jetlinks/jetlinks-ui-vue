@@ -3,9 +3,13 @@
         <j-spin :spinning="loading" :delay="500">
             <div class="container">
                 <div class="left">
+                    <!--                    <img-->
+                    <!--                        style="width: 100%; height: 100%"-->
+                    <!--                        :src="basis.background || getImage('/login.png')"-->
+                    <!--                    />-->
                     <img
                         style="width: 100%; height: 100%"
-                        :src="basis.background || getImage('/login.png')"
+                        :src="basis.background"
                     />
                 </div>
                 <div class="right">
@@ -137,7 +141,11 @@
                                                             class="more-button-item"
                                                             v-for="(
                                                                 item, index
-                                                            ) in bindings.slice(4,bindings.length-1)"
+                                                            ) in bindings.slice(
+                                                                4,
+                                                                bindings.length -
+                                                                    1,
+                                                            )"
                                                             :key="index"
                                                             @click="
                                                                 handleClickOther(
@@ -588,7 +596,7 @@ onMounted(() => {
                                 transform: translateY(50%);
                             }
                         }
-                        .more{
+                        .more {
                             text-align: center;
                             cursor: pointer;
                         }
