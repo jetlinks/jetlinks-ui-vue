@@ -37,8 +37,6 @@
 <script setup name="Actions">
 import {
     iconMap,
-    itemNotifyIconMap,
-    typeIconMap,
 } from '@/views/rule-engine/Scene/Save/action/ListItem/util';
 import { isBoolean } from 'lodash-es';
 

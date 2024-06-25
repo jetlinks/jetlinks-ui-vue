@@ -105,7 +105,7 @@ import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import color, { getHexColor } from '@/components/BadgeStatus/color';
 import BranchesTabs from './BranchesTabs.vue';
 import { PropType } from 'vue';
-import { handleActiveBranches, handleGroupAndFilter, typeMap } from './utils';
+import { handleActiveBranches, handleGroupAndFilter, typeMap } from '../../Save/Scene/Save/utils';
 import { useMenuStore } from '@/store/menu';
 
 type EmitProps = {
@@ -148,10 +148,6 @@ const props = defineProps({
         // 后端返回已关联的执行动作
         type: Array,
         default: () => [],
-    },
-    showMask: {
-        type: Boolean,
-        default: false,
     },
     showBranches: {
         type: Boolean,
