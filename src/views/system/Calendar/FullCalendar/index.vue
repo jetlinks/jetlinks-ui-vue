@@ -206,7 +206,7 @@ const handleViewDidMount = async (arg) => {
         return;
     }
     queryEndDate.value.push(endDate);
-    if (!calendarTagColor) {
+    if (calendarTagColor.size === 0) {
         await system.getTagsColor();
     }
     queryEventsData(startDate, endDate, true);

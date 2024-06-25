@@ -1,3 +1,4 @@
+import { testIpv4_6 } from '@/utils/validate';
 export const colorMap = new Map();
 colorMap.set('running', 'success');
 colorMap.set('partialError', 'warning');
@@ -191,8 +192,8 @@ const validator1 = (rule:any, value:any, callback:any)  => {
     if(value === undefined || value === '' || value === null) {
       return Promise.reject("请输入通道端口")
     } else {
-      if(value < 0 || value > 65535) {
-        return Promise.reject("请输入0~65535的整数")
+      if(value < 1 || value > 65535) {
+        return Promise.reject("请输入1~65535的整数")
       }
       return Promise.resolve()
     }
@@ -239,6 +240,19 @@ const validator1 = (rule:any, value:any, callback:any)  => {
       return Promise.resolve()
     }
   }
+  /**
+ * 校验官网地址
+ */
+const validateUrl = async (_rule: any, value: string) => {
+    if (!value) {
+        return Promise.resolve();
+    } else {
+        if (!testIpv4_6(value)) {
+            return Promise.reject('请输入正确的IP地址');
+        }
+        return Promise.resolve();
+    }
+};
 export const LeftTreeRules = {
     channelId: [{ required: true, message: '请选择所属通道', trigger: 'blur' }],
     name: [
@@ -273,6 +287,7 @@ export const LeftTreeRules = {
     serializable: [{required: true, trigger: 'change', message: '请选择型号'}],
     terminnalAddress: [{required: true, trigger: 'blur', message: '请输入分组地址'}],
     frameAmountMax: [{required: true, message: '请输入确认帧数量', trigger: 'blur'}],
+    address: [{ trigger: 'blur',validator: validateUrl,message: '请输入正确的ip地址'}],
 };
 
 export const FormTableColumns = [
