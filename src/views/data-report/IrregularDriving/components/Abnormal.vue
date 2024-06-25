@@ -79,6 +79,7 @@ import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelect } from '@/utils/hooks/useSelect';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 
 const {
     selectedRowKeys,
@@ -100,6 +101,8 @@ const pageSize = ref<number>(12);
 const configRef = ref<Record<string, any>>({});
 
 const type = ref<string>('xlsx');
+
+const { handleSearch } = useProSearch(globParams, handleClearSelected);
 
 const vehicleType = ref<{ label: string; value: string }[]>();
 
@@ -283,14 +286,14 @@ const handleExport = async () => {
     }
 };
 
-/**
- * 搜索
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
-    globParams.value = _params;
-};
+// /**
+//  * 搜索
+//  * @param _params
+//  */
+// const handleSearch = (_params: any) => {
+//     if (_params.terms && _params.terms.length > 0) handleClearSelected();
+//     globParams.value = _params;
+// };
 </script>
 
 <style lang="less " scoped></style>

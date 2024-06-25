@@ -101,6 +101,7 @@ import { formatDate, handleSearchByDate } from '@/utils/dataReportUtils';
 import search from 'components/Search';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -125,6 +126,10 @@ const {
     handleSelectAll,
     handleClearSelected,
 } = useSelectableTable();
+
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    'createTime',
+]);
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
@@ -178,17 +183,6 @@ const handleOnChange = (num: number, pageSize: number) => {
         pageSize: pageSize,
     };
     handleSearch(_params);
-};
-
-/**
- * @function handleSearch 搜索组件的搜索事件
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
-    // 处理搜索条件为时间的情况
-    handleSearchByDate(_params, ['activationDate', 'updateTime']);
-    globParams.value = _params;
 };
 
 /**

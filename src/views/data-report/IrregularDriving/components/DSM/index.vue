@@ -63,6 +63,7 @@ import moment from 'moment';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
+import { useProSearch } from '@/hook/useProSearch';
 
 const configRef = ref<InstanceType<typeof PTable>>();
 
@@ -73,6 +74,13 @@ const vehicleType = ref<{ label: string; value: string }[]>();
 const dataInfo = ref<Record<string, any>>();
 
 const globParams = ref<Record<string, any>>({});
+
+const { handleSearch } = useProSearch(
+    globParams,
+    () => configRef.value?.EmptySelectKeys(),
+    ['reportTime'],
+);
+
 /**
  * 导出
  */
@@ -137,8 +145,6 @@ const handleExport = async () => {
         }
     }
 };
-
-
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
@@ -247,14 +253,14 @@ const onDetail = (data: Record<string, any>) => {
     dataInfo.value = data;
     visible.value = true;
 };
-/**
- * 搜索
- * @param param
- */
-const handleSearch = (param: any) => {
-    handleSearchByDate(param, ['reportTime']);
-    globParams.value = param;
-};
+// /**
+//  * 搜索
+//  * @param param
+//  */
+// const handleSearch = (param: any) => {
+//     handleSearchByDate(param, ['reportTime']);
+//     globParams.value = param;
+// };
 </script>
 
 <style lang="less" scoped></style>

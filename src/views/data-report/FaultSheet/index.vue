@@ -71,6 +71,7 @@ import { columns } from './columnConfig';
 
 import {
     formatDate,
+    handleResetSelectedRows,
     handleSearchByDate,
     handleSearchByDescription,
 } from '@/utils/dataReportUtils';
@@ -157,13 +158,16 @@ const handleOnChange = (num: number, pageSize: number) => {
     handleSearch(_params);
 };
 
+// 上一次搜索的条件，这里不能使用null，null.property会报错，而{}.property 是 undefined 不会报错
+let prevSearchTerms = ref<any>({});
+
 /**
  * @function handleSearch 搜索组件的搜索事件
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    // 如果携带搜索条件时，清空选中的数据项
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
+    // 处理需要清空选中行的情况
+    handleResetSelectedRows(_params, prevSearchTerms, handleClearSelected);
     // 处理搜索的字段是时间类型的情况
     handleSearchByDate(_params, ['faultTime']);
     // 处理搜索的字段是故障描述类型的情况

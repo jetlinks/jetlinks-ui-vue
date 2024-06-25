@@ -87,6 +87,7 @@ import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { onlyMessage } from '@/utils/comm';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { handleResetSelectedRows } from '@/utils/dataReportUtils';
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
@@ -262,12 +263,16 @@ const handleExport = async () => {
     });
 };
 
+// 上一次搜索的条件
+let prevSearchTerms = ref<any>({});
+
 /**
  * 搜索
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
+    // 处理需要清空选中行的情况
+    handleResetSelectedRows(_params, prevSearchTerms, handleClearSelected);
     handleSearchDate(_params);
     globParams.value = _params;
 };
