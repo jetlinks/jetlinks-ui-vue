@@ -1,15 +1,15 @@
 <template>
   <Select
-    showSearch
     placeholder="请选择单位"
     style="width: 100%"
+    mode="tags"
     v-model:value="myValue"
     :dropdownStyle="{
       zIndex: 1071
     }"
     :getPopupContainer="(node) => tableWrapperRef || node"
     :options="options"
-    :filterOption="filterOption"
+    optionFilterProp="label"
     @change="change"
   />
 </template>
