@@ -77,7 +77,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        产品名称
+                                        物模型名称
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ slotProps.productName }}
@@ -282,7 +282,7 @@ const columns = [
         ellipsis:true
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'productName',
         key: 'productName',
         search: {
@@ -328,7 +328,7 @@ const columns = [
     {
         key: 'productId$product-info',
         dataIndex: 'productId$product-info',
-        title: '产品分类',
+        title: '物模型分类',
         hideInTable: true,
         search: {
             type: 'treeSelect',

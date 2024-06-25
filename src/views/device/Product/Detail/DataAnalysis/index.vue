@@ -216,7 +216,7 @@ const queryCodeTips = () => {
 }
 
 
-//获取产品解析规则
+//获取物模型解析规则
 const getProductCode = async () => {
     const res: any = await productCode(productStore.current.id);
     if (res.status === 200) {
@@ -239,7 +239,7 @@ const test = async (dataTest: any) => {
     }
 };
 
-//保存产品解析规则
+//保存物模型解析规则
 const save = async () => {
     const item = {
         provider: 'jsr223',

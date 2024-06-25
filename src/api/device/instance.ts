@@ -5,9 +5,9 @@ import { DeviceInstance } from '@/views/device/Instance/typings'
 import { DeviceMetadata, UnitType } from '@/views/device/Product/typings';
 
 /**
- * 重置设备继承产品的物模型规则
+ * 重置设备继承物模型的物模型规则
  * @param deviceId 设备ID
- * @param productId 产品ID
+ * @param productId 物模型ID
  */
 export const resetRule = (productId:string,deviceId:string,data:any) => server.remove(`/virtual/property/product/${productId}/${deviceId}/_batch`,{},{data})
 
@@ -93,7 +93,7 @@ export const batchDeleteDevice = (data: string[]) => server.put(`/device-instanc
 
 /**
  * 下载设备模板
- * @param productId 产品id
+ * @param productId 物模型id
  * @param type 文件类型
  * @returns 
  */
@@ -102,7 +102,7 @@ export const deviceTemplateDownload = (productId: string, type: string) => `${BA
 export const templateDownload = (productId: string, type: string) => server.get(`/device-instance/${productId}/template.${type}`, {}, { responseType: 'blob' })
 /**
  * 设备导入
- * @param productId 产品id
+ * @param productId 物模型id
  * @param type 文件类型
  * @returns 
  */
@@ -110,7 +110,7 @@ export const deviceImport = (productId: string, fileUrl: string, autoDeploy: boo
 
 /**
  * 设备导出
- * @param productId 产品id
+ * @param productId 物模型id
  * @param type 文件类型
  * @returns 
  */
@@ -276,7 +276,7 @@ export const saveDeviceMapping = (deviceId: string, data: any) => server.post(`/
 export const deleteDeviceMapping = (deviceId: string, data:any) => server.post(`/edge/operations/${deviceId}/device-mapping-delete-by-deviceid/invoke`, data)
 
 /**
- * 获取产品列表
+ * 获取物模型列表
  * @param data
  */
 export const getProductListNoPage = (data: any) => server.post('/device/product/_query/no-paging?paging=false', data)
@@ -306,15 +306,15 @@ export const queryGatewayState = (id: string) => server.get(`/gateway/device/${i
 export const queryNetworkState = (id: string) => server.get(`/network/config/${id}`)
 
 /**
- * 产品状态
- * @param id 产品id
+ * 物模型状态
+ * @param id 物模型id
  * @returns 
  */
 export const queryProductState = (id: string) => server.get(`/device/product/${id}`)
 
 /**
- * 产品配置
- * @param id 产品id
+ * 物模型配置
+ * @param id 物模型id
  * @returns 
  */
 export const queryProductConfig = (id: string) => server.get(`/device/product/${id}/config-metadata`)
@@ -540,13 +540,13 @@ export const getPropertiesList = (deviceId: string, property: string, data: Reco
 export const getProtocal = (id: string, transport: string) => server.get(`/protocol/${id}/transport/${transport}`)
 
 /**
- * 获取产品解析规则
+ * 获取物模型解析规则
  * @param productId 
  * @returns 
  */
 export const productCode = (productId: string) => server.get(`/device/transparent-codec/${productId}`)
 /**
- * 保存产品解析规则
+ * 保存物模型解析规则
  * @param productId 
  * @returns 
  */
@@ -581,7 +581,7 @@ export const testCode = (data: Record<string, unknown>) => server.post(`/device/
  */
 export const delDeviceCode = (productId: string, deviceId: string) => server.remove(`/device/transparent-codec/${productId}/${deviceId}`)
 /**
- * 删除产品解析规则
+ * 删除物模型解析规则
  * @param productId 
  * @returns 
  */
@@ -631,8 +631,8 @@ export const queryProductCodeTips = (productId: string) => server.get(`/device/t
 export const queryTypescript = (deviceId:string) => server.get(`/device/${deviceId}/virtual-property.d.ts`) 
 
 /**
- * 获取产品物模型规则TS
- * @param productId 产品ID
+ * 获取物模型物模型规则TS
+ * @param productId 物模型ID
  * @returns 
  */
 export const queryProductTs = (productId:string) => server.get(`/product/${productId}/virtual-property.d.ts`)

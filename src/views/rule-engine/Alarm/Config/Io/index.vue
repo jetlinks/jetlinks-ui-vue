@@ -224,8 +224,8 @@ const outputData = [
         key: 'targetType',
         name: '告警目标类型',
         type: 'string',
-        desc: '告警所属的业务类型，具体有产品、设备、部门、其他',
-        example: '产品',
+        desc: '告警所属的业务类型，具体有物模型、设备、部门、其他',
+        example: '物模型',
     },
     {
         key: 'targetId',

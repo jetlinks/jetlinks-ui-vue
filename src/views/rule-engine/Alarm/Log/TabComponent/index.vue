@@ -227,7 +227,7 @@ imgMap.set('other', getImage('/alarm/other.png'));
 imgMap.set('org', getImage('/alarm/org.png'));
 
 const titleMap = new Map();
-titleMap.set('product', '产品');
+titleMap.set('product', '物模型');
 titleMap.set('device', '设备');
 titleMap.set('other', '其他');
 titleMap.set('org', '组织');
@@ -303,7 +303,7 @@ const columns = [
 
 const newColumns = computed(() => {
     const otherColumns = {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'targetName',
         key: 'targetName',
         // search: {
@@ -366,7 +366,7 @@ const newColumns = computed(() => {
     }
     if (props.type === 'device') {
         const productColumns = {
-            title: '产品名称',
+            title: '物模型名称',
             dataIndex: 'product_id',
             key: 'product_id',
             search: {

@@ -111,7 +111,7 @@ const columns = [
         },
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,

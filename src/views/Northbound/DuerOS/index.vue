@@ -53,7 +53,7 @@
                             <j-row style="margin-top: 15px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        产品
+                                        物模型
                                     </div>
                                     <Ellipsis>
                                         <div>{{ slotProps?.productName }}</div>
@@ -169,7 +169,7 @@ const columns = [
         },
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'productName',
         key: 'productName',
         search: {

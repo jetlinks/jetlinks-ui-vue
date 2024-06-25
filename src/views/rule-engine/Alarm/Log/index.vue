@@ -16,7 +16,7 @@ const list = [
     },
     {
         key: 'product',
-        tab: '产品',
+        tab: '物模型',
     },
     {
         key: 'device',
@@ -38,7 +38,7 @@ const noList = [
     },
     {
         key: 'product',
-        tab: '产品',
+        tab: '物模型',
     },
     {
         key: 'device',

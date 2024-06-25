@@ -179,7 +179,7 @@ const columns = [
         },
     },
     {
-        title: '所属产品',
+        title: '所属物模型',
         dataIndex: 'productName',
         key: 'productName',
         search: {

@@ -37,7 +37,7 @@ export const saveProtocol = () => server.post(`/protocol/default-protocol/_save`
 // 新增设备接入网关
 export const saveAccessConfig = (data: any) => server.post(`/gateway/device`, data)
 
-// 新增产品
+// 新增物模型
 export const saveProduct = (data: any) => server.post(`/device/product`,data)
 
 // 新增设备

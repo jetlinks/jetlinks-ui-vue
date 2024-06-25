@@ -26,7 +26,7 @@ export const networkInitList: ListProps[] = [
     // {
     //   key: 'access',
     //   name: '设备接入配置',
-    //   desc: '诊断该设备所属产品是否已配置“设备接入”方式，未配置将导致设备连接失败。',
+    //   desc: '诊断该设备所属物模型是否已配置“设备接入”方式，未配置将导致设备连接失败。',
     //   status: 'loading',
     //   text: '正在诊断中...',
     //   info: null,
@@ -49,8 +49,8 @@ export const networkInitList: ListProps[] = [
     },
     {
         key: 'product',
-        name: '产品状态',
-        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+        name: '物模型状态',
+        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
         status: 'loading',
         text: '正在诊断中...',
         info: null,
@@ -69,7 +69,7 @@ export const childInitList: ListProps[] = [
     // {
     //   key: 'access',
     //   name: '设备接入配置',
-    //   desc: '诊断该设备所属产品是否已配置“设备接入”方式，未配置将导致设备连接失败。',
+    //   desc: '诊断该设备所属物模型是否已配置“设备接入”方式，未配置将导致设备连接失败。',
     //   status: 'loading',
     //   text: '正在诊断中...',
     //   info: null,
@@ -100,8 +100,8 @@ export const childInitList: ListProps[] = [
     },
     {
         key: 'product',
-        name: '产品状态',
-        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+        name: '物模型状态',
+        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
         status: 'loading',
         text: '正在诊断中...',
         info: null,
@@ -120,7 +120,7 @@ export const cloudInitList: ListProps[] = [
     // {
     //   key: 'access',
     //   name: '设备接入配置',
-    //   desc: '诊断该设备所属产品是否已配置“设备接入”方式，未配置将导致设备连接失败。',
+    //   desc: '诊断该设备所属物模型是否已配置“设备接入”方式，未配置将导致设备连接失败。',
     //   status: 'loading',
     //   text: '正在诊断中...',
     //   info: null,
@@ -135,8 +135,8 @@ export const cloudInitList: ListProps[] = [
     },
     {
         key: 'product',
-        name: '产品状态',
-        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+        name: '物模型状态',
+        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
         status: 'loading',
         text: '正在诊断中...',
         info: null,
@@ -155,7 +155,7 @@ export const channelInitList: ListProps[] = [
     // {
     //   key: 'access',
     //   name: '设备接入配置',
-    //   desc: '诊断该设备所属产品是否已配置“设备接入”方式，未配置将导致设备连接失败。',
+    //   desc: '诊断该设备所属物模型是否已配置“设备接入”方式，未配置将导致设备连接失败。',
     //   status: 'loading',
     //   text: '正在诊断中...',
     //   info: null,
@@ -170,8 +170,8 @@ export const channelInitList: ListProps[] = [
     },
     {
         key: 'product',
-        name: '产品状态',
-        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+        name: '物模型状态',
+        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
         status: 'loading',
         text: '正在诊断中...',
         info: null,
@@ -190,7 +190,7 @@ export const mediaInitList: ListProps[] = [
     // {
     //   key: 'access',
     //   name: '设备接入配置',
-    //   desc: '诊断该设备所属产品是否已配置“设备接入”方式，未配置将导致设备连接失败。',
+    //   desc: '诊断该设备所属物模型是否已配置“设备接入”方式，未配置将导致设备连接失败。',
     //   status: 'loading',
     //   text: '正在诊断中...',
     //   info: null,
@@ -205,8 +205,8 @@ export const mediaInitList: ListProps[] = [
     },
     {
         key: 'product',
-        name: '产品状态',
-        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+        name: '物模型状态',
+        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
         status: 'loading',
         text: '正在诊断中...',
         info: null,

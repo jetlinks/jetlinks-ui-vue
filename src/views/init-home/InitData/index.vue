@@ -26,7 +26,7 @@
         <div class="data-content">
             <p class="data-p-style">
                 <ExclamationCircleOutlined style="margin: 0 0 0 5px" />
-                初始化数据包括MQTT产品、MQTT设备、MQTT类型设备接入网关、MQTT网络组件、Jetlinks
+                初始化数据包括MQTT物模型、MQTT设备、MQTT类型设备接入网关、MQTT网络组件、Jetlinks
                 官方协议
             </p>
         </div>
@@ -289,9 +289,9 @@ const saveCurrentData = () => {
                         channel: 'network',
                         channelId: network?.result?.id,
                     });
-                    // 新增产品
+                    // 新增物模型
                     const product = await saveProduct({
-                        name: 'MQTT产品',
+                        name: 'MQTT物模型',
                         messageProtocol: protocolItem?.id,
                         protocolName: protocolItem?.name,
                         transportProtocol: 'MQTT',

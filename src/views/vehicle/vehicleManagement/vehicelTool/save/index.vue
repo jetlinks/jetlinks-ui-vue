@@ -1,4 +1,4 @@
-<!-- 新增、编辑产品 -->
+<!-- 新增、编辑物模型 -->
 <template>
     <j-modal
         :title="props.title"
@@ -76,7 +76,7 @@
                     <j-tree-select
                         showSearch
                         v-model:value="form.orgName"
-                        placeholder="请选择产品分类"
+                        placeholder="请选择物模型分类"
                         :tree-data="treeList"
                         @change="valueChange"
                         allow-clear
@@ -122,9 +122,13 @@
                             v-model:value="form.deviceIds"
                             mode="multiple"
                             placeholder="请选择关联设备"
+                            :max-tag-count="maxTagCount"
                             :options="deviceIdsOptions"
                             :open="false"
                         >
+                            <template #maxTagPlaceholder="omittedValues">
+                                <span>+ {{ omittedValues.length }} ...</span>
+                            </template>
                         </j-select>
                         <j-button
                             style="width: 90px"
@@ -216,12 +220,13 @@ import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import dayjs, { Dayjs } from 'dayjs';
 
 const deviceIdsOptions = ref<any>([]);
+const maxTagCount = ref(4);
 
 const emit = defineEmits(['success']);
 const props = defineProps({
     title: {
         type: String,
-        defult: '',
+        default: '',
     },
     isAdd: {
         type: Number,
@@ -329,7 +334,7 @@ const queryOrgTree = async () => {
     });
 };
 /**
- * 处理产品分类key
+ * 处理物模型分类key
  */
 const dealOrgTree = (arr: any) => {
     return arr.map((element: any) => {

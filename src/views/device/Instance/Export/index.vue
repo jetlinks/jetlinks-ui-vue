@@ -10,17 +10,17 @@
         <div style="background-color: rgb(236, 237, 238)">
             <p style="padding: 10px">
                 <AIcon type="ExclamationCircleOutlined" />
-                选择单个产品时可导出其下属设备的详细数据,不选择产品时导出所有设备的基础数据。
+                选择单个物模型时可导出其下属设备的详细数据,不选择物模型时导出所有设备的基础数据。
             </p>
         </div>
         <div style="margin-top: 20px">
             <j-form :layout="'vertical'">
-                <j-form-item label="产品">
+                <j-form-item label="物模型">
                     <j-select
                         show-search
                         :filter-option="filterOption"
                         v-model:value="modelRef.product"
-                        placeholder="请选择产品"
+                        placeholder="请选择物模型"
                         allowClear
                     >
                         <j-select-option

@@ -4,7 +4,7 @@
             <j-row :gutter="24">
                 <j-col :span="6">
                     <TopCard
-                        title="产品数量"
+                        title="物模型数量"
                         :img="getImage('/device/device-product.svg')"
                         :footer="productFooter"
                         :value="productTotal"
@@ -147,7 +147,7 @@ const menuStore = useMenuStore();
 //     { label: '近一年', value: 'year' },
 // ];
 /**
- * 获取产品数量
+ * 获取物模型数量
  */
 const getProductData = () => {
     // if (menuStore.hasMenu('device/Product')) {

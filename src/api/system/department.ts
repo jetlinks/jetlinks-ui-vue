@@ -10,20 +10,20 @@ export const updateDepartment_api = (data: any) => server.put(`/organization/${d
 export const delDepartment_api = (id: string) => server.remove(`/organization/${id}`);
 
 
-// 获取所属产品列表
+// 获取所属物模型列表
 export const getDeviceProduct_api = (data: object) => server.get(`/device/product/_query/no-paging`, data);
-// 获取产品列表
+// 获取物模型列表
 export const getDeviceOrProductList_api = (data: object) => server.post(`/device-product/_query`, data);
 // 获取设备列表
 export const getDeviceList_api = (data: object) => server.post(`/device/instance/_query`, data);
-// 根据产品的id获取产品的权限
+// 根据物模型的id获取物模型的权限
 export const getPermission_api = (type: 'device' | 'product', ids: object, id: string) => server.post(`/assets/bindings/${type}/org/${id}/_query`, ids);
 // 获取绑定的权限
 export const getBindingsPermission = (type: 'device' | 'product', ids: string[]) => server.post(`/assets/bindings/${type}`, ids);
-// 获取产品的权限字典
+// 获取物模型的权限字典
 export const getPermissionDict_api = () => server.get(`/assets/bindings/product/permissions`);
 
-// 部门绑定产品
+// 部门绑定物模型
 export const bindDeviceOrProductList_api = (type: 'device' | 'product', data: object) => server.post(`/assets/bind/${type}`, data);
 // 批量解绑
 export const unBindDeviceOrProduct_api = (type: 'device' | 'product', data: object) => server.post(`/assets/unbind/${type}`, data);

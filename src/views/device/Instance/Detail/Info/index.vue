@@ -43,7 +43,7 @@
                 </div>
             </div>
         </j-descriptions-item>
-        <j-descriptions-item label="产品名称">{{
+        <j-descriptions-item label="物模型名称">{{
             instanceStore.current?.productName
         }}</j-descriptions-item>
         <j-descriptions-item label="设备类型">{{

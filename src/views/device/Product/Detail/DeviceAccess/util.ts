@@ -5,7 +5,7 @@ export const steps = [
     popover: {
       className: 'driver',
       title: `<div id='title'>配置物模型</div><div id='guide'>1/3</div>`,
-      description: `配置产品物模型，实现设备在云端的功能描述。`,
+      description: `配置物模型物模型，实现设备在云端的功能描述。`,
       position: 'bottom',
     },
   },
@@ -13,8 +13,8 @@ export const steps = [
     element: '.ant-switch',
     popover: {
       className: 'driver',
-      title: `<div id='title'>启用产品</div><div id='guide'>2/3</div>`,
-      description: '启用产品后，可在产品下新增设备。',
+      title: `<div id='title'>启用物模型</div><div id='guide'>2/3</div>`,
+      description: '启用物模型后，可在物模型下新增设备。',
       position: 'bottom',
     },
   },
@@ -44,7 +44,7 @@ export const steps1 = [
     popover: {
       className: 'driver',
       title: `<div id='title'>配置物模型</div><div id='guide'>2/4</div>`,
-      description: `配置产品物模型，实现设备在云端的功能描述。`,
+      description: `配置物模型物模型，实现设备在云端的功能描述。`,
       position: 'bottom',
     },
   },
@@ -52,8 +52,8 @@ export const steps1 = [
     element: '.ant-switch',
     popover: {
       className: 'driver',
-      title: `<div id='title'>启用产品</div><div id='guide'>3/4</div>`,
-      description: '启用产品后，可在产品下新增设备。',
+      title: `<div id='title'>启用物模型</div><div id='guide'>3/4</div>`,
+      description: '启用物模型后，可在物模型下新增设备。',
       position: 'bottom',
     },
   },

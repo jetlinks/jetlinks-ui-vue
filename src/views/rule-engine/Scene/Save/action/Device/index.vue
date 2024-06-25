@@ -9,7 +9,7 @@
     >
         <j-steps :current="current" @change="stepChange">
             <j-step>
-                <template #title>选择产品</template>
+                <template #title>选择物模型</template>
             </j-step>
             <j-step>
                 <template #title>选择设备</template>
@@ -216,7 +216,7 @@ const save = async (step?: number) => {
     if (_step === 0) {
         DeviceModel.productId
             ? (current.value = 1)
-            : onlyMessage('请选择产品', 'error');
+            : onlyMessage('请选择物模型', 'error');
     } else if (_step === 1) {
         if (deviceRef.value) {
             await deviceRef.value?.onFormSave();

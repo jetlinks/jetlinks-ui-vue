@@ -9,7 +9,7 @@
   >
     <j-steps :current='addModel.stepNumber' @change='stepChange'>
       <j-step>
-        <template #title>选择产品</template>
+        <template #title>选择物模型</template>
       </j-step>
       <j-step>
         <template #title>选择设备</template>
@@ -157,7 +157,7 @@ const handleOptions = (data: TriggerDeviceOptions) => {
     _options.selectorIcon = 'icon-shebei1';
   } else if (addModel.selector === 'org') {
     _options.name = addModel.selectorValues?.[0].name + '的';
-    _options.productName = addModel.productDetail.name; // 产品名称
+    _options.productName = addModel.productDetail.name; // 物模型名称
     _options.selectorIcon = 'icon-zuzhi';
   } else {
     _options.name = '所有的' + addModel.productDetail.name;
@@ -225,7 +225,7 @@ const getDeviceDetailByMetadata = async (deviceId: string) => {
 const save = async (step?: number) => {
   let _step = step !== undefined ? step : addModel.stepNumber
   if (_step === 0) {
-    addModel.productId ? addModel.stepNumber = 1 : onlyMessage('请选择产品', 'error')
+    addModel.productId ? addModel.stepNumber = 1 : onlyMessage('请选择物模型', 'error')
   } else if (_step === 1) {
     const isFixed = addModel.selector === 'fixed' // 是否选择方式为设备
     if ((['fixed', 'org'].includes(addModel.selector) ) && !addModel.selectorValues?.length) {

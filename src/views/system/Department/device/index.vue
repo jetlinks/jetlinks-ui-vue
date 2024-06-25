@@ -271,7 +271,7 @@ const columns = [
         },
     },
     {
-        title: '所属产品',
+        title: '所属物模型',
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,
@@ -542,7 +542,7 @@ const table = {
         }
     },
     clickAdd: (type?: string) => {
-        // 设备资产分配弹窗操作类型: type = 'handle': 手动点击资产分配按钮, !type产品资产分配后, 自动弹出设备资产分配
+        // 设备资产分配弹窗操作类型: type = 'handle': 手动点击资产分配按钮, !type物模型资产分配后, 自动弹出设备资产分配
         departmentStore.setType(type);
         dialogs.addShow = true;
     },

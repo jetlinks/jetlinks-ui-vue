@@ -53,7 +53,7 @@ const rules = [{
         ) {
           return Promise.reject(new Error('该数据已发生变更，请重新配置'));
         }
-      //  判断产品
+      //  判断物模型
       //  判断设备或者组织
       //  判断属性、事件、功能
     }

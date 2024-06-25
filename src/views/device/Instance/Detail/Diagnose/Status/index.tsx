@@ -36,7 +36,7 @@ const Status = defineComponent({
         const device = ref(instanceStore.current)
         const gateway = ref<Partial<Record<string, any>>>({}) // 网关信息
         const parent = ref<Partial<Record<string, any>>>({}) // 父设备
-        const product = ref<Partial<Record<string, any>>>({}) // 产品
+        const product = ref<Partial<Record<string, any>>>({}) // 物模型
 
         const artificialVisible = ref<boolean>(false)
         const artificialData = ref<Partial<Record<string, any>>>()
@@ -605,14 +605,14 @@ const Status = defineComponent({
             }
         })
 
-        // 产品状态
+        // 物模型状态
         const diagnoseProduct = () => new Promise(async (resolve) => {
             if (unref(device).state?.value === 'online') {
                 setTimeout(() => {
                     list.value = modifyArrayList(unref(list), {
                         key: 'product',
-                        name: '产品状态',
-                        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                        name: '物模型状态',
+                        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
                         status: 'success',
                         text: '正常',
                         info: null,
@@ -629,8 +629,8 @@ const Status = defineComponent({
                         const state = response.result?.state
                         _item = {
                             key: 'product',
-                            name: '产品状态',
-                            desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                            name: '物模型状态',
+                            desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
                             status: state === 1 ? 'success' : 'error',
                             text: state === 1 ? '正常' : '异常',
                             info:
@@ -641,7 +641,7 @@ const Status = defineComponent({
                                                 status="default"
                                                 text={
                                                     <span>
-                                                        产品已禁用，请
+                                                        物模型已禁用，请
                                                         <PermissionButton
                                                             hasPermission="device/Product:action"
                                                             type="link"
@@ -656,8 +656,8 @@ const Status = defineComponent({
                                                                             list.value,
                                                                             {
                                                                                 key: 'product',
-                                                                                name: '产品状态',
-                                                                                desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                                                                name: '物模型状态',
+                                                                                desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
                                                                                 status: 'success',
                                                                                 text: '正常',
                                                                                 info: null,
@@ -669,7 +669,7 @@ const Status = defineComponent({
                                                         >
                                                             启用
                                                         </PermissionButton>
-                                                        产品
+                                                        物模型
                                                     </span>
                                                 }
                                             />
@@ -775,7 +775,7 @@ const Status = defineComponent({
             }
         })
 
-        // 产品认证配置
+        // 物模型认证配置
         const diagnoseProductAuthConfig = () => new Promise(async (resolve) => {
             const _device = unref(device)
             if (_device.productId) {
@@ -790,8 +790,8 @@ const Status = defineComponent({
                                 list.value,
                                 {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: `物模型-${item?.name}`,
+                                    desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'loading',
                                     text: '正在诊断中...',
                                     info: null,
@@ -804,8 +804,8 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: `物模型-${item?.name}`,
+                                    desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'success',
                                     text: '正常',
                                     info: null,
@@ -821,8 +821,8 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: `物模型-${item?.name}`,
+                                    desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'error',
                                     text: '异常',
                                     info: (
@@ -848,8 +848,8 @@ const Status = defineComponent({
                                                                         list.value,
                                                                         {
                                                                             key: `product-auth${i}`,
-                                                                            name: `产品-${item?.name}`,
-                                                                            desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                            name: `物模型-${item?.name}`,
+                                                                            desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                             status: 'success',
                                                                             text: '正常',
                                                                             info: null,
@@ -872,8 +872,8 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: `物模型-${item?.name}`,
+                                    desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                     status: 'warning',
                                     text: '可能存在异常',
                                     info: (
@@ -889,8 +889,8 @@ const Status = defineComponent({
                                                                     manualInspection({
                                                                         type: 'product',
                                                                         key: `product-auth${i}`,
-                                                                        name: `产品-${item?.name}`,
-                                                                        desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                        name: `物模型-${item?.name}`,
+                                                                        desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                         data: { ...item },
                                                                         configuration: _configuration,
                                                                         productId: unref(device).productId,
@@ -899,7 +899,7 @@ const Status = defineComponent({
                                                             >
                                                                 人工检查
                                                             </Button>
-                                                            产品{item.name}
+                                                            物模型{item.name}
                                                             配置是否已填写正确,若您确定该项无需诊断可
                                                             <Popconfirm
                                                                 title="确认忽略？"
@@ -908,8 +908,8 @@ const Status = defineComponent({
                                                                         list.value,
                                                                         {
                                                                             key: `product-auth${i}`,
-                                                                            name: `产品-${item?.name}`,
-                                                                            desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                            name: `物模型-${item?.name}`,
+                                                                            desc: `诊断物模型${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
                                                                             status: 'success',
                                                                             text: '正常',
                                                                             info: null,
@@ -1578,8 +1578,8 @@ const Status = defineComponent({
                                 if (resp.status === 200) {
                                     list.value = modifyArrayList(list.value, {
                                         key: 'product',
-                                        name: '产品状态',
-                                        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                        name: '物模型状态',
+                                        desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
                                         status: 'success',
                                         text: '正常',
                                         info: null,

@@ -1,7 +1,7 @@
 import server from '@/utils/request';
 
 /**
- * 获取产品列表
+ * 获取物模型列表
  */
 export const getProductList  = (parmas?:any)  => server.get('/device/product/_query/no-paging?paging=false',parmas);
 
@@ -11,7 +11,7 @@ export const getProductList  = (parmas?:any)  => server.get('/device/product/_qu
 export const getDeviceList = (parmas?:any) => server.get('/device-instance/_query/no-paging?paging=false',parmas);
 
 /**
- * 获取有设备的告警的产品名称
+ * 获取有设备的告警的物模型名称
  */ 
 export const getAlarmProduct = (parmas:any) => server.post('/device-instance/_query',parmas) 
 

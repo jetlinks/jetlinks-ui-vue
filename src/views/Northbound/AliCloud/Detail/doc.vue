@@ -35,13 +35,13 @@
         <div class="image">
           <j-image width="100%" :src="getImage('/northbound/aliyun1.jpg')" />
         </div>
-        <h2> 3. 网桥产品</h2>
+        <h2> 3. 网桥物模型</h2>
         <div>
-          物联网平台对于阿里云物联网平台，是一个网关设备，需要映射到阿里云物联网平台的具体产品
+          物联网平台对于阿里云物联网平台，是一个网关设备，需要映射到阿里云物联网平台的具体物模型
         </div>
-        <h2> 4. 产品映射</h2>
+        <h2> 4. 物模型映射</h2>
         <div>
-          将阿里云物联网平台中的产品实例与物联网平台的产品实例进行关联。关联后需要进入该产品下的每一个设备的实例信息页，填入对应的阿里云物联网平台设备的DeviceName、DeviceSecret进行一对一绑定。
+          将阿里云物联网平台中的物模型实例与物联网平台的物模型实例进行关联。关联后需要进入该物模型下的每一个设备的实例信息页，填入对应的阿里云物联网平台设备的DeviceName、DeviceSecret进行一对一绑定。
         </div>
         <div class="image">
           <j-image width="100%" :src="getImage('/northbound/aliyun4.png')" />

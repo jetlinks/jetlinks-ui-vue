@@ -141,13 +141,13 @@ let alarmState = ref<Footer[]>([
 ]);
 const selectOpt1 = ref<Object[]>([
     { label: '设备', value: 'device' },
-    { label: '产品', value: 'product' },
+    { label: '物模型', value: 'product' },
     { label: '组织', value: 'org' },
     { label: '其它', value: 'other' },
 ]);
 const selectOpt2 = ref<SelectTypes['options']>([
     { label: '设备', value: 'device' },
-    { label: '产品', value: 'product' },
+    { label: '物模型', value: 'product' },
     { label: '其它', value: 'other' },
 ]);
 let queryCodition = reactive({
@@ -425,7 +425,7 @@ const selectChange = () => {
     if (queryCodition.targetType === 'device') {
         tip = '设备';
     } else if (queryCodition.targetType === 'product') {
-        tip = '产品';
+        tip = '物模型';
     } else if (queryCodition.targetType === 'org') {
         tip = '组织';
     }

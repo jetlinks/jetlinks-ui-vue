@@ -52,7 +52,7 @@ const opsStepDetails: recommendList[] = [
     {
         title: '协议管理',
         details:
-            '根据业务需求自定义开发对应的产品（设备模型）接入协议，并上传到平台。',
+            '根据业务需求自定义开发对应的物模型（设备模型）接入协议，并上传到平台。',
         iconUrl: '/images/home/Frame4528.png',
         linkUrl: 'link/Protocol',
     },

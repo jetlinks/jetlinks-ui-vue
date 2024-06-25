@@ -112,7 +112,7 @@
                                 <div class="doc">
                                     <h1>操作指引：</h1>
                                     <div>
-                                        1、CTWing端创建应用、产品、设备；配置完成后查看产品详情。其中产品ID以及Master-APIkey在JetLinks平台配置时会使用。
+                                        1、CTWing端创建应用、物模型、设备；配置完成后查看物模型详情。其中物模型ID以及Master-APIkey在JetLinks平台配置时会使用。
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img1" />
@@ -129,7 +129,7 @@
                                         </div> -->
                                     </div>
                                     <div>
-                                        3、IOT端创建产品，选中接入方式为CTWing，填写CTWing平台中的产品ID、Master-APIkey。
+                                        3、IOT端创建物模型，选中接入方式为CTWing，填写CTWing平台中的物模型ID、Master-APIkey。
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img2" />
@@ -166,7 +166,7 @@
                                         </j-descriptions-item>
                                     </j-descriptions>
                                     <div class="overLength">
-                                        5、CTWing端配置产品/设备/分组级订阅，订阅方URL地址请填写： {{
+                                        5、CTWing端配置物模型/设备/分组级订阅，订阅方URL地址请填写： {{
                                                 `${origin}/api/ctwing/${randomString()}/notify`
                                             }}（此处订阅地址可以在JetLinks平台中配置完成CTWing网关后再填写）。
                                     </div>
@@ -303,11 +303,11 @@
                             }}的设备接入网关
                         </p>
                         <p>
-                            2、创建产品，并选中接入方式为
+                            2、创建物模型，并选中接入方式为
                             {{
                                 props?.provider?.id === 'OneNet'
                                     ? 'OneNet'
-                                    : 'CTWing,选中后需填写CTWing平台中的产品ID、Master-APIkey。'
+                                    : 'CTWing,选中后需填写CTWing平台中的物模型ID、Master-APIkey。'
                             }}
                         </p>
                         <p>
