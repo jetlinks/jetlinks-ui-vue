@@ -72,7 +72,7 @@ const formData = reactive({
   type: props.value?.type,
   scale: props.value?.scale,
   expands: {
-    maxLength: props.value?.maxLength || props.value?.expands.maxLength,
+    maxLength: props.value?.maxLength || props.value?.expands?.maxLength,
   },
   boolean: {
     trueText: props.value?.trueText || '是',
@@ -135,7 +135,7 @@ const typeChange = (e) => {
 const initValue = () => {
   formData.type = props.value?.type;
   formData.scale = props.value?.scale;
-  formData.expands.maxLength = props.value?.maxLength || props.value?.expands.maxLength;
+  formData.expands.maxLength = props.value?.maxLength || props.value?.expands?.maxLength;
   formData.boolean = {
     trueText: props.value?.trueText || '是',
     trueValue: props.value?.trueValue || 'true',
