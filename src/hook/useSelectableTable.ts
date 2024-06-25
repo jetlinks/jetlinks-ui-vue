@@ -69,6 +69,7 @@ export function useSelectableTable() {
      * @param idList
      */
     const handleDefaultSelected = (idList: (string | number)[]) => {
+        idSet.reset();
         idList.forEach((id: string | number) => {
             idSet.setItem(id);
         });
