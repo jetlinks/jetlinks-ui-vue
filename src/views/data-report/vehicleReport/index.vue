@@ -85,6 +85,7 @@ import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 const menuStory = useMenuStore();
 
 const configRef = ref<Record<string, any>>({});
@@ -108,6 +109,8 @@ const {
     handleSelectAll,
     handleClearSelected,
 } = useSelectableTable();
+
+const { handleSearch } = useProSearch(globParams, handleClearSelected);
 
 const columns = [
     {
@@ -208,14 +211,14 @@ const queryData = async (_params: any) => {
     }
 };
 
-/**
- * 搜索
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
-    globParams.value = _params;
-};
+// /**
+//  * 搜索
+//  * @param _params
+//  */
+// const handleSearch = (_params: any) => {
+//     if (_params.terms && _params.terms.length > 0) handleClearSelected();
+//     globParams.value = _params;
+// };
 
 const handelDetail = (slotProps: any) => {
     if (!slotProps.deviceId) {

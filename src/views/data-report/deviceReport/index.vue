@@ -116,6 +116,7 @@ import moment from 'moment';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { onlyMessage } from '@/utils/comm';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 
 const {
     selectedRowKeys,
@@ -135,7 +136,8 @@ const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSize = ref<number>(12);
 
-const selectIds = ref<Array<number | string>>([]);
+// 调用useProSearch获取handleSearch方法
+const { handleSearch } = useProSearch(globParams, handleClearSelected);
 
 const type = ref<string>('xlsx');
 
@@ -251,14 +253,14 @@ const queryData = async (_params: any) => {
     }
 };
 
-/**
- * 搜索
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
-    globParams.value = _params;
-};
+// /**
+//  * 搜索
+//  * @param _params
+//  */
+// const handleSearch = (_params: any) => {
+//     if (_params.terms && _params.terms.length > 0) handleClearSelected();
+//     globParams.value = _params;
+// };
 
 /**
  * @function handleExport 导出

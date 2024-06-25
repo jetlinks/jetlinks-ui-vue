@@ -85,6 +85,7 @@ import { Modal, Textarea } from 'jetlinks-ui-components';
 import { queryLogsType } from '@/api/device/instance';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 
 const {
     selectedRowKeys,
@@ -106,7 +107,11 @@ const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSize = ref<number>(12);
 
-const selectIds = ref<Array<number | string>>([]);
+// 调用useProSearch获取handleSearch方法
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    'createTime',
+]);
+
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
     const resp: any = await queryDeviceLogs(_params);
@@ -294,15 +299,15 @@ const handelDetail = (data: any) => {
     });
 };
 
-/**
- * 搜索
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
-    handleSearchByDate(_params, ['createTime']);
-    globParams.value = _params;
-};
+// /**
+//  * 搜索
+//  * @param _params
+//  */
+// const handleSearch = (_params: any) => {
+//     if (_params.terms && _params.terms.length > 0) handleClearSelected();
+//     handleSearchByDate(_params, ['createTime']);
+//     globParams.value = _params;
+// };
 </script>
 
 <style lang="less" scoped></style>

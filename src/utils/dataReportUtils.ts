@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { Ref } from 'vue';
 
 /**
  * @function handleTimeStamp 将搜索的时间转为时间戳
@@ -16,7 +17,8 @@ export const handleTimeStamp = (term: { [key: string]: any }) => {
 };
 
 /**
- * @function handleSearchByDate 处理搜索条件为时间的情况
+ * @function handleSearchByDate
+ * @description 处理搜索条件为时间的情况
  * @param _params 搜索携带的条件
  * @param columns 要过滤的时间字段
  */
@@ -106,4 +108,40 @@ export const formatDate = (timeStamp: number | string | undefined) => {
         res = timeStamp;
     }
     return dayjs(res).format('YYYY-MM-DD HH:mm:ss');
+};
+
+/**
+ * @function handleResetSelectedRows
+ * @description 处理重置和切换搜索条件时，清空选中的行
+ * @param params 搜索携带的条件对象
+ * @param prevSearchTerms 上一次搜索条件
+ * @param resetCallback 重置选中的回调
+ */
+export const handleResetSelectedRows = (
+    params: any,
+    prevSearchTerms: Ref<any>,
+    resetCallback: () => void,
+) => {
+    // 如果携带搜索条件时
+    if (params.terms && params.terms.length > 0) {
+        let termsIsChange: boolean = false;
+        const terms = params.terms[0].terms[0];
+
+        // 如果上一次的搜索条件与这次的搜索条件不同，则清空选中的行
+        for (const key in terms) {
+            if (terms[key] !== prevSearchTerms.value[key]) {
+                termsIsChange = true;
+                prevSearchTerms.value = terms;
+                break;
+            }
+        }
+
+        termsIsChange && resetCallback();
+    } else {
+        // 如果currentSearchTerms不为空时，说明上次搜索条件有值，则这次搜索为重置操作，也清空选中的行
+        if (Reflect.ownKeys(prevSearchTerms.value).length > 0) {
+            resetCallback();
+            prevSearchTerms.value = {};
+        }
+    }
 };

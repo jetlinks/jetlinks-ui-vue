@@ -97,7 +97,10 @@ import { useSelect } from '@/utils/hooks/useSelect';
 import { onlyMessage } from '@/utils/comm';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
-import { handleSearchByDate } from '@/utils/dataReportUtils';
+import {
+    handleResetSelectedRows,
+    handleSearchByDate,
+} from '@/utils/dataReportUtils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
 
 const {
@@ -392,12 +395,16 @@ const columns = [
     },
 ];
 
+// 上一次搜索的条件，这里不能使用null，null.property会报错，而{}.property 是 undefined 不会报错
+let prevSearchTerms = ref<any>({});
+
 /**
  * 搜索
  * @param _params
  */
 const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
+    // 处理需要清空选中行的情况
+    handleResetSelectedRows(_params, prevSearchTerms, handleClearSelected);
     handleSearchDate(_params);
     // 下方函数用于处理日期型时间的搜索
     handleSearchByDate(_params, ['reportTime']);
