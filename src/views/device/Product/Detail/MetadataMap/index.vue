@@ -270,7 +270,7 @@ const getDefaultMetadata = async () => {
             const _m = concatProperties.find((p) => p.id === item.id);
             return {
                 index: index + 1,
-                id: item.id, // 产品物模型id
+                id: item.id, // 物模型物模型id
                 name: item?.name,
                 type: item.valueType?.type,
                 customMapping: _m?.customMapping,

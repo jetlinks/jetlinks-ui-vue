@@ -22,7 +22,7 @@ const check = async (): Promise<boolean> => {
   const deviceTrigger = data.value.trigger!.device!
   const productId = deviceTrigger.productId
 
-  // 判断产品是否删除
+  // 判断物模型是否删除
   const proResp = await queryProductList({ terms: [{ terms: [{ column: 'id', termType: 'eq', value: productId }]}]})
   if (proResp.success && (proResp.result as any)?.total === 0) {
     data.value.trigger!.device!.productId = ''
@@ -31,7 +31,7 @@ const check = async (): Promise<boolean> => {
 
   const productDetail = proResp?.result?.data?.[0]
   const selectorValues = deviceTrigger.selectorValues?.map(item => item.value)
-  let metadata = JSON.parse(productDetail?.metadata || '{}') // 获取当前产品物模型
+  let metadata = JSON.parse(productDetail?.metadata || '{}') // 获取当前物模型物模型
 
   // 判断设备是否删除
   if (deviceTrigger.selector === 'fixed') { // 设备

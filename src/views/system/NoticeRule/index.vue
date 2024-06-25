@@ -75,7 +75,7 @@ const systemNotice = [
         children: [
             {
                 provider: 'alarm-product',
-                name: '产品告警',
+                name: '物模型告警',
             },
             {
                 provider: 'alarm-device',

@@ -43,13 +43,13 @@ const formTouchOff = () => {
 }
 
 /**
- * 校验当前执行动作的设备或者产品是否删除
+ * 校验当前执行动作的设备或者物模型是否删除
  */
 const checkDeviceDelete = async () => {
   const item = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device
   const proResp = await queryProductList({ terms: [{ column: 'id', termType: 'eq', value: item!.productId }]})
 
-  if (proResp.success && (proResp.result as any)?.total === 0 && item && item.productId) { // 产品已删除
+  if (proResp.success && (proResp.result as any)?.total === 0 && item && item.productId) { // 物模型已删除
     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.productId = undefined
     formTouchOff()
     return
@@ -77,7 +77,7 @@ const checkDeviceDelete = async () => {
       return
     }
 
-  } else if (item!.selector === 'context') { // 如果是按变量，校验上一个设备输出的产品id
+  } else if (item!.selector === 'context') { // 如果是按变量，校验上一个设备输出的物模型id
     if (props.name === 0) {
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
       formTouchOff()

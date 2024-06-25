@@ -7,7 +7,7 @@
             </div>
             <div class="right">
               <j-tabs v-if='isNoCommunity' v-model:activeKey="activeKey" destroyInactiveTabPane>
-                <j-tab-pane key="product" tab="产品">
+                <j-tab-pane key="product" tab="物模型">
                   <Product
                     :parentId="departmentId"
                     @open-device-bind="openDeviceBind"

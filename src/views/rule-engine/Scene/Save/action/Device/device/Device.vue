@@ -53,7 +53,7 @@
                             <div>{{ slotProps.deviceType?.text }}</div>
                         </j-col>
                         <j-col :span="12">
-                            <div class="card-item-content-text">产品名称</div>
+                            <div class="card-item-content-text">物模型名称</div>
                             <Ellipsis style="width: 100%">
                                 {{ slotProps.productName }}
                             </Ellipsis>

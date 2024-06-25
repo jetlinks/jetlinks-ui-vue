@@ -165,7 +165,7 @@ const handleAddClick = () => {
   metadataStore.set('type', type)
   metadataStore.set('action', 'add')
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    onlyMessage('修改物模型后会脱离产品物模型', 'warning')
+    onlyMessage('修改物模型后会脱离物模型物模型', 'warning')
   }
 }
 
@@ -187,7 +187,7 @@ const handleEditClick = (record: MetadataItem) => {
   metadataStore.model.type = type;
   metadataStore.model.action = 'edit';
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    onlyMessage('修改物模型后会脱离产品物模型', 'warning');
+    onlyMessage('修改物模型后会脱离物模型物模型', 'warning');
   }
 }
 

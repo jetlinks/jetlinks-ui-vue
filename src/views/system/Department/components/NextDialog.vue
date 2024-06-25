@@ -8,7 +8,7 @@
         class="edit-dialog-container"
         @cancel="cancel"
     >
-        是否继续分配产品下的具体设备
+        是否继续分配物模型下的具体设备
     </j-modal>
 </template>
 

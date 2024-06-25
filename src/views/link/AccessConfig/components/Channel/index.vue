@@ -68,7 +68,7 @@
                     <TitleComponent data="设备接入指引" />
                     <p>1、配置{{ provider.name }}通道</p>
                     <p>2、创建{{ provider.name }}设备接入网关</p>
-                    <p>3、创建产品，并选中接入方式为{{ provider.name }}</p>
+                    <p>3、创建物模型，并选中接入方式为{{ provider.name }}</p>
                     <p>4、添加设备，单独为每一个设备进行数据点绑定</p>
                 </div>
             </j-col>

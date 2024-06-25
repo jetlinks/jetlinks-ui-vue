@@ -138,7 +138,7 @@ const TypeList = [
         label: '自定义',
         value: 'fixed',
         image: getImage('/scene/device-custom.png'),
-        tip: '自定义选择当前产品下的任意设备',
+        tip: '自定义选择当前物模型下的任意设备',
     },
     {
         label: '按关系',
@@ -150,7 +150,7 @@ const TypeList = [
         label: '按标签',
         value: 'tag',
         image: getImage('/scene/device-tag.png'),
-        tip: '按标签选择产品下具有特定标签的设备',
+        tip: '按标签选择物模型下具有特定标签的设备',
     },
     {
         label: '按变量',
@@ -196,7 +196,7 @@ const sourceChangeEvent = async () => {
         branchGroup: props.branchesName,
         action: props.name - 1,
     };
-    //判断相同产品才有按变量
+    //判断相同物模型才有按变量
     const productId =
         data.value?.branches?.[props.branchesName].then?.[props.thenName]
             ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;

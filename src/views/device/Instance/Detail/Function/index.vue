@@ -4,7 +4,7 @@
         style="margin-top: 50px"
     >
         <template #description>
-            请配置对应产品的
+            请配置对应物模型的
             <!-- <a @click="emits('onJump', 'Metadata')">物模型属性功能</a> -->
             <a @click="onJump">物模型属性功能</a>
         </template>

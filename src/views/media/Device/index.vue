@@ -242,7 +242,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'productId',
         key: 'productId',
         scopedSlots: true,

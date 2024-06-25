@@ -220,7 +220,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'name',
         key: 'name',
         width: 220,
@@ -320,7 +320,7 @@ const getActions = (
                     'accessProvider',
                     'messageProtocol',
                 ]);
-                downloadObject(extra, data.name + '产品');
+                downloadObject(extra, data.name + '物模型');
             },
         },
         {
@@ -353,7 +353,7 @@ const getActions = (
             text: '删除',
             disabled: data.state !== 0,
             tooltip: {
-                title: data.state !== 0 ? '已启用的产品不能删除' : '删除',
+                title: data.state !== 0 ? '已启用的物模型不能删除' : '删除',
             },
             popConfirm: {
                 title: '确认删除?',
@@ -404,7 +404,7 @@ const beforeUpload = (file: any) => {
             return false;
         }
         const data = JSON.parse(text);
-        // 设置导入的产品状态为未发布
+        // 设置导入的物模型状态为未发布
         data.state = 0;
         if (Array.isArray(data)) {
             onlyMessage('请上传正确格式文件', 'error');
@@ -412,7 +412,7 @@ const beforeUpload = (file: any) => {
         }
         delete data.state;
         if (!data?.name) {
-            data.name = '产品' + Date.now();
+            data.name = '物模型' + Date.now();
         }
         if (!data?.deviceType || JSON.stringify(data?.deviceType) === '{}') {
             onlyMessage('缺少deviceType字段或对应的值', 'error');
@@ -559,7 +559,7 @@ const query = reactive({
             },
         },
         {
-            title: '产品分类',
+            title: '物模型分类',
             key: 'classified',
             dataIndex: 'classifiedId',
             search: {

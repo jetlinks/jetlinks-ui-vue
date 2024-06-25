@@ -18,9 +18,9 @@
                 </j-col>
                 <j-col :span="12">
                     <j-form-item
-                        label="产品名称"
+                        label="物模型名称"
                         name="productId"
-                        :rules="{ required: true, message: '请选择产品名称' }"
+                        :rules="{ required: true, message: '请选择物模型名称' }"
                     >
                         <j-select
                             :disabled="props.childData?.id"
@@ -68,7 +68,7 @@ const emit = defineEmits(['closeChildSave']);
 const productList = ref();
 const visible = ref(false);
 /**
- * 获取产品列表
+ * 获取物模型列表
  */
 const getProductList = async () => {
     const res = await getProductListNoPage({
@@ -138,8 +138,8 @@ const getEdgeMapData = () => {
     }
 };
 /**
- * 根据产品id获取对应映射列表
- * @param e 产品id
+ * 根据物模型id获取对应映射列表
+ * @param e 物模型id
  */
 const selectChange = (e: any) => {
     if (e) {

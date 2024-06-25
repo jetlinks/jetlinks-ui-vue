@@ -133,7 +133,7 @@ const props = defineProps<{
 }>();
 // 弹窗相关
 const loading = ref(false);
-// 资产咨询次数, 产品分配后自动进入的设备资产, 第一次需要带上产品id查询
+// 资产咨询次数, 物模型分配后自动进入的设备资产, 第一次需要带上物模型id查询
 const queryCount = ref(0);
 
 const confirm = () => {
@@ -152,7 +152,7 @@ const confirm = () => {
         ),
     }));
 
-    // 分配产品资产后, 进入设备资产分配
+    // 分配物模型资产后, 进入设备资产分配
     // departmentStore.setProductId(table.selectedRows.map((item: any) => item.id));
 
     loading.value = true;
@@ -340,7 +340,7 @@ const table: any = {
                                     };
                                 })
                                 ?.sort((a: any, b: any) => a.idx - b.idx);
-                            // 产品的状态进行转换处理
+                            // 物模型的状态进行转换处理
                             if (props.assetType === 'product') {
                                 item.state = {
                                     value:
@@ -399,7 +399,7 @@ const table: any = {
             //     queryCount.value > 1 ||
             //     departmentStore.optType === 'handle'
             // ) {
-            //     // 非设备|产品id不存在|有其他查询操作(queryCount+1)|设备页面手动点击资产分配, 均删除产品带入的id
+            //     // 非设备|物模型id不存在|有其他查询操作(queryCount+1)|设备页面手动点击资产分配, 均删除物模型带入的id
             //     terms[0].terms.pop();
             // }
             if (oParams.terms && oParams.terms.length > 0) {

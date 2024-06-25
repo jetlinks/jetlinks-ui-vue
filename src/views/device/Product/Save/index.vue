@@ -1,4 +1,4 @@
-<!-- 新增、编辑产品 -->
+<!-- 新增、编辑物模型 -->
 <template>
     <j-modal
         :title="props.title"
@@ -59,11 +59,11 @@
                         </j-form-item>
                     </j-col>
                 </j-row>
-                <j-form-item label="产品分类" name="classifiedId">
+                <j-form-item label="物模型分类" name="classifiedId">
                     <j-tree-select
                         showSearch
                         v-model:value="form.classifiedId"
-                        placeholder="请选择产品分类"
+                        placeholder="请选择物模型分类"
                         :tree-data="treeList"
                         @change="valueChange"
                         allow-clear
@@ -239,7 +239,7 @@ const valueChange = (value: string, label: string) => {
     form.classifiedName = label[0];
 };
 /**
- * 查询产品分类
+ * 查询物模型分类
  */
 const queryProductTree = async () => {
     category(encodeQuery({ sorts: { sortIndex: 'asc' } })).then((resp) => {
@@ -250,7 +250,7 @@ const queryProductTree = async () => {
     });
 };
 /**
- * 处理产品分类key
+ * 处理物模型分类key
  */
 const dealProductTree = (arr: any) => {
     return arr.map((element: any) => {
@@ -327,7 +327,7 @@ const submitData = () => {
                 // 编辑
                 form.classifiedId
                     ? form.classifiedId
-                    : (form.classifiedId = ''); // 产品分类不选传空字符串
+                    : (form.classifiedId = ''); // 物模型分类不选传空字符串
                 form.classifiedName
                     ? form.classifiedName
                     : (form.classifiedName = '');

@@ -7,7 +7,7 @@
     @cancel='cancel'
   >
     <div>
-      <!--   选择产品   -->
+      <!--   选择物模型   -->
       <div v-if='steps === 0'>
         <Product
           v-model:rowKey='importData.productId'
@@ -105,7 +105,7 @@ const productChange = (detail: any) => {
 const next = () => {
   if (steps.value === 0) {
     if (!importData.productId) {
-      return onlyMessage('请选择产品', 'error')
+      return onlyMessage('请选择物模型', 'error')
     }
     if (productDetail.value?.accessProvider !== 'plugin_gateway') {
       importData.type = 'file'

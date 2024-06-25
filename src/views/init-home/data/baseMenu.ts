@@ -412,7 +412,7 @@ export default [
                     },
                     {
                         code: 'device/Product',
-                        name: '产品',
+                        name: '物模型',
                         owner: 'iot',
                         //parentId: '1-3',
                         id: '8ddbb67de5f65514105d47b448bfd70e',
@@ -820,7 +820,7 @@ export default [
                     },
                     {
                         code: 'device/Category',
-                        name: '产品分类',
+                        name: '物模型分类',
                         owner: 'iot',
                         //parentId: '1-3',
                         id: 'bc83f18659982abb9ac1a96362fc3372',

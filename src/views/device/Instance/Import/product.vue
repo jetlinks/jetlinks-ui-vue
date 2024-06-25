@@ -6,7 +6,7 @@
     class="device-import-product"
     target="device-import-product"
   />
-  <div class="alert">请选择产品，本次批量导入的设备将成为该产品的所属设备</div>
+  <div class="alert">请选择物模型，本次批量导入的设备将成为该物模型的所属设备</div>
   <j-scrollbar :height='400'>
     <j-pro-table
       model='CARD'

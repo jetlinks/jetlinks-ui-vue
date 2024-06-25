@@ -79,14 +79,14 @@
                     :rules="[
                         {
                             required: true,
-                            message: '请选择所属产品',
+                            message: '请选择所属物模型',
                         },
                     ]"
                 >
                     <template #label>
                         <span
-                            >所属产品
-                            <j-tooltip title="只能选择“正常”状态的产品">
+                            >所属物模型
+                            <j-tooltip title="只能选择“正常”状态的物模型">
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
@@ -98,7 +98,7 @@
                         showSearch
                         v-model:value="modelRef.productId"
                         :disabled="!!data?.id"
-                        placeholder="请选择状态为“正常”的产品"
+                        placeholder="请选择状态为“正常”的物模型"
                     >
                         <j-select-option
                             :value="item.id"

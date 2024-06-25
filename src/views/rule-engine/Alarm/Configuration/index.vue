@@ -243,7 +243,7 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '产品',
+                    label: '物模型',
                     value: 'product',
                 },
                 {
@@ -372,7 +372,7 @@ const current = ref<any>({});
 const defaultLevel = ref<any[]>([]);
 
 const map = {
-    product: '产品',
+    product: '物模型',
     device: '设备',
     org: '组织',
     other: '其他',

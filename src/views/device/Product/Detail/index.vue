@@ -108,7 +108,7 @@
                 :disabled="productStore.current?.state === 0"
                 :tooltip="
                     productStore.current?.state === 0
-                        ? { title: '请先启用产品' }
+                        ? { title: '请先启用物模型' }
                         : undefined
                 "
                 hasPermission="device/Product:update"
@@ -226,7 +226,7 @@ const onTabChange = (e: string) => {
 };
 
 /**
- * 启用产品
+ * 启用物模型
  */
 const handleDeploy = async () => {
     if (productStore.current.id) {
@@ -239,7 +239,7 @@ const handleDeploy = async () => {
 };
 
 /**
- * 禁用产品
+ * 禁用物模型
  */
 const handleUndeploy = async () => {
     if (productStore.current.id) {

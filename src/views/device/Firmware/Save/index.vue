@@ -27,13 +27,13 @@
               </j-col>
               <j-col :span="24"
               ><j-form-item
-                  label="所属产品"
+                  label="所属物模型"
                   v-bind="validateInfos.productId"
               >
                 <j-select
                     v-model:value="formData.productId"
                     :options="productOptions"
-                    placeholder="请选择所属产品"
+                    placeholder="请选择所属物模型"
                     allowClear
                     show-search
                     :filter-option="filterOption"
@@ -292,7 +292,7 @@ const validatorProductExist = async (_: Record<string, any>, value: string) => {
     if(dt){
       return Promise.resolve();
     } else {
-      return Promise.reject('当前产品不存在，请选择产品')
+      return Promise.reject('当前物模型不存在，请选择物模型')
     }
   }
 };
@@ -317,7 +317,7 @@ const { resetFields, validate, validateInfos } = useForm(
             { max: 64, message: '最多可输入64个字符' },
         ],
         productId: [
-            { required: true, message: '请选择所属产品' },
+            { required: true, message: '请选择所属物模型' },
             { validator: validatorProductExist, trigger: 'blur' }
         ],
         version: [

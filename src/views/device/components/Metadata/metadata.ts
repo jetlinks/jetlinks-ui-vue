@@ -72,7 +72,7 @@ export const asyncUpdateMetadata = (
       const metadata = JSON.parse(data.metadata || '{}')
       const dealMetadata = cloneDeep(metadata)
       const productMetaData = JSON.parse(data?.productMetadata || '{}')
-      // 筛选出产品的物模型 剔除不传递给接口保存
+      // 筛选出物模型的物模型 剔除不传递给接口保存
       const productMetaDataMap = new Map()
       Object.keys(productMetaData).forEach((key:any)=>{
         if(Array.isArray(productMetaData[key])){
@@ -85,7 +85,7 @@ export const asyncUpdateMetadata = (
       Object.keys(metadata).forEach((key:any)=>{
         if(Array.isArray(metadata[key])){
           dealMetadata[key] =  metadata[key].filter((item:any,index:number)=>{
-            //判断产品物模型是否有该id
+            //判断物模型物模型是否有该id
             return !(productMetaDataMap.get(key) && productMetaDataMap.get(key).includes(item.id))
           })
         }
@@ -98,7 +98,7 @@ export const asyncUpdateMetadata = (
  * 删除物模型数据
  * @param type 物模型类型
  * @param item 删除的数据
- * @param data 设备/产品数据
+ * @param data 设备/物模型数据
  * @param onEvent 回调
  */
 export const removeMetadata = (

@@ -162,10 +162,10 @@
                                 <div class="doc">
                                     <h1>操作指引：</h1>
                                     <div>
-                                        1、登录OneNet平台创建产品、设备，并配置HTTP的全局推送
+                                        1、登录OneNet平台创建物模型、设备，并配置HTTP的全局推送
                                     </div>
                                     <div>
-                                        2、获取OneNet平台的产品Key
+                                        2、获取OneNet平台的物模型Key
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img5" />
@@ -174,7 +174,7 @@
                                         3、IOT端创建类型为OneNet的设备接入网关
                                     </div>
                                     <div>
-                                        4、IOT端创建产品，选中接入方式为OneNet类型的设备接入网关，填写Master-APIkey（OneNet端的产品Key）
+                                        4、IOT端创建物模型，选中接入方式为OneNet类型的设备接入网关，填写Master-APIkey（OneNet端的物模型Key）
                                     </div>
                                     <div class="image">
                                         <j-image width="100%" :src="img6" />
@@ -249,7 +249,7 @@
                                             >说明</j-descriptions-item
                                         >
                                         <j-descriptions-item label="apiKey"
-                                            >OneNet平台中具体产品的Master-APIkey</j-descriptions-item
+                                            >OneNet平台中具体物模型的Master-APIkey</j-descriptions-item
                                         >
                                         <j-descriptions-item label="通知Token">
                                             填写OneNet数据推送配置中设置的Token
@@ -382,11 +382,11 @@
                             }}的设备接入网关
                         </p>
                         <p>
-                            2、创建产品，并选中接入方式为
+                            2、创建物模型，并选中接入方式为
                             {{
                                 props?.provider?.id === 'OneNet'
                                     ? 'OneNet'
-                                    : 'CTWing,选中后需填写CTWing平台中的产品ID、Master-APIkey。'
+                                    : 'CTWing,选中后需填写CTWing平台中的物模型ID、Master-APIkey。'
                             }}
                         </p>
                         <p>

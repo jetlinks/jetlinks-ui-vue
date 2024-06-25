@@ -3,7 +3,7 @@ import server from '@/utils/request'
 import { DeviceMetadata, ProductItem, DepartmentItem, MetadataType  } from '@/views/device/Product/typings'
 
 /**
- * 根据条件查询产品（不带翻页）
+ * 根据条件查询物模型（不带翻页）
  * @param data 查询条件
  * @returns 
  */
@@ -19,9 +19,9 @@ export const queryNoPagingPost = (data: any) => server.post(`/device-product/_qu
 export const convertMetadata = (direction: 'from' | 'to', type: string, data: any) => server.post<DeviceMetadata>(`/device/product/metadata/convert-${direction}/${type}`, data)
 
 /**
- * 修改产品
- * @param id 产品ID
- * @param data 产品数据
+ * 修改物模型
+ * @param id 物模型ID
+ * @param data 物模型数据
  * @returns 
  */
 export const modify = (id: string, data: any) => server.put(`/device-product/${id}`, data)
@@ -33,14 +33,14 @@ export const modify = (id: string, data: any) => server.put(`/device-product/${i
 export const getCodecs = () => server.get<{id: string, name: string}>('/device/product/metadata/codecs')
 
 /**
- * 根据产品ID获取产品详情
- * @param id 产品ID
+ * 根据物模型ID获取物模型详情
+ * @param id 物模型ID
  * @returns 
  */
 export const detail = (id: string) => server.get<ProductItem>(`/device-product/${id}`)
 
 /**
- * 产品分类
+ * 物模型分类
  * @param data 查询条件
  */
 export const category = (data: any) => server.get('/device/category/_tree?paging=false', data)
@@ -72,56 +72,56 @@ export const category = (data: any) => server.get('/device/category/_tree?paging
  export const queryGatewayList = (data: any = defaultGatewayData) => server.post('/gateway/device/_query/no-paging', data)
 
  /**
-  * 查询产品列表(分页)
+  * 查询物模型列表(分页)
   * @param data 查询条件
   */
  export const queryProductList = (data: any) => server.post('/device-product/_query', data)
 
  /**
- * 启用产品
- * @param productId 产品ID
+ * 启用物模型
+ * @param productId 物模型ID
  * @param data 
  * @returns 
  */
 export const _deploy = (productId: string) => server.post(`/device-product/${productId}/deploy`)
 
 /**
- * 禁用产品
- * @param productId 产品ID
+ * 禁用物模型
+ * @param productId 物模型ID
  * @param data 
  * @returns 
  */
 export const _undeploy = (productId: string) => server.post(`/device-product/${productId}/undeploy`)
 
 /**
- * 新增产品
+ * 新增物模型
  * @param data 
  * @returns 
  */
 export const addProduct = (data:any) => server.post('/device-product',data)
 
 /**
- * 修改产品
- * @param id 产品ID
+ * 修改物模型
+ * @param id 物模型ID
  * @param data 
  * @returns 
  */
 export const editProduct = (data: any) => server.put(`/device-product/${data.id}`, data)
 
 /**
- * 删除产品
- * @param id 产品ID
+ * 删除物模型
+ * @param id 物模型ID
  */
 export const deleteProduct = (id: string) => server.remove(`/device-product/${id}`)
 
 /**
- * 检测产品Id唯一性
- * @param id 产品ID
+ * 检测物模型Id唯一性
+ * @param id 物模型ID
  */
  export const queryProductId = (id: string) => server.get(`/device-product/${id}/exists`)
 /**
- * 保存产品
- * @param data 产品信息
+ * 保存物模型
+ * @param data 物模型信息
  * @returns 
  */
 export const saveProductMetadata = (data: Record<string, unknown>) => server.patch('/device-product', data)
@@ -188,8 +188,8 @@ export const getOperator = () => server.get<OperatorItem[]>('/property-calculate
 export const getStreamingAggType = () => server.get<Record<string, string>[]>('/dictionary/streaming-agg-type/items')
 
 /**
- * 根据指定的接入方式获取产品需要的配置信息
- * @pId 产品id
+ * 根据指定的接入方式获取物模型需要的配置信息
+ * @pId 物模型id
  * @accessId 设备接入id
  */
 export const getAccessConfig = (pId: string, accessId: string) => server.get(`/device-product/${pId}/${accessId}/config-metadata`)

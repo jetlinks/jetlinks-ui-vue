@@ -257,28 +257,30 @@ const saveChange = (val: any) => {
 const getData = (
     start: number,
     end: number,
-): Promise<{ sortArray: any[]}> => {
-    return new Promise((resolve) => {
-        queryFlow(start, end, {
-            orderBy: 'date',
-            terms: [{
-              column : "cardId",
-              termType: "eq",
-              value: route.params.id
-            }]
-        }).then((resp: any) => {
-            if (resp.status === 200) {
-                const sortArray = resp.result.sort(
-                    (a: any, b: any) =>
-                        new Date(a.date).getTime() - new Date(b.date).getTime(),
-                );
-                resolve({
-                    sortArray,
-                });
-            }
+): Promise<{ sortArray: any[]; data: any[] }> => {
+  return new Promise((resolve) => {
+    queryFlow(start, end, {
+      orderBy: 'date',
+      terms: [{
+        column : "cardId",
+        termType: "eq",
+        value: route.params.id
+      }]
+    }).then((resp: any) => {
+      if (resp.status === 200) {
+        const sortArray = resp.result.sort(
+            (a: any, b: any) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
+        resolve({
+          sortArray,
+          data: sortArray.map(
+              (item: any) => item.value,
+          ),
         });
+      }
     });
-
+  });
 };
 
 /**
