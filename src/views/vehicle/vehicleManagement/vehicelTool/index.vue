@@ -131,37 +131,7 @@
                             </div>
                         </template>
                         <template #actions="item">
-                            <j-dropdown
-                                placement="bottomRight"
-                                v-if="item.key === 'more'"
-                            >
-                                <j-button>
-                                    <AIcon :type="item.icon" />
-                                    <span>{{ item.text }}</span>
-                                </j-button>
-                                <template #overlay>
-                                    <j-menu>
-                                        <j-menu-item
-                                            v-for="(o, i) in item.children"
-                                            :key="i"
-                                        >
-                                            <PermissionButton
-                                                :disabled="item.disabled"
-                                                :popConfirm="o.popConfirm"
-                                                :tooltip="{
-                                                    ...o.tooltip,
-                                                }"
-                                                @click="o.onClick"
-                                            >
-                                                <AIcon :type="o.icon" />
-                                                <span>{{ o?.text }}</span>
-                                            </PermissionButton>
-                                        </j-menu-item>
-                                    </j-menu>
-                                </template>
-                            </j-dropdown>
                             <PermissionButton
-                                v-else
                                 :disabled="item.disabled"
                                 :popConfirm="item.popConfirm"
                                 :tooltip="{
@@ -268,6 +238,7 @@ import Save from './save/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import moment from 'moment';
+const menuStory = useMenuStore();
 
 const tableRef = ref<Record<string, any>>({});
 const currentForm = ref({});
@@ -428,7 +399,16 @@ const add = () => {
  * 查看
  */
 const handleView = (data: any) => {
-    console.log('查看详情');
+    menuStory.jumpPage(
+        'vehicle/vehicleManagement/vehicelTool/Detail',
+        {
+            id: data.id,
+        },
+        {
+            id: data.id,
+            deviceId: JSON.stringify(data.deviceId),
+        },
+    );
     // if (isCheck.value) {
     //     if (_selectedRowKeys.value.includes(data.id)) {
     //         const _index = _selectedRowKeys.value.findIndex(
