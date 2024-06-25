@@ -3,7 +3,7 @@
         :zIndex="1072"
         :mask-closable="false"
         visible
-        width="70vw"
+        width="1200"
         title="编辑规则"
         :destroyOnClose="true"
         :dialogStyle="{
@@ -152,11 +152,11 @@ getAllCrud()
     width: 100%;
 
     .left {
-        width: 60%;
+        width: 75%;
     }
 
     .right {
-        width: 40%;
+        flex: 1 1 0;
         margin-left: 10px;
         padding-left: 10px;
         border-left: 1px solid lightgray;

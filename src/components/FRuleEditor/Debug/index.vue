@@ -152,7 +152,7 @@
                         class="action"
                         @click="runScriptAgain"
                     >
-                        <a style="margin-left: 75px">发送数据</a>
+                        <a>发送数据</a>
                     </div>
                     <div v-if="virtualRule?.script && !isBeginning">
 <!--                        <a v-if="isBeginning" @click="beginAction">-->
@@ -471,6 +471,7 @@ defineExpose({
     // width: 100%;
     // height: 340px;
     // margin-top: 20px;
+  gap: 12px;
 
     .top {
         // min-width: 0;
