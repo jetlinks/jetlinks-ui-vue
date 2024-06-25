@@ -25,9 +25,41 @@
       <a-descriptions-item v-if="data.valueType.type === 'date'" label="格式">{{ data.valueType?.format }}</a-descriptions-item>
       <a-descriptions-item
           v-if="
-          ['enum', 'object', 'boolean', 'array'].includes(data.valueType.type)"
+          ['boolean', 'array'].includes(data.valueType.type)"
       >
         <JsonView :value="dataTypeTable.dataSource"/>
+      </a-descriptions-item>
+      <a-descriptions-item
+        v-if="
+          ['enum', 'object'].includes(data.valueType.type)"
+        :scroll="{
+            y: 130
+        }"
+      >
+        <j-table
+          :columns="data.valueType.type === 'object' ? objectColumns : enumColumns"
+          :dataSource="data.valueType.type === 'object' ? data.valueType.properties : data.valueType.elements"
+          :pagination="false"
+          size="small"
+        >
+          <template #bodyCell="{column, record, index}">
+            <j-ellipsis v-if="column.dataIndex === 'id'">
+              {{ record.id }}
+            </j-ellipsis>
+            <j-ellipsis v-if="column.dataIndex === 'name'">
+              {{ record.name }}
+            </j-ellipsis>
+            <j-ellipsis v-if="column.dataIndex === 'value'">
+              {{ record.value }}
+            </j-ellipsis>
+            <j-ellipsis v-if="column.dataIndex === 'text'">
+              {{ record.text }}
+            </j-ellipsis>
+            <j-ellipsis v-if="column.dataIndex === 'valueType'">
+              {{ findTypeItem(record.valueType?.type).label }}
+            </j-ellipsis>
+          </template>
+        </j-table>
       </a-descriptions-item>
       <a-descriptions-item label="属性来源">
         {{ sourceMap[data.expands.source] }}
@@ -65,6 +97,8 @@ import {watch} from "vue";
 import JsonView from './JsonView.vue'
 import {TypeStringMap} from "@/views/device/components/Metadata/Base/columns";
 import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
+import {enumColumns, objectColumns} from './utils'
+import { findTypeItem } from '@/components/Metadata/Table/components/Type/data'
 
 const props = defineProps({
   data: {
