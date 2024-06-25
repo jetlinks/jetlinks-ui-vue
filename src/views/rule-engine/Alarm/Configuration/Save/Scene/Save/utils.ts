@@ -290,7 +290,6 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
 
         lastItem.children.push(item)
     })
-
     return group
 }
 
