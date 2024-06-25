@@ -69,7 +69,7 @@ const count = ref<number>(0);
 const levelList = ref<any[]>([]);
 
 const map = {
-    product: '产品',
+    product: '物模型',
     device: '设备',
     org: '组织',
     other: '其他',

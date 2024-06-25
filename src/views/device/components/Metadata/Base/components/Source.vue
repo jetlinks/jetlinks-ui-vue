@@ -79,7 +79,7 @@
                                     重置
                             </j-button>
                             <j-tooltip>
-                                <template #title>重置为产品属性规则</template>
+                                <template #title>重置为物模型属性规则</template>
                                 <AIcon type="QuestionCircleOutlined" style="margin-top: 10px;"/>
                             </j-tooltip>
                        </div>

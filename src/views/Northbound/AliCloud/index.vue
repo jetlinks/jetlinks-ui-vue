@@ -53,7 +53,7 @@
                             <j-row style="margin-top: 15px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        网桥产品
+                                        网桥物模型
                                     </div>
                                     <Ellipsis>
                                         <div>
@@ -157,7 +157,7 @@ const columns = [
         },
     },
     {
-        title: '网桥产品',
+        title: '网桥物模型',
         dataIndex: 'bridgeProductName',
         key: 'bridgeProductName',
         search: {

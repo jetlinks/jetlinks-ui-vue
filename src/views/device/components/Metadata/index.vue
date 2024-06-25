@@ -2,14 +2,14 @@
     <div class='device-detail-metadata' style="position: relative;">
      <!-- <div class="tips">-->
 <!--        <j-tooltip :title="instanceStore.detail?.independentMetadata && type === 'device'-->
-<!--        ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'-->
-<!--        : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'">-->
+<!--        ? '该设备已脱离物模型物模型，修改物模型物模型对该设备无影响'-->
+<!--        : '设备会默认继承物模型的物模型，修改设备物模型后将脱离物模型物模型'">-->
 <!--          <div class="ellipsis" style='color: #999;'>-->
 <!--            <AIcon type="InfoCircleOutlined" style="margin-right: 3px" />-->
 <!--            {{-->
 <!--              instanceStore.detail?.independentMetadata && type === 'device'-->
-<!--                ? '该设备已脱离产品物模型，修改产品物模型对该设备无影响'-->
-<!--                : '设备会默认继承产品的物模型，修改设备物模型后将脱离产品物模型'-->
+<!--                ? '该设备已脱离物模型物模型，修改物模型物模型对该设备无影响'-->
+<!--                : '设备会默认继承物模型的物模型，修改设备物模型后将脱离物模型物模型'-->
 <!--            }}-->
 <!--          </div>-->
 <!--        </j-tooltip> -->
@@ -22,7 +22,7 @@
               key="reload"
                 :hasPermission="`${permission}:update`"
               :popConfirm="{ title: '确认重置？', onConfirm: resetMetadata, }"
-                :tooltip="{ title: '重置后将使用产品的物模型配置' }"
+                :tooltip="{ title: '重置后将使用物模型的物模型配置' }"
             >
               重置操作
             </PermissionButton>
@@ -31,7 +31,7 @@
           </j-space>
         </template>
         <template #centerExtra>
-          <span class="desc">设备会默认继承产品的物模型，继承的物模型不支持删改</span>
+          <span class="desc">设备会默认继承物模型的物模型，继承的物模型不支持删改</span>
         </template>
         <j-tab-pane tab="属性定义" key="properties">
           <BaseMetadata :target="type" type="properties" :permission="permission" />

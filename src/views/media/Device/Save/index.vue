@@ -78,18 +78,18 @@
                             </j-col>
                         </j-row>
                         <j-form-item
-                            label="所属产品"
+                            label="所属物模型"
                             name="productId"
                             :rules="{
                                 required: true,
-                                message: '请选择所属产品',
+                                message: '请选择所属物模型',
                             }"
                         >
                             <j-row :gutter="[0, 10]">
                                 <j-col :span="!!route.query.id ? 24 : 22">
                                     <j-select
                                         v-model:value="formData.productId"
-                                        placeholder="请选择所属产品"
+                                        placeholder="请选择所属物模型"
                                         :disabled="!!route.query.id"
                                         showSearch
                                         @change="handleProductChange"
@@ -297,13 +297,13 @@
                         <h1>平台端配置</h1>
                         <h2>1、ID</h2>
                         <div>设备唯一标识，请填写设备端配置的设备编号。</div>
-                        <h2>2、所属产品</h2>
+                        <h2>2、所属物模型</h2>
                         <div>
-                            只能选择接入方式为GB/T28281的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择GB/T28181类型的网关完成产品创建
+                            只能选择接入方式为GB/T28281的物模型，若当前无对应物模型，可点击右侧快速添加按钮，填写物模型名称和选择GB/T28181类型的网关完成物模型创建
                         </div>
                         <h2>3、接入密码</h2>
                         <div>
-                            配置接入密码，设备端配置的密码需与该密码一致。该字段可在产品-设备接入页面进行统一配置，配置后所有设备将继承产品配置。设备单独修改后将脱离继承关系。
+                            配置接入密码，设备端配置的密码需与该密码一致。该字段可在物模型-设备接入页面进行统一配置，配置后所有设备将继承物模型配置。设备单独修改后将脱离继承关系。
                         </div>
                         <h1>设备端配置</h1>
                         <div>
@@ -317,7 +317,7 @@
                         </div>
                         <h2>1、SIP服务器编号/SIP域</h2>
                         <div>
-                            SIP服务器编号填入该设备所属产品-接入方式页面“连接信息”的SIP。
+                            SIP服务器编号填入该设备所属物模型-接入方式页面“连接信息”的SIP。
                             SIP域通常为SIP服务器编号的前10位。
                         </div>
                         <div class="image">
@@ -328,7 +328,7 @@
                         </div>
                         <h2>2、SIP服务器IP/端口</h2>
                         <div>
-                            SIP服务器IP/端口填入该设备所属产品-接入方式页面中“连接信息”的IP/端口。
+                            SIP服务器IP/端口填入该设备所属物模型-接入方式页面中“连接信息”的IP/端口。
                         </div>
                         <div class="image">
                             <j-image
@@ -342,7 +342,7 @@
                         </div>
                         <h2>4、注册密码</h2>
                         <div>
-                            填入该设备所属产品-接入方式页面中“GB28281配置”处的接入密码
+                            填入该设备所属物模型-接入方式页面中“GB28281配置”处的接入密码
                         </div>
                         <div class="image">
                             <j-image
@@ -369,9 +369,9 @@
                         <div>
                             设备唯一标识，若不填写，系统将自动生成唯一标识。
                         </div>
-                        <h2>2、所属产品</h2>
+                        <h2>2、所属物模型</h2>
                         <div>
-                            只能选择接入方式为固定地址的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择固定地址类型的网关完成产品创建。
+                            只能选择接入方式为固定地址的物模型，若当前无对应物模型，可点击右侧快速添加按钮，填写物模型名称和选择固定地址类型的网关完成物模型创建。
                         </div>
                     </div>
                 </j-col>
@@ -427,7 +427,7 @@ const handleChannelChange = () => {
 };
 
 /**
- * 获取所属产品
+ * 获取所属物模型
  */
 const productList = ref<ProductType[]>([]);
 const getProductList = async () => {
@@ -452,7 +452,7 @@ const handleProductChange = () => {
 };
 
 /**
- * 新增产品
+ * 新增物模型
  */
 const saveProductVis = ref(false);
 

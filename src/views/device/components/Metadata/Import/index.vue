@@ -18,7 +18,7 @@
                     导入的物模型会覆盖原来的属性、功能、事件、标签，请谨慎操作。
                 </template>
                 <template v-else>
-                    导入时会根据标识跳过继承自产品物模型的属性、功能、事件、标签。
+                    导入时会根据标识跳过继承自物模型物模型的属性、功能、事件、标签。
                 </template>
             </p>
         </div>
@@ -35,16 +35,16 @@
                 ]"
             >
                 <j-select v-model:value="formModel.type">
-                    <j-select-option value="copy">拷贝产品</j-select-option>
+                    <j-select-option value="copy">拷贝物模型</j-select-option>
                     <j-select-option value="import">导入物模型</j-select-option>
                 </j-select>
             </j-form-item>
             <j-form-item
-                label="选择产品"
+                label="选择物模型"
                 :rules="[
                     {
                         required: true,
-                        message: '请选择产品',
+                        message: '请选择物模型',
                     },
                 ]"
                 name="copy"
@@ -54,7 +54,7 @@
                     :options="productList"
                     v-model:value="formModel.copy"
                     option-filter-prop="label"
-                    placeholder="请选择产品"
+                    placeholder="请选择物模型"
                     showSearch
                 ></j-select>
             </j-form-item>

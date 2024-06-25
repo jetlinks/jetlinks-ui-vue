@@ -11,7 +11,7 @@
                     请先<j-button type="link" @click="showModal">选择</j-button
                     >设备接入网关，用以提供设备接入能力
                 </span>
-                <span v-else>请联系管理员配置产品接入方式</span>
+                <span v-else>请联系管理员配置物模型接入方式</span>
             </template>
         </j-empty>
     </div>
@@ -73,14 +73,14 @@
                     </div>
                     <div v-else>{{ '暂无连接信息' }}</div>
                 </div>
-                <!--        产品类型        -->
+                <!--        物模型类型        -->
                 <j-form ref="pluginFormRef" :model="productData" layout="vertical" v-if='productTypes.length'>
-                  <j-form-item name='id' label='产品类型' :rules='[{ required: true, message: "请选择产品类型"}]'>
+                  <j-form-item name='id' label='物模型类型' :rules='[{ required: true, message: "请选择物模型类型"}]'>
                     <j-select
                       v-model:value='productData.id'
                       :options='productTypes'
                       @change='productTypeChange'
-                      placeholder='请选择产品类型'
+                      placeholder='请选择物模型类型'
                     />
                   </j-form-item>
 
@@ -92,7 +92,7 @@
                     class="config"
                 >
                     <template #extra>
-                        <j-tooltip title="此配置来自于产品接入方式所选择的协议">
+                        <j-tooltip title="此配置来自于物模型接入方式所选择的协议">
                             <AIcon
                                 type="QuestionCircleOutlined"
                                 style="margin-left: 2px"
@@ -375,7 +375,7 @@ const fun = () =>{
     console.log(formData.data,productStore.current?.configuration)
 }
 fun()
-// 产品类型
+// 物模型类型
 const productTypes = ref([])
 const productData = reactive({
   id: undefined,
@@ -772,7 +772,7 @@ const submitDevice = async () => {
     if (!res) return
     const values = { storePolicy: form.storePolicy, ...formData.data };
     const id = productStore.current?.id;
-    // 该产品是否有物模型，有则弹窗进行处理
+    // 该物模型是否有物模型，有则弹窗进行处理
     const _metadata = JSON.parse(productStore.current?.metadata || '{}')
     console.log(_metadata.properties, productData.metadata)
     if (
@@ -803,7 +803,7 @@ const updateAccessData = async (id: string, values: any) => {
   const result: any = {};
   flatObj(values, result);
   const { storePolicy, ...extra } = result;
-  // 产品有物模型，设备接入没有，取产品物模型；设备接入有物模型，产品没有，取设备接入的物模型；否则取空字符串；不能为undefined或者null
+  // 物模型有物模型，设备接入没有，取物模型物模型；设备接入有物模型，物模型没有，取设备接入的物模型；否则取空字符串；不能为undefined或者null
   let _metadata = ''
   if (productStore.current?.metadata) {
     _metadata = productStore.current?.metadata
@@ -836,7 +836,7 @@ const updateAccessData = async (id: string, values: any) => {
       productData.id
     ).catch(() => ({}))
   }
-  // 更新产品配置信息
+  // 更新物模型配置信息
   const resp = await modify(id || '', {
     id: id,
     configuration: { ...extra },
@@ -890,10 +890,10 @@ watchEffect(() => {
 
 const tooltip = computed(() => {
   if (productStore.current?.count > 0) {
-    return '产品下有设备实例时不能更换接入方式'
+    return '物模型下有设备实例时不能更换接入方式'
   }
   if (productStore.current.state === 1) {
-    return '停用产品后才可更换接入方式'
+    return '停用物模型后才可更换接入方式'
   }
   return ''
 })

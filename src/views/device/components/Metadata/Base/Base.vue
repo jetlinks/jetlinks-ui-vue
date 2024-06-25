@@ -57,7 +57,7 @@
         <template #inputs="{ data }">
           <j-tooltip
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
+            title="继承自物模型物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
               <j-button :disabled="true" type="link" >
@@ -87,7 +87,7 @@
         <template #properties="{ data }">
           <j-tooltip
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
+            title="继承自物模型物模型的数据不支持修改"
           >
 <!--            <ModelButton :disabled="true"/>-->
             <j-button :disabled="true" type="link">
@@ -112,7 +112,7 @@
         <template #other="{ data }">
           <!-- <j-tooltip
             v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
+            title="继承自物模型物模型的数据不支持修改"
           > -->
 <!--            <ModelButton :disabled="true"/>-->
             <!-- <j-button :disabled="true" type="link" style="padding-left: 0;">
@@ -129,7 +129,7 @@
               :has-permission="`${permission}:update`"
               :medataType="type"
               :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
-                title: '继承自产品物模型的数据不支持删除',
+                title: '继承自物模型物模型的数据不支持删除',
               } : undefined"
           />
 
@@ -195,7 +195,7 @@
                 :tooltip="{
                   placement: 'topRight',
                   getPopupContainer: getPopupContainer,
-                  title: target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? '继承自产品物模型的数据不支持删除' :'删除',
+                  title: target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? '继承自物模型物模型的数据不支持删除' :'删除',
                 }"
             >
               <AIcon type="DeleteOutlined" />

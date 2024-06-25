@@ -6,7 +6,7 @@
                 <div>
                     <AIcon type="ExclamationCircleOutlined" />
                     <template v-if="topTitle === 'rest'">
-                        当前数据解析内容已脱离产品影响，
+                        当前数据解析内容已脱离物模型影响，
                         <PermissionButton
                             type="link"
                             hasPermission="device/Instance:update"
@@ -14,10 +14,10 @@
                         >
                             重置
                         </PermissionButton>
-                        后将继承产品数据解析内容
+                        后将继承物模型数据解析内容
                     </template>
                     <template v-else>
-                        当前数据解析内容继承自产品,
+                        当前数据解析内容继承自物模型,
                         <PermissionButton
                             type="link"
                             hasPermission="device/Instance:update"
@@ -26,7 +26,7 @@
                         >
                             修改
                         </PermissionButton>
-                        后将脱离产品影响。
+                        后将脱离物模型影响。
                     </template>
                 </div>
             </div>

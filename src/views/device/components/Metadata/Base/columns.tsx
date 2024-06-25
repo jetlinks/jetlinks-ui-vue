@@ -149,7 +149,7 @@ const isExtendsProduct = (id: string, productKeys: string, type: string) => {
   if (!id) return false
   const vailKeys = productKeys[type] || []
   if (vailKeys.includes(id)) {
-    onlyMessage('继承自产品物模型的数据不支持修改', 'warning')
+    onlyMessage('继承自物模型物模型的数据不支持修改', 'warning')
     return true
   }
   return false

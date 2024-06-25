@@ -10,11 +10,11 @@
             <j-form :layout="'vertical'">
                 <j-row>
                     <j-col span="24">
-                        <j-form-item label="产品" required>
+                        <j-form-item label="物模型" required>
                             <j-select
                                 showSearch
                                 v-model:value="modelRef.product"
-                                placeholder="请选择产品"
+                                placeholder="请选择物模型"
                             >
                                 <j-select-option
                                     :value="item.id"

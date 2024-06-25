@@ -87,21 +87,23 @@ import { queryLevel, saveLevel } from '@/api/rule-engine/config';
 import { LevelItem } from './typing';
 import Io from './Io/index.vue';
 import { isNoCommunity } from '@/utils/utils';
-const list = isNoCommunity ?[
-    {
-        key: 'config',
-        tab: '告警级别',
-    },
-    {
-        key: 'io',
-        tab: '数据流转',
-    },
-] : [
-    {
-        key: 'config',
-        tab: '告警级别',
-    }
-]
+const list = isNoCommunity
+    ? [
+          {
+              key: 'config',
+              tab: '告警级别',
+          },
+          {
+              key: 'io',
+              tab: '数据流转',
+          },
+      ]
+    : [
+          {
+              key: 'config',
+              tab: '告警级别',
+          },
+      ];
 let levels = ref<LevelItem[]>([]);
 let tab = ref<'io' | 'config' | string>('config');
 const getAlarmLevel = () => {
@@ -143,7 +145,7 @@ const onTabChange = (e: string) => {
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: #1d39c4;
+    background-color: var(--theme-color-primary);
     border-radius: 0 3px 3px 0;
     content: ' ';
 }

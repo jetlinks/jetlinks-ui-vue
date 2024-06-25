@@ -169,7 +169,7 @@
                                 :width="80"
                                 :height="80"
                                 :src="
-                                    getServerImgPath(slotProps?.photoUrl) ||
+                                    slotProps?.photoUrl ||
                                     getImage('/device/instance/device-card.png')
                                 "
                             />
@@ -194,7 +194,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        产品名称
+                                        物模型名称
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ slotProps.productName }}
@@ -313,12 +313,7 @@ import {
     batchDeployDevice,
     batchDeleteDevice,
 } from '@/api/device/instance';
-import {
-    getImage,
-    getServerImgPath,
-    LocalStore,
-    onlyMessage,
-} from '@/utils/comm';
+import { getImage, LocalStore, onlyMessage } from '@/utils/comm';
 import Import from './Import/modal.vue';
 import Export from './Export/index.vue';
 import Process from './Process/index.vue';
@@ -391,7 +386,7 @@ const columns = [
         },
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,
@@ -438,7 +433,7 @@ const columns = [
     {
         key: 'classifiedId',
         dataIndex: 'classifiedId',
-        title: '产品分类',
+        title: '物模型分类',
         hideInTable: true,
         search: {
             type: 'treeSelect',

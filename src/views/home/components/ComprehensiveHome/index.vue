@@ -75,7 +75,7 @@ const rulePermission = (action: string) =>
 const deviceBootConfig: bootConfig[] = [
     {
         english: 'STEP1',
-        label: '创建产品',
+        label: '创建物模型',
         link: 'device/Product',
         auth: productPermission('add'),
         image: '/images/home/guide-home1.png',
@@ -108,9 +108,9 @@ const deviceBootConfig: bootConfig[] = [
 // 设备接入推荐步骤-数据
 const deviceStepDetails: recommendList[] = [
     {
-        title: '创建产品',
+        title: '创建物模型',
         details:
-            '产品是设备的集合，通常指一组具有相同功能的设备。物联设备必须通过产品进行接入方式配置。',
+            '物模型是设备的集合，通常指一组具有相同功能的设备。物联设备必须通过物模型进行接入方式配置。',
         iconUrl: '/images/home/bottom-4.png',
         linkUrl: 'device/Product',
         auth: productPermission('add'),
@@ -119,9 +119,9 @@ const deviceStepDetails: recommendList[] = [
         },
     },
     {
-        title: '配置产品接入方式',
+        title: '配置物模型接入方式',
         details:
-            '通过产品对同一类型的设备进行统一的接入方式配置。请参照设备铭牌说明选择匹配的接入方式。',
+            '通过物模型对同一类型的设备进行统一的接入方式配置。请参照设备铭牌说明选择匹配的接入方式。',
         iconUrl: '/images/home/bottom-1.png',
         linkUrl: 'device/Product/Detail',
         auth: productPermission('update'),
@@ -131,7 +131,7 @@ const deviceStepDetails: recommendList[] = [
     },
     {
         title: '添加测试设备',
-        details: '添加单个设备，用于验证产品模型是否配置正确。',
+        details: '添加单个设备，用于验证物模型模型是否配置正确。',
         iconUrl: '/images/home/bottom-5.png',
         linkUrl: 'device/Instance',
         auth: devicePermission('add'),
@@ -152,7 +152,7 @@ const deviceStepDetails: recommendList[] = [
     },
     {
         title: '批量添加设备',
-        details: '批量添加同一产品下的设备',
+        details: '批量添加同一物模型下的设备',
         iconUrl: '/images/home/bottom-3.png',
         linkUrl: 'device/Instance',
         auth: devicePermission('import'),
@@ -192,7 +192,7 @@ const opsStepDetails: recommendList[] = [
     {
         title: '协议管理',
         details:
-            '根据业务需求自定义开发对应的产品（设备模型）接入协议，并上传到平台。',
+            '根据业务需求自定义开发对应的物模型（设备模型）接入协议，并上传到平台。',
         iconUrl: '/images/home/Frame4528.png',
         linkUrl: 'link/Protocol',
     },

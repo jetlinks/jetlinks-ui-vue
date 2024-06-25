@@ -14,7 +14,7 @@ export const useDepartmentStore = defineStore({
         productId: undefined,
         // 设备资产分配弹窗操作类型: 
         // 1. optType === 'handle': 手动点击资产分配按钮; 
-        // 2. optType === ': 产品资产分配后, 自动弹出设备资产分配
+        // 2. optType === ': 物模型资产分配后, 自动弹出设备资产分配
         optType: '',
         crossPageKeys: [], // 表格跨页多选的keys
         changedApis: {},

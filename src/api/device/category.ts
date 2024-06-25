@@ -1,8 +1,8 @@
-// 产品分类
+// 物模型分类
 import server from '@/utils/request'
 import { CategoryItem } from '@/views/device/Category/typings'
 /**
- * 查询产品分类树形数据
+ * 查询物模型分类树形数据
  */
  
 export const queryTree = (params?: Record<string, any>) => server.post<CategoryItem>('/device/category/_tree', params)

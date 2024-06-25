@@ -5,7 +5,7 @@
 
         <div class="box-list">
             <div class="box-item">
-                <div class="label">产品数量</div>
+                <div class="label">物模型数量</div>
                 <div class="value">{{ projectNum }}</div>
                 <img src="/images/home/product.png" alt="" />
             </div>
@@ -28,7 +28,7 @@ const deviceNum = ref(0);
 
 const menuPermission = useMenuStore().hasMenu;
 const getData = () => {
-    // 有产品菜单权限则获取数据
+    // 有物模型菜单权限则获取数据
     menuPermission('device/Instance') &&
         getDeviceCount_api().then((resp: any) => {
             deviceNum.value = resp.result;

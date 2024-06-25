@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="选择产品"
+        title="选择物模型"
         width="700px"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
@@ -10,16 +10,16 @@
     >
         <j-form :model="form" ref="formRef" layout="vertical">
             <j-form-item
-                label="产品"
+                label="物模型"
                 name="productId"
-                :rules="[{ required: true, message: '请选择产品' }]"
+                :rules="[{ required: true, message: '请选择物模型' }]"
             >
                 <j-select
                     v-model:value="form.productId"
                     style="width: 100%"
                     show-search
                     :options="productList"
-                    placeholder="请选择产品"
+                    placeholder="请选择物模型"
                 >
                 </j-select>
             </j-form-item>

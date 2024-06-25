@@ -1,4 +1,4 @@
-<!-- 产品保存成功后的提示框 -->
+<!-- 物模型保存成功后的提示框 -->
 <template>
     <j-modal
         :maskClosable="false"
@@ -9,7 +9,7 @@
         width="650px"
     >
         <template #title>
-            <span>产品创建成功</span>
+            <span>物模型创建成功</span>
         </template>
         <template #footer>
             <j-button @click="cancel">关闭</j-button>
@@ -22,10 +22,10 @@
                         class="icon-style"
                     ></AIcon>
                 </div>
-                <div class="product-title">产品创建成功</div>
+                <div class="product-title">物模型创建成功</div>
             </div>
             <div style="display: flex">
-                <div class="product-id">产品ID: {{ idValue }}</div>
+                <div class="product-id">物模型ID: {{ idValue }}</div>
                 <div
                     class="product-btn"
                     @click="showDetail"
@@ -35,13 +35,13 @@
                 </div>
             </div>
             <div>接下来推荐操作:</div>
-            <div class="product-main">1、配置产品接入方式</div>
+            <div class="product-main">1、配置物模型接入方式</div>
             <div class="product-text">
-                点击具体产品的查看按钮,进入“设备接入”tab页，并参照设备铭牌说明选择匹配的接入方式
+                点击具体物模型的查看按钮,进入“设备接入”tab页，并参照设备铭牌说明选择匹配的接入方式
             </div>
             <div class="product-main">2、添加测试设备</div>
             <div class="product-text">
-                进入设备列表，添加单个设备，用于验证产品模型是否配置正确
+                进入设备列表，添加单个设备，用于验证物模型模型是否配置正确
             </div>
             <div class="product-main">3、功能调试</div>
             <div class="product-text">
@@ -49,7 +49,7 @@
             </div>
             <div class="product-main">4、批量添加设备</div>
             <div class="product-text">
-                进入设备列表页面，点击批量导入设备，批量添加同一产品下的设备
+                进入设备列表页面，点击批量导入设备，批量添加同一物模型下的设备
             </div>
         </div>
     </j-modal>

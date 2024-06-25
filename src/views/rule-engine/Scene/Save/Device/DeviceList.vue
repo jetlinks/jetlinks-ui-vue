@@ -52,7 +52,7 @@
             </j-col>
             <j-col :span="12">
               <div class="card-item-content-text">
-                产品名称
+                物模型名称
               </div>
               <div>{{ slotProps.productName }}</div>
             </j-col>

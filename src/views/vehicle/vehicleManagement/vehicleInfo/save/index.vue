@@ -1,4 +1,4 @@
-<!-- 新增、编辑产品 -->
+<!-- 新增、编辑物模型 -->
 <template>
     <j-modal
         :title="props.title"
@@ -80,7 +80,7 @@
                         showSearch
                         v-model:value="form.orgName"
                         :disabled="idDisabled"
-                        placeholder="请选择产品分类"
+                        placeholder="请选择物模型分类"
                         :tree-data="treeList"
                         @change="valueChange"
                         allow-clear
@@ -272,7 +272,7 @@ const rules = reactive({
 });
 
 /**
- * 查询产品分类
+ * 查询物模型分类
  */
 const queryOrgTree = async () => {
     getDepartmentList({ paging: false }).then((resp: any) => {
@@ -283,7 +283,7 @@ const queryOrgTree = async () => {
     });
 };
 /**
- * 处理产品分类key
+ * 处理物模型分类key
  */
 const dealOrgTree = (arr: any) => {
     return arr.map((element: any) => {

@@ -140,15 +140,15 @@ const jumpDetail = (item: any) => {
         border-radius: 2px;
 
         &.level-1 {
-            background-color: #e50012;
+            background-color: #ff3325;
         }
 
         &.level-2 {
-            background-color: #ff9457;
+            background-color: #ff9100;
         }
 
         &.level-3 {
-            background-color: #fabd47;
+            background-color: #ffb24d;
         }
 
         &.level-4 {

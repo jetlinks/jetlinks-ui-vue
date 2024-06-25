@@ -119,7 +119,7 @@ const deviceBootConfig: bootConfig[] = [
 const deviceStepDetails: recommendList[] = [
     {
         title: '添加视频设备',
-        details: '根据视频设备的传输协议，在已创建的产品下添加对应的设备。',
+        details: '根据视频设备的传输协议，在已创建的物模型下添加对应的设备。',
         iconUrl: '/images/home/bottom-6.png',
         linkUrl: 'media/Device/Save',
         auth: hasPermission('media/Device:add'),

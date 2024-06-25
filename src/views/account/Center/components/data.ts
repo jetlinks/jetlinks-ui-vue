@@ -7,9 +7,9 @@ const systemNotice = [
         children: [
             {
                 provider: 'alarm-product',
-                name: '产品告警',
+                name: '物模型告警',
                 description:
-                    '当产品类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    '当物模型类型的告警被触发时，你将在已订阅的方式中收到通知',
             },
             {
                 provider: 'alarm-device',

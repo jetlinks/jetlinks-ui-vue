@@ -20,7 +20,7 @@
         <j-descriptions-item label="ID">
             <Ellipsis>{{ productStore.current.id }}</Ellipsis>
         </j-descriptions-item>
-        <j-descriptions-item label="产品分类">
+        <j-descriptions-item label="物模型分类">
             <Ellipsis>{{ productStore.current.classifiedName }}</Ellipsis>
         </j-descriptions-item>
         <j-descriptions-item label="设备类型">{{

@@ -11,10 +11,10 @@
     >
         <j-form ref="formRef" :model="formData" layout="vertical">
             <j-form-item
-                label="产品名称"
+                label="物模型名称"
                 name="name"
                 :rules="[
-                    { required: true, message: '请输入产品名称' },
+                    { required: true, message: '请输入物模型名称' },
                     {
                         max: 64,
                         message: '最多输入64个字符',

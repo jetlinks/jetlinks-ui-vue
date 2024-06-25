@@ -14,7 +14,7 @@
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
-                :gridColumn="2"
+                :gridColumn="3"
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -42,20 +42,14 @@
                     >
                         <template #img>
                             <slot name="img">
-                                <img
-                                    :src="
-                                        getImage(
-                                            '/cascade.png',
-                                        )
-                                    "
-                                />
+                                <img :src="getImage('/cascade.png')" />
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px);">
-                            <span style="font-size: 16px;font-weight: 700">
-                                {{ slotProps.name }}
-                            </span>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-size: 16px; font-weight: 700">
+                                    {{ slotProps.name }}
+                                </span>
                             </Ellipsis>
                             <p>通道数量：{{ slotProps.count || 0 }}</p>
                             <j-badge
@@ -64,11 +58,13 @@
                                         ? 'success'
                                         : 'error'
                                 "
-                                style="display: flex; align-items: center;"
+                                style="display: flex; align-items: center"
                             >
                                 <template #text>
                                     <j-ellipsis>
-                                        {{ `sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}` }}
+                                        {{
+                                            `sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`
+                                        }}
                                     </j-ellipsis>
                                 </template>
                             </j-badge>

@@ -5,7 +5,7 @@
                 <template #label>
                     <div>
                         文件上传
-                        <div class="alert"><AIcon style="margin-right: 5px;" type="InfoCircleOutlined" />导入系统已存在的设备数据，不会更改已存在设备的所属产品信息</div>
+                        <div class="alert"><AIcon style="margin-right: 5px;" type="InfoCircleOutlined" />导入系统已存在的设备数据，不会更改已存在设备的所属物模型信息</div>
                     </div>
                 </template>
 

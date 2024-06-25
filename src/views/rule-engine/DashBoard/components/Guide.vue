@@ -36,8 +36,8 @@ const props = defineProps<guideProps>();
         left: 0;
         width: 8px;
         height: 8px;
-        background-color: @primary-color;
-        border: 1px solid #b4c0da;
+        background-color: var(--boot-card-icon-primary);
+        border: 1px solid var(--boot-card-icon-border);
         transform: translateY(-50%);
         content: ' ';
     }
@@ -46,7 +46,7 @@ const props = defineProps<guideProps>();
         font-size: 14px;
         font-weight: 400;
     }
-    .title{
+    .title {
         flex: 1;
     }
 

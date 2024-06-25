@@ -234,14 +234,14 @@
                                             name="bridgeProductKey"
                                             :rules="{
                                                 required: true,
-                                                message: '请选择网桥产品',
+                                                message: '请选择网桥物模型',
                                             }"
                                         >
                                             <template #label>
                                                 <span>
-                                                    网桥产品
+                                                    网桥物模型
                                                     <j-tooltip
-                                                        title="物联网平台对应的阿里云产品"
+                                                        title="物联网平台对应的阿里云物模型"
                                                     >
                                                         <AIcon
                                                             type="QuestionCircleOutlined"
@@ -253,7 +253,7 @@
                                                 </span>
                                             </template>
                                             <j-select
-                                                placeholder="请选择网桥产品"
+                                                placeholder="请选择网桥物模型"
                                                 v-model:value="
                                                     modelRef.bridgeProductKey
                                                 "
@@ -272,7 +272,7 @@
                                         </j-form-item>
                                     </j-col>
                                     <j-col :span="24">
-                                        <p>产品映射</p>
+                                        <p>物模型映射</p>
                                         <j-collapse
                                             v-if="modelRef.mappings.length"
                                             :activeKey="activeKey"
@@ -291,8 +291,8 @@
                                                                   i.productKey ===
                                                                   item.productKey,
                                                           )?.productName ||
-                                                          `产品映射${index + 1}`
-                                                        : `产品映射${index + 1}`
+                                                          `物模型映射${index + 1}`
+                                                        : `物模型映射${index + 1}`
                                                 "
                                             >
                                                 <template #extra
@@ -303,7 +303,7 @@
                                                 <j-row :gutter="24">
                                                     <j-col :span="12">
                                                         <j-form-item
-                                                            label="阿里云产品"
+                                                            label="阿里云物模型"
                                                             :name="[
                                                                 'mappings',
                                                                 index,
@@ -312,11 +312,11 @@
                                                             :rules="{
                                                                 required: true,
                                                                 message:
-                                                                    '请选择阿里云产品',
+                                                                    '请选择阿里云物模型',
                                                             }"
                                                         >
                                                             <j-select
-                                                                placeholder="请选择阿里云产品"
+                                                                placeholder="请选择阿里云物模型"
                                                                 v-model:value="
                                                                     item.productKey
                                                                 "
@@ -345,7 +345,7 @@
                                                     </j-col>
                                                     <j-col :span="12">
                                                         <j-form-item
-                                                            label="平台产品"
+                                                            label="平台物模型"
                                                             :name="[
                                                                 'mappings',
                                                                 index,
@@ -355,7 +355,7 @@
                                                                 {
                                                                     required: true,
                                                                     message:
-                                                                        '请选择平台产品',
+                                                                        '请选择平台物模型',
                                                                 },
                                                                 {
                                                                     validator:
@@ -366,7 +366,7 @@
                                                             ]"
                                                         >
                                                             <!-- <j-select
-                                                                placeholder="请选择平台产品"
+                                                                placeholder="请选择平台物模型"
                                                                 v-model:value="
                                                                     item.productId
                                                                 "
@@ -591,7 +591,7 @@ const onCollChange = (_key: string[]) => {
 };
 
 const _error = computed(() => {
-    return _errorSet.value.size ? `当前选择的部分产品为禁用状态` : ''
+    return _errorSet.value.size ? `当前选择的部分物模型为禁用状态` : ''
 })
 
 const onActiveProduct = async () => {
@@ -620,7 +620,7 @@ const _validator = (_rule: any, value: string): Promise<any> =>
         if(!modelRef.id || modelRef.id === ':id') {
             return resolve('');
         } else if (!_item && value) {
-            return reject('关联产品已被删除，请重新选择');
+            return reject('关联物模型已被删除，请重新选择');
         }
         return resolve('');
     });

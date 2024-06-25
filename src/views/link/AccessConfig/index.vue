@@ -48,7 +48,10 @@
                             <template #img>
                                 <slot name="img">
                                     <img
-                                        :src="getImage('/device-access.png')"
+                                        :src="
+                                            slotProps?.photoUrl ||
+                                            getImage('/device-access.png')
+                                        "
                                     />
                                 </slot>
                             </template>

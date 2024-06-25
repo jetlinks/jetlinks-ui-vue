@@ -68,12 +68,12 @@
                                     </j-col>
                                     <j-col :span="12">
                                         <j-form-item
-                                            label="产品"
+                                            label="物模型"
                                             name="id"
                                             :rules="[
                                                 {
                                                     required: true,
-                                                    message: '请选择产品',
+                                                    message: '请选择物模型',
                                                 },
                                                 {
                                                     validator: _validator,
@@ -138,7 +138,7 @@
                                         <j-form-item
                                             name="productName"
                                             v-show="false"
-                                            label="产品名称"
+                                            label="物模型名称"
                                         >
                                             <j-input
                                                 v-model:value="
@@ -259,7 +259,7 @@
                                                                 <span>
                                                                     操作
                                                                     <j-tooltip
-                                                                        title="映射物联网平台中所选产品具备的动作"
+                                                                        title="映射物联网平台中所选物模型具备的动作"
                                                                     >
                                                                         <AIcon
                                                                             type="QuestionCircleOutlined"
@@ -707,7 +707,7 @@ const findProductMetadata = computed(() => {
     );
 });
 
-// 查询产品列表
+// 查询物模型列表
 const getProduct = async (id?: string) => {
     const resp = await queryProductList(id);
     if (resp.status === 200) {
@@ -783,10 +783,10 @@ const _validator = (_rule: any, value: string): Promise<any> =>
             return resolve('');
         } else if (!_item && value) {
             productChange(value);
-            return reject('关联产品已被删除，请重新选择');
+            return reject('关联物模型已被删除，请重新选择');
         } else {
             if (!_item?.state) {
-                _error.value = `当前选择的${_item.name}产品为禁用状态`;
+                _error.value = `当前选择的${_item.name}物模型为禁用状态`;
             } else {
                 _error.value = '';
             }

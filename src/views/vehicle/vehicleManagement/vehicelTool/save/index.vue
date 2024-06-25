@@ -1,4 +1,4 @@
-<!-- 新增、编辑产品 -->
+<!-- 新增、编辑物模型 -->
 <template>
     <j-modal
         :title="props.title"
@@ -76,7 +76,7 @@
                     <j-tree-select
                         showSearch
                         v-model:value="form.orgName"
-                        placeholder="请选择产品分类"
+                        placeholder="请选择物模型分类"
                         :tree-data="treeList"
                         @change="valueChange"
                         allow-clear
@@ -329,7 +329,7 @@ const queryOrgTree = async () => {
     });
 };
 /**
- * 处理产品分类key
+ * 处理物模型分类key
  */
 const dealOrgTree = (arr: any) => {
     return arr.map((element: any) => {

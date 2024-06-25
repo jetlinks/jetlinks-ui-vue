@@ -8,7 +8,7 @@ import server from '@/utils/request'
 export const query = (data: Record<string, any>) => server.post('/device/aliyun/bridge/_query', data)
 
 /**
- * 查询产品列表
+ * 查询物模型列表
  * @param data 
  * @returns 
  */
@@ -59,7 +59,7 @@ export const _undeploy = (id: string) => server.post(`/device/aliyun/bridge/${id
 export const getRegionsList = (params?: Record<string, any>) => server.get(`/device/aliyun/bridge/regions`, params)
 
 /**
- * 产品映射中的阿里云产品下拉列表
+ * 物模型映射中的阿里云物模型下拉列表
  * @param data 
  * @returns 
  */

@@ -14,7 +14,7 @@
                     触发属性
                     <j-tooltip>
                         <template #title>
-                            <div>选择当前产品物模型下的属性作为触发属性</div>
+                            <div>选择当前物模型物模型下的属性作为触发属性</div>
                             <div>任意属性值更新时将触发下方计算规则</div>
                         </template>
                         <AIcon

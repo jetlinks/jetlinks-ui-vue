@@ -52,12 +52,12 @@ const devices = ref(props.deviceKeys)
 const orgIds = ref(props.orgId)
 
 const typeList = ref([
-  { label: '自定义', value: 'fixed', tip: '自定义选择当前产品下的任意设备', img: getImage('/scene/device-custom.png')},
-  { label: '全部', value: 'all', tip: '产品下的所有设备', img: getImage('/scene/trigger-device-all.png')},
+  { label: '自定义', value: 'fixed', tip: '自定义选择当前物模型下的任意设备', img: getImage('/scene/device-custom.png')},
+  { label: '全部', value: 'all', tip: '物模型下的所有设备', img: getImage('/scene/trigger-device-all.png')},
 ])
 
 if (isNoCommunity) {
-  typeList.value.push({ label: '按组织', value: 'org', tip: '选择产品下归属于具体组织的设备', img: getImage('/scene/trigger-device-org.png')},)
+  typeList.value.push({ label: '按组织', value: 'org', tip: '选择物模型下归属于具体组织的设备', img: getImage('/scene/trigger-device-org.png')},)
 }
 
 const select = (s: string) => {

@@ -78,7 +78,7 @@
                 <j-descriptions-item label="ID">{{
                     instanceStore.current?.id
                 }}</j-descriptions-item>
-                <j-descriptions-item label="所属产品">
+                <j-descriptions-item label="所属物模型">
                     <PermissionButton
                         type="link"
                         style="margin-top: -5px; padding: 0"
@@ -254,7 +254,7 @@ const getDetail = () => {
         instanceStore.current?.deviceType?.value === 'gateway' &&
         !keys.includes('ChildDevice')
     ) {
-        // 产品类型为网关的情况下才显示此模块
+        // 物模型类型为网关的情况下才显示此模块
         list.value.push({
             key: 'ChildDevice',
             tab: '子设备',

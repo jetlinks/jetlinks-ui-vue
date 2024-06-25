@@ -2,7 +2,7 @@
 <template>
     <page-container>
         <j-row :gutter="[24, 24]">
-            <j-col :xxl="14" :xl='24'>
+            <j-col :xxl="14" :xl="24">
                 <div class="home-guide">
                     <Guide title="物联卡引导"></Guide>
                     <div
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </j-col>
-            <j-col :xxl="10" :xl='24'>
+            <j-col :xxl="10" :xl="24">
                 <div class="home-statistics">
                     <Guide title="基础统计">
                         <template #extra>
@@ -87,7 +87,7 @@
     </page-container>
 </template>
 
-<script setup lang="ts" name='IotCardHome'>
+<script setup lang="ts" name="IotCardHome">
 import { getImage, onlyMessage } from '@/utils/comm';
 import Guide from '../components/Guide.vue';
 import moment from 'moment';
@@ -178,17 +178,17 @@ const pieChartData = ref<any[]>([
 ]);
 
 const jumpPage = (data: GuideItemProps) => {
-    if (!data.auth){
+    if (!data.auth) {
         onlyMessage('暂无权限，请联系管理员', 'warning');
-        return
+        return;
     }
     if (data.key === 'EQUIPMENT') {
-        menuStory.jumpPage(data.url, { id: ':id'});
+        menuStory.jumpPage(data.url, { id: ':id' });
     } else {
-      let params: any = undefined
-      if (data.key === 'SCREEN') {
-        params = { type: 'add'}
-      }
+        let params: any = undefined;
+        if (data.key === 'SCREEN') {
+            params = { type: 'add' };
+        }
         menuStory.jumpPage(data.url, params);
     }
 };
@@ -304,7 +304,7 @@ const createPieChart = () => {
                 trigger: 'item',
                 formatter: '{b}: {c} ({d}%)',
             },
-            color: ['#85a5ff', '#f29b55', '#c4c4c4'],
+            color: ['#4DC0F4', '#FF3325', '#c4c4c4'],
             series: [
                 {
                     name: '',
@@ -366,9 +366,9 @@ getStateCard();
     position: relative;
     padding: 16px;
     background: linear-gradient(
-        135.62deg,
-        #f6f7fd 22.27%,
-        rgba(255, 255, 255, 0.86) 91.82%
+        187.04deg,
+        rgba(249, 111, 69, 0.03) 21.28%,
+        rgba(249, 111, 69, 0) 94.51%
     );
     border-radius: 2px;
     box-shadow: 0 4px 18px #efefef;
@@ -386,10 +386,10 @@ getStateCard();
             content: '';
         }
         &.normal::before {
-            background: #85a5ff;
+            background: #4dc0f4;
         }
         &.notActive::before {
-            background: #f29b55;
+            background: #ff3325;
         }
         &.stopped::before {
             background: #c4c4c4;

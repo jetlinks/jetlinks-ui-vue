@@ -141,7 +141,7 @@ const updateAccessData = async (id: string, values: any, metadata: string) => {
     ).catch(() => ({}))
   }
 
-  // 更新产品配置信息
+  // 更新物模型配置信息
   const resp = await modify(id || '', {
     id: id,
     configuration: { ...extra },
@@ -167,7 +167,7 @@ const updateAccessData = async (id: string, values: any, metadata: string) => {
 const submitData = () => {
   formRef.value.validate().then((res) => {
     if (res) {
-      let metadata = JSON.parse(productDetail.value?.metadata || '{}') // 产品物模型
+      let metadata = JSON.parse(productDetail.value?.metadata || '{}') // 物模型物模型
       switch (handleData.type![0]) {
         case 'intersection': // 交集
           metadata.properties = IntersectionFn(metadata.properties, props.metadata.properties)
@@ -204,7 +204,7 @@ const cancel = () => {
 
 /**
  * 交集处理函数， 只保留来自插件中的属性
- * @param DataA 产品物模型
+ * @param DataA 物模型物模型
  * @param DataB 插件物模型
  * @constructor
  */
@@ -222,7 +222,7 @@ const IntersectionFn = (DataA: any[] = [], DataB: any[] = []): any[] => {
 
 /**
  * 并集函数处理，保留平台、插件中的所有属性，ID重复时，只保留来自插件中的1条属性。
- * @param DataA 产品物模型
+ * @param DataA 物模型物模型
  * @param DataB 插件物模型
  * @constructor
  */

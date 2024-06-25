@@ -89,9 +89,9 @@ const jumpPage = () => {
             position: relative;
             padding: 16px;
             background: linear-gradient(
-                135.62deg,
-                #f6f7fd 22.27%,
-                hsla(0, 0%, 100%, 0.86) 91.82%
+                187.04deg,
+                rgba(249, 111, 69, 0.03) 21.28%,
+                rgba(249, 111, 69, 0) 94.51%
             );
             border-radius: 2px;
             box-shadow: 0 4px 18px #efefef;

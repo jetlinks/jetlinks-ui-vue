@@ -29,7 +29,7 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
-                        @click="()=>jumpDetail(slotProps)"
+                        @click="() => jumpDetail(slotProps)"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
@@ -43,21 +43,26 @@
                     >
                         <template #img>
                             <slot name="img">
-                                <img :src="getImage('/device-media.png')" />
+                                <img
+                                    :src="
+                                        slotProps?.photoUrl ||
+                                        getImage('/device-media.png')
+                                    "
+                                />
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px);">
-                            <span style="font-size: 16px;font-weight: 700">
-                                {{ slotProps.name }}
-                            </span>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-size: 16px; font-weight: 700">
+                                    {{ slotProps.name }}
+                                </span>
                             </Ellipsis>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         厂商
                                     </div>
-                                    <Ellipsis style="width: calc(100% - 20px);">
+                                    <Ellipsis style="width: calc(100% - 20px)">
                                         <div>{{ slotProps.manufacturer }}</div>
                                     </Ellipsis>
                                 </j-col>
@@ -71,7 +76,10 @@
                                     <div class="card-item-content-text">
                                         型号
                                     </div>
-                                    <Ellipsis style="width: calc(100% - 20px);">{{ slotProps.model }}</Ellipsis>
+                                    <Ellipsis
+                                        style="width: calc(100% - 20px)"
+                                        >{{ slotProps.model }}</Ellipsis
+                                    >
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -208,7 +216,7 @@ const columns = [
         dataIndex: 'provider',
         key: 'provider',
         scopedSlots: true,
-        width:120,
+        width: 120,
         search: {
             type: 'select',
             options: PROVIDER_OPTIONS,
@@ -234,7 +242,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '产品名称',
+        title: '物模型名称',
         dataIndex: 'productId',
         key: 'productId',
         scopedSlots: true,
@@ -452,7 +460,7 @@ const getProductName = (pid: string) => {
     return productList.value.find((f: any) => f.value === pid)?.label;
 };
 
-const jumpDetail =  (data:any) =>{
+const jumpDetail = (data: any) => {
     menuStory.jumpPage('device/Instance/Detail', { id: data.id });
-}
+};
 </script>

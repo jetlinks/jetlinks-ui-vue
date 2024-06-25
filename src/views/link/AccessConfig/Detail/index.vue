@@ -211,7 +211,7 @@ const queryProviders = async () => {
 };
 
 /**
- * 检查是否被产品使用
+ * 检查是否被物模型使用
  */
 const checkBindProduct = async (_id: string) => {
   const resp = await queryProductList({

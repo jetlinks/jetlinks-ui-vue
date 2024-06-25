@@ -47,7 +47,12 @@
                         >
                             <template #img>
                                 <slot name="img">
-                                    <img :src="getImage('/stream.png')" />
+                                    <img
+                                        :src="
+                                            slotProps?.photoUrl ||
+                                            getImage('/stream.png')
+                                        "
+                                    />
                                 </slot>
                             </template>
                             <template #content>

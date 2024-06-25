@@ -1,4 +1,4 @@
-<!--产品分类 -->
+<!--物模型分类 -->
 <template>
     <page-container>
         <pro-search
@@ -245,7 +245,7 @@ const table = reactive({
         },
     ],
     /**
-     * 添加产品分类
+     * 添加物模型分类
      */
     add: async () => {
         title.value = '新增分类';

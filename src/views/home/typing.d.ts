@@ -8,7 +8,7 @@ export interface recommendList {
     auth?: boolean;
     onClick?: Function
 }
-// 产品列表里的每项
+// 物模型列表里的每项
 export interface productItem {
     label: string;
     value: string

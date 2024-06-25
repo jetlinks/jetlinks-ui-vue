@@ -13,13 +13,13 @@ export default {
     del: (id: string) => server.remove(`/media/device/${id}`),
     // 更新通道
     updateChannels: (id: string) => server.post(`/media/device/${id}/channels/_sync`),
-    // post查询产品列表
+    // post查询物模型列表
     queryProductList: (data: any) => server.post<ProductType[]>(`/device/product/_query/no-paging`, data),
-    // get获取产品
+    // get获取物模型
     getProductList: (data: any) => server.get(`/device/product/_query/no-paging?paging=false`, data),
-    // 快速添加产品
+    // 快速添加物模型
     saveProduct: (data: any) => server.post<any>(`/device/product`, data),
-    // 产品发布
+    // 物模型发布
     deployProductById: (id: string) => server.post<any>(`/device/product/${id}/deploy`),
     // 查询设备接入配置
     queryProvider: (data?: any) => server.post<any>(`/gateway/device/detail/_query`, data),
