@@ -1,4 +1,5 @@
 <template>
+  <div class="metadata-base">
   <EditTable
       v-if="!heavyLoad"
       ref="tableRef"
@@ -245,6 +246,7 @@
       :unitOptions="unitOptions"
       @cancel="cancelDetailModal"
   />
+  </div>
 </template>
 
 <script setup lang="ts" name="MetadataBase">
@@ -562,6 +564,11 @@ const fullToggle = (type: boolean, cb: Function) => {
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
 onUnmounted(() => {
+  message.config({
+    getContainer() {
+      return document.body
+    },
+  })
   EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
 })
 
@@ -612,5 +619,11 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   color: #6f6f6f;
   justify-content: center;
   align-items: center
+}
+
+.metadata-base {
+  :deep(.ant-message) {
+    z-index: 1073;
+  }
 }
 </style>

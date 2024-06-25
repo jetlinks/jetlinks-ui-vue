@@ -80,6 +80,7 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
             const success: any[] = []
             let validateLen = 0
             const end = () => {
+                validateLen += 1
                 if (validateLen === len) {
                     Object.keys(error).length ? reject(error) : resolve(success)
                 }
@@ -90,16 +91,14 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
                     if (record[rowKey]) {
                         validateItem(record, index).then(res => {
                             success.push(handlePureRecord(res))
-                            validateLen += 1
                             end()
                         }).catch(err => {
                             options?.onError(err)
                             error.push(err)
-                            validateLen += 1
                             end()
                         })
                     } else {
-                        validateLen += 1
+                        end()
                     }
                 })
             } else {
