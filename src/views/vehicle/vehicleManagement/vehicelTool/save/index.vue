@@ -264,6 +264,7 @@ const treeList = ref<Record<string, any>[]>([]);
 const imageTypes = reactive([
     'image/jpeg',
     'image/png',
+    'image/jpg',
     'image/jfif',
     'image/pjp',
 ]);

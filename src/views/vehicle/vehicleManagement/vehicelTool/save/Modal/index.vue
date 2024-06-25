@@ -203,6 +203,7 @@ const handleSearch = (_params: any) => {
  * 显示弹窗
  */
 const show = (data: any) => {
+    console.log('data', data);
     sbVisible.value = true;
     handleDefaultSelected(data);
 };
