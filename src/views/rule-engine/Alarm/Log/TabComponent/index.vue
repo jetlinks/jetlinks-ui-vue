@@ -44,7 +44,7 @@
                                         </span>
                                     </Ellipsis>
                                 </div>
-                                <div
+                                <!-- <div
                                     class="alarmLevel"
                                     :style="{
                                         backgroundColor: levelColorMap.get(
@@ -60,7 +60,8 @@
                                             }}
                                         </span>
                                     </Ellipsis>
-                                </div>
+                                </div> -->
+                                <LevelIcon :level="slotProps.level"></LevelIcon>
                             </div>
                             <j-row :gutter="24">
                                 <j-col
@@ -198,6 +199,7 @@ import { useMenuStore } from '@/store/menu';
 import LogDrawer from './components/DetailDrawer.vue';
 import Duration from '../components/Duration.vue';
 import { useAlarmLevel } from '@/hook';
+import LevelIcon from '../../Config/LevelIcon.vue';
 const menuStory = useMenuStore();
 const tableRef = ref();
 const { levelMap, levelList } = useAlarmLevel();
