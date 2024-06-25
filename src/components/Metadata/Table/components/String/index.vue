@@ -46,23 +46,30 @@ const props = defineProps({
 const formRef = ref()
 const visible = ref(false)
 const formData = reactive({
-  maxLength: props.value,
+  maxLength: props.value.maxLength || props.value.expands?.maxLength,
 })
 
 const onOk = () => {
   visible.value = false
-  emit('update:value', formData.maxLength);
-  emit('confirm', formData.maxLength);
+  const obj = {
+    ...props.value,
+    expands: {
+      maxLength: formData.maxLength
+    }
+  }
+
+  emit('update:value', obj);
+  emit('confirm', obj);
 }
 
 const onCancel = () => {
   formRef.value?.resetFields();
-  formData.maxLength = props.value;
+  formData.maxLength = props.value.maxLength || props.value.expands?.maxLength,
   emit('cancel');
 }
 
 watch(() => props.value, (newValue) => {
-  formData.maxLength = newValue
+  formData.maxLength = newValue.maxLength || newValue.expands?.maxLength
 })
 
 </script>

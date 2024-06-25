@@ -22,7 +22,7 @@ const props = defineProps({
   name: {
     type: String,
     default: 'maxLength'
-  }
+  },
 })
 
 const myValue = ref(props.value)

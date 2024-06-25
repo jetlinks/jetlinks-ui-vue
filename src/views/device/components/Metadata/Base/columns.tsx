@@ -39,7 +39,7 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
   if (!value) {
     return Promise.resolve()
   }
-  console.log(value)
+
   if (value.type === 'enum' && !value.elements?.length) {
     return Promise.reject('请添加枚举项')
   }
@@ -95,9 +95,8 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.format = value
       break;
     case 'string':
-      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
     case 'password':
-      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
+      obj.expands.maxLength = JSON.stringify(value) === '{}' ? undefined : value
       break;
     default:
       obj = value
@@ -135,7 +134,7 @@ export const typeSelectChange = (type: string) => {
       break;
     case 'string':
     case 'password':
-      obj.maxLength = undefined
+      obj.expands.maxLength = undefined
       break;
     case 'boolean':
       obj.trueText = '是'

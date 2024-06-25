@@ -78,7 +78,7 @@
           <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
           <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
-          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
           <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" :disabled="record.expands?.isProduct"/>
           <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" :disabled="record.expands?.isProduct"/>
           <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" :disabled="record.expands?.isProduct"/>
