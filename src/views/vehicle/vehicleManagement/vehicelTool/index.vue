@@ -67,10 +67,10 @@
                         <template #img>
                             <slot name="img">
                                 <img
+                                    style="width: 80px; height: 80px"
                                     :src="
-                                        getServerImgPath(
-                                            slotProps.pictureUrl,
-                                        ) || getImage('/device-product.png')
+                                        slotProps.pictureUrl ||
+                                        getImage('/device-product.png')
                                     "
                                     class="productImg"
                                 />
@@ -262,7 +262,7 @@ import {
     deleteVehicle,
 } from '@/api/vehicle/vehicleManagement';
 import { useMenuStore } from 'store/menu';
-import { getImage, onlyMessage, getServerImgPath } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '../typings';
 import Save from './save/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
