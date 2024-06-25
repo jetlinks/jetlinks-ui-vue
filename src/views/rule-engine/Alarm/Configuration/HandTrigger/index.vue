@@ -172,11 +172,11 @@ const props = defineProps({
 const terms = [
     {
         terms: [
-            // {
-            //     column: 'id',
-            //     termType: 'alarm-bind-rule',
-            //     value: props.data?.id,
-            // },
+            {
+                column: 'id',
+                termType: 'alarm-bind-rule',
+                value: props.data?.id,
+            },
             {
                 column: 'triggerType',
                 termType: 'eq',
