@@ -3,7 +3,7 @@
         :zIndex="1072"
         :mask-closable="false"
         visible
-        width="1200"
+        width="1300px"
         title="编辑规则"
         :destroyOnClose="true"
         :dialogStyle="{

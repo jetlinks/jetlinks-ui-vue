@@ -63,6 +63,7 @@
       </a-descriptions-item>
       <a-descriptions-item label="属性来源">
         {{ sourceMap[data.expands.source] }}
+        <a v-if="data.expands.source === 'rule'" type="link" style="padding: 0 12px" @click="showRuleDetail">查看</a>
       </a-descriptions-item>
       <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
       <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
@@ -89,6 +90,12 @@
       <j-button type="primary" @click="ok">确认</j-button>
     </template>
   </a-modal>
+  <RuleDetailModal
+    v-if="ruleRecord.visible"
+    :value="ruleRecord.value"
+    :getPopupContainer="getPopupContainer"
+    @cancel="onCloseRule"
+  />
 </template>
 
 <script setup lang="ts" name="PropertiesModal">
@@ -99,6 +106,11 @@ import {TypeStringMap} from "@/views/device/components/Metadata/Base/columns";
 import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
 import {enumColumns, objectColumns} from './utils'
 import { findTypeItem } from '@/components/Metadata/Table/components/Type/data'
+import RuleDetailModal from '../components/VirtualRule/DetailModal.vue'
+import { queryDeviceVirtualProperty } from '@/api/device/instance';
+import { queryProductVirtualProperty } from '@/api/device/product';
+import {useInstanceStore} from "store/instance";
+import {useProductStore} from "store/product";
 
 const props = defineProps({
   data: {
@@ -122,6 +134,8 @@ const props = defineProps({
 const emit = defineEmits(['cancel'])
 
 const route = useRoute()
+const instanceStore = useInstanceStore();
+const productStore = useProductStore();
 const { settingData } = useStoreType(props.type)
 
 const sourceMap = {
@@ -138,6 +152,11 @@ const readTypeText = computed(() => {
   }
 
   return props.data?.expands?.type?.map?.((key: string) => type[key]).join('、')
+})
+
+const ruleRecord = reactive({
+  visible: false,
+  value: undefined
 })
 
 const unitLabel = computed(() => {
@@ -214,7 +233,38 @@ const ok = () => {
   cancel()
 }
 
+const showRuleDetail = () => {
+  ruleRecord.visible = true
+}
+const onCloseRule = () => {
+  ruleRecord.visible = false
+  ruleRecord.value = undefined
+}
+
+const getRuleDetail = async () => {
+  if (props.data.expands.source === 'rule') {
+    let resp
+    if (props.type === 'product') {
+      resp = await queryProductVirtualProperty(
+        productStore.current?.id,
+        props.data.id,
+      );
+    } else {
+      resp = await queryDeviceVirtualProperty(
+        instanceStore.current?.productId,
+        instanceStore.current?.id,
+        props.data.id,
+      );
+    }
+
+    if (resp.success) {
+      ruleRecord.value = resp.result.rule?.script
+    }
+  }
+}
+
 watch(() => props.data.valueType.type, (val) => {
+  getRuleDetail()
   handleDataTable(val)
 }, { immediate: true })
 
