@@ -68,8 +68,9 @@
                             <slot name="img">
                                 <img
                                     :src="
-                                        getServerImgPath(slotProps.pictureUrl) ||
-                                        getImage('/device-product.png')
+                                        getServerImgPath(
+                                            slotProps.pictureUrl,
+                                        ) || getImage('/device-product.png')
                                     "
                                     class="productImg"
                                 />
@@ -427,18 +428,19 @@ const add = () => {
  * 查看
  */
 const handleView = (data: any) => {
-    if (isCheck.value) {
-        if (_selectedRowKeys.value.includes(data.id)) {
-            const _index = _selectedRowKeys.value.findIndex(
-                (i) => i === data.id,
-            );
-            _selectedRowKeys.value.splice(_index, 1);
-        } else {
-            _selectedRowKeys.value = [..._selectedRowKeys.value, data.id];
-        }
-    } else {
-        console.log('查看详情');
-    }
+    console.log('查看详情');
+    // if (isCheck.value) {
+    //     if (_selectedRowKeys.value.includes(data.id)) {
+    //         const _index = _selectedRowKeys.value.findIndex(
+    //             (i) => i === data.id,
+    //         );
+    //         _selectedRowKeys.value.splice(_index, 1);
+    //     } else {
+    //         _selectedRowKeys.value = [..._selectedRowKeys.value, data.id];
+    //     }
+    // } else {
+    //     console.log('查看详情');
+    // }
 };
 
 /**
@@ -551,11 +553,9 @@ const handelRemove = async () => {
         return;
     }
     //删除
-
     onlyMessage('操作成功');
     //清空已选择
     _selectedRowKeys.value = [];
-    //恢复状态
     isCheck.value = false;
     tableRef.value?.reload();
 };
