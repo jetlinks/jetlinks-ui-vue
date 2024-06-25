@@ -3,15 +3,16 @@
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
+        bordered
         :scroll="{ y: 'calc(100vh - 260px)' }"
     >
         <template #bodyCell="{ column, text, record }">
             <template v-if="column.dataIndex === 'alarmTime'"
                 ><span
                     >{{ dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-                    }}<a-button type="text" @click="() => showDetail(record)">
+                    }}<a-button type="link" @click="() => showDetail(record)">
                         <template #icon>
-                            <AIcon type="FileSearchOutlined"></AIcon>
+                            <AIcon type="EyeOutlined"></AIcon>
                         </template> </a-button></span
             ></template>
             <template v-if="column.dataIndex === 'sourceId'">
@@ -35,7 +36,7 @@
         <a-button
             v-if="exceed"
             class="moreBtn"
-            type="text"
+            type="link"
             @click="gotoAlarmLog"
             >查看更多 ></a-button
         >
@@ -141,7 +142,7 @@ onMounted(() => {
     height: 50px;
     .moreBtn {
         position: absolute;
-        right: 0;
+        right: 50%;
         top: 10px;
     }
 }

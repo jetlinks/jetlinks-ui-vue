@@ -4,17 +4,17 @@
         okText="确定"
         cancelText="取消"
         :width="1000"
+        title="告警日志"
         :closable="true"
         @ok="closeModal"
         @cancel="closeModal"
     >
-        <template #title>
-            <span>{{ data?.alarmConfigName }}</span>
+        <div class="alarmInfo">
+            <span class="alarmTitle">{{ data?.alarmConfigName }}</span>
             <span class="alarmTime">{{
                 dayjs(data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
             }}</span>
-        </template>
-
+        </div>
         <j-descriptions bordered :column="2">
             <j-descriptions-item label="触发条件" :span="2">{{
                 data?.triggerDesc
@@ -62,8 +62,17 @@ const gotoDevice = (id) => {
 };
 </script>
 <style lang="less" scoped>
-.alarmTime {
-    font-size: 12px;
-    margin-left: 20px;
+.alarmInfo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    .alarmTitle {
+        font-weight: 600;
+        font-size: 16px;
+        color: #1a1a1a;
+    }
+    .alarmTime {
+        font-size: 14px;
+    }
 }
 </style>
