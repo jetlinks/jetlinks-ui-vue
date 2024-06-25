@@ -31,7 +31,7 @@
                 :params="params"
             >
                 <template #card="slotProps">
-                    <CardBox
+                    <!-- <CardBox
                         :value="slotProps"
                         :status="slotProps.state?.value"
                         :statusText="slotProps.state?.text"
@@ -76,17 +76,29 @@
                                 </div>
                             </Ellipsis>
                         </template>
-                    </CardBox>
+                    </CardBox> -->
+                    <SceneCardBox
+                        :value="slotProps"
+                        :status="slotProps.state?.value"
+                        :statusText="slotProps.state?.text"
+                        :alarmId="props.data.id"
+                        :activeKeys="activeKeys[slotProps.id]"
+                        :selected="_selectedRowKeys.includes(slotProps.id)"
+                        @click="() => handleClick(slotProps)"
+                    ></SceneCardBox>
                 </template>
             </JProTable>
         </div>
     </j-modal>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { getImage, onlyMessage } from '@/utils/comm';
 import { query } from '@/api/rule-engine/scene';
+import { queryBindScene } from '@/api/rule-engine/configuration';
 import { _execute } from '@/api/rule-engine/configuration';
+import SceneCardBox from './components/CardBox.vue';
+import { useRequest } from '@/hook';
 
 const columns = [
     {
@@ -96,32 +108,34 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-              const res = await query(
-                  {
-                        sorts: [
-                          {
+                const res = await query({
+                    sorts: [
+                        {
                             name: 'createTime',
                             order: 'desc',
-                          },
-                        ],
-                        terms: [
-                          {
+                        },
+                    ],
+                    terms: [
+                        {
                             column: 'id',
                             termType: 'alarm-bind-rule',
                             value: props.data?.id,
-                          },
-                          { column: 'triggerType', termType: 'eq', value: 'manual' }
-                        ]
-                      }
-              );
-              if (res.status === 200) {
-                  return res.result.data.map((item: any) => ({
-                      label: item.name,
-                      value: item.id,
-                  }));
-              }
-              return []
-            }
+                        },
+                        {
+                            column: 'triggerType',
+                            termType: 'eq',
+                            value: 'manual',
+                        },
+                    ],
+                });
+                if (res.status === 200) {
+                    return res.result.data.map((item) => ({
+                        label: item.name,
+                        value: item.id,
+                    }));
+                }
+                return [];
+            },
         },
     },
     {
@@ -158,15 +172,30 @@ const props = defineProps({
 const terms = [
     {
         terms: [
-            {
-                column: 'id',
-                termType: 'alarm-bind-rule',
-                value: props.data?.id,
-            },
+            // {
+            //     column: 'id',
+            //     termType: 'alarm-bind-rule',
+            //     value: props.data?.id,
+            // },
             {
                 column: 'triggerType',
                 termType: 'eq',
                 value: props.data?.sceneTriggerType,
+            },
+        ],
+    },
+    {
+        terms: [
+            {
+                column: 'features',
+                termType: 'in',
+                value: ['alarmTrigger', 'alarmReliever'],
+            },
+            {
+                column: 'features',
+                termType: 'isnull',
+                value: 1,
+                type: 'or',
             },
         ],
         type: 'and',
@@ -183,13 +212,12 @@ typeMap.set('manual', {
     tip: '适用于第三方平台向物联网平台下发指令控制设备',
 });
 
-const _selectedRowKeys = ref<string[]>([]);
+const _selectedRowKeys = ref([]);
 
-const handleClick = (dt: any) => {
-   
-    if(dt.state?.value === 'disable') {
-        onlyMessage('该场景为禁用状态，无法触发告警','error')
-        return
+const handleClick = (dt) => {
+    if (dt.state?.value === 'disable') {
+        onlyMessage('该场景为禁用状态，无法触发告警', 'error');
+        return;
     }
     if (_selectedRowKeys.value.includes(dt.id)) {
         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
@@ -205,7 +233,7 @@ const onSelectChange = () => {
     _selectedRowKeys.value = [];
 };
 
-const handleSearch = (e: any) => {
+const handleSearch = (e) => {
     params.value = e;
 };
 const emit = defineEmits(['close', 'save']);
@@ -232,6 +260,21 @@ const saveCorrelation = async () => {
 const closeModal = () => {
     emit('close');
 };
+const { data: activeKeys } = useRequest(queryBindScene, {
+    defaultParams: { terms: [{ column: 'alarmId', value: props.data?.id }] },
+    onSuccess(res) {
+        const activeMap = res.result.data.reduce((prev, next) => {
+            if (prev[next.ruleId]) {
+                prev[next.ruleId].push(next.branchIndex);
+            } else {
+                prev[next.ruleId] = [next.branchIndex];
+            }
+            return prev;
+        }, {});
+        return activeMap || {};
+    },
+    defaultValue: {},
+});
 </script>
 <style lang="less" scoped>
 .subTitle {
