@@ -1,5 +1,6 @@
 <template>
     <j-modal
+        title="关联设备选择"
         :maskClosable="false"
         destroy-on-close
         v-model:visible="sbVisible"
