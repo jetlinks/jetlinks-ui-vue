@@ -71,8 +71,8 @@
               <j-form-item label="从机地址" :name="['configuration', 'host']" :rules="LeftTreeRules.host">
                 <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入" :disabled="false"/>
               </j-form-item>
-              <j-form-item label="从机端口" :name="['configuration', 'port']" >
-                <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" placeholder="请输入从机端口"/>
+              <j-form-item label="从机端口" :name="['configuration', 'port']" :rules="LeftTreeRules.port" >
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :min="1" :max="65535" :precision="0" autocomplete="off" placeholder="请输入从机端口"/>
               </j-form-item>
               <j-form-item label="分组地址" :name="['configuration', 'terminnalAddress']" :rules="LeftTreeRules.terminnalAddress">
                 <j-input-number style="width: 100%" :min="0" :max="65535" :precision="0" v-model:value="formData.configuration.terminnalAddress" autocomplete="off" placeholder="请输入分组地址"></j-input-number>
@@ -118,21 +118,19 @@
                 :name="['configuration', 'instanceNumber']"
                 :rules="[{ required: true, trigger: 'change' }]"
               >
-                <j-input
-                  type="number"
+                <j-input-number
                   style="width: 100%"
                   v-model:value="formData.configuration.instanceNumber"
                   placeholder="请输入设备实例号"
-                  :maxlength="64"
+                  :min="0"
                   :disabled="route.query.id ? true : false"
                 />
               </j-form-item>
-              <j-form-item label="地址" :name="['configuration', 'address']">
+              <j-form-item label="地址" :name="['configuration', 'address']"  :rules="LeftTreeRules.address">
                 <j-input
                   style="width: 100%"
                   v-model:value="formData.configuration.address"
                   :maxlength="64"
-                  type="tel"
                   placeholder="请输入地址"
                 >
                 </j-input>
