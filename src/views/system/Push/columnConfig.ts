@@ -1,15 +1,15 @@
 export const columnsConfig = [
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        width: 200,
-        fixed: 'left',
-        ellipsis: true,
-        search: {
-            type: 'number',
-        },
-    },
+    // {
+    //     title: 'ID',
+    //     dataIndex: 'id',
+    //     key: 'id',
+    //     width: 200,
+    //     fixed: 'left',
+    //     ellipsis: true,
+    //     search: {
+    //         type: 'number',
+    //     },
+    // },
     // {
     //     title: '公司名称',
     //     dataIndex: 'companyName',
@@ -28,7 +28,7 @@ export const columnsConfig = [
         search: {
             type: 'string',
         },
-        width: 100,
+        ellipsis: true,
     },
     {
         title: '设备规则',
@@ -37,7 +37,7 @@ export const columnsConfig = [
         search: {
             type: 'string',
         },
-        width: 100,
+        ellipsis: true,
     },
     {
         title: '账号',
@@ -46,7 +46,7 @@ export const columnsConfig = [
         search: {
             type: 'string',
         },
-        width: 100,
+        ellipsis: true,
     },
     {
         title: '密码',
@@ -55,28 +55,28 @@ export const columnsConfig = [
         search: {
             type: 'string',
         },
-        width: 120,
+        ellipsis: true,
     },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        width: 100,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '启用',
-                    value: 1,
-                },
-                {
-                    label: '禁用',
-                    value: 0,
-                },
-            ],
-        },
-        scopedSlots: true,
-    },
+    // {
+    //     title: '状态',
+    //     dataIndex: 'status',
+    //     key: 'status',
+    //     width: 100,
+    //     search: {
+    //         type: 'select',
+    //         options: [
+    //             {
+    //                 label: '启用',
+    //                 value: 1,
+    //             },
+    //             {
+    //                 label: '禁用',
+    //                 value: 0,
+    //             },
+    //         ],
+    //     },
+    //     scopedSlots: true,
+    // },
     {
         title: '加密类型',
         dataIndex: 'encryptType',
@@ -87,12 +87,12 @@ export const columnsConfig = [
         },
         width: 100,
     },
-    {
-        title: '公钥',
-        dataIndex: 'publicKey',
-        key: 'publicKey',
-        width: 100,
-    },
+    // {
+    //     title: '公钥',
+    //     dataIndex: 'publicKey',
+    //     key: 'publicKey',
+    //     width: 100,
+    // },
     {
         title: '有效开始时间',
         dataIndex: 'efficaciousStartTime',
@@ -107,40 +107,40 @@ export const columnsConfig = [
         width: 180,
         scopedSlots: true,
     },
-    {
-        title: '创建者ID',
-        dataIndex: 'publicKey',
-        key: 'publicKey',
-        width: 100,
-        ellipsis: true,
-    },
-    {
-        title: '创建时间',
-        dataIndex: 'createTime',
-        key: 'createTime',
-        width: 180,
-        scopedSlots: true,
-    },
-    {
-        title: '修改人ID',
-        dataIndex: 'modifierId',
-        key: 'modifierId',
-        width: 100,
-        ellipsis: true,
-    },
-    {
-        title: '修改时间',
-        dataIndex: 'modifyTime',
-        key: 'modifyTime',
-        width: 180,
-        scopedSlots: true,
-    },
+    // {
+    //     title: '创建者ID',
+    //     dataIndex: 'publicKey',
+    //     key: 'publicKey',
+    //     width: 100,
+    //     ellipsis: true,
+    // },
+    // {
+    //     title: '创建时间',
+    //     dataIndex: 'createTime',
+    //     key: 'createTime',
+    //     width: 180,
+    //     scopedSlots: true,
+    // },
+    // {
+    //     title: '修改人ID',
+    //     dataIndex: 'modifierId',
+    //     key: 'modifierId',
+    //     width: 100,
+    //     ellipsis: true,
+    // },
+    // {
+    //     title: '修改时间',
+    //     dataIndex: 'modifyTime',
+    //     key: 'modifyTime',
+    //     width: 180,
+    //     scopedSlots: true,
+    // },
     {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        fixed: 'right',
-        width: 170,
+        width: 100,
+        // fixed: 'right',
         scopedSlots: true,
     },
 ];

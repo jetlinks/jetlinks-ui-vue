@@ -12,8 +12,6 @@
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
-                :scroll="{ x: 1500 }"
-                sticky
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -53,29 +51,6 @@
                             "
                         >
                             <AIcon type="EditOutlined" />
-                        </PermissionButton>
-                        <PermissionButton
-                            type="link"
-                            :tooltip="{
-                                title: `${
-                                    actionScope.status ? '启用' : '禁用'
-                                }`,
-                            }"
-                            :popConfirm="{
-                                title: `确定${
-                                    actionScope.status ? '启用' : '禁用'
-                                }吗？`,
-                                onConfirm: () =>
-                                    tableHandler.updateStatus(actionScope),
-                            }"
-                        >
-                            <AIcon
-                                :type="
-                                    actionScope.status
-                                        ? 'PlayCircleOutlined'
-                                        : 'StopOutlined'
-                                "
-                            />
                         </PermissionButton>
                         <PermissionButton
                             type="link"
@@ -131,8 +106,8 @@ const tableRef = ref<any>();
 const dateColumns = [
     'efficaciousStartTime',
     'efficaciousEndTime',
-    'createTime',
-    'modifyTime',
+    // 'createTime',
+    // 'modifyTime',
 ];
 
 // 加密类型name和value的映射
@@ -223,39 +198,29 @@ const tableHandler = {
         modal.type = type;
         if (type === 'add') {
             modal.data = {
-                // id: '',
-                // companyName: '',
                 address: '',
                 deviceRuleCode: '',
                 username: '',
                 password: '',
                 encryptType: undefined,
-                publicKey: '',
-                efficaciousStartTime: '',
-                efficaciousEndTime: '',
+                // publicKey: '',
+                // efficaciousStartTime: '',
+                // efficaciousEndTime: '',
             };
         } else {
             modal.data = {
                 id: row.id,
-                // companyName: '',
-                address: row.address,
+                // address: row.address,
                 deviceRuleCode: row.deviceRuleCode,
                 username: row.username,
                 password: row.password,
-                encryptType: row.encryptType,
-                publicKey: row.publicKey,
-                efficaciousStartTime: row.efficaciousStartTime,
-                efficaciousEndTime: row.efficaciousEndTime,
+                // encryptType: row.encryptType,
+                // publicKey: row.publicKey,
+                // efficaciousStartTime: row.efficaciousStartTime,
+                // efficaciousEndTime: row.efficaciousEndTime,
             };
         }
         modal.visible = true;
-    },
-    // 修改状态
-    updateStatus: ({ id, status }: any) => {
-        updateSingleConfig({ status: status ? 0 : 1 }, id).then(() => {
-            onlyMessage('操作成功');
-            tableHandler.refreshTable();
-        });
     },
     // 删除
     deleteRow: (id: string) => {
@@ -279,4 +244,11 @@ const handleProSearch = (_params: any) => {
 };
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+:deep(.ant-table-cell) {
+    .ant-btn {
+        padding: 0;
+        margin-right: 16px;
+    }
+}
+</style>
