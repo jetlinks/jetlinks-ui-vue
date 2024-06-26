@@ -105,7 +105,7 @@ watchEffect(() => {
     const _valueName = props.valueName;
     if (Array.isArray(_value) && _value.length) {
         label.value = []
-        _value?.forEach((i: any, index: number) => {
+        _value?.filter(i => i).forEach((i: any, index: number) => {
             const option = getOption(_options, i as string, _valueName);
             if (option) {
                 label.value.push(option[props.labelName] || option.name);
