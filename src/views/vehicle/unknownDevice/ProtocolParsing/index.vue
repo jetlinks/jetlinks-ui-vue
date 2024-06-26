@@ -15,13 +15,18 @@
                     sorts: [{ name: 'timestamp', order: 'desc' }],
                 }"
                 v-model:params="globParams"
-                :gridColumn="3"
+                :rowSelection="{
+                    selectedRowKeys: selectedRowKeys,
+                    onSelect: handleRowSelected,
+                    onSelectAll: handleSelectAll,
+                    onSelectNone: handleClearSelected,
+                }"
             >
                 <template #headerTitle>
                     <j-space>
                         <PermissionButton
                             :popConfirm="{
-                                title: '确认导出',
+                                title: popTitle,
                                 onConfirm: () => handleExport(),
                             }"
                         >
@@ -72,7 +77,12 @@ import { onlyMessage } from '@/utils/comm';
 import { useProSearch } from '@/hook/useProSearch';
 import { useSelectableTable } from '@/hook/useSelectableTable';
 import moment from 'moment';
-const { handleClearSelected } = useSelectableTable();
+const {
+    selectedRowKeys,
+    handleRowSelected,
+    handleSelectAll,
+    handleClearSelected,
+} = useSelectableTable();
 const tableRef = ref<Record<string, any>>({});
 // 表格数据总数
 const dataTotal = ref<number>(0);
@@ -123,10 +133,18 @@ const handleOnChange = (num: number, pageSize: number) => {
     handleSearch(_params);
 };
 
+// 处理导出按钮的提示，无需修改复制即可
+const popTitle = computed(() => {
+    return selectedRowKeys.value.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
+
 /**
  * @function handleExport 导出
  */
 const handleExport = () => {
+    console.log('selectedRowKeys', selectedRowKeys.value);
     onlyMessage('导出成功');
 };
 
@@ -207,6 +225,7 @@ const columns = [
 ];
 
 const queryData = async (_params: any) => {
+    console.log('_params', _params);
     const resp: any = await queryUnknownProtocol(_params);
     console.log('resp', resp);
     if (resp.status === 200) {
