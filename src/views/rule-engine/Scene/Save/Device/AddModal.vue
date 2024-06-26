@@ -20,7 +20,6 @@
     </j-steps>
     <j-divider style='margin-bottom: 0px' />
     <div class='steps-content'>
-      <j-scrollbar :maxHeight="500">
         <Product
           v-if='addModel.stepNumber === 0'
           v-model:rowKey='addModel.productId'
@@ -41,7 +40,6 @@
           :metadata='addModel.metadata'
           :operator='addModel.operator'
         />
-      </j-scrollbar>
     </div>
     <template #footer>
       <div class='steps-action'>
@@ -280,8 +278,8 @@ nextTick(() => {
 <style scoped>
 .steps-content {
   width: 100%;
-  /*max-height: 500px;*/
-  /*overflow-y: auto;*/
-  /*overflow-x: hidden;*/
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

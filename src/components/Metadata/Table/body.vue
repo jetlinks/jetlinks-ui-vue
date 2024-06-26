@@ -163,6 +163,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   viewScrollRef.value?.removeEventListener('scroll', onScroll)
   menuInstance?.destroy()
+  menuInstance?.cleanCopy()
 })
 
 watch(() => props.dataSource, () => {

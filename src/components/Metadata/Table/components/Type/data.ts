@@ -1,4 +1,4 @@
-export default [
+const type = [
     {
         value: 'int',
         label: 'int(整数型)',
@@ -52,3 +52,9 @@ export default [
         label: 'geoPoint(地理位置)',
     },
 ];
+
+export const findTypeItem = (value: string) => {
+    return type.find(item => item.value === value)
+}
+
+export default type

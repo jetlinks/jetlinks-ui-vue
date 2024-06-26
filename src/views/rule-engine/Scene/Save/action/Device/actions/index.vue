@@ -39,8 +39,8 @@
                     :rules="functionRules"
                 >
                     <EditTable
-                        :functions="functions"
                         v-model:value="modelRef.message.inputs"
+                        :functions="functions"
                         :builtInList="builtInList"
                     />
                 </j-form-item>
@@ -82,7 +82,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="ActionDeviceActions">
 import { getImage } from '@/utils/comm';
 import TopCard from '../device/TopCard.vue';
 import { detail } from '@/api/device/instance';
@@ -264,48 +264,6 @@ const onMessageTypeChange = (val: string) => {
     }
 };
 
-watch(
-    () => props.productDetail,
-    (newVal) => {
-        if (newVal?.id) {
-            if (props.values?.selector === 'fixed' && props.values?.selectorValues?.length === 1) {
-                const id = props.values?.selectorValues?.[0]?.value;
-                if (id) {
-                    detail(id).then((resp) => {
-                        if (resp.status === 200) {
-                            metadata.value = JSON.parse(
-                                resp.result?.metadata || '{}',
-                            );
-                        }
-                    });
-                }
-            } else {
-                metadata.value = JSON.parse(newVal?.metadata || '{}');
-            }
-        }
-    },
-    { immediate: true },
-);
-
-watch(
-    () => props.values?.message,
-    (newVal) => {
-        if (newVal?.messageType) {
-            modelRef.message = newVal;
-            if (
-                ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(
-                    newVal.messageType,
-                )
-            ) {
-                queryBuiltIn();
-            }else{
-                modelRef.message.properties =  [] as any;
-            }
-        }
-    },
-    { immediate: true },
-);
-
 const onWriteChange = (val: string, optionColumn: string[]) => {
     modelRef.propertiesValue = val;
     emit('change', {
@@ -347,6 +305,51 @@ const onFormSave = () => {
             });
     });
 };
+
+watch(
+  () => props.productDetail,
+  (newVal) => {
+    if (newVal?.id) {
+      if (props.values?.selector === 'fixed' && props.values?.selectorValues?.length === 1) {
+        const id = props.values?.selectorValues?.[0]?.value;
+        if (id) {
+          detail(id).then((resp) => {
+            if (resp.status === 200) {
+              metadata.value = JSON.parse(
+                resp.result?.metadata || '{}',
+              );
+            }
+          });
+        }
+      } else {
+        metadata.value = JSON.parse(newVal?.metadata || '{}');
+      }
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.values?.message,
+  (newVal) => {
+    if (newVal?.messageType) {
+
+      modelRef.message = JSON.parse(JSON.stringify(newVal));
+      if (
+        ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(
+          newVal.messageType,
+        )
+      ) {
+        queryBuiltIn();
+      } else {
+        if (!modelRef.message.properties) {
+          modelRef.message = Object.assign(modelRef.message, {properties: [] })
+        }
+      }
+    }
+  },
+  { immediate: true },
+);
 
 defineExpose({ onFormSave });
 </script>

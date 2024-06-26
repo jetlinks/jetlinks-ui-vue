@@ -308,7 +308,7 @@ watch(
 
 const showDouble = computed(() => {
     const isRange = paramsValue.termType
-        ? arrayParamsKey.includes(paramsValue.termType)
+        ? doubleParamsKey.includes(paramsValue.termType)
         : false;
     const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
@@ -330,7 +330,7 @@ const showDouble = computed(() => {
 
 const showArray = computed(()=>{
     const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false;
-                        const isSourceMetric = paramsValue.value?.source === 'metric';
+    const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
         metricOption.value = metricsCacheOption.value.filter((item) =>
             isRange ? item.range : !item.range,
@@ -526,6 +526,26 @@ const onDelete = () => {
         props.whenName
     ].terms.splice(props.termsName, 1);
 };
+
+watchEffect(() => {
+  const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false;
+  const isSourceMetric = paramsValue.value?.source === 'metric';
+  if (metricsCacheOption.value.length) {
+    metricOption.value = metricsCacheOption.value.filter((item) =>
+      isRange ? item.range : !item.range,
+    );
+  } else {
+    metricOption.value = [];
+  }
+
+  if (isRange) {
+    if (isMetric.value) {
+      return !isSourceMetric;
+    }
+    return true;
+  }
+  return false;
+})
 
 nextTick(() => {
     Object.assign(

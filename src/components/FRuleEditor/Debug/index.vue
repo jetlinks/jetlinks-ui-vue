@@ -152,7 +152,7 @@
                         class="action"
                         @click="runScriptAgain"
                     >
-                        <a style="margin-left: 75px">发送数据</a>
+                        <a>发送数据</a>
                     </div>
                     <div v-if="virtualRule?.script && !isBeginning">
 <!--                        <a v-if="isBeginning" @click="beginAction">-->
@@ -202,6 +202,7 @@ import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
 import {useTableWrapper} from "@/components/Metadata/Table/utils";
 import { onlyMessage } from '@/utils/comm';
+import {message} from "ant-design-vue";
 
 const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
@@ -314,6 +315,11 @@ const runScript = () => {
     }
     if (!props.virtualRule?.script) {
         isBeginning.value = true;
+      message.config({
+        getContainer() {
+          return tableWrapperRef.value || document.body
+        }
+      })
         onlyMessage('请编辑规则', 'warning');
         return;
     }
@@ -394,8 +400,13 @@ const getTime = () => {
 };
 
 const beginAction = () => {
-  if (property.value.some(item => !item.id || !(item.current || item.last) )) {
-    return onlyMessage('请添加规则属性')
+  if (!property.value.length || property.value.some(item => !item.id || !(item.current || item.last) )) {
+    message.config({
+      getContainer() {
+        return tableWrapperRef.value || document.body
+      },
+    })
+    return onlyMessage('请添加规则属性', 'warning')
   }
     isBeginning.value = false;
     runScript();
@@ -418,6 +429,12 @@ onUnmounted(() => {
         ws.value.unsubscribe?.();
     }
     clearAction();
+
+    message.config({
+      getContainer() {
+        return document.body
+      },
+    })
     window.clearInterval(timer.value);
     timer.value = null;
 });
@@ -454,6 +471,7 @@ defineExpose({
     // width: 100%;
     // height: 340px;
     // margin-top: 20px;
+  gap: 12px;
 
     .top {
         // min-width: 0;

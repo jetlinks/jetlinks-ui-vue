@@ -37,7 +37,8 @@ export const getMetadataItemByType = (type: string) => {
                 group: undefined
             },
             valueType: {
-                type: undefined
+                type: undefined,
+                expands: {}
             }
         })
     } else if (type === 'functions') {

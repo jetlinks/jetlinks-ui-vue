@@ -12,7 +12,7 @@
             <TypeSelect v-model:value="formData.type" />
           </a-form-item>
           <ScaleItem v-if="showDouble" v-model:value="formData.scale" />
-          <StringItem v-else-if="showString" v-model:value="formData.maxLength" />
+          <StringItem v-else-if="showString" v-model:value="formData.expands.maxLength" />
           <BooleanItem v-else-if="showBoolean" v-model:value="formData.boolean" name="boolean"/>
           <DateItem v-else-if="showDate" v-model:value="formData.format"/>
           <EnumItem ref="enumTableRef" v-else-if="showEnum" v-model:value="formData.enum.elements"/>
@@ -71,7 +71,9 @@ const visible = ref(false)
 const formData = reactive({
   type: props.value?.type,
   scale: props.value?.scale,
-  maxLength: props.value?.maxLength,
+  expands: {
+    maxLength: props.value?.maxLength || props.value?.expands?.maxLength,
+  },
   boolean: {
     trueText: props.value?.trueText || '是',
     trueValue: props.value?.trueValue || 'true',
@@ -133,7 +135,7 @@ const typeChange = (e) => {
 const initValue = () => {
   formData.type = props.value?.type;
   formData.scale = props.value?.scale;
-  formData.maxLength = props.value?.maxLength;
+  formData.expands.maxLength = props.value?.maxLength || props.value?.expands?.maxLength;
   formData.boolean = {
     trueText: props.value?.trueText || '是',
     trueValue: props.value?.trueValue || 'true',
@@ -165,7 +167,7 @@ const handleValue = (type, data) => {
       break;
     case 'string':
     case 'password':
-      newObject = pick(data, 'maxLength');
+      newObject = pick(data, 'expands');
       break;
     case 'date':
       newObject = pick(data, 'format');

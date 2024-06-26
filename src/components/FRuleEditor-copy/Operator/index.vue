@@ -97,15 +97,18 @@ const getData = async (id?: string) => {
     code: '',
     children: _properties
       .filter((p: PropertyMetadata) => p.id !== id)
-      .map((p: PropertyMetadata) => ({
-        id: p.id,
-        name: p.name,
-        description: `### ${p.name}
+      .map((p: PropertyMetadata) => {
+        const readOnly = p.expands.type.length === 1 && p.expands.type[0] === 'read' ? '是' : '否'
+        return {
+          id: p.id,
+          name: p.name,
+          description: `### ${p.name}
         \n 数据类型: ${p.valueType?.type}
-        \n 是否只读: ${p.expands?.readOnly || 'false'}
+        \n 是否只读: ${readOnly}
         \n 可写数值范围: `,
-        type: 'property',
-      })),
+          type: 'property',
+        }
+      }),
   };
   const response = await getOperator();
   if (response.status === 200) {

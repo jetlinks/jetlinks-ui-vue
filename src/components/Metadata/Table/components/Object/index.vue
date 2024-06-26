@@ -35,7 +35,7 @@
               <div style="display: flex; gap: 12px; align-items: center">
                 <TypeSelect  v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" />
                 <DoubleParams v-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" placement="topRight"/>
-                <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" placement="topRight"/>
+                <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" placement="topRight"/>
                 <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" placement="topRight"/>
                 <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" placement="topRight"/>
                 <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" placement="topRight"/>
@@ -209,7 +209,9 @@ const addItem = () => {
     expands: {
       required: false
     },
-    valueType: {}
+    valueType: {
+      expands: {}
+    }
   })
 }
 

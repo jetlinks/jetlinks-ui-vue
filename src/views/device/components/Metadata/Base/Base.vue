@@ -1,4 +1,5 @@
 <template>
+  <div class="metadata-base">
   <EditTable
       v-if="!heavyLoad"
       ref="tableRef"
@@ -78,7 +79,7 @@
           <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
           <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
-          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
           <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" :disabled="record.expands?.isProduct"/>
           <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" :disabled="record.expands?.isProduct"/>
           <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" :disabled="record.expands?.isProduct"/>
@@ -245,6 +246,7 @@
       :unitOptions="unitOptions"
       @cancel="cancelDetailModal"
   />
+  </div>
 </template>
 
 <script setup lang="ts" name="MetadataBase">
@@ -405,23 +407,26 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
   switch (type) {
     case 'add':
       dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
+      editStatus.value = true
       break;
     case 'paste':
       const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
       cloneRecord.id = `copy_${cloneRecord.id}`
       if (record.id) {
-        Modal.confirm({
-          title: '当前行存在数据',
-          onOk() {
-            dataSource.value.splice(_index, 1, cloneRecord)
-          },
-          onCancel() {
-            console.log('Cancel');
-          },
-        })
+        dataSource.value.splice(_index + 1, 0, cloneRecord)
+        // Modal.confirm({
+        //   title: '当前行存在数据',
+        //   onOk() {
+        //     dataSource.value.splice(_index, 1, cloneRecord)
+        //   },
+        //   onCancel() {
+        //     console.log('Cancel');
+        //   },
+        // })
       } else {
         dataSource.value.splice(_index, 1, cloneRecord)
       }
+      editStatus.value = true
       break;
     case 'detail':
       detailData.data = record
@@ -438,8 +443,10 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       //   },
       // })
       dataSource.value.splice(_index, 1)
+      editStatus.value = true
       break;
   }
+
 }
 
 const handleSaveClick = async (next?: Function) => {
@@ -557,6 +564,11 @@ const fullToggle = (type: boolean, cb: Function) => {
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
 onUnmounted(() => {
+  message.config({
+    getContainer() {
+      return document.body
+    },
+  })
   EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
 })
 
@@ -607,5 +619,11 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   color: #6f6f6f;
   justify-content: center;
   align-items: center
+}
+
+.metadata-base {
+  :deep(.ant-message) {
+    z-index: 1073;
+  }
 }
 </style>

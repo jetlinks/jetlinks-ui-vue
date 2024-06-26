@@ -274,7 +274,7 @@ const typeOptions = computed(() => {
 });
 
 const options = computed(() => {
-    return (dataSource?.value || []).filter((item: any) => (item?.id !== props.value?.id) && item.id && item.expands?.source !== 'rule');
+    return (dataSource?.value || []).filter((item: any) => (item?.id !== props.value?.id) && item.id);
 });
 
 const setInitVirtualRule = () => {
