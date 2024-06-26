@@ -5,55 +5,81 @@
             target="dataUpload-config"
             @search="handleSearch"
         ></pro-search>
-        <PTable
-            ref="tableRef"
-            :columns="columns"
-            model="table"
-            :request="queryData"
-            :defaultParams="{
-                sorts: [{ name: 'reportTime', order: 'desc' }],
-            }"
-            v-model:params="globParams"
-            :gridColumn="3"
-        >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        :popConfirm="{
-                            title: '确认导出',
-                            onConfirm: () => handleExport(),
-                        }"
-                    >
-                        <AIcon type="ExportOutlined" />
-                        导出
-                    </PermissionButton>
-                </j-space>
-            </template>
-            <template #abnormalTime="{abnormalTime}">
-              {{
-                        abnormalTime
-                            ? moment(Number(abnormalTime)).format(
+        <FullPage>
+            <JProTable
+                ref="tableRef"
+                :columns="columns"
+                model="table"
+                :request="queryData"
+                :defaultParams="{
+                    sorts: [{ name: 'timestamp', order: 'desc' }],
+                }"
+                v-model:params="globParams"
+                :gridColumn="3"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton
+                            :popConfirm="{
+                                title: '确认导出',
+                                onConfirm: () => handleExport(),
+                            }"
+                        >
+                            <AIcon type="ExportOutlined" />
+                            导出
+                        </PermissionButton>
+                    </j-space>
+                </template>
+                <template #timestamp="{ timestamp }">
+                    {{
+                        timestamp
+                            ? moment(Number(timestamp)).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : ''
                     }}
-            </template>
-            <template #action="slotProps">
-                <a @click="handelDetail(slotProps)" style="color: #f84914"
-                    >查看
-                </a>
-            </template>
-        </PTable>
+                </template>
+                <template #action="slotProps">
+                    <a @click="handelDetail(slotProps)" style="color: #f84914"
+                        >查看
+                    </a>
+                </template>
+                <template #paginationRender>
+                    <a-pagination
+                        showQuickJumper
+                        isShowContent
+                        showSizeChanger
+                        :pageSize="pageSize"
+                        :pageSizeOptions="['5', '12', '20', '50']"
+                        :current="currentPage"
+                        :total="dataTotal"
+                        :show-total="() => `总共 ${dataTotal} 条`"
+                        @change="handleOnChange"
+                    />
+                </template>
+            </JProTable>
+        </FullPage>
     </div>
 </template>
 
 <script setup lang="ts">
-import { vehicleTypeEnum } from '@/api/data-report/commonApi';
+import {
+    queryUnknownProtocol,
+    exportUnknownProtocol,
+} from '@/api/vehicle/unknown';
 import { Modal, Textarea } from 'ant-design-vue';
-import PTable from '@/components/PTable/index.vue';
 import { onlyMessage } from '@/utils/comm';
+import { useProSearch } from '@/hook/useProSearch';
+import { useSelectableTable } from '@/hook/useSelectableTable';
 import moment from 'moment';
+const { handleClearSelected } = useSelectableTable();
 const tableRef = ref<Record<string, any>>({});
+// 表格数据总数
+const dataTotal = ref<number>(0);
+// 表格当前属于多少页
+const currentPage = ref<number>(1);
+// 表格每页显示多少条数据
+const pageSize = ref<number>(5);
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
@@ -61,7 +87,7 @@ const globParams = ref<Record<string, any>>({});
 const handelDetail = (data: any) => {
     let content = '';
     try {
-        content = JSON.stringify(data.errorMessage, null, 2);
+        content = JSON.stringify(data.payload, null, 2);
     } catch (error) {
         content = data.errorMessage;
     }
@@ -74,6 +100,27 @@ const handelDetail = (data: any) => {
             value: content,
         }),
     });
+};
+
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    'createTime',
+]);
+
+/**
+ * @function handleOnChange 分页器改变的回调事件
+ * @param num
+ * @param pageSize
+ */
+const handleOnChange = (num: number, pageSize: number) => {
+    const _params = {
+        ...globParams.value,
+
+        // 因为分页器发生改变时会自动改变当前页码和每页条数
+        // 因此在这覆盖globSearchParam中的pageIndex和pageSize
+        pageIndex: num - 1,
+        pageSize: pageSize,
+    };
+    handleSearch(_params);
 };
 
 /**
@@ -89,44 +136,24 @@ const columns = [
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: () =>
-                new Promise((resolve) => {
-                    vehicleTypeEnum().then((resp: any) => {
-                        resolve(
-                            resp.result.map((item: any) => ({
-                                label: item.text,
-                                value: item.value,
-                            })),
-                        );
-                    });
-                }),
-        },
     },
     {
         title: '出厂编号',
         dataIndex: 'factoryNumber',
         key: 'factoryNumber',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '车辆简称',
         dataIndex: 'simpleName',
         key: 'simpleName',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
 
     {
         title: '子设备',
-        dataIndex: 'subEquipment',
-        key: 'subEquipment',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
         search: {
             type: 'string',
@@ -134,8 +161,8 @@ const columns = [
     },
     {
         title: '异常时间',
-        dataIndex: 'abnormalTime',
-        key: 'abnormalTime',
+        dataIndex: 'timestamp',
+        key: 'timestamp',
         ellipsis: true,
         scopedSlots: true,
         width: 200,
@@ -152,6 +179,7 @@ const columns = [
         width: 200,
         search: {
             type: 'string',
+            first: true,
         },
     },
     {
@@ -160,9 +188,6 @@ const columns = [
         key: 'modelNumber',
         scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '所属组织',
@@ -170,9 +195,6 @@ const columns = [
         key: 'orgName',
         scopedSlots: true,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '操作',
@@ -184,38 +206,26 @@ const columns = [
     },
 ];
 
-const queryData = async () => {
-    const data: any[] = [];
-    for (let i = 0; i < 12; i++) {
-        data.push({
-            id: `${i}`,
-            vehicleTypeEnum: `内燃柴油车${i}`,
-            factoryNumber: `出厂编号${i}`,
-            simpleName: `90923${i}`,
-            subEquipment: `电池${i}`,
-            abnormalTime: 1718955275000,
-            errorMessage: "{errorMessage:'异常'}",
-            modelNumber: '型号',
-            orgName: '所属组织',
-        });
-    }
-    return new Promise((resolve) => {
-        resolve({
-            message: 'success',
-            result: {
-                pageIndex: 0,
-                pageSize: 12,
-                total: 100,
-                data: data,
-            },
+const queryData = async (_params: any) => {
+    const resp: any = await queryUnknownProtocol(_params);
+    console.log('resp', resp);
+    if (resp.status === 200) {
+        dataTotal.value = resp.result.total || 12;
+        currentPage.value = resp.result.pageIndex + 1 || 0;
+        pageSize.value = resp.result.pageSize || 12;
+        return {
+            // 3.仿造请求结果返回给表格
+            code: resp.status,
+            result: resp.result,
+            status: resp.status,
+        };
+    } else {
+        return {
+            code: 200,
+            result: { data: [] },
             status: 200,
-            timestamp: 1718783580064,
-        });
-    });
-};
-
-const handleSearch = (params: any) => {
-    globParams.value = params;
+        };
+    }
 };
 </script>
 

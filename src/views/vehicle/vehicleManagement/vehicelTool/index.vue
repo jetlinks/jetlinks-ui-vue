@@ -2,7 +2,7 @@
     <page-container>
         <pro-search
             :columns="query.columns"
-            target="product-manage"
+            target="vehicle-manage"
             @search="handleSearch"
         />
         <FullPage>

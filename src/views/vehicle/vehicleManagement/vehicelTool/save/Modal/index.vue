@@ -77,6 +77,7 @@ import { onlyMessage } from '@/utils/comm';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { handleSearchByDate } from '@/utils/dataReportUtils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 const sbVisible = ref<boolean>(false);
 
 const {
@@ -188,15 +189,9 @@ const columns = [
     },
 ];
 
-/**
- * 搜索
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    if (_params.terms && _params.terms.length > 0) handleClearSelected();
-    handleSearchByDate(_params, ['createTime']);
-    globParams.value = _params;
-};
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    'createTime',
+]);
 
 /**
  * 显示弹窗
