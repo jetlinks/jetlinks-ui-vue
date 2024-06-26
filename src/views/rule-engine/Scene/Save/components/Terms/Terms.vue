@@ -67,21 +67,12 @@
 <!--      </j-form-item>-->
 <!--    </div>-->
   </div>
-  <j-modal
+  <BranchesNameEdit
     v-if="editConditionVisible"
-    visible
-    title="编辑"
-    :keyboard="false"
-    :maskClosable="false"
+    :name="conditionName"
     @cancel="editConditionVisible = false"
     @ok="changeBranchName"
-  >
-    <j-form layout='vertical'>
-      <j-form-item label="条件名称：" :required="true">
-        <j-input v-model:value="conditionName"></j-input>
-      </j-form-item>
-    </j-form>
-  </j-modal>
+  />
 </template>
 
 <script setup lang='ts' name='Terms'>
@@ -95,6 +86,7 @@ import type { FormModelType } from '@/views/rule-engine/Scene/typings'
 import Branches from './Branches.vue'
 import {randomNumber, randomString} from "@/utils/utils";
 import TermsTabPane from './TermsTabPane.vue'
+import BranchesNameEdit from "./BranchesNameEdit.vue";
 
 
 const sceneStore = useSceneStore()
@@ -104,7 +96,7 @@ const columnOptions = ref<any>([])
 const group = ref<Array<{ id: string, len: number}>>([])
 const activeKey = ref('')
 const editConditionVisible = ref(false);
-const conditionName = ref<any>('')
+const conditionName = ref<any>()
 
 provide(ContextKey, columnOptions)
 
@@ -256,19 +248,23 @@ const showEditCondition = (key:any) =>{
   }
 }
 
-const changeBranchName = () =>{
+const changeBranchName = (name: string) =>{
   let _activeKey = activeKey.value.replace('group_', '')
+
   data.value.branches?.forEach((item:any)=>{
      if(item?.key === _activeKey){
-      item.branchName = conditionName.value
+      item.branchName = name
      }
   })
 
-  data.value.options!.when.forEach(item => {
-    if (item.key === _activeKey) {
-      item.branchName = conditionName.value
+  let optionsItem = data.value.options!.when.find(item => item.key === _activeKey)
+
+  if (!optionsItem) {
+    const _index = group.value.findIndex(item => item.branchKey === _activeKey)
+    if (_index !== -1) {
+      data.value.options!.when[_index].branchName = name
     }
-  })
+  }
 
   editConditionVisible.value =false
 }
@@ -288,35 +284,36 @@ watchEffect(() => {
   }
 
   let _group = []
+  let _branchesIndex = 0
   if (branches) {
     branches.forEach((item, index) => {
-      // if (index === 0) {
-      //   _group.push({
-      //     id: `group_${item.key}`,
-      //     len: 0,
-      //     start: 0,
-      //   })
-      // }
 
       const lastIndex = _group.length - 1
-      const whenItem = data.value.options!.when.find(whenItem => item && whenItem.key === item.key)
+
+      const whenItem = data.value.options!.when[_branchesIndex]
 
       if (index === 0 || item?.executeAnyway) {
         _group[lastIndex + 1] = {
           id: `group_${item.key}`,
           len: 1,
           start: index,
-          branchName: item.branchName,
-          groupIndex: whenItem?.groupIndex
+          branchKey: item.key,
+          branchName: item.branchName || whenItem?.branchName,
+          groupIndex: _branchesIndex
         }
       } else {
         _group[lastIndex].len += 1
       }
+
+      if (item) {
+        item.branches_Index = index
+        _branchesIndex += 1
+      }
     })
 
-    branches.filter(item => item).forEach((item, index) => {
-      item.branches_Index = index
-    })
+    // branches.filter(item => item).forEach((item, index) => {
+    //   item.branches_Index = index
+    // })
 
     group.value = _group
     if (!activeKey.value) {

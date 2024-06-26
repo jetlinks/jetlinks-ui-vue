@@ -27,7 +27,12 @@
                     terms: [{
                       column: 'triggerType',
                       value: props.type === 'other' ? null : 'device'
-                    }]
+                      },
+                      // {
+                      //   column: 'branches$actions$executor',
+                      //   value: 'alarm'
+                      // }
+                    ]
                 }"
         :params="params"
       >
