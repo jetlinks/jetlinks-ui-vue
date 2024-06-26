@@ -390,7 +390,6 @@ const reset = () => {
  * 显示弹窗
  */
 const show = (data: any) => {
-    console.log('data', data);
     if (props.isAdd === 2) {
         form.value = {
             ...data,
@@ -399,7 +398,6 @@ const show = (data: any) => {
             }),
         };
         idDisabled.value = true;
-        console.log('form', form.value);
     } else if (props.isAdd === 1) {
         reset();
         idDisabled.value = false;

@@ -145,7 +145,7 @@ const columns = [
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
-        width: 180,
+        width: 130,
         ellipsis: true,
         search: {
             type: 'string',
@@ -156,6 +156,7 @@ const columns = [
         dataIndex: 'name',
         key: 'name',
         scopedSlots: true,
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -166,7 +167,6 @@ const columns = [
         key: 'createTime',
         width: 200,
         scopedSlots: true,
-        ellipsis: true,
         search: {
             type: 'date',
         },
@@ -177,7 +177,6 @@ const columns = [
         key: 'state',
         width: 100,
         scopedSlots: true,
-        ellipsis: true,
         search: {
             type: 'select',
             options: [
@@ -203,7 +202,6 @@ const handleSearch = (_params: any) => {
  * 显示弹窗
  */
 const show = (data: any) => {
-    console.log('data', data);
     sbVisible.value = true;
     handleDefaultSelected(data);
 };
