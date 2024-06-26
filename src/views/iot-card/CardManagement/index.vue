@@ -178,20 +178,6 @@
                                 </j-col>
                                 <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        类型
-                                    </div>
-                                    <div>{{ slotProps.cardType.text }}</div>
-                                </j-col>
-                                <j-col :span="6">
-                                    <div class="card-item-content-text">
-                                        绑定设备
-                                    </div>
-                                    <Ellipsis>{{
-                                        slotProps.deviceName
-                                    }}</Ellipsis>
-                                </j-col>
-                                <j-col :span="6">
-                                    <div class="card-item-content-text">
                                         运营商状态
                                     </div>
                                     <BadgeStatus
@@ -203,6 +189,20 @@
                                             deactivate: 'error',
                                         }"
                                     />
+                                </j-col>
+                                <j-col :span="6">
+                                    <div class="card-item-content-text">
+                                        类型
+                                    </div>
+                                    <div>{{ slotProps.cardType.text }}</div>
+                                </j-col>
+                                <j-col :span="6">
+                                    <div class="card-item-content-text">
+                                        绑定设备
+                                    </div>
+                                    <Ellipsis>{{
+                                        slotProps.deviceName
+                                    }}</Ellipsis>
                                 </j-col>
                             </j-row>
                             <j-divider style="margin: 12px 0" />

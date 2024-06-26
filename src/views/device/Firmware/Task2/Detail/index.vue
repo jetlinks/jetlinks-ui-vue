@@ -6,49 +6,50 @@
         :closable="false"
         :maskClosable="false"
     >
-        <div class="allOperation">
-            <PermissionButton
-                @click="stopAll"
-                hasPermission="device/Firmware:update"
-                ><template #icon><AIcon type="PauseOutlined" /> </template
-                >全部暂停
-            </PermissionButton>
-            <PermissionButton
-                style="margin-left: 20px"
-                hasPermission="device/Firmware:update"
-                @click="startAll"
-                ><template #icon><AIcon type="CaretRightOutlined" /> </template
-                >全部开始</PermissionButton
-            >
-            <PermissionButton
-                v-if="data?.mode?.value === 'push'"
-                style="margin-left: 20px"
-                hasPermission="device/Firmware:update"
-                @click="batchRetry"
-                ><template #icon><AIcon type="RedoOutlined" /> </template>
-                批量重试
-            </PermissionButton>
-            <PermissionButton
-                style="float: right"
-                type="text"
-                hasPermission="device/Firmware:update"
-                @click="refreshState"
-                ><template #icon><AIcon type="RedoOutlined" /> </template>
-                刷新状态
-            </PermissionButton>
-        </div>
         <div class="generalInfo">
-            <div style="width: 80%">
-                <span>当前进度</span>
-                <a-progress
-                    style="width: 90%"
-                    strokeLinecap="square"
-                    :strokeWidth="20"
-                    :percent="general.percent"
-                    :format="(percent) => `已完成${percent}%`"
-                ></a-progress>
+            <div class="progress">
+                <div style="width: 90%">
+                    <span>当前进度</span>
+                    <a-progress
+                        style="width: 80%; margin-left: 20px"
+                        :strokeWidth="10"
+                        :percent="general.percent"
+                        :format="(percent) => `${percent}%`"
+                    ></a-progress>
+                </div>
+                <span class="total">共{{ general.total }}个任务</span>
             </div>
-            <div class="total">共{{ general.total }}个任务</div>
+            <div class="allOperation">
+                <PermissionButton
+                    @click="stopAll"
+                    hasPermission="device/Firmware:update"
+                    ><template #icon><AIcon type="PauseOutlined" /> </template
+                    >全部暂停
+                </PermissionButton>
+                <PermissionButton
+                    style="margin-left: 20px"
+                    hasPermission="device/Firmware:update"
+                    @click="startAll"
+                    ><template #icon
+                        ><AIcon type="CaretRightOutlined" /> </template
+                    >全部开始</PermissionButton
+                >
+                <PermissionButton
+                    v-if="data?.mode?.value === 'push'"
+                    style="margin-left: 20px"
+                    hasPermission="device/Firmware:update"
+                    @click="batchRetry"
+                    ><template #icon><AIcon type="RedoOutlined" /> </template>
+                    批量重试
+                </PermissionButton>
+                <PermissionButton
+                    type="text"
+                    hasPermission="device/Firmware:update"
+                    @click="refreshState"
+                    ><template #icon><AIcon type="RedoOutlined" /> </template>
+                    刷新状态
+                </PermissionButton>
+            </div>
         </div>
         <j-table
             :columns="columns"
@@ -66,27 +67,35 @@
                     text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '--'
                 }}</template>
                 <template v-if="column.dataIndex === 'state'">
-                    <a-progress
-                        strokeLinecap="square"
-                        :percent="
-                            text?.value === 'failed' ? '100' : record?.progress
-                        "
-                        :status="text?.value === 'failed' ? 'exception' : ''"
-                        :showInfo="false"
-                    />
-                    <div
-                        v-if="
-                            text?.value !== 'failed' &&
-                            text?.value !== 'waiting'
-                        "
-                    >
-                        {{ text?.text + ' ' + record?.progress + '%' }}
-                    </div>
-                    <div v-if="text?.value === 'failed'">
-                        {{ text?.text + '：' + record?.errorReason }}
-                    </div>
-                    <div v-if="text?.value === 'waiting'">
-                        {{ text?.text }}
+                    <div class="state">
+                        <a-progress
+                            type="circle"
+                            style="margin-right: 10px;"
+                            :width="20"
+                            :percent="
+                                text?.value === 'failed'
+                                    ? '100'
+                                    : record?.progress
+                            "
+                            :status="
+                                text?.value === 'failed' ? 'exception' : ''
+                            "
+
+                        />
+                        <div
+                            v-if="
+                                text?.value !== 'failed' &&
+                                text?.value !== 'waiting'
+                            "
+                        >
+                            {{ text?.text + ' ' + record?.progress + '%' }}
+                        </div>
+                        <div v-if="text?.value === 'failed'">
+                            {{ text?.text + '：' + record?.errorReason }}
+                        </div>
+                        <div v-if="text?.value === 'waiting'">
+                            {{ text?.text }}
+                        </div>
                     </div>
                 </template>
             </template>
@@ -244,13 +253,19 @@ onMounted(() => {
 <style lang="less" scoped>
 .generalInfo {
     display: flex;
-    margin: 30px 0;
-    .total {
-        margin-left: 5%;
+    margin-bottom: 30px;
+    justify-content: space-between;
+    .progress {
+        width: 55%;
+        line-height: 32px;
+        display: flex;
     }
 }
 .tip {
     color: rgb(170, 170, 170);
     margin-right: 10px;
+}
+.state{
+    display: flex;
 }
 </style>

@@ -38,13 +38,18 @@
                         <template #content>
                             <div class="alarmTitle">
                                 <div class="alarmName">
-                                    <Ellipsis style="width: calc(100% - 100px)">
-                                        <span style="font-weight: 500">
+                                    <Ellipsis style="width: 100%">
+                                        <span
+                                            style="
+                                                font-weight: 500;
+                                                font-size: 16px;
+                                            "
+                                        >
                                             {{ slotProps.alarmName }}
                                         </span>
                                     </Ellipsis>
                                 </div>
-                                <div
+                                <!-- <div
                                     class="alarmLevel"
                                     :style="{
                                         backgroundColor: levelColorMap.get(
@@ -60,7 +65,8 @@
                                             }}
                                         </span>
                                     </Ellipsis>
-                                </div>
+                                </div> -->
+                                <LevelIcon :level="slotProps.level"></LevelIcon>
                             </div>
                             <j-row :gutter="24">
                                 <j-col
@@ -72,12 +78,12 @@
                                     "
                                     class="content-left"
                                 >
+                                    <div class="content-title">告警维度</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.targetName }}
                                         </div></Ellipsis
                                     >
-                                    <div class="content-title">告警维度</div>
                                 </j-col>
                                 <j-col
                                     :span="
@@ -87,6 +93,9 @@
                                             : 8
                                     "
                                 >
+                                    <div class="content-title">
+                                        最近告警时间
+                                    </div>
                                     <Ellipsis>
                                         <div>
                                             {{
@@ -107,9 +116,6 @@
                                             }}
                                         </div>
                                     </Ellipsis>
-                                    <div class="content-title">
-                                        最近告警时间
-                                    </div>
                                 </j-col>
                                 <j-col
                                     :span="
@@ -119,12 +125,12 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis
-                                        ><Duration :data="slotProps"></Duration
-                                    ></Ellipsis>
                                     <div class="content-title">
                                         告警持续时长
                                     </div>
+                                    <Ellipsis
+                                        ><Duration :data="slotProps"></Duration
+                                    ></Ellipsis>
                                 </j-col>
                                 <j-col
                                     :span="6"
@@ -133,15 +139,13 @@
                                         slotProps.targetType === 'device'
                                     "
                                 >
+                                    <div class="content-title">告警原因</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.actualDesc || '--' }}
                                         </div></Ellipsis
                                     >
-                                    <div class="content-title">
-                                        告警原因
-                                    </div></j-col
-                                >
+                                </j-col>
                             </j-row>
                         </template>
                         <template #actions="item">
@@ -188,7 +192,6 @@
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import { getOrgList, query, getAlarmProduct } from '@/api/rule-engine/log';
-import { queryLevel } from '@/api/rule-engine/config';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
@@ -198,6 +201,7 @@ import { useMenuStore } from '@/store/menu';
 import LogDrawer from './components/DetailDrawer.vue';
 import Duration from '../components/Duration.vue';
 import { useAlarmLevel } from '@/hook';
+import LevelIcon from '../../Config/LevelIcon.vue';
 const menuStory = useMenuStore();
 const tableRef = ref();
 const { levelMap, levelList } = useAlarmLevel();
@@ -536,7 +540,9 @@ onMounted(() => {
         padding: 5px;
     }
     .alarmName {
-        width: 50%;
+        max-width: 30%;
+        color: #1a1a1a;
+        margin-right: 10px;
     }
 }
 </style>

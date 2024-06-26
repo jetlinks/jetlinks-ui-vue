@@ -3,6 +3,7 @@
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
+        bordered
         :scroll="{ y: 'calc(100vh - 260px)' }"
     >
         <template #bodyCell="{ column, text, record }">
@@ -28,7 +29,7 @@
         <a-button
             v-if="exceed"
             class="moreBtn"
-            type="text"
+            type="link"
             @click="gotoAlarmRecord"
             >查看更多 ></a-button
         >
@@ -125,7 +126,7 @@ onMounted(() => {
     height: 50px;
     .moreBtn {
         position: absolute;
-        right: 0;
+        right: 50%;
         top: 10px;
     }
 }
