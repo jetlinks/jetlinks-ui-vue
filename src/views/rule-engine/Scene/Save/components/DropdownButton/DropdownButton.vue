@@ -39,9 +39,9 @@
               :virtual='true'
               @select='treeSelect'
             >
-              <template #title="{ name, description }">
+              <template #title="{ name, fullName, description }">
                 <j-space>
-                  {{ name }}
+                  {{ name || fullName }}
                   <span v-if='description' class='tree-title-description'>{{ description }}</span>
                 </j-space>
               </template>
