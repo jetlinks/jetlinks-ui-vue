@@ -1,7 +1,7 @@
 <template>
     <div class="tagsContainer" ref="tags">
-        <PermissionButton type="text" @click="addTag" :disabled="rapidOn">
-            +新增标签
+        <PermissionButton type="primary" ghost block @click="addTag" :disabled="rapidOn" style="margin-bottom: 10px;">
+            + 新增标签
         </PermissionButton>
         <div v-for="i in tagsList" class="tag">
             <div class="tagLeft">
@@ -19,14 +19,14 @@
                     >{{ i.name }}</Ellipsis
                 >
             </div>
-            <div>
+            <div class="controls">
                 <PermissionButton
                     type="text"
                     :disabled="i.disabled || rapidOn"
                     @click="() => editData(i)"
                 >
                     <template #icon>
-                        <AIcon type="FormOutlined" />
+                        <AIcon type="EditOutlined" />
                     </template>
                 </PermissionButton>
                 <PermissionButton
@@ -155,18 +155,37 @@ onMounted(() => {
     .tag {
         display: flex;
         justify-content: space-between;
-        background-color: rgb(242, 242, 242);
         margin-bottom: 10px;
         padding: 0 10px;
+        height: 32px;
         .tagLeft {
             display: flex;
             padding-top: 6px;
             .colorExtractor {
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
+                margin-top: 3px;
+                width: 16px;
+                height: 16px;
+                border-radius: 2px;
+                margin-right: 8px;
             }
         }
+        .controls{
+            display: none;
+            font-size: 14px;
+           
+            :deep(.ant-btn-text){
+                padding: 4px 8px;
+            }
+        }
+        &:hover{
+            .controls{
+                display: block;
+            }
+        }
+    }
+    .tag:hover{
+        background-color: rgb(242, 242, 242);
+        border-radius: 4px;
     }
 }
 </style>

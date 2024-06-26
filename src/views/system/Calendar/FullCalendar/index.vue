@@ -1,23 +1,5 @@
 <template>
     <div class="calendarContainer" v-if="showCalendar">
-        <FullCalendar
-            ref="calendarEl"
-            class="calendar"
-            :options="calendarOptions"
-        >
-            <template v-slot:eventContent="arg">
-                <div class="event">
-                    <div class="event-title">{{ arg.event.title }}</div>
-                    <a-button
-                        v-if="!selectable && !preview"
-                        type="text"
-                        class="closeBtn"
-                        @click="() => deleteEvent(arg)"
-                        >x</a-button
-                    >
-                </div>
-            </template>
-        </FullCalendar>
         <div class="calenderButton">
             <a-date-picker
                 v-model:value="current"
@@ -45,12 +27,34 @@
         </div>
         <div class="compareSave" v-if="eventChange">
             <PermissionButton
-                type="link"
+                type="primary"
                 @click="saveCalendar"
                 :disabled="selectable"
                 >确认</PermissionButton
             >
         </div>
+        <FullCalendar
+            ref="calendarEl"
+            class="calendar"
+            :options="calendarOptions"
+        >
+            <template v-slot:eventContent="arg">
+                <div class="event">
+                    <div
+                        class="decoration"
+                        :style="{ backgroundColor: arg.backgroundColor }"
+                    ></div>
+                    <div class="event-title">{{ arg.event.title }}</div>
+                    <a-button
+                        v-if="!selectable && !preview"
+                        type="text"
+                        class="closeBtn"
+                        @click="() => deleteEvent(arg)"
+                        >x</a-button
+                    >
+                </div>
+            </template>
+        </FullCalendar>
         <div
             v-if="selectable && !choiceEnd && showTips"
             class="tips"
@@ -366,12 +370,21 @@ const calendarOptions = {
     unselectAuto: false,
     locale: locale,
     droppable: true,
-    height: props.preview ? '600px' : '720px',
+    height: props.preview ? '600px' : '680px',
     // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,
     dateClick: handleDateClick,
     dayCellDidMount: handleCellDidMount,
+    //星期只显示数字
+    dayHeaderContent: function (arg) {
+        return arg.date.toLocaleDateString('default', { weekday: 'narrow' });
+    },
+    dayCellContent: function (e) {
+        return {
+            html: '<div class="custom-day-cell">' + e.date.getDate() + '</div>',
+        };
+    },
 };
 // //编辑标签后刷新日历数据
 // const refreshCalendar = () => {
@@ -439,7 +452,7 @@ const rapidAction = async (effectDays) => {
             });
         } else {
             eventsData.value = eventsData.value.filter((item) => {
-                console.log(effectData[i])
+                console.log(effectData[i]);
                 return item.date !== effectDates[i];
             });
         }
@@ -575,38 +588,45 @@ setTimeout(() => {
 }
 .calendarContainer {
     position: relative;
-    padding-top: 20px;
+    padding: 0 24px;
+    padding-bottom: 0;
+    padding-top: 44px;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
     .compareTip {
         position: absolute;
         right: 20%;
-        top: 7px;
+        top: 27px;
         transform: translateX(50%);
     }
     .skip {
         position: absolute;
         right: 0;
-        top: 7px;
+        top: 27px;
     }
     .compareSave {
         position: absolute;
-        right: 0;
-        top: 2px;
+        right: 10px;
+        top: 22px;
     }
     .calenderButton {
         position: absolute;
-        top: 2px;
+        top: 22px;
     }
     .event {
         position: relative;
-        height: 30px;
-        line-height: 30px;
+        height: 32px;
+        padding: 6px;
+        color: #1a1a1a;
+        display: flex;
 
         .closeBtn {
             position: absolute;
             right: 0;
-            top: -5px;
-            color: #fff;
+            top: 0;
+            color: #777777;
             display: none;
+            font-size: 16px;
         }
     }
     .event:hover {
@@ -614,11 +634,19 @@ setTimeout(() => {
             display: inline-block;
         }
     }
+    .decoration {
+        width: 4px;
+        height: 16px;
+        border-radius: 2px;
+        margin: 2px 4px;
+        display: inline-block;
+    }
     .event-title {
         white-space: nowrap; /* 不换行 */
         overflow: hidden; /* 超出部分隐藏 */
         text-overflow: ellipsis; /* 显示省略号 */
         width: calc(100% - 30px);
+        font-size: 14px;
     }
 }
 :deep(.fc-highlight) {
@@ -632,9 +660,99 @@ setTimeout(() => {
     border-radius: 5px;
     color: white;
 }
+:deep(.fc-theme-standard th) {
+    border: none;
+}
+:deep(.fc-theme-standard td) {
+    border: none;
+    border-top: 1px solid #cccccc;
+}
+:deep(.fc-theme-standard .fc-scrollgrid) {
+    border: none;
+}
+:deep(.fc) {
+    .fc-col-header-cell-cushion {
+        color: #777777;
+    }
+    th {
+        text-align: right;
+        color: #777777;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 5px 0;
+    }
+    .fc-daygrid-day.fc-day-today {
+        background-color: transparent;
+        .fc-daygrid-day-number {
+            background-color: #1677ff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            text-align: center;
+        }
+    }
+    .fc-event {
+        border: none !important;
+    }
+    .fc-daygrid-event-harness {
+        margin: 0 4px;
+        margin-top: 4px !important;
+        border-radius: 6px;
+    }
+    .fc-daygrid-day-frame {
+        height: 155px;
+        .fc-daygrid-day-events {
+            max-height: 120px;
+            overflow-y: auto;
+            &::-webkit-scrollbar-thumb {
+                background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+                border-radius: 4px; /* 滚动条拖动部分圆角 */
+            }
+        }
+    }
+    .fc-scroller {
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #fff; /* 滚动条背景色 */
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+            border-radius: 4px; /* 滚动条拖动部分圆角 */
+        }
+    }
+}
+:deep(.fc-scrollgrid-section-body > td) {
+    border: none !important;
+}
+:deep(.fc-daygrid-day-number) {
+    color: #1a1a1a;
+    font-weight: 600;
+}
 </style>
 <style>
+.calendarContainer {
+    .fc-event {
+        background: #edf5ff !important;
+    }
+    .fc-daygrid-day-events {
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #fff; /* 滚动条背景色 */
+        }
+    }
+}
+
 .selectedDate {
-    background-color: rgb(234, 234, 255) !important;
+    background-color: #edf5ff !important;
+    .fc-event {
+        background: #fff !important;
+    }
+    .fc-daygrid-day-events {
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #edf5ff; /* 滚动条背景色 */
+        }
+    }
 }
 </style>
