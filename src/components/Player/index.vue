@@ -21,7 +21,7 @@
     />
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="LivePlayer">
 import LivePlayer from '@liveqing/liveplayer-v3';
 
 type PlayerProps = {
