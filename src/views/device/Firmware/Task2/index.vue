@@ -9,29 +9,42 @@
     >
         <template #extra>
             <PermissionButton
-                type="link"
+                type="primary"
                 hasPermission="device/Firmware:add"
                 @click="handleAdd"
-                >+新增任务
+            >
+                + 新增任务
             </PermissionButton>
         </template>
         <div v-for="item in taskList" class="task">
             <div class="taskTitle">
-                <div>{{ item?.mode?.text }}</div>
-                <div>
-                    <Ellipsis>{{ item?.name }}</Ellipsis>
+                <div class="taskTitleLeft">
+                    <div class="upgradeMode">{{ item?.mode?.text }}</div>
+                    <div class="title">
+                        <Ellipsis>{{ item?.name }}</Ellipsis>
+                    </div>
                 </div>
-                <div>
-                    完成比例<span class="progress">
-                        {{ (item?.progress || 0) + '%' }}
-                    </span>
+                <div class="taskTitleRight">
+                    <div>
+                        完成比例<span
+                            class="progress"
+                            :style="{
+                                color:
+                                    item?.progress === 100
+                                        ? '#52C41A'
+                                        : '#FF4D4F',
+                            }"
+                        >
+                            {{ (item?.progress || 0) + '%' }}
+                        </span>
+                    </div>
+                    <PermissionButton
+                        type="link"
+                        hasPermission="device/Firmware:view"
+                        @click="() => taskDetail(item)"
+                        >任务详情</PermissionButton
+                    >
                 </div>
-                <PermissionButton
-                    type="text"
-                    hasPermission="device/Firmware:view"
-                    @click="() => taskDetail(item)"
-                    >任务详情</PermissionButton
-                >
             </div>
             <a-descriptions bordered :column="2">
                 <a-descriptions-item
@@ -148,13 +161,31 @@ onMounted(() => {
 }
 .taskTitle {
     display: flex;
-    justify-content: space-around;
-    div {
-        width: 20%;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    .taskTitleLeft,
+    .taskTitleRight {
+        display: flex;
+        line-height: 32px;
     }
     .progress {
-        color: rgb(217, 0, 27);
-        margin-left: 5px;
+        margin-left: 10px;
+    }
+    .upgradeMode {
+        background: #e6f4ff;
+        border-radius: 4px;
+        border: 1px solid #91caff;
+        height: 22px;
+        padding: 0 8px;
+        color: #1677ff;
+        margin-top: 4px;
+        line-height: 22px;
+    }
+    .title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-left: 12px;
+        color: #1a1a1a;
     }
 }
 </style>
