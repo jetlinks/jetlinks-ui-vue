@@ -235,7 +235,7 @@ import { useMenuStore } from 'store/menu';
 import { getImage, onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '../typings';
 import Save from './save/index.vue';
-import BatchDropdown from '@/components/BatchDropdown/index.vue';
+// import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import moment from 'moment';
 const menuStory = useMenuStore();
@@ -267,6 +267,7 @@ const query = reactive({
             title: '车辆类型',
             dataIndex: 'vehicleTypeEnum',
             key: 'vehicleTypeEnum',
+            ellipsis: true,
             scopedSlots: true,
             search: {
                 type: 'select',
@@ -299,6 +300,7 @@ const query = reactive({
             title: '车辆状态',
             key: 'vehicleStatus',
             dataIndex: 'vehicleStatus',
+            ellipsis: true,
             scopedSlots: true,
             search: {
                 type: 'select',
@@ -345,6 +347,7 @@ const query = reactive({
             title: '出厂日期',
             key: 'vehicleDate',
             dataIndex: 'vehicleDate',
+            ellipsis: true,
             scopedSlots: true,
             width: 200,
             search: {
@@ -371,7 +374,7 @@ const query = reactive({
             title: '操作',
             key: 'action',
             fixed: 'right',
-            width: 160,
+            width: 180,
             scopedSlots: true,
         },
     ],
@@ -449,6 +452,17 @@ const getActions = (
     }
     const actions = [
         {
+            key: 'view',
+            text: '查看详情',
+            tooltip: {
+                title: '查看详情',
+            },
+            icon: 'EyeOutlined',
+            onClick: () => {
+                handleView(data);
+            },
+        },
+        {
             key: 'update',
             text: '编辑',
             tooltip: {
@@ -519,7 +533,8 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-
+    if (type === 'card')
+        return actions.filter((i: ActionsType) => i.key !== 'view');
     return actions;
 };
 
