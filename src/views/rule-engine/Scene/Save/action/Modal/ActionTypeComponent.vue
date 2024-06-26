@@ -18,6 +18,7 @@ import { ActionsType } from '../../../typings';
 import Delay from '../Delay/index.vue';
 import Notify from '../Notify/index.vue';
 import Device from '../Device/index.vue';
+import {randomNumber} from "@/utils/utils";
 
 const props = defineProps({
     branchesName: {
@@ -59,6 +60,7 @@ const onPropsOk = (data: any, options: any) => {
         type: props.actionType,
         executor: props.actionType,
         key: props?.data?.key || `${props.actionType}_${new Date().getTime()}`,
+        actionId: props?.data?.actionId || randomNumber(),
         [props.actionType]: {
             ...data,
         },
