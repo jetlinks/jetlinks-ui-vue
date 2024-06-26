@@ -55,7 +55,7 @@
                         isShowContent
                         showSizeChanger
                         :pageSize="pageSize"
-                        :pageSizeOptions="['5', '12', '20', '50']"
+                        :pageSizeOptions="['12', '24', '48', '96']"
                         :current="currentPage"
                         :total="dataTotal"
                         :show-total="() => `总共 ${dataTotal} 条`"
@@ -89,7 +89,7 @@ const dataTotal = ref<number>(0);
 // 表格当前属于多少页
 const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
-const pageSize = ref<number>(5);
+const pageSize = ref<number>(12);
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
