@@ -16,10 +16,11 @@
             <template v-else>
                 <FunctionItem
                     :builtInList="builtInList"
-                    @change="onChange"
                     v-model:source="record.source"
-                    :data="record"
                     v-model:value="record.value"
+                    v-model:upperKey="record.upperKey"
+                    :data="record"
+                    @change="onChange"
                 />
             </template>
         </template>
@@ -82,7 +83,7 @@ watchEffect(() => {
     dataSource.value = list;
 });
 
-const onChange = () => {
+const onChange = (v: string) => {
     const arr = [...dataSource.value].map((item) => {
         return {
             name: item.id,

@@ -39,8 +39,8 @@
                     :rules="functionRules"
                 >
                     <EditTable
-                        :functions="functions"
                         v-model:value="modelRef.message.inputs"
+                        :functions="functions"
                         :builtInList="builtInList"
                     />
                 </j-form-item>
