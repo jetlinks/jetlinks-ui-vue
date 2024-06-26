@@ -67,6 +67,8 @@ const failNumber = ref(0); //导入失败数量
 const errorMessage = ref();
 const detailFile = ref('')
 const uploadChange = async (info: Record<string, any>) => {
+    successNumber.value = 0;
+    failNumber.value = 0;
     if (info.file.status === 'done') {
         const resp: any = info.file.response || { result: '' };
         handleImport(resp)
