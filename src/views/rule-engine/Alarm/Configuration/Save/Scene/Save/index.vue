@@ -28,10 +28,22 @@
                       column: 'triggerType',
                       value: props.type === 'other' ? null : 'device'
                       },
-                      // {
-                      //   column: 'branches$actions$executor',
-                      //   value: 'alarm'
-                      // }
+                      {
+                        terms: [
+                          {
+                            column: 'features',
+                            termType: 'in',
+                            value: [ 'alarmTrigger', 'alarmReliever']
+                          },
+                          {
+                            column: 'features',
+                            termType: 'isnull',
+                            value: 1,
+                            type: 'or'
+                          }
+                        ],
+                        type: 'and'
+                      }
                     ]
                 }"
         :params="params"

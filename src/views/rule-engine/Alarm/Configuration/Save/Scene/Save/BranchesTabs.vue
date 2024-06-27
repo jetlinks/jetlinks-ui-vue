@@ -3,7 +3,7 @@
     <div v-if="triggerType ==='device'">
       <a-tabs v-if="branchesGroup.length" v-model:activeKey="activeKey">
         <template v-if="showDetailBtn" #rightExtra>
-          <a-button @click="show = !show">
+          <a-button @click.stop="show = !show">
             {{ show ? '收起' : '点击查看详情'}}
           </a-button>
         </template>
@@ -37,7 +37,7 @@
     </div>
     <div v-else>
       <div style="margin: 8px 0; text-align: right" v-if="showDetailBtn">
-        <a-button @click="show = !show">
+        <a-button @click.stop="show = !show">
           {{ show ? '收起' : '点击查看详情'}}
         </a-button>
       </div>

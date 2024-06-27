@@ -266,9 +266,13 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
     if (!branches) return []
 
     branches.forEach((item, index) => {
+        if (when) {
+            item.when = when[index]
+        }
+        console.log(item)
         if (index === 0 || item.executeAnyway) {
             group.push({
-                branchName: item.branchName || `条件${group.length + 1}`,
+                branchName: item.branchName || item.when?.branchName || `条件${group.length + 1}`,
                 key: item.key || item.branchId,
                 children: []
             })
@@ -284,9 +288,7 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
             item.parallel = item.then[1]?.actions
         }
 
-        if (when) {
-            item.when = when[index]
-        }
+
 
         lastItem.children.push(item)
     })
