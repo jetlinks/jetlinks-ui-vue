@@ -501,7 +501,7 @@ const modelRef = reactive<any>({
         instanceId: undefined,
         accessKeyId: undefined,
         accessSecret: undefined,
-        apiEndpoint: undefined,
+        // apiEndpoint: undefined,
     },
     bridgeProductKey: undefined,
     bridgeProductName: undefined,
@@ -597,7 +597,7 @@ const _error = computed(() => {
 });
 
 const regionChange = (val: any) => {
-    modelRef.accessConfig.apiEndpoint = `https://iot.${val}.aliyuncs.com`;
+    // modelRef.accessConfig.apiEndpoint = `https://iot.${val}.aliyuncs.com`;
 };
 const onActiveProduct = async () => {
     [..._errorSet.value.values()].forEach(async (i: any) => {
