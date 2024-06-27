@@ -57,8 +57,14 @@
                 style='width: 100%;padding: 8px 12px; border-radius: 4px'
                 :showCircular="false"
               >
+
                 <DeviceTitle v-if="value.triggerType === 'device'" :options='value.options?.trigger'/>
-                <TimerTitle v-if="value.triggerType === 'timer'" :options='value.options?.trigger'/>
+                  <template v-if="value.triggerType === 'timer'" #extra>
+                    <span style="padding-right: 10px;">
+                      系统时间到达
+                    </span>
+                  </template>
+                  <TimerTitle v-if="value.triggerType === 'timer'" :options='value.options?.trigger'/>
                 <span v-if="value.triggerType === 'manual'">
                   系统在接收到手动触发指令时，触发场景
                 </span>

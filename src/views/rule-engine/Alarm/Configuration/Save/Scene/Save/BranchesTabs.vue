@@ -43,10 +43,6 @@
       </div>
       <div  v-for="group in branchesGroup">
         <div v-for="(branch, index) in group.children">
-          <div style="display: flex;align-items: center" v-if="show">
-            <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
-            <Terms :when="branch.when" />
-          </div>
           <template v-if="branch.serial?.length">
             <div v-if="show" class="branches-tabs-title">
               串行
