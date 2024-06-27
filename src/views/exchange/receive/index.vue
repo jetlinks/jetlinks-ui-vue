@@ -2,52 +2,97 @@
     <page-container>
         <pro-search :columns="columns" type="simple" @search="onSearch" />
         <FullPage>
-            <JProTable :defaultParams="defaultParams" :pagination="{
-                pageSizeOptions: ['10', '20', '50', '80', '100'],
-                showSizeChanger: true,
-                showQuickJumper: false,
-                size: 'size',
-            }" :columns="columns" :params="params" ref="tableRef" :request="query" :row-selection="{
-                selectedRowKeys: selectedRowKeys,
-                onSelect: onSelectChange,
-                onSelectAll: onSelectAll,
-                onSelectNone: () => (selectedRowKeys = []),
-            }">
+            <JProTable
+                :defaultParams="defaultParams"
+                :pagination="{
+                    pageSizeOptions: ['10', '20', '50', '80', '100'],
+                    showSizeChanger: true,
+                    showQuickJumper: false,
+                    size: 'size',
+                }"
+                :columns="columns"
+                :params="params"
+                ref="tableRef"
+                :request="query"
+                :row-selection="{
+                    selectedRowKeys: selectedRowKeys,
+                    onSelect: onSelectChange,
+                    onSelectAll: onSelectAll,
+                    onSelectNone: () => (selectedRowKeys = []),
+                }"
+            >
                 <template #headerTitle>
                     <j-space>
-                        <j-button type="primary" @click="handleAdd">新增</j-button>
-                        <j-button type="default" @click="handleExport()" :disabled="!hasSelected">导出</j-button>
+                        <j-button type="primary" @click="handleAdd"
+                            >新增</j-button
+                        >
+                        <j-space>
+                            <PermissionButton
+                                :popConfirm="{
+                                    title: '确认导出吗',
+                                    onConfirm: () => handleExport(),
+                                }"
+                            >
+                                导出
+                            </PermissionButton>
+                        </j-space>
                     </j-space>
                 </template>
                 <template #actions="slotProps">
                     <j-space>
-                        <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
-                            <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :hasPermission="i.key === 'view'
-                                ? true
-                                : 'device/Product:' + i.key
-                                " :tooltip="{
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :hasPermission="
+                                    i.key === 'view'
+                                        ? true
+                                        : 'device/Product:' + i.key
+                                "
+                                :tooltip="{
                                     ...i.tooltip,
-                                }" @click="i.onClick" type="link" :danger="i.key === 'delete'">
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                :danger="i.key === 'delete'"
+                            >
                                 <template #icon>
-                                    <AIcon style="font-size: 13px" :type="i.icon" />
+                                    <AIcon
+                                        style="font-size: 13px"
+                                        :type="i.icon"
+                                    />
                                 </template>
                             </PermissionButton>
                         </template>
                     </j-space>
                 </template>
                 <template #state="slotProps">
-                    <BadgeStatus :status="slotProps.state?.value" :text="slotProps.state?.text" :statusNames="{
-                        enabled: 'processing',
-                        disabled: 'warning',
-                    }" />
-                </template>
-                <template #card="slotProps">
-                    <CardBox :value="slotProps" :actions="getActions(slotProps, 'card')" @click="handleClick"
-                        :active="selectedRowKeys.includes(slotProps.id)" :showStatus="true"
-                        :status="slotProps.state?.value" :statusText="slotProps.state?.text" :statusNames="{
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
                             enabled: 'processing',
                             disabled: 'warning',
-                        }">
+                        }"
+                    />
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        @click="handleClick"
+                        :active="selectedRowKeys.includes(slotProps.id)"
+                        :showStatus="true"
+                        :status="slotProps.state?.value"
+                        :statusText="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'warning',
+                        }"
+                    >
                         <template #content>
                             <Ellipsis style="width: calc(100% - 100px)">
                                 <span style="font-size: 16px; font-weight: 600">
@@ -59,7 +104,9 @@
                                     <div class="card-item-content-text">
                                         Topic
                                     </div>
-                                    <j-ellipsis style="width: calc(100% - 10px)">
+                                    <j-ellipsis
+                                        style="width: calc(100% - 10px)"
+                                    >
                                         <div>{{ slotProps.topic }}</div>
                                     </j-ellipsis>
                                 </j-col>
@@ -67,17 +114,27 @@
                                     <div class="card-item-content-text">
                                         说明
                                     </div>
-                                    <j-ellipsis style="width: calc(100% - 10px)">
+                                    <j-ellipsis
+                                        style="width: calc(100% - 10px)"
+                                    >
                                         <div>{{ slotProps.description }}</div>
                                     </j-ellipsis>
                                 </j-col>
                             </j-row>
                         </template>
                         <template #actions="item">
-                            <PermissionButton :disabled="item.disabled" :popConfirm="item.popConfirm" :tooltip="{
-                                ...item.tooltip,
-                            }" @click="item.onClick">
-                                <AIcon type="DeleteOutlined" v-if="item.key === 'delete'" />
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
                                 <template v-else>
                                     <AIcon :type="item.icon" />
                                     <span>{{ item?.text }}</span>
@@ -90,8 +147,16 @@
         </FullPage>
 
         <!-- 新增和编辑 -->
-        <Modal :loading="myModalState.modalLoad" :visible="myModalState.modalVisible" :form="form" :title="myModalState.modalTitle"
-         :factoryList="factoryList" :isAdd="isAdd" :productList="productList" @handModal="handModal" />
+        <Modal
+            :loading="myModalState.modalLoad"
+            :visible="myModalState.modalVisible"
+            :form="form"
+            :title="myModalState.modalTitle"
+            :factoryList="factoryList"
+            :isAdd="isAdd"
+            :productList="productList"
+            @handModal="handModal"
+        />
     </page-container>
 </template>
 
@@ -133,11 +198,11 @@ const data = reactive({
 
 const { form } = toRefs(data);
 
-const handModal = ()=>{
-    myModalState.modalVisible = false
+const handModal = () => {
+    myModalState.modalVisible = false;
     tableRef.value?.reload();
     Init();
-}
+};
 
 const defaultParams = ref({
     pageSize: 20,
@@ -157,8 +222,7 @@ const myModalState = reactive({
     modalVisible: false,
     modalTitle: '新增',
     modalLoad: false,
-})
-
+});
 
 const hasSelected = computed(() => selectedRowKeys.value.length > 0);
 
@@ -237,15 +301,17 @@ const onSearch = (e: any) => {
 //新增
 const handleAdd = () => {
     reset();
-    isAdd.value = 1
-    myModalState.modalTitle = '新增'
-    myModalState.modalVisible = true
+    isAdd.value = 1;
+    myModalState.modalTitle = '新增';
+    myModalState.modalVisible = true;
+    console.log('selectedRow.value', selectedRow.value);
 };
 
 const handleExport = () => {
     let myArr = selectedRow.value.map((item: any) => ({
         productId: item.productId,
         deviceIds: item.deviceIds,
+        name: item.name,
     }));
     if (myArr.length === 1) {
         const query = {
@@ -265,6 +331,7 @@ const handleExport = () => {
                 ],
             },
         };
+        console.log('query', query);
         queryDeviceProductList(query).then((res: any) => {
             const { result } = res;
             if (result) {
@@ -276,10 +343,11 @@ const handleExport = () => {
                     'accessProvider',
                     'messageProtocol',
                 ]);
-                downloadObject(extra, '导出信息');
+                downloadObject(extra, `导出信息-${myArr[0].name}`);
             }
         });
     } else if (myArr.length > 1) {
+        console.log('myArr', myArr);
         myArr.forEach((element) => {
             const query = {
                 ids: element.deviceIds,
@@ -289,7 +357,7 @@ const handleExport = () => {
                             terms: [
                                 {
                                     column: 'id',
-                                    termType: 'eq',
+                                    termType: 'in',
                                     type: 'or',
                                     value: element.productId,
                                 },
@@ -299,9 +367,9 @@ const handleExport = () => {
                 },
             };
             queryDeviceProductList(query).then((res: any) => {
-                // console.log(res.result);
-                if (res.result) {
-                    const extra = omit(JSON.parse(JSON.stringify(res.result)), [
+                const { result } = res;
+                if (result) {
+                    const extra = omit(JSON.parse(JSON.stringify(result)), [
                         'transportProtocol',
                         'protocolName',
                         'accessId',
@@ -309,7 +377,7 @@ const handleExport = () => {
                         'accessProvider',
                         'messageProtocol',
                     ]);
-                    downloadObject(extra, '导出信息');
+                    downloadObject(extra, `导出信息-${element.name}`);
                 }
             });
         });
@@ -340,6 +408,16 @@ const columns = [
                 { label: '禁用', value: 'disabled' },
                 { label: '正常', value: 'enabled' },
             ],
+        },
+    },
+    {
+        title: 'Topic',
+        dataIndex: 'topic',
+        key: 'topic',
+        width: 120,
+        ellipsis: true,
+        search: {
+            type: 'string',
         },
     },
     {
@@ -388,8 +466,9 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'
-                    }?`,
+                title: `确认${
+                    data.state.value === 'enabled' ? '禁用' : '启用'
+                }?`,
                 onConfirm: async () => {
                     let response = undefined;
                     if (data.state.value === 'enabled') {
@@ -498,10 +577,10 @@ const Init = () => {
     });
 };
 
-const divWidth = ref(1920)
+const divWidth = ref(1920);
 const handleResize = () => {
     divWidth.value = window.innerWidth;
-}
+};
 
 onMounted(() => {
     window.addEventListener('resize', handleResize);

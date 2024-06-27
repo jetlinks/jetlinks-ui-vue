@@ -88,7 +88,7 @@
                                     <j-ellipsis
                                         style="width: calc(100% - 10px)"
                                     >
-                                        <div>{{slotProps.topic}}</div>
+                                        <div>{{ slotProps.topic }}</div>
                                     </j-ellipsis>
                                 </j-col>
                                 <j-col :span="8">
@@ -128,8 +128,15 @@
         </FullPage>
 
         <!-- 新增和编辑 -->
-        <Modal :loading="myModalState.modalLoad" :visible="myModalState.modalVisible" :form="form" :title="myModalState.modalTitle"
-        :isAdd="isAdd" :productList="productList" @handModal="handModal" />
+        <Modal
+            :loading="myModalState.modalLoad"
+            :visible="myModalState.modalVisible"
+            :form="form"
+            :title="myModalState.modalTitle"
+            :isAdd="isAdd"
+            :productList="productList"
+            @handModal="handModal"
+        />
     </page-container>
 </template>
 
@@ -171,22 +178,22 @@ const myModalState = reactive({
     modalVisible: false,
     modalTitle: '新增',
     modalLoad: false,
-})
+});
 
 const { form } = toRefs(data);
 
 const menuStory = useMenuStore();
-const divWidth = ref(1920)
+const divWidth = ref(1920);
 
 const handleResize = () => {
-      divWidth.value = window.innerWidth;
-    }
+    divWidth.value = window.innerWidth;
+};
 
-const handModal = ()=>{
-    myModalState.modalVisible = false
+const handModal = () => {
+    myModalState.modalVisible = false;
     tableRef.value?.reload();
     Init();
-}
+};
 
 const reset = () => {
     form.value = {
@@ -241,9 +248,9 @@ const onSearch = (e: any) => {
 //新增
 const handleAdd = () => {
     reset();
-    isAdd.value = 1
-    myModalState.modalTitle = '新增'
-    myModalState.modalVisible = true
+    isAdd.value = 1;
+    myModalState.modalTitle = '新增';
+    myModalState.modalVisible = true;
 };
 
 const columns = [
@@ -268,6 +275,16 @@ const columns = [
                 { label: '禁用', value: 'disabled' },
                 { label: '正常', value: 'enabled' },
             ],
+        },
+    },
+    {
+        title: 'Topic',
+        dataIndex: 'topic',
+        key: 'topic',
+        width: 120,
+        ellipsis: true,
+        search: {
+            type: 'string',
         },
     },
     {
@@ -443,7 +460,7 @@ watch(
     },
 );
 
-const Init = ()=>{
+const Init = () => {
     queryNoPagingPost({
         paging: false,
         sorts: [{ name: 'createTime', order: 'desc' }],
@@ -464,26 +481,25 @@ const Init = ()=>{
 
             filterReSandProduct().then((res: any) => {
                 if (res.status === 200) {
-                    if(res.result.length > 0){
+                    if (res.result.length > 0) {
                         SelProductList.value = res.result;
-                    } else{
-                        SelProductList.value = []
+                    } else {
+                        SelProductList.value = [];
                     }
                 }
             });
         }
     });
-}
+};
 
 onMounted(() => {
     window.addEventListener('resize', handleResize);
-    Init()
+    Init();
 });
 
 onUnmounted(() => {
-      window.removeEventListener('resize', handleResize);
-    });
-
+    window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <style lang="less" scoped></style>
