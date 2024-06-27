@@ -15,13 +15,13 @@
                 满足条件后将{{ item.alarm.mode === 'trigger' ? '触发' : '解除' }}当前告警
               </span>
 
-              <a-button v-if="!showUnbindBtn" type="link" @click="onBind(item)" :disabled="activeKeys.some(active => active === item.actionId)">
+              <a-button v-if="!showUnbindBtn" type="link" @click.stop="onBind(item)" :disabled="activeKeys.some(active => active === item.actionId)">
                 <template #icon>
                   <AIcon type="icon-bangding"/>
                 </template>
                 {{ selectedKeys.some(selectKey => selectKey === item.actionId) ? '已关联' : '关联' }}
               </a-button>
-              <a-button v-else-if="activeKeys.some(active => active === item.actionId)" type="link" @click="onSelect(item)">
+              <a-button v-else-if="activeKeys.some(active => active === item.actionId)" type="link" @click.stop="onSelect(item)">
                 <template #icon>
                   <AIcon type="icon-jiebang"/>
                 </template>

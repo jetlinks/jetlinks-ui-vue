@@ -90,7 +90,7 @@
             <a-button style="font-size: 16px;" type="link" @click.stop="jumpView">无效数据，请重新保存场景</a-button>
           </div>
         </div>
-        <div class="card-content-tabs" v-if="showBranches && showBranchesVisible">
+        <div class="card-content-tabs" v-if="showBranches && showBranchesVisible" @click.stop>
           <BranchesTabs
             :branchesGroup="branchesGroup"
             :alarmId="alarmId"
