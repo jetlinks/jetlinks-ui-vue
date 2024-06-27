@@ -4,15 +4,19 @@
             <j-space>
                 <div>
                     统计周期：
-                    <j-select v-model:value="cycle" style="width: 120px">
-                        <j-select-option value="*" v-if="_type"
+                    <j-select
+                        v-model:value="cycle"
+                        style="width: 120px"
+                        :options="periodOptions"
+                    >
+                        <!-- <j-select-option value="*" v-if="_type"
                             >实际值</j-select-option
                         >
                         <j-select-option value="1m">按分钟统计</j-select-option>
                         <j-select-option value="1h">按小时统计</j-select-option>
                         <j-select-option value="1d">按天统计</j-select-option>
                         <j-select-option value="1w">按周统计</j-select-option>
-                        <j-select-option value="1M">按月统计</j-select-option>
+                        <j-select-option value="1M">按月统计</j-select-option> -->
                     </j-select>
                 </div>
                 <div v-if="cycle !== '*' && _type">
@@ -38,6 +42,7 @@ import { getPropertiesInfo, getPropertiesList } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import Chart from './Chart.vue';
 import * as echarts from 'echarts';
+import dayjs from 'dayjs';
 
 const list = ['int', 'float', 'double', 'long'];
 
@@ -57,6 +62,7 @@ const agg = ref<string>('AVG');
 const loading = ref<boolean>(false);
 const chartsList = ref<any[]>([]);
 const instanceStore = useInstanceStore();
+const periodOptions = ref<any>([]);
 const options = ref({});
 
 const _type = computed(() => {
@@ -186,11 +192,11 @@ const getOptions = (arr: any[]) => {
             {
                 type: 'inside',
                 start: 0,
-                end: 10,
+                end: 100,
             },
             {
                 start: 0,
-                end: 10,
+                end: 100,
             },
         ],
         tooltip: {
@@ -209,6 +215,69 @@ const getOptions = (arr: any[]) => {
         ],
     };
 };
+watch(
+    () => prop.time,
+    (val) => {
+        const diffInSeconds = dayjs(val[1]).diff(dayjs(val[0]), 'minute');
+        if (diffInSeconds < 60) {
+            periodOptions.value = [
+                {
+                    label: '实际值',
+                    value: '*',
+                },
+                {
+                    label: '按分钟统计',
+                    value: '1m',
+                },
+            ];
+            cycle.value = '*';
+        } else if (diffInSeconds < 1440) {
+            periodOptions.value = [
+                {
+                    label: '实际值',
+                    value: '*',
+                },
+                {
+                    label: '按分钟统计',
+                    value: '1m',
+                },
+                {
+                    label: '按小时统计',
+                    value: '1h',
+                },
+            ];
+            cycle.value = '*';
+        } else if (diffInSeconds < 43200) {
+            periodOptions.value = [
+                {
+                    label: '按小时统计',
+                    value: '1h',
+                },
+                {
+                    label: '按天统计',
+                    value: '1d',
+                },
+            ];
+            cycle.value = '1h';
+        } else {
+            periodOptions.value = [
+                {
+                    label: '按天统计',
+                    value: '1d',
+                },
+                {
+                    label: '按周统计',
+                    value: '1w',
+                },
+            ];
+            cycle.value = '1d';
+        }
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 
 watch(
     () => [cycle.value, agg.value, prop.time],
