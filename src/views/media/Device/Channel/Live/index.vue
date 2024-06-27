@@ -3,14 +3,16 @@
     <j-modal
         v-model:visible="_vis"
         title="播放"
-        :width="type === 'share'? '100%' : _type ? 1200 : 900"
-        :class="{share: type === 'share'}"
+        :width="type === 'share' ? '100%' : _type ? 1200 : 900"
+        :class="{ share: type === 'share' }"
         :maskClosable="false"
         @ok="_vis = false"
         :destroyOnClose="true"
     >
         <template #closeIcon>
-          <j-button :disabled="type === 'share'" type="text"><AIcon type="CloseOutlined" /></j-button>
+            <j-button :disabled="type === 'share'" type="text"
+                ><AIcon type="CloseOutlined"
+            /></j-button>
         </template>
         <div class="media-live-tool">
             <j-radio-group
@@ -30,12 +32,16 @@
             </div>
         </div>
         <div class="media-live">
-            <div class="media-live-video" @mouseenter="visibleChange"  @mouseleave="mouseleave">
-                <div
-                    :class="mediaToolClass"
-                    @mouseenter="showTool = true"
-                >
-                    <div class="tool-item" v-if="type !== 'share'">
+            <div
+                class="media-live-video"
+                @mouseenter="visibleChange"
+                @mouseleave="mouseleave"
+            >
+                <div :class="mediaToolClass" @mouseenter="showTool = true">
+                    <div
+                        class="tool-item"
+                        v-if="type !== 'share' && showRecord"
+                    >
                         <template v-if="isRecord === 0">
                             <j-dropdown
                                 trigger="click"
@@ -44,10 +50,7 @@
                                 <div>开始录像</div>
                                 <template #overlay>
                                     <j-menu @click="recordStart">
-                                        <j-menu-item
-                                            key="true"
-                                            v-if="_type"
-                                        >
+                                        <j-menu-item key="true" v-if="_type">
                                             <span style="padding-right: 12px"
                                                 >本地存储</span
                                             >
@@ -100,7 +103,7 @@
                     autoplay
                 />
             </div>
-            <div class="media-live-actions" v-if="_type">
+            <div class="media-live-actions" v-if="_type && showActions">
                 <div class="actions-tool">
                     <MediaTool
                         @onMouseDown="handleMouseDown"
@@ -128,14 +131,18 @@
                         </template>
                     </MediaTool>
                 </div>
-                <Preset  v-if='data.ptzType.value ===0 || data.ptzType.value === 1' :data="data" @refresh="onRefresh" />
+                <Preset
+                    v-if="data.ptzType.value === 0 || data.ptzType.value === 1"
+                    :data="data"
+                    @refresh="onRefresh"
+                />
             </div>
         </div>
         <template #footer>
-          <j-space v-if="type !== 'share'">
-            <j-button  @click="_vis = false">取消</j-button>
-            <j-button  @click="_vis = false" type="primary">确定</j-button>
-          </j-space>
+            <j-space v-if="type !== 'share'">
+                <j-button @click="_vis = false">取消</j-button>
+                <j-button @click="_vis = false" type="primary">确定</j-button>
+            </j-space>
         </template>
     </j-modal>
     <Share v-if="visible" :data="data" @close="visible = false" />
@@ -148,6 +155,8 @@ import MediaTool from '@/components/Player/mediaTool.vue';
 import channelApi from '@/api/media/channel';
 import Share from './Share.vue';
 import Preset from './Preset.vue';
+import { useSystem } from '@/store/system';
+import { mediaConfigMap } from '../data';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -168,7 +177,7 @@ const props = defineProps({
 });
 
 const route = useRoute();
-
+const system = useSystem();
 const _vis = computed({
     get: () => props.visible,
     set: (val) => emit('update:visible', val),
@@ -186,8 +195,18 @@ const showToolLock = ref(false);
 const visible = ref(false);
 
 const _type = computed(() => {
-  return route.query.type !== 'fixed-media'
-})
+    return route.query.type !== 'fixed-media';
+});
+
+const showRecord = computed(() => {
+    const key = mediaConfigMap.get(route.query.type + '-record');
+    return system.configInfo?.media?.[key] != 'false';
+});
+
+const showActions = computed(() => {
+    const key = mediaConfigMap.get(route.query.type + '-ptz');
+    return system.configInfo?.media?.[key] != 'false';
+});
 
 const speedList = [
     { label: '高', value: 180 },
@@ -303,7 +322,12 @@ const handleReset = async () => {
  * @param type 控制类型
  */
 const handleMouseDown = (type: string) => {
-    channelApi.ptzTool(props.data.deviceId, props.data.channelId, type, speed.value);
+    channelApi.ptzTool(
+        props.data.deviceId,
+        props.data.channelId,
+        type,
+        speed.value,
+    );
 };
 const handleMouseUp = () => {
     channelApi.ptzStop(props.data.deviceId, props.data.channelId);
@@ -317,8 +341,8 @@ const onShare = () => {
 };
 
 const onRefresh = () => {
-    emit('refresh')
-}
+    emit('refresh');
+};
 
 watch(
     () => _vis.value,
@@ -332,8 +356,8 @@ watch(
         }
     },
     {
-      immediate: true
-    }
+        immediate: true,
+    },
 );
 </script>
 <style lang="less" scoped>
