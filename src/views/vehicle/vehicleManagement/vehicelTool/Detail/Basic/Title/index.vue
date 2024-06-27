@@ -1,6 +1,5 @@
 <template>
     <div class="t-table">
-        <div class="table-title">车辆概况</div>
         <div class="t-title">
             <div class="title-left">
                 <img
@@ -160,14 +159,6 @@ const props = withDefaults(
     background: #ffffff;
     border-radius: 4px;
     overflow: auto;
-
-    .table-title {
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 21px;
-        color: #191c27;
-        margin-left: 12px;
-    }
 }
 
 .t-title {

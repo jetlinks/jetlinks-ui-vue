@@ -225,9 +225,7 @@ const columns = [
 ];
 
 const queryData = async (_params: any) => {
-    console.log('_params', _params);
     const resp: any = await queryUnknownProtocol(_params);
-    console.log('resp', resp);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;
         currentPage.value = resp.result.pageIndex + 1 || 0;

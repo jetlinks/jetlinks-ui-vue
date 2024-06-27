@@ -1,10 +1,13 @@
 <template>
     <div class="detail">
-        <Title
-            :data="vehicleData"
-            :deviceData="dataAss"
-            :vehicleMileage="vehicleMileage"
-        />
+        <DetailsTitle :title="'车辆概况'">
+            <Title
+                :data="vehicleData"
+                :deviceData="dataAss"
+                :vehicleMileage="vehicleMileage"
+            />
+        </DetailsTitle>
+
         <div class="table above">
             <DetailsTitle :title="'在线离线表'">
                 <j-table
@@ -66,7 +69,7 @@
                 </j-table>
             </DetailsTitle>
         </div>
-        <div class="table content">
+        <!-- <div class="table content">
             <div class="table-title">当前关联的设备</div>
             <j-table
                 ref="configRef"
@@ -128,7 +131,7 @@
                     </template>
                 </template>
             </j-table>
-        </div>
+        </div> -->
         <div class="table footer">
             <DetailsTitle :title="'行驶记录明细'">
                 <j-table
@@ -278,32 +281,32 @@ const columnsWork = [
     },
 ];
 
-const columnsAss = [
-    {
-        title: 'ID',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
-        ellipsis: true,
-    },
-    {
-        title: '设备名称',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-    },
-    {
-        title: '所属物模型',
-        dataIndex: 'productName',
-        key: 'productName',
-        ellipsis: true,
-    },
-    {
-        title: '状态',
-        dataIndex: 'state',
-        key: 'state',
-        ellipsis: true,
-    },
-];
+// const columnsAss = [
+//     {
+//         title: 'ID',
+//         dataIndex: 'deviceId',
+//         key: 'deviceId',
+//         ellipsis: true,
+//     },
+//     {
+//         title: '设备名称',
+//         dataIndex: 'name',
+//         key: 'name',
+//         ellipsis: true,
+//     },
+//     {
+//         title: '所属物模型',
+//         dataIndex: 'productName',
+//         key: 'productName',
+//         ellipsis: true,
+//     },
+//     {
+//         title: '状态',
+//         dataIndex: 'state',
+//         key: 'state',
+//         ellipsis: true,
+//     },
+// ];
 
 const columnsRecord = [
     {
@@ -376,17 +379,17 @@ const paginationWork = {
     size: 'small',
 };
 
-const paginationAss = {
-    showTotal: (num: number, range: number[]) => {
-        return `总共 ${num} 条`;
-    },
-    defaultPageSize: 4,
-    total: dataAss.value?.length,
-    pageSizeOptions: ['4', '10', '20', '50', '100'],
-    showQuickJumper: true,
-    showSizeChanger: true,
-    size: 'small',
-};
+// const paginationAss = {
+//     showTotal: (num: number, range: number[]) => {
+//         return `总共 ${num} 条`;
+//     },
+//     defaultPageSize: 4,
+//     total: dataAss.value?.length,
+//     pageSizeOptions: ['4', '10', '20', '50', '100'],
+//     showQuickJumper: true,
+//     showSizeChanger: true,
+//     size: 'small',
+// };
 
 const getDetailFn = async () => {
     const _id = route.params?.id as string;
@@ -395,7 +398,8 @@ const getDetailFn = async () => {
         vehicleData.value = res.result;
     }
 };
-//获取当前关联设备信息
+
+// 获取当前关联设备信息
 const queryDevice = async () => {
     const _id = route.params?.id as string;
     const params = {
@@ -414,6 +418,7 @@ const queryDevice = async () => {
         dataAss.value = res.result.data;
     }
 };
+
 //获取车辆里程
 const getMileage = async () => {
     const _deviceId: any = route.query?.deviceId;
@@ -511,7 +516,7 @@ onMounted(() => {
     .table {
         height: 393px;
         padding: 16px;
-        margin-top: 16px;
+        margin-top: 10px;
         background: #ffffff;
         border-radius: 4px;
 
