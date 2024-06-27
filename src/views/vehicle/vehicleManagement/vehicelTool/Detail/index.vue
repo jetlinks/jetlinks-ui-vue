@@ -2,14 +2,14 @@
     <page-container
         :tabList="list"
         :showBack="true"
-        :tabActiveKey="tabActiveKey"
+        :tabActiveKey="instanceStore.tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title> </template>
         <FullPage>
             <div style="padding: 24px; height: 100%">
                 <component
-                    :is="tabs[tabActiveKey]"
+                    :is="tabs[instanceStore.tabActiveKey]"
                     v-bind="{ type: 'device' }"
                     @onJump="onTabChange"
                 />
@@ -20,9 +20,16 @@
 </template>
 
 <script lang="ts" setup>
+import { useInstanceStore } from '@/store/instance';
 import FloatBackBtn from './components/FloatBackBtn/index.vue';
 import Basic from './Basic/index.vue';
 import Sub from './Sub/index.vue';
+import Running from './Running/index.vue';
+import { getWebSocket } from '@/utils/websocket';
+const instanceStore = useInstanceStore();
+const route = useRoute();
+
+const statusRef = ref();
 
 const initList = [
     {
@@ -43,16 +50,70 @@ const initList = [
     },
 ];
 const list = ref([...initList]);
-const tabActiveKey = ref('Basic');
 
 const tabs = {
     Basic,
     Sub,
+    Running,
+};
+
+const initPage = async (newId: any) => {
+    await instanceStore.refresh(String(newId));
+    getStatus(String(newId));
+    list.value = [...initList];
+    //   getDetail();
+    instanceStore.tabActiveKey = 'Basic';
+};
+
+onBeforeRouteUpdate((to: any) => {
+    console.log('instanceStore', instanceStore.current);
+    if (
+        to.query?.deviceId !== instanceStore.current.id &&
+        to.name === 'vehicle/vehicleManagement/vehicelTool/Detail'
+    ) {
+        initPage(to.query?.deviceId);
+    }
+});
+
+const getDetailFn = async () => {
+    const _id = route.query?.deviceId;
+    instanceStore.tabActiveKey = 'Basic';
+    if (_id) {
+        await instanceStore.refresh(String(_id));
+        getStatus(String(_id));
+        list.value = [...initList];
+        // getDetail();
+    }
+};
+
+onMounted(() => {
+    getDetailFn();
+});
+
+const getStatus = (id: string) => {
+    statusRef.value = getWebSocket(
+        `instance-editor-info-status-${id}`,
+        `/dashboard/device/status/change/realTime`,
+        {
+            deviceId: id,
+        },
+    ).subscribe((message: any) => {
+        if (
+            message.payload?.value?.type !== instanceStore.current?.state.value
+        ) {
+            instanceStore.refresh(id);
+        }
+    });
 };
 
 const onTabChange = (e: string) => {
-    tabActiveKey.value = e;
+    instanceStore.tabActiveKey = e;
 };
+
+onUnmounted(() => {
+    instanceStore.current = {} as any;
+    statusRef.value && statusRef.value.unsubscribe();
+});
 </script>
 
 <style lang="less" scoped>

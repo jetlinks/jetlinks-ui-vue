@@ -10,3 +10,19 @@ export interface ActionsType {
     icon?: string;
     children?: ActionsType[];
 }
+
+type PropertyData = {
+    data: {
+        value?:
+            | {
+                  formatValue: string;
+                  property: string;
+                  value: any;
+              }
+            | any;
+        timeString: string;
+        timestamp: number;
+        formatValue: string;
+        property: string;
+    };
+};

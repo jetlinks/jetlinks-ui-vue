@@ -422,7 +422,7 @@ const queryDevice = async () => {
 //获取车辆里程
 const getMileage = async () => {
     const _deviceId: any = route.query?.deviceId;
-    const res: any = await getVehicleMileage(JSON.parse(_deviceId));
+    const res: any = await getVehicleMileage(_deviceId);
     if (res.status == 200) {
         vehicleMileage.value = res.result.mileage;
     }
@@ -435,7 +435,7 @@ const queryDataRecord = async () => {
         terms: [
             {
                 column: 'deviceId',
-                value: JSON.parse(_deviceId),
+                value: _deviceId,
                 termType: 'eq',
             },
         ],
@@ -473,7 +473,7 @@ const queryVehicleStatus = async () => {
         terms: [
             {
                 column: 'deviceId',
-                value: JSON.parse(_deviceId),
+                value: _deviceId,
                 termType: 'eq',
             },
         ],

@@ -409,7 +409,7 @@ const handleView = (data: any) => {
         },
         {
             id: data.id,
-            deviceId: JSON.stringify(data.deviceId),
+            deviceId: data.deviceId,
         },
     );
     // if (isCheck.value) {
