@@ -516,7 +516,7 @@ onMounted(() => {
     .table {
         height: 393px;
         padding: 16px;
-        margin-top: 10px;
+        margin-top: 8px;
         background: #ffffff;
         border-radius: 4px;
 

@@ -13,17 +13,7 @@
                 :request="request"
                 model="TABLE"
                 :params="queryParams"
-                :defaultParams="{
-                    sorts: [{ name: 'vehicleDate', order: 'desc' }],
-                    terms: [
-                        {
-                            column: 'vehicleId',
-                            value: `${_id}`,
-                            termType: 'eq',
-                            // type: 'and',
-                        },
-                    ],
-                }"
+                :defaultParams="defaultParams"
             >
                 <template #state="slotProps">
                     <BadgeStatus
@@ -46,7 +36,7 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a> 查看 </a>
+                    <a style="color: #f84914"> 查看 </a>
                 </template>
             </j-pro-table>
         </FullPage>
@@ -61,7 +51,15 @@ import dayjs from 'dayjs';
 
 const route = useRoute();
 const _id = route.params?.id as string;
-
+const defaultParams = {
+    terms: [
+        {
+            column: 'vehicleId',
+            value: `${_id}`,
+            termType: 'eq',
+        },
+    ],
+};
 const queryParams = ref({});
 const columns = [
     {

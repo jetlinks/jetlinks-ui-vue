@@ -53,7 +53,6 @@
                             @click="i.onClick && i.onClick(slotProps)"
                             type="link"
                             style="padding: 0px"
-                            :hasPermission="'device/Instance:update'"
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
@@ -247,17 +246,6 @@ const subscribeProperty = () => {
                 messageCache.set(payload.value?.property, payload);
                 throttleFn();
             }
-            // unref(list)
-            //     .sort((a: any, b: any) => a.timestamp - b.timestamp)
-            //     .forEach((item: any) => {
-            //         const { value } = item;
-            //         propertyValue.value[value?.property] = {
-            //             ...item,
-            //             ...value,
-            //         };
-            //     });
-            // list.value = [...list.value, payload];
-            // throttle(valueChange(list.value), 500);
         });
 };
 

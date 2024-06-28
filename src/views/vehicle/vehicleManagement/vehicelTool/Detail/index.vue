@@ -25,6 +25,7 @@ import FloatBackBtn from './components/FloatBackBtn/index.vue';
 import Basic from './Basic/index.vue';
 import Sub from './Sub/index.vue';
 import Running from './Running/index.vue';
+import Forklift from './Forklift/index.vue';
 import { getWebSocket } from '@/utils/websocket';
 const instanceStore = useInstanceStore();
 const route = useRoute();
@@ -55,6 +56,7 @@ const tabs = {
     Basic,
     Sub,
     Running,
+    Forklift,
 };
 
 const initPage = async (newId: any) => {
