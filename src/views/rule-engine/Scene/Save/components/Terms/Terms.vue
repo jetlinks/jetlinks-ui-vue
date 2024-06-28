@@ -36,8 +36,9 @@
                   :groupIndex="i + 1"
                   :key='item.key'
                   :showGroupDelete="group.length !== 1"
-                  @delete='branchesDelete'
+                  @delete='branchesDelete(index)'
                   @deleteAll='branchesDeleteAll'
+                  @add="branchesAdd"
                 />
                 <div v-else class='actions-terms-warp' :style='{ marginTop: data.branches.length === 2 ? 0 : 24 }'>
                   <div class='actions-terms-title' style='padding: 0;margin-bottom: 24px;'>
@@ -81,13 +82,14 @@ import { useSceneStore } from '@/store/scene'
 import { cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
 import { ContextKey, handleParamsData } from './util'
-import { getParseTerm } from '@/api/rule-engine/scene'
-import type { FormModelType } from '@/views/rule-engine/Scene/typings'
+import {getParseTerm, queryAlarmList} from '@/api/rule-engine/scene'
+import type { FormModelType} from '@/views/rule-engine/Scene/typings'
 import Branches from './Branches.vue'
 import {randomNumber, randomString} from "@/utils/utils";
 import TermsTabPane from './TermsTabPane.vue'
 import BranchesNameEdit from "./BranchesNameEdit.vue";
-
+import {Modal} from "ant-design-vue";
+import {queryBindScene, unBindAlarmMultiple} from "@/api/rule-engine/configuration";
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -140,7 +142,7 @@ const queryColumn = (dataModel: FormModelType) => {
 const addBranches = (len: number) => {
   const branchesItem = {
     when: [],
-    key: `branches_${new Date().getTime()}`,
+    key: randomNumber(),
     shakeLimit: {
       enabled: false,
       time: 1,
@@ -148,31 +150,26 @@ const addBranches = (len: number) => {
       alarmFirst: false,
     },
     then: [],
-    branchId: Math.floor(Math.random() * 100000000)
+    branchId: randomNumber()
   }
   // const lastIndex = data.value.branches!.length - 1 || 0
   data.value.branches?.splice(len - 1, 1, branchesItem)
   data.value.options!.when.splice(len - 1, 1, {
     terms: []
   })
-  // data.value.options!.when = []
 }
 
-const branchesDelete = (index: number) => {
-  // TODO 删除逻辑变更，需要判断是否包含告警，再批量删除告警
-  if (data.value.branches?.length === 2) {
-    data.value.branches?.splice(index, 1, null as any)
-  } else {
-    data.value.branches?.splice(index, 1)
-  }
-  data.value.options?.when?.splice(index, 1)
+const branchesDelete = (index: any) => {
+  groupDelete({
+    start: index,
+    len: 1
+  }, -1)
 }
 
 const addGroup = (targetKey: string, action: string) => {
   if (action === 'add') {
     const lastGroup = group.value[group.value.length - 1]
     const lastIndex = (lastGroup?.groupIndex || group.value.length) + 1
-    const branchName =  '条件' +  lastIndex
     const key = randomNumber()
 
     const branchesItem: any = {
@@ -204,7 +201,7 @@ const addGroup = (targetKey: string, action: string) => {
       then: [],
       executeAnyway: true,
       branchId: key,
-      branchName
+      branchName: ''
     }
     data.value.branches?.push(branchesItem, null)
     // data.value.branches?.push(null as any)
@@ -213,7 +210,7 @@ const addGroup = (targetKey: string, action: string) => {
       terms: [{
         terms: [['','eq','','and']],
       }],
-      branchName,
+      branchName: '',
       key,
       executeAnyway: true,
       groupIndex: lastIndex
@@ -228,24 +225,106 @@ const branchesDeleteAll = () => {
 
 }
 
-const groupDelete = (g: any, index: number) => {
-  let _index = index - 1
-  if (_index < 0) { // 左移
-    _index = 0
+const groupDelete = async (g: any, index: number) => {
+
+  // 校验当前条件下是否有数据
+  let actionLen = 0
+  let alarmTerms: Array<Record<string, string>> = []
+
+  for (let i = g.start; i < g.start + g.len; i++) {
+    const item = data.value.branches[i]
+    if (item) {
+      item.then?.forEach(thenItem => {
+        actionLen += thenItem.actions.length
+        if (thenItem.actions) {
+          thenItem.actions.forEach((actionItem) => {
+            const _actionId = actionItem.actionId
+            if (actionItem.executor === 'alarm') {
+              alarmTerms.push({
+                column: 'branchIndex',
+                value: _actionId || item.branchId,
+                type: 'or'
+              })
+            }
+          })
+        }
+      })
+    }
   }
 
-  group.value.splice(index, 1)
+  if (actionLen) {
+    if (alarmTerms.length) {
+      const resp = await queryBindScene({
+        terms: alarmTerms
+      })
+
+      Modal.confirm({
+        title: `已关联 ${resp.result.total} 条告警，删除该条件会同步解除对应的关联告警，确认删除？`,
+        onOk() {
+          const _data = resp.result.data.map(item => {
+            return {
+              "alarmId": item.alarmId,
+              "ruleId": item.ruleId,
+              "branchIndex": item.branchIndex
+            }
+          })
+          unBindAlarmMultiple(_data)
+          removeBranchesData(g, index)
+        }
+      })
+    } else {
+      Modal.confirm({
+        title: '该条件下有执行动作，确认删除？',
+        onOk() {
+          removeBranchesData(g, index)
+        }
+      })
+    }
+  } else {
+    removeBranchesData(g, index)
+  }
+
+}
+
+const removeBranchesData = (g: any, index: number) => {
+  console.log(g.start, g.len)
   const removeBranches = data.value.branches.splice(g.start, g.len)
 
   removeBranches.forEach(item => {
-    let _index = data.value.options!.when.fineIndex(whenItem => whenItem.key === item.branchId)
-    if (_index !== -1) {
-      _index = item.branches_Index
+    if (item) {
+      let _index = data.value.options!.when.findIndex(whenItem => whenItem.key === item.branchId)
+      if (_index !== -1) {
+        _index = item.branches_Index
+      }
+      data.value.options!.when.splice(_index, 1)
     }
-    data.value.options!.when.splice(_index, 1)
   })
 
-  activeKey.value = group.value[_index].id
+  if (index >= 0) { // 删除整个条件组
+    group.value.splice(index, 1)
+
+    if (g.id === activeKey.value) { //
+      let _moveIndex = index - 1
+
+      if (_moveIndex < 0) { // 左移
+        _moveIndex = 0
+      }
+
+      activeKey.value = group.value[_moveIndex].id
+    }
+  } else { // 单个条件删除
+    const groupItem = group.value.find(item => item.id === activeKey.value) // 获取当前条件组
+    groupItem!.len -= 1
+    const branchesItem = data.value.branches[g.start]
+    if (branchesItem === undefined || branchesItem?.executeAnyway) { // 当前位置为undefined或者是下一个条件组的开始 就插入null
+      data.value.branches?.splice(g.start, 0, null)
+    }
+  }
+}
+
+const branchesAdd = () => {
+  // const groupItem = group.value.find(item => item.id === activeKey.value) // 获取当前条件的组
+  // groupItem!.len += 1
 }
 
 const showEditCondition = (key:any) =>{
@@ -287,7 +366,7 @@ watchEffect(() => {
 
 watchEffect(() => {
   const branches = data.value.branches
-
+  console.log('branches 发生变化')
   if (data.value.branches?.filter(item => item).length) {
     open.value = !!data.value.branches[0].when.length
   } else {
@@ -315,7 +394,8 @@ watchEffect(() => {
           start: index,
           branchKey: item.key,
           branchId: item.branchId,
-          branchName: item.branchName || whenItem?.branchName,
+          // branchName: item.branchName || whenItem?.branchName || `条件 ${_branchesIndex + 1}`,
+          branchName: item.branchName || whenItem?.branchName || `条件`,
           groupIndex: _branchesIndex
         }
       } else {
