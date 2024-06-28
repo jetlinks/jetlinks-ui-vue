@@ -64,6 +64,7 @@
             :name='name'
             :openShakeLimit="true"
             :thenOptions='FormModel.branches[name]?.then'
+            :groupIndex="groupIndex"
           />
         </j-form-item>
       </div>

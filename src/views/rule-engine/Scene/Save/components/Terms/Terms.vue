@@ -33,7 +33,7 @@
                   :name='index'
                   :branches_Index='item.branches_Index'
                   :groupLen="b.start + b.len"
-                  :groupIndex="i"
+                  :groupIndex="i + 1"
                   :key='item.key'
                   :showGroupDelete="group.length !== 1"
                   @delete='branchesDelete'
@@ -159,6 +159,7 @@ const addBranches = (len: number) => {
 }
 
 const branchesDelete = (index: number) => {
+  // TODO 删除逻辑变更，需要判断是否包含告警，再批量删除告警
   if (data.value.branches?.length === 2) {
     data.value.branches?.splice(index, 1, null as any)
   } else {
@@ -172,7 +173,7 @@ const addGroup = (targetKey: string, action: string) => {
     const lastGroup = group.value[group.value.length - 1]
     const lastIndex = (lastGroup?.groupIndex || group.value.length) + 1
     const branchName =  '条件' +  lastIndex
-    const key = `branches_${randomString()}`
+    const key = randomNumber()
 
     const branchesItem: any = {
       when: [
@@ -202,12 +203,12 @@ const addGroup = (targetKey: string, action: string) => {
       },
       then: [],
       executeAnyway: true,
-      branchId: randomNumber(),
+      branchId: key,
       branchName
     }
     data.value.branches?.push(branchesItem, null)
     // data.value.branches?.push(null as any)
-    activeKey.value = `group_${branchesItem.key}`
+    activeKey.value = key
     data.value.options!.when.push({
       terms: [{
         terms: [['','eq','','and']],
@@ -218,7 +219,7 @@ const addGroup = (targetKey: string, action: string) => {
       groupIndex: lastIndex
     })
   } else {
-    const index = group.value.findIndex(item => item.id === targetKey)
+    const index = group.value.findIndex(item => item.branchId === targetKey)
     groupDelete(group.value[index], index)
   }
 }
@@ -234,8 +235,16 @@ const groupDelete = (g: any, index: number) => {
   }
 
   group.value.splice(index, 1)
-  data.value.branches.splice(g.start, g.len)
-  data.value.options!.when.splice(g.start, g.len)
+  const removeBranches = data.value.branches.splice(g.start, g.len)
+
+  removeBranches.forEach(item => {
+    let _index = data.value.options!.when.fineIndex(whenItem => whenItem.key === item.branchId)
+    if (_index !== -1) {
+      _index = item.branches_Index
+    }
+    data.value.options!.when.splice(_index, 1)
+  })
+
   activeKey.value = group.value[_index].id
 }
 
@@ -243,16 +252,16 @@ const showEditCondition = (key:any) =>{
   if(key === activeKey.value){
     editConditionVisible.value = true;
     conditionName.value = group.value.find((i:any)=>{
-      return i.id === key
+      return i.branchId === key
     })?.branchName
   }
 }
 
 const changeBranchName = (name: string) =>{
-  let _activeKey = activeKey.value.replace('group_', '')
+  let _activeKey = activeKey.value
 
   data.value.branches?.forEach((item:any)=>{
-     if(item?.key === _activeKey){
+     if(item?.branchId === _activeKey){
       item.branchName = name
      }
   })
@@ -260,10 +269,12 @@ const changeBranchName = (name: string) =>{
   let optionsItem = data.value.options!.when.find(item => item.key === _activeKey)
 
   if (!optionsItem) {
-    const _index = group.value.findIndex(item => item.branchKey === _activeKey)
+    const _index = group.value.findIndex(item => item.branchId === _activeKey)
     if (_index !== -1) {
       data.value.options!.when[_index].branchName = name
     }
+  } else {
+    optionsItem.branchName = name
   }
 
   editConditionVisible.value =false
@@ -290,14 +301,20 @@ watchEffect(() => {
 
       const lastIndex = _group.length - 1
 
-      const whenItem = data.value.options!.when[_branchesIndex]
+      let whenItem = data.value.options!.when.find(when => item?.branchId === when.key)
+
+      if (!whenItem) {
+        whenItem = data.value.options!.when[_branchesIndex]
+      }
+
 
       if (index === 0 || item?.executeAnyway) {
         _group[lastIndex + 1] = {
-          id: `group_${item.key}`,
+          id: item.branchId,
           len: 1,
           start: index,
           branchKey: item.key,
+          branchId: item.branchId,
           branchName: item.branchName || whenItem?.branchName,
           groupIndex: _branchesIndex
         }
@@ -306,7 +323,7 @@ watchEffect(() => {
       }
 
       if (item) {
-        item.branches_Index = index
+        item.branches_Index = _branchesIndex
         _branchesIndex += 1
       }
     })

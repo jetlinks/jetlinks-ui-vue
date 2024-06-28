@@ -406,7 +406,7 @@ const beginAction = () => {
         return tableWrapperRef.value || document.body
       },
     })
-    return onlyMessage('请添加规则属性', 'warning')
+    return onlyMessage('请填写属性值', 'warning')
   }
     isBeginning.value = false;
     runScript();
