@@ -98,6 +98,7 @@
                                                         .regionId
                                                 "
                                                 show-search
+                                                @change="regionChange"
                                                 @blur="productChange"
                                             >
                                                 <j-select-option
@@ -492,7 +493,7 @@ const route = useRoute();
 const formRef = ref();
 const _errorSet = ref<Set<string>>(new Set());
 
-const modelRef = reactive({
+const modelRef = reactive<any>({
     id: undefined,
     name: undefined,
     accessConfig: {
@@ -500,6 +501,7 @@ const modelRef = reactive({
         instanceId: undefined,
         accessKeyId: undefined,
         accessSecret: undefined,
+        apiEndpoint: undefined,
     },
     bridgeProductKey: undefined,
     bridgeProductName: undefined,
@@ -591,16 +593,19 @@ const onCollChange = (_key: string[]) => {
 };
 
 const _error = computed(() => {
-    return _errorSet.value.size ? `当前选择的部分产品为禁用状态` : ''
-})
+    return _errorSet.value.size ? `当前选择的部分产品为禁用状态` : '';
+});
 
+const regionChange = (val: any) => {
+    modelRef.accessConfig.apiEndpoint = `https://iot.${val}.aliyuncs.com`;
+};
 const onActiveProduct = async () => {
     [..._errorSet.value.values()].forEach(async (i: any) => {
         const resp = await _deploy(i).catch((error) => {
             onlyMessage('操作失败', 'error');
         });
-        if(resp?.status === 200) {
-            _errorSet.value.delete(i)
+        if (resp?.status === 200) {
+            _errorSet.value.delete(i);
             onlyMessage('操作成功！');
         }
     });
@@ -610,14 +615,14 @@ const onActiveProduct = async () => {
 const onPlatError = (val: any) => {
     const _item = productList.value.find((item) => item.id === val);
     if (val && _item && !_item?.state) {
-        _errorSet.value.add(val)
+        _errorSet.value.add(val);
     }
 };
 
 const _validator = (_rule: any, value: string): Promise<any> =>
     new Promise((resolve, reject) => {
         const _item = productList.value.find((item) => item.id === value);
-        if(!modelRef.id || modelRef.id === ':id') {
+        if (!modelRef.id || modelRef.id === ':id') {
             return resolve('');
         } else if (!_item && value) {
             return reject('关联产品已被删除，请重新选择');
@@ -633,6 +638,7 @@ const saveBtn = () => {
                 (item: any) => item?.productKey === data?.bridgeProductKey,
             );
             data.bridgeProductName = product?.productName || '';
+            data.accessConfig.apiEndpoint = modelRef.accessConfig.apiEndpoint;
             loading.value = true;
             const resp = await savePatch({
                 ...toRaw(modelRef),
