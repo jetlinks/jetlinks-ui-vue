@@ -127,6 +127,8 @@ const topOptions = computed(() => {
     cloneTypeEnum.invokeFunction
   ]
 
+  if (!props.metadata) return baseOptions;
+
   if (props.metadata.events?.length) {
     // baseOptions.push(TypeEnum.reportEvent)
     cloneTypeEnum.reportEvent.disabled = false
