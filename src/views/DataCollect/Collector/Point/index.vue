@@ -224,13 +224,13 @@
                                             "
                                             class="card-box-content-right-2"
                                         >
-                                            <p>
+                                            <Ellipsis>
                                                 {{
                                                     propertyValue.get(
                                                         slotProps.id,
                                                     )?.hex || ''
                                                 }}
-                                            </p>
+                                            </Ellipsis>
                                             <p>
                                                 {{
                                                     dayjs(
