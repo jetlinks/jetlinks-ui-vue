@@ -26,19 +26,7 @@
                         :tab="item.label"
                         :key="item.key"
                     >
-                        <div v-for="(i, index) in myValue" class="scene-select-item">
-                            <ArrayItem
-                                v-model:value="myValue[index]"
-                                :valueName="valueName"
-                                :labelName="labelName"
-                                :options="options"
-                                :component="item.component"
-                                :extra="props"
-                                @select="(v, l) => onSelect(v, l, index)"
-                            />
-                        </div>
-                        <j-button @click="addItem">+</j-button>
-                        <j-button @click="deleteItem">-</j-button>
+                      <a-input placeholder="多个值用,隔开" v-model:value="myValue" @change="() => onSelect"/>
                     </j-tab-pane>
                 </j-tabs>
             </div>
@@ -53,7 +41,7 @@ import ArrayItem from './ArrayItem.vue';
 import { cloneDeep } from 'lodash-es';
 import { getOption } from '../DropdownButton/util';
 type Emit = {
-    (e: 'update:value', data: ValueType): void;
+    (e: 'update:value', data: Array<ValueType>): void;
     (e: 'update:source', data: string): void;
     (
         e: 'select',
@@ -70,7 +58,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
-const myValue = ref<ValueType>(cloneDeep(props.value) || [undefined, undefined] as any);
+const myValue = ref<ValueType>(cloneDeep(props.value) || `[]` as any);
 const mySource = ref<string>(props.source);
 const label = ref<any>(props.placeholder);
 const visible = ref(false);
@@ -79,26 +67,15 @@ const tabsChange = (e: string) => {
     emit('update:source', mySource.value);
 };
 
-const onSelect = (v: any, _label: string, index: number) => {
+const onSelect = () => {
     emit('update:value', myValue.value);
-    label.value[index] = _label;
-    emit('select', myValue.value, _label, label.value);
+    label.value = myValue.value
+    emit('select', myValue.value, myValue.value, label.value);
 };
 
 const visibleChange = (v: boolean) => {
     visible.value = v;
 };
-
-const addItem = () => {
-    myValue.value?.push(null);
-    emit('update:value', myValue.value);
-};
-
-const deleteItem = () => {
-    myValue.value?.pop();
-    emit('update:value', myValue.value);
-};
-
 watchEffect(() => {
     const _options = props.options;
     const _value = props.value;
