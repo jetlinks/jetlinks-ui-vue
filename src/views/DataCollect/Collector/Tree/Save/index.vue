@@ -123,6 +123,7 @@
                   v-model:value="formData.configuration.instanceNumber"
                   placeholder="请输入设备实例号"
                   :min="0"
+                  :precision="0"
                   :disabled="route.query.id ? true : false"
                 />
               </j-form-item>

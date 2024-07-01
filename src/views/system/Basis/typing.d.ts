@@ -53,8 +53,20 @@ export type AMapKey = {
     webKey: string
 }
 
+export type MediaType = {
+    "fix-ptz": string;
+    "fix-record": string;
+    "gb-ptz": string;
+    "gb-record":string;
+    "onvif-ptz":string;
+    "onvif-record":string;
+    "plugin-ptz":string;
+    "plugin-record":string;
+}
+
 export type ConfigInfoType = {
     paths: PathType;
     amap: AMapKey;
     front: formValueType;
+    media: MediaType
 }
