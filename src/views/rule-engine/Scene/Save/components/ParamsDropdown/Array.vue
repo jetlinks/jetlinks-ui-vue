@@ -26,7 +26,7 @@
                         :tab="item.label"
                         :key="item.key"
                     >
-                      <a-input placeholder="多个值用,隔开" v-model:value="myValue" @change="() => onSelect"/>
+                      <a-input placeholder="多个值以英文逗号隔开" v-model:value="myValue" @change="() => onSelect"/>
                     </j-tab-pane>
                 </j-tabs>
             </div>
