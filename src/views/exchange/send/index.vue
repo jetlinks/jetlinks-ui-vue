@@ -265,9 +265,19 @@ const columns = [
         },
     },
     {
+        title: 'Topic',
+        dataIndex: 'topic',
+        key: 'topic',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
+        width: 150,
         scopedSlots: true,
         search: {
             type: 'select',
@@ -275,16 +285,6 @@ const columns = [
                 { label: '禁用', value: 'disabled' },
                 { label: '正常', value: 'enabled' },
             ],
-        },
-    },
-    {
-        title: 'Topic',
-        dataIndex: 'topic',
-        key: 'topic',
-        width: 120,
-        ellipsis: true,
-        search: {
-            type: 'string',
         },
     },
     {

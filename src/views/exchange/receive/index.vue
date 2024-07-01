@@ -10,7 +10,7 @@
                     showQuickJumper: false,
                     size: 'size',
                 }"
-                :columns="columns"
+                :columns="columnsList"
                 :params="params"
                 ref="tableRef"
                 :request="query"
@@ -37,6 +37,23 @@
                             </PermissionButton>
                         </j-space>
                     </j-space>
+                </template>
+                <template #factoryId="slotProps">
+                    <div>
+                        <j-ellipsis>{{
+                            funGetFactory(slotProps.factoryId)
+                        }}</j-ellipsis>
+                    </div>
+                </template>
+                <template #state="slotProps">
+                    <BadgeStatus
+                        :status="slotProps.state?.value"
+                        :text="slotProps.state?.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'warning',
+                        }"
+                    />
                 </template>
                 <template #actions="slotProps">
                     <j-space>
@@ -68,16 +85,6 @@
                             </PermissionButton>
                         </template>
                     </j-space>
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state?.value"
-                        :text="slotProps.state?.text"
-                        :statusNames="{
-                            enabled: 'processing',
-                            disabled: 'warning',
-                        }"
-                    />
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -304,7 +311,6 @@ const handleAdd = () => {
     isAdd.value = 1;
     myModalState.modalTitle = '新增';
     myModalState.modalVisible = true;
-    console.log('selectedRow.value', selectedRow.value);
 };
 
 const handleExport = () => {
@@ -391,17 +397,50 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
-        width: 220,
-        ellipsis: true,
         search: {
             type: 'string',
+        },
+    },
+    {
+        title: 'Topic',
+        dataIndex: 'topic',
+        key: 'topic',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '所属工厂',
+        dataIndex: 'factoryId',
+        key: 'factoryId',
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    queryFactoryList({
+                        paging: false,
+                        sorts: [
+                            {
+                                name: 'createTime',
+                                order: 'desc',
+                            },
+                        ],
+                        terms: [],
+                    }).then((response: any) => {
+                        resolve(
+                            response.result.data.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
-        scopedSlots: true,
         search: {
             type: 'select',
             options: [
@@ -410,15 +449,36 @@ const columns = [
             ],
         },
     },
+];
+
+const columnsList = [
+    {
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
+        width: 220,
+        ellipsis: true,
+    },
     {
         title: 'Topic',
         dataIndex: 'topic',
         key: 'topic',
-        width: 120,
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
+    },
+    {
+        title: '所属工厂',
+        dataIndex: 'factoryId',
+        key: 'factoryId',
+        width: 200,
+        ellipsis: true,
+        scopedSlots: true,
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        width: 150,
+        key: 'state',
+        scopedSlots: true,
     },
     {
         title: '说明',
@@ -434,6 +494,13 @@ const columns = [
         scopedSlots: true,
     },
 ];
+
+const funGetFactory = (id: string) => {
+    const foundObject: any = factoryList.value.find(
+        (item: any) => item.id === id,
+    );
+    return foundObject ? foundObject.name : '';
+};
 
 const getActions = (
     data: Partial<Record<string, any>>,
