@@ -33,6 +33,7 @@
                 <PermissionButton
                     type="text"
                     hasPermission="device/Firmware:update"
+                    style="float: right;"
                     @click="refreshState"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
                     刷新状态
@@ -42,7 +43,7 @@
                 <div style="width: 90%">
                     <span>当前进度</span>
                     <a-progress
-                        style="width: 80%; margin-left: 20px"
+                        style="width: 90%; margin-left: 20px"
                         :strokeWidth="10"
                         :percent="general.percent"
                         :format="(percent) => `${percent}%`"
@@ -253,9 +254,12 @@ onMounted(() => {
 .generalInfo {
     margin-bottom: 30px;
     .progress {
-        width: 55%;
+        width: 100%;
         line-height: 32px;
         display: flex;
+    }
+    .allOperation{
+        margin-bottom: 20px;
     }
 }
 .tip {
