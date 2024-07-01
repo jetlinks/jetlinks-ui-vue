@@ -115,10 +115,26 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <h3 class="card-item-content-title">
+                                <Ellipsis
+                                    style="
+                                        cursor: pointer;
+                                        font-size: 16px;
+                                        font-weight: 700;
+                                        color: #1d39c4;
+                                        width: calc(100% - 100px);
+                                    "
+                                >
                                     {{ item.name }}
-                                </h3>
-                                <div class="desc">{{ item.description }}</div>
+                                </Ellipsis>
+                                <Ellipsis
+                                    style="
+                                        margin-top: 10px;
+                                        color: #666;
+                                        font-weight: 400;
+                                        font-size: 12px;
+                                    "
+                                    >{{ item.description }}</Ellipsis
+                                >
                                 <j-row v-if="props.channel === 'gb28181-2016'">
                                     <j-col :span="12">
                                         {{ item.channelInfo?.name }}
@@ -182,7 +198,7 @@ type Emits = {
     (e: 'update:productId', data: string): void;
     (e: 'close'): void;
     (e: 'save', data: Record<string, any>): void;
-    (e: 'update:password',data:string):void
+    (e: 'update:password', data: string): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -289,10 +305,10 @@ const handleOk = () => {
         .then(async () => {
             btnLoading.value = true;
             const res = await DeviceApi.saveProduct(formData.value);
-            console.log(res)
+            console.log(res);
             if (res.success) {
                 emit('update:productId', res.result.id);
-                emit('update:password', res.result.configuration.access_pwd)
+                emit('update:password', res.result.configuration.access_pwd);
                 const deployResp = await DeviceApi.deployProductById(
                     res.result.id,
                 );
@@ -336,14 +352,11 @@ const handleAdd = () => {
     .gateway-item {
         padding: 16px;
         text-align: left;
-        .card-item-content-title,
-        .desc,
         .subtitle {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-        .desc,
         .subtitle {
             margin-top: 10px;
             color: #666;
