@@ -74,7 +74,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="DeviceTag">
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -109,7 +109,7 @@ const addItem = () => {
 
 const deleteItem = (_index: number) => {
     tagList.value.splice(_index, 1);
-    onValueChange();
+    onValueChange()
 };
 
 const onTypeSelect = (key: any, _index: number) => {
@@ -145,32 +145,31 @@ watch(
         options.value = newTag.map((item: any) => {
             return { label: item.name, value: item.id, ...item };
         });
-        if (newVal && newVal[0] && newVal[0]?.name && newTag && newTag.length) {
-            const names: string[] = [];
-            const newTagList = newVal[0]?.value
-                .filter((valueItem: any) => {
-                    return newTag.some(
-                        (item: any) => valueItem.column === item.id,
-                    );
-                })
-                .map((valueItem: any) => {
-                    const oldItem = newTag.find(
-                        (item: any) => item.id === valueItem.column,
-                    );
-                    if (oldItem) {
-                        names.push(oldItem.name);
-                        return {
-                            ...handleItem(oldItem),
-                            value: valueItem?.value,
-                            type: valueItem?.type,
-                        };
-                    }
-                    return valueItem;
-                });
-            tagList.value = newTagList;
-        } else {
-            tagList.value = [{}];
-        }
+
+      // const names: string[] = [];
+      const newTagList = newVal[0]?.value.map((valueItem: any) => {
+          const oldItem = newTag.find(
+            (item: any) => item.id === valueItem.column,
+          );
+          if (oldItem) {
+            // names.push(oldItem.name);
+            return {
+              ...handleItem(oldItem),
+              value: valueItem?.value,
+              type: valueItem?.type,
+            };
+          }
+          return valueItem;
+        }) || [{}];
+
+      tagList.value = newTagList;
+
+        // if (newVal && newVal[0] && newVal[0]?.name && newTag && newTag.length) {
+        //
+        //     tagList.value = newTagList;
+        // } else {
+        //     tagList.value = [{}];
+        // }
     },
     {
         immediate: true,
