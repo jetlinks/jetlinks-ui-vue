@@ -38,7 +38,7 @@
                 @mouseleave="mouseleave"
             >
                 <div :class="mediaToolClass" @mouseenter="showTool = true">
-                    <div class="tool-item" v-if="type !== 'share'">
+                    <div class="tool-item" v-if="type !== 'share' && showRecord">
                         <template v-if="isRecord === 0">
                             <j-dropdown
                                 trigger="click"
