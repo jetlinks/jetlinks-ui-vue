@@ -17,12 +17,29 @@
             </j-space>
         </div>
         <div class="box-cont">
-            <j-space> </j-space>
+            <j-row>
+                <j-col :span="12"> <div>left - 监控视频</div></j-col>
+                <j-col :span="12">
+                    <div class="map-page-container">
+                        <AMapComponent @init="initMap" />
+                    </div>
+                    <div class="toolbar">
+                        <!-- <button @click="getMap()">获取地图实例</button> -->
+                    </div>
+                </j-col>
+            </j-row>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
+const mapRef = ref();
+const loading = ref(true);
+const initMap = (e) => {
+    loading.value = true;
+    mapRef.value = e;
+    loading.value = false;
+};
 const firstLock = () => {
     console.log('一级锁车');
 };
@@ -41,11 +58,18 @@ const viewPhotos = () => {
     flex-direction: column;
     min-height: 100%;
     .box-top {
-        height: 60px;
+        height: 50px;
     }
     .box-cont {
         border-top: 2px solid #b4b4b4;
         height: 400px;
+
+        .ant-row {
+            margin-top: 12px;
+        }
     }
+}
+.map-page-container {
+    height: 400px;
 }
 </style>
