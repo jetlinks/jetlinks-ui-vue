@@ -38,10 +38,7 @@
                 @mouseleave="mouseleave"
             >
                 <div :class="mediaToolClass" @mouseenter="showTool = true">
-                    <div
-                        class="tool-item"
-                        v-if="type !== 'share' && showRecord"
-                    >
+                    <div class="tool-item" v-if="type !== 'share'">
                         <template v-if="isRecord === 0">
                             <j-dropdown
                                 trigger="click"
@@ -214,7 +211,7 @@ const speedList = [
     { label: '低', value: 45 },
 ];
 const speed = ref(90);
-
+const local = ref();
 const _speed = computed(() => {
     return speedList.find((item) => item.value === speed.value)?.label;
 });
@@ -275,9 +272,11 @@ const recordStart = async ({ key }: { key: string }) => {
     showToolLock.value = false;
     showTool.value = false;
     isRecord.value = 1;
-    const local = key === 'true';
+    local.value = key === 'true';
     const res = await channelApi
-        .recordStart(props.data.deviceId, props.data.channelId, { local })
+        .recordStart(props.data.deviceId, props.data.channelId, {
+            local: local.value,
+        })
         .catch(() => ({ success: false }));
     if (res.success) {
         isRecord.value = 2;
@@ -293,6 +292,7 @@ const recordStop = async () => {
     const res = await channelApi.recordStop(
         props.data.deviceId,
         props.data.channelId,
+        { local: local.value },
     );
     if (res.success) {
         isRecord.value = 0;
