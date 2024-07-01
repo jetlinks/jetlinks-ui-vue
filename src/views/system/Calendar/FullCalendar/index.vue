@@ -44,7 +44,10 @@
                         class="decoration"
                         :style="{ backgroundColor: arg.backgroundColor }"
                     ></div>
-                    <div class="event-title">{{ arg.event.title }}</div>
+                    <a-tooltip>
+                        <template #title>{{ arg.event.title }}</template>
+                        <div class="event-title">{{ arg.event.title }}</div>
+                    </a-tooltip>
                     <a-button
                         v-if="!selectable && !preview"
                         type="text"

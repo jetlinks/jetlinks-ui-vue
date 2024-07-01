@@ -78,7 +78,7 @@ export const useSystem = defineStore('system', {
             }
         },
         async getSystemConfig() {
-            const params = ['front', 'amap', 'paths'];
+            const params = ['front', 'amap', 'paths','media'];
             const { status, result } = await getDetails_api(params);
             if (status === 200) {
                 params.forEach((key: string) => {
