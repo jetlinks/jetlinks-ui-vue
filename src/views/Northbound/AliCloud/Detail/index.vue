@@ -98,6 +98,7 @@
                                                         .regionId
                                                 "
                                                 show-search
+                                                @change="regionChange"
                                                 @blur="productChange"
                                             >
                                                 <j-select-option
