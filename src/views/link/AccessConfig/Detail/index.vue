@@ -94,7 +94,6 @@ const goProviders = (param: any) => {
     showType.value = param.type;
     provider.value = param;
     type.value = false;
-    console.log(showType.value,provider.value)
 };
 
 const goBack = () => {
@@ -155,7 +154,10 @@ const getTypeList = (result: Record<string, any>) => {
             edge.push(item);
         } else {
             item.type = 'network';
-            network.push(item);
+            // todo 后端还未实现完成，导致该组件新增时存在异常，先进行屏蔽
+            if (item.id !== "media-plugin"){
+              network.push(item);
+            }
         }
     });
 
@@ -193,7 +195,6 @@ const queryProviders = async () => {
     if (resp.status === 200) {
         const _data = resp.result || [];
         dataSource.value = getTypeList(accessConfigTypeFilter(_data as any[]));
-        console.log(dataSource.value)
         // dataSource.value = getTypeList(resp.result)[0].list.filter(
         //     (item) => item.name !== '插件设备接入',
         // );
@@ -222,7 +223,6 @@ const checkBindProduct = async (_id: string) => {
       value: _id
     }]
   })
-  console.log(resp.success && resp.result?.total)
   if (resp.success && resp.result?.total) {
     bindProduct.value = true
   }
