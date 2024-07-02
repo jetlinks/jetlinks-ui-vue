@@ -269,7 +269,7 @@ const onDrop = (info: any) => {
         });
     } else {
         loop(data, dropKey, (_item: any, index: number, arr: any[], parent) => {
-          dragObj.parentId = _item.parentId
+          dragObj.parentId = parent ? parent.id : ''
           dragObj.sortIndex = dropPosition === -1 ? index : index + 1
           arr.splice(dragObj.sortIndex, 0, dragObj);
           if (parent) {
@@ -278,6 +278,8 @@ const onDrop = (info: any) => {
               return cl
             })
             updateRegion(parent)
+          } else {
+            updateRegion(dragObj)
           }
         });
 
