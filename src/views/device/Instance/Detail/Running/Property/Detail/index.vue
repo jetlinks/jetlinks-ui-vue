@@ -3,6 +3,7 @@
         title="详情"
         visible
         width="50vw"
+        :maskClosable="false"
         @ok="onCancel"
         @cancel="onCancel"
     >
@@ -27,22 +28,14 @@
                     />
                 </j-tab-pane>
                 <j-tab-pane key="charts" tab="图表">
-                    <Charts
-                        :data="props.data"
-                        :time="_getTimes"
-                        :searchParams="params"
-                    />
+                    <Charts :data="props.data" :time="_getTimes" />
                 </j-tab-pane>
                 <j-tab-pane
                     key="geo"
                     tab="轨迹"
                     v-if="data?.valueType?.type === 'geoPoint'"
                 >
-                    <PropertyAMap
-                        :data="props.data"
-                        :time="_getTimes"
-                        :searchParams="params"
-                    />
+                    <PropertyAMap :data="props.data" :time="_getTimes" />
                 </j-tab-pane>
             </j-tabs>
         </div>

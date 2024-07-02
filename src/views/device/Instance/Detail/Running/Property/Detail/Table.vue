@@ -71,13 +71,14 @@
 </template>
 
 <script lang="ts" setup>
-import { getPropertyData } from '@/api/device/instance';
+import { getPropertyDataNew } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import encodeQuery from '@/utils/encodeQuery';
 import moment from 'moment';
 import { getType } from '../index';
 import ValueRender from '../ValueRender.vue';
 import JsonViewer from 'vue-json-viewer';
+import { cloneDeep } from 'lodash-es';
 
 const _props = defineProps({
     data: {
@@ -103,7 +104,7 @@ const dataSource = ref({
 });
 const current = ref<any>({});
 const visible = ref<boolean>(false);
-
+console.log(_props.data);
 const columns = computed(() => {
     const arr: any[] = [
         {
@@ -119,6 +120,18 @@ const columns = computed(() => {
             ellipsis: true,
         },
     ];
+    if (
+        ['int', 'long', 'float', 'double'].includes(
+            _props.data?.valueType?.type,
+        )
+    ) {
+        arr.push({
+            title: '原始值',
+            dataIndex: 'originValue',
+            key: 'originValue',
+            ellipsis: true,
+        });
+    }
     if (_props.data?.valueType?.type != 'geoPoint') {
         arr.push({
             title: '操作',
@@ -126,6 +139,7 @@ const columns = computed(() => {
             key: 'action',
         });
     }
+
     return arr;
 });
 
@@ -142,16 +156,65 @@ const showDetail = (item: any) => {
 };
 
 const queryPropertyData = async (params: any) => {
-    const resp = await getPropertyData(
+    let searchParams = cloneDeep(_props.searchParams);
+    if (_props.searchParams?.terms) {
+        searchParams.terms.push({
+            terms: [
+                {
+                    column: 'timestamp',
+                    value: _props.time[0],
+                    termType: 'gt',
+                },
+                {
+                    column: 'timestamp',
+                    value: _props.time[1],
+                    termType: 'lt',
+                },
+            ],
+            type: 'and',
+        });
+    } else {
+        searchParams = {
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'timestamp',
+                            value: _props.time[0],
+                            termType: 'gt',
+                        },
+                        {
+                            column: 'timestamp',
+                            value: _props.time[1],
+                            termType: 'lt',
+                        },
+                    ],
+                },
+            ],
+        };
+    }
+    const resp = await getPropertyDataNew(
+        // instanceStore.current.id,
+        // encodeQuery({
+        //     ...params,
+        //     terms: {
+        //         property: _props.data.id,
+        //         timestamp$BTW: _props.time,
+        //     },
+        //     sorts: { timestamp: 'desc' },
+        // }),
         instanceStore.current.id,
-        encodeQuery({
+        _props.data.id,
+        {
             ...params,
-            terms: {
-                property: _props.data.id,
-                timestamp$BTW: _props.time,
-            },
-            sorts: { timestamp: 'desc' },
-        }),
+            ...searchParams,
+            sort: [
+                {
+                    name: 'timestamp',
+                    order: 'desc',
+                },
+            ],
+        },
     );
     if (resp.status === 200) {
         dataSource.value = resp.result as any;
@@ -160,7 +223,6 @@ const queryPropertyData = async (params: any) => {
 watch(
     () => [_props.data.id, _props.time, _props.searchParams],
     ([newVal]) => {
-        console.log(_props.searchParams);
         if (newVal && _props.time?.length) {
             queryPropertyData({
                 pageSize: 12,
