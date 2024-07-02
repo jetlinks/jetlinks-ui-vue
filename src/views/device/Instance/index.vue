@@ -8,7 +8,7 @@
         <FullPage>
             <JProTable
                 ref="instanceRef"
-                :columns="columns"
+                :columns="columnList"
                 :request="query"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -370,7 +370,7 @@ const transformData = (arr: any[]): any[] => {
     }
 };
 
-const columns = [
+const columns = ref([
     {
         title: 'ID',
         dataIndex: 'id',
@@ -404,36 +404,6 @@ const columns = [
                     queryNoPagingPost({ paging: false }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
-                                label: item.name,
-                                value: item.id,
-                            })),
-                        );
-                    });
-                }),
-        },
-    },
-    {
-        title: '所属工厂',
-        dataIndex: 'factoryName',
-        key: 'factoryName',
-        ellipsis: true,
-        search: {
-            type: 'select',
-            rename: 'factoryId',
-            options: () =>
-                new Promise((resolve) => {
-                    queryFactoryList({
-                        paging: false,
-                        sorts: [
-                            {
-                                name: 'createTime',
-                                order: 'desc',
-                            },
-                        ],
-                        terms: [],
-                    }).then((response: any) => {
-                        resolve(
-                            response.result.data.map((item: any) => ({
                                 label: item.name,
                                 value: item.id,
                             })),
@@ -622,7 +592,91 @@ const columns = [
         width: 300,
         scopedSlots: true,
     },
-];
+]);
+
+const columnList = ref([
+    {
+        title: 'ID',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+    },
+    {
+        title: '设备名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+    },
+    {
+        title: '产品名称',
+        dataIndex: 'productName',
+        key: 'productName',
+        ellipsis: true,
+    },
+    {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        scopedSlots: true,
+        width: 200,
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        scopedSlots: true,
+    },
+    {
+        key: 'classifiedId',
+        dataIndex: 'classifiedId',
+        title: '产品分类',
+        hideInTable: true,
+    },
+    {
+        key: 'accessProvider',
+        title: '网关类型',
+        dataIndex: 'accessProvider',
+        valueType: 'select',
+        hideInTable: true,
+    },
+    {
+        key: 'accessId',
+        dataIndex: 'accessId',
+        title: '接入方式',
+        hideInTable: true,
+    },
+    {
+        dataIndex: 'deviceType',
+        title: '设备类型',
+        valueType: 'select',
+        hideInTable: true,
+    },
+    {
+        dataIndex: 'id$dim-assets',
+        title: '所属组织',
+        hideInTable: true,
+    },
+    {
+        key: 'id$dev-tag',
+        dataIndex: 'id$dev-tag',
+        title: '设备标签',
+        hideInTable: true,
+    },
+    {
+        title: '说明',
+        dataIndex: 'describe',
+        key: 'describe',
+        ellipsis: true,
+        width: 200,
+    },
+    {
+        title: '操作',
+        key: 'action',
+        fixed: 'right',
+        width: 300,
+        scopedSlots: true,
+    },
+]);
 
 const paramsFormat = (
     config: Record<string, any>,
@@ -820,7 +874,7 @@ const getActions = (
             },
         },
     };
-    if (isIOT.value ==='true' && factoryType.value === 'general') {
+    if (isIOT.value === 'true' && factoryType.value === 'general') {
         actions.splice(2, 0, distributeData);
     }
     if (type === 'card')
@@ -1086,8 +1140,49 @@ const onRefresh = () => {
 };
 
 onMounted(() => {
+    if (isIOT.value === 'true' && factoryType.value === 'general') {
+        const factoryName = {
+            title: '所属工厂',
+            dataIndex: 'factoryName',
+            key: 'factoryName',
+            scopedSlots: true,
+            ellipsis: true,
+        };
+        const factorySearch = {
+            title: '所属工厂',
+            dataIndex: 'factoryName',
+            key: 'factoryName',
+            ellipsis: true,
+            search: {
+                type: 'select',
+                rename: 'factoryId',
+                options: () =>
+                    new Promise((resolve) => {
+                        queryFactoryList({
+                            paging: false,
+                            sorts: [
+                                {
+                                    name: 'createTime',
+                                    order: 'desc',
+                                },
+                            ],
+                            terms: [],
+                        }).then((response: any) => {
+                            resolve(
+                                response.result.data.map((item: any) => ({
+                                    label: item.name,
+                                    value: item.id,
+                                })),
+                            );
+                        });
+                    }),
+            },
+        };
+        columnList.value.splice(2, 0, factoryName);
+        columns.value.splice(3, 0, factorySearch);
+    }
     query().then((res: any) => {
-        console.log('res',res);
+        console.log('res', res);
     });
 });
 </script>

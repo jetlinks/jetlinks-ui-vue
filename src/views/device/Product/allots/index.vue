@@ -57,11 +57,11 @@ const confirmDisabled = ref<boolean>(true);
 const openView = ref(true);
 const title = ref('下发');
 const loading = ref<boolean>(false);
-const targetKeys = ref<string[]>([]);
+const targetKeys = ref<any[]>([]);
 const factoryList = ref<any>([]);
 
 const confirm = () => {
-    loading.value = true
+    loading.value = true;
     let foundObjects = targetKeys.value.map((key) => {
         return factoryList.value.find((obj: any) => {
             delete obj.key;
@@ -101,15 +101,16 @@ const getMock = () => {
             queryFactoryIssued(props.disProductId).then((res: any) => {
                 if (res.status === 200) {
                     if (res.result.length > 0) {
-                        targetKeys.value = res.result.map((item: any) => {
+                        let uniqueArray = res.result.map((item: any) => {
                             return item.factoryId;
                         });
-                        isLoading.value = false
-                        confirmDisabled.value = false
+                        targetKeys.value = [...new Set(uniqueArray)]; //去重
+                        isLoading.value = false;
+                        confirmDisabled.value = false;
                     } else {
                         targetKeys.value = [];
-                        isLoading.value = false
-                        confirmDisabled.value = false
+                        isLoading.value = false;
+                        confirmDisabled.value = false;
                     }
                 }
             });

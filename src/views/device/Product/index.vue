@@ -8,7 +8,7 @@
         <FullPage>
             <JProTable
                 :columns="columns"
-                :request="queryProductList"
+                :request="queryPro"
                 ref="tableRef"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
@@ -43,6 +43,9 @@
                 </template>
                 <template #deviceType="slotProps">
                     <div>{{ slotProps.deviceType.text }}</div>
+                </template>
+                <template #factoryName="slotProps">
+                    <div>{{ slotProps.factoryName }}</div>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -235,6 +238,11 @@ import {
     updateDevice,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
+import {
+    isTopic,
+    queryFactoryList,
+    queryFactoryIssued,
+} from '@/api/factory/factory';
 import { omit, cloneDeep } from 'lodash-es';
 import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
@@ -255,10 +263,11 @@ const title = ref<string>('');
 const params = ref<Record<string, any>>({});
 const allotsVisible = ref(false);
 const disProductId = ref();
+const factoryList = ref<any>([]);
 
 const isIOT = ref();
 const factoryType = ref();
-const columns = [
+const columns = ref([
     {
         title: 'ID',
         dataIndex: 'id',
@@ -309,7 +318,7 @@ const columns = [
         width: 340,
         scopedSlots: true,
     },
-];
+]);
 const permission = usePermissionStore().hasPermission(`device/Product:import`);
 const _selectedRowKeys = ref<string[]>([]);
 const currentForm = ref({});
@@ -444,7 +453,7 @@ const getActions = (
         },
         icon: 'DeleteOutlined',
     };
-    if (isIOT.value ==='true' && factoryType.value === 'general') {
+    if (isIOT.value === 'true' && factoryType.value === 'general') {
         others.splice(1, 0, distributeData);
     }
     if (type === 'card') {
@@ -562,13 +571,16 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
-                                    return (
-                                        i.id !== 'modbus-tcp' &&
-                                        i.id !== 'opc-ua'
-                                    );
-                                }));
-                            
+                            resolve(
+                                accessConfigTypeFilter(data).filter(
+                                    (i: any) => {
+                                        return (
+                                            i.id !== 'modbus-tcp' &&
+                                            i.id !== 'opc-ua'
+                                        );
+                                    },
+                                ),
+                            );
                         });
                     });
                 },
@@ -668,7 +680,7 @@ const query = reactive({
             search: {
                 first: true,
                 type: 'treeSelect',
-                termOptions:['eq'],
+                termOptions: ['eq'],
                 options: async () => {
                     return new Promise((res) => {
                         queryOrgThree({ paging: false }).then((resp: any) => {
@@ -732,12 +744,15 @@ const handleSearch = (e: any) => {
                         },
                     };
                 }
-                if(b.column === 'accessProvider'){
-                    if(b.value === 'collector-gateway'){
+                if (b.column === 'accessProvider') {
+                    if (b.value === 'collector-gateway') {
                         b.termType = b.termType === 'eq' ? 'in' : 'nin';
-                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
-                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
-                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                        b.value = ['opc-ua', 'modbus-tcp', 'collector-gateway'];
+                    } else if (
+                        Array.isArray(b.value) &&
+                        b.value.includes('collector-gateway')
+                    ) {
+                        b.value = ['opc-ua', 'modbus-tcp', ...b.value];
                     }
                 }
                 return b;
@@ -747,8 +762,79 @@ const handleSearch = (e: any) => {
 
     params.value = newTerms;
 };
+
+const funGetFactory = async (data: any) => {
+    new Promise((resolve) => {
+        queryFactoryIssued(data.id)
+            .then((resp: any) => {
+                if (resp.result?.length > 0) {
+                    let uniqueArray = [...new Set(resp.result)]; //去重
+                    console.log('uniqueArray', uniqueArray);
+                    const nowFacList = uniqueArray.map((item: any) => {
+                        // console.log('factoryList.value', factoryList.value);
+                        let found = factoryList.value?.find(
+                            (bItem: any) => bItem.id === item.factoryId,
+                        );
+                        return found ? found.name : null;
+                    });
+                    resolve(nowFacList);
+                } else {
+                    resolve(null);
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    });
+};
+
+const getMock = () => {
+    queryFactoryList({
+        paging: false,
+    }).then((response: any) => {
+        if (response.status === 200) {
+            factoryList.value = response.result.data;
+        }
+    });
+};
+
+const queryPro = (params: Record<string, any>) =>
+    new Promise((resolve) => {
+        queryProductList({
+            pageIndex: params.pageIndex + 1,
+            pageSize: params.pageSize,
+            sorts: params.sorts,
+            terms: params.terms,
+        })
+            .then((response: any) => {
+                resolve({
+                    result: {
+                        data: response.result?.data,
+                        pageIndex: params.pageIndex || 0,
+                        pageSize: params.pageSize || 12,
+                        total: response.result?.total,
+                    },
+                    status: response.status,
+                });
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    });
+
 const routerParams = useRouterParams();
 onMounted(() => {
+    if (isIOT.value === 'true' && factoryType.value === 'general') {
+        const factoryName = {
+            title: '所属工厂',
+            dataIndex: 'factoryName',
+            key: 'factoryName',
+            scopedSlots: true,
+            ellipsis: true,
+        };
+        columns.value.splice(2, 0, factoryName);
+    }
+    // getMock();
     if (routerParams.params?.value.save) {
         add();
     }
