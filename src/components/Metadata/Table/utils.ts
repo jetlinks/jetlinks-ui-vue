@@ -12,8 +12,10 @@ type ColumnsFormType = {
 type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
 
 type OptionsType = {
-    onError: (err: Array<{ message: string, __index: number, field: string, filedValue: any}>) => void
-    onEdit: (item: any) => void
+    onError?: (err: Array<{ message: string, __index: number, field: string, filedValue: any}>) => void
+    onEdit?: (item: any) => void
+
+    validateRowKey?: Boolean
 }
 
 export const TABLE_WRAPPER = Symbol('table-wrapper')
@@ -46,7 +48,7 @@ export const handlePureRecord = (record: Record<string, any>) => {
     // }
     return omit(record, ['__serial', '__index', '__top', '__selected', '__key'])
 }
-export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options?: OptionsType): {
+export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options: OptionsType = {}): {
     validate: () => Promise<any>
     validateItem: (data: Record<string, any> ) => Promise<any>
     errorMap: Ref<Record<string, any>>
@@ -57,6 +59,8 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
     let schemaInstance: any
     let rules = ref({})
     let validateDataSource = ref(dataSource)
+
+    const _options = Object.assign({ validateRowKey: false }, options)
 
 
     const validateItem = (data: Record<string, any>, index: number = 0): Promise<any> => {
@@ -86,14 +90,16 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
                 }
             }
 
+            const validateRowKey = _options.validateRowKey
+
             if (filterDataSource.length) {
                 filterDataSource.forEach((record, index) => {
-                    if (record[rowKey]) {
+                    if (validateRowKey || record[rowKey]) {
                         validateItem(record, index).then(res => {
                             success.push(handlePureRecord(res))
                             end()
                         }).catch(err => {
-                            options?.onError(err)
+                            _options.onError?.(err)
                             error.push(err)
                             end()
                         })

@@ -39,7 +39,7 @@ import StringItem from '../String/Item.vue'
 import BooleanItem from '../Boolean/Item.vue'
 import DateItem from '../Date/Item.vue'
 import EnumItem from '../Enum/Item.vue'
-import { pick } from 'lodash-es'
+import {cloneDeep, pick} from 'lodash-es'
 import {Form} from "ant-design-vue";
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
@@ -83,7 +83,7 @@ const formData = reactive({
   format: props.value?.format,
   enum: {
     multiple: props.value?.multiple,
-    elements: props.value?.elements || [],
+    elements: cloneDeep(props.value?.elements) || [],
   },
   elementType: {
     type: undefined
@@ -145,7 +145,7 @@ const initValue = () => {
   formData.format = props.value?.format;
   formData.enum = {
     multiple: props.value?.multiple,
-    elements: props.value?.elements,
+    elements: cloneDeep(props.value?.elements),
   };
   formData.elementType = {
     type: undefined

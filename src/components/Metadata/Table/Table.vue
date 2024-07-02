@@ -68,6 +68,10 @@ const props = defineProps({
   selectedRowKeys: {
     type: [Array],
     default: () => []
+  },
+  validateRowKey: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -104,7 +108,8 @@ const {rules, validateItem, validate, errorMap} = useValidate(
       },
       onEdit: () => {
           emit('editChange', true)
-      }
+      },
+      validateRowKey: props.validateRowKey
     }
 )
 
