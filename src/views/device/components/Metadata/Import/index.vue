@@ -533,14 +533,14 @@ const requiredCheck = (data: any) => {
             } else {
                 testType(item?.valueType, index);
             }
-            if (!item?.expands?.type) {
-                onlyMessage(
-                    `标签定义第${index + 1}个数组中缺失expands.type属性`,
-                    'error',
-                );
-                check = true;
-                return;
-            }
+            // if (!item?.expands?.type) {
+            //     onlyMessage(
+            //         `标签定义第${index + 1}个数组中缺失expands.type属性`,
+            //         'error',
+            //     );
+            //     check = true;
+            //     return;
+            // }
         });
     }
     return check;
@@ -806,6 +806,7 @@ const handleImport = async () => {
             const { id } = route.params || {};
             if (data.metadata === 'alink') {
                 try {
+                    console.log(JSON.parse(data.import))
                     const _import = omit(JSON.parse(data.import), [
                         'schema',
                         'profile',
@@ -813,7 +814,7 @@ const handleImport = async () => {
                     Object.keys(_import).forEach((i: any) => {
                         const map = new Map();
                         _import[i].forEach((item: any) =>
-                            map.set(item.id, item),
+                            map.set(item.identifier, item),
                         );
                         _import[i] = [...map.values()];
                     });
