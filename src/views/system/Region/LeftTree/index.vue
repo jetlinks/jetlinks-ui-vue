@@ -268,22 +268,18 @@ const onDrop = (info: any) => {
             updateRegion(item)
         });
     } else {
-        let i = 0;
         loop(data, dropKey, (_item: any, index: number, arr: any[], parent) => {
           dragObj.parentId = _item.parentId
           dragObj.sortIndex = dropPosition === -1 ? index : index + 1
           arr.splice(dragObj.sortIndex, 0, dragObj);
-          parent.children = arr.map((cl: any, clIndex: number) => {
-            cl.sortIndex = clIndex + 1
-            return cl
-          })
           if (parent) {
+            parent.children = arr.map((cl: any, clIndex: number) => {
+              cl.sortIndex = clIndex + 1
+              return cl
+            })
             updateRegion(parent)
           }
         });
-
-
-
 
     }
 

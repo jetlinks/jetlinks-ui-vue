@@ -50,7 +50,7 @@ const onSelect = (code: string, node: Record<string, any>) => {
     regionState.type = MAP_TOOL.geoJson
   } else if(node.properties?.partition === 'manual') {
     layerSetData(node.geoJson, false)
-  } else if (node.properties?.type === 'builtin' || node.children.length){
+    } else {
     mapRef.value?.showDistrict(code)
     regionState.type = MAP_TOOL.district
   }
