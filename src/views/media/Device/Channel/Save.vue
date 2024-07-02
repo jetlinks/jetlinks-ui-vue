@@ -294,13 +294,13 @@ const handleSubmit = () => {
                 // ptzType,
                 ...extraFormData
             } = formData.value;
-            if (media_url || media_password || media_username) {
-                extraFormData.others = {
-                    media_url,
-                    media_password,
-                    media_username,
-                };
-            }
+
+            extraFormData.others = {
+              media_url,
+              media_password,
+              media_username,
+            };
+
             const res = formData.value.id
                 ? await ChannelApi.update(formData.value.id, extraFormData).finally(() => {loading.value = false;})
                 : await ChannelApi.save(extraFormData).finally(() => {loading.value = false;});
