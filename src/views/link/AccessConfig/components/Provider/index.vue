@@ -1,7 +1,10 @@
 <template>
     <div v-for="items in dataSource" :key="items.type" class="card-items">
         <div class="card-items-container">
-            <TitleComponent :data="items.title" style='font-size: 16px;'></TitleComponent>
+            <TitleComponent
+                :data="items.title"
+                style="font-size: 16px"
+            ></TitleComponent>
             <j-row :gutter="[24, 24]">
                 <j-col :span="12" v-for="item in items.list" :key="item.id">
                     <div class="provider">
@@ -28,7 +31,7 @@
                                     </div>
                                     <div class="desc">
                                         <j-ellipsis :lineClamp="2">
-                                          {{ item.description || '' }}
+                                            {{ item.description || '' }}
                                         </j-ellipsis>
                                     </div>
                                 </div>
@@ -60,11 +63,7 @@ const props = defineProps({
 const emit = defineEmits(['onClick']);
 
 const getBackgroundColor = () => {
-    return `linear-gradient(
-                188.4deg,
-                rgba(9, 46, 231, 0.03) 22.94%,
-                rgba(9, 46, 231, 0) 94.62%
-            )`;
+    return `background: linear-gradient(188.4deg, rgba(248, 73, 20, 0.03) 30%, rgba(248, 73, 20, 0) 80%)`;
 };
 
 const click = (value: object) => {
