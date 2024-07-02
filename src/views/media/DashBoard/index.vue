@@ -179,6 +179,7 @@ const getPlayCount = async (params: any) => {
                 dimension: 'agg',
                 group: 'playCount',
                 params: {
+                    format: dt > year ? 'YYYY年-MM月': '',
                     time: _time,
                     from: moment(Number(params.time.start)).format(
                         'YYYY-MM-DD HH:mm:ss',
