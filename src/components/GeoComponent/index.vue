@@ -3,7 +3,7 @@
     <div class="page-container">
         <j-input allowClear v-model:value="inputPoint">
             <template #addonAfter>
-                <environment-outlined @click="modalVis = true" />
+                <environment-outlined @click="showMap" />
             </template>
         </j-input>
         <j-modal
@@ -101,6 +101,11 @@ const clickMap = (e: any) => {
     position.value = [e.lnglat.lng, e.lnglat.lat];
 };
 
+const showMap = () => {
+  mapPoint.value = props.point
+  modalVis.value = true;
+}
+
 /**
  * 选择搜索结果
  * @param e
@@ -110,6 +115,8 @@ const selectPoi = (e: any) => {
     mapPoint.value = selectPoint.join(',');
     map.setCenter(selectPoint);
 };
+
+
 </script>
 
 <style lang="less" scoped></style>

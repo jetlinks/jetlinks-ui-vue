@@ -290,7 +290,7 @@ const handleSubmit = () => {
                 media_url,
                 media_password,
                 media_username,
-                manufacturer,
+                // manufacturer,
                 // ptzType,
                 ...extraFormData
             } = formData.value;

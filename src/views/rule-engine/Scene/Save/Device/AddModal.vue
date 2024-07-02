@@ -2,7 +2,7 @@
   <j-modal
     title='触发规则'
     visible
-    :width='910'
+    :width='950'
     @ok='save'
     @cancel='cancel'
     :maskClosable="false"

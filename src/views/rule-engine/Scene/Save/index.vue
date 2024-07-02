@@ -57,6 +57,7 @@ import { modify } from '@/api/rule-engine/scene'
 import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@/utils/comm';
 import Description from './components/Description.vue'
+import {handleFeatures} from "@/views/rule-engine/Scene/Save/util";
 
 const sceneStore = useSceneStore()
 const menuStore = useMenuStore()
@@ -72,7 +73,8 @@ const save = async () => {
   if (formData) {
     loading.value = true
     const branches = data.value.branches?.filter(item => item)
-    const resp: any = await modify(data.value.id!, { ...data.value, branches }).then(res => res).catch(() => {
+    const features = handleFeatures(branches)
+    const resp: any = await modify(data.value.id!, { ...data.value, features, branches }).then(res => res).catch(() => {
       loading.value = false
     })
     loading.value = false

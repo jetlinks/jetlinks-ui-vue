@@ -69,6 +69,9 @@ import { randomString } from '@/utils/utils'
 import { storeToRefs } from 'pinia'
 import { useSceneStore } from 'store/scene'
 import { Form } from 'jetlinks-ui-components'
+import { Modal } from 'ant-design-vue'
+import {queryAlarmCount, queryAlarmList} from "@/api/rule-engine/scene";
+import {unBindAlarm, unBindAlarmMultiple} from "@/api/rule-engine/configuration";
 
 const sceneStore = useSceneStore()
 const { data: FormModel } = storeToRefs(sceneStore)
@@ -86,7 +89,11 @@ const props = defineProps({
   openShakeLimit: {
     type: Boolean,
     default: false
-  }
+  },
+  groupIndex: {
+    type: Number,
+    default: 0
+  },
 })
 
 const emit = defineEmits(['update', 'add'])
@@ -121,13 +128,54 @@ watch(
   }
 )
 
-const onDelete = (_key: string, _parallel: boolean) => {
+const onDelete = async (_key: string, _parallel: boolean) => {
   const thenName = props.thenOptions.findIndex(item => item.parallel === _parallel)
   const actionIndex = FormModel.value.branches?.[props.name].then?.[thenName].actions.findIndex(item => item.key === _key)
+
   if (actionIndex !== -1) {
-    FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(actionIndex!, 1)
+
+    const actionItem = FormModel.value.branches?.[props.name].then?.[thenName].actions[actionIndex]
+    if (actionItem.executor === 'alarm') {
+      const _branchId = FormModel.value.branches?.[props.name].branchId
+      const resp = await queryAlarmList({
+        terms: [
+          {
+            terms: [
+              {
+                column: 'id$rule-bind-alarm',
+                value: `${FormModel.value.id}:${actionItem.actionId || _branchId}`,
+              },
+              {
+                column: 'id$rule-bind-alarm',
+                value: `${FormModel.value.id}:${-1}`,
+                type: 'or'
+              },
+            ],
+          },
+        ]
+      })
+      if (resp.success && resp.result.total) {
+        Modal.confirm({
+          title: `已关联 ${resp.result.total} 条告警，删除该执行动作会同步解除对应的关联告警，确认删除？`,
+          onOk() {
+            const _data = resp.result.data.map(item => {
+                return {
+                  "alarmId": item.id,
+                  "ruleId": FormModel.value.id,
+                  "branchIndex": actionItem.actionId
+                }
+            })
+            unBindAlarmMultiple(_data)
+            FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(actionIndex!, 1)
+            formItemContext.onFieldChange()
+          }
+        })
+      } else {
+        FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(actionIndex!, 1)
+        formItemContext.onFieldChange()
+      }
+    }
   }
-  formItemContext.onFieldChange()
 }
 
 const onAdd = (actionItem: any, _parallel: boolean) => {

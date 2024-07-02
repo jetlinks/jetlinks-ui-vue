@@ -64,6 +64,7 @@
             :name='name'
             :openShakeLimit="true"
             :thenOptions='FormModel.branches[name]?.then'
+            :groupIndex="groupIndex"
           />
         </j-form-item>
       </div>
@@ -78,7 +79,7 @@ import WhenItem from './WhenItem.vue'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import Action from '../../action/index.vue'
-import { randomString } from '@/utils/utils'
+import {randomNumber, randomString} from '@/utils/utils'
 
 const sceneStore = useSceneStore()
 const { data: FormModel } = storeToRefs(sceneStore)
@@ -122,7 +123,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['deleteGroup'])
+const emit = defineEmits(['deleteGroup', 'delete'])
 
 const showDelete = ref(false)
 const error = ref(false)
@@ -144,11 +145,12 @@ const WarpClass = computed(() => {
 })
 
 const onDelete = () => {
-  if (FormModel.value.branches?.length == 2) {
-    FormModel.value.branches?.splice(props.name, 1)
-  } else {
-    FormModel.value.branches?.splice(props.name, 1)
-  }
+  // if (FormModel.value.branches?.length == 2) {
+  //   FormModel.value.branches?.splice(props.name, 1)
+  // } else {
+  //   FormModel.value.branches?.splice(props.name, 1)
+  // }
+  emit('delete')
 }
 
 const onDeleteAll = () => {
@@ -190,7 +192,7 @@ const addWhen = () => {
         type: 'and',
       }
     ],
-    key: `terms_${randomString()}`
+    key: `terms_${randomString()}`,
   }
   FormModel.value.branches?.[props.name].when?.push(terms)
   if(FormModel.value.branches?.length <= props.name + 1){

@@ -57,16 +57,40 @@
                 style='width: 100%;padding: 8px 12px; border-radius: 4px'
                 :showCircular="false"
               >
+
                 <DeviceTitle v-if="value.triggerType === 'device'" :options='value.options?.trigger'/>
-                <TimerTitle v-if="value.triggerType === 'timer'" :options='value.options?.trigger'/>
+                  <template v-if="value.triggerType === 'timer'" #extra>
+                    <span style="padding-right: 10px;">
+                      系统时间到达
+                    </span>
+                  </template>
+                  <TimerTitle v-if="value.triggerType === 'timer'" :options='value.options?.trigger'/>
                 <span v-if="value.triggerType === 'manual'">
                   系统在接收到手动触发指令时，触发场景
                 </span>
               </AddButton>
             </div>
+          </div  >
+
+          <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" :style="maskStyle">
+            <div class="mask-content">
+              <slot name="mask">
+                <div>
+                  当前告警已关联：
+                </div>
+                <div>
+                  <j-ellipsis>
+                    {{ activeBranches.join(',')}}
+                  </j-ellipsis>
+                </div>
+              </slot>
+            </div>
+          </div>
+          <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" >
+            <a-button style="font-size: 16px;" type="link" @click.stop="jumpView">无效数据，请重新保存场景</a-button>
           </div>
         </div>
-        <div class="card-content-tabs" v-if="showBranches">
+        <div class="card-content-tabs" v-if="showBranches && showBranchesVisible" @click.stop>
           <BranchesTabs
             :branchesGroup="branchesGroup"
             :alarmId="alarmId"
@@ -91,23 +115,7 @@
           </div>
         </div>
       </div>
-      <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" :style="maskStyle">
-        <div class="mask-content">
-          <slot name="mask">
-            <div>
-              当前告警已关联：
-            </div>
-            <div>
-              <j-ellipsis>
-                {{ activeBranches.join(',')}}
-              </j-ellipsis>
-            </div>
-          </slot>
-        </div>
-      </div>
-      <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" >
-        <a-button style="font-size: 16px;" type="link" @click="jumpView">无效数据，请重新保存场景</a-button>
-      </div>
+
       <slot></slot>
     </div>
   </div>
@@ -200,6 +208,8 @@ const bgcColor = computed(() => {
   }
 })
 
+const showBranchesVisible = ref(false)
+
 const itemType = computed(() => {
   return typeMap.get(props.value.triggerType) || {}
 })
@@ -221,6 +231,7 @@ const bindAlarm = (key: string, selected: boolean) => {
 
 const click = () => {
   emit('click')
+  onShowBranchesTabs()
 }
 
 const jumpView = () => {
@@ -235,6 +246,10 @@ const jumpView = () => {
       emit('reload')
     }
   };
+}
+
+const onShowBranchesTabs = () => {
+  showBranchesVisible.value = !showBranchesVisible.value
 }
 
 </script>
@@ -400,7 +415,7 @@ const jumpView = () => {
     .card-content-bg-item {
       position: absolute;
       right: -5%;
-      height: 100%;
+      height: 320px;
       top: 0;
       background: linear-gradient(188.4deg,
       rgba(229, 0, 18, 0.03) 22.94%,
@@ -425,16 +440,16 @@ const jumpView = () => {
 
     .card-mask {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: -40px;
+      left: -30px;
+      bottom: 0;
+      right: -12px;
       z-index: 99;
       display: flex;
       justify-content: center;
-      width: 100%;
       font-size: 16px;
-      height: 136px;
       color: #fff;
-      padding-top: 30px;
+      padding-top: 10px;
       background-color: rgba(#000, 0.45);
       cursor: pointer;
       transition: background-color 0.3s;
@@ -443,10 +458,6 @@ const jumpView = () => {
       &.mask-hover:hover {
         background-color: rgba(#000, 0.01);
         color: transparent;
-      }
-
-      &.mask-full {
-        height: 100%;
       }
 
       .mask-content {

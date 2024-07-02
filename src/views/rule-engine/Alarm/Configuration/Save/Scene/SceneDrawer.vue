@@ -25,6 +25,7 @@
           :show="true"
           :showDetailBtn="false"
           :showUnbindBtn="true"
+          :triggerType="detail.triggerType"
           @select="handleBind"
         />
         <div v-if="loading" class="branches-loading">

@@ -7,18 +7,6 @@
         :maskClosable="false"
     >
         <div class="generalInfo">
-            <div class="progress">
-                <div style="width: 90%">
-                    <span>当前进度</span>
-                    <a-progress
-                        style="width: 80%; margin-left: 20px"
-                        :strokeWidth="10"
-                        :percent="general.percent"
-                        :format="(percent) => `${percent}%`"
-                    ></a-progress>
-                </div>
-                <span class="total">共{{ general.total }}个任务</span>
-            </div>
             <div class="allOperation">
                 <PermissionButton
                     @click="stopAll"
@@ -45,10 +33,23 @@
                 <PermissionButton
                     type="text"
                     hasPermission="device/Firmware:update"
+                    style="float: right;"
                     @click="refreshState"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
                     刷新状态
                 </PermissionButton>
+            </div>
+            <div class="progress">
+                <div style="width: 90%">
+                    <span>当前进度</span>
+                    <a-progress
+                        style="width: 90%; margin-left: 20px"
+                        :strokeWidth="10"
+                        :percent="general.percent"
+                        :format="(percent) => `${percent}%`"
+                    ></a-progress>
+                </div>
+                <span class="total">共{{ general.total }}个任务</span>
             </div>
         </div>
         <j-table
@@ -70,7 +71,7 @@
                     <div class="state">
                         <a-progress
                             type="circle"
-                            style="margin-right: 10px;"
+                            style="margin-right: 10px"
                             :width="20"
                             :percent="
                                 text?.value === 'failed'
@@ -80,7 +81,6 @@
                             :status="
                                 text?.value === 'failed' ? 'exception' : ''
                             "
-
                         />
                         <div
                             v-if="
@@ -252,20 +252,21 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 .generalInfo {
-    display: flex;
     margin-bottom: 30px;
-    justify-content: space-between;
     .progress {
-        width: 55%;
+        width: 100%;
         line-height: 32px;
         display: flex;
+    }
+    .allOperation{
+        margin-bottom: 20px;
     }
 }
 .tip {
     color: rgb(170, 170, 170);
     margin-right: 10px;
 }
-.state{
+.state {
     display: flex;
 }
 </style>

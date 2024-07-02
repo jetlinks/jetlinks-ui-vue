@@ -45,12 +45,12 @@ provide(REGION_KEY, regionState)
 const onSelect = (code: string, node: Record<string, any>) => {
   if (!node) return
 
-  if (node.properties.partition === 'geoJson') {
+  if (node.properties?.partition === 'geoJson') {
     mapRef.value?.showGeoJson(node.geoJson)
     regionState.type = MAP_TOOL.geoJson
-  } else if(node.properties.partition === 'manual') {
+  } else if(node.properties?.partition === 'manual') {
     layerSetData(node.geoJson, false)
-  } else if (node.properties.type === 'builtin'){
+  } else if (node.properties?.type === 'builtin' || node.children.length){
     mapRef.value?.showDistrict(code)
     regionState.type = MAP_TOOL.district
   }

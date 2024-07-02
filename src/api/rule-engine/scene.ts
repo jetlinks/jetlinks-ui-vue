@@ -27,4 +27,5 @@ export const queryBuiltInParams = (data: any, params?: any) => server.post(`/sce
 
 export const getParseTerm = (data: Record<string, any>) => server.post(`/scene/parse-term-column`, data)
 
-export const queryAlarmList = (data: Record<string, any>) => server.post(`/alarm/config/_query/`, data)
+export const queryAlarmList = (data: Record<string, any>) => server.post(`/alarm/config/_query`, data)
+export const queryAlarmCount = (data: Record<string, any>) => server.post(`/alarm/config/_count`, data)
