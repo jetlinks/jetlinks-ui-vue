@@ -15,6 +15,7 @@ import { EventEmitter, EventSubscribeKeys, getParams } from '@/views/rule-engine
 import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownButton/util'
 import { getBuildInData, getNotifyVariablesUser } from './util'
 import { defineExpose } from 'vue'
+import {queryDetailListNoPaging} from "@/api/device/firmware";
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -57,18 +58,27 @@ const checkDeviceDelete = async () => {
 
   const productDetail = proResp?.result?.data?.[0]
   let metadata = JSON.parse(productDetail?.metadata || '{}')
-
   if (item?.selector === 'fixed') {
     let hasDevice = false
     if (item!.selectorValues) {
       const deviceList = item!.selectorValues?.map(item => item.value) || []
-      const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
-      hasDevice = deviceResp.success && (deviceResp.result as any)?.total === (item!.selectorValues?.length || 0)
+      const deviceResp = await queryDetailListNoPaging(
+        {
+          terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}],
+          context: {
+            "includeTags": false,
+            "includeBind": false,
+            "includeRelations": false,
+            "includeFirmwareInfos": false
+          }
+        })
+
+      hasDevice = deviceResp.success && deviceResp.result.length === (item!.selectorValues?.length || 0)
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
-        // const deviceDetail = deviceResp?.result?.data?.[0]
-        const deviceDetailResp = await getDeviceDetail(deviceList[0])
-        metadata = JSON.parse(deviceDetailResp.result?.deriveMetadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
+        const deviceDetail = deviceResp.result?.[0]
+        // const deviceDetailResp = await getDeviceDetail(deviceList[0])
+        metadata = JSON.parse(deviceDetail?.metadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }
     if (!hasDevice) { // 某一个设备被删除
@@ -317,7 +327,6 @@ const checkNoticeDelete = async () => {
 }
 
 const check = () => {
-  console.log(_data.value.branches)
   const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
   if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
     checkDeviceDelete()

@@ -479,6 +479,7 @@ const valueSelect = (
     labelObj: Record<number, any>,
     option: any,
 ) => {
+
     if (paramsValue.value?.source === 'metric') {
         paramsValue.value.metric = option?.id;
     }

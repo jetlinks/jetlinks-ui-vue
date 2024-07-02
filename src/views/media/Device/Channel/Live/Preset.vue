@@ -98,7 +98,7 @@ const dataSource = ref<Item[]>(init);
 const loading = ref(false);
 const route = useRoute()
 
-const handleSearch = async (id: string, arr: Item[]) => {
+const handleSearch = async (id: string, arr: Item[] = []) => {
   const params: Record<string, string> = {}
   if (route.query.type === 'gb28181-2016') {
     params.channel = props.data.channelId
