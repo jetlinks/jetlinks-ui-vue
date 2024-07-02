@@ -58,17 +58,36 @@ type Emits = {
 };
 
 const emit = defineEmits<Emits>();
-const columns = [
-    {
-        dataIndex: 'value',
-        key: 'value',
-        title: props.data?.name,
-        search: {
-            type:
-                props.data?.valueType?.type === 'string' ? 'string' : 'number',
-        },
-    },
-];
+const columns =
+    props.data?.valueType?.type === 'string'
+        ? [
+              {
+                  dataIndex: 'value',
+                  key: 'value',
+                  title: props.data?.name,
+                  search: {
+                      type: 'string',
+                  },
+              },
+          ]
+        : [
+              {
+                  dataIndex: 'value',
+                  key: 'value',
+                  title: props.data?.name,
+                  search: {
+                      type: 'number',
+                  },
+              },
+              {
+                  dataIndex: 'originValue',
+                  key: 'originValue',
+                  title: 'originValue',
+                  search: {
+                      type: 'string',
+                  },
+              },
+          ];
 
 const params = ref();
 const showSearch = ref(false);
