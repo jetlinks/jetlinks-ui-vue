@@ -87,7 +87,7 @@
 <script setup name="AlarmModal">
 import {queryAlarmList} from '@/api/rule-engine/scene';
 import { useAlarmLevel, useRequest } from '@/hook'
-import {bindScene} from "@/api/rule-engine/configuration";
+import {bindScene, getTargetTypes} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
 import LevelIcon from '@/views/rule-engine/Alarm/Config/LevelIcon.vue'
 
@@ -125,6 +125,27 @@ const { run, loading } = useRequest(bindScene, {
 const { levelMap, levelList } = useAlarmLevel()
 
 const columns = [
+  {
+    title: '类型',
+    dataIndex: 'targetType',
+    search: {
+      type: 'select',
+      defaultValue: 'other',
+      componentProps: {
+        defaultValue: 'other'
+      },
+      options: async () => {
+        const resp = await getTargetTypes()
+        if (resp.success) {
+          return resp.result.filter(item => {
+            return props.targetType === 'device' || item.id === 'other'
+          }).map(item => ({ label: item.name, value: item.id }))
+        } else {
+          return []
+        }
+      },
+    }
+  },
   {
     title: '配置名称',
     dataIndex: 'name',
@@ -168,6 +189,7 @@ const columns = [
     },
     width: 200,
   },
+
 ]
 
 const handleSearch = (e) => {

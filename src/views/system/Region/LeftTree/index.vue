@@ -100,7 +100,7 @@
 import { cloneDeep, debounce } from 'lodash-es';
 import { onMounted, ref, watch } from 'vue';
 import Save from '../Save/index.vue';
-import { getRegionTree, delRegion } from '@/api/system/region';
+import { getRegionTree, delRegion, updateRegion } from '@/api/system/region';
 import {useArea, useRegion} from '../hooks';
 import ResizeObserver from 'ant-design-vue/lib/vc-resize-observer';
 import { onlyMessage } from '@/utils/comm';
@@ -218,13 +218,15 @@ const onDrop = (info: any) => {
     const dropPos = info.node.pos.split('-');
     const dropPosition =
         info.dropPosition - Number(dropPos[dropPos.length - 1]);
-    const loop = (data: any, key: string | number, callback: any) => {
+
+
+    const loop = (data: any, key: string | number, callback: any, parent?: any) => {
         data.forEach((item: any, index: number) => {
-            if (item.key === key) {
-                return callback(item, index, data);
+            if (item.id === key) {
+                return callback(item, index, data, parent);
             }
             if (item.children) {
-                return loop(item.children, key, callback);
+                return loop(item.children, key, callback, item);
             }
         });
     };
@@ -235,12 +237,19 @@ const onDrop = (info: any) => {
         arr.splice(index, 1);
         dragObj = item;
     });
+
     if (!info.dropToGap) {
         // Drop on the content
         loop(data, dropKey, (item: any) => {
             item.children = item.children || [];
             /// where to insert 示例添加到头部，可以是随意位置
+            dragObj.parentId = item.id
             item.children.unshift(dragObj);
+            item.children = item.children.map((cl: any, clIndex: number) => {
+              cl.sortIndex = clIndex + 1
+              return cl
+            })
+            updateRegion(item)
         });
     } else if (
         (info.node.children || []).length > 0 && // Has children
@@ -250,21 +259,35 @@ const onDrop = (info: any) => {
         loop(data, dropKey, (item: any) => {
             item.children = item.children || [];
             // where to insert 示例添加到头部，可以是随意位置
+            dragObj.parentId = item.id
             item.children.unshift(dragObj);
+            item.children = item.children.map((cl: any, clIndex: number) => {
+              cl.sortIndex = clIndex + 1
+              return cl
+            })
+            updateRegion(item)
         });
     } else {
-        let ar: any[] = [];
         let i = 0;
-        loop(data, dropKey, (_item: any, index: number, arr: any[]) => {
-            ar = arr;
-            i = index;
+        loop(data, dropKey, (_item: any, index: number, arr: any[], parent) => {
+          dragObj.parentId = _item.parentId
+          dragObj.sortIndex = dropPosition === -1 ? index : index + 1
+          arr.splice(dragObj.sortIndex, 0, dragObj);
+          parent.children = arr.map((cl: any, clIndex: number) => {
+            cl.sortIndex = clIndex + 1
+            return cl
+          })
+          if (parent) {
+            updateRegion(parent)
+          }
         });
-        if (dropPosition === -1) {
-            ar.splice(i, 0, dragObj);
-        } else {
-            ar.splice(i + 1, 0, dragObj);
-        }
+
+
+
+
     }
+
+
     treeData.value = data;
 };
 

@@ -14,10 +14,6 @@
                               termType: 'alarm-bind-rule',
                               value: id,
                           },
-                          {
-                            column: 'triggerType',
-                            value: configurationData.current?.targetType === 'other' ? null : 'device'
-                          }
                       ],
                       type: 'and',
                   },

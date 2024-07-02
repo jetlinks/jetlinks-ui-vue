@@ -113,7 +113,8 @@ const upperOptions = computed(() => {
   return filterParamsData(props.data.valueType?.type, cloneDeep(props?.builtInList));
 });
 
-const onChange = () => {
+const onChange = (e, label, option) => {
+  console.log(e.column, label, option)
   const objValue: any = {source: _source.value, value: _value.value}
   if (_source.value === 'upper') {
     objValue.upperKey = _value.value

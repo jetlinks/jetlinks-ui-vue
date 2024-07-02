@@ -468,7 +468,6 @@ const columns = [
         width: 200,
         search: {
             type: 'string',
-            termOptions: ['eq'],
         },
     },
     {

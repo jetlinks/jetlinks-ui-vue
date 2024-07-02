@@ -11,7 +11,7 @@
                 <j-button
                     type="link"
                     style="padding: 0"
-                    v-if="!record.flag"
+                    v-if="!record.flag || props.share"
                     :disabled="loading"
                     @click="onSetting(record)"
                     >设置</j-button
@@ -38,7 +38,7 @@
             </template>
             <template v-else-if="column.dataIndex === 'name'">
                 <j-input
-                    :disabled="record.flag"
+                    :disabled="record.flag || props.share"
                     v-model:value="record[column.dataIndex]"
                 />
             </template>
