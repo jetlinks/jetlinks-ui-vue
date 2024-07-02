@@ -77,17 +77,17 @@ const findChildren = (data: any, code: string) => {
 }
 
 const onCheckChange = (e: any) => {
-  if (e.target.checked) {
-    const children = features.value?.children ? features.value?.children : findChildren(props.areaTree, _value.value)
-    emits('update:children', children.map((item, index) => {
-      if (!item.sortIndex) {
-        item.sortIndex = index + 1
-      }
-      return item
-    }));
-  } else {
-    emits('update:children', []);
-  }
+  // if (e.target.checked) {
+  //   const children = features.value?.children ? features.value?.children : findChildren(props.areaTree, _value.value)
+  //   emits('update:children', children.map((item, index) => {
+  //     if (!item.sortIndex) {
+  //       item.sortIndex = index + 1
+  //     }
+  //     return item
+  //   }));
+  // } else {
+  //   emits('update:children', []);
+  // }
   emits('update:sync', e.target.checked)
 };
 
@@ -108,19 +108,19 @@ const getObj = (node: any): any => {
 };
 
 const onSelect = (val: string, node: any) => {
-  features.value = getObj(node);
+  // features.value = getObj(node);
   _value.value = val;
 
   emits('update:name', features.value?.name);
   emits('update:value', features.value?.code);
 
-  if (mySync.value) {
-    emits('update:children', node?.children.map(item => ({
-      code: item.code,
-      name: item.name,
-      parentId: item.parentId,
-    })));
-  }
+  // if (mySync.value) {
+  //   emits('update:children', node?.children.map(item => ({
+  //     code: item.code,
+  //     name: item.name,
+  //     parentId: item.parentId,
+  //   })));
+  // }
 };
 
 
@@ -131,7 +131,7 @@ watch(
         _value.value = props.value
       } else {
         emits('update:name', '中国');
-        emits('update:value', 100000);
+        emits('update:value', '100000');
       }
     },
     {
