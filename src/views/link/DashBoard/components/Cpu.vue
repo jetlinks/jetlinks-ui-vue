@@ -20,11 +20,15 @@
                             style="margin-right: 10px"
                             v-model:value="data.type"
                         >
-                          <j-radio-button value="hour">
-                            最近1小时
-                          </j-radio-button>
-                          <j-radio-button value="day"> 最近24小时 </j-radio-button>
-                          <j-radio-button value="week"> 近一周 </j-radio-button>
+                            <j-radio-button value="hour">
+                                最近1小时
+                            </j-radio-button>
+                            <j-radio-button value="day">
+                                最近24小时
+                            </j-radio-button>
+                            <j-radio-button value="week">
+                                近一周
+                            </j-radio-button>
                         </j-radio-group>
                     </template>
                 </j-range-picker>
@@ -35,18 +39,16 @@
                     style="height: 200px; margin-top: 100px"
                 />
                 <template v-else>
-                  <div style="height: 300px">
-                    <Echarts
-                        :options="echartsOptions"
-                    />
-                  </div>
+                    <div style="height: 300px">
+                        <Echarts :options="echartsOptions" />
+                    </div>
 
-                  <ServerList
-                      v-if="serverOptions.length > 1"
-                      v-model:value="serverActive"
-                      :options="serverOptions"
-                      :color="colorCpu"
-                  />
+                    <ServerList
+                        v-if="serverOptions.length > 1"
+                        v-model:value="serverActive"
+                        :options="serverOptions"
+                        :color="colorCpu"
+                    />
                 </template>
             </div>
         </div>
@@ -62,22 +64,22 @@ import {
     defaultParamsData,
     areaStyleCpu,
     typeDataLine,
-    colorCpu
+    colorCpu,
 } from './tool.ts';
 import { DataType } from '../typings';
-import ServerList from './ServerList.vue'
-import Echarts from './echarts.vue'
+import ServerList from './ServerList.vue';
+import Echarts from './echarts.vue';
 
 const props = defineProps({
-  serviceId: {
-    type: String,
-    default: undefined
-  },
-  isNoCommunity: {
-    type:Boolean,
-    default: false
-  }
-})
+    serviceId: {
+        type: String,
+        default: undefined,
+    },
+    isNoCommunity: {
+        type: Boolean,
+        default: false,
+    },
+});
 
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
@@ -86,54 +88,61 @@ const data = ref<DataType>({
     time: [null, null],
 });
 const isEmpty = ref(false);
-const serverActive = ref<string[]>([])
-const serverOptions = ref<string[]>([])
+const serverActive = ref<string[]>([]);
+const serverOptions = ref<string[]>([]);
 const serverData = reactive({
-  xAxis: [],
-  data: []
-})
+    xAxis: [],
+    data: [],
+});
 
 const pickerTimeChange = () => {
     data.value.type = undefined;
-  getCPUEcharts(data.value)
+    getCPUEcharts(data.value);
 };
 
 const echartsOptions = computed(() => {
-  const series = serverActive.value.length
-          ? serverActive.value.map((key) => setOptions(serverData.data, key))
-          : typeDataLine
-  return {
-    xAxis: {
-      type: 'category',
-      boundaryGap: false,
-      data: arrayReverse(serverData.xAxis),
-    },
-    tooltip: {
-      trigger: 'axis',
-      valueFormatter: (value: any) => `${value}%`,
-    },
-    yAxis: {
-      type: 'value',
-    },
-    grid: {
-      left: '50px',
-      right: '50px',
-    },
-    dataZoom: [
-      {
-        type: 'inside',
-        start: 0,
-        end: data.value.type !== 'hour' ? 5 : 100,
-      },
-      {
-        start: 0,
-        end: data.value.type !== 'hour' ? 5 : 100,
-      },
-    ],
-    color: colorCpu,
-    series: series
-  };
-})
+    const series = serverActive.value.length
+        ? serverActive.value.map((key) => setOptions(serverData.data, key))
+        : typeDataLine;
+    return {
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: arrayReverse(serverData.xAxis),
+        },
+        tooltip: {
+            trigger: 'axis',
+            valueFormatter: (value: any) => `${value}%`,
+        },
+        yAxis: {
+            type: 'value',
+        },
+        grid: {
+            left: '50px',
+            right: '50px',
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 0,
+                end: data.value.type !== 'hour' ? 5 : 100,
+                brushStyle: {
+                    // 修改滑动条的背景颜色
+                    color: 'rgba(0, 0, 0, 0.3)', // 设置背景颜色，这里是一个半透明黑色的例子
+                    borderColor: 'rgba(0, 0, 0, 0.5)', // 设置边框颜色
+                    borderWidth: 1, // 设置边框宽度
+                },
+            },
+            {
+                start: 0,
+                end: data.value.type !== 'hour' ? 5 : 100,
+            },
+        ],
+        // color: colorCpu,
+        color: '#00B87A',
+        series: series,
+    };
+});
 const getCPUEcharts = async (val: any) => {
     loading.value = true;
     const res: any = await dashboard(defaultParamsData('cpu', val));
@@ -141,11 +150,11 @@ const getCPUEcharts = async (val: any) => {
         const _cpuOptions = {};
         const _cpuXAxis = new Set();
         if (res.result?.length) {
-          isEmpty.value = false;
-          // 根据服务节点来筛选数据
-          // const filterArray = props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
-          const filterArray = res.result
-          filterArray.forEach((item: any) => {
+            isEmpty.value = false;
+            // 根据服务节点来筛选数据
+            // const filterArray = props.isNoCommunity ? res.result.filter((item : any) => item.data?.clusterNodeId === props.serviceId) : res.result
+            const filterArray = res.result;
+            filterArray.forEach((item: any) => {
                 const value = item.data.value;
                 const nodeID = item.data.clusterNodeId;
                 _cpuXAxis.add(
@@ -181,11 +190,11 @@ const setOptions = (optionsData: any, key: string) => ({
 
 const handleCpuOptions = (optionsData: any, xAxis: any) => {
     const dataKeys = Object.keys(optionsData);
-    serverActive.value = dataKeys
-    serverOptions.value = dataKeys
-    serverData.xAxis = xAxis
-    serverData.data = optionsData
-}
+    serverActive.value = dataKeys;
+    serverOptions.value = dataKeys;
+    serverData.xAxis = xAxis;
+    serverData.data = optionsData;
+};
 
 watch(
     () => data.value.type,
@@ -193,7 +202,7 @@ watch(
         if (value === undefined) return;
         const date = getTimeByType(value);
         data.value.time = [dayjs(date), dayjs(new Date())];
-      getCPUEcharts(data.value);
+        getCPUEcharts(data.value);
     },
     { immediate: true, deep: true },
 );
@@ -204,7 +213,6 @@ watch(
 //
 //   }
 // })
-
 </script>
 
 <style lang="less" scoped>
