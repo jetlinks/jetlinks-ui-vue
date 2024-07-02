@@ -76,6 +76,11 @@
                                                         value: item.value,
                                                     }))
                                                 "
+                                                :extra="{
+                                                      style: {
+                                                        zIndex: 1030
+                                                      }
+                                                }"
                                             />
                                         </j-form-item>
                                     </template>
@@ -245,6 +250,10 @@ const handleClear = (func: any) => {
 const onTabChange = (_key: string) => {
     executeResult.value = '';
 };
+
+const getPopupContainer = () => {
+  return document.body
+}
 </script>
 
 <style lang="less" scoped>
