@@ -22,7 +22,7 @@
                     draggable
                     block-node
                     v-model:expandedKeys="expandedKeys"
-                    v-model:selectedKeys="selectedKeys"
+                    :selectedKeys="selectedKeys"
                     :tree-data="_treeData"
                     :show-line="{ showLeafIcon: false }"
                     :show-icon="true"
@@ -249,23 +249,26 @@ const onDrop = (info: any) => {
               cl.sortIndex = clIndex + 1
               return cl
             })
-            updateRegion(item)
+            updateRegion(dragObj)
         });
     } else if (
         (info.node.children || []).length > 0 && // Has children
         info.node.expanded && // Is expanded
         dropPosition === 1 // On the bottom gap
     ) {
-        loop(data, dropKey, (item: any) => {
+        loop(data, dropKey, (item: any, index: number, _data: any[]) => {
             item.children = item.children || [];
             // where to insert 示例添加到头部，可以是随意位置
-            dragObj.parentId = item.id
-            item.children.unshift(dragObj);
+            dragObj.parentId = item.parentId
             item.children = item.children.map((cl: any, clIndex: number) => {
               cl.sortIndex = clIndex + 1
               return cl
             })
+
+            _data.splice(index + 1, 0, dragObj);
+            // 获取item的父级，将dragObj放入同级
             updateRegion(item)
+            updateRegion(dragObj)
         });
     } else {
         loop(data, dropKey, (_item: any, index: number, arr: any[], parent) => {
