@@ -391,16 +391,17 @@ const search = (data: any) => {
             type: 'and',
         });
     }
-    if (
-        props.type === 'device' &&
-        data?.terms[0]?.terms[0]?.column === 'product_id'
-    ) {
-        params.value.terms = [
-            {
+    if (props.type === 'device') {
+        data?.terms.forEach((i: any, _index: number) => {
+            i.terms.forEach((item: any, index: number) => {
+                if (item.column === 'product_id') {
+                    params.value.terms[_index].terms[index] = {
                 column: 'targetId$dev-instance',
                 value: [data?.terms[0]?.terms[0]],
-            },
-        ];
+                    };
+                }
+            });
+        });
     }
     if (props.id) {
         params.value.terms.push({
