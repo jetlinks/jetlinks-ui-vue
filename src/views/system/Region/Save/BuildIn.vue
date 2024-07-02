@@ -111,8 +111,8 @@ const onSelect = (val: string, node: any) => {
   // features.value = getObj(node);
   _value.value = val;
 
-  emits('update:name', features.value?.name);
-  emits('update:value', features.value?.code);
+  emits('update:name', node.name);
+  emits('update:value', node.code);
 
   // if (mySync.value) {
   //   emits('update:children', node?.children.map(item => ({

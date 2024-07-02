@@ -13,10 +13,12 @@ export const syncChildren = (code: string, area: any[]) => {
         children.some(item => {
             if (item.code === code ) {
                 _children = item.children
+                return true
             } else if (item.children) {
                 _children = findItem(code, item.children)
+                return _children.length
             }
-            return item.code === code
+            return false
         })
 
         return _children.map(item => {

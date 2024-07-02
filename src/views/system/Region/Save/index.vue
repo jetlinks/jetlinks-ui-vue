@@ -46,7 +46,6 @@
           <j-form-item>
             <BuildIn
               v-model:value="modelRef.code"
-              v-model:children="modelRef.children"
               v-model:name="modelRef.name"
               v-model:sync="modelRef.properties.sync"
               :areaTree="areaTree"
@@ -288,7 +287,7 @@ const handleSave = () => {
         const _syncChildren = syncChildren(newData.code, props.areaTree)
 
         const different = _syncChildren.filter(item => {
-          if (newData.children.some(oldItem => oldItem.code === item.code)) {
+          if (newData.children && newData.children.some(oldItem => oldItem.code === item.code)) {
             return false
           }
 
@@ -300,7 +299,7 @@ const handleSave = () => {
         })
 
         newData.children = [
-          ...newData.children,
+          ...(newData.children || []),
           ...different
         ]
       }
@@ -371,8 +370,8 @@ watch(
 
 watch(() => JSON.stringify(props.treeData), () => {
   areaList.value = JSON.parse(JSON.stringify(props.treeData))
-  if (props.mode === 'add' && modelRef.properties.sync) {
-    modelRef.children = props.areaTree?.[0]?.children
-  }
+  // if (props.mode === 'add' && modelRef.properties.sync) {
+  //   // modelRef.children = props.areaTree?.[0]?.children
+  // }
 }, {immediate: true})
 </script>
