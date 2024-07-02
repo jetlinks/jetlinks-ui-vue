@@ -126,12 +126,6 @@ const echartsOptions = computed(() => {
                 type: 'inside',
                 start: 0,
                 end: data.value.type !== 'hour' ? 5 : 100,
-                brushStyle: {
-                    // 修改滑动条的背景颜色
-                    color: 'rgba(0, 0, 0, 0.3)', // 设置背景颜色，这里是一个半透明黑色的例子
-                    borderColor: 'rgba(0, 0, 0, 0.5)', // 设置边框颜色
-                    borderWidth: 1, // 设置边框宽度
-                },
             },
             {
                 start: 0,
