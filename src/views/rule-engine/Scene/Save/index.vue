@@ -15,7 +15,7 @@
           </div>
         </div>
         <j-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
-          <Device v-if='data.triggerType === "device"' />
+          <Device ref="deviceRef" v-if='data.triggerType === "device"' />
           <Manual v-else-if='data.triggerType === "manual"' />
           <Timer v-else-if='data.triggerType === "timer"' />
 <!--          <j-form-item-->
@@ -67,9 +67,14 @@ const { getDetail, refresh } = sceneStore
 const route = useRoute();
 const sceneForm = ref()
 const loading = ref(false)
+const deviceRef = ref()
 
 const save = async () => {
-  const formData = await sceneForm.value.validateFields()
+  const formData = await sceneForm.value.validateFields().catch(err => {
+    const names = err.errorFields[0].name
+    console.log('err', names)
+    deviceRef.value?.changePaneIndex(names[1])
+  })
   if (formData) {
     loading.value = true
     const branches = data.value.branches?.filter(item => item)
