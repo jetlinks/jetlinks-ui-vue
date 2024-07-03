@@ -44,9 +44,13 @@ const _props = defineProps({
         type: Array,
         default: () => [],
     },
+    columnMap: {
+        type: Object,
+        default: () => ({})
+    }
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'update:columnMap']);
 
 const columns = [
     {
@@ -67,6 +71,7 @@ const columns = [
 ];
 
 const dataSource = ref<any[]>([]);
+const columnMap = ref(_props.columnMap || {})
 
 watchEffect(() => {
     const list = (_props.functions || []).map((item: any) => {
@@ -83,7 +88,10 @@ watchEffect(() => {
     dataSource.value = list;
 });
 
-const onChange = (v: string) => {
+const onChange = (v: any, obj: any, option: any, record: any) => {
+
+  columnMap.value[record.id] = v.source === 'fixed' ? undefined : obj.column
+
     const arr = [...dataSource.value].map((item) => {
         return {
             name: item.id,
@@ -95,5 +103,6 @@ const onChange = (v: string) => {
         };
     });
     emit('update:value', arr);
+    emit('update:columnMap', columnMap.value);
 };
 </script>

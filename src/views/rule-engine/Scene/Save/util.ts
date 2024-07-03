@@ -168,6 +168,11 @@ export const handleFeatures = (branches: ActionBranchesProps[]): string[] => {
                     if (actionItem.executor === 'alarm') {
                         features.add(actionItem.alarm?.mode === 'trigger' ? 'alarmTrigger' : 'alarmReliever')
                     }
+                    // 处理options中的column、columnMap
+                    const _options = actionItem.options || {}
+                    const columnMapKeys = Object.values(_options.columnMap || {})
+                    const columns = new Set([...(_options.columns || []), ...columnMapKeys]) // 去重
+                    actionItem.options.columns = [...columns.values()]
                 })
             })
         }

@@ -555,7 +555,6 @@ const onSave = (data: ActionsType, options: any) => {
  * @param options
  */
 const onPropsOk = (data: ActionsType, options?: any) => {
-  console.log('onPropsOk', data)
   onSave(data, options);
   actionType.value = '';
 };

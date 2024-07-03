@@ -113,8 +113,7 @@ const upperOptions = computed(() => {
   return filterParamsData(props.data.valueType?.type, cloneDeep(props?.builtInList));
 });
 
-const onChange = (e, label, option) => {
-  console.log(e.column, label, option)
+const onChange = (e: any, label: string, option: any) => {
   const objValue: any = {source: _source.value, value: _value.value}
   if (_source.value === 'upper') {
     objValue.upperKey = _value.value
@@ -122,7 +121,7 @@ const onChange = (e, label, option) => {
   }
   emit('update:value', _value.value);
   emit('update:source', _source.value);
-  emit('change', objValue);
+  emit('change', objValue, e, option, props.data);
 };
 
 watchEffect(() => {

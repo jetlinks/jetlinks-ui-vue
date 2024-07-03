@@ -44,6 +44,7 @@
                 :thenName="thenName"
                 :values="DeviceModel"
                 :productDetail="productDetail"
+                :columnMap="options.columnMap"
                 ref="actionRef"
                 @change="onActionsChange"
             />
@@ -135,7 +136,7 @@ const onCancel = () => {
     emit('cancel');
 };
 
-const onSave = (_data: any) => {
+const onSave = (_data: any, _columnMap: any = {}) => {
     const item: any = {
         selector: DeviceModel.selector,
         source: DeviceModel.source,
@@ -155,7 +156,8 @@ const onSave = (_data: any) => {
         selector: DeviceModel.selector, //选择器标识
         triggerName: data.value.options?.trigger?.name || '触发设备',
         ...DeviceOptions.value,
-        otherColumns: []
+        otherColumns: [],
+        columnMap: _columnMap
     };
     const _type = _data.message.messageType;
     if (_type === 'INVOKE_FUNCTION') {
@@ -229,7 +231,8 @@ const save = async (step?: number) => {
     } else {
         if (actionRef.value) {
             const _data = await actionRef.value?.onFormSave();
-            onSave(_data);
+            const _columnMap = actionRef.value?.getColumnMap()
+            onSave(_data, _columnMap);
         }
     }
 };

@@ -72,7 +72,6 @@ const deviceRef = ref()
 const save = async () => {
   const formData = await sceneForm.value.validateFields().catch(err => {
     const names = err.errorFields[0].name
-    console.log('err', names)
     deviceRef.value?.changePaneIndex(names[1])
   })
   if (formData) {
