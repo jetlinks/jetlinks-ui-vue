@@ -1,16 +1,17 @@
 import axios from 'axios'
+
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable'
 import { notification as Notification, Modal } from 'jetlinks-ui-components'
 import router from '@/router'
 import { LoginPath } from '@/router/menu'
 import { cleanToken, getToken, LocalStore } from '@/utils/comm'
 import type { AxiosInstance, AxiosResponse } from 'axios'
-import qs from 'qs'
 
 export interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
   result: T
   success: boolean
 }
+
 
 export const SUCCESS_CODE = 200 // 成功代码
 
@@ -29,7 +30,7 @@ const filterApiUrl = [
 export const request = axios.create({
   withCredentials: false,
   baseURL: BASE_API_PATH,
-  timeout: 1000 * 15
+  timeout: 1000 * 15,
 })
 
 /**
@@ -50,7 +51,7 @@ export const post = function <T>(url: string, data = {}, params = {}, ext = {}) 
     params,
     method: 'POST',
     url,
-    data,
+    data: data,
   })
 }
 

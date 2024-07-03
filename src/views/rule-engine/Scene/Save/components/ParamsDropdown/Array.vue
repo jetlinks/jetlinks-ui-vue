@@ -26,7 +26,7 @@
                         :tab="item.label"
                         :key="item.key"
                     >
-                      <a-input placeholder="多个值以英文逗号隔开" v-model:value="myValue" @change="() => onSelect"/>
+                      <a-input placeholder="多个值以英文逗号隔开" v-model:value="myValue" @change="onSelect"/>
                     </j-tab-pane>
                 </j-tabs>
             </div>
@@ -58,9 +58,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
-const myValue = ref<ValueType>(cloneDeep(props.value) || `[]` as any);
+const myValue = ref<string>();
 const mySource = ref<string>(props.source);
-const label = ref<any>(props.placeholder);
+const label = ref<any>('[]');
 const visible = ref(false);
 const tabsChange = (e: string) => {
     mySource.value = e;
@@ -68,34 +68,25 @@ const tabsChange = (e: string) => {
 };
 
 const onSelect = () => {
-    emit('update:value', myValue.value);
-    label.value = myValue.value
-    emit('select', myValue.value, myValue.value, label.value);
+    const _value = myValue.value.split(',')
+    emit('update:value', _value);
+    label.value = JSON.stringify(_value)
+    emit('select', _value, myValue.value, label.value);
 };
 
 const visibleChange = (v: boolean) => {
     visible.value = v;
 };
-watchEffect(() => {
-    const _options = props.options;
-    const _value = props.value;
-    const _valueName = props.valueName;
-    if (Array.isArray(_value) && _value.length) {
-        label.value = []
-        _value?.filter(i => i).forEach((i: any, index: number) => {
-            const option = getOption(_options, i as string, _valueName);
-            if (option) {
-                label.value.push(option[props.labelName] || option.name);
-            } else {
-                label.value.push(i);
-            }
-        });
-    }
-});
 
-watch(()=>props.value,()=>{
-    myValue.value = cloneDeep(props.value);
-})
+watch(()=>props.value,() => {
+    if (props.value?.every(item => !item)) {
+      myValue.value = undefined
+      label.value = '[]'
+    } else {
+      myValue.value = props.value.toString()
+      label.value = JSON.stringify(props.value)
+    }
+}, { immediate: true })
 </script>
 
 <style scoped lang="less">

@@ -23,7 +23,7 @@
                                 </div>
                                 <div
                                     :class="
-                                        node.children?.length > 0
+                                        !node.isLeaf
                                             ? 'parent'
                                             : 'add'
                                     "
@@ -180,6 +180,7 @@ const getData = async (id?: string) => {
         name: '属性',
         description: '',
         code: '',
+        isLeaf: false,
         children: _properties
             .filter((p: PropertyMetadata) => p.id !== id)
             .map((p: PropertyMetadata) => {
@@ -188,6 +189,7 @@ const getData = async (id?: string) => {
               return {
                 id: p.id,
                 name: p.name,
+                isLeaf: true,
                 description: `### ${p.name}
                 \n 标识: ${p.id}
                 \n 数据类型: ${p.valueType?.type}
@@ -202,9 +204,11 @@ const getData = async (id?: string) => {
         name: '标签',
         Description: '',
         code: '',
+        isLeaf: false,
         children: tagsMetadata.value.map((i: any) => ({
             id: i.id,
             name: i.name,
+          isLeaf: true,
             description: `### ${i.name}
             \n 标识: ${i.id}
             \n 数据类型: ${i.valueType?.type}

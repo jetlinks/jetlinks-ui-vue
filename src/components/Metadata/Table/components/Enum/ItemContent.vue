@@ -8,19 +8,20 @@
       :pagination="false"
       :height="200"
       :disableMenu="false"
+      :validateRowKey="true"
     >
       <template #value="{ record, index }">
         <EditableItem
           :name="[index, 'value']"
         >
-          <a-input v-model:value="record.value" />
+          <a-input v-model:value="record.value" @change="valueChange"/>
         </EditableItem>
       </template>
       <template #text="{ record, index }">
         <EditableItem
           :name="[index, 'text']"
         >
-          <a-input v-model:value="record.text" />
+          <a-input v-model:value="record.text" @change="valueChange"/>
         </EditableItem>
       </template>
       <template #action="{ index }">
@@ -65,6 +66,10 @@ const columns = [{
       {
         asyncValidator: (rule, value, ...setting) => {
           const option = setting[2]
+
+          if (!value) {
+            return Promise.reject('请输入Value值')
+          }
           if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
             return Promise.reject('该Value值已存在')
           }
@@ -104,6 +109,12 @@ const addItem = () => {
     value: undefined,
     text: undefined
   })
+  emit('update:value', dataSource.value)
+  emit('change', dataSource.value)
+  formItemContext.onFieldChange()
+}
+
+const valueChange = () => {
   emit('update:value', dataSource.value)
   emit('change', dataSource.value)
   formItemContext.onFieldChange()

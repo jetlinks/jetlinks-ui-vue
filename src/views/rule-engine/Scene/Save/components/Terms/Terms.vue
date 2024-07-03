@@ -18,6 +18,7 @@
             v-for="(b, i) in group"
             :key="b.id"
             :closable="false"
+            :forceRender="true"
           >
             <template #tab>
               <TermsTabPane :showClose="group.length > 1" @close="() => addGroup(b.id, 'close')">
@@ -358,6 +359,18 @@ const changeBranchName = (name: string) =>{
 
   editConditionVisible.value =false
 }
+
+const changePaneIndex = (index) => {
+  const _groupItem = group.value.find(item => {
+    return item.start >= index && index < (item.start + item.len)
+  })
+
+  if (_groupItem) {
+    activeKey.value = _groupItem.branchId
+  }
+
+}
+
 watchEffect(() => {
   if (data.value.trigger?.device) {
     queryColumn({ trigger: data.value.trigger })
@@ -366,7 +379,6 @@ watchEffect(() => {
 
 watchEffect(() => {
   const branches = data.value.branches
-  console.log('branches 发生变化')
   if (data.value.branches?.filter(item => item).length) {
     open.value = !!data.value.branches[0].when.length
   } else {
@@ -417,6 +429,10 @@ watchEffect(() => {
       activeKey.value = _group[0].id
     }
   }
+})
+
+defineExpose({
+  changePaneIndex
 })
 
 </script>

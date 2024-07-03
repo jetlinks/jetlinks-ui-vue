@@ -19,6 +19,7 @@
     "@fullcalendar/interaction": "^6.1.13",
     "@fullcalendar/vue3": "^6.1.13",
     "@liveqing/liveplayer-v3": "^3.7.10",
+    "@types/axios": "^0.14.0",
     "@types/marked": "^4.0.8",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vuemap/vue-amap": "^2.1.2",

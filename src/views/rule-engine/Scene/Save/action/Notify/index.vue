@@ -234,5 +234,15 @@ const onOk = async () => {
 
 .steps-content {
     width: 100%;
+
+  :deep(.JSearch-item) {
+    .JSearch-item--column {
+      width: 130px !important;
+    }
+
+    .JSearch-item--termType {
+      width: 110px !important;
+    }
+  }
 }
 </style>

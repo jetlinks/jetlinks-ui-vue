@@ -46,7 +46,6 @@
           <j-form-item>
             <BuildIn
               v-model:value="modelRef.code"
-              v-model:children="modelRef.children"
               v-model:name="modelRef.name"
               v-model:sync="modelRef.properties.sync"
               :areaTree="areaTree"
@@ -162,6 +161,7 @@ import {onlyMessage} from "@/utils/comm";
 import RadioButton from '@/components/CardSelect/RadioButton.vue'
 import GeoJsonModal from './GeoJsonModal.vue'
 import {useRegion} from "@/views/system/Region/hooks";
+import {syncChildren} from "@/views/system/Region/util";
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -200,7 +200,8 @@ const init = {
   children: [],
   properties: {
     type: 'builtin',
-    partition: 'none'
+    partition: 'none',
+    sync: true
   },
   sortIndex: props.data.sortIndex || 1,
   geoJson: undefined,
@@ -282,19 +283,25 @@ const handleSave = () => {
       newData.fullName = props.data.parentFullName ? props.data.parentFullName + modelRef.name : modelRef.name
       newData.parentId = newData.parentId || ''
 
-      const arr = areaList.value.map(item => item.code)
+      if (newData.properties.sync) {
+        const _syncChildren = syncChildren(newData.code, props.areaTree)
 
-      if (newData.children?.length) {
-        newData.children = newData.children.map(item => {
+        const different = _syncChildren.filter(item => {
+          if (newData.children && newData.children.some(oldItem => oldItem.code === item.code)) {
+            return false
+          }
+
           if (!item.fullName) {
             item.fullName = newData.fullName + item.name
           }
-          item = {
-            ...item,
-            children: []
-          }
-          return item
-        }).filter(item => !arr.includes(item.code))
+
+          return true
+        })
+
+        newData.children = [
+          ...(newData.children || []),
+          ...different
+        ]
       }
 
       loading.value = true;
@@ -363,8 +370,8 @@ watch(
 
 watch(() => JSON.stringify(props.treeData), () => {
   areaList.value = JSON.parse(JSON.stringify(props.treeData))
-  if (props.mode === 'add' && modelRef.properties.sync) {
-    modelRef.children = props.areaTree?.[0]?.children
-  }
+  // if (props.mode === 'add' && modelRef.properties.sync) {
+  //   // modelRef.children = props.areaTree?.[0]?.children
+  // }
 }, {immediate: true})
 </script>
