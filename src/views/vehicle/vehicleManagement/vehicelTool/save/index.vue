@@ -123,7 +123,6 @@
                             mode="multiple"
                             placeholder="请选择关联设备"
                             :max-tag-count="maxTagCount"
-                            :options="deviceIdsOptions"
                             :open="false"
                         >
                             <template #maxTagPlaceholder="omittedValues">
@@ -147,7 +146,6 @@
                             mode="multiple"
                             label-in-value
                             placeholder="请选择关联零部件"
-                            :options="deviceIdsOptions"
                             :open="false"
                         >
                         </j-select>
@@ -219,7 +217,6 @@ import { getImage } from '@/utils/comm';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import dayjs, { Dayjs } from 'dayjs';
 
-const deviceIdsOptions = ref<any>([]);
 const maxTagCount = ref(4);
 
 const emit = defineEmits(['success']);
@@ -468,22 +465,6 @@ defineExpose({
 
 onMounted(() => {
     queryOrgTree();
-    const setData = {
-        paging: false,
-        sorts: [{ name: 'createTime', order: 'desc' }],
-    };
-    queryNoPagingPostDevice(setData).then((resp: any) => {
-        if (resp.status === 200) {
-            if (resp.result.length > 0) {
-                deviceIdsOptions.value = resp.result.map((item: any) => {
-                    return {
-                        value: item.id,
-                        label: item.name,
-                    };
-                });
-            }
-        }
-    });
 });
 </script>
 <style scoped lang="less">

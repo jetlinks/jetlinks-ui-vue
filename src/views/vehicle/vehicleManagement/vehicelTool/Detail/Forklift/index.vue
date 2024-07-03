@@ -25,6 +25,7 @@
                     </div>
                     <div class="toolbar">
                         <!-- <button @click="getMap()">获取地图实例</button> -->
+                        获取地图实例
                     </div>
                 </j-col>
             </j-row>
@@ -35,7 +36,8 @@
 <script lang="ts" setup>
 const mapRef = ref();
 const loading = ref(true);
-const initMap = (e) => {
+const initMap = (e: any) => {
+    console.log('map', e);
     loading.value = true;
     mapRef.value = e;
     loading.value = false;
