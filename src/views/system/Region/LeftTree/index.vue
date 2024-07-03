@@ -182,6 +182,8 @@ const onEdit = (_data: any) => {
     mode.value = 'edit';
     current.value = _data;
     visible.value = true;
+    selectedKeys.value = [_data.id]
+    emit('select', _data?.code, _data);
 };
 
 const onRemove = async (id: string) => {
@@ -311,6 +313,7 @@ watch(
  * 区域选择
  */
 const areaSelect = (key, { node }) => {
+    if (!key.length) return
     selectedKeys.value = key;
     emit('select', node?.code, node);
 };
@@ -326,7 +329,7 @@ const handleSearch = async () => {
         const dt = treeData.value?.[0];
         if (dt) {
             selectedKeys.value = dt?.id ? [dt?.id] : [];
-            emit('select', dt?.code);
+            emit('select', dt?.code, dt);
         }
     }
 };

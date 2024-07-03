@@ -232,6 +232,7 @@ const showGeoJsonFn = (geoJson) => {
 
 const openEdit = () => {
   isEdit.value = true
+  layerId.value = randomNumber()
 }
 
 const onDelete = () => {
@@ -246,6 +247,11 @@ const onDelete = () => {
     toolType: '',
     id: randomNumber()
   })
+}
+
+const readOnly = () => {
+  isEdit.value = false
+  showToolDom.value = false
 }
 
 const onRevoke = () => {
@@ -276,7 +282,8 @@ defineExpose({
   showDistrict: showDistrictFn,
   showGeoJson: showGeoJsonFn,
   openEdit: openEdit,
-  init: init
+  init: init,
+  readOnly: readOnly,
 })
 
 </script>

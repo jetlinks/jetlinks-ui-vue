@@ -37,7 +37,8 @@ const regionState = reactive({
   editType: 'add',
   treeMask: false,
   saveCache: undefined,
-  stateInit: stateInit
+  stateInit: stateInit,
+  mapReadOnly: mapReadOnly
 })
 
 provide(REGION_KEY, regionState)
@@ -71,6 +72,11 @@ function openSave(geoJson: Record<string, any>){
 
 function showTool(type: string) {
   mapRef.value?.showTool(regionState.saveCache?.geoJson)
+}
+
+function mapReadOnly(geoJson: any) {
+  layerSetData(geoJson, false)
+  mapRef.value?.readOnly(geoJson)
 }
 
 function openEdit() {
