@@ -9,7 +9,7 @@
             <JProTable
                 ref="instanceRef"
                 :columns="columnList"
-                :request="query"
+                :request="tbQueryDevice"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
@@ -224,6 +224,15 @@
                         </template>
                     </CardBox>
                 </template>
+                <template #createTime="slotProps">
+                    <span>{{
+                        slotProps?.createTime
+                            ? dayjs(slotProps.createTime).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}</span>
+                </template>
                 <template #state="slotProps">
                     <BadgeStatus
                         :status="slotProps.state?.value"
@@ -235,13 +244,9 @@
                         }"
                     />
                 </template>
-                <template #createTime="slotProps">
+                <template #factoryLogsEntity="slotProps">
                     <span>{{
-                        slotProps?.createTime
-                            ? dayjs(slotProps.createTime).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : ''
+                        slotProps.factoryLogsEntity?.factoryName ? '是' : '否'
                     }}</span>
                 </template>
                 <template #action="slotProps">
@@ -325,6 +330,7 @@ import {
     queryGatewayList,
     queryNoPagingPost,
     queryOrgThree,
+    tbQueryDevice,
 } from '@/api/device/product';
 import { queryFactoryList, sandDevice } from '@/api/factory/factory';
 import { queryGetSendData } from '@/api/exchange/receive';
@@ -1148,6 +1154,13 @@ onMounted(() => {
             scopedSlots: true,
             ellipsis: true,
         };
+        const isAllots = {
+            title: '是否已下发',
+            dataIndex: 'factoryLogsEntity',
+            key: 'factoryLogsEntity',
+            scopedSlots: true,
+            ellipsis: true,
+        };
         const factorySearch = {
             title: '所属工厂',
             dataIndex: 'factoryName',
@@ -1179,6 +1192,7 @@ onMounted(() => {
             },
         };
         columnList.value.splice(2, 0, factoryName);
+        columnList.value.splice(3, 0, isAllots);
         columns.value.splice(3, 0, factorySearch);
     }
     query().then((res: any) => {

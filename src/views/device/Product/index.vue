@@ -44,8 +44,10 @@
                 <template #deviceType="slotProps">
                     <div>{{ slotProps.deviceType.text }}</div>
                 </template>
-                <template #factoryName="slotProps">
-                    <div>{{ slotProps.factoryName }}</div>
+                <template #factoryLogsEntities="slotProps">
+                    <div>
+                        {{ funGetFactory(slotProps.factoryLogsEntities) }}
+                    </div>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -236,6 +238,7 @@ import {
     _undeploy,
     deleteProduct,
     updateDevice,
+    tbQueryProduct,
 } from '@/api/device/product';
 import { isNoCommunity, downloadObject } from '@/utils/utils';
 import {
@@ -763,44 +766,20 @@ const handleSearch = (e: any) => {
     params.value = newTerms;
 };
 
-const funGetFactory = async (data: any) => {
-    new Promise((resolve) => {
-        queryFactoryIssued(data.id)
-            .then((resp: any) => {
-                if (resp.result?.length > 0) {
-                    let uniqueArray = [...new Set(resp.result)]; //去重
-                    console.log('uniqueArray', uniqueArray);
-                    const nowFacList = uniqueArray.map((item: any) => {
-                        // console.log('factoryList.value', factoryList.value);
-                        let found = factoryList.value?.find(
-                            (bItem: any) => bItem.id === item.factoryId,
-                        );
-                        return found ? found.name : null;
-                    });
-                    resolve(nowFacList);
-                } else {
-                    resolve(null);
-                }
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    });
-};
-
-const getMock = () => {
-    queryFactoryList({
-        paging: false,
-    }).then((response: any) => {
-        if (response.status === 200) {
-            factoryList.value = response.result.data;
-        }
-    });
+const funGetFactory = (data: any) => {
+    console.log(data);
+    if (data?.length > 0) {
+        return data.map((item: any) => {
+            return item.factoryName;
+        });
+    }
+    return null;
 };
 
 const queryPro = (params: Record<string, any>) =>
     new Promise((resolve) => {
-        queryProductList({
+        //queryProductList  tbQueryProduct
+        tbQueryProduct({
             pageIndex: params.pageIndex + 1,
             pageSize: params.pageSize,
             sorts: params.sorts,
@@ -826,9 +805,9 @@ const routerParams = useRouterParams();
 onMounted(() => {
     if (isIOT.value === 'true' && factoryType.value === 'general') {
         const factoryName = {
-            title: '所属工厂',
-            dataIndex: 'factoryName',
-            key: 'factoryName',
+            title: '已下发工厂',
+            dataIndex: 'factoryLogsEntities',
+            key: 'factoryLogsEntities',
             scopedSlots: true,
             ellipsis: true,
         };
