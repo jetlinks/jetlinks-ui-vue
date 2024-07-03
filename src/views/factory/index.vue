@@ -254,6 +254,7 @@ const tableRef = ref<Record<string, any>>({});
 
 const paramsAppList = ref<any>([]);
 const queryAppList = ref<any>([]);
+const appList = ref<any>([]);
 const SelFactoryList = ref<any>([]);
 
 const formRef = ref();
@@ -314,29 +315,33 @@ const modalState = reactive({
             modalState.confirmLoading = true;
             let { id, ...addData } = form.value;
             if (isAdd.value === 1) {
-                addFactory(addData).then((res: any) => {
-                    if (res.status === 200) {
-                        onlyMessage('添加成功！');
+                addFactory(addData)
+                    .then((res: any) => {
+                        if (res.status === 200) {
+                            onlyMessage('添加成功！');
+                            modalState.confirmLoading = false;
+                            modalState.openView = false;
+                            paramsAppList.value = queryAppList.value;
+                            tableRef.value?.reload();
+                        }
+                    })
+                    .catch(() => {
                         modalState.confirmLoading = false;
-                        modalState.openView = false;
-                        paramsAppList.value = queryAppList.value;
-                        tableRef.value?.reload();
-                    }
-                }).catch(()=>{
-                    modalState.confirmLoading = false;
-                });
+                    });
             } else {
-                editFactory(form.value).then((res: any) => {
-                    if (res.status === 200) {
-                        onlyMessage('修改成功！');
+                editFactory(form.value)
+                    .then((res: any) => {
+                        if (res.status === 200) {
+                            onlyMessage('修改成功！');
+                            modalState.confirmLoading = false;
+                            modalState.openView = false;
+                            paramsAppList.value = queryAppList.value;
+                            tableRef.value?.reload();
+                        }
+                    })
+                    .catch(() => {
                         modalState.confirmLoading = false;
-                        modalState.openView = false;
-                        paramsAppList.value = queryAppList.value;
-                        tableRef.value?.reload();
-                    }
-                }).catch(()=>{
-                    modalState.confirmLoading = false;
-                });;
+                    });
             }
         });
     },
@@ -401,16 +406,20 @@ const handleAdd = () => {
 
 //查看子工厂
 const handleSee = (data: any) => {
+    const getData = appList.value;
     if (data.applicationId) {
-        let getAppData = queryAppList.value.find((item: any) => item.id = data.applicationId);
-        if(getAppData.apiServer?.redirectUri){
-            const url = getAppData.apiServer?.redirectUri
+        const getAppData = getData.find(
+            (item: any) => item.id === data.applicationId,
+        );
+        if (getAppData.apiServer?.redirectUri) {
+            const url = getAppData.apiServer?.redirectUri;
             const openUrl = `${url}/#/user/login?id=${data.id}&factory=${data.id}`;
             // LocalStore.set('onLogin', 'no');
+            // console.log('openUrl', openUrl);
             // window.open(`${url}${BASE_API_PATH}/application/sso/${getAppData.id}/login`,'_blank');
             window.open(openUrl, '_blank');
         } else {
-            onlyMessage('内部应用未配置正确,请检查','error')
+            onlyMessage('内部应用未配置正确,请检查', 'error');
         }
     }
 };
@@ -481,6 +490,7 @@ const getActions = (
             onClick: () => {
                 isAdd.value = 2;
                 modalState.title = '编辑';
+                paramsAppList.value = queryAppList.value;
                 modalState.openView = true;
                 form.value = data;
             },
@@ -565,12 +575,15 @@ const filteredItems = computed(() => {
 onMounted(() => {
     getQueryApply().then((res: any) => {
         if (res.result) {
+            console.log('res.result', res.result);
             queryAppList.value = res.result;
+            appList.value = res.result;
             paramsAppList.value = queryAppList.value;
         }
     });
 
     getQueryFacApply().then((resp: any) => {
+        console.log('resp', resp);
         SelFactoryList.value = resp.result;
     });
 });
