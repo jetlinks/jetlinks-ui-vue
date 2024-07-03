@@ -44,13 +44,19 @@
                                 detail.deviceName
                             }}</j-descriptions-item>
                             <j-descriptions-item label="平台类型">{{
-                                detail.operatorPlatformType?.text
+                            platformTypeList.find(
+                                (item) =>
+                                    item.value ===
+                                    detail.operatorPlatformType?.text,
+                            )?.label || detail.operatorPlatformType?.text
                             }}</j-descriptions-item>
                             <j-descriptions-item label="平台名称">{{
                                 detail.platformConfigName
                             }}</j-descriptions-item>
                             <j-descriptions-item label="运营商">{{
-                                detail.operatorName
+                            OperatorList.find(
+                                (item) => item.value === detail.operatorName,
+                            )?.label || detail.operatorName
                             }}</j-descriptions-item>
                             <j-descriptions-item label="类型">{{
                                 detail.cardType?.text
@@ -237,6 +243,7 @@ import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
 import { queryFlow } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
+import { OperatorList, platformTypeList } from '@/views/iot-card/data';
 
 const props = defineProps({
     type: {
