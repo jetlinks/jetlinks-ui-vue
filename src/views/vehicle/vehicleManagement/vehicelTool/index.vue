@@ -41,7 +41,7 @@
                     </j-space> -->
                 </template>
                 <template #deviceType="slotProps">
-                    <div>{{ slotProps.deviceType.text }}</div>
+                    <div>{{ slotProps?.deviceType?.text }}</div>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -69,7 +69,7 @@
                                 <img
                                     style="width: 80px; height: 80px"
                                     :src="
-                                        slotProps.pictureUrl ||
+                                        slotProps?.pictureUrl ||
                                         getImage('/device-product.png')
                                     "
                                     class="productImg"
@@ -85,7 +85,7 @@
                                 ><span
                                     style="font-weight: 600; font-size: 16px"
                                 >
-                                    {{ slotProps.simpleName }}
+                                    {{ slotProps?.simpleName }}
                                 </span></Ellipsis
                             >
                             <div>
@@ -110,7 +110,7 @@
                                             ><div>
                                                 {{
                                                     slotProps?.vehicleTypeEnum
-                                                        .text
+                                                        ?.text
                                                 }}
                                             </div></Ellipsis
                                         ></j-col
@@ -170,8 +170,8 @@
                 </template>
                 <template #vehicleStatus="slotProps">
                     <BadgeStatus
-                        :text="listStatusText(slotProps.vehicleStatus)"
-                        :status="slotProps.vehicleStatus"
+                        :text="listStatusText(slotProps?.vehicleStatus)"
+                        :status="slotProps?.vehicleStatus"
                         :statusNames="{
                             0: 'processing',
                             1: 'error',
@@ -192,7 +192,9 @@
                     {{ slotProps.devices.length }}个
                 </template>
                 <template #vehicleTypeEnum="slotProps">
-                    <Ellipsis>{{ slotProps.vehicleTypeEnum.text }}</Ellipsis>
+                    <Ellipsis>{{
+                        slotProps.vehicleTypeEnum?.text || '--'
+                    }}</Ellipsis>
                 </template>
                 <template #action="slotProps">
                     <j-space :size="16">

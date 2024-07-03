@@ -18,7 +18,7 @@
                         data?.simpleName
                     }}</j-descriptions-item>
                     <j-descriptions-item label="车辆类型">{{
-                        data?.vehicleTypeEnum.text
+                        data?.vehicleTypeEnum?.text || '--'
                     }}</j-descriptions-item>
                     <j-descriptions-item label="型号">{{
                         data?.modelNumber
