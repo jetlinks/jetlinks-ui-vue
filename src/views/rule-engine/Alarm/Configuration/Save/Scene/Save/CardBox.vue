@@ -86,8 +86,8 @@
               </slot>
             </div>
           </div>
-          <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" >
-            <a-button style="font-size: 16px;" type="link" @click.stop="jumpView">无效数据，请重新保存场景</a-button>
+          <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" @click.stop="jumpView">
+            <a-button style="font-size: 16px;" type="link" >无效数据，请重新保存场景</a-button>
           </div>
         </div>
         <div class="card-content-tabs" v-if="showBranches && showBranchesVisible" @click.stop>

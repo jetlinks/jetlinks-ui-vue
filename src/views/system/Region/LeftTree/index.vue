@@ -100,7 +100,7 @@
 import { cloneDeep, debounce } from 'lodash-es';
 import { onMounted, ref, watch } from 'vue';
 import Save from '../Save/index.vue';
-import { getRegionTree, delRegion, updateRegion } from '@/api/system/region';
+import {getRegionTree, delRegion, updateRegion, saveRegion} from '@/api/system/region';
 import {useArea, useRegion} from '../hooks';
 import ResizeObserver from 'ant-design-vue/lib/vc-resize-observer';
 import { onlyMessage } from '@/utils/comm';
@@ -258,7 +258,7 @@ const onDrop = (info: any) => {
         info.node.expanded && // Is expanded
         dropPosition === 1 // On the bottom gap
     ) {
-        loop(data, dropKey, (item: any, index: number, _data: any[]) => {
+        loop(data, dropKey, (item: any, index: number, _data: any[], parent: any) => {
             item.children = item.children || [];
             // where to insert 示例添加到头部，可以是随意位置
             dragObj.parentId = item.parentId
@@ -273,18 +273,19 @@ const onDrop = (info: any) => {
             updateRegion(dragObj)
         });
     } else {
-        loop(data, dropKey, (_item: any, index: number, arr: any[], parent) => {
+        loop(data, dropKey, (_item: any, index: number, arr: any[], parent: any) => {
           dragObj.parentId = parent ? parent.id : ''
           dragObj.sortIndex = dropPosition === -1 ? index : index + 1
           arr.splice(dragObj.sortIndex, 0, dragObj);
+          const sortArray = arr.map((cl: any, clIndex: number) => {
+            cl.sortIndex = clIndex + 1
+            return cl
+          })
           if (parent) {
-            parent.children = arr.map((cl: any, clIndex: number) => {
-              cl.sortIndex = clIndex + 1
-              return cl
-            })
+            parent.children = sortArray
             updateRegion(parent)
           } else {
-            updateRegion(dragObj)
+            updateRegion(arr)
           }
         });
 
