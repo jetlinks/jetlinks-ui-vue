@@ -115,10 +115,26 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <h3 class="card-item-content-title">
+                                <Ellipsis
+                                    style="
+                                        cursor: pointer;
+                                        font-size: 16px;
+                                        font-weight: 700;
+                                        color: #1d39c4;
+                                        width: calc(100% - 100px);
+                                    "
+                                >
                                     {{ item.name }}
-                                </h3>
-                                <div class="desc">{{ item.description }}</div>
+                                </Ellipsis>
+                                <Ellipsis
+                                    style="
+                                        margin-top: 10px;
+                                        color: #666;
+                                        font-weight: 400;
+                                        font-size: 12px;
+                                    "
+                                    >{{ item.description }}</Ellipsis
+                                >
                                 <j-row v-if="props.channel === 'gb28181-2016'">
                                     <j-col :span="12">
                                         {{ item.channelInfo?.name }}
@@ -340,14 +356,11 @@ const handleAdd = () => {
     .gateway-item {
         padding: 16px;
         text-align: left;
-        .card-item-content-title,
-        .desc,
         .subtitle {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-        .desc,
         .subtitle {
             margin-top: 10px;
             color: #666;
