@@ -516,11 +516,6 @@ export const saveEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/
 export const getPropertyData = (deviceId: string, params: Record<string, unknown>) => server.get(`/device-instance/${deviceId}/properties/_query`, params)
 
 /**
- * 查询属性详情post
- */
-export const getPropertyDataNew = (deviceId:string,property:string,data:any) => server.post(`/device-instance/${deviceId}/${property}/_query`,data)
-
-/**
  * 聚合查询设备属性
  * @param deviceId
  * @param data

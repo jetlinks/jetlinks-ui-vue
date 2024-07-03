@@ -16,22 +16,7 @@
             @change="onRangeChange"
             :allowClear="false"
         />
-        <a-button
-            v-if="searchVisible"
-            @click="showSearch = !showSearch"
-            type="text"
-            >高级筛选
-            <AIcon
-                :type="showSearch ? 'CaretDownOutlined' : 'CaretUpOutlined'"
-            ></AIcon
-        ></a-button>
     </j-space>
-    <pro-search
-        v-if="showSearch"
-        :columns="columns"
-        target="device-instance"
-        @search="handleSearch"
-    />
 </template>
 
 <script lang="ts" setup>
@@ -54,55 +39,12 @@ const props = defineProps({
 
 type Emits = {
     (e: 'update:modelValue', data: Props): void;
-    (e: 'search', data: any): void;
 };
 
 const emit = defineEmits<Emits>();
-const columns =
-    props.data?.valueType?.type === 'string'
-        ? [
-              {
-                  dataIndex: 'value',
-                  key: 'value',
-                  title: props.data?.name,
-                  search: {
-                      type: 'string',
-                  },
-              },
-          ]
-        : [
-              {
-                  dataIndex: 'value',
-                  key: 'value',
-                  title: props.data?.name,
-                  search: {
-                      type: 'number',
-                  },
-              },
-              {
-                  dataIndex: 'originValue',
-                  key: 'originValue',
-                  title: 'originValue',
-                  search: {
-                      type: 'string',
-                  },
-              },
-          ];
-
 const params = ref();
-const showSearch = ref(false);
 const radioValue = ref<string>('today');
 const dateValue = ref<Props>();
-
-const searchVisible = computed(() => {
-    return ['int', 'long', 'float', 'double', 'string'].includes(
-        props.data?.valueType?.type,
-    );
-});
-const handleSearch = (e: any) => {
-    params.value = e;
-    emit('search', params.value);
-};
 const onRangeChange = (value: Props) => {
     emit('update:modelValue', value);
     radioValue.value = '';

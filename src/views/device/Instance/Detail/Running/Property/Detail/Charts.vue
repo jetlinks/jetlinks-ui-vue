@@ -44,8 +44,6 @@ import Chart from './Chart.vue';
 import * as echarts from 'echarts';
 import dayjs from 'dayjs';
 
-const list = ['int', 'float', 'double', 'long'];
-
 const prop = defineProps({
     data: {
         type: Object,
@@ -57,17 +55,18 @@ const prop = defineProps({
     },
 });
 
-const cycle = ref<string>('*');
+const cycle = ref<string>();
 const agg = ref<string>('AVG');
 const loading = ref<boolean>(false);
 const chartsList = ref<any[]>([]);
 const instanceStore = useInstanceStore();
 const periodOptions = ref<any>([]);
 const options = ref({});
+const list = ['int', 'float', 'double', 'long'];
 
 const _type = computed(() => {
     const flag = list.includes(prop.data?.valueType?.type || '');
-    cycle.value = flag ? '*' : '1m';
+    // cycle.value = flag ? '*' : '1m';
     return flag;
 });
 

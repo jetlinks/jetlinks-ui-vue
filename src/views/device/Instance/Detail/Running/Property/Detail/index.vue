@@ -8,11 +8,7 @@
         @cancel="onCancel"
     >
         <div style="margin-bottom: 10px">
-            <TimeComponent
-                v-model="dateValue"
-                :data="props.data"
-                @search="search"
-            />
+            <TimeComponent v-model="dateValue" :data="props.data" />
         </div>
         <div>
             <j-tabs
@@ -21,11 +17,7 @@
                 style="max-height: 600px; overflow-y: auto"
             >
                 <j-tab-pane key="table" tab="列表">
-                    <Table
-                        :data="props.data"
-                        :time="_getTimes"
-                        :searchParams="params"
-                    />
+                    <Table :data="props.data" :time="_getTimes" />
                 </j-tab-pane>
                 <j-tab-pane key="charts" tab="图表">
                     <Charts :data="props.data" :time="_getTimes" />
@@ -57,7 +49,6 @@ const props = defineProps({
 });
 
 const _emits = defineEmits(['close']);
-const params = ref();
 const activeKey = ref<'table' | 'charts' | 'geo'>('table');
 
 const dateValue = ref<[Dayjs, Dayjs]>();
@@ -68,9 +59,7 @@ const _getTimes = computed(() => {
     }
     return [];
 });
-const search = (e: any) => {
-    params.value = e;
-};
+
 const onCancel = () => {
     _emits('close');
 };
