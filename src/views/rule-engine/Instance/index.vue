@@ -208,6 +208,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
     },
     {
         title: '状态',
@@ -219,6 +220,7 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
     },
     {
         title: '操作',

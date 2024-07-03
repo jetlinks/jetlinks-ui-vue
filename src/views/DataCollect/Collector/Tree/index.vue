@@ -222,8 +222,10 @@ const handlUpdate = async (data: any) => {
 const handlDelete = async (id: string) => {
     const resp = await remove(id);
     if (resp.status === 200) {
+        selectedKeys.value = []
         handleSearch(params.value);
         onlyMessage('操作成功', 'success');
+        
     }
 };
 
