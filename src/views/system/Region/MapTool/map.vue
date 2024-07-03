@@ -1,6 +1,8 @@
 <template>
   <div class="region-map">
-    <AMapComponent>
+    <AMapComponent
+      ref="mapRef"
+    >
       <el-amap-polygon
         v-if="showPolygon"
         :path="pathData"
@@ -10,6 +12,7 @@
         @adjust="dragend"
         @removenode="dragend"
         @addnode="dragend"
+        @init="polygonInit"
       />
       <el-amap-circle
         v-if="showCircle"
@@ -27,6 +30,7 @@
         @adjust="dragend"
         @removenode="dragend"
         @addnode="dragend"
+        @init="polygonInit"
       />
       <DistrictSearch
         v-if="showDistrict"
@@ -105,6 +109,7 @@ const adbode = ref()
 const pathData = ref()
 const isEdit = ref(false)
 const layerId = ref('layer')
+const mapRef = ref()
 
 const toolDrawCache = ref()
 
@@ -270,6 +275,11 @@ const initState = () => {
   adbode.value = undefined
   toolType.value = undefined
   pathData.value = undefined
+}
+
+const polygonInit = (e) => {
+  const bounds = e.getBounds()
+  mapRef.value?.setBounds(bounds)
 }
 
 const init = () => {

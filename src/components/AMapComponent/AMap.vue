@@ -50,7 +50,7 @@ const mapRef = ref();
 
 const uiLoading = ref<boolean>(false);
 
-const map = ref<any>(null);
+let mapInstance:any = null;
 
 const isOpenUi = computed(() => {
     return 'AMapUI' in props || props.AMapUI;
@@ -66,15 +66,26 @@ const getAMapUI = () => {
 const marker = ref<any[]>([]);
 
 const initMap = (e: any) => {
-    map.value = e;
+    mapInstance = e;
     if (isOpenUi.value) {
         getAMapUI();
     }
     emit('init', e);
 };
 
+const setBounds = (bounds: any) => {
+  console.log(bounds)
+  if (mapInstance) {
+    mapInstance.setBounds(bounds)
+  }
+}
+
 onMounted(()=>{
     console.log(secretKey,'secretKey')
+})
+
+defineExpose({
+  setBounds
 })
 </script>
 
