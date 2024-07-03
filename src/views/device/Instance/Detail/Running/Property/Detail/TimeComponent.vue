@@ -31,10 +31,6 @@ const props = defineProps({
         type: Object as PropType<Props>,
         default: undefined,
     },
-    data: {
-        type: Object,
-        default: {},
-    },
 });
 
 type Emits = {
