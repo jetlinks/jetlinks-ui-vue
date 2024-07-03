@@ -254,6 +254,7 @@ const tableRef = ref<Record<string, any>>({});
 
 const paramsAppList = ref<any>([]);
 const queryAppList = ref<any>([]);
+const appList = ref<any>([]);
 const SelFactoryList = ref<any>([]);
 
 const formRef = ref();
@@ -314,6 +315,19 @@ const modalState = reactive({
             modalState.confirmLoading = true;
             let { id, ...addData } = form.value;
             if (isAdd.value === 1) {
+                addFactory(addData)
+                    .then((res: any) => {
+                        if (res.status === 200) {
+                            onlyMessage('添加成功！');
+                            modalState.confirmLoading = false;
+                            modalState.openView = false;
+                            paramsAppList.value = queryAppList.value;
+                            tableRef.value?.reload();
+                        }
+                    })
+                    .catch(() => {
+                        modalState.confirmLoading = false;
+                    });
                 addFactory(addData)
                     .then((res: any) => {
                         if (res.status === 200) {
@@ -576,6 +590,7 @@ onMounted(() => {
         if (res.result) {
             console.log('res.result', res.result);
             queryAppList.value = res.result;
+            appList.value = res.result;
             paramsAppList.value = queryAppList.value;
         }
     });
