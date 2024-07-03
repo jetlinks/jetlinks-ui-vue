@@ -10,9 +10,9 @@
                 current: (dataSource?.pageIndex || 0) + 1,
                 pageSize: dataSource?.pageSize || 12,
                 showSizeChanger: true,
-                showLessItems:true,
+                showLessItems: true,
                 total: dataSource?.total || 0,
-                pageSizeOptions: ['12', '24', '48', '96']
+                pageSizeOptions: ['12', '24', '48', '96'],
             }"
         >
             <template #bodyCell="{ column, record }">
@@ -95,11 +95,11 @@ const dataSource = ref({
     pageIndex: 0,
     pageSize: 12,
     data: [],
-    total: 0
+    total: 0,
 });
 const current = ref<any>({});
 const visible = ref<boolean>(false);
-
+console.log(_props.data);
 const columns = computed(() => {
     const arr: any[] = [
         {
@@ -122,6 +122,7 @@ const columns = computed(() => {
             key: 'action',
         });
     }
+
     return arr;
 });
 
@@ -153,7 +154,6 @@ const queryPropertyData = async (params: any) => {
         dataSource.value = resp.result as any;
     }
 };
-
 watch(
     () => [_props.data.id, _props.time],
     ([newVal]) => {
@@ -165,8 +165,9 @@ watch(
         }
     },
     {
-        deep: true, immediate: true
-    }
+        deep: true,
+        immediate: true,
+    },
 );
 
 const onChange = (page: any) => {
@@ -197,10 +198,10 @@ const _download = (record: any) => {
 :deep(.ant-pagination-item) {
     display: none !important;
 }
-:deep(.ant-pagination-jump-next){
+:deep(.ant-pagination-jump-next) {
     display: none !important;
 }
-:deep(.ant-pagination-jump-prev){
+:deep(.ant-pagination-jump-prev) {
     display: none !important;
 }
 </style>
