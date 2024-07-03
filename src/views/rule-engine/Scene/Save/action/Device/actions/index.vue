@@ -40,6 +40,7 @@
                 >
                     <EditTable
                         v-model:value="modelRef.message.inputs"
+                        v-model:columnMap="columnMap"
                         :functions="functions"
                         :builtInList="builtInList"
                     />
@@ -73,6 +74,7 @@
                 <WriteProperty
                     ref="writeFormRef"
                     v-model:value="modelRef.message.properties"
+                    v-model:columnMap="columnMap"
                     :metadata="metadata"
                     :builtInList="builtInList"
                     @change="onWriteChange"
@@ -137,11 +139,16 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    columnMap: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
 const emit = defineEmits(['change']);
 
 const formRef = ref();
+const columnMap = ref(props.columnMap || {})
 
 const modelRef = reactive({
     message: {
@@ -156,6 +163,7 @@ const modelRef = reactive({
 const writeFormRef = ref();
 
 const functionSelect = (val: any, options?: any) => {
+    columnMap.value = {}
     modelRef.message.inputs = [];
     emit('change', {
         propertiesName: options?.label,
@@ -252,6 +260,7 @@ const queryBuiltIn = async () => {
 };
 
 const onMessageTypeChange = (val: string) => {
+    columnMap.value = {}
     const flag = ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val);
     modelRef.message = {
         messageType: val,
@@ -265,6 +274,7 @@ const onMessageTypeChange = (val: string) => {
 };
 
 const onWriteChange = (val: string, optionColumn: string[]) => {
+
     modelRef.propertiesValue = val;
     emit('change', {
         propertiesName:
@@ -305,6 +315,10 @@ const onFormSave = () => {
             });
     });
 };
+
+const getColumnMap = () => {
+  return columnMap.value
+}
 
 watch(
   () => props.productDetail,
@@ -351,5 +365,5 @@ watch(
   { immediate: true },
 );
 
-defineExpose({ onFormSave });
+defineExpose({ onFormSave, getColumnMap });
 </script>

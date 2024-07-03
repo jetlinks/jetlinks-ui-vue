@@ -229,7 +229,14 @@ const updateGeoJson = (json: string) => {
 }
 
 const handleCancel = (data: any) => {
-  regionState.stateInit()
+  if (modelRef.properties.type === 'custom') {
+    if (props.mode === 'add') {
+      regionState.mapInit()
+    } else {
+      regionState.mapReadOnly(modelRef.geoJson)
+    }
+  }
+
   emit('close', data);
 };
 
@@ -255,6 +262,8 @@ const showEditMap = (type: boolean) => {
 
   if (type) {
     regionState.layerSetData(modelRef.geoJson)
+  } else {
+    regionState.type = undefined
   }
 
   regionState.editType = props.mode

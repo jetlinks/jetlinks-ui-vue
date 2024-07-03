@@ -195,6 +195,7 @@ const componentsType = ref<ITypes>({
     object: 'object',
     geoPoint: 'geoPoint',
     file: 'file',
+    time: 'time',
 });
 const typeMap = new Map(Object.entries(componentsType.value));
 

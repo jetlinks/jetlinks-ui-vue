@@ -1,6 +1,8 @@
 <template>
   <div class="region-map">
-    <AMapComponent>
+    <AMapComponent
+      ref="mapRef"
+    >
       <el-amap-polygon
         v-if="showPolygon"
         :path="pathData"
@@ -10,6 +12,7 @@
         @adjust="dragend"
         @removenode="dragend"
         @addnode="dragend"
+        @init="polygonInit"
       />
       <el-amap-circle
         v-if="showCircle"
@@ -27,6 +30,7 @@
         @adjust="dragend"
         @removenode="dragend"
         @addnode="dragend"
+        @init="polygonInit"
       />
       <DistrictSearch
         v-if="showDistrict"
@@ -105,6 +109,7 @@ const adbode = ref()
 const pathData = ref()
 const isEdit = ref(false)
 const layerId = ref('layer')
+const mapRef = ref()
 
 const toolDrawCache = ref()
 
@@ -232,6 +237,7 @@ const showGeoJsonFn = (geoJson) => {
 
 const openEdit = () => {
   isEdit.value = true
+  layerId.value = randomNumber()
 }
 
 const onDelete = () => {
@@ -246,6 +252,11 @@ const onDelete = () => {
     toolType: '',
     id: randomNumber()
   })
+}
+
+const readOnly = () => {
+  isEdit.value = false
+  showToolDom.value = false
 }
 
 const onRevoke = () => {
@@ -266,6 +277,11 @@ const initState = () => {
   pathData.value = undefined
 }
 
+const polygonInit = (e) => {
+  const bounds = e.getBounds()
+  mapRef.value?.setBounds(bounds)
+}
+
 const init = () => {
   initState()
   reset()
@@ -276,7 +292,8 @@ defineExpose({
   showDistrict: showDistrictFn,
   showGeoJson: showGeoJsonFn,
   openEdit: openEdit,
-  init: init
+  init: init,
+  readOnly: readOnly,
 })
 
 </script>

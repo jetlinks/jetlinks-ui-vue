@@ -16,6 +16,21 @@
             <div style="display: flex;align-items: center" v-if="show">
               <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
               <Terms :when="branch.when" />
+
+            </div>
+            <div class="branches-shakeLimit" v-if="show">
+              <span class="branches-shakeLimit-action">执行</span>
+              <template v-if="branch.shakeLimit?.enabled">
+                <span>开启防抖</span>
+                <span class="branches-shakeLimit-time">{{ branch.shakeLimit.time }}</span>
+                <span>秒内发送</span>
+                <span class="branches-shakeLimit-time">{{ branch.shakeLimit.threshold }}</span>
+                <span>次及以上时，处理</span>
+                <span>{{ branch.shakeLimit.alarmFirst ? '第一次' : '最后一次' }}</span>
+              </template>
+              <span v-else>
+                关闭防抖
+              </span>
             </div>
           <template v-if="branch.serial?.length">
             <div v-if="show" class="branches-tabs-title">
@@ -136,6 +151,18 @@ const select = (id, selected) => {
 
   &:not(:last-child) {
     margin-bottom: 8px;
+  }
+}
+
+.branches-shakeLimit {
+  .branches-shakeLimit-action {
+    font-weight: bold;
+    padding-right: 8px;
+  }
+
+  .branches-shakeLimit-time {
+    padding: 0 8px;
+    font-weight: bold;
   }
 }
 </style>

@@ -72,7 +72,7 @@
             </div>
           </div  >
 
-          <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" :style="maskStyle">
+          <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" :class="{ 'branches-tabs-mask': showBranchesVisible}" :style="maskStyle">
             <div class="mask-content">
               <slot name="mask">
                 <div>
@@ -86,8 +86,8 @@
               </slot>
             </div>
           </div>
-          <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" >
-            <a-button style="font-size: 16px;" type="link" @click.stop="jumpView">无效数据，请重新保存场景</a-button>
+          <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" @click.stop="jumpView">
+            <a-button style="font-size: 16px;" type="link" >无效数据，请重新保存场景</a-button>
           </div>
         </div>
         <div class="card-content-tabs" v-if="showBranches && showBranchesVisible" @click.stop>
@@ -230,8 +230,10 @@ const bindAlarm = (key: string, selected: boolean) => {
 }
 
 const click = () => {
-  emit('click')
-  onShowBranchesTabs()
+  if (!isInvalid.value) {
+    emit('click')
+    onShowBranchesTabs()
+  }
 }
 
 const jumpView = () => {
@@ -442,7 +444,7 @@ const onShowBranchesTabs = () => {
       position: absolute;
       top: -40px;
       left: -30px;
-      bottom: 0;
+      bottom: -30px;
       right: -12px;
       z-index: 99;
       display: flex;
@@ -468,6 +470,10 @@ const onShowBranchesTabs = () => {
         height: 100%;
         padding: 24px !important;
         flex-direction: column;
+      }
+
+      &.branches-tabs-mask {
+        bottom: 0;
       }
     }
   }
