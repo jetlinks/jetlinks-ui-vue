@@ -88,10 +88,6 @@ const _props = defineProps({
         type: Array,
         default: () => [],
     },
-    searchParams: {
-        type: Object,
-        default: {},
-    },
 });
 
 const instanceStore = useInstanceStore();
@@ -119,18 +115,6 @@ const columns = computed(() => {
             ellipsis: true,
         },
     ];
-    if (
-        ['int', 'long', 'float', 'double'].includes(
-            _props.data?.valueType?.type,
-        )
-    ) {
-        arr.push({
-            title: '原始值',
-            dataIndex: 'originValue',
-            key: 'originValue',
-            ellipsis: true,
-        });
-    }
     if (_props.data?.valueType?.type != 'geoPoint') {
         arr.push({
             title: '操作',
@@ -171,7 +155,7 @@ const queryPropertyData = async (params: any) => {
     }
 };
 watch(
-    () => [_props.data.id, _props.time, _props.searchParams],
+    () => [_props.data.id, _props.time],
     ([newVal]) => {
         if (newVal && _props.time?.length) {
             queryPropertyData({

@@ -42,7 +42,6 @@ type Emits = {
 };
 
 const emit = defineEmits<Emits>();
-const params = ref();
 const radioValue = ref<string>('today');
 const dateValue = ref<Props>();
 const onRangeChange = (value: Props) => {
