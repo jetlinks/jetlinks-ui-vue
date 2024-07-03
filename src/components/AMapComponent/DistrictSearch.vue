@@ -43,14 +43,15 @@ let district
 let polygon
 
 const remove = () => {
-  if (polygon) {
-    instance.$amapComponent.remove(polygon)
+  if (polygon && instance.$amapComponent?.remove) {
+    // instance.$amapComponent.remove(polygon)
+    polygon.destroy()
     polygon = null
   }
 }
 
 const drawBounds = (paths) => {
-  if (polygon) {
+  if (polygon && instance.$amapComponent?.remove) {
     instance.$amapComponent.remove(polygon)
     polygon = null
   }
