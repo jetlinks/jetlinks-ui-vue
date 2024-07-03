@@ -53,7 +53,7 @@
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
-                                :tooltip="{ title: '新增子菜单' }"
+                                :tooltip="{ title:  slotProps.level >= 3 ? '仅支持3级菜单' : '新增子菜单' }"
                                 :disabled="slotProps.level >= 3"
                                 @click="table.addChildren(slotProps)"
                             >

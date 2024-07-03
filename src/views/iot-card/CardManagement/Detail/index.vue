@@ -43,13 +43,19 @@
                             detail.deviceName
                         }}</j-descriptions-item>
                         <j-descriptions-item label="平台类型">{{
-                            detail.operatorPlatformType?.text
+                            platformTypeList.find(
+                                (item) =>
+                                    item.value ===
+                                    detail.operatorPlatformType?.text,
+                            )?.label || detail.operatorPlatformType?.text
                         }}</j-descriptions-item>
                         <j-descriptions-item label="平台名称">{{
                             detail.platformConfigName
                         }}</j-descriptions-item>
                         <j-descriptions-item label="运营商">{{
-                            detail.operatorName
+                            OperatorList.find(
+                                (item) => item.value === detail.operatorName,
+                            )?.label || detail.operatorName
                         }}</j-descriptions-item>
                         <j-descriptions-item label="类型">{{
                             detail.cardType?.text
@@ -187,6 +193,7 @@ import Guide from '@/views/iot-card/components/Guide.vue';
 import LineChart from '@/views/iot-card/components/LineChart.vue';
 import { queryFlow } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
+import { OperatorList, platformTypeList } from '@/views/iot-card/data';
 
 const route = useRoute();
 
@@ -230,18 +237,17 @@ const saveChange = (val: any) => {
     }
 };
 
-const getData = (
-    start: number,
-    end: number,
-): Promise<{ sortArray: any[]}> => {
+const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
     return new Promise((resolve) => {
         queryFlow(start, end, {
             orderBy: 'date',
-            terms: [{
-              column : "cardId",
-              termType: "eq",
-              value: route.params.id
-            }]
+            terms: [
+                {
+                    column: 'cardId',
+                    termType: 'eq',
+                    value: route.params.id,
+                },
+            ],
         }).then((resp: any) => {
             if (resp.status === 200) {
                 const sortArray = resp.result.sort(
@@ -254,7 +260,6 @@ const getData = (
             }
         });
     });
-
 };
 
 /**
@@ -284,15 +289,14 @@ const getDataTotal = () => {
             .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
         monthOptions.value = resp.sortArray;
-    })
+    });
     getData(yTime[0], yTime[1]).then((resp) => {
         yearTotal.value = resp.sortArray
             .reduce((r, n) => r + Number(n.value), 0)
             .toFixed(2);
-            yearOptions.value = resp.sortArray;
+        yearOptions.value = resp.sortArray;
     });
 };
-
 
 /**
  * 流量统计

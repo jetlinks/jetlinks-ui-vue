@@ -110,9 +110,10 @@ const flatObj = (obj: any, result: any) => {
 
 
 const updateAccessData = async (id: string, values: any, metadata: string) => {
-  const result: any = {};
-  flatObj(values, result);
-  const { storePolicy, ...extra } = result;
+  // const result: any = {};
+  // flatObj(values, result);
+  // const { storePolicy, ...extra } = result;
+  const { storePolicy, ...extra } = values;
   // 更新选择设备(设备接入)
   const accessObj = {
     ...productDetail.value,

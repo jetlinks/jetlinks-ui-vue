@@ -69,8 +69,10 @@
                     :precision="0"
                 />
             </j-form-item>
-
-            <j-form-item :name="['features']">
+            <j-form-item label="推送控制">
+                <a-switch v-model:checked="formData.pushControl"></a-switch>
+            </j-form-item>
+            <j-form-item :name="['features']" v-if="formData.pushControl"> 
                 <j-checkbox-group v-model:value="formData.features">
                     <j-checkbox value="changedOnly" name="type"
                         >只推送变化的数据</j-checkbox
@@ -107,7 +109,7 @@ const props = defineProps({
     provider: {
         type: String,
         default: '',
-    }
+    },
 });
 
 const emit = defineEmits(['change']);
@@ -118,7 +120,8 @@ const formData = ref({
     accessModes: [],
     interval: undefined,
     features: [],
-    valueType: undefined
+    valueType: undefined,
+    pushControl: false,
 });
 
 const bacnetValueType = ref<string[]>([])
@@ -134,10 +137,10 @@ const getIdAndType = async () => {
 
 const handleOk = async () => {
     const data = cloneDeep(formData.value);
-    const { accessModes, features, interval, valueType } = data;
+    const { accessModes, features, interval, valueType , pushControl } = data;
     const ischange =
         accessModes.length !== 0 ||
-        features.length !== 0 ||
+        pushControl ||
         Number(interval) === 0 ||
         !!interval || !!valueType;
     if (ischange) {
@@ -152,10 +155,10 @@ const handleOk = async () => {
                     );
                 }
             }
-            if(features.length !== 0) {
-                i.features = data.features
+            if (features.length !== 0) {
+                i.features = data.features;
             } else {
-                i.features = i.features.map((it: any) =>it.value)
+                i.features = [];
             }
             if (!!interval || Number(interval) === 0) {
                 i.interval = data.interval;
