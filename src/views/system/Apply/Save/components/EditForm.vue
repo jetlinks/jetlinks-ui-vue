@@ -663,7 +663,7 @@
                                     tooltip="第三方应用唯一标识匹配的秘钥"
                                 />
                             </template>
-                            <j-input
+                            <j-input-password   
                                 v-model:value="form.data.apiServer.secureKey"
                                 placeholder="请输入secureKey"
                             />
