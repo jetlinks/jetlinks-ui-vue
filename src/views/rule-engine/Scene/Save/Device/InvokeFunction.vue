@@ -103,6 +103,7 @@ const functionData = computed(() => {
         id: datum.id,
         name: datum.name,
         type: datum.valueType?.type || '-',
+        type: datum.valueType?.type || '-',
         format: datum.valueType?.format || undefined,
         options: handlePropertiesOptions(datum.valueType),
         value: undefined,
