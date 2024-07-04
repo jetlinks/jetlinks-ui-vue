@@ -217,7 +217,7 @@ import { getImage } from '@/utils/comm';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
 import dayjs, { Dayjs } from 'dayjs';
 
-const maxTagCount = ref(4);
+const maxTagCount = ref(5);
 
 const emit = defineEmits(['success']);
 const props = defineProps({

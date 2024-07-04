@@ -35,19 +35,23 @@ const statusRef = ref();
 const initList = [
     {
         key: 'Basic',
-        tab: '基础信息',
+        tab: '车辆信息',
     },
     {
         key: 'Running',
-        tab: '运行状态',
+        tab: '运行数据',
     },
     {
         key: 'Sub',
-        tab: '子设备',
+        tab: '智能设备',
     },
     {
         key: 'Forklift',
-        tab: '叉车监控',
+        tab: '实时监控',
+    },
+    {
+        key: 'Configuration',
+        tab: '采集配置',
     },
 ];
 const list = ref([...initList]);

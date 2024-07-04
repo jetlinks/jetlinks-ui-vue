@@ -15,6 +15,16 @@
                 :params="queryParams"
                 :defaultParams="defaultParams"
             >
+                <template #headerTitle>
+                    <j-space>
+                        <PermissionButton type="primary" @click="funBind">
+                            绑定
+                        </PermissionButton>
+                        <PermissionButton @click="funUnbinds">
+                            批量解绑
+                        </PermissionButton>
+                    </j-space>
+                </template>
                 <template #state="slotProps">
                     <BadgeStatus
                         :status="slotProps.state?.value"
@@ -36,10 +46,14 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <a style="color: #f84914"> 查看 </a>
+                    <a style="color: #f84914" @click="funSee(slotProps)">
+                        查看
+                    </a>
+                    <a style="margin-left: 10px; color: #f84914"> 解绑 </a>
                 </template>
             </j-pro-table>
         </FullPage>
+        <Modal ref="subDetailRef" />
     </div>
 </template>
 
@@ -47,6 +61,7 @@
 import { queryVehicleEquipmentList } from '@/api/data-report/vehicleReport';
 import { queryNoPagingPost } from '@/api/device/product';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import Modal from './Modal/index.vue';
 import dayjs from 'dayjs';
 
 const route = useRoute();
@@ -61,6 +76,8 @@ const defaultParams = {
     ],
 };
 const queryParams = ref({});
+const subDetailRef = ref();
+
 const columns = [
     {
         title: 'ID',
@@ -140,6 +157,20 @@ const columns = [
         scopedSlots: true,
     },
 ];
+
+const funBind = () => {
+    console.log('绑定');
+};
+
+const funUnbinds = () => {
+    console.log('批量绑定');
+};
+
+const funSee = (data: any) => {
+    nextTick(() => {
+        subDetailRef.value.show(data.deviceId);
+    });
+};
 
 const handleSearch = (e: any) => {
     queryParams.value = e;
