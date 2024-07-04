@@ -431,6 +431,7 @@ import { usePermissionStore } from 'store/permission';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
 import SyncModal from './Sync.vue';
+import { OperatorList } from '../data'
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -514,20 +515,7 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-                return [
-                    {
-                        label: '移动',
-                        value: '移动',
-                    },
-                    {
-                        label: '电信',
-                        value: '电信',
-                    },
-                    {
-                        label: '联通',
-                        value: '联通',
-                    },
-                ];
+                return OperatorList
             },
         },
     },
