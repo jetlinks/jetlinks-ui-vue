@@ -65,6 +65,7 @@
     "vite-plugin-monaco-editor": "^1.1.0",
     "vue": "3.3.4",
     "vue-cropper": "^1.0.9",
+    "vue-i18n": "^9.13.1",
     "vue-json-viewer": "^3.0.4",
     "vue-router": "^4.1.6",
     "vue3-json-viewer": "^2.2.2",

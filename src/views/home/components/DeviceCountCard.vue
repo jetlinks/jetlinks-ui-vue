@@ -1,16 +1,16 @@
 <template>
     <div class="device-count-container">
-        <h5 class="title">设备统计</h5>
-        <span class="detail" @click="jumpPage('device/DashBoard')"> 详情 </span>
+        <h5 class="title">{{ $t('components.DeviceCountCard.926510-0') }}</h5>
+        <span class="detail" @click="jumpPage('device/DashBoard')"> {{ $t('components.DeviceCountCard.926510-1') }} </span>
 
         <div class="box-list">
             <div class="box-item">
-                <div class="label">产品数量</div>
+                <div class="label">{{ $t('components.DeviceCountCard.926510-2') }}</div>
                 <div class="value">{{ projectNum }}</div>
                 <img src="/images/home/product.png" alt="" />
             </div>
             <div class="box-item">
-                <div class="label">设备数量</div>
+                <div class="label">{{ $t('components.DeviceCountCard.926510-3') }}</div>
                 <div class="value">{{ deviceNum }}</div>
                 <img src="/images/home/top-1.png" alt="" />
             </div>
@@ -21,7 +21,9 @@
 <script setup lang="ts">
 import { getDeviceCount_api, getProductCount_api } from '@/api/home';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const { jumpPage } = useMenuStore();
 const projectNum = ref(0);
 const deviceNum = ref(0);

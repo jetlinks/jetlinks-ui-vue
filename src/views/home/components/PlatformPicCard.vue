@@ -1,7 +1,7 @@
 <template>
     <div class="platform-pic-container">
         <div class="title">
-            <span>平台架构图</span>
+            <span>{{ $t('components.PlatformPicCard.926510-0') }}</span>
             <p>PLATFORM ARCHITECTURE DIAGRAM</p>
         </div>
       <div class='plaid'></div>
@@ -13,6 +13,9 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     image: String,
 });

@@ -14,7 +14,7 @@
             rel="noopener noreferrer"
             class="records"
           >
-            备案：{{ basis.recordNumber || '渝ICP备19017719号-1' }}
+            {{ $t('Login.index.265048-0') }}{{ basis.recordNumber || $t('Login.index.265048-1') }}
           </a>
         </div>
         <div class="right">
@@ -40,31 +40,31 @@
                   @finish="onFinish"
                   :rules="rules"
                 >
-                  <j-form-item label="账号" name="username">
+                  <j-form-item :label="$t('Login.index.265048-2')" name="username">
                     <j-input
                       v-model:value="form.username"
-                      placeholder="请输入账号"
+                      :placeholder="$t('Login.index.265048-3')"
                       :maxlength="64"
                     ></j-input>
                   </j-form-item>
-                  <j-form-item label="密码" name="password">
+                  <j-form-item :label="$t('Login.index.265048-4')" name="password">
                     <j-input-password
                       v-model:value="form.password"
-                      placeholder="请输入密码"
+                      :placeholder="$t('Login.index.265048-5')"
                       :maxlength="64"
                     ></j-input-password>
                   </j-form-item>
                   <j-form-item
                     v-if="codeConfig"
                     class="verifyCode"
-                    label="验证码"
+                    :label="$t('Login.index.265048-6')"
                     name="verifyCode"
                   >
                     <j-input
                       v-model:value="form.verifyCode"
                       autocomplete="off"
                       :maxlength="64"
-                      placeholder="请输入验证码"
+                      :placeholder="$t('Login.index.265048-7')"
                     >
                       <template #addonAfter>
                         <div>
@@ -89,7 +89,7 @@
                                                             ? -1
                                                             : 3600000)
                                             "
-                    >记住我
+                    >{{ $t('Login.index.265048-8') }}
                     </j-checkbox
                     >
                   </j-form-item>
@@ -101,14 +101,14 @@
                       class="login-form-button"
                       block
                     >
-                      登录
+                      {{ $t('Login.index.265048-9') }}
                     </j-button>
                   </j-form-item>
                 </j-form>
                 <div class="other" v-if="bindings.length">
                   <j-divider plain>
                     <div class="other-text">
-                      其他登录方式
+                      {{ $t('Login.index.265048-10') }}
                     </div>
                   </j-divider>
                   <div class="other-button">
@@ -202,7 +202,7 @@
           </div>
           <div v-if="basis.recommend === 'true'" class="bottom">
             <div class="view">
-              JETLINKS团队全新力作可视化大屏系统
+              {{ $t('Login.index.265048-11') }}
             </div>
             <div class="url">
               <div style="height: 33px">
@@ -213,7 +213,7 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                体验DEMO
+                {{ $t('Login.index.265048-12') }}
               </a>
             </div>
           </div>
@@ -265,7 +265,9 @@ import {encrypt} from '@/utils/encrypt';
 import {closeWs} from '@/utils/websocket';
 import {defaultImg, iconMap} from './utils'
 import {useRequest} from '@/hook'
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const store = useUserInfo();
 const systemStore = useSystem();
 const router = useRouter();
@@ -306,7 +308,7 @@ const rules = {
     {
       validator(_: any, value: string) {
         if (!value) {
-          return Promise.reject('请输入账号!');
+          return Promise.reject($t('Login.index.265048-13'));
         }
         return Promise.resolve();
       },
@@ -316,7 +318,7 @@ const rules = {
     {
       validator(_: any, value: string) {
         if (!value) {
-          return Promise.reject('请输入密码!');
+          return Promise.reject($t('Login.index.265048-14'));
         }
         return Promise.resolve();
       },
@@ -326,7 +328,7 @@ const rules = {
     {
       validator(_: any, value: string) {
         if (!value) {
-          return Promise.reject('请输入验证码!');
+          return Promise.reject($t('Login.index.265048-15'));
         }
         return Promise.resolve();
       },
