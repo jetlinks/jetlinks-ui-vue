@@ -511,6 +511,12 @@ const getProductList = async () => {
     };
     const { result } = await DeviceApi.queryProductList(params);
     productList.value = result;
+    if(result.length && !route.query.id){
+        formData.value.productId = result[0]?.id
+        formData.value.others.access_pwd = result[0]?.configuration?.access_pwd
+        formData.value.streamMode = result[0]?.configuration?.stream_mode
+    }
+   
 };
 
 const handleProductChange = () => {
