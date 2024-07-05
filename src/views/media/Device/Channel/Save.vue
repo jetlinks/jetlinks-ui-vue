@@ -74,7 +74,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24" v-if="route.query.type === 'fixed-media'">
+                <j-col :span="24" v-if="['fixed-media','media-plugin'].includes(route.query.type)">
                     <j-form-item
                         name="media_url"
                         :rules="[

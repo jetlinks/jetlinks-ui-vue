@@ -230,9 +230,6 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
-        search: {
-            type: 'string',
-        },
         ellipsis: true,
     },
     {
