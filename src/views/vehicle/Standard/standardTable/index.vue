@@ -1,5 +1,5 @@
 <template>
-    <div class="product-container">
+    <div class="container">
         <pro-search
             :columns="columns"
             @search="(params:any)=>queryParams = {...params}"
@@ -10,7 +10,6 @@
                 ref="tableRef"
                 :request="request"
                 :scroll="{
-                    x: true,
                     y: 610,
                 }"
                 model="TABLE"
@@ -59,7 +58,6 @@
 import PermissionButton from '@/components/PermissionButton/index.vue';
 import SaveDialog from '../components/SaveDialog.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
-import { unBindDeviceOrProduct_api } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 
 const title = ref('添加');
@@ -111,23 +109,22 @@ const request = (params: Record<string, any>) => {
 
 const columns = [
     {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-        ellipsis: true,
+        title: '名称',
+        dataIndex: 'name',
+        key: 'name',
         fixed: 'left',
+        ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '名称',
-        dataIndex: 'name',
-        key: 'name',
+        title: '标识',
+        dataIndex: 'id',
+        key: 'id',
         ellipsis: true,
         search: {
             type: 'string',
-            first: true,
         },
     },
     {
@@ -207,35 +204,12 @@ const table = {
         });
     },
     clickDelete: (row?: any) => {
-        const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1)
-            return onlyMessage('请勾选需要删除的数据', 'warning');
-        const params = [
-            {
-                targetType: 'org',
-                targetId: props.parentId,
-                assetType: 'product',
-                assetIdList: ids,
-            },
-        ];
-        unBindDeviceOrProduct_api('product', params).then(() => {
-            tableData._selectedRowKeys = [];
-            onlyMessage('操作成功');
-            refresh();
-        });
+        const id = row.id;
+        console.log('删除成功', id);
     },
 };
 
 table.init();
-
-const dialogs = reactive({
-    selectIds: [] as string[],
-    permissList: [] as string[],
-    addShow: false,
-    editShow: false,
-    nextShow: false,
-});
-
 watch(
     () => props.parentId,
     () => {
@@ -243,17 +217,10 @@ watch(
         tableData.selectedRows = [];
     },
 );
-
-watch(
-    () => dialogs.addShow,
-    (val: boolean) => {
-        if (!val) tableData.selectedRows = [];
-    },
-);
 </script>
 
 <style lang="less" scoped>
-.product-container {
+.container {
     :deep(.ant-table td) {
         white-space: nowrap;
     }

@@ -420,7 +420,6 @@ const submitData = () => {
             loading.value = true;
             if (props.isAdd === 1) {
                 const { deviceIds, ...params } = form.value;
-                console.log('params', { vehicleEntity: params, deviceIds });
                 saveVehicleDevices({ vehicleEntity: params, deviceIds })
                     .then((res: any) => {
                         if (res.status === 200) {
@@ -437,7 +436,6 @@ const submitData = () => {
                     });
                 //新增
             } else if (props.isAdd === 2) {
-                console.log('params update', form.value);
                 const { deviceIds, ...params } = form.value;
                 saveVehicleDevices({ vehicleEntity: params, deviceIds })
                     .then((res: any) => {

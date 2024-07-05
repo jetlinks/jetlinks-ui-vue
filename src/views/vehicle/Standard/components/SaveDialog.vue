@@ -2,11 +2,12 @@
     <j-modal
         :visible="visible"
         :title="title"
+        :maskClosable="false"
+        destroy-on-close
         width="520px"
         @ok="handleOk"
-        :maskClosable="false"
         @cancel="cancel"
-        :loading="loading"
+        :confirmLoading="loading"
     >
         <j-form layout="vertical" :model="form" :rules="rules" ref="formRef">
             <j-form-item label="名称" name="name">
