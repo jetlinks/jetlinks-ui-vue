@@ -2,7 +2,7 @@
 <template>
     <page-container>
         <div class="device-channel-warp">
-            <div class="left-warp" v-if="route.query.type === 'gb28181-2016'">
+            <div class="left-warp" v-if="['gb28181-2016', 'onvif'].includes(route.query.type)">
                 <div class="left-content" :class="{ active: show }">
                     <Tree
                         :deviceId="deviceId"

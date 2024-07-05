@@ -58,7 +58,7 @@
                 </j-col>
                 <j-col
                     :span="24"
-                    v-if="['gb28181-2016', 'onvif'].includes(route.query.type)"
+                    v-if="typeOne"
                 >
                     <j-form-item
                         label="厂商"
@@ -74,7 +74,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24" v-if="['fixed-media','media-plugin'].includes(route.query.type)">
+                <j-col :span="24" v-if="typeTow">
                     <j-form-item
                         name="media_url"
                         :rules="[
@@ -102,7 +102,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="12" v-if="!formData.id">
+                <j-col :span="12" v-if="typeTow">
                     <j-form-item
                         name="media_username"
                         label="用户名"
@@ -114,7 +114,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="12" v-if="!formData.id">
+                <j-col :span="12" v-if="typeTow">
                     <j-form-item
                         name="media_password"
                         label="密码"
@@ -138,7 +138,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24" v-if="['gb28181-2016', 'onvif'].includes(route.query.type)">
+                <j-col :span="24" v-if="typeOne">
                     <j-form-item label="云台类型" name="ptzType">
                         <j-select
                             v-model:value="formData.ptzType"
@@ -196,6 +196,12 @@ const _vis = computed({
     set: (val) => emit('update:visible', val),
 });
 
+const typeOne = computed(()=>{
+    return ['gb28181-2016', 'onvif'].includes(route.query.type)
+})
+const typeTow = computed(()=>{
+    return ['fixed-media','media-plugin'].includes(route.query.type)
+})
 const formRef = ref();
 const formData = ref({
     id: undefined,
