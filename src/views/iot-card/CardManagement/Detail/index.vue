@@ -226,7 +226,7 @@
                 </j-col>
             </j-row>
         </div>
-        <JEmpty></JEmpty>
+        <JEmpty v-else></JEmpty>
     </page-container>
 </template>
 
