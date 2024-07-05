@@ -1,7 +1,7 @@
 <template>
   <template v-if="isPermission">
     <template v-if="popConfirm">
-      <j-popconfirm :disabled="!isPermission || props.disabled" :overlayStyle='{width: "220px", zIndex: 1075 }' v-bind="popConfirm">
+      <!-- <j-popconfirm :disabled="!isPermission || props.disabled" :overlayStyle='{width: "220px", zIndex: 1075 }' v-bind="popConfirm">
         <j-tooltip v-if="tooltip" v-bind="tooltip">
           <slot v-if="noButton"></slot>
           <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
@@ -17,12 +17,28 @@
             <slot name="icon"></slot>
           </template>
         </j-button>
-      </j-popconfirm>
+      </j-popconfirm> -->
+      <a-modal v-if="modalVisible"></a-modal>
+      <j-tooltip v-if="tooltip" v-bind="tooltip">
+          <slot v-if="noButton"></slot>
+          <j-button v-else v-bind="props" :disabled="_isPermission"  :style="props.style"  @click="modalVisible = true">
+            <slot></slot>
+            <template #icon>
+              <slot name="icon"></slot>
+            </template>
+          </j-button>
+        </j-tooltip>
+        <j-button v-else v-bind="props" :disabled="_isPermission" @click="modalVisible = true" >
+          <slot></slot>
+          <template #icon>
+            <slot name="icon"></slot>
+          </template>
+        </j-button>
     </template>
     <template v-else-if="tooltip">
       <j-tooltip v-bind="tooltip">
         <slot v-if="noButton"></slot>
-        <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
+        <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style"> 
           <slot></slot>
           <template #icon>
             <slot name="icon"></slot>
@@ -95,7 +111,7 @@ const props = defineProps({
   },
   ...omit(buttonProps(), 'icon')
 })
-
+const modalVisible = ref(false)
 // const { tooltip, popConfirm, hasPermission, noButton, ..._buttonProps } = props;
 
 const permissionStore = usePermissionStore()
