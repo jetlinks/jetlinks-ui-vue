@@ -31,12 +31,11 @@
 <script setup lang="ts">
 import { debounce } from 'lodash-es';
 import ChannelApi from '@/api/media/channel';
-import DeviceApi from '@/api/media/device';
 
 interface TreeProps {
-    deviceId: string;
     onSelect: (id: string) => void;
     onTreeLoad: (type: boolean) => void;
+    deviceData: any;
 }
 
 const props = defineProps<TreeProps>();
@@ -51,36 +50,30 @@ const getTreeData = async (id: string, data?: any) => {
     treeData.value = treeData.value;
 };
 
-/**
- * 获取设备详情
- * @param id
- */
-const getDeviceDetail = async (id: string) => {
-    const deviceResp = await DeviceApi.detail(id);
-    if (deviceResp.status === 200) {
-        treeData.value = [
-            {
-                id,
-                name: deviceResp.result.name,
-                children: [],
-            },
-        ];
-        selectedKeys.value = [id];
-        getTreeData(props.deviceId, {});
-    }
-};
-
 const queryTree = debounce((e: any) => {
-    getTreeData(props.deviceId, {
+    getTreeData(props.deviceData.id, {
         terms: [
             { column: 'name', termType: 'like', value: `%${e.target.value}%` },
         ],
     });
 }, 300);
 
-watchEffect(() => {
-    getDeviceDetail(props.deviceId);
-});
+watch(
+    () => props.deviceData,
+    () => {
+        treeData.value = [
+            {
+                id: props.deviceData.id,
+                name: props.deviceData.name,
+                children: [],
+            },
+        ];
+        selectedKeys.value = [props.deviceData.id];
+        getTreeData(props.deviceData.id, {});
+    },{
+        deep:true
+    }
+);
 </script>
 
 <style lang="less" scoped>
