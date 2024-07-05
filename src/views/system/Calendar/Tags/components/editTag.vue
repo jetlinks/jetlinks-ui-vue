@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        title="新增标签"
+        :title="editType === 'add' ? '新增标签' : '编辑标签'"
         @cancel="emit('closeEditTag')"
         @ok="submit"
     >
