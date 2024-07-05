@@ -37,8 +37,8 @@
                     >
                         <template #headerTitle>
                             <j-tooltip
-                                v-if="route?.query.type === 'gb28181-2016'"
-                                title="接入方式为GB/T28281时，不支持新增"
+                                v-if="['gb28181-2016', 'onvif'].includes(route.query.type)"
+                                :title="`接入方式为${route.query.type === 'onvif' ? 'Onvif' : 'GB/T28181'}时，不支持新增`"
                             >
                                 <j-button type="primary" disabled>
                                     新增
