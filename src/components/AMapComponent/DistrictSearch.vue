@@ -43,9 +43,10 @@ let district
 let polygon
 
 const remove = () => {
-  if (polygon && instance.$amapComponent?.remove) {
-    // instance.$amapComponent.remove(polygon)
-    polygon.destroy()
+  if (polygon && instance.$amapComponent) {
+    if (instance.$amapComponent.getLayers().length) {
+      instance.$amapComponent.remove(polygon)
+    }
     polygon = null
   }
 }

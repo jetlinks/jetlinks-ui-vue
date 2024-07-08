@@ -26,8 +26,10 @@ const instance = useMap()
 let geoJsonLayer
 
 const remove = () => {
-  if (geoJsonLayer) {
-    instance.$amapComponent.remove(geoJsonLayer)
+  if (geoJsonLayer && instance.$amapComponent) {
+      if (instance.$amapComponent.getLayers().length) {
+        instance.$amapComponent.remove(geoJsonLayer)
+      }
     geoJsonLayer = null
   }
 }
