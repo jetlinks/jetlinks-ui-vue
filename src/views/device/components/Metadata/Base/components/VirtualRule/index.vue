@@ -1,6 +1,7 @@
 <template>
     <j-form ref="formRef" layout="vertical" :model="formData">
         <ReadType
+            v-if="source !== 'rule'"
             v-model:value="formData.type"
             :disabled="source !== 'device'"
             :options="typeOptions"
