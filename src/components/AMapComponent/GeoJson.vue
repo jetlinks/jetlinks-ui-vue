@@ -4,7 +4,7 @@
 
 <script setup>
 import { useMap } from './useMap'
-import { maxBy, minBy } from 'lodash-es'
+import { max, min } from 'lodash-es'
 
 defineOptions({
   name: 'GeoJson'
@@ -59,10 +59,13 @@ const drawBounds = () => {
     }, [])
 
     if (points.length) {
-      const maxLng = maxBy(points, (e) => e[0])[0]
-      const maxLat = maxBy(points, (e) => e[1])[1]
-      const minLng = minBy(points, (e) => e[0])[0]
-      const minLat = minBy(points, (e) => e[1])[1]
+      const lngArr = points.map(lnglat => lnglat[0])
+      const latArr = points.map(lnglat => lnglat[1])
+
+      const maxLng = max(lngArr)
+      const maxLat = max(latArr)
+      const minLng = min(lngArr)
+      const minLat = min(latArr)
       const southWest = new AMap.LngLat(maxLng, maxLat)
       const northEast = new AMap.LngLat(minLng, minLat)
       const bounds = new AMap.Bounds(southWest, northEast)
