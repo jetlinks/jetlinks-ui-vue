@@ -297,6 +297,7 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
 
 export const handleActiveBranches = (branches: any[], activeKeys: any[]) => {
     const branchesNames: string[] = []
+    const activeKeySet = new Set(activeKeys)
     let invalid = false
 
     branches.forEach((item) => {
@@ -304,7 +305,13 @@ export const handleActiveBranches = (branches: any[], activeKeys: any[]) => {
 
         item.children.forEach(child => {
             invalid = child.serial?.some(serial => !serial.actionId)
-            hasAlarmId = child.serial?.some(serial => activeKeys.includes(serial.actionId)) || child.parallel?.some(parallel => activeKeys.includes(parallel.actionId))
+            if (hasAlarmId === false) {
+
+                const status = child.serial?.some(serial => activeKeySet.has(serial.actionId)) || child.parallel?.some(parallel => activeKeySet.has(parallel.actionId))
+                if (status) {
+                    hasAlarmId = true
+                }
+            }
         })
 
         if (hasAlarmId) {

@@ -34,12 +34,8 @@
                   {{ value.name }}
                 </span>
               </Ellipsis>
-              <div v-if="showBindTags && activeBranches.length">
-                <a-tag v-for="tag in activeBranches">
-                  <Ellipsis style='max-width: 120px;'>
-                    {{ tag }}
-                  </Ellipsis>
-                </a-tag>
+              <div style="margin-top: 8px;" v-if="showBindTags && activeBranches.length">
+                <Tags :tags="activeBranches"/>
               </div>
               <Ellipsis v-else>
                 <div class="subTitle">
@@ -51,7 +47,7 @@
               </Ellipsis>
 
             </div>
-            <div class="condition-name">
+            <div class="condition-name" v-if="showRule">
               <AddButton
                 v-if="value.options || value.triggerType === 'manual'"
                 style='width: 100%;padding: 8px 12px; border-radius: 4px'
@@ -131,6 +127,7 @@ import BranchesTabs from './BranchesTabs.vue'
 import {PropType} from 'vue';
 import {handleActiveBranches, handleGroupAndFilter, typeMap} from './utils'
 import {useMenuStore} from "@/store/menu";
+import Tags from './tags.vue'
 
 type EmitProps = {
   (e: 'click'): void;
@@ -188,6 +185,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  showRule: {
+    type: Boolean,
+    default: true
+  },
   maskStyle: {
     type: Object,
     default: undefined
@@ -243,7 +244,6 @@ const jumpView = () => {
     `${window.location.origin + window.location.pathname}#${url}?triggerType=${props.value.triggerType}&id=${props.value.id}`,
   );
   tab.onTabSaveSuccess = (value: any) => {
-    console.log('', value)
     if (value.success) {
       emit('reload')
     }
@@ -253,6 +253,10 @@ const jumpView = () => {
 const onShowBranchesTabs = () => {
   showBranchesVisible.value = !showBranchesVisible.value
 }
+
+watch(() => props.value.id, () => {
+  showBranchesVisible.value = false
+})
 
 </script>
 

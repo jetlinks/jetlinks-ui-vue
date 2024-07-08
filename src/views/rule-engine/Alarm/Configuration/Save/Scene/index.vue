@@ -45,6 +45,7 @@
           :showMask="false"
           :showBranches="false"
           :showBindTags="true"
+          :showRule="false"
           @click="handleView(slotProps)"
         >
           <div class="scene-view">
@@ -157,6 +158,7 @@ const closeSave = () => {
 const saveSuccess = () => {
   visible.value = false;
   actionRef.value.reload();
+  reload()
 };
 /**
  * 查看
@@ -184,14 +186,14 @@ const sceneCancel = () => {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   font-size: 16px;
   height: 100%;
-  color: #fff;
+  color: transparent;
   padding-top: 30px;
   background-color: rgba(#000, 0);
   cursor: pointer;
@@ -199,6 +201,7 @@ const sceneCancel = () => {
 
   &:hover {
     background-color: rgba(#000, 0.4);
+    color: #fff;
   }
 }
 </style>
