@@ -2,7 +2,7 @@
   <ResizeObserver
     :onResize="onResize"
   >
-    <div class="tags-warp">
+    <div class="tags-warp" :style="styles">
         <div v-for="item in tagOptions" class="tags-item">
           <Ellipsis>
             {{ item }}
@@ -22,6 +22,10 @@ const props = defineProps({
   tags: {
     type: Array,
     default: () => ([])
+  },
+  styles: {
+    type: Object,
+    default: () => ({})
   }
 })
 

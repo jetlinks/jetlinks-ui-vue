@@ -423,6 +423,7 @@ const refreshTable = () => {
 
 .card-item-content-text {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 </style>

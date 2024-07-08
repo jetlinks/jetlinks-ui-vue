@@ -34,7 +34,10 @@
                   {{ value.name }}
                 </span>
               </Ellipsis>
-              <div style="margin-top: 8px;" v-if="showBindTags && activeBranches.length">
+              <div v-if="showBindTags && activeBranches.length">
+                <div  style="margin-top: 16px; margin-bottom: 8px" class="card-item-content-text">
+                  关联条件
+                </div>
                 <Tags :tags="activeBranches"/>
               </div>
               <Ellipsis v-else>
@@ -74,11 +77,7 @@
                 <div>
                   当前告警已关联：
                 </div>
-                <div>
-                  <j-ellipsis>
-                    {{ activeBranches.join(',')}}
-                  </j-ellipsis>
-                </div>
+                <Tags :tags="activeBranches" :styles="{ justifyContent: 'center' }"/>
               </slot>
             </div>
           </div>
@@ -460,12 +459,6 @@ watch(() => props.value.id, () => {
       cursor: pointer;
       transition: background-color 0.3s;
 
-
-      &.mask-hover:hover {
-        background-color: rgba(#000, 0.01);
-        color: transparent;
-      }
-
       .mask-content {
         display: flex;
         align-items: center;
@@ -475,6 +468,17 @@ watch(() => props.value.id, () => {
         padding: 24px !important;
         flex-direction: column;
       }
+
+      &.mask-hover:hover {
+        background-color: rgba(#000, 0.01);
+        color: transparent;
+
+        .mask-content {
+          display: none;
+        }
+      }
+
+
 
       &.branches-tabs-mask {
         bottom: 0;
