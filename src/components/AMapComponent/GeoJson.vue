@@ -4,6 +4,7 @@
 
 <script setup>
 import { useMap } from './useMap'
+import { maxBy, minBy } from 'lodash-es'
 
 defineOptions({
   name: 'GeoJson'
@@ -35,24 +36,38 @@ const drawBounds = () => {
 
   if (!props.geo) return
 
-  console.log('drawBounds', props.geo)
   geoJsonLayer = new AMap.GeoJSON({
-    geoJSON: props.geo
+    geoJSON: props.geo,
+    getPolygon: (geojson, lnglats) => {
+      return new AMap.Polygon({
+        path: lnglats,
+        fillOpacity: 0.25,// 面积越大透明度越高
+        strokeColor: '#0091ea',
+        fillColor: '#80d8ff'
+      });
+    }
   })
 
   instance.$amapComponent.add(geoJsonLayer)
 
   if (props.view) {
-    // const points = props.geo.features.reduce((prev, next) => {
-    //   const coordinates = next.geometry.coordinates[0]
-    //   console.log(coordinates[0])
-    //   prev.push(...coordinates[0])
-    //   return prev
-    // }, [])
-    //
-    // console.log(points)
-    // const bounds = new AMap.Bounds(points)
-    // instance.$amapComponent.setBounds(bounds)
+
+    const points = props.geo.features.reduce((prev, next) => {
+      const coordinates = next.geometry.coordinates
+      prev.push(...coordinates[0])
+      return prev
+    }, [])
+
+    if (points.length) {
+      const maxLng = maxBy(points, (e) => e[0])[0]
+      const maxLat = maxBy(points, (e) => e[1])[1]
+      const minLng = minBy(points, (e) => e[0])[0]
+      const minLat = minBy(points, (e) => e[1])[1]
+      const southWest = new AMap.LngLat(maxLng, maxLat)
+      const northEast = new AMap.LngLat(minLng, minLat)
+      const bounds = new AMap.Bounds(southWest, northEast)
+      instance.$amapComponent.setBounds(bounds)
+    }
   }
 }
 
