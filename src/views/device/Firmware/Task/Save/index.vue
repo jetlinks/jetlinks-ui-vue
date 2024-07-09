@@ -6,6 +6,7 @@
         :visible="true"
         width="700px"
         :confirm-loading="loading"
+        :maskClosable="false"
         @cancel="handleCancel"
         @ok="handleOk"
     >
@@ -90,6 +91,7 @@
                         <SelectDevices
                             v-model:modelValue="formData.deviceId"
                             :data="data"
+                            :productId="productId"
                         ></SelectDevices> </j-form-item
                 ></j-col>
                 <j-col :span="24">
@@ -117,6 +119,14 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    firmwareId: {
+        type: String,
+        default: '',
+    },
+    productId: {
+        type: String,
+        default: '',
+    },
 });
 
 const formRef = ref<FormInstance>();
@@ -126,8 +136,8 @@ const loading = ref(false);
 const productOptions = ref([]);
 const emit = defineEmits(['change']);
 
-const firmwareId = route.query.id;
-const productId = route.query.productId;
+const firmwareId = props.firmwareId;
+const productId = props.productId;
 const view = props.data.view;
 
 const formData: any = ref({
@@ -166,7 +176,7 @@ const onSubmit = async () => {
         productId,
     }).finally(() => {
         loading.value = false;
-    })
+    });
     resp.success && emit('change', true);
 };
 
