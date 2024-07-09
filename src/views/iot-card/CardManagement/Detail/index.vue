@@ -513,7 +513,7 @@ const getDetail = () => {
         if (resp.success) {
             detail.value = resp.result;
 
-            if (resp.result.cardStateType?.value === 'deactivate') {
+            if (resp.result.cardStateType?.value === 'deactivate' && detail.value.operatorName === 'onelink') {
                 deactivateData.show = true;
                 //   获取停机原因
                 queryDeactivate(cardId.value).then((deacResp: any) => {

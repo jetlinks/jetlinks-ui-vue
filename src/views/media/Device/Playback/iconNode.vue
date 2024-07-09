@@ -81,4 +81,8 @@ const handleClick = () => {
         props.onDownLoad();
     }
 };
+
+watch(()=>props.item,()=>{
+    status.value = props.item?.isServer ? 2 : 0
+})
 </script>

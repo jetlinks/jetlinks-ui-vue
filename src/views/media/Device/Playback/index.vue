@@ -167,7 +167,6 @@
                                         </div>
                                     </j-list-item>
                                 </template>
-                                <div></div>
                             </j-list>
                         </div>
                     </j-spin>
