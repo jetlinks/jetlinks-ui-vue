@@ -22,19 +22,19 @@
             </PermissionButton>
         </template>
         <template #headerCell="{ column }">
-                <template v-if="column.key === 'state'">
-                    <span> 状态 </span>
-                    <j-switch
-                        style="margin-left: 10px"
-                        v-model:checked="checkedAll"
-                        @change="updateAllRowData('state', $event)"
-                        checkedValue="enabled"
-                        unCheckedValue="disabled"
-                        checked-children="开启"
-                        un-checked-children="关闭"
-                    />
-                </template>
+            <template v-if="column.key === 'state'">
+                <span> 状态 </span>
+                <j-switch
+                    style="margin-left: 10px"
+                    v-model:checked="checkedAll"
+                    @change="updateAllRowData('state', $event)"
+                    checkedValue="enabled"
+                    unCheckedValue="disabled"
+                    checked-children="开启"
+                    un-checked-children="关闭"
+                />
             </template>
+        </template>
         <template #select="{ data }">
             <j-select
                 v-model:value="data.record.select"
@@ -88,22 +88,26 @@
                 }"
                 bordered
             >
-            <template #headerCell="{ column }">
-                <template v-if="column.key === 'state'">
-                    <span> 状态 </span>
-                    <j-switch
-                        style="margin-left: 10px"
-                        v-model:checked="checkedDetail"
-                        @change="updateAllDetailData('state', $event)"
-                        checkedValue="enabled"
-                        unCheckedValue="disabled"
-                        checked-children="开启"
-                        un-checked-children="关闭"
-                    />
+                <template #headerCell="{ column }">
+                    <template v-if="column.key === 'state'">
+                        <span> 状态 </span>
+                        <j-switch
+                            style="margin-left: 10px"
+                            v-model:checked="checkedDetail"
+                            @change="updateAllDetailData('state', $event)"
+                            checkedValue="enabled"
+                            unCheckedValue="disabled"
+                            checked-children="开启"
+                            un-checked-children="关闭"
+                        />
+                    </template>
                 </template>
-            </template>
                 <template #isDistribute="{ data }">
-                    <span>{{ data.record.select && data.record?.targetAttribute.targetId === data.record.originalId ? '是':'否' }}</span>
+                    <span>{{
+                        valueExistsInArray(mapOptions, data.record)
+                            ? '是'
+                            : '否'
+                    }}</span>
                 </template>
                 <template #select="{ data }">
                     <j-select
@@ -143,8 +147,8 @@ const DelTableRef = ref();
 const deviceMapDetail = ref<any>([]);
 const mapOptions = ref<any>([]);
 const deviceMapDetailOne = ref<any>();
-const checkedAll = ref('disabled')
-const checkedDetail = ref('disabled')
+const checkedAll = ref('disabled');
+const checkedDetail = ref('disabled');
 
 const State = reactive({
     openView: false,
@@ -155,7 +159,7 @@ const State = reactive({
         // console.log('props.deviceDetailList',props.deviceDetailList)
         deviceMapDetailOne.value.deviceTargetAttribute = deviceMapDetail.value;
 
-        const getDeviceMapDeOne = deviceMapDetailOne.value
+        const getDeviceMapDeOne = deviceMapDetailOne.value;
         const arr = props.deviceDetailList.map((item: any) => {
             if (item.originalId === getDeviceMapDeOne.originalId) {
                 return {
@@ -164,14 +168,13 @@ const State = reactive({
                     select: getDeviceMapDeOne?.select,
                     state: getDeviceMapDeOne?.state,
                     bln: true,
-                    targetAttribute: 
-                    getDeviceMapDeOne?.targetAttribute,
+                    targetAttribute: getDeviceMapDeOne?.targetAttribute,
                     deviceTargetAttributeMap:
-                    getDeviceMapDeOne?.deviceTargetAttributeMap,
+                        getDeviceMapDeOne?.deviceTargetAttributeMap,
                     deviceTargetAttribute:
-                    getDeviceMapDeOne?.deviceTargetAttribute,
+                        getDeviceMapDeOne?.deviceTargetAttribute,
                 };
-            }else{
+            } else {
                 return item;
             }
         });
@@ -185,7 +188,7 @@ const State = reactive({
 });
 
 const props = defineProps({
-    deviceIdsMap:{
+    deviceIdsMap: {
         type: Object,
         default: [],
     },
@@ -207,33 +210,33 @@ const props = defineProps({
     },
     allDataMapping: {
         type: Object,
-        default: [], 
+        default: [],
     },
     allDeviceMapping: {
         type: Object,
-        default: [], 
+        default: [],
     },
     selectProductId: {
         type: String,
-        default: '', 
+        default: '',
     },
 });
 // const deviceDetailList = ref<any>(props.deviceDetailList);
 
 const columns = [
-    { title: '原设备名称', dataIndex: 'originalName',key: 'originalName' },
-    { title: '原设备标识', dataIndex: 'originalId',key: 'originalId' },
-    { title: '目标设备', dataIndex: 'select',key: 'select' },
-    { title: '状态', dataIndex: 'state' ,key: 'state', width: 200 },
-    { title: '操作', dataIndex: 'action' ,key: 'action', width: 100 },
+    { title: '原设备名称', dataIndex: 'originalName', key: 'originalName' },
+    { title: '原设备标识', dataIndex: 'originalId', key: 'originalId' },
+    { title: '目标设备', dataIndex: 'select', key: 'select' },
+    { title: '状态', dataIndex: 'state', key: 'state', width: 200 },
+    { title: '操作', dataIndex: 'action', key: 'action', width: 100 },
 ];
 
 const DetailColumns = [
-    { title: '原属性名称', dataIndex: 'originalName',key: 'originalName' },
-    { title: '原属性标识', dataIndex: 'originalId' ,key: 'originalId'},
-    { title: '总工厂下发属性', dataIndex: 'isDistribute',key: 'isDistribute'},
-    { title: '目标属性', dataIndex: 'select',key: 'select' },
-    { title: '状态', dataIndex: 'state' ,key: 'state', width: 200 },
+    { title: '原属性名称', dataIndex: 'originalName', key: 'originalName' },
+    { title: '原属性标识', dataIndex: 'originalId', key: 'originalId' },
+    { title: '总工厂下发属性', dataIndex: 'isDistribute', key: 'isDistribute' },
+    { title: '目标属性', dataIndex: 'select', key: 'select' },
+    { title: '状态', dataIndex: 'state', key: 'state', width: 200 },
 ];
 
 //设备状态管理
@@ -254,10 +257,13 @@ const updateAllDetailData = (dataIndex: string, event: any) => {
 const saveRowData = (index: any, dataIndex: string, event: any, data?: any) => {
     if (dataIndex === 'select') {
         if (event) {
-            props.deviceDetailList[index]['deviceTargetAttribute'] = data.record?.deviceTargetAttribute;
-            props.deviceDetailList[index]['deviceTargetAttributeMap'] = data.record?.deviceTargetAttributeMap;
+            props.deviceDetailList[index]['deviceTargetAttribute'] =
+                data.record?.deviceTargetAttribute;
+            props.deviceDetailList[index]['deviceTargetAttributeMap'] =
+                data.record?.deviceTargetAttributeMap;
             props.deviceDetailList[index][dataIndex] = event;
-            props.deviceDetailList[index]['targetAttribute'] = splitHumidity(event);
+            props.deviceDetailList[index]['targetAttribute'] =
+                splitHumidity(event);
         } else {
             props.deviceDetailList[index][dataIndex] = event;
             props.deviceDetailList[index]['targetAttribute'] = undefined;
@@ -301,15 +307,24 @@ const handleSave = () => {
         state: item.state,
     }));
     // console.log('props.allDataMapping',props.allDataMapping)
-    if (props.allDataMapping.length>0 && props.allDeviceMapping.length>0) {
-        if(!props.selectProductId){
-            onlyMessage('保存失败','error');
-            return
+    if (props.allDataMapping.length > 0 && props.allDeviceMapping.length > 0) {
+        if (!props.selectProductId) {
+            onlyMessage('保存失败', 'error');
+            return;
         }
-        const newDataMapping = upsert(props.allDataMapping, { id: props.selectProductId, configList: getData })
-        const newDeviceMapping = upsert(props.allDeviceMapping, { id: props.selectProductId, configList: getDeviceData })
+        const newDataMapping = upsert(props.allDataMapping, {
+            id: props.selectProductId,
+            configList: getData,
+        });
+        const newDeviceMapping = upsert(props.allDeviceMapping, {
+            id: props.selectProductId,
+            configList: getDeviceData,
+        });
 
-        let senSaveDataMap = { dataMapping: newDataMapping, deviceMapping: newDeviceMapping };
+        let senSaveDataMap = {
+            dataMapping: newDataMapping,
+            deviceMapping: newDeviceMapping,
+        };
         // console.log('senSaveDataMap1', senSaveDataMap);
         getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
             if (res.status === 200) {
@@ -318,11 +333,16 @@ const handleSave = () => {
             }
         });
     } else {
-        if(!props.selectProductId){
-            onlyMessage('保存失败','error');
-            return
+        if (!props.selectProductId) {
+            onlyMessage('保存失败', 'error');
+            return;
         }
-        let senSaveDataMap = { dataMapping: [{ id: props.selectProductId, configList: getData }], deviceMapping: [{ id: props.selectProductId, configList: getDeviceData }] };
+        let senSaveDataMap = {
+            dataMapping: [{ id: props.selectProductId, configList: getData }],
+            deviceMapping: [
+                { id: props.selectProductId, configList: getDeviceData },
+            ],
+        };
         // console.log('senSaveDataMap2', senSaveDataMap);
         getDataSandMap(props.sendId, senSaveDataMap).then((res: any) => {
             if (res.status === 200) {
@@ -343,7 +363,7 @@ const upsert = (arr: any, obj: any) => {
         // 如果存在，更新
         return [...arr.slice(0, index), obj, ...arr.slice(index + 1)];
     }
-}
+};
 
 const splitHumidity = (data: any) => {
     const match = data.match(/^([^(]+)\((.*)\)$/);
@@ -365,14 +385,14 @@ const handleMap = (data: any) => {
     // console.log('data', data);
     deviceMapDetailOne.value = data.record;
     deviceMapDetail.value = data.record.deviceTargetAttribute;
-    // console.log('props.deviceIdsMap',props.deviceIdsMap)
-    if(data.record.targetAttribute){
+    if (data.record.targetAttribute) {
         let mapOptionDevice = props.deviceIdsMap.find(
-            (item: any) => item.targetId === data.record.targetAttribute.targetId,
-        )
+            (item: any) =>
+                item.targetId === data.record.targetAttribute.targetId,
+        );
         mapOptions.value = mapOptionDevice?.deviceTargetAttributeMap || [];
-    }else{
-        mapOptions.value = []
+    } else {
+        mapOptions.value = [];
     }
     if (!data.record.bln) {
         // console.log('bln',data.record.bln)
@@ -392,7 +412,7 @@ const handleMap = (data: any) => {
                     } else {
                         return {
                             ...item,
-                        }
+                        };
                     }
                 },
             );
@@ -401,6 +421,16 @@ const handleMap = (data: any) => {
         }
     }
     State.openView = true;
+};
+
+const valueExistsInArray = (array: any, value: any) => {
+    if (value) {
+        let myValue = `${value.originalName}(${value.originalId})`;
+        return array.some((obj: any) => {
+            return Object.values(obj).includes(myValue);
+        });
+    }
+    return false;
 };
 
 const emit = defineEmits(['updateParentVar', 'refresh']);
