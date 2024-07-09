@@ -73,6 +73,8 @@
                             type="circle"
                             style="margin-right: 10px"
                             :width="20"
+                            :showInfo="false"
+                            trailColor="#f0f0f0"
                             :percent="
                                 text?.value === 'failed'
                                     ? '100'
@@ -88,7 +90,7 @@
                                 text?.value !== 'waiting'
                             "
                         >
-                            {{ text?.text + ' ' + record?.progress + '%' }}
+                            {{  record?.progress + '%' }}
                         </div>
                         <div v-if="text?.value === 'failed'">
                             {{ text?.text + '：' + record?.errorReason }}
