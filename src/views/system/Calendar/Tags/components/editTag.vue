@@ -23,6 +23,7 @@
                         :rules="[
                             {
                                 required: true,
+                                message:'请为标签命名'
                             },
                             {
                                 max: 16,
