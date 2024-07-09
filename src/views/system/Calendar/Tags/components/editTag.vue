@@ -12,6 +12,7 @@
                         <ColorPicker
                             type="color"
                             :hex="tagInfo.color"
+                            :rgba="tagInfo.color"
                             :themeColor="themeColor" 
                             @change="changeColor"
                         />
