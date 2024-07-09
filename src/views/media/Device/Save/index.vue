@@ -142,7 +142,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入接入密码',
+                                        message: '请输入接入地址',
                                     },
                                     {
                                         max: 64,
@@ -152,6 +152,7 @@
                             >
                                 <j-input
                                     v-model:value="formData.others.onvifUrl"
+                                    placeholder="请输入接入地址"
                                 ></j-input>
                             </j-form-item>
                             <j-form-item
@@ -160,7 +161,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入接入密码',
+                                        message: '请输入接入账户',
                                     },
                                     {
                                         max: 64,
@@ -172,6 +173,7 @@
                                     v-model:value="
                                         formData.others.onvifUsername
                                     "
+                                    placeholder="请输入接入账户"
                                 ></j-input>
                             </j-form-item>
                             <j-form-item
@@ -192,6 +194,7 @@
                                     v-model:value="
                                         formData.others.onvifPassword
                                     "
+                                    placeholder="请输入接入密码"
                                 ></j-input-password>
                             </j-form-item>
                         </template>
@@ -508,6 +511,12 @@ const getProductList = async () => {
     };
     const { result } = await DeviceApi.queryProductList(params);
     productList.value = result;
+    if(result.length && !route.query.id){
+        formData.value.productId = result[0]?.id
+        formData.value.others.access_pwd = result[0]?.configuration?.access_pwd
+        formData.value.streamMode = result[0]?.configuration?.stream_mode
+    }
+   
 };
 
 const handleProductChange = () => {
