@@ -54,17 +54,11 @@
                         </PermissionButton>
                         <PermissionButton
                             type="link"
-                            :tooltip="{
-                                title: actionScope.status
-                                    ? '请先禁用，再删除'
-                                    : '删除',
-                            }"
                             :popConfirm="{
                                 title: '确认删除?',
                                 onConfirm: () =>
                                     tableHandler.deleteRow(actionScope.id),
                             }"
-                            :disabled="!actionScope.status"
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
