@@ -63,7 +63,8 @@
                 />
             </j-form-item>
             <p style="color: #616161" v-if="formData.configuration.function">
-                PLC地址: {{
+                PLC地址:
+                {{
                     InitAddress[formData.configuration.function] +
                         Number(formData.pointKey) || 0
                 }}
@@ -85,7 +86,11 @@
             </j-form-item>
 
             <j-form-item
-                v-if="['HoldingRegisters', 'InputRegisters'].includes(formData.configuration.function)"
+                v-if="
+                    ['HoldingRegisters', 'InputRegisters'].includes(
+                        formData.configuration.function,
+                    )
+                "
                 label="数据类型"
                 :name="['configuration', 'codec', 'provider']"
                 :rules="[
@@ -271,7 +276,7 @@ import {
 import { ModBusRules, checkProviderData } from '../../data.ts';
 import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/lib/form';
-import {cloneDeep, omit} from 'lodash-es';
+import { cloneDeep, omit } from 'lodash-es';
 
 const props = defineProps({
     data: {
@@ -329,7 +334,11 @@ const handleOk = async () => {
     delete data?.nspwc;
     const { codec } = data?.configuration;
 
-    if (!['HoldingRegisters', 'InputRegisters'].includes(data?.configuration.function)) {
+    if (
+        !['HoldingRegisters', 'InputRegisters'].includes(
+            data?.configuration.function,
+        )
+    ) {
         codec.provider = 'int8';
     }
     const { interval } = formData.value.configuration;
@@ -343,24 +352,26 @@ const handleOk = async () => {
 
     // address是多余字段，但是react版本上使用到了这个字段
     params.configuration.parameter = {
-      ...params.configuration.parameter,
-      address: data?.pointKey,
+        ...params.configuration.parameter,
+        address: data?.pointKey,
     };
 
     if (props.data.provider === 'COLLECTOR_GATEWAY') {
-      const configuration = cloneDeep(params.configuration)
-      params.configuration = {
-        configuration: configuration,
-        interval: params.interval
-      }
+        const configuration = cloneDeep(params.configuration);
+        // 兼容导入数据格式 24.7.9
+        //   params.configuration = {
+        //     configuration: configuration,
+        //     interval: params.interval
+        //   }
+        params.configuration = configuration;
     }
 
     loading.value = true;
-    const response = !id
-        ? await savePointBatch(params).catch(() => {})
-        : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
-    emit('change', response?.status === 200);
-    loading.value = false;
+    // const response = !id
+    //     ? await savePointBatch(params).catch(() => {})
+    //     : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
+    // emit('change', response?.status === 200);
+    // loading.value = false;
 };
 
 const handleCancel = () => {
@@ -388,7 +399,11 @@ const changeWriteByteCount = (value: Array<string>) => {
     formData.value.configuration.parameter.writeByteCount = value[0];
 };
 const changeFunction = (value: string) => {
-    formData.value.accessModes = ['InputRegisters', 'DiscreteInputs'].includes(value) ? ['read'] : ['read', 'write'];
+    formData.value.accessModes = ['InputRegisters', 'DiscreteInputs'].includes(
+        value,
+    )
+        ? ['read']
+        : ['read', 'write'];
 };
 
 const checkProvider = (_rule: Rule, value: string): Promise<any> =>
@@ -447,31 +462,42 @@ watch(
 watch(
     () => props.data,
     (value) => {
-        if (value.id && ['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(value.provider)) {
+         // 兼容导入数据格式 24.7.9
+        if (
+            value.id &&
+            ['MODBUS_TCP', 'COLLECTOR_GATEWAY'].includes(value.provider)
+        ) {
             const _value: any = cloneDeep(value);
             const { writeByteCount, byteCount } =
-            props.data.provider === 'COLLECTOR_GATEWAY' ? _value.configuration.configuration.parameter: _value.configuration.parameter;
+                props.data.provider === 'COLLECTOR_GATEWAY' &&
+                _value.configuration?.configuration
+                    ? _value.configuration?.configuration.parameter
+                    : _value.configuration.parameter;
 
-          if (props.data.provider === 'COLLECTOR_GATEWAY') {
-            formData.value = {
-              ...omit(_value, ['configuration']),
-              ..._value.configuration,
+            if (props.data.provider === 'COLLECTOR_GATEWAY') {
+                _value.configuration?.configuration
+                    ? (formData.value = {
+                          ...omit(_value, ['configuration']),
+                          ..._value.configuration,
+                      })
+                    : (formData.value = {
+                          ..._value,
+                      });
+            } else {
+                formData.value = _value;
             }
-          } else {
-            formData.value = _value;
-          }
 
-          if (!!_value.accessModes[0]?.value) {
-            formData.value.accessModes = value.accessModes.map(
-                (i: any) => i.value,
-            );
-          }
-          if (!!_value.features[0]?.value) {
-            formData.value.features = value.features.map(
-                (i: any) => i.value,
-            );
-          }
-          formData.value.nspwc = !!writeByteCount || !!byteCount;
+            if (!!_value.accessModes[0]?.value) {
+                formData.value.accessModes = value.accessModes.map(
+                    (i: any) => i.value,
+                );
+            }
+            if (!!_value.features[0]?.value) {
+                formData.value.features = value.features.map(
+                    (i: any) => i.value,
+                );
+            }
+            formData.value.nspwc = !!writeByteCount || !!byteCount;
         }
     },
     { immediate: true, deep: true },

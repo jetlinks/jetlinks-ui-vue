@@ -1,8 +1,19 @@
 <!-- 视频图标组件 -->
 <template>
-    <a @click="handleClick">
-        <AIcon :type="iconType" />
-    </a>
+    <j-tooltip
+        key="download"
+        :title="
+            type !== 'local'
+                ? '下载录像文件'
+                : item.isServer || status === 2
+                ? '查看'
+                : '下载到云端'
+        "
+    >
+        <a @click="handleClick">
+            <AIcon :type="iconType" />
+        </a>
+    </j-tooltip>
 </template>
 
 <script setup lang="ts">
@@ -70,4 +81,8 @@ const handleClick = () => {
         props.onDownLoad();
     }
 };
+
+watch(()=>props.item,()=>{
+    status.value = props.item?.isServer ? 2 : 0
+})
 </script>

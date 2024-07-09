@@ -86,11 +86,12 @@ const beforeUpload = (_file: any) => {
     return isCsv || isXlsx;
 };
 const downTemplate = async (type: string) => {
-    const res: any = await exportTemplate(<string>props.data?.provider, type);
+    // console.log(props.data?.configuration?.collectorProvider);
+    const res: any = await exportTemplate(<string>props.data?.configuration?.collectorProvider, type);
     if (res) {
         const blob = new Blob([res], { type: type });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `${props.data?.provider}导入模版`, type);
+        downloadFileByUrl(url, `${props.data?.configuration?.collectorProvider}导入模版`, type);
     }
 };
 const handleImport = async (file: any) => {
@@ -99,7 +100,7 @@ const handleImport = async (file: any) => {
     let event: EventSource
     event = new EventSource(
         `${BASE_API_PATH}/data-collect/point/${props.data?.collectorId
-        }/${props.data?.provider}/import?:X_Access_Token=${getToken()
+        }/${props.data?.configuration?.collectorProvider}/import?:X_Access_Token=${getToken()
         }&fileUrl=${file.result}`,
         { withCredentials: true },
     );
