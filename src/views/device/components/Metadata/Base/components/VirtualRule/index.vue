@@ -1,6 +1,7 @@
 <template>
     <j-form ref="formRef" layout="vertical" :model="formData">
         <ReadType
+            v-if="source !== 'rule'"
             v-model:value="formData.type"
             :disabled="source !== 'device'"
             :options="typeOptions"
@@ -38,7 +39,7 @@
                     <j-select-option
                         :disabled="
                             formData.virtualRule?.triggerProperties?.length &&
-                            !formData.virtualRule?.triggerProperties?.includes(
+                            formData.virtualRule.triggerProperties?.includes(
                                 '*',
                             )
                         "

@@ -64,7 +64,7 @@
                             </template>
                             <template #content>
                                 <a-row>
-                                    <Ellipsis style="max-width: 100px">
+                                    <Ellipsis style="max-width: calc(100% - 120px)">
                                         <span
                                             style="
                                                 font-weight: 600;
@@ -78,6 +78,16 @@
                                         :level="slotProps.level"
                                     ></LevelIcon>
                                 </a-row>
+                              <a-row>
+                                <div class="card-item-content-text">
+                                  说明
+                                </div>
+                                <div>
+                                  <Ellipsis style="max-width: 100%" >
+                                    {{ slotProps.description }}
+                                  </Ellipsis>
+                                </div>
+                              </a-row>
                             </template>
                             <template #actions="item">
                                 <PermissionButton
@@ -409,5 +419,11 @@ const refreshTable = () => {
 <style lang="less" scoped>
 .content-des-title {
     font-size: 12px;
+}
+
+.card-item-content-text {
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 </style>
