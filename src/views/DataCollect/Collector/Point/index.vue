@@ -503,8 +503,8 @@ const clickBatch = () => {
 };
 
 const handlAdd = () => {
+    console.log(props.data)
     if( props.data?.provider === 'snap7'){
-        console.log(props.data)
         visible.saveS7 = true
         current.value = {
             collectorId: props.data?.id,
