@@ -5,7 +5,7 @@
                 <div class="left">
                     <LeftTree @change="(id) => (vehicleId = id)" />
                 </div>
-                <div class="right">数据</div>
+                <div class="right"><RightData /></div>
             </div>
             <div class="run-chart">
                 <div class="message-card">
@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import LeftTree from './LeftTree/index.vue';
+import RightData from './RightData/index.vue';
 import TimeSelect from './components/TimeSelect.vue';
 import Charts from './components/Charts.vue';
 

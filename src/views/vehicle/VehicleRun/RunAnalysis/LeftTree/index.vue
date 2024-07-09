@@ -213,16 +213,6 @@ const getData = [
                 id: '2080f5d1-bb8c-4d14-a303-7554a23e8177',
                 memberCount: 0,
             },
-            {
-                name: '车辆28',
-                parentId: 'fd8470b9-21a9-4ff7-95e6-d3aef0b026c2',
-                sortIndex: 2,
-                level: 2,
-                creatorId: '1199596756811550720',
-                createTime: 1718864846551,
-                id: '2080f5d1-bb8c-4d14-a303-7554a23e8187',
-                memberCount: 0,
-            },
         ],
     },
 ];
