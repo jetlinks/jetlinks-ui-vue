@@ -206,8 +206,9 @@ const handleSave = async () => {
     const resp = await CascadeApi.bindChannel(
         route.query.id as string,
         _selectedRowKeys.value,
-    );
-    loading.value = false;
+    ).finally(()=>{
+        loading.value = false;
+    })
     if (resp.success) {
         onlyMessage('操作成功！');
         _vis.value = false;
