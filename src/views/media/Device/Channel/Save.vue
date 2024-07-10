@@ -200,7 +200,7 @@ const typeOne = computed(()=>{
     return ['gb28181-2016', 'onvif'].includes(route.query.type)
 })
 const typeTow = computed(()=>{
-    return ['fixed-media','media-plugin'].includes(route.query.type)
+    return ['fixed-media'].includes(route.query.type)
 })
 const formRef = ref();
 const formData = ref({

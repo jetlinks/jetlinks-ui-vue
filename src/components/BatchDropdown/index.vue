@@ -53,6 +53,7 @@
 <script lang="ts" setup>
 import { PropType } from 'vue';
 import { BatchActionsType } from './types';
+import { defineExpose } from 'vue';
 
 const props = defineProps({
     actions: {
@@ -98,6 +99,9 @@ const onPopConfirm = (e: any, fun: any) => {
 const onPopCancel = () => {
     visible.value = false;
 };
+defineExpose({
+    reload
+})
 </script>
 
 <style lang="less" scoped>
