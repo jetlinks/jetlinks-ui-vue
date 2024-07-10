@@ -4,7 +4,7 @@
         <div class="device-channel-warp">
             <div
                 class="left-warp"
-                v-if="['gb28181-2016', 'onvif'].includes(route.query.type)"
+                v-if="route.query.type === 'gb28181-2016'"
             >
                 <div class="left-content" :class="{ active: show }">
                     <Tree
@@ -217,9 +217,6 @@ const columns = [
         dataIndex: 'manufacturer',
         key: 'manufacturer',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '安装地址',
