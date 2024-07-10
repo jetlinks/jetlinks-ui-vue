@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-const value = ref('');
+const value = ref('humidity');
 const state = reactive({
     value1: ['x', 'y'],
     value2: ['speed'],

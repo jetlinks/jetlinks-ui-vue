@@ -55,3 +55,10 @@ export const updateVehicleStatus = (params: any) =>
  *
  */
 export const deleteVehicle = (id: any) => server.remove(`/vehicle/` + id);
+
+/**
+ * 查询行驶记录
+ * @param data 查询条件
+ */
+export const queryVehicleTravelList = (data?: any) =>
+    server.post(`/vehicle/es/travel`, data);
