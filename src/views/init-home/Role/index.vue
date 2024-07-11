@@ -299,7 +299,7 @@ defineExpose({
                     text-align: center;
                     height: 32px;
                     line-height: 32px;
-                    border-radius: 12%;
+                    border-radius: 2px;
                     padding: 0 10px;
                     position: relative;
 
