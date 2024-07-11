@@ -79,7 +79,7 @@
 <script lang="ts" setup name="FirmwarePage">
 import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
-import TaskDrawer from './Task2/index.vue';
+import TaskDrawer from './Task/index.vue';
 import dayjs from 'dayjs';
 import _ from 'lodash-es';
 import Save from './Save/index.vue';

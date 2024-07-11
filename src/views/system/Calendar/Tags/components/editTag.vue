@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        title="新增标签"
+        :title="editType === 'add' ? '新增标签' : '编辑标签'"
         @cancel="emit('closeEditTag')"
         @ok="submit"
     >
@@ -12,6 +12,7 @@
                         <ColorPicker
                             type="color"
                             :hex="tagInfo.color"
+                            :rgba="tagInfo.color"
                             :themeColor="themeColor" 
                             @change="changeColor"
                         />
@@ -23,6 +24,7 @@
                         :rules="[
                             {
                                 required: true,
+                                message:'请为标签命名'
                             },
                             {
                                 max: 16,

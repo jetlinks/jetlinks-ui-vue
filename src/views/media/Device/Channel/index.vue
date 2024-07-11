@@ -2,10 +2,13 @@
 <template>
     <page-container>
         <div class="device-channel-warp">
-            <div class="left-warp" v-if="route.query.type === 'gb28181-2016'">
+            <div
+                class="left-warp"
+                v-if="route.query.type === 'gb28181-2016'"
+            >
                 <div class="left-content" :class="{ active: show }">
                     <Tree
-                        :deviceId="deviceId"
+                        :deviceData="deviceData"
                         :on-tree-load="(e) => (show = e)"
                         :on-select="handleSelect"
                     />
@@ -37,8 +40,16 @@
                     >
                         <template #headerTitle>
                             <j-tooltip
-                                v-if="route?.query.type === 'gb28181-2016'"
-                                title="接入方式为GB/T28281时，不支持新增"
+                                v-if="
+                                    ['gb28181-2016', 'onvif'].includes(
+                                        route.query.type,
+                                    )
+                                "
+                                :title="`接入方式为${
+                                    route.query.type === 'onvif'
+                                        ? 'Onvif'
+                                        : 'GB/T28181'
+                                }时，不支持新增`"
                             >
                                 <j-button type="primary" disabled>
                                     新增
@@ -54,6 +65,35 @@
                                     ><AIcon type="PlusOutlined" />新增</template
                                 >
                             </PermissionButton>
+                        </template>
+                        <template #rightExtraRender>
+                            <PermissionButton
+                                type="text"
+                                :tooltip="{
+                                    title:
+                                        route?.query?.type === 'fixed-media'
+                                            ? '固定地址无法更新通道'
+                                            : deviceData?.state?.value ===
+                                              'offline'
+                                            ? '设备已离线'
+                                            : deviceData?.state?.value ===
+                                              'notActive'
+                                            ? '设备已禁用'
+                                            : '更新通道',
+                                }"
+                                :disabled="
+                                    deviceData?.state?.value === 'offline' ||
+                                    deviceData?.state?.value === 'notActive' ||
+                                    route?.query?.type === 'fixed-media'
+                                "
+                                @click="refreshChanel"
+                            >
+                                <template #icon
+                                    ><AIcon
+                                        type="SyncOutlined"
+                                    />更新通道</template
+                                ></PermissionButton
+                            >
                         </template>
                         <template #status="slotProps">
                             <j-space>
@@ -130,7 +170,11 @@
             :channelData="channelData"
             @submit="listRef.reload()"
         />
-        <Live v-model:visible="playerVis" :data="playData" @refresh="listRef.reload()" />
+        <Live
+            v-model:visible="playerVis"
+            :data="playData"
+            @refresh="listRef.reload()"
+        />
     </page-container>
 </template>
 
@@ -142,11 +186,11 @@ import Save from './Save.vue';
 import Live from './Live/index.vue';
 import Tree from './Tree/index.vue';
 import { cloneDeep } from 'lodash-es';
-import { useElementSize } from '@vueuse/core';
 import { onlyMessage } from '@/utils/comm';
+import DeviceApi from '@/api/media/device';
 
 const menuStory = useMenuStore();
-const route = useRoute();
+const route: any = useRoute();
 
 const columns = [
     {
@@ -173,9 +217,6 @@ const columns = [
         dataIndex: 'manufacturer',
         key: 'manufacturer',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '安装地址',
@@ -212,6 +253,7 @@ const columns = [
 ];
 
 const params = ref<Record<string, any>>({});
+const deviceData = ref<any>();
 
 /**
  * 搜索
@@ -223,7 +265,7 @@ const handleSearch = (e: any) => {
 
 const saveVis = ref(false);
 const handleAdd = () => {
-    channelData.value = undefined
+    channelData.value = undefined;
     saveVis.value = true;
 };
 
@@ -329,6 +371,19 @@ const handleSelect = (key: string) => {
         };
     }
 };
+const refreshChanel = async () => {
+    const res = await DeviceApi.updateChannels(deviceData.value.id);
+    if (res.success) {
+        onlyMessage('通道更新成功');
+        listRef.value?.reload();
+    }
+};
+onMounted(async () => {
+    const deviceResp = await DeviceApi.detail(route.query.id);
+    if (deviceResp.success) {
+        deviceData.value = deviceResp.result;
+    }
+});
 </script>
 <style lang="less" scoped>
 @import './index.less';

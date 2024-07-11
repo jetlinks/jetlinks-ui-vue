@@ -35,11 +35,10 @@
                 </span>
               </Ellipsis>
               <div v-if="showBindTags && activeBranches.length">
-                <a-tag v-for="tag in activeBranches">
-                  <Ellipsis style='max-width: 120px;'>
-                    {{ tag }}
-                  </Ellipsis>
-                </a-tag>
+                <div  style="margin-top: 16px; margin-bottom: 8px" class="card-item-content-text">
+                  关联条件
+                </div>
+                <Tags :tags="activeBranches"/>
               </div>
               <Ellipsis v-else>
                 <div class="subTitle">
@@ -51,7 +50,7 @@
               </Ellipsis>
 
             </div>
-            <div class="condition-name">
+            <div class="condition-name" v-if="showRule">
               <AddButton
                 v-if="value.options || value.triggerType === 'manual'"
                 style='width: 100%;padding: 8px 12px; border-radius: 4px'
@@ -78,11 +77,7 @@
                 <div>
                   当前告警已关联：
                 </div>
-                <div>
-                  <j-ellipsis>
-                    {{ activeBranches.join(',')}}
-                  </j-ellipsis>
-                </div>
+                <Tags :tags="activeBranches" :styles="{ justifyContent: 'center' }"/>
               </slot>
             </div>
           </div>
@@ -131,6 +126,7 @@ import BranchesTabs from './BranchesTabs.vue'
 import {PropType} from 'vue';
 import {handleActiveBranches, handleGroupAndFilter, typeMap} from './utils'
 import {useMenuStore} from "@/store/menu";
+import Tags from './tags.vue'
 
 type EmitProps = {
   (e: 'click'): void;
@@ -188,6 +184,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  showRule: {
+    type: Boolean,
+    default: true
+  },
   maskStyle: {
     type: Object,
     default: undefined
@@ -243,7 +243,6 @@ const jumpView = () => {
     `${window.location.origin + window.location.pathname}#${url}?triggerType=${props.value.triggerType}&id=${props.value.id}`,
   );
   tab.onTabSaveSuccess = (value: any) => {
-    console.log('', value)
     if (value.success) {
       emit('reload')
     }
@@ -253,6 +252,10 @@ const jumpView = () => {
 const onShowBranchesTabs = () => {
   showBranchesVisible.value = !showBranchesVisible.value
 }
+
+watch(() => props.value.id, () => {
+  showBranchesVisible.value = false
+})
 
 </script>
 
@@ -456,12 +459,6 @@ const onShowBranchesTabs = () => {
       cursor: pointer;
       transition: background-color 0.3s;
 
-
-      &.mask-hover:hover {
-        background-color: rgba(#000, 0.01);
-        color: transparent;
-      }
-
       .mask-content {
         display: flex;
         align-items: center;
@@ -471,6 +468,17 @@ const onShowBranchesTabs = () => {
         padding: 24px !important;
         flex-direction: column;
       }
+
+      &.mask-hover:hover {
+        background-color: rgba(#000, 0.01);
+        color: transparent;
+
+        .mask-content {
+          display: none;
+        }
+      }
+
+
 
       &.branches-tabs-mask {
         bottom: 0;

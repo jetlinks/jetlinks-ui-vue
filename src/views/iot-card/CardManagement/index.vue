@@ -431,7 +431,7 @@ import { usePermissionStore } from 'store/permission';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
 import SyncModal from './Sync.vue';
-import { OperatorList } from '../data'
+import { OperatorList } from '../data';
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -515,7 +515,7 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-                return OperatorList
+                return OperatorList;
             },
         },
     },
@@ -598,15 +598,36 @@ const columns = [
         key: 'cardState',
         width: 180,
         scopedSlots: true,
+    },
+    {
+        title: '运营商状态',
+        dataIndex: 'operatorState',
+        key: 'operatorState',
+        hidden:true,
         search: {
             type: 'select',
             options: [
-                { label: '未同步', value: 'notReady' },
-                { label: '同步失败', value: 'error' },
-                { label: '激活', value: 'using' },
-                { label: '未激活', value: 'toBeActivated' },
-                { label: '停机', value: 'deactivate' },
-                { label: '其它', value: 'other' },
+                { label: '激活(正常)', value: 'using' },
+                { label: '测试激活', value: 'testActivation' },
+                { label: '拆机', value: 'disassemble' },
+                { label: '停用(已停用)', value: 'deactivate' },
+                { label: '运营商管理状态', value: 'operatorManagement' },
+                { label: '可激活(电信)', value: 'beActivated' },
+                { label: '待激活', value: 'toBeActivated' },
+                { label: '测试去激活', value: 'testToActivation' },
+                { label: '可测试', value: 'testable' },
+                { label: '库存(移动)', value: 'inStock' },
+                { label: '预销户', value: 'preSeller' },
+                { label: '单向停机', value: 'oneWayShutdown' },
+                { label: '预销号', value: 'preSale' },
+                { label: '过户', value: 'transfer' },
+                { label: '休眠', value: 'dormant' },
+                { label: '可激活(联通)', value: 'activatable' },
+                { label: '已失效', value: 'expired' },
+                { label: '已清除', value: 'cleared' },
+                { label: '已更换', value: 'replaced' },
+                { label: '库存（联通）', value: 'stock' },
+                { label: '开始', value: 'start' },
             ],
         },
     },

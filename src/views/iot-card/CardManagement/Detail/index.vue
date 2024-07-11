@@ -1,8 +1,8 @@
 <!-- 物联卡查看 -->
 <template>
-    <page-container>
+    <page-container v-if="type === 'card'">
         <!-- 新增、编辑 -->
-        <div v-if="type === 'card' || cardId">
+        <div>
             <Save
                 v-if="visible"
                 :type="saveType"
@@ -44,19 +44,20 @@
                                 detail.deviceName
                             }}</j-descriptions-item>
                             <j-descriptions-item label="平台类型">{{
-                            platformTypeList.find(
-                                (item) =>
-                                    item.value ===
-                                    detail.operatorPlatformType?.text,
-                            )?.label || detail.operatorPlatformType?.text
+                                platformTypeList.find(
+                                    (item) =>
+                                        item.value ===
+                                        detail.operatorPlatformType?.text,
+                                )?.label || detail.operatorPlatformType?.text
                             }}</j-descriptions-item>
                             <j-descriptions-item label="平台名称">{{
                                 detail.platformConfigName
                             }}</j-descriptions-item>
                             <j-descriptions-item label="运营商">{{
-                            OperatorList.find(
-                                (item) => item.value === detail.operatorName,
-                            )?.label || detail.operatorName
+                                OperatorList.find(
+                                    (item) =>
+                                        item.value === detail.operatorName,
+                                )?.label || detail.operatorName
                             }}</j-descriptions-item>
                             <j-descriptions-item label="类型">{{
                                 detail.cardType?.text
@@ -226,8 +227,235 @@
                 </j-col>
             </j-row>
         </div>
-        <JEmpty></JEmpty>
     </page-container>
+    <div v-else>
+        <div v-if="cardId">
+            <Save
+                v-if="visible"
+                :type="saveType"
+                :data="current"
+                @change="saveChange"
+            />
+            <j-row :gutter="[24, 24]">
+                <j-col :span="24">
+                    <j-card>
+                        <j-descriptions size="small" :column="3" bordered>
+                            <template #title>
+                                <Guide>
+                                    <template #title>
+                                        <span>基本信息</span>
+                                        <j-button
+                                            type="link"
+                                            @click="
+                                                () => {
+                                                    visible = true;
+                                                    current = detail;
+                                                    saveType = 'edit';
+                                                }
+                                            "
+                                        >
+                                            <AIcon type="EditOutlined"></AIcon>
+                                            编辑
+                                        </j-button>
+                                    </template>
+                                </Guide>
+                            </template>
+
+                            <j-descriptions-item label="卡号">{{
+                                detail.id
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="ICCID">{{
+                                detail.iccId
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="绑定设备">{{
+                                detail.deviceName
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="平台类型">{{
+                                platformTypeList.find(
+                                    (item) =>
+                                        item.value ===
+                                        detail.operatorPlatformType?.text,
+                                )?.label || detail.operatorPlatformType?.text
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="平台名称">{{
+                                detail.platformConfigName
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="运营商">{{
+                                OperatorList.find(
+                                    (item) =>
+                                        item.value === detail.operatorName,
+                                )?.label || detail.operatorName
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="类型">{{
+                                detail.cardType?.text
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="激活日期">{{
+                                detail.activationDate
+                                    ? moment(detail.activationDate).format(
+                                          'YYYY-MM-DD HH:mm:ss',
+                                      )
+                                    : ''
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="更新时间">{{
+                                detail.updateTime
+                                    ? moment(detail.updateTime).format(
+                                          'YYYY-MM-DD HH:mm:ss',
+                                      )
+                                    : ''
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="总流量">{{
+                                detail.totalFlow
+                                    ? detail.totalFlow.toFixed(2) + ' M'
+                                    : '0 M'
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="使用流量">{{
+                                detail.usedFlow
+                                    ? detail.usedFlow.toFixed(2) + ' M'
+                                    : '0 M'
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="剩余流量">{{
+                                detail.residualFlow
+                                    ? detail.residualFlow.toFixed(2) + ' M'
+                                    : '0 M'
+                            }}</j-descriptions-item>
+                            <j-descriptions-item label="运营商状态">
+                                {{ detail?.cardState?.text }}
+                                <span
+                                    v-if="deactivateData.show"
+                                    style="padding-left: 8px"
+                                >
+                                    <a-tooltip :title="deactivateData.tip">
+                                        <AIcon
+                                            type="ExclamationCircleOutlined"
+                                            style="
+                                                color: var(--ant-error-color);
+                                            "
+                                        />
+                                    </a-tooltip>
+                                </span>
+                            </j-descriptions-item>
+                            <j-descriptions-item label="平台状态">
+                                {{ detail?.cardStateType?.text }}
+                            </j-descriptions-item>
+                            <j-descriptions-item label="说明">{{
+                                detail?.describe
+                            }}</j-descriptions-item>
+                        </j-descriptions>
+                    </j-card>
+                </j-col>
+                <j-col :span="24">
+                    <!-- 流量统计 -->
+                    <j-row :gutter="24">
+                        <j-col :span="16">
+                            <div class="card">
+                                <Guide title="流量统计">
+                                    <template #extra>
+                                        <TimeSelect
+                                            :type="'week'"
+                                            :quickBtnList="quickBtnList"
+                                            @change="getEcharts"
+                                        />
+                                    </template>
+                                </Guide>
+                                <LineChart
+                                    :showX="true"
+                                    :showY="true"
+                                    style="min-height: 490px"
+                                    :chartData="flowData"
+                                />
+                            </div>
+                        </j-col>
+                        <j-col :span="8">
+                            <div class="card">
+                                <Guide title="数据统计" />
+                                <div
+                                    class="static-info"
+                                    style="min-height: 490px"
+                                >
+                                    <div class="data-statistics-item">
+                                        <div
+                                            class="flow-info"
+                                            style="width: 100%"
+                                        >
+                                            <div class="label">
+                                                昨日流量消耗
+                                            </div>
+                                            <j-tooltip placement="bottomLeft">
+                                                <template #title>
+                                                    <span
+                                                        >{{ dayTotal }} M</span
+                                                    >
+                                                </template>
+                                                <div class="value">
+                                                    {{ dayTotal }}
+                                                    <span class="unit">M</span>
+                                                </div>
+                                            </j-tooltip>
+                                        </div>
+                                        <LineChart
+                                            color="#FBA500"
+                                            :chartData="dayOptions"
+                                        />
+                                    </div>
+                                    <div class="data-statistics-item">
+                                        <div
+                                            class="flow-info"
+                                            style="width: 100%"
+                                        >
+                                            <div class="label">
+                                                当月流量消耗
+                                            </div>
+                                            <j-tooltip placement="bottomLeft">
+                                                <template #title>
+                                                    <span
+                                                        >{{
+                                                            monthTotal
+                                                        }}
+                                                        M</span
+                                                    >
+                                                </template>
+                                                <div class="value">
+                                                    {{ monthTotal }}
+                                                    <span class="unit">M</span>
+                                                </div>
+                                            </j-tooltip>
+                                        </div>
+                                        <LineChart :chartData="monthOptions" />
+                                    </div>
+                                    <div class="data-statistics-item">
+                                        <div
+                                            class="flow-info"
+                                            style="width: 100%"
+                                        >
+                                            <div class="label">
+                                                本年流量消耗
+                                            </div>
+                                            <j-tooltip placement="bottomLeft">
+                                                <template #title>
+                                                    <span
+                                                        >{{ yearTotal }} M</span
+                                                    >
+                                                </template>
+                                                <div class="value">
+                                                    {{ yearTotal }}
+                                                    <span class="unit">M</span>
+                                                </div>
+                                            </j-tooltip>
+                                        </div>
+                                        <LineChart
+                                            color="#58E1D3"
+                                            :chartData="yearOptions"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </j-col>
+                    </j-row>
+                </j-col>
+            </j-row>
+        </div>
+        <JEmpty v-else></JEmpty>
+    </div>
 </template>
 
 <script setup lang="ts" name="CardDetail">
@@ -285,7 +513,7 @@ const getDetail = () => {
         if (resp.success) {
             detail.value = resp.result;
 
-            if (resp.result.cardStateType?.value === 'deactivate') {
+            if (resp.result.cardStateType?.value === 'deactivate' && detail.value.operatorName === 'onelink') {
                 deactivateData.show = true;
                 //   获取停机原因
                 queryDeactivate(cardId.value).then((deacResp: any) => {

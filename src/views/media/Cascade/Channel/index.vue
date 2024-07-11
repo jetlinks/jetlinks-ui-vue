@@ -377,6 +377,7 @@ const handleMultipleUnbind = async () => {
     if (resp.success) {
         onlyMessage('操作成功！');
         _selectedRowKeys.value = []
+        channelIdMap.clear()
         listRef.value?.reload();
     } else {
         onlyMessage('操作失败！', 'error');

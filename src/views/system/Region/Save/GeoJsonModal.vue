@@ -7,6 +7,9 @@
     @ok="handleSave"
     @cancel="handleCancel"
   >
+    <div>
+      仅支持获取单个区域数据
+    </div>
     <j-monaco-editor
       language="json"
       style="height: 400px"

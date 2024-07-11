@@ -4,12 +4,12 @@ export const testProperties = (data:any) =>{
 }
 
 export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolean)=>{
-    if(data.type === 'boolean'){
-        if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
-            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
-            return true
-        }
-    }
+    // if(data.type === 'boolean'){
+    //     if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
+    //         onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
+    //         return true
+    //     }
+    // }
     // if(data.type === 'enum' && !isObject){
     //     if(data?.elements?.length > 0){
     //         data.elements.forEach((a:any,b:number)=>{
