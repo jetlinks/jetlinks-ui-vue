@@ -272,7 +272,7 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
 
         if (index === 0 || item.executeAnyway) {
             group.push({
-                branchName: item.branchName || item.when?.branchName || `条件${group.length + 1}`,
+                branchName: item.branchName || item.whenOptions?.branchName || `条件${group.length + 1}`,
                 key: item.key || item.branchId,
                 children: []
             })
@@ -287,8 +287,6 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
         if (item.then[1]?.actions.length) {
             item.parallel = item.then[1]?.actions
         }
-
-
 
         lastItem.children.push(item)
     })

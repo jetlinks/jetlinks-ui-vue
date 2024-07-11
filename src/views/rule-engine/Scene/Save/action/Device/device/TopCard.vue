@@ -27,7 +27,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="DeviceTopCard">
 import { PropType } from 'vue';
 
 const props = defineProps({

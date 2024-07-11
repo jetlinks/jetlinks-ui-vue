@@ -81,6 +81,7 @@ import RelationSelect from './RelationSelect.vue';
 import { getParams } from '../../../util';
 import { handleParamsData } from '../../../components/Terms/util';
 import _ from 'lodash-es';
+import { TypeMap } from './util'
 
 const props = defineProps({
     values: {
@@ -133,33 +134,6 @@ const list = ref<any[]>([]);
 const builtInList = ref<any[]>([]);
 const tagList = ref<any[]>([]);
 
-const TypeList = [
-    {
-        label: '自定义',
-        value: 'fixed',
-        image: getImage('/scene/device-custom.png'),
-        tip: '自定义选择当前产品下的任意设备',
-    },
-    {
-        label: '按关系',
-        value: 'relation',
-        image: getImage('/scene/device-relation.png'),
-        tip: '选择与触发设备具有相同关系的设备',
-    },
-    {
-        label: '按标签',
-        value: 'tag',
-        image: getImage('/scene/device-tag.png'),
-        tip: '按标签选择产品下具有特定标签的设备',
-    },
-    {
-        label: '按变量',
-        value: 'context',
-        image: getImage('/scene/device-variable.png'),
-        tip: '选择设备ID为上游变量值的设备',
-    },
-];
-
 const filterTree = (nodes: any[]) => {
     if (!nodes?.length) {
         return nodes;
@@ -209,8 +183,13 @@ const sourceChangeEvent = async () => {
 };
 
 const filterType = async (newVal: any) => {
-    const _list = TypeList.filter((item) => item.value === 'fixed' || item.value === 'tag');
-    if (unref(data)?.trigger?.type === 'device') {
+    const _typeList = [
+      TypeMap.fixed
+    ]
+    const triggerType  = unref(data)?.trigger?.type
+
+    if (triggerType === 'device') {
+        _typeList.push(TypeMap.tag) // 设备输出一直展示标签
         //关系
         const res = await NoticeApi.getRelationUsers({
             paging: false,
@@ -220,15 +199,7 @@ const filterType = async (newVal: any) => {
             ],
         });
         if (res.success && res.result.length !== 0) {
-            const array = TypeList.filter((item) => item.value === 'relation');
-            _list.push(...array);
-        }
-        //标签
-        const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
-        if (tag && tag.length !== 0) {
-            tagList.value = tag || [];
-            // const array = TypeList.filter((item) => item.value === 'tag');
-            // _list.push(...array);
+            _typeList.push(TypeMap.relation)
         }
         //变量
         if (
@@ -236,21 +207,20 @@ const filterType = async (newVal: any) => {
             !props.parallel &&
             props.name !== 0
         ) {
-            const array = TypeList.filter((item) => item.value === 'context');
-            _list.push(...array);
+          _typeList.push(TypeMap.context)
         }
-        list.value = _list;
+
     } else {
         if (
             builtInList.value.length !== 0 &&
             !props.parallel &&
             props.name !== 0
         ) {
-            const array = TypeList.filter((item) => item.value === 'context');
-            _list.push(...array);
+          _typeList.push(TypeMap.context)
         }
-        list.value = _list;
     }
+
+  list.value = _typeList;
 };
 
 const onSelectorChange = (val: string) => {
