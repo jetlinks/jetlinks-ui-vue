@@ -28,23 +28,39 @@
                             <Ellipsis style="width: calc(100%-100px)">{{ item.name }}</Ellipsis>
                         </div>
                         <div @click="(e) => e.stopPropagation()">
-                            <j-popconfirm v-if="hasPermission('system/Dictionary:action')"
-                                :title="item.data.status === 1 ? '确定禁用？' : '确定启用？'" @confirm="() => updateDic(item.data)">
-                                <j-switch :checked="item.status" :disabled="!hasPermission('system/Dictionary:action')"
-                                    :checkedValue="1" :unCheckedValue="0"></j-switch>
+                            <j-popconfirm v-if="hasPermission('system/Dictionary:action') && item.data.classified !=='system'"
+                                :title="item.data.status === 1 ? '禁用后引用该字典的页面将受到影响，确认禁用？' : '确定启用？'" @confirm="() => updateDic(item.data)">
+                                <j-switch
+                                  :checked="item.status"
+                                  :disabled="!hasPermission('system/Dictionary:action')"
+                                  :checkedValue="1" :unCheckedValue="0"
+                                ></j-switch>
                             </j-popconfirm>
-                            <j-tooltip v-else placement="top" title="暂无权限,请联系管理员">
-                                <j-switch :checked="item.status" :disabled="!hasPermission('system/Dictionary:action')"
-                                    :checkedValue="1" :unCheckedValue="0"></j-switch>
+                            <j-tooltip v-else placement="top" :title="item.data.classified ==='system' ? '内置数据不支持修改' : '暂无权限,请联系管理员'">
+                                <j-switch
+                                  :checked="item.status"
+                                  :disabled="true"
+                                  :checkedValue="1" :unCheckedValue="0"
+                                ></j-switch>
                             </j-tooltip>
-                            <PermissionButton type="text" hasPermission="system/Dictionary:delete" :popConfirm="{
-                                title: `确定要删除？`,
+                            <PermissionButton
+                              type="text"
+                              hasPermission="system/Dictionary:delete"
+                              :disabled="item.data.classified ==='system'"
+                              :tooltip="item.data.classified ==='system' ? { title: '内置数据不支持修改'} : null"
+                              :popConfirm="{
+                                title: `删除后引用该字典的页面将受到影响，确认删除？`,
                                 onConfirm: () => deleteDic(item.id),
                             }">
                                 删除
                             </PermissionButton>
-                            <PermissionButton type="text" hasPermission="system/Dictionary:update"
-                                @click="showEdit(item.data)">
+                            <PermissionButton
+                              type="text"
+                              hasPermission="system/Dictionary:update"
+                              :disabled="item.data.classified ==='system'"
+                              :tooltip="item.data.classified ==='system' ? { title: '内置数据不支持修改'} : null"
+                              @click="showEdit(item.data)"
+                            >
                                 编辑
                             </PermissionButton>
                         </div>
@@ -114,7 +130,7 @@ const saveSuccess = () => {
     reload()
 }
 /**
- * 
+ *
  * @param id 字典id
  * 删除字典
  */
