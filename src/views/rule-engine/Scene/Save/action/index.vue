@@ -135,6 +135,7 @@ const onDelete = async (_key: string, _parallel: boolean) => {
   if (actionIndex !== -1) {
 
     const actionItem = FormModel.value.branches?.[props.name].then?.[thenName].actions[actionIndex]
+
     if (actionItem.executor === 'alarm') {
       const _branchId = FormModel.value.branches?.[props.name].branchId
       const resp = await queryAlarmList({
@@ -174,6 +175,9 @@ const onDelete = async (_key: string, _parallel: boolean) => {
         FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(actionIndex!, 1)
         formItemContext.onFieldChange()
       }
+    } else {
+      FormModel.value.branches?.[props.name].then?.[thenName].actions.splice(actionIndex!, 1)
+      formItemContext.onFieldChange()
     }
   }
 }
