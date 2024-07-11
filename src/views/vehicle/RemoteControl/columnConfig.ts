@@ -65,14 +65,14 @@ export const columns = [
         title: '最高限速',
         dataIndex: 'maximumSpeedLimit',
         key: 'maximumSpeedLimit',
-        ellipsis: true,
+        width: 120,
         scopedSlots: true,
     },
     {
         title: '报警速度',
         dataIndex: 'alarmSpeed',
         key: 'alarmSpeed',
-        ellipsis: true,
+        width: 120,
         scopedSlots: true,
     },
     {
@@ -89,7 +89,7 @@ export const columns = [
         title: '碰撞阈值',
         dataIndex: 'collision',
         key: 'collision',
-        ellipsis: true,
+        width: 120,
         scopedSlots: true,
         search: {
             type: 'string',

@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        title="最高限速"
+        title="报警速度"
         :maskClosable="false"
         destroy-on-close
         v-model:visible="visible"
@@ -12,11 +12,8 @@
         :confirmLoading="loading"
     >
         <j-form layout="vertical" :model="form" :rules="rules" ref="formRef">
-            <j-form-item label="最高限速" name="maximumSpeedLimit">
-                <j-input
-                    v-model:value="form.maximumSpeedLimit"
-                    placeholder="请输入"
-                />
+            <j-form-item label="报警速度" name="alarmSpeed">
+                <j-input v-model:value="form.alarmSpeed" placeholder="请输入" />
             </j-form-item>
         </j-form>
     </j-modal>
@@ -30,10 +27,11 @@ const loading = ref(false);
 const formRef = ref();
 
 const form = ref<any>([]);
+
 const rules = reactive({
-    maximumSpeedLimit: [
-        { required: true, message: '请填写最高限速', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    alarmSpeed: [
+        { required: true, message: '请填写报警速度', trigger: 'blur' },
+        { max: 32, message: '最多可输入64位字符', trigger: 'change' },
     ],
 });
 
@@ -44,14 +42,20 @@ const show = (data: any) => {
     visible.value = true;
     form.value = [];
 };
+
 defineExpose({
     show: show,
 });
 
 const submitData = () => {
+    loading.value = true;
     formRef.value.validate().then(async () => {
         onlyMessage('确定', 'warning');
     });
+
+    setTimeout(() => {
+        loading.value = false;
+    }, 1000);
 };
 
 const close = () => {

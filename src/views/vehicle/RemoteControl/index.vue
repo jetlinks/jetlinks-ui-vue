@@ -82,17 +82,35 @@
                         }"
                     />
                 </template>
-                <template #maximumSpeedLimit="{ maximumSpeedLimit }">
-                    <a> {{ maximumSpeedLimit || 0 }} km/h </a>
+                <template #maximumSpeedLimit="slotProps">
+                    <PermissionButton
+                        type="link"
+                        :key="slotProps.id"
+                        @click="funSpeed(slotProps)"
+                    >
+                        <span>{{ slotProps.maximumSpeedLimit || 0 }} km/h</span>
+                    </PermissionButton>
                 </template>
-                <template #alarmSpeed="{ alarmSpeed }">
-                    <a> {{ alarmSpeed || 0 }} km/h </a>
+                <template #alarmSpeed="slotProps">
+                    <PermissionButton
+                        type="link"
+                        :key="slotProps.id"
+                        @click="funAlarm(slotProps)"
+                    >
+                        <span>{{ slotProps.alarmSpeed || 0 }} km/h</span>
+                    </PermissionButton>
                 </template>
                 <template #remoteLock="{ remoteLock }">
                     <a> {{ remoteLock === 0 ? '锁车' : '解锁' }} </a>
                 </template>
-                <template #collision="{ collision }">
-                    <a> {{ collision || 0 }} kg </a>
+                <template #collision="slotProps">
+                    <PermissionButton
+                        type="link"
+                        :key="slotProps.id"
+                        @click="funCollision(slotProps)"
+                    >
+                        <span>{{ slotProps.collision || 0 }} kg</span>
+                    </PermissionButton>
                 </template>
                 <template #overload="{ overload }">
                     <a> {{ overload || 0 }} t</a>
@@ -118,6 +136,9 @@
                 </template>
             </JProTable>
         </FullPage>
+        <AlarmModal ref="alarmRef" />
+        <MaxSpeedModal ref="maxSpeedRef" />
+        <CollisionModal ref="collisionRef" />
     </page-container>
 </template>
 
@@ -136,6 +157,15 @@ import {
     handleSearchByDescription,
 } from '@/utils/dataReportUtils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import PermissionButton from '@/components/PermissionButton/index.vue';
+import AlarmModal from './AlarmModal/index.vue';
+import MaxSpeedModal from './MaxSpeedModal/index.vue';
+import CollisionModal from './CollisionModal/index.vue';
+
+const alarmRef = ref();
+const maxSpeedRef = ref();
+const collisionRef = ref();
+const currentForm = ref({});
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -197,12 +227,30 @@ const queryData = async (_params: any) => {
     }
 };
 //限速
-const funSpeed = () => {
+const funSpeed = (data?: any) => {
     console.log('限速');
+    if (data) {
+        nextTick(() => {
+            maxSpeedRef.value.show(data);
+        });
+    } else {
+        nextTick(() => {
+            maxSpeedRef.value.show(currentForm.value);
+        });
+    }
 };
 //报警速度
-const funAlarm = () => {
+const funAlarm = (data?: any) => {
     console.log('报警速度');
+    if (data) {
+        nextTick(() => {
+            alarmRef.value.show(data);
+        });
+    } else {
+        nextTick(() => {
+            alarmRef.value.show(currentForm.value);
+        });
+    }
 };
 //远程锁车
 const funRemoteLock = () => {
@@ -213,8 +261,17 @@ const funRemoteUnlock = () => {
     console.log('远程解锁');
 };
 //碰撞阈值
-const funCollision = () => {
+const funCollision = (data?: any) => {
     console.log('碰撞阈值');
+    if (data) {
+        nextTick(() => {
+            collisionRef.value.show(data);
+        });
+    } else {
+        nextTick(() => {
+            collisionRef.value.show(currentForm.value);
+        });
+    }
 };
 //超载阈值
 const funOverload = () => {

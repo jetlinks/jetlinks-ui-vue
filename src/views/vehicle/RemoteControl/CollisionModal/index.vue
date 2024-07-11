@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        title="最高限速"
+        title="碰撞阈值"
         :maskClosable="false"
         destroy-on-close
         v-model:visible="visible"
@@ -12,11 +12,8 @@
         :confirmLoading="loading"
     >
         <j-form layout="vertical" :model="form" :rules="rules" ref="formRef">
-            <j-form-item label="最高限速" name="maximumSpeedLimit">
-                <j-input
-                    v-model:value="form.maximumSpeedLimit"
-                    placeholder="请输入"
-                />
+            <j-form-item label="碰撞阈值" name="collision">
+                <j-input v-model:value="form.collision" placeholder="请输入" />
             </j-form-item>
         </j-form>
     </j-modal>
@@ -31,8 +28,8 @@ const formRef = ref();
 
 const form = ref<any>([]);
 const rules = reactive({
-    maximumSpeedLimit: [
-        { required: true, message: '请填写最高限速', trigger: 'blur' },
+    collision: [
+        { required: true, message: '请填写碰撞阈值', trigger: 'blur' },
         { max: 64, message: '最多可输入64位字符', trigger: 'change' },
     ],
 });
