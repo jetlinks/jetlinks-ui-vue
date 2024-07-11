@@ -10,13 +10,13 @@
     <div class="dropdown-button termType">
       {{ TermsTypeMap[value[1]] || value[1] }}
     </div>
-    <div class="dropdown-button value">
+    <div v-if="_value" class="dropdown-button value">
       <AIcon type='icon-canshu' />
-      {{ value[2][0] }}
+      {{ _value[0] }}
     </div>
     <div v-if="value[2][1]" class="dropdown-button value">
       <AIcon type='icon-canshu' />
-      {{ value[2][1] }}
+      {{ _value[1] }}
     </div>
 
   </div>
@@ -52,7 +52,19 @@ const props = defineProps({
   showType: {
     type: Boolean,
     default: false
+  },
+  data: {
+    type: Array,
+    default: () => []
   }
+})
+
+const _value = computed(() => {
+  if (['in', 'nin','contains_all', 'contains_any', 'not_contains', 'nbtw', 'btw',].includes(props.data.termType)) {
+    return props.data.value.value
+  }
+
+  return props.value[2]
 })
 
 </script>

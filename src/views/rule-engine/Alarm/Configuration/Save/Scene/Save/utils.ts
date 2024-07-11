@@ -267,7 +267,7 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
 
     branches.forEach((item, index) => {
         if (when) {
-            item.when = when[index]
+            item.whenOptions = when[index]
         }
 
         if (index === 0 || item.executeAnyway) {
