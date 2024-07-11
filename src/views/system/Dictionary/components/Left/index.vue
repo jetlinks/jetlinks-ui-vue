@@ -109,7 +109,6 @@ const search = () => {
     queryData(true, searchValue.value)
 }
 const searchChange = () => {
-    console.log(searchValue.value === '')
     if (searchValue.value === '') {
         queryData(true)
     }

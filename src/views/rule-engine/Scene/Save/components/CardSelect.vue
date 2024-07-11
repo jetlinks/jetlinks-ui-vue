@@ -1,11 +1,14 @@
 <template>
-    <div class="scene-trigger-way-warp" :class="{disabled: disabled}">
+    <div class="scene-trigger-way-warp" >
         <template v-for="item in options" :key="item.value">
             <div
                 class="trigger-way-item"
-                :class="{ active: item?.value === value }"
+                :class="{
+                  active: item?.value === value,
+                  disabled: item.disabled || disabled
+                }"
                 :style="{width: `${cardSize}px`}"
-                @click="onSelect(item.value)"
+                @click="onSelect(item)"
             >
                 <div class="way-item-title">
                     <p>{{ item.label }}</p>
@@ -51,11 +54,12 @@ const props = defineProps({
 
 const emit = defineEmits(['update:value'])
 
-const onSelect = (_type: string) => {
-    if (!props.disabled) {
-      emit('update:value', _type)
+const onSelect = (record: any) => {
+    if (!props.disabled && !record.disabled) {
+      emit('update:value', record.value)
     }
 }
+
 </script>
 
 <style lang="less" scoped>
@@ -82,8 +86,8 @@ const onSelect = (_type: string) => {
             }
 
             span {
-                color: rgba(#000, 0.35);
-                font-size: 12px;
+                color: #777;
+                font-size: 14px;
             }
         }
 
@@ -108,20 +112,18 @@ const onSelect = (_type: string) => {
                 opacity: 1;
             }
         }
-    }
 
-    &.disabled {
-        .trigger-way-item {
-            cursor: not-allowed;
+        &.disabled {
+          cursor: not-allowed;
 
-            &:hover {
-                color: initial;
-                opacity: 0.6;
-            }
+          &:hover {
+            color: initial;
+            opacity: 0.6;
+          }
 
-            &.active {
-                opacity: 1;
-            }
+          &.active {
+            opacity: 1;
+          }
         }
     }
 }
