@@ -21,9 +21,8 @@
                         @click="handleAdd"
                         hasPermission="media/Device:add"
                     >
-                        <template #icon
-                            ><AIcon type="PlusOutlined" />新增</template
-                        >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
                     </PermissionButton>
                 </template>
                 <template #card="slotProps">
