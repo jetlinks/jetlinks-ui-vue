@@ -160,13 +160,14 @@ const triggerOptions = computed(() => {
     { label: "按周", value: "week" },
     { label: "按月", value: "month" },
     { label: "cron表达式", value: "cron" },
+    { label: "自定义日历", value: "multi" }
   ]
 
-  if (props.type === 'timer') {
-    _options = [..._options, {
-      label: "自定义日历", value: "multi"
-    }]
-  }
+  // if (props.type === 'timer') {
+  //   _options = [..._options, {
+  //     label: "自定义日历", value: "multi"
+  //   }]
+  // }
   return _options
 })
 
