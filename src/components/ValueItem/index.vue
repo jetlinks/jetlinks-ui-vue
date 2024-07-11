@@ -122,11 +122,10 @@ import { PropType } from 'vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
 import GeoComponent from '@/components/GeoComponent/index.vue';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { ItemData, ITypes } from './types';
 import { FILE_UPLOAD } from '@/api/comm';
-import { Upload } from 'jetlinks-ui-components'
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;

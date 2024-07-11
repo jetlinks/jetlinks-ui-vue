@@ -8,7 +8,7 @@
               {{ group.termType }}
             </div>
             <div class="terms-group-content" :class="{'group-content-border': border, 'group-content-bg': !border}">
-              <WhenItem v-for="(item, groupIndex) in group.terms" :type="item.termType" :value="item" :showType="groupIndex !== 0" />
+              <WhenItem v-for="(item, groupIndex) in group.terms" :type="item.termType" :value="item" :showType="groupIndex !== 0" :data="data[index].terms[groupIndex]" />
             </div>
           </div>
       </div>
@@ -19,7 +19,6 @@
 <script setup name="Terms">
 import WhenItem from "./WhenItem.vue";
 
-
 const props = defineProps({
   when: {
     type: Object,
@@ -28,8 +27,13 @@ const props = defineProps({
   border: {
     type: Boolean,
     default: true
+  },
+  data: {
+    type: Array,
+    default: () => []
   }
 })
+
 </script>
 
 <style scoped lang="less">
