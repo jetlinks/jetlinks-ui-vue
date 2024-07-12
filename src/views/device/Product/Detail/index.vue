@@ -24,17 +24,14 @@
                             )
                         "
                     >
-                        <j-popconfirm
-                            title="确认禁用"
-                            @confirm="handleUndeploy"
-                            v-if="productStore.current.state === 1"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="
-                                !permissionStore.hasPermission(
-                                    'device/Product:action',
-                                )
-                            "
+                        <PermissionButton
+                            style="padding: 0;"
+                            type="text"
+                            hasPermission="device/Product:action"
+                            :popConfirm="{
+                                title: productStore.current.state === 1 ? '确认禁用' : '确认启用',
+                                onConfirm: productStore.current.state === 1  ?  handleUndeploy : handleDeploy,
+                            }"
                         >
                             <j-switch
                                 :checked="productStore.current.state === 1"
@@ -46,32 +43,7 @@
                                     )
                                 "
                             />
-                        </j-popconfirm>
-                        <j-popconfirm
-                            title="确认启用"
-                            @confirm="handleDeploy"
-                            v-if="productStore.current.state === 0"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="
-                                !permissionStore.hasPermission(
-                                    'device/Product:action',
-                                )
-                            "
-                        >
-                            <j-switch
-                                :unCheckedValue="
-                                    productStore.current.state === 0
-                                "
-                                checked-children="正常"
-                                un-checked-children="禁用"
-                                :disabled="
-                                    !permissionStore.hasPermission(
-                                        'device/Product:action',
-                                    )
-                                "
-                            />
-                        </j-popconfirm>
+                        </PermissionButton>
                     </div>
                     <div style="margin: -5px 0 0 20px" v-else>
                         <j-tooltip>

@@ -66,41 +66,28 @@
                                 </j-space>
                             </template>
                             <template v-if="column.dataIndex === 'action'">
-                                <j-space :size="16">
-                                    <j-tooltip
-                                        v-for="i in getActions(record, 'table')"
-                                        :key="i.key"
-                                        v-bind="i.tooltip"
-                                    >
-                                        <j-popconfirm
-                                            v-if="i.popConfirm"
-                                            v-bind="i.popConfirm"
-                                            :disabled="i.disabled"
-                                        >
-                                            <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
-                                                type="link"
-                                                ><AIcon :type="i.icon"
-                                            /></j-button>
-                                        </j-popconfirm>
-                                        <j-button
-                                            style="padding: 0"
-                                            type="link"
-                                            v-else
-                                            @click="
-                                                i.onClick && i.onClick(record)
-                                            "
-                                        >
-                                            <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
-                                                type="link"
-                                                ><AIcon :type="i.icon"
-                                            /></j-button>
-                                        </j-button>
-                                    </j-tooltip>
-                                </j-space>
+                                <j-space>
+                        <template
+                            v-for="i in getActions(record, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0 5px"
+                                :danger="i.key === 'delete'"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
                             </template>
                         </template>
                     </JTable>

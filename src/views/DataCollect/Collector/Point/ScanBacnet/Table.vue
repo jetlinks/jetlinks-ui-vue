@@ -218,16 +218,18 @@
                 </template>
 
                 <template v-if="dataIndex === 'action'">
-                    <j-tooltip title="删除">
-                        <j-popconfirm
-                            title="确认删除"
-                            @confirm="clickDelete(record.nodeId, index)"
-                        >
-                            <a style="color: red"
-                                ><AIcon type="DeleteOutlined"
-                            /></a>
-                        </j-popconfirm>
-                    </j-tooltip>
+                    <PermissionButton
+                        type="text"
+                        :tooltip="{
+                            title: '删除',
+                        }"
+                        :popConfirm="{
+                            title: '确认删除？',
+                            onConfirm: () => clickDelete(record.nodeId, index),
+                        }"
+                        ><a style="color: red"
+                            ><AIcon type="DeleteOutlined" /></a
+                    ></PermissionButton>
                 </template>
             </template>
         </j-table>

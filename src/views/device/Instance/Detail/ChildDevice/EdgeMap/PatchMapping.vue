@@ -41,12 +41,11 @@
                                 <j-list-item>
                                     {{ item.title }}
                                     <template #actions>
-                                        <j-popconfirm
-                                            title="确定删除?"
-                                            @confirm="_delete(item.key)"
-                                        >
-                                            <AIcon type="DeleteOutlined" />
-                                        </j-popconfirm>
+                                        <ConfirmModal
+                                            title="确认删除？"
+                                            :onConfirm="() => _delete(item.key)"
+                                            ><AIcon type="DeleteOutlined"
+                                        /></ConfirmModal>
                                     </template>
                                 </j-list-item>
                             </template>
@@ -88,7 +87,7 @@ const _props = defineProps({
     },
     text: {
         type: String,
-    }
+    },
 });
 const _emits = defineEmits(['close', 'save']);
 
@@ -100,7 +99,7 @@ const rightList = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
 
-const confirmLoading = ref(false)
+const confirmLoading = ref(false);
 const handleData = (data: any[], type: string) => {
     data.forEach((item) => {
         item.key = item.id;
@@ -185,14 +184,8 @@ const onLoadData: TreeProps['loadData'] = (treeNode) => {
         };
         const res =
             treeNode.type === 'channel'
-                ? await edgeCollector(
-                      <string>_props.edgeId,
-                      params,
-                  )
-                : await edgePoint(
-                      <string>_props.edgeId,
-                      params,
-                  );
+                ? await edgeCollector(<string>_props.edgeId, params)
+                : await edgePoint(<string>_props.edgeId, params);
         (<any>treeNode.dataRef).children = res.result?.[0].map((item: any) => ({
             ...item,
             title: item.name,
@@ -214,7 +207,7 @@ const _delete = (_key: string) => {
 };
 
 const handleClick = async () => {
-    confirmLoading.value = true
+    confirmLoading.value = true;
     if (!rightList.value.length) {
         onlyMessage('请选择采集器', 'warning');
     } else {
@@ -259,11 +252,13 @@ const handleClick = async () => {
                         requestList: filterParms,
                     });
                     const resp = await saveDeviceMapping(_props.edgeId, {
-                        info: [{
-                            deviceId: res.result?.id,
-                            deviceName: res.result?.name,
-                        }],
-                    })
+                        info: [
+                            {
+                                deviceId: res.result?.id,
+                                deviceName: res.result?.name,
+                            },
+                        ],
+                    });
                     if (res.status === 200) {
                         onlyMessage('操作成功');
                         _emits('save');
@@ -274,7 +269,7 @@ const handleClick = async () => {
             }
         }
     }
-    confirmLoading.value = false
+    confirmLoading.value = false;
 };
 const handleClose = () => {
     _emits('close');

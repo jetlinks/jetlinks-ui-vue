@@ -8,7 +8,11 @@
                 </j-space>
             </template>
             <j-form ref="formRef" :model="modelRef">
-                <j-table :columns="columns" :dataSource="modelRef.dataSource" @change="tableChange">
+                <j-table
+                    :columns="columns"
+                    :dataSource="modelRef.dataSource"
+                    @change="tableChange"
+                >
                     <template #headerCell="{ column }">
                         <template v-if="column.key === 'collectorId'">
                             采集器
@@ -20,24 +24,36 @@
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.dataIndex === 'channelId'">
                             <j-form-item
-                                :name="['dataSource', myCurrent * 10 + index, 'channelId']"
+                                :name="[
+                                    'dataSource',
+                                    myCurrent * 10 + index,
+                                    'channelId',
+                                ]"
                             >
                                 <j-select
                                     style="width: 100%"
                                     v-model:value="record[column.dataIndex]"
                                     placeholder="请选择"
                                     allowClear
-                                    show-search 
+                                    show-search
                                     :filter-option="filterOption"
                                     :options="channelList"
-                                    @select="(_, option) => { record.provider = option.provider }"
+                                    @select="
+                                        (_, option) => {
+                                            record.provider = option.provider;
+                                        }
+                                    "
                                 >
                                 </j-select>
                             </j-form-item>
                         </template>
                         <template v-if="column.dataIndex === 'collectorId'">
                             <j-form-item
-                                :name="['dataSource', myCurrent * 10 + index, 'collectorId']"
+                                :name="[
+                                    'dataSource',
+                                    myCurrent * 10 + index,
+                                    'collectorId',
+                                ]"
                                 :rules="[
                                     {
                                         required: !!record.channelId,
@@ -54,7 +70,11 @@
                         </template>
                         <template v-if="column.dataIndex === 'pointId'">
                             <j-form-item
-                                :name="['dataSource', myCurrent * 10 + index, 'pointId']"
+                                :name="[
+                                    'dataSource',
+                                    myCurrent * 10 + index,
+                                    'pointId',
+                                ]"
                                 :rules="[
                                     {
                                         required: !!record.channelId,
@@ -78,17 +98,18 @@
                             <j-badge v-else status="error" text="未绑定" />
                         </template>
                         <template v-if="column.key === 'action'">
-                            <j-tooltip title="解绑">
-                                <j-popconfirm
-                                    title="确认解绑"
-                                    :disabled="!record.id"
-                                    @confirm="unbind(record.id)"
-                                >
-                                    <j-button type="link" :disabled="!record.id"
-                                        ><AIcon type="icon-jiebang"
-                                    /></j-button>
-                                </j-popconfirm>
-                            </j-tooltip>
+                            <PermissionButton
+                                type="link"
+                                :tooltip="{
+                                    title: '解绑',
+                                }"
+                                :popConfirm="{
+                                    title: '确认解绑',
+                                    onConfirm: () => unbind(record.id),
+                                }"
+                                :disabled="!record.id"
+                                ><AIcon type="icon-jiebang"
+                            /></PermissionButton>
                         </template>
                     </template>
                 </j-table>
@@ -104,7 +125,7 @@
         />
     </j-spin>
     <j-card v-else :bordered="false" borderStyle="padding: 0">
-        <JEmpty description='暂无数据，请配置物模型' style="margin: 10% 0" />
+        <JEmpty description="暂无数据，请配置物模型" style="margin: 10% 0" />
     </j-card>
 </template>
 
@@ -158,7 +179,7 @@ const columns = [
     },
 ];
 
-const myCurrent = ref(0)
+const myCurrent = ref(0);
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -209,12 +230,13 @@ const getChannel = async () => {
 const handleSearch = async () => {
     loading.value = true;
     getChannel();
-    const _metadata = metadata.properties?.map?.((item: any) => ({
-        metadataId: item.id,
-        metadataName: `${item.name}(${item.id})`,
-        metadataType: 'property',
-        name: item.name,
-    })) || [];
+    const _metadata =
+        metadata.properties?.map?.((item: any) => ({
+            metadataId: item.id,
+            metadataName: `${item.name}(${item.id})`,
+            metadataType: 'property',
+            name: item.name,
+        })) || [];
     if (_metadata && _metadata.length) {
         const resp: any = await queryMapping(
             'device',
@@ -239,18 +261,21 @@ const handleSearch = async () => {
 };
 
 const tableChange = (pagination: { current: number }) => {
-  myCurrent.value = pagination.current - 1
-}
+    myCurrent.value = pagination.current - 1;
+};
 
-const unbind = async (id: string) => {
+const unbind = (id: string) => {
     if (id) {
-        const resp = await removeMapping('device', instanceStore.current.id, [
+        const response = removeMapping('device', instanceStore.current.id, [
             id,
         ]);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            handleSearch();
-        }
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                handleSearch();
+            }
+        });
+        return response
     }
 };
 
@@ -271,7 +296,7 @@ const onSave = () => {
                 (i: any) => i.channelId,
             );
             if (arr && arr.length !== 0) {
-                console.log(arr)
+                console.log(arr);
                 const resp = await saveMapping(
                     instanceStore.current.id,
                     props.provider,

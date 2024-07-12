@@ -16,11 +16,6 @@
             :defaultParams="defaultParams"
             :scroll="{y:420}"
         >
-            <!-- <template #rightExtraRender>
-                <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
-                    <j-button type="primary">全部已读</j-button>
-                </j-popconfirm>
-            </template> -->
             <template #topicProvider="slotProps">
                 {{ slotProps.topicName }}
             </template>

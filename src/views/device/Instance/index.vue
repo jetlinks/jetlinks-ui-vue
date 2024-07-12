@@ -595,19 +595,32 @@ const getActions = (
                 title: `确认${
                     data.state.value !== 'notActive' ? '禁用' : '启用'
                 }?`,
-                onConfirm: async () => {
-                    let response = undefined;
-                    if (data.state.value !== 'notActive') {
-                        response = await _undeploy(data.id);
-                    } else {
-                        response = await _deploy(data.id);
-                    }
-                    if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
-                        instanceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    let response =
+                        data.state.value !== 'notActive'
+                            ? _undeploy(data.id)
+                            : _deploy(data.id);
+                    response.then((resp) => {
+                        if (resp && resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            instanceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
+
+                    // if (data.state.value !== 'notActive') {
+                    //     response = await _undeploy(data.id);
+                    // } else {
+                    //     response = await _deploy(data.id);
+                    // }
+                    // if (response && response.status === 200) {
+                    //     onlyMessage('操作成功！');
+                    //     instanceRef.value?.reload();
+                    // } else {
+                    //     onlyMessage('操作失败！', 'error');
+                    // }
                 },
             },
         },

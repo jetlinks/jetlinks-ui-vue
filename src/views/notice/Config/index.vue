@@ -38,18 +38,15 @@
                                 导入
                             </PermissionButton>
                         </j-upload>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
+                        <PermissionButton
+                            :popConfirm="{
+                                title: '确认导出？',
+                                onConfirm: handleExport,
+                            }"
+                            hasPermission="notice/Config:export"
                         >
-                            <PermissionButton
-                                hasPermission="notice/Config:export"
-                            >
-                                导出
-                            </PermissionButton>
-                        </j-popconfirm>
+                            导出
+                        </PermissionButton>
                     </j-space>
                 </template>
                 <template #card="slotProps">
@@ -128,20 +125,16 @@
                                         </j-menu>
                                     </template>
                                 </j-dropdown>
-                                <j-popconfirm
+                                <PermissionButton
                                     v-else-if="item.key === 'delete'"
-                                    v-bind="item.popConfirm"
+                                    :popConfirm="item.popConfirm"
                                     :disabled="item.disabled"
+                                    :hasPermission="`notice/Config:${item.key}`"
                                 >
-                                    <PermissionButton
-                                        :disabled="item.disabled"
-                                        :hasPermission="`notice/Config:${item.key}`"
-                                    >
-                                        <template #icon>
-                                            <AIcon type="DeleteOutlined" />
-                                        </template>
-                                    </PermissionButton>
-                                </j-popconfirm>
+                                    <template #icon>
+                                        <AIcon type="DeleteOutlined" />
+                                    </template>
+                                </PermissionButton>
                                 <template v-else>
                                     <PermissionButton
                                         :disabled="item.disabled"
