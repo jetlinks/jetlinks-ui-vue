@@ -113,7 +113,6 @@ const checkValue = (_rule: any, value: any, item: any) => {
         return Promise.resolve();
     }
     const type = item.expands?.businessType || item?.type;
-    console.log(type, props.notify)
     if (type === 'file') {
         return Promise.resolve();
     } else if (type === 'link') {

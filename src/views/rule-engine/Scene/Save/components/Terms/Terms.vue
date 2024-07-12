@@ -288,7 +288,6 @@ const groupDelete = async (g: any, index: number) => {
 }
 
 const removeBranchesData = (g: any, index: number) => {
-  console.log(g.start, g.len)
   const removeBranches = data.value.branches.splice(g.start, g.len)
 
   removeBranches.forEach(item => {

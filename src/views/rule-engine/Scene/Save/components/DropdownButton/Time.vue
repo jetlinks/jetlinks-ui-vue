@@ -60,7 +60,6 @@ const getPopupContainer = (trigger: HTMLElement) => {
 }
 
 const change = (e: string) => {
-  console.log('Time',e)
   myValue.value =  e
   emit('update:value', e)
   emit('change', e)

@@ -337,7 +337,6 @@ const getActions = (
                       }
                     ],
                   })
-                  console.log(resp)
                   if (resp.success && resp.result?.total) {
                     await deleteModal(data.id)
                   } else {
