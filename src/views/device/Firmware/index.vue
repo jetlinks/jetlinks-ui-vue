@@ -67,7 +67,12 @@
                 </j-pro-table>
             </FullPage>
         </div>
-        <Save v-if="visible" :data="current" :productOptions="productOptions" @change="saveChange" />
+        <Save
+            v-if="visible"
+            :data="current"
+            :productOptions="productOptions"
+            @change="saveChange"
+        />
         <TaskDrawer
             v-if="showTask"
             :firmwareId="firmwareId"
@@ -216,11 +221,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             popConfirm: {
                 title: '确认删除?',
-                okText: ' 确定',
-                placement: 'topLeft',
-                cancelText: '取消',
-                onConfirm: async () => {
-                    handleDelete(data.id);
+                onConfirm: () => {
+                   return handleDelete(data.id);
                 },
             },
             icon: 'DeleteOutlined',
@@ -261,14 +263,17 @@ const saveChange = (value: FormDataType) => {
     }
 };
 
-const handleDelete = async (id: string) => {
-    const res = await remove(id);
-    if (res.status === 200) {
-        onlyMessage('操作成功', 'success');
-        tableRef.value.reload();
-    } else {
-        onlyMessage(res?.message, 'error');
-    }
+const handleDelete = (id: string) => {
+    const response = remove(id);
+    response.then((res:any) => {
+        if (res.status === 200) {
+            onlyMessage('操作成功', 'success');
+            tableRef.value.reload();
+        } else {
+            onlyMessage(res?.message, 'error');
+        }
+    });
+    return response
 };
 
 onMounted(() => {

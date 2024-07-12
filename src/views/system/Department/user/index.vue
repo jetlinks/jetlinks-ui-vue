@@ -4,23 +4,23 @@
             :columns="columns"
             target="category-user"
             @search="handleParams"
-            style='margin-bottom: 0;'
+            style="margin-bottom: 0"
         />
-      <FullPage :extraHeight="24">
+        <FullPage :extraHeight="24">
             <j-pro-table
                 ref="tableRef"
                 :columns="columns"
                 :request="table.requestFun"
                 :params="queryParams"
                 :scroll="{
-                    x:true,
-                    y:610,
+                    x: true,
+                    y: 610,
                 }"
                 :rowSelection="{
                     selectedRowKeys: table._selectedRowKeys,
                     onSelect: table.onSelectChange,
                     onSelectAll: selectAll,
-                    onSelectNone: () => table._selectedRowKeys = []
+                    onSelectNone: () => (table._selectedRowKeys = []),
                 }"
                 model="TABLE"
             >
@@ -30,7 +30,7 @@
                         :hasPermission="`${permission}:bind-user`"
                         @click="dialogVisible = true"
                         style="margin-right: 15px"
-                        :disabled='!parentId'
+                        :disabled="!parentId"
                     >
                         <AIcon type="PlusOutlined" />绑定用户
                     </PermissionButton>
@@ -200,23 +200,26 @@ const table = reactive({
     },
     unBind: (row?: any) => {
         const ids = row ? [row.id] : table._selectedRowKeys;
-        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
+        if (ids.length < 1)
+            return onlyMessage('请勾选需要解绑的数据', 'warning');
 
-        unBindUser_api(props.parentId, ids).then(() => {
+        const response = unBindUser_api(props.parentId, ids);
+        response.then(() => {
             onlyMessage('操作成功');
-            table._selectedRowKeys = []
+            table._selectedRowKeys = [];
             table.refresh();
         });
+        return response;
     },
-    onSelectChange: (row:any,selected:Boolean) => {
+    onSelectChange: (row: any, selected: Boolean) => {
         const arr = new Set(table._selectedRowKeys);
-        console.log(row)
-        if(selected){
-            arr.add(row.id)
-        }else{
-            arr.delete(row.id)
+        console.log(row);
+        if (selected) {
+            arr.add(row.id);
+        } else {
+            arr.delete(row.id);
         }
-        table._selectedRowKeys = [...arr.values()]
+        table._selectedRowKeys = [...arr.values()];
     },
     // 刷新列表
     refresh: () => {
@@ -226,29 +229,29 @@ const table = reactive({
 
 const dialogVisible = ref(false);
 
-const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+const selectAll = (selected: Boolean, selectedRows: any, changeRows: any) => {
     if (selected) {
-            changeRows.map((i: any) => {
-                if (!table._selectedRowKeys.includes(i.id)) {
-                    table._selectedRowKeys.push(i.id)
-                }
-            })
-        } else {
-            const arr = changeRows.map((item: any) => item.id)
-            const _ids: string[] = [];
-            table._selectedRowKeys.map((i: any) => {
-                if (!arr.includes(i)) {   
-                    _ids.push(i)
-                }
-            })
-            table._selectedRowKeys = _ids;
-        }     
-}
+        changeRows.map((i: any) => {
+            if (!table._selectedRowKeys.includes(i.id)) {
+                table._selectedRowKeys.push(i.id);
+            }
+        });
+    } else {
+        const arr = changeRows.map((item: any) => item.id);
+        const _ids: string[] = [];
+        table._selectedRowKeys.map((i: any) => {
+            if (!arr.includes(i)) {
+                _ids.push(i);
+            }
+        });
+        table._selectedRowKeys = _ids;
+    }
+};
 watch(
     () => props.parentId,
     () => {
         table.refresh();
-        table._selectedRowKeys = []
+        table._selectedRowKeys = [];
     },
 );
 </script>

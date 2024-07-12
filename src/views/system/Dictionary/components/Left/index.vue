@@ -216,7 +216,8 @@ const saveSuccess = () => {
  * 删除字典
  */
 const deleteDic = (id: string) => {
-    deleteDictionary(id).then((res: any) => {
+   const response  = deleteDictionary(id)
+   response.then((res: any) => {
         if (res.status === 200) {
             onlyMessage('操作成功!');
             queryData(true);
@@ -224,6 +225,7 @@ const deleteDic = (id: string) => {
             onlyMessage('操作失败!', 'error');
         }
     });
+    return response
 };
 /**
  * 更新字典

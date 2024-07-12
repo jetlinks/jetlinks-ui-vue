@@ -40,101 +40,6 @@
                             :actions="batchActions"
                             @change="onCheckChange"
                         />
-                        <!-- <j-dropdown>
-                        <j-button>
-                            批量操作
-                            <AIcon type="DownOutlined" />
-                        </j-button>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        @click="exportVisible = true"
-                                        :hasPermission="'iot-card/CardManagement:export'"
-                                    >
-                                        <AIcon type="ExportOutlined" />
-                                        批量导出
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        @click="importVisible = true"
-                                        :hasPermission="'iot-card/CardManagement:import'"
-                                    >
-                                        <AIcon type="ImportOutlined" />批量导入
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :popConfirm="{
-                                            title: '确认激活吗？',
-                                            onConfirm: handleActive,
-                                        }"
-                                        :hasPermission="'iot-card/CardManagement:active'"
-                                    >
-                                        <AIcon type="CheckCircleOutlined" />
-                                        批量激活
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :popConfirm="{
-                                            title: '确认停用吗？',
-                                            onConfirm: handleStop,
-                                        }"
-                                        ghost
-                                        type="primary"
-                                        :hasPermission="'iot-card/CardManagement:action'"
-                                    >
-                                        <AIcon type="StopOutlined" />
-                                        批量停用
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :popConfirm="{
-                                            title: '确认复机吗？',
-                                            onConfirm: handleResumption,
-                                        }"
-                                        ghost
-                                        type="primary"
-                                        :hasPermission="'iot-card/CardManagement:action'"
-                                    >
-                                        <AIcon type="PoweroffOutlined" />
-                                        批量复机
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        :popConfirm="{
-                                            title: '确认同步状态吗？',
-                                            onConfirm: handleSync,
-                                        }"
-                                        ghost
-                                        type="primary"
-                                        :hasPermission="'iot-card/CardManagement:sync'"
-                                    >
-                                        <AIcon type="SwapOutlined" />
-                                        同步状态
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item v-if="_selectedRowKeys.length > 0">
-                                    <PermissionButton
-                                        :popConfirm="{
-                                            title: '确认删除吗？',
-                                            onConfirm: handelRemove,
-                                        }"
-                                        ghost
-                                        type="primary"
-                                        :hasPermission="'iot-card/CardManagement:delete'"
-                                    >
-                                        <AIcon type="SwapOutlined" />
-                                        批量删除
-                                    </PermissionButton>
-                                </j-menu-item>
-                            </j-menu>
-                        </template>
-                    </j-dropdown> -->
                     </j-space>
                 </template>
                 <template #card="slotProps">
@@ -603,7 +508,7 @@ const columns = [
         title: '运营商状态',
         dataIndex: 'operatorState',
         key: 'operatorState',
-        hidden:true,
+        hidden: true,
         search: {
             type: 'select',
             options: [
@@ -679,13 +584,15 @@ const getActions = (
                       title: '确认解绑设备？',
                       okText: '确定',
                       cancelText: '取消',
-                      onConfirm: async () => {
-                          unbind(data.id).then((resp: any) => {
+                      onConfirm: () => {
+                          const response = unbind(data.id);
+                          response.then((resp: any) => {
                               if (resp.status === 200) {
                                   onlyMessage('操作成功');
                                   cardManageRef.value?.reload();
                               }
                           });
+                          return response;
                       },
                   }
                 : undefined,
@@ -730,29 +637,34 @@ const getActions = (
                         : '确认停用?',
                 okText: '确定',
                 cancelText: '取消',
-                onConfirm: async () => {
+                onConfirm: () => {
+                    let response;
                     if (data.cardStateType?.value === 'toBeActivated') {
-                        changeDeploy(data.id).then((resp) => {
+                        response = changeDeploy(data.id);
+                        response.then((resp) => {
                             if (resp.status === 200) {
                                 onlyMessage('操作成功');
                                 cardManageRef.value?.reload();
                             }
                         });
                     } else if (data.cardStateType?.value === 'deactivate') {
-                        resumption(data.id).then((resp) => {
+                        response = resumption(data.id);
+                        response.then((resp) => {
                             if (resp.status === 200) {
                                 onlyMessage('操作成功');
                                 cardManageRef.value?.reload();
                             }
                         });
                     } else {
-                        unDeploy(data.id).then((resp) => {
+                        response = unDeploy(data.id);
+                        response.then((resp) => {
                             if (resp.status === 200) {
                                 onlyMessage('操作成功');
                                 cardManageRef.value?.reload();
                             }
                         });
                     }
+                    return response;
                 },
             },
         },
@@ -766,20 +678,23 @@ const getActions = (
                 title: '确认删除?',
                 okText: '确定',
                 cancelText: '取消',
-                onConfirm: async () => {
-                    const resp: any = await del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功');
-                        const index = _selectedRowKeys.value.findIndex(
-                            (id: any) => id === data.id,
-                        );
-                        if (index !== -1) {
-                            _selectedRowKeys.value.splice(index, 1);
+                onConfirm: () => {
+                    const response: any = del(data.id);
+                    response.then((resp: any) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功');
+                            const index = _selectedRowKeys.value.findIndex(
+                                (id: any) => id === data.id,
+                            );
+                            if (index !== -1) {
+                                _selectedRowKeys.value.splice(index, 1);
+                            }
+                            cardManageRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
                         }
-                        cardManageRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    });
+                    return response;
                 },
             },
             icon: 'DeleteOutlined',
@@ -907,11 +822,13 @@ const handleStop = () => {
         _selectedRowKeys.value.length >= 10 &&
         _selectedRowKeys.value.length <= 100
     ) {
-        unDeployBatch(_selectedRowKeys.value).then((res: any) => {
+        const response = unDeployBatch(_selectedRowKeys.value);
+        response.then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('操作成功');
             }
         });
+        return response;
     } else {
         onlyMessage(
             '仅支持同一个运营商下且最少10条数据,最多100条数据',
@@ -928,11 +845,13 @@ const handleResumption = () => {
         _selectedRowKeys.value.length >= 10 &&
         _selectedRowKeys.value.length <= 100
     ) {
-        resumptionBatch(_selectedRowKeys.value).then((res: any) => {
+        const response = resumptionBatch(_selectedRowKeys.value);
+        response.then((res: any) => {
             if (res.status === 200) {
                 onlyMessage('操作成功');
             }
         });
+        return response;
     } else {
         onlyMessage(
             '仅支持同一个运营商下且最少10条数据,最多100条数据',
@@ -972,20 +891,23 @@ const handleSync = async () => {
 /**
  * 批量删除
  */
-const handelRemove = async () => {
+const handelRemove = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择数据', 'error');
         return;
     }
-    const resp = await removeCards(
+    const response = removeCards(
         _selectedRowKeys.value.map((v) => ({ id: v })),
     );
-    if (resp.status === 200) {
-        onlyMessage('操作成功');
-        _selectedRowKeys.value = [];
-        // _selectedRow.value = [];
-        cardManageRef.value?.reload();
-    }
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功');
+            _selectedRowKeys.value = [];
+            // _selectedRow.value = [];
+            cardManageRef.value?.reload();
+        }
+    });
+    return response;
 };
 const batchActions: BatchActionsType[] = [
     {

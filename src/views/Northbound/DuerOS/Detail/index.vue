@@ -770,13 +770,15 @@ const getTypesActions = (val: string) => {
 
 const onActiveProduct = () => {
     if (modelRef.id) {
-        _deploy(modelRef.id).then((resp) => {
+        const response = _deploy(modelRef.id)
+        response.then((resp) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功！');
                 getProduct(modelRef.id);
                 _error.value = '';
             }
         });
+        return response
     }
 };
 

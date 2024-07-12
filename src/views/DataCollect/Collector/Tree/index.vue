@@ -12,7 +12,7 @@
             <PermissionButton
                 class="add-btn"
                 type="primary"
-                @click="handlAdd()"
+                @click="handleAdd()"
                 hasPermission="DataCollect/Collector:add"
             >
                 <template #icon><AIcon type="PlusOutlined" /></template>
@@ -25,11 +25,13 @@
                 :selected-keys="selectedKeys"
                 :fieldNames="{ key: 'id' }"
                 v-if="
-                    !(defualtDataSource.length === 0 ||
-                    defualtDataSource?.[0]?.children?.length === 0)
+                    !(
+                        defualtDataSource.length === 0 ||
+                        defualtDataSource?.[0]?.children?.length === 0
+                    )
                 "
                 :height="660"
-                @select='treeSelect'
+                @select="treeSelect"
                 defaultExpandAll
                 :showLine="{ showLeafIcon: false }"
                 :show-icon="true"
@@ -38,39 +40,41 @@
                     <Ellipsis class="tree-left-title">
                         {{ name }}
                     </Ellipsis>
-<!--                    <j-tag-->
-<!--                        class="tree-left-tag"-->
-<!--                        v-if="data.id !== '*'"-->
-<!--                        :color="-->
-<!--                          data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?-->
-<!--                          colorMap.get(data?.runningState?.value) :-->
-<!--                          colorMap.get(data?.uniformState?.value)-->
-<!--                        "-->
-<!--                        >{{-->
-<!--                        data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?-->
-<!--                            data?.runningState?.text :-->
-<!--                            data?.uniformState?.text-->
-<!--                      }}</j-tag-->
-<!--                    >-->
+                    <!--                    <j-tag-->
+                    <!--                        class="tree-left-tag"-->
+                    <!--                        v-if="data.id !== '*'"-->
+                    <!--                        :color="-->
+                    <!--                          data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?-->
+                    <!--                          colorMap.get(data?.runningState?.value) :-->
+                    <!--                          colorMap.get(data?.uniformState?.value)-->
+                    <!--                        "-->
+                    <!--                        >{{-->
+                    <!--                        data?.uniformState?.value === 'normal' || data?.state?.value === 'disabled' ?-->
+                    <!--                            data?.runningState?.text :-->
+                    <!--                            data?.uniformState?.text-->
+                    <!--                      }}</j-tag-->
+                    <!--                    >-->
                     <j-tag
                         class="tree-left-tag"
                         v-if="data.id !== '*'"
                         :color="colorMap.get(data?.uniformState?.value)"
-                    >{{ data?.uniformState?.text }}</j-tag
+                        >{{ data?.uniformState?.text }}</j-tag
                     >
                     <j-tag
                         class="tree-left-tag2"
                         v-if="data.id !== '*'"
                         :color="
-                          data?.state?.value === 'disabled' ? colorMap.get(data?.runningState?.value) :
-                          colorMap.get(data?.state?.value)
+                            data?.state?.value === 'disabled'
+                                ? colorMap.get(data?.runningState?.value)
+                                : colorMap.get(data?.state?.value)
                         "
-                        >
-                      {{
-                       data?.state?.value === 'disabled' ? data?.state?.text : data?.runningState?.text
-                      }}
-                    </j-tag
                     >
+                        {{
+                            data?.state?.value === 'disabled'
+                                ? data?.state?.text
+                                : data?.runningState?.text
+                        }}
+                    </j-tag>
                     <span
                         v-if="data.id !== '*'"
                         class="func-btns"
@@ -81,7 +85,7 @@
                             :tooltip="{
                                 title: '编辑',
                             }"
-                            @click="handlEdit(data)"
+                            @click="handleEdit(data)"
                             hasPermission="DataCollect/Collector:update"
                         >
                             <AIcon type="EditOutlined" />
@@ -94,14 +98,17 @@
                                         ? '启用'
                                         : '禁用',
                             }"
-                            :disabled="data?.runningState?.value === 'stopped' && data?.state?.value!== 'disabled'"
+                            :disabled="
+                                data?.runningState?.value === 'stopped' &&
+                                data?.state?.value !== 'disabled'
+                            "
                             hasPermission="DataCollect/Collector:action"
                             :popConfirm="{
                                 title:
                                     data?.state?.value === 'disabled'
                                         ? '确定启用?'
                                         : '确定禁用?',
-                                onConfirm: () => handlUpdate(data),
+                                onConfirm: () => handleUpdate(data),
                             }"
                         >
                             <AIcon
@@ -125,7 +132,7 @@
                             hasPermission="DataCollect/Collector:delete"
                             :popConfirm="{
                                 title: `该操作将会删除下属点位，确定删除？`,
-                                onConfirm: () => handlDelete(data.id),
+                                onConfirm: () => handleDelete(data.id),
                             }"
                         >
                             <AIcon type="DeleteOutlined" />
@@ -135,7 +142,12 @@
             </j-tree>
             <j-empty v-else description="暂无数据" />
         </j-spin>
-        <Save :channelListAll="channelListAll" v-if="visible" :data="current" @change="saveChange" />
+        <Save
+            :channelListAll="channelListAll"
+            v-if="visible"
+            :data="current"
+            @change="saveChange"
+        />
     </div>
 </template>
 
@@ -167,7 +179,7 @@ const searchValue = ref();
 const visible = ref(false);
 const current = ref({});
 const collectorAll = ref();
-const channelListAll = ref<any[]>([])
+const channelListAll = ref<any[]>([]);
 
 const root = [
     {
@@ -182,51 +194,60 @@ const defualtDataSource: any = ref(_.cloneDeep(root));
 const defualtParams = {
     paging: false,
     sorts: [{ name: 'createTime', order: 'desc' }],
-    terms: !!channelId ? [
-        {
-            terms: [
+    terms: !!channelId
+        ? [
+              {
+                  terms: [
                       {
                           column: 'channelId',
                           value: channelId,
                       },
                   ],
-            type: 'and',
-        },
-    ] : [],
+                  type: 'and',
+              },
+          ]
+        : [],
 };
 const params = ref();
 
-const handlAdd = () => {
+const handleAdd = () => {
     current.value = {};
     visible.value = true;
 };
 
-const handlEdit = (data: object) => {
+const handleEdit = (data: object) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
 };
 
-const handlUpdate = async (data: any) => {
+const handleUpdate = (data: any) => {
     const state = data?.state?.value;
-    const resp = await update(data?.id, {
+    const response = update(data?.id, {
         state: state !== 'disabled' ? 'disabled' : 'enabled',
         runningState: state !== 'disabled' ? 'stopped' : 'running',
     });
-    if (resp.status === 200) {
-        handleSearch(params.value);
-        const _item = collectorAll.value.find((i: any) => i?.id === selectedKeys.value?.[0])
-        emits('change', _item)
-        onlyMessage('操作成功', 'success');
-    }
+    response.then((resp) => {
+        if (resp.status === 200) {
+            handleSearch(params.value);
+            const _item = collectorAll.value.find(
+                (i: any) => i?.id === selectedKeys.value?.[0],
+            );
+            emits('change', _item);
+            onlyMessage('操作成功', 'success');
+        }
+    });
+    return response
 };
-const handlDelete = async (id: string) => {
-    const resp = await remove(id);
-    if (resp.status === 200) {
-        selectedKeys.value = []
-        handleSearch(params.value);
-        onlyMessage('操作成功', 'success');
-        
-    }
+const handleDelete = (id: string) => {
+    const response = remove(id);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            selectedKeys.value = [];
+            handleSearch(params.value);
+            onlyMessage('操作成功', 'success');
+        }
+    });
+    return response
 };
 
 const saveChange = (value: object) => {
@@ -265,7 +286,7 @@ const handleSearch = async (value: any) => {
                         termType: 'like',
                     },
                 ],
-            }
+            },
         ];
     } else {
         !!value && (params.value = value);
@@ -299,14 +320,13 @@ const handleSearch = async (value: any) => {
     spinning.value = false;
 };
 const getChannelNoPaging = async () => {
-
     const res: any = await queryChannelNoPaging();
     channelListAll.value = res.result;
 };
 
 const treeSelect = (keys: string, e: any) => {
-  selectedKeys.value = [e.node?.id]
-}
+    selectedKeys.value = [e.node?.id];
+};
 
 onMounted(() => {
     handleSearch(_.cloneDeep(defualtParams));
@@ -316,16 +336,18 @@ onMounted(() => {
 watch(
     () => selectedKeys.value[0],
     (n, p) => {
-        const key = _.isArray(selectedKeys.value) ? selectedKeys.value[0] : selectedKeys.value;
+        const key = _.isArray(selectedKeys.value)
+            ? selectedKeys.value[0]
+            : selectedKeys.value;
         if (key) {
-          if (key !== "*") {
-            const row = collectorAll.value.find((i: any) => i.id === key);
-            emits('change', row);
-          } else {
-            emits('change', {
-              id: '*'
-            });
-          }
+            if (key !== '*') {
+                const row = collectorAll.value.find((i: any) => i.id === key);
+                emits('change', row);
+            } else {
+                emits('change', {
+                    id: '*',
+                });
+            }
         }
     },
 );

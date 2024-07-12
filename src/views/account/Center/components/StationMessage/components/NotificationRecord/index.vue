@@ -226,13 +226,15 @@ const refresh = () => {
 
 const changeStatus = (row: any) => {
     const type = row.state.value === 'read' ? '_unread' : '_read';
-    changeStatus_api(type, [row.id]).then((resp: any) => {
+    const response =  changeStatus_api(type, [row.id])
+    response.then((resp: any) => {
         if (resp.status === 200) {
             onlyMessage('操作成功！');
             refresh();
             user.updateAlarm();
         }
     });
+    return response
 };
 
 watchEffect(() => {

@@ -25,12 +25,18 @@
                         "
                     >
                         <PermissionButton
-                            style="padding: 0;"
+                            style="padding: 0"
                             type="text"
                             hasPermission="device/Product:action"
                             :popConfirm="{
-                                title: productStore.current.state === 1 ? '确认禁用' : '确认启用',
-                                onConfirm: productStore.current.state === 1  ?  handleUndeploy : handleDeploy,
+                                title:
+                                    productStore.current.state === 1
+                                        ? '确认禁用'
+                                        : '确认启用',
+                                onConfirm:
+                                    productStore.current.state === 1
+                                        ? handleUndeploy
+                                        : handleDeploy,
                             }"
                         >
                             <j-switch
@@ -105,7 +111,6 @@
                 type="primary"
                 :popConfirm="{
                     title: `确定应用配置?`,
-                    placement: 'bottomRight',
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
@@ -241,26 +246,32 @@ const onTabChange = (e: string) => {
 /**
  * 启用产品
  */
-const handleDeploy = async () => {
+const handleDeploy = () => {
     if (productStore.current.id) {
-        const resp = await _deploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _deploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
 /**
  * 禁用产品
  */
-const handleUndeploy = async () => {
+const handleUndeploy = () => {
     if (productStore.current.id) {
-        const resp = await _undeploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _undeploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 

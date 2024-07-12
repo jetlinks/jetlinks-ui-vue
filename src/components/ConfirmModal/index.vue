@@ -38,19 +38,20 @@ const props = defineProps({
 });
 const confirmLoading = ref(false);
 const modalVisible = ref(false);
-const modalConfirm = () => {
+const modalConfirm = async() => {
     if (typeof props.onConfirm === 'function') {
         confirmLoading.value = true;
-        const res = props.onConfirm();
-        if (res?.finally) {
-            res.finally(() => {
-                confirmLoading.value = false;
-                modalVisible.value = false;
-            });
-        } else {
+        const res = await props.onConfirm();
+        // if (res?.finally) {
+        //     console.log(123)
+        //     res.finally(() => {
+        //         confirmLoading.value = false;
+        //         modalVisible.value = false;
+        //     });
+        // } else {
             confirmLoading.value = false;
             modalVisible.value = false;
-        }
+        // }
     } else {
         modalVisible.value = false;
     }

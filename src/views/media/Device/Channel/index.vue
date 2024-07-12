@@ -2,10 +2,7 @@
 <template>
     <page-container>
         <div class="device-channel-warp">
-            <div
-                class="left-warp"
-                v-if="route.query.type === 'gb28181-2016'"
-            >
+            <div class="left-warp" v-if="route.query.type === 'gb28181-2016'">
                 <div class="left-content" :class="{ active: show }">
                     <Tree
                         :deviceData="deviceData"
@@ -336,14 +333,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await ChannelApi.del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = ChannelApi.del(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

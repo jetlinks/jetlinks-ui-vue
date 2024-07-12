@@ -255,19 +255,22 @@ const getActions = (
                 title: `确认${
                     data.state.value !== 'disabled' ? '禁用' : '启用'
                 }?`,
-                onConfirm: async () => {
+                onConfirm: () => {
                     let response = undefined;
                     if (data.state.value !== 'disabled') {
-                        response = await _undeploy(data.id);
+                        response = _undeploy(data.id);
                     } else {
-                        response = await _deploy(data.id);
+                        response = _deploy(data.id);
                     }
-                    if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
-                        instanceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    response.then((res) => {
+                        if (res && res.status === 200) {
+                            onlyMessage('操作成功！');
+                            instanceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -283,14 +286,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        instanceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = _delete(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            instanceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
             icon: 'DeleteOutlined',

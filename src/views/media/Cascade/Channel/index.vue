@@ -335,17 +335,20 @@ const getActions = (
             icon: 'DisconnectOutlined',
             popConfirm: {
                 title: '确认解绑?',
-                onConfirm: async () => {
-                    const resp = await CascadeApi.unbindChannel(
+                onConfirm: () => {
+                    const response = CascadeApi.unbindChannel(
                         route.query.id as string,
                         [data.channelId],
                     );
-                    if (resp.success) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    response.then((resp) => {
+                        if (resp.success) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
         },

@@ -366,6 +366,7 @@ const getActions = (
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
+                    return 
                 },
             },
         },

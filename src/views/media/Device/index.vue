@@ -381,14 +381,17 @@ const getActions = (
             disabled: data.state.value === 'online',
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await DeviceApi.del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = DeviceApi.del(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

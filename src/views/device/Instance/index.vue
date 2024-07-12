@@ -595,32 +595,19 @@ const getActions = (
                 title: `确认${
                     data.state.value !== 'notActive' ? '禁用' : '启用'
                 }?`,
-                onConfirm: () => {
-                    let response =
-                        data.state.value !== 'notActive'
-                            ? _undeploy(data.id)
-                            : _deploy(data.id);
-                    response.then((resp) => {
-                        if (resp && resp.status === 200) {
-                            onlyMessage('操作成功！');
-                            instanceRef.value?.reload();
-                        } else {
-                            onlyMessage('操作失败！', 'error');
-                        }
-                    });
-                    return response;
-
-                    // if (data.state.value !== 'notActive') {
-                    //     response = await _undeploy(data.id);
-                    // } else {
-                    //     response = await _deploy(data.id);
-                    // }
-                    // if (response && response.status === 200) {
-                    //     onlyMessage('操作成功！');
-                    //     instanceRef.value?.reload();
-                    // } else {
-                    //     onlyMessage('操作失败！', 'error');
-                    // }
+                onConfirm: async() => {
+                    let response 
+                    if (data.state.value !== 'notActive') {
+                        response = await _undeploy(data.id);
+                    } else {
+                        response = await _deploy(data.id);
+                    }
+                    if (response && response.status === 200) {
+                        onlyMessage('操作成功！');
+                        instanceRef.value?.reload();
+                    } else {
+                        onlyMessage('操作失败！', 'error');
+                    }
                 },
             },
         },
@@ -636,20 +623,23 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        const index = _selectedRowKeys.value.findIndex(
-                            (id: any) => id === data.id,
-                        );
-                        if (index !== -1) {
-                            _selectedRowKeys.value.splice(index, 1);
+                onConfirm: () => {
+                    const response = _delete(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            const index = _selectedRowKeys.value.findIndex(
+                                (id: any) => id === data.id,
+                            );
+                            if (index !== -1) {
+                                _selectedRowKeys.value.splice(index, 1);
+                            }
+                            instanceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
                         }
-                        instanceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    });
+                    return response;
                 },
             },
             icon: 'DeleteOutlined',
@@ -738,17 +728,20 @@ const syncDeviceStatus = () => {
     operationVisible.value = true;
 };
 
-const delSelectedDevice = async () => {
+const delSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择设备', 'error');
         return;
     }
-    const resp = await batchDeleteDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
+    const response = batchDeleteDevice(_selectedRowKeys.value);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            _selectedRowKeys.value = [];
+            instanceRef.value?.reload();
+        }
+    });
+    return response
 };
 
 // const activeSelectedDevice = async () => {
@@ -764,17 +757,20 @@ const delSelectedDevice = async () => {
 //     }
 // };
 
-const disabledSelectedDevice = async () => {
+const disabledSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择设备', 'error');
         return;
     }
-    const resp = await batchUndeployDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
+    const response = batchUndeployDevice(_selectedRowKeys.value);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            _selectedRowKeys.value = [];
+            instanceRef.value?.reload();
+        }
+    });
+    return response;
 };
 
 const batchActions: BatchActionsType[] = [

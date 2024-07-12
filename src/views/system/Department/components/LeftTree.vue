@@ -192,10 +192,12 @@ function handleTreeMap(_data: any[]) {
 }
 // 删除部门
 function delDepartment(id: string) {
-    delDepartment_api(id).then(() => {
+    const response = delDepartment_api(id)
+    response.then(() => {
         onlyMessage('操作成功');
         getTree();
     });
+    return response
 }
 function refresh(id: string) {
     // @ts-ignore

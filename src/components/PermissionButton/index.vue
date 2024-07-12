@@ -153,19 +153,12 @@ const _isPermission = computed(() =>
         : true,
 );
 
-const modalConfirm = (e: MouseEvent) => {
+const modalConfirm = async (e: MouseEvent) => {
     if (typeof props.popConfirm?.onConfirm === 'function') {
         confirmLoading.value = true;
-        const res:any = props.popConfirm?.onConfirm(e);
-        if (res?.finally) {
-            res.finally(() => {
-                confirmLoading.value = false;
-                modalVisible.value = false;
-            });
-        } else {
-            confirmLoading.value = false;
-            modalVisible.value = false;
-        }
+        const res: any = await props.popConfirm?.onConfirm(e);
+        confirmLoading.value = false;
+        modalVisible.value = false;
     } else {
         modalVisible.value = false;
     }
