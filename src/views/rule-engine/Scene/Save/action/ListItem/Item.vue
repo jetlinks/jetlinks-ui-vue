@@ -8,16 +8,17 @@
             <CheckItem v-bind='props' ref='checkItemRef'>
               <div class="item-options-warp">
                   <div class="item-options-type" @click="onAdd">
-                      <img
-                          style="width: 18px"
-                          :src="
-                              iconMap.get(
-                                  data?.executor === 'alarm'
-                                      ? data?.alarm?.mode
-                                      : data?.executor,
-                              )
-                          "
-                      />
+<!--                      <img-->
+<!--                          style="width: 18px"-->
+<!--                          :src="-->
+<!--                              iconMap.get(-->
+<!--                                  data?.executor === 'alarm'-->
+<!--                                      ? data?.alarm?.mode-->
+<!--                                      : data?.executor,-->
+<!--                              )-->
+<!--                          "-->
+<!--                      />-->
+                    <AIcon :type="iconMap.get(data?.executor === 'alarm' ? data.alarm.mode : data.executor)"/>
                   </div>
                   <div
                       class="item-options-content"
@@ -636,6 +637,7 @@ const rules = [{
             background-color: #f0f0f0;
             border-radius: 6px 0 0 6px;
             cursor: pointer;
+            font-size: 22px;
         }
 
         .item-options-content {
