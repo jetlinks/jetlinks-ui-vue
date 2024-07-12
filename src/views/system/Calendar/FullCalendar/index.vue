@@ -373,7 +373,7 @@ const calendarOptions = {
     unselectAuto: false,
     locale: locale,
     droppable: true,
-    height: props.preview ? '600px' : '680px',
+    height: props.preview ? '600px' : '620px',
     // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,

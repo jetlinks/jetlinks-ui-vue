@@ -23,6 +23,9 @@
                 <PermissionButton
                     type="text"
                     :disabled="i.disabled || rapidOn"
+                    :tooltip="{
+                        title: '编辑'
+                    }"
                     @click="() => editData(i)"
                 >
                     <template #icon>
@@ -32,6 +35,9 @@
                 <PermissionButton
                     type="text"
                     :disabled="i.disabled || rapidOn"
+                    :tooltip="{
+                        title: '删除'
+                    }"
                     :popConfirm="{
                         title: `确定要删除？`,
                         onConfirm: () => deleteData(i.id),
