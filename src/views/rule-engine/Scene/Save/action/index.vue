@@ -113,13 +113,10 @@ watch(
       return !!item.actions.length
     })
 
-    if (
-      !lock.value &&
-      parallelArray.value.length &&
-      (!serialArray.value.length || !isSerialActions)
-    ) {
-      activeKeys.value = ['2']
-      lock.value = true
+    const isParallelActions = parallelArray.value.some((item) => !!item.actions?.length)
+
+    if (!lock.value && isParallelActions) {
+      activeKeys.value = !serialArray.value.length || !isSerialActions ? ['2'] : ['1', '2']
     }
   },
   {
