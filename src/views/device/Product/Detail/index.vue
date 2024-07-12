@@ -231,27 +231,6 @@ const tabs = {
     AlarmRecord,
 };
 
-// watch(
-//     () => route.params.id,
-//     (newId) => {
-//         if (newId && route.name === 'device/Product/Detail') {
-//             productStore.reSet();
-//             productStore.tabActiveKey = 'Info';
-//             productStore.refresh(newId as string);
-//         }
-//     },
-//     { immediate: true, deep: true },
-// );
-onMounted(() => {
-    productStore.refresh(route.params.id as string);
-});
-
-watch(
-    () => productStore.current,
-    () => {
-        getProtocol();
-    },
-);
 const onBack = () => {
     history.back();
 };
@@ -396,11 +375,33 @@ const jumpDevice = () => {
         },
     );
 };
+
+watch(
+  () => productStore.current,
+  () => {
+    getProtocol();
+  },
+);
+
+// watch(
+//   () => route.params.id,
+//   (newId) => {
+//     if (newId && route.name === 'device/Product/Detail') {
+//       // productStore.reSet();
+//       productStore.tabActiveKey = 'Info';
+//       // productStore.refresh(newId as string);
+//     }
+//   },
+//   { immediate: true, deep: true },
+// );
+
 onMounted(() => {
-    if (routerParams.params?.value.tab) {
-        productStore.tabActiveKey = routerParams.params?.value.tab;
-    }
+  productStore.refresh(route.params.id as string);
+
+  productStore.tabActiveKey = routerParams.params?.value.tab || 'Info';
+
 });
+
 </script>
 <style scoped lang="less">
 .ant-switch-loading,
@@ -411,7 +412,6 @@ onMounted(() => {
     max-width: 300px;
     overflow: hidden;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 </style>
