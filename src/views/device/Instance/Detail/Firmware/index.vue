@@ -35,7 +35,7 @@
 <script setup>
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
-import { queryPaginateNot, queryTaskPaginateNot } from '@/api/device/firmware';
+import { queryPaginateNot,historyPaginateNot } from '@/api/device/firmware';
 import Task from '@/views/device/Firmware/Task/index.vue';
 import dayjs from 'dayjs';
 const props = defineProps({
@@ -76,7 +76,7 @@ const queryFirmwareList = async () => {
     }
     if (props.type === 'device') {
         // 查看固件所属产品下所有的任务 过滤掉不包含该设备的升级任务的固件
-        const resp = await queryTaskPaginateNot({
+        const resp = await historyPaginateNot({
             paging: false,
             sorts: [{ name: 'createTime', order: 'desc' }],
             terms: [
@@ -95,7 +95,7 @@ const queryFirmwareList = async () => {
                 return resp.result.find((item) => {
                     return (
                         i.id === item.firmwareId &&
-                        (!item?.deviceId || item.deviceId.includes(current.id))
+                        current.id === item.deviceId
                     );
                 });
             });
