@@ -132,8 +132,8 @@ const echartsOptions = computed(() => {
                 end: data.value.type !== 'hour' ? 5 : 100,
             },
         ],
-        // color: colorCpu,
-        color: '#00B87A',
+        color: colorCpu,
+        //color: '#00B87A',
         series: series,
     };
 });

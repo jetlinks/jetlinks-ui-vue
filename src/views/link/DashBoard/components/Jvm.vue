@@ -188,8 +188,8 @@ const echartsOptions = computed(() => {
                 end: data.value.type !== 'hour' ? 10 : 100,
             },
         ],
-        // color: colorJvm,
-        color: '#4DC0F4',
+        color: colorJvm,
+        //color: '#4DC0F4',
         series: series,
     };
 });
