@@ -9,7 +9,7 @@
       <div style="width: 450px">
         <a-form ref="formRef" layout="vertical" :model="formData">
           <a-form-item label="元素类型" required name="type" :rules="rules" :validate-first="true">
-            <TypeSelect v-model:value="formData.type" />
+            <TypeSelect v-model:value="formData.type" :filter="['object']"/>
           </a-form-item>
           <ScaleItem v-if="showDouble" v-model:value="formData.scale" />
           <StringItem v-else-if="showString" v-model:value="formData.expands.maxLength" />

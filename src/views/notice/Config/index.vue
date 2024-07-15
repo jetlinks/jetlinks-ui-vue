@@ -172,7 +172,7 @@
                     </Ellipsis>
                 </template>
                 <template #action="slotProps">
-                    <j-space :size="16">
+                    <j-space>
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -279,7 +279,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 250,
         scopedSlots: true,
     },
 ];
