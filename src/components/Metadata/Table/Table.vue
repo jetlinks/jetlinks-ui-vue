@@ -13,13 +13,15 @@
       <div class="metadata-edit-table-body" :style="{width: tableStyle.width, height: `${height}px`}">
         <Body
             ref="tableBody"
-            :dataSource="dataSource"
+            :dataSource="bodyDataSource"
             :columns="myColumns"
             :cellHeight="cellHeight"
             :height="height"
             :disableMenu="disableMenu"
             :rowKey="rowKey"
             :selectedRowKeys="selectedRowKeys"
+            :groupKey="groupActive.key"
+            :openGroup="openGroup"
             @scrollDown="onScrollDown"
         >
         <template v-for="(_, name) in slots" #[name]="slotData">
@@ -28,6 +30,15 @@
         </Body>
         <slot name="bodyExtra"></slot>
       </div>
+      <Group
+        v-if="dataSource.length"
+        v-model:activeKey="groupActive.key"
+        :options="groupOptions"
+        @add="groupAdd"
+        @delete="groupDelete"
+        @edit="groupEdit"
+        @change="groupChange"
+      />
     </div>
   </div>
 </template>
@@ -40,39 +51,23 @@ import Header from './header.vue'
 import Body from './body.vue'
 import {useFullscreen} from '@vueuse/core';
 import {provide, useAttrs, useSlots} from 'vue'
+import Group from './group.vue'
+import {randomNumber} from "@/utils/utils";
+import {bodyProps} from "./props";
 
 const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange'])
 
 const props = defineProps({
   ...tableProps(),
+  ...bodyProps(),
   serial: {
     type: Object,
-    default: () => ({width: 60})
-  },
-  cellHeight: {
-    type: Number,
-    default: 50
-  },
-  height: {
-    type: Number,
-    default: 500
-  },
-  disableMenu: {
-    type: Boolean,
-    default: true
-  },
-  rowKey: {
-    type: String,
-    default: 'id'
-  },
-  selectedRowKeys: {
-    type: [Array],
-    default: () => []
+    default: () => ({width: 66})
   },
   validateRowKey: {
     type: Boolean,
     default: false
-  }
+  },
 })
 
 const slots = useSlots()
@@ -86,10 +81,40 @@ const tableStyle = reactive({
 })
 
 const fields = {}
+const defaultGroupId = randomNumber()
 
 const fieldsErrMap = ref({})
-
+const groupOptions = ref([])
+const groupActive = reactive({
+  key: undefined,
+  name: undefined
+})
 const _dataSource = computed(() => {
+  const _options = new Map()
+  props.dataSource.forEach((item, index) => {
+    item.__dataIndex = index
+    if (!item.expands?.groupId) {
+      item.expands.groupId = groupActive.key || defaultGroupId
+      item.expands.groupName = groupActive.name || '分组1'
+    }
+
+    _options.set(item.expands?.groupId, {
+      value: item.expands?.groupId,
+      label: item.expands?.groupName
+    })
+  })
+
+  groupOptions.value = [..._options.values()]
+
+  return props.dataSource
+})
+
+const bodyDataSource = computed(() => {
+  if (props.openGroup) {
+    return props.dataSource.filter(item => {
+      return item.expands.groupId === groupActive.key
+    })
+  }
   return props.dataSource
 })
 
@@ -103,7 +128,6 @@ const {rules, validateItem, validate, errorMap} = useValidate(
     props.rowKey,
   {
       onError: (err) => {
-        console.log('body--err',err)
         // 显示全部err红标
         err.forEach((item, errIndex) => {
           item.forEach((e, eIndex) =>{
@@ -204,6 +228,26 @@ const getTableWrapperRef = () => {
   return tableWrapper.value
 }
 
+const groupAdd = (val) => {
+  groupOptions.value.push(val)
+}
+
+const groupChange = (key, name) => {
+  groupActive.key = key
+  groupActive.name = name
+}
+
+const groupDelete = (id, index) => {
+  groupOptions.value.splice(index, 1)
+  // TODO 触发emit，外部操作dataSource
+  emit('groupDelete', id)
+}
+
+const groupEdit = (record) => {
+  const { name, id } = record
+  // TODO 触发emit，外部操作dataSource修改分组name
+}
+
 watch(() => scrollWidth.value, () => {
   onResize({width: tableStyle.width})
 })
@@ -253,7 +297,6 @@ defineExpose({
     .metadata-edit-table-body {
       background-color: #fff;
       overflow-y: hidden;
-      display: flex;
       position: relative;
       height: 100%;
       width: 100%;

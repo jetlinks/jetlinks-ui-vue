@@ -1,8 +1,8 @@
 <template>
   <div class="metadata-edit-table-header-container" :style="style">
-    <div class="metadata-edit-table-header-cell" v-for="item in columns" :id="item.dataIndex" :style="{width: `${item.width}px`, left: `${item.left}px`}">
+    <div class="metadata-edit-table-header-cell" v-for="(item, index) in columns" :id="item.dataIndex" :style="{width: `${item.width}px`, left: `${item.left}px`}">
       <span class="metadata-edit-table-header-cell-box">
-        {{ item.title }}
+        {{ String.fromCharCode(65 + index)}} {{ item.title }}
       </span>
     </div>
   </div>

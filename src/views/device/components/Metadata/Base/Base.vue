@@ -8,6 +8,7 @@
       :height="560"
       :selectedRowKeys="selectedRowKeys"
       :disableMenu="!hasOperate('add', type)"
+      :openGroup="true"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
   >
@@ -450,9 +451,7 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
 }
 
 const handleSaveClick = async (next?: Function) => {
-  let resp = await tableRef.value.validate().catch(err => {
-    console.log('handleSaveClick--err', err)
-  });
+  let resp = await tableRef.value.validate()
 
   if (resp) {
     const virtual: any[] = [];

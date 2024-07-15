@@ -29,7 +29,7 @@
               {{ virtualRang.start + index + 1 }}
             </div>
             <div v-else class="body-cell-box">
-              <slot :name="column.dataIndex" :record="item" :index="virtualRang.start + index" :column="column" >
+              <slot :name="column.dataIndex" :record="item" :index="item.__dataIndex" :column="column" >
                 {{ item[column.dataIndex] }}
               </slot>
             </div>
@@ -51,39 +51,13 @@
 import ContextMenu from './components/ContextMenu'
 import {useRightMenuContext} from "@/components/Metadata/Table/utils";
 import {randomString} from "@/utils/utils";
+import {bodyProps} from "./props";
 
 const props = defineProps({
-  dataSource: {
-    type: Array,
-    default: () => ([])
-  },
-  columns: {
-    type: Array,
-    default: () => ([])
-  },
-  cellHeight: {
-    type: Number,
-    default: 50
-  },
-  height: {
-    type: Number,
-    default: 300
-  },
-  style: {
-    type: Object,
-    default: () => ({})
-  },
-  disableMenu: {
-    type: Boolean,
-    default: true
-  },
-  rowKey: {
+  ...bodyProps(),
+  groupKey: {
     type: String,
-    default: 'id'
-  },
-  selectedRowKeys: {
-    type: [Array],
-    default: () => []
+    default: undefined
   }
 })
 
@@ -183,6 +157,10 @@ watch(() => props.dataSource.length, () => {
     emit('scrollDown', maxLen.value - props.dataSource.length + 3)
   }
 }, { immediate: true})
+
+watch(() => props.groupKey, () => {
+  scrollTo(0)
+})
 
 defineExpose({
   scrollTo

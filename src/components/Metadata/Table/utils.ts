@@ -48,7 +48,7 @@ export const handlePureRecord = (record: Record<string, any>) => {
     // if (record.expands) {
     //     record.expands = omit(record.expands, ['isProduct'])
     // }
-    return omit(record, ['__serial', '__index', '__top', '__selected', '__key'])
+    return omit(record, ['__serial', '__index', '__top', '__selected', '__key', '__dataIndex'])
 }
 export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options: OptionsType = {}): {
     validate: () => Promise<any>
