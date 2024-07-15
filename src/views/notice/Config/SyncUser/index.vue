@@ -67,27 +67,27 @@
                             </template>
                             <template v-if="column.dataIndex === 'action'">
                                 <j-space>
-                        <template
-                            v-for="i in getActions(record, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                :disabled="i.disabled"
-                                :popConfirm="i.popConfirm"
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                type="link"
-                                style="padding: 0 5px"
-                                :danger="i.key === 'delete'"
-                            >
-                                <template #icon
-                                    ><AIcon :type="i.icon"
-                                /></template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
+                                    <template
+                                        v-for="i in getActions(record, 'table')"
+                                        :key="i.key"
+                                    >
+                                        <PermissionButton
+                                            :disabled="i.disabled"
+                                            :popConfirm="i.popConfirm"
+                                            :tooltip="{
+                                                ...i.tooltip,
+                                            }"
+                                            @click="i.onClick"
+                                            type="link"
+                                            style="padding: 0 5px"
+                                            :danger="i.key === 'delete'"
+                                        >
+                                            <template #icon
+                                                ><AIcon :type="i.icon"
+                                            /></template>
+                                        </PermissionButton>
+                                    </template>
+                                </j-space>
                             </template>
                         </template>
                     </JTable>
@@ -196,11 +196,11 @@ watch(
  * 部门点击
  */
 const onTreeSelect = (keys: any) => {
-  if (keys.length) {
-    deptId.value = keys[0];
-    pageSize.value = 12;
-    current.value = 1;
-  }
+    if (keys.length) {
+        deptId.value = keys[0];
+        pageSize.value = 12;
+        current.value = 1;
+    }
 };
 
 // 右侧表格
@@ -253,14 +253,16 @@ const getActions = (
             icon: 'DisconnectOutlined',
             popConfirm: {
                 title: '确认解绑?',
-                onConfirm: async () => {
-                    configApi
-                        .unBindUser({ bindingId: data.bindId }, data.bindId)
-                        .then(() => {
-                            onlyMessage('操作成功');
-                            getTableData();
-                        });
-                    return 
+                onConfirm:  () => {
+                    const response = configApi.unBindUser(
+                        { bindingId: data.bindId },
+                        data.bindId,
+                    );
+                    response.then(() => {
+                        onlyMessage('操作成功');
+                        getTableData();
+                    });
+                    return response;
                 },
             },
         },
@@ -440,12 +442,8 @@ const handleBind = (row: any) => {
  * 绑定用户, 用户下拉筛选
  */
 const filterOption = (input: string, option: any) => {
-    const text = option?.componentOptions?.children?.[0]?.text ||  option.label
-    return (
-        text
-            .toLowerCase()
-            .indexOf(input.toLowerCase()) >= 0
-    );
+    const text = option?.componentOptions?.children?.[0]?.text || option.label;
+    return text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 /**
