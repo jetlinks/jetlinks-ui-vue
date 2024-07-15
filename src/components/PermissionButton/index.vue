@@ -27,7 +27,7 @@
                 :confirmLoading="confirmLoading"
                 :width="300"
                 centered
-                :maskClosable=false
+                :maskClosable="false"
             >
                 <div class="modalContent">
                     {{ popConfirm.title }}
