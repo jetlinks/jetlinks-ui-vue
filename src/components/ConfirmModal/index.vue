@@ -39,10 +39,10 @@ const props = defineProps({
 });
 const confirmLoading = ref(false);
 const modalVisible = ref(false);
-const modalConfirm = () => {
+const modalConfirm = async() => {
     if (typeof props.onConfirm === 'function') {
         confirmLoading.value = true;
-        const res = props.onConfirm()?.finally(()=>{
+        const res = await props.onConfirm()?.finally(()=>{
             confirmLoading.value = false;
             modalVisible.value = false;
             return
