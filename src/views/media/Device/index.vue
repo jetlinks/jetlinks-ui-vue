@@ -27,7 +27,7 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
-                        @click="() => jumpDetail(slotProps)"
+                        @click="() => showSummary(slotProps)"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
@@ -164,6 +164,7 @@
                 </template>
             </JProTable>
         </FullPage>
+        <Summary v-if="visibleSummary" :deviceId="deviceId" @closeDrawer="visibleSummary = false"></Summary>
     </page-container>
 </template>
 
@@ -174,14 +175,15 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
 import encodeQuery from '@/utils/encodeQuery';
-
 import { useMenuStore } from 'store/menu';
+import Summary from './Summary/index.vue';
 
 const menuStory = useMenuStore();
 
 const listRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-
+const visibleSummary = ref(false);
+const deviceId = ref();
 const columns = [
     {
         title: 'ID',
@@ -344,32 +346,6 @@ const getActions = (
                 menuStory.jumpPage('device/Instance/Detail', { id: data.id });
             },
         },
-        // {
-        //     key: 'updateChannel',
-        //     text: '更新通道',
-        //     tooltip: {
-        //         title:
-        //             data.provider === 'fixed-media'
-        //                 ? '固定地址无法更新通道'
-        //                 : data.state.value === 'offline'
-        //                 ? '设备已离线'
-        //                 : data.state.value === 'notActive'
-        //                 ? '设备已禁用'
-        //                 : '更新通道',
-        //     },
-        //     disabled:
-        //         data.state.value === 'offline' ||
-        //         data.state.value === 'notActive' ||
-        //         data.provider === 'fixed-media',
-        //     icon: 'SyncOutlined',
-        //     onClick: async () => {
-        //         const res = await DeviceApi.updateChannels(data.id);
-        //         if (res.success) {
-        //             onlyMessage('通道更新成功');
-        //             listRef.value?.reload();
-        //         }
-        //     },
-        // },
         {
             key: 'delete',
             text: '删除',
@@ -437,7 +413,10 @@ const getProductName = (pid: string) => {
     return productList.value.find((f: any) => f.value === pid)?.label;
 };
 
-const jumpDetail = (data: any) => {
-    menuStory.jumpPage('device/Instance/Detail', { id: data.id });
+
+
+const showSummary = (data: any) => {
+    visibleSummary.value = true;
+    deviceId.value = data.id;
 };
 </script>
