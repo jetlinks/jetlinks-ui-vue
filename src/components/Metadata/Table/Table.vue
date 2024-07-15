@@ -33,7 +33,7 @@
 </template>
 
 <script setup name="MetadataBaseTable">
-import {useValidate, useResizeObserver, handleColumnsWidth, TABLE_WRAPPER, FULL_SCREEN, RIGHT_MENU} from './utils'
+import {useValidate, useResizeObserver, handleColumnsWidth, TABLE_WRAPPER, FULL_SCREEN, RIGHT_MENU, TABLE_ERROR} from './utils'
 import {tableProps} from 'ant-design-vue/lib/table'
 import {useFormContext} from './context'
 import Header from './header.vue'
@@ -87,6 +87,8 @@ const tableStyle = reactive({
 
 const fields = {}
 
+const fieldsErrMap = ref({})
+
 const _dataSource = computed(() => {
   return props.dataSource
 })
@@ -101,10 +103,21 @@ const {rules, validateItem, validate, errorMap} = useValidate(
     props.rowKey,
   {
       onError: (err) => {
-        const _errObj = err[0]
-        const field = findField(_errObj.__index, _errObj.field)
-        field?.showErrorTip(_errObj.message)
-        tableBody.value.scrollTo(_errObj.__index)
+        console.log('body--err',err)
+        // 显示全部err红标
+        err.forEach((item, errIndex) => {
+          item.forEach((e, eIndex) =>{
+            const field = findField(e.__index, e.field)
+
+            if (field) {
+              field.showErrorTip(e.message)
+              fieldsErrMap.value[field.eventKey] = e.message
+            }
+            if (errIndex === 0 && eIndex === 0) {
+              tableBody.value.scrollTo(e.__index)
+            }
+          })
+        })
       },
       onEdit: () => {
           emit('editChange', true)
@@ -116,6 +129,7 @@ const {rules, validateItem, validate, errorMap} = useValidate(
 provide(TABLE_WRAPPER, tableWrapper)
 provide(FULL_SCREEN, isFullscreen)
 provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value })
+provide(TABLE_ERROR, fieldsErrMap)
 
 const addField = (key, field) => {
   fields[key] = field
@@ -131,6 +145,14 @@ function findField(index, name) {
     return names[0] === index && names[1] === name
   })
   return fields[fieldId]
+}
+
+function removeFieldError(key) {
+  delete fieldsErrMap.value[key]
+}
+
+function addFieldError(key, message) {
+  fieldsErrMap.value[key] = message
 }
 
 const scrollWidth = computed(() => {
@@ -194,6 +216,8 @@ useFormContext({
   rules,
   addField,
   removeField,
+  removeFieldError,
+  addFieldError,
   validateItem
 })
 

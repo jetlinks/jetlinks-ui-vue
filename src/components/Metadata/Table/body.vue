@@ -234,6 +234,7 @@ defineExpose({
 
       .body-cell-box {
         padding: 0 12px;
+        position: relative;
       }
     }
   }

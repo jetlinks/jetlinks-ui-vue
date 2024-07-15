@@ -12,7 +12,7 @@ type ColumnsFormType = {
 type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
 
 type OptionsType = {
-    onError?: (err: Array<{ message: string, __index: number, field: string, filedValue: any}>) => void
+    onError?: (err: Array<Array<{ message: string, __index: number, field: string, filedValue: any}>>) => void
     onEdit?: (item: any) => void
 
     validateRowKey?: Boolean
@@ -22,6 +22,8 @@ export const TABLE_WRAPPER = Symbol('table-wrapper')
 export const FULL_SCREEN = Symbol('full')
 
 export const RIGHT_MENU = Symbol('right-menu')
+
+export const TABLE_ERROR = Symbol('table-error')
 
 
 /**
@@ -86,6 +88,10 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
             const end = () => {
                 validateLen += 1
                 if (validateLen === len) {
+                    if (error.length) {
+                        _options.onError?.(error)
+                    }
+
                     Object.keys(error).length ? reject(error) : resolve(success)
                 }
             }
@@ -99,7 +105,6 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
                             success.push(handlePureRecord(res))
                             end()
                         }).catch(err => {
-                            _options.onError?.(err)
                             error.push(err)
                             end()
                         })

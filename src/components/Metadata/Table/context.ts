@@ -1,4 +1,5 @@
 import { provide } from 'vue'
+import {TABLE_ERROR} from "./utils";
 
 type FiledExpose = {
 
@@ -15,4 +16,8 @@ export const useInjectForm = () => {
         dataSource: computed(() => []),
         rules: computed(() => undefined),
     })
+}
+
+export const useInjectError = () => {
+    return inject(TABLE_ERROR)
 }
