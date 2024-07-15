@@ -33,7 +33,7 @@
                 <PermissionButton
                     type="text"
                     hasPermission="device/Firmware:update"
-                    style="float: right;"
+                    style="float: right"
                     @click="refreshState"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
                     刷新状态
@@ -56,6 +56,7 @@
             :columns="columns"
             :data-source="historyList"
             :pagination="false"
+            :rowClassName="rowClassName"
             :scroll="{
                 y: 400,
             }"
@@ -90,7 +91,7 @@
                                 text?.value !== 'waiting'
                             "
                         >
-                            {{  record?.progress + '%' }}
+                            {{ record?.progress + '%' }}
                         </div>
                         <div v-if="text?.value === 'failed'">
                             {{ text?.text + '：' + record?.errorReason }}
@@ -125,6 +126,9 @@ const props = defineProps({
     data: {
         type: Object,
         default: {},
+    },
+    deviceId: {
+        type: String,
     },
 });
 const emit = defineEmits(['closeDetail', 'refresh']);
@@ -163,6 +167,9 @@ const general = reactive({
     total: 0,
     percent: 0,
 });
+const rowClassName = (record,index) =>{
+    return record.deviceId === props.deviceId ? 'heightLightRow' : ''
+}
 //查询任务升级记录列表
 const queryHistoryList = async () => {
     const params = {
@@ -188,9 +195,9 @@ const queryHistoryList = async () => {
         general.total = res.result.length;
         let progress = 0;
         res.result.forEach((item) => {
-            progress += item.progress;
+            item?.state?.value === 'success'?  progress += 1 : '' ;
         });
-        general.percent = ((progress / (general.total * 100)) * 100).toFixed(2);
+        general.percent =  progress/general.total.toFixed(2) * 100 ;
     }
 };
 const refreshState = async () => {
@@ -260,7 +267,7 @@ onMounted(() => {
         line-height: 32px;
         display: flex;
     }
-    .allOperation{
+    .allOperation {
         margin-bottom: 20px;
     }
 }
@@ -271,4 +278,9 @@ onMounted(() => {
 .state {
     display: flex;
 }
+
 </style>
+<style>
+.heightLightRow{
+    background-color: rgb(242, 228, 255);
+}</style>

@@ -11,6 +11,8 @@ export const remove = (id: string) => server.remove(`/firmware/${id}`);
 
 export const query = (data: object) => server.post(`/firmware/_query/`, data);
 
+export const queryPaginateNot = (data: object) => server.post('/firmware/_query/no-paging',data)
+
 export const querySystemApi = (data?: object) =>
     server.post(`/system/config/scopes`, data);
 
