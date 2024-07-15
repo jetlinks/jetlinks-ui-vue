@@ -22,7 +22,6 @@
                             :min="1"
                             :max="sliderMax"
                             v-model:value="sliderValue"
-                            :tooltip-open="true"
                             @afterChange="sliderChange"
                         />
                     </div>
@@ -31,32 +30,23 @@
                         <input
                             type="button"
                             class="btn"
-                            value="开始动画"
+                            value="开始"
                             id="start"
                             :onclick="startAnimation"
                         />
                         <input
                             type="button"
                             class="btn"
-                            value="暂停动画"
+                            value="暂停"
                             id="pause"
                             :onclick="pauseAnimation"
                         />
-                    </div>
-                    <div class="input-item">
                         <input
                             type="button"
                             class="btn"
-                            value="继续动画"
+                            value="继续"
                             id="resume"
                             :onclick="resumeAnimation"
-                        />
-                        <input
-                            type="button"
-                            class="btn"
-                            value="停止动画"
-                            id="stop"
-                            :onclick="stopAnimation"
                         />
                     </div>
                 </div>
@@ -66,6 +56,7 @@
 </template>
 
 <script setup>
+import AMapComponent from '@/components/AMapComponent/index.vue';
 const MapRef = ref();
 const loading = ref(true);
 const lineArr = [
@@ -111,6 +102,7 @@ const sliderChange = (value) => {
     );
 
     MapRef.value.setCenter(vehicleLocation, true); //更新地图中心坐标
+    // playCar();
 };
 
 //重置
@@ -177,7 +169,7 @@ const playCar = () => {
     //计算继续开始的线路
     let replayPath = [];
     for (let i = sliderValue.value - 1; i < path.value.length; i++) {
-        replayPath.push(path.value[i]);
+        replayPath.push(new AMap.LngLat(path.value[i][0], path.value[i][1]));
     }
     if (replayPath.length === 0) {
         marker.value.moveAlong(path.value, {
@@ -218,10 +210,6 @@ const resumeAnimation = () => {
     marker.value.resumeMove();
 };
 
-const stopAnimation = () => {
-    marker.value.stopMove();
-};
-
 watch(
     passedPath.value,
     (newValue, oldValue) => {
@@ -233,7 +221,7 @@ watch(
 );
 </script>
 
-<style>
+<style scoped>
 @import 'https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css';
 .region-map {
     height: 100%;

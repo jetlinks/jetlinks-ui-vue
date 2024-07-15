@@ -1,14 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <%- favicon %>
+
+<head>
+  <meta charset="UTF-8" />
+  <%- favicon %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%- title %></title>
     <script src="/js/liveplayer-lib.min.js"></script>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+    <style>
+      .amap-logo {
+        display: none !important;
+      }
+
+      .amap-copyright {
+        display: none !important;
+      }
+    </style>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
