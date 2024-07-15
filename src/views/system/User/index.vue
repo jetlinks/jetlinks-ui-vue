@@ -29,6 +29,11 @@
                             <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
                     </template>
+                    <template #username="slotProps">
+                        <Ellipsis>
+                            <span style="background-color: #e1fcb9;padding: 5px;">{{ slotProps.username }} </span>
+                        </Ellipsis>
+                    </template>
                     <template #type="slotProps">
                         {{ slotProps.type?.name }}
                     </template>
@@ -160,7 +165,7 @@ const columns = [
         title: '用户名',
         dataIndex: 'username',
         key: 'username',
-        ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -361,19 +366,22 @@ const handleParams = (params: any) => {
                     };
                 }
             }
-            if(termsItem.column === 'roleList'){
-                if(termsItem.termType === 'eq' || termsItem.termType === 'in'){
+            if (termsItem.column === 'roleList') {
+                if (
+                    termsItem.termType === 'eq' ||
+                    termsItem.termType === 'in'
+                ) {
                     return {
                         column: 'id$in-dimension$role',
                         type: termsItem.type,
-                        value: termsItem.value
-                    }
-                }else{
+                        value: termsItem.value,
+                    };
+                } else {
                     return {
                         column: 'id$in-dimension$role$not',
                         type: termsItem.type,
-                        value: termsItem.value
-                    }
+                        value: termsItem.value,
+                    };
                 }
             }
             return termsItem;
