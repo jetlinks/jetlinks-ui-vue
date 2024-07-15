@@ -42,9 +42,15 @@ const modalVisible = ref(false);
 const modalConfirm = () => {
     if (typeof props.onConfirm === 'function') {
         confirmLoading.value = true;
-        const res = props.onConfirm();
-        confirmLoading.value = false;
-        modalVisible.value = false;
+        const res = props.onConfirm()?.finally(()=>{
+            confirmLoading.value = false;
+            modalVisible.value = false;
+            return
+        });
+        if(!res?.finally){
+            confirmLoading.value = false;
+            modalVisible.value = false;
+        }
     } else {
         modalVisible.value = false;
     }
