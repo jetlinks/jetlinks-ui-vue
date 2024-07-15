@@ -39,7 +39,7 @@
                     <j-select-option
                         :disabled="
                             formData.virtualRule?.triggerProperties?.length &&
-                            formData.virtualRule.triggerProperties?.includes(
+                            !formData.virtualRule.triggerProperties?.includes(
                                 '*',
                             )
                         "

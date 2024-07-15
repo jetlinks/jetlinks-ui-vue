@@ -9,7 +9,6 @@
     >
         <j-form ref="actionForm" :model="formModel" layout="vertical">
             <j-form-item
-                label="类型"
                 name="type"
                 :rules="[
                     {
@@ -17,7 +16,16 @@
                         message: '请选择类型',
                     },
                 ]"
+
             >
+                <template #label>
+                  <div style="position: relative">
+                    类型
+                    <div v-if="optionDisabled" class="action-tip">
+                      告警类型执行动作涉及绑定告警配置，不支持修改为其它类型
+                    </div>
+                  </div>
+                </template>
                 <CardSelect v-model:value="formModel.type" :options="options.filter(item => !(item.value === 'delay' && parallel))"/>
             </j-form-item>
             <ActionTypeComponent
@@ -74,24 +82,29 @@ const props = defineProps({
 
 const emit = defineEmits(['cancel', 'save']);
 
+const optionDisabled = Object.keys(props.data).length > 2 && props.data?.executor === 'alarm'
+
 const options = [
   {
     label: '设备输出',
     value: 'device',
     iconUrl: getImage('/scene/device-type.png'),
     subLabel: '配置设备调用功能、读取属性、设置属性规则',
+    disabled: optionDisabled
   },
   {
     label: '消息通知',
     value: 'notify',
     iconUrl: getImage('/scene/message-type.png'),
     subLabel: '配置向指定用户发邮件、钉钉、微信、短信等通知',
+    disabled: optionDisabled
   },
   {
     label: '延迟执行',
     value: 'delay',
     iconUrl: getImage('/scene/delay-type.png'),
     subLabel: '等待一段时间后，再执行后续动作',
+    disabled: optionDisabled
   },
   {
     label: '触发告警',
@@ -163,3 +176,12 @@ const onPropsCancel = () => {
 };
 
 </script>
+<style scoped>
+.action-tip {
+  position: absolute;
+  top: 0;
+  left: 50px;
+  width: 500px;
+  color: #777;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="dataSource.length"
-    class="metadata-edit-table-body-viewport" :style="{ ...style, height: height + 'px'}" ref="viewScrollRef">
+    class="metadata-edit-table-body-viewport" :style="{ ...style, height: height + 'px'}" ref="viewScrollRef" @scroll="onScroll">
     <div :style="{position: 'relative'}">
       <div class="metadata-edit-scrollbar" :style="containerStyle"> </div>
       <div class="metadata-edit-table-center" ref="tableCenterRef" >
@@ -154,14 +154,7 @@ const updateView = () => {
   updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
 }
 
-onMounted(() => {
-  nextTick(() => {
-    viewScrollRef.value?.addEventListener('scroll', onScroll)
-  })
-})
-
 onBeforeUnmount(() => {
-  viewScrollRef.value?.removeEventListener('scroll', onScroll)
   menuInstance?.destroy()
   menuInstance?.cleanCopy()
 })

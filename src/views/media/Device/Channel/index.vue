@@ -355,7 +355,7 @@ const getActions = (
 };
 
 // 左侧树
-const show = ref(false);
+
 const deviceId = computed(() => route.query.id as string);
 const handleSelect = (key: string) => {
     if (key === deviceId.value && listRef.value?.reload) {

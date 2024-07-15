@@ -295,7 +295,6 @@ function getSideEffects(compName: string, options: JetlinksVueResolverOptions, _
     return
   const lib = options.cjs ? 'lib' : 'es'
   const packageName = options?.packageName || 'jetlinks-ui-components'
-
   if (importStyle === 'less' || importLess) {
     const styleDir = getStyleDir(compName, _isAntd)
     return `${packageName}/${lib}/${styleDir}/style`
@@ -319,7 +318,24 @@ const primitiveNames = ['AIcon','Affix', 'Anchor', 'AnchorLink', 'message', 'Not
   'DataTableObject',
   'CheckButton',
 ]
+
 const prefix = 'J'
+
+const proComponents = [
+  'ProTable', 'Search', 'AdvancedSearch', 'Ellipsis', 'MonacoEditor', 'ProLayout', 'ScrollTable', 'TableCard', 'Scrollbar', 'CardSelect', 'PopconfirmModal', 'DataTable',
+  'DataTableArray',
+  'DataTableString',
+  'DataTableInteger',
+  'DataTableDouble',
+  'DataTableBoolean',
+  'DataTableEnum',
+  'DataTableFile',
+  'DataTableDate',
+  'DataTableTypeSelect',
+  'DataTableObject',
+  'CheckButton',
+    'ValueItem'
+]
 
 let jetlinksNames: Set<string>
 
@@ -356,11 +372,15 @@ export function JetlinksVueResolver(options: JetlinksVueResolverOptions = {}): a
       }
       const _isJetlinks = isJetlinks(name)
       const _isAntd = isAntdv(name)
+
       if ((_isJetlinks || _isAntd) && !options?.exclude?.includes(name)) {
         const importName = filterName.includes(name) ? name : name.slice(1)
-        options.packageName = _isJetlinks ? 'jetlinks-ui-components' : 'ant-design-vue'
+
+        options.packageName = proComponents.includes(importName) ? 'jetlinks-ui-components' : 'ant-design-vue'
+
         const path = `${options.packageName}/${options.cjs ? 'lib' : 'es'}`
-        const stylePath = getSideEffects(importName, options, _isAntd)
+        const stylePath = getSideEffects(importName, options, !proComponents.includes(importName))
+
         return {
           name: importName,
           from: path,

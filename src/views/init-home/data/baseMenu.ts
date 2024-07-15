@@ -14,7 +14,7 @@ export const USER_CENTER_MENU_DATA = {
   granted: true,
   owner: 'iot',
   options: {
-    isShow: false,
+    show: true,
   },
   permissions: [
     {
@@ -23,6 +23,13 @@ export const USER_CENTER_MENU_DATA = {
     },
   ],
   buttons: [
+    {
+      id: 'view',
+      name: '查看',
+      permissions: [
+
+      ]
+    },
     {
       id: USER_CENTER_MENU_BUTTON_CODE,
       name: '修改密码',
@@ -3738,7 +3745,7 @@ export default [
         owner: 'iot',
         //parentId: '3',
         id: '2fa02b8758fe82a6b9666f4ebb1bbd03',
-        sortIndex: 8,
+        sortIndex: 7,
         url: '/system/Relationship',
         icon: 'icon-shuxingpeizhi',
         showPage: ['relation'],
@@ -3794,7 +3801,7 @@ export default [
         owner: 'iot',
         //parentId: '3',
         id: 'c62a6bd5018763dae9fc0d869b6df3a2',
-        sortIndex: 9,
+        sortIndex: 8,
         url: '/system/DataSource',
         icon: 'icon-shebei',
         showPage: ['datasource-config'],
@@ -3879,7 +3886,7 @@ export default [
         owner: 'iot',
         //parentId: '3',
         id: '8750142230773cde42a4e28efa7f84d5',
-        sortIndex: 10,
+        sortIndex: 9,
         url: '/system/Api',
         icon: 'icon-chakanAPI',
         showPage: ['open-api'],
@@ -3928,7 +3935,7 @@ export default [
         owner: 'iot',
         //parentId: '3',
         id: 'e0640f9621c21078cad62d5646a5579d',
-        sortIndex: 11,
+        sortIndex: 10,
         url: '/system/Apply',
         icon: 'icon-yingyongguanli',
         showPage: ['application'],
@@ -4021,7 +4028,7 @@ export default [
         name: '订阅管理',
         owner: 'iot',
         id: '522f790d4422a608d491bc9e2fa12b4e',
-        sortIndex: 12,
+        sortIndex: 11,
         url: '/system/NoticeRule',
         icon: 'CopyOutlined',
         showPage: ['notify-channel'],
@@ -4211,9 +4218,9 @@ export default [
         name: '地区管理',
         owner: 'iot',
         id: 'b69782873cc24be8165c6ad29233333',
-        sortIndex: 12,
+        sortIndex: 13,
         url: '/system/region',
-        icon: 'FormOutlined',
+        icon: 'EnvironmentOutlined',
         showPage: ['area'],
         permissions: [],
         buttons: [
