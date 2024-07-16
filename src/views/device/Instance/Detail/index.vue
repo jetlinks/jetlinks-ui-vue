@@ -342,23 +342,29 @@ const onTabChange = (e: string) => {
     }
 };
 
-const handleAction = async () => {
+const handleAction = () => {
     if (instanceStore.current?.id) {
-        const resp = await _deploy(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _deploy(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response;
     }
 };
 
-const handleDisconnect = async () => {
+const handleDisconnect = () => {
     if (instanceStore.current?.id) {
-        const resp = await _disconnect(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _disconnect(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response
     }
 };
 

@@ -377,13 +377,15 @@ const addRow = () => {
 
 const clickDel = (row: any, index: number) => {
     if (row.scale !== undefined) {
-        delSaveRow_api(id, leftData.selectedKeys[0], [row.name]).then(
+        const response = delSaveRow_api(id, leftData.selectedKeys[0], [row.name])
+        response.then(
             (resp: any) => {
                 if (resp.status === 200) {
                     table.data.splice(index, 1);
                 }
             },
         );
+        return response
     } else {
         table.data.splice(index, 1);
     }

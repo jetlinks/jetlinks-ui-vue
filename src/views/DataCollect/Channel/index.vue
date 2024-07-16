@@ -43,7 +43,9 @@
                         >
                             <template #img>
                                 <slot name="img">
-                                    <img :src="ImageMap.get(slotProps.provider)" />
+                                    <img
+                                        :src="ImageMap.get(slotProps.provider)"
+                                    />
                                 </slot>
                             </template>
                             <template #content>
@@ -67,9 +69,19 @@
                                             <div class="card-item-content-text">
                                                 <j-tooltip>
                                                     <template #title>{{
-                                                        protocolList.find(item => item.value === slotProps.provider)?.label
+                                                        protocolList.find(
+                                                            (item) =>
+                                                                item.value ===
+                                                                slotProps.provider,
+                                                        )?.label
                                                     }}</template>
-                                                    {{ protocolList.find(item => item.value === slotProps.provider)?.label }}
+                                                    {{
+                                                        protocolList.find(
+                                                            (item) =>
+                                                                item.value ===
+                                                                slotProps.provider,
+                                                        )?.label
+                                                    }}
                                                 </j-tooltip>
                                             </div>
                                         </j-col>
@@ -104,9 +116,9 @@
                                                 说明
                                             </div>
                                             <j-ellipsis>
-                                              <div class="explain">
-                                                {{slotProps.description}}
-                                              </div>
+                                                <div class="explain">
+                                                    {{ slotProps.description }}
+                                                </div>
                                             </j-ellipsis>
                                         </j-col>
                                     </j-row>
@@ -145,7 +157,12 @@
 <script lang="ts" setup name="DataCollectPage">
 import type { ActionsType } from '@/components/Table/index';
 import { getImage } from '@/utils/comm';
-import { query, remove, update ,getProviders} from '@/api/data-collect/channel';
+import {
+    query,
+    remove,
+    update,
+    getProviders,
+} from '@/api/data-collect/channel';
 import { onlyMessage } from '@/utils/comm';
 import { StatusColorEnum, updateStatus } from './data';
 import { useMenuStore } from 'store/menu';
@@ -161,16 +178,15 @@ const current = ref({});
 
 const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
-const s7Image = getImage('/DataCollect/s7.png')
-const gatewayImage = getImage('/DataCollect/gateway.png')
-const iecImage = getImage('/DataCollect/IEC104.png')
-const ImageMap = new Map()
-ImageMap.set('OPC_UA',opcImage)
-ImageMap.set('MODBUS_TCP',modbusImage)
-ImageMap.set('snap7',s7Image)
-ImageMap.set('iec104',iecImage)
-ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
-
+const s7Image = getImage('/DataCollect/s7.png');
+const gatewayImage = getImage('/DataCollect/gateway.png');
+const iecImage = getImage('/DataCollect/IEC104.png');
+const ImageMap = new Map();
+ImageMap.set('OPC_UA', opcImage);
+ImageMap.set('MODBUS_TCP', modbusImage);
+ImageMap.set('snap7', s7Image);
+ImageMap.set('iec104', iecImage);
+ImageMap.set('COLLECTOR_GATEWAY', gatewayImage);
 
 const columns = [
     {
@@ -190,20 +206,27 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'select',
-            options: async() =>{
+            options: async () => {
                 const resp: any = await getProviders();
                 if (resp.status === 200) {
-        const arr = resp.result
-            .filter(
-                (item: any) =>  ['GATEWAY', 'Modbus/TCP', 'opc-ua','snap7', 'IEC104','BACNet/IP'].includes(item.name),
-            )
-            .map((it: any) => it.name);
-        const providers: any = protocolList.filter((item: any) =>
-            arr.includes(item.alias),
-        );
-        return providers
-    }
-            }
+                    const arr = resp.result
+                        .filter((item: any) =>
+                            [
+                                'GATEWAY',
+                                'Modbus/TCP',
+                                'opc-ua',
+                                'snap7',
+                                'IEC104',
+                                'BACNet/IP',
+                            ].includes(item.name),
+                        )
+                        .map((it: any) => it.name);
+                    const providers: any = protocolList.filter((item: any) =>
+                        arr.includes(item.alias),
+                    );
+                    return providers;
+                }
+            },
         },
     },
     {
@@ -268,7 +291,7 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                handlEdit(data);
+                handleEdit(data);
             },
         },
         {
@@ -280,12 +303,15 @@ const getActions = (
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
                 title: `确认${stateText}?`,
-                onConfirm: async () => {
-                    const res = await update(data.id, updateStatus[state]);
-                    if (res.success) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value?.reload();
-                    }
+                onConfirm: () => {
+                    const response = update(data.id, updateStatus[state]);
+                    response.then((res) => {
+                        if (res.success) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value?.reload();
+                        }
+                    });
+                    return response
                 },
             },
         },
@@ -300,12 +326,15 @@ const getActions = (
             popConfirm: {
                 placement: 'topRight',
                 title: '该操作将会删除下属采集器与点位，确定删除?',
-                onConfirm: async () => {
-                    const res = await remove(data.id);
-                    if (res.success) {
+                onConfirm:  () => {
+                    const response =  remove(data.id);
+                    response.then((res)=>{
+                        if (res.success) {
                         onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     }
+                    })
+                   return response
                 },
             },
             icon: 'DeleteOutlined',
@@ -319,7 +348,7 @@ const handlAdd = () => {
     visible.value = true;
 };
 
-const handlEdit = (data: object) => {
+const handleEdit = (data: object) => {
     current.value = _.cloneDeep(data);
     visible.value = true;
 };
@@ -372,7 +401,7 @@ const handleSearch = (e: any) => {
         white-space: nowrap; //溢出不换行
     }
     .explain {
-      margin-top: 10px;
+        margin-top: 10px;
     }
 }
 .details-text {

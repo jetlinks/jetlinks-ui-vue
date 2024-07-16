@@ -1,6 +1,6 @@
 <template>
     <div class="tagsContainer" ref="tags">
-        <PermissionButton type="primary" ghost block @click="addTag" :disabled="rapidOn" style="margin-bottom: 10px;">
+        <PermissionButton type="primary"  hasPermission="system/Calendar:add" ghost block @click="addTag" :disabled="rapidOn" style="margin-bottom: 10px;">
             + 新增标签
         </PermissionButton>
         <div v-for="i in tagsList" class="tag">
@@ -22,7 +22,11 @@
             <div class="controls">
                 <PermissionButton
                     type="text"
+                     hasPermission="system/Calendar:update"
                     :disabled="i.disabled || rapidOn"
+                    :tooltip="{
+                        title: '编辑'
+                    }"
                     @click="() => editData(i)"
                 >
                     <template #icon>
@@ -31,7 +35,11 @@
                 </PermissionButton>
                 <PermissionButton
                     type="text"
+                     hasPermission="system/Calendar:delete"
                     :disabled="i.disabled || rapidOn"
+                    :tooltip="{
+                        title: '删除'
+                    }"
                     :popConfirm="{
                         title: `确定要删除？`,
                         onConfirm: () => deleteData(i.id),

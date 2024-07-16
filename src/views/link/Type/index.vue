@@ -209,12 +209,12 @@ const columns = [
         width: 150,
         search: {
             type: 'select',
-            options: async() => {
+            options: async () => {
                 const res: any = await supports();
-              return  options.value = res.result.map((item: any) => ({
+                return (options.value = res.result.map((item: any) => ({
                     value: item.id,
                     label: item.name,
-                }));
+                })));
             },
         },
         scopedSlots: true,
@@ -313,15 +313,18 @@ const getActions = (
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
                 title: `确认${stateText}?`,
-                onConfirm: async () => {
-                    let res =
+                onConfirm: () => {
+                    let response =
                         state === 'enabled'
-                            ? await shutdown(data.id)
-                            : await start(data.id);
-                    if (res.success) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value?.reload();
-                    }
+                            ? shutdown(data.id)
+                            : start(data.id);
+                    response.then((res) => {
+                        if (res.success) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value?.reload();
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -335,14 +338,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const res: any = await remove(data.id);
-                    if (res.status === 200) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value.reload();
-                    } else {
-                        onlyMessage(res?.message, 'error');
-                    }
+                onConfirm: () => {
+                    const response: any = remove(data.id);
+                    response.then((res:any) => {
+                        if (res.status === 200) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value.reload();
+                        } else {
+                            onlyMessage(res?.message, 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

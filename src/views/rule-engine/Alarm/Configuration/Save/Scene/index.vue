@@ -135,6 +135,7 @@ const getActions = (
             onlyMessage('操作成功');
             actionRef.value.reload();
           }
+          return 
         },
       },
     },

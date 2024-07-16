@@ -195,6 +195,19 @@
         @close="visible = false"
         @save="saveBtn"
     />
+    <a-modal
+        v-if="modalVisible"
+        visible
+        :closable="false"
+        @cancel="modalVisible = false"
+        @ok="deleteDevice"
+        :confirmLoading="confirmLoading"
+        :width="300"
+        centered
+        :maskClosable="false"
+    >
+        {{ deleteTip }}</a-modal
+    >
 </template>
 
 <script setup lang="ts">
@@ -206,6 +219,7 @@ import {
     batchUndeployDevice,
     batchDeployDevice,
     batchDeleteDevice,
+    detail,
 } from '@/api/device/instance';
 import { getImage, LocalStore, onlyMessage } from '@/utils/comm';
 import Import from './Import/modal.vue';
@@ -243,7 +257,10 @@ const type = ref<string>('');
 const isCheck = ref<boolean>(false);
 const routerParams = useRouterParams();
 const menuStory = useMenuStore();
-
+const modalVisible = ref(false);
+const confirmLoading = ref(false);
+const deleteDeviceId = ref('')
+const deleteTip = ref('确认删除？');
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
         return (arr || []).map((item: any) => {
@@ -591,12 +608,13 @@ const getActions = (
                 data.state.value !== 'notActive'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
+
             popConfirm: {
                 title: `确认${
                     data.state.value !== 'notActive' ? '禁用' : '启用'
                 }?`,
                 onConfirm: async () => {
-                    let response = undefined;
+                    let response;
                     if (data.state.value !== 'notActive') {
                         response = await _undeploy(data.id);
                     } else {
@@ -621,23 +639,17 @@ const getActions = (
                         ? '已启用的设备不能删除'
                         : '删除',
             },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        const index = _selectedRowKeys.value.findIndex(
-                            (id: any) => id === data.id,
-                        );
-                        if (index !== -1) {
-                            _selectedRowKeys.value.splice(index, 1);
-                        }
-                        instanceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
-                },
+            onClick: async () => {
+                deleteDeviceId.value = data.id
+                const res = await detail(data.id).finally(()=>{
+                    modalVisible.value = true;
+                });
+                if (res.success) {
+                    deleteTip.value =
+                        res.result?.accessProvider === 'Ctwing'
+                            ? '该操作仅可删除物联网平台数据Ctwing平台数据需另行删除'
+                            : '确认删除？';
+                }
             },
             icon: 'DeleteOutlined',
         },
@@ -725,17 +737,20 @@ const syncDeviceStatus = () => {
     operationVisible.value = true;
 };
 
-const delSelectedDevice = async () => {
+const delSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择设备', 'error');
         return;
     }
-    const resp = await batchDeleteDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
+    const response = batchDeleteDevice(_selectedRowKeys.value);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            _selectedRowKeys.value = [];
+            instanceRef.value?.reload();
+        }
+    });
+    return response;
 };
 
 // const activeSelectedDevice = async () => {
@@ -751,17 +766,20 @@ const delSelectedDevice = async () => {
 //     }
 // };
 
-const disabledSelectedDevice = async () => {
+const disabledSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择设备', 'error');
         return;
     }
-    const resp = await batchUndeployDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
+    const response = batchUndeployDevice(_selectedRowKeys.value);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            _selectedRowKeys.value = [];
+            instanceRef.value?.reload();
+        }
+    });
+    return response;
 };
 
 const batchActions: BatchActionsType[] = [
@@ -902,5 +920,25 @@ const handleSearch = (_params: any) => {
 
 const onRefresh = () => {
     instanceRef.value?.reload();
+};
+
+const deleteDevice = async () => {
+    confirmLoading.value = true
+    const resp = await _delete(deleteDeviceId.value).finally(()=>{
+        confirmLoading.value = false;
+        modalVisible.value = false;
+    });
+    if (resp.status === 200) {
+        onlyMessage('操作成功！');
+        const index = _selectedRowKeys.value.findIndex(
+            (id: any) => id === deleteDeviceId.value,
+        );
+        if (index !== -1) {
+            _selectedRowKeys.value.splice(index, 1);
+        }
+        instanceRef.value?.reload();
+    } else {
+        onlyMessage('操作失败！', 'error');
+    }
 };
 </script>

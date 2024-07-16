@@ -276,17 +276,21 @@ const table = {
             status: status === 0 ? 1 : 0,
             id,
         };
-        changeUserStatus_api(params).then(() => {
+        const response = changeUserStatus_api(params)
+        response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response
     },
     // 删除
     clickDel: (id: string) => {
-        deleteUser_api(id).then(() => {
+        const response = deleteUser_api(id)
+        response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response
     },
     // 刷新列表
     refresh: () => {

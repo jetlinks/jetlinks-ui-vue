@@ -580,10 +580,12 @@ const table = {
                 assetIdList: ids,
             },
         ];
-        unBindDeviceOrProduct_api('device', params).then(() => {
+        const response = unBindDeviceOrProduct_api('device', params)
+        response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response
     },
     refresh: () => {
         nextTick(() => {

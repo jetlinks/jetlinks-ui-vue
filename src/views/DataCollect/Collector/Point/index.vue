@@ -16,13 +16,13 @@
                     :request="queryPoint"
                     :defaultParams="defaultParams"
                     :rowSelection="
-                    isCheck
-                        ? {
-                              selectedRowKeys: _selectedRowKeys,
-                              onSelectNone: () => (_selectedRowKeys = []),
-                          }
-                        : false
-                "
+                        isCheck
+                            ? {
+                                  selectedRowKeys: _selectedRowKeys,
+                                  onSelectNone: () => (_selectedRowKeys = []),
+                              }
+                            : false
+                    "
                     :params="params"
                 >
                     <template #headerTitle>
@@ -407,7 +407,7 @@ const checkAll = ref(false);
 const spinning = ref(false);
 const ReadIdMap = new Map();
 const isCheck = ref(false);
-const batchRef = ref()
+const batchRef = ref();
 const defaultParams = ref({
     sorts: [{ name: 'id', order: 'desc' }],
     terms: [
@@ -549,17 +549,20 @@ const handleEdit = (data: any) => {
     });
 };
 
-const handleDelete = async (id: string | undefined = undefined) => {
+const handleDelete = (id: string | undefined = undefined) => {
     spinning.value = true;
-    const res = !id
-        ? await batchDeletePoint(_selectedRowKeys.value).catch(() => {})
-        : await removePoint(id as string).catch(() => {});
-    if (res?.status === 200) {
-        cancelSelect();
-        tableRef.value?.reload();
-        onlyMessage('操作成功', 'success');
-    }
-    spinning.value = false;
+    const response = !id
+        ? batchDeletePoint(_selectedRowKeys.value).catch(() => {})
+        : removePoint(id as string).catch(() => {});
+    response.then((res) => {
+        if (res?.status === 200) {
+            cancelSelect();
+            tableRef.value?.reload();
+            onlyMessage('操作成功', 'success');
+        }
+        spinning.value = false;
+    });
+    return response;
 };
 
 const onCheckChange = () => {
@@ -686,8 +689,8 @@ const cancelSelect = () => {
 };
 
 const handleClick = (dt: any) => {
-    if(!isCheck.value){
-        return 
+    if (!isCheck.value) {
+        return;
     }
     if (_selectedRowKeys.value.includes(dt.id)) {
         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
@@ -793,7 +796,7 @@ watch(
             tableRef?.value?.reload && tableRef?.value?.reload();
             // cancelSelect();
             checkAll.value = false;
-            batchRef.value?.reload()
+            batchRef.value?.reload();
             batchActions.value =
                 props?.data?.provider === 'OPC_UA' ||
                 props?.data?.provider === 'BACNetIp'
@@ -804,7 +807,7 @@ watch(
                               permission: 'DataCollect/Collector:update',
                               icon: 'FormOutlined',
                               selected: {
-                                  onClick: handleBatchUpdate
+                                  onClick: handleBatchUpdate,
                               },
                           },
                           {

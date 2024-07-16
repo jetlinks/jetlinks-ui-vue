@@ -573,11 +573,13 @@ const table = {
                 assetIdList: ids,
             },
         ];
-        unBindDeviceOrProduct_api('product', params).then(() => {
+        const response = unBindDeviceOrProduct_api('product', params)
+        response.then(() => {
             tableData._selectedRowKeys = [];
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response
     },
     refresh: () => {
         nextTick(() => {
