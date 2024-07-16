@@ -30,23 +30,30 @@
                         <input
                             type="button"
                             class="btn"
-                            value="开始"
+                            value="正常速度"
                             id="start"
                             :onclick="startAnimation"
                         />
                         <input
                             type="button"
                             class="btn"
-                            value="暂停"
+                            value="快速"
                             id="pause"
                             :onclick="pauseAnimation"
                         />
                         <input
                             type="button"
                             class="btn"
-                            value="继续"
+                            value="慢速"
                             id="resume"
                             :onclick="resumeAnimation"
+                        />
+                        <input
+                            type="button"
+                            class="btn"
+                            value="暂停"
+                            id="resume"
+                            :onclick="stopAni"
                         />
                     </div>
                 </div>
@@ -63,13 +70,10 @@ const lineArr = [
     [116.478935, 39.997761],
     [116.478939, 39.997825],
     [116.478912, 39.998549],
-    [116.478912, 39.998549],
-    [116.478998, 39.998555],
     [116.478998, 39.998555],
     [116.479282, 39.99856],
     [116.479658, 39.998528],
     [116.480151, 39.998453],
-    [116.480784, 39.998302],
     [116.480784, 39.998302],
     [116.481149, 39.998184],
     [116.481573, 39.997997],
@@ -90,24 +94,16 @@ const polyline = ref();
 const marker = ref();
 const passedPolyline = ref();
 const sliderValue = ref(1);
+const sliderValueCopy = ref(1);
 const sliderMax = ref(100);
-const passedPath = ref();
-
-const circleCenter = ref(lineArr[0]);
 
 const sliderChange = (value) => {
+    sliderValueCopy.value = value;
     const vehicleLocation = path.value[value - 1];
     marker.value.setPosition(
         new AMap.LngLat(vehicleLocation[0], vehicleLocation[1]),
     );
-
     MapRef.value.setCenter(vehicleLocation, true); //更新地图中心坐标
-    // playCar();
-};
-
-//重置
-const reset = () => {
-    // this.map.clearMap();
 };
 
 const initMap = (e) => {
@@ -134,26 +130,20 @@ const initMap = (e) => {
             path: lineArr,
             showDir: true,
             strokeColor: '#28F', //线颜色
-            // strokeOpacity: 1,     //线透明度
             strokeWeight: 6, //线宽
-            // strokeStyle: "solid"  //线样式
         });
 
-        passedPolyline.value = new AMap.Polyline({
-            map: map,
-            strokeColor: '#AF5', //线颜色
-            showDir: true,
-            strokeWeight: 6, //线宽
-            // strokeOpacity: 1,
-        });
+        // passedPolyline.value = new AMap.Polyline({
+        //     map: MapRef.value,
+        //     showDir: true,
+        //     strokeColor: '#AF5', //线颜色
+        //     strokeWeight: 6, //线宽
+        // });
 
         marker.value.on('moving', (e) => {
-            sliderValue.value = e.passedPath.length; // 车移动更新进度条
-            // console.log('passedPolyline.value', passedPolyline.value.getPath());
-            passedPolyline.value.setPath(e.passedPath);
-            passedPath.value = e.passedPath;
-            // polColor.value = '#AF5';
-            // console.log('e.target.getPosition()', e.target.getPosition());
+            // console.log('e', e);
+            // sliderValue.value = e.passedPath.length; // 车移动更新进度条
+            sliderValue.value = e.passedPath.length + sliderValueCopy.value - 1; // 车移动更新进度条
             map.setCenter(e.target.getPosition(), true);
         });
     });
@@ -161,64 +151,84 @@ const initMap = (e) => {
     map.setFitView();
 };
 
-const playCar = () => {
-    if (marker.value) {
-        marker.value.stopMove();
-    }
+// const setPassedPolyline = () => {
+//     //判断地图是否已划车辆轨迹线
+//     if (passedPolyline.value) {
+//         passedPolyline.value.destroy();
+//     }
+//     let replayPath = [];
+//     //轨迹线和进度条结合
+//     for (let i = 0; i < sliderValue.value; i++) {
+//         replayPath.push(path.value[i]);
+//     }
+//     passedPolyline.value = new AMap.Polyline({
+//         map: MapRef.value,
+//         path: replayPath,
+//         showDir: true,
+//         strokeColor: '#AF5', //线颜色
+//         strokeWeight: 6, //线宽
+//     });
+// };
 
-    //计算继续开始的线路
-    let replayPath = [];
-    for (let i = sliderValue.value - 1; i < path.value.length; i++) {
-        replayPath.push(new AMap.LngLat(path.value[i][0], path.value[i][1]));
+const startAnimation = () => {
+    const spend = 300;
+    funAnimation(spend);
+};
+
+const pauseAnimation = () => {
+    const spend = 150;
+    funAnimation(spend);
+};
+
+const resumeAnimation = () => {
+    const spend = 600;
+    funAnimation(spend);
+};
+
+const funAnimation = (e) => {
+    marker.value.stopMove();
+    const spend = e;
+    /**
+     * 判断车辆行驶半途中，按快速按钮或者慢速按钮，继续行驶开始位置是上次暂停的地方
+     * 并且判断进度条的位置和值，与车辆行进记录保持一直
+     */
+    sliderValueCopy.value = sliderValue.value;
+    if (sliderValueCopy.value > path.value.length - 1) {
+        sliderValue.value = 1;
+        sliderValueCopy.value = 1;
     }
-    if (replayPath.length === 0) {
-        marker.value.moveAlong(path.value, {
+    if (sliderValue.value < path.value.length) {
+        marker.value.stopMove();
+        let replayPath = [];
+        //轨迹线和进度条结合
+        for (let i = sliderValue.value - 1; i < path.value.length; i++) {
+            replayPath.push(path.value[i]);
+        }
+        marker.value.moveAlong(replayPath, {
             // 每一段的时长
-            duration: 500, //可根据实际采集时间间隔设置
-            aniInterval: 500 * path.value.length,
+            duration: spend, //可根据实际采集时间间隔设置
+            aniInterval: replayPath.length * spend,
             // JSAPI2.0 是否延道路自动设置角度在 moveAlong 里设置
             autoRotation: true,
         });
     } else {
-        console.log('sliderValue.value', sliderValue.value);
-        console.log('replayPath', replayPath);
-        marker.value.moveAlong(replayPath, {
+        marker.value.moveAlong(path.value, {
             // 每一段的时长
-            duration: 500, //可根据实际采集时间间隔设置
-            aniInterval: 500 * path.value.length,
+            duration: spend, //可根据实际采集时间间隔设置
+            aniInterval: path.value.length * spend,
             // JSAPI2.0 是否延道路自动设置角度在 moveAlong 里设置
             autoRotation: true,
         });
     }
 };
 
-const startAnimation = () => {
-    marker.value.moveAlong(path.value, {
-        // 每一段的时长
-        duration: 500, //可根据实际采集时间间隔设置
-        aniInterval: 500 * path.value.length,
-        // JSAPI2.0 是否延道路自动设置角度在 moveAlong 里设置
-        autoRotation: true,
-    });
+const stopAni = () => {
+    marker.value.stopMove();
 };
 
-const pauseAnimation = () => {
-    marker.value.pauseMove();
-};
+// onMounted(() => {
 
-const resumeAnimation = () => {
-    marker.value.resumeMove();
-};
-
-watch(
-    passedPath.value,
-    (newValue, oldValue) => {
-        console.log('newValue', newValue);
-    },
-    {
-        deep: true,
-    },
-);
+// });
 </script>
 
 <style scoped>
@@ -238,6 +248,7 @@ watch(
     border-radius: 0.25rem;
     width: 100%;
     border-width: 0;
+    opacity: 0.85;
     border-radius: 0.4rem;
     box-shadow: 0 2px 6px 0 rgba(114, 124, 245, 0.5);
     position: relative;
@@ -246,7 +257,7 @@ watch(
 }
 .input-card .btn {
     margin-right: 1.2rem;
-    width: 9rem;
+    width: 6rem;
 }
 
 .input-card .btn:last-child {
@@ -255,12 +266,5 @@ watch(
 
 .item-slider {
     width: 100%;
-}
-
-.amap-logo {
-    display: none !important;
-}
-.amap-copyright {
-    display: none !important;
 }
 </style>
