@@ -192,16 +192,17 @@
                 </template>
 
                 <template v-if="dataIndex === 'action'">
-                    <j-tooltip title="删除">
-                        <j-popconfirm
-                            title="确认删除"
-                            @confirm="clickDelete(record.id)"
-                        >
-                            <a style="color: red"
-                                ><AIcon type="DeleteOutlined"
-                            /></a>
-                        </j-popconfirm>
-                    </j-tooltip>
+                    <PermissionButton
+                        :tooltip="{
+                            title: '删除',
+                        }"
+                        :popConfirm="{
+                            title: '确认删除？',
+                            onConfirm: () => clickDelete(record.id),
+                        }"
+                    >
+                        <a style="color: red"><AIcon type="DeleteOutlined" /></a
+                    ></PermissionButton>
                 </template>
             </template>
         </j-table>
@@ -234,7 +235,7 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
                 ? reject('最多可输入64个字符')
                 : resolve('');
         } else {
-            resolve('')
+            resolve('');
         }
     });
 
@@ -244,9 +245,8 @@ const filterOption = (input: string, option: any) => {
 
 const clickDelete = (value: string) => {
     emits('change', value);
-    
-    // 删除时需要做同上操作 todo
 
+    // 删除时需要做同上操作 todo
 };
 
 const getTargetData = (index: number, type: string) => {

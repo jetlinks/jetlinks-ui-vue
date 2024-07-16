@@ -261,20 +261,23 @@ const table = {
     },
     // 删除
     clickDel: (row: sourceItemType) => {
-        delDataSource_api(row.id as string).then((resp: any) => {
+        const response =  delDataSource_api(row.id as string)
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
                 onlyMessage('操作成功!');
             }
         });
+        return response
     },
     clickChangeStatus: (row: sourceItemType) => {
         const status = row.state.value === 'enabled' ? '_disable' : '_enable';
-
-        changeStatus_api(row.id as string, status).then(() => {
+        const response = changeStatus_api(row.id as string, status);
+        response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response;
     },
     // 刷新列表
     refresh: () => {

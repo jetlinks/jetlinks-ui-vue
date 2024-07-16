@@ -7,7 +7,9 @@
                 ref="listRef"
                 model="table"
                 :columns="columns"
-                :request="(e) => CascadeApi.queryBindChannel(route?.query.id, e)"
+                :request="
+                    (e) => CascadeApi.queryBindChannel(route?.query.id, e)
+                "
                 :defaultParams="{
                     sorts: [{ name: 'name', order: 'desc' }],
                 }"
@@ -27,12 +29,14 @@
                         <j-button type="primary" @click="bindVis = true">
                             绑定通道
                         </j-button>
-                        <j-popconfirm
-                            title="确认解绑?"
-                            @confirm="handleMultipleUnbind"
+                        <PermissionButton
+                            type="primary"
+                            :popConfirm="{
+                                title: '确认解绑？',
+                                onConfirm: handleMultipleUnbind,
+                            }"
+                            >批量解绑</PermissionButton
                         >
-                            <j-button> 批量解绑 </j-button>
-                        </j-popconfirm>
                     </j-space>
                 </template>
                 <template #gbChannelIdHeader="title">
@@ -46,7 +50,7 @@
                     </j-tooltip>
                 </template>
                 <template #gbChannelId="slotProps">
-                    <div style="display: flex; align-items: center;">
+                    <div style="display: flex; align-items: center">
                         <Ellipsis style="width: 150px">
                             {{ slotProps.gbChannelId }}
                         </Ellipsis>
@@ -110,37 +114,25 @@
                 </template>
                 <template #action="slotProps">
                     <j-space :size="16">
-                        <j-tooltip
+                        <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
-                            v-bind="i.tooltip"
                         >
-                            <j-popconfirm
-                                v-if="i.popConfirm"
-                                v-bind="i.popConfirm"
+                            <PermissionButton
                                 :disabled="i.disabled"
-                            >
-                                <j-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
-                                    ><AIcon :type="i.icon"
-                                /></j-button>
-                            </j-popconfirm>
-                            <j-button
-                                style="padding: 0"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
                                 type="link"
-                                v-else
-                                @click="i.onClick && i.onClick(slotProps)"
+                                style="padding: 0 5px"
                             >
-                                <j-button
-                                    :disabled="i.disabled"
-                                    style="padding: 0"
-                                    type="link"
+                                <template #icon
                                     ><AIcon :type="i.icon"
-                                /></j-button>
-                            </j-button>
-                        </j-tooltip>
+                                /></template>
+                            </PermissionButton>
+                        </template>
                     </j-space>
                 </template>
             </JProTable>
@@ -241,40 +233,42 @@ const params = ref<Record<string, any>>({});
  * @param params
  */
 const handleSearch = (e: any) => {
-    if(e.terms[0]?.terms[0]?.column === "gbChannelId"){
-        params.value = {terms: [
-        {
-            column: "id$gb28181-cascade-channel",
-            value: [
-                {
-                    column: "gb_channel_id",
-                    termType : e.terms[0]?.terms[0]?.termType,
-                    value: e.terms[0]?.terms[0]?.value
-                }
-            ]
-        },
-        {
+    if (e.terms[0]?.terms[0]?.column === 'gbChannelId') {
+        params.value = {
             terms: [
                 {
-                    column: "id$gb28181-cascade-channel",
+                    column: 'id$gb28181-cascade-channel',
                     value: [
                         {
-                            column: "gb_channel_id",
-                            termType: "isnull",
-                            value: "1"
-                        }
-                    ]
+                            column: 'gb_channel_id',
+                            termType: e.terms[0]?.terms[0]?.termType,
+                            value: e.terms[0]?.terms[0]?.value,
+                        },
+                    ],
                 },
                 {
-                    column: "channelId",
-                    termType : e.terms[0]?.terms[0]?.termType,
-                    value: e.terms[0]?.terms[0]?.value
-                }
+                    terms: [
+                        {
+                            column: 'id$gb28181-cascade-channel',
+                            value: [
+                                {
+                                    column: 'gb_channel_id',
+                                    termType: 'isnull',
+                                    value: '1',
+                                },
+                            ],
+                        },
+                        {
+                            column: 'channelId',
+                            termType: e.terms[0]?.terms[0]?.termType,
+                            value: e.terms[0]?.terms[0]?.value,
+                        },
+                    ],
+                    type: 'or',
+                },
             ],
-            type: "or"
-        }
-    ]}
-    }else{
+        };
+    } else {
         params.value = e;
     }
 };
@@ -284,43 +278,43 @@ const _selectedRowKeys = ref<string[]>([]);
 const bindVis = ref(false);
 
 const channelIdMap = new Map();
-const onSelectChange = (row: any,selected:Boolean) => {
+const onSelectChange = (row: any, selected: Boolean) => {
     const arr = new Set(_selectedRowKeys.value);
-    if(selected){
-        arr.add(row.id)
-        channelIdMap.set(row.id,row.channelId)
-    }else{
-        arr.delete(row.id)
-        channelIdMap.delete(row.id)
+    if (selected) {
+        arr.add(row.id);
+        channelIdMap.set(row.id, row.channelId);
+    } else {
+        arr.delete(row.id);
+        channelIdMap.delete(row.id);
     }
     _selectedRowKeys.value = [...arr.values()];
 };
-const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+const selectAll = (selected: Boolean, selectedRows: any, changeRows: any) => {
     if (selected) {
-            changeRows.map((i: any) => {
-                if (!_selectedRowKeys.value.includes(i.id)) {
-                    _selectedRowKeys.value.push(i.id)
-                    channelIdMap.set(i.id,i.channelId)
-                }
-            })
-        } else {
-            const arr = changeRows.map((item: any) => item.id)
-            const _ids: string[] = [];
-            _selectedRowKeys.value.map((i: any) => {
-                if (!arr.includes(i)) {   
-                    _ids.push(i)
-                }else{
-                    channelIdMap.delete(i)
-                }
-            })
-            _selectedRowKeys.value = _ids;
-        }     
-}
+        changeRows.map((i: any) => {
+            if (!_selectedRowKeys.value.includes(i.id)) {
+                _selectedRowKeys.value.push(i.id);
+                channelIdMap.set(i.id, i.channelId);
+            }
+        });
+    } else {
+        const arr = changeRows.map((item: any) => item.id);
+        const _ids: string[] = [];
+        _selectedRowKeys.value.map((i: any) => {
+            if (!arr.includes(i)) {
+                _ids.push(i);
+            } else {
+                channelIdMap.delete(i);
+            }
+        });
+        _selectedRowKeys.value = _ids;
+    }
+};
 
-const cancelSelectAll = () =>{
+const cancelSelectAll = () => {
     _selectedRowKeys.value = [];
     channelIdMap.clear();
-}
+};
 /**
  * 表格操作按钮
  * @param data 表格数据项
@@ -341,17 +335,20 @@ const getActions = (
             icon: 'DisconnectOutlined',
             popConfirm: {
                 title: '确认解绑?',
-                onConfirm: async () => {
-                    const resp = await CascadeApi.unbindChannel(
+                onConfirm: () => {
+                    const response = CascadeApi.unbindChannel(
                         route.query.id as string,
                         [data.channelId],
                     );
-                    if (resp.success) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    response.then((resp) => {
+                        if (resp.success) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
         },
@@ -367,17 +364,13 @@ const handleMultipleUnbind = async () => {
         onlyMessage('请先选择需要解绑的通道列表', 'error');
         return;
     }
-    // const channelIds = listRef.value?._dataSource
-    //     .filter((f: any) => _selectedRowKeys.value.includes(f.id))
-    //     .map((m: any) => m.channelId);
-    const resp = await CascadeApi.unbindChannel(
-        route.query.id as string,
-       [...channelIdMap.values()]
-    );
+    const resp = await CascadeApi.unbindChannel(route.query.id as string, [
+        ...channelIdMap.values(),
+    ]);
     if (resp.success) {
         onlyMessage('操作成功！');
-        _selectedRowKeys.value = []
-        channelIdMap.clear()
+        _selectedRowKeys.value = [];
+        channelIdMap.clear();
         listRef.value?.reload();
     } else {
         onlyMessage('操作失败！', 'error');

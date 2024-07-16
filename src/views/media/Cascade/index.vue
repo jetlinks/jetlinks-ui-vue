@@ -42,20 +42,14 @@
                     >
                         <template #img>
                             <slot name="img">
-                                <img
-                                    :src="
-                                        getImage(
-                                            '/cascade.png',
-                                        )
-                                    "
-                                />
+                                <img :src="getImage('/cascade.png')" />
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px);">
-                            <span style="font-size: 16px;font-weight: 700">
-                                {{ slotProps.name }}
-                            </span>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-size: 16px; font-weight: 700">
+                                    {{ slotProps.name }}
+                                </span>
                             </Ellipsis>
                             <p>通道数量：{{ slotProps.count || 0 }}</p>
                             <j-badge
@@ -64,11 +58,13 @@
                                         ? 'success'
                                         : 'error'
                                 "
-                                style="display: flex; align-items: center;"
+                                style="display: flex; align-items: center"
                             >
                                 <template #text>
                                     <j-ellipsis>
-                                        {{ `sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}` }}
+                                        {{
+                                            `sip:${slotProps.sipConfigs[0]?.sipId}@${slotProps.sipConfigs[0]?.hostAndPort}`
+                                        }}
                                     </j-ellipsis>
                                 </template>
                             </j-badge>
@@ -354,18 +350,20 @@ const getActions = (
                 title: `确认${
                     data.status?.value === 'enabled' ? '禁用' : '启用'
                 }?`,
-                onConfirm: async () => {
-                    let res =
+                onConfirm: () => {
+                    let response =
                         data.status.value === 'enabled'
-                            ? await CascadeApi.disabled(data.id)
-                            : await CascadeApi.enabled(data.id);
-
-                    if (res.success) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                            ? CascadeApi.disabled(data.id)
+                            : CascadeApi.enabled(data.id);
+                    response.then((res) => {
+                        if (res.success) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -381,14 +379,17 @@ const getActions = (
             disabled: data.status?.value === 'enabled',
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await CascadeApi.del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = CascadeApi.del(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

@@ -91,8 +91,8 @@ const reload = () => {
 
 const onPopConfirm = (e: any, fun: any) => {
     if (fun) {
-        fun(e);
         onPopCancel();
+        return fun(e);
     }
 };
 

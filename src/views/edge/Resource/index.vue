@@ -93,9 +93,7 @@
                     {{ slotProps.sourceName }}
                 </template>
                 <template #category="slotProps">
-                    {{
-                      slotProps.category
-                    }}
+                    {{ slotProps.category }}
                 </template>
                 <template #createTime="slotProps">
                     <span>{{
@@ -204,14 +202,14 @@ const columns = [
                         paging: false,
                         sorts: [{ name: 'createTime', order: 'desc' }],
                     }).then((resp: any) => {
-                      const arrMap = new Map()
-                      resp.result.data.forEach((item: any) => {
-                        arrMap.set(item.category, {
-                          label: item.category,
-                          value: item.category,
-                        })
-                      })
-                      resolve([...arrMap.values()]);
+                        const arrMap = new Map();
+                        resp.result.data.forEach((item: any) => {
+                            arrMap.set(item.category, {
+                                label: item.category,
+                                value: item.category,
+                            });
+                        });
+                        resolve([...arrMap.values()]);
                     });
                 }),
         },
@@ -225,7 +223,7 @@ const columns = [
             type: 'select',
             options: () =>
                 new Promise((resolve) => {
-                  query({
+                    query({
                         paging: false,
                         sorts: [
                             {
@@ -234,13 +232,13 @@ const columns = [
                             },
                         ],
                     }).then((resp: any) => {
-                        const arrMap = new Map()
+                        const arrMap = new Map();
                         resp.result.data.forEach((item: any) => {
-                          arrMap.set(item.sourceId, {
-                            label: item.sourceName,
-                            value: item.sourceId,
-                          })
-                        })
+                            arrMap.set(item.sourceId, {
+                                label: item.sourceName,
+                                value: item.sourceId,
+                            });
+                        });
                         resolve([...arrMap.values()]);
                     });
                 }),
@@ -336,19 +334,22 @@ const getActions = (
                 title: `确认${
                     data.state.value !== 'disabled' ? '禁用' : '启用'
                 }?`,
-                onConfirm: async () => {
+                onConfirm: () => {
                     let response = undefined;
                     if (data.state.value !== 'disabled') {
-                        response = await _stop([data.id]);
+                        response = _stop([data.id]);
                     } else {
-                        response = await _start([data.id]);
+                        response = _start([data.id]);
                     }
-                    if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
-                        edgeResourceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    response.then((res) => {
+                        if (res && res.status === 200) {
+                            onlyMessage('操作成功！');
+                            edgeResourceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -364,14 +365,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        edgeResourceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = _delete(data.id);
+                    response.then((res) => {
+                        if (res.status === 200) {
+                            onlyMessage('操作成功！');
+                            edgeResourceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

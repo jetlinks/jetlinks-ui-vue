@@ -332,20 +332,24 @@ const table = {
     },
     changeStatus: (row: any) => {
         const state = row.state.value === 'enabled' ? 'disabled' : 'enabled';
-        changeApplyStatus_api(row.id, { state }).then((resp: any) => {
+        const response = changeApplyStatus_api(row.id, { state })
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功');
                 table.refresh();
             }
         });
+        return response
     },
     clickDel: (row: any) => {
-        delApply_api(row.id).then((resp: any) => {
+        const response = delApply_api(row.id)
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功');
                 table.refresh();
             }
         });
+        return response
     },
     getActions: (
         data: Partial<Record<string, any>>,

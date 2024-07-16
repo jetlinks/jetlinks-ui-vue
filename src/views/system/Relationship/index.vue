@@ -169,7 +169,8 @@ const table = {
     },
     // 删除
     clickDel: (row: any) => {
-        delRelation_api(row.id).then((resp: any) => {
+       const response =  delRelation_api(row.id)
+       response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
                 onlyMessage('操作成功!');
@@ -177,6 +178,7 @@ const table = {
                 onlyMessage(resp.message, 'error');
             }
         });
+        return response
     },
     // 刷新列表
     refresh: () => {

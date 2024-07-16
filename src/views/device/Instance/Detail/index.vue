@@ -125,7 +125,7 @@ import Parsing from './Parsing/index.vue';
 import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
 import AlarmRecord from './AlarmRecord/index.vue';
-import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue'
+import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
@@ -174,8 +174,8 @@ const initList = [
     },
     {
         key: 'CardManagement',
-        tab: '物联网卡'
-    }
+        tab: '物联网卡',
+    },
 ];
 
 const list = ref([...initList]);
@@ -195,7 +195,7 @@ const tabs = {
     MetadataMap,
     GateWay,
     AlarmRecord,
-    CardManagement
+    CardManagement,
 };
 
 const getStatus = (id: string) => {
@@ -337,23 +337,29 @@ const onTabChange = (e: string) => {
     }
 };
 
-const handleAction = async () => {
+const handleAction = () => {
     if (instanceStore.current?.id) {
-        const resp = await _deploy(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _deploy(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response;
     }
 };
 
-const handleDisconnect = async () => {
+const handleDisconnect = () => {
     if (instanceStore.current?.id) {
-        const resp = await _disconnect(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _disconnect(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response
     }
 };
 

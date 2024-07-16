@@ -11,7 +11,6 @@
     </page-container>
 </template>
 <script lang="ts" setup name="LogPage">
-import { defineComponent, ref } from 'vue';
 import AccessLog from './Access/index.vue';
 import SystemLog from './System/index.vue';
 import { useRouterParams } from '@/utils/hooks/useParams';
