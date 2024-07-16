@@ -11,8 +11,20 @@ type ColumnsFormType = {
 }
 type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
 
+type ErrorItem = {
+    message: string
+    __index: number
+    __dataIndex: number
+
+    field: string
+
+    filedValue: any
+
+    groupId: string
+}
+
 type OptionsType = {
-    onError?: (err: Array<Array<{ message: string, __index: number, field: string, filedValue: any}>>) => void
+    onError?: (err: Array<Array<ErrorItem>>) => void
     onEdit?: (item: any) => void
 
     validateRowKey?: Boolean
@@ -24,6 +36,8 @@ export const FULL_SCREEN = Symbol('full')
 export const RIGHT_MENU = Symbol('right-menu')
 
 export const TABLE_ERROR = Symbol('table-error')
+
+export const TABLE_GROUP_ERROR = Symbol('table-group-error')
 
 
 /**
@@ -69,7 +83,7 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
         return new Promise((resolve, reject) => {
             schemaInstance.validate(data, { firstFields: true, index}, (err: any[]) => {
                 if (err?.length) {
-                    reject(err.map(item => ({ ...item, __index: index})))
+                    reject(err.map(item => ({ ...item, __index: data.__serial, __dataIndex: index })))
                 } else {
                     resolve(data)
                 }
@@ -222,3 +236,5 @@ export const useTableWrapper = () => {
 }
 
 export const useRightMenuContext = () => inject(RIGHT_MENU)
+
+export const useTableGroupError = () => inject(TABLE_GROUP_ERROR)

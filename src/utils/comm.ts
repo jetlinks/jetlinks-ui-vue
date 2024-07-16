@@ -186,3 +186,11 @@ export const getBase64 = (img: File, callback: (base64Url: string) => void) => {
     callback(result.target.result)
   }
 }
+
+export const isFullScreen = () => {
+  return !!(document.fullscreen ||
+      document.mozFullScreen ||
+      document.webkitIsFullScreen ||
+      document.webkitFullScreen ||
+      document.msFullScreen)
+}

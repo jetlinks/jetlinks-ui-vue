@@ -31,7 +31,7 @@
         <slot name="bodyExtra"></slot>
       </div>
       <Group
-        v-if="dataSource.length"
+        v-if="dataSource.length && openGroup"
         v-model:activeKey="groupActive.key"
         :options="groupOptions"
         @add="groupAdd"
@@ -44,7 +44,16 @@
 </template>
 
 <script setup name="MetadataBaseTable">
-import {useValidate, useResizeObserver, handleColumnsWidth, TABLE_WRAPPER, FULL_SCREEN, RIGHT_MENU, TABLE_ERROR} from './utils'
+import {
+  useValidate,
+  useResizeObserver,
+  handleColumnsWidth,
+  TABLE_WRAPPER,
+  FULL_SCREEN,
+  RIGHT_MENU,
+  TABLE_ERROR,
+  TABLE_GROUP_ERROR
+} from './utils'
 import {tableProps} from 'ant-design-vue/lib/table'
 import {useFormContext} from './context'
 import Header from './header.vue'
@@ -55,7 +64,7 @@ import Group from './group.vue'
 import {randomNumber} from "@/utils/utils";
 import {bodyProps} from "./props";
 
-const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange'])
+const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange', 'groupDelete', 'groupEdit'])
 
 const props = defineProps({
   ...tableProps(),
@@ -84,24 +93,37 @@ const fields = {}
 const defaultGroupId = randomNumber()
 
 const fieldsErrMap = ref({})
+const fieldsGroupError = ref({})
 const groupOptions = ref([])
 const groupActive = reactive({
   key: undefined,
   name: undefined
 })
+
 const _dataSource = computed(() => {
   const _options = new Map()
   props.dataSource.forEach((item, index) => {
     item.__dataIndex = index
-    if (!item.expands?.groupId) {
-      item.expands.groupId = groupActive.key || defaultGroupId
-      item.expands.groupName = groupActive.name || '分组1'
-    }
+    if (props.openGroup) {
+      const _groupId = item.expands?.groupId
+      if (!_groupId) {
+        item.expands.groupId = groupActive.key || defaultGroupId
+        item.expands.groupName = groupActive.name || '分组1'
+      }
 
-    _options.set(item.expands?.groupId, {
-      value: item.expands?.groupId,
-      label: item.expands?.groupName
-    })
+      const _optionsItem = _options.get(item.expands.groupId)
+
+      if (!_optionsItem) {
+        _options.set(item.expands.groupId, {
+          value: item.expands?.groupId,
+          label: item.expands?.groupName,
+          len: item.id ? 1 : 0
+        })
+      } else if (item.id){
+        _optionsItem.len += 1
+        _options.set(item.expands.groupId, _optionsItem)
+      }
+    }
   })
 
   groupOptions.value = [..._options.values()]
@@ -128,20 +150,31 @@ const {rules, validateItem, validate, errorMap} = useValidate(
     props.rowKey,
   {
       onError: (err) => {
+        fieldsErrMap.value = {}
+        fieldsGroupError.value = {}
+        const errMap = {}
+
         // 显示全部err红标
         err.forEach((item, errIndex) => {
           item.forEach((e, eIndex) =>{
-            const field = findField(e.__index, e.field)
-
+            const field = findField(e.__dataIndex, e.field)
             if (field) {
               field.showErrorTip(e.message)
-              fieldsErrMap.value[field.eventKey] = e.message
+              errMap[field.eventKey] = e.message
             }
             if (errIndex === 0 && eIndex === 0) {
-              tableBody.value.scrollTo(e.__index)
+              const groupItem = _dataSource.value[e.__dataIndex]
+              groupActive.key = groupItem.expands.groupId
+              groupActive.name = groupItem.expands.groupName
+              setTimeout(() => {
+                tableBody.value.scrollTo(e.__index)
+              }, 10)
             }
           })
         })
+
+        fieldsErrMap.value = errMap
+
       },
       onEdit: () => {
           emit('editChange', true)
@@ -154,6 +187,7 @@ provide(TABLE_WRAPPER, tableWrapper)
 provide(FULL_SCREEN, isFullscreen)
 provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value })
 provide(TABLE_ERROR, fieldsErrMap)
+provide(TABLE_GROUP_ERROR, fieldsGroupError)
 
 const addField = (key, field) => {
   fields[key] = field
@@ -239,14 +273,49 @@ const groupChange = (key, name) => {
 
 const groupDelete = (id, index) => {
   groupOptions.value.splice(index, 1)
-  // TODO 触发emit，外部操作dataSource
+  Object.keys(fieldsErrMap.value).forEach(errorKey => {
+    const [ index ] = errorKey.split('-')
+    const dataSourceItem = _dataSource.value[index]
+    const groupId = dataSourceItem.expands?.groupId
+    if (groupId === id) {
+      removeFieldError(errorKey)
+      removeField(errorKey)
+    }
+  })
   emit('groupDelete', id)
 }
 
 const groupEdit = (record) => {
-  const { name, id } = record
-  // TODO 触发emit，外部操作dataSource修改分组name
+  emit('groupEdit', record)
 }
+
+watch(() => JSON.stringify(fieldsErrMap.value), (errorMap) => {
+  fieldsGroupError.value = {}
+  const _errorObj = JSON.parse(errorMap || '{}')
+
+  Object.keys(_errorObj).forEach(errorKey => {
+    const [ index ] = errorKey.split('-')
+    const dataSourceItem = _dataSource.value[index]
+    const groupId = dataSourceItem.expands?.groupId
+
+    const groupError = fieldsGroupError.value[groupId]
+
+    const groupErrorItem = {
+      [errorKey]: {
+        message: _errorObj[errorKey],
+        index,
+        serial: dataSourceItem.__serial
+      }
+    }
+
+    if (groupError) {
+      groupError.push(groupErrorItem)
+    } else {
+      fieldsGroupError.value[groupId] = [groupErrorItem]
+    }
+
+  })
+})
 
 watch(() => scrollWidth.value, () => {
   onResize({width: tableStyle.width})

@@ -142,7 +142,7 @@ useProvideFormItemContext({
 
 onBeforeUnmount(() => {
   hideErrorTip()
-  context.removeField(eventKey.value)
+  // context.removeField(eventKey.value)
 })
 
 watch(() => [filedName.value, props.name], () => {

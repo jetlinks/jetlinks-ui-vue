@@ -135,9 +135,13 @@ onBeforeUnmount(() => {
 
 watch(() => props.dataSource, () => {
 
-  props.dataSource.forEach(item => {
+  props.dataSource.forEach((item, index) => {
     if (!item.__key) {
       item.__key = randomString()
+    }
+
+    if (!item.__serial) {
+      item.__serial = index
     }
   })
 

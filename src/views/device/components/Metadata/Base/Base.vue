@@ -8,9 +8,11 @@
       :height="560"
       :selectedRowKeys="selectedRowKeys"
       :disableMenu="!hasOperate('add', type)"
-      :openGroup="true"
+      :openGroup="type === 'properties'"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
+      @groupEdit="groupEdit"
+      @groupDelete="groupDelete"
   >
     <template #extra="{ isFullscreen, fullScreenToggle }">
       <div class="extra-header">
@@ -558,6 +560,18 @@ const parentTabsChange = (next?: Function) => {
 const fullToggle = (type: boolean, cb: Function) => {
   cb()
   _isFullscreen.value = !type
+}
+
+const groupEdit = (record: { value: string, label: string}) => {
+  dataSource.value.forEach(item => {
+    if (item.expands?.groupId === record.value) {
+      item.expands.groupName = record.label
+    }
+  })
+}
+
+const groupDelete = (id: string) => {
+  dataSource.value = dataSource.value.filter(item => item.expands?.groupId !== id || item.expands?.isProduct)
 }
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
