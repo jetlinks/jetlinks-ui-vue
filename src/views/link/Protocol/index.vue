@@ -236,7 +236,7 @@ const getActions = (
             popConfirm: {
                 title: '确认删除?',
                 onConfirm:  () => {
-                    const response: any = = remove(data.id);
+                    const response: any = remove(data.id);
                     response.then((res)=>{
                         if (res.status === 200) {
                         onlyMessage('操作成功', 'success');
