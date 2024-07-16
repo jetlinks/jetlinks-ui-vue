@@ -6,7 +6,7 @@
         :visible="true"
         width="700px"
         :confirm-loading="loading"
-        :maskClosable='false'
+        :maskClosable="false"
         @cancel="handleCancel"
         @ok="handleOk"
     >
@@ -163,14 +163,16 @@
                                         class="formRef-form-item"
                                         style="width: 10%"
                                     >
-                                        <j-popconfirm
-                                            title="确认删除吗？"
-                                            ok-text="确认"
-                                            cancel-text="取消"
-                                            @confirm="removeList(propertie)"
+                                        <PermissionButton
+                                            type="text"
+                                            :popConfirm="{
+                                                title: '确认删除吗？',
+                                                onConfirm: () =>
+                                                    removeList(propertie),
+                                            }"
                                         >
-                                            <AIcon type="DeleteOutlined" />
-                                        </j-popconfirm>
+                                            <AIcon type="DeleteOutlined"
+                                        /></PermissionButton>
                                     </j-form-item>
                                 </div>
                                 <j-form-item class="formRef-form-item-add">
@@ -245,10 +247,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
-    productOptions:{
+    productOptions: {
         type: Array,
-        default: []
-    }
+        default: [],
+    },
 });
 
 const emit = defineEmits(['change']);

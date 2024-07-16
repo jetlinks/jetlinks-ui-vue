@@ -74,15 +74,9 @@
                     @select="valueSelect"
                 />
             </div>
-            <j-popconfirm
-                title="确认删除？"
-                @confirm="onDelete"
-                :overlayStyle="{ minWidth: '180px' }"
-            >
-                <div v-show="showDelete" class="button-delete">
-                    <AIcon type="CloseOutlined" />
-                </div>
-            </j-popconfirm>
+            <ConfirmModal title="确认删除？" :onConfirm="onDelete" className="button-delete" :show="showDelete">
+                <AIcon type="CloseOutlined" />
+            </ConfirmModal>
         </div>
         <div class="term-add" @click.stop="termAdd" v-if="isLast">
             <div class="terms-content">

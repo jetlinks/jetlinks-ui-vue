@@ -170,12 +170,14 @@ const table = {
             onlyMessage('请勾选数据', 'warning');
             return;
         }
-        unbindUser_api(roleId, data).then((resp) => {
+        const response = unbindUser_api(roleId, data)
+        response.then((resp) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功');
                 table.refresh();
             }
         });
+        return response
     },
     // 刷新表格
     refresh: () => {

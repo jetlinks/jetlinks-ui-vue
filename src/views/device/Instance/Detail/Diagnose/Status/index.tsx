@@ -124,24 +124,27 @@ const Status = defineComponent({
                                                             hasPermission="link/Type:action"
                                                             popConfirm={{
                                                                 title: '确认启用',
-                                                                onConfirm: async () => {
-                                                                    const res = await startNetwork(
+                                                                onConfirm:  () => {
+                                                                    const response =  startNetwork(
                                                                         unref(gateway)?.channelId,
                                                                     );
-                                                                    if (res.status === 200) {
-                                                                        onlyMessage('操作成功！');
-                                                                        list.value = modifyArrayList(
-                                                                            list.value,
-                                                                            {
-                                                                                key: 'network',
-                                                                                name: '网络组件',
-                                                                                desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
-                                                                                status: 'success',
-                                                                                text: '正常',
-                                                                                info: null,
-                                                                            },
-                                                                        );
-                                                                    }
+                                                                    response.then((res)=>{
+                                                                        if (res.status === 200) {
+                                                                            onlyMessage('操作成功！');
+                                                                            list.value = modifyArrayList(
+                                                                                list.value,
+                                                                                {
+                                                                                    key: 'network',
+                                                                                    name: '网络组件',
+                                                                                    desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                                                                    status: 'success',
+                                                                                    text: '正常',
+                                                                                    info: null,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    })
+                                                                  return response
                                                                 }
                                                             }}
                                                         >
@@ -294,22 +297,25 @@ const Status = defineComponent({
                                                             style="padding: 0"
                                                             popConfirm={{
                                                                 title: '确认启用',
-                                                                onConfirm: async () => {
-                                                                    const resp = await startGateway(unref(device).accessId || '');
-                                                                    if (resp.status === 200) {
-                                                                        onlyMessage('操作成功！');
-                                                                        list.value = modifyArrayList(
-                                                                            list.value,
-                                                                            {
-                                                                                key: 'gateway',
-                                                                                name: '设备接入网关',
-                                                                                desc: desc,
-                                                                                status: 'success',
-                                                                                text: '正常',
-                                                                                info: null,
-                                                                            },
-                                                                        );
-                                                                    }
+                                                                onConfirm:  () => {
+                                                                    const response =  startGateway(unref(device).accessId || '');
+                                                                    response.then((resp)=>{
+                                                                        if (resp.status === 200) {
+                                                                            onlyMessage('操作成功！');
+                                                                            list.value = modifyArrayList(
+                                                                                list.value,
+                                                                                {
+                                                                                    key: 'gateway',
+                                                                                    name: '设备接入网关',
+                                                                                    desc: desc,
+                                                                                    status: 'success',
+                                                                                    text: '正常',
+                                                                                    info: null,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    })
+                                                                    return response
                                                                 }
                                                             }}
                                                         >
@@ -424,22 +430,25 @@ const Status = defineComponent({
                                                         style="padding: 0"
                                                         popConfirm={{
                                                             title: '确认启用',
-                                                            onConfirm: async () => {
-                                                                const resp = await startGateway(unref(device).accessId || '');
-                                                                if (resp.status === 200) {
-                                                                    onlyMessage('操作成功！');
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: 'gateway',
-                                                                            name: '设备接入网关',
-                                                                            desc: desc,
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
-                                                                }
+                                                            onConfirm:  () => {
+                                                                const response =  startGateway(unref(device).accessId || '');
+                                                                response.then((resp)=>{
+                                                                    if (resp.status === 200) {
+                                                                        onlyMessage('操作成功！');
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: 'gateway',
+                                                                                name: '设备接入网关',
+                                                                                desc: desc,
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }
+                                                                })
+                                                                return response
                                                             }
                                                         }}
                                                     >
@@ -538,22 +547,25 @@ const Status = defineComponent({
                                                             style="padding: 0"
                                                             popConfirm={{
                                                                 title: '确认启用',
-                                                                onConfirm: async () => {
-                                                                    const resp = await _deploy(response?.result?.id || '');
-                                                                    if (resp.status === 200) {
-                                                                        onlyMessage('操作成功！');
-                                                                        list.value = modifyArrayList(
-                                                                            list.value,
-                                                                            {
-                                                                                key: 'parent-device',
-                                                                                name: '网关父设备',
-                                                                                desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
-                                                                                status: 'success',
-                                                                                text: '正常',
-                                                                                info: null,
-                                                                            },
-                                                                        );
-                                                                    }
+                                                                onConfirm: () => {
+                                                                    const response =  _deploy(response?.result?.id || '');
+                                                                    response.then((resp)=>{
+                                                                        if (resp.status === 200) {
+                                                                            onlyMessage('操作成功！');
+                                                                            list.value = modifyArrayList(
+                                                                                list.value,
+                                                                                {
+                                                                                    key: 'parent-device',
+                                                                                    name: '网关父设备',
+                                                                                    desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                                                                    status: 'success',
+                                                                                    text: '正常',
+                                                                                    info: null,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    })
+                                                                   return response
                                                                 }
                                                             }}
                                                         >
@@ -648,22 +660,25 @@ const Status = defineComponent({
                                                             style="padding: 0"
                                                             popConfirm={{
                                                                 title: '确认启用',
-                                                                onConfirm: async () => {
-                                                                    const resp = await _deployProduct(unref(device).productId || '');
-                                                                    if (resp.status === 200) {
-                                                                        onlyMessage('操作成功！');
-                                                                        list.value = modifyArrayList(
-                                                                            list.value,
-                                                                            {
-                                                                                key: 'product',
-                                                                                name: '产品状态',
-                                                                                desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
-                                                                                status: 'success',
-                                                                                text: '正常',
-                                                                                info: null,
-                                                                            },
-                                                                        );
-                                                                    }
+                                                                onConfirm:  () => {
+                                                                    const response =  _deployProduct(unref(device).productId || '');
+                                                                    response.then((resp)=>{
+                                                                        if (resp.status === 200) {
+                                                                            onlyMessage('操作成功！');
+                                                                            list.value = modifyArrayList(
+                                                                                list.value,
+                                                                                {
+                                                                                    key: 'product',
+                                                                                    name: '产品状态',
+                                                                                    desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                                                                    status: 'success',
+                                                                                    text: '正常',
+                                                                                    info: null,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    })
+                                                                   return response
                                                                 }
                                                             }}
                                                         >
@@ -726,23 +741,26 @@ const Status = defineComponent({
                                                     style="padding: 0"
                                                     popConfirm={{
                                                         title: '确认启用',
-                                                        onConfirm: async () => {
-                                                            const resp = await _deploy(unref(device)?.id || '');
-                                                            if (resp.status === 200) {
-                                                                instanceStore.current.state = { value: 'offline', text: '离线' }
-                                                                onlyMessage('操作成功！');
-                                                                list.value = modifyArrayList(
-                                                                    list.value,
-                                                                    {
-                                                                        key: 'device',
-                                                                        name: '设备状态',
-                                                                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
-                                                                        status: 'success',
-                                                                        text: '正常',
-                                                                        info: null,
-                                                                    },
-                                                                );
-                                                            }
+                                                        onConfirm:  () => {
+                                                            const response =  _deploy(unref(device)?.id || '');
+                                                            response.then((resp)=>{
+                                                                if (resp.status === 200) {
+                                                                    instanceStore.current.state = { value: 'offline', text: '离线' }
+                                                                    onlyMessage('操作成功！');
+                                                                    list.value = modifyArrayList(
+                                                                        list.value,
+                                                                        {
+                                                                            key: 'device',
+                                                                            name: '设备状态',
+                                                                            desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                                                                            status: 'success',
+                                                                            text: '正常',
+                                                                            info: null,
+                                                                        },
+                                                                    );
+                                                                }
+                                                            })
+                                                           return response
                                                         }
                                                     }}
                                                 >
@@ -1736,22 +1754,26 @@ const Status = defineComponent({
                                                                     style="padding: 0"
                                                                     popConfirm={{
                                                                         title: '确认启用',
-                                                                        onConfirm: async () => {
-                                                                            const resp = await _deploy(response?.result?.id || '');
-                                                                            if (resp.status === 200) {
-                                                                                onlyMessage('操作成功！');
-                                                                                list.value = modifyArrayList(
-                                                                                    list.value,
-                                                                                    {
-                                                                                        key: 'parent-device',
-                                                                                        name: '网关父设备',
-                                                                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
-                                                                                        status: 'success',
-                                                                                        text: '正常',
-                                                                                        info: null,
-                                                                                    },
-                                                                                );
-                                                                            }
+                                                                        onConfirm:  () => {
+                                                                            const response =  _deploy(response?.result?.id || '');
+                                                                            response.then((resp)=>{
+                                                                                if (resp.status === 200) {
+                                                                                    onlyMessage('操作成功！');
+                                                                                    list.value = modifyArrayList(
+                                                                                        list.value,
+                                                                                        {
+                                                                                            key: 'parent-device',
+                                                                                            name: '网关父设备',
+                                                                                            desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                                                                            status: 'success',
+                                                                                            text: '正常',
+                                                                                            info: null,
+                                                                                        },
+                                                                                    );
+                                                                                }
+                                                                            })
+                                                                            return response
+                                                                           
                                                                         }
                                                                     }}
                                                                 >

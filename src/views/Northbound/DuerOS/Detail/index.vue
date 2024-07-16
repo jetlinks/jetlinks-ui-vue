@@ -178,16 +178,19 @@
                                                         style="width: 20px"
                                                         @click.stop
                                                     >
-                                                        <j-popconfirm
+                                                        <ConfirmModal
                                                             title="确认删除？"
-                                                            @confirm.prevent="
-                                                                delItem(index)
+                                                            :onConfirm="
+                                                                () =>
+                                                                    delItem(
+                                                                        index,
+                                                                    )
                                                             "
                                                         >
                                                             <AIcon
                                                                 type="DeleteOutlined"
                                                             />
-                                                        </j-popconfirm>
+                                                        </ConfirmModal>
                                                     </div>
                                                 </template>
                                                 <j-row :gutter="24">
@@ -369,18 +372,19 @@
                                                         style="width: 20px"
                                                         @click.stop
                                                     >
-                                                        <j-popconfirm
+                                                        <ConfirmModal
                                                             title="确认删除？"
-                                                            @confirm.prevent="
-                                                                delPropertyItem(
-                                                                    index,
-                                                                )
+                                                            :onConfirm="
+                                                                () =>
+                                                                    delPropertyItem(
+                                                                        index,
+                                                                    )
                                                             "
                                                         >
                                                             <AIcon
                                                                 type="DeleteOutlined"
                                                             />
-                                                        </j-popconfirm>
+                                                        </ConfirmModal>
                                                     </div>
                                                 </template>
                                                 <j-row :gutter="24">
@@ -766,20 +770,22 @@ const getTypesActions = (val: string) => {
 
 const onActiveProduct = () => {
     if (modelRef.id) {
-        _deploy(modelRef.id).then((resp) => {
+        const response = _deploy(modelRef.id)
+        response.then((resp) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功！');
                 getProduct(modelRef.id);
                 _error.value = '';
             }
         });
+        return response
     }
 };
 
 const _validator = (_rule: any, value: string): Promise<any> =>
     new Promise((resolve, reject) => {
         const _item = productList.value.find((item) => item.id === value);
-        if(!modelRef.id || modelRef.id === ':id') {
+        if (!modelRef.id || modelRef.id === ':id') {
             return resolve('');
         } else if (!_item && value) {
             productChange(value);

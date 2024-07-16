@@ -25,11 +25,11 @@
                 <j-radio-button value="m3u8">HLS</j-radio-button>
                 <!-- <j-radio-button value='rtc'>RTC</j-radio-button> -->
             </j-radio-group>
-<!--            <div class="media-live-share" v-if="type !== 'share'">-->
-<!--                <j-button type="link" @click="onShare"-->
-<!--                    ><AIcon type="ShareAltOutlined" />分享视频</j-button-->
-<!--                >-->
-<!--            </div>-->
+            <!--            <div class="media-live-share" v-if="type !== 'share'">-->
+            <!--                <j-button type="link" @click="onShare"-->
+            <!--                    ><AIcon type="ShareAltOutlined" />分享视频</j-button-->
+            <!--                >-->
+            <!--            </div>-->
         </div>
         <div class="media-live">
             <div
@@ -38,7 +38,10 @@
                 @mouseleave="mouseleave"
             >
                 <div :class="mediaToolClass" @mouseenter="showTool = true">
-                    <div class="tool-item" v-if="type !== 'share' && showRecord">
+                    <div
+                        class="tool-item"
+                        v-if="type !== 'share' && showRecord"
+                    >
                         <template v-if="isRecord === 0">
                             <j-dropdown
                                 trigger="click"
@@ -83,14 +86,11 @@
                     <div class="tool-item" @click.stop="handleRefresh">
                         刷新
                     </div>
-                    <div class="tool-item">
-                        <j-popconfirm
-                            title="重置将断开直播, 可能会影响其他播放者"
-                            @confirm="handleReset"
-                        >
+                    <ConfirmModal title="重置将断开直播, 可能会影响其他播放者" :onConfirm="handleReset">
+                        <div class="tool-item">
                             重置
-                        </j-popconfirm>
-                    </div>
+                        </div></ConfirmModal
+                    >
                 </div>
                 <LivePlayer
                     ref="player"
@@ -154,6 +154,7 @@ import Share from './Share.vue';
 import Preset from './Preset.vue';
 import { useSystem } from '@/store/system';
 import { mediaConfigMap } from '../data';
+import { onlyMessage } from '@/utils/comm';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -313,8 +314,14 @@ const handleRefresh = () => {
 /**
  * 重置
  */
-const handleReset = async () => {
-    channelApi.mediaStop(props.data.deviceId, props.data.channelId);
+const handleReset =  () => {
+    const resp = channelApi.mediaStop(props.data.deviceId, props.data.channelId);
+    resp.then((res)=>{
+        if(res.success){
+            onlyMessage('操作成功！')
+        }
+    })
+    return resp
 };
 
 /**
