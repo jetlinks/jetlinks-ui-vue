@@ -90,7 +90,7 @@ const title = ref('');
 const isAdd = ref(0);
 const isChild = ref(0);
 const tableLoading = ref(false);
-const addSortId = ref()
+const addSortId = ref();
 // 筛选
 const query = reactive({
     columns: [
@@ -108,10 +108,10 @@ const query = reactive({
             key: 'sortIndex',
             search: {
                 type: 'number',
-                componentProps:{
-                    precision:0,
-                    min:1
-                }
+                componentProps: {
+                    precision: 0,
+                    min: 1,
+                },
             },
             scopedSlots: true,
         },
@@ -183,7 +183,7 @@ const getActions = (
                 }
                 nextTick(() => {
                     modifyRef.value.show(data);
-                    addSortId.value = data.id
+                    addSortId.value = data.id;
                 });
             },
         },
@@ -197,14 +197,17 @@ const getActions = (
                 title: '确认删除?',
                 okText: ' 确定',
                 cancelText: '取消',
-                onConfirm: async () => {
-                    const resp = await deleteTree(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = deleteTree(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            tableRef.value.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',
@@ -259,10 +262,10 @@ const table = reactive({
      * 刷新表格数据
      */
     refresh: () => {
-        if(isAdd.value === 0 && isChild.value !==3){
+        if (isAdd.value === 0 && isChild.value !== 3) {
             expandedRowKeys.value.push(addSortId.value);
         }
-        console.log(expandedRowKeys.value)
+        console.log(expandedRowKeys.value);
         tableRef.value.reload();
     },
 });

@@ -24,17 +24,20 @@
                             )
                         "
                     >
-                        <j-popconfirm
-                            title="确认禁用"
-                            @confirm="handleUndeploy"
-                            v-if="productStore.current.state === 1"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="
-                                !permissionStore.hasPermission(
-                                    'device/Product:action',
-                                )
-                            "
+                        <PermissionButton
+                            style="padding: 0"
+                            type="text"
+                            hasPermission="device/Product:action"
+                            :popConfirm="{
+                                title:
+                                    productStore.current.state === 1
+                                        ? '确认禁用'
+                                        : '确认启用',
+                                onConfirm:
+                                    productStore.current.state === 1
+                                        ? handleUndeploy
+                                        : handleDeploy,
+                            }"
                         >
                             <j-switch
                                 :checked="productStore.current.state === 1"
@@ -46,32 +49,7 @@
                                     )
                                 "
                             />
-                        </j-popconfirm>
-                        <j-popconfirm
-                            title="确认启用"
-                            @confirm="handleDeploy"
-                            v-if="productStore.current.state === 0"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="
-                                !permissionStore.hasPermission(
-                                    'device/Product:action',
-                                )
-                            "
-                        >
-                            <j-switch
-                                :unCheckedValue="
-                                    productStore.current.state === 0
-                                "
-                                checked-children="正常"
-                                un-checked-children="禁用"
-                                :disabled="
-                                    !permissionStore.hasPermission(
-                                        'device/Product:action',
-                                    )
-                                "
-                            />
-                        </j-popconfirm>
+                        </PermissionButton>
                     </div>
                     <div style="margin: -5px 0 0 20px" v-else>
                         <j-tooltip>
@@ -133,7 +111,6 @@
                 type="primary"
                 :popConfirm="{
                     title: `确定应用配置?`,
-                    placement: 'bottomRight',
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
@@ -171,14 +148,14 @@ import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
 import MetadataMap from './MetadataMap';
 import AlarmRecord from '@/views/device/Instance/Detail/AlarmRecord/index.vue';
-// import Metadata from '../../../components/Metadata/index.vue';
+import Firmware from '@/views/device/Instance/Detail/Firmware/index.vue';
 import {
     _deploy,
     _undeploy,
     getDeviceNumber,
     getProtocolDetail,
 } from '@/api/device/product';
-import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
+import { handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
@@ -220,6 +197,10 @@ const list = ref([
         key: 'AlarmRecord',
         tab: '告警记录',
     },
+    {
+        key: 'Firmware',
+        tab: '远程升级',
+    },
 ]);
 
 const tabs = {
@@ -229,6 +210,7 @@ const tabs = {
     DataAnalysis,
     MetadataMap,
     AlarmRecord,
+    Firmware,
 };
 
 const onBack = () => {
@@ -248,26 +230,32 @@ const onTabChange = (e: string) => {
 /**
  * 启用产品
  */
-const handleDeploy = async () => {
+const handleDeploy = () => {
     if (productStore.current.id) {
-        const resp = await _deploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _deploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
 /**
  * 禁用产品
  */
-const handleUndeploy = async () => {
+const handleUndeploy = () => {
     if (productStore.current.id) {
-        const resp = await _undeploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _undeploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
@@ -320,6 +308,10 @@ const getProtocol = async () => {
                         key: 'AlarmRecord',
                         tab: '告警记录',
                     },
+                    {
+                        key: 'Firmware',
+                        tab: '远程升级',
+                    },
                 ];
             } else {
                 list.value = [
@@ -339,6 +331,10 @@ const getProtocol = async () => {
                     {
                         key: 'AlarmRecord',
                         tab: '告警记录',
+                    },
+                    {
+                        key: 'Firmware',
+                        tab: '远程升级',
                     },
                 ];
             }

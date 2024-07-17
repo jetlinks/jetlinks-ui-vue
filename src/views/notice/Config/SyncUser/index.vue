@@ -66,40 +66,27 @@
                                 </j-space>
                             </template>
                             <template v-if="column.dataIndex === 'action'">
-                                <j-space :size="16">
-                                    <j-tooltip
+                                <j-space>
+                                    <template
                                         v-for="i in getActions(record, 'table')"
                                         :key="i.key"
-                                        v-bind="i.tooltip"
                                     >
-                                        <j-popconfirm
-                                            v-if="i.popConfirm"
-                                            v-bind="i.popConfirm"
+                                        <PermissionButton
                                             :disabled="i.disabled"
-                                        >
-                                            <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
-                                                type="link"
-                                                ><AIcon :type="i.icon"
-                                            /></j-button>
-                                        </j-popconfirm>
-                                        <j-button
-                                            style="padding: 0"
+                                            :popConfirm="i.popConfirm"
+                                            :tooltip="{
+                                                ...i.tooltip,
+                                            }"
+                                            @click="i.onClick"
                                             type="link"
-                                            v-else
-                                            @click="
-                                                i.onClick && i.onClick(record)
-                                            "
+                                            style="padding: 0 5px"
+                                            :danger="i.key === 'delete'"
                                         >
-                                            <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
-                                                type="link"
+                                            <template #icon
                                                 ><AIcon :type="i.icon"
-                                            /></j-button>
-                                        </j-button>
-                                    </j-tooltip>
+                                            /></template>
+                                        </PermissionButton>
+                                    </template>
                                 </j-space>
                             </template>
                         </template>
@@ -209,11 +196,11 @@ watch(
  * 部门点击
  */
 const onTreeSelect = (keys: any) => {
-  if (keys.length) {
-    deptId.value = keys[0];
-    pageSize.value = 12;
-    current.value = 1;
-  }
+    if (keys.length) {
+        deptId.value = keys[0];
+        pageSize.value = 12;
+        current.value = 1;
+    }
 };
 
 // 右侧表格
@@ -266,13 +253,16 @@ const getActions = (
             icon: 'DisconnectOutlined',
             popConfirm: {
                 title: '确认解绑?',
-                onConfirm: async () => {
-                    configApi
-                        .unBindUser({ bindingId: data.bindId }, data.bindId)
-                        .then(() => {
-                            onlyMessage('操作成功');
-                            getTableData();
-                        });
+                onConfirm:  () => {
+                    const response = configApi.unBindUser(
+                        { bindingId: data.bindId },
+                        data.bindId,
+                    );
+                    response.then(() => {
+                        onlyMessage('操作成功');
+                        getTableData();
+                    });
+                    return response;
                 },
             },
         },
@@ -452,12 +442,8 @@ const handleBind = (row: any) => {
  * 绑定用户, 用户下拉筛选
  */
 const filterOption = (input: string, option: any) => {
-    const text = option?.componentOptions?.children?.[0]?.text ||  option.label
-    return (
-        text
-            .toLowerCase()
-            .indexOf(input.toLowerCase()) >= 0
-    );
+    const text = option?.componentOptions?.children?.[0]?.text || option.label;
+    return text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 /**

@@ -91,15 +91,20 @@
                     <Ellipsis>{{
                         [
                             {
-                                label:  item?.type?.falseText,
+                                label: item?.type?.falseText,
                                 value: item?.type?.falseValue,
                             },
                             {
                                 label: item?.type?.trueText,
                                 value: item?.type?.trueValue,
-                            }
-                        ].find((i) => i.value ===
-                           instanceStore.current?.configuration?.[item.property] )?.label || ''
+                            },
+                        ].find(
+                            (i) =>
+                                i.value ===
+                                instanceStore.current?.configuration?.[
+                                    item.property
+                                ],
+                        )?.label || ''
                     }}</Ellipsis>
                 </span>
                 <span v-else>
@@ -143,15 +148,19 @@ const instanceStore = useInstanceStore();
 const visible = ref<boolean>(false);
 const config = ref<ConfigMetadata[]>([]);
 
-watch(()=>instanceStore.current.id,(val) => {
-    if (val) {
-        getConfigMetadata(val).then((resp) => {
-            if (resp.status === 200) {
-                config.value = resp?.result as ConfigMetadata[];
-            }
-        });
-    }
-},{ immediate: true });
+watch(
+    () => instanceStore.current.id,
+    (val) => {
+        if (val) {
+            getConfigMetadata(val).then((resp) => {
+                if (resp.status === 200) {
+                    config.value = resp?.result as ConfigMetadata[];
+                }
+            });
+        }
+    },
+    { immediate: true },
+);
 
 const isExit = (property: string) => {
     return (
@@ -163,23 +172,29 @@ const isExit = (property: string) => {
     );
 };
 
-const deployBtn = async () => {
+const deployBtn = () => {
     if (instanceStore.current.id) {
-        const resp = await _deploy(instanceStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功');
-            instanceStore.refresh(instanceStore.current.id);
-        }
+        const response = _deploy(instanceStore.current.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功');
+                instanceStore.refresh(instanceStore.current.id);
+            }
+        });
+        return response;
     }
 };
 
-const resetBtn = async () => {
+const resetBtn = () => {
     if (instanceStore.current.id) {
-        const resp = await configurationReset(instanceStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('恢复默认配置成功');
-            instanceStore.refresh(instanceStore.current.id);
-        }
+        const response = configurationReset(instanceStore.current.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('恢复默认配置成功');
+                instanceStore.refresh(instanceStore.current.id);
+            }
+        });
+        return response
     }
 };
 

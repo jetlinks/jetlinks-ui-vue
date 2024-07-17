@@ -1,8 +1,10 @@
 <template>
-    <div class="calendarContainer">
-        <CalendarTags/>
-        <CalendarRight />
-    </div>
+    <page-container>
+        <div class="calendarContainer">
+            <CalendarTags />
+            <CalendarRight />
+        </div>
+    </page-container>
 </template>
 
 <script setup>

@@ -62,9 +62,7 @@
                         </template>
                         <template #content>
                             <Ellipsis style="width: calc(100% - 100px)">
-                                <span
-                                    style="font-size: 16px; font-weight: 600"
-                                >
+                                <span style="font-size: 16px; font-weight: 600">
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
@@ -101,7 +99,11 @@
                                             :key="i"
                                         >
                                             <PermissionButton
-                                                :disabled="o.disabled || slotProps.state.value !== 'online'"
+                                                :disabled="
+                                                    o.disabled ||
+                                                    slotProps.state.value !==
+                                                        'online'
+                                                "
                                                 :popConfirm="o.popConfirm"
                                                 :tooltip="{
                                                     ...o.tooltip,
@@ -154,9 +156,11 @@
                 </template>
                 <template #registryTime="slotProps">
                     <span>{{
-                       slotProps.registryTime ? dayjs(slotProps.registryTime).format(
-                            'YYYY-MM-DD HH:mm:ss',
-                        ) : ''
+                        slotProps.registryTime
+                            ? dayjs(slotProps.registryTime).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
                     }}</span>
                 </template>
                 <template #action="slotProps">
@@ -204,7 +208,7 @@
         />
     </page-container>
 </template>
-  
+
 <script lang="ts" setup>
 import { queryGatewayList, queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
@@ -269,7 +273,7 @@ const columns = [
             type: 'string',
             defaultTermType: 'eq',
         },
-        ellipsis:true
+        ellipsis: true,
     },
     {
         title: '设备名称',
@@ -279,7 +283,7 @@ const columns = [
             type: 'string',
             first: true,
         },
-        ellipsis:true
+        ellipsis: true,
     },
     {
         title: '产品名称',
@@ -300,7 +304,7 @@ const columns = [
                     });
                 }),
         },
-        ellipsis:true
+        ellipsis: true,
     },
     {
         title: '注册时间',
@@ -378,7 +382,7 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
-        ellipsis:true,
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -435,19 +439,22 @@ const getActions = (
                 title: `确认${
                     data.state.value !== 'notActive' ? '禁用' : '启用'
                 }?`,
-                onConfirm: async () => {
+                onConfirm: () => {
                     let response = undefined;
                     if (data.state.value !== 'notActive') {
-                        response = await _undeploy(data.id);
+                        response = _undeploy(data.id);
                     } else {
-                        response = await _deploy(data.id);
+                        response = _deploy(data.id);
                     }
-                    if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
-                        edgeDeviceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    response.then((res) => {
+                        if (res && res.status === 200) {
+                            onlyMessage('操作成功！');
+                            edgeDeviceRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -475,13 +482,15 @@ const getActions = (
             icon: 'RedoOutlined',
             popConfirm: {
                 title: '确认重置密码为Jetlinks123？',
-                onConfirm: async () => {
-                    restPassword(data.id).then((resp: any) => {
+                onConfirm: () => {
+                    const response = restPassword(data.id);
+                    response.then((resp: any) => {
                         if (resp.status === 200) {
                             onlyMessage('操作成功！');
                             edgeDeviceRef.value?.reload();
                         }
                     });
+                    return response;
                 },
             },
         },
@@ -499,14 +508,17 @@ const getActions = (
         },
         popConfirm: {
             title: '确认删除?',
-            onConfirm: async () => {
-                const resp = await _delete(data.id);
-                if (resp.status === 200) {
-                    onlyMessage('操作成功！');
-                    edgeDeviceRef.value?.reload();
-                } else {
-                    onlyMessage('操作失败！', 'error');
-                }
+            onConfirm: () => {
+                const response = _delete(data.id);
+                response.then((resp) => {
+                    if (resp.status === 200) {
+                        onlyMessage('操作成功！');
+                        edgeDeviceRef.value?.reload();
+                    } else {
+                        onlyMessage('操作失败！', 'error');
+                    }
+                });
+                return response;
             },
         },
         icon: 'DeleteOutlined',
@@ -552,6 +564,5 @@ const onRefresh = () => {
     edgeDeviceRef.value?.reload();
 };
 </script>
-  
-  <style lang="less" scoped>
-</style>
+
+<style lang="less" scoped></style>

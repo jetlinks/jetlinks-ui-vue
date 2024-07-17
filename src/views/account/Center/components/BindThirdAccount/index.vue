@@ -29,13 +29,10 @@
                         </div>
                     </div>
                     <div class="content-item-right">
-                        <j-popconfirm
-                            v-if="item.bound"
-                            title="确认解除绑定嘛?"
-                            @confirm="() => unBind(item.id)"
-                        >
-                            <j-button>解除绑定</j-button>
-                        </j-popconfirm>
+                        <PermissionButton  v-if="item.bound" :popConfirm="{
+                            title:'确认解除绑定嘛?',
+                            onConfirm:() => unBind(item.id)
+                        }">解除绑定</PermissionButton>
                         <j-button
                             v-else
                             ghost
@@ -66,12 +63,14 @@ const bindIcon = {
     'third-party': '/apply/third-party.png',
 };
 const unBind = (id: string) => {
-    unBind_api(id).then((resp) => {
+    const response =  unBind_api(id)
+    response.then((resp) => {
         if (resp.status === 200) {
             onlyMessage('解绑成功', 'success');
             getSsoBinds();
         }
     });
+    return response
 };
 const clickBind = (id: string) => {
     window.open(

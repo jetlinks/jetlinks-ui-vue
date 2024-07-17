@@ -385,6 +385,6 @@ export const BacnetFormTableColumns = [
         key: 'action',
         dataIndex: 'action',
         fixed: 'right',
-        width: 50,
+        width: 70,
     },
 ]

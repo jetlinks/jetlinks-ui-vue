@@ -9,6 +9,7 @@
     >
         <template #extra>
             <PermissionButton
+                v-if=!props?.showPosition
                 type="primary"
                 hasPermission="device/Firmware:add"
                 @click="handleAdd"
@@ -61,7 +62,7 @@
                     item?.deviceId?.length ? '选择设备' : '所有设备'
                 }}</a-descriptions-item>
                 <a-descriptions-item label="说明"
-                    ><Ellipsis>
+                    ><Ellipsis style="max-width: 200px;">
                         {{ item?.description || '--' }}
                     </Ellipsis></a-descriptions-item
                 >
@@ -80,6 +81,7 @@
         v-if="detailVisible"
         @close-detail="closeDetail"
         @refresh="queryTaskList"
+        :deviceId="props.deviceId"
         :data="currentTask"
     />
 </template>
@@ -99,6 +101,12 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    showPosition:{
+        type:String
+    },
+    deviceId:{
+        type:String
+    }
 });
 const taskList = ref([]);
 const visible = ref(false);
@@ -123,7 +131,14 @@ const queryTaskList = async () => {
     };
     const res = await queryTaskPaginateNot(param);
     if (res.status === 200) {
-        taskList.value = res.result;
+        if(props?.deviceId){
+            console.log(props.deviceId)
+            taskList.value = res.result.filter((i)=>{
+                return !i?.deviceId ||  i.deviceId.includes(props.deviceId)
+            })
+        }else{
+            taskList.value = res.result;
+        }
         if (currentTask.value?.id) {
             currentTask.value = taskList.value.find(
                 (i) => i.id === currentTask.value.id,
@@ -186,6 +201,7 @@ onMounted(() => {
         font-weight: 500;
         margin-left: 12px;
         color: #1a1a1a;
+        max-width: 300px;
     }
 }
 </style>
