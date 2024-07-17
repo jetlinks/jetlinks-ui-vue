@@ -1,6 +1,5 @@
 <template>
-    <page-container>
-        <FullPage>
+    
             <j-card>
                 <div class="box">
                     <div class="left">
@@ -449,28 +448,67 @@
                                     </j-col>
                                 </j-row>
                             </j-form>
-                            <div v-if="type === 'edit'">
-                                <PermissionButton
-                                    type="primary"
-                                    :loading="loading"
-                                    @click="saveBtn"
-                                    :hasPermission="[
-                                        'Northbound/AliCloud:add',
-                                        'Northbound/AliCloud:update',
-                                    ]"
-                                >
-                                    保存
-                                </PermissionButton>
-                            </div>
                         </div>
                     </div>
                     <div class="right">
                         <Doc />
                     </div>
+                    <div class="control">
+                        <a-space>
+                            <PermissionButton
+                                v-if="data?.id"
+                                hasPermission="Northbound/AliCloud:delete"
+                                :tooltip="{
+                                    title:
+                                        data?.state?.value !== 'disabled'
+                                            ? '请先禁用该数据，再删除。'
+                                            : '删除',
+                                }"
+                                :popConfirm="{
+                                    title: `确认删除`,
+                                    onConfirm: deleteData,
+                                }"
+                                >删除
+                            </PermissionButton>
+                            <PermissionButton
+                                v-if="data?.id"
+                                hasPermission="Northbound/AliCloud:action"
+                                :tooltip="{
+                                    title:
+                                        data?.state?.value !== 'disabled'
+                                            ? '禁用'
+                                            : '启用',
+                                }"
+                                :popConfirm="{
+                                    title: `确认${
+                                        data?.state?.value !== 'disabled'
+                                            ? '禁用'
+                                            : '启用'
+                                    }?`,
+                                    onConfirm: actionAliCloud,
+                                }"
+                                >{{
+                                    data?.state?.value !== 'disabled'
+                                        ? '禁用'
+                                        : '启用'
+                                }}
+                            </PermissionButton>
+                            <PermissionButton
+                                type="primary"
+                                :loading="loading"
+                                @click="saveBtn"
+                                :hasPermission="[
+                                    'Northbound/AliCloud:add',
+                                    'Northbound/AliCloud:update',
+                                ]"
+                            >
+                                保存
+                            </PermissionButton>
+                        </a-space>
+                    </div>
                 </div>
             </j-card>
-        </FullPage>
-    </page-container>
+      
 </template>
 
 <script lang="ts" setup>
@@ -481,15 +519,20 @@ import {
     getRegionsList,
     getAliyunProductsList,
     queryProductList,
+    _delete,
+    _deploy,
+    _undeploy
 } from '@/api/northbound/alicloud';
 import _ from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';
-import { _deploy } from '@/api/device/product';
-
-const router = useRouter();
-const route = useRoute();
-
+import { _deploy as deploy } from '@/api/device/product';
+const props = defineProps({
+    data: {
+        type: Object,
+    },
+});
+const emit = defineEmits(['refreshList']);
 const formRef = ref();
 const _errorSet = ref<Set<string>>(new Set());
 
@@ -530,7 +573,6 @@ const productList = ref<Record<string, any>[]>([]);
 const regionsList = ref<Record<string, any>[]>([]);
 const aliyunProductList = ref<Record<string, any>[]>([]);
 const loading = ref<boolean>(false);
-const type = ref<'edit' | 'view'>('edit');
 const activeKey = ref<string[]>(['0']);
 
 const queryRegionsList = async () => {
@@ -601,7 +643,7 @@ const regionChange = (val: any) => {
 };
 const onActiveProduct = async () => {
     [..._errorSet.value.values()].forEach(async (i: any) => {
-        const resp = await _deploy(i).catch((error) => {
+        const resp = await deploy(i).catch((error) => {
             onlyMessage('操作失败', 'error');
         });
         if (resp?.status === 200) {
@@ -649,8 +691,11 @@ const saveBtn = () => {
             });
             if (resp.status === 200) {
                 onlyMessage('操作成功！');
-                formRef.value.resetFields();
-                router.push('/iot/northbound/AliCloud');
+                if (props.data?.id) {
+                    emit('refreshList', true);
+                } else {
+                    emit('refreshList');
+                }
             }
         })
         .catch((err: any) => {
@@ -662,14 +707,44 @@ const saveBtn = () => {
             });
         });
 };
+
+const actionAliCloud = () => {
+    let response = undefined;
+    if (props.data?.state?.value !== 'disabled') {
+        response = _undeploy(props.data?.id);
+    } else {
+        response = _deploy(props.data?.id);
+    }
+    response.then((res) => {
+        if (res && res.status === 200) {
+            onlyMessage('操作成功！');
+            emit('refreshList', true);
+        } else {
+            onlyMessage('操作失败！', 'error');
+        }
+    });
+    return response;
+};
+
+const deleteData = () => {
+    const response = _delete(props.data?.id);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            emit('refreshList');
+        } else {
+            onlyMessage('操作失败！', 'error');
+        }
+    });
+    return response;
+};
 watch(
-    () => route.params?.id,
-    async (newId) => {
-        if (newId) {
+    () => props.data,
+    async () => {
+        if (props.data?.id) {
             queryRegionsList();
             await getProduct();
-            if (newId === ':id' || !newId) return;
-            const resp = await detail(newId as string);
+            const resp = await detail(props.data?.id as string);
             const _data: any = resp.result;
             if (_data) {
                 getAliyunProduct(_data?.accessConfig);
@@ -678,16 +753,25 @@ watch(
             activeKey.value = (_data?.mappings || []).map(
                 (_: any, index: number) => index,
             );
-        }
-    },
-    { immediate: true, deep: true },
-);
-
-watch(
-    () => route.query.type,
-    (newVal) => {
-        if (newVal) {
-            type.value = newVal as 'edit' | 'view';
+        } else {
+            modelRef.id = undefined;
+            modelRef.modelRefname = undefined;
+            modelRef.accessConfig = {
+                regionId: undefined,
+                instanceId: undefined,
+                accessKeyId: undefined,
+                accessSecret: undefined,
+                apiEndpoint: undefined,
+            };
+            modelRef.bridgeProductKey = undefined;
+            modelRef.bridgeProductName = undefined;
+            modelRef.mappings = [
+                {
+                    productKey: undefined,
+                    productId: undefined,
+                },
+            ];
+            modelRef.description = undefined;
         }
     },
     { immediate: true, deep: true },
@@ -706,9 +790,14 @@ watch(
         width: 33%;
         position: absolute;
         right: 0;
-        top: 0;
+        top: 40px;
         overflow-y: auto;
-        height: 100%;
+        height: 95%;
+    }
+    .control {
+        position: absolute;
+        right: 0;
+        top: 0;
     }
 }
 </style>

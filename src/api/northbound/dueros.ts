@@ -8,6 +8,11 @@ import server from '@/utils/request'
 export const query = (data: Record<string, any>) => server.post('/dueros/product/_query', data)
 
 /**
+ * 查询数据不分页
+ */
+export const queryPaginateNot = (data:any) => server.post('/dueros/product/_query/no-paging',data)
+
+/**
  * 查询产品列表
  * @param id 
  * @returns 
