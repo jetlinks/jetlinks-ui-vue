@@ -94,6 +94,7 @@ const visible = ref(false)
 const type = ref('新增分组')
 const errorMap = useTableGroupError()
 const tableWrapperRef = useTableWrapper()
+const addIndex = ref(0)
 
 const formRef = ref()
 const formData = reactive({
@@ -102,9 +103,26 @@ const formData = reactive({
 
 const onAdd = (targetKey, action) => {
   if (action === 'add') {
-    visible.value = true
     type.value = 'add'
-    formData.label = '分组' + (props.options.length + 1)
+    // 获取上一个包含 “分组_” 的信息
+    const groupName = props.options.filter(item => item.label.includes('分组_'))
+    let index = addIndex.value + 1
+    let findStatus = false
+    while (!findStatus) {
+      const status = groupName.some(item => {
+        const [ _, _index] = item.label.split('_')
+        if (index === Number(_index)) {
+          index = Number(_index) + 1
+          return true
+        }
+        return false
+      })
+
+      findStatus = !status
+    }
+
+    addIndex.value = index
+    formData.label = '分组_' + index
     onOk()
   }
 }

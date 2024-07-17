@@ -105,7 +105,7 @@ const _dataSource = computed(() => {
       const _groupId = item.expands?.groupId
       if (!_groupId) {
         item.expands.groupId = groupActive.value || defaultGroupId
-        item.expands.groupName = groupActive.label || '分组1'
+        item.expands.groupName = groupActive.label || '分组_1'
       }
 
       const _optionsItem = _options.get(item.expands.groupId)
