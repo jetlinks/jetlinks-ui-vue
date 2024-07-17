@@ -13,7 +13,7 @@
 <script setup name="MetadataGroup">
 
 import {METADATA_GROUP_OPTIONS} from "../../consts";
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
   value: {

@@ -121,7 +121,7 @@ import { treeFilter } from '@/utils/tree';
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product';
 import { inject } from 'vue';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import Markdown from '@/components/Markdown'
 
 const props = defineProps({

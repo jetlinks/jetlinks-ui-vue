@@ -1,5 +1,5 @@
 import { provide } from 'vue'
-import {TABLE_ERROR} from "./utils";
+import {RIGHT_MENU, TABLE_DATA_SOURCE, TABLE_ERROR, TABLE_GROUP_ERROR, TABLE_WRAPPER} from "./utils";
 
 type FiledExpose = {
 
@@ -18,6 +18,12 @@ export const useInjectForm = () => {
     })
 }
 
-export const useInjectError = () => {
-    return inject(TABLE_ERROR)
-}
+export const useInjectError = () => inject(TABLE_ERROR)
+
+export const useTableWrapper = () => inject(TABLE_WRAPPER)
+
+export const useRightMenuContext = () => inject(RIGHT_MENU)
+
+export const useTableGroupError = () => inject(TABLE_GROUP_ERROR)
+
+export const useTableDataSource = () => inject(TABLE_DATA_SOURCE, [])

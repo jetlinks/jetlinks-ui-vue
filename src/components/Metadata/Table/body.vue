@@ -49,14 +49,14 @@
 
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
-import {useRightMenuContext} from "@/components/Metadata/Table/utils";
+import {useRightMenuContext} from "@/components/Metadata/Table/context";
 import {randomString} from "@/utils/utils";
 import {bodyProps} from "./props";
 
 const props = defineProps({
   ...bodyProps(),
   groupKey: {
-    type: String,
+    type: [String, Number],
     default: undefined
   }
 })
@@ -140,9 +140,7 @@ watch(() => props.dataSource, () => {
       item.__key = randomString()
     }
 
-    if (!item.__serial) {
-      item.__serial = index
-    }
+    item.__serial = index
   })
 
   updateView()

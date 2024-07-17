@@ -34,6 +34,15 @@
             </span>
           </a-space>
         </div>
+        <div class="extra-center">
+          <div v-if="copyDetail.index">
+            已复制
+            <span v-if="type === 'properties'">{{ copyDetail.groupName }}</span>
+            第
+            {{ copyDetail.index }}
+            行
+          </div>
+        </div>
         <div class="extra-right">
           <PermissionButton
               type="primary"
@@ -222,6 +231,9 @@
       <GroupSelect v-model:value="record.expands.group" :disabled="record.expands?.isProduct" @change="metadataChange"/>
     </template>
   </EditTable>
+    <div>
+      可编辑数据列表共 {{ effectiveDataLength }} 条数据
+    </div>
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
       :data="detailData.data"
@@ -339,6 +351,12 @@ const selectedRowKeys = ref<string[]>([])
 
 const _isFullscreen = ref(false)
 
+const copyDetail = reactive({
+  key: undefined,
+  index: 0,
+  groupName: undefined
+})
+
 const searchData = reactive({
   len: 0,
   show: false
@@ -354,6 +372,10 @@ const detailData = reactive({
 })
 
 const heavyLoad = ref<Boolean>(false)
+
+const effectiveDataLength = computed(() => {
+  return dataSource.value.filter(item => item.id).length
+})
 
 const getPopupContainer = () => {
   if (_isFullscreen.value) {
@@ -406,15 +428,30 @@ const scrollDown = (len: number = 5) => {
 }
 
 const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  Record<string, any>) => {
-  const _index = record.__index
+  const _index = record.__dataIndex
   switch (type) {
     case 'add':
       dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
       editStatus.value = true
+      nextTick(() => {
+        if (copyDetail.key) {
+          const copyItem = dataSource.value.find(item => item.__key === copyDetail.key)
+          console.log(copyItem)
+          copyDetail.index = copyItem!.__serial + 1
+          copyDetail.groupName = copyItem!.expands.groupName
+        }
+      })
       break;
     case 'paste':
       const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
       cloneRecord.id = `copy_${cloneRecord.id}`
+      if (props.type === 'properties') {
+        // 获取当前分组id和name
+        const expandsItem = dataSource.value[_index + 1].expands
+        cloneRecord.expands.groupName = expandsItem.groupName
+        cloneRecord.expands.groupId = expandsItem.groupId
+      }
+
       if (record.id) {
         dataSource.value.splice(_index + 1, 0, cloneRecord)
         // Modal.confirm({
@@ -429,7 +466,13 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       } else {
         dataSource.value.splice(_index, 1, cloneRecord)
       }
+
       editStatus.value = true
+      break;
+    case 'copy':
+      copyDetail.index = record.__serial + 1
+      copyDetail.key = record.__key
+      copyDetail.groupName = dataSource.value[record.__dataIndex].expands.groupName
       break;
     case 'detail':
       detailData.data = record
@@ -445,6 +488,11 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       //     console.log('Cancel');
       //   },
       // })
+      if (copyDetail.key === record.__key) {
+        copyDetail.key = undefined
+        copyDetail.groupName = undefined
+        copyDetail.index = 0
+      }
       dataSource.value.splice(_index, 1)
       editStatus.value = true
       break;

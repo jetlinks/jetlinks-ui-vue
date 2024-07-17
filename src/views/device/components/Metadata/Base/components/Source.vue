@@ -113,7 +113,7 @@ import {provide, Ref} from 'vue';
 import {queryProductVirtualProperty} from '@/api/device/product';
 import {useProductStore} from '@/store/product';
 import {PopoverModal} from '@/components/Metadata/Table'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 const instanceStore = useInstanceStore();
 const productStore = useProductStore();

@@ -15,10 +15,9 @@
 </template>
 
 <script setup name="TableFormItem">
-import {useInjectError, useInjectForm} from "./context";
+import {useInjectError, useInjectForm, useTableWrapper} from "./context";
 import {get, isArray, throttle } from 'lodash-es'
 import {onBeforeUnmount, computed} from "vue";
-import {useTableWrapper} from "./utils";
 import { useProvideFormItemContext } from 'ant-design-vue/es/form/FormItemContext'
 
 const props = defineProps({

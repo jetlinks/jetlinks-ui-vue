@@ -74,7 +74,7 @@
 import {Modal} from "ant-design-vue";
 import {randomNumber} from "@/utils/utils";
 import {isFullScreen} from "@/utils/comm";
-import {useTableGroupError, useTableWrapper} from './utils'
+import {useTableGroupError, useTableWrapper} from './context'
 
 const props = defineProps({
   options: {

@@ -1,34 +1,14 @@
-import Schema from 'async-validator';
 import type { ColumnType } from 'ant-design-vue/lib/table'
-import { Ref, onBeforeUnmount, watch } from 'vue'
-import ResizeObserver from "resize-observer-polyfill";
-import {debounce, omit} from "lodash-es";
+import { omit} from "lodash-es";
 
-type DataSourceType = Array<Record<string, any> & { __validate_id?: string, __validate_index?: number}>
+
 type ColumnsFormType = {
     rules: Array<Record<string, any>>,
     watch: Array<string>
 }
-type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
+export type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
 
-type ErrorItem = {
-    message: string
-    __index: number
-    __dataIndex: number
 
-    field: string
-
-    filedValue: any
-
-    groupId: string
-}
-
-type OptionsType = {
-    onError?: (err: Array<Array<ErrorItem>>) => void
-    onEdit?: (item: any) => void
-
-    validateRowKey?: Boolean
-}
 
 export const TABLE_WRAPPER = Symbol('table-wrapper')
 export const FULL_SCREEN = Symbol('full')
@@ -39,12 +19,14 @@ export const TABLE_ERROR = Symbol('table-error')
 
 export const TABLE_GROUP_ERROR = Symbol('table-group-error')
 
+export const TABLE_DATA_SOURCE = Symbol('table-data-source')
+
 
 /**
  * 规则收集器，收集columns中的rules和watch
  * @param columns
  */
-const collectValidateRules = (columns: ColumnsType):  Record<string, any> => {
+export const collectValidateRules = (columns: ColumnsType):  Record<string, any> => {
     const rules = {}
     columns.forEach(item => {
         if (item.form) {
@@ -64,116 +46,8 @@ export const handlePureRecord = (record: Record<string, any>) => {
     // }
     return omit(record, ['__serial', '__index', '__top', '__selected', '__key', '__dataIndex'])
 }
-export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsType, rowKey: string, options: OptionsType = {}): {
-    validate: () => Promise<any>
-    validateItem: (data: Record<string, any> ) => Promise<any>
-    errorMap: Ref<Record<string, any>>
-    rules: Ref<Record<string, any>>
-} => {
-    const errorMap = ref({})
-
-    let schemaInstance: any
-    let rules = ref({})
-    let validateDataSource = ref(dataSource)
-
-    const _options = Object.assign({ validateRowKey: false }, options)
 
 
-    const validateItem = (data: Record<string, any>, index: number = 0): Promise<any> => {
-        return new Promise((resolve, reject) => {
-            schemaInstance.validate(data, { firstFields: true, index}, (err: any[]) => {
-                if (err?.length) {
-                    reject(err.map(item => ({ ...item, __index: data.__serial, __dataIndex: index })))
-                } else {
-                    resolve(data)
-                }
-            })
-        })
-    }
-
-    const validate = () => {
-        return new Promise((resolve, reject) => {
-            const filterDataSource = dataSource.value
-
-            const len = filterDataSource.length
-            const error: any[] = []
-            const success: any[] = []
-            let validateLen = 0
-            const end = () => {
-                validateLen += 1
-                if (validateLen === len) {
-                    if (error.length) {
-                        _options.onError?.(error)
-                    }
-
-                    Object.keys(error).length ? reject(error) : resolve(success)
-                }
-            }
-
-            const validateRowKey = _options.validateRowKey
-
-            if (filterDataSource.length) {
-                filterDataSource.forEach((record, index) => {
-                    if (validateRowKey || record[rowKey]) {
-                        validateItem(record, index).then(res => {
-                            success.push(handlePureRecord(res))
-                            end()
-                        }).catch(err => {
-                            error.push(err)
-                            end()
-                        })
-                    } else {
-                        end()
-                    }
-                })
-            } else {
-                resolve(filterDataSource)
-            }
-        })
-    }
-
-    const createValidate = () => {
-        rules.value = collectValidateRules(columns)
-        schemaInstance = new Schema(rules.value)
-    }
-
-    watch(() => dataSource.value, () => {
-        validateDataSource.value = dataSource.value
-    }, { deep: true })
-
-    createValidate()
-
-    return {
-        validate,
-        validateItem,
-        errorMap,
-        rules,
-    }
-}
-
-
-export const useResizeObserver = (tableWrapper: Ref<HTMLElement>, cb: Function) => {
-
-    let observer: ResizeObserver
-
-    const onResize = (e: any[]) => {
-        let rect = {}
-        for (const entry of e) {
-            rect = entry.contentRect;
-        }
-
-        cb(rect, e)
-    }
-
-    onMounted(() => {
-        observer = new ResizeObserver(debounce(onResize, 100))
-        observer.observe(tableWrapper.value)
-    })
-
-    onBeforeUnmount(() => {
-        observer.unobserve(tableWrapper.value)
-    })
-}
 
 export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => {
 
@@ -229,12 +103,3 @@ export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => 
         return prev
     }, [])
 }
-
-export const useTableWrapper = () => {
-    return inject(TABLE_WRAPPER)
-
-}
-
-export const useRightMenuContext = () => inject(RIGHT_MENU)
-
-export const useTableGroupError = () => inject(TABLE_GROUP_ERROR)

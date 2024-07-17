@@ -20,7 +20,7 @@
             :disableMenu="disableMenu"
             :rowKey="rowKey"
             :selectedRowKeys="selectedRowKeys"
-            :groupKey="groupActive.key"
+            :groupKey="groupActive.value"
             :openGroup="openGroup"
             @scrollDown="onScrollDown"
         >
@@ -32,12 +32,12 @@
       </div>
       <Group
         v-if="dataSource.length && openGroup"
-        v-model:activeKey="groupActive.key"
+        v-model:activeKey="groupActive.value"
         :options="groupOptions"
-        @add="groupAdd"
+        @add="addGroup"
         @delete="groupDelete"
         @edit="groupEdit"
-        @change="groupChange"
+        @change="updateGroupActive"
       />
     </div>
   </div>
@@ -45,15 +45,14 @@
 
 <script setup name="MetadataBaseTable">
 import {
-  useValidate,
-  useResizeObserver,
   handleColumnsWidth,
   TABLE_WRAPPER,
   FULL_SCREEN,
   RIGHT_MENU,
   TABLE_ERROR,
-  TABLE_GROUP_ERROR
+  TABLE_GROUP_ERROR, TABLE_DATA_SOURCE
 } from './utils'
+import {useGroup, useResizeObserver, useValidate} from './hooks'
 import {tableProps} from 'ant-design-vue/lib/table'
 import {useFormContext} from './context'
 import Header from './header.vue'
@@ -81,11 +80,12 @@ const props = defineProps({
 
 const slots = useSlots()
 const attrs = useAttrs()
+
 const myColumns = ref([])
 const tableWrapper = ref()
 const tableBody = ref()
 const tableStyle = reactive({
-  width: 100,
+  width: '100%',
   height: props.height
 })
 
@@ -94,11 +94,8 @@ const defaultGroupId = randomNumber()
 
 const fieldsErrMap = ref({})
 const fieldsGroupError = ref({})
-const groupOptions = ref([])
-const groupActive = reactive({
-  key: undefined,
-  name: undefined
-})
+
+const { groupActive, groupOptions, addGroup, removeGroup, updateGroupActive, updateGroupOptions } = useGroup(props.openGroup)
 
 const _dataSource = computed(() => {
   const _options = new Map()
@@ -107,8 +104,8 @@ const _dataSource = computed(() => {
     if (props.openGroup) {
       const _groupId = item.expands?.groupId
       if (!_groupId) {
-        item.expands.groupId = groupActive.key || defaultGroupId
-        item.expands.groupName = groupActive.name || '分组1'
+        item.expands.groupId = groupActive.value || defaultGroupId
+        item.expands.groupName = groupActive.label || '分组1'
       }
 
       const _optionsItem = _options.get(item.expands.groupId)
@@ -126,15 +123,14 @@ const _dataSource = computed(() => {
     }
   })
 
-  groupOptions.value = [..._options.values()]
-
+  updateGroupOptions([..._options.values()])
   return props.dataSource
 })
 
 const bodyDataSource = computed(() => {
   if (props.openGroup) {
     return props.dataSource.filter(item => {
-      return item.expands.groupId === groupActive.key
+      return item.expands.groupId === groupActive.value
     })
   }
   return props.dataSource
@@ -163,9 +159,12 @@ const {rules, validateItem, validate, errorMap} = useValidate(
               errMap[field.eventKey] = e.message
             }
             if (errIndex === 0 && eIndex === 0) {
-              const groupItem = _dataSource.value[e.__dataIndex]
-              groupActive.key = groupItem.expands.groupId
-              groupActive.name = groupItem.expands.groupName
+
+              if (props.openGroup) {
+                const expands = _dataSource.value[e.__dataIndex].expands
+                updateGroupActive(expands.groupId, expands.groupName)
+              }
+
               setTimeout(() => {
                 tableBody.value.scrollTo(e.__index)
               }, 10)
@@ -188,6 +187,7 @@ provide(FULL_SCREEN, isFullscreen)
 provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value })
 provide(TABLE_ERROR, fieldsErrMap)
 provide(TABLE_GROUP_ERROR, fieldsGroupError)
+provide(TABLE_DATA_SOURCE, _dataSource)
 
 const addField = (key, field) => {
   fields[key] = field
@@ -262,17 +262,8 @@ const getTableWrapperRef = () => {
   return tableWrapper.value
 }
 
-const groupAdd = (val) => {
-  groupOptions.value.push(val)
-}
-
-const groupChange = (key, name) => {
-  groupActive.key = key
-  groupActive.name = name
-}
-
 const groupDelete = (id, index) => {
-  groupOptions.value.splice(index, 1)
+  removeGroup(index)
   Object.keys(fieldsErrMap.value).forEach(errorKey => {
     const [ index ] = errorKey.split('-')
     const dataSourceItem = _dataSource.value[index]
@@ -291,30 +282,31 @@ const groupEdit = (record) => {
 
 watch(() => JSON.stringify(fieldsErrMap.value), (errorMap) => {
   fieldsGroupError.value = {}
-  const _errorObj = JSON.parse(errorMap || '{}')
+  if (props.openGroup) {
+    const _errorObj = JSON.parse(errorMap || '{}')
 
-  Object.keys(_errorObj).forEach(errorKey => {
-    const [ index ] = errorKey.split('-')
-    const dataSourceItem = _dataSource.value[index]
-    const groupId = dataSourceItem.expands?.groupId
+    Object.keys(_errorObj).forEach(errorKey => {
+      const [ index ] = errorKey.split('-')
+      const dataSourceItem = _dataSource.value[index]
+      const groupId = dataSourceItem.expands?.groupId
 
-    const groupError = fieldsGroupError.value[groupId]
+      const groupError = fieldsGroupError.value[groupId]
 
-    const groupErrorItem = {
-      [errorKey]: {
-        message: _errorObj[errorKey],
-        index,
-        serial: dataSourceItem.__serial
+      const groupErrorItem = {
+        [errorKey]: {
+          message: _errorObj[errorKey],
+          index,
+          serial: dataSourceItem.__serial
+        }
       }
-    }
 
-    if (groupError) {
-      groupError.push(groupErrorItem)
-    } else {
-      fieldsGroupError.value[groupId] = [groupErrorItem]
-    }
-
-  })
+      if (groupError) {
+        groupError.push(groupErrorItem)
+      } else {
+        fieldsGroupError.value[groupId] = [groupErrorItem]
+      }
+    })
+  }
 })
 
 watch(() => scrollWidth.value, () => {
