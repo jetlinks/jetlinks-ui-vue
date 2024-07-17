@@ -177,7 +177,6 @@
 </template>
 
 <script setup lang="ts">
-import server from '@/utils/request';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import {
@@ -189,17 +188,12 @@ import {
     _deploy,
     _undeploy,
     deleteProduct,
-    addProduct,
-    editProduct,
-    queryProductId,
     updateDevice,
 } from '@/api/device/product';
-import { isNoCommunity, downloadObject } from '@/utils/utils';
+import {  downloadObject } from '@/utils/utils';
 import { omit, cloneDeep } from 'lodash-es';
-import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
-import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';

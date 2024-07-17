@@ -148,14 +148,14 @@ import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
 import MetadataMap from './MetadataMap';
 import AlarmRecord from '@/views/device/Instance/Detail/AlarmRecord/index.vue';
-// import Metadata from '../../../components/Metadata/index.vue';
+import Firmware from '@/views/device/Instance/Detail/Firmware/index.vue';
 import {
     _deploy,
     _undeploy,
     getDeviceNumber,
     getProtocolDetail,
 } from '@/api/device/product';
-import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
+import { handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
@@ -197,6 +197,10 @@ const list = ref([
         key: 'AlarmRecord',
         tab: '告警记录',
     },
+    {
+        key: 'Firmware',
+        tab: '远程升级',
+    },
 ]);
 
 const tabs = {
@@ -206,6 +210,7 @@ const tabs = {
     DataAnalysis,
     MetadataMap,
     AlarmRecord,
+    Firmware,
 };
 
 // watch(
@@ -324,6 +329,10 @@ const getProtocol = async () => {
                         key: 'AlarmRecord',
                         tab: '告警记录',
                     },
+                    {
+                        key: 'Firmware',
+                        tab: '远程升级',
+                    },
                 ];
             } else {
                 list.value = [
@@ -343,6 +352,10 @@ const getProtocol = async () => {
                     {
                         key: 'AlarmRecord',
                         tab: '告警记录',
+                    },
+                    {
+                        key: 'Firmware',
+                        tab: '远程升级',
                     },
                 ];
             }

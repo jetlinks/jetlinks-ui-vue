@@ -88,11 +88,8 @@ import TaskDrawer from './Task/index.vue';
 import dayjs from 'dayjs';
 import _ from 'lodash-es';
 import Save from './Save/index.vue';
-import { useMenuStore } from 'store/menu';
 import type { FormDataType } from './type';
 import { onlyMessage } from '@/utils/comm';
-
-const menuStory = useMenuStore();
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -231,14 +228,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const handleUpdate = (data: Partial<Record<string, any>>) => {
-    // menuStory.jumpPage(
-    //     'device/Firmware/Task',
-    //     {},
-    //     {
-    //         id: data.id,
-    //         productId: data.productId,
-    //     },
-    // );
+
     showTask.value = true;
     firmwareId.value = data.id;
     productId.value = data.productId;
