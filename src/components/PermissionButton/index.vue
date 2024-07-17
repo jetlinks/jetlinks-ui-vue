@@ -18,7 +18,7 @@
           </template>
         </j-button>
       </j-popconfirm> -->
-            <a-modal
+            <!-- <a-modal
                 v-if="modalVisible"
                 visible
                 :closable="false"
@@ -32,7 +32,7 @@
                 <div class="modalContent">
                     {{ popConfirm.title }}
                 </div>
-            </a-modal>
+            </a-modal> -->
             <j-tooltip v-if="tooltip" v-bind="tooltip">
                 <slot v-if="noButton"></slot>
                 <j-button
@@ -40,7 +40,7 @@
                     v-bind="props"
                     :disabled="_isPermission"
                     :style="props.style"
-                    @click="modalVisible = true"
+                    @click="showConfirm"
                 >
                     <slot></slot>
                     <template #icon>
@@ -52,7 +52,7 @@
                 v-else
                 v-bind="props"
                 :disabled="_isPermission"
-                @click="modalVisible = true"
+                @click="showConfirm"
             >
                 <slot></slot>
                 <template #icon>
@@ -112,6 +112,7 @@ import { TooltipProps, PopconfirmProps } from 'ant-design-vue/es';
 import { buttonProps } from 'ant-design-vue/es/button/button';
 import { usePermissionStore } from '@/store/permission';
 import { omit } from 'lodash-es';
+import { Modal } from 'ant-design-vue';
 
 const props = defineProps({
     noButton: {
@@ -136,8 +137,8 @@ const props = defineProps({
     },
     ...omit(buttonProps(), 'icon'),
 });
-const modalVisible = ref(false);
-const confirmLoading = ref(false);
+// const modalVisible = ref(false);
+// const confirmLoading = ref(false);
 const permissionStore = usePermissionStore();
 
 const isPermission = computed(() => {
@@ -154,22 +155,32 @@ const _isPermission = computed(() =>
         : true,
 );
 
-const modalConfirm =  async (e: MouseEvent) => {
-    if (typeof props.popConfirm?.onConfirm === 'function') {
-        confirmLoading.value = true;
-        const res: any =  await props.popConfirm?.onConfirm(e)?.finally(()=>{
-            confirmLoading.value = false;
-            modalVisible.value = false;
-            return 
-        });
-        if(!res?.finally){
-            confirmLoading.value = false;
-            modalVisible.value = false;
-        }
-    } else {
-        modalVisible.value = false;
-    }
-};
+// const modalConfirm =  async (e: MouseEvent) => {
+//     if (typeof props.popConfirm?.onConfirm === 'function') {
+//         confirmLoading.value = true;
+//         const res: any =  await props.popConfirm?.onConfirm(e)?.finally(()=>{
+//             confirmLoading.value = false;
+//             modalVisible.value = false;
+//             return 
+//         });
+//         if(!res?.finally){
+//             confirmLoading.value = false;
+//             modalVisible.value = false;
+//         }
+//     } else {
+//         modalVisible.value = false;
+//     }
+// };
+const showConfirm = () =>{
+    Modal.confirm({
+        title: props.popConfirm?.title,
+        content: props.popConfirm?.content,
+        onOk() {
+          return props.popConfirm?.onConfirm()
+        },
+        onCancel() {},
+      });
+}
 </script>
 <style scoped lang="less">
 .modalContent {
