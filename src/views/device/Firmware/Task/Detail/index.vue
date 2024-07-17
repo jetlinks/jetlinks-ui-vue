@@ -101,6 +101,9 @@
                         </div>
                     </div>
                 </template>
+                <template v-if="column.dataIndex === 'version'">
+                    {{ text | '--' }}
+                </template>
             </template>
         </j-table>
         <template #footer>
@@ -155,6 +158,11 @@ const columns = [
         dataIndex: 'completeTime',
     },
     {
+        title: '设备版本',
+        key: 'version',
+        dataIndex: 'version',
+    },
+    {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
@@ -167,9 +175,9 @@ const general = reactive({
     total: 0,
     percent: 0,
 });
-const rowClassName = (record,index) =>{
-    return record.deviceId === props.deviceId ? 'heightLightRow' : ''
-}
+const rowClassName = (record, index) => {
+    return record.deviceId === props.deviceId ? 'heightLightRow' : '';
+};
 //查询任务升级记录列表
 const queryHistoryList = async () => {
     const params = {
@@ -195,9 +203,9 @@ const queryHistoryList = async () => {
         general.total = res.result.length;
         let progress = 0;
         res.result.forEach((item) => {
-            item?.state?.value === 'success'?  progress += 1 : '' ;
+            item?.state?.value === 'success' ? (progress += 1) : '';
         });
-        general.percent =  progress/general.total.toFixed(2) * 100 ;
+        general.percent = (progress / general.total.toFixed(2)) * 100;
     }
 };
 const refreshState = async () => {
@@ -278,9 +286,9 @@ onMounted(() => {
 .state {
     display: flex;
 }
-
 </style>
 <style>
-.heightLightRow{
+.heightLightRow {
     background-color: rgb(242, 228, 255);
-}</style>
+}
+</style>
