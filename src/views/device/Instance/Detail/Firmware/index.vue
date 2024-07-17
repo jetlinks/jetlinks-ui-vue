@@ -1,28 +1,46 @@
 <template>
-    <div class="firmwareContainer">
-        <div
-            v-for="i in firmwareList"
-            class="firmwareBox"
-            @click="() => showTask(i.id)"
-        >
-            <div class="firmwareHead">
-                <Ellipsis style="width: 200px">
-                    {{ i.name }}
-                </Ellipsis>
-                <Ellipsis style="width: 200px">{{ i.description }}</Ellipsis>
-            </div>
-            <div class="firmwareFoot">
-                <div>固件版本：{{ i.version }}</div>
-                <div>签名方式：{{ i.signMethod }}</div>
-                <div>
-                    创建时间：{{
-                        dayjs(i.createTime).format('YYYY-MM-DD HH:mm:ss')
-                    }}
-                </div>
-            </div>
-            <div class="mask">查看升级任务</div>
+    <div class="firmwareContainer" v-if="firmwareList?.length">
+        <div v-for="i in firmwareList" class="firmwareBox">
+            <CardBox
+                :showStatus="false"
+                :value="i"
+                @click="() => showTask(i.id)"
+                v-bind="i"
+            >
+                <template #content>
+                    <div class="cardContent">
+                        <div class="firmwareHead">
+                            <Ellipsis style="width: 200px">
+                                {{ i.name }}
+                            </Ellipsis>
+                        </div>
+                        <div class="firmwareDes">
+                            <Ellipsis style="width: 200px">{{
+                                i.description
+                            }}</Ellipsis>
+                        </div>
+                        <div class="firmwareFoot">
+                            <div>
+                                <span class="firmwareFootTitle">签名方式：</span
+                                >{{ i.signMethod }}
+                            </div>
+                            <div>
+                                <span class="firmwareFootTitle">创建时间：</span
+                                >{{
+                                    dayjs(i.createTime).format(
+                                        'YYYY-MM-DD HH:mm:ss',
+                                    )
+                                }}
+                            </div>
+                        </div>
+                        <div class="version">V {{ i.version }}</div>
+                    </div>
+                    <!-- <div class="mask">查看升级任务</div> -->
+                </template>
+            </CardBox>
         </div>
     </div>
+    <JEmpty v-else></JEmpty>
     <Task
         v-if="visibleTask"
         :firmwareId="firmwareId"
@@ -35,7 +53,7 @@
 <script setup>
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
-import { queryPaginateNot,historyPaginateNot } from '@/api/device/firmware';
+import { queryPaginateNot, historyPaginateNot } from '@/api/device/firmware';
 import Task from '@/views/device/Firmware/Task/index.vue';
 import dayjs from 'dayjs';
 const props = defineProps({
@@ -63,7 +81,10 @@ const queryFirmwareList = async () => {
                 terms: [
                     {
                         type: 'or',
-                        value:  props.type === 'device' ? current.productId : current.id,
+                        value:
+                            props.type === 'device'
+                                ? current.productId
+                                : current.id,
                         termType: 'eq',
                         column: 'productId',
                     },
@@ -94,8 +115,7 @@ const queryFirmwareList = async () => {
             firmwareList.value = firmwareList.value.filter((i) => {
                 return resp.result.find((item) => {
                     return (
-                        i.id === item.firmwareId &&
-                        current.id === item.deviceId
+                        i.id === item.firmwareId && current.id === item.deviceId
                     );
                 });
             });
@@ -116,12 +136,9 @@ onMounted(() => {
     justify-content: space-between;
     flex-wrap: wrap;
     .firmwareBox {
-        width: 48%;
+        width: 33%;
         position: relative;
         margin-bottom: 20px;
-        border: 1px solid rgb(215, 215, 215);
-        box-sizing: border-box;
-        padding: 10px;
         .mask {
             position: absolute;
             top: 0;
@@ -145,12 +162,32 @@ onMounted(() => {
             }
         }
     }
+    .cardContent {
+        position: relative;
+        .version {
+            position: absolute;
+            top: -10px;
+            right: 5px;
+        }
+    }
     .firmwareHead,
     .firmwareFoot {
         display: flex;
     }
+    .firmwareHead {
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .firmwareDes {
+        height: 22px;
+        color: #777777;
+        margin: 8px 0;
+    }
     .firmwareFoot {
         justify-content: space-between;
+        .firmwareFootTitle{
+            color:#A3A3A3
+        }
     }
 }
 </style>

@@ -165,6 +165,7 @@ const columns = [
     {
         title: '状态',
         dataIndex: 'state',
+        width: 300,
         key: 'state',
     },
 ];
@@ -289,6 +290,6 @@ onMounted(() => {
 </style>
 <style>
 .heightLightRow {
-    background-color: rgb(242, 228, 255);
+    background-color: #E6F4FF;
 }
 </style>
