@@ -195,19 +195,6 @@
         @close="visible = false"
         @save="saveBtn"
     />
-    <a-modal
-        v-if="modalVisible"
-        visible
-        :closable="false"
-        @cancel="modalVisible = false"
-        @ok="deleteDevice"
-        :confirmLoading="confirmLoading"
-        :width="300"
-        centered
-        :maskClosable="false"
-    >
-        {{ deleteTip }}</a-modal
-    >
 </template>
 
 <script setup lang="ts">
@@ -243,7 +230,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import TagSearch from './components/TagSearch.vue';
-
+import { Modal } from 'ant-design-vue';
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -258,8 +245,8 @@ const isCheck = ref<boolean>(false);
 const routerParams = useRouterParams();
 const menuStory = useMenuStore();
 const modalVisible = ref(false);
-const confirmLoading = ref(false);
-const deleteDeviceId = ref('')
+const deleteDeviceId = ref('');
+const deleteState = ref(false)
 const deleteTip = ref('确认删除？');
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
@@ -640,8 +627,12 @@ const getActions = (
                         : '删除',
             },
             onClick: async () => {
-                deleteDeviceId.value = data.id
-                const res = await detail(data.id).finally(()=>{
+                if(deleteState.value){
+                    return
+                }
+                deleteState.value =  true
+                deleteDeviceId.value = data.id;
+                const res = await detail(data.id).finally(() => {
                     modalVisible.value = true;
                 });
                 if (res.success) {
@@ -650,6 +641,13 @@ const getActions = (
                             ? '该操作仅可删除物联网平台数据Ctwing平台数据需另行删除'
                             : '确认删除？';
                 }
+                Modal.confirm({
+                    title:  deleteTip.value,
+                    onOk() {
+                        return  deleteDevice()
+                    },
+                    onCancel() {},
+                });
             },
             icon: 'DeleteOutlined',
         },
@@ -923,11 +921,7 @@ const onRefresh = () => {
 };
 
 const deleteDevice = async () => {
-    confirmLoading.value = true
-    const resp = await _delete(deleteDeviceId.value).finally(()=>{
-        confirmLoading.value = false;
-        modalVisible.value = false;
-    });
+    const resp = await _delete(deleteDeviceId.value)
     if (resp.status === 200) {
         onlyMessage('操作成功！');
         const index = _selectedRowKeys.value.findIndex(
@@ -940,5 +934,6 @@ const deleteDevice = async () => {
     } else {
         onlyMessage('操作失败！', 'error');
     }
+    deleteState.value = false
 };
 </script>
