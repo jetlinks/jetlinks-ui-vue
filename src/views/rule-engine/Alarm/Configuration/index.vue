@@ -385,18 +385,6 @@ const getActions = (
                 visibleDelete.value = true;
                 configId.value = data.id;
             },
-            // popConfirm: {
-            //     title: '确认删除?',
-            //     onConfirm: async () => {
-            //         const resp = await remove(data.id);
-            //         if (resp.status === 200) {
-            //             onlyMessage('操作成功！');
-            //             tableRef.value?.reload();
-            //         } else {
-            //             onlyMessage('操作失败！', 'error');
-            //         }
-            //     },
-            // },
             icon: 'DeleteOutlined',
         },
     ];
