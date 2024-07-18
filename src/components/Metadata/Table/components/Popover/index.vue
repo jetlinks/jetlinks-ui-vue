@@ -31,7 +31,7 @@
 
 <script setup name="MetadataPopover">
 import { useMask } from '../utils'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
   placement: {

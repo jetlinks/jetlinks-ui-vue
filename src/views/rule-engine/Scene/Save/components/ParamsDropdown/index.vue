@@ -132,7 +132,6 @@ const treeSelect = (v: any, option: any) => {
   const node = option.node
   visible.value = false
   label.value = node[props.labelName] || node.name || node.fullName
-  console.log('treeSelect', node, label.value)
   emit('update:value', node[props.valueName])
   emit('select', node, label.value, { 0: label.value })
 }
@@ -146,7 +145,6 @@ const valueItemChange = (e: string) => {
 const onSelect = (e: string, option: any) => {
   visible.value = false
   label.value = option[props.labelName]
-  console.log(e, option)
   emit('update:value', e)
   emit('select', e, label.value, { 0: label.value }, option)
 }

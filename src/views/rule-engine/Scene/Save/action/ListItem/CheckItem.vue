@@ -327,11 +327,13 @@ const checkNoticeDelete = async () => {
 }
 
 const check = () => {
-  const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
-  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
-    checkDeviceDelete()
-  } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
-    checkNoticeDelete()
+  if (_data.value.branches![props.branchesName].then[props.thenName]) {
+    const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
+    if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
+      checkDeviceDelete()
+    } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
+      checkNoticeDelete()
+    }
   }
 }
 

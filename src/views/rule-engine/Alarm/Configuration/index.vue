@@ -82,7 +82,7 @@
                                 <div class="card-item-content-text">
                                   说明
                                 </div>
-                                <div>
+                                <div style="height: 22px;width: 100%">
                                   <Ellipsis style="max-width: 100%" >
                                     {{ slotProps.description }}
                                   </Ellipsis>
@@ -134,7 +134,7 @@
                         <LevelIcon :level="slotProps.level"></LevelIcon>
                     </template>
                     <template #action="slotProps">
-                        <j-space :size="16">
+                        <j-space >
                             <template
                                 v-for="i in getActions(slotProps, 'table')"
                                 :key="i.key"
@@ -280,7 +280,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 120,
+        width: 170,
         scopedSlots: true,
     },
 ];
@@ -319,7 +319,7 @@ const getActions = (
                 visible.value = true;
                 current.value = data;
             },
-            icon: 'LikeOutlined',
+            icon: 'icon-shoudongchufa',
         },
         {
             key: 'update',

@@ -26,9 +26,7 @@ export const getMetadataItemByType = (type: string) => {
     let item = {
         id: undefined,
         name: undefined,
-        expands: {
-            group: undefined
-        }
+        expands: {}
     }
     if (type === 'properties') {
         item = Object.assign(item, {

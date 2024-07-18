@@ -29,7 +29,7 @@
               {{ virtualRang.start + index + 1 }}
             </div>
             <div v-else class="body-cell-box">
-              <slot :name="column.dataIndex" :record="item" :index="virtualRang.start + index" :column="column" >
+              <slot :name="column.dataIndex" :record="item" :index="item.__dataIndex" :column="column" >
                 {{ item[column.dataIndex] }}
               </slot>
             </div>
@@ -49,41 +49,15 @@
 
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
-import {useRightMenuContext} from "@/components/Metadata/Table/utils";
+import {useRightMenuContext} from "@/components/Metadata/Table/context";
 import {randomString} from "@/utils/utils";
+import {bodyProps} from "./props";
 
 const props = defineProps({
-  dataSource: {
-    type: Array,
-    default: () => ([])
-  },
-  columns: {
-    type: Array,
-    default: () => ([])
-  },
-  cellHeight: {
-    type: Number,
-    default: 50
-  },
-  height: {
-    type: Number,
-    default: 300
-  },
-  style: {
-    type: Object,
-    default: () => ({})
-  },
-  disableMenu: {
-    type: Boolean,
-    default: true
-  },
-  rowKey: {
-    type: String,
-    default: 'id'
-  },
-  selectedRowKeys: {
-    type: [Array],
-    default: () => []
+  ...bodyProps(),
+  groupKey: {
+    type: [String, Number],
+    default: undefined
   }
 })
 
@@ -161,10 +135,12 @@ onBeforeUnmount(() => {
 
 watch(() => props.dataSource, () => {
 
-  props.dataSource.forEach(item => {
+  props.dataSource.forEach((item, index) => {
     if (!item.__key) {
       item.__key = randomString()
     }
+
+    item.__serial = index
   })
 
   updateView()
@@ -183,6 +159,10 @@ watch(() => props.dataSource.length, () => {
     emit('scrollDown', maxLen.value - props.dataSource.length + 3)
   }
 }, { immediate: true})
+
+watch(() => props.groupKey, () => {
+  scrollTo(0)
+})
 
 defineExpose({
   scrollTo
@@ -234,6 +214,7 @@ defineExpose({
 
       .body-cell-box {
         padding: 0 12px;
+        position: relative;
       }
     }
   }

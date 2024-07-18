@@ -8,7 +8,7 @@
               {{ group.termType }}
             </div>
             <div class="terms-group-content" :class="{'group-content-border': border, 'group-content-bg': !border}">
-              <WhenItem v-for="(item, groupIndex) in group.terms" :type="item.termType" :value="item" :showType="groupIndex !== 0" :data="data[index].terms[groupIndex]" />
+              <WhenItem v-for="(item, groupIndex) in group.terms" :type="item.termType" :value="item" :showType="groupIndex !== 0" :data="data[index]?.terms[groupIndex]" />
             </div>
           </div>
       </div>
