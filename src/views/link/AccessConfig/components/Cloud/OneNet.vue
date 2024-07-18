@@ -526,7 +526,7 @@ const saveData = async () => {
         },
         protocol: procotolCurrent.value,
         provider: props.provider.id,
-        transport: 'HTTP_SERVER',
+        transport: 'HTTP',
     };
     const resp =
         id === ':id'
