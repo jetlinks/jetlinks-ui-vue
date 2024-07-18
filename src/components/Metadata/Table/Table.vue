@@ -8,7 +8,10 @@
     </div>
     <div class="metadata-edit-table">
       <div class="metadata-edit-table-header" style="height: 50px" :style="{paddingRight: scrollWidth + 'px'}">
-        <Header :columns="myColumns" :style="{width: tableStyle.width}"/>
+        <Header
+          :columns="myColumns"
+          :style="{width: tableStyle.width}"
+        />
       </div>
       <div class="metadata-edit-table-body" :style="{width: tableStyle.width, height: `${height}px`}">
         <Body
@@ -19,9 +22,9 @@
             :height="height"
             :disableMenu="disableMenu"
             :rowKey="rowKey"
-            :selectedRowKeys="selectedRowKeys"
             :groupKey="groupActive.value"
             :openGroup="openGroup"
+            :rowSelection="rowSelection"
             @scrollDown="onScrollDown"
         >
         <template v-for="(_, name) in slots" #[name]="slotData">
@@ -50,7 +53,10 @@ import {
   FULL_SCREEN,
   RIGHT_MENU,
   TABLE_ERROR,
-  TABLE_GROUP_ERROR, TABLE_DATA_SOURCE
+  TABLE_GROUP_ERROR,
+  TABLE_DATA_SOURCE,
+  TABLE_OPEN_GROUP,
+  TABLE_TOOL, TABLE_GROUP_OPTIONS
 } from './utils'
 import {useGroup, useResizeObserver, useValidate} from './hooks'
 import {tableProps} from 'ant-design-vue/lib/table'
@@ -99,7 +105,7 @@ const { groupActive, groupOptions, addGroup, removeGroup, updateGroupActive, upd
 
 const _dataSource = computed(() => {
   const _options = new Map()
-  props.dataSource.forEach((item, index) => {
+  const newDataSource = props.dataSource.map((item, index) => {
     item.__dataIndex = index
     if (props.openGroup) {
       const _groupId = item.expands?.groupId
@@ -110,21 +116,39 @@ const _dataSource = computed(() => {
 
       const _optionsItem = _options.get(item.expands.groupId)
 
+      let __serial = 1
+
       if (!_optionsItem) {
         _options.set(item.expands.groupId, {
           value: item.expands?.groupId,
           label: item.expands?.groupName,
-          len: item.id ? 1 : 0
+          effective: item.id ? 1 : 0, // 有效数据长度
+          len: 1 // 分组数据总长度
         })
-      } else if (item.id){
+      } else {
+        if (item.id){
+          _optionsItem.effective += 1
+        }
         _optionsItem.len += 1
         _options.set(item.expands.groupId, _optionsItem)
+      }
+
+      __serial = _optionsItem?.len || 1
+
+      return {
+        ...item,
+        __serial
+      }
+    } else {
+      return {
+        ...item,
+        __serial: index + 1
       }
     }
   })
 
   updateGroupOptions([..._options.values()])
-  return props.dataSource
+  return newDataSource
 })
 
 const bodyDataSource = computed(() => {
@@ -166,7 +190,7 @@ const {rules, validateItem, validate, errorMap} = useValidate(
               }
 
               setTimeout(() => {
-                tableBody.value.scrollTo(e.__index)
+                tableBody.value.scrollTo(e.__serial)
               }, 10)
             }
           })
@@ -188,7 +212,23 @@ provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.val
 provide(TABLE_ERROR, fieldsErrMap)
 provide(TABLE_GROUP_ERROR, fieldsGroupError)
 provide(TABLE_DATA_SOURCE, _dataSource)
+provide(TABLE_OPEN_GROUP, props.openGroup)
+provide(TABLE_TOOL, {
+  scrollTo: (record) => {
+    if (props.openGroup) {
+      const expands = record.expands
+      updateGroupActive(expands.groupId, expands.groupName)
+    }
 
+    setTimeout(() => {
+      tableBody.value.scrollTo(record.__serial)
+    }, 10)
+  },
+  selected: (keys) => {
+    tableBody.value.updateSelectedKeys(keys)
+  }
+})
+provide(TABLE_GROUP_OPTIONS, groupOptions)
 const addField = (key, field) => {
   fields[key] = field
 }
@@ -256,6 +296,10 @@ function rightMenu(menuType, record, copyValue) {
 const scrollToById = (key) => {
   const _index = _dataSource.value.findIndex(item => item[props.rowKey] === key)
   tableBody.value.scrollTo(_index)
+}
+
+const scrollToByIndex = (index) => {
+  tableBody.value.scrollTo(index)
 }
 
 const getTableWrapperRef = () => {
@@ -330,6 +374,7 @@ defineExpose({
   validate,
   tableWrapper,
   scrollToById,
+  scrollToByIndex,
   getTableWrapperRef
 })
 </script>
@@ -353,6 +398,7 @@ defineExpose({
 
     .metadata-edit-table-header {
       overflow: hidden;
+      width: 100%;
     }
 
     .metadata-edit-table-body {

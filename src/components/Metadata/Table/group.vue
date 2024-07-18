@@ -19,7 +19,7 @@
               </a-menu>
             </template>
             <div class="table-group-error-warp">
-              {{ item.label }} ({{ item.len}})
+              {{ item.label }} ({{ item.effective}})
               <a-tooltip
                 v-if="errorMap[item.value]"
                 color="#ffffff"
@@ -34,7 +34,7 @@
             </div>
           </a-dropdown>
           <div v-else class="table-group-error-warp">
-            {{ item.label }} ({{ item.len}})
+            {{ item.label }} ({{ item.effective}})
             <a-tooltip
               v-if="errorMap[item.value]"
               color="#ffffff"

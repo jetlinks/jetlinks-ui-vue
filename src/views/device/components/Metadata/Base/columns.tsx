@@ -17,7 +17,9 @@ interface DataTableColumnProps extends ColumnProps {
   },
   options?: any[]
   doubleClick?: (record: any, index: number, dataIndex: string) => boolean
-  control?: (newValue: any, oldValue: any) => Boolean
+  control?: (newValue: any, oldValue: any) => boolean
+
+  filter?: boolean
 }
 
 const SourceMap = {
@@ -184,6 +186,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           },
         ]
       },
+      filter: true
     },
     {
       title: '名称',
@@ -205,6 +208,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         ]
       },
+      filter: true
     },
   ];
 

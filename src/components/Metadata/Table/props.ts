@@ -27,12 +27,12 @@ export const bodyProps = () => ({
         type: String,
         default: 'id'
     },
-    selectedRowKeys: {
-        type: [Array],
-        default: () => []
-    },
     openGroup: {
         type: Boolean,
         default: false
+    },
+    rowSelection: {
+        type: Object,
+        default: undefined
     }
 })

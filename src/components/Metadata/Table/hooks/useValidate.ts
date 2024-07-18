@@ -7,7 +7,7 @@ type DataSourceType = Array<Record<string, any> & { __validate_id?: string, __va
 
 export type ErrorItem = {
     message: string
-    __index: number
+    __serial: number
     __dataIndex: number
 
     field: string
@@ -43,7 +43,7 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
         return new Promise((resolve, reject) => {
             schemaInstance.validate(data, { firstFields: true, index}, (err: any[]) => {
                 if (err?.length) {
-                    reject(err.map(item => ({ ...item, __index: data.__serial, __dataIndex: index })))
+                    reject(err.map(item => ({ ...item, __serial: data.__serial, __dataIndex: index })))
                 } else {
                     resolve(data)
                 }

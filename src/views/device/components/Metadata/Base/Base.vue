@@ -6,9 +6,11 @@
       :data-source="dataSource"
       :columns="columns"
       :height="560"
-      :selectedRowKeys="selectedRowKeys"
       :disableMenu="!hasOperate('add', type)"
       :openGroup="type === 'properties'"
+      :rowSelection="{
+        selectedRowKeys: selectedRowKeys
+      }"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
       @groupEdit="groupEdit"
