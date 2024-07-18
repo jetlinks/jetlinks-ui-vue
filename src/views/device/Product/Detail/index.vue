@@ -110,7 +110,7 @@
             <PermissionButton
                 type="primary"
                 :popConfirm="{
-                    title: `确定应用配置?`,
+                    title: `确认应用配置?`,
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"

@@ -60,8 +60,8 @@
                                 v-if="hasPermission('system/Dictionary:action')"
                                 :title="
                                     item.data.status === 1
-                                        ? '确定禁用？'
-                                        : '确定启用？'
+                                        ? '确认禁用？'
+                                        : '确认启用？'
                                 "
                                 :onConfirm="() => updateDic(item.data)"
                             >
