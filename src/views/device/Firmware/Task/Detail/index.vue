@@ -102,7 +102,7 @@
                     </div>
                 </template>
                 <template v-if="column.dataIndex === 'version'">
-                    {{ text | '--' }}
+                    {{ text || '--' }}
                 </template>
             </template>
         </j-table>
