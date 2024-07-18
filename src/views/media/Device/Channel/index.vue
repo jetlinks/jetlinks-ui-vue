@@ -2,22 +2,11 @@
 <template>
     <page-container>
         <div class="device-channel-warp">
-            <div class="left-warp" v-if="route.query.type === 'gb28181-2016'">
-                <div class="left-content" :class="{ active: show }">
-                    <Tree
-                        :deviceData="deviceData"
-                        :on-tree-load="(e) => (show = e)"
-                        :on-select="handleSelect"
-                    />
-                </div>
-                <div
-                    class="left-warp--btn"
-                    :class="{ active: !show }"
-                    @click="show = !show"
-                >
-                    <AIcon type="LeftOutlined" />
-                </div>
-            </div>
+            <Tree
+                :deviceData="deviceData"
+                :on-tree-load="(e) => (show = e)"
+                :on-select="handleSelect"
+            />
             <div class="right">
                 <pro-search
                     :columns="columns"
@@ -343,7 +332,7 @@ const getActions = (
                             onlyMessage('操作失败！', 'error');
                         }
                     });
-                    return response
+                    return response;
                 },
             },
             icon: 'DeleteOutlined',
