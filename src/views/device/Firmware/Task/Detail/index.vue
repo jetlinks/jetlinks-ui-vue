@@ -62,12 +62,24 @@
             }"
         >
             <template #bodyCell="{ column, text, record }">
-                <template v-if="column.dataIndex === 'createTime'">{{
-                    dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-                }}</template>
-                <template v-if="column.dataIndex === 'completeTime'">{{
-                    text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '--'
-                }}</template>
+                <template
+                    v-if="
+                        column.dataIndex === 'deviceName' ||
+                        column.dataIndex === 'productName'
+                    "
+                >
+                    <Ellipsis style="width: 100%">{{ text }}</Ellipsis>
+                </template>
+                <template v-if="column.dataIndex === 'createTime'">
+                    <Ellipsis style="width: 100%">{{
+                        dayjs(text).format('YYYY-MM-DD HH:mm:ss')
+                    }}</Ellipsis></template
+                >
+                <template v-if="column.dataIndex === 'completeTime'"
+                    ><Ellipsis style="width: 100%">{{
+                        text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '--'
+                    }}</Ellipsis></template
+                >
                 <template v-if="column.dataIndex === 'state'">
                     <div class="state">
                         <a-progress
@@ -161,6 +173,7 @@ const columns = [
         title: '设备版本',
         key: 'version',
         dataIndex: 'version',
+        width: 100,
     },
     {
         title: '状态',
@@ -290,6 +303,6 @@ onMounted(() => {
 </style>
 <style>
 .heightLightRow {
-    background-color: #E6F4FF;
+    background-color: #e6f4ff;
 }
 </style>
