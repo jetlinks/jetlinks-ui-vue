@@ -275,24 +275,62 @@ const query = reactive({
                 type: 'select',
                 options: [
                     {
-                        label: '内燃柴油机',
+                        label: '内燃柴油车',
                         value: 'ICDieselEngine',
                     },
                     {
-                        label: '内燃汽油机',
+                        label: '内燃汽油车',
                         value: 'ICGasolineEngine',
                     },
                     {
+                        label: '内燃天然气车',
+                        value: 'ICNGasVehicle',
+                    },
+                    {
+                        label: '铅酸电动车',
+                        value: 'LAElectricVehicle',
+                    },
+                    {
+                        label: '锂电电动车',
+                        value: 'LIElectricVehicles',
+                    },
+
+                    {
+                        label: '电动托盘车',
+                        value: 'ElectricPalletTruck',
+                    },
+                    {
+                        label: '铅酸电池',
+                        value: 'LeadAcidBattery',
+                    },
+                    {
+                        label: '锂电池',
+                        value: 'LithiumBattery',
+                    },
+                    {
+                        label: '正面吊',
+                        value: 'ReachStacker',
+                    },
+                    {
+                        label: '电动牵引车',
+                        value: 'ElectricTractor',
+                    },
+
+                    {
                         label: '内燃牵引车',
-                        value: 'ICTractor',
+                        value: 'InternalCombustionTractor',
                     },
                     {
-                        label: '机械柴油机',
-                        value: 'MachineDieselEngine',
+                        label: '环保排放（DPF）监控',
+                        value: 'EEmissionMonitoring',
                     },
                     {
-                        label: '其他',
-                        value: 'other',
+                        label: '内燃挖掘机',
+                        value: 'InternalCombustionExcavator',
+                    },
+                    {
+                        label: '混动堆高机',
+                        value: 'HybridStacker',
                     },
                 ],
             },

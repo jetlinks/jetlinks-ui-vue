@@ -26,15 +26,11 @@
                     >
                         <template v-if="!item?.children">
                             <div class="itemText">
-                                <Ellipsis style="width: calc(100%-10px)">{{
-                                    item.name
-                                }}</Ellipsis>
+                                <Ellipsis>{{ item.name }}</Ellipsis>
                             </div>
                         </template>
                         <template v-else>
-                            <Ellipsis style="width: calc(100%-10px)">{{
-                                item.name
-                            }}</Ellipsis>
+                            <Ellipsis>{{ item.name }}</Ellipsis>
                         </template>
                     </div>
                 </template>

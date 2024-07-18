@@ -76,7 +76,7 @@
                     <j-tree-select
                         showSearch
                         v-model:value="form.orgName"
-                        placeholder="请选择物模型分类"
+                        placeholder="请选择所属组织"
                         :tree-data="treeList"
                         @change="valueChange"
                         allow-clear
@@ -233,24 +233,62 @@ const props = defineProps({
 
 const vehicleTypeList = [
     {
-        name: '内燃柴油机',
+        name: '内燃柴油车',
         value: 'ICDieselEngine',
     },
     {
-        name: '内燃汽油机',
+        name: '内燃汽油车',
         value: 'ICGasolineEngine',
     },
     {
+        name: '内燃天然气车',
+        value: 'ICNGasVehicle',
+    },
+    {
+        name: '铅酸电动车',
+        value: 'LAElectricVehicle',
+    },
+    {
+        name: '锂电电动车',
+        value: 'LIElectricVehicles',
+    },
+
+    {
+        name: '电动托盘车',
+        value: 'ElectricPalletTruck',
+    },
+    {
+        name: '铅酸电池',
+        value: 'LeadAcidBattery',
+    },
+    {
+        name: '锂电池',
+        value: 'LithiumBattery',
+    },
+    {
+        name: '正面吊',
+        value: 'ReachStacker',
+    },
+    {
+        name: '电动牵引车',
+        value: 'ElectricTractor',
+    },
+
+    {
         name: '内燃牵引车',
-        value: 'ICTractor',
+        value: 'InternalCombustionTractor',
     },
     {
-        name: '机械柴油机',
-        value: 'MachineDieselEngine',
+        name: '环保排放（DPF）监控',
+        value: 'EEmissionMonitoring',
     },
     {
-        name: '其他',
-        value: 'other',
+        name: '内燃挖掘机',
+        value: 'InternalCombustionExcavator',
+    },
+    {
+        name: '混动堆高机',
+        value: 'HybridStacker',
     },
 ];
 const loading = ref<boolean>(false);

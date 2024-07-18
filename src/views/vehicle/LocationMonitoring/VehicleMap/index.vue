@@ -92,7 +92,7 @@ const initMap = (e: any) => {
     const text = {
         content: '测试地点1', //要展示的文字内容
         direction: 'right', //文字方向，有 icon 时为围绕文字的方向，没有 icon 时，则为相对 position 的位置
-        offset: [-20, -4], //在 direction 基础上的偏移量
+        offset: [-15, -4], //在 direction 基础上的偏移量
         //文字样式
         style: {
             fontSize: 12, //字体大小
@@ -114,7 +114,6 @@ const initMap = (e: any) => {
     labelsLayer.add(labelMarker1);
     map.add(labelsLayer);
     labelMarker1.on('click', (e: any) => {
-        console.log('eee', e.data.data.position);
         openInfo(e.data.data.position);
     });
     map.setFitView();
@@ -131,14 +130,16 @@ const openInfo = (data: any) => {
     info.push('地址 :北京市朝阳区望京阜荣街10号首开广场4层</div></div>');
     const infoWindow = new AMap.InfoWindow({
         content: info.join('<br/>'), //使用默认信息窗体框样式，显示信息内容
-        offset: new AMap.Pixel(-2, -12),
+        offset: new AMap.Pixel(0, -12),
     });
     infoWindow.open(MapRef.value, data);
 };
 
-const mapSearch = () => {};
+const mapSearch = () => {
+    console.log('mapSearch');
+};
 const mapSearchChange = () => {
-    console.log('searchChange !!!');
+    console.log('mapSearchChange !!!');
 };
 </script>
 
@@ -226,29 +227,29 @@ const mapSearchChange = () => {
 }
 :deep(.radio-Alarm) {
     .ant-radio-inner {
-        // background-color: #ffa502; /* 选中时的圆圈颜色 */
+        // background-color: #ffa502;
         border-color: #ffa502;
     }
     .ant-radio-inner::hover {
-        background-color: #ffa502; /* 选中时的圆圈颜色 */
+        background-color: #ffa502;
         border-color: #ffa502;
     }
     .ant-radio-inner::after {
-        background-color: #ffa502; /* 改变选中标记的颜色 */
+        background-color: #ffa502;
     }
 }
 
 :deep(.radio-Fault) {
     .ant-radio-inner {
-        // background-color: #ff4757; /* 选中时的圆圈颜色 */
+        // background-color: #ff4757;
         border-color: #ff4757;
     }
     .ant-radio-inner::hover {
-        background-color: #ff4757; /* 选中时的圆圈颜色 */
+        background-color: #ff4757;
         border-color: #ff4757;
     }
     .ant-radio-inner::after {
-        background-color: #ff4757; /* 改变选中标记的颜色 */
+        background-color: #ff4757;
     }
 }
 </style>
