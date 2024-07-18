@@ -96,7 +96,7 @@
                                 type="text"
                                 hasPermission="system/Dictionary:delete"
                                 :popConfirm="{
-                                    title: `确定要删除？`,
+                                    title: `确认删除？`,
                                     onConfirm: () => deleteDic(item.id),
                                 }"
                             >
