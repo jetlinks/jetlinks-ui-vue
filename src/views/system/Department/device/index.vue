@@ -178,7 +178,7 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
                             :hasPermission="i.permission"
