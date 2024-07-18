@@ -28,7 +28,7 @@
             allowClear
             showTime
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%;z-index: 800"
+            style="width: 100%;z-index: 1071"
             v-bind="extra"
             :getPopupContainer="getPopupContainer"
             @change='dateChange'
