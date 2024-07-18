@@ -646,7 +646,9 @@ const getActions = (
                     onOk() {
                         return  deleteDevice()
                     },
-                    onCancel() {},
+                    onCancel() {
+                        deleteState.value =  false
+                    },
                 });
             },
             icon: 'DeleteOutlined',
