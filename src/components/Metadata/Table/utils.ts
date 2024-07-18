@@ -19,7 +19,13 @@ export const TABLE_ERROR = Symbol('table-error')
 
 export const TABLE_GROUP_ERROR = Symbol('table-group-error')
 
+export const TABLE_GROUP_OPTIONS = Symbol('table-group-options')
+
 export const TABLE_DATA_SOURCE = Symbol('table-data-source')
+
+export const TABLE_OPEN_GROUP = Symbol('table-open-group')
+
+export const TABLE_TOOL = Symbol('table-tool')
 
 
 /**
