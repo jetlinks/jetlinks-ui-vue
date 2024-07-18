@@ -108,7 +108,7 @@
                         <div v-if="text?.value === 'failed'">
                             {{ text?.text + '：' + record?.errorReason }}
                         </div>
-                        <div v-if="text?.value === 'waiting'">
+                        <div v-if="text?.value === 'waiting' || text?.value === 'canceled'" :style="{marginLeft: text?.value === 'canceled' ? '10px' : '0'}">
                             {{ text?.text }}
                         </div>
                     </div>
