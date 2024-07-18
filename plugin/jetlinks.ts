@@ -374,12 +374,17 @@ export function JetlinksVueResolver(options: JetlinksVueResolverOptions = {}): a
       const _isAntd = isAntdv(name)
 
       if ((_isJetlinks || _isAntd) && !options?.exclude?.includes(name)) {
+        // const importName = filterName.includes(name) ? name : name.slice(1)
+        //
+        // options.packageName = proComponents.includes(importName) ? 'jetlinks-ui-components' : 'ant-design-vue'
+        //
+        // const path = `${options.packageName}/${options.cjs ? 'lib' : 'es'}`
+        // const stylePath = getSideEffects(importName, options, !proComponents.includes(importName))
+
         const importName = filterName.includes(name) ? name : name.slice(1)
-
-        options.packageName = proComponents.includes(importName) ? 'jetlinks-ui-components' : 'ant-design-vue'
-
+        options.packageName = _isJetlinks ? 'jetlinks-ui-components' : 'ant-design-vue'
         const path = `${options.packageName}/${options.cjs ? 'lib' : 'es'}`
-        const stylePath = getSideEffects(importName, options, !proComponents.includes(importName))
+        const stylePath = getSideEffects(importName, options, _isAntd)
 
         return {
           name: importName,

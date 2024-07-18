@@ -165,7 +165,7 @@
                     </Ellipsis>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -272,7 +272,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 250,
+        width: 210,
         scopedSlots: true,
     },
 ];
@@ -398,7 +398,7 @@ const getActions = (
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
-                    return 
+                    return
                 },
             },
             icon: 'DeleteOutlined',
