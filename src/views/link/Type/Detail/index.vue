@@ -136,7 +136,7 @@
                                             <PermissionButton
                                                 danger
                                                 :popConfirm="{
-                                                    title: '确定删除？',
+                                                    title: '确认删除？',
                                                     onConfirm: () =>
                                                         removeCluster(cluster),
                                                 }"

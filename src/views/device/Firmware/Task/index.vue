@@ -4,7 +4,7 @@
         title="升级任务"
         placement="right"
         :width="700"
-        :maskClosable="false"
+        :closable="false"
         @close="$emit('closeDrawer')"
     >
         <template #extra>

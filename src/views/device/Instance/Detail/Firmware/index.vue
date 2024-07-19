@@ -133,8 +133,8 @@ onMounted(() => {
 <style lang="less" scoped>
 .firmwareContainer {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
+    gap: 8px;
     .firmwareBox {
         width: 33%;
         position: relative;

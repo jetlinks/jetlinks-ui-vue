@@ -367,11 +367,11 @@ const handleOk = async () => {
     }
 
     loading.value = true;
-    // const response = !id
-    //     ? await savePointBatch(params).catch(() => {})
-    //     : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
-    // emit('change', response?.status === 200);
-    // loading.value = false;
+    const response = !id
+        ? await savePointBatch(params).catch(() => {})
+        : await updatePoint(id, { ...props.data, ...params }).catch(() => {});
+    emit('change', response?.status === 200);
+    loading.value = false;
 };
 
 const handleCancel = () => {
