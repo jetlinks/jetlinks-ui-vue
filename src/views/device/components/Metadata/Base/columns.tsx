@@ -174,8 +174,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           asyncValidator(rule:any,value: any, ...setting: any) {
             if (value) {
               const option = setting[2]
-
-              if (dataSource.value.filter((item, index) => index !== option.index && item.id).some(item => item.id === value)) {
+              if (dataSource.value.filter((item) => item.__dataIndex !== option.index && item.id).some(item => item.id === value)) {
                 return Promise.reject('该标识已存在')
               }
             }
@@ -235,7 +234,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       sort: {
         sortKey: ['valueType', 'type'],
         dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.valueType.type)
+          const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
           const typeMap = getTypeMap()
           return Object.keys(group).map((key, index) => {
             return {
@@ -339,7 +338,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       sort: {
         sortKey: ['output', 'type'],
         dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.output.type)
+          const group = groupBy(dataSource.value.filter(item => item.id && item.output.type), (e) => e.output.type)
           const typeMap = getTypeMap()
           return Object.keys(group).map(key => {
             return {
@@ -451,7 +450,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       sort: {
         sortKey: ['valueType', 'type'],
         dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.valueType.type)
+          const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
           const typeMap = getTypeMap()
           return Object.keys(group).map(key => {
             return {

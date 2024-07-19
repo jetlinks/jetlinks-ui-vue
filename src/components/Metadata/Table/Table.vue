@@ -48,7 +48,6 @@
 
 <script setup name="MetadataBaseTable">
 import {
-  handleColumnsWidth,
   TABLE_WRAPPER,
   FULL_SCREEN,
   RIGHT_MENU,
@@ -57,7 +56,8 @@ import {
   TABLE_DATA_SOURCE,
   TABLE_OPEN_GROUP,
   TABLE_TOOL, TABLE_GROUP_OPTIONS
-} from './utils'
+} from './consts'
+import { handleColumnsWidth } from './utils'
 import {useGroup, useResizeObserver, useValidate} from './hooks'
 import {tableProps} from 'ant-design-vue/lib/table'
 import {useFormContext} from './context'
@@ -122,7 +122,7 @@ const _dataSource = computed(() => {
       return sortData.order === 'desc' ? index : ~index + 1
     }) : props.dataSource
 
-  const newDataSource = sortDataSource.map((item, index) => {
+  sortDataSource.forEach((item, index) => {
     item.__dataIndex = index
     if (props.openGroup) {
       const _groupId = item.expands?.groupId
@@ -152,20 +152,15 @@ const _dataSource = computed(() => {
 
       __serial = _optionsItem?.len || 1
 
-      return {
-        ...item,
-        __serial
-      }
+      item.__serial = __serial
     } else {
-      return {
-        ...item,
-        __serial: index + 1
-      }
+      item.__serial = index + 1
     }
   })
 
   updateGroupOptions([..._options.values()])
-  return newDataSource
+
+  return sortDataSource
 })
 
 const bodyDataSource = computed(() => {
@@ -207,7 +202,8 @@ const {rules, validateItem, validate, errorMap} = useValidate(
               }
 
               setTimeout(() => {
-                tableBody.value.scrollTo(e.__serial)
+                console.log(e.__serial)
+                tableBody.value.scrollTo(e.__serial - 1)
               }, 10)
             }
           })

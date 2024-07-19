@@ -43,7 +43,7 @@
           <template #serial="{ record }">
             <span v-if="openGroup">
               <Ellipsis>
-                {{ record.expands.groupName }} 第 {{ record.__serial }} 行
+                {{ record.expands.groupName }} 第 {{ record.__oldSerial }} 行
               </Ellipsis>
             </span>
             <span v-else>
@@ -108,7 +108,7 @@ const selectedTableRow = (record) => {
 }
 
 const handleFilterArray = () => {
-  const cloneDataSource = JSON.parse(JSON.stringify(dataSource.value || '[]'))
+  const cloneDataSource = JSON.parse(JSON.stringify(dataSource.value || '[]')).map(item => Object.assign(item, { __oldSerial: item.__serial}))
   const _filterArray = cloneDataSource.filter(item => {
     if (item[props.searchKey]) {
       return item[props.searchKey].includes(searchValue.value)

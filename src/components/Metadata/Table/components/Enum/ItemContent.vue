@@ -70,7 +70,7 @@ const columns = [{
           if (!value) {
             return Promise.reject('请输入Value值')
           }
-          if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
+          if (dataSource.value.filter((_, index) => index.__dataIndex !== option.index).some(item => item.value === value)) {
             return Promise.reject('该Value值已存在')
           }
           return Promise.resolve();

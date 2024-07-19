@@ -7,8 +7,8 @@ import {
     TABLE_WRAPPER,
     TABLE_OPEN_GROUP,
     TABLE_TOOL,
-    TABLE_GROUP_OPTIONS
-} from "./utils";
+    TABLE_GROUP_OPTIONS, TABLE_FORM_ITEM_ERROR
+} from "./consts";
 
 type FiledExpose = {
 
@@ -43,3 +43,4 @@ export const useTableTool = () => inject(TABLE_TOOL, false)
 
 export const useGroupOptions = () => inject(TABLE_GROUP_OPTIONS, [])
 
+export const useFormItemError = () => inject(TABLE_FORM_ITEM_ERROR)

@@ -16,6 +16,7 @@
             <Sort
               v-if="item.sort"
               v-bind="item.sort"
+              :key="item.dataIndex"
               :active="tableTool.sortData.dataIndex === item.dataIndex"
               :selectedRowKeys="tableTool.sortData.dataIndex === item.dataIndex ? tableTool.sortData.orderKeys : []"
               :dataIndex="item.dataIndex"

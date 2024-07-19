@@ -68,7 +68,7 @@ const emit = defineEmits(['update:dataSource', 'scrollDown'])
 
 const viewScrollRef = ref()
 const tableCenterRef = ref()
-const virtualData = ref([])
+// const virtualData = ref([])
 const virtualRang = reactive({
   start: 0,
 })
@@ -84,12 +84,21 @@ const maxLen = computed(() => {
 
 const selectedRowKeys = ref([])
 
-const updateVirtualData = (start, end) => {
-  virtualData.value = props.dataSource.slice(start, end)
+const virtualData = computed(()=> {
+
+  const array = props.dataSource.slice(virtualRang.start, virtualRang.end)
   if (tableCenterRef.value) {
-    tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${start * props.cellHeight}px, 0)`
+    tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${virtualRang.start * props.cellHeight}px, 0)`
   }
-}
+  return array
+})
+// const updateVirtualData = (start, end) => {
+//   debugger
+//   virtualData.value = props.dataSource.slice(start, end)
+//   if (tableCenterRef.value) {
+//     tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${start * props.cellHeight}px, 0)`
+//   }
+// }
 
 const onScroll = () => {
   const height = viewScrollRef.value.scrollTop
@@ -102,13 +111,14 @@ const onScroll = () => {
   const start = _index < 0 ? 0 : _index
   const end = start + maxLen.value + 4
 
-  virtualRang.start = start
-
   if (height + clientHeight >= props.dataSource.length * props.cellHeight && !scrollLock.value) { // 滚动到底
     emit('scrollDown')
     scrollLock.value = true
   }
-  updateVirtualData(start, end)
+
+  virtualRang.start = start
+  virtualRang.end = end
+  // updateVirtualData(start, end)
 }
 
 const scrollTo = (index) => {
@@ -129,9 +139,9 @@ const showContextMenu = (e, record, _index) => {
   }
 }
 
-const updateView = () => {
-  updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
-}
+// const updateView = () => {
+//   updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
+// }
 
 const rowClick = (record) => {
   if (props.rowSelection?.selectedRowKeys) {
@@ -172,7 +182,7 @@ watch(() => props.dataSource, (val, oldVal) => {
     }
   })
 
-  updateView()
+  // updateView()
 
 }, {
   immediate: true,
@@ -190,9 +200,9 @@ watch(() => props.dataSource.length, () => {
   }
 }, { immediate: true})
 
-watch(() => props.height, () => {
-  updateView()
-})
+// watch(() => props.height, () => {
+//   updateView()
+// })
 
 watch(() => props.groupKey, () => {
   if (props.openGroup) {

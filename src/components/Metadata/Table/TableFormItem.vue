@@ -9,16 +9,17 @@
     </template>
     <div v-if="errorMap.visible" class="table-form-error-target" ></div>
   </a-tooltip>
-  <div :id="eventKey" style="position: relative">
+  <div :id="eventKey" style="position: relative" :class="{'edit-table-form-has-error': errorMap.message }">
     <slot />
   </div>
 </template>
 
 <script setup name="TableFormItem">
 import {useInjectError, useInjectForm, useTableWrapper} from "./context";
-import {get, isArray, throttle } from 'lodash-es'
+import {get, isArray } from 'lodash-es'
 import {onBeforeUnmount, computed} from "vue";
 import { useProvideFormItemContext } from 'ant-design-vue/es/form/FormItemContext'
+import {TABLE_FORM_ITEM_ERROR} from "@/components/Metadata/Table/consts";
 
 const props = defineProps({
   name: {
@@ -72,6 +73,8 @@ const filedValue = computed(() => {
   return get(context.dataSource.value, props.name)
 })
 
+provide(TABLE_FORM_ITEM_ERROR, errorMap)
+
 const popContainer = (e) => {
   return e
 }
@@ -100,7 +103,7 @@ const validateRules = () => {
   if (isArray(props.name)) {
     index = props.name[0]
   }
-  const promise = context.validateItem({ [filedName.value]: filedValue.value }, index)
+  const promise = context.validateItem({ [filedName.value]: get(context.dataSource.value, props.name) }, index)
   promise.catch(res => {
     const error = res?.filter(item => item.field === filedName.value) || []
     if (error.length === 0) {
@@ -137,7 +140,7 @@ useProvideFormItemContext({
   id: filedId,
   onFieldChange,
   onFieldBlur,
-}, computed(() => filedValue.value))
+}, computed(() => get(context.dataSource.value, props.name)))
 
 onBeforeUnmount(() => {
   hideErrorTip()
@@ -165,5 +168,31 @@ watch(() => [filedName.value, props.name], () => {
   border-top-color: @error-color;
   border-right-width: 0;
   border-bottom-width: 0;
+}
+</style>
+
+<style lang="less">
+.edit-table-form-has-error {
+
+  .select-no-value {
+    .ant-select-selector {
+      border-color: @error-color !important;
+      &:focus {
+        box-shadow: 0 0 0 2px var(--ant-error-color-outline) !important;
+      }
+    }
+  }
+
+  > input {
+    border-color: @error-color !important;
+
+    &:focus {
+      box-shadow: 0 0 0 2px var(--ant-error-color-outline) !important;
+    }
+  }
+
+  .table-form-required-aicon {
+    color: @error-color;
+  }
 }
 </style>
