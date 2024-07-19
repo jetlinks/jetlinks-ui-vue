@@ -63,7 +63,7 @@ import Editor from './Editor/index.vue';
 import Debug from './Debug/index.vue';
 import Operator from './Operator/index.vue';
 import { cloneDeep } from 'lodash-es';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 interface Emits {
     (e: 'save', data: string | undefined): void;
     (e: 'close'): void;

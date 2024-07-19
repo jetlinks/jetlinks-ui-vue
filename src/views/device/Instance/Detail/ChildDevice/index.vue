@@ -60,7 +60,7 @@
                         type="primary"
                         hasPermission="device/Instance:update"
                         :popConfirm="{
-                            title: '确定解绑吗？',
+                            title: '确认解绑吗？',
                             onConfirm: handleUnBind,
                         }"
                         >批量解除</PermissionButton

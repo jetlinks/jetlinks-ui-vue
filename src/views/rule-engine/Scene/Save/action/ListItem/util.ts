@@ -4,11 +4,11 @@ import { getParams } from '@/views/rule-engine/Scene/Save/util'
 import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownButton/util'
 
 export const iconMap = new Map();
-iconMap.set('trigger', getImage('/scene/action-bind-icon.png'));
-iconMap.set('notify', getImage('/scene/action-notify-icon.png'));
-iconMap.set('device', getImage('/scene/action-device-icon.png'));
-iconMap.set('relieve', getImage('/scene/action-unbind-icon.png'));
-iconMap.set('delay', getImage('/scene/action-delay-icon.png'));
+iconMap.set('trigger', 'icon-chufagaojing');
+iconMap.set('notify', 'icon-xiaoxitongzhi');
+iconMap.set('device', 'icon-shebeishuchu');
+iconMap.set('relieve', 'icon-jiechugaojing');
+iconMap.set('delay', 'icon-yanchizhihang');
 
 export const itemNotifyIconMap = new Map();
 itemNotifyIconMap.set(

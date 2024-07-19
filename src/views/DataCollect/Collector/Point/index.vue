@@ -122,7 +122,7 @@
                                         }"
                                         hasPermission="DataCollect/Collector:delete"
                                         :popConfirm="{
-                                            title: `确定删除？`,
+                                            title: `确认删除？`,
                                             onConfirm: () =>
                                                 handleDelete(slotProps.id),
                                         }"
@@ -818,7 +818,7 @@ watch(
                               icon: 'DeleteOutlined',
                               selected: {
                                   popConfirm: {
-                                      title: '确定删除？',
+                                      title: '确认删除？',
                                       onConfirm: handleBatchDelete,
                                   },
                               },
@@ -833,7 +833,7 @@ watch(
                               icon: 'DeleteOutlined',
                               selected: {
                                   popConfirm: {
-                                      title: '确定删除？',
+                                      title: '确认删除？',
                                       onConfirm: handleBatchDelete,
                                   },
                               },

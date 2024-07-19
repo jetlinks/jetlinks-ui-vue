@@ -72,7 +72,7 @@
                               :hasPermission="`${permission}:delete`"
                               :tooltip="{ title: '删除' }"
                               :popConfirm="{
-                                  title: `确定要删除吗`,
+                                  title: `确认删除？`,
                                   onConfirm: () => delDepartment(data.id),
                               }"
                           >

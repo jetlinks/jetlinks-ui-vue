@@ -104,7 +104,7 @@
                 />
             </template>
             <template #action="slotProps">
-                <j-space>
+                <j-space :size="16">
                     <template
                         v-for="i in getActions(slotProps, 'table')"
                         :key="i.key"
@@ -337,7 +337,6 @@ const getActions = (
                       }
                     ],
                   })
-                  console.log(resp)
                   if (resp.success && resp.result?.total) {
                     await deleteModal(data.id)
                   } else {

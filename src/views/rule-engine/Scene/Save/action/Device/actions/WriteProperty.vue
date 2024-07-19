@@ -198,7 +198,6 @@ const onValueChange = (val: any, label: string) => {
       [propertyModelRef.properties]: propertyModelRef?.source === 'upper' ? val.column : undefined
     }
 
-    console.log('onValueChange',val , label)
     emit('update:value', obj);
     emit('update:columnMap', columnMap.value);
     emit('change', label || val, optionColumn)

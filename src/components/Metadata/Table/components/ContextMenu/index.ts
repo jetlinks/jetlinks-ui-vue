@@ -34,6 +34,7 @@ const contextMenu = (e: Event, data: any, context: any) => {
         },
         onCopy: (data: any) => {
             copyValue = data
+            context.click('copy', data)
         },
         paste: !!copyValue
     }

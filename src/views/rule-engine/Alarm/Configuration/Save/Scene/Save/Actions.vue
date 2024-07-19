@@ -4,10 +4,11 @@
       <div class="actions-item" v-if="item.executor === 'alarm' || show">
         <div class="item-options-warp">
           <div class="item-options-type">
-            <img
-              style="width: 18px"
-              :src="iconMap.get(item.executor === 'alarm' ? item.alarm.mode : item.executor)"
-            />
+<!--            <img-->
+<!--              style="width: 18px"-->
+<!--              :src="iconMap.get(item.executor === 'alarm' ? item.alarm.mode : item.executor)"-->
+<!--            />-->
+            <AIcon :type="iconMap.get(item.executor === 'alarm' ? item.alarm.mode : item.executor)"/>
           </div>
           <div class="item-options-content">
             <template v-if="item.executor === 'alarm'">
@@ -158,14 +159,14 @@
                 <AIcon :type="typeIconMap[item.device?.message?.messageType ||'INVOKE_FUNCTION']"/>
                 <span style="padding-left: 4px">{{ item.options?.type }}</span>
                 <AIcon type="icon-mubiao" style="padding:0 4px"/>
-                <Ellipsis style='max-width: 200px;margin-right: 12px;'>
+                <Ellipsis style='max-width: 120px;margin-right: 12px;'>
                   {{ item.options?.name }}
                 </Ellipsis>
-                <Ellipsis style='max-width: 400px;'>
+                <Ellipsis style='max-width: 120px;'>
                   {{ item.options?.propertiesName }}
                 </Ellipsis>
                 <span v-if='!isBoolean(item.options?.propertiesValue) && item.options?.propertiesValue'>为 </span>
-                <Ellipsis style='max-width: 200px;'>
+                <Ellipsis style='max-width: 120px;'>
                   {{
                     `${
                       (
@@ -282,6 +283,7 @@ const onSelect = (record) => {
       background-color: #f0f0f0;
       border-radius: 6px 0 0 6px;
       cursor: pointer;
+      font-size: 22px;
     }
 
     .item-options-content {

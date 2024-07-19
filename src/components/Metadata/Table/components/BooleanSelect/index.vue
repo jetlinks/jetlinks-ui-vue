@@ -11,7 +11,7 @@
 </template>
 
 <script setup name="BooleanSelect">
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import {isBoolean} from "lodash-es";
 import { selectProps } from 'ant-design-vue/lib/select'
 

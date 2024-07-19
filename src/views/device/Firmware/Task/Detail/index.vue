@@ -62,12 +62,24 @@
             }"
         >
             <template #bodyCell="{ column, text, record }">
-                <template v-if="column.dataIndex === 'createTime'">{{
-                    dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-                }}</template>
-                <template v-if="column.dataIndex === 'completeTime'">{{
-                    text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '--'
-                }}</template>
+                <template
+                    v-if="
+                        column.dataIndex === 'deviceName' ||
+                        column.dataIndex === 'productName'
+                    "
+                >
+                    <Ellipsis style="width: 100%">{{ text }}</Ellipsis>
+                </template>
+                <template v-if="column.dataIndex === 'createTime'">
+                    <Ellipsis style="width: 100%">{{
+                        dayjs(text).format('YYYY-MM-DD HH:mm:ss')
+                    }}</Ellipsis></template
+                >
+                <template v-if="column.dataIndex === 'completeTime'"
+                    ><Ellipsis style="width: 100%">{{
+                        text ? dayjs(text).format('YYYY-MM-DD HH:mm:ss') : '--'
+                    }}</Ellipsis></template
+                >
                 <template v-if="column.dataIndex === 'state'">
                     <div class="state">
                         <a-progress
@@ -96,13 +108,13 @@
                         <div v-if="text?.value === 'failed'">
                             {{ text?.text + '：' + record?.errorReason }}
                         </div>
-                        <div v-if="text?.value === 'waiting'">
+                        <div v-if="text?.value === 'waiting' || text?.value === 'canceled'" :style="{marginLeft: text?.value === 'canceled' ? '10px' : '0'}">
                             {{ text?.text }}
                         </div>
                     </div>
                 </template>
                 <template v-if="column.dataIndex === 'version'">
-                    {{ text | '--' }}
+                    {{ text || '--' }}
                 </template>
             </template>
         </j-table>
@@ -161,6 +173,7 @@ const columns = [
         title: '设备版本',
         key: 'version',
         dataIndex: 'version',
+        width: 100,
     },
     {
         title: '状态',
@@ -290,6 +303,6 @@ onMounted(() => {
 </style>
 <style>
 .heightLightRow {
-    background-color: #E6F4FF;
+    background-color: #e6f4ff;
 }
 </style>

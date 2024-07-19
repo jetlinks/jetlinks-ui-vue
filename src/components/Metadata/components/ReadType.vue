@@ -35,7 +35,7 @@
 <script setup lang="ts" name="ReadType">
 
 import type {PropType} from "vue";
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 type Emit = {
   (e: 'update:value', data: Array<string>): void

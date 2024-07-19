@@ -17,7 +17,7 @@
     <j-form-item v-if='showCron' name='cron' :rules="cronRules">
       <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
     </j-form-item>
-    <j-form-item v-else-if="showMulti" :rules="multiRules">
+    <j-form-item v-else-if="showMulti" name="multi" :rules="multiRules">
       <Calendar v-model:value="formModel.multi" @change='updateValue'/>
     </j-form-item>
     <template v-else>
@@ -102,9 +102,9 @@ import dayjs from 'dayjs'
 import WhenOption from './WhenOption.vue'
 import {cloneDeep, pick} from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
-import { isCron } from '@/utils/regular'
 import { defineExpose } from 'vue'
 import Calendar from './Calendar.vue'
+import cronstrue from 'cronstrue'
 
 type NameType = string[] | string
 
@@ -134,8 +134,11 @@ const cronRules = [
   { max: 64, message: '最多可输入64个字符' },
   {
     validator: async (_: any, v: string) => {
+
       if (v) {
-        if (!isCron(v)) {
+        try {
+          console.log(v, cronstrue.toString(v))
+        } catch (e) {
           return Promise.reject(new Error('请输入正确的cron表达式'));
         }
       } else {
@@ -149,8 +152,16 @@ const cronRules = [
 const multiRules = [
   {
     validator: async (_: any, v: string) => {
-      console.log(v)
-      return Promise.resolve();
+      if (!v.spec?.length) {
+        return Promise.reject('请添加自定义日历规则');
+      } else {
+        const index = v.spec.findIndex(item => !item.scheduleTags.length)
+        if (index > -1) {
+          return Promise.reject(`规则【${index + 1}】请选择日期类型`);
+        }
+      }
+
+      return Promise.resolve()
     }
   }
 ]
@@ -224,7 +235,6 @@ const updateValue = () => {
       keys.push('once')
     }
   }
-  console.log( pick(cloneValue, keys), keys)
   emit('update:value', pick(cloneValue, keys))
 }
 
