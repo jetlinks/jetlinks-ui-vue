@@ -243,24 +243,29 @@ const Status = defineComponent({
                                                                         });
                                                                     }
                                                                 }}>人工检查</Button>网关配置是否已填写正确，若您确定该项无需诊断可
-                                                                <Popconfirm
-                                                                    title="确认忽略？"
-                                                                    onConfirm={() => {
-                                                                        list.value = modifyArrayList(
-                                                                            list.value,
-                                                                            {
-                                                                                key: 'gateway',
-                                                                                name: '设备接入网关',
-                                                                                desc: desc,
-                                                                                status: 'success',
-                                                                                text: '正常',
-                                                                                info: null,
-                                                                            },
-                                                                        );
+                                                                <PermissionButton
+                                                                    
+                                                                    type="link"
+                                                                    style="padding: 0"
+                                                                    popConfirm={{
+                                                                        title:"确认忽略？",
+                                                                        onConfirm:() => {
+                                                                            list.value = modifyArrayList(
+                                                                                list.value,
+                                                                                {
+                                                                                    key: 'gateway',
+                                                                                    name: '设备接入网关',
+                                                                                    desc: desc,
+                                                                                    status: 'success',
+                                                                                    text: '正常',
+                                                                                    info: null,
+                                                                                },
+                                                                            );
+                                                                        }
                                                                     }}
                                                                 >
-                                                                    <Button type="link" style="padding: 0">忽略</Button>
-                                                                </Popconfirm>
+                                                                    忽略
+                                                                </PermissionButton>
                                                             </span>
                                                         }
                                                     />
@@ -374,24 +379,28 @@ const Status = defineComponent({
                                                             }}
                                                         >人工检查</Button>
                                                         网关配置是否已填写正确，若您确定该项无需诊断可
-                                                        <Popconfirm
-                                                            title="确认忽略？"
-                                                            onConfirm={() => {
-                                                                list.value = modifyArrayList(
-                                                                    list.value,
-                                                                    {
-                                                                        key: 'gateway',
-                                                                        name: '设备接入网关',
-                                                                        desc: desc,
-                                                                        status: 'success',
-                                                                        text: '正常',
-                                                                        info: null,
-                                                                    },
-                                                                );
+                                                        <PermissionButton
+                                                            type="link"
+                                                            style="padding: 0"
+                                                            popConfirm={{
+                                                                title:"确认忽略？",
+                                                                onConfirm:() => {
+                                                                    list.value = modifyArrayList(
+                                                                        list.value,
+                                                                        {
+                                                                            key: 'gateway',
+                                                                            name: '设备接入网关',
+                                                                            desc: desc,
+                                                                            status: 'success',
+                                                                            text: '正常',
+                                                                            info: null,
+                                                                        },
+                                                                    );
+                                                                }
                                                             }}
                                                         >
-                                                            <Button type="link" style="padding: 0">忽略</Button>
-                                                        </Popconfirm>
+                                                            忽略
+                                                        </PermissionButton>
                                                     </span>
                                                 }
                                             />
@@ -859,24 +868,28 @@ const Status = defineComponent({
                                                                 填写
                                                             </Button>
                                                             ，若您确定该项无需诊断可
-                                                            <Popconfirm
-                                                                title="确认忽略？"
-                                                                onConfirm={() => {
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: `product-auth${i}`,
-                                                                            name: `产品-${item?.name}`,
-                                                                            desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
+                                                            <PermissionButton
+                                                                type="link" 
+                                                                style="padding: 0"
+                                                                popConfirm={{
+                                                                     title:"确认忽略？",
+                                                                     onConfirm:() => {
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: `product-auth${i}`,
+                                                                                name: `产品-${item?.name}`,
+                                                                                desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }
                                                                 }}
                                                             >
-                                                                <Button type="link" style="padding: 0">忽略</Button>
-                                                            </Popconfirm>
+                                                                忽略
+                                                            </PermissionButton>
                                                         </span>
                                                     }
                                                 />
@@ -919,24 +932,31 @@ const Status = defineComponent({
                                                             </Button>
                                                             产品{item.name}
                                                             配置是否已填写正确,若您确定该项无需诊断可
-                                                            <Popconfirm
-                                                                title="确认忽略？"
-                                                                onConfirm={() => {
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: `product-auth${i}`,
-                                                                            name: `产品-${item?.name}`,
-                                                                            desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
-                                                                }}
+                                                            <PermissionButton      
+                                                                type="link" 
+                                                                style="padding: 0"
+                                                                popConfirm={
+                                                                    {
+                                                                        title:"确认忽略？",
+                                                                        onConfirm:() => {
+                                                                            list.value = modifyArrayList(
+                                                                                list.value,
+                                                                                {
+                                                                                    key: `product-auth${i}`,
+                                                                                    name: `产品-${item?.name}`,
+                                                                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                    status: 'success',
+                                                                                    text: '正常',
+                                                                                    info: null,
+                                                                                },
+                                                                            );
+                                                                        }
+                                                                    }
+                                                                }
+                                                                
                                                             >
-                                                                <Button type="link" style="padding: 0">忽略</Button>
-                                                            </Popconfirm>
+                                                               忽略
+                                                            </PermissionButton>
                                                         </span>
                                                     }
                                                 />
@@ -1020,24 +1040,28 @@ const Status = defineComponent({
                                                                 填写
                                                             </Button>
                                                             ，若您确定该项无需诊断可
-                                                            <Popconfirm
-                                                                title="确认忽略？"
-                                                                onConfirm={() => {
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: `device-auth${i}`,
-                                                                            name: `设备-${item?.name}`,
-                                                                            desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
-                                                                }}
+                                                            <PermissionButton
+                                                                type="link"
+                                                                style="padding: 0"
+                                                                popConfirm={{
+                                                                     title:"确认忽略？",
+                                                                     onConfirm:() => {
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: `device-auth${i}`,
+                                                                                name: `设备-${item?.name}`,
+                                                                                desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }}
+                                                                }
                                                             >
-                                                                <Button type="link" style="padding: 0">忽略</Button>
-                                                            </Popconfirm>
+                                                               忽略
+                                                            </PermissionButton>
                                                         </span>
                                                     }
                                                 />
@@ -1080,24 +1104,28 @@ const Status = defineComponent({
                                                             </Button>
                                                             设备{item.name}
                                                             配置是否已填写正确,若您确定该项无需诊断可
-                                                            <Popconfirm
-                                                                title="确认忽略？"
-                                                                onConfirm={() => {
-                                                                    list.value = modifyArrayList(
-                                                                        list.value,
-                                                                        {
-                                                                            key: `device-auth${i}`,
-                                                                            name: `设备-${item?.name}`,
-                                                                            desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
-                                                                            status: 'success',
-                                                                            text: '正常',
-                                                                            info: null,
-                                                                        },
-                                                                    );
-                                                                }}
+                                                            <PermissionButton
+                                                                type="link" 
+                                                                style="padding: 0"
+                                                                popConfirm={{
+                                                                      title:"确认忽略？",
+                                                                      onConfirm:() => {
+                                                                        list.value = modifyArrayList(
+                                                                            list.value,
+                                                                            {
+                                                                                key: `device-auth${i}`,
+                                                                                name: `设备-${item?.name}`,
+                                                                                desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                status: 'success',
+                                                                                text: '正常',
+                                                                                info: null,
+                                                                            },
+                                                                        );
+                                                                    }}
+                                                                }
                                                             >
-                                                                <Button type="link" style="padding: 0">忽略</Button>
-                                                            </Popconfirm>
+                                                                忽略
+                                                            </PermissionButton>
                                                         </span>
                                                     }
                                                 />
@@ -1154,21 +1182,25 @@ const Status = defineComponent({
                                         人工检查
                                     </Button>
                                     设备-OneNet配置是否已填写正确,若您确定该项无需诊断可
-                                    <Popconfirm
-                                        title="确认忽略？"
-                                        onConfirm={() => {
-                                            list.value = modifyArrayList(list.value, {
-                                                key: `onenet`,
-                                                name: `设备-OneNet配置`,
-                                                desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
-                                                status: 'success',
-                                                text: '正常',
-                                                info: null,
-                                            });
-                                        }}
+                                    <PermissionButton
+                                        type="link" 
+                                        style="padding: 0"
+                                        popConfirm={{
+                                            title:"确认忽略？",
+                                            onConfirm:() => {
+                                                list.value = modifyArrayList(list.value, {
+                                                    key: `onenet`,
+                                                    name: `设备-OneNet配置`,
+                                                    desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
+                                                    status: 'success',
+                                                    text: '正常',
+                                                    info: null,
+                                                });
+                                            }}
+                                        }
                                     >
-                                        <Button type="link" style="padding: 0">忽略</Button>
-                                    </Popconfirm>
+                                        忽略
+                                    </PermissionButton>
                                 </div>
                             </div>
                         ),
@@ -1192,8 +1224,10 @@ const Status = defineComponent({
                                         填写
                                     </Button>
                                     ，若您确定该项无需诊断可
-                                    <Popconfirm
+                                    <PermissionButton
                                         title="确认忽略？"
+                                        type="link" 
+                                        style="padding: 0"
                                         onConfirm={() => {
                                             list.value = modifyArrayList(list.value, {
                                                 key: `onenet`,
@@ -1205,8 +1239,8 @@ const Status = defineComponent({
                                             });
                                         }}
                                     >
-                                        <Button type="link" style="padding: 0">忽略</Button>
-                                    </Popconfirm>
+                                        忽略
+                                    </PermissionButton>
                                 </div>
                             </div>
                         ),
@@ -1266,21 +1300,25 @@ const Status = defineComponent({
                                         人工检查
                                     </Button>
                                     设备-CTWing配置是否已填写正确,若您确定该项无需诊断可
-                                    <Popconfirm
-                                        title="确认忽略？"
-                                        onConfirm={() => {
-                                            list.value = modifyArrayList(list.value, {
-                                                key: `ctwing`,
-                                                name: `设备-CTWing配置`,
-                                                desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
-                                                status: 'success',
-                                                text: '正常',
-                                                info: null,
-                                            });
+                                    <PermissionButton
+                                        type="link" 
+                                        style="padding: 0"
+                                        popConfirm={{
+                                            title:"确认忽略？",
+                                            onConfirm:() => {
+                                                list.value = modifyArrayList(list.value, {
+                                                    key: `ctwing`,
+                                                    name: `设备-CTWing配置`,
+                                                    desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                                                    status: 'success',
+                                                    text: '正常',
+                                                    info: null,
+                                                });
+                                            }
                                         }}
                                     >
-                                        <Button type="link" style="padding: 0">忽略</Button>
-                                    </Popconfirm>
+                                        忽略
+                                    </PermissionButton>
                                 </div>
                             </div>
                         ),
@@ -1304,21 +1342,28 @@ const Status = defineComponent({
                                         填写
                                     </Button>
                                     ，若您确定该项无需诊断可
-                                    <Popconfirm
-                                        title="确认忽略？"
-                                        onConfirm={() => {
-                                            list.value = modifyArrayList(list.value, {
-                                                key: `ctwing`,
-                                                name: `设备-CTWing配置`,
-                                                desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
-                                                status: 'success',
-                                                text: '正常',
-                                                info: null,
-                                            });
-                                        }}
+                                    <PermissionButton
+                                        type="link" 
+                                        style="padding: 0"
+                                        popConfirm={
+                                            {
+                                                title:"确认忽略？",
+                                                onConfirm:() => {
+                                                    list.value = modifyArrayList(list.value, {
+                                                        key: `ctwing`,
+                                                        name: `设备-CTWing配置`,
+                                                        desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                                                        status: 'success',
+                                                        text: '正常',
+                                                        info: null,
+                                                    });
+                                                }
+                                            }
+                                        }
+                                        
                                     >
-                                        <Button type="link" style="padding: 0">忽略</Button>
-                                    </Popconfirm>
+                                        忽略
+                                    </PermissionButton>
                                 </div>
                             </div>
                         ),
