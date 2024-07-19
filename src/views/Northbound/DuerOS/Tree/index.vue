@@ -3,6 +3,7 @@
         type="primary"
         @click="handleAdd"
         block
+        ghost
         hasPermission="Northbound/DuerOS:add"
     >
         <template #icon><AIcon type="PlusOutlined" /></template>
@@ -93,6 +94,19 @@ defineExpose({
 });
 </script>
 <style lang="less" scoped>
+.listContainer {
+    margin-top: 10px;
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 5px; /* 滚动条宽度 */
+        background-color: #edf5ff; /* 滚动条背景色 */
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+        border-radius: 4px; /* 滚动条拖动部分圆角 */
+    }
+}
 .listItem {
     display: flex;
     justify-content: space-between;

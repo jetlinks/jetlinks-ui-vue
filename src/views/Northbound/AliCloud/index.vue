@@ -5,23 +5,25 @@
             target="northbound-aliyun"
             @search="handleSearch"
         />
-        <div class="container">
-            <div class="list">
-              <Tree ref="TreeRef" @viewData="viewData"  :params="params"/>
+        <FullPage>
+            <div class="container">
+                <div class="list">
+                    <Tree ref="TreeRef" @viewData="viewData" :params="params" />
+                </div>
+                <div class="detail">
+                    <Detail :data="current" @refreshList="refreshList" />
+                </div>
             </div>
-            <div class="detail">
-                <Detail :data="current" @refreshList="refreshList"/>
-            </div>
-        </div>
+        </FullPage>
     </page-container>
 </template>
 
 <script setup>
 import Tree from './Tree/index.vue';
-import Detail from './Detail/index.vue'
+import Detail from './Detail/index.vue';
 const params = ref({});
-const current = ref()
-const TreeRef = ref()
+const current = ref();
+const TreeRef = ref();
 
 const columns = [
     {
@@ -64,30 +66,30 @@ const columns = [
     },
 ];
 
-const viewData = (data)=>{
-    current.value = data
-}
-const refreshList = (changeSelect = false) =>{
-    TreeRef.value?.refresh(changeSelect)
-}
+const viewData = (data) => {
+    current.value = data;
+};
+const refreshList = (changeSelect = false) => {
+    TreeRef.value?.refresh(changeSelect);
+};
 const handleSearch = (_params) => {
     params.value = _params;
 };
-
 </script>
 <style scoped lang="less">
-.container{
+.container {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
-    .list{
+    height: 100%;
+    .list {
         width: 15%;
         background-color: #fff;
-        padding: 10px 5px;
+        padding: 10px 15px;
+        height: 100%;
     }
-    .detail{
-        width: 84%;
+    .detail {
+        width: 85%;
     }
 }
 </style>
-

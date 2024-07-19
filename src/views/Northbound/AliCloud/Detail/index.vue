@@ -1,5 +1,4 @@
 <template>
-    
             <j-card>
                 <div class="box">
                     <div class="left">
@@ -458,6 +457,7 @@
                             <PermissionButton
                                 v-if="data?.id"
                                 hasPermission="Northbound/AliCloud:delete"
+                                danger
                                 :tooltip="{
                                     title:
                                         data?.state?.value !== 'disabled'
@@ -472,6 +472,8 @@
                             </PermissionButton>
                             <PermissionButton
                                 v-if="data?.id"
+                                type="primary"
+                                ghost
                                 hasPermission="Northbound/AliCloud:action"
                                 :tooltip="{
                                     title:
@@ -784,6 +786,17 @@ watch(
     .left {
         .left-content {
             width: 66%;
+            padding: 0 20px;
+            height: calc(100vh - 300px);
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+                width: 5px; /* 滚动条宽度 */
+                background-color: #edf5ff; /* 滚动条背景色 */
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+                border-radius: 4px; /* 滚动条拖动部分圆角 */
+            }
         }
     }
     .right {

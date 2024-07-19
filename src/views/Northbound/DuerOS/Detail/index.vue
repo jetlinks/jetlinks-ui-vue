@@ -406,26 +406,6 @@
                                                         },
                                                     ]"
                                                 >
-                                                    <!-- <j-select
-                                                                placeholder="请选择平台属性"
-                                                                v-model:value="
-                                                                    item.target
-                                                                "
-                                                                show-search
-                                                            >
-                                                                <j-select-option
-                                                                    v-for="i in getProductProperties(
-                                                                        item.target,
-                                                                    )"
-                                                                    :key="i.id"
-                                                                    :value="
-                                                                        i.id
-                                                                    "
-                                                                    >{{
-                                                                        i.name
-                                                                    }}</j-select-option
-                                                                >
-                                                            </j-select> -->
                                                     <MSelect
                                                         v-model:value="
                                                             item.target
@@ -487,6 +467,7 @@
                     <PermissionButton
                         v-if="data?.id"
                         hasPermission="Northbound/DuerOS:delete"
+                        danger
                         :tooltip="{
                             title:
                                 data?.state?.value !== 'disabled'
@@ -501,6 +482,8 @@
                     </PermissionButton>
                     <PermissionButton
                         v-if="data?.id"
+                        type="primary"
+                        ghost
                         hasPermission="Northbound/DuerOS:action"
                         :tooltip="{
                             title:
@@ -939,9 +922,22 @@ watch(
 <style scoped lang="less">
 .box {
     position: relative;
+    height: 100%;
     .left {
+        overflow: hidden;
         .left-content {
             width: 66%;
+            padding: 0 20px;
+            height: calc(100vh - 300px);
+            overflow-y: auto;
+            &::-webkit-scrollbar {
+                width: 5px; /* 滚动条宽度 */
+                background-color: #edf5ff; /* 滚动条背景色 */
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+                border-radius: 4px; /* 滚动条拖动部分圆角 */
+            }
         }
     }
     .right {
@@ -950,7 +946,15 @@ watch(
         right: 0;
         top: 40px;
         overflow-y: auto;
-        height: 95%;
+        height: 90%;
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #edf5ff; /* 滚动条背景色 */
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+            border-radius: 4px; /* 滚动条拖动部分圆角 */
+        }
     }
     .control {
         position: absolute;
