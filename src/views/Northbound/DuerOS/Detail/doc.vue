@@ -68,7 +68,7 @@
             >
                 <j-descriptions-item label="参数">说明</j-descriptions-item>
                 <j-descriptions-item label="appId">
-                  第三方应用唯一标识，物联网平台的自动生成
+                    第三方应用唯一标识，物联网平台的自动生成
                 </j-descriptions-item>
                 <j-descriptions-item label="secureKey">
                     secureKey 第三方应用唯一标识匹配的秘钥，物联网平台的自动生成
@@ -110,7 +110,14 @@ import { getImage } from '@/utils/comm';
     color: rgba(#000, 0.8);
     font-size: 14px;
     background-color: #fafafa;
-
+    &::-webkit-scrollbar {
+        width: 5px; /* 滚动条宽度 */
+        background-color: #edf5ff; /* 滚动条背景色 */
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+        border-radius: 4px; /* 滚动条拖动部分圆角 */
+    }
     .url {
         padding: 8px 16px;
         color: #2f54eb;
@@ -139,10 +146,10 @@ import { getImage } from '@/utils/comm';
         margin: 16px 0;
 
         .desc {
-          width: 100%;
-          text-align: center;
-          color: rgb(138, 143, 141);
-          margin-top: 10px;
+            width: 100%;
+            text-align: center;
+            color: rgb(138, 143, 141);
+            margin-top: 10px;
         }
     }
 }

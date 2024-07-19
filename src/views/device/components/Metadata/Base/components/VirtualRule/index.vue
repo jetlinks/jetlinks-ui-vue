@@ -186,7 +186,7 @@ import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import {PropType, Ref} from 'vue';
 import { ReadType } from '@/components/Metadata/components';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 type SourceType = 'device' | 'manual' | 'rule';
 

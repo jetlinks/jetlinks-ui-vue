@@ -9,7 +9,7 @@
       <div style="width: 450px">
         <a-form ref="formRef" layout="vertical" :model="formData">
           <a-form-item label="元素类型" required name="type" :rules="rules" :validate-first="true">
-            <TypeSelect v-model:value="formData.type" />
+            <TypeSelect v-model:value="formData.type"/>
           </a-form-item>
           <ScaleItem v-if="showDouble" v-model:value="formData.scale" />
           <StringItem v-else-if="showString" v-model:value="formData.expands.maxLength" />
@@ -17,7 +17,7 @@
           <DateItem v-else-if="showDate" v-model:value="formData.format"/>
           <EnumItem ref="enumTableRef" v-else-if="showEnum" v-model:value="formData.enum.elements"/>
           <a-form-item v-else-if="showArray" label="子元素类型" required :name="['elementType','type']" :rules="[{ required: true, message: '请选择子元素类型'}]">
-            <TypeSelect  v-model:value="formData.elementType.type" :filter="['array']" />
+            <TypeSelect  v-model:value="formData.elementType.type" :filter="['array', 'object']" />
           </a-form-item>
         </a-form>
       </div>

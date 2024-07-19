@@ -31,7 +31,6 @@ const mouseover = () => {
 }
 
 const close = (e) => {
-  console.log(e)
   e.stopPropagation()
   if (props.showClose && showIcon.value) {
     emit('close')

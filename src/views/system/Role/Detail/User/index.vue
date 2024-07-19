@@ -27,7 +27,7 @@
                     </j-button>
                     <PermissionButton
                         :popConfirm="{
-                            title: `是否批量解除绑定`,
+                            title: `确认批量解除绑定？`,
                             placement: 'topRight',
                             onConfirm: () => table.unbind(),
                         }"

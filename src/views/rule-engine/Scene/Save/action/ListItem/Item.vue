@@ -15,16 +15,7 @@
                 <CheckItem v-bind="props" ref="checkItemRef">
                     <div class="item-options-warp">
                         <div class="item-options-type" @click="onAdd">
-                            <img
-                                style="width: 18px"
-                                :src="
-                                    iconMap.get(
-                                        data?.executor === 'alarm'
-                                            ? data?.alarm?.mode
-                                            : data?.executor,
-                                    )
-                                "
-                            />
+                          <AIcon :type="iconMap.get(data?.executor === 'alarm' ? data.alarm.mode : data.executor)"/>
                         </div>
                         <div
                             class="item-options-content"

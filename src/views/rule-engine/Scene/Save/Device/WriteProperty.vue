@@ -92,7 +92,6 @@ const callDataOptions = computed(() => {
   if (_valueKeys.length) {
     return _valueKeys.map(key => {
       const item: any = props.properties.find((p: any) => p.id === key)
-      console.log(item, props.value, key)
       if (item) {
         const _options = handleOptions(item, item.valueType?.type)
         return {
@@ -142,14 +141,12 @@ const callDataChange = (v: any[]) => {
 
 const rules = [{
   validator(_: string, value: any) {
-    console.log(value, callDataOptions.value)
     if (!value?.length && callDataOptions.value.length) {
       return Promise.reject('请选择属性值')
     } else {
       let hasValue = value.find((item: { name: string, value: any}) => !item.value)
       if (hasValue) {
         const item = callDataOptions.value.find((item: any) => item.id === hasValue.name)
-        console.log()
         return Promise.reject(item?.name ? `请输入${item?.name}值` : '请输入属性值')
       }
     }

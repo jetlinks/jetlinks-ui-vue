@@ -10,12 +10,13 @@
             v-for="(item, index) in virtualData"
             :class="{
               'metadata-edit-table-row': true,
-              'metadata-edit-table-row-selected': selectedRowKeys.includes(item[rowKey] || virtualRang.start + index + 1)
+              'metadata-edit-table-row-selected': selectedRowKeys?.includes(item[rowKey] || virtualRang.start + index + 1)
             }"
             :key="`record_${item.__key}`"
             :style="{height: `${cellHeight}px`,}"
             :data-row-key="item[rowKey] || virtualRang.start + index + 1"
             @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
+            @click.stop="() => rowClick(item)"
         >
           <div
               v-for="column in columns"
@@ -26,10 +27,12 @@
               }"
           >
             <div v-if="column.dataIndex === '__serial'" class="body-cell-box">
-              {{ virtualRang.start + index + 1 }}
+              <slot name="serial" :record="item" :index="item.__dataIndex" :column="column" >
+                {{ virtualRang.start + index + 1 }}
+              </slot>
             </div>
             <div v-else class="body-cell-box">
-              <slot :name="column.dataIndex" :record="item" :index="virtualRang.start + index" :column="column" >
+              <slot :name="column.dataIndex" :record="item" :index="item.__dataIndex" :column="column" >
                 {{ item[column.dataIndex] }}
               </slot>
             </div>
@@ -49,41 +52,15 @@
 
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
-import {useRightMenuContext} from "@/components/Metadata/Table/utils";
+import {useRightMenuContext} from "@/components/Metadata/Table/context";
 import {randomString} from "@/utils/utils";
+import {bodyProps} from "./props";
 
 const props = defineProps({
-  dataSource: {
-    type: Array,
-    default: () => ([])
-  },
-  columns: {
-    type: Array,
-    default: () => ([])
-  },
-  cellHeight: {
-    type: Number,
-    default: 50
-  },
-  height: {
-    type: Number,
-    default: 300
-  },
-  style: {
-    type: Object,
-    default: () => ({})
-  },
-  disableMenu: {
-    type: Boolean,
-    default: true
-  },
-  rowKey: {
-    type: String,
-    default: 'id'
-  },
-  selectedRowKeys: {
-    type: [Array],
-    default: () => []
+  ...bodyProps(),
+  groupKey: {
+    type: [String, Number],
+    default: undefined
   }
 })
 
@@ -104,6 +81,8 @@ let menuInstance
 const maxLen = computed(() => {
   return Math.trunc(props.height / props.cellHeight)
 })
+
+const selectedRowKeys = ref([])
 
 const updateVirtualData = (start, end) => {
   virtualData.value = props.dataSource.slice(start, end)
@@ -154,20 +133,47 @@ const updateView = () => {
   updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
 }
 
+const rowClick = (record) => {
+  if (props.rowSelection?.selectedRowKeys) {
+    const rowSet = new Set(selectedRowKeys.value)
+    const key = record[props.rowKey]
+    const selected = !rowSet.has(key)
+
+    if (selected) {
+      rowSet.delete(key)
+    } else {
+      rowSet.add(key)
+    }
+
+    props.rowSelection.onSelect?.(record, selected )
+
+    selectedRowKeys.value = [...rowSet.values()]
+  }
+}
+
+const updateSelectedKeys = (keys) => {
+  selectedRowKeys.value = keys
+}
+
 onBeforeUnmount(() => {
   menuInstance?.destroy()
   menuInstance?.cleanCopy()
 })
 
-watch(() => props.dataSource, () => {
+watch(() => JSON.stringify(props.rowSelection?.selectedRowKeys), (val) => {
+  selectedRowKeys.value = JSON.parse(val || '[]')
+}, { immediate: true })
 
-  props.dataSource.forEach(item => {
+watch(() => props.dataSource, (val, oldVal) => {
+
+  props.dataSource.forEach((item, index) => {
     if (!item.__key) {
       item.__key = randomString()
     }
   })
 
   updateView()
+
 }, {
   immediate: true,
   deep: true
@@ -184,8 +190,19 @@ watch(() => props.dataSource.length, () => {
   }
 }, { immediate: true})
 
+watch(() => props.height, () => {
+  updateView()
+})
+
+watch(() => props.groupKey, () => {
+  if (props.openGroup) {
+    scrollTo(0)
+  }
+})
+
 defineExpose({
-  scrollTo
+  scrollTo,
+  updateSelectedKeys
 })
 
 </script>
@@ -234,6 +251,7 @@ defineExpose({
 
       .body-cell-box {
         padding: 0 12px;
+        position: relative;
       }
     }
   }

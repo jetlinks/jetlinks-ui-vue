@@ -16,7 +16,7 @@
 
 <script setup name="MetadataUnitSelect">
 import { Form, Select } from 'ant-design-vue'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import {useGetUnit} from "@/views/device/components/Metadata/Base/columns";
 
 const props = defineProps({

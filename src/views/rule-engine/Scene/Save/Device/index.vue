@@ -43,7 +43,6 @@ const rules = [{
     if (!v) {
       return Promise.reject(new Error('请配置设备触发规则'));
     } else {
-        console.log('device-validator', v)
         if (
           !v.productId ||
           (['fixed', 'org'].includes(v.selector) && !v.selectorValues) ||

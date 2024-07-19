@@ -178,7 +178,7 @@ import {
 } from '@/api/device/product';
 import {omit, cloneDeep} from 'lodash-es';
 import { PopoverModal } from '@/components/Metadata/Table'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import { useThreshold } from './hooks'
 
 const props = defineProps({
