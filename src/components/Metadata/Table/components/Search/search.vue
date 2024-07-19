@@ -15,13 +15,13 @@
           <a-space>
             <span>查找</span>
             <a-input v-model:value="searchValue" placeholder="请输入查找内容" />
-            <a-button @click="() => search('all')">查抄全部</a-button>
-            <a-button @click="() => search('prev')">上一个</a-button>
-            <a-button @click="() => search('next')">下一个</a-button>
+            <a-button type="primary" ghost @click="() => search('all')">查抄全部</a-button>
+            <a-button type="primary" ghost @click="() => search('prev')">上一个</a-button>
+            <a-button type="primary" ghost @click="() => search('next')">下一个</a-button>
           </a-space>
         </div>
         <div>
-          <a-button @click.stop="onClose">关闭</a-button>
+          <a-button type="primary" @click.stop="onClose">关闭</a-button>
         </div>
       </div>
       <div v-if="visible" style="margin: 12px 0">
@@ -31,7 +31,7 @@
           :columns="columns"
           :height="tableHeight"
           :disableMenu="false"
-          :cellHeight="32"
+          :cellHeight="36"
           :rowSelection="{
             onSelect: onSelect,
             selectedRowKeys: selectedRowKeys
@@ -53,7 +53,7 @@
         </Table>
       </div>
       <div v-if="visible">
-        查找到 {{filterArray.length}} 条相关属性
+        查找到 <span class="table-search-result-total">{{filterArray.length}}</span> 条相关属性
       </div>
     </div>
   </DragModal>
@@ -63,7 +63,6 @@
 import { DragModal } from '@/components/Modal'
 import Table from '../../Table.vue'
 import {useTableDataSource, useTableOpenGroup, useTableTool, useGroupOptions} from "@/components/Metadata/Table/context";
-import { sortBy } from 'lodash-es'
 
 const props = defineProps({
   searchKey: {
@@ -182,5 +181,9 @@ const onSelect = (record) => {
 .table-search-header {
   display: flex;
   justify-content: space-between;
+}
+
+.table-search-result-total {
+  color: @primary-color;
 }
 </style>

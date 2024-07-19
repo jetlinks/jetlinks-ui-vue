@@ -138,20 +138,6 @@
             :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
             :disabled="record.expands?.isProduct"
         />
-        <a-select
-            v-else-if="props.type === 'tags'"
-            v-model:value="record.expands.type"
-            mode="multiple"
-            style="width: 100%;"
-            :options="[
-              { label: '读', value: 'read'},
-              { label: '写', value: 'write'},
-              { label: '上报', value: 'report'},
-            ]"
-            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
-            :disabled="record.expands?.isProduct"
-            placeholder="请选择读写类型"
-        />
       </EditTableFormItem>
     </template>
     <template #other="{ record }">

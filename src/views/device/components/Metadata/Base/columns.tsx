@@ -3,8 +3,11 @@ import { DataType } from './components'
 import {MetadataItem, MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
-import {omit, isObject } from "lodash-es";
+import {omit, isObject, groupBy} from "lodash-es";
 import { onlyMessage } from "@/utils/comm";
+import {getSourceMap} from "@/views/device/components/Metadata/Base/utils";
+import {getTypeMap} from "components/Metadata/Table/components/Type/data";
+import {getEventLevelMap} from "@/views/device/data";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -20,6 +23,7 @@ interface DataTableColumnProps extends ColumnProps {
   control?: (newValue: any, oldValue: any) => boolean
 
   filter?: boolean
+  sort?: Record<string, any>
 }
 
 const SourceMap = {
@@ -216,11 +220,8 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '数据类型',
       dataIndex: 'valueType',
-      type: 'components',
-      components: {
-        name: DataType
-      },
       form: {
+        required: true,
         rules: [{
           asyncValidator(_: any, value: any) {
 
@@ -231,12 +232,27 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
+      sort: {
+        sortKey: ['valueType', 'type'],
+        dataSource: () => {
+          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.valueType.type)
+          const typeMap = getTypeMap()
+          return Object.keys(group).map((key, index) => {
+            return {
+              name: typeMap[key],
+              key: key,
+              total: group[key].length
+            }
+          })
+        }
+      },
       width: 260,
     },
     {
       title: '属性来源',
       dataIndex: 'expands',
       form: {
+        required: true,
         rules: [
           {
             asyncValidator: async (rule: any, value: any) => {
@@ -254,6 +270,21 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
             }
           },
         ]
+      },
+      sort: {
+        sortKey: ['expands', 'source'],
+        dataSource: () => {
+          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.source)
+          const sourceMap = getSourceMap()
+
+          return Object.keys(group).map(key => {
+            return {
+              name: sourceMap[key],
+              key: key,
+              total: group[key].length
+            }
+          })
+        }
       },
       width: 220
     },
@@ -274,6 +305,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       title: '是否异步',
       dataIndex: 'async',
       width: 120,
+      sort: {
+        sortKey: ['async'],
+        dataSource: () => {
+          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.async)
+
+          return Object.keys(group).map(key => {
+            return {
+              name: key ? '是' : '否',
+              key: key,
+              total: group[key].length
+            }
+          })
+        }
+      },
     },
     {
       title: '输入参数',
@@ -291,6 +336,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
+      sort: {
+        sortKey: ['output', 'type'],
+        dataSource: () => {
+          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.output.type)
+          const typeMap = getTypeMap()
+          return Object.keys(group).map(key => {
+            return {
+              name: typeMap[key],
+              key: key,
+              total: group[key].length
+            }
+          })
+        }
+      }
     },
     // {
     //   title: '属性分组',
@@ -318,12 +377,27 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       title: '事件级别',
       dataIndex: 'expands',
       width: 150,
+      sort: {
+        sortKey: ['expands', 'level'],
+        dataSource: () => {
+          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.level)
+          const typeMap = getEventLevelMap()
+          return Object.keys(group).map(key => {
+            return {
+              name: typeMap[key],
+              key: key,
+              total: group[key].length
+            }
+          })
+        }
+      }
     },
     {
       title: '输出参数',
       dataIndex: 'valueType',
       width: 100,
       form: {
+        required: true,
         rules: [{
           asyncValidator: async (rule: any, value: any) => {
 
@@ -374,6 +448,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
+      sort: {
+        sortKey: ['valueType', 'type'],
+        dataSource: () => {
+          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.valueType.type)
+          const typeMap = getTypeMap()
+          return Object.keys(group).map(key => {
+            return {
+              name: typeMap[key],
+              key: key,
+              total: group[key].length
+            }
+          })
+        }
+      }
     },
     // {
     //   title: '读写类型',

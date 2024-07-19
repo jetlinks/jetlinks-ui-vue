@@ -68,6 +68,7 @@ import {provide, useAttrs, useSlots} from 'vue'
 import Group from './group.vue'
 import {randomNumber} from "@/utils/utils";
 import {bodyProps} from "./props";
+import {get, sortBy, findIndex} from 'lodash-es'
 
 const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange', 'groupDelete', 'groupEdit'])
 
@@ -101,11 +102,27 @@ const defaultGroupId = randomNumber()
 const fieldsErrMap = ref({})
 const fieldsGroupError = ref({})
 
+const sortData = reactive({
+  key: undefined,
+  order: undefined,
+  orderKeys: [],
+  dataIndex: undefined
+})
+
 const { groupActive, groupOptions, addGroup, removeGroup, updateGroupActive, updateGroupOptions } = useGroup(props.openGroup)
 
 const _dataSource = computed(() => {
   const _options = new Map()
-  const newDataSource = props.dataSource.map((item, index) => {
+
+  const sortDataSource = sortData.key ?
+    sortBy(props.dataSource, (val) => {
+      if (!val.id) return 99999999
+
+      const index = findIndex(sortData.orderKeys, val2 => get(val, sortData.key) === val2)
+      return sortData.order === 'desc' ? index : ~index + 1
+    }) : props.dataSource
+
+  const newDataSource = sortDataSource.map((item, index) => {
     item.__dataIndex = index
     if (props.openGroup) {
       const _groupId = item.expands?.groupId
@@ -153,7 +170,7 @@ const _dataSource = computed(() => {
 
 const bodyDataSource = computed(() => {
   if (props.openGroup) {
-    return props.dataSource.filter(item => {
+    return _dataSource.value.filter(item => {
       return item.expands.groupId === groupActive.value
     })
   }
@@ -226,7 +243,20 @@ provide(TABLE_TOOL, {
   },
   selected: (keys) => {
     tableBody.value.updateSelectedKeys(keys)
-  }
+  },
+  order: (type, key, orderKeys, dataIndex) => {
+    sortData.key = key
+    sortData.order = type
+    sortData.orderKeys = orderKeys
+    sortData.dataIndex = dataIndex
+  },
+  cleanOrder: () => {
+    sortData.key = undefined
+    sortData.order = undefined
+    sortData.orderKeys = []
+    sortData.dataIndex = undefined
+  },
+  sortData
 })
 provide(TABLE_GROUP_OPTIONS, groupOptions)
 const addField = (key, field) => {

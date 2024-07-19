@@ -96,7 +96,7 @@ const onScroll = () => {
   const clientHeight = viewScrollRef.value.clientHeight
   const scrollHeight = viewScrollRef.value.scrollHeight
 
-  const _index = Math.round(height / props.cellHeight)
+  const _index = Math.round(height / props.cellHeight) - 1
 
 
   const start = _index < 0 ? 0 : _index
