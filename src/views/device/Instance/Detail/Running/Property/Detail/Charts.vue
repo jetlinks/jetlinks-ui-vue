@@ -9,14 +9,6 @@
                         style="width: 120px"
                         :options="periodOptions"
                     >
-                        <!-- <j-select-option value="*" v-if="_type"
-                            >实际值</j-select-option
-                        >
-                        <j-select-option value="1m">按分钟统计</j-select-option>
-                        <j-select-option value="1h">按小时统计</j-select-option>
-                        <j-select-option value="1d">按天统计</j-select-option>
-                        <j-select-option value="1w">按周统计</j-select-option>
-                        <j-select-option value="1M">按月统计</j-select-option> -->
                     </j-select>
                 </div>
                 <div v-if="cycle !== '*' && _type">
