@@ -1,5 +1,10 @@
 <template>
-  <ConfigProvider :locale='zhCN'>
+  <ConfigProvider
+    :locale='zhCN'
+    :IconConfig="{
+      scriptUrl: '//at.alicdn.com/t/c/font_4035907_1v1ms5scih.js'
+    }"
+  >
     <router-view />
   </ConfigProvider>
 </template>

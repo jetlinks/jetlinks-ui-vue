@@ -124,7 +124,7 @@
                         </CardBox>
                     </template>
                     <template #action="slotProps">
-                        <j-space>
+                        <j-space :size="16">
                             <template
                                 v-for="i in getActions(slotProps, 'table')"
                                 :key="i.key"
@@ -269,7 +269,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 120,
+        width: 200,
         scopedSlots: true,
     },
 ];
@@ -309,6 +309,7 @@ const getActions = (
             text: stateText,
             tooltip: {
                 title: stateText,
+                placement: 'topRight',
             },
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {

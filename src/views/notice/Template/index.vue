@@ -267,7 +267,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 180,
         scopedSlots: true,
     },
 ];
@@ -397,7 +397,7 @@ const getActions = (
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
-                    return 
+                    return
                 },
             },
             icon: 'DeleteOutlined',

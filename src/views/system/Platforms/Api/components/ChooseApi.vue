@@ -153,7 +153,7 @@ const save = async () => {
                 emits('refresh');
             }
         } else {
-            onlyMessage('请选择API接口','error')
+            onlyMessage('与上次勾选数据一致，未执行调用操作','error')
             return
         }
     } else if (props.mode === 'appManger') {

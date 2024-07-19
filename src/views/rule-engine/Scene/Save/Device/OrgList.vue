@@ -117,7 +117,6 @@ const query = async (p: any) => {
 
 const selectedRowChange = (values: any, selectedRows: any[]) => {
   const item = selectedRows[0]
-  console.log(values, selectedRows)
   emit('update', [{ name: item.name, value: item.id }])
 }
 

@@ -44,7 +44,7 @@
                                         <PermissionButton
                                             :hasPermission="`${permission}:bind`"
                                             :popConfirm="{
-                                                title: `是否批量解除绑定`,
+                                                title: `确认批量解除绑定？`,
                                                 onConfirm: () =>
                                                     table.clickUnBind(),
                                             }"
@@ -142,7 +142,7 @@
                             <PermissionButton
                                 :hasPermission="`${permission}:bind`"
                                 :popConfirm="{
-                                    title: `是否解除绑定`,
+                                    title: `确认解除绑定？`,
                                     onConfirm: () =>
                                         table.clickUnBind(slotProps),
                                 }"
@@ -178,7 +178,7 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
                             :hasPermission="i.permission"
@@ -383,7 +383,7 @@ const table = {
                     key: 'unbind',
                     tooltip: { title: '解除绑定' },
                     popConfirm: {
-                        title: `是否解除绑定`,
+                        title: `确认解除绑定？`,
                         onConfirm: () => table.clickUnBind(data),
                     },
                     icon: 'DisconnectOutlined',

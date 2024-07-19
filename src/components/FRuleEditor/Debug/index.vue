@@ -200,7 +200,7 @@ import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import { onlyMessage } from '@/utils/comm';
 import {message} from "ant-design-vue";
 

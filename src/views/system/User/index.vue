@@ -79,9 +79,9 @@
                                     }`,
                                 }"
                                 :popConfirm="{
-                                    title: `确定${
+                                    title: `确认${
                                         slotProps.status ? '禁用' : '启用'
-                                    }吗？`,
+                                    }？`,
                                     onConfirm: () =>
                                         table.changeStatus(slotProps),
                                 }"

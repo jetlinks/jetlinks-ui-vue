@@ -127,7 +127,7 @@ const getActions = (
       text: '解绑',
       icon: 'DisconnectOutlined',
       popConfirm: {
-        title: '确定解绑？',
+        title: '确认解绑？',
         onConfirm: async () => {
           // const res = await unbindScene(id, [data.id], data.branchIndex);
           const res = await unbindScene(id, [data.id]);
