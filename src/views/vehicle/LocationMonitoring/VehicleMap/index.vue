@@ -43,6 +43,7 @@
 <script lang="ts" setup>
 import AMapComponent from '@/components/AMapComponent/index.vue';
 import MapTree from './mapTree/index.vue';
+import { createWindow } from './utils/index';
 const MapRef = ref();
 const loading = ref(true);
 const mapSearchValue = ref();
@@ -84,22 +85,9 @@ const initMap = (e: any) => {
     //设置一个图标对象
     const icon = {
         type: 'image', //图标类型，现阶段只支持 image 类型
-        image: 'https://a.amap.com/jsapi_demos/static/demo-center/marker/express2.png', //可访问的图片 URL
-        size: [48, 21], //图片尺寸
+        image: 'https://a.amap.com/jsapi_demos/static/demo-center-v2/car.png', //可访问的图片 URL
+        size: [24, 48], //图片尺寸
         anchor: 'center', //图片相对 position 的锚点，默认为 bottom-center
-    };
-
-    const text = {
-        content: '测试地点1', //要展示的文字内容
-        direction: 'right', //文字方向，有 icon 时为围绕文字的方向，没有 icon 时，则为相对 position 的位置
-        offset: [-15, -4], //在 direction 基础上的偏移量
-        //文字样式
-        style: {
-            fontSize: 12, //字体大小
-            fillColor: '#22886f', //字体颜色
-            strokeColor: '#fff', //描边颜色
-            strokeWidth: 2, //描边宽度
-        },
     };
 
     const labelMarker1 = new AMap.LabelMarker({
@@ -108,7 +96,6 @@ const initMap = (e: any) => {
         zIndex: 16,
         rank: 1, //避让优先级
         icon: icon, //标注图标，将 icon 对象传给 icon 属性
-        text: text, //标注文本，将 text 对象传给 text 属性
     });
 
     labelsLayer.add(labelMarker1);
@@ -120,17 +107,26 @@ const initMap = (e: any) => {
 };
 
 const openInfo = (data: any) => {
-    //构建信息窗体中显示的内容
-    var info = [];
-    info.push(
-        '<div><div><img style="float:left;" src=" https://webapi.amap.com/images/autonavi.png "/></div> ',
-    );
-    info.push('<div style="padding:0px 0px 0px 4px;"><b>高德软件</b>');
-    info.push('电话 : 010-84107000   邮编 : 100102');
-    info.push('地址 :北京市朝阳区望京阜荣街10号首开广场4层</div></div>');
+    const myData = {
+        name: '20000724（皖AB0387）',
+        type: 0,
+        orgName: '牵引车分公司',
+        vehicleType: '牵引汽油车',
+        typeN: 'QYCD25-QCG',
+        speed: '30',
+        vehicleFault: 1,
+        vehicleAlarm: 2,
+        positionTime: '2024-07-19 09:00:00',
+        PositionLocation: '北京市望京阜通东大街方恒国际中心A座16层',
+    };
+    const closeApp = () => {
+        infoWindow.close();
+    };
+    const { div, app } = createWindow('测试数据', myData, closeApp);
     const infoWindow = new AMap.InfoWindow({
-        content: info.join('<br/>'), //使用默认信息窗体框样式，显示信息内容
-        offset: new AMap.Pixel(0, -12),
+        content: div,
+        isCustom: true,
+        offset: new AMap.Pixel(0, -35),
     });
     infoWindow.open(MapRef.value, data);
 };
