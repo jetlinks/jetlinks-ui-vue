@@ -29,6 +29,11 @@
                             <AIcon type="PlusOutlined" />新增
                         </PermissionButton>
                     </template>
+                    <template #username="slotProps">
+                        <div class="username">
+                            <Ellipsis>{{ slotProps.username }}</Ellipsis>
+                        </div>
+                    </template>
                     <template #type="slotProps">
                         {{ slotProps.type?.name }}
                     </template>
@@ -160,7 +165,7 @@ const columns = [
         title: '用户名',
         dataIndex: 'username',
         key: 'username',
-        ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -276,21 +281,21 @@ const table = {
             status: status === 0 ? 1 : 0,
             id,
         };
-        const response = changeUserStatus_api(params)
+        const response = changeUserStatus_api(params);
         response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
-        return response
+        return response;
     },
     // 删除
     clickDel: (id: string) => {
-        const response = deleteUser_api(id)
+        const response = deleteUser_api(id);
         response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
-        return response
+        return response;
     },
     // 刷新列表
     refresh: () => {
@@ -365,19 +370,22 @@ const handleParams = (params: any) => {
                     };
                 }
             }
-            if(termsItem.column === 'roleList'){
-                if(termsItem.termType === 'eq' || termsItem.termType === 'in'){
+            if (termsItem.column === 'roleList') {
+                if (
+                    termsItem.termType === 'eq' ||
+                    termsItem.termType === 'in'
+                ) {
                     return {
                         column: 'id$in-dimension$role',
                         type: termsItem.type,
-                        value: termsItem.value
-                    }
-                }else{
+                        value: termsItem.value,
+                    };
+                } else {
                     return {
                         column: 'id$in-dimension$role$not',
                         type: termsItem.type,
-                        value: termsItem.value
-                    }
+                        value: termsItem.value,
+                    };
                 }
             }
             return termsItem;
@@ -404,5 +412,13 @@ const handleParams = (params: any) => {
             }
         }
     }
+}
+.username {
+    display: inline-block;
+    border: 1px solid #91caff;
+    padding: 0 8px;
+    border-radius: 4px;
+    color: #1677ff;
+    background: #e6f4ff;
 }
 </style>
