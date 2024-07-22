@@ -18,7 +18,7 @@
                 :class="{ selected: i.id === selectedId }"
             >
                 <div class="itemText">
-                    <Ellipsis style="max-width: 160px ">
+                    <Ellipsis style="width: 100% ">
                         {{ i.name }}
                     </Ellipsis>
                 </div>
@@ -117,6 +117,9 @@ defineExpose({
         background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
         border-radius: 4px; /* 滚动条拖动部分圆角 */
     }
+}
+.itemText{
+    width: calc(100% - 50px)
 }
 .listItem {
     display: flex;

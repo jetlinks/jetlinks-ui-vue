@@ -18,7 +18,9 @@
                 :class="{ selected: i.id === selectedId }"
             >
                 <div class="itemText">
-                    {{ i.name }}
+                    <Ellipsis style="width: 100%;">
+                        {{ i.name }}
+                    </Ellipsis>
                 </div>
                 <div
                     class="status"
@@ -126,6 +128,9 @@ defineExpose({
     margin-top: 5px;
     cursor: pointer;
     padding: 5px;
+}
+.itemText{
+    width: calc(100% - 50px);
 }
 .selected {
     background-color: #f2f2f2;
