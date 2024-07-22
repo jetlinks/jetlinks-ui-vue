@@ -14,6 +14,31 @@
                 :reEventWhenUpdate="true"
             ></el-amap-polyline> -->
                 </AMapComponent>
+                <div class="search-card">
+                    <j-input
+                        placeholder="请输入车辆简称"
+                        v-model:value="mapSearchValue"
+                        @pressEnter="mapSearch"
+                        style="height: 40px"
+                        @change="mapSearchChange"
+                    >
+                        <template #suffix>
+                            <AIcon type="SearchOutlined" @click="mapSearch" />
+                        </template>
+                    </j-input>
+                </div>
+                <div class="vehicleType-time">
+                    <TimeSelect
+                        key="flow-static"
+                        :quickBtnList="[
+                            { label: '今日', value: 'day' },
+                            { label: '本周', value: 'week' },
+                            { label: '本月', value: 'month' },
+                        ]"
+                        :type="'week'"
+                        @change="getEcharts"
+                    />
+                </div>
                 <div class="input-card">
                     <h4>轨迹进度</h4>
                     <div class="input-item">
@@ -64,8 +89,11 @@
 
 <script setup>
 import AMapComponent from '@/components/AMapComponent/index.vue';
+import TimeSelect from './components/TimeSelect.vue';
 const MapRef = ref();
 const loading = ref(true);
+const mapSearchValue = ref();
+
 const lineArr = [
     [116.478935, 39.997761],
     [116.478939, 39.997825],
@@ -96,6 +124,39 @@ const passedPolyline = ref();
 const sliderValue = ref(1);
 const sliderValueCopy = ref(1);
 const sliderMax = ref(100);
+
+const mapSearch = () => {
+    console.log('mapSearch');
+};
+const mapSearchChange = () => {
+    console.log('mapSearchChange !!!');
+};
+
+const getEcharts = (data) => {
+    let _time = '1m';
+    let format = 'M月dd日 HH:mm';
+    let limit = 12;
+    const dt = data.end - data.start;
+    const hour = 60 * 60 * 1000;
+    const days = hour * 24;
+    const months = days * 30;
+    const year = 365 * days;
+    if (dt <= hour + 10) {
+        limit = 60;
+        format = 'HH:mm';
+    } else if (dt > hour && dt <= days) {
+        _time = '1h';
+        limit = 24;
+    } else if (dt > days && dt < year) {
+        limit = Math.abs(Math.ceil(dt / days)) + 1;
+        _time = '1d';
+        format = 'M月dd日 HH:mm:ss';
+    } else if (dt >= year) {
+        limit = Math.abs(Math.floor(dt / months));
+        _time = '1M';
+        format = 'yyyy年-M月';
+    }
+};
 
 const sliderChange = (value) => {
     sliderValueCopy.value = value;
@@ -255,6 +316,40 @@ const stopAni = () => {
     bottom: 13rem;
     left: 4px;
 }
+.search-card {
+    display: flex;
+    flex-direction: row;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border-radius: 0.25rem;
+    width: 360px;
+    height: 40px;
+    border-width: 0;
+    opacity: 0.85;
+    border-radius: 0.4rem;
+    box-shadow: 0 2px 6px 0 rgba(114, 124, 245, 0.5);
+    position: absolute;
+    top: 100px;
+    left: 300px;
+}
+
+.vehicleType-time {
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border-radius: 0.25rem;
+    width: 600px;
+    height: 40px;
+    border-width: 0;
+    opacity: 0.8;
+    border-radius: 0.4rem;
+    position: absolute;
+    top: 106px;
+    left: 700px;
+}
+
 .input-card .btn {
     margin-right: 1.2rem;
     width: 6rem;

@@ -11,7 +11,7 @@
                         placeholder="请输入车辆简称"
                         v-model:value="mapSearchValue"
                         @pressEnter="mapSearch"
-                        style="height: 48px"
+                        style="height: 40px"
                         @change="mapSearchChange"
                     >
                         <template #suffix>
@@ -171,7 +171,7 @@ const mapSearchChange = () => {
     background-clip: border-box;
     border-radius: 0.25rem;
     width: 360px;
-    height: 48px;
+    height: 40px;
     border-width: 0;
     opacity: 0.85;
     border-radius: 0.4rem;
@@ -193,7 +193,7 @@ const mapSearchChange = () => {
     border-radius: 0.4rem;
     box-shadow: 0 2px 6px 0 rgba(234, 235, 243, 0.5);
     position: absolute;
-    top: 104px;
+    top: 102px;
     right: 200px;
 }
 
