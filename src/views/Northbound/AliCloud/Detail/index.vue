@@ -757,7 +757,7 @@ watch(
             );
         } else {
             modelRef.id = undefined;
-            modelRef.modelRefname = undefined;
+            modelRef.name = undefined;
             modelRef.accessConfig = {
                 regionId: undefined,
                 instanceId: undefined,
