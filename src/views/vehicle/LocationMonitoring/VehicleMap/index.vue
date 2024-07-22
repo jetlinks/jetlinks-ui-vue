@@ -114,8 +114,8 @@ const openInfo = (data: any) => {
         vehicleType: '牵引汽油车',
         typeN: 'QYCD25-QCG',
         speed: '30',
-        vehicleFault: 1,
-        vehicleAlarm: 2,
+        vehicleFault: 0,
+        vehicleAlarm: 0,
         positionTime: '2024-07-19 09:00:00',
         PositionLocation: '北京市望京阜通东大街方恒国际中心A座16层',
     };
