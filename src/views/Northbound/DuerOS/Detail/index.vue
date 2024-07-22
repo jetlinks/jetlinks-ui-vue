@@ -1,6 +1,6 @@
 <template>
     <j-card>
-        <div class="box">
+        <div class="box" v-if="!noData">
             <div class="left">
                 <div class="left-content">
                     <TitleComponent data="基本信息" />
@@ -517,6 +517,10 @@
                 </a-space>
             </div>
         </div>
+        <j-empty
+            v-else
+            style="height: calc(100vh - 300px); padding-top: 200px"
+        ></j-empty>
     </j-card>
 </template>
 
@@ -545,7 +549,7 @@ const props = defineProps({
 const emit = defineEmits(['refreshList']);
 
 const formRef = ref();
-
+const noData = ref(false);
 const modelRef = reactive({
     id: undefined,
     name: undefined,
@@ -877,8 +881,9 @@ const deleteData = () => {
 watch(
     () => props.data,
     async () => {
+        noData.value = false
+        formRef.value?.resetFields();
         if (props.data?.id) {
-            formRef.value?.resetFields()
             await getProduct(props.data?.id as string);
             getTypes();
             const resp = await detail(props.data?.id as string);
@@ -889,31 +894,35 @@ watch(
             }
             Object.assign(modelRef, _obj);
         } else {
-            modelRef.id = undefined;
-            modelRef.name = undefined;
-            modelRef.applianceType = undefined;
-            modelRef.productName = undefined;
-            modelRef.actionMappings = [
-                {
-                    actionType: undefined,
-                    action: undefined,
-                    command: {
-                        messageType: undefined,
-                        message: {
-                            properties: undefined,
-                            functionId: undefined,
-                            inputs: [],
+            if (props.data?.type === 'add') {
+                modelRef.id = undefined;
+                modelRef.name = undefined;
+                modelRef.applianceType = undefined;
+                modelRef.productName = undefined;
+                modelRef.actionMappings = [
+                    {
+                        actionType: undefined,
+                        action: undefined,
+                        command: {
+                            messageType: undefined,
+                            message: {
+                                properties: undefined,
+                                functionId: undefined,
+                                inputs: [],
+                            },
                         },
                     },
-                },
-            ];
-            modelRef.propertyMappings = [
-                {
-                    source: undefined,
-                    target: undefined,
-                },
-            ];
-            modelRef.description = undefined;
+                ];
+                modelRef.propertyMappings = [
+                    {
+                        source: undefined,
+                        target: undefined,
+                    },
+                ];
+                modelRef.description = undefined;
+            }else if(props.data?.type === 'noData'){
+                noData.value = true
+            }
         }
     },
     { immediate: true, deep: true },
