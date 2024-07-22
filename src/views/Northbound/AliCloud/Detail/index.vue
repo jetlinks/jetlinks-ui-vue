@@ -364,30 +364,6 @@
                                                                 },
                                                             ]"
                                                         >
-                                                            <!-- <j-select
-                                                                placeholder="请选择平台产品"
-                                                                v-model:value="
-                                                                    item.productId
-                                                                "
-                                                                show-search
-                                                            >
-                                                                <j-select-option
-                                                                    v-for="i in getPlatProduct(
-                                                                        item.productId ||
-                                                                            '',
-                                                                    )"
-                                                                    :key="i.id"
-                                                                    :value="
-                                                                        i?.id
-                                                                    "
-                                                                    :label="
-                                                                        i.name
-                                                                    "
-                                                                    >{{
-                                                                        i.name
-                                                                    }}</j-select-option
-                                                                >
-                                                            </j-select> -->
                                                             <MSelect
                                                                 v-model:value="
                                                                     item.productId
@@ -743,6 +719,7 @@ const deleteData = () => {
 watch(
     () => props.data,
     async () => {
+        _errorSet.value?.clear()
         if (props.data?.id) {
             formRef.value?.resetFields()
             queryRegionsList();
