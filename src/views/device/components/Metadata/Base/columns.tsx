@@ -299,7 +299,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 120,
+      width: 110,
     },
   ]);
 
@@ -326,7 +326,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '输入参数',
       dataIndex: 'inputs',
-      width: 100,
+      width: 110,
     },
     {
       title: '输出参数',
@@ -398,7 +398,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '输出参数',
       dataIndex: 'valueType',
-      width: 100,
+      width: 110,
       form: {
         required: true,
         rules: [{
@@ -490,12 +490,12 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 160,
+      width: 110,
     },
     {
       title: '说明',
       dataIndex: 'description',
-      width: 200,
+      width: 250,
       form: {
         rules: [
           { max: 20, message: '最多可输入20个字符' },

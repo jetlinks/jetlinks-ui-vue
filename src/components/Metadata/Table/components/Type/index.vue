@@ -2,6 +2,7 @@
   <div :class="{'select-no-value': !value}">
     <a-select
       v-bind="props"
+      allow-clear
       :value="myValue"
       style="width: 100%"
       placeholder="请选择数据类型"

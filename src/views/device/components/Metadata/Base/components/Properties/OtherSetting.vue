@@ -146,10 +146,9 @@
             :disabled="disabled"
             :has-permission="hasPermission"
             :tooltip="tooltip"
-            style="padding-left: 0"
-            type="link"
+            type="primary"
         >
-            <AIcon type="SettingOutlined" />
+            <AIcon type="EditOutlined" />
             配置
         </PermissionButton>
     </PopoverModal>
@@ -159,10 +158,9 @@
         :disabled="disabled"
         :has-permission="hasPermission"
         :tooltip="tooltip"
-        style="padding-left: 0"
-        type="link"
+        type="primary"
     >
-        <AIcon type="SettingOutlined" />
+        <AIcon type="EditOutlined" />
         配置
     </PermissionButton>
 </template>
