@@ -60,8 +60,10 @@ const queryList = async (changeSelect = false) => {
     const res = await queryPaginateNot(queryParams);
     if (res.success) {
         treeData.value = res.result;
-        if (treeData.value.length && !changeSelect) {
-            selectItem(treeData.value[0]);
+        if (treeData.value.length) {
+            !changeSelect ?  selectItem(treeData.value[0]) : selectItem(treeData.value.find((i)=>{
+                return selectedId.value = i.id
+            }))
         }
     }
 };
