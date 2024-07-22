@@ -103,6 +103,7 @@ const validateRules = () => {
   if (isArray(props.name)) {
     index = props.name[0]
   }
+
   const promise = context.validateItem({ [filedName.value]: get(context.dataSource.value, props.name) }, index)
   promise.catch(res => {
     const error = res?.filter(item => item.field === filedName.value) || []

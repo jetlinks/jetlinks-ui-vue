@@ -110,9 +110,9 @@
         </div>
         <div v-else-if="type === 'events'">
           <ObjectParams v-model:value="record.valueType.properties">
-            <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+            <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct" :danger="!record.valueType.properties?.length && record.id">
               <template #icon>
-                <AIcon type="SettingOutlined"/>
+                <AIcon type="SettingOutlined" :class="{'table-form-required-aicon': !record.valueType.properties?.length}"/>
               </template>
               配置
             </a-button>
@@ -173,7 +173,7 @@
         <ObjectParams v-model:value="record.inputs" :type="type">
           <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
             <template #icon>
-              <AIcon type="SettingOutlined"/>
+              <AIcon type="SettingOutlined" :class="{'table-form-required-aicon': !record.inputs.length}"/>
             </template>
             配置
           </a-button>

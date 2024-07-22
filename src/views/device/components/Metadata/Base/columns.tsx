@@ -174,7 +174,11 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           asyncValidator(rule:any,value: any, ...setting: any) {
             if (value) {
               const option = setting[2]
-              if (dataSource.value.filter((item) => item.__dataIndex !== option.index && item.id).some(item => item.id === value)) {
+
+              const isSome = dataSource.value.some((item) => {
+                return item.__dataIndex !== option.index && item.id && item.id === value
+              })
+              if (isSome) {
                 return Promise.reject('该标识已存在')
               }
             }

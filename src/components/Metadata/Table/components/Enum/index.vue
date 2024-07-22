@@ -15,7 +15,7 @@
     <slot>
       <a-button type="link" :disabled="disabled" style="padding: 0">
         <template #icon>
-          <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !formData.elements.length}"/>
+          <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !value.length}"/>
         </template>
       </a-button>
     </slot>

@@ -1,8 +1,8 @@
 <template>
-  <div :class="{'select-no-value': !myValue}">
+  <div :class="{'select-no-value': !value}">
     <a-select
       v-bind="props"
-      v-model:value="myValue"
+      :value="myValue"
       style="width: 100%"
       placeholder="请选择数据类型"
       :dropdownStyle="{
@@ -24,10 +24,6 @@ const props = defineProps({
   ...selectProps(),
   filter: {
     type: Array ,
-    default: () => [],
-  },
-  value: {
-    type: Array,
     default: () => [],
   }
 });

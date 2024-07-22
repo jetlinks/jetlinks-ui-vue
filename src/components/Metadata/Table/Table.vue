@@ -97,7 +97,7 @@ const tableStyle = reactive({
 })
 
 const fields = {}
-const defaultGroupId = randomNumber()
+const defaultGroupId = 'group_'+randomNumber()
 
 const fieldsErrMap = ref({})
 const fieldsGroupError = ref({})
@@ -158,7 +158,9 @@ const _dataSource = computed(() => {
     }
   })
 
-  updateGroupOptions([..._options.values()])
+  if (props.openGroup) {
+    updateGroupOptions([..._options.values()])
+  }
 
   return sortDataSource
 })
@@ -169,7 +171,7 @@ const bodyDataSource = computed(() => {
       return item.expands.groupId === groupActive.value
     })
   }
-  return props.dataSource
+  return _dataSource.value
 })
 
 useResizeObserver(tableWrapper, onResize)

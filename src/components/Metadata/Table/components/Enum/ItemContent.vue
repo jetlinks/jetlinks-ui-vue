@@ -11,18 +11,18 @@
       :validateRowKey="true"
     >
       <template #value="{ record, index }">
-        <EditableItem
+        <EditTableFormItem
           :name="[index, 'value']"
         >
           <a-input v-model:value="record.value" @change="valueChange"/>
-        </EditableItem>
+        </EditTableFormItem>
       </template>
       <template #text="{ record, index }">
-        <EditableItem
+        <EditTableFormItem
           :name="[index, 'text']"
         >
           <a-input v-model:value="record.text" @change="valueChange"/>
-        </EditableItem>
+        </EditTableFormItem>
       </template>
       <template #action="{ index }">
         <a-button danger type="link"  @click="() => deleteItem(index)">
@@ -41,7 +41,7 @@
 
 <script setup name="EnumItemContent">
 import EditTable from '../../Table.vue'
-import EditableItem from '../../TableFormItem.vue'
+import EditTableFormItem from '../../TableFormItem.vue'
 import { Form } from "ant-design-vue";
 
 const emit = defineEmits(['update:value', 'change'])
@@ -70,7 +70,12 @@ const columns = [{
           if (!value) {
             return Promise.reject('请输入Value值')
           }
-          if (dataSource.value.filter((_, index) => index.__dataIndex !== option.index).some(item => item.value === value)) {
+
+          const isSome = dataSource.value.some((item) => {
+            return item.__dataIndex !== option.index && item.value === value
+          })
+
+          if (isSome) {
             return Promise.reject('该Value值已存在')
           }
           return Promise.resolve();
