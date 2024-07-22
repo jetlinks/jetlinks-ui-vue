@@ -398,6 +398,7 @@
                         v-if="data?.id"
                         hasPermission="Northbound/AliCloud:delete"
                         danger
+                        :disabled="data?.state?.value !== 'disabled'"
                         :tooltip="{
                             title:
                                 data?.state?.value !== 'disabled'

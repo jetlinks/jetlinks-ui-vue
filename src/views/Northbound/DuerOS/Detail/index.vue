@@ -468,6 +468,7 @@
                         v-if="data?.id"
                         hasPermission="Northbound/DuerOS:delete"
                         danger
+                        :disabled="data?.state?.value !== 'disabled'"
                         :tooltip="{
                             title:
                                 data?.state?.value !== 'disabled'
