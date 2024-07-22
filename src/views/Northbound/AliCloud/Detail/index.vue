@@ -744,6 +744,7 @@ watch(
     () => props.data,
     async () => {
         if (props.data?.id) {
+            formRef.value?.resetFields()
             queryRegionsList();
             await getProduct();
             const resp = await detail(props.data?.id as string);

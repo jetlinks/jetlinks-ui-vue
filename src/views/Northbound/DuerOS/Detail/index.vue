@@ -878,6 +878,7 @@ watch(
     () => props.data,
     async () => {
         if (props.data?.id) {
+            formRef.value?.resetFields()
             await getProduct(props.data?.id as string);
             getTypes();
             const resp = await detail(props.data?.id as string);
