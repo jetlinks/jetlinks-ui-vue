@@ -2,7 +2,7 @@
     <div class="choose-view">
         <HomeView v-model:value="currentView" />
         <div class="btn">
-            <j-button type="primary" @click="confirm">保存修改</j-button>
+            <j-button type="primary" ghost @click="confirm">保存修改</j-button>
         </div>
     </div>
 </template>
@@ -56,17 +56,25 @@ onMounted(() => {
 <style lang="less" scoped>
 .choose-view {
     width: 100%;
-    padding: 4% 9% 0 9%;
+    padding: 4% 9% 4% 9%;
     box-sizing: border-box;
 
     .btn {
         display: flex;
         justify-content: flex-end;
         margin-top: 68px;
+        border-color: transparent !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
 
         button {
-            background-color: @primary-2;
-            color: @primary-color-hover;
+            //background-color: @primary-2;
+            background-color: fade(#f84914, 15%);
+            //color: @primary-color-hover;
+            margin: 0 !important;
+            &:hover {
+                background-color: fade(#f84914, 10%);
+            }
         }
     }
 }

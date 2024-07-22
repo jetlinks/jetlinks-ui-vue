@@ -90,7 +90,7 @@ import {
 } from '@/utils/consts';
 import { usePermissionStore } from '@/store/permission';
 import RoleShow from './components/RoleShow/index.vue';
-import {isNoCommunity} from "@/utils/utils";
+import { isNoCommunity } from '@/utils/utils';
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -104,38 +104,40 @@ const imageTypes = reactive([
 const user = useUserInfo();
 
 type KeyType = 'HomeView' | 'BindThirdAccount' | 'Subscribe' | 'StationMessage';
-console.log(isNoCommunity)
-const list: { key: KeyType; title: string }[] = isNoCommunity ? [
-    {
-        key: 'HomeView',
-        title: '首页视图',
-    },
-    {
-        key: 'BindThirdAccount',
-        title: '绑定第三方账号',
-    },
-    {
-        key: 'Subscribe',
-        title: '我的订阅',
-    },
-    {
-        key: 'StationMessage',
-        title: '站内信',
-    },
-] : [
-  {
-    key: 'HomeView',
-    title: '首页视图',
-  },
-  {
-    key: 'Subscribe',
-    title: '我的订阅',
-  },
-  {
-    key: 'StationMessage',
-    title: '站内信',
-  },
-];
+console.log(isNoCommunity);
+const list: { key: KeyType; title: string }[] = isNoCommunity
+    ? [
+          {
+              key: 'HomeView',
+              title: '首页视图',
+          },
+          {
+              key: 'BindThirdAccount',
+              title: '绑定第三方账号',
+          },
+          {
+              key: 'Subscribe',
+              title: '我的订阅',
+          },
+          {
+              key: 'StationMessage',
+              title: '站内信',
+          },
+      ]
+    : [
+          {
+              key: 'HomeView',
+              title: '首页视图',
+          },
+          {
+              key: 'Subscribe',
+              title: '我的订阅',
+          },
+          {
+              key: 'StationMessage',
+              title: '站内信',
+          },
+      ];
 
 const tabs = {
     HomeView,
@@ -184,12 +186,12 @@ watchEffect(() => {
 
 onMounted(() => {
     user.getUserInfo();
-})
+});
 
 onUnmounted(() => {
-    user.tabKey = 'HomeView'
-    user.other.tabKey = ''
-})
+    user.tabKey = 'HomeView';
+    user.other.tabKey = '';
+});
 </script>
 
 <style lang="less" scoped>
@@ -258,6 +260,7 @@ onUnmounted(() => {
         width: 100%;
         padding: 0 @padding;
         margin-top: 15px;
+        padding-bottom: 24px;
     }
 
     .person-content-item-content {
