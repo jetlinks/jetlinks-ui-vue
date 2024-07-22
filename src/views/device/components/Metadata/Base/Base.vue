@@ -220,7 +220,7 @@
     </template>
   </EditTable>
     <div>
-      可编辑数据列表共 {{ effectiveDataLength }} 条数据
+      可编辑数据列表共 <span class="metadata-result-total">{{ effectiveDataLength }}</span> 条数据
     </div>
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
@@ -674,5 +674,9 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   :deep(.ant-message) {
     z-index: 1073;
   }
+}
+
+.metadata-result-total {
+  color: @primary-color;
 }
 </style>

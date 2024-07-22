@@ -77,7 +77,10 @@ const props = defineProps({
   ...bodyProps(),
   serial: {
     type: Object,
-    default: () => ({width: 66})
+    default: () => ({
+      width: 66,
+      title: '序号'
+    })
   },
   validateRowKey: {
     type: Boolean,
@@ -298,7 +301,7 @@ function onResize({width = 0, height}) {
   if (props.serial) {
     const serial = {
       dataIndex: '__serial',
-      title: '序号',
+      title: props.serial.title || '序号',
       customRender: (customData) => {
         if (props.serial?.customRender) {
           return props.serial?.customRender(customData)

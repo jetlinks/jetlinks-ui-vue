@@ -37,7 +37,8 @@
             selectedRowKeys: selectedRowKeys
           }"
           :serial="{
-            width: openGroup ? 150 : 66
+            width: openGroup ? 150 : 66,
+            title: '行数'
           }"
         >
           <template #serial="{ record }">
@@ -49,6 +50,16 @@
             <span v-else>
               {{ record.__serial }}
             </span>
+          </template>
+          <template #id="{ record }">
+            <Ellipsis>
+              {{ record.id }}
+            </Ellipsis>
+          </template>
+          <template #name="{ record }">
+            <Ellipsis>
+              {{ record.name }}
+            </Ellipsis>
           </template>
         </Table>
       </div>
