@@ -274,7 +274,7 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.state !== 'disable' ? '禁用' : '启用'}?`,
+                title: `确认${data.state.value !== 'disable' ? '禁用' : '启用'}?`,
                 onConfirm: async () => {
                     let response = undefined;
                     if (data.state?.value !== 'started') {
