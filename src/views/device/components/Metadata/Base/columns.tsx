@@ -235,20 +235,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
-      sort: {
-        sortKey: ['valueType', 'type'],
-        dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
-          const typeMap = getTypeMap()
-          return Object.keys(group).map((key, index) => {
-            return {
-              name: typeMap[key],
-              key: key,
-              total: group[key].length
-            }
-          })
-        }
-      },
+      // sort: {
+      //   sortKey: ['valueType', 'type'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
+      //     const typeMap = getTypeMap()
+      //     return Object.keys(group).map((key, index) => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // },
       width: 260,
     },
     {
@@ -274,21 +274,21 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           },
         ]
       },
-      sort: {
-        sortKey: ['expands', 'source'],
-        dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.source)
-          const sourceMap = getSourceMap()
-
-          return Object.keys(group).map(key => {
-            return {
-              name: sourceMap[key],
-              key: key,
-              total: group[key].length
-            }
-          })
-        }
-      },
+      // sort: {
+      //   sortKey: ['expands', 'source'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.source)
+      //     const sourceMap = getSourceMap()
+      //
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: sourceMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // },
       width: 220
     },
     // {
@@ -308,20 +308,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       title: '是否异步',
       dataIndex: 'async',
       width: 120,
-      sort: {
-        sortKey: ['async'],
-        dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.async)
-
-          return Object.keys(group).map(key => {
-            return {
-              name: key ? '是' : '否',
-              key: key,
-              total: group[key].length
-            }
-          })
-        }
-      },
+      // sort: {
+      //   sortKey: ['async'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.async)
+      //
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: key ? '是' : '否',
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // },
     },
     {
       title: '输入参数',
@@ -339,20 +339,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
-      sort: {
-        sortKey: ['output', 'type'],
-        dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id && item.output.type), (e) => e.output.type)
-          const typeMap = getTypeMap()
-          return Object.keys(group).map(key => {
-            return {
-              name: typeMap[key],
-              key: key,
-              total: group[key].length
-            }
-          })
-        }
-      }
+      // sort: {
+      //   sortKey: ['output', 'type'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id && item.output.type), (e) => e.output.type)
+      //     const typeMap = getTypeMap()
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // }
     },
     // {
     //   title: '属性分组',
@@ -380,20 +380,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       title: '事件级别',
       dataIndex: 'expands',
       width: 150,
-      sort: {
-        sortKey: ['expands', 'level'],
-        dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.level)
-          const typeMap = getEventLevelMap()
-          return Object.keys(group).map(key => {
-            return {
-              name: typeMap[key],
-              key: key,
-              total: group[key].length
-            }
-          })
-        }
-      }
+      // sort: {
+      //   sortKey: ['expands', 'level'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.level)
+      //     const typeMap = getEventLevelMap()
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // }
     },
     {
       title: '输出参数',
@@ -451,20 +451,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
-      sort: {
-        sortKey: ['valueType', 'type'],
-        dataSource: () => {
-          const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
-          const typeMap = getTypeMap()
-          return Object.keys(group).map(key => {
-            return {
-              name: typeMap[key],
-              key: key,
-              total: group[key].length
-            }
-          })
-        }
-      }
+      // sort: {
+      //   sortKey: ['valueType', 'type'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
+      //     const typeMap = getTypeMap()
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // }
     },
     // {
     //   title: '读写类型',
