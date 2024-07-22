@@ -3,15 +3,19 @@
         visible
         placement="right"
         :width="600"
-        :maskClosable="false"
+        :closable="false"
         @close="$emit('closeDrawer')"
     >
-        <div>
-            <div>{{ deviceData?.name }}</div>
-            <div>
-                设备ID：
+        <template #title>
+            <div class="deviceName">
+                <Ellipsis style="max-width: 400px;">{{ deviceData?.name }}</Ellipsis>
+            </div>
+            <div class="deviceId">
+                <span> 设备ID： </span>
                 <a @click="jumpDetail">{{ deviceData?.id }}</a>
             </div>
+        </template>
+        <div>
             <a-descriptions bordered :column="1">
                 <a-descriptions-item label="接入方式">{{
                     deviceData?.provider
@@ -36,7 +40,11 @@
                         ['onvif', 'gb28181-2016'].includes(deviceData?.provider)
                     "
                     label="接入密码"
-                    >{{ deviceData?.provider=== 'onvif' ?  deviceData?.others?.onvifPassword : deviceData?.others?.access_pwd}}</a-descriptions-item
+                    >{{
+                        deviceData?.provider === 'onvif'
+                            ? deviceData?.others?.onvifPassword
+                            : deviceData?.others?.access_pwd
+                    }}</a-descriptions-item
                 >
                 <a-descriptions-item label="说明">{{
                     deviceData?.description || '--'
@@ -90,4 +98,15 @@ onMounted(() => {
     getDetail();
 });
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.deviceId {
+    font-size: 13px;
+    span {
+        color: #777777;
+    }
+}
+.deviceName {
+    font-size: 16px;
+    font-weight: 600;
+}
+</style>
