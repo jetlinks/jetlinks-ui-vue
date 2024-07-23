@@ -8,7 +8,9 @@
     >
         <template #title>
             <div class="deviceName">
-                <Ellipsis style="max-width: 400px;">{{ deviceData?.name }}</Ellipsis>
+                <Ellipsis style="max-width: 400px">{{
+                    deviceData?.name
+                }}</Ellipsis>
             </div>
             <div class="deviceId">
                 <span> 设备ID： </span>
@@ -18,7 +20,9 @@
         <div>
             <a-descriptions bordered :column="1">
                 <a-descriptions-item label="接入方式">{{
-                    deviceData?.provider
+                    PROVIDER_OPTIONS.find(
+                        (i) => i.value === deviceData?.provider,
+                    )?.label
                 }}</a-descriptions-item>
                 <a-descriptions-item label="所属产品">{{
                     deviceData?.productName
@@ -57,6 +61,7 @@
 <script setup>
 import { useMenuStore } from 'store/menu';
 import DeviceApi from '@/api/media/device';
+import { PROVIDER_OPTIONS } from '../const';
 const props = defineProps({
     deviceId: {
         type: Object,
@@ -76,7 +81,7 @@ const getProductList = async () => {
     const res = await DeviceApi.queryProductList(params);
     if (res.success) {
         deviceData.value.productName = res.result?.[0]?.name;
-        if (deviceData.value.channel !== 'media-plugin') {
+        if (deviceData.value.provider !== 'media-plugin') {
             deviceData.value.others.access_pwd = deviceData.value.others
                 .access_pwd
                 ? deviceData.value.others.access_pwd
