@@ -37,6 +37,20 @@
             </j-row>
             <j-row :gutter="24">
                 <j-col :span="24">
+                    <div class="office-card">
+                        <Guide title="设备离线分析"> </Guide>
+                        <div class="office-chart">
+                            <Charts
+                                :options="
+                                    categoryOptions(totalCount, officeData)
+                                "
+                            ></Charts>
+                        </div>
+                    </div>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="24">
                     <div class="message-card">
                         <Guide title="设备消息">
                             <template #extra>
@@ -90,6 +104,7 @@ import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
 import dayjs from 'dayjs';
 import { isNoCommunity } from '@/utils/utils';
+import categoryOptions from './config';
 
 const system = useSystem();
 const AmapKey = system.$state.configInfo.amap?.apiKey;
@@ -138,7 +153,28 @@ let messageChartYData = ref<any[]>([]);
 let messageMaxChartYData = ref<number>();
 let onlineOptions = ref<any>({});
 let TodayDevOptions = ref<any>({});
+
+const officeData = ref();
+const totalCount = ref(0);
 let devMegOptions = ref<any>({});
+
+//今日设备消息量
+const getOfficeOptions = () => {
+    officeData.value = [
+        { name: '自动关机', value: 10, rate: 20 },
+        { name: '连接超时', value: 25, rate: 50 },
+        { name: 'T-BOX拆除', value: 5, rate: 10 },
+        { name: '其他', value: 10, rate: 20 },
+    ];
+    totalCount.value = officeData.value.reduce(
+        (
+            acc: number,
+            cur: { alarmType: string; value: number; rate: number },
+        ) => acc + cur.value,
+        0,
+    );
+};
+
 const menuStore = useMenuStore();
 // const quickBtnList = [
 //     { label: '昨日', value: 'yesterday' },
@@ -616,16 +652,22 @@ const getEcharts = (data: any) => {
 
 getOnline();
 getYesterdayOnline();
+getOfficeOptions();
 getDevice();
 </script>
 <style lang="less" scoped>
 .message-card,
+.office-card,
 .device-position {
     margin-top: 24px;
     padding: 24px;
     background-color: white;
 }
 .message-chart {
+    width: 100%;
+    height: 470px;
+}
+.office-chart {
     width: 100%;
     height: 470px;
 }
