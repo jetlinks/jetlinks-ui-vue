@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal title="写入" :visible="true" width="500px" @cancel="handleCancel">
         <j-form
             class="form"
@@ -196,6 +196,43 @@
                     v-model:value="formData.value"
                 />
             </j-form-item>
+            <j-form-item
+                v-if="data?.provider === 'BACNetIp'"
+                :rules="[
+                    {
+                        required: true,
+                        message: `请选择写入优先级`,
+                    },
+                ]"
+                :name="['others', 'priority']"
+            >
+                <template #label>
+                    <div>
+                        <span>写入优先级</span>
+                        <a-tooltip>
+                            <template #title
+                                >写优先级允许系统管理员或控制策略决定哪些写入请求应被优先处理
+                                <br />
+                                ·1表示最高优先级，16表示最低优先级<br />
+                                ·当多个控制器或系统尝试写入同一个点位时，较高优先级的写入请求会覆盖较低优先级的写入请求<br />
+                                ·如果高优先级的写入请求失效，系统会自动恢复次高优先级的写入值，依次类推直至找到有效的写入请求</template
+                            >
+                            <AIcon
+                                type="QuestionCircleOutlined"
+                                style="margin-left: 10px"
+                            ></AIcon>
+                        </a-tooltip>
+                    </div>
+                </template>
+                <a-select v-model:value="formData.others.priority">
+                    <a-select-option
+                        v-for="(i, index) in priority"
+                        :value="index + 1"
+                    >
+                        {{ index + 1 }}
+                    </a-select-option>
+                </a-select>
+            </j-form-item>
         </j-form>
         <template #footer>
             <j-button key="back" @click="handleCancel">取消</j-button>
@@ -264,8 +301,12 @@ const validateHex = async (rule:any, value:any) => {
 const collectorId = props.data.collectorId;
 const pointId: string = props.data.id;
 
+const priority = new Array(16);
 const formData = ref({
     value: '',
+    others: {
+        priority: 1,
+    },
 });
 
 const onChange = (value: Dayjs, dateString: string) => {

@@ -7,18 +7,19 @@
             :class="{
                 active: _value === item.value,
                 labelBottom: labelBottom,
+                itemDisabled: !item.disabled,
             }"
-            @click="onSelect(item.value)"
+            @click="onSelect(item.value, item.disabled)"
         >
             <div class="'way-item-title">
                 <span class="way-item-label">{{ item.label }}</span>
-              <j-tooltip v-if="item.tip" :title="item.tip">
-                <AIcon
-                  type="QuestionCircleOutlined"
-                  class="way-item-icon"
-                  style="padding-left: 8px;"
-                />
-              </j-tooltip>
+                <j-tooltip v-if="item.tip" :title="item.tip">
+                    <AIcon
+                        type="QuestionCircleOutlined"
+                        class="way-item-icon"
+                        style="padding-left: 8px"
+                    />
+                </j-tooltip>
             </div>
             <div class="way-item-image">
                 <img :width="48" :src="item.image" />
@@ -60,8 +61,8 @@ watch(
     { immediate: true, deep: true },
 );
 
-const onSelect = (_type: string) => {
-    if (!props.disabled) {
+const onSelect = (_type: string, disabled: Boolean) => {
+    if (!props.disabled && disabled) {
         _value.value = _type;
         emits('update:value', _type);
         emits('change', _type);
@@ -75,7 +76,7 @@ const onSelect = (_type: string) => {
     flex-wrap: wrap;
     gap: 16px 24px;
     width: 100%;
-
+   
     .trigger-way-item {
         flex: 1 1 0;
         display: flex;
@@ -88,7 +89,9 @@ const onSelect = (_type: string) => {
         border-radius: 2px;
         cursor: pointer;
         transition: all 0.3s;
-
+        &.itemDisabled {
+        cursor: not-allowed;
+    }
         .way-item-title {
             span {
                 font-size: 16px;
