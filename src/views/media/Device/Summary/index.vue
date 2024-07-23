@@ -44,12 +44,18 @@
                         ['onvif', 'gb28181-2016'].includes(deviceData?.provider)
                     "
                     label="接入密码"
-                    >{{
-                        deviceData?.provider === 'onvif'
-                            ? deviceData?.others?.onvifPassword
-                            : deviceData?.others?.access_pwd
-                    }}</a-descriptions-item
-                >
+                    ><div class="password">
+                        <span>{{ showPassword }}</span>
+                        <AIcon
+                            :type="
+                                visiblePassword
+                                    ? 'EyeInvisibleOutlined'
+                                    : 'EyeOutlined'
+                            "
+                            @click="visiblePassword = !visiblePassword"
+                            class="passwordIcon"
+                        ></AIcon></div
+                ></a-descriptions-item>
                 <a-descriptions-item label="说明">{{
                     deviceData?.description || '--'
                 }}</a-descriptions-item>
@@ -69,6 +75,23 @@ const props = defineProps({
 });
 const menuStory = useMenuStore();
 const deviceData = ref();
+
+const visiblePassword = ref(false);
+const showPassword = computed(() => {
+    let password =
+        deviceData.value?.provider === 'onvif'
+            ? deviceData.value?.others?.onvifPassword
+            : deviceData.value?.others?.access_pwd;
+    if (!visiblePassword.value) {
+        let hiddenPassword  = ''
+        for (let i = 0; i < password.length; i++) {
+            hiddenPassword += '*'
+        }
+        return hiddenPassword
+    }else{
+        return password
+    }
+});
 const jumpDetail = (data) => {
     menuStory.jumpPage('device/Instance/Detail', { id: props.deviceId });
 };
@@ -113,5 +136,13 @@ onMounted(() => {
 .deviceName {
     font-size: 16px;
     font-weight: 600;
+}
+.password {
+    position: relative;
+    .passwordIcon {
+        position: absolute;
+        right: 0;
+        top: 5px;
+    }
 }
 </style>
