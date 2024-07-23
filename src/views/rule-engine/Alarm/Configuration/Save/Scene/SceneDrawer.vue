@@ -3,7 +3,7 @@
     visible
     title="关联场景联动详情"
     :width="600"
-    :maskClosable="false"
+    :closable="false"
     :keyboard="false"
     @close="onCancel"
   >

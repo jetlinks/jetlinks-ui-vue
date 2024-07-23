@@ -145,10 +145,10 @@
                         :validateFirst="true"
                         :rules="[
                             { required: true, message: '请输入用户名' },
-                            {
-                                validator: checkCh,
-                                trigger: ['change', 'blur'],
-                            },
+                            // {
+                            //     validator: checkCh,
+                            //     trigger: ['change', 'blur'],
+                            // },
                             {
                                 validator: form.rules.checkUserName,
                                 trigger: 'blur',
