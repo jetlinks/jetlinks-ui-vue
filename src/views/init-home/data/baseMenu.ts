@@ -4634,14 +4634,57 @@ export default [
         code: 'system/Calendar',
         name: '日历维护',
         owner: 'iot',
-        //parentId: '3',
         id: '9d03fb403f3edb4ceb796dd81167562f',
+        showPage: ["calendar-manager"],
         sortIndex: 14,
         url: '/system/Calendar',
-        icon: 'icon-zidingyiguize',
-        showPage: [],
-        permissions: [],
-        buttons: [],
+        icon: 'icon-rili',
+        permissions: [
+          {
+            permission: "calendar-manager",
+            actions: [
+              "query",
+            ]
+          }
+        ],
+        buttons: [
+          {
+            id: "add",
+            name: "新增",
+            permissions: [
+              {
+                permission: "calendar-manager",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            id: "update",
+            name: "编辑",
+            permissions: [
+              {
+                permission: "calendar-manager",
+                actions: [
+                  "save"
+                ]
+              }
+            ]
+          },
+          {
+            id: "delete",
+            name: "删除",
+            permissions: [
+              {
+                permission: "calendar-manager",
+                actions: [
+                  "delete"
+                ]
+              }
+            ]
+          }
+        ],
         accessSupport: { text: "不支持", value: "unsupported" },
         supportDataAccess: false
       },
