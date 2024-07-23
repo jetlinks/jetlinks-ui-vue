@@ -69,7 +69,7 @@
     </div>
 </template>
 
-<script setup lang='ts' name="Device">
+<script setup lang="ts" name="Device">
 import { useSceneStore } from '@/store/scene';
 import TopCard from './TopCard.vue';
 import { storeToRefs } from 'pinia';
@@ -81,7 +81,7 @@ import RelationSelect from './RelationSelect.vue';
 import { getParams } from '../../../util';
 import { handleParamsData } from '../../../components/Terms/util';
 import _ from 'lodash-es';
-import { TypeMap } from './util'
+import { TypeMap } from './util';
 
 const props = defineProps({
     values: {
@@ -183,13 +183,19 @@ const sourceChangeEvent = async () => {
 };
 
 const filterType = async (newVal: any) => {
+    // const _typeList = [
+    //   TypeMap.fixed,
+    // ]
     const _typeList = [
-      TypeMap.fixed
-    ]
-    const triggerType  = unref(data)?.trigger?.type
+        TypeMap.fixed,
+        TypeMap.context,
+        TypeMap.relation,
+        TypeMap.tag,
+    ];
+    const triggerType = unref(data)?.trigger?.type;
 
     if (triggerType === 'device') {
-        _typeList.push(TypeMap.tag) // 设备输出一直展示标签
+        // _typeList.push(TypeMap.tag) // 设备输出一直展示标签
         //关系
         const res = await NoticeApi.getRelationUsers({
             paging: false,
@@ -199,7 +205,8 @@ const filterType = async (newVal: any) => {
             ],
         });
         if (res.success && res.result.length !== 0) {
-            _typeList.push(TypeMap.relation)
+            // _typeList.push(TypeMap.relation)
+            TypeMap.relation.disabled = true;
         }
         //变量
         if (
@@ -207,20 +214,21 @@ const filterType = async (newVal: any) => {
             !props.parallel &&
             props.name !== 0
         ) {
-          _typeList.push(TypeMap.context)
+            //   _typeList.push(TypeMap.context)
+            TypeMap.context.disabled = true;
         }
-
     } else {
         if (
             builtInList.value.length !== 0 &&
             !props.parallel &&
             props.name !== 0
         ) {
-          _typeList.push(TypeMap.context)
+            //   _typeList.push(TypeMap.context)
+            TypeMap.context.disabled = true;
         }
     }
 
-  list.value = _typeList;
+    list.value = _typeList;
 };
 
 const onSelectorChange = (val: string) => {
@@ -243,7 +251,7 @@ const onDeviceChange = (_detail: any) => {
             modelRef.deviceId = '';
             modelRef.selectorValues = [] as any;
         }
-        modelRef.upperKey = ''
+        modelRef.upperKey = '';
         emits('save', unref(modelRef), { name: _detail.name });
     }
 };
@@ -287,7 +295,7 @@ const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
     modelRef.source = 'upper';
     modelRef.upperKey = val;
-    modelRef.selectorValues = undefined // [{ value: val, name: node.description }] as any;
+    modelRef.selectorValues = undefined; // [{ value: val, name: node.description }] as any;
     emits('save', unref(modelRef), { name: node.description });
 };
 
@@ -351,7 +359,7 @@ const onFormSave = () => {
                         });
                     }
                 } else {
-                    resolve({..._data});
+                    resolve({ ..._data });
                 }
             })
             .catch((err: any) => {
@@ -363,5 +371,4 @@ const onFormSave = () => {
 defineExpose({ onFormSave });
 </script>
 
-<style scoped lang='less'>
-</style>
+<style scoped lang="less"></style>
