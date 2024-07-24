@@ -12,9 +12,7 @@
                 ref="cardManageRef"
                 :columns="columns"
                 :request="query"
-                :defaultParams="{
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                }"
+                :defaultParams="defaultParams"
                 :rowSelection="
                     isCheck
                         ? {
@@ -371,11 +369,7 @@
             @change="saveChange"
         />
         <!--   批量同步     -->
-        <SyncModal
-          v-if="syncVisible"
-          :params="params"
-          @close="syncClose"
-        />
+        <SyncModal v-if="syncVisible" :params="params" @close="syncClose" />
     </page-container>
 </template>
 
@@ -409,7 +403,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { usePermissionStore } from 'store/permission';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
-import SyncModal from './Sync.vue'
+import SyncModal from './Sync.vue';
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -425,7 +419,22 @@ const cardId = ref<any>();
 const current = ref<Partial<CardManagement>>({});
 const saveType = ref<string>('');
 const isCheck = ref<boolean>(false);
-const syncVisible = ref(false)
+const syncVisible = ref(false);
+const defaultParams = {
+    sorts: [{ name: 'createTime', order: 'desc' }],
+    terms: [
+        {
+            terms: [
+                {
+                    type: 'or',
+                    value: 'deactivate',
+                    termType: 'not',
+                    column: 'cardStateType',
+                },
+            ],
+        },
+    ],
+};
 
 const columns = [
     {
@@ -572,17 +581,17 @@ const columns = [
         key: 'cardStateType',
         width: 180,
         scopedSlots: true,
-        search: {
-            type: 'select',
-            options: [
-                { label: '未同步', value: 'notReady' },
-                { label: '同步失败', value: 'error' },
-                { label: '激活', value: 'using' },
-                { label: '未激活', value: 'toBeActivated' },
-                { label: '停机', value: 'deactivate' },
-                { label: '其它', value: 'other' },
-            ],
-        },
+        // search: {
+        //     type: 'select',
+        //     options: [
+        //         { label: '未同步', value: 'notReady' },
+        //         { label: '同步失败', value: 'error' },
+        //         { label: '激活', value: 'using' },
+        //         { label: '未激活', value: 'toBeActivated' },
+        //         { label: '停机', value: 'deactivate' },
+        //         { label: '其它', value: 'other' },
+        //     ],
+        // },
     },
     {
         title: '操作',
@@ -897,8 +906,8 @@ const handleResumption = () => {
 /**
  * 同步状态
  */
- const handleSync = async() => {
-  syncVisible.value = true
+const handleSync = async () => {
+    syncVisible.value = true;
     // if (!_selectedRowKeys.value.length) {
     //     onlyMessage('请选择数据', 'error');
     //     return;
@@ -1004,7 +1013,7 @@ const batchActions: BatchActionsType[] = [
         type: 'primary',
         permission: 'iot-card/CardManagement:sync',
         icon: 'SwapOutlined',
-        onClick: handleSync
+        onClick: handleSync,
     },
     {
         key: 'delete',
@@ -1022,9 +1031,9 @@ const batchActions: BatchActionsType[] = [
 ];
 
 const syncClose = () => {
-  syncVisible.value = false
-  cardManageRef.value?.reload();
-}
+    syncVisible.value = false;
+    cardManageRef.value?.reload();
+};
 
 onMounted(() => {
     if (routerParams.params.value.type === 'add' && paltformPermission) {
