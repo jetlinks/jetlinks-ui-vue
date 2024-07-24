@@ -309,6 +309,7 @@ import MetaDataModal from './metadataModal.vue'
 import { getPluginData, getProductByPluginId, savePluginData } from '@/api/link/plugin'
 import { detail as queryPluginAccessDetail } from '@/api/link/accessConfig'
 import { onlyMessage } from '@/utils/comm';
+import { pick } from 'lodash-es';
 
 const productStore = useProductStore();
 const tableRef = ref();
@@ -554,7 +555,8 @@ const queryAccessDetail = async (id: string) => {
         if (res.status === 200) {
             access.value = res.result.data[0];
           if (access.value?.transportDetail?.metadata) {
-            productData.metadata = JSON.parse(access.value?.transportDetail?.metadata)
+            const metadata = JSON.parse(access.value?.transportDetail?.metadata)
+            productData.metadata = pick(metadata,['functions','properties','events','tags'])
           }
         }
     });
@@ -672,13 +674,14 @@ const checkAccess = async (data: any) => {
     getGuide(!!data.metadata.length); //
 
     if (data.access?.transportDetail?.metadata) {
-      productData.metadata = JSON.parse(data.access?.transportDetail?.metadata)
+      const metadata = JSON.parse(data.access?.transportDetail?.metadata)
+      productData.metadata = pick(metadata,['functions','properties','events','tags'])
     }
   }
 }
 
 const productTypeChange = (id: string, items: any) => {
-  productData.metadata = items?.metadata || {}
+  productData.metadata = items?.metadata ?  pick(items.metadata,['functions','properties','events','tags']) : {}
 }
 
 /**
@@ -736,7 +739,7 @@ const getData = async (accessId?: string) => {
               productTypes.value = resp.result.map(item => {
                 if (pluginRes?.result?.externalId === item.id) {
                   productData.id = pluginRes?.result?.externalId
-                  productData.metadata = item.metadata
+                  productData.metadata = pick(item.metadata,['functions','properties','events','tags'])
                 }
                 return { ...item, label: item.name, value: item.id }
               })
