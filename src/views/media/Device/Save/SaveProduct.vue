@@ -185,6 +185,7 @@
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { getProductsById } from '@/api/link/plugin'
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
 import { usePermissionStore } from '@/store/permission';
@@ -218,6 +219,23 @@ const _vis = computed({
  * 获取接入网关
  */
 const gatewayList = ref<gatewayType[]>([]);
+
+// 表单数据
+const formRef = ref();
+const formData = ref({
+    accessId: '',
+    accessName: '',
+    accessProvider: '',
+    configuration: {
+        access_pwd: '',
+        stream_mode: 'UDP',
+    },
+    deviceType: props.deviceType,
+    messageProtocol: '',
+    name: '',
+    protocolName: '',
+    transportProtocol: '',
+});
 const getGatewayList = async () => {
     const params = {
         pageSize: 100,
@@ -242,7 +260,10 @@ const handleClick = async (e: any) => {
     formData.value.messageProtocol = e.protocolDetail.id;
     formData.value.protocolName = e.protocolDetail.name;
     formData.value.transportProtocol = e.transport;
-
+    if(props.channel === 'media-plugin'){
+        const { result } = await getProductsById(e.channelId)
+    }
+    console.log(e,'data')
     const { result } = await DeviceApi.getConfiguration(
         e.protocol,
         e.transport,
@@ -281,23 +302,6 @@ watch(
         }
     },
 );
-
-// 表单数据
-const formRef = ref();
-const formData = ref({
-    accessId: '',
-    accessName: '',
-    accessProvider: '',
-    configuration: {
-        access_pwd: '',
-        stream_mode: 'UDP',
-    },
-    deviceType: props.deviceType,
-    messageProtocol: '',
-    name: '',
-    protocolName: '',
-    transportProtocol: '',
-});
 
 /**
  * 提交

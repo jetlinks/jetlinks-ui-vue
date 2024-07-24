@@ -74,7 +74,7 @@ const queryChartsAggList = async () => {
         ],
         query: {
             interval: cycle.value,
-            format: 'yyyy-MM-dd HH:mm:ss',
+            format: cycle.value === '1d' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss',
             from: prop.time[0],
             to: prop.time[1],
         },
@@ -83,11 +83,11 @@ const queryChartsAggList = async () => {
     });
     if (resp.status === 200) {
         const dataList: any[] = [
-            {
-                year: prop.time[1],
-                value: undefined,
-                type: prop.data?.name || '',
-            },
+                // {
+                //     year: prop.time[1],
+                //     value: undefined,
+                //     type: prop.data?.name || '',
+                // },
         ];
         (resp.result as any[]).forEach((i: any) => {
             dataList.push({
@@ -97,11 +97,11 @@ const queryChartsAggList = async () => {
                 type: prop.data?.name || '',
             });
         });
-        dataList.push({
-            year: prop.time[0],
-            value: undefined,
-            type: prop.data?.name || '',
-        });
+        // dataList.push({
+        //     year: prop.time[0],
+        //     value: undefined,
+        //     type: prop.data?.name || '',
+        // });
         chartsList.value = (dataList || []).reverse();
     }
 };
@@ -168,7 +168,7 @@ const getOptions = (arr: any[]) => {
             type: 'category',
             data: arr.map((item) => {
                 return echarts.format.formatTime(
-                    'yyyy-MM-dd\nhh:mm:ss',
+                    cycle.value === '1d' ? 'yyyy-MM-dd' : 'yyyy-MM-dd\nhh:mm:ss',
                     item.year,
                     false,
                 );
