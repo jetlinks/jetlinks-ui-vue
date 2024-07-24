@@ -55,7 +55,7 @@ import {
   TABLE_GROUP_ERROR,
   TABLE_DATA_SOURCE,
   TABLE_OPEN_GROUP,
-  TABLE_TOOL, TABLE_GROUP_OPTIONS
+  TABLE_TOOL, TABLE_GROUP_OPTIONS, TABLE_GROUP_ACTIVE
 } from './consts'
 import { handleColumnsWidth } from './utils'
 import {useGroup, useResizeObserver, useValidate} from './hooks'
@@ -100,7 +100,7 @@ const tableStyle = reactive({
 })
 
 const fields = {}
-const defaultGroupId = 'group_'+randomNumber()
+const defaultGroupId = 'group_1'
 
 const fieldsErrMap = ref({})
 const fieldsGroupError = ref({})
@@ -136,8 +136,6 @@ const _dataSource = computed(() => {
 
       const _optionsItem = _options.get(item.expands.groupId)
 
-      let __serial = 1
-
       if (!_optionsItem) {
         _options.set(item.expands.groupId, {
           value: item.expands?.groupId,
@@ -153,9 +151,7 @@ const _dataSource = computed(() => {
         _options.set(item.expands.groupId, _optionsItem)
       }
 
-      __serial = _optionsItem?.len || 1
-
-      item.__serial = __serial
+      item.__serial = _optionsItem?.len || 1
     } else {
       item.__serial = index + 1
     }
@@ -260,6 +256,8 @@ provide(TABLE_TOOL, {
   sortData
 })
 provide(TABLE_GROUP_OPTIONS, groupOptions)
+provide(TABLE_GROUP_ACTIVE, groupActive)
+
 const addField = (key, field) => {
   fields[key] = field
 }
@@ -355,6 +353,10 @@ const groupEdit = (record) => {
   emit('groupEdit', record)
 }
 
+const getGroupActive = () => {
+  return groupActive.value
+}
+
 watch(() => JSON.stringify(fieldsErrMap.value), (errorMap) => {
   fieldsGroupError.value = {}
   if (props.openGroup) {
@@ -406,7 +408,8 @@ defineExpose({
   tableWrapper,
   scrollToById,
   scrollToByIndex,
-  getTableWrapperRef
+  getTableWrapperRef,
+  getGroupActive
 })
 </script>
 
@@ -414,6 +417,7 @@ defineExpose({
 .metadata-edit-table-wrapper {
   background: #fff;
   height: 100%;
+  position: relative;
 
   &.table-full-screen {
     padding: 24px;

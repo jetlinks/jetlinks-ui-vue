@@ -67,11 +67,11 @@ export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => 
         }
     })
 
-    return newColumns.reduce((prev, next, index) => {
-        let _width = next.width
+    return newColumns.map((item, index) => {
+        let _width = item.width
         let left = 0
 
-        if (!next.width) {
+        if (!item.width) {
             _width = parseAverage
         }
 
@@ -80,14 +80,17 @@ export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => 
         }
 
         if (index !== 0) {
-            left = prev[index - 1].width + prev[index - 1].left
+            left = newColumns[index - 1].width + newColumns[index - 1].left
         }
 
-        prev.push({
-            ...next,
-            width: _width,
-            left
-        })
-        return prev
+
+        item.width = _width
+        item.left = left
+        // prev.push({
+        //     ...next,
+        //     width: _width,
+        //     left
+        // })
+        return item
     }, [])
 }
