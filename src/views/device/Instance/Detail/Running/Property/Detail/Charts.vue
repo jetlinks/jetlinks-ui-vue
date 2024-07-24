@@ -82,12 +82,17 @@ const queryChartsAggList = async () => {
         loading.value = false;
     });
     if (resp.status === 200) {
+        let beginTime;
+        let endTime;
+        if (cycle.value === '1d') {
+            beginTime = dayjs(prop.time[0]).format('YYYY-MM-DD');
+            endTime = dayjs(prop.time[1]).format('YYYY-MM-DD');
+        } else {
+            beginTime = dayjs(prop.time[0]).format('YYYY-MM-DD HH:mm:ss');
+            endTime = dayjs(prop.time[1]).format('YYYY-MM-DD HH:mm:ss');
+        }
+
         const dataList: any[] = [
-                // {
-                //     year: prop.time[1],
-                //     value: undefined,
-                //     type: prop.data?.name || '',
-                // },
         ];
         (resp.result as any[]).forEach((i: any) => {
             dataList.push({
@@ -97,12 +102,27 @@ const queryChartsAggList = async () => {
                 type: prop.data?.name || '',
             });
         });
-        // dataList.push({
-        //     year: prop.time[0],
-        //     value: undefined,
-        //     type: prop.data?.name || '',
-        // });
         chartsList.value = (dataList || []).reverse();
+        if (
+            !chartsList.value?.[0]?.year ||
+            chartsList.value[0].year !== beginTime
+        ) {
+            chartsList.value.unshift({
+                year: prop.time[0],
+                value: undefined,
+                type: prop.data?.name || '',
+            });
+        }
+        if (
+            !chartsList.value?.[chartsList.value.length - 1]?.year ||
+            chartsList.value[chartsList.value.length - 1].year !== endTime
+        ) {
+            chartsList.value.push({
+                year: prop.time[1],
+                value: undefined,
+                type: prop.data?.name || '',
+            });
+        }
     }
 };
 
@@ -168,7 +188,9 @@ const getOptions = (arr: any[]) => {
             type: 'category',
             data: arr.map((item) => {
                 return echarts.format.formatTime(
-                    cycle.value === '1d' ? 'yyyy-MM-dd' : 'yyyy-MM-dd\nhh:mm:ss',
+                    cycle.value === '1d'
+                        ? 'yyyy-MM-dd'
+                        : 'yyyy-MM-dd\nhh:mm:ss',
                     item.year,
                     false,
                 );
