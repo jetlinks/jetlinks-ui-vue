@@ -78,6 +78,7 @@ export const asyncUpdateMetadata = (
       const productMetaDataMap = new Map()
 
       Object.keys(productMetaData).forEach((key:any)=>{
+      console.log('asyncUpdateMetadata',productMetaData, key)
         if(Array.isArray(productMetaData[key])){
            const ids = productMetaData[key].map((item:any)=>{
             return item.id

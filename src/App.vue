@@ -2,7 +2,7 @@
   <ConfigProvider
     :locale='zhCN'
     :IconConfig="{
-      scriptUrl: '//at.alicdn.com/t/c/font_4035907_1v1ms5scih.js'
+      scriptUrl: '//at.alicdn.com/t/c/font_4035907_zz8lsf4pexa.js'
     }"
   >
     <router-view />

@@ -34,7 +34,6 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
 
     let schemaInstance: any
     let rules = ref({})
-    let validateDataSource = ref(dataSource)
 
     const _options = Object.assign({ validateRowKey: false }, options)
 
@@ -96,10 +95,6 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
         rules.value = collectValidateRules(columns)
         schemaInstance = new Schema(rules.value)
     }
-
-    watch(() => dataSource.value, () => {
-        validateDataSource.value = dataSource.value
-    }, { deep: true })
 
     createValidate()
 

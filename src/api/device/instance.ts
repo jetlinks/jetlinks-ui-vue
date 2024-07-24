@@ -660,8 +660,11 @@ export const queryProductThreshold = (productId: string, propertyId: string) => 
 
 /**
  * 阈值限制-重置设备物继承产品的模型阈值
- * @param productId
  * @param deviceId
- * @param propertyId
+ * @param data
  */
 export const resetDeviceThreshold = (deviceId: string,  data: string) => server.remove(`/threshold/property/device/${deviceId}/_batch`, {}, { data })
+
+export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/instance/${id}/property-metadata/template.${format}`
+
+export const analyzeMetadata = (id: string, url: string) => server.get(`/device/instance/property-metadata/file/analyze?fileUrl=${url}`)

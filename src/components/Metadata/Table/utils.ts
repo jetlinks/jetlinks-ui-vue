@@ -10,24 +10,6 @@ export type ColumnsType = Array<ColumnType & { form?: ColumnsFormType }>
 
 
 
-export const TABLE_WRAPPER = Symbol('table-wrapper')
-export const FULL_SCREEN = Symbol('full')
-
-export const RIGHT_MENU = Symbol('right-menu')
-
-export const TABLE_ERROR = Symbol('table-error')
-
-export const TABLE_GROUP_ERROR = Symbol('table-group-error')
-
-export const TABLE_GROUP_OPTIONS = Symbol('table-group-options')
-
-export const TABLE_DATA_SOURCE = Symbol('table-data-source')
-
-export const TABLE_OPEN_GROUP = Symbol('table-open-group')
-
-export const TABLE_TOOL = Symbol('table-tool')
-
-
 /**
  * 规则收集器，收集columns中的rules和watch
  * @param columns
@@ -85,11 +67,11 @@ export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => 
         }
     })
 
-    return newColumns.reduce((prev, next, index) => {
-        let _width = next.width
+    return newColumns.map((item, index) => {
+        let _width = item.width
         let left = 0
 
-        if (!next.width) {
+        if (!item.width) {
             _width = parseAverage
         }
 
@@ -98,14 +80,17 @@ export const handleColumnsWidth = (columns: any[], warpWidth: number): any[] => 
         }
 
         if (index !== 0) {
-            left = prev[index - 1].width + prev[index - 1].left
+            left = newColumns[index - 1].width + newColumns[index - 1].left
         }
 
-        prev.push({
-            ...next,
-            width: _width,
-            left
-        })
-        return prev
+
+        item.width = _width
+        item.left = left
+        // prev.push({
+        //     ...next,
+        //     width: _width,
+        //     left
+        // })
+        return item
     }, [])
 }
