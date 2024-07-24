@@ -41,7 +41,7 @@
                         title: '删除'
                     }"
                     :popConfirm="{
-                        title: `确定要删除？`,
+                        title: `确认删除？`,
                         onConfirm: () => deleteData(i.id),
                     }"
                 >

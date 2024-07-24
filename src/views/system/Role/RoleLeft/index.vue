@@ -54,7 +54,7 @@
                                     style="padding: 0"
                                     hasPermission="system/Role:groupDelete"
                                     :popConfirm="{
-                                        title: `确定要删除？`,
+                                        title: `确认删除？`,
                                         onConfirm: () => deleteGroup(item.id),
                                     }"
                                     :disabled="item.id === 'default_group'"

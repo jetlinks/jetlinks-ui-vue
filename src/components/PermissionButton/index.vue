@@ -28,6 +28,7 @@
                 :width="300"
                 centered
                 :maskClosable="false"
+                z-index="9999"
             >
                 <div class="modalContent">
                     {{ popConfirm.title }}

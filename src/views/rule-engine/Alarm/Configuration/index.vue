@@ -64,7 +64,9 @@
                             </template>
                             <template #content>
                                 <a-row>
-                                    <Ellipsis style="max-width: calc(100% - 120px)">
+                                    <Ellipsis
+                                        style="max-width: calc(100% - 120px)"
+                                    >
                                         <span
                                             style="
                                                 font-weight: 600;
@@ -78,16 +80,16 @@
                                         :level="slotProps.level"
                                     ></LevelIcon>
                                 </a-row>
-                              <a-row>
-                                <div class="card-item-content-text">
-                                  说明
-                                </div>
-                                <div style="height: 22px;width: 100%">
-                                  <Ellipsis style="max-width: 100%" >
-                                    {{ slotProps.description }}
-                                  </Ellipsis>
-                                </div>
-                              </a-row>
+                                <a-row>
+                                    <div class="card-item-content-text">
+                                        说明
+                                    </div>
+                                    <div style="height: 22px; width: 100%">
+                                        <Ellipsis style="max-width: 100%">
+                                            {{ slotProps.description }}
+                                        </Ellipsis>
+                                    </div>
+                                </a-row>
                             </template>
                             <template #actions="item">
                                 <PermissionButton
@@ -134,7 +136,7 @@
                         <LevelIcon :level="slotProps.level"></LevelIcon>
                     </template>
                     <template #action="slotProps">
-                        <j-space >
+                        <j-space :size="16">
                             <template
                                 v-for="i in getActions(slotProps, 'table')"
                                 :key="i.key"
@@ -171,12 +173,7 @@
         v-if="visible"
         :data="current"
     />
-    <Delete
-        v-if="visibleDelete"
-        :id="configId"
-        @close="visibleDelete = false"
-        @refreshTable="refreshTable"
-    />
+    
 </template>
 
 <script lang="ts" setup>
@@ -186,18 +183,21 @@ import {
     _disable,
     remove,
 } from '@/api/rule-engine/configuration';
+import { query } from '@/api/rule-engine/log';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
 import LevelIcon from '../Config/LevelIcon.vue';
-import Delete from './Delete/index.vue';
+import { Modal } from 'ant-design-vue';
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
 const visibleDelete = ref(false);
 const configId = ref();
+const deleteState = ref(false)
+const alarmRecordNumber = ref(0);
 const columns = [
     {
         title: '配置名称',
@@ -366,7 +366,7 @@ const getActions = (
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
-                    return 
+                    return;
                 },
             },
         },
@@ -381,22 +381,41 @@ const getActions = (
                         : '删除',
                 placement: 'topLeft',
             },
-            onClick: () => {
+            onClick: async () => {
+                if(deleteState.value){
+                    return
+                }
+                deleteState.value = true
+                const params = {
+                    paging: false,
+                    terms: [
+                        {
+                            termType: 'eq',
+                            column: 'alarmConfigId',
+                            value: data.id,
+                            type: 'and',
+                        },
+                    ],
+                };
+                const res = await query(params);
+                if (res.success) {
+                    alarmRecordNumber.value = res.result?.total || 0;
+                }
+                Modal.confirm({
+                    title: alarmRecordNumber.value
+                        ? `删除告警配置将同步删除相关联的${alarmRecordNumber.value}条告警记录,确认删除？`
+                        : '确认删除？',
+                    onOk() {
+                        return deleteConfig(data.id);
+                    },
+                    onCancel() {
+                        deleteState.value = false
+                    },
+                });
+
                 visibleDelete.value = true;
                 configId.value = data.id;
             },
-            // popConfirm: {
-            //     title: '确认删除?',
-            //     onConfirm: async () => {
-            //         const resp = await remove(data.id);
-            //         if (resp.status === 200) {
-            //             onlyMessage('操作成功！');
-            //             tableRef.value?.reload();
-            //         } else {
-            //             onlyMessage('操作失败！', 'error');
-            //         }
-            //     },
-            // },
             icon: 'DeleteOutlined',
         },
     ];
@@ -412,6 +431,17 @@ const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };
 
+const deleteConfig = async (id:any) => {
+    const resp = await remove(id)
+    if (resp.success) {
+        onlyMessage('操作成功！');
+        refreshTable()
+    } else {
+        onlyMessage('操作失败！', 'error');
+    }
+    deleteState.value = false
+};
+
 const refreshTable = () => {
     visibleDelete.value = false;
     tableRef.value.reload();
@@ -423,8 +453,8 @@ const refreshTable = () => {
 }
 
 .card-item-content-text {
-  width: 100%;
-  margin-top: 16px;
-  margin-bottom: 8px;
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 8px;
 }
 </style>

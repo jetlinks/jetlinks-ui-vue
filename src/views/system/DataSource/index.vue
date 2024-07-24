@@ -84,11 +84,11 @@
                                 :hasPermission="`${permission}:action`"
                                 type="link"
                                 :popConfirm="{
-                                    title: `确定要${
+                                    title: `确认${
                                         table.getRowStatus(slotProps)
                                             ? '禁用'
                                             : '启用'
-                                    }吗？`,
+                                    }？`,
                                     onConfirm: () =>
                                         table.clickChangeStatus(slotProps),
                                 }"

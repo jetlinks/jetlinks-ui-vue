@@ -321,7 +321,7 @@ const getActions = (
             disabled: state === 'enabled',
             tooltip: {
                 title:
-                    state === 'enabled' ? '请先禁用该组件，再删除。' : '删除',
+                    state === 'enabled' ? '请先禁用该通道，再删除。' : '删除',
             },
             popConfirm: {
                 placement: 'topRight',

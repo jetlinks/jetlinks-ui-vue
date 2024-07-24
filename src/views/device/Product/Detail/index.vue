@@ -110,7 +110,7 @@
             <PermissionButton
                 type="primary"
                 :popConfirm="{
-                    title: `确定应用配置?`,
+                    title: `确认应用配置?`,
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
@@ -383,17 +383,17 @@ watch(
 //   () => route.params.id,
 //   (newId) => {
 //     if (newId && route.name === 'device/Product/Detail') {
-//       // productStore.reSet();
+//       productStore.reSet();
 //       productStore.tabActiveKey = 'Info';
-//       // productStore.refresh(newId as string);
+//       productStore.refresh(newId as string);
 //     }
 //   },
 //   { immediate: true, deep: true },
 // );
 
 onMounted(() => {
+  productStore.reSet();
   productStore.refresh(route.params.id as string);
-
   productStore.tabActiveKey = routerParams.params?.value.tab || 'Info';
 
 });

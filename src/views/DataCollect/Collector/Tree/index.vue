@@ -106,8 +106,8 @@
                             :popConfirm="{
                                 title:
                                     data?.state?.value === 'disabled'
-                                        ? '确定启用?'
-                                        : '确定禁用?',
+                                        ? '确认启用？'
+                                        : '确认禁用？',
                                 onConfirm: () => handleUpdate(data),
                             }"
                         >

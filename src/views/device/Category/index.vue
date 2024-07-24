@@ -39,7 +39,7 @@
                     </PermissionButton>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"

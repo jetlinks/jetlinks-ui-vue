@@ -60,8 +60,8 @@
                                 v-if="hasPermission('system/Dictionary:action')"
                                 :title="
                                     item.data.status === 1
-                                        ? '确定禁用？'
-                                        : '确定启用？'
+                                        ? '确认禁用？'
+                                        : '确认启用？'
                                 "
                                 :onConfirm="() => updateDic(item.data)"
                             >
@@ -96,7 +96,7 @@
                                 type="text"
                                 hasPermission="system/Dictionary:delete"
                                 :popConfirm="{
-                                    title: `确定要删除？`,
+                                    title: `确认删除？`,
                                     onConfirm: () => deleteDic(item.id),
                                 }"
                             >

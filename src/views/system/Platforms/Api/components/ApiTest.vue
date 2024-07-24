@@ -62,7 +62,7 @@
                                     <PermissionButton
                                         type="text"
                                         :popConfirm="{
-                                            title: `确定删除`,
+                                            title: `确认删除`,
                                             onConfirm: () =>
                                                 requestBody.clickDel(index),
                                         }"
