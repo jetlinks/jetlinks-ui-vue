@@ -147,33 +147,18 @@ import {
     changeDeploy,
     unDeploy,
     resumption,
-    del,
-    changeDeployBatch,
-    unDeployBatch,
-    resumptionBatch,
+    exportIOTBlack,
+    exportIOTWhite,
 } from '@/api/iot-card/cardManagement';
-import type { CardManagement } from '../typing';
 import { getImage, onlyMessage } from '@/utils/comm';
 import Export from '../Export.vue';
-import { useMenuStore } from 'store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
-import { usePermissionStore } from 'store/permission';
-import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
 
-const router = useRouter();
-const menuStory = useMenuStore();
 const cardManageRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
-// const _selectedRow = ref<any[]>([]);
-const bindDeviceVisible = ref<boolean>(false);
-const visible = ref<boolean>(false);
 const exportVisible = ref<boolean>(false);
-const cardId = ref<any>();
-const current = ref<Partial<CardManagement>>({});
-const saveType = ref<string>('');
-const isCheck = ref<boolean>(false);
 const defaultParams = {
     sorts: [{ name: 'createTime', order: 'desc' }],
     terms: [
@@ -344,10 +329,6 @@ const columns = [
         scopedSlots: true,
     },
 ];
-const btnHasPermission = usePermissionStore().hasPermission;
-const paltformPermission = btnHasPermission(`iot-card/Platform:add`);
-
-const routerParams = useRouterParams();
 
 const getActions = (
     data: Partial<Record<string, any>>,
