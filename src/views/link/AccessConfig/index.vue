@@ -22,7 +22,7 @@
                     <template #headerTitle>
                         <PermissionButton
                             type="primary"
-                            @click="handlAdd"
+                            @click="handleAdd"
                             hasPermission="link/AccessConfig:add"
                         >
                             <template #icon
@@ -43,7 +43,7 @@
                                 enabled: 'processing',
                                 disabled: 'error',
                             }"
-                            @click="handlEye(slotProps.id)"
+                            @click="handleEye(slotProps)"
                         >
                             <template #img>
                                 <slot name="img">
@@ -180,6 +180,7 @@
                 </j-pro-table>
             </FullPage>
         </div>
+        <Outline v-if="visibleOutline" :data="current" @closeDrawer="visibleOutline = false"></Outline>
     </page-container>
 </template>
 <script lang="ts" setup name="AccessConfigPage">
@@ -196,11 +197,13 @@ import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { cloneDeep } from 'lodash-es';
+import Outline from './Outline/index.vue'
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-
+const visibleOutline = ref(false);
+const current = ref()
 let providersList = ref<Record<string, any>>([]);
 
 const statusMap = new Map();
@@ -283,7 +286,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EditOutlined',
             onClick: async () => {
-                handlEdit(data.id);
+                handleEdit(data.id);
             },
         },
         {
@@ -343,18 +346,20 @@ const getProvidersList = async () => {
 };
 getProvidersList();
 
-const handlAdd = () => {
+const handleAdd = () => {
     menuStory.jumpPage(
         `link/AccessConfig/Detail`,
         { id: ':id' },
         { view: false },
     );
 };
-const handlEdit = (id: string) => {
+const handleEdit = (id: string) => {
     menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: false });
 };
-const handlEye = (id: string) => {
-    menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: true });
+const handleEye = (data: any) => {
+    visibleOutline.value = true;
+    current.value = data;
+    // menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: true });
 };
 
 const getDescription = (slotProps: Record<string, any>) =>
