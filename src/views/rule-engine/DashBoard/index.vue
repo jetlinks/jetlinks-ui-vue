@@ -66,6 +66,8 @@
                                     <li
                                         v-for="(item, i) in state.ranking"
                                         :key="item.targetId"
+                                        style="cursor: pointer"
+                                        @click="jumpToDetail(item.targetId)"
                                     >
                                         <img
                                             :src="
@@ -103,7 +105,7 @@
 
 <script lang="ts" setup>
 import { Empty } from 'jetlinks-ui-components';
-import { getImage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import Charts from './components/Charts.vue';
 import TopCard from './components/TopCard.vue';
 import NewAlarm from './components/NewAlarm.vue';
@@ -120,6 +122,10 @@ import {
     getAlarmLevel,
 } from '@/api/rule-engine/dashboard';
 import dayjs from 'dayjs';
+import { useMenuStore } from 'store/menu';
+import { query } from '@/api/rule-engine/scene';
+
+const menuStory = useMenuStore();
 let currentMonAlarm = ref<Footer[]>([
     {
         title: '当月告警',
@@ -232,12 +238,11 @@ const getDashBoard = () => {
     dashboard([today, thisMonth, fifteen]).then((res) => {
         if (res.status == 200) {
             const _data = res.result as DashboardItem[];
-            state.today = _data.find(
-                (item) => item.group === 'today',
-            )?.data.value || 0;
-            state.thisMonth = _data.find(
-                (item) => item.group === 'thisMonth',
-            )?.data.value || 0;
+            state.today =
+                _data.find((item) => item.group === 'today')?.data.value || 0;
+            state.thisMonth =
+                _data.find((item) => item.group === 'thisMonth')?.data.value ||
+                0;
             currentMonAlarm.value[0].value = state.thisMonth;
             const fifteenData = _data
                 .filter((item) => item.group === '15day')
@@ -369,12 +374,12 @@ const selectChange = () => {
     const month = day * 30;
     const year = 365 * day;
 
-    if (dt <= (hour + 10)) {
-      limit = 60
-      format = 'HH:mm';
+    if (dt <= hour + 10) {
+        limit = 60;
+        format = 'HH:mm';
     } else if (dt > hour && dt <= day) {
-      time = '1h'
-      limit = 24;
+        time = '1h';
+        limit = 24;
     } else if (dt > day && dt < year) {
         limit = Math.abs(Math.ceil(dt / day)) + 1;
         time = '1d';
@@ -438,17 +443,18 @@ const selectChange = () => {
             res.result
                 .filter((item: any) => item.group === 'alarmTrend')
                 .forEach((item: any) => {
-                    if(time === '1d'){
-                        item.data.timeString = item.data.timeString.split(' ')[0]
+                    if (time === '1d') {
+                        item.data.timeString =
+                            item.data.timeString.split(' ')[0];
                     }
                     xData.push(item.data.timeString);
                     sData.push(item.data.value);
                 });
-            const data:any = JSON.parse(JSON.stringify(sData))
-            if (data && data.length > 0 ) {
-                    const maxY = data.sort((a,b)=>{
-                    return b-a
-                })[0]
+            const data: any = JSON.parse(JSON.stringify(sData));
+            if (data && data.length > 0) {
+                const maxY = data.sort((a, b) => {
+                    return b - a;
+                })[0];
                 alarmStatisticsOption.value = {
                     xAxis: {
                         type: 'category',
@@ -467,7 +473,7 @@ const selectChange = () => {
                     grid: {
                         top: '2%',
                         bottom: '5%',
-                        left:  maxY < 1000 ? 50 : maxY.toString().length * 10,
+                        left: maxY < 1000 ? 50 : maxY.toString().length * 10,
                         right: '48px',
                     },
                     series: [
@@ -500,8 +506,8 @@ const selectChange = () => {
                         },
                     ],
                 };
-            }else{
-                console.log('data is empty ')
+            } else {
+                console.log('data is empty ');
             }
             state.ranking = res.result
                 ?.filter(
@@ -516,6 +522,37 @@ const selectChange = () => {
                 );
         }
     });
+};
+
+const jumpToDetail = (id: string) => {
+    switch (queryCodition.targetType) {
+        case 'device':
+            menuStory.jumpPage('device/Instance/Detail', { id });
+        case 'product':
+            menuStory.jumpPage('device/Product/Detail', { id });
+        case 'org':
+            menuStory.jumpPage('system/Department', {}, { id });
+        case 'other':
+            query({
+                terms: [
+                    {
+                        column: 'id',
+                        termType: 'eq',
+                        value: id,
+                    },
+                ],
+            }).then((res:any) => {
+                if (res.success && res.result?.data) {
+                    if(res.result?.total){
+                        const scene = res.result.data[0]
+                         menuStory.jumpPage('rule-engine/Scene/Save',{}, { triggerType: scene.trigger.type, id: id });
+                    }else{
+                        onlyMessage('数据已经删除','error')
+                    }
+                }
+            });
+           
+    }
 };
 </script>
 <style scoped lang="less">
