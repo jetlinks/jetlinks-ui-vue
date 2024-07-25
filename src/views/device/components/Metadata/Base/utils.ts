@@ -1,20 +1,26 @@
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
 
-export const levelMap = ref({
-    ordinary: '普通',
-    warn: '警告',
-    urgent: '紧急',
-})
-export const sourceMap = ref({
-    device: '设备',
-    manual: '手动',
-    rule: '规则',
-});
-export const expandsType = ref({
-    read: '读',
-    write: '写',
-    report: '上报',
-});
+export const sourceType = [
+    {
+        value: 'device',
+        label: '设备',
+    },
+    {
+        value: 'manual',
+        label: '手动',
+    },
+    {
+        value: 'rule',
+        label: '规则',
+    },
+]
+
+export const getSourceMap = () => {
+    return sourceType.reduce((prev, next) => {
+        prev[next.value] = next.label
+        return prev
+    }, {})
+}
 
 export const limitsMap = new Map<string, any>();
 limitsMap.set('events-add', 'eventNotInsertable');

@@ -1,11 +1,12 @@
 import { OperatorItem } from '@/components/FRuleEditor/Operator/typings'
 import server from '@/utils/request'
 import { DeviceMetadata, ProductItem, DepartmentItem, MetadataType  } from '@/views/device/Product/typings'
+import {BASE_API_PATH} from "@/utils/variable";
 
 /**
  * 根据条件查询产品（不带翻页）
  * @param data 查询条件
- * @returns 
+ * @returns
  */
 export const queryNoPagingPost = (data: any) => server.post(`/device-product/_query/no-paging?paging=false`, data)
 
@@ -14,7 +15,7 @@ export const queryNoPagingPost = (data: any) => server.post(`/device-product/_qu
  * @param direction from|to
  * @param type 物模型类型
  * @param data 物模型数据
- * @returns 
+ * @returns
  */
 export const convertMetadata = (direction: 'from' | 'to', type: string, data: any) => server.post<DeviceMetadata>(`/device/product/metadata/convert-${direction}/${type}`, data)
 
@@ -22,20 +23,20 @@ export const convertMetadata = (direction: 'from' | 'to', type: string, data: an
  * 修改产品
  * @param id 产品ID
  * @param data 产品数据
- * @returns 
+ * @returns
  */
 export const modify = (id: string, data: any) => server.put(`/device-product/${id}`, data)
 
 /**
- * 
- * @returns 
+ *
+ * @returns
  */
 export const getCodecs = () => server.get<{id: string, name: string}>('/device/product/metadata/codecs')
 
 /**
  * 根据产品ID获取产品详情
  * @param id 产品ID
- * @returns 
+ * @returns
  */
 export const detail = (id: string) => server.get<ProductItem>(`/device-product/${id}`)
 
@@ -80,31 +81,31 @@ export const category = (data: any) => server.get('/device/category/_tree?paging
  /**
  * 启用产品
  * @param productId 产品ID
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const _deploy = (productId: string) => server.post(`/device-product/${productId}/deploy`)
 
 /**
  * 禁用产品
  * @param productId 产品ID
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const _undeploy = (productId: string) => server.post(`/device-product/${productId}/undeploy`)
 
 /**
  * 新增产品
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const addProduct = (data:any) => server.post('/device-product',data)
 
 /**
  * 修改产品
  * @param id 产品ID
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const editProduct = (data: any) => server.put(`/device-product/${data.id}`, data)
 
@@ -122,7 +123,7 @@ export const deleteProduct = (id: string) => server.remove(`/device-product/${id
 /**
  * 保存产品
  * @param data 产品信息
- * @returns 
+ * @returns
  */
 export const saveProductMetadata = (data: Record<string, unknown>) => server.patch('/device-product', data)
 
@@ -218,6 +219,8 @@ export const getMetadataDeviceConfig = (params: {
 export const saveProductVirtualProperty = (productId: string, data: any[]) => server.patch(`/virtual/property/product/${productId}/_batch`, data)
 
 export const queryProductVirtualProperty = (productId: string, propertyId: string) => server.get(`/virtual/property/product/${productId}/${propertyId}`)
+
+export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/product/${id}/property-metadata/template.${format}`
 
 
 

@@ -68,7 +68,7 @@
     <slot>
       <a-button type="link" :disabled="disabled" style="padding: 0">
         <template #icon>
-          <AIcon type="EditOutlined"/>
+          <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !value.length}"/>
         </template>
       </a-button>
     </slot>
@@ -120,7 +120,11 @@ const defaultColumns = [
             if (value) {
               const option = setting[2]
 
-              if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
+              const isSome = dataSource.value.some((item) => {
+                return item.__dataIndex !== option.index && item.id === value
+              })
+
+              if (isSome) {
                 return Promise.reject('该标识已存在')
               }
               return Promise.resolve()

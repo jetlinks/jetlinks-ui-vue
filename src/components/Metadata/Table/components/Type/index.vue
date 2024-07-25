@@ -1,16 +1,19 @@
 <template>
-  <a-select
-    v-bind="props"
-    v-model:value="myValue"
-    style="width: 100%"
-    placeholder="请选择数据类型"
-    :dropdownStyle="{
-      zIndex: 1071
-    }"
-    :options="options"
-    :getPopupContainer="(node) => tableWrapperRef || node"
-    @change="change"
-  />
+  <div :class="{'select-no-value': !value}">
+    <a-select
+      v-bind="props"
+      allow-clear
+      :value="myValue"
+      style="width: 100%"
+      placeholder="请选择数据类型"
+      :dropdownStyle="{
+        zIndex: 1071
+      }"
+      :options="options"
+      :getPopupContainer="(node) => tableWrapperRef || node"
+      @change="change"
+    />
+  </div>
 </template>
 
 <script setup name="MetadataType">
@@ -22,10 +25,6 @@ const props = defineProps({
   ...selectProps(),
   filter: {
     type: Array ,
-    default: () => [],
-  },
-  value: {
-    type: Array,
     default: () => [],
   }
 });

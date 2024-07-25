@@ -142,7 +142,7 @@ const onOk = () => {
   const data = { ...formData }
 
   if (type.value === 'add') {
-    data.value = randomNumber()
+    data.value = 'group_'+randomNumber()
     myActiveKey.value = data.value
     emit(type.value, data)
     emit('change', data.value, data.label)

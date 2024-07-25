@@ -15,7 +15,7 @@
     <slot>
       <a-button type="link" :disabled="disabled" style="padding: 0">
         <template #icon>
-          <AIcon type="EditOutlined"/>
+          <AIcon type="EditOutlined" />
         </template>
       </a-button>
     </slot>

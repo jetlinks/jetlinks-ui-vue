@@ -15,13 +15,13 @@
           <a-space>
             <span>查找</span>
             <a-input v-model:value="searchValue" placeholder="请输入查找内容" />
-            <a-button @click="() => search('all')">查抄全部</a-button>
-            <a-button @click="() => search('prev')">上一个</a-button>
-            <a-button @click="() => search('next')">下一个</a-button>
+            <a-button type="primary" ghost @click="() => search('all')">查抄全部</a-button>
+            <a-button type="primary" ghost @click="() => search('prev')">上一个</a-button>
+            <a-button type="primary" ghost @click="() => search('next')">下一个</a-button>
           </a-space>
         </div>
         <div>
-          <a-button @click.stop="onClose">关闭</a-button>
+          <a-button type="primary" @click.stop="onClose">关闭</a-button>
         </div>
       </div>
       <div v-if="visible" style="margin: 12px 0">
@@ -31,29 +31,40 @@
           :columns="columns"
           :height="tableHeight"
           :disableMenu="false"
-          :cellHeight="32"
+          :cellHeight="36"
           :rowSelection="{
             onSelect: onSelect,
             selectedRowKeys: selectedRowKeys
           }"
           :serial="{
-            width: openGroup ? 150 : 66
+            width: openGroup ? 150 : 66,
+            title: '行数'
           }"
         >
           <template #serial="{ record }">
             <span v-if="openGroup">
               <Ellipsis>
-                {{ record.expands.groupName }} 第 {{ record.__serial }} 行
+                {{ record.expands.groupName }} 第 {{ record.__oldSerial }} 行
               </Ellipsis>
             </span>
             <span v-else>
               {{ record.__serial }}
             </span>
           </template>
+          <template #id="{ record }">
+            <Ellipsis>
+              {{ record.id }}
+            </Ellipsis>
+          </template>
+          <template #name="{ record }">
+            <Ellipsis>
+              {{ record.name }}
+            </Ellipsis>
+          </template>
         </Table>
       </div>
       <div v-if="visible">
-        查找到 {{filterArray.length}} 条相关属性
+        查找到 <span class="table-search-result-total">{{filterArray.length}}</span> 条相关属性
       </div>
     </div>
   </DragModal>
@@ -63,7 +74,6 @@
 import { DragModal } from '@/components/Modal'
 import Table from '../../Table.vue'
 import {useTableDataSource, useTableOpenGroup, useTableTool, useGroupOptions} from "@/components/Metadata/Table/context";
-import { sortBy } from 'lodash-es'
 
 const props = defineProps({
   searchKey: {
@@ -109,7 +119,7 @@ const selectedTableRow = (record) => {
 }
 
 const handleFilterArray = () => {
-  const cloneDataSource = JSON.parse(JSON.stringify(dataSource.value || '[]'))
+  const cloneDataSource = JSON.parse(JSON.stringify(dataSource.value || '[]')).map(item => Object.assign(item, { __oldSerial: item.__serial}))
   const _filterArray = cloneDataSource.filter(item => {
     if (item[props.searchKey]) {
       return item[props.searchKey].includes(searchValue.value)
@@ -182,5 +192,9 @@ const onSelect = (record) => {
 .table-search-header {
   display: flex;
   justify-content: space-between;
+}
+
+.table-search-result-total {
+  color: @primary-color;
 }
 </style>

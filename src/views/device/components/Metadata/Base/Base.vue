@@ -20,14 +20,11 @@
       <div class="extra-header">
         <div class="extra-left">
           <a-space>
-            <a-input-search
-              allowClear
-              placeholder="请输入搜索名称"
-              @search="handleSearch"
-            />
-            <AIcon
-                :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
-                @click="() => fullToggle(isFullscreen, fullScreenToggle)"
+            <Import
+              v-if="type === 'properties'"
+              :target="target"
+              :metadata="dataSource"
+              @ok="importMetadata"
             />
             <span v-if="searchData.show">
               已查询到
@@ -37,15 +34,38 @@
           </a-space>
         </div>
         <div class="extra-center">
-          <div v-if="copyDetail.index">
-            已复制
-            <span v-if="type === 'properties'">{{ copyDetail.groupName }}</span>
-            第
-            {{ copyDetail.index }}
-            行
+          <div v-if="copyDetail.index" class="extra-copy-tip">
+            <div class="extra-copy-tip-context">
+              <span> 已复制 </span>
+              <template v-if="type === 'properties'">
+                <Ellipsis style="max-width: 120px">
+                  {{ copyDetail.groupName }}
+                </Ellipsis>
+                <span >,</span>
+              </template>
+              <span>
+                第
+                {{ copyDetail.index }}
+                行
+              </span>
+            </div>
+            <div></div>
+              <div class="extra-copy-tip-icon" @click="copyDetail.index = 0">
+                <AIcon type="CloseOutlined" />
+              </div>
           </div>
         </div>
         <div class="extra-right">
+          <a-button
+            @click="() => fullToggle(isFullscreen, fullScreenToggle)"
+          >
+            <template #icon>
+              <AIcon
+                :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
+              />
+            </template>
+          </a-button>
+
           <PermissionButton
               type="primary"
               key="update"
@@ -110,9 +130,9 @@
         </div>
         <div v-else-if="type === 'events'">
           <ObjectParams v-model:value="record.valueType.properties">
-            <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+            <a-button type="primary" :disabled="record.expands?.isProduct" :danger="!record.valueType.properties?.length && record.id">
               <template #icon>
-                <AIcon type="SettingOutlined"/>
+                <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.valueType.properties?.length}"/>
               </template>
               配置
             </a-button>
@@ -137,20 +157,6 @@
             :options="EventLevel"
             :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
             :disabled="record.expands?.isProduct"
-        />
-        <a-select
-            v-else-if="props.type === 'tags'"
-            v-model:value="record.expands.type"
-            mode="multiple"
-            style="width: 100%;"
-            :options="[
-              { label: '读', value: 'read'},
-              { label: '写', value: 'write'},
-              { label: '上报', value: 'report'},
-            ]"
-            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
-            :disabled="record.expands?.isProduct"
-            placeholder="请选择读写类型"
         />
       </EditTableFormItem>
     </template>
@@ -185,9 +191,9 @@
     <template #inputs="{ record, index }">
       <EditTableFormItem :name="[index, 'inputs']" @change="metadataChange">
         <ObjectParams v-model:value="record.inputs" :type="type">
-          <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+          <a-button type="primary" :disabled="record.expands?.isProduct">
             <template #icon>
-              <AIcon type="SettingOutlined"/>
+              <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.inputs.length}"/>
             </template>
             配置
           </a-button>
@@ -234,7 +240,7 @@
     </template>
   </EditTable>
     <div>
-      可编辑数据列表共 {{ effectiveDataLength }} 条数据
+      可编辑数据列表共 <span class="metadata-result-total">{{ effectiveDataLength }}</span> 条数据
     </div>
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
@@ -313,6 +319,7 @@ import {
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
 import {message } from "ant-design-vue";
+import { Import } from './components/Import'
 
 const props = defineProps({
   target: {
@@ -404,24 +411,24 @@ const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
   );
 };
 
-const handleSearch = (searchValue: string) => {
-  const keys: string[] = []
-  if (searchValue) {
-    dataSource.value.forEach(item => {
-      if (item.name && item.name.includes(searchValue)) {
-        keys.push(item.id)
-      }
-    })
-  }
-
-  if (keys.length) {
-    tableRef.value.scrollToById(keys[0])
-  }
-  selectedRowKeys.value = keys
-
-  searchData.len = keys.length
-  searchData.show = true
-};
+// const handleSearch = (searchValue: string) => {
+//   const keys: string[] = []
+//   if (searchValue) {
+//     dataSource.value.forEach(item => {
+//       if (item.name && item.name.includes(searchValue)) {
+//         keys.push(item.id)
+//       }
+//     })
+//   }
+//
+//   if (keys.length) {
+//     tableRef.value.scrollToById(keys[0])
+//   }
+//   selectedRowKeys.value = keys
+//
+//   searchData.len = keys.length
+//   searchData.show = true
+// };
 
 const scrollDown = (len: number = 5) => {
   if (!hasOperate('add', props.type)) {
@@ -438,8 +445,7 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       nextTick(() => {
         if (copyDetail.key) {
           const copyItem = dataSource.value.find(item => item.__key === copyDetail.key)
-          console.log(copyItem)
-          copyDetail.index = copyItem!.__serial + 1
+          copyDetail.index = copyItem!.__serial
           copyDetail.groupName = copyItem!.expands.groupName
         }
       })
@@ -475,6 +481,7 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       copyDetail.index = record.__serial + 1
       copyDetail.key = record.__key
       copyDetail.groupName = dataSource.value[record.__dataIndex].expands.groupName
+      selectedRowKeys.value = [record.id]
       break;
     case 'detail':
       detailData.data = record
@@ -624,6 +631,10 @@ const groupDelete = (id: string) => {
   dataSource.value = dataSource.value.filter(item => item.expands?.groupId !== id || item.expands?.isProduct)
 }
 
+const importMetadata = (_metadata: any[]) => {
+  dataSource.value = _metadata
+}
+
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
 onUnmounted(() => {
@@ -662,12 +673,36 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   display: flex;
   justify-content: space-between;
   padding-bottom: 16px;
+  position: relative;
 }
 
 .extra-right {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.extra-copy-tip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 300px;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background-color: #fff;
+  box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.08),0px 3px 6px -4px rgba(0, 0, 0, 0.12),0px 9px 28px 8px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  transform: translateX(-150px);
+
+  .extra-copy-tip-icon {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  .extra-copy-tip-context {
+    display: flex;
+    gap: 4px;
+  }
 }
 
 .noEdit-tip {
@@ -688,5 +723,9 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   :deep(.ant-message) {
     z-index: 1073;
   }
+}
+
+.metadata-result-total {
+  color: @primary-color;
 }
 </style>

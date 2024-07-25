@@ -57,4 +57,11 @@ export const findTypeItem = (value: string) => {
     return type.find(item => item.value === value)
 }
 
+export const getTypeMap = () => {
+    return type.reduce((prev, next) => {
+        prev[next.value] = next.label
+        return prev
+    }, {})
+}
+
 export default type
