@@ -4,6 +4,8 @@ import { SearchHistoryList } from 'components/Search/types'
 
 export const FILE_UPLOAD = `${BASE_API_PATH}/file/static`;
 
+export const FileUpload = `${BASE_API_PATH}/file/upload`;
+
 /**
  * 保存查询记录
  * @param data
@@ -31,8 +33,8 @@ export const systemVersion = () => server.get<{edition?: string}>('/system/versi
 
 /**
  * 聚合查询
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const queryDashboard = (data: Record<string, any>) => server.post(`/dashboard/_multi`, data)
 

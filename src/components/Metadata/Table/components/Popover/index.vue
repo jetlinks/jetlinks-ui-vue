@@ -2,8 +2,10 @@
   <a-popover
     trigger="click"
     :visible="visible"
-    :overlay-class-name="warpClassNames"
-    :placement="placement"
+    :overlay-class-name="{
+      [warpClassNames]: true,
+      'metadata-table-popover-warp': true
+    }"
     :overlayStyle="{
       'zIndex': 1070
     }"
@@ -85,10 +87,18 @@ watch(() => props.visible, (newValue) => {
 
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .footer {
   display: flex;
   flex-direction: row-reverse;
   margin-top: 8px;
+}
+</style>
+
+<style lang="less">
+.metadata-table-popover-warp {
+  .ant-popover-arrow {
+    display: none;
+  }
 }
 </style>

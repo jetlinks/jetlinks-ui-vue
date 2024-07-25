@@ -1,6 +1,4 @@
 import { ref, reactive } from 'vue'
-import type { Ref, ReactiveEffect } from 'vue'
-
 
 type GroupActiveType = {
     value?: number

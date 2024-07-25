@@ -30,8 +30,8 @@ const emit = defineEmits(['update:value', 'confirm', 'cancel']);
 
 const props = defineProps({
   value: {
-    type: Number,
-    default: undefined,
+    type: Object,
+    default: () => ({}),
   },
   placement: {
     type: String,

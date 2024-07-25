@@ -1,4 +1,5 @@
 import { isNoCommunity } from '@/utils/utils';
+import type from "components/Metadata/Table/components/Type/data";
 
 export const DataTypeList: { label: string; value: string }[] = [
   {
@@ -110,6 +111,13 @@ export const EventLevel: { label: string; value: string }[] = [
     label: '紧急',
   },
 ];
+
+export const getEventLevelMap = () => {
+  return EventLevel.reduce((prev, next) => {
+    prev[next.value] = next.label
+    return prev
+  }, {})
+}
 
 export const DateTypeList = [
   // {

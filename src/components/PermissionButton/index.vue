@@ -1,23 +1,32 @@
 <template>
     <template v-if="isPermission">
         <template v-if="popConfirm">
-            <!-- <j-popconfirm :disabled="!isPermission || props.disabled" :overlayStyle='{width: "220px", zIndex: 1075 }' v-bind="popConfirm">
-        <j-tooltip v-if="tooltip" v-bind="tooltip">
-          <slot v-if="noButton"></slot>
-          <j-button v-else v-bind="props" :disabled="_isPermission" :style="props.style">
-            <slot></slot>
-            <template #icon>
-              <slot name="icon"></slot>
-            </template>
-          </j-button>
-        </j-tooltip>
-        <j-button v-else v-bind="props" :disabled="_isPermission" >
-          <slot></slot>
-          <template #icon>
-            <slot name="icon"></slot>
-          </template>
-        </j-button>
-      </j-popconfirm> -->
+            <!-- <j-popconfirm
+                :disabled="!isPermission || props.disabled"
+                :overlayStyle="{ width: '220px', zIndex: 1075 }"
+                v-bind="popConfirm"
+            >
+                <j-tooltip v-if="tooltip" v-bind="tooltip">
+                    <slot v-if="noButton"></slot>
+                    <j-button
+                        v-else
+                        v-bind="props"
+                        :disabled="_isPermission"
+                        :style="props.style"
+                    >
+                        <slot></slot>
+                        <template #icon>
+                            <slot name="icon"></slot>
+                        </template>
+                    </j-button>
+                </j-tooltip>
+                <j-button v-else v-bind="props" :disabled="_isPermission">
+                    <slot></slot>
+                    <template #icon>
+                        <slot name="icon"></slot>
+                    </template>
+                </j-button>
+            </j-popconfirm> -->
             <!-- <a-modal
                 v-if="modalVisible"
                 visible
@@ -162,7 +171,7 @@ const _isPermission = computed(() =>
 //         const res: any =  await props.popConfirm?.onConfirm(e)?.finally(()=>{
 //             confirmLoading.value = false;
 //             modalVisible.value = false;
-//             return 
+//             return
 //         });
 //         if(!res?.finally){
 //             confirmLoading.value = false;
@@ -172,24 +181,24 @@ const _isPermission = computed(() =>
 //         modalVisible.value = false;
 //     }
 // };
-const showConfirm = () =>{
+const showConfirm = () => {
     Modal.confirm({
         title: props.popConfirm?.title,
         content: props.popConfirm?.content,
         onOk() {
-          return props.popConfirm?.onConfirm()
+            return props.popConfirm?.onConfirm();
         },
         onCancel() {},
-      });
-}
+    });
+};
 </script>
 <style scoped lang="less">
-.modalContent {
-    text-align: center;
-}
-.control {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-}
+// .modalContent {
+//     text-align: center;
+// }
+// .control {
+//     margin-top: 20px;
+//     display: flex;
+//     justify-content: space-between;
+// }
 </style>

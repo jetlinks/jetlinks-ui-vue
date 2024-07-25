@@ -48,7 +48,6 @@
 
 <script setup name="MetadataBaseTable">
 import {
-  handleColumnsWidth,
   TABLE_WRAPPER,
   FULL_SCREEN,
   RIGHT_MENU,
@@ -56,8 +55,9 @@ import {
   TABLE_GROUP_ERROR,
   TABLE_DATA_SOURCE,
   TABLE_OPEN_GROUP,
-  TABLE_TOOL, TABLE_GROUP_OPTIONS
-} from './utils'
+  TABLE_TOOL, TABLE_GROUP_OPTIONS, TABLE_GROUP_ACTIVE
+} from './consts'
+import { handleColumnsWidth } from './utils'
 import {useGroup, useResizeObserver, useValidate} from './hooks'
 import {tableProps} from 'ant-design-vue/lib/table'
 import {useFormContext} from './context'
@@ -68,6 +68,7 @@ import {provide, useAttrs, useSlots} from 'vue'
 import Group from './group.vue'
 import {randomNumber} from "@/utils/utils";
 import {bodyProps} from "./props";
+import {get, sortBy, findIndex} from 'lodash-es'
 
 const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange', 'groupDelete', 'groupEdit'])
 
@@ -76,7 +77,10 @@ const props = defineProps({
   ...bodyProps(),
   serial: {
     type: Object,
-    default: () => ({width: 66})
+    default: () => ({
+      width: 66,
+      title: '序号'
+    })
   },
   validateRowKey: {
     type: Boolean,
@@ -96,16 +100,32 @@ const tableStyle = reactive({
 })
 
 const fields = {}
-const defaultGroupId = randomNumber()
+const defaultGroupId = 'group_1'
 
 const fieldsErrMap = ref({})
 const fieldsGroupError = ref({})
+
+const sortData = reactive({
+  key: undefined,
+  order: undefined,
+  orderKeys: [],
+  dataIndex: undefined
+})
 
 const { groupActive, groupOptions, addGroup, removeGroup, updateGroupActive, updateGroupOptions } = useGroup(props.openGroup)
 
 const _dataSource = computed(() => {
   const _options = new Map()
-  const newDataSource = props.dataSource.map((item, index) => {
+
+  const sortDataSource = sortData.key ?
+    sortBy(props.dataSource, (val) => {
+      if (!val.id) return 99999999
+
+      const index = findIndex(sortData.orderKeys, val2 => get(val, sortData.key) === val2)
+      return sortData.order === 'desc' ? index : ~index + 1
+    }) : props.dataSource
+
+  sortDataSource.forEach((item, index) => {
     item.__dataIndex = index
     if (props.openGroup) {
       const _groupId = item.expands?.groupId
@@ -115,8 +135,6 @@ const _dataSource = computed(() => {
       }
 
       const _optionsItem = _options.get(item.expands.groupId)
-
-      let __serial = 1
 
       if (!_optionsItem) {
         _options.set(item.expands.groupId, {
@@ -133,31 +151,26 @@ const _dataSource = computed(() => {
         _options.set(item.expands.groupId, _optionsItem)
       }
 
-      __serial = _optionsItem?.len || 1
-
-      return {
-        ...item,
-        __serial
-      }
+      item.__serial = _optionsItem?.len || 1
     } else {
-      return {
-        ...item,
-        __serial: index + 1
-      }
+      item.__serial = index + 1
     }
   })
 
-  updateGroupOptions([..._options.values()])
-  return newDataSource
+  if (props.openGroup) {
+    updateGroupOptions([..._options.values()])
+  }
+
+  return sortDataSource
 })
 
 const bodyDataSource = computed(() => {
   if (props.openGroup) {
-    return props.dataSource.filter(item => {
+    return _dataSource.value.filter(item => {
       return item.expands.groupId === groupActive.value
     })
   }
-  return props.dataSource
+  return _dataSource.value
 })
 
 useResizeObserver(tableWrapper, onResize)
@@ -190,7 +203,8 @@ const {rules, validateItem, validate, errorMap} = useValidate(
               }
 
               setTimeout(() => {
-                tableBody.value.scrollTo(e.__serial)
+                console.log(e.__serial)
+                tableBody.value.scrollTo(e.__serial - 1)
               }, 10)
             }
           })
@@ -226,9 +240,24 @@ provide(TABLE_TOOL, {
   },
   selected: (keys) => {
     tableBody.value.updateSelectedKeys(keys)
-  }
+  },
+  order: (type, key, orderKeys, dataIndex) => {
+    sortData.key = key
+    sortData.order = type
+    sortData.orderKeys = orderKeys
+    sortData.dataIndex = dataIndex
+  },
+  cleanOrder: () => {
+    sortData.key = undefined
+    sortData.order = undefined
+    sortData.orderKeys = []
+    sortData.dataIndex = undefined
+  },
+  sortData
 })
 provide(TABLE_GROUP_OPTIONS, groupOptions)
+provide(TABLE_GROUP_ACTIVE, groupActive)
+
 const addField = (key, field) => {
   fields[key] = field
 }
@@ -270,7 +299,7 @@ function onResize({width = 0, height}) {
   if (props.serial) {
     const serial = {
       dataIndex: '__serial',
-      title: '序号',
+      title: props.serial.title || '序号',
       customRender: (customData) => {
         if (props.serial?.customRender) {
           return props.serial?.customRender(customData)
@@ -324,6 +353,10 @@ const groupEdit = (record) => {
   emit('groupEdit', record)
 }
 
+const getGroupActive = () => {
+  return groupActive.value
+}
+
 watch(() => JSON.stringify(fieldsErrMap.value), (errorMap) => {
   fieldsGroupError.value = {}
   if (props.openGroup) {
@@ -375,7 +408,8 @@ defineExpose({
   tableWrapper,
   scrollToById,
   scrollToByIndex,
-  getTableWrapperRef
+  getTableWrapperRef,
+  getGroupActive
 })
 </script>
 
@@ -383,6 +417,7 @@ defineExpose({
 .metadata-edit-table-wrapper {
   background: #fff;
   height: 100%;
+  position: relative;
 
   &.table-full-screen {
     padding: 24px;
