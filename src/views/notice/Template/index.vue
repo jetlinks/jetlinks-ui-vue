@@ -193,7 +193,7 @@
         </FullPage>
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
-        <Log v-model:visible="logVis" :data="currentConfig" />
+        <Log v-if="logVis" :data="currentConfig" @cancel="logVis = false" />
     </page-container>
 </template>
 
