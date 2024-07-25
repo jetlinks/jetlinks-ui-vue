@@ -21,7 +21,7 @@
 <script setup lang='ts' name='InklingModal'>
 import InklingDevice from '@/views/device/components/InklingDevice'
 import { onlyMessage } from '@/utils/comm'
-import { savePluginData } from '@/api/link/plugin'
+import { savePluginData, getPluginData } from '@/api/link/plugin'
 
 type Emit = {
   (e: 'cancel'): void
@@ -69,6 +69,18 @@ const handleOk = async () => {
 const handleCancel = () => {
   emit('cancel')
 }
+
+const getCheckedKeys = () => {
+  getPluginData( 'device', props.pluginId!, route.params.id as string,).then(res => {
+    if (res.success) {
+      checkKey.value = res.result?.externalId || ''
+    }
+  })
+}
+
+onMounted(() => {
+  getCheckedKeys()
+})
 
 </script>
 
