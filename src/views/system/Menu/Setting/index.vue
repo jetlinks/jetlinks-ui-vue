@@ -45,11 +45,11 @@
             >
         </j-card>
         <j-modal
+            modalType="message"
             :visible="visible"
+            :confirmLoading="loading"
             @ok="handleOk"
             @cancel="handleCancel"
-            modalType="message"
-            :confirmLoading="loading"
         >
             保存后当前系统菜单数据将被覆盖，确认操作？
         </j-modal>
@@ -120,7 +120,7 @@ const params = {
 let filterProtocolList: any[] = [];
 const getProvidersFn = async () => {
     if(!isNoCommunity){
-        return 
+        return
     }else{
         const res: any = await getProviders();
         filterProtocolList = protocolList.filter((item) => {
@@ -155,7 +155,7 @@ getProvidersFn();
 //     return filtered;
 // }
 /**
- * 
+ *
  * @param nodes 菜单数据
  * @param selectedKeys 选中的菜单
  * 选中和非选中改变show的值
@@ -198,6 +198,7 @@ const handleOk = async () => {
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
+        location.reload()
     }
     loading.value = false;
     visible.value = false;
