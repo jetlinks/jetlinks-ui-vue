@@ -31,6 +31,8 @@ export const request = axios.create({
   withCredentials: false,
   baseURL: BASE_API_PATH,
   timeout: 1000 * 15,
+  // TODO 重写transformRequest处理无法传递null和undefined的问题
+  // transformRequest
 })
 
 /**
