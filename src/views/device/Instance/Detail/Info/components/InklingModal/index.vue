@@ -10,8 +10,10 @@
   >
     <InklingDevice
       v-model:value='checkKey'
+      type="device"
       :accessId='accessId'
       :pluginId="pluginId"
+      :internalId="route.params.id"
     />
   </j-modal>
 </template>

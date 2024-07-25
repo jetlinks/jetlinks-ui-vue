@@ -1,7 +1,7 @@
 <template>
   <a-button type="primary" ghost @click="showImport">
     <template #icon>
-      <AIcon type="DownloadOutlined" />
+      <AIcon type="DownloadOutlined"/>
     </template>
     导入
   </a-button>
@@ -23,7 +23,7 @@
       <a-form-item label="上传文件">
         <a-upload-dragger
           name="file"
-          :action="FileUpload"
+          :action="analyzeMetadata"
           :headers="{[TOKEN_KEY]: LocalStore.get(TOKEN_KEY)}"
           :maxCount="1"
           :showUploadList="false"
@@ -33,7 +33,7 @@
           @drop="handleDrop"
         >
           <div class="dragger-box">
-            <AIcon class="icon" type="PlusCircleFilled" />
+            <AIcon class="icon" type="PlusCircleFilled"/>
             <span style="margin: 16px 0 8px 0">点击或拖拽上传文件</span>
             <span>格式：.xlsx, .csv</span>
           </div>
@@ -53,22 +53,21 @@
     </div>
     <div v-else>
       <div>
-        导入成功： {{successCount}}条
+        导入成功： {{ successCount }}条
       </div>
       <div>
-        导入失败： {{errorCount}}条
+        导入失败： {{ errorCount }}条
       </div>
     </div>
   </a-modal>
 </template>
 
 <script setup name="MetadataImport">
-import { FileUpload } from '@/api/comm';
 import {TOKEN_KEY, TOKEN_KEY_URL} from '@/utils/variable';
-import {LocalStore, onlyMessage, getToken, isFullScreen} from '@/utils/comm';
-import { validate } from './util'
-import { getTemplate, analyzeMetadata } from '@/api/device/instance'
-import { getTemplate as getProductTemplate } from '@/api/device/product'
+import {getToken, isFullScreen, LocalStore, onlyMessage} from '@/utils/comm';
+import {validate} from './util'
+import {analyzeMetadata, getTemplate} from '@/api/device/instance'
+import {getTemplate as getProductTemplate} from '@/api/device/product'
 import {downloadFileByUrl} from "@/utils/utils";
 import {useGroupActive, useTableWrapper} from "@/components/Metadata/Table/context";
 
@@ -96,14 +95,14 @@ let submitMetadata = []
 
 const route = useRoute()
 
-const modalContainer = (e) =>{
+const modalContainer = (e) => {
   if (isFullScreen()) {
     return tableWrapperRef.value || document.body
   }
   return document.body
 }
 
-const init = () =>{
+const init = () => {
   step.value = 1
   successCount.value = 0
   errorCount.value = 0
@@ -118,38 +117,33 @@ const onCancel = () => {
   visible.value = false
 }
 
-const submitData = async (fileUrl) => {
-  if (!!fileUrl) {
-    // validate()
-    step.value = 2
-    await analyzeMetadata(route.params.id, fileUrl).then(resp => {
-      if (resp.success) {
-        const _metadata = props.metadata.filter(item => item.id && !item.expands?.isProduct)
-        const result = resp.result.map(item => {
-          if (item.expands) {
-            item.expands.groupId = groupActive.value
-            item.expands.groupName = groupActive.label
-          } else {
-            item.expands = {
-              groupId: groupActive.value,
-              groupName: groupActive.label,
-            }
-          }
-          return item
-        })
-
-        submitMetadata = validate(result, _metadata, (validate) => {
-          if (validate) {
-            successCount.value += 1
-          } else {
-            errorCount.value += 1
-          }
-        })
+const submitData = async (metadataStr) => {
+  console.log(metadataStr)
+  if (metadataStr) {
+    const _metadataObject = JSON.parse(metadataStr || "{}")
+    const properties = _metadataObject.properties
+    const _metadata = props.metadata.filter(item => item.id && !item.expands?.isProduct)
+    const result = properties.map(item => {
+      if (item.expands) {
+        item.expands.groupId = groupActive.value
+        item.expands.groupName = groupActive.label
+      } else {
+        item.expands = {
+          groupId: groupActive.value,
+          groupName: groupActive.label,
+        }
       }
-    }).finally(() => {
-      step.value = 3
+      return item
     })
 
+    submitMetadata = validate(result, _metadata, (validate) => {
+      if (validate) {
+        successCount.value += 1
+      } else {
+        errorCount.value += 1
+      }
+    })
+    step.value = 3
   } else {
     onlyMessage('请先上传文件', 'error');
   }
@@ -163,10 +157,11 @@ const onOk = () => {
 const downFile = (type) => {
   const url = props.target === 'device' ? getTemplate(route.params.id, type) : getProductTemplate(route.params.id, type)
 
-  downloadFileByUrl(url + `?${TOKEN_KEY_URL}=${getToken()}` , '物模型模版', type)
+  downloadFileByUrl(url + `?${TOKEN_KEY_URL}=${getToken()}`, '物模型模版', type)
 }
 
-const handleDrop = () => {};
+const handleDrop = () => {
+};
 
 const beforeUpload = (file) => {
   const isCsv = file.type === 'text/csv';
@@ -182,9 +177,12 @@ const beforeUpload = (file) => {
 
 
 const uploadChange = async (info) => {
+  if (info.file.status === 'uploading') {
+    step.value = 2
+  }
   if (info.file.status === 'done') {
-    const resp = info.file.response || { result: {} };
-    await submitData(resp?.result.accessUrl || '');
+    const resp = info.file.response || {result: {}};
+    await submitData(resp?.result || '');
   }
   if (info.file.status === 'error') {
     onlyMessage('上传失败', 'error');
@@ -208,6 +206,7 @@ const uploadChange = async (info) => {
 .file-download {
   display: flex;
   gap: 16px;
+
   .btn {
     border: none;
     background-color: #ECECF0;

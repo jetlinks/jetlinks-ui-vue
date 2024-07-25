@@ -194,6 +194,12 @@ const filterType = async (newVal: any) => {
     ];
     const triggerType = unref(data)?.trigger?.type;
 
+    //标签
+    const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
+    if (tag && tag.length !== 0) {
+      tagList.value = tag || [];
+    }
+
     if (triggerType === 'device') {
         // _typeList.push(TypeMap.tag) // 设备输出一直展示标签
         //关系

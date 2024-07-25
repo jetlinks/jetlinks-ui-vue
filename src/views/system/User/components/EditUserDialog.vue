@@ -89,7 +89,7 @@
                             :fieldNames="{ label: 'name', value: 'id', children:'children' }"
                             :disabled="form.data.username === 'admin'"
                             :filterTreeNode="
-                                (v: string, node: any) => filterSelectNode(v, node, 'name')
+                                (v, node) => filterSelectNode(v, node, 'name')
                             "
                         >
                         <template #title="{ name }">
