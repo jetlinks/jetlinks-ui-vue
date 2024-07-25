@@ -229,11 +229,11 @@ const refreshState = async () => {
 };
 //全部开始
 const startAll = async () => {
-    const state =
-        props.data?.mode?.value === 'push'
-            ? ['canceled', 'failed']
-            : ['canceled'];
-    const res = await startTask(props.data.id, state);
+    // const state =
+    //     props.data?.mode?.value === 'push'
+    //         ? ['canceled', 'failed']
+    //         : ['canceled'];
+    const res = await startTask(props.data.id,  ['canceled', 'failed']);
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();
