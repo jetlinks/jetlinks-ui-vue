@@ -29,7 +29,10 @@
                             >导出
                         </PermissionButton>
                         <PermissionButton
-                            @click="handleResumption"
+                            :popConfirm="{
+                                title: '确认复机吗？',
+                                onConfirm: handleResumption,
+                            }"
                             :hasPermission="'iot-card/CardManagement:action'"
                             >复机
                         </PermissionButton>
@@ -149,6 +152,7 @@ import {
     resumption,
     exportIOTBlack,
     exportIOTWhite,
+    resumptionBatch,
 } from '@/api/iot-card/cardManagement';
 import { getImage, onlyMessage } from '@/utils/comm';
 import Export from '../Export.vue';
@@ -407,6 +411,20 @@ const handleSearch = (e: any) => {
 const onSelectChange = (keys: string[], rows: []) => {
     _selectedRowKeys.value = [...keys];
     // _selectedRow.value = [...rows];
+};
+
+//复机
+
+const handleResumption = () => {
+    if (_selectedRowKeys.value.length >= 1) {
+        resumptionBatch(_selectedRowKeys.value).then((res: any) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功');
+            }
+        });
+    } else {
+        onlyMessage('请勾选需要复机的物联卡', 'warning');
+    }
 };
 
 /**
