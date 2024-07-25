@@ -24,7 +24,7 @@
                 'coap-server-gateway',
                 'tcp-server-gateway',
                 'udp-device-gateway',
-            ]"
+            ].includes(data.provider)"
             :data="data"
         />
         <SecondKind
