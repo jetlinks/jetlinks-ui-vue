@@ -291,7 +291,7 @@ import {
   productGuide,
   productGuideSave,
   getStoragList,
-  saveDevice,
+  saveDevice,   
   updateDevice,
   detail,
   modify, getAccessConfig

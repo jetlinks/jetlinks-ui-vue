@@ -400,7 +400,6 @@ watchEffect(() => {
 });
 
 onMounted(() => {
-    console.log(props, '123');
     if (paramsId !== ':id') {
         // 编辑，回显表单值
         formData.name = props.data.name;
