@@ -937,6 +937,9 @@ const handleImport = async () => {
                     close();
                 } catch (e) {
                     loading.value = false;
+                    if(e?.name === 'AxiosError'){
+                        return
+                    }
                     onlyMessage(
                         e === 'error'
                             ? '物模型数据不正确'
