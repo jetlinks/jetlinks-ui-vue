@@ -665,11 +665,20 @@ export const queryDeviceThreshold = (productId: string, deviceId: string,  prope
 export const queryProductThreshold = (productId: string, propertyId: string) => server.get(`/message/preprocessor/product/${productId}/property/${propertyId}`)
 
 /**
- * 阈值限制-重置设备物继承产品的模型阈值
- * @param deviceId
- * @param data
+ * 阈值限制-删除产品物模型的阈值
+ * @param productId 
+ * @param propertyId 
+ * @returns 
  */
-export const resetDeviceThreshold = (deviceId: string,  data: string) => server.remove(`/threshold/property/device/${deviceId}/_batch`, {}, { data })
+export const deleteProductThreshold = (productId:string,propertyId:string,data:any) => server.remove(`/message/preprocessor/product/${productId}/property/${propertyId}`,data)
+
+/**
+ * 阈值限制-删除产品物模型的阈值
+ * @param productId 
+ * @param propertyId 
+ * @returns 
+ */
+export const deleteDeviceThreshold = (productId:string,deviceId:string,propertyId:string,data:any) => server.remove(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`,data)
 
 export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/instance/${id}/property-metadata/template.${format}`
 

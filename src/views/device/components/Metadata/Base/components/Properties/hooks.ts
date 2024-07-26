@@ -1,4 +1,4 @@
-import { updateProductThreshold, updateDeviceThreshold ,queryDeviceThreshold, queryProductThreshold, resetDeviceThreshold } from '@/api/device/instance'
+import { updateProductThreshold, updateDeviceThreshold ,queryDeviceThreshold, queryProductThreshold , deleteProductThreshold, deleteDeviceThreshold } from '@/api/device/instance'
 import { useRequest } from '@/hook'
 import {useProductStore} from "store/product";
 import {useInstanceStore} from "store/instance";
@@ -15,6 +15,10 @@ export const useThreshold = (props: Record<string, any>) => {
 
     const { run: updateDeviceRun } = useRequest(updateDeviceThreshold,{ immediate: false})
 
+    const { run: deleteProductRun } = useRequest(deleteProductThreshold,{ immediate: false})
+    
+    const { run: deleteDeviceRun } = useRequest(deleteDeviceThreshold,{ immediate: false})
+
     const { run: queryDevice } = useRequest(queryDeviceThreshold, {
         immediate: false,
         onSuccess(res) {
@@ -29,9 +33,6 @@ export const useThreshold = (props: Record<string, any>) => {
         }
     })
 
-    const { run: rest } = useRequest(resetDeviceThreshold, { immediate: false, onSuccess(res) {
-            thresholdDetailQuery()
-        } })
 
     const handleDetail = (data: Record<string, any>) => {
         thresholdDetail.value = {
@@ -45,7 +46,7 @@ export const useThreshold = (props: Record<string, any>) => {
     }
 
     const thresholdUpdate = (data: Record<string, any>) => {
-        const param = {
+        const params = {
             thingType: props.target,
             provider: 'simple',
             configuration:{
@@ -67,12 +68,19 @@ export const useThreshold = (props: Record<string, any>) => {
             
         }
         if(props.target === 'product'){
-            updateProductRun(productStore.current.id,props.id,param)
+            updateProductRun(productStore.current.id,props.id,params)
         }else{
-            updateDeviceRun(deviceStore.current.productId, deviceStore.current.id, props.id)
+            updateDeviceRun(deviceStore.current.productId, deviceStore.current.id, props.id,params)
         }
     }
 
+    const thresholdDelete = ()=>{
+        if(props.target === 'product'){
+            deleteProductRun(productStore.current.id,props.id)
+        }else{
+            deleteDeviceRun(deviceStore.current.productId,deviceStore.current.id,props.id)
+        }
+    }
     const thresholdDetailQuery = () => {
         if (props.target === 'product') {
             queryProduct(productStore.current.id, props.id)
@@ -81,13 +89,10 @@ export const useThreshold = (props: Record<string, any>) => {
         }
     }
 
-    const thresholdRest = () => {
-        rest(deviceStore.current.id, [props.id])
-    }
 
     return {
         thresholdUpdate,
-        thresholdRest,
+        thresholdDelete,
         thresholdDetailQuery,
         thresholdDetail
     }

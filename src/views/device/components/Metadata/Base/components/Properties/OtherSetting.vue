@@ -99,14 +99,13 @@
                         <template #header>
                             <a-space>
                                 <div>拓展配置</div>
-
                                 <a-button
                                     v-if="
                                         props.isProduct && target === 'device'
                                     "
                                     type="link"
                                     style="padding: 0 4px; height: 22px"
-                                    @click="thresholdRest"
+                                    @click="(e)=>resetThreshold(e)"
                                 >
                                     <template #icon>
                                         <AIcon type="RedoOutlined" />
@@ -258,9 +257,9 @@ const tableWrapperRef = useTableWrapper();
 
 const {
     thresholdUpdate,
-    thresholdRest,
     thresholdDetail,
     thresholdDetailQuery,
+    thresholdDelete
 } = useThreshold(props);
 
 const emit = defineEmits(['update:value', 'change']);
@@ -363,6 +362,12 @@ const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
     }
 };
 
+const resetThreshold = async(e:any) =>{
+    e.stopPropagation();
+    await thresholdDelete();
+    thresholdDetailQuery();
+}
+
 const getConfig = async () => {
     const id =
         type === 'product' ? productStore.current?.id : deviceStore.current.id;
@@ -430,7 +435,8 @@ const confirm = () => {
             }
             if (showExtra.value) {
                 // expands.threshold = extraForm
-                await thresholdUpdate(extraForm);
+                await thresholdUpdate(extraForm)
+                // extraForm.type ?  await thresholdUpdate(extraForm) : await thresholdDelete()
             }
 
             expands.otherEdit = true;
