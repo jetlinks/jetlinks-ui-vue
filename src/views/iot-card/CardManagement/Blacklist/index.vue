@@ -118,12 +118,6 @@
                                 @click="i.onClick"
                                 type="link"
                                 style="padding: 0px"
-                                :hasPermission="
-                                    i.key === 'view'
-                                        ? true
-                                        : 'iot-card/CardManagement:' + i.key
-                                "
-                                :danger="i.key === 'delete'"
                             >
                                 {{ i.text }}
                             </PermissionButton>
@@ -151,7 +145,6 @@ import {
     unDeploy,
     resumption,
     exportIOTBlack,
-    exportIOTWhite,
     resumptionBatch,
 } from '@/api/iot-card/cardManagement';
 import { getImage, onlyMessage } from '@/utils/comm';
@@ -414,7 +407,6 @@ const onSelectChange = (keys: string[], rows: []) => {
 };
 
 //复机
-
 const handleResumption = () => {
     if (_selectedRowKeys.value.length >= 1) {
         resumptionBatch(_selectedRowKeys.value).then((res: any) => {

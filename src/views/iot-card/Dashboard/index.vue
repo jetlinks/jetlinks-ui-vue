@@ -68,7 +68,7 @@
                 </j-row>
             </j-card>
             <j-row :gutter="24">
-                <j-col :span="16">
+                <j-col :span="16" v-show="true">
                     <div class="static-card">
                         <Guide title="流量统计">
                             <template #extra>
@@ -94,7 +94,7 @@
                         </div>
                     </div>
                 </j-col>
-                <j-col :span="8">
+                <j-col :span="8" v-show="true">
                     <div class="static-card">
                         <Guide title="流量使用TOP10">
                             <template #extra>

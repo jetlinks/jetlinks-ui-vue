@@ -389,6 +389,7 @@ import {
     sync,
     removeCards,
     unbind,
+    exportIOTWhite,
 } from '@/api/iot-card/cardManagement';
 import type { CardManagement } from './typing';
 import { getImage, onlyMessage } from '@/utils/comm';
