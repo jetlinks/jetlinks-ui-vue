@@ -202,8 +202,6 @@ const filterType = async (newVal: any) => {
       _typeList[3].disabled = true
     }
 
-    console.log(newVal, tag)
-
     if (triggerType === 'device') {
         // _typeList.push(TypeMap.tag) // 设备输出一直展示标签
         //关系
