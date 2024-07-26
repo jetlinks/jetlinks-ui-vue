@@ -85,7 +85,7 @@ const formData = reactive({
     multiple: props.value?.multiple,
     elements: cloneDeep(props.value?.elements) || [],
   },
-  elementType: {
+  elementType: props.value?.type === 'array' ? props.value.elementType : {
     type: undefined
   }
 });
@@ -145,9 +145,10 @@ const initValue = () => {
   formData.format = props.value?.format;
   formData.enum = {
     multiple: props.value?.multiple,
-    elements: cloneDeep(props.value?.elements),
+    elements: cloneDeep(props.value?.elements || []),
   };
-  formData.elementType = {
+
+  formData.elementType = props.value?.type === 'array' ? props.value.elementType : {
     type: undefined
   }
 };

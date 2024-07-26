@@ -2,12 +2,12 @@
     <div class="trigger-way-warp" :class="{ disabled: disabled }">
         <div
             v-for="item in typeList"
-            :key="item.value"
             class="trigger-way-item"
+            :key="item.value"
             :class="{
                 active: _value === item.value,
                 labelBottom: labelBottom,
-                itemDisabled: !item.disabled,
+                itemDisabled: item.disabled,
             }"
             @click="onSelect(item.value, item.disabled)"
         >
@@ -62,7 +62,7 @@ watch(
 );
 
 const onSelect = (_type: string, disabled: Boolean) => {
-    if (!props.disabled && disabled) {
+    if (!props.disabled && !disabled) {
         _value.value = _type;
         emits('update:value', _type);
         emits('change', _type);
@@ -76,7 +76,7 @@ const onSelect = (_type: string, disabled: Boolean) => {
     flex-wrap: wrap;
     gap: 16px 24px;
     width: 100%;
-   
+
     .trigger-way-item {
         flex: 1 1 0;
         display: flex;

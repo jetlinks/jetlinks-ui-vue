@@ -1,6 +1,6 @@
 <!-- 通知记录 -->
 <template>
-    <j-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
+    <j-modal visible title="通知记录" :footer="null" width="70%" @cancel="emit('cancel')">
         <pro-search type="simple" :columns="columns" @search="handleSearch" />
 
         <JProTable
@@ -55,6 +55,7 @@ import Record from '../../Template/Log/components/Record.vue'
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
+    (e: 'cancel'): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -160,7 +161,7 @@ const handleDetail = (data: any) => {
         content: h(
             "p",
             {
-               
+
                 style: {
                     maxHeight: '300px',
                     overflowY: 'auto',
@@ -183,7 +184,7 @@ const handleDetail = (data: any) => {
             },
         ),
     });
-    }  
+    }
 };
 </script>
 <style lang="less" scoped>

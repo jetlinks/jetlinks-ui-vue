@@ -478,7 +478,7 @@ const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  
       editStatus.value = true
       break;
     case 'copy':
-      copyDetail.index = record.__serial + 1
+      copyDetail.index = record.__serial
       copyDetail.key = record.__key
       copyDetail.groupName = dataSource.value[record.__dataIndex].expands.groupName
       selectedRowKeys.value = [record.id]

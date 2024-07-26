@@ -66,7 +66,6 @@ import Body from './body.vue'
 import {useFullscreen} from '@vueuse/core';
 import {provide, useAttrs, useSlots} from 'vue'
 import Group from './group.vue'
-import {randomNumber} from "@/utils/utils";
 import {bodyProps} from "./props";
 import {get, sortBy, findIndex} from 'lodash-es'
 
@@ -76,7 +75,7 @@ const props = defineProps({
   ...tableProps(),
   ...bodyProps(),
   serial: {
-    type: Object,
+    type: [Object, Boolean],
     default: () => ({
       width: 66,
       title: '序号'
@@ -203,7 +202,6 @@ const {rules, validateItem, validate, errorMap} = useValidate(
               }
 
               setTimeout(() => {
-                console.log(e.__serial)
                 tableBody.value.scrollTo(e.__serial - 1)
               }, 10)
             }
@@ -212,6 +210,9 @@ const {rules, validateItem, validate, errorMap} = useValidate(
 
         fieldsErrMap.value = errMap
 
+      },
+      onSuccess: () => {
+        fieldsErrMap.value = {}
       },
       onEdit: () => {
           emit('editChange', true)

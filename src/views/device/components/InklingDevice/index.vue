@@ -121,7 +121,6 @@ import {
     getCommandsDevicesByAccessId,
 } from '@/api/link/accessConfig';
 import { isArray } from 'lodash-es';
-import {getPluginData} from "@/api/link/plugin";
 import { getInkingDevices } from '@/api/device/instance';
 
 type Emit = {
@@ -182,17 +181,11 @@ const queryInkingDevices = (data: string[]) => {
             return;
         }
 
-        if (props.internalId) {
-          const res = await getPluginData(props.type, props.accessId, props.internalId);
-          if (res) {
-            disabledKeys.value = res.result?.map((item) => item.externalId);
-          }
-        } else {
-          const res = await getInkingDevices(data,props.accessId);
-          if (res) {
-            disabledKeys.value = res.result?.map((item) => item.externalId);
-          }
+        const res = await getInkingDevices(data,props.accessId);
+        if (res) {
+          disabledKeys.value = res.result?.map((item) => item.externalId) || [];
         }
+
         resolve(true);
     });
 };

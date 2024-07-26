@@ -9,7 +9,7 @@ import {
     TABLE_TOOL,
     TABLE_GROUP_OPTIONS,
     TABLE_FORM_ITEM_ERROR,
-    TABLE_GROUP_ACTIVE
+    TABLE_GROUP_ACTIVE, FULL_SCREEN
 } from "./consts";
 
 type FiledExpose = {
@@ -47,3 +47,5 @@ export const useGroupOptions = () => inject(TABLE_GROUP_OPTIONS, [])
 
 export const useFormItemError = () => inject(TABLE_FORM_ITEM_ERROR)
 export const useGroupActive = () => inject(TABLE_GROUP_ACTIVE)
+
+export const useTableFullScreen = () => inject(FULL_SCREEN)
