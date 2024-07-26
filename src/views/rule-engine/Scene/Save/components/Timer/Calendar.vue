@@ -135,7 +135,7 @@ const { data:options } = useRequest(queryTags)
 const visible = ref(false)
 
 const myValue = reactive({
-  type: 'and',
+  type: 'or',
   spec: []
 })
 

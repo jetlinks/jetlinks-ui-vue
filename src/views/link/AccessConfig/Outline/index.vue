@@ -7,7 +7,9 @@
     >
         <template #title>
             <div class="drawerTitle">
-                <div>{{ data?.name }}</div>
+                <Ellipsis style="height: 22px; width: calc(100% - 50px)"
+                    ><div>{{ data?.name }}</div></Ellipsis
+                >
                 <Ellipsis style="height: 22px; max-width: 650px"
                     ><div class="description">
                         {{ data?.description }}
@@ -16,15 +18,17 @@
             </div>
         </template>
         <FirstKind
-            v-if="[
-                'mqtt-server-gateway',
-                'mqtt-client-gateway',
-                'websocket-server',
-                'http-server-gateway',
-                'coap-server-gateway',
-                'tcp-server-gateway',
-                'udp-device-gateway',
-            ].includes(data.provider)"
+            v-if="
+                [
+                    'mqtt-server-gateway',
+                    'mqtt-client-gateway',
+                    'websocket-server',
+                    'http-server-gateway',
+                    'coap-server-gateway',
+                    'tcp-server-gateway',
+                    'udp-device-gateway',
+                ].includes(data.provider)
+            "
             :data="data"
         />
         <SecondKind
@@ -76,7 +80,6 @@ const emit = defineEmits(['closeDrawer']);
 </script>
 <style lang="less" scoped>
 .description {
-    color: #777777;
     font-size: 12px;
 }
 </style>

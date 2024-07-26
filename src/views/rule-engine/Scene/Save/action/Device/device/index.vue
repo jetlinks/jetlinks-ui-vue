@@ -194,6 +194,14 @@ const filterType = async (newVal: any) => {
     ];
     const triggerType = unref(data)?.trigger?.type;
 
+    //标签
+    const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
+    tagList.value = tag || [];
+
+    if (tag?.length === 0) {
+      _typeList[3].disabled = true
+    }
+
     if (triggerType === 'device') {
         // _typeList.push(TypeMap.tag) // 设备输出一直展示标签
         //关系
@@ -206,27 +214,29 @@ const filterType = async (newVal: any) => {
         });
         if (res.success && res.result.length !== 0) {
             // _typeList.push(TypeMap.relation)
-            TypeMap.relation.disabled = true;
+            // TypeMap.relation.disabled = true;
+          _typeList[2].disabled = true
         }
         //变量
-        if (
-            builtInList.value.length !== 0 &&
-            !props.parallel &&
-            props.name !== 0
-        ) {
+        if ( props.name === 0 ) {
             //   _typeList.push(TypeMap.context)
-            TypeMap.context.disabled = true;
+            // TypeMap.context.disabled = true;
+          _typeList[1].disabled = true
         }
     } else {
         if (
-            builtInList.value.length !== 0 &&
-            !props.parallel &&
-            props.name !== 0
+            // builtInList.value.length !== 0 &&
+            // !props.parallel &&
+            // props.name !== 0
+          props.name === 0
         ) {
             //   _typeList.push(TypeMap.context)
-            TypeMap.context.disabled = true;
+            // TypeMap.context.disabled = true;
+          _typeList[1].disabled = true
         }
     }
+
+  console.log(_typeList)
 
     list.value = _typeList;
 };

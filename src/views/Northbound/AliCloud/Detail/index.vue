@@ -1,516 +1,458 @@
 <template>
-            <j-card>
-                <div class="box">
-                    <div class="left">
-                        <div class="left-content">
-                            <TitleComponent data="基本信息" />
-                            <j-alert
-                                v-if="!!_error && modelRef?.id"
-                                style="margin: 10px 0"
-                                type="warning"
+    <j-card>
+        <div class="box" v-if="!noData">
+            <div class="left">
+                <div class="left-content">
+                    <TitleComponent data="基本信息" />
+                    <j-alert
+                        v-if="!!_error && modelRef?.id"
+                        style="margin: 10px 0"
+                        type="warning"
+                    >
+                        <template #message>
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                "
                             >
-                                <template #message>
-                                    <div
-                                        style="
-                                            display: flex;
-                                            justify-content: space-between;
-                                            align-items: center;
+                                <span
+                                    style="
+                                        width: calc(100% - 100px);
+                                        text-align: center;
+                                    "
+                                    >{{ _error }}</span
+                                >
+                                <PermissionButton
+                                    :popConfirm="{
+                                        title: '确认启用',
+                                        onConfirm: onActiveProduct,
+                                    }"
+                                    size="small"
+                                    :hasPermission="'device/Product:action'"
+                                >
+                                    立即启用
+                                </PermissionButton>
+                            </div>
+                        </template>
+                    </j-alert>
+                    <j-form
+                        :layout="'vertical'"
+                        ref="formRef"
+                        :model="modelRef"
+                    >
+                        <j-row :gutter="24">
+                            <j-col :span="24">
+                                <j-form-item
+                                    label="名称"
+                                    name="name"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入名称',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <j-input
+                                        placeholder="请输入名称"
+                                        v-model:value="modelRef.name"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
+                                    :name="['accessConfig', 'regionId']"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请选择服务地址',
+                                        },
+                                    ]"
+                                >
+                                    <template #label>
+                                        <span>
+                                            服务地址
+                                            <j-tooltip
+                                                title="阿里云内部给每台机器设置的唯一编号"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </j-tooltip>
+                                        </span>
+                                    </template>
+                                    <j-select
+                                        placeholder="请选择服务地址"
+                                        v-model:value="
+                                            modelRef.accessConfig.regionId
+                                        "
+                                        show-search
+                                        @change="regionChange"
+                                        @blur="productChange"
+                                    >
+                                        <j-select-option
+                                            v-for="item in regionsList"
+                                            :key="item.id"
+                                            :value="item.id"
+                                            :label="item.name"
+                                            >{{ item.name }}</j-select-option
+                                        >
+                                    </j-select>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
+                                    :name="['accessConfig', 'instanceId']"
+                                >
+                                    <template #label>
+                                        <span>
+                                            实例ID
+                                            <j-tooltip
+                                                title="阿里云物联网平台中的实例ID,没有则不填"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </j-tooltip>
+                                        </span>
+                                    </template>
+                                    <j-input
+                                        placeholder="请输入实例ID"
+                                        v-model:value="
+                                            modelRef.accessConfig.instanceId
+                                        "
+                                        @blur="productChange"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
+                                    :name="['accessConfig', 'accessKeyId']"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入accessKey',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <template #label>
+                                        <span>
+                                            accessKey
+                                            <j-tooltip
+                                                title="用于程序通知方式调用云服务API的用户标识"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </j-tooltip>
+                                        </span>
+                                    </template>
+                                    <j-input
+                                        placeholder="请输入accessKey"
+                                        v-model:value="
+                                            modelRef.accessConfig.accessKeyId
+                                        "
+                                        @blur="productChange"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
+                                    :name="['accessConfig', 'accessSecret']"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入accessSecret',
+                                        },
+                                        {
+                                            max: 64,
+                                            message: '最多输入64个字符',
+                                        },
+                                    ]"
+                                >
+                                    <template #label>
+                                        <span>
+                                            accessSecret
+                                            <j-tooltip
+                                                title="用于程序通知方式调用云服务费API的秘钥标识"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </j-tooltip>
+                                        </span>
+                                    </template>
+                                    <j-input
+                                        placeholder="请输入accessSecret"
+                                        v-model:value="
+                                            modelRef.accessConfig.accessSecret
+                                        "
+                                        @blur="productChange"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-form-item
+                                    name="bridgeProductKey"
+                                    :rules="{
+                                        required: true,
+                                        message: '请选择网桥产品',
+                                    }"
+                                >
+                                    <template #label>
+                                        <span>
+                                            网桥产品
+                                            <j-tooltip
+                                                title="物联网平台对应的阿里云产品"
+                                            >
+                                                <AIcon
+                                                    type="QuestionCircleOutlined"
+                                                    style="margin-left: 2px"
+                                                />
+                                            </j-tooltip>
+                                        </span>
+                                    </template>
+                                    <j-select
+                                        placeholder="请选择网桥产品"
+                                        v-model:value="
+                                            modelRef.bridgeProductKey
+                                        "
+                                        show-search
+                                    >
+                                        <j-select-option
+                                            v-for="item in aliyunProductList"
+                                            :key="item.productKey"
+                                            :value="item.productKey"
+                                            :label="item.productName"
+                                            >{{
+                                                item.productName
+                                            }}</j-select-option
+                                        >
+                                    </j-select>
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="24">
+                                <p>产品映射</p>
+                                <j-collapse
+                                    v-if="modelRef.mappings.length"
+                                    :activeKey="activeKey"
+                                    @change="onCollChange"
+                                >
+                                    <j-collapse-panel
+                                        v-for="(
+                                            item, index
+                                        ) in modelRef.mappings"
+                                        :key="index"
+                                        :forceRender="false"
+                                        :header="
+                                            item.productKey
+                                                ? aliyunProductList.find(
+                                                      (i) =>
+                                                          i.productKey ===
+                                                          item.productKey,
+                                                  )?.productName ||
+                                                  `产品映射${index + 1}`
+                                                : `产品映射${index + 1}`
                                         "
                                     >
-                                        <span
-                                            style="
-                                                width: calc(100% - 100px);
-                                                text-align: center;
-                                            "
-                                            >{{ _error }}</span
-                                        >
-                                        <PermissionButton
-                                            :popConfirm="{
-                                                title: '确认启用',
-                                                onConfirm: onActiveProduct,
-                                            }"
-                                            size="small"
-                                            :hasPermission="'device/Product:action'"
-                                        >
-                                            立即启用
-                                        </PermissionButton>
-                                    </div>
-                                </template>
-                            </j-alert>
-                            <j-form
-                                :layout="'vertical'"
-                                ref="formRef"
-                                :model="modelRef"
-                            >
-                                <j-row :gutter="24">
-                                    <j-col :span="24">
-                                        <j-form-item
-                                            label="名称"
-                                            name="name"
-                                            :rules="[
-                                                {
-                                                    required: true,
-                                                    message: '请输入名称',
-                                                },
-                                                {
-                                                    max: 64,
-                                                    message: '最多输入64个字符',
-                                                },
-                                            ]"
-                                        >
-                                            <j-input
-                                                placeholder="请输入名称"
-                                                v-model:value="modelRef.name"
-                                            />
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <j-form-item
-                                            :name="['accessConfig', 'regionId']"
-                                            :rules="[
-                                                {
-                                                    required: true,
-                                                    message: '请选择服务地址',
-                                                },
-                                            ]"
-                                        >
-                                            <template #label>
-                                                <span>
-                                                    服务地址
-                                                    <j-tooltip
-                                                        title="阿里云内部给每台机器设置的唯一编号"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </span>
-                                            </template>
-                                            <j-select
-                                                placeholder="请选择服务地址"
-                                                v-model:value="
-                                                    modelRef.accessConfig
-                                                        .regionId
-                                                "
-                                                show-search
-                                                @change="regionChange"
-                                                @blur="productChange"
-                                            >
-                                                <j-select-option
-                                                    v-for="item in regionsList"
-                                                    :key="item.id"
-                                                    :value="item.id"
-                                                    :label="item.name"
-                                                    >{{
-                                                        item.name
-                                                    }}</j-select-option
+                                        <template #extra
+                                            ><AIcon
+                                                type="DeleteOutlined"
+                                                @click="delItem(index)"
+                                        /></template>
+                                        <j-row :gutter="24">
+                                            <j-col :span="12">
+                                                <j-form-item
+                                                    label="阿里云产品"
+                                                    :name="[
+                                                        'mappings',
+                                                        index,
+                                                        'productKey',
+                                                    ]"
+                                                    :rules="{
+                                                        required: true,
+                                                        message:
+                                                            '请选择阿里云产品',
+                                                    }"
                                                 >
-                                            </j-select>
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <j-form-item
-                                            :name="[
-                                                'accessConfig',
-                                                'instanceId',
-                                            ]"
-                                        >
-                                            <template #label>
-                                                <span>
-                                                    实例ID
-                                                    <j-tooltip
-                                                        title="阿里云物联网平台中的实例ID,没有则不填"
+                                                    <j-select
+                                                        placeholder="请选择阿里云产品"
+                                                        v-model:value="
+                                                            item.productKey
+                                                        "
+                                                        show-search
                                                     >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
+                                                        <j-select-option
+                                                            v-for="i in getAliyunProductList(
+                                                                item?.productKey ||
+                                                                    '',
+                                                            )"
+                                                            :key="i.productKey"
+                                                            :value="
+                                                                i.productKey
                                                             "
-                                                        />
-                                                    </j-tooltip>
-                                                </span>
-                                            </template>
-                                            <j-input
-                                                placeholder="请输入实例ID"
-                                                v-model:value="
-                                                    modelRef.accessConfig
-                                                        .instanceId
-                                                "
-                                                @blur="productChange"
-                                            />
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <j-form-item
-                                            :name="[
-                                                'accessConfig',
-                                                'accessKeyId',
-                                            ]"
-                                            :rules="[
-                                                {
-                                                    required: true,
-                                                    message: '请输入accessKey',
-                                                },
-                                                {
-                                                    max: 64,
-                                                    message: '最多输入64个字符',
-                                                },
-                                            ]"
-                                        >
-                                            <template #label>
-                                                <span>
-                                                    accessKey
-                                                    <j-tooltip
-                                                        title="用于程序通知方式调用云服务API的用户标识"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
+                                                            :label="
+                                                                i.productName
                                                             "
-                                                        />
-                                                    </j-tooltip>
-                                                </span>
-                                            </template>
-                                            <j-input
-                                                placeholder="请输入accessKey"
-                                                v-model:value="
-                                                    modelRef.accessConfig
-                                                        .accessKeyId
-                                                "
-                                                @blur="productChange"
-                                            />
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <j-form-item
-                                            :name="[
-                                                'accessConfig',
-                                                'accessSecret',
-                                            ]"
-                                            :rules="[
-                                                {
-                                                    required: true,
-                                                    message:
-                                                        '请输入accessSecret',
-                                                },
-                                                {
-                                                    max: 64,
-                                                    message: '最多输入64个字符',
-                                                },
-                                            ]"
-                                        >
-                                            <template #label>
-                                                <span>
-                                                    accessSecret
-                                                    <j-tooltip
-                                                        title="用于程序通知方式调用云服务费API的秘钥标识"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </span>
-                                            </template>
-                                            <j-input
-                                                placeholder="请输入accessSecret"
-                                                v-model:value="
-                                                    modelRef.accessConfig
-                                                        .accessSecret
-                                                "
-                                                @blur="productChange"
-                                            />
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <j-form-item
-                                            name="bridgeProductKey"
-                                            :rules="{
-                                                required: true,
-                                                message: '请选择网桥产品',
-                                            }"
-                                        >
-                                            <template #label>
-                                                <span>
-                                                    网桥产品
-                                                    <j-tooltip
-                                                        title="物联网平台对应的阿里云产品"
-                                                    >
-                                                        <AIcon
-                                                            type="QuestionCircleOutlined"
-                                                            style="
-                                                                margin-left: 2px;
-                                                            "
-                                                        />
-                                                    </j-tooltip>
-                                                </span>
-                                            </template>
-                                            <j-select
-                                                placeholder="请选择网桥产品"
-                                                v-model:value="
-                                                    modelRef.bridgeProductKey
-                                                "
-                                                show-search
-                                            >
-                                                <j-select-option
-                                                    v-for="item in aliyunProductList"
-                                                    :key="item.productKey"
-                                                    :value="item.productKey"
-                                                    :label="item.productName"
-                                                    >{{
-                                                        item.productName
-                                                    }}</j-select-option
+                                                            >{{
+                                                                i.productName
+                                                            }}</j-select-option
+                                                        >
+                                                    </j-select>
+                                                </j-form-item>
+                                            </j-col>
+                                            <j-col :span="12">
+                                                <j-form-item
+                                                    label="平台产品"
+                                                    :name="[
+                                                        'mappings',
+                                                        index,
+                                                        'productId',
+                                                    ]"
+                                                    :rules="[
+                                                        {
+                                                            required: true,
+                                                            message:
+                                                                '请选择平台产品',
+                                                        },
+                                                        {
+                                                            validator:
+                                                                _validator,
+                                                            trigger: 'change',
+                                                        },
+                                                    ]"
                                                 >
-                                            </j-select>
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <p>产品映射</p>
-                                        <j-collapse
-                                            v-if="modelRef.mappings.length"
-                                            :activeKey="activeKey"
-                                            @change="onCollChange"
-                                        >
-                                            <j-collapse-panel
-                                                v-for="(
-                                                    item, index
-                                                ) in modelRef.mappings"
-                                                :key="index"
-                                                :forceRender="false"
-                                                :header="
-                                                    item.productKey
-                                                        ? aliyunProductList.find(
-                                                              (i) =>
-                                                                  i.productKey ===
-                                                                  item.productKey,
-                                                          )?.productName ||
-                                                          `产品映射${index + 1}`
-                                                        : `产品映射${index + 1}`
-                                                "
-                                            >
-                                                <template #extra
-                                                    ><AIcon
-                                                        type="DeleteOutlined"
-                                                        @click="delItem(index)"
-                                                /></template>
-                                                <j-row :gutter="24">
-                                                    <j-col :span="12">
-                                                        <j-form-item
-                                                            label="阿里云产品"
-                                                            :name="[
-                                                                'mappings',
-                                                                index,
-                                                                'productKey',
-                                                            ]"
-                                                            :rules="{
-                                                                required: true,
-                                                                message:
-                                                                    '请选择阿里云产品',
-                                                            }"
-                                                        >
-                                                            <j-select
-                                                                placeholder="请选择阿里云产品"
-                                                                v-model:value="
-                                                                    item.productKey
-                                                                "
-                                                                show-search
-                                                            >
-                                                                <j-select-option
-                                                                    v-for="i in getAliyunProductList(
-                                                                        item?.productKey ||
-                                                                            '',
-                                                                    )"
-                                                                    :key="
-                                                                        i.productKey
-                                                                    "
-                                                                    :value="
-                                                                        i.productKey
-                                                                    "
-                                                                    :label="
-                                                                        i.productName
-                                                                    "
-                                                                    >{{
-                                                                        i.productName
-                                                                    }}</j-select-option
-                                                                >
-                                                            </j-select>
-                                                        </j-form-item>
-                                                    </j-col>
-                                                    <j-col :span="12">
-                                                        <j-form-item
-                                                            label="平台产品"
-                                                            :name="[
-                                                                'mappings',
-                                                                index,
-                                                                'productId',
-                                                            ]"
-                                                            :rules="[
-                                                                {
-                                                                    required: true,
-                                                                    message:
-                                                                        '请选择平台产品',
-                                                                },
-                                                                {
-                                                                    validator:
-                                                                        _validator,
-                                                                    trigger:
-                                                                        'change',
-                                                                },
-                                                            ]"
-                                                        >
-                                                            <!-- <j-select
-                                                                placeholder="请选择平台产品"
-                                                                v-model:value="
-                                                                    item.productId
-                                                                "
-                                                                show-search
-                                                            >
-                                                                <j-select-option
-                                                                    v-for="i in getPlatProduct(
-                                                                        item.productId ||
-                                                                            '',
-                                                                    )"
-                                                                    :key="i.id"
-                                                                    :value="
-                                                                        i?.id
-                                                                    "
-                                                                    :label="
-                                                                        i.name
-                                                                    "
-                                                                    >{{
-                                                                        i.name
-                                                                    }}</j-select-option
-                                                                >
-                                                            </j-select> -->
-                                                            <MSelect
-                                                                v-model:value="
-                                                                    item.productId
-                                                                "
-                                                                :options="
-                                                                    getPlatProduct(
-                                                                        item.productId ||
-                                                                            '',
-                                                                    )
-                                                                "
-                                                                @error="
-                                                                    onPlatError
-                                                                "
-                                                            />
-                                                        </j-form-item>
-                                                    </j-col>
-                                                </j-row>
-                                            </j-collapse-panel>
-                                        </j-collapse>
-                                        <j-card v-else>
-                                            <j-empty />
-                                        </j-card>
-                                    </j-col>
-                                    <j-col :span="24">
-                                        <j-button
-                                            type="dashed"
-                                            style="
-                                                width: 100%;
-                                                margin-top: 10px;
-                                            "
-                                            @click="addItem"
-                                        >
-                                            <AIcon
-                                                type="PlusOutlined"
-                                                style="margin-left: 2px"
-                                            />添加
-                                        </j-button>
-                                    </j-col>
-                                    <j-col :span="24" style="margin-top: 20px">
-                                        <j-form-item
-                                            label="说明"
-                                            name="description"
-                                            :rules="{
-                                                max: 200,
-                                                message: '最多输入200个字符',
-                                            }"
-                                        >
-                                            <j-textarea
-                                                v-model:value="
-                                                    modelRef.description
-                                                "
-                                                placeholder="请输入说明"
-                                                showCount
-                                                :maxlength="200"
-                                            />
-                                        </j-form-item>
-                                    </j-col>
-                                </j-row>
-                            </j-form>
-                        </div>
-                    </div>
-                    <div class="right">
-                        <Doc />
-                    </div>
-                    <div class="control">
-                        <a-space>
-                            <PermissionButton
-                                v-if="data?.id"
-                                hasPermission="Northbound/AliCloud:delete"
-                                danger
-                                :tooltip="{
-                                    title:
-                                        data?.state?.value !== 'disabled'
-                                            ? '请先禁用该数据，再删除。'
-                                            : '删除',
-                                }"
-                                :popConfirm="{
-                                    title: `确认删除`,
-                                    onConfirm: deleteData,
-                                }"
-                                >删除
-                            </PermissionButton>
-                            <PermissionButton
-                                v-if="data?.id"
-                                type="primary"
-                                ghost
-                                hasPermission="Northbound/AliCloud:action"
-                                :tooltip="{
-                                    title:
-                                        data?.state?.value !== 'disabled'
-                                            ? '禁用'
-                                            : '启用',
-                                }"
-                                :popConfirm="{
-                                    title: `确认${
-                                        data?.state?.value !== 'disabled'
-                                            ? '禁用'
-                                            : '启用'
-                                    }?`,
-                                    onConfirm: actionAliCloud,
-                                }"
-                                >{{
-                                    data?.state?.value !== 'disabled'
-                                        ? '禁用'
-                                        : '启用'
-                                }}
-                            </PermissionButton>
-                            <PermissionButton
-                                type="primary"
-                                :loading="loading"
-                                @click="saveBtn"
-                                :hasPermission="[
-                                    'Northbound/AliCloud:add',
-                                    'Northbound/AliCloud:update',
-                                ]"
-                            >
-                                保存
-                            </PermissionButton>
-                        </a-space>
-                    </div>
+                                                    <MSelect
+                                                        v-model:value="
+                                                            item.productId
+                                                        "
+                                                        :options="
+                                                            getPlatProduct(
+                                                                item.productId ||
+                                                                    '',
+                                                            )
+                                                        "
+                                                        @error="onPlatError"
+                                                    />
+                                                </j-form-item>
+                                            </j-col>
+                                        </j-row>
+                                    </j-collapse-panel>
+                                </j-collapse>
+                                <j-card v-else>
+                                    <j-empty />
+                                </j-card>
+                            </j-col>
+                            <j-col :span="24">
+                                <j-button
+                                    type="dashed"
+                                    style="width: 100%; margin-top: 10px"
+                                    @click="addItem"
+                                >
+                                    <AIcon
+                                        type="PlusOutlined"
+                                        style="margin-left: 2px"
+                                    />添加
+                                </j-button>
+                            </j-col>
+                            <j-col :span="24" style="margin-top: 20px">
+                                <j-form-item
+                                    label="说明"
+                                    name="description"
+                                    :rules="{
+                                        max: 200,
+                                        message: '最多输入200个字符',
+                                    }"
+                                >
+                                    <j-textarea
+                                        v-model:value="modelRef.description"
+                                        placeholder="请输入说明"
+                                        showCount
+                                        :maxlength="200"
+                                    />
+                                </j-form-item>
+                            </j-col>
+                        </j-row>
+                    </j-form>
                 </div>
-            </j-card>
-      
+            </div>
+            <div class="right">
+                <Doc />
+            </div>
+            <div class="control">
+                <a-space>
+                    <PermissionButton
+                        v-if="data?.id"
+                        hasPermission="Northbound/AliCloud:delete"
+                        danger
+                        :disabled="data?.state?.value !== 'disabled'"
+                        :tooltip="{
+                            title:
+                                data?.state?.value !== 'disabled'
+                                    ? '请先禁用该数据，再删除。'
+                                    : '删除',
+                        }"
+                        :popConfirm="{
+                            title: `确认删除`,
+                            onConfirm: deleteData,
+                        }"
+                        >删除
+                    </PermissionButton>
+                    <PermissionButton
+                        v-if="data?.id"
+                        type="primary"
+                        ghost
+                        hasPermission="Northbound/AliCloud:action"
+                        :tooltip="{
+                            title:
+                                data?.state?.value !== 'disabled'
+                                    ? '禁用'
+                                    : '启用',
+                        }"
+                        :popConfirm="{
+                            title: `确认${
+                                data?.state?.value !== 'disabled'
+                                    ? '禁用'
+                                    : '启用'
+                            }?`,
+                            onConfirm: actionAliCloud,
+                        }"
+                        >{{
+                            data?.state?.value !== 'disabled' ? '禁用' : '启用'
+                        }}
+                    </PermissionButton>
+                    <PermissionButton
+                        type="primary"
+                        :loading="loading"
+                        @click="saveBtn"
+                        :hasPermission="[
+                            'Northbound/AliCloud:add',
+                            'Northbound/AliCloud:update',
+                        ]"
+                    >
+                        保存
+                    </PermissionButton>
+                </a-space>
+            </div>
+        </div>
+        <j-empty
+            v-else
+            style="height: calc(100vh - 300px); padding-top: 200px"
+        ></j-empty>
+    </j-card>
 </template>
 
 <script lang="ts" setup>
@@ -523,7 +465,7 @@ import {
     queryProductList,
     _delete,
     _deploy,
-    _undeploy
+    _undeploy,
 } from '@/api/northbound/alicloud';
 import _ from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
@@ -537,7 +479,7 @@ const props = defineProps({
 const emit = defineEmits(['refreshList']);
 const formRef = ref();
 const _errorSet = ref<Set<string>>(new Set());
-
+const noData = ref(false);
 const modelRef = reactive<any>({
     id: undefined,
     name: undefined,
@@ -743,6 +685,9 @@ const deleteData = () => {
 watch(
     () => props.data,
     async () => {
+        _errorSet.value?.clear();
+        noData.value = false;
+        formRef.value?.resetFields();
         if (props.data?.id) {
             queryRegionsList();
             await getProduct();
@@ -756,24 +701,28 @@ watch(
                 (_: any, index: number) => index,
             );
         } else {
-            modelRef.id = undefined;
-            modelRef.modelRefname = undefined;
-            modelRef.accessConfig = {
-                regionId: undefined,
-                instanceId: undefined,
-                accessKeyId: undefined,
-                accessSecret: undefined,
-                apiEndpoint: undefined,
-            };
-            modelRef.bridgeProductKey = undefined;
-            modelRef.bridgeProductName = undefined;
-            modelRef.mappings = [
-                {
-                    productKey: undefined,
-                    productId: undefined,
-                },
-            ];
-            modelRef.description = undefined;
+            if (props.data?.type === 'add') {
+                modelRef.id = undefined;
+                modelRef.name = undefined;
+                modelRef.accessConfig = {
+                    regionId: undefined,
+                    instanceId: undefined,
+                    accessKeyId: undefined,
+                    accessSecret: undefined,
+                    apiEndpoint: undefined,
+                };
+                modelRef.bridgeProductKey = undefined;
+                modelRef.bridgeProductName = undefined;
+                modelRef.mappings = [
+                    {
+                        productKey: undefined,
+                        productId: undefined,
+                    },
+                ];
+                modelRef.description = undefined;
+            } else if (props.data?.type === 'noData') {
+                noData.value = true;
+            }
         }
     },
     { immediate: true, deep: true },

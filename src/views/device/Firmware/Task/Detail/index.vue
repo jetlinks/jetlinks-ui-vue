@@ -97,18 +97,18 @@
                                 text?.value === 'failed' ? 'exception' : ''
                             "
                         />
-                        <div
-                            v-if="
-                                text?.value !== 'failed' &&
-                                text?.value !== 'waiting'
-                            "
-                        >
+                        <div v-if="text?.value === 'processing' || text?.value === 'success'">
                             {{ record?.progress + '%' }}
                         </div>
                         <div v-if="text?.value === 'failed'">
                             {{ text?.text + '：' + record?.errorReason }}
                         </div>
-                        <div v-if="text?.value === 'waiting' || text?.value === 'canceled'" :style="{marginLeft: text?.value === 'canceled' ? '10px' : '0'}">
+                        <div
+                            v-if="
+                                text?.value === 'waiting' ||
+                                text?.value === 'canceled'
+                            "
+                        >
                             {{ text?.text }}
                         </div>
                     </div>
@@ -229,11 +229,11 @@ const refreshState = async () => {
 };
 //全部开始
 const startAll = async () => {
-    const state =
-        props.data?.mode?.value === 'push'
-            ? ['canceled', 'failed']
-            : ['canceled'];
-    const res = await startTask(props.data.id, state);
+    // const state =
+    //     props.data?.mode?.value === 'push'
+    //         ? ['canceled', 'failed']
+    //         : ['canceled'];
+    const res = await startTask(props.data.id,  ['canceled', 'failed']);
     if (res.success) {
         onlyMessage('操作成功', 'success');
         queryHistoryList();

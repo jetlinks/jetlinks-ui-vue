@@ -134,6 +134,8 @@ const onFieldChange = () => {
 watch(() => globalErrorMessage.value, (val) => {
   if (val[eventKey.value]) {
     showErrorTip(val[eventKey.value])
+  } else {
+    hideErrorTip()
   }
 }, { immediate: true, deep: true})
 

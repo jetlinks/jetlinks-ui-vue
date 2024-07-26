@@ -16,6 +16,7 @@
                    label: a.text,
                    value: a.value,
             }))"
+            style="width: 100%;z-index: 1071"
             :get-popup-container="(node) => fullRef || node"
         />
       </template>
