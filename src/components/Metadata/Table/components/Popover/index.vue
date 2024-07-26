@@ -33,7 +33,7 @@
 
 <script setup name="MetadataPopover">
 import { useMask } from '../utils'
-import {useTableWrapper} from "@/components/Metadata/Table/context";
+import {useTableWrapper, useTableFullScreen} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
   placement: {
@@ -65,6 +65,7 @@ const props = defineProps({
 const emit = defineEmits(['ok', 'cancel', 'update:visible'])
 
 const tableWrapperRef = useTableWrapper()
+const fullScreen = useTableFullScreen()
 
 const { warpClassNames, visibleChange, visible } = useMask(props.visible, {
   visibleChange(v) {
@@ -83,6 +84,12 @@ const submit = async () => {
 
 watch(() => props.visible, (newValue) => {
   visibleChange(newValue)
+})
+
+watch(() => fullScreen.value, (val) => {
+  if (!val) {
+    cancel()
+  }
 })
 
 </script>
