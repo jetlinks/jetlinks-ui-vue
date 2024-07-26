@@ -23,7 +23,6 @@
       <a-form-item label="上传文件">
         <a-upload-dragger
           name="file"
-          :action="analyzeMetadata"
           :headers="{[TOKEN_KEY]: LocalStore.get(TOKEN_KEY)}"
           :maxCount="1"
           :showUploadList="false"
@@ -66,7 +65,7 @@
 import {TOKEN_KEY, TOKEN_KEY_URL} from '@/utils/variable';
 import {getToken, isFullScreen, LocalStore, onlyMessage} from '@/utils/comm';
 import {validate} from './util'
-import {analyzeMetadata, getTemplate} from '@/api/device/instance'
+import { getTemplate, uploadAnalyzeMetadata} from '@/api/device/instance'
 import {getTemplate as getProductTemplate} from '@/api/device/product'
 import {downloadFileByUrl} from "@/utils/utils";
 import {useGroupActive, useTableWrapper} from "@/components/Metadata/Table/context";
@@ -172,11 +171,25 @@ const beforeUpload = (file) => {
     onlyMessage('请上传.xlsx或.csv格式文件', 'warning');
   }
 
-  return isCsv || isXlsx;
+  const formData = new FormData()
+
+  formData.append('file', file)
+
+  step.value = 2
+  uploadAnalyzeMetadata(formData).then(res => {
+    if (res.success) {
+      submitData(res.result)
+    }
+  })
+
+  // return isCsv || isXlsx;
+
+  return false
 };
 
 
 const uploadChange = async (info) => {
+  console.log(info)
   if (info.file.status === 'uploading') {
     step.value = 2
   }

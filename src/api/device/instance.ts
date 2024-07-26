@@ -667,4 +667,4 @@ export const resetDeviceThreshold = (deviceId: string,  data: string) => server.
 
 export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/instance/${id}/property-metadata/template.${format}`
 
-export const analyzeMetadata = `${BASE_API_PATH}/device/instance/property-metadata/file/analyze`
+export const uploadAnalyzeMetadata = (data: any) => server.post('/device/instance/property-metadata/file/analyze', data)
