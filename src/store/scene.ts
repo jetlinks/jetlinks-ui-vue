@@ -55,7 +55,7 @@ export const defaultBranches = [
     then: [],
     executeAnyway: true,
     branchId: defaultBranchId,
-    branchName:'条件1'
+    branchName:'条件'
   },
 ];
 
@@ -68,7 +68,7 @@ const defaultOptions = {
           terms: [['','eq','','and']],
         },
       ],
-      branchName:'条件1',
+      branchName:'条件',
       key:  'branches_1',
       executeAnyway: true,
       groupIndex: 1
