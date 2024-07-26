@@ -19,6 +19,7 @@ export type ErrorItem = {
 
 export type OptionsType = {
     onError?: (err: Array<Array<ErrorItem>>) => void
+    onSuccess?: () => void
     onEdit?: (item: any) => void
 
     validateRowKey?: Boolean
@@ -61,11 +62,15 @@ export const useValidate = (dataSource: Ref<DataSourceType>, columns: ColumnsTyp
             const end = () => {
                 validateLen += 1
                 if (validateLen === len) {
-                    if (error.length) {
-                        _options.onError?.(error)
-                    }
+                    const isSuccess = !Object.keys(error).length
 
-                    Object.keys(error).length ? reject(error) : resolve(success)
+                    if (isSuccess) {
+                        resolve(success)
+                        _options.onSuccess?.()
+                    } else {
+                        _options.onError?.(error)
+                        reject(error)
+                    }
                 }
             }
 

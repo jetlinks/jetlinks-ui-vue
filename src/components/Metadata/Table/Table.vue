@@ -202,7 +202,6 @@ const {rules, validateItem, validate, errorMap} = useValidate(
               }
 
               setTimeout(() => {
-                console.log(e.__serial)
                 tableBody.value.scrollTo(e.__serial - 1)
               }, 10)
             }
@@ -211,6 +210,9 @@ const {rules, validateItem, validate, errorMap} = useValidate(
 
         fieldsErrMap.value = errMap
 
+      },
+      onSuccess: () => {
+        fieldsErrMap.value = {}
       },
       onEdit: () => {
           emit('editChange', true)
