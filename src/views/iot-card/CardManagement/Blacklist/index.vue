@@ -69,7 +69,7 @@
                     </div>
                 </template>
                 <template #operatorName="slotProps">
-                    {{ OperatorMap[slotProps.operatorName] }}
+                    {{ OperatorMap[slotProps.operatorName] || '' }}
                 </template>
                 <template #cardType="slotProps">
                     {{ slotProps.cardType.text }}

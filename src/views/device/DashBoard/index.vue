@@ -94,6 +94,7 @@ import {
     deviceCount,
     dashboard,
     getGo,
+    getOfflineAnalysis,
 } from '@/api/device/dashboard';
 import encodeQuery from '@/utils/encodeQuery';
 import { getImage } from '@/utils/comm';
@@ -158,8 +159,18 @@ const officeData = ref();
 const totalCount = ref(0);
 let devMegOptions = ref<any>({});
 
-//今日设备消息量
+//设备离线分析
 const getOfficeOptions = () => {
+    getOfflineAnalysis({
+        terms: [
+            {
+                column: 'state',
+                value: 'offline',
+            },
+        ],
+    }).then((res: any) => {
+        console.log('res', res);
+    });
     officeData.value = [
         { name: '自动关机', value: 10, rate: 20 },
         { name: '连接超时', value: 25, rate: 50 },
@@ -379,6 +390,7 @@ const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
         ],
     };
 };
+
 const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
     TodayDevOptions = {
         tooltip: {
