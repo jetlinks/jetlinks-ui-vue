@@ -638,10 +638,16 @@ export const queryTypescript = (deviceId:string) => server.get(`/device/${device
 export const queryProductTs = (productId:string) => server.get(`/product/${productId}/virtual-property.d.ts`)
 
 /**
- * 阈值限制-新增/修改
+ * 阈值限制-新增/修改-产品
  * @param data
  */
-export const updateThreshold = (data: any) => server.patch('/threshold/property', data)
+export const updateProductThreshold = (productId:string,propertyId:string,data: any) => server.put(`/message/preprocessor/product/${productId}/property/${propertyId}`, data)
+
+/**
+ * 阈值限制-新增/修改-设备
+ * @param data
+ */
+export const updateDeviceThreshold = (productId:string,deviceId:string,propertyId:string,data: any) => server.put(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`, data)
 
 /**
  * 阈值限制-设备物模型阈值限制
@@ -649,14 +655,14 @@ export const updateThreshold = (data: any) => server.patch('/threshold/property'
  * @param deviceId
  * @param propertyId
  */
-export const queryDeviceThreshold = (productId: string, deviceId: string,  propertyId: string) => server.get(`/threshold/property/device/${productId}/${deviceId}/${propertyId}`)
+export const queryDeviceThreshold = (productId: string, deviceId: string,  propertyId: string) => server.get(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`)
 
 /**
  * 阈值限制-产品物模型阈值限制
  * @param productId
  * @param propertyId
  */
-export const queryProductThreshold = (productId: string, propertyId: string) => server.get(`/threshold/property/product/${productId}/${propertyId}`)
+export const queryProductThreshold = (productId: string, propertyId: string) => server.get(`/message/preprocessor/product/${productId}/property/${propertyId}`)
 
 /**
  * 阈值限制-重置设备物继承产品的模型阈值
