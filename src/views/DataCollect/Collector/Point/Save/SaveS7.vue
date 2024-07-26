@@ -43,7 +43,7 @@
                 trigger: 'blur',
             }">
                 <j-input-number type="number" style="width: 100%" addon-after="字节" v-model:value="form.configuration.bytes"
-                    placeholder="请输入字符串长度" :precision="0" :controls="false" :maxlength="64" :disabled="disabled" />
+                    placeholder="请输入字符串长度" :precision="0" :controls="false" :disabled="disabled" :max="65535" :min="0" />
             </j-form-item>
 
             <j-form-item v-if="form.configuration.type == 'Bool'" label="位偏移量（bit）" :name="['configuration', 'bits']"
