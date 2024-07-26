@@ -246,7 +246,7 @@ const routerParams = useRouterParams();
 const menuStory = useMenuStore();
 const modalVisible = ref(false);
 const deleteDeviceId = ref('');
-const deleteState = ref(false)
+const deleteState = ref(false);
 const deleteTip = ref('确认删除？');
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
@@ -627,10 +627,10 @@ const getActions = (
                         : '删除',
             },
             onClick: async () => {
-                if(deleteState.value){
-                    return
+                if (deleteState.value) {
+                    return;
                 }
-                deleteState.value =  true
+                deleteState.value = true;
                 deleteDeviceId.value = data.id;
                 const res = await detail(data.id).finally(() => {
                     modalVisible.value = true;
@@ -642,12 +642,12 @@ const getActions = (
                             : '确认删除？';
                 }
                 Modal.confirm({
-                    title:  deleteTip.value,
+                    title: deleteTip.value,
                     onOk() {
-                        return  deleteDevice()
+                        return deleteDevice();
                     },
                     onCancel() {
-                        deleteState.value =  false
+                        deleteState.value = false;
                     },
                 });
             },
@@ -923,7 +923,7 @@ const onRefresh = () => {
 };
 
 const deleteDevice = async () => {
-    const resp = await _delete(deleteDeviceId.value)
+    const resp = await _delete(deleteDeviceId.value);
     if (resp.status === 200) {
         onlyMessage('操作成功！');
         const index = _selectedRowKeys.value.findIndex(
@@ -936,6 +936,6 @@ const deleteDevice = async () => {
     } else {
         onlyMessage('操作失败！', 'error');
     }
-    deleteState.value = false
+    deleteState.value = false;
 };
 </script>

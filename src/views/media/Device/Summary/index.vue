@@ -8,7 +8,9 @@
     >
         <template #title>
             <div class="deviceName">
-                <Ellipsis style="max-width: 400px;">{{ deviceData?.name }}</Ellipsis>
+                <Ellipsis style="max-width: 400px">{{
+                    deviceData?.name
+                }}</Ellipsis>
             </div>
             <div class="deviceId">
                 <span> 设备ID： </span>
@@ -18,7 +20,9 @@
         <div>
             <a-descriptions bordered :column="1">
                 <a-descriptions-item label="接入方式">{{
-                    deviceData?.provider
+                    PROVIDER_OPTIONS.find(
+                        (i) => i.value === deviceData?.provider,
+                    )?.label
                 }}</a-descriptions-item>
                 <a-descriptions-item label="所属产品">{{
                     deviceData?.productName
@@ -40,12 +44,18 @@
                         ['onvif', 'gb28181-2016'].includes(deviceData?.provider)
                     "
                     label="接入密码"
-                    >{{
-                        deviceData?.provider === 'onvif'
-                            ? deviceData?.others?.onvifPassword
-                            : deviceData?.others?.access_pwd
-                    }}</a-descriptions-item
-                >
+                    ><div class="password">
+                        <span>{{ showPassword }}</span>
+                        <AIcon
+                            :type="
+                                visiblePassword
+                                    ? 'EyeInvisibleOutlined'
+                                    : 'EyeOutlined'
+                            "
+                            @click="visiblePassword = !visiblePassword"
+                            class="passwordIcon"
+                        ></AIcon></div
+                ></a-descriptions-item>
                 <a-descriptions-item label="说明">{{
                     deviceData?.description || '--'
                 }}</a-descriptions-item>
@@ -57,6 +67,7 @@
 <script setup>
 import { useMenuStore } from 'store/menu';
 import DeviceApi from '@/api/media/device';
+import { PROVIDER_OPTIONS } from '../const';
 const props = defineProps({
     deviceId: {
         type: Object,
@@ -64,6 +75,23 @@ const props = defineProps({
 });
 const menuStory = useMenuStore();
 const deviceData = ref();
+
+const visiblePassword = ref(false);
+const showPassword = computed(() => {
+    let password =
+        deviceData.value?.provider === 'onvif'
+            ? deviceData.value?.others?.onvifPassword
+            : deviceData.value?.others?.access_pwd;
+    if (!visiblePassword.value) {
+        let hiddenPassword  = ''
+        for (let i = 0; i < password.length; i++) {
+            hiddenPassword += '*'
+        }
+        return hiddenPassword
+    }else{
+        return password
+    }
+});
 const jumpDetail = (data) => {
     menuStory.jumpPage('device/Instance/Detail', { id: props.deviceId });
 };
@@ -76,7 +104,7 @@ const getProductList = async () => {
     const res = await DeviceApi.queryProductList(params);
     if (res.success) {
         deviceData.value.productName = res.result?.[0]?.name;
-        if (deviceData.value.channel !== 'media-plugin') {
+        if (deviceData.value.provider !== 'media-plugin') {
             deviceData.value.others.access_pwd = deviceData.value.others
                 .access_pwd
                 ? deviceData.value.others.access_pwd
@@ -108,5 +136,13 @@ onMounted(() => {
 .deviceName {
     font-size: 16px;
     font-weight: 600;
+}
+.password {
+    position: relative;
+    .passwordIcon {
+        position: absolute;
+        right: 0;
+        top: 5px;
+    }
 }
 </style>

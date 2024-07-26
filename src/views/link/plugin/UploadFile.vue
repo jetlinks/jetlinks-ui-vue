@@ -73,13 +73,11 @@ const beforeUpload: UploadProps['beforeUpload'] = (file, fl) => {
     loading.value = false;
     return false
   }
-  console.log(fl)
   list.value = fl
   return isFile;
 };
 const handleChange = async (info: UploadChangeParam) => {
   loading.value = true;
-  console.log(info)
   if (info.file.status === 'done') {
     loading.value = false;
     const result = info.file.response?.result;

@@ -18,7 +18,9 @@
                 :class="{ selected: i.id === selectedId }"
             >
                 <div class="itemText">
-                    {{ i.name }}
+                    <Ellipsis style="width: 100% ">
+                        {{ i.name }}
+                    </Ellipsis>
                 </div>
                 <div
                     class="status"
@@ -60,8 +62,15 @@ const queryList = async (changeSelect = false) => {
     const res = await queryPaginateNot(queryParams);
     if (res.success) {
         treeData.value = res.result;
-        if (treeData.value.length && !changeSelect) {
-            selectItem(treeData.value[0]);
+        if (treeData.value.length) {
+            !changeSelect ?  selectItem(treeData.value[0]) : selectItem(treeData.value.find((i)=>{
+                return selectedId.value = i.id
+            }))
+        }else{
+            selectedId.value = '';
+            emit("viewData",{
+                type:'noData'
+            })
         }
     }
 };
@@ -71,7 +80,9 @@ const selectItem = (data) => {
 };
 const handleAdd = () => {
     selectedId.value = '';
-    emit('viewData', {});
+    emit('viewData', {
+        type:'add'
+    });
 };
 
 const refresh = (changeSelect) => {
@@ -106,6 +117,9 @@ defineExpose({
         background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
         border-radius: 4px; /* 滚动条拖动部分圆角 */
     }
+}
+.itemText{
+    width: calc(100% - 50px)
 }
 .listItem {
     display: flex;
