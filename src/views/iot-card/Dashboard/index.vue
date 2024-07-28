@@ -203,8 +203,8 @@ const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
  */
 const getDataTotal = () => {
     const dTime = [
-        dayjs(new Date()).startOf('day').valueOf(),
-        dayjs(new Date()).endOf('day').valueOf(),
+        dayjs(new Date()).subtract(1, 'day').startOf('day').valueOf(),
+        dayjs(new Date()).subtract(1, 'day').endOf('day').valueOf(),
     ];
     const mTime = [
         dayjs().startOf('month').valueOf(),
