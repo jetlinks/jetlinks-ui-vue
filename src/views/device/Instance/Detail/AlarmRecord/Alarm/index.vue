@@ -95,15 +95,15 @@ const columns = [
         },
         scopedSlots: true,
     },
-    {
-        title: '原始值',
-        dataIndex: 'originalValue',
-        key: 'originalValue',
-        hidden: true,
-        search: {
-            type: 'number',
-        },
-    },
+    // {
+    //     title: '原始值',
+    //     dataIndex: 'originalValue',
+    //     key: 'originalValue',
+    //     hidden: true,
+    //     search: {
+    //         type: 'number',
+    //     },
+    // },
     {
         title: '告警持续时长',
         dataIndex: 'duration',

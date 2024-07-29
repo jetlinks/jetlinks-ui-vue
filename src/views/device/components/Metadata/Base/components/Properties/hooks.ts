@@ -37,8 +37,10 @@ export const useThreshold = (props: Record<string, any>) => {
     const handleDetail = (data: Record<string, any>) => {
         thresholdDetail.value = {
             type: data.configuration.matcher.provider,
-            lowerLimit: data.configuration.matcher.configuration.min,
-            upperLimit: data.configuration.matcher.configuration.max,
+            limit:{
+                lower:  data.configuration.matcher.configuration.min,
+                upper:  data.configuration.matcher.configuration.max
+            },
             mode: data.configuration.processors.map((i:any)=>{
                 return i.provider
             })
@@ -53,8 +55,8 @@ export const useThreshold = (props: Record<string, any>) => {
                 matcher:{
                     provider: data.type,
                     configuration:{
-                        max: data.upperLimit,
-                        min: data.lowerLimit,
+                        max: data.limit.upper,
+                        min: data.limit.lower,
                         not: false
                     }
                 },
