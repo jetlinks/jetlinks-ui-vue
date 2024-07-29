@@ -1,7 +1,7 @@
 <template>
     <page-container>
         <FullPage>
-            <div class="analysis-title">配置条件选择</div>
+            <!-- <div class="analysis-title">配置条件选择</div> -->
             <div class="analysis-form">
                 <j-form layout="vertical" :model="form" ref="formRef">
                     <j-form-item label="首页" name="index">
@@ -102,25 +102,25 @@ const submitData = () => {
         .catch((err: any) => {});
 };
 
-// onMounted(() => {
-//     getReportConfig().then((resp: any) => {
-//         console.log('resp', resp);
-//     });
-// });
+onMounted(() => {
+    // getReportConfig().then((resp: any) => {
+    //     console.log('resp', resp);
+    // });
+});
 </script>
 
 <style lang="less" scoped>
-.analysis-title {
-    padding: 24px 16px;
-    height: 40px;
-    font-weight: 500;
-    font-size: 24px;
-    line-height: 28px;
-    display: flex;
-    align-items: center;
-    color: #191c27;
-    border-bottom: 1px solid #e7e9ef;
-}
+// .analysis-title {
+//     padding: 24px 16px;
+//     height: 40px;
+//     font-weight: 500;
+//     font-size: 24px;
+//     line-height: 28px;
+//     display: flex;
+//     align-items: center;
+//     color: #191c27;
+//     border-bottom: 1px solid #e7e9ef;
+// }
 .analysis-form {
     padding: 20px 16px;
 
