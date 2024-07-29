@@ -98,24 +98,38 @@
                     <j-collapse-panel key="extra" v-if="showExtra">
                         <template #header>
                             <a-space>
-                                <div>拓展配置</div>
+                                <div>阈值限制</div>
                                 <a-button
                                     v-if="
                                         props.isProduct && target === 'device'
                                     "
                                     type="link"
                                     style="padding: 0 4px; height: 22px"
-                                    @click="(e)=>resetThreshold(e)"
+                                    @click="(e) => resetThreshold(e)"
                                 >
                                     <template #icon>
                                         <AIcon type="RedoOutlined" />
                                     </template>
                                     重置
                                 </a-button>
+                                <a-button
+                                    v-else
+                                    type="link"
+                                    style="padding: 0 4px; height: 22px"
+                                    @click="(e) => resetThreshold(e)"
+                                >
+                                    <template #icon>
+                                        <AIcon type="RedoOutlined" />
+                                    </template>
+                                    清空
+                                </a-button>
+                                <a-tooltip>
+                                    <template #title>重置后阀值限制继承于产品</template>
+                                    <AIcon type="QuestionCircleOutlined" />
+                                </a-tooltip>
                             </a-space>
                         </template>
                         <div class="extra-limit extra-check-group">
-                            <div class="extra-title">阈值限制</div>
                             <CardSelect
                                 v-model:value="extraForm.type"
                                 :options="[
@@ -125,14 +139,9 @@
                                 @select="limitSelect"
                             />
                         </div>
-                        <div
-                            class="extra-limit-input"
-                            v-if="extraForm.type"
-                        >
+                        <div class="extra-limit-input" v-if="extraForm.type">
                             <div class="extra-title">阈值</div>
-                            <a-space
-                                v-if="extraForm.type === 'number-range'"
-                            >
+                            <a-space v-if="extraForm.type === 'number-range'">
                                 <a-input-number
                                     v-model:value="extraForm.lowerLimit"
                                     style="width: 178px"
@@ -149,22 +158,24 @@
                         </div>
                         <div
                             class="extra-handle extra-check-group"
-                            v-if="extraForm.type"
+                            v-if="extraForm.lowerLimit || extraForm.upperLimit"
                         >
                             <div class="extra-title">超出阈值数据处理方式</div>
                             <CardSelect
                                 v-model:value="extraForm.mode"
                                 :options="[
                                     { label: '忽略', value: 'ignore' },
-                                    { label: '仅记录', value: 'record' },
-                                    { label: '记录并发送告警', value: 'device-alarm' },
+                                    { label: '记录', value: 'record' },
+                                    {
+                                        label: '告警',
+                                        value: 'device-alarm',
+                                    },
                                 ]"
                                 :showImage="false"
-                                :multiple="true"
                             />
-                            <!-- <div style="margin: 8px 0">
+                            <div style="margin: 8px 0">
                                 {{ handleTip }}
-                            </div> -->
+                            </div>
                         </div>
                     </j-collapse-panel>
                 </j-collapse>
@@ -259,7 +270,7 @@ const {
     thresholdUpdate,
     thresholdDetail,
     thresholdDetailQuery,
-    thresholdDelete
+    thresholdDelete,
 } = useThreshold(props);
 
 const emit = defineEmits(['update:value', 'change']);
@@ -288,14 +299,14 @@ const typeMap = {
     tags: 'tag',
 };
 
-// const handleTip = computed(() => {
-//     if (extraForm.mode === 'ignore') {
-//         return '平台将忽略超出阈值的数据，无法查看上报记录';
-//     } else if (extraForm.mode === 'record') {
-//         return '您可以在告警记录-无效数据页面查看超出阈值的数据上报记录';
-//     }
-//     return '您可以在设备详情-告警记录 页面查看告警情况';
-// });
+const handleTip = computed(() => {
+    if (extraForm.mode.includes('ignore')) {
+        return '平台将忽略超出阈值的数据，无法查看上报记录';
+    } else if (extraForm.mode.includes('record')) {
+        return '您可以在告警记录-无效数据页面查看超出阈值的数据上报记录';
+    }
+    return '您可以在设备详情-告警记录 页面查看告警情况';
+});
 
 const showContent = computed(() => {
     if (props.isProduct && props.target === 'device') {
@@ -361,12 +372,18 @@ const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
         extraForm.mode = ['ignore'];
     }
 };
-
-const resetThreshold = async(e:any) =>{
+const resetValue = () => {
+    extraForm.mode = ['ignore'];
+    extraForm.type = '';
+    extraForm.lowerLimit = 0;
+    extraForm.upperLimit = 0;
+};
+const resetThreshold = async (e: any) => {
     e.stopPropagation();
     await thresholdDelete();
+    resetValue();
     thresholdDetailQuery();
-}
+};
 
 const getConfig = async () => {
     const id =
@@ -435,7 +452,7 @@ const confirm = () => {
             }
             if (showExtra.value) {
                 // expands.threshold = extraForm
-                await thresholdUpdate(extraForm)
+                await thresholdUpdate(extraForm);
                 // extraForm.type ?  await thresholdUpdate(extraForm) : await thresholdDelete()
             }
 
@@ -481,7 +498,10 @@ const cancel = () => {
 watch(
     () => thresholdDetail,
     () => {
-        if (thresholdDetail.value && JSON.stringify(thresholdDetail.value) !== '{}') {
+        if (
+            thresholdDetail.value &&
+            JSON.stringify(thresholdDetail.value) !== '{}'
+        ) {
             extraForm.mode = thresholdDetail.value?.mode;
             extraForm.type = thresholdDetail.value?.type || '';
             extraForm.lowerLimit = thresholdDetail.value?.lowerLimit;

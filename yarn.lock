@@ -3422,17 +3422,16 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz#7bc3c38c2e2e5d2eee6224f4878ff4d8326c978f"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.38:
-  version "1.0.42"
-  resolved "https://registry.npmjs.org/jetlinks-ui-components/-/jetlinks-ui-components-1.0.42.tgz#85e2abf4c22f4479f780b961948beb1dfd7a0398"
-  integrity sha512-QqlWcpl1CiDCEkpBlIxg1gpgWbhyQE3cXMdq0t2e7Ct+gFIuyLCuT2adTW0j901kE2LIhOPUNbuiWPYMrodfIA==
+jetlinks-ui-components@^1.0.45:
+  version "1.0.45"
+  resolved "https://registry.yarnpkg.com/jetlinks-ui-components/-/jetlinks-ui-components-1.0.45.tgz#0d9be0798a50b2df5a8d2267b4cd75a6c04dbeec"
+  integrity sha512-OVWiYKBIH8Oeo+8G5aX15sBGMdH4tay+EeyZ0E8aTKJNBETr/VIR3iCYf2ys52i6KIaNxdJO0VzfauKexf2fWA==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"
     colorpicker-v3 "^2.10.2"
     lodash-es "^4.17.21"
     monaco-editor "^0.40.0"
-    onigasm "^2.2.5"
     sortablejs "^1.15.0"
     vuedraggable "^4.1.0"
 
@@ -4315,13 +4314,6 @@ onetime@^6.0.0:
   integrity sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==
   dependencies:
     mimic-fn "^4.0.0"
-
-onigasm@^2.2.5:
-  version "2.2.5"
-  resolved "https://registry.npmjs.org/onigasm/-/onigasm-2.2.5.tgz#cc4d2a79a0fa0b64caec1f4c7ea367585a676892"
-  integrity sha512-F+th54mPc0l1lp1ZcFMyL/jTs2Tlq4SqIHKIXGZOR/VkHkF9A7Fr5rRr5+ZG/lWeRsyrClLYRq7s/yFQ/XhWCA==
-  dependencies:
-    lru-cache "^5.1.1"
 
 open@^8.4.2:
   version "8.4.2"
