@@ -47,7 +47,7 @@
                     :rules="rules"
                 >
                   <CheckFilterItem
-                    v-model:value="
+                    :value="
                             formModel.branches[branchName].then[thenName]
                                 .actions[actionName].terms[name].terms[index]
                         "
@@ -256,6 +256,7 @@ const onDelete = () => {
 const rules = [
     {
         validator(_: any, v?: Record<string, any>) {
+          console.log(v)
             if (v !== undefined && !v.error) {
                 if (!Object.keys(v).length) {
                     return Promise.reject(

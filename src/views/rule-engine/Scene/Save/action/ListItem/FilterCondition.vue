@@ -104,7 +104,8 @@ import { treeFilter } from '@/utils/comm';
 import { timeTypeKeys } from '@/views/rule-engine/Scene/Save/components/Terms/util';
 import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
 import {queryAlarmList} from '@/api/rule-engine/scene';
-import {analysisFilterTerms, handleFilterTerms} from "@/views/rule-engine/Scene/Save/action/ListItem/util";
+import {analysisFilterTerms, handleFilterTerms, useCheckFilter } from "@/views/rule-engine/Scene/Save/action/ListItem/util";
+
 
 const sceneStore = useSceneStore();
 const { data: formModel } = storeToRefs(sceneStore);
@@ -199,6 +200,8 @@ const tabsOptions = ref<Array<TabsOption>>([
 
 const alarmOptions = ref([])
 
+const checkFilter = useCheckFilter()
+
 const showDouble = computed(() => {
   return paramsValue.termType
     ? arrayParamsKey.includes(paramsValue.termType)
@@ -206,8 +209,12 @@ const showDouble = computed(() => {
 });
 
 const showAlarm = computed(() => {
-  return paramsValue.column?.split('.')[1] === 'firstAlarm'
+  return paramsValue.column?.split('.')?.[1] === 'firstAlarm'
 })
+
+const valueChangeAfter = () => {
+  checkFilter.onFieldChange()
+}
 
 const handOptionByColumn = (option: any) => {
     if (option) {
@@ -264,7 +271,7 @@ const handOptionByColumn = (option: any) => {
             'type',
         );
     } else {
-        termTypeOptions.value = [];
+        // termTypeOptions.value = [];
         valueOptions.value = [];
         valueColumnOptions.value = [];
     }
@@ -320,6 +327,7 @@ const columnSelect = (e: any) => {
       paramsValue.alarm = undefined
     } else {
       delete paramsValue.alarm
+      delete paramsValue.terms
     }
 
     // 如果参数类型未发生变化，则不修改操作符以及值
@@ -361,7 +369,8 @@ const columnSelect = (e: any) => {
     set(termsColumns, [props.termsName, props.name], columns);
     handleOptionsColumnsValue(termsColumns, _options);
     emit('update:value', handleFilterTerms({ ...paramsValue }));
-    formItemContext.onFieldChange();
+    termTypeOptions.value = e.termTypes
+    valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][0] = e.name;
@@ -396,23 +405,22 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
         value: value,
     };
     emit('update:value', handleFilterTerms({ ...paramsValue }));
-    formItemContext.onFieldChange();
+  valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][1] = e.name;
 };
 
 const alarmSelect = (e: { key: string; label: string }) => {
-  console.log(e)
   emit('update:value', handleFilterTerms({ ...paramsValue }));
-  formItemContext.onFieldChange();
+  valueChangeAfter();
   formModel.value.branches![props.branchName].then[props.thenName].actions[
     props.actionName
     ].options!.terms[props.termsName].terms[props.name][4] = e.label;
 }
 const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
     emit('update:value', handleFilterTerms({ ...paramsValue }));
-    formItemContext.onFieldChange();
+  valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][2] = labelObj;
@@ -528,6 +536,7 @@ watch(
         paramsValue.column,
         'id',
       );
+
       if (option && Object.keys(option).length) {
         handOptionByColumn(option);
         if (props.value.error) {
@@ -535,21 +544,22 @@ watch(
             ...props.value,
             error: false,
           }));
-          formItemContext.onFieldChange();
+          valueChangeAfter();
         }
       } else {
         emit('update:value', handleFilterTerms({
           ...props.value,
           error: true,
         }));
-        formItemContext.onFieldChange();
+        valueChangeAfter();
       }
     }
   },
-);
+  { deep: true });
 
 watch(() => props.value, () => {
   const terms = analysisFilterTerms(props.value)
+  console.log(props.value, terms)
   paramsValue.value = terms.value
   paramsValue.column = terms.column
   paramsValue.type = terms.type
@@ -557,9 +567,18 @@ watch(() => props.value, () => {
   paramsValue.alarm = terms.alarm
 }, { immediate: true, deep: true })
 
-nextTick(() => {
-    Object.assign(paramsValue, props.value);
-});
+onMounted(() => {
+  if (paramsValue.column) {
+    const option = getOption(
+      columnOptions.value,
+      paramsValue.column,
+      'id',
+    );
+    if (option && Object.keys(option).length) {
+      handOptionByColumn(option);
+    }
+  }
+})
 </script>
 
 <style scoped></style>
