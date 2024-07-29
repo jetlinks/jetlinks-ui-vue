@@ -46,20 +46,33 @@
                     ]"
                     :rules="rules"
                 >
-                    <FilterItem
-                        v-model:value="
+                  <CheckFilterItem
+                    v-model:value="
                             formModel.branches[branchName].then[thenName]
                                 .actions[actionName].terms[name].terms[index]
                         "
-                        :isFirst="index === 0"
-                        :isLast="index === termsOptions.length - 1"
-                        :showDeleteBtn="termsOptions.length !== 1"
-                        :name="index"
-                        :termsName="name"
-                        :actionName="actionName"
-                        :thenName="thenName"
-                        :branchName="branchName"
+                    :name="index"
+                    :termsName="name"
+                    :actionName="actionName"
+                    :thenName="thenName"
+                    :branchName="branchName"
+                  >
+                    <FilterItem
+                      v-model:value="
+                            formModel.branches[branchName].then[thenName]
+                                .actions[actionName].terms[name].terms[index]
+                        "
+                      :isFirst="index === 0"
+                      :isLast="index === termsOptions.length - 1"
+                      :showDeleteBtn="termsOptions.length !== 1"
+                      :name="index"
+                      :termsName="name"
+                      :actionName="actionName"
+                      :thenName="thenName"
+                      :branchName="branchName"
                     />
+                  </CheckFilterItem>
+
                 </j-form-item>
             </div>
             <div v-if="isLast" class="terms-group-add" @click="addTerms">
@@ -89,6 +102,8 @@ import {
     EventSubscribeKeys,
 } from '@/views/rule-engine/Scene/Save/util';
 import { handleParamsData } from '@/views/rule-engine/Scene/Save/components/Terms/util';
+import {filterTermsValidator} from "@/views/rule-engine/Scene/Save/action/ListItem/util";
+import CheckFilterItem from './CheckFilterItem.vue'
 
 const sceneStore = useSceneStore();
 const { data: formModel } = storeToRefs(sceneStore);
@@ -247,26 +262,8 @@ const rules = [
                         new Error('该数据已发生变更，请重新配置'),
                     );
                 }
-                if (!v.column) {
-                    return Promise.reject(new Error('请选择参数'));
-                }
 
-                if (!v.termType) {
-                    return Promise.reject(new Error('请选择操作符'));
-                }
-
-                if (v.value.value === undefined) {
-                    return Promise.reject(new Error('请选择或输入参数值'));
-                } else {
-                    if (
-                        isArray(v.value.value) &&
-                        v.value.value.some((_v: any) => _v === undefined)
-                    ) {
-                        return Promise.reject(new Error('请选择或输入参数值'));
-                    } else if (v.value.value === undefined) {
-                        return Promise.reject(new Error('请选择或输入参数值'));
-                    }
-                }
+              return filterTermsValidator(v)
             } else {
                 if (v?.error) {
                     // 数据发生变化
@@ -276,7 +273,6 @@ const rules = [
                 }
                 return Promise.reject(new Error('请选择参数'));
             }
-            return Promise.resolve();
         },
     },
 ];

@@ -2,6 +2,7 @@ import { getImage } from '@/utils/comm'
 import NoticeApi from '@/api/notice/config'
 import { getParams } from '@/views/rule-engine/Scene/Save/util'
 import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownButton/util'
+import {cloneDeep, isArray, omit} from "lodash-es";
 
 export const iconMap = new Map();
 iconMap.set('trigger', 'icon-chufagaojing');
@@ -57,4 +58,77 @@ export const getNotifyVariablesUser = (isRelationUser: boolean = false): Promise
       relation: relationResp?.result || []
     })
   })
+}
+
+
+export const analysisFilterTerms = (terms: any) => {
+  if (terms.terms.length) {
+    const realTerms = terms.terms[0]
+    const alarmTerms = terms.terms[1]
+    return {
+      ...realTerms,
+      alarm: alarmTerms.value.value
+    }
+  }
+  return terms
+}
+
+export const handleFilterTerms = (terms: any) => {
+  const {alarm, ...extra} = cloneDeep(terms)
+  if (terms.hasOwnProperty('alarm')) {
+    const column = extra.column
+    const identifying = column.split('.')[0]
+    return {
+      terms: [
+        extra,
+        {
+          column: `${identifying}.alarmConfigId`,
+          value: {
+            source: 'fixed',
+            value: alarm
+          },
+          type: 'and',
+          termType: 'eq'
+        }
+      ]
+    }
+  }
+  return terms
+}
+
+const termsValidator = (terms: any) => {
+  if (!terms.column) {
+    return Promise.reject(new Error('请选择参数'));
+  }
+
+  if (!terms.termType) {
+    return Promise.reject(new Error('请选择操作符'));
+  }
+
+  if (terms.value.value === undefined) {
+    return Promise.reject(new Error('请选择或输入参数值'));
+  } else {
+    if (
+        isArray(terms.value.value) &&
+        terms.value.value.some((_v: any) => _v === undefined) || terms.value.value === undefined
+    ) {
+      return Promise.reject(new Error('请选择或输入参数值'));
+    }
+  }
+
+  return Promise.resolve();
+}
+
+export const filterTermsValidator = (terms: any) => {
+  if (terms.terms.length) {
+    const realTerms = terms.terms[0]
+    const alarmTerms = terms.terms[1]
+
+    if (!alarmTerms.value.value) {
+      return Promise.reject(new Error('请选择告警配置'))
+    }
+    return termsValidator(realTerms)
+  } else {
+    return termsValidator(terms)
+  }
 }

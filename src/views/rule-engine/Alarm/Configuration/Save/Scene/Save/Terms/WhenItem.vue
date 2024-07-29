@@ -7,6 +7,9 @@
       <AIcon type='icon-zhihangdongzuoxie-1' />
       {{ value[0] }}
     </div>
+    <div v-if="showAlarm" class="dropdown-button">
+      {{ value[4] }}
+    </div>
     <div class="dropdown-button termType">
       {{ TermsTypeMap[value[1]] || value[1] }}
     </div>
@@ -57,6 +60,10 @@ const props = defineProps({
     type: Array,
     default: () => []
   }
+})
+
+const showAlarm = computed(() => {
+  return props.data.terms?.length
 })
 
 const _value = computed(() => {

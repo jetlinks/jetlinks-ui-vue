@@ -15,7 +15,7 @@
       <JProTable
         model="CARD"
         :columns="columns"
-        :request="queryAlarmList"
+        :request="queryAlarmPage"
         :bodyStyle="{ padding: 0 }"
         :gridColumn="3"
         :defaultParams="{
@@ -85,7 +85,7 @@
 </template>
 
 <script setup name="AlarmModal">
-import {queryAlarmList} from '@/api/rule-engine/scene';
+import {queryAlarmPage} from '@/api/rule-engine/scene';
 import { useAlarmLevel, useRequest } from '@/hook'
 import {bindScene, getTargetTypes} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";

@@ -70,7 +70,7 @@ import { storeToRefs } from 'pinia'
 import { useSceneStore } from 'store/scene'
 import { Form } from 'jetlinks-ui-components'
 import { Modal } from 'ant-design-vue'
-import {queryAlarmCount, queryAlarmList} from "@/api/rule-engine/scene";
+import {queryAlarmCount, queryAlarmPage} from "@/api/rule-engine/scene";
 import {unBindAlarm, unBindAlarmMultiple} from "@/api/rule-engine/configuration";
 
 const sceneStore = useSceneStore()
@@ -135,7 +135,7 @@ const onDelete = async (_key: string, _parallel: boolean) => {
 
     if (actionItem.executor === 'alarm') {
       const _branchId = FormModel.value.branches?.[props.name].branchId
-      const resp = await queryAlarmList({
+      const resp = await queryAlarmPage({
         terms: [
           {
             terms: [

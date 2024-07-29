@@ -83,7 +83,7 @@ import { useSceneStore } from '@/store/scene'
 import { cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
 import { ContextKey, handleParamsData } from './util'
-import {getParseTerm, queryAlarmList} from '@/api/rule-engine/scene'
+import {getParseTerm} from '@/api/rule-engine/scene'
 import type { FormModelType} from '@/views/rule-engine/Scene/typings'
 import Branches from './Branches.vue'
 import {randomNumber, randomString} from "@/utils/utils";
