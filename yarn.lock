@@ -3424,7 +3424,7 @@ jetlinks-store@^0.0.3:
 
 jetlinks-ui-components@^1.0.45:
   version "1.0.45"
-  resolved "https://registry.yarnpkg.com/jetlinks-ui-components/-/jetlinks-ui-components-1.0.45.tgz#0d9be0798a50b2df5a8d2267b4cd75a6c04dbeec"
+  resolved "https://registry.npmjs.org/jetlinks-ui-components/-/jetlinks-ui-components-1.0.45.tgz#0d9be0798a50b2df5a8d2267b4cd75a6c04dbeec"
   integrity sha512-OVWiYKBIH8Oeo+8G5aX15sBGMdH4tay+EeyZ0E8aTKJNBETr/VIR3iCYf2ys52i6KIaNxdJO0VzfauKexf2fWA==
   dependencies:
     "@vueuse/core" "^9.12.0"

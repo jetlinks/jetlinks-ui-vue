@@ -103,21 +103,21 @@ const TypeList = [
         value: 'INVOKE_FUNCTION',
         image: getImage('/scene/invoke-function.png'),
         tip: '',
-        disabled: true,
+        disabled: false,
     },
     {
         label: '读取属性',
         value: 'READ_PROPERTY',
         image: getImage('/scene/read-property.png'),
         tip: '',
-        disabled: true,
+        disabled: false,
     },
     {
         label: '设置属性',
         value: 'WRITE_PROPERTY',
         image: getImage('/scene/write-property.png'),
         tip: '',
-        disabled: true,
+        disabled: false,
     },
 ];
 

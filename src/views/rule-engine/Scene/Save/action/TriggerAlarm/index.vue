@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { queryAlarmList } from '@/api/rule-engine/scene';
+import { queryAlarmPage } from '@/api/rule-engine/scene';
 import {
     getAlarmLevel,
     getAlarmConfigCount,
@@ -103,6 +103,7 @@ import {
 import AlarmModal from "./AlarmModal.vue";
 import {unBindAlarm} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
+import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
 
 const props = defineProps({
     id: {
@@ -172,9 +173,19 @@ const columns = [
     }
 ];
 
+/**
+ * 发布订阅
+ */
+const eventEmit = () => {
+  const _key = props.actionId || props.branchId
+  EventEmitter.emit(`${_key}_alarm`, { updateTime: new Date().getTime()})
+}
+
 const onOk = () => {
   visible.value = false
   tableRef.value.reload()
+
+  eventEmit()
 }
 
 const showAlarm = () => {
@@ -186,12 +197,13 @@ const unBind = async (record: any) => {
   if (res.success) {
     tableRef.value.reload()
     onlyMessage('操作成功！')
+    eventEmit()
   }
 }
 
 const queryData = async (terms: any) => {
 
-  const resp = await queryAlarmList(terms)
+  const resp = await queryAlarmPage(terms)
 
   count.value = resp.result.total
 

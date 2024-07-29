@@ -15,7 +15,7 @@
           <a-space>
             <span>查找</span>
             <a-input v-model:value="searchValue" placeholder="请输入查找内容" />
-            <a-button type="primary" ghost @click="() => search('all')">查抄全部</a-button>
+            <a-button type="primary" ghost @click="() => search('all')">查找全部</a-button>
             <a-button type="primary" ghost @click="() => search('prev')">上一个</a-button>
             <a-button type="primary" ghost @click="() => search('next')">下一个</a-button>
           </a-space>

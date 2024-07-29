@@ -212,6 +212,8 @@ export type TermsType = {
   key?: string;
   error?: boolean
   metric?: string
+
+  alarm?: string
 };
 
 export type PlatformRelation = {

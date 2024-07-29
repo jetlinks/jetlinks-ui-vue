@@ -3,11 +3,10 @@
 </template>
 
 <script setup lang='ts' name='ActionCheckItem'>
-import { ActionsType, FormModelType, PlatformRelation } from '@/views/rule-engine/Scene/typings'
+import type { PlatformRelation } from '@/views/rule-engine/Scene/typings'
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { queryProductList } from '@/api/device/product'
-import { query as deviceQuery, detail as getDeviceDetail } from '@/api/device/instance'
 import noticeConfig from '@/api/notice/config'
 import noticeTemplate from '@/api/notice/template'
 import { Form } from 'jetlinks-ui-components'
@@ -16,6 +15,7 @@ import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownBut
 import { getBuildInData, getNotifyVariablesUser } from './util'
 import { defineExpose } from 'vue'
 import {queryDetailListNoPaging} from "@/api/device/firmware";
+
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -328,10 +328,12 @@ const checkNoticeDelete = async () => {
 
 const check = () => {
   if (_data.value.branches![props.branchesName].then[props.thenName]) {
-    const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
-    if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
+
+    const action = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]
+    const _executor = action?.executor
+    if (_executor === 'device' && action?.device) { // 设备输出，并且有值
       checkDeviceDelete()
-    } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
+    } else if (_executor === 'notify' && action?.notify) {
       checkNoticeDelete()
     }
   }

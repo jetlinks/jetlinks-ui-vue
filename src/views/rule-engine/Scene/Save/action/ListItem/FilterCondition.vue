@@ -28,6 +28,14 @@
                 @select="columnSelect"
             />
             <DropdownButton
+                v-if="showAlarm"
+                :options="alarmOptions"
+                type="alarm"
+                placeholder="请选择告警配置"
+                v-model:value="paramsValue.alarm"
+                @select="alarmSelect"
+            />
+            <DropdownButton
                 :options="termTypeOptions"
                 type="termType"
                 value-name="id"
@@ -94,6 +102,9 @@ import { cloneDeep, flattenDeep, isArray, isObject, set } from 'lodash-es';
 import { Form } from 'jetlinks-ui-components';
 import { treeFilter } from '@/utils/comm';
 import { timeTypeKeys } from '@/views/rule-engine/Scene/Save/components/Terms/util';
+import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
+import {queryAlarmList} from '@/api/rule-engine/scene';
+import {analysisFilterTerms, handleFilterTerms} from "@/views/rule-engine/Scene/Save/action/ListItem/util";
 
 const sceneStore = useSceneStore();
 const { data: formModel } = storeToRefs(sceneStore);
@@ -162,6 +173,7 @@ const paramsValue = reactive<TermsType>({
     type: props.value.type,
     termType: props.value.termType,
     value: props.value.value,
+    alarm: undefined
 });
 const formItemContext = Form.useInjectFormItemContext();
 const showDelete = ref(false);
@@ -184,6 +196,18 @@ const tabsOptions = ref<Array<TabsOption>>([
     { label: '手动输入', key: 'fixed', component: 'string' },
     { label: '内置参数', key: 'upper', component: 'tree' },
 ]);
+
+const alarmOptions = ref([])
+
+const showDouble = computed(() => {
+  return paramsValue.termType
+    ? arrayParamsKey.includes(paramsValue.termType)
+    : false;
+});
+
+const showAlarm = computed(() => {
+  return paramsValue.column?.split('.')[1] === 'firstAlarm'
+})
 
 const handOptionByColumn = (option: any) => {
     if (option) {
@@ -260,41 +284,6 @@ const handOptionByColumn = (option: any) => {
     }
 };
 
-watch(
-    () => [columnOptions.value, paramsValue.column],
-    () => {
-        if (paramsValue.column) {
-            const option = getOption(
-                columnOptions.value,
-                paramsValue.column,
-                'id',
-            );
-            if (option && Object.keys(option).length) {
-                handOptionByColumn(option);
-                if (props.value.error) {
-                    emit('update:value', {
-                        ...props.value,
-                        error: false,
-                    });
-                    formItemContext.onFieldChange();
-                }
-            } else {
-                emit('update:value', {
-                    ...props.value,
-                    error: true,
-                });
-                formItemContext.onFieldChange();
-            }
-        }
-    },
-);
-
-const showDouble = computed(() => {
-    const isRange = paramsValue.termType
-        ? arrayParamsKey.includes(paramsValue.termType)
-        : false;
-    return isRange;
-});
 
 const mouseover = () => {
     if (props.showDeleteBtn) {
@@ -326,6 +315,12 @@ const columnSelect = (e: any) => {
     const dataType = e.type;
     const hasTypeChange = dataType !== tabsOptions.value[0].component;
     let termTypeChange = false;
+
+    if (paramsValue.column!.split('.')[1] === 'firstAlarm') {
+      paramsValue.alarm = undefined
+    } else {
+      delete paramsValue.alarm
+    }
 
     // 如果参数类型未发生变化，则不修改操作符以及值
     const termTypes = e.termTypes;
@@ -365,7 +360,7 @@ const columnSelect = (e: any) => {
     const termsColumns = _options?.termsColumns || [];
     set(termsColumns, [props.termsName, props.name], columns);
     handleOptionsColumnsValue(termsColumns, _options);
-    emit('update:value', { ...paramsValue });
+    emit('update:value', handleFilterTerms({ ...paramsValue }));
     formItemContext.onFieldChange();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
@@ -400,15 +395,23 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
         source: paramsValue.value?.source || tabsOptions.value[0].key,
         value: value,
     };
-    emit('update:value', { ...paramsValue });
+    emit('update:value', handleFilterTerms({ ...paramsValue }));
     formItemContext.onFieldChange();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][1] = e.name;
 };
 
+const alarmSelect = (e: { key: string; label: string }) => {
+  console.log(e)
+  emit('update:value', handleFilterTerms({ ...paramsValue }));
+  formItemContext.onFieldChange();
+  formModel.value.branches![props.branchName].then[props.thenName].actions[
+    props.actionName
+    ].options!.terms[props.termsName].terms[props.name][4] = e.label;
+}
 const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
-    emit('update:value', { ...paramsValue });
+    emit('update:value', handleFilterTerms({ ...paramsValue }));
     formItemContext.onFieldChange();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
@@ -417,7 +420,7 @@ const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
 
 const typeChange = (e: any) => {
     paramsValue.type = e.value;
-    emit('update:value', { ...paramsValue });
+    emit('update:value', handleFilterTerms({ ...paramsValue }));
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][3] = e.label;
@@ -434,9 +437,10 @@ const termAdd = () => {
         type: 'and',
         key: `params_${new Date().getTime()}`,
     };
-    formModel.value.branches?.[props.branchName]?.then?.[
+    formModel.value.branches![props.branchName].then[
         props.thenName
-    ]?.actions?.[props.actionName].terms?.[props.termsName].terms?.push(terms);
+    ].actions[props.actionName].terms[props.termsName].terms.push(terms);
+
     formModel.value.branches?.[props.branchName]?.then?.[
         props.thenName
     ]?.actions?.[props.actionName].options?.terms?.[
@@ -445,14 +449,14 @@ const termAdd = () => {
 };
 
 const onDelete = () => {
-    const key =
-        formModel.value.branches?.[props.branchName]?.then?.[props.thenName]
-            ?.actions?.[props.actionName].terms?.[props.termsName].terms?.[
-            props.name
-        ].key;
-    formModel.value.branches?.[props.branchName]?.then?.[
+    // const key =
+    //     formModel.value.branches?.[props.branchName]?.then?.[props.thenName]
+    //         ?.actions?.[props.actionName].terms?.[props.termsName].terms?.[
+    //         props.name
+    //     ].key;
+    formModel.value.branches![props.branchName].then[
         props.thenName
-    ]?.actions?.[props.actionName].terms?.[props.termsName].terms?.splice(
+    ].actions[props.actionName].terms[props.termsName].terms?.splice(
         props.name,
         1,
     );
@@ -463,6 +467,95 @@ const onDelete = () => {
     set(termsColumns, [props.termsName, props.name], []);
     handleOptionsColumnsValue(termsColumns, _options);
 };
+
+const getAlarmOptions = () => {
+  const actionId = formModel.value.branches![props.branchName].then[props.thenName]
+    .actions[props.name].actionId
+  const branchId = formModel.value.branches![props.branchName].branchId
+  const _id = formModel.value.id
+  queryAlarmList({
+    sorts: [{ name: 'createTime', order: 'desc' }],
+    terms: [
+      {
+        terms: [
+          {
+            column: 'id$rule-bind-alarm',
+            value: `${_id}:${actionId || branchId}`,
+          },
+          {
+            column: 'id$rule-bind-alarm',
+            value: `${_id}:${-1}`,
+            type: 'or'
+          },
+        ]
+      }
+    ]
+  }).then(resp => {
+    if (resp.success) {
+      alarmOptions.value = resp.result?.map(item => {
+        return {
+          label: item.name,
+          value: item.id
+        }
+      }) || []
+    }
+  })
+}
+const subscribe = () => {
+  const actionId = formModel.value.branches![props.branchName].then[props.thenName]
+    .actions[props.name].actionId
+  const _key = actionId || formModel.value.branches![props.branchName].branchId
+  EventEmitter.subscribe([`${_key}_alarm`], () => {
+    console.log('subscribe')
+    getAlarmOptions()
+  })
+}
+
+subscribe()
+
+watch(() => showAlarm.value, (val) => {
+  if (val) {
+    getAlarmOptions()
+  }
+}, { immediate: true })
+
+watch(
+  () => [columnOptions.value, paramsValue.column],
+  () => {
+    if (paramsValue.column) {
+      const option = getOption(
+        columnOptions.value,
+        paramsValue.column,
+        'id',
+      );
+      if (option && Object.keys(option).length) {
+        handOptionByColumn(option);
+        if (props.value.error) {
+          emit('update:value', handleFilterTerms({
+            ...props.value,
+            error: false,
+          }));
+          formItemContext.onFieldChange();
+        }
+      } else {
+        emit('update:value', handleFilterTerms({
+          ...props.value,
+          error: true,
+        }));
+        formItemContext.onFieldChange();
+      }
+    }
+  },
+);
+
+watch(() => props.value, () => {
+  const terms = analysisFilterTerms(props.value)
+  paramsValue.value = terms.value
+  paramsValue.column = terms.column
+  paramsValue.type = terms.type
+  paramsValue.termType = terms.termType
+  paramsValue.alarm = terms.alarm
+}, { immediate: true, deep: true })
 
 nextTick(() => {
     Object.assign(paramsValue, props.value);

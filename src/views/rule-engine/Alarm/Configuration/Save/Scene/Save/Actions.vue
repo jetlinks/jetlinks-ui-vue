@@ -207,7 +207,7 @@
           满足此条件后执行后续动作
         </div>
         <div class="actions-item-filter-overflow">
-          <Terms :when="item.options" :border="false"/>
+          <Terms :when="item.options" :border="false" :data="item.terms"/>
         </div>
       </div>
     </div>
