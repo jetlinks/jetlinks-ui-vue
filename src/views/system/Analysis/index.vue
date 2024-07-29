@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { getReportConfig } from '@/api/system/analysis';
 import { onlyMessage } from '@/utils/comm';
 
 const data = reactive({
@@ -96,10 +97,16 @@ const submitData = () => {
         .then(async () => {
             // 保存
             console.log('form', form.value);
-            onlyMessage('保存成功！');
+            onlyMessage('暂无保存接口', 'warning');
         })
         .catch((err: any) => {});
 };
+
+// onMounted(() => {
+//     getReportConfig().then((resp: any) => {
+//         console.log('resp', resp);
+//     });
+// });
 </script>
 
 <style lang="less" scoped>

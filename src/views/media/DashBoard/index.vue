@@ -35,7 +35,7 @@
                 />
             </j-col>
             <j-col :span="24" class="dash-board-bottom">
-                <full-page>
+                <full-page v-show="true">
                     <Card
                         title="播放数量(人次)"
                         :chartData="chartData"

@@ -12,8 +12,8 @@
                 />
             </j-col>
         </j-row>
-        <j-row :gutter="24" style="margin-top: 24px;">
-            <j-col :span="24">
+        <j-row :gutter="24" style="margin-top: 24px">
+            <j-col :span="24" v-show="true">
                 <Card />
             </j-col>
         </j-row>
@@ -33,7 +33,7 @@ const menuPermission = useMenuStore().hasMenu;
 const StatusData = ref(statusData);
 const getNumberData = () => {
     StatusData.value.forEach(async (item: any) => {
-        if(menuPermission(item[0]?.permission)) {
+        if (menuPermission(item[0]?.permission)) {
             const res = await queryCount(item[0].type, {});
             const resp = await queryCount(item[0].type, defaultParams);
             item[0].total = res?.result;

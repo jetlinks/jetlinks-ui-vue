@@ -25,7 +25,7 @@
             </j-row>
             <j-row :gutter="24">
                 <j-col :span="24">
-                    <div class="alarm-card">
+                    <div class="alarm-card" v-show="true">
                         <Guide>
                             <template #title>
                                 <span style="margin-right: 24px">告警统计</span>
