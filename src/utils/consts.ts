@@ -68,3 +68,5 @@ export const protocolList = [
 
 export const EXPORT_TIPS = '导出成功';
 export const EXCEED_EXPORT_TIPS = '超出上限，已导出10000条';
+export const EXPORT_ALL = '确认导出全部数据';
+export const EXPORT_SELECT = '确认导出选中数据';
