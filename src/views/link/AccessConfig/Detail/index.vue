@@ -109,6 +109,7 @@ const TypeMap = new Map([
     ['onvif', 'media'],
     ['media-plugin', 'media'],
     ['OneNet', 'cloud'],
+    ['OneNet-platform','cloud'],
     ['Ctwing', 'cloud'],
     ['modbus-tcp', 'channel'],
     ['opc-ua', 'channel'],
@@ -123,6 +124,7 @@ DataMap.set('gb28181-2016', { type: 'media', title: '视频类设备接入' });
 DataMap.set('onvif',{ type: 'media' , title:'视频类设备接入'});
 DataMap.set('media-plugin', { type: 'media', title: '视频类设备接入' });
 DataMap.set('OneNet', { type: 'cloud', title: '云平台接入' });
+DataMap.set('OneNet-platform', { type: 'cloud', title: '云平台接入' });
 DataMap.set('Ctwing', { type: 'cloud', title: '云平台接入' });
 DataMap.set('modbus-tcp', { type: 'channel', title: '通道类设备接入' });
 DataMap.set('opc-ua', { type: 'channel', title: '通道类设备接入' });
@@ -141,7 +143,7 @@ const getTypeList = (result: Record<string, any>) => {
         if (item.id === 'fixed-media' || item.id === 'gb28181-2016' || item.id ==='onvif' || item.id === 'media-plugin') {
             item.type = 'media';
             media.push(item);
-        } else if (item.id === 'OneNet' || item.id === 'Ctwing') {
+        } else if (item.id === 'OneNet' || item.id === 'Ctwing' || item.id === 'OneNet-platform') {
             item.type = 'cloud';
             cloud.push(item);
         } else if (item.id === 'modbus-tcp' || item.id === 'opc-ua' || item.id === 'collector-gateway') {
