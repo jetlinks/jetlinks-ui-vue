@@ -99,19 +99,28 @@
                         <template #header>
                             <a-space>
                                 <div>阈值限制</div>
-                                <a-button
+                                <template
                                     v-if="
                                         props.isProduct && target === 'device'
                                     "
-                                    type="link"
-                                    style="padding: 0 4px; height: 22px"
-                                    @click="(e) => resetThreshold(e)"
                                 >
-                                    <template #icon>
-                                        <AIcon type="RedoOutlined" />
-                                    </template>
-                                    重置
-                                </a-button>
+                                    <a-button
+                                        type="link"
+                                        style="padding: 0 4px; height: 22px"
+                                        @click="(e) => resetThreshold(e)"
+                                    >
+                                        <template #icon>
+                                            <AIcon type="RedoOutlined" />
+                                        </template>
+                                        重置
+                                    </a-button>
+                                    <a-tooltip>
+                                        <template #title
+                                            >重置后阀值限制继承于产品</template
+                                        >
+                                        <AIcon type="QuestionCircleOutlined" />
+                                    </a-tooltip>
+                                </template>
                                 <a-button
                                     v-else
                                     type="link"
@@ -123,60 +132,98 @@
                                     </template>
                                     清空
                                 </a-button>
-                                <a-tooltip>
-                                    <template #title>重置后阀值限制继承于产品</template>
-                                    <AIcon type="QuestionCircleOutlined" />
-                                </a-tooltip>
                             </a-space>
                         </template>
-                        <div class="extra-limit extra-check-group">
-                            <CardSelect
-                                v-model:value="extraForm.type"
-                                :options="[
-                                    { label: '上下限', value: 'number-range' },
-                                ]"
-                                :showImage="false"
-                                @select="limitSelect"
-                            />
-                        </div>
-                        <div class="extra-limit-input" v-if="extraForm.type">
-                            <div class="extra-title">阈值</div>
-                            <a-space v-if="extraForm.type === 'number-range'">
-                                <a-input-number
-                                    v-model:value="extraForm.lowerLimit"
-                                    style="width: 178px"
-                                    placeholder="请输入下限"
-                                />
-                                <span>~</span>
-                                <a-input-number
-                                    v-model:value="extraForm.upperLimit"
-                                    style="width: 178px"
-                                    :min="extraForm.lowerLimit"
-                                    placeholder="请输入上限"
-                                />
-                            </a-space>
-                        </div>
-                        <div
-                            class="extra-handle extra-check-group"
-                            v-if="extraForm.lowerLimit || extraForm.upperLimit"
+                        <a-form
+                            :model="extraForm"
+                            layout="vertical"
+                            ref="ThresholdRef"
                         >
-                            <div class="extra-title">超出阈值数据处理方式</div>
-                            <CardSelect
-                                v-model:value="extraForm.mode"
-                                :options="[
-                                    { label: '忽略', value: 'ignore' },
-                                    { label: '记录', value: 'record' },
+                            <a-form-item>
+                                <div class="extra-limit extra-check-group">
+                                    <CardSelect
+                                        v-model:value="extraForm.type"
+                                        :options="[
+                                            {
+                                                label: '上下限',
+                                                value: 'number-range',
+                                            },
+                                        ]"
+                                        :showImage="false"
+                                        @select="limitSelect"
+                                    />
+                                </div>
+                            </a-form-item>
+                            <a-form-item
+                                v-if="extraForm.type"
+                                name="limit"
+                                :rules="[
                                     {
-                                        label: '告警',
-                                        value: 'device-alarm',
+                                        required: true,
+                                        message: '请输入上下限',
+                                    },
+                                    {
+                                        validator: validateLimit,
+                                        trigger: 'change',
                                     },
                                 ]"
-                                :showImage="false"
-                            />
-                            <div style="margin: 8px 0">
-                                {{ handleTip }}
-                            </div>
-                        </div>
+                            >
+                                <template #label
+                                    ><div class="extra-title">
+                                        阈值
+                                    </div></template
+                                >
+                                <a-space
+                                    v-if="extraForm.type === 'number-range'"
+                                >
+                                    <a-input-number
+                                        v-model:value="extraForm.limit.lower"
+                                        style="width: 178px"
+                                        placeholder="请输入下限"
+                                    />
+                                    <span>~</span>
+                                    <a-input-number
+                                        v-model:value="extraForm.limit.upper"
+                                        style="width: 178px"
+                                        :min="extraForm.limit.lower"
+                                        placeholder="请输入上限"
+                                    />
+                                </a-space>
+                            </a-form-item>
+                            <a-form-item
+                                v-if="extraForm.type"
+                                name="mode"
+                                :rules="[
+                                    {
+                                        required: true,
+                                        message: '请选择处理方式',
+                                    },
+                                ]"
+                            >
+                                <template #label>
+                                    <div class="extra-title">
+                                        超出阈值数据处理方式
+                                    </div></template
+                                >
+                                <div class="extra-handle extra-check-group">
+                                    <CardSelect
+                                        v-model:value="extraForm.mode"
+                                        :options="[
+                                            { label: '忽略', value: 'ignore' },
+                                            { label: '记录', value: 'record' },
+                                            {
+                                                label: '告警',
+                                                value: 'device-alarm',
+                                            },
+                                        ]"
+                                        :showImage="false"
+                                    />
+                                    <div style="margin: 8px 0">
+                                        {{ handleTip }}
+                                    </div>
+                                </div></a-form-item
+                            >
+                        </a-form>
                     </j-collapse-panel>
                 </j-collapse>
             </j-scrollbar>
@@ -275,6 +322,7 @@ const {
 
 const emit = defineEmits(['update:value', 'change']);
 
+const ThresholdRef = ref();
 const activeKey = ref();
 const metricsRef = ref();
 
@@ -286,8 +334,10 @@ const config = ref<any>([]);
 const configValue = ref(props.value?.expands);
 
 const extraForm = reactive({
-    upperLimit: 0,
-    lowerLimit: 0,
+    limit: {
+        upper: 0,
+        lower: 0,
+    },
     mode: ['ignore'],
     type: '',
 });
@@ -363,8 +413,8 @@ const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
     if (!isSelected) {
         // 删除
         if (key === 'number-range') {
-            extraForm.upperLimit = 0;
-            extraForm.lowerLimit = 0;
+            extraForm.limit.lower = 0;
+            extraForm.limit.upper = 0;
         }
     }
 
@@ -375,14 +425,24 @@ const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
 const resetValue = () => {
     extraForm.mode = ['ignore'];
     extraForm.type = '';
-    extraForm.lowerLimit = 0;
-    extraForm.upperLimit = 0;
+    extraForm.limit.lower = 0;
+    extraForm.limit.upper = 0;
 };
 const resetThreshold = async (e: any) => {
     e.stopPropagation();
     await thresholdDelete();
     resetValue();
     thresholdDetailQuery();
+};
+
+const validateLimit = (_: any, value: any) => {
+    if (value.lower !== null && value.upper !== null) {
+        return value.upper < value.lower
+            ? Promise.reject('上限必须小于下限')
+            : Promise.resolve();
+    } else {
+        return Promise.reject('请输入上下限');
+    }
 };
 
 const getConfig = async () => {
@@ -450,21 +510,28 @@ const confirm = () => {
             if (metrics) {
                 expands.metrics = metrics;
             }
-            if (showExtra.value) {
-                // expands.threshold = extraForm
-                await thresholdUpdate(extraForm);
-                // extraForm.type ?  await thresholdUpdate(extraForm) : await thresholdDelete()
+            if (showExtra.value && extraForm.type) {
+                ThresholdRef.value?.validate().then(async () => {
+                    await thresholdUpdate(extraForm);
+                    expands.otherEdit = true;
+                    emit('update:value', {
+                        ...props.value,
+                        ...expands,
+                    });
+                    emit('change');
+                    modalVisible.value = false;
+                    resolve(true);
+                });
+            } else {
+                expands.otherEdit = true;
+                emit('update:value', {
+                    ...props.value,
+                    ...expands,
+                });
+                emit('change');
+                modalVisible.value = false;
+                resolve(true);
             }
-
-            expands.otherEdit = true;
-
-            emit('update:value', {
-                ...props.value,
-                ...expands,
-            });
-            emit('change');
-            modalVisible.value = false;
-            resolve(true);
         } catch (err) {
             reject(false);
         }
@@ -504,8 +571,7 @@ watch(
         ) {
             extraForm.mode = thresholdDetail.value?.mode;
             extraForm.type = thresholdDetail.value?.type || '';
-            extraForm.lowerLimit = thresholdDetail.value?.lowerLimit;
-            extraForm.upperLimit = thresholdDetail.value?.upperLimit;
+            extraForm.limit = thresholdDetail.value?.limit;
         }
     },
     { immediate: true, deep: true },
@@ -515,14 +581,6 @@ watch(
     () => JSON.stringify(props.value),
     () => {
         myValue.value = cloneDeep(props.value);
-
-        // if (props.value.threshold) {
-        //   const threshold = props.value.threshold
-        //   extraForm.handle = threshold.handle
-        //   extraForm.type = threshold.type
-        //   extraForm.lowerLimit = threshold.lowerLimit
-        //   extraForm.upperLimit = threshold.upperLimit
-        // }
     },
     { immediate: true },
 );
