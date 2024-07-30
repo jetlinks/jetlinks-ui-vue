@@ -31,6 +31,8 @@ export const typeIconMap = {
   WRITE_PROPERTY: 'icon-zhihangdongzuoxie',
 };
 
+export const CHECK_FILTER_KEY = Symbol('check-filter-key')
+
 export const getBuildInData = async (params: any, data: any) => {
   const buildInData = await getParams(params, unref(data));
 
@@ -62,11 +64,11 @@ export const getNotifyVariablesUser = (isRelationUser: boolean = false): Promise
 
 
 export const analysisFilterTerms = (terms: any) => {
-  if (terms.terms.length) {
+  if (terms.terms?.length) {
     const realTerms = terms.terms[0]
     const alarmTerms = terms.terms[1]
     return {
-      ...realTerms,
+      ...omit(realTerms, ['terms']),
       alarm: alarmTerms.value.value
     }
   }
@@ -120,7 +122,7 @@ const termsValidator = (terms: any) => {
 }
 
 export const filterTermsValidator = (terms: any) => {
-  if (terms.terms.length) {
+  if (terms.terms?.length) {
     const realTerms = terms.terms[0]
     const alarmTerms = terms.terms[1]
 
@@ -132,3 +134,6 @@ export const filterTermsValidator = (terms: any) => {
     return termsValidator(terms)
   }
 }
+
+
+export const useCheckFilter = () =>  inject(CHECK_FILTER_KEY, {})

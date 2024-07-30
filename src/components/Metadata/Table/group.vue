@@ -179,8 +179,8 @@ const menuClick = (e, record) => {
           myActiveKey.value = props.options[index - 1].value
           label = props.options[index - 1].label
         } else if (index === 0 && props.options.length === 1) {
-          myActiveKey.value = undefined
-          label = undefined
+          myActiveKey.value = props.options[0].value
+          label = props.options[0].label
         } else {
           myActiveKey.value = props.options[index + 1].value
           label = props.options[index + 1].label
