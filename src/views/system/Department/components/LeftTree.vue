@@ -14,7 +14,6 @@
         <div class="add-btn">
             <PermissionButton
                 type="primary"
-                class="add-btn"
                 :hasPermission="`${permission}:add`"
                 @click="openDialog()"
             >
