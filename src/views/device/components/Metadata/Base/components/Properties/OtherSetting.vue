@@ -438,7 +438,7 @@ const resetThreshold = async (e: any) => {
 const validateLimit = (_: any, value: any) => {
     if (value.lower !== null && value.upper !== null) {
         return value.upper < value.lower
-            ? Promise.reject('上限必须小于下限')
+            ? Promise.reject('上限必须大于下限')
             : Promise.resolve();
     } else {
         return Promise.reject('请输入上下限');

@@ -57,10 +57,13 @@
                         </div>
                         <div @click="(e) => e.stopPropagation()">
                             <ConfirmModal
-                                v-if="hasPermission('system/Dictionary:action')"
+                                v-if="
+                                    hasPermission('system/Dictionary:action') &&
+                                    item.data.classified !== 'system'
+                                "
                                 :title="
                                     item.data.status === 1
-                                        ? '确认禁用？'
+                                        ? '禁用后引用该字典的页面将受到影响，确认禁用？'
                                         : '确认启用？'
                                 "
                                 :onConfirm="() => updateDic(item.data)"
@@ -70,7 +73,7 @@
                                     :disabled="
                                         !hasPermission(
                                             'system/Dictionary:action',
-                                        )
+                                        ) || item.data.classified === 'system'
                                     "
                                     :checkedValue="1"
                                     :unCheckedValue="0"
@@ -79,14 +82,18 @@
                             <j-tooltip
                                 v-else
                                 placement="top"
-                                title="暂无权限,请联系管理员"
+                                :title="
+                                    !hasPermission('system/Dictionary:action')
+                                        ? '暂无权限,请联系管理员'
+                                        : '内置数据不支持修改'
+                                "
                             >
                                 <j-switch
                                     :checked="item.status"
                                     :disabled="
                                         !hasPermission(
                                             'system/Dictionary:action',
-                                        )
+                                        ) || item.data.classified === 'system'
                                     "
                                     :checkedValue="1"
                                     :unCheckedValue="0"
@@ -95,6 +102,12 @@
                             <PermissionButton
                                 type="text"
                                 hasPermission="system/Dictionary:delete"
+                                :disabled="item.data.classified === 'system'"
+                                :tooltip="
+                                    item.data.classified === 'system'
+                                        ? { title: '内置数据不支持修改' }
+                                        : null
+                                "
                                 :popConfirm="{
                                     title: `确认删除？`,
                                     onConfirm: () => deleteDic(item.id),
@@ -104,6 +117,12 @@
                             </PermissionButton>
                             <PermissionButton
                                 type="text"
+                                :disabled="item.data.classified === 'system'"
+                                :tooltip="
+                                    item.data.classified === 'system'
+                                        ? { title: '内置数据不支持修改' }
+                                        : null
+                                "
                                 hasPermission="system/Dictionary:update"
                                 @click="showEdit(item.data)"
                             >
@@ -182,6 +201,10 @@ const queryData = (first?: Boolean, searchName?: any) => {
             listData.value = res.result;
             if (first && res.result.length) {
                 selectDic(res.result[0]);
+            }else if(selectedKeys.value){
+                selectDic(res.result.find(i=>{
+                    return i.id = selectedKeys.value[0]
+                }))
             }
         }
     });
@@ -208,6 +231,7 @@ const reload = () => {
 const saveSuccess = () => {
     saveShow.value = false;
     reload();
+    
 };
 /**
  *
@@ -215,8 +239,8 @@ const saveSuccess = () => {
  * 删除字典
  */
 const deleteDic = (id: string) => {
-   const response  = deleteDictionary(id)
-   response.then((res: any) => {
+    const response = deleteDictionary(id);
+    response.then((res: any) => {
         if (res.status === 200) {
             onlyMessage('操作成功!');
             queryData(true);
@@ -224,7 +248,7 @@ const deleteDic = (id: string) => {
             onlyMessage('操作失败!', 'error');
         }
     });
-    return response
+    return response;
 };
 /**
  * 更新字典
@@ -240,7 +264,7 @@ const updateDic = (data: any) => {
             onlyMessage('操作失败!', 'error');
         }
     });
-    return response
+    return response;
 };
 /**
  * 切换选中字典

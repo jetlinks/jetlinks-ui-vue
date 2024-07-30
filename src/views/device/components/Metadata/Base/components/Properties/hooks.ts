@@ -58,7 +58,7 @@ export const useThreshold = (props: Record<string, any>) => {
                     configuration:{
                         max: data.limit.upper,
                         min: data.limit.lower,
-                        not: false
+                        not: true
                     }
                 },
                 processors: [{
