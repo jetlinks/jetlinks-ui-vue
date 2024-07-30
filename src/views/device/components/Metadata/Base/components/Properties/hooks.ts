@@ -41,9 +41,10 @@ export const useThreshold = (props: Record<string, any>) => {
                 lower:  data.configuration.matcher.configuration.min,
                 upper:  data.configuration.matcher.configuration.max
             },
-            mode: data.configuration.processors.map((i:any)=>{
-                return i.provider
-            })
+            // mode: data.configuration.processors.map((i:any)=>{
+            //     return i.provider
+            // })
+            mode: data.configuration.processors[0].provider
         }
     }
 
@@ -60,12 +61,16 @@ export const useThreshold = (props: Record<string, any>) => {
                         not: false
                     }
                 },
-                processors: data.mode.map((i:any)=>{
-                    return  {
-                        provider: i,
-                        configuration:{}
-                    }
-                })
+                processors: [{
+                    provider: data.mode,
+                    configuration:{}
+                }]
+                // data.mode.map((i:any)=>{
+                //     return  {
+                //         provider: i,
+                //         configuration:{}
+                //     }
+                // })
             },
             
         }

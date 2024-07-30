@@ -135,12 +135,25 @@
             <j-form-item
                 :label="data.name"
                 name="value"
-                :rules="[
-                    {
-                        required: true,
-                        message: `请输入${data.name}`,
-                    },
-                ]"
+                :rules="
+                    ['hex'].includes(valueType)
+                        ? [
+                              {
+                                  required: true,
+                                  message: `请输入${data.name}`,
+                              },
+                              {
+                                  validator: validateHex,
+                                  trigger: 'blur',
+                              },
+                          ]
+                        : [
+                              {
+                                  required: true,
+                                  message: `请输入${data.name}`,
+                              },
+                          ]
+                "
                 v-else
             >
                 <j-input-number
@@ -261,7 +274,6 @@ const valueTypeArray = [
     'ieee754_float',
     'ieee754_double',
     'number',
-    'hex'
 ];
 
 const s7Type = [
@@ -281,6 +293,11 @@ const emit = defineEmits(['change']);
 const loading = ref(false);
 const formRef = ref<FormInstance>();
 
+const validateHex = async (rule:any, value:any) => {
+    return /^0[xX][0-9A-Fa-f]+$|^[0-9A-Fa-f]+$/.test(value)
+        ? Promise.resolve()
+        : Promise.reject('请输入16进制');
+};
 const collectorId = props.data.collectorId;
 const pointId: string = props.data.id;
 
@@ -298,6 +315,11 @@ const onChange = (value: Dayjs, dateString: string) => {
 
 const handleOk = async () => {
     const data = await formRef.value?.validate();
+    // if (['hex'].includes(valueType)) {
+    //     if (data?.value) {
+    //         data.value = convertHexToDecimal(data?.value);
+    //     }
+    // }
     const params: any = {
         ...data,
         pointId,
@@ -314,6 +336,13 @@ const handleCancel = () => {
 
 const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
+
+const convertHexToDecimal = (value: any) => {
+    // 去除可能存在的前缀（如0x）
+    let hexString = value.replace(/^0x/i, '');
+    // 将16进制字符串转换为10进制数值
+    return parseInt(hexString, 16);
 };
 </script>
 
