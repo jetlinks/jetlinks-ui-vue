@@ -5,6 +5,7 @@
                 :data="treeData"
                 class="tree"
                 @change="changeTree"
+                @addAll="addAll"
                 :unSelectKeys="unSelectKeys"
             ></Tree>
             <Table
@@ -86,6 +87,10 @@ const handleCancel = () => {
 const changeTree = (row: any) => {
     tableData.value.push(row)
 };
+
+const addAll = (data:any)=>{
+    tableData.value = data
+}
 const changeTable = (value: string, index: number) => {
     tableData.value.splice(index, 1)
 };

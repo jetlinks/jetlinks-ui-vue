@@ -339,46 +339,70 @@ export const BacnetFormTableColumns = [
         key: 'name',
         width: 140,
         fixed: 'left',
+        form:{
+            required: true
+        }
     },
     {
         title: '对象类型',
         dataIndex: 'type',
         key: 'type',
+        form:{
+            required: true
+        }
     },
     {
         title: '对象号',
         dataIndex: 'instanceNumber',
         key: 'instanceNumber',
+        form:{
+            required: true
+        }
     },
     {
         title: '属性ID',
         dataIndex: 'propertyId',
         key: 'propertyId',
+         form:{
+            required: true
+        },
         width: 200,
     },
     {
         title: '值类型',
         dataIndex: 'valueType',
         key: 'valueType',
+        form:{
+            required: true
+        },
         width: 200,
     },
     {
         title: '访问类型',
         dataIndex: 'accessModes',
         key: 'accessModes',
+        form:{
+            required: true
+        },
         width: 260,
     },
     {
         title: '采集频率',
         key: 'interval',
         dataIndex: 'interval',
+        form:{
+            required: true
+        },
         width: 200,
     },
     {
         title: '只推送变化的数据',
         key: 'features',
         dataIndex: 'features',
-        width: 140,
+        form:{
+            required: true
+        },
+        width: 150,
     },
     {
         title: '操作',
