@@ -15,17 +15,17 @@
       </div>
       <div class="metadata-edit-table-body" :style="{width: tableStyle.width, height: `${height}px`}">
         <Body
-            ref="tableBody"
-            :dataSource="bodyDataSource"
-            :columns="myColumns"
-            :cellHeight="cellHeight"
-            :height="height"
-            :disableMenu="disableMenu"
-            :rowKey="rowKey"
-            :groupKey="groupActive.value"
-            :openGroup="openGroup"
-            :rowSelection="rowSelection"
-            @scrollDown="onScrollDown"
+          ref="tableBody"
+          :dataSource="bodyDataSource"
+          :columns="myColumns"
+          :cellHeight="cellHeight"
+          :height="height"
+          :disableMenu="disableMenu"
+          :rowKey="rowKey"
+          :groupKey="groupActive.value"
+          :openGroup="openGroup"
+          :rowSelection="rowSelection"
+          @scrollDown="onScrollDown"
         >
         <template v-for="(_, name) in slots" #[name]="slotData">
           <slot :name="name" v-bind="slotData || {}"/>
@@ -48,16 +48,18 @@
 
 <script setup name="MetadataBaseTable">
 import {
-  TABLE_WRAPPER,
   FULL_SCREEN,
   RIGHT_MENU,
-  TABLE_ERROR,
-  TABLE_GROUP_ERROR,
   TABLE_DATA_SOURCE,
+  TABLE_ERROR,
+  TABLE_GROUP_ACTIVE,
+  TABLE_GROUP_ERROR,
+  TABLE_GROUP_OPTIONS,
   TABLE_OPEN_GROUP,
-  TABLE_TOOL, TABLE_GROUP_OPTIONS, TABLE_GROUP_ACTIVE
+  TABLE_TOOL,
+  TABLE_WRAPPER
 } from './consts'
-import { handleColumnsWidth } from './utils'
+import {handleColumnsWidth} from './utils'
 import {useGroup, useResizeObserver, useValidate} from './hooks'
 import {tableProps} from 'ant-design-vue/lib/table'
 import {useFormContext} from './context'
@@ -67,7 +69,7 @@ import {useFullscreen} from '@vueuse/core';
 import {provide, useAttrs, useSlots} from 'vue'
 import Group from './group.vue'
 import {bodyProps} from "./props";
-import {get, sortBy, findIndex} from 'lodash-es'
+import {findIndex, get, sortBy} from 'lodash-es'
 
 const emit = defineEmits(['scrollDown', 'rightMenuClick', 'editChange', 'groupDelete', 'groupEdit'])
 
@@ -111,7 +113,14 @@ const sortData = reactive({
   dataIndex: undefined
 })
 
-const { groupActive, groupOptions, addGroup, removeGroup, updateGroupActive, updateGroupOptions } = useGroup(props.openGroup)
+const {
+  groupActive,
+  groupOptions,
+  addGroup,
+  removeGroup,
+  updateGroupActive,
+  updateGroupOptions
+} = useGroup(props.openGroup)
 
 const _dataSource = computed(() => {
   const _options = new Map()
@@ -143,7 +152,7 @@ const _dataSource = computed(() => {
           len: 1 // 分组数据总长度
         })
       } else {
-        if (item.id){
+        if (item.id) {
           _optionsItem.effective += 1
         }
         _optionsItem.len += 1
@@ -177,53 +186,56 @@ useResizeObserver(tableWrapper, onResize)
 const {isFullscreen, toggle} = useFullscreen(tableWrapper);
 
 const {rules, validateItem, validate, errorMap} = useValidate(
-    _dataSource,
-    props.columns,
-    props.rowKey,
+  _dataSource,
+  props.columns,
+  props.rowKey,
   {
-      onError: (err) => {
-        fieldsErrMap.value = {}
-        fieldsGroupError.value = {}
-        const errMap = {}
+    onError: (err) => {
+      fieldsErrMap.value = {}
+      fieldsGroupError.value = {}
+      const errMap = {}
 
-        // 显示全部err红标
-        err.forEach((item, errIndex) => {
-          item.forEach((e, eIndex) =>{
-            const field = findField(e.__dataIndex, e.field)
-            if (field) {
-              field.showErrorTip(e.message)
-              errMap[field.eventKey] = e.message
+      // 显示全部err红标
+      err.forEach((item, errIndex) => {
+        item.forEach((e, eIndex) => {
+          const field = findField(e.__dataIndex, e.field)
+
+          const _eventKey = field ? field.eventKey : `${e.__dataIndex}-${e.field}`
+          if (field) {
+            field.showErrorTip(e.message)
+          }
+          errMap[_eventKey] = e.message
+
+          if (errIndex === 0 && eIndex === 0) {
+
+            if (props.openGroup) {
+              const expands = _dataSource.value[e.__dataIndex].expands
+              updateGroupActive(expands.groupId, expands.groupName)
             }
-            if (errIndex === 0 && eIndex === 0) {
 
-              if (props.openGroup) {
-                const expands = _dataSource.value[e.__dataIndex].expands
-                updateGroupActive(expands.groupId, expands.groupName)
-              }
-
-              setTimeout(() => {
-                tableBody.value.scrollTo(e.__serial - 1)
-              }, 10)
-            }
-          })
+            setTimeout(() => {
+              tableBody.value.scrollTo(e.__serial - 1)
+            }, 10)
+          }
         })
+      })
 
-        fieldsErrMap.value = errMap
+      fieldsErrMap.value = errMap
 
-      },
-      onSuccess: () => {
-        fieldsErrMap.value = {}
-      },
-      onEdit: () => {
-          emit('editChange', true)
-      },
-      validateRowKey: props.validateRowKey
-    }
+    },
+    onSuccess: () => {
+      fieldsErrMap.value = {}
+    },
+    onEdit: () => {
+      emit('editChange', true)
+    },
+    validateRowKey: props.validateRowKey
+  }
 )
 
 provide(TABLE_WRAPPER, tableWrapper)
 provide(FULL_SCREEN, isFullscreen)
-provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value })
+provide(RIGHT_MENU, {click: rightMenu, getPopupContainer: () => tableWrapper.value})
 provide(TABLE_ERROR, fieldsErrMap)
 provide(TABLE_GROUP_ERROR, fieldsGroupError)
 provide(TABLE_DATA_SOURCE, _dataSource)
@@ -339,7 +351,7 @@ const getTableWrapperRef = () => {
 const groupDelete = (id, index) => {
   removeGroup(index)
   Object.keys(fieldsErrMap.value).forEach(errorKey => {
-    const [ index ] = errorKey.split('-')
+    const [index] = errorKey.split('-')
     const dataSourceItem = _dataSource.value[index]
     const groupId = dataSourceItem.expands?.groupId
     if (groupId === id) {
@@ -358,17 +370,19 @@ const getGroupActive = () => {
   return groupActive.value
 }
 
-watch(() => JSON.stringify(fieldsErrMap.value), (errorMap) => {
+watch(() => fieldsErrMap.value, (errorMap) => {
   fieldsGroupError.value = {}
+
   if (props.openGroup) {
-    const _errorObj = JSON.parse(errorMap || '{}')
+    const _errorObj = errorMap
+    const groupErrorMap = {}
 
     Object.keys(_errorObj).forEach(errorKey => {
-      const [ index ] = errorKey.split('-')
+      const [index] = errorKey.split('-')
       const dataSourceItem = _dataSource.value[index]
       const groupId = dataSourceItem.expands?.groupId
 
-      const groupError = fieldsGroupError.value[groupId]
+      const groupError = groupErrorMap[groupId]
 
       const groupErrorItem = {
         [errorKey]: {
@@ -381,11 +395,14 @@ watch(() => JSON.stringify(fieldsErrMap.value), (errorMap) => {
       if (groupError) {
         groupError.push(groupErrorItem)
       } else {
-        fieldsGroupError.value[groupId] = [groupErrorItem]
+        groupErrorMap[groupId] = [groupErrorItem]
       }
     })
+    console.log(groupErrorMap)
+
+    fieldsGroupError.value = groupErrorMap
   }
-})
+}, {deep: true})
 
 watch(() => scrollWidth.value, () => {
   onResize({width: tableStyle.width})
