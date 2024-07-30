@@ -98,7 +98,7 @@ import ParamsDropdown, {
 import { inject } from 'vue';
 import { useSceneStore } from 'store/scene';
 import { storeToRefs } from 'pinia';
-import { cloneDeep, flattenDeep, isArray, isObject, set } from 'lodash-es';
+import {cloneDeep, flattenDeep, isArray, isObject, omit, set} from 'lodash-es';
 import { Form } from 'jetlinks-ui-components';
 import { treeFilter } from '@/utils/comm';
 import { timeTypeKeys } from '@/views/rule-engine/Scene/Save/components/Terms/util';
@@ -416,7 +416,8 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
         source: paramsValue.value?.source || tabsOptions.value[0].key,
         value: value,
     };
-    emit('update:value', handleFilterTerms({ ...paramsValue }));
+    const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
+    emit('update:value', handleFilterTerms({ ...updateValue }));
   valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
@@ -431,7 +432,9 @@ const alarmSelect = (e: { key: string; label: string }) => {
     ].options!.terms[props.termsName].terms[props.name][4] = e.label;
 }
 const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
-    emit('update:value', handleFilterTerms({ ...paramsValue }));
+  const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
+  console.log(updateValue, showAlarm.value)
+    emit('update:value', handleFilterTerms({ ...updateValue }));
   valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
@@ -440,7 +443,8 @@ const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
 
 const typeChange = (e: any) => {
     paramsValue.type = e.value;
-    emit('update:value', handleFilterTerms({ ...paramsValue }));
+  const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
+    emit('update:value', handleFilterTerms({ ...updateValue }));
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][3] = e.label;
@@ -514,6 +518,7 @@ const getAlarmOptions = () => {
     if (resp.success) {
       alarmOptions.value = resp.result?.map(item => {
         return {
+          ...item,
           label: item.name,
           value: item.id
         }
@@ -576,7 +581,9 @@ watch(() => props.value, () => {
   paramsValue.column = terms.column
   paramsValue.type = terms.type
   paramsValue.termType = terms.termType
-  paramsValue.alarm = terms.alarm
+  if (terms.hasOwnProperty('alarm')) {
+    paramsValue.alarm = terms.alarm
+  }
 }, { immediate: true, deep: true })
 
 onMounted(() => {
