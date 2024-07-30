@@ -63,7 +63,7 @@
                 placeholder="参数值"
                 value-name="id"
                 label-name="name"
-                :options="valueOptions"
+                :options="showAlarmSelect ? alarmOptions : valueOptions"
                 :metricOptions="valueColumnOptions"
                 :tabsOptions="tabsOptions"
                 v-model:value="paramsValue.value.value"
@@ -193,6 +193,9 @@ const arrayParamsKey = [
 ];
 const valueColumnOptions = ref<any[]>([]);
 
+const showAlarmKey = ['lastAlarmTime', 'firstAlarm', 'alarmTime', 'level']
+const showAlarmSelectKey = ['alarmConfigId', 'alarmName']
+
 const tabsOptions = ref<Array<TabsOption>>([
     { label: '手动输入', key: 'fixed', component: 'string' },
     { label: '内置参数', key: 'upper', component: 'tree' },
@@ -209,7 +212,11 @@ const showDouble = computed(() => {
 });
 
 const showAlarm = computed(() => {
-  return paramsValue.column?.split('.')?.[1] === 'firstAlarm'
+  return showAlarmKey.includes(paramsValue.column?.split('.')?.[1])
+})
+
+const showAlarmSelect = computed(() => {
+  return showAlarmSelectKey.includes(paramsValue.column?.split('.')?.[1])
 })
 
 const valueChangeAfter = () => {
@@ -219,10 +226,12 @@ const valueChangeAfter = () => {
 const handOptionByColumn = (option: any) => {
     if (option) {
         termTypeOptions.value = option.termTypes || [];
-        tabsOptions.value[0].component = option.type;
+        const _showAlarmSelect = showAlarmSelectKey.includes(option.column?.split('.')?.[1])
+        const _type = _showAlarmSelect ? 'select' : option.type;
+        tabsOptions.value[0].component = _type
         columnType.value = option.type;
         const _options = option.options;
-        if (option.type === 'boolean') {
+        if (_type === 'boolean') {
             // 处理_options为Object时
             if (isObject(_options)) {
                 const bool = (_options as any)?.bool;
@@ -250,7 +259,7 @@ const handOptionByColumn = (option: any) => {
                     { label: '否', name: '否', value: 'false', id: 'false' },
                 ];
             }
-        } else if (option.type === 'enum') {
+        } else if (_type === 'enum') {
             valueOptions.value =
                 _options?.elements?.map((item: any) => ({
                     ...item,
@@ -265,9 +274,10 @@ const handOptionByColumn = (option: any) => {
                     value: item.id,
                 })) || [];
         }
+
         valueColumnOptions.value = treeFilter(
             cloneDeep(columnOptions.value),
-            option.type,
+            _type,
             'type',
         );
     } else {
@@ -323,8 +333,10 @@ const columnSelect = (e: any) => {
     const hasTypeChange = dataType !== tabsOptions.value[0].component;
     let termTypeChange = false;
 
-    if (paramsValue.column!.split('.')[1] === 'firstAlarm') {
-      paramsValue.alarm = undefined
+    if (showAlarmKey.includes(paramsValue.column?.split('.')?.[1])) {
+      if (!paramsValue.alarm) {
+        paramsValue.alarm = undefined
+      }
     } else {
       delete paramsValue.alarm
       delete paramsValue.terms
@@ -521,8 +533,8 @@ const subscribe = () => {
 
 subscribe()
 
-watch(() => showAlarm.value, (val) => {
-  if (val) {
+watch([showAlarm.value, showAlarmSelect.value], (val) => {
+  if (val && !alarmOptions.value.length) {
     getAlarmOptions()
   }
 }, { immediate: true })
