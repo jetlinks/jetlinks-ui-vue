@@ -138,21 +138,23 @@ const filterTree = (nodes: any[]) => {
     if (!nodes?.length) {
         return nodes;
     }
-    const arr = nodes.filter((it) => {
-        if (
-            it.children.find(
-                (item: any) =>
-                    item?.id?.indexOf(
-                        'deviceId' || 'device_id' || 'device_Id',
-                    ) > -1,
-            ) &&
-            !it.children.find((item: any) => item?.id.indexOf('boolean') > -1)
-        ) {
-            return true;
-        }
-        return false;
-    });
-    return arr.map((item) => {
+    // const arr = nodes.filter((it) => {
+    //     const deviceAttr = ['deviceId', 'device_id', 'device_Id']
+    //     return it.children.some((item: any) => deviceAttr.includes(item.id) && !item.id.includes('boolean'))
+    //     // if (
+    //     //     it.children.find(
+    //     //         (item: any) =>
+    //     //             item?.id?.indexOf(
+    //     //                 'deviceId' || 'device_id' || 'device_Id',
+    //     //             ) > -1,
+    //     //     ) &&
+    //     //     !it.children.find((item: any) => item?.id.indexOf('boolean') > -1)
+    //     // ) {
+    //     //     return true;
+    //     // }
+    //     // return false;
+    // });
+    return nodes.map((item) => {
         if (item.children) {
         }
         return {
@@ -171,22 +173,28 @@ const sourceChangeEvent = async () => {
         action: props.name - 1,
     };
     //判断相同产品才有按变量
-    const productId =
-        data.value?.branches?.[props.branchesName].then?.[props.thenName]
-            ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;
-    if (productId === props?.productDetail?.id) {
-        const _data = await getParams(_params, unref(data));
-        builtInList.value = handleParamsData(filterTree(_data), 'id');
-    } else {
-        builtInList.value = [];
-    }
+    // const productId =
+    //     data.value?.branches?.[props.branchesName].then?.[props.thenName]
+    //         ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;
+    // if (productId === props?.productDetail?.id) {
+    //     const _data = await getParams(_params, unref(data));
+    //     builtInList.value = handleParamsData(filterTree(_data), 'id');
+    // } else {
+    //     builtInList.value = [];
+    // }
+  const _data = await getParams(_params, unref(data));
+  builtInList.value = handleParamsData(filterTree(_data), 'id');
+
+  if (props.productDetail?.id) {
+    filterType(props.productDetail?.id);
+  }
 };
 
 const filterType = async (newVal: any) => {
     // const _typeList = [
     //   TypeMap.fixed,
     // ]
-    const _typeList = [
+    let _typeList = [
         TypeMap.fixed,
         TypeMap.context,
         TypeMap.relation,
@@ -218,22 +226,35 @@ const filterType = async (newVal: any) => {
           _typeList[2].disabled = true
         }
         //变量
-        if ( props.name === 0 ) {
-            //   _typeList.push(TypeMap.context)
-            // TypeMap.context.disabled = true;
-          _typeList[1].disabled = true
-        }
+
+        // if (builtInList.value.length) {
+        //     //   _typeList.push(TypeMap.context)
+        //     // TypeMap.context.disabled = true;
+        //
+        // }
+      _typeList[1].disabled = !builtInList.value.length
     } else {
-        if (
-            // builtInList.value.length !== 0 &&
-            // !props.parallel &&
-            // props.name !== 0
-          props.name === 0
-        ) {
-            //   _typeList.push(TypeMap.context)
-            // TypeMap.context.disabled = true;
-          _typeList[1].disabled = true
-        }
+        // if (
+        //     // builtInList.value.length !== 0 &&
+        //     // !props.parallel &&
+        //     // props.name !== 0
+        //   builtInList.value.length
+        // ) {
+        //     //   _typeList.push(TypeMap.context)
+        //     // TypeMap.context.disabled = true;
+        //   _typeList[1].disabled = true
+        // }
+
+
+      if (props.name === 0) {
+        _typeList = [
+          TypeMap.fixed,
+          TypeMap.tag,
+        ]
+      } else {
+        _typeList.splice(2, 1)
+        _typeList[1].disabled = !builtInList.value.length
+      }
     }
 
   console.log(_typeList)
@@ -322,11 +343,8 @@ watch(
 
 watch(
     () => props.productDetail,
-    async (newVal) => {
-        await sourceChangeEvent();
-        if (newVal?.id) {
-            filterType(newVal);
-        }
+    (newVal) => {
+        sourceChangeEvent();
     },
     {
         immediate: true,
