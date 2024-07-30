@@ -238,7 +238,6 @@ watch(
     () => data.value.time.type,
     (value) => {
         if (value === undefined) return;
-        console.log(value);
         const date = getTimeByType(value);
         data.value.time.time = [dayjs(date), dayjs(new Date())];
 
