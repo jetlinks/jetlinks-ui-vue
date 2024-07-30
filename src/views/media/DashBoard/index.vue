@@ -168,7 +168,7 @@ const getPlayCount = async (params: any) => {
     } else if (dt > day && dt < year) {
         _limit = Math.abs(Math.ceil(dt / day));
         _time = '1d';
-        format = 'M月-dd日'
+        format = 'M月dd日'
     } else if (dt >= year) {
         _limit = Math.abs(Math.floor(dt / month));
         _time = '1M';
