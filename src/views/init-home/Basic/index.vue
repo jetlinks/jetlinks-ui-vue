@@ -23,6 +23,18 @@
                         <j-select-option value="dark">黑色</j-select-option>
                     </j-select>
                 </j-form-item>
+                <!-- <j-form-item
+                    label="地图选择"
+                    name="mapType"
+                    v-bind="validateInfos.mapType"
+                >
+                    <j-select v-model:value="form.mapType">
+                        <j-select-option value="AMAP">高德地图</j-select-option>
+                        <j-select-option value="GoogleMaps"
+                            >谷歌地图</j-select-option
+                        >
+                    </j-select>
+                </j-form-item> -->
                 <j-form-item>
                     <template #label>
                         <span>高德API Key</span>
@@ -316,6 +328,13 @@ const rulesFrom = ref({
         {
             required: true,
             message: '请选择主题色',
+            trigger: 'blur',
+        },
+    ],
+    mapType: [
+        {
+            required: true,
+            message: '请选择地图',
             trigger: 'blur',
         },
     ],
