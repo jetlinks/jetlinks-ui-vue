@@ -1,19 +1,10 @@
 <template>
-    <!-- <a-modal
-        v-if="modalVisible"
-        visible
-        :closable="false"
-        @cancel="modalVisible = false"
-        @ok="modalConfirm"
-        :confirmLoading="confirmLoading"
-        :width="300"
-        centered
-        :maskClosable="false"
-        z-index="9999"
-        ><div class="modalContent">
-            {{ title }}
-        </div>
-    </a-modal> -->
+    <!-- <a-tooltip v-if="toolTip" v-bind="toolTip">
+        <span @click="showConfirm" :class="props.className" v-show="show">
+            {{ props.class }}
+            <slot></slot>
+        </span>
+    </a-tooltip> -->
     <span @click="showConfirm" :class="props.className" v-show="show">
         {{ props.class }}
         <slot></slot>
@@ -38,6 +29,13 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+    toolTip: {
+        type: Object
+    },
 });
 // const confirmLoading = ref(false);
 // const modalVisible = ref(false);
@@ -57,16 +55,19 @@ const props = defineProps({
 //         modalVisible.value = false;
 //     }
 // };
-const showConfirm = () =>{
+const showConfirm = () => {
+    if (props.disabled) {
+        return;
+    }
     Modal.confirm({
         title: props.title,
         content: props?.content,
         onOk() {
-          return props?.onConfirm()
+            return props?.onConfirm();
         },
         onCancel() {},
-      });
-}
+    });
+};
 </script>
 <style lang="less" scoped>
 .modalContent {
