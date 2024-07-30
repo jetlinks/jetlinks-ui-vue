@@ -165,8 +165,13 @@ const search = (key) => {
     tableRef.value?.scrollToByIndex(searchIndex.value - 1)
   }
 
-  selectedRowKeys.value = [searchItem.id]
-  selectedTableRow(searchItem)
+  if (filterArray.value.length > 1) {
+    selectedRowKeys.value = [searchItem.id]
+    selectedTableRow(searchItem)
+  } else {
+    selectedRowKeys.value = []
+    tableTool.selected([])
+  }
 }
 
 const heightChange = (h) => {
