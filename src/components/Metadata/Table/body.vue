@@ -71,6 +71,7 @@ const tableCenterRef = ref()
 // const virtualData = ref([])
 const virtualRang = reactive({
   start: 0,
+  end: 15
 })
 const containerStyle = ref(0)
 const context = useRightMenuContext()
@@ -164,6 +165,12 @@ const rowClick = (record) => {
 const updateSelectedKeys = (keys) => {
   selectedRowKeys.value = keys
 }
+
+onMounted(() => {
+  nextTick(() => {
+    onScroll()
+  })
+})
 
 onBeforeUnmount(() => {
   menuInstance?.destroy()
