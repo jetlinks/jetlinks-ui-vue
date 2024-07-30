@@ -17,8 +17,8 @@
                         {
                             column:
                                 props.goal === 'device'
-                                    ? 'deviceId'
-                                    : 'productId',
+                                    ? 'thingId'
+                                    : 'templateId',
                             value: current.id,
                             termType: 'eq',
                         },
@@ -60,21 +60,21 @@ const columns = [
     },
     {
         title: '阈值限制',
-        dataIndex: 'threshold',
-        key: 'threshold',
+        dataIndex: 'description',
+        key: 'description',
     },
-    {
-        title: '上报数据',
-        dataIndex: 'originalValue',
-        key: 'originalValue',
-        search: {
-            type: 'number',
-        },
-    },
+    // {
+    //     title: '上报数据',
+    //     dataIndex: 'originalValue',
+    //     key: 'originalValue',
+    //     search: {
+    //         type: 'number',
+    //     },
+    // },
     {
         title: '原始值',
-        dataIndex: 'originalValue',
-        key: 'originalValue',
+        dataIndex: 'value',
+        key: 'value',
         search: {
             type: 'number',
         },

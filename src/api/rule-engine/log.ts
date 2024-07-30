@@ -59,4 +59,4 @@ export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/
 /**
  * 查询无效数据
  */
-export const queryInvalidData = (data:any) => server.post('/threshold/invalid/record/_query/pager',data)
+export const queryInvalidData = (data:any) => server.post('/message/preprocessor/invalid/_query',data)
