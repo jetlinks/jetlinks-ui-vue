@@ -171,7 +171,7 @@ const initList = [
     },
     {
         key: 'AlarmRecord',
-        tab: '告警记录',
+        tab: '预处理数据',
     },
     {
         key: 'CardManagement',

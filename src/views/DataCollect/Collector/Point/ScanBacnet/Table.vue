@@ -240,12 +240,12 @@
 </template>
 
 <script lang="ts" setup>
-import { getBacnetValueType } from '@/api/data-collect/collector';
+import { getBacnetValueType  } from '@/api/data-collect/collector';
 import { BacnetFormTableColumns, regOnlyNumber } from '../../data';
 import { Rule } from 'ant-design-vue/lib/form';
 import PropertyId from './PropertyId.vue';
 import {
-  EditTable,BooleanParams
+  EditTable
 } from '@/components/Metadata/Table'
 
 const props = defineProps({
@@ -375,6 +375,7 @@ watch(
         }
     },
 );
+
 </script>
 
 <style lang="less" scoped>

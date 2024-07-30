@@ -195,7 +195,7 @@ const list = ref([
     },
     {
         key: 'AlarmRecord',
-        tab: '告警记录',
+        tab: '预处理数据',
     },
     {
         key: 'Firmware',
@@ -306,7 +306,7 @@ const getProtocol = async () => {
                     },
                     {
                         key: 'AlarmRecord',
-                        tab: '告警记录',
+                        tab: '预处理数据',
                     },
                     {
                         key: 'Firmware',
@@ -330,7 +330,7 @@ const getProtocol = async () => {
                     },
                     {
                         key: 'AlarmRecord',
-                        tab: '告警记录',
+                        tab: '预处理数据',
                     },
                     {
                         key: 'Firmware',
