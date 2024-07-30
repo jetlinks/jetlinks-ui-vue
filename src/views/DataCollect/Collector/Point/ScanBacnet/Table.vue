@@ -106,7 +106,7 @@
                         ]"
                     >
                         <j-select
-                            style="width: 75%"
+                            style="width: 72%"
                             v-model:value="record.accessModes.value"
                             placeholder="请选择"
                             allowClear
@@ -190,7 +190,7 @@
                         ]"
                     >
                         <j-select
-                            style="width: 50%"
+                            style="width: 45%"
                             v-model:value="record.features.value"
                             placeholder="请选择"
                             allowClear

@@ -30,10 +30,10 @@
           />
         </EditTableFormItem>
       </template>
-      <template #action="{record}">
+      <template #action="{index}">
         <j-button
             type="link"
-            @click="() => deleteItem(data.index)"
+            @click="() => deleteItem(index)"
         >
           <AIcon type="DeleteOutlined" />
         </j-button>
