@@ -6,8 +6,9 @@
 import { Form } from "jetlinks-ui-components";
 import {queryAlarmList} from "@/api/rule-engine/scene";
 import {defineExpose} from "vue";
-import {useSceneStore} from "store/scene";
+import {useSceneStore} from "@/store/scene";
 import {storeToRefs} from "pinia";
+import { CHECK_FILTER_KEY } from './util'
 
 const props = defineProps({
   name: {
@@ -39,12 +40,13 @@ const props = defineProps({
 const formItemContext = Form.useInjectFormItemContext()
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
+
 const formTouchOff = () => {
   formItemContext.onFieldChange()
 }
 
 const check = async () => {
-  if (props.value?.terms.length) {
+  if (props.value?.terms?.length) {
     const alarmTerms = props.value.terms[1]
     const id = data.value.id
     const bindId = data.value.branches[props.branchName].then[props.thenName].actions[props.actionName].actionId || data.value.branches[props.branchName].branchId
@@ -84,6 +86,10 @@ const check = async () => {
 }
 
 check()
+
+provide(CHECK_FILTER_KEY, {
+  onFieldChange: formTouchOff
+})
 
 defineExpose({
   formTouchOff

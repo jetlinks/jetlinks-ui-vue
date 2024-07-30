@@ -263,7 +263,6 @@ watch(() => props.value.id, () => {
 .card {
   width: 100%;
   background-color: #fff;
-  height: 170px;
 
   .checked-icon {
     position: absolute;
@@ -295,7 +294,6 @@ watch(() => props.value.id, () => {
     border: 1px solid #e6e6e6;
     overflow: hidden;
     cursor: pointer;
-    height: 100%;
 
     &.disabled {
       filter: grayscale(100%);
@@ -330,7 +328,7 @@ watch(() => props.value.id, () => {
       position: relative;
       padding: 30px 12px 30px 30px;
       overflow: hidden;
-      height: 100%;
+      min-height: 170px;
 
       .card-item-avatar {
         margin-right: 16px;
