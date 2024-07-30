@@ -29,7 +29,7 @@
                     </span>
                 </template>
                 <template #handleType="slotProps">
-                    <span>{{ slotProps.handleType.text }}</span>
+                    <span>{{ slotProps.handleType?.text }}</span>
                 </template>
                 <template #alarmDuration="slotProps">
                     <Ellipsis><Duration :data="slotProps" /></Ellipsis>

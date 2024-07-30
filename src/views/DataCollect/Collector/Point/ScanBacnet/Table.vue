@@ -1,13 +1,16 @@
 <template>
     <j-form class="table" ref="formTableRef" :model="modelRef">
-        <j-table
+        <EditTable
             v-if="modelRef.dataSource.length !== 0"
             :dataSource="modelRef.dataSource"
             :columns="BacnetFormTableColumns"
-            :scroll="{ y: 580 }"
+            :height="580"
+            :cellHeight="80"
+            :disableMenu="false"
             :pagination="false"
+            :serial="false"
         >
-            <template #headerCell="{ column }">
+            <!-- <template #headerCell="{ column }">
                 <template
                     v-if="column.key === 'nodeId' || column.key === 'action'"
                 >
@@ -17,9 +20,9 @@
                     <span> {{ column.title }} </span>
                     <span style="margin-left: 5px; color: red">*</span>
                 </template>
-            </template>
-            <template #bodyCell="{ column: { dataIndex }, record, index }">
-                <template v-if="dataIndex === 'name'">
+            </template> -->
+            <!-- <template #bodyCell="{ column: { dataIndex }, record, index }"> -->
+                <template #name="{record,index}">
                     <j-form-item
                         :name="['dataSource', index, 'name']"
                         :rules="[
@@ -34,24 +37,24 @@
                         ]"
                     >
                         <j-input
-                            v-model:value="record[dataIndex]"
+                            v-model:value="record.name"
                             placeholder="请输入"
                             style="width: 80%"
                             allowClear
                         ></j-input>
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'type'">
+                <template #type="{record}">
                     <j-form-item>
                         {{ record.objectId?.type }}
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'instanceNumber'">
+                <template #instanceNumber="{record}">
                     <j-form-item>
                         {{ record.objectId?.instanceNumber }}
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'propertyId'">
+                <template #propertyId="{record,index}">
                     <j-form-item
                         :name="['dataSource', index, 'propertyId']"
                         :rules="{
@@ -60,7 +63,7 @@
                         }"
                     >
                         <PropertyId
-                            v-model:value="record[dataIndex]"
+                            v-model:value="record.propertyId"
                             :valueTypeList="valueTypeList"
                             :collectorId="collectorData.collectorId"
                             :objectId="record.objectId"
@@ -69,7 +72,7 @@
                         ></PropertyId>
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'valueType'">
+                <template #valueType="{record,index}">
                     <j-form-item
                         :name="['dataSource', index, 'valueType']"
                         :rules="{
@@ -78,7 +81,7 @@
                         }"
                     >
                         <j-select
-                            v-model:value="record[dataIndex]"
+                            v-model:value="record.valueType"
                             style="width: 80%"
                             placeholder="请选择"
                         >
@@ -91,7 +94,7 @@
                         </j-select>
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'accessModes'">
+                <template #accessModes="{record,index}">
                     <j-form-item
                         class="form-item"
                         :name="['dataSource', index, 'accessModes', 'value']"
@@ -104,7 +107,7 @@
                     >
                         <j-select
                             style="width: 75%"
-                            v-model:value="record[dataIndex].value"
+                            v-model:value="record.accessModes.value"
                             placeholder="请选择"
                             allowClear
                             mode="multiple"
@@ -114,20 +117,20 @@
                                 { label: '写', value: 'write' },
                                 { label: '订阅', value: 'subscribe' },
                             ]"
-                            :disabled="index !== 0 && record[dataIndex].check"
-                            @change="changeValue(index, dataIndex)"
+                            :disabled="index !== 0 && record.accessModes.check"
+                            @change="changeValue(index, 'accessModes')"
                         >
                         </j-select>
                         <j-checkbox
                             style="margin-left: 5px"
                             v-if="index !== 0"
-                            v-model:checked="record[dataIndex].check"
-                            @click="changeCheckbox(index, dataIndex)"
+                            v-model:checked="record.accessModes.check"
+                            @click="changeCheckbox(index, 'accessModes')"
                             >同上</j-checkbox
                         >
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'interval'">
+                <template #interval="{record,index}">
                     <j-form-item
                         class="form-item"
                         :name="[
@@ -151,7 +154,7 @@
                         <j-input-number
                             style="width: 60%"
                             v-model:value="
-                                record.configuration[dataIndex].value
+                                record.configuration.interval.value
                             "
                             placeholder="请输入"
                             allowClear
@@ -160,22 +163,22 @@
                             :min="0"
                             :disabled="
                                 index !== 0 &&
-                                record.configuration[dataIndex].check
+                                record.configuration.interval.check
                             "
-                            @blur="changeValue(index, dataIndex)"
+                            @blur="changeValue(index, 'interval')"
                         ></j-input-number>
                         <j-checkbox
                             style="margin-left: 5px; margin-top: 5px"
                             v-show="index !== 0"
                             v-model:checked="
-                                record.configuration[dataIndex].check
+                                record.configuration.interval.check
                             "
-                            @click="changeCheckbox(index, dataIndex)"
+                            @click="changeCheckbox(index, 'interval')"
                             >同上</j-checkbox
                         >
                     </j-form-item>
                 </template>
-                <template v-if="dataIndex === 'features'">
+                <template #features="{record,index}">
                     <j-form-item
                         class="form-item"
                         :name="['dataSource', index, 'features', 'value']"
@@ -187,8 +190,8 @@
                         ]"
                     >
                         <j-select
-                            style="width: 40%"
-                            v-model:value="record[dataIndex].value"
+                            style="width: 50%"
+                            v-model:value="record.features.value"
                             placeholder="请选择"
                             allowClear
                             :filter-option="filterOption"
@@ -202,22 +205,21 @@
                                     value: false,
                                 },
                             ]"
-                            :disabled="index !== 0 && record[dataIndex].check"
-                            @change="changeValue(index, dataIndex)"
+                            :disabled="index !== 0 && record.features.check"
+                            @change="changeValue(index, 'features')"
                         >
                         </j-select>
-
                         <j-checkbox
                             style="margin-left: 5px"
                             v-show="index !== 0"
-                            v-model:checked="record[dataIndex].check"
-                            @click="changeCheckbox(index, dataIndex)"
+                            v-model:checked="record.features.check"
+                            @click="changeCheckbox(index, 'features')"
                             >同上</j-checkbox
                         >
                     </j-form-item>
                 </template>
 
-                <template v-if="dataIndex === 'action'">
+                <template #action="{record,index}">
                     <PermissionButton
                         type="text"
                         :tooltip="{
@@ -231,8 +233,8 @@
                             ><AIcon type="DeleteOutlined" /></a
                     ></PermissionButton>
                 </template>
-            </template>
-        </j-table>
+            <!-- </template> -->
+        </EditTable>
         <j-empty v-else style="margin-top: 10%" />
     </j-form>
 </template>
@@ -242,6 +244,9 @@ import { getBacnetValueType } from '@/api/data-collect/collector';
 import { BacnetFormTableColumns, regOnlyNumber } from '../../data';
 import { Rule } from 'ant-design-vue/lib/form';
 import PropertyId from './PropertyId.vue';
+import {
+  EditTable,BooleanParams
+} from '@/components/Metadata/Table'
 
 const props = defineProps({
     data: {
@@ -349,21 +354,26 @@ defineExpose({
     validate,
 });
 watch(
-    () => props.data,
-    (value, preValue) => {
+    () => props.data.length,
+    (vlength:number, plength:number) => {
+        const value = props.data
         modelRef.dataSource = value;
+        console.log(vlength,plength)
         // 有新增时同上数据
-        const vlength = value.length,
-            plength = preValue.length;
+        // const vlength = value.length,
+        //     plength = preValue.length;
         if (plength !== 0 && plength < vlength) {
             defaultType.forEach((type) => {
                 vlength === 2
                     ? changeValue(0, type)
                     : changeCheckbox(vlength - 1, type);
             });
+        }else if(plength === 0 && vlength > 1){
+            defaultType.forEach((type)=>{
+                changeValue(0,type)
+            })
         }
     },
-    { deep: true },
 );
 </script>
 
@@ -392,5 +402,11 @@ watch(
 
 .form-item {
     display: flex;
+}
+:deep(.ant-form-item){
+    margin: 0;
+}
+:deep(.body-cell-box){
+    padding: 0
 }
 </style>

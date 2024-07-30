@@ -137,7 +137,6 @@
                                     </PermissionButton>
 
                                     <PermissionButton
-                                        class="add-btn"
                                         type="text"
                                         @click="handleEdit(slotProps)"
                                         hasPermission="DataCollect/Collector:update"

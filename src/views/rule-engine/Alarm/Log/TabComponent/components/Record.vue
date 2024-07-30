@@ -16,7 +16,7 @@
                 <Duration :data="record"/>
             </template>
             <template v-if="column.dataIndex === 'handleType'">
-                {{ text.text }}
+                {{ text?.text }}
             </template>
             <template v-if="column.dataIndex === 'description'">
                 <Ellipsis>

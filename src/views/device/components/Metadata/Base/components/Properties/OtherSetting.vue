@@ -338,7 +338,7 @@ const extraForm = reactive({
         upper: 0,
         lower: 0,
     },
-    mode: ['ignore'],
+    mode: 'ignore',
     type: '',
 });
 
@@ -350,9 +350,9 @@ const typeMap = {
 };
 
 const handleTip = computed(() => {
-    if (extraForm.mode.includes('ignore')) {
+    if (extraForm.mode === 'ignore') {
         return '平台将忽略超出阈值的数据，无法查看上报记录';
-    } else if (extraForm.mode.includes('record')) {
+    } else if (extraForm.mode === 'record') {
         return '您可以在告警记录-无效数据页面查看超出阈值的数据上报记录';
     }
     return '您可以在设备详情-告警记录 页面查看告警情况';
@@ -419,11 +419,11 @@ const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
     }
 
     if (keys.length === 0) {
-        extraForm.mode = ['ignore'];
+        extraForm.mode = 'ignore';
     }
 };
 const resetValue = () => {
-    extraForm.mode = ['ignore'];
+    extraForm.mode = 'ignore';
     extraForm.type = '';
     extraForm.limit.lower = 0;
     extraForm.limit.upper = 0;
@@ -512,6 +512,7 @@ const confirm = () => {
             }
             if (showExtra.value && extraForm.type) {
                 ThresholdRef.value?.validate().then(async () => {
+                    console.log(extraForm,'extraForm')
                     await thresholdUpdate(extraForm);
                     expands.otherEdit = true;
                     emit('update:value', {

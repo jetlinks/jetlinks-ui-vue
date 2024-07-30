@@ -10,7 +10,7 @@
 
         <div class="add-btn">
             <PermissionButton
-                class="add-btn"
+                
                 type="primary"
                 @click="handleAdd()"
                 hasPermission="DataCollect/Collector:add"
