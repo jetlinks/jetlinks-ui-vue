@@ -19,7 +19,7 @@ import AMapComponent from './AMapComponent/AMap.vue'
 import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 import ValueItem from './ValueItem/index.vue'
 import RowPagination from './RowPagination/index.vue'
-import Calendar from './Calendar/index.vue'
+import LevelIcon from './AlarmLeveIcon/index.vue'
 import CheckButton from "./CheckButton";
 import ConfirmModal from './ConfirmModal/index.vue'
 
@@ -50,5 +50,6 @@ export default  {
             .component('CardSelect', CardSelect)
             .component('CheckButton', CheckButton)
             .component('ConfirmModal',ConfirmModal)
+            .component('LevelIcon',LevelIcon)
     }
 }
