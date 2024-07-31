@@ -56,7 +56,31 @@ const props = defineProps({
 });
 const { current } =
     props.goal === 'device' ? useInstanceStore() : useProductStore();
-const columns = [
+const columns = props.goal === 'device' ? [
+    {
+        title: '上报时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
+        },
+        scopedSlots: true,
+    },
+    {
+        title: '阈值限制',
+        dataIndex: 'description',
+        key: 'description',
+    },
+    {
+        title: '原始值',
+        dataIndex: 'value',
+        key: 'value',
+        search: {
+            type: 'string',
+        },
+    },
+] : [
     {
         title: '上报时间',
         dataIndex: 'createTime',
@@ -81,14 +105,6 @@ const columns = [
         dataIndex: 'description',
         key: 'description',
     },
-    // {
-    //     title: '上报数据',
-    //     dataIndex: 'originalValue',
-    //     key: 'originalValue',
-    //     search: {
-    //         type: 'number',
-    //     },
-    // },
     {
         title: '原始值',
         dataIndex: 'value',
@@ -97,7 +113,7 @@ const columns = [
             type: 'string',
         },
     },
-];
+]
 const handleSearch = (e) => {
     params.value = e;
 };
