@@ -483,7 +483,9 @@ const getConfig = async () => {
         } else if (showMetrics.value) {
             activeKey.value = ['metrics'];
         }
-
+        if(showExtra.value){
+            activeKey.value = ['extra']
+        }
         if (resp.result.length && !configValue.value) {
             resp.result.forEach((a) => {
                 if (a.properties) {
@@ -512,7 +514,6 @@ const confirm = () => {
             }
             if (showExtra.value && extraForm.type) {
                 ThresholdRef.value?.validate().then(async () => {
-                    console.log(extraForm,'extraForm')
                     await thresholdUpdate(extraForm);
                     expands.otherEdit = true;
                     emit('update:value', {
@@ -541,7 +542,7 @@ const confirm = () => {
 
 watch(
     () => modalVisible.value,
-    () => {
+    async () => {
         if (modalVisible.value) {
             configValue.value = omit(props.value, [
                 'source',
@@ -550,7 +551,6 @@ watch(
                 'required',
             ]);
             getConfig();
-
             if (showExtra.value) {
                 thresholdDetailQuery();
             }

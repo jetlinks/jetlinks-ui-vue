@@ -220,7 +220,7 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
-    if (permissionStore.hasPermission('rule-engine/Alarm/Configuration:view')) {
+    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view')) {
         list.value.push({
             key: 'AlarmRecord',
             tab: '预处理数据',

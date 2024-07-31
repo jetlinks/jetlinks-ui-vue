@@ -19,7 +19,11 @@
             <Duration :data="slotProps" />
         </template>
         <template #handleTime="slotProps">
-            {{ dayjs(slotProps.handleTime).format('YYYY-MM-DD HH:mm:ss') }}
+            {{
+                slotProps.handleTime
+                    ? dayjs(slotProps.handleTime).format('YYYY-MM-DD HH:mm:ss')
+                    : '--'
+            }}
         </template>
         <template #handleType="slotProps">
             {{ slotProps?.handleType?.text || '--' }}
@@ -40,8 +44,8 @@
                         style="padding: 0 5px"
                         :hasPermission="
                             i.key == 'solve'
-                                ? 'rule-engine/Alarm/Configuration:action'
-                                : 'rule-engine/Alarm/Configuration:view'
+                                ? 'rule-engine/Alarm/Log:action'
+                                : 'rule-engine/Alarm/Log:view'
                         "
                     >
                         {{ i.text }}
@@ -95,15 +99,6 @@ const columns = [
         },
         scopedSlots: true,
     },
-    // {
-    //     title: '原始值',
-    //     dataIndex: 'originalValue',
-    //     key: 'originalValue',
-    //     hidden: true,
-    //     search: {
-    //         type: 'number',
-    //     },
-    // },
     {
         title: '告警持续时长',
         dataIndex: 'duration',
@@ -194,6 +189,11 @@ const defaultParams =
                               value: current.id,
                               termType: 'eq',
                           },
+                          {
+                              column: 'alarmConfigSource',
+                              value: 'device-property-preprocessor',
+                              termType: 'eq',
+                          },
                       ],
                       type: 'and',
                   },
@@ -213,6 +213,11 @@ const defaultParams =
                                       termType: 'eq',
                                   },
                               ],
+                          },
+                          {
+                              column: 'alarmConfigSource',
+                              value: 'device-property-preprocessor',
+                              termType: 'eq',
                           },
                       ],
                       type: 'and',
@@ -234,7 +239,7 @@ const queryHandle = async (id) => {
             },
         ],
     });
-    if (res.success && res.result?.data.length) {
+    if (res.status === 200 && res.result?.data.length) {
         handleDescription.value = res.result.data?.[0]?.description;
     }
 };
@@ -249,10 +254,10 @@ const getActions = (data) => {
                       tooltip: {
                           title: '查看详情',
                       },
-                      onClick: () => {
-                          solveVisible.value = true;
+                      onClick: async () => {
                           solveType.value = 'view';
-                          queryHandle(data.id);
+                          await queryHandle(data.id);
+                          solveVisible.value = true;
                       },
                   },
                   {
@@ -276,6 +281,7 @@ const getActions = (data) => {
                       },
                       onClick: () => {
                           solveVisible.value = true;
+                          solveType.value = 'handle';
                           currentAlarm.value = data;
                       },
                   },
@@ -296,8 +302,30 @@ const getActions = (data) => {
 const closeSolve = () => {
     solveVisible.value = false;
 };
+
+const refreshCurrent = async () => {
+    const res = await queryAlarmRecord({
+        terms: [
+            {
+                column: 'id',
+                termType: 'eq',
+                value: currentAlarm.value.id,
+            },
+            {
+                column: 'alarmConfigSource',
+                value: 'device-property-preprocessor',
+                termType: 'eq',
+            },
+        ],
+    });
+    if (res.success && res.result?.data?.length) {
+        currentAlarm.value = res.result.data[0];
+    }
+};
+
 const refresh = () => {
     deviceAlarm.value?.reload();
+    refreshCurrent();
 };
 const solveRefresh = () => {
     solveVisible.value = false;
