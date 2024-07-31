@@ -29,7 +29,7 @@
         <template #sourceId="slotProps">
                 <Ellipsis>
                     设备ID：
-                    <span class="deviceId" @click="() => gotoDevice(slotProps.sourceId)">{{
+                    <span class="deviceId">{{
                         slotProps.sourceId
                     }}</span></Ellipsis
                 >
