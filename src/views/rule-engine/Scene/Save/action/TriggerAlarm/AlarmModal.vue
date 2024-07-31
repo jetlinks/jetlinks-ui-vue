@@ -89,7 +89,6 @@ import {queryAlarmPage} from '@/api/rule-engine/scene';
 import { useAlarmLevel, useRequest } from '@/hook'
 import {bindScene, getTargetTypes} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
-import LevelIcon from '@/views/rule-engine/Alarm/Config/LevelIcon.vue'
 
 const props = defineProps({
   id: {

@@ -66,7 +66,12 @@
                                         </span>
                                     </Ellipsis>
                                 </div> -->
-                                <LevelIcon :level="slotProps.level"></LevelIcon>
+                              <div style="display: flex;max-width: 50%;">
+                                <LevelIcon :level="slotProps.level" ></LevelIcon>
+                                <Ellipsis>
+                                  {{ levelMap[slotProps.level] }}
+                                </Ellipsis>
+                              </div>
                             </div>
                             <j-row :gutter="24">
                                 <j-col
@@ -201,7 +206,6 @@ import { useMenuStore } from '@/store/menu';
 import LogDrawer from './components/DetailDrawer.vue';
 import Duration from '../components/Duration.vue';
 import { useAlarmLevel } from '@/hook';
-import LevelIcon from '../../Config/LevelIcon.vue';
 const menuStory = useMenuStore();
 const tableRef = ref();
 const { levelMap, levelList } = useAlarmLevel();
@@ -225,13 +229,6 @@ titleMap.set('product', '产品');
 titleMap.set('device', '设备');
 titleMap.set('other', '其他');
 titleMap.set('org', '组织');
-
-const levelColorMap = new Map();
-levelColorMap.set('level1', 'rgba(229, 0,  18 )');
-levelColorMap.set('level2', 'rgba(255, 148,  87)');
-levelColorMap.set('level3', 'rgba(250, 189,  71)');
-levelColorMap.set('level4', 'rgba(153, 153, 153)');
-levelColorMap.set('level5', 'rgba(196, 196,  196)');
 
 const columns = [
     {
@@ -533,7 +530,7 @@ onMounted(() => {
 }
 .alarmTitle {
     display: flex;
-    width: 30%;
+    width: 60%;
 
     .alarmLevel {
         width: 30%;
