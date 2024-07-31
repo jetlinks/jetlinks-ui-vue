@@ -62,7 +62,7 @@ const instanceStore = useInstanceStore();
 const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
 const properties = metadata.properties;
 const events = metadata.events;
-
+console.log(metadata,'metadata')
 watch(
     () => events,
     (newVal) => {

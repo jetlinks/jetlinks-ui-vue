@@ -76,7 +76,7 @@ const columns = [
         dataIndex: 'value',
         key: 'value',
         search: {
-            type: 'number',
+            type: 'string',
         },
     },
 ];
