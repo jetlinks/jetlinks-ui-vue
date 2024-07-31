@@ -4,6 +4,7 @@
         :title="editType === 'add' ? '新增标签' : '编辑标签'"
         @cancel="emit('closeEditTag')"
         @ok="submit"
+        :confirmLoading="loading"
     >
         <a-form :model="tagInfo" ref="form">
             <a-row :gutter="16">
@@ -69,6 +70,7 @@ const colorData = ref();
 const changeColor = ({rgba}) => {
     tagInfo.color = rgba;
 };
+const loading = ref(false)
 const themeColor =  [
     '#69B1FF',
     '#5CDBD3',
@@ -82,6 +84,7 @@ const themeColor =  [
     '#FF85C0'
 ]
 const submit = () => {
+    loading.value = true
     form.value.validate().then(async () => {
         let id;
         if (props.editType === 'add') {
@@ -96,7 +99,9 @@ const submit = () => {
         const res = await saveTag(submitData);
         if (res.success) {
             colorData.value[id] = tagInfo.color;
-            const saveRes = await saveTagsColor(colorData.value);
+            const saveRes = await saveTagsColor(colorData.value).catch(()=>{
+                loading.value = false
+            });
             if (saveRes.success) {
                 onlyMessage('操作成功');
                 emit('refresh');

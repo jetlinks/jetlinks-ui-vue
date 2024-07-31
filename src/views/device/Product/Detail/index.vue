@@ -194,10 +194,6 @@ const list = ref([
         tab: '设备接入',
     },
     {
-        key: 'AlarmRecord',
-        tab: '告警记录',
-    },
-    {
         key: 'Firmware',
         tab: '远程升级',
     },
@@ -305,10 +301,6 @@ const getProtocol = async () => {
                         tab: '数据解析',
                     },
                     {
-                        key: 'AlarmRecord',
-                        tab: '告警记录',
-                    },
-                    {
                         key: 'Firmware',
                         tab: '远程升级',
                     },
@@ -329,10 +321,6 @@ const getProtocol = async () => {
                         tab: '设备接入',
                     },
                     {
-                        key: 'AlarmRecord',
-                        tab: '告警记录',
-                    },
-                    {
                         key: 'Firmware',
                         tab: '远程升级',
                     },
@@ -349,6 +337,16 @@ const getProtocol = async () => {
             )
         ) {
             list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
+        }
+        if (
+            permissionStore.hasPermission(
+                'rule-engine/Alarm/Configuration:view',
+            )
+        ) {
+            list.value.push({
+                key: 'AlarmRecord',
+                tab: '预处理数据',
+            });
         }
     }
 };
@@ -373,10 +371,10 @@ const jumpDevice = () => {
 };
 
 watch(
-  () => productStore.current,
-  () => {
-    getProtocol();
-  },
+    () => productStore.current,
+    () => {
+        getProtocol();
+    },
 );
 
 // watch(
@@ -392,12 +390,10 @@ watch(
 // );
 
 onMounted(() => {
-  productStore.reSet();
-  productStore.refresh(route.params.id as string);
-  productStore.tabActiveKey = routerParams.params?.value.tab || 'Info';
-
+    productStore.reSet();
+    productStore.refresh(route.params.id as string);
+    productStore.tabActiveKey = routerParams.params?.value.tab || 'Info';
 });
-
 </script>
 <style scoped lang="less">
 .ant-switch-loading,

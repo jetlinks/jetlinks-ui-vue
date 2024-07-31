@@ -4,16 +4,13 @@
         :columns="columns"
         :pagination="false"
         bordered
-        :scroll="{ y: 'calc(100vh - 260px)' }"
+        :scroll="{ y: 'calc(100vh - 300px)' }"
     >
         <template #bodyCell="{ column, text, record }">
             <template v-if="column.dataIndex === 'alarmTime'"
                 ><span
                     >{{ dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-                    }}<a-button type="link" @click="() => showDetail(record)">
-                        <template #icon>
-                            <AIcon type="EyeOutlined"></AIcon>
-                        </template> </a-button></span
+                    }}</span
             ></template>
             <template v-if="column.dataIndex === 'sourceId'">
                 <Ellipsis>
@@ -30,6 +27,12 @@
                 "
                 ><Ellipsis>{{ text }}</Ellipsis></template
             >
+            <template v-if="column.dataIndex === 'action'">
+                <a-button type="link" @click="() => showDetail(record)">
+                        <template #icon>
+                            <AIcon type="EyeOutlined"></AIcon>
+                        </template> </a-button>
+            </template>
         </template></a-table
     >
     <div class="tableBottom">
@@ -85,6 +88,12 @@ const columns = [
         dataIndex: 'actualDesc',
         key: 'actualDesc',
     },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        width:100
+    }
 ];
 const queryData = async () => {
     const res = await queryLogList(props.configId, {

@@ -106,7 +106,7 @@
                         ]"
                     >
                         <j-select
-                            style="width: 75%"
+                            style="width: 72%"
                             v-model:value="record.accessModes.value"
                             placeholder="请选择"
                             allowClear
@@ -190,7 +190,7 @@
                         ]"
                     >
                         <j-select
-                            style="width: 50%"
+                            style="width: 45%"
                             v-model:value="record.features.value"
                             placeholder="请选择"
                             allowClear
@@ -240,12 +240,12 @@
 </template>
 
 <script lang="ts" setup>
-import { getBacnetValueType } from '@/api/data-collect/collector';
+import { getBacnetValueType  } from '@/api/data-collect/collector';
 import { BacnetFormTableColumns, regOnlyNumber } from '../../data';
 import { Rule } from 'ant-design-vue/lib/form';
 import PropertyId from './PropertyId.vue';
 import {
-  EditTable,BooleanParams
+  EditTable
 } from '@/components/Metadata/Table'
 
 const props = defineProps({
@@ -375,6 +375,7 @@ watch(
         }
     },
 );
+
 </script>
 
 <style lang="less" scoped>

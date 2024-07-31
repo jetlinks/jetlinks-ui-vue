@@ -40,8 +40,8 @@
                         style="padding: 0 5px"
                         :hasPermission="
                             i.key == 'solve'
-                                ? 'rule-engine/Alarm/Log:action'
-                                : 'rule-engine/Alarm/Log:view'
+                                ? 'rule-engine/Alarm/Configuration:action'
+                                : 'rule-engine/Alarm/Configuration:view'
                         "
                     >
                         {{ i.text }}

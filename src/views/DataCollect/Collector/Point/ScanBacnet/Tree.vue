@@ -5,7 +5,9 @@
             <!-- <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox> -->
         </div>
         {{ unSelectKeys }}
-        <a-button block @click="allControl"> 全部添加 </a-button>
+        <a-button block @click="allControl"
+            >{{ props.tableData.length ? '全部撤销' : '全部添加' }}
+        </a-button>
         <j-spin :spinning="spinning">
             <j-tree
                 v-if="!!treeData"
@@ -47,7 +49,6 @@ import {
     getBacnetObjectList,
 } from '@/api/data-collect/collector';
 import { cloneDeep } from 'lodash-es';
-import { emit } from 'process';
 
 const props = defineProps({
     data: {
@@ -58,8 +59,12 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    tableData: {
+        type: Array,
+        default: [],
+    },
 });
-const emits = defineEmits(['change','addAll','cancelAll']);
+const emits = defineEmits(['change', 'addAll', 'cancelAll']);
 
 const channelId = props.data?.channelId;
 const instanceNumber = props.data?.configuration?.instanceNumber;
@@ -183,33 +188,38 @@ const getPoint = async () => {
 };
 
 const allControl = () => {
-   const allData =  treeData.value?.map((i) => {
-        return {
-            features: {
-                value: (i?.features || []).includes('changedOnly'),
-                check: true,
-            },
-            nodeId: `${i?.objectId.type}:${i?.objectId.instanceNumber}` || '',
-            objectId: i?.objectId || {},
-            name: i?.name || '',
-            propertyId: i?.propertyId || '',
-            valueType: i?.valueType || '',
-            accessModes: {
-                value: i?.accessModes || [],
-                check: true,
-            },
-            type: i?.type,
-            configuration: {
-                ...i?.configuration,
-                interval: {
-                    value: i?.configuration?.interval || 3000,
+    if (props.tableData.length) {
+        emits('cancelAll');
+    } else {
+        const allData = treeData.value?.map((i) => {
+            return {
+                features: {
+                    value: (i?.features || []).includes('changedOnly'),
                     check: true,
                 },
-                nodeId: i?.id,
-            },
-        };
-    });
-    emits('addAll',allData)
+                nodeId:
+                    `${i?.objectId.type}:${i?.objectId.instanceNumber}` || '',
+                objectId: i?.objectId || {},
+                name: i?.name || '',
+                propertyId: i?.propertyId || '',
+                valueType: i?.valueType || '',
+                accessModes: {
+                    value: i?.accessModes || [],
+                    check: true,
+                },
+                type: i?.type,
+                configuration: {
+                    ...i?.configuration,
+                    interval: {
+                        value: i?.configuration?.interval || 3000,
+                        check: true,
+                    },
+                    nodeId: i?.id,
+                },
+            };
+        });
+        emits('addAll', allData);
+    }
 };
 watch(
     () => isSelected.value,
