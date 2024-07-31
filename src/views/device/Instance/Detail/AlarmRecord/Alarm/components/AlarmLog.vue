@@ -9,9 +9,9 @@
         <div class="alarmInfo">
             <div class="title">告警日志</div>
             <div class="alarmInfoRight">
-                <!-- <div>
+                <div>
                     {{ levelMap?.[AlarmData?.level] || AlarmData?.level }}
-                </div> -->
+                </div>
                 <div>
                     <BadgeStatus
                         :status="AlarmData?.state.value"
