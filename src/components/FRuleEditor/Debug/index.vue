@@ -196,7 +196,6 @@
 </template>
 <script setup lang="ts" name="Debug">
 import { PropType, Ref } from 'vue';
-import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
 import moment from 'moment';
 import { getWebSocket } from '@/utils/websocket';
@@ -224,18 +223,6 @@ const property = ref<propertyType[]>([]);
 const tag = ref<Array<any>>([]);
 const tableWrapperRef = useTableWrapper()
 
-const headerOptions = [
-    {
-        key: 'property',
-        label: '属性赋值',
-        title: '属性赋值',
-    },
-    {
-        key: 'tag',
-        label: '标签赋值',
-        title: '标签赋值',
-    },
-];
 const columns = [
     {
         title: '属性名称',
@@ -295,19 +282,18 @@ const ws = ref();
 const virtualIdRef = ref(new Date().getTime());
 const medataSource = inject<Ref<any[]>>('metadataSource');
 const tagsSource = inject<Ref<any[]>>('_tagsDataSource');
-const productStore = useProductStore();
 const ruleEditorStore = useRuleEditorStore();
 
 const time = ref<number>(0);
 const timer = ref<any>(null);
 
 const runScript = () => {
-    const metadata = productStore.current.metadata || '{}';
-    const propertiesList = JSON.parse(metadata).properties || [];
+    const propertiesList = medataSource?.value || []
     const _properties = property.value.map((item: any) => {
         const _item = propertiesList.find((i: any) => i.id === item.id);
         return { ...item, type: _item?.valueType?.type };
     });
+    console.log('runScript', _properties, propertiesList)
     let _tags = {};
     tag.value.forEach((item) => {
         _tags[item.id] = item.current;
@@ -373,12 +359,12 @@ const runScriptAgain = async () => {
     if (wsAgain.value) {
         wsAgain.value.unsubscribe?.();
     }
-    const metadata = productStore.current.metadata || '{}';
-    const propertiesList = JSON.parse(metadata).properties || [];
+    const propertiesList = medataSource?.value || []
     const _properties = property.value.map((item: any) => {
         const _item = propertiesList.find((i: any) => i.id === item.id);
         return { ...item, type: _item?.valueType?.type };
     });
+    console.log('runScriptAgain', _properties, propertiesList)
 
     wsAgain.value = getWebSocket(
         `virtual-property-debug-${props.id}-${new Date().getTime()}`,
