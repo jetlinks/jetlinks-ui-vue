@@ -79,7 +79,7 @@
 
 <script setup>
 import {
-    query as queryAlarmRecord,
+    queryByDevice as queryAlarmRecord,
     queryHandleHistory,
 } from '@/api/rule-engine/log';
 import { useInstanceStore } from '@/store/instance';
