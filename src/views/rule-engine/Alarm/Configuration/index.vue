@@ -258,7 +258,7 @@ const columns = [
     {
         title: '关联场景联动',
         dataIndex: 'scene',
-        hidden:true,
+        hideInTable:true,
         key: 'scene',
         search: {
             type: 'select',
