@@ -1,6 +1,7 @@
 <template>
     <j-spin :spinning="loading">
         <JProTable
+            ref="tableRef"
             :columns="columns"
             :request="query"
             :params="_params"
@@ -136,7 +137,7 @@ const propertyValue = ref<Record<string, any>>({});
 const _params = reactive({
     name: '',
 });
-
+const tableRef = ref()
 const subRef = ref();
 
 // const list = ref<any[]>([]);
@@ -335,6 +336,8 @@ watch(
         if (newVal.length) {
             _dataSource.value = newVal as PropertyData[];
             _params.name = '';
+            console.log(tableRef.value,'ref')
+            tableRef.value?.reload()
         }
     },
     {

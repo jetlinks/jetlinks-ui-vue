@@ -12,7 +12,7 @@
                 <Ellipsis
                     class="tagName"
                     style="
-                        width: 90px;
+                        width: 120px;
                         cursor: url('/images/calendar/hover.png'), pointer;
                     "
                     :id="i.id"
@@ -160,6 +160,7 @@ onMounted(() => {
     width: 15%;
     background-color: #fff;
     padding: 10px;
+    border-right: 1px solid #CCCCCC;
     .tag {
         display: flex;
         justify-content: space-between;

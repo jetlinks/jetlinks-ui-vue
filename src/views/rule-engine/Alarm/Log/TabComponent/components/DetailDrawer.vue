@@ -13,11 +13,14 @@
                             typeMap.get(AlarmData?.targetType)
                         }}</span>
                         <div>
-                            <Ellipsis style="max-width: 100px">{{
+                            <Ellipsis style="max-width: 200px">{{
                                 AlarmData?.alarmName
                             }}</Ellipsis>
                         </div>
                         <LevelIcon :level="AlarmData.level"></LevelIcon>
+                    </div>
+                    <div style="font-size: 12px; margin-left: 10px; margin-top:5px">
+                        {{ AlarmData?.description || '暂无说明' }}
                     </div>
                 </div>
                 <div class="alarmInfoRight">
@@ -43,9 +46,7 @@
                 </div>
             </div>
         </template>
-        <div>
-            {{ AlarmData?.description || '暂无说明' }}
-        </div>
+
         <a-radio-group
             v-model:value="activeKey"
             button-style="solid"

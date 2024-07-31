@@ -82,11 +82,13 @@ const handleSearch = (_params) => {
     justify-content: space-between;
     margin-bottom: 20px;
     height: 100%;
+   
     .list {
         width: 15%;
         background-color: #fff;
         padding: 10px 15px;
         height: 100%;
+        border-right: 1px solid #f0f0f0;
     }
     .detail {
         width: 85%;

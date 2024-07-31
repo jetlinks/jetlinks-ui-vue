@@ -43,6 +43,7 @@
             @click="gotoAlarmLog"
             >查看更多 ></a-button
         >
+        <span v-else-if="dataSource.length">已展示全部数据</span>
     </div>
     <LogDetail v-if="visibleDetail" :data="current" @close="close" />
 </template>
