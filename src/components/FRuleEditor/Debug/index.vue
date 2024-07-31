@@ -217,6 +217,8 @@ type propertyType = {
     id?: string;
     current?: string;
     last?: string;
+
+    type?: string
 };
 const property = ref<propertyType[]>([]);
 const tag = ref<Array<any>>([]);
