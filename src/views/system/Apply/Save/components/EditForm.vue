@@ -98,7 +98,10 @@
                                 {
                                     required: true,
                                     message: '请输入接入地址',
-                                },
+                                },{
+                                    validator:validateBaseUrl,
+                                    trigger: 'change'
+                                }
                             ]"
                         >
                             <template #label>
@@ -1912,6 +1915,20 @@ const validateIP = (_rule: Rule, value: string) => {
         return Promise.resolve();
     }
 };
+
+/**
+ * 校验接入地址
+ */
+const validateBaseUrl = (_rule:Rule , value: string) =>{
+    if(value){
+        if(value === 'http://' || value === 'https://'){
+            return Promise.reject('请输入接入地址')
+        }
+        return Promise.resolve()
+    }else{
+        return Promise.reject('请输入接入地址')
+    }
+}
 </script>
 
 <style lang="less" scoped>

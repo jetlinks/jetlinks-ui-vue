@@ -5,6 +5,8 @@
                 :data="treeData"
                 class="tree"
                 @change="changeTree"
+                @cancelAll="cancelAll"
+                @addAll="addAll"
                 :unSelectKeys="unSelectKeys"
             ></Tree>
             <Table
@@ -89,6 +91,23 @@ const changeTable = (value: string) => {
     tableDataMap.delete(value);
     tableData.value = [...tableDataMap.values()];
 };
+const cancelAll = (points:Array<any>)=>{
+    unSelectKeys.value = []
+    points.forEach((i:any)=>{
+        if(tableDataMap.has(i.id)){
+            tableDataMap.delete(i.id);
+            unSelectKeys.value.push(i.id)
+        }
+    })
+    tableData.value = [...tableDataMap.values()];
+}
+
+const addAll = (points: Array<any>)=>{
+    points.forEach((i:any)=>{
+        tableDataMap.set(i.id,i)
+    })
+    tableData.value = [...tableDataMap.values()]
+}
 </script>
 
 <style lang="less" scoped>

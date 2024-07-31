@@ -83,6 +83,11 @@ export const getBacnetObjectList = (channelId: string, instanceNumber: string) =
  */
 export const getBacnetPropertyIdNotUse = (data: any) => server.post(`/collect/bacnet/${data.collectorId}/unused/ids`, data)
 
+// /**
+//  * 查询所有属性id
+//  */
+// export const getBacnetAllPropertyId = () => server.get('/collect/bacnet/property/ids')
+
 /**查询bacnet值类型*/
 export const getBacnetValueType = () => server.get(`/collect/bacnet/value/types`)
 

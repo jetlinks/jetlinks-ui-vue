@@ -125,14 +125,15 @@ import Parsing from './Parsing/index.vue';
 import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
 import AlarmRecord from './AlarmRecord/index.vue';
-import Firmware from './Firmware/index.vue'
-import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue'
+import Firmware from './Firmware/index.vue';
+import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
+import { usePermissionStore } from '@/store/permission';
 
 const menuStory = useMenuStore();
 
@@ -170,16 +171,13 @@ const initList = [
         tab: '日志管理',
     },
     {
-        key: 'AlarmRecord',
-        tab: '告警记录',
+        key: 'CardManagement',
+        tab: '物联网卡',
     },
     {
-        key: 'CardManagement',
-        tab: '物联网卡'
-    },{
         key: 'Firmware',
-        tab: '远程升级'
-    }
+        tab: '远程升级',
+    },
 ];
 
 const list = ref([...initList]);
@@ -200,9 +198,10 @@ const tabs = {
     GateWay,
     AlarmRecord,
     CardManagement,
-    Firmware
+    Firmware,
 };
 
+const permissionStore = usePermissionStore();
 const getStatus = (id: string) => {
     statusRef.value = getWebSocket(
         `instance-editor-info-status-${id}`,
@@ -221,6 +220,12 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
+    if (permissionStore.hasPermission('rule-engine/Alarm/Configuration:view')) {
+        list.value.push({
+            key: 'AlarmRecord',
+            tab: '预处理数据',
+        });
+    }
     if (
         instanceStore.current?.protocol &&
         !['modbus-tcp', 'opc-ua'].includes(instanceStore.current?.protocol) &&
@@ -364,7 +369,7 @@ const handleDisconnect = () => {
                 instanceStore.refresh(instanceStore.current?.id);
             }
         });
-        return response
+        return response;
     }
 };
 
