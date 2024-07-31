@@ -528,10 +528,13 @@ const jumpToDetail = (id: string) => {
     switch (queryCodition.targetType) {
         case 'device':
             menuStory.jumpPage('device/Instance/Detail', { id });
+            break;
         case 'product':
             menuStory.jumpPage('device/Product/Detail', { id });
+            break;
         case 'org':
             menuStory.jumpPage('system/Department', {}, { id });
+            break;
         case 'other':
             query({
                 terms: [
@@ -551,7 +554,7 @@ const jumpToDetail = (id: string) => {
                     }
                 }
             });
-           
+            break;
     }
 };
 </script>

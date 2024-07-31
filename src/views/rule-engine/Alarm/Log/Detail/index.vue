@@ -128,7 +128,7 @@ const getActions = (
             tooltip: {
                 title: '查看',
             },
-            icon: 'SearchOutlined',
+            icon: 'EyeOutlined',
             onClick: () => {
                 current.value = data;
                 visible.value = true;

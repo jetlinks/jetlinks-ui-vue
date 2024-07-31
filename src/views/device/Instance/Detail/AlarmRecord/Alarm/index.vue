@@ -27,13 +27,11 @@
             }}
         </template>
         <template #sourceId="slotProps">
-                <Ellipsis>
-                    设备ID：
-                    <span class="deviceId">{{
-                        slotProps.sourceId
-                    }}</span></Ellipsis
-                >
-            </template>
+            <Ellipsis>
+                设备ID：
+                <span class="deviceId"  @click="() => gotoDevice(slotProps.sourceId)">{{ slotProps.sourceId }}</span></Ellipsis
+            >
+        </template>
         <template #handleType="slotProps">
             {{ slotProps?.handleType?.text || '--' }}
         </template>
@@ -90,103 +88,189 @@ import dayjs from 'dayjs';
 import Duration from '@/views/rule-engine/Alarm/Log/components/Duration.vue';
 import Solve from '@/views/rule-engine/Alarm/Log/SolveComponent/index.vue';
 import AlarmLog from './components/AlarmLog.vue';
+import { useMenuStore } from 'store/menu';
 const props = defineProps({
     goal: {
         type: String,
         default: 'device',
     },
 });
+const menuStory = useMenuStore();
 const { current } =
     props.goal === 'device' ? useInstanceStore() : useProductStore();
-const columns = [
-    {
-        title: '告警时间',
-        dataIndex: 'alarmTime',
-        key: 'alarmTime',
-        search: {
-            type: 'date',
-        },
-        scopedSlots: true,
-    },
-    {
-        title: '告警持续时长',
-        dataIndex: 'duration',
-        key: 'duration',
-        scopedSlots: true,
-    },
-    {
-        title: '触发条件',
-        dataIndex: 'triggerDesc',
-        key: 'triggerDesc',
-    },{
-        title: '告警源',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
-        scopedSlots: true,
-        search:{
-            type: 'string'
-        }
-    },
-    {
-        title: '告警原因',
-        dataIndex: 'actualDesc',
-        key: 'actualDesc',
-    },
-    {
-        title: '处理时间',
-        dataIndex: 'handleTime',
-        key: 'handleTime',
-        search: {
-            type: 'date',
-        },
-        scopedSlots: true,
-    },
+const columns =
+    props.goal === 'device'
+        ? [
+              {
+                  title: '告警时间',
+                  dataIndex: 'alarmTime',
+                  key: 'alarmTime',
+                  search: {
+                      type: 'date',
+                  },
+                  scopedSlots: true,
+              },
+              {
+                  title: '告警持续时长',
+                  dataIndex: 'duration',
+                  key: 'duration',
+                  scopedSlots: true,
+              },
+              {
+                  title: '触发条件',
+                  dataIndex: 'triggerDesc',
+                  key: 'triggerDesc',
+              },
+              {
+                  title: '告警原因',
+                  dataIndex: 'actualDesc',
+                  key: 'actualDesc',
+              },
+              {
+                  title: '处理时间',
+                  dataIndex: 'handleTime',
+                  key: 'handleTime',
+                  search: {
+                      type: 'date',
+                  },
+                  scopedSlots: true,
+              },
 
-    {
-        title: '处理类型',
-        dataIndex: 'handleType',
-        key: 'handleType',
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '人工',
-                    value: 'user',
-                },
-                {
-                    label: '系统',
-                    value: 'system',
-                },
-            ],
-        },
-        scopedSlots: true,
-    },
-    {
-        title: '状态',
-        dataIndex: 'state',
-        key: 'state',
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '已处理',
-                    value: 'normal',
-                },
-                {
-                    label: '告警中',
-                    value: 'warning',
-                },
-            ],
-        },
-        scopedSlots: true,
-    },
-    {
-        title: '操作',
-        dataIndex: 'actions',
-        key: 'actions',
-        scopedSlots: true,
-    },
-];
+              {
+                  title: '处理类型',
+                  dataIndex: 'handleType',
+                  key: 'handleType',
+                  search: {
+                      type: 'select',
+                      options: [
+                          {
+                              label: '人工',
+                              value: 'user',
+                          },
+                          {
+                              label: '系统',
+                              value: 'system',
+                          },
+                      ],
+                  },
+                  scopedSlots: true,
+              },
+              {
+                  title: '状态',
+                  dataIndex: 'state',
+                  key: 'state',
+                  search: {
+                      type: 'select',
+                      options: [
+                          {
+                              label: '已处理',
+                              value: 'normal',
+                          },
+                          {
+                              label: '告警中',
+                              value: 'warning',
+                          },
+                      ],
+                  },
+                  scopedSlots: true,
+              },
+              {
+                  title: '操作',
+                  dataIndex: 'actions',
+                  key: 'actions',
+                  scopedSlots: true,
+              },
+          ]
+        : [
+              {
+                  title: '告警时间',
+                  dataIndex: 'alarmTime',
+                  key: 'alarmTime',
+                  search: {
+                      type: 'date',
+                  },
+                  scopedSlots: true,
+              },
+              {
+                  title: '告警持续时长',
+                  dataIndex: 'duration',
+                  key: 'duration',
+                  scopedSlots: true,
+              },
+              {
+                  title: '触发条件',
+                  dataIndex: 'triggerDesc',
+                  key: 'triggerDesc',
+              },
+              {
+                  title: '告警源',
+                  dataIndex: 'sourceId',
+                  key: 'sourceId',
+                  scopedSlots: true,
+                  search: {
+                      type: 'string',
+                  },
+              },
+              {
+                  title: '告警原因',
+                  dataIndex: 'actualDesc',
+                  key: 'actualDesc',
+              },
+              {
+                  title: '处理时间',
+                  dataIndex: 'handleTime',
+                  key: 'handleTime',
+                  search: {
+                      type: 'date',
+                  },
+                  scopedSlots: true,
+              },
+
+              {
+                  title: '处理类型',
+                  dataIndex: 'handleType',
+                  key: 'handleType',
+                  search: {
+                      type: 'select',
+                      options: [
+                          {
+                              label: '人工',
+                              value: 'user',
+                          },
+                          {
+                              label: '系统',
+                              value: 'system',
+                          },
+                      ],
+                  },
+                  scopedSlots: true,
+              },
+              {
+                  title: '状态',
+                  dataIndex: 'state',
+                  key: 'state',
+                  search: {
+                      type: 'select',
+                      options: [
+                          {
+                              label: '已处理',
+                              value: 'normal',
+                          },
+                          {
+                              label: '告警中',
+                              value: 'warning',
+                          },
+                      ],
+                  },
+                  scopedSlots: true,
+              },
+              {
+                  title: '操作',
+                  dataIndex: 'actions',
+                  key: 'actions',
+                  scopedSlots: true,
+              },
+          ];
 const params = ref();
 const handleDescription = ref();
 const deviceAlarm = ref();
@@ -292,9 +376,9 @@ const getActions = (data) => {
             : [
                   {
                       key: 'solve',
-                      text: '告警处理',
+                      text: '处理',
                       tooltip: {
-                          title: '告警处理',
+                          title: '处理',
                       },
                       onClick: () => {
                           solveVisible.value = true;
@@ -340,6 +424,9 @@ const refreshCurrent = async () => {
     }
 };
 
+const gotoDevice = (id) => {
+    menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
+};
 const refresh = () => {
     deviceAlarm.value?.reload();
     refreshCurrent();
@@ -352,6 +439,6 @@ const solveRefresh = () => {
 <style lang="less" scoped>
 .deviceId {
     cursor: pointer;
-    color:#4096FF;
+    color: #4096ff;
 }
 </style>
