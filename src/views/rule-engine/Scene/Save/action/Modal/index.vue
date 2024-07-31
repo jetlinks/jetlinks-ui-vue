@@ -41,10 +41,6 @@
 </template>
 
 <script lang="ts" setup name='UpdateActionItemModal'>
-import { getImage } from '@/utils/comm';
-import Delay from '../Delay/index.vue';
-import Notify from '../Notify/index.vue';
-import Device from '../Device/index.vue';
 import { PropType } from 'vue';
 import { ActionsType } from '../../../typings';
 import ActionTypeComponent from './ActionTypeComponent.vue';
@@ -88,34 +84,34 @@ const options = [
   {
     label: '设备输出',
     value: 'device',
-    iconUrl: getImage('/scene/device-type.png'),
+    iconUrl: 'icon-shebeishuchu',
     subLabel: '配置设备调用功能、读取属性、设置属性规则',
     disabled: optionDisabled
   },
   {
     label: '消息通知',
     value: 'notify',
-    iconUrl: getImage('/scene/message-type.png'),
+    iconUrl: 'icon-xiaoxitongzhi',
     subLabel: '配置向指定用户发邮件、钉钉、微信、短信等通知',
     disabled: optionDisabled
   },
   {
     label: '延迟执行',
     value: 'delay',
-    iconUrl: getImage('/scene/delay-type.png'),
+    iconUrl: 'icon-yanchizhihang',
     subLabel: '等待一段时间后，再执行后续动作',
     disabled: optionDisabled
   },
   {
     label: '触发告警',
     value: 'trigger',
-    iconUrl: getImage('/scene/trigger-type.png'),
+    iconUrl: 'icon-chufagaojing',
     subLabel: '配置触发告警规则，需配合“告警配置”使用',
   },
   {
     label: '解除告警',
     value: 'relieve',
-    iconUrl: getImage('/scene/cancel-type.png'),
+    iconUrl: 'icon-jiechugaojing',
     subLabel: '配置解除告警规则，需配合“告警配置”使用',
   },
 ];
