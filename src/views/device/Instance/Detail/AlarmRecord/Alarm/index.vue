@@ -281,7 +281,7 @@ const visibleDrawer = ref(false);
 const defaultParams =
     props.goal === 'device'
         ? {
-              sorts: [{ name: 'createTime', order: 'desc' }],
+              sorts: [{ name: 'alarmTime', order: 'desc' }],
               terms: [
                   {
                       terms: [
@@ -301,7 +301,7 @@ const defaultParams =
               ],
           }
         : {
-              sorts: [{ name: 'createTime', order: 'desc' }],
+              sorts: [{ name: 'alarmTime', order: 'desc' }],
               terms: [
                   {
                       terms: [
