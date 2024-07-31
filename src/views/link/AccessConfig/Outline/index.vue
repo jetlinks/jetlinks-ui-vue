@@ -36,7 +36,7 @@
             :data="data"
         />
         <ThirdKind
-            v-if="['Ctwing', 'OneNet'].includes(data.provider)"
+            v-if="['Ctwing', 'OneNet','OneNet-platform'].includes(data.provider)"
             :data="data"
         />
         <FourthKind
