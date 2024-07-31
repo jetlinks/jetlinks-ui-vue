@@ -186,7 +186,7 @@ const sourceChangeEvent = async () => {
   builtInList.value = handleParamsData(filterTree(_data), 'id');
 
   if (props.productDetail?.id) {
-    filterType(props.productDetail?.id);
+    filterType(props.productDetail);
   }
 };
 
@@ -204,6 +204,7 @@ const filterType = async (newVal: any) => {
 
     //标签
     const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
+
     tagList.value = tag || [];
 
     if (tag?.length === 0) {
