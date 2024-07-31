@@ -106,8 +106,9 @@ const init = () => {
       isLive: props.live,
       width: '100%',
       height: '100%',
+      hasStart: false,
       playbackRate: false,
-      ignores: ['progress', 'volume', 'currentTime'],
+      ignores: ['progress', 'volume', 'time', 'replay'],
       closeVideoClick: true,
       closeVideoDblclick: true,
       closeVideoTouch: true,
@@ -120,19 +121,39 @@ const init = () => {
 
     player.on(Events.PLAY, (ev) => {
       console.log('-播放开始-', ev);
+      props.onPlay?.()
     })
     player.on(Events.PAUSE, (ev) => {
-      console.log('-播放结束-', ev);
-      player.play(props.url)
+      console.log('-播放暂停-', ev);
+      props.onPause?.()
     })
-    player.on('loadedmetadata', (ev) => {
+    player.on(Events.ENDED, (ev) => {
+      console.log('-播放结束-', ev);
+      props.onEnded?.()
+    })
+    player.on(Events.TIME_UPDATE, (ev) => {
+      props.onTimeUpdate?.(ev)
+    })
+    player.on(Events.CANPLAY, (ev) => {
       console.log('-媒体数据加载好了-', ev);
-      if ( props.autoplay) {
+      if (props.autoplay !== false) {
         play()
       }
     })
     player.on(Events.SEEKED, (ev) => {
       console.log('-跳着播放-', ev);
+      if (props.live) {
+        init()
+      }
+    })
+    player.on(Events.ERROR, (ev) => {
+      console.log('-播放错误-', ev);
+      if (props.live) {
+        setTimeout(() => {
+          init()
+        }, 5000)
+      }
+      props.onError?.(ev)
     })
   }, 30)
 }

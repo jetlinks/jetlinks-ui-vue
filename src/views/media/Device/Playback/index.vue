@@ -22,15 +22,7 @@
                                 playStatus = 2;
                             }
                         "
-                        :on-ended="
-                            () => {
-                                playStatus = 0;
-                                if (playTimeNode && isEnded) {
-                                    isEnded = true;
-                                    playTimeNode.onNextPlay();
-                                }
-                            }
-                        "
+                        :on-ended="onEnded"
                         :on-error="
                             () => {
                                 playStatus = 0;
@@ -38,7 +30,7 @@
                         "
                         :on-time-update="
                             (e) => {
-                                playTime = e;
+                                playTime = e.currentTime;
                             }
                         "
                     />
@@ -311,6 +303,15 @@ const downloadClick = async (item: recordsItemType) => {
     downNode.click();
     document.body.removeChild(downNode);
 };
+
+const onEnded = () => {
+  playStatus.value = 0;
+  if (playTimeNode && !isEnded.value) {
+    isEnded.value = true;
+    playTimeNode.value.onNextPlay();
+  }
+}
+
 
 onMounted(() => {
     const _type = route.query.type as string;
