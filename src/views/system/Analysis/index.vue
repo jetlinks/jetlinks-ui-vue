@@ -103,9 +103,9 @@ const submitData = () => {
 };
 
 onMounted(() => {
-    // getReportConfig().then((resp: any) => {
-    //     console.log('resp', resp);
-    // });
+    getReportConfig().then((resp: any) => {
+        console.log('resp', resp);
+    });
 });
 </script>
 

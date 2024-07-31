@@ -81,8 +81,8 @@ const subDetailRef = ref();
 const columns = [
     {
         title: 'ID',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'id',
+        key: 'id',
         ellipsis: true,
     },
     {

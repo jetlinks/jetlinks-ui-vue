@@ -26,7 +26,7 @@
                     <j-space>
                         <PermissionButton
                             :popConfirm="{
-                                title: '确认导出',
+                                title: popTitle,
                                 onConfirm: () => handleExport(),
                             }"
                         >
@@ -34,6 +34,18 @@
                             导出
                         </PermissionButton>
                     </j-space>
+                </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    <Ellipsis>{{ vehicleTypeEnum?.text || '' }}</Ellipsis>
+                </template>
+                <template #createTime="{ createTime }">
+                    {{
+                        createTime
+                            ? moment(Number(createTime)).format(
+                                  'YYYY-MM-DD HH:mm:ss',
+                              )
+                            : ''
+                    }}
                 </template>
                 <template #paginationRender>
                     <a-pagination
@@ -54,9 +66,10 @@
 </template>
 
 <script setup lang="ts">
+import { queryUnknownName, exportUnknownName } from '@/api/vehicle/unknown';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { onlyMessage } from '@/utils/comm';
-import { useProSearch } from '@/hook/useProSearch';
+import { downloadFileByUrl } from '@/utils/utils';
 import { useSelectableTable } from '@/hook/useSelectableTable';
 import moment from 'moment';
 const {
@@ -74,11 +87,69 @@ const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSizePag = ref<number>(12);
 
+// 导出文件的类型
+const type = ref<string>('xlsx');
+
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
 
-const handleExport = () => {
-    onlyMessage('导出成功');
+// 处理导出按钮的提示，无需修改复制即可
+const popTitle = computed(() => {
+    return selectedRowKeys.value.length === 0
+        ? '确认导出全部数据？'
+        : '确认导出选中数据？';
+});
+
+const handleExport = async () => {
+    let _params: any = {};
+    if (selectedRowKeys.value.length > 0) {
+        // 当部分选中时
+        _params = {
+            paging: false,
+            pageSize:
+                selectedRowKeys.value.length > 10000
+                    ? 10000
+                    : selectedRowKeys.value.length,
+            terms: [
+                {
+                    column: 'id',
+                    value: selectedRowKeys.value,
+                    termType: 'in',
+                },
+            ],
+            sorts: [{ name: 'createTime', order: 'desc' }],
+        };
+    } else {
+        // 当全不选时
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
+    }
+    const res: any = await exportUnknownName(
+        'unknownName',
+        type.value,
+        _params,
+    );
+    if (res.status === 200) {
+        const blob = new Blob([res.data], { type: type.value });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(
+            url,
+            `设备命名异常-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            type.value,
+        );
+        if (
+            selectedRowKeys.value.length > 10000 ||
+            (selectedRowKeys.value.length == 0 && dataTotal.value > 10000)
+        ) {
+            onlyMessage('超出上限，已导出10000条', 'warning');
+        } else {
+            onlyMessage('导出成功');
+        }
+    }
 };
 
 /**
@@ -102,35 +173,34 @@ const handleOnChange = (num: number, pageSize: number) => {
 
 const columns = [
     {
-        title: '子设备',
-        dataIndex: 'id',
-        key: 'id',
+        title: '设备id',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
-    {
-        title: '所属车辆简称',
-        dataIndex: 'simpleName',
-        key: 'simpleName',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-
-    {
-        title: '出厂编号',
-        dataIndex: 'factoryNumber',
-        key: 'factoryNumber',
-        ellipsis: true,
-        scopedSlots: true,
-        width: 200,
-        search: {
-            type: 'string',
-        },
-    },
+    // {
+    //     title: '所属车辆简称',
+    //     dataIndex: 'simpleName',
+    //     key: 'simpleName',
+    //     ellipsis: true,
+    //     search: {
+    //         type: 'string',
+    //     },
+    // },
+    // {
+    //     title: '出厂编号',
+    //     dataIndex: 'factoryNumber',
+    //     key: 'factoryNumber',
+    //     ellipsis: true,
+    //     scopedSlots: true,
+    //     width: 200,
+    //     search: {
+    //         type: 'string',
+    //     },
+    // },
     {
         title: '车辆类型',
         dataIndex: 'vehicleTypeEnum',
@@ -152,58 +222,36 @@ const columns = [
         },
     },
     {
-        title: '型号',
-        dataIndex: 'modelNumber',
-        key: 'modelNumber',
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
         scopedSlots: true,
         ellipsis: true,
         search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '所属组织',
-        dataIndex: 'orgName',
-        key: 'orgName',
-        scopedSlots: true,
-        ellipsis: true,
-        search: {
-            type: 'string',
+            type: 'date',
         },
     },
 ];
 
-const queryData = async () => {
-    const data: any[] = [];
-    for (let i = 0; i < 12; i++) {
-        data.push({
-            id: `${i}`,
-            vehicleTypeEnum: `内燃柴油车${i}`,
-            factoryNumber: `出厂编号${i}`,
-            simpleName: `90923${i}`,
-            subEquipment: `电池${i}`,
-            abnormalTime: 1718955275000,
-            errorMessage: "{errorMessage:'异常'}",
-            modelNumber: '型号',
-            orgName: '所属组织',
-        });
-    }
-    dataTotal.value = 100;
-    currentPage.value = 0 || 0;
-    pageSizePag.value = 12 || 12;
-    return new Promise((resolve) => {
-        resolve({
-            message: 'success',
-            result: {
-                pageIndex: 0,
-                pageSize: 12,
-                total: 100,
-                data: data,
-            },
+const queryData = async (_params: any) => {
+    const resp: any = await queryUnknownName(_params);
+    if (resp.status === 200) {
+        dataTotal.value = resp.result.total || 12;
+        currentPage.value = resp.result.pageIndex + 1 || 0;
+        pageSizePag.value = resp.result.pageSize || 12;
+        return {
+            // 3.仿造请求结果返回给表格
+            code: resp.status,
+            result: resp.result,
+            status: resp.status,
+        };
+    } else {
+        return {
+            code: 200,
+            result: { data: [] },
             status: 200,
-            timestamp: 1718783580064,
-        });
-    });
+        };
+    }
 };
 
 const handleSearch = (params: any) => {

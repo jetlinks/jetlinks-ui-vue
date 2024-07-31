@@ -35,6 +35,9 @@
                         </PermissionButton>
                     </j-space>
                 </template>
+                <template #vehicleTypeEnum="{ vehicleTypeEnum }">
+                    <Ellipsis>{{ vehicleTypeEnum?.text || '' }}</Ellipsis>
+                </template>
                 <template #timestamp="{ timestamp }">
                     {{
                         timestamp
@@ -76,6 +79,7 @@ import { Modal, Textarea } from 'ant-design-vue';
 import { onlyMessage } from '@/utils/comm';
 import { useProSearch } from '@/hook/useProSearch';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 const {
     selectedRowKeys,
@@ -90,6 +94,9 @@ const dataTotal = ref<number>(0);
 const currentPage = ref<number>(1);
 // 表格每页显示多少条数据
 const pageSize = ref<number>(12);
+
+// 导出文件的类型
+const type = ref<string>('xlsx');
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
@@ -143,33 +150,80 @@ const popTitle = computed(() => {
 /**
  * @function handleExport 导出
  */
-const handleExport = () => {
-    console.log('selectedRowKeys', selectedRowKeys.value);
-    onlyMessage('导出成功');
+const handleExport = async () => {
+    let _params: any = {};
+    if (selectedRowKeys.value.length > 0) {
+        // 当部分选中时
+        _params = {
+            paging: false,
+            pageSize:
+                selectedRowKeys.value.length > 10000
+                    ? 10000
+                    : selectedRowKeys.value.length,
+            terms: [
+                {
+                    column: 'deviceId',
+                    value: selectedRowKeys.value,
+                    termType: 'in',
+                },
+            ],
+            sorts: [{ name: 'createTime', order: 'desc' }],
+        };
+    } else {
+        // 当全不选时
+        _params = {
+            paging: false,
+            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: globParams.value.terms,
+        };
+    }
+    const res: any = await exportUnknownProtocol(
+        'UnknownProtocol',
+        type.value,
+        _params,
+    );
+    if (res.status === 200) {
+        const blob = new Blob([res.data], { type: type.value });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(
+            url,
+            `设备命名异常-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            type.value,
+        );
+        if (
+            selectedRowKeys.value.length > 10000 ||
+            (selectedRowKeys.value.length == 0 && dataTotal.value > 10000)
+        ) {
+            onlyMessage('超出上限，已导出10000条', 'warning');
+        } else {
+            onlyMessage('导出成功');
+        }
+    }
 };
 
 const columns = [
     {
-        title: '车辆类型',
+        title: '设备类型',
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
     },
-    {
-        title: '出厂编号',
-        dataIndex: 'factoryNumber',
-        key: 'factoryNumber',
-        ellipsis: true,
-    },
-    {
-        title: '车辆简称',
-        dataIndex: 'simpleName',
-        key: 'simpleName',
-        ellipsis: true,
-    },
+    // {
+    //     title: '出厂编号',
+    //     dataIndex: 'factoryNumber',
+    //     key: 'factoryNumber',
+    //     ellipsis: true,
+    // },
+    // {
+    //     title: '车辆简称',
+    //     dataIndex: 'simpleName',
+    //     key: 'simpleName',
+    //     ellipsis: true,
+    // },
 
     {
-        title: '子设备',
+        title: '设备id',
         dataIndex: 'deviceId',
         key: 'deviceId',
         ellipsis: true,
@@ -183,7 +237,7 @@ const columns = [
         key: 'timestamp',
         ellipsis: true,
         scopedSlots: true,
-        width: 200,
+        width: 220,
         search: {
             type: 'date',
         },
@@ -194,25 +248,10 @@ const columns = [
         key: 'errorMessage',
         ellipsis: true,
         scopedSlots: true,
-        width: 200,
         search: {
             type: 'string',
             first: true,
         },
-    },
-    {
-        title: '型号',
-        dataIndex: 'modelNumber',
-        key: 'modelNumber',
-        scopedSlots: true,
-        ellipsis: true,
-    },
-    {
-        title: '所属组织',
-        dataIndex: 'orgName',
-        key: 'orgName',
-        scopedSlots: true,
-        ellipsis: true,
     },
     {
         title: '操作',
