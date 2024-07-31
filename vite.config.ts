@@ -114,6 +114,7 @@ export default defineConfig(({ mode}) => {
               less: {
                   modifyVars: {
                       'root-entry-name': 'variable',
+                      'primary-color': '#1677FF',
                       hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
                   },
                   javascriptEnabled: true,
