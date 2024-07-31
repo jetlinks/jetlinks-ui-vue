@@ -76,30 +76,31 @@
                                             {{ slotProps.name }}
                                         </span>
                                     </Ellipsis>
-
                                 </a-row>
                                 <a-row>
-                                  <j-col :span="12">
-                                    <div class="card-item-content-text">
-                                      说明
-                                    </div>
-                                    <div style="height: 22px; width: 100%">
-                                      <Ellipsis style="max-width: 100%">
-                                        {{ slotProps.description }}
-                                      </Ellipsis>
-                                    </div>
-                                  </j-col>
-                                  <j-col :span="12">
-                                    <div class="card-item-content-text">
-                                      告警级别
-                                    </div>
-                                    <div style="display: flex;">
-                                      <LevelIcon :level="slotProps.level" ></LevelIcon>
-                                      <Ellipsis>
-                                        {{ levelMap[slotProps.level] }}
-                                      </Ellipsis>
-                                    </div>
-                                  </j-col>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            说明
+                                        </div>
+                                        <div style="height: 22px; width: 100%">
+                                            <Ellipsis style="max-width: 100%">
+                                                {{ slotProps.description }}
+                                            </Ellipsis>
+                                        </div>
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            告警级别
+                                        </div>
+                                        <div style="display: flex">
+                                            <LevelIcon
+                                                :level="slotProps.level"
+                                            ></LevelIcon>
+                                            <Ellipsis>
+                                                {{ levelMap[slotProps.level] }}
+                                            </Ellipsis>
+                                        </div>
+                                    </j-col>
                                 </a-row>
                             </template>
                             <template #actions="item">
@@ -144,12 +145,12 @@
                         />
                     </template>
                     <template #level="slotProps">
-                      <div style="display: flex;">
-                        <LevelIcon :level="slotProps.level" ></LevelIcon>
-                        <Ellipsis>
-                          {{ levelMap[slotProps.level] }}
-                        </Ellipsis>
-                      </div>
+                        <div style="display: flex">
+                            <LevelIcon :level="slotProps.level"></LevelIcon>
+                            <Ellipsis>
+                                {{ levelMap[slotProps.level] }}
+                            </Ellipsis>
+                        </div>
                     </template>
                     <template #action="slotProps">
                         <j-space :size="16">
@@ -189,7 +190,6 @@
         v-if="visible"
         :data="current"
     />
-
 </template>
 
 <script lang="ts" setup>
@@ -200,20 +200,21 @@ import {
     remove,
 } from '@/api/rule-engine/configuration';
 import { query } from '@/api/rule-engine/log';
+import { queryLevel } from '@/api/rule-engine/config';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
 import { Modal } from 'ant-design-vue';
-import {useAlarmLevel} from "@/hook";
+import { useAlarmLevel } from '@/hook';
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
-const { levelMap } = useAlarmLevel()
+const { levelMap } = useAlarmLevel();
 const visibleDelete = ref(false);
 const configId = ref();
-const deleteState = ref(false)
+const deleteState = ref(false);
 const alarmRecordNumber = ref(0);
 const columns = [
     {
@@ -255,12 +256,55 @@ const columns = [
         width: 150,
     },
     {
+        title: '关联场景联动',
+        dataIndex: 'scene',
+        hidden:true,
+        key: 'scene',
+        search: {
+            type: 'select',
+            options: async () => {
+                const allData = await queryList({
+                    paging: false,
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                });
+                const result = allData.result?.data as any[];
+                if (allData.success && result && result.length) {
+                    const sceneDataMap = new Map(); // 用于去重
+                    result.forEach((item) => {
+                        item.scene.forEach((a: any) => {
+                            sceneDataMap.set(a.id, {
+                                label: a.name,
+                                value: a.id,
+                            });
+                        });
+                    });
+                    return [...sceneDataMap.values()];
+                }
+                return [];
+            },
+        },
+        width: 220,
+        ellipsis: true,
+    },
+    {
         title: '告警级别',
         dataIndex: 'level',
         key: 'level',
         scopedSlots: true,
         search: {
-            type: 'number',
+            type: 'select',
+            options: async () => {
+                const res = await queryLevel();
+                if (res.status === 200) {
+                    return (res?.result?.levels || [])
+                        .filter((i: any) => i?.level && i?.title)
+                        .map((item: any) => ({
+                            label: item.title,
+                            value: item.level,
+                        }));
+                }
+                return [];
+            },
         },
         width: 150,
     },
@@ -399,10 +443,10 @@ const getActions = (
                 placement: 'topLeft',
             },
             onClick: async () => {
-                if(deleteState.value){
-                    return
+                if (deleteState.value) {
+                    return;
                 }
-                deleteState.value = true
+                deleteState.value = true;
                 const params = {
                     paging: false,
                     terms: [
@@ -426,7 +470,7 @@ const getActions = (
                         return deleteConfig(data.id);
                     },
                     onCancel() {
-                        deleteState.value = false
+                        deleteState.value = false;
                     },
                 });
 
@@ -448,15 +492,15 @@ const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };
 
-const deleteConfig = async (id:any) => {
-    const resp = await remove(id)
+const deleteConfig = async (id: any) => {
+    const resp = await remove(id);
     if (resp.success) {
         onlyMessage('操作成功！');
-        refreshTable()
+        refreshTable();
     } else {
         onlyMessage('操作失败！', 'error');
     }
-    deleteState.value = false
+    deleteState.value = false;
 };
 
 const refreshTable = () => {

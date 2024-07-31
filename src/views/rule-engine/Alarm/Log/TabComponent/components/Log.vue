@@ -150,6 +150,7 @@ onMounted(() => {
     text-align: center;
     position: relative;
     height: 50px;
+    margin-top: 20px;
     .moreBtn {
         position: absolute;
         right: 50%;
