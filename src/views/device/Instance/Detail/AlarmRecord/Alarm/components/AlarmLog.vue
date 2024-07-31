@@ -56,8 +56,10 @@ const props = defineProps({
 });
 const emit = defineEmits(['closeDrawer', 'refreshTable']);
 const { levelMap } = useAlarmLevel();
-const AlarmData = ref(props.data);
 const solveVisible = ref(false);
+const AlarmData = computed(()=>{
+    return props.data
+})
 const closeDrawer = () => {
     emit('closeDrawer');
 };
@@ -65,11 +67,13 @@ const closeSolve = () => {
     solveVisible.value = false;
 };
 const refresh = () => {
+    solveVisible.value = false;
     emit('refreshTable');
 };
 const dealAlarm = () => {
     solveVisible.value = true;
 };
+
 </script>
 <style lang="less" scoped>
 .alarmInfo {

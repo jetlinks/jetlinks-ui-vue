@@ -2,7 +2,6 @@
     <div>
         <a-tabs
             tab-position="left"
-            style="height: 500px"
             v-model:activeKey="activeKey"
             :tabBarStyle="{ width: '200px' }"
         >

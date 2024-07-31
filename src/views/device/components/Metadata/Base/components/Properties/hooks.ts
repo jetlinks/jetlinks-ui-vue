@@ -50,7 +50,7 @@ export const useThreshold = (props: Record<string, any>) => {
 
     const thresholdUpdate = (data: Record<string, any>) => {
         const params = {
-            thingType: props.target,
+            thingType: 'device',
             provider: 'simple',
             configuration:{
                 matcher:{
