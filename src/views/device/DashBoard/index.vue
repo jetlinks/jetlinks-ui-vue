@@ -546,7 +546,7 @@ const getDevice = () => {
 
 const getEcharts = (data: any) => {
     let _time = '1m';
-    let format = 'M月dd日 HH:mm';
+    let format = 'M月dd日 HH';
     let limit = 12;
     const dt = data.end - data.start;
     const hour = 60 * 60 * 1000;
