@@ -30,8 +30,17 @@
         :params="params"
         ><template #createTime="slotProps">
             {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
-        </template></JProTable
-    >
+        </template>
+        <template #thingId="slotProps">
+            <Ellipsis>
+                设备ID：
+                <span
+                    class="deviceId"
+                    >{{ slotProps.thingId }}</span
+                ></Ellipsis
+            >
+        </template>
+    </JProTable>
 </template>
 
 <script setup>
@@ -59,6 +68,15 @@ const columns = [
         scopedSlots: true,
     },
     {
+        title: '告警源',
+        dataIndex: 'thingId',
+        key: 'thingId',
+        scopedSlots: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
         title: '阈值限制',
         dataIndex: 'description',
         key: 'description',
@@ -76,7 +94,7 @@ const columns = [
         dataIndex: 'value',
         key: 'value',
         search: {
-            type: 'number',
+            type: 'string',
         },
     },
 ];
@@ -85,4 +103,10 @@ const handleSearch = (e) => {
 };
 const params = ref();
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.deviceId {
+    cursor: pointer;
+    color:#4096FF;
+}
+</style>
+

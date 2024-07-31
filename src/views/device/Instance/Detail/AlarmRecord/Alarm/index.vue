@@ -2,6 +2,7 @@
     <pro-search
         :columns="columns"
         target="device-instance"
+        type="simple"
         @search="handleSearch"
     />
     <JProTable
@@ -25,11 +26,19 @@
                     : '--'
             }}
         </template>
+        <template #sourceId="slotProps">
+                <Ellipsis>
+                    设备ID：
+                    <span class="deviceId">{{
+                        slotProps.sourceId
+                    }}</span></Ellipsis
+                >
+            </template>
         <template #handleType="slotProps">
             {{ slotProps?.handleType?.text || '--' }}
         </template>
         <template #state="slotProps">
-            {{ slotProps?.state?.text }}
+            {{ slotProps?.state?.value === 'normal' ? '已处理' : '告警中' }}
         </template>
         <template #actions="slotProps">
             <j-space>
@@ -109,6 +118,14 @@ const columns = [
         title: '触发条件',
         dataIndex: 'triggerDesc',
         key: 'triggerDesc',
+    },{
+        title: '告警源',
+        dataIndex: 'sourceId',
+        key: 'sourceId',
+        scopedSlots: true,
+        search:{
+            type: 'string'
+        }
     },
     {
         title: '告警原因',
@@ -152,8 +169,8 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '无告警',
-                    value: ' normal',
+                    label: '已处理',
+                    value: 'normal',
                 },
                 {
                     label: '告警中',
@@ -332,4 +349,9 @@ const solveRefresh = () => {
     refresh();
 };
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.deviceId {
+    cursor: pointer;
+    color:#4096FF;
+}
+</style>
