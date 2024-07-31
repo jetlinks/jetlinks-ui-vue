@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import i18n from './i18n'
 import 'xgplayer/dist/index.min.css'
+import '@/style/global.less'
 
 dayjs.locale('zh-cn');
 
