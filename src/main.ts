@@ -8,6 +8,7 @@ import 'ant-design-vue/dist/antd.variable.min.css'
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import i18n from './i18n'
+import 'xgplayer/dist/index.min.css'
 
 dayjs.locale('zh-cn');
 

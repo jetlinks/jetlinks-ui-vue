@@ -126,7 +126,7 @@ const type = ref<string | undefined>(undefined);
 
 const { areaTree } = useArea();
 
-const emit = defineEmits(['select']);
+const emit = defineEmits(['select', 'close']);
 
 const filterTreeNodes = (tree: any[], condition: string) => {
     return tree.filter((item) => {
@@ -176,6 +176,7 @@ const onSave = () => {
 
 const onClose = () => {
     visible.value = false;
+  emit('close');
 };
 
 const divResize = ({ height }) => {

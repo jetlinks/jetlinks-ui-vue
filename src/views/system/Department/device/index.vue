@@ -97,7 +97,7 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                                {{ slotProps.name }}  
+                                {{ slotProps.name }}
                             </h3>
                             <j-row>
                                 <j-col :span="12">
@@ -173,7 +173,7 @@
                 <template #registryTime="slotProps">
                     <span>{{
                         slotProps.registryTime ? dayjs(slotProps.registryTime).format(
-                            'YYYY-MM-DD YY:mm:ss',
+                            'YYYY-MM-DD HH:mm:ss',
                         ) : '-'
                     }}</span>
                 </template>

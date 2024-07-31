@@ -14,7 +14,7 @@
         <div>
           <a-space>
             <span>查找</span>
-            <a-input v-model:value="searchValue" placeholder="请输入查找内容" />
+            <a-input v-model:value="searchValue" :maxlength="64" placeholder="请输入查找内容" />
             <a-button type="primary" ghost @click="() => search('all')">查找全部</a-button>
             <a-button type="primary" ghost @click="() => search('prev')">上一个</a-button>
             <a-button type="primary" ghost @click="() => search('next')">下一个</a-button>
@@ -165,8 +165,13 @@ const search = (key) => {
     tableRef.value?.scrollToByIndex(searchIndex.value - 1)
   }
 
-  selectedRowKeys.value = [searchItem.id]
-  selectedTableRow(searchItem)
+  if (filterArray.value.length > 1) {
+    selectedRowKeys.value = [searchItem.id]
+    selectedTableRow(searchItem)
+  } else {
+    selectedRowKeys.value = []
+    tableTool.selected([])
+  }
 }
 
 const heightChange = (h) => {

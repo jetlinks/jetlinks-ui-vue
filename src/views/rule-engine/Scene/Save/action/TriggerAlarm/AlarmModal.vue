@@ -130,10 +130,6 @@ const columns = [
     dataIndex: 'targetType',
     search: {
       type: 'select',
-      defaultValue: 'other',
-      componentProps: {
-        defaultValue: 'other'
-      },
       options: async () => {
         const resp = await getTargetTypes()
         if (resp.success) {

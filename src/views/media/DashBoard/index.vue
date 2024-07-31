@@ -161,14 +161,18 @@ const getPlayCount = async (params: any) => {
     const day = hour * 24;
     const month = day * 30;
     const year = 365 * day;
+    let format = ''
+
     if (dt <= day) {
         _limit = Math.abs(Math.ceil(dt / hour));
     } else if (dt > day && dt < year) {
         _limit = Math.abs(Math.ceil(dt / day));
         _time = '1d';
+        format = 'M月dd日'
     } else if (dt >= year) {
         _limit = Math.abs(Math.floor(dt / month));
         _time = '1M';
+      format = 'YYYY年-MM月'
     }
     dashboardApi
         .getPlayCount([
@@ -179,7 +183,7 @@ const getPlayCount = async (params: any) => {
                 dimension: 'agg',
                 group: 'playCount',
                 params: {
-                    format: dt > year ? 'YYYY年-MM月': '',
+                    format: format,
                     time: _time,
                     from: moment(Number(params.time.start)).format(
                         'YYYY-MM-DD HH:mm:ss',

@@ -89,33 +89,47 @@ const checkDeviceDelete = async () => {
     }
 
   } else if (item!.selector === 'context') { // 如果是按变量，校验上一个设备输出的产品id
-    if (props.name === 0) {
+    // if (props.name === 0) {
+    //   _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+    //   formTouchOff()
+    //   return
+    // } else {
+    //   const prevItem = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].device
+    //   if (prevItem?.productId !== item?.productId) {
+    //     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+    //     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
+    //     formTouchOff()
+    //     return
+    //   } else {
+    //     const _upperKey = item!.upperKey
+    //     const _params = {
+    //       branch: props.thenName,
+    //       branchGroup: props.branchesName,
+    //       action: props.name - 1,
+    //     };
+    //     const upperData = await getParams(_params, unref(_data.value));
+    //     const option = getOption(upperData, _upperKey, 'id')
+    //     if (!option) {
+    //       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+    //       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
+    //       formTouchOff()
+    //       return
+    //     }
+    //   }
+    // }
+    const _upperKey = item!.upperKey
+    const _params = {
+      branch: props.thenName,
+      branchGroup: props.branchesName,
+      action: props.name - 1,
+    };
+    const upperData = await getParams(_params, unref(_data.value));
+    const option = getOption(upperData, _upperKey, 'id')
+    if (!option) {
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
       formTouchOff()
       return
-    } else {
-      const prevItem = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].device
-      if (prevItem?.productId !== item?.productId) {
-        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
-        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
-        formTouchOff()
-        return
-      } else {
-        const _upperKey = item!.upperKey
-        const _params = {
-          branch: props.thenName,
-          branchGroup: props.branchesName,
-          action: props.name - 1,
-        };
-        const upperData = await getParams(_params, unref(_data.value));
-        const option = getOption(upperData, _upperKey, 'id')
-        if (!option) {
-          _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
-          _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
-          formTouchOff()
-          return
-        }
-      }
     }
   } else if (item!.selector === 'relation') {
     const _relationValue = (item!.selectorValues?.[0]?.value as any)?.relation

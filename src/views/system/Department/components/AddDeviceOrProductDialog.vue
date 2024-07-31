@@ -100,7 +100,7 @@
             </template>
             <template #registryTime="slotProps">
                 <span>{{
-                    dayjs(slotProps.registryTime).format('YYYY-MM-DD YY:mm:ss')
+                    dayjs(slotProps.registryTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
         </j-pro-table>
@@ -187,7 +187,7 @@ const columns = props.queryColumns.filter(
 
 const searchColumns = computed(() => {
     return props.queryColumns.map(item => {
-        if (departmentStore.productId) {    
+        if (departmentStore.productId) {
             if (item.dataIndex === 'productName') {
                 item.search.first = true
                 item.search.componentProps = {
@@ -468,14 +468,14 @@ const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
             const _ids: string[] = [];
             const _row: any[] = [];
             table.selectedRows.map((i: any) => {
-                if (!arr.includes(i.id)) {   
+                if (!arr.includes(i.id)) {
                     _ids.push(i.id)
                     _row.push(i)
                 }
             })
             table._selectedRowKeys.value = _ids;
             table.selectedRows = _row;
-        }     
+        }
 }
 const cancel = () => {
     departmentStore.setProductId(undefined)

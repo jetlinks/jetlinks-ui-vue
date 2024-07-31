@@ -4,7 +4,7 @@
       ref="mapRef"
     >
       <el-amap-polygon
-        v-if="showPolygon"
+        v-if="showPolygon && pathData?.length"
         :path="pathData"
         :editable="isEdit"
         :key="layerId"
@@ -22,7 +22,7 @@
         @dragend="dragend"
       />
       <el-amap-rectangle
-        v-if="showRectangle"
+        v-if="showRectangle && pathData?.length"
         :bounds="pathData"
         :editable="isEdit"
         :key="layerId"

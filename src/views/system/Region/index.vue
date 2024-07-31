@@ -5,7 +5,7 @@
                 <div class="left">
                   <div v-if="regionState.treeMask" class="left-mask"></div>
                   <div class="left-content">
-                    <LeftTree ref="treeRef" @select="onSelect" />
+                    <LeftTree ref="treeRef" @select="onSelect" @close="close"/>
                   </div>
                 </div>
                 <div class="right">
@@ -38,7 +38,8 @@ const regionState = reactive({
   treeMask: false,
   saveCache: undefined,
   stateInit: stateInit,
-  mapReadOnly: mapReadOnly
+  mapReadOnly: mapReadOnly,
+  prevSelect: {}
 })
 
 provide(REGION_KEY, regionState)
@@ -54,6 +55,16 @@ const onSelect = (code: string, node: Record<string, any>) => {
     } else {
     mapRef.value?.showDistrict(code)
     regionState.type = MAP_TOOL.district
+  }
+
+  regionState.prevSelect = {
+    code, node
+  }
+}
+
+const close = () => {
+  if (regionState.prevSelect.code) {
+    onSelect(regionState.prevSelect.code, regionState.prevSelect.node)
   }
 }
 

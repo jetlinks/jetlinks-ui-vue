@@ -63,7 +63,7 @@
                 placeholder="参数值"
                 value-name="id"
                 label-name="name"
-                :options="valueOptions"
+                :options="showAlarmSelect ? alarmOptions : valueOptions"
                 :metricOptions="valueColumnOptions"
                 :tabsOptions="tabsOptions"
                 v-model:value="paramsValue.value.value"
@@ -98,7 +98,7 @@ import ParamsDropdown, {
 import { inject } from 'vue';
 import { useSceneStore } from 'store/scene';
 import { storeToRefs } from 'pinia';
-import { cloneDeep, flattenDeep, isArray, isObject, set } from 'lodash-es';
+import {cloneDeep, flattenDeep, isArray, isObject, omit, set} from 'lodash-es';
 import { Form } from 'jetlinks-ui-components';
 import { treeFilter } from '@/utils/comm';
 import { timeTypeKeys } from '@/views/rule-engine/Scene/Save/components/Terms/util';
@@ -193,6 +193,9 @@ const arrayParamsKey = [
 ];
 const valueColumnOptions = ref<any[]>([]);
 
+const showAlarmKey = ['lastAlarmTime', 'firstAlarm', 'alarmTime', 'level']
+const showAlarmSelectKey = ['alarmConfigId', 'alarmName']
+
 const tabsOptions = ref<Array<TabsOption>>([
     { label: '手动输入', key: 'fixed', component: 'string' },
     { label: '内置参数', key: 'upper', component: 'tree' },
@@ -209,7 +212,11 @@ const showDouble = computed(() => {
 });
 
 const showAlarm = computed(() => {
-  return paramsValue.column?.split('.')?.[1] === 'firstAlarm'
+  return showAlarmKey.includes(paramsValue.column?.split('.')?.[1])
+})
+
+const showAlarmSelect = computed(() => {
+  return showAlarmSelectKey.includes(paramsValue.column?.split('.')?.[1])
 })
 
 const valueChangeAfter = () => {
@@ -219,10 +226,12 @@ const valueChangeAfter = () => {
 const handOptionByColumn = (option: any) => {
     if (option) {
         termTypeOptions.value = option.termTypes || [];
-        tabsOptions.value[0].component = option.type;
+        const _showAlarmSelect = showAlarmSelectKey.includes(option.column?.split('.')?.[1])
+        const _type = _showAlarmSelect ? 'select' : option.type;
+        tabsOptions.value[0].component = _type
         columnType.value = option.type;
         const _options = option.options;
-        if (option.type === 'boolean') {
+        if (_type === 'boolean') {
             // 处理_options为Object时
             if (isObject(_options)) {
                 const bool = (_options as any)?.bool;
@@ -250,7 +259,7 @@ const handOptionByColumn = (option: any) => {
                     { label: '否', name: '否', value: 'false', id: 'false' },
                 ];
             }
-        } else if (option.type === 'enum') {
+        } else if (_type === 'enum') {
             valueOptions.value =
                 _options?.elements?.map((item: any) => ({
                     ...item,
@@ -265,9 +274,10 @@ const handOptionByColumn = (option: any) => {
                     value: item.id,
                 })) || [];
         }
+
         valueColumnOptions.value = treeFilter(
             cloneDeep(columnOptions.value),
-            option.type,
+            _type,
             'type',
         );
     } else {
@@ -323,8 +333,10 @@ const columnSelect = (e: any) => {
     const hasTypeChange = dataType !== tabsOptions.value[0].component;
     let termTypeChange = false;
 
-    if (paramsValue.column!.split('.')[1] === 'firstAlarm') {
-      paramsValue.alarm = undefined
+    if (showAlarmKey.includes(paramsValue.column?.split('.')?.[1])) {
+      if (!paramsValue.alarm) {
+        paramsValue.alarm = undefined
+      }
     } else {
       delete paramsValue.alarm
       delete paramsValue.terms
@@ -404,7 +416,8 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
         source: paramsValue.value?.source || tabsOptions.value[0].key,
         value: value,
     };
-    emit('update:value', handleFilterTerms({ ...paramsValue }));
+    const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
+    emit('update:value', handleFilterTerms({ ...updateValue }));
   valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
@@ -419,7 +432,9 @@ const alarmSelect = (e: { key: string; label: string }) => {
     ].options!.terms[props.termsName].terms[props.name][4] = e.label;
 }
 const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
-    emit('update:value', handleFilterTerms({ ...paramsValue }));
+  const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
+  console.log(updateValue, showAlarm.value)
+    emit('update:value', handleFilterTerms({ ...updateValue }));
   valueChangeAfter();
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
@@ -428,7 +443,8 @@ const valueSelect = (_: any, label: string, labelObj: Record<number, any>) => {
 
 const typeChange = (e: any) => {
     paramsValue.type = e.value;
-    emit('update:value', handleFilterTerms({ ...paramsValue }));
+  const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
+    emit('update:value', handleFilterTerms({ ...updateValue }));
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
     ].options!.terms[props.termsName].terms[props.name][3] = e.label;
@@ -502,6 +518,7 @@ const getAlarmOptions = () => {
     if (resp.success) {
       alarmOptions.value = resp.result?.map(item => {
         return {
+          ...item,
           label: item.name,
           value: item.id
         }
@@ -521,8 +538,8 @@ const subscribe = () => {
 
 subscribe()
 
-watch(() => showAlarm.value, (val) => {
-  if (val) {
+watch([showAlarm.value, showAlarmSelect.value], (val) => {
+  if (val && !alarmOptions.value.length) {
     getAlarmOptions()
   }
 }, { immediate: true })
@@ -564,7 +581,9 @@ watch(() => props.value, () => {
   paramsValue.column = terms.column
   paramsValue.type = terms.type
   paramsValue.termType = terms.termType
-  paramsValue.alarm = terms.alarm
+  if (terms.hasOwnProperty('alarm')) {
+    paramsValue.alarm = terms.alarm
+  }
 }, { immediate: true, deep: true })
 
 onMounted(() => {

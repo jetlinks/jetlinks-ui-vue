@@ -76,19 +76,25 @@
                                             {{ slotProps.name }}
                                         </span>
                                     </Ellipsis>
-                                    <LevelIcon
-                                        :level="slotProps.level"
-                                    ></LevelIcon>
+
                                 </a-row>
                                 <a-row>
+                                  <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        说明
+                                      说明
                                     </div>
                                     <div style="height: 22px; width: 100%">
-                                        <Ellipsis style="max-width: 100%">
-                                            {{ slotProps.description }}
-                                        </Ellipsis>
+                                      <Ellipsis style="max-width: 100%">
+                                        {{ slotProps.description }}
+                                      </Ellipsis>
                                     </div>
+                                  </j-col>
+                                  <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                      告警级别
+                                    </div>
+                                    <LevelIcon :level="slotProps.level" ></LevelIcon>
+                                  </j-col>
                                 </a-row>
                             </template>
                             <template #actions="item">
@@ -173,7 +179,7 @@
         v-if="visible"
         :data="current"
     />
-    
+
 </template>
 
 <script lang="ts" setup>
