@@ -6,39 +6,18 @@ export const columnsConf = [
         dataIndex: 'id',
         key: 'id',
         ellipsis: false,
+        innerWidth: 300,
         search: {
             type: 'string',
         },
     },
     {
         title: '采集模型',
-        dataIndex: 'model',
-        key: 'model',
+        dataIndex: 'productName',
+        key: 'productName',
         ellipsis: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: '年卡',
-                    text: '年卡',
-                    value: 'year',
-                },
-                {
-                    label: '季卡',
-                    text: '季卡',
-                    value: 'season',
-                },
-                {
-                    label: '月卡',
-                    text: '月卡',
-                    value: 'month',
-                },
-                {
-                    label: '其他',
-                    text: '其他',
-                    value: 'other',
-                },
-            ],
+            type: 'string',
         },
         scopedSlots: true,
     },
@@ -62,17 +41,14 @@ export const columnsConf = [
             options: [
                 {
                     label: '直连设备',
-                    // text: '直连设备',
                     value: 'device',
                 },
                 {
                     label: '网关设备',
-                    // text: '季卡',
                     value: 'gateway',
                 },
                 {
                     label: '网关子设备',
-                    // text: '月卡',
                     value: 'childrenDevice',
                 },
             ],
@@ -85,25 +61,27 @@ export const columnsConf = [
         key: 'offlineTime',
         ellipsis: true,
         scopedSlots: true,
+        width: 180,
     },
     {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
-        // search: {
-        //     type: 'select',
-        //     options: [
-        //         { label: '在线', text: '在线', value: 'online' },
-        //         { label: '离线', text: '离线', value: 'offline' },
-        //         { label: '异常', text: '异常', value: 'abnormal' },
-        //     ],
-        // },
+        width: 100,
+        search: {
+            type: 'select',
+            options: [
+                { label: '在线', text: '在线', value: 'online' },
+                { label: '离线', text: '离线', value: 'offline' },
+                { label: '未激活', text: '未激活', value: 'notActive' },
+            ],
+        },
         scopedSlots: true,
     },
     {
         title: '离线原因',
-        dataIndex: 'offlineReason',
-        key: 'offlineReason',
+        dataIndex: 'offlineReasons',
+        key: 'offlineReasons',
         ellipsis: true,
         search: {
             type: 'string',
@@ -263,180 +241,3 @@ export const mockData = {
         ],
     },
 };
-
-interface Props {
-    title: string;
-    desc: string;
-    additional: string[];
-    status: 'loading' | 'pass' | 'fail' | 'unknown';
-}
-
-export const diagnoseList: Props[] = [
-    {
-        title: '产品状态',
-        desc: '诊断产品状态是否已发布，未发布状态将导致连接失败',
-        additional: [
-            '产品未发布。请发布产品，尝试重新连接。/产品未发布。请联系管理员处理。',
-        ],
-
-        status: 'loading',
-    },
-    {
-        title: '设备接入配置',
-        desc: '诊断设备接入配置是否正确，配置错误将导致连接失败',
-        additional: [
-            '请检查设备接入配置是否已正确填写/请联系管理员检查设备接入配置/请进行人工检查设备接入配置是否已填写正确',
-        ],
-        status: 'loading',
-    },
-    {
-        title: '设备接入状态',
-        desc: '诊断设备状态是否正常，禁用状态将导致连接失败',
-        additional: [
-            '设备未启用。请启用设备，尝试重新连接。/设备未启用。请联系管理员处理。',
-        ],
-        status: 'loading',
-    },
-    {
-        title: '实例信息配置',
-        desc: '诊断设备实例信息配置是否正确，配置错误将导致连接失败',
-        additional: [
-            '请检查设备实例信息配置是否已正确填写/请联系管理员检查实例信息配置',
-        ],
-        status: 'loading',
-    },
-    {
-        title: '设备接入网关状态',
-        desc: '诊断设备接入网关配置状态是否正常，禁用状态将导致连接失败',
-        additional: [
-            '设备接入网关未启用。请启用设备接入网关，尝试重新连接。/设备接入网关未启用。请联系管理员处理。',
-        ],
-        status: 'loading',
-    },
-    {
-        title: '网络信息',
-        desc: '诊断网络组件配置是否正确，配置错误将导致连接失败',
-        additional: [
-            '网络组件未启用。请启用网络组件，尝试重新连接。/网络组件未启用。请联系管理员处理。',
-            '请检查服务器端口是否开放，如未开放，请开放后，尝试重新连接。',
-            '请检查服务器防火墙策略，如有开启防火墙，请关闭防火墙获调整防火墙策略后重试',
-        ],
-        status: 'loading',
-    },
-    {
-        title: '其他可能异常',
-        desc: '当以上诊断均无异常时，请检查以下内容',
-        additional: [
-            '产品-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
-            '设备-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
-            '请根据设备接入配置中${URL}信息，任意上报一条数据',
-            '协议设备请检查电池电量是否充足',
-            '其他设备请检查是否存在网络通信故障',
-        ],
-        status: 'loading',
-    },
-];
-
-const diagnoseNetwork: IDiagnoseItem = {
-    diagnoseType: 'network',
-    title: '网络组件',
-    desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseGateway: IDiagnoseItem = {
-    diagnoseType: 'gateway',
-    title: '设备接入网关',
-    desc: '诊断设备接入网关配置状态是否正常，禁用状态将导致设备连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseProduct: IDiagnoseItem = {
-    diagnoseType: 'product',
-    title: '物模型状态',
-    desc: '诊断物模型状态是否正常，禁用状态将导致设备连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseDevice: IDiagnoseItem = {
-    diagnoseType: 'device',
-    title: '设备状态',
-    desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseProductAuth: IDiagnoseItem = {
-    diagnoseType: 'product-auth',
-    title: '物模型认证',
-    desc: '诊断物模型认证配置是否正确，错误的配置将导致连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseDeviceAuth: IDiagnoseItem = {
-    diagnoseType: 'device-auth',
-    title: '设备认证',
-    desc: '诊断设备认证配置是否正确，错误的配置将导致连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseParentDevice: IDiagnoseItem = {
-    diagnoseType: 'parent-device',
-    title: '网关父设备',
-    desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseCTWing: IDiagnoseItem = {
-    diagnoseType: 'ctwing',
-    title: '设备-CTWing配置',
-    desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-const diagnoseOnenet: IDiagnoseItem = {
-    diagnoseType: 'onenet',
-    title: '设备-OneNet配置',
-    desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
-    additional: [],
-    status: 'loading',
-};
-
-export const diagnoseNetworkDevice = [
-    diagnoseNetwork,
-    diagnoseGateway,
-    diagnoseProduct,
-    diagnoseDevice,
-    diagnoseProductAuth,
-    diagnoseDeviceAuth,
-];
-
-export const diagnoseChildDevice = [
-    diagnoseGateway,
-    diagnoseParentDevice,
-    diagnoseProduct,
-    diagnoseDevice,
-    diagnoseProductAuth,
-    diagnoseDeviceAuth,
-];
-
-export const diagnoseMediaDevice = [
-    diagnoseGateway,
-    diagnoseProduct,
-    diagnoseDevice,
-];
-
-export const diagnoseCloudDevice = [
-    diagnoseGateway,
-    diagnoseProduct,
-    diagnoseDevice,
-    diagnoseCTWing,
-    diagnoseOnenet,
-];

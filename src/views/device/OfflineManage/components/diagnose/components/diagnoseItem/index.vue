@@ -11,12 +11,14 @@
                 </p>
                 <div class="additional">
                     <slot>
-                        <p
+                        <template
                             v-for="(item, index) in data.additional"
                             :key="index"
                         >
-                            <a-badge status="default" :text="item" />
-                        </p>
+                            <p v-if="!isXieliDevice && index === 3">
+                                <a-badge status="default" :text="item" />
+                            </p>
+                        </template>
                     </slot>
                 </div>
             </div>
@@ -32,6 +34,8 @@ defineOptions({
     name: 'DiagnoseItem',
 });
 
+defineProps<{ isXieliDevice: boolean }>();
+
 const data = {
     path: '/images/diagnose/status/warning.png',
     title: '其他可能异常',
@@ -40,7 +44,7 @@ const data = {
         '产品-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
         '设备-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
         '请根据设备接入配置中${URL}信息，任意上报一条数据',
-        '协议设备请检查电池电量是否充足',
+        '请检查电池电量是否充足',
         '其他设备请检查是否存在网络通信故障',
     ],
     result: '可能存在异常',

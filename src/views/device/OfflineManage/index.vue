@@ -9,6 +9,9 @@
                 model="table"
                 :params="globParams"
                 :gridColumn="3"
+                :defaultParams="{
+                    sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
+                }"
                 :rowKey="(record: any) => record.id"
                 :rowSelection="{
                     selectedRowKeys: selectedRowKeys,
@@ -87,6 +90,7 @@
             :device-id="deviceId"
             :device-type="deviceType"
             :device-state="deviceState"
+            :is-xieli-device="deviceIsXieli"
             @update:close="modalEvent.close"
         />
         <div class="loading" v-if="pageLoading">
@@ -119,12 +123,20 @@ import DiagnoseModal from '@/views/device/OfflineManage/components/diagnose/inde
 import dayjs from 'dayjs';
 import { detail, queryGatewayState } from '@/api/device/instance';
 import { useInstanceStore } from 'store/instance';
+import {
+    checkDevice,
+    fetchOfflineDevice,
+    offlineDeviceExport,
+} from '@/api/device/offlineManage';
+import { simDataExport } from '@/api/data-report/sim';
+
+const DEFAULT_ORDER_COLUMN = 'createTime';
 
 const tableRef = ref();
 
 const globParams = ref<Record<string, any>>({});
 const total = ref<number>(0);
-const currentPage = ref<number>(1);
+const currentPage = ref<number>(1); // 注意a-pagination的索引从1开始
 const pageSize = ref<number>(12);
 const pageLoading = ref(false);
 
@@ -141,9 +153,10 @@ const {
 
 // 解构搜索函数
 const { handleSearch } = useProSearch(globParams, handleClearSelected, [
-    'offlineTime',
+    DEFAULT_ORDER_COLUMN,
 ]);
 
+// 处理设备诊断的钩子
 const instanceStore = useInstanceStore();
 
 //
@@ -157,9 +170,26 @@ const handleShowTotal = () => {
 };
 
 // 处理网络请求
-const queryData = async () => {
-    total.value = mockData.result.data.length;
-    return mockData;
+const queryData = async (_params: Record<string, any>) => {
+    const resp = await fetchOfflineDevice(_params);
+    if (resp.status === 200) {
+        total.value = resp.result.total;
+        currentPage.value = resp.result.pageIndex + 1;
+        pageSize.value = resp.result.pageSize;
+        dataSource.value = resp.result.data;
+        return {
+            // 3.仿造请求结果返回给表格
+            code: resp.status,
+            result: resp.result,
+            status: resp.status,
+        };
+    } else {
+        return {
+            code: 200,
+            result: { data: [] },
+            status: 200,
+        };
+    }
 };
 
 // 获取tag样式
@@ -167,7 +197,7 @@ const getState = (status: { text: string; value: string }) => {
     switch (status.value) {
         case 'offline':
             return '#FF3325';
-        case 'warning':
+        case 'notActive':
             return '#FF9100';
         default:
             return '#00B87A';
@@ -205,15 +235,34 @@ const handleExport = async () => {
                     termType: 'in',
                 },
             ],
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
         };
     } else {
         _params = {
             paging: false,
             pageSize: total.value > 10000 ? 10000 : total.value,
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
             terms: globParams.value.terms,
         };
+    }
+
+    const res = await offlineDeviceExport(type.value, _params);
+    if (res.status === 200) {
+        const blob = new Blob([res.data], { type: type.value });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(
+            url,
+            `离线设备数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            type.value,
+        );
+        if (
+            selectedRowKeys.value?.length > 10000 ||
+            (selectedRowKeys.value?.length == 0 && total.value > 10000)
+        ) {
+            onlyMessage(EXCEED_EXPORT_TIPS, 'warning');
+        } else {
+            onlyMessage(EXPORT_TIPS);
+        }
     }
 };
 
@@ -226,49 +275,68 @@ const modalVisible = ref<boolean>(false);
 const deviceId = ref<string>('');
 const deviceState = ref<string>('');
 const deviceType = ref<string>('');
+const deviceIsXieli = ref<boolean>(false);
+
+// modal框事件
 const modalEvent = {
     open: async (record: Record<string, any>) => {
         pageLoading.value = true;
         // 处理传递给modal框的值
         deviceId.value = record.id;
         deviceState.value = record.state.value;
-        const deviceResp = await detail(record.id);
         let accessId = '';
-        if (deviceResp.status === 200) {
-            const res = deviceResp.result;
-
+        const results = await Promise.allSettled([
+            checkDevice(record.id),
+            detail(record.id),
+        ]);
+        // 判断是否有请求异常
+        if (results.some((item) => item.status === 'rejected')) {
+            onlyMessage('网络异常，请再试一次!', 'error');
+            pageLoading.value = false;
+        } else {
+            const res = (results[1] as PromiseFulfilledResult<any>).value
+                .result;
+            // 将数据暂存到store中，用于status组件
             instanceStore.current = res;
-            console.log('instanceStore.current', toRaw(instanceStore.current));
-
+            console.log(res);
+            // 判断accessId是否为空
             if (!res.accessId) {
-                onlyMessage('accessId缺失', 'error');
+                onlyMessage('accessId缺失!', 'error');
                 pageLoading.value = false;
                 return;
             } else {
                 accessId = res.accessId;
             }
-        }
-        const accessResp = await queryGatewayState(accessId);
-        if (accessResp.status === 200) {
-            const res = accessResp.result as any;
-            if (res.provider) {
-                const provider = handleProvider(res.provider);
-                if (provider === 'channel') {
-                    onlyMessage('暂不能处理该类型设备', 'error');
-                    return;
+            // 判断是否为协力设备
+            deviceIsXieli.value = (
+                results[0] as PromiseFulfilledResult<any>
+            ).value.result;
+
+            // 获取设备类型，用于status组件
+            const accessResp = await queryGatewayState(accessId);
+            if (accessResp.status === 200) {
+                const res = accessResp.result as any;
+                if (res.provider) {
+                    const provider = handleProvider(res.provider);
+                    if (provider === 'channel') {
+                        onlyMessage('暂不能诊断该类型设备', 'error');
+                        pageLoading.value = false;
+                        return;
+                    }
+                    deviceType.value = provider;
                 }
-                deviceType.value = provider;
             }
+            // 显示modal框
+            modalVisible.value = true;
+            pageLoading.value = false;
         }
-        // 显示modal框
-        modalVisible.value = true;
-        pageLoading.value = false;
     },
     close() {
         modalVisible.value = false;
     },
 };
 
+// 获取设备分类
 const handleProvider = (provider: string) => {
     if (provider === 'fixed-media' || provider === 'gb28181-2016') {
         provider = 'media';
@@ -285,7 +353,8 @@ const handleProvider = (provider: string) => {
 };
 
 onMounted(() => {
-    instanceStore.current = {};
+    // 清空store避免切换到设备实例页面时数据未清空
+    instanceStore.current = {} as any;
 });
 </script>
 

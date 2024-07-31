@@ -43,7 +43,10 @@
                             @countChange="countChange"
                             @percentChange="percentChange"
                             @stateChange="stateChange"
-                        /><diagnose-item v-if="otherDiagnoseIsShow" />
+                        /><diagnose-item
+                            v-if="otherDiagnoseIsShow"
+                            :is-xieli-device="isXieliDevice"
+                        />
                     </div>
                 </div>
             </div>
@@ -69,6 +72,7 @@ interface IProps {
     deviceId: string;
     deviceState: string;
     deviceType: string;
+    isXieliDevice: boolean;
 }
 
 const props = defineProps<IProps>();
@@ -221,7 +225,8 @@ const countChange = (num: number) => {
 
 onMounted(() => {
     watch(
-        () => statusRef?.value?.showOtherDiagnose,
+        // @ts-ignore ts报错showOtherDiagnose，实际上已做expose但由于tsx组件的支持较差，这里需要忽略检测
+        () => statusRef.value.showOtherDiagnose,
         (val) => {
             console.log('watch status', val);
             if (val === true) {
