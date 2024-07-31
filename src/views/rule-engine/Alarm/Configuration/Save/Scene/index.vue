@@ -3,7 +3,7 @@
     <JProTable
       model="CARD"
       :request="queryTable"
-      :gridColumns="[1, 1, 2]"
+      :gridColumns="[1, 2, 3]"
       :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
                 terms: [
@@ -135,7 +135,7 @@ const getActions = (
             onlyMessage('操作成功');
             actionRef.value.reload();
           }
-          return 
+          return
         },
       },
     },

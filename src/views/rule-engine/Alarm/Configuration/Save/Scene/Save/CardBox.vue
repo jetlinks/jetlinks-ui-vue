@@ -71,7 +71,7 @@
             </div>
           </div  >
 
-          <div v-if="showMask && activeBranches.length && !isInvalid" class="card-mask mask-hover" :class="{ 'branches-tabs-mask': showBranchesVisible}" :style="maskStyle">
+          <div v-if="showMask && activeBranches.length && !isInvalid" v-show="!showBranchesVisible" class="card-mask" :class="{ 'branches-tabs-mask': showBranchesVisible}" :style="maskStyle">
             <div class="mask-content">
               <slot name="mask">
                 <div>
