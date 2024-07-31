@@ -213,8 +213,7 @@ watch(() => props.value, () => {
   .header {
     position: absolute;
     right: 0;
-    top: 0;
-    transform: translateY(-120%);
+    top: -55px;
   }
   .calendar-items {
     max-height: 350px;

@@ -98,6 +98,7 @@ import {useHistory, useRegion} from "../hooks";
 import { MAP_TOOL } from '../util'
 import { DistrictSearch, GeoJson } from '@/components/AMapComponent'
 import { randomNumber } from '@/utils/utils'
+import {onlyMessage} from "@/utils/comm";
 
 const regionState = useRegion()
 const { revoke, addRecord, reset, hasHistory } = useHistory()
@@ -211,7 +212,11 @@ const showToolFn = (geoJson) => {
 }
 
 const toolSave = () => {
-  regionState.openSave(toolDrawCache.value)
+  if (toolDrawCache.value) {
+    regionState.openSave(toolDrawCache.value)
+  } else {
+    onlyMessage('请绘制区域范围','warning')
+  }
 }
 
 const toolClose = () => { // 取消操作
@@ -245,6 +250,7 @@ const onDelete = () => {
   regionState.type = undefined
   toolType.value = undefined
   pathData.value = undefined
+  toolDrawCache.value = undefined
 
   addRecord({
     isEdit: false,

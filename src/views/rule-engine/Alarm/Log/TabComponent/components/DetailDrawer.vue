@@ -79,7 +79,6 @@ import { query } from '@/api/rule-engine/log';
 import Record from './Record.vue';
 import Log from './Log.vue';
 import SolveComponent from '../../SolveComponent/index.vue';
-import LevelIcon from '../../../Config/LevelIcon.vue';
 const props = defineProps({
     logData: {
         type: Object,
