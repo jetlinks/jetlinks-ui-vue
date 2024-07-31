@@ -26,6 +26,13 @@ export const getOrgList = (parmas?:any) => server.get('/organization/_query/no-p
 export const query = (data:any) => server.post('/alarm/record/_query/',data);
 
 /**
+ * 设备产品专用查询
+ * @param data 
+ * @returns 
+ */
+export const queryByDevice = (data:any) => server.post(`/alarm/record/device/_query`,data)
+
+/**
  * 告警处理
  */
 export const handleLog = (data:any) => server.post('/alarm/record/_handle',data);
