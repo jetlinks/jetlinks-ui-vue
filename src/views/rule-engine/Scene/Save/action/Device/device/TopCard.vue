@@ -109,20 +109,14 @@ const onSelect = (_type: string, disabled: Boolean) => {
 
         .way-item-image {
             margin: 0 !important;
-            opacity: 0.6;
         }
 
         &:hover {
-            .way-item-image {
-                opacity: 0.8;
-            }
+          border-color: @primary-color-hover;
         }
 
         &.active {
             border-color: @primary-color-active;
-            .way-item-image {
-                opacity: 1;
-            }
         }
 
         &.labelBottom {
