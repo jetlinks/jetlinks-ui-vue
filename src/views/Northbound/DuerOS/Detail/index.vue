@@ -1,5 +1,5 @@
 <template>
-    <j-card>
+    <!-- <j-card> -->
         <div class="box" v-if="!noData">
             <div class="left">
                 <div class="left-content">
@@ -522,7 +522,7 @@
             v-else
             style="height: calc(100vh - 300px); padding-top: 200px"
         ></j-empty>
-    </j-card>
+    <!-- </j-card> -->
 </template>
 
 <script lang="ts" setup>
@@ -934,6 +934,7 @@ watch(
 .box {
     position: relative;
     height: 100%;
+    margin: 20px;
     .left {
         overflow: hidden;
         .left-content {

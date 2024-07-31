@@ -325,7 +325,6 @@ onBeforeRouteUpdate((to: any) => {
 const getDetailFn = async () => {
     const _id = route.params?.id;
     if (_id) {
-        console.log(123)
         await instanceStore.refresh(String(_id));
         getStatus(String(_id));
         list.value = [...initList];

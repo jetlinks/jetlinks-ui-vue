@@ -212,7 +212,7 @@ const columns = [
         search: {
             type: 'string',
         },
-        width: 220,
+        width: 300,
         ellipsis: true,
     },
     {
@@ -241,7 +241,7 @@ const columns = [
                 },
             ],
         },
-        width: 100,
+        width: 150,
     },
     {
         title: '告警级别',
@@ -251,7 +251,7 @@ const columns = [
         search: {
             type: 'number',
         },
-        width: 100,
+        width: 150,
     },
     {
         title: '状态',
@@ -271,7 +271,7 @@ const columns = [
                 },
             ],
         },
-        width: 90,
+        width: 120,
     },
     {
         title: '说明',

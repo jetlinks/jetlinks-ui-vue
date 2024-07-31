@@ -60,7 +60,7 @@
                         }"
                         @click="view(slotProps)"
                     >
-                        <AIcon type="SearchOutlined" />
+                        <AIcon type="EyeOutlined" />
                     </PermissionButton>
                 </j-space>
             </template>

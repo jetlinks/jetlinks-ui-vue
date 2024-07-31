@@ -13,7 +13,7 @@
                 {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template v-if="column.dataIndex === 'duration'">
-                <Duration :data="record"/>
+                <Duration :data="record" />
             </template>
             <template v-if="column.dataIndex === 'handleType'">
                 {{ text?.text }}
@@ -32,7 +32,7 @@
             type="link"
             @click="gotoAlarmRecord"
             >查看更多 ></a-button
-        >
+        ><span v-else-if="dataSource.length">已展示全部数据</span>
     </div>
 </template>
 
@@ -41,7 +41,7 @@ import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import { defineExpose } from 'vue';
-import Duration  from '../../components/Duration.vue';
+import Duration from '../../components/Duration.vue';
 const props = defineProps({
     currentId: {
         type: String,
@@ -109,12 +109,12 @@ const gotoAlarmRecord = () => {
         { id: props.currentId },
     );
 };
-const refreshRecord= () =>{
-    queryList()
-}
+const refreshRecord = () => {
+    queryList();
+};
 defineExpose({
-    refreshRecord
-})
+    refreshRecord,
+});
 onMounted(() => {
     queryList();
 });
