@@ -46,9 +46,12 @@
             }"
         >
             <template #level="slotProps">
-              <j-ellipsis>
-                {{ levelList.find(i => slotProps.level === i.level)?.title || '' }}
-              </j-ellipsis>
+              <div style="display: flex;">
+                <LevelIcon :level="slotProps.level" ></LevelIcon>
+                <Ellipsis>
+                  {{ levelMap[slotProps.level] }}
+                </Ellipsis>
+              </div>
             </template>
             <template #targetType="slotProps">
                 {{ map[slotProps.targetType] }}
@@ -96,14 +99,11 @@
 
 <script setup lang="ts">
 import { queryAlarmPage } from '@/api/rule-engine/scene';
-import {
-    getAlarmLevel,
-    getAlarmConfigCount,
-} from '@/api/rule-engine/dashboard';
 import AlarmModal from "./AlarmModal.vue";
 import {unBindAlarm} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
 import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
+import {useAlarmLevel} from "@/hook";
 
 const props = defineProps({
     id: {
@@ -126,10 +126,10 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const count = ref<number>(0);
-const levelList = ref<any[]>([]);
 
 const visible = ref(false)
 const tableRef = ref()
+const { levelMap } = useAlarmLevel();
 
 const map = {
     product: '产品',
@@ -236,13 +236,6 @@ const queryData = async (terms: any) => {
 //     { immediate: true },
 // );
 
-onMounted(() => {
-    getAlarmLevel().then((resp) => {
-        if (resp.status === 200) {
-            levelList.value = resp.result?.levels || []
-        }
-    });
-});
 </script>
 <style scoped lang="less">
 .related-alarms-content {

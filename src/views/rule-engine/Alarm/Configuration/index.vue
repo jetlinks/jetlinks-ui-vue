@@ -93,7 +93,12 @@
                                     <div class="card-item-content-text">
                                       告警级别
                                     </div>
-                                    <LevelIcon :level="slotProps.level" ></LevelIcon>
+                                    <div style="display: flex;">
+                                      <LevelIcon :level="slotProps.level" ></LevelIcon>
+                                      <Ellipsis>
+                                        {{ levelMap[slotProps.level] }}
+                                      </Ellipsis>
+                                    </div>
                                   </j-col>
                                 </a-row>
                             </template>
@@ -139,7 +144,12 @@
                         />
                     </template>
                     <template #level="slotProps">
-                        <LevelIcon :level="slotProps.level"></LevelIcon>
+                      <div style="display: flex;">
+                        <LevelIcon :level="slotProps.level" ></LevelIcon>
+                        <Ellipsis>
+                          {{ levelMap[slotProps.level] }}
+                        </Ellipsis>
+                      </div>
                     </template>
                     <template #action="slotProps">
                         <j-space :size="16">
@@ -194,12 +204,13 @@ import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
-import LevelIcon from '../Config/LevelIcon.vue';
 import { Modal } from 'ant-design-vue';
+import {useAlarmLevel} from "@/hook";
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
+const { levelMap } = useAlarmLevel()
 const visibleDelete = ref(false);
 const configId = ref();
 const deleteState = ref(false)
@@ -251,7 +262,7 @@ const columns = [
         search: {
             type: 'number',
         },
-        width: 100,
+        width: 150,
     },
     {
         title: '状态',
