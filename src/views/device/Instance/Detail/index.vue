@@ -325,12 +325,16 @@ onBeforeRouteUpdate((to: any) => {
 const getDetailFn = async () => {
     const _id = route.params?.id;
     if (_id) {
+        console.log(123)
         await instanceStore.refresh(String(_id));
         getStatus(String(_id));
         list.value = [...initList];
         getDetail();
+        instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+    }else{
+        instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
     }
-    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+    
 };
 
 onMounted(() => {
