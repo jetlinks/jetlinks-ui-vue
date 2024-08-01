@@ -169,21 +169,11 @@ const getOfficeOptions = () => {
             },
         ],
     }).then((res: any) => {
-        console.log('res', res);
+        if (res.result?.data) {
+            officeData.value = res.result.data;
+            totalCount.value = res.result.totalCount;
+        }
     });
-    officeData.value = [
-        { name: '自动关机', value: 10, rate: 20 },
-        { name: '连接超时', value: 25, rate: 50 },
-        { name: 'T-BOX拆除', value: 5, rate: 10 },
-        { name: '其他', value: 10, rate: 20 },
-    ];
-    totalCount.value = officeData.value.reduce(
-        (
-            acc: number,
-            cur: { alarmType: string; value: number; rate: number },
-        ) => acc + cur.value,
-        0,
-    );
 };
 
 const menuStore = useMenuStore();
