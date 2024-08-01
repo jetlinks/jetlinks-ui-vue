@@ -26,4 +26,8 @@ const props = defineProps({
 });
 const activeKey = ref('alarm');
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+:deep(.ant-tabs-tab-active){
+    background-color: #F1F7FF;
+}
+</style>
