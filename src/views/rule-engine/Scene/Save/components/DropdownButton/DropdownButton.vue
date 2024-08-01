@@ -118,10 +118,7 @@ const visibleChange = (v: boolean) => {
 
 const dropdownButtonClass = computed(() => ({
   'dropdown-button': true,
-  'column': props.type === 'column',
-  'termType': props.type === 'termType',
-  'value': props.type === 'value',
-  'type': props.type === 'type',
+  [props.type]: true
 }))
 
 const treeSelect = (v: any, option: any) => {
