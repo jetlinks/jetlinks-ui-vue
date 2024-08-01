@@ -94,6 +94,7 @@ const type = ref<string>('xlsx');
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
 const vehicleTypeValue = ref('');
+const chooseList = ref<string[]>([]);
 
 const { handleSearch } = useProSearch(globParams, handleClearSelected, [
     'timestamp',
@@ -245,13 +246,21 @@ const queryData = async (_params: any) => {
     if (terms.length > 0) {
         terms[0].terms?.map((item: any) => {
             if (item.column === 'vehicleTypeEnum') {
-                vehicleTypeValue.value = item.value;
+                if (item.termType === 'eq' || item.termType === 'not') {
+                    vehicleTypeValue.value = item.value;
+                    chooseList.value = [];
+                } else {
+                    chooseList.value = item.value;
+                    vehicleTypeValue.value = chooseList.value.join(',');
+                }
             } else {
                 vehicleTypeValue.value = '';
+                chooseList.value = [];
             }
         });
     } else {
         vehicleTypeValue.value = '';
+        chooseList.value = [];
     }
     const myParams = {
         queryParamEntity: {
@@ -259,9 +268,14 @@ const queryData = async (_params: any) => {
             terms,
         },
         vehicleTypeEnum: vehicleTypeValue.value,
+        isContains:
+            vehicleTypeValue.value || chooseList.value.length > 0
+                ? true
+                : false,
+        chooseList: chooseList.value,
     };
-    // console.log('myParams', myParams);
-    const resp: any = await queryUnknownName(_params);
+    console.log('命名myParams', myParams);
+    const resp: any = await queryUnknownName(myParams);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;
         currentPage.value = resp.result.pageIndex + 1 || 0;

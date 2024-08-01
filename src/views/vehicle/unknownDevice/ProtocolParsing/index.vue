@@ -102,6 +102,7 @@ const type = ref<string>('xlsx');
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
 const vehicleTypeValue = ref('');
+const chooseList = ref<string[]>([]);
 
 const handelDetail = (data: any) => {
     let content = '';
@@ -280,18 +281,25 @@ const columns = [
 ];
 
 const queryData = async (_params: any) => {
-    console.log('_params', _params);
     const { terms, ...params } = _params;
     if (terms.length > 0) {
         terms[0].terms?.map((item: any) => {
             if (item.column === 'vehicleTypeEnum') {
-                vehicleTypeValue.value = item.value;
+                if (item.termType === 'eq' || item.termType === 'not') {
+                    vehicleTypeValue.value = item.value;
+                    chooseList.value = [];
+                } else {
+                    chooseList.value = item.value;
+                    vehicleTypeValue.value = chooseList.value.join(',');
+                }
             } else {
                 vehicleTypeValue.value = '';
+                chooseList.value = [];
             }
         });
     } else {
         vehicleTypeValue.value = '';
+        chooseList.value = [];
     }
     const myParams = {
         queryParamEntity: {
@@ -299,9 +307,14 @@ const queryData = async (_params: any) => {
             terms,
         },
         vehicleTypeEnum: vehicleTypeValue.value,
+        isContains:
+            vehicleTypeValue.value || chooseList.value.length > 0
+                ? true
+                : false,
+        chooseList: chooseList.value,
     };
-    console.log('myParams', myParams);
-    const resp: any = await queryUnknownProtocol(_params);
+    console.log('协议myParams', myParams);
+    const resp: any = await queryUnknownProtocol(myParams);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;
         currentPage.value = resp.result.pageIndex + 1 || 0;
