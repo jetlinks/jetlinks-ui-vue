@@ -1,7 +1,7 @@
 {
   "name": "jetlinks-vue",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.2.0",
   "scripts": {
     "dev": "vite --mode develop",
     "dev:force": "vite --force --mode develop",

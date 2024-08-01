@@ -16,6 +16,7 @@ module.exports = {
         'revert', // 撤销commit 回滚上一版本
         'perf', // 性能优化
           'remove', //删除
+          'release', //删除
       ]
     ],
     'scope-case': [0],
@@ -25,7 +26,7 @@ module.exports = {
       rules: {
         "commit-rule": ({ raw }) => {
           return [
-            /^\[(build|feat|fix|update|refactor|docs|chore|style|revert|perf|remove)].+/g.test(raw),
+            /^\[(build|feat|fix|update|refactor|docs|chore|style|revert|perf|remove|release)].+/g.test(raw),
             `commit备注信息格式错误，格式为 <[type] 修改内容>，type支持${types.join(",")}`
           ]
         }
