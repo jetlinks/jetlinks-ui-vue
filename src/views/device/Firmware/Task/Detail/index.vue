@@ -219,7 +219,7 @@ const queryHistoryList = async () => {
         res.result.forEach((item) => {
             item?.state?.value === 'success' ? (progress += 1) : '';
         });
-        general.percent = (progress / general.total.toFixed(2)) * 100;
+        general.percent = (progress / general.total).toFixed(2) * 100;
     }
 };
 const refreshState = async () => {
