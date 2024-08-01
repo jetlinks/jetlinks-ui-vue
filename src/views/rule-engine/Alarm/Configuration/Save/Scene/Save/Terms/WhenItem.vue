@@ -7,7 +7,7 @@
       <AIcon type='icon-zhihangdongzuoxie-1' />
       {{ value[0] }}
     </div>
-    <div v-if="showAlarm" class="dropdown-button">
+    <div v-if="showAlarm" class="dropdown-button alarm">
       {{ value[4] }}
     </div>
     <div class="dropdown-button termType">
@@ -97,9 +97,9 @@ const _value = computed(() => {
   }
 
   &.termType {
-    color: #2f54eb;
-    background-color: rgba(163, 202, 255, 0.3);
-    border-color: rgba(47, 84, 235, 0.3);
+    color: #13C2C2;
+    background: rgba(135, 232, 222, 0.3);
+    border: 1px solid rgba(54, 207, 201, 0.4);
   }
 
   &.value {
@@ -111,6 +111,12 @@ const _value = computed(() => {
   &.type {
     padding: 5px 10px;
     margin-left: 8px;
+  }
+
+  &.alarm {
+    color: #2F54EB;
+    background: rgba(163, 202, 255, 0.3);
+    border: 1px solid rgba(47, 84, 235, 0.3);
   }
 }
 
