@@ -24,7 +24,12 @@
                     allowClear
                     placeholder="请选择值类型"
                 >
-                    <j-select-option v-for="item in bacnetValueType" :key="item" :value="item">{{ item }}</j-select-option>
+                    <j-select-option
+                        v-for="item in bacnetValueType"
+                        :key="item"
+                        :value="item"
+                        >{{ item }}</j-select-option
+                    >
                 </j-select>
             </j-form-item>
             <j-form-item label="访问类型" name="accessModes">
@@ -69,8 +74,10 @@
                     :precision="0"
                 />
             </j-form-item>
-
-            <j-form-item :name="['features']">
+            <j-form-item label="推送控制">
+                <a-switch v-model:checked="formData.pushControl"></a-switch>
+            </j-form-item>
+            <j-form-item :name="['features']" v-if="formData.pushControl"> 
                 <j-checkbox-group v-model:value="formData.features">
                     <j-checkbox value="changedOnly" name="type"
                         >只推送变化的数据</j-checkbox
@@ -95,8 +102,11 @@
 </template>
 <script lang="ts" setup>
 import type { FormInstance } from 'ant-design-vue';
-import { savePointBatch, getBacnetValueType } from '@/api/data-collect/collector';
-import { cloneDeep, isObject } from 'lodash-es';
+import {
+    savePointBatch,
+    getBacnetValueType,
+} from '@/api/data-collect/collector';
+import { cloneDeep, isObject , omit } from 'lodash-es';
 import { regOnlyNumber } from '../../../data';
 
 const props = defineProps({
@@ -107,7 +117,7 @@ const props = defineProps({
     provider: {
         type: String,
         default: '',
-    }
+    },
 });
 
 const emit = defineEmits(['change']);
@@ -118,28 +128,28 @@ const formData = ref({
     accessModes: [],
     interval: undefined,
     features: [],
-    valueType: undefined
+    valueType: undefined,
+    pushControl: false,
 });
 
-const bacnetValueType = ref<string[]>([])
+const bacnetValueType = ref<string[]>([]);
 
 const getIdAndType = async () => {
-  const resp: any = await getBacnetValueType()
-  if(resp.success) {
-    bacnetValueType.value = resp.result
-  }
-}
-
-
+    const resp: any = await getBacnetValueType();
+    if (resp.success) {
+        bacnetValueType.value = resp.result;
+    }
+};
 
 const handleOk = async () => {
     const data = cloneDeep(formData.value);
-    const { accessModes, features, interval, valueType } = data;
+    const { accessModes, features, interval, valueType , pushControl } = data;
     const ischange =
         accessModes.length !== 0 ||
-        features.length !== 0 ||
+        pushControl ||
         Number(interval) === 0 ||
-        !!interval || !!valueType;
+        !!interval ||
+        !!valueType;
     if (ischange) {
         const params = cloneDeep(props.data);
         params.forEach((i: any) => {
@@ -152,11 +162,12 @@ const handleOk = async () => {
                     );
                 }
             }
-            if(features.length !== 0) {
-                i.features = data.features
+            if (features.length !== 0) {
+                i.features = data.features;
             } else {
-                i.features = i.features.map((it: any) =>it.value)
+                i.features = [];
             }
+            
             if (!!interval || Number(interval) === 0) {
                 i.interval = data.interval;
                 i.configuration = {
@@ -164,11 +175,11 @@ const handleOk = async () => {
                     interval: data.interval,
                 };
             }
-            if(data.valueType) {
+            if (data.valueType) {
                 i.configuration = {
                     ...i.configuration,
-                    valueType: data.valueType
-                }
+                    valueType: data.valueType,
+                };
             }
         });
         loading.value = true;
@@ -184,30 +195,34 @@ const handleCancel = () => {
     emit('change', false);
 };
 
-watch(() => props.provider, () => {
-    if(props.provider === 'BACNetIp') {
-        getIdAndType()
-    }
-}, { immediate: true });
+watch(
+    () => props.provider,
+    () => {
+        if (props.provider === 'BACNetIp') {
+            getIdAndType();
+        }
+    },
+    { immediate: true },
+);
 
 const labelName = computed(() => {
-  const arr = [];
-  if (formData.value.accessModes.length) {
-    arr.push('访问类型');
-  }
-  if (!!formData.value.interval) {
-    arr.push('采集频率');
-  }
-  if (formData.value.features.length) {
-    arr.push('只推送变化的数据');
-  }
-  if (formData.value.type) {
-    arr.push('数据类型');
-  }
-  if (formData.value.valueType) {
-    arr.push('值类型');
-  }
-  return arr;
+    const arr = [];
+    if (formData.value.accessModes.length) {
+        arr.push('访问类型');
+    }
+    if (!!formData.value.interval) {
+        arr.push('采集频率');
+    }
+    if (formData.value.features.length) {
+        arr.push('只推送变化的数据');
+    }
+    if (formData.value.type) {
+        arr.push('数据类型');
+    }
+    if (formData.value.valueType) {
+        arr.push('值类型');
+    }
+    return arr;
 });
 </script>
 

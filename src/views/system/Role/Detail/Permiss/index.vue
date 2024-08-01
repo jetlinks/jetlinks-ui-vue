@@ -82,7 +82,7 @@ const form = reactive({
     //         }
     //     });
     // },
-    clickSave: () => {   
+    clickSave: () => {
         // formRef.value?.validate().then(() => {
             // const updateRole = editRole_api(roleId, form.data);
           if(form.menus?.length > 0){
@@ -125,11 +125,11 @@ const form = reactive({
 
             &::before {
                 position: absolute;
-                top: 5px px;
+                top: 5px;
                 left: 0;
                 width: 4px;
                 height: calc(100% - 10px);
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 2px;
                 content: ' ';
             }

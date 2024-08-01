@@ -23,7 +23,6 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import ParamsItem from './ParamsItem.vue'
 import { isArray } from 'lodash-es'
-import { randomString } from '@/utils/utils'
 
 const sceneStore = useSceneStore()
 const { data: formModel } = storeToRefs(sceneStore)

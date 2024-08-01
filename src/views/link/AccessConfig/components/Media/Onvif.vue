@@ -59,16 +59,13 @@
             </j-col>
             <j-col :span="12">
                 <div class="doc">
-                    <h1>接入方式</h1>
+                    <h1>Onvif视频接入</h1>
                     <p>
-                        {{ provider.name }}
-                    </p>
-                    <p>
-                        {{ provider.description }}
+                        适用于使用RSTP或RTMP固定地址接入的视频设备
                     </p>
                     <h1>消息协议</h1>
                     <p>
-                        {{ provider.id === 'fixed-media' ? 'URL' : 'SIP' }}
+                        内置Onvif协议
                     </p>
                 </div>
             </j-col>

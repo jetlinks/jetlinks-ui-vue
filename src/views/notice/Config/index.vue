@@ -38,18 +38,15 @@
                                 导入
                             </PermissionButton>
                         </j-upload>
-                        <j-popconfirm
-                            title="确认导出？"
-                            ok-text="确定"
-                            cancel-text="取消"
-                            @confirm="handleExport"
+                        <PermissionButton
+                            :popConfirm="{
+                                title: '确认导出？',
+                                onConfirm: handleExport,
+                            }"
+                            hasPermission="notice/Config:export"
                         >
-                            <PermissionButton
-                                hasPermission="notice/Config:export"
-                            >
-                                导出
-                            </PermissionButton>
-                        </j-popconfirm>
+                            导出
+                        </PermissionButton>
                     </j-space>
                 </template>
                 <template #card="slotProps">
@@ -128,20 +125,16 @@
                                         </j-menu>
                                     </template>
                                 </j-dropdown>
-                                <j-popconfirm
+                                <PermissionButton
                                     v-else-if="item.key === 'delete'"
-                                    v-bind="item.popConfirm"
+                                    :popConfirm="item.popConfirm"
                                     :disabled="item.disabled"
+                                    :hasPermission="`notice/Config:${item.key}`"
                                 >
-                                    <PermissionButton
-                                        :disabled="item.disabled"
-                                        :hasPermission="`notice/Config:${item.key}`"
-                                    >
-                                        <template #icon>
-                                            <AIcon type="DeleteOutlined" />
-                                        </template>
-                                    </PermissionButton>
-                                </j-popconfirm>
+                                    <template #icon>
+                                        <AIcon type="DeleteOutlined" />
+                                    </template>
+                                </PermissionButton>
                                 <template v-else>
                                     <PermissionButton
                                         :disabled="item.disabled"
@@ -200,7 +193,7 @@
         </FullPage>
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
-        <Log v-model:visible="logVis" :data="currentConfig" />
+        <Log v-if="logVis" :data="currentConfig" @cancel="logVis = false" />
         <SyncUser v-model:visible="syncVis" :data="currentConfig" />
     </page-container>
 </template>
@@ -279,7 +272,7 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 200,
+        width: 210,
         scopedSlots: true,
     },
 ];
@@ -405,6 +398,7 @@ const getActions = (
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
+                    return
                 },
             },
             icon: 'DeleteOutlined',

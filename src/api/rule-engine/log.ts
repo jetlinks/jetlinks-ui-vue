@@ -26,6 +26,13 @@ export const getOrgList = (parmas?:any) => server.get('/organization/_query/no-p
 export const query = (data:any) => server.post('/alarm/record/_query/',data);
 
 /**
+ * 设备产品专用查询
+ * @param data 
+ * @returns 
+ */
+export const queryByDevice = (data:any) => server.post(`/alarm/record/device/_query`,data)
+
+/**
  * 告警处理
  */
 export const handleLog = (data:any) => server.post('/alarm/record/_handle',data);
@@ -50,3 +57,13 @@ export const queryHistoryList = (data:any) => server.post('/alarm/history/_query
  * 获取告警处理结果
  */
 export const queryHandleHistory = (data:any) => server.post('/alarm/record/handle-history/_query',data);
+
+/**
+ * 获取告警日志（新）
+ */
+export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data)
+
+/**
+ * 查询无效数据
+ */
+export const queryInvalidData = (data:any) => server.post('/message/preprocessor/invalid/_query',data)

@@ -40,12 +40,11 @@
                                 <j-list-item>
                                     {{ item.title }}
                                     <template #actions>
-                                        <j-popconfirm
-                                            title="确定删除?"
-                                            @confirm="_delete(item.key)"
-                                        >
-                                            <AIcon type="DeleteOutlined" />
-                                        </j-popconfirm>
+                                        <ConfirmModal
+                                            title="确认删除？"
+                                            :onConfirm="() => _delete(item.key)"
+                                            ><AIcon type="DeleteOutlined"
+                                        /></ConfirmModal>
                                     </template>
                                 </j-list-item>
                             </template>
@@ -121,11 +120,10 @@ const handleSearch = async () => {
     }
 };
 
-
-const expandedKeys = ref<string[]>([])
+const expandedKeys = ref<string[]>([]);
 const onCheck = (keys: string[], e: any) => {
     // console.log(expandedKeys.push(e));
-    expandedKeys.value.push(e.node.id)
+    expandedKeys.value.push(e.node.id);
     checkedKeys.value = [...keys];
     leftList.value = e?.checkedNodes || [];
 };
@@ -155,7 +153,6 @@ const getChannel = async () => {
 };
 
 const onLoadData: TreeProps['loadData'] = (treeNode) => {
-
     return new Promise(async (resolve) => {
         if (treeNode.dataRef?.children) {
             resolve();

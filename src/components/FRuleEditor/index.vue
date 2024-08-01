@@ -1,13 +1,16 @@
 <template>
     <j-modal
-        :zIndex="1030"
+        :zIndex="1072"
         :mask-closable="false"
         visible
-        width="70vw"
+        width="1300px"
         title="编辑规则"
-        :getContainer="(node) => fullRef || node"
-        @cancel="handleCancel"
         :destroyOnClose="true"
+        :dialogStyle="{
+          zIndex: 1072
+        }"
+        :getContainer="(node) => tableWrapperRef || node"
+        @cancel="handleCancel"
     >
         <div class="header" v-if="virtualRule?.windowType && virtualRule?.windowType !== 'undefined'">
             <div class="header-item">
@@ -24,27 +27,27 @@
         <div class="box">
             <div class="left">
                 <div>
-                    <Operator :id="id" :propertiesOptions="propertiesOptions" @add-operator-value="addOperatorValue" />
+                  <Editor
+                    ref="editor"
+                    mode="advance"
+                    key="advance"
+                    v-model:value="_value"
+                    :tips="tips"
+                  />
                 </div>
                 <div style="margin-top: 10px;">
-                    <Editor
-                        ref="editor"
-                        mode="advance"
-                        key="advance"
-                        v-model:value="_value"
-                        :tips="tips"
-                    />
-                </div>
-            </div>
-            <div class="right">
-                <Debug
+                  <Debug
                     :virtualRule="{
                         ...virtualRule,
                         script: _value,
                     }"
+                    :propertiesOptions="propertiesOptions"
                     :id="id"
-                    @success="onSuccess"
-                />
+                  />
+                </div>
+            </div>
+            <div class="right">
+              <Operator :id="id" :propertiesOptions="propertiesOptions" @add-operator-value="addOperatorValue" />
             </div>
         </div>
         <template #footer>
@@ -59,9 +62,8 @@
 import Editor from './Editor/index.vue';
 import Debug from './Debug/index.vue';
 import Operator from './Operator/index.vue';
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
 import { cloneDeep } from 'lodash-es';
-import { PropertyMetadata } from '@/views/device/Product/typings';
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 interface Emits {
     (e: 'save', data: string | undefined): void;
     (e: 'close'): void;
@@ -77,8 +79,7 @@ const props = defineProps({
 });
 
 const _value = ref<string | undefined>(props.value);
-const _disabled = ref<boolean>(true);
-const fullRef = inject(FULL_CODE);
+const tableWrapperRef = useTableWrapper()
 const tips = ref<any[]>([])
 const handleCancel = () => {
     emit('close');
@@ -110,7 +111,7 @@ const getAllCrud = () => {
     console.log(item)
     const config = item
     tips.value.push({
-      label: `${config.name}$recent实时值`, 
+      label: `${config.name}$recent实时值`,
       insertText:`$recent ("${config.id}")`,
       kind: 18,
     })
@@ -151,11 +152,11 @@ getAllCrud()
     width: 100%;
 
     .left {
-        width: 60%;
+        width: 75%;
     }
 
     .right {
-        width: 40%;
+        flex: 1 1 0;
         margin-left: 10px;
         padding-left: 10px;
         border-left: 1px solid lightgray;

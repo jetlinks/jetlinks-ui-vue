@@ -2,24 +2,24 @@
     <div class="trigger-way-warp" :class="{ disabled: disabled }">
         <div
             v-for="item in typeList"
-            :key="item.value"
             class="trigger-way-item"
+            :key="item.value"
             :class="{
                 active: _value === item.value,
                 labelBottom: labelBottom,
+                itemDisabled: item.disabled,
             }"
-            @click="onSelect(item.value)"
+            @click="onSelect(item.value, item.disabled)"
         >
             <div class="'way-item-title">
                 <span class="way-item-label">{{ item.label }}</span>
-                <j-popover v-if="item.tip">
-                    <j-tooltip :title="item.tip">
-                        <AIcon
-                            type="QuestionCircleOutlined"
-                            class="way-item-icon"
-                        />
-                    </j-tooltip>
-                </j-popover>
+                <j-tooltip v-if="item.tip" :title="item.tip">
+                    <AIcon
+                        type="QuestionCircleOutlined"
+                        class="way-item-icon"
+                        style="padding-left: 8px"
+                    />
+                </j-tooltip>
             </div>
             <div class="way-item-image">
                 <img :width="48" :src="item.image" />
@@ -28,7 +28,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="DeviceTopCard">
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -61,8 +61,8 @@ watch(
     { immediate: true, deep: true },
 );
 
-const onSelect = (_type: string) => {
-    if (!props.disabled) {
+const onSelect = (_type: string, disabled: Boolean) => {
+    if (!props.disabled && !disabled) {
         _value.value = _type;
         emits('update:value', _type);
         emits('change', _type);
@@ -78,16 +78,20 @@ const onSelect = (_type: string) => {
     width: 100%;
 
     .trigger-way-item {
+        flex: 1 1 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 237px;
+        min-width: 0;
+        //width: 237px;
         padding: 12px 16px;
         border: 1px solid #e0e4e8;
         border-radius: 2px;
         cursor: pointer;
         transition: all 0.3s;
-
+        &.itemDisabled {
+        cursor: not-allowed;
+    }
         .way-item-title {
             span {
                 font-size: 16px;
@@ -99,25 +103,20 @@ const onSelect = (_type: string) => {
 
             .way-item-icon {
                 color: rgba(#000, 0.5);
+                padding-left: 8px;
             }
         }
 
         .way-item-image {
             margin: 0 !important;
-            opacity: 0.6;
         }
 
         &:hover {
-            .way-item-image {
-                opacity: 0.8;
-            }
+          border-color: @primary-color-hover;
         }
 
         &.active {
             border-color: @primary-color-active;
-            .way-item-image {
-                opacity: 1;
-            }
         }
 
         &.labelBottom {

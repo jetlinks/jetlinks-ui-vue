@@ -169,7 +169,7 @@ const handlePercent = (e: any) => {
     if (e) {
         _value.value = [
             {
-                column: `this['currentValue'] - this['lastValue'] * ${e}/100`,
+                column: `this['currentValue'] - this['lastValue'] * ${100- e}/100`,
                 value: 0,
                 termType: 'lt',
                 type: 'or',
@@ -202,8 +202,8 @@ const handlePercent = (e: any) => {
 
 const handlePercentProps = (arr: any) => {
     const obj = arr.find((item: any) => item.termType === 'lt')
-    const val = obj.column.split('*')[1].split('/')[0]
-    percentValue.value = val !== 'init' ? val : undefined
+    const val =  obj.column.split('*')[1].split('/')[0]
+    percentValue.value = val !== 'init' ? 100 - val : undefined
 }
 
 const handleChange = () => {

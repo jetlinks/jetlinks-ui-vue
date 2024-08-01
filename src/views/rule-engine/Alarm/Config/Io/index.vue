@@ -470,7 +470,6 @@ const saveOutput = () => {
     padding-left: 10px;
     color: rgba(0, 0, 0, 0.8);
     font-weight: 600;
-    line-height: 1;
     margin-bottom: 16px;
     line-height: 30px;
 }
@@ -480,7 +479,7 @@ const saveOutput = () => {
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: #1d39c4;
+    background-color: @primary-color;
     border-radius: 0 3px 3px 0;
     content: ' ';
 }

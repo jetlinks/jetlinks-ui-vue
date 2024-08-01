@@ -1,85 +1,139 @@
 <!-- 平台对接 -->
 <template>
     <page-container>
-        <pro-search :columns="columns" target="platform-search" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="platform-search"
+            @search="handleSearch"
+        />
         <FullPage>
-          <j-pro-table ref="platformRef" :columns="columns" :request="queryList"
-              :defaultParams="{ sorts: [{ name: 'createTime', order: 'desc' }] }" :params="params" :gridColumn="3">
-              <template #headerTitle>
-                  <j-space>
-                  <!-- <j-button type="primary" @click="handleAdd">
+            <j-pro-table
+                ref="platformRef"
+                :columns="columns"
+                :request="queryList"
+                :defaultParams="{
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                }"
+                :params="params"
+                :gridColumn="3"
+            >
+                <template #headerTitle>
+                    <j-space>
+                        <!-- <j-button type="primary" @click="handleAdd">
                           <AIcon type="PlusOutlined" />新增
                           </j-button> -->
-                      <PermissionButton @click="handleAdd" :hasPermission="'iot-card/Platform:add'" type="primary">
-                          <AIcon type="PlusOutlined" />新增
-                      </PermissionButton>
-                  </j-space>
-              </template>
-              <template #card="slotProps">
-                  <CardBox :value="slotProps" :actions="getActions(slotProps, 'card')" v-bind="slotProps"
-                      :status="slotProps.state.value" :statusText="slotProps.state.text" :statusNames="{
-                          enabled: 'processing',
-                          disabled: 'error',
-                      }">
-                      <template #img>
-                          <slot name="img">
-                              <img :src="getImage('/iot-card/iot-card-bg.png')" />
-                          </slot>
-                      </template>
-                      <template #content>
-                          <h3  style='font-size: 16px;width: calc(100% - 90px); margin-bottom: 18px;'>
-                            <Ellipsis>
-                              {{ slotProps.name }}
-                            </Ellipsis>
-                          </h3>
-                          <j-row>
-                              <j-col :span="12">
-                                  <div class="card-item-content-text">
-                                      平台类型
-                                  </div>
-                                  <div>{{ slotProps.operatorName }}</div>
-                              </j-col>
-                              <j-col :span="12">
-                                  <div class="card-item-content-text">说明</div>
-                                  <Ellipsis>{{ slotProps.explain }}</Ellipsis>
-                              </j-col>
-                          </j-row>
-                      </template>
-                      <template #actions="item">
-                          <PermissionButton :disabled="item.disabled" :popConfirm="item.popConfirm" :tooltip="{
-                              ...item.tooltip,
-                          }" @click="item.onClick" :hasPermission="'iot-card/Platform:' + item.key">
-                              <AIcon type="DeleteOutlined" v-if="item.key === 'delete'" />
-                              <template v-else>
-                                  <AIcon :type="item.icon" />
-                                  <span>{{ item?.text }}</span>
-                              </template>
-                          </PermissionButton>
-                      </template>
-                  </CardBox>
-              </template>
-              <template #state="slotProps">
-                  <j-badge :text="slotProps.state.text" :status="
-                      slotProps.state.value === 'disabled'
-                          ? 'error'
-                          : 'success'
-                  " />
-              </template>
-              <template #action="slotProps">
-                  <j-space :size="16">
-                      <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
-                          <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
-                              ...i.tooltip,
-                          }" @click="i.onClick" type="link" style="padding: 0px"
-                              :hasPermission="'iot-card/Platform:' + i.key">
-                              <template #icon>
-                                  <AIcon :type="i.icon" />
-                              </template>
-                          </PermissionButton>
-                      </template>
-                  </j-space>
-              </template>
-          </j-pro-table>
+                        <PermissionButton
+                            @click="handleAdd"
+                            :hasPermission="'iot-card/Platform:add'"
+                            type="primary"
+                        >
+                            <AIcon type="PlusOutlined" />新增
+                        </PermissionButton>
+                    </j-space>
+                </template>
+                <template #card="slotProps">
+                    <CardBox
+                        :value="slotProps"
+                        :actions="getActions(slotProps, 'card')"
+                        v-bind="slotProps"
+                        :status="slotProps.state.value"
+                        :statusText="slotProps.state.text"
+                        :statusNames="{
+                            enabled: 'processing',
+                            disabled: 'error',
+                        }"
+                    >
+                        <template #img>
+                            <slot name="img">
+                                <img
+                                    :src="getImage('/iot-card/iot-card-bg.png')"
+                                />
+                            </slot>
+                        </template>
+                        <template #content>
+                            <h3
+                                style="
+                                    font-size: 16px;
+                                    width: calc(100% - 90px);
+                                    margin-bottom: 18px;
+                                "
+                            >
+                                <Ellipsis>
+                                    {{ slotProps.name }}
+                                </Ellipsis>
+                            </h3>
+                            <j-row>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        平台类型
+                                    </div>
+                                    <div>{{ slotProps.operatorName }}</div>
+                                </j-col>
+                                <j-col :span="12">
+                                    <div class="card-item-content-text">
+                                        说明
+                                    </div>
+                                    <Ellipsis>{{ slotProps.explain }}</Ellipsis>
+                                </j-col>
+                            </j-row>
+                        </template>
+                        <template #actions="item">
+                            <PermissionButton
+                                :disabled="item.disabled"
+                                :popConfirm="item.popConfirm"
+                                :tooltip="{
+                                    ...item.tooltip,
+                                }"
+                                @click="item.onClick"
+                                :hasPermission="'iot-card/Platform:' + item.key"
+                            >
+                                <AIcon
+                                    type="DeleteOutlined"
+                                    v-if="item.key === 'delete'"
+                                />
+                                <template v-else>
+                                    <AIcon :type="item.icon" />
+                                    <span>{{ item?.text }}</span>
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </CardBox>
+                </template>
+                <template #state="slotProps">
+                    <j-badge
+                        :text="slotProps.state.text"
+                        :status="
+                            slotProps.state.value === 'disabled'
+                                ? 'error'
+                                : 'success'
+                        "
+                    />
+                </template>
+                <template #action="slotProps">
+                    <j-space :size="16">
+                        <template
+                            v-for="i in getActions(slotProps, 'table')"
+                            :key="i.key"
+                        >
+                            <PermissionButton
+                                :disabled="i.disabled"
+                                :popConfirm="i.popConfirm"
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
+                                type="link"
+                                style="padding: 0px"
+                                :hasPermission="'iot-card/Platform:' + i.key"
+                            >
+                                <template #icon>
+                                    <AIcon :type="i.icon" />
+                                </template>
+                            </PermissionButton>
+                        </template>
+                    </j-space>
+                </template>
+            </j-pro-table>
         </FullPage>
     </page-container>
 </template>
@@ -88,9 +142,9 @@
 import { getImage, onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '@/components/Table';
 import { queryList, update, del } from '@/api/iot-card/platform';
-import { useMenuStore } from 'store/menu'
-const menuStory = useMenuStore()
-const router = useRouter()
+import { useMenuStore } from 'store/menu';
+const menuStory = useMenuStore();
+const router = useRouter();
 const platformRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
@@ -146,12 +200,15 @@ const columns = [
     },
 ];
 
-const statusUpdate = async (data: any) => {
-    const res = await update(data);
-    if (res.status === 200) {
-        onlyMessage('操作成功');
-        platformRef.value?.reload();
-    }
+const statusUpdate = (data: any) => {
+    const response = update(data);
+    response.then((res) => {
+        if (res.status === 200) {
+            onlyMessage('操作成功');
+            platformRef.value?.reload();
+        }
+    });
+    return response;
 };
 
 const getActions = (
@@ -183,20 +240,21 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'PlayCircleOutlined',
             popConfirm: {
-                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'
-                    }？`,
+                title: `确认${
+                    data.state.value === 'enabled' ? '禁用' : '启用'
+                }？`,
                 okText: ' 确定',
                 cancelText: '取消',
                 onConfirm: () => {
                     if (data.state.value === 'enabled') {
-                        statusUpdate({
+                        return statusUpdate({
                             id: data.id,
                             config: { ...data.config },
                             state: 'disabled',
                             operatorName: data.operatorName,
                         });
                     } else {
-                        statusUpdate({
+                        return statusUpdate({
                             id: data.id,
                             config: { ...data.config },
                             state: 'enabled',
@@ -218,14 +276,17 @@ const getActions = (
                 title: '确认删除?',
                 okText: ' 确定',
                 cancelText: '取消',
-                onConfirm: async () => {
-                    const resp: any = await del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        platformRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response: any = del(data.id);
+                    response.then((resp:any) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            platformRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',
@@ -241,7 +302,7 @@ const handleSearch = (e: any) => {
  * 新增
  */
 const handleAdd = () => {
-    menuStory.jumpPage('iot-card/Platform/Detail', { id: ':id' })
+    menuStory.jumpPage('iot-card/Platform/Detail', { id: ':id' });
 };
 </script>
 

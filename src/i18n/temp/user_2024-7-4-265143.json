@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Login.index.265048-0": "备案：",
+		"Login.index.265048-1": "渝ICP备19017719号-1",
+		"Login.index.265048-2": "账号",
+		"Login.index.265048-3": "请输入账号",
+		"Login.index.265048-4": "密码",
+		"Login.index.265048-5": "请输入密码",
+		"Login.index.265048-6": "验证码",
+		"Login.index.265048-7": "请输入验证码",
+		"Login.index.265048-8": "记住我",
+		"Login.index.265048-9": "登录",
+		"Login.index.265048-10": "其他登录方式",
+		"Login.index.265048-11": "JETLINKS团队全新力作可视化大屏系统",
+		"Login.index.265048-12": "体验DEMO",
+		"Login.index.265048-13": "请输入账号!",
+		"Login.index.265048-14": "请输入密码!",
+		"Login.index.265048-15": "请输入验证码!"
+	},
+	"en": {
+		"Login.index.265048-0": "keep on record:",
+		"Login.index.265048-1": "YuICPBei No. 19017719-1",
+		"Login.index.265048-2": "account number",
+		"Login.index.265048-3": "Please enter your account number",
+		"Login.index.265048-4": "password",
+		"Login.index.265048-5": "Please input a password",
+		"Login.index.265048-6": "Verification Code",
+		"Login.index.265048-7": "Please enter the verification code",
+		"Login.index.265048-8": "Remember me",
+		"Login.index.265048-9": "Sign in",
+		"Login.index.265048-10": "Other login methods",
+		"Login.index.265048-11": "JETLINKS team's new visual large screen system",
+		"Login.index.265048-12": "Experience DEMO",
+		"Login.index.265048-13": "Please enter your account!",
+		"Login.index.265048-14": "Please input a password!",
+		"Login.index.265048-15": "Please enter the verification code!"
+	}
+}

@@ -44,6 +44,7 @@ import { useInstanceStore } from '@/store/instance';
 import _ from 'lodash-es';
 import Event from './Event/index.vue';
 import Property from './Property/index.vue';
+import { storeToRefs } from 'pinia';
 
 const activeKey = ref<string>('property');
 const tabList = ref<{ key: string; tab: string; type: 'property' | 'event' }[]>(
@@ -59,15 +60,19 @@ const type = ref<string>('property');
 const data = ref<Record<string, any>>({});
 const value = ref<string>('');
 const instanceStore = useInstanceStore();
-const metadata = JSON.parse(instanceStore.current?.metadata || '{}');
-const properties = metadata.properties;
-const events = metadata.events;
+const { current } = storeToRefs(instanceStore);
+
+const properties: any = ref(undefined);
+const events: any = ref(undefined);
 
 watch(
-    () => events,
-    (newVal) => {
-        if (events && newVal.length) {
-            newVal.map((item: any) => {
+    () => current.value,
+    (value) => {
+        const metadata = JSON.parse(value?.metadata || '{}');
+        properties.value = metadata.properties;
+        events.value = metadata.events;
+        if (events.value && events.value.length) {
+            events.value.map((item: any) => {
                 tabList.value.push({
                     ...item,
                     key: item.id,
@@ -78,10 +83,30 @@ watch(
         }
     },
     {
-        deep: true,
         immediate: true,
+        deep: true,
     },
 );
+// watch(
+//     () => events.value,
+//     (newVal) => {
+//         console.log(events.value,'test')
+//         if (events.value && newVal.length) {
+//             newVal.map((item: any) => {
+//                 tabList.value.push({
+//                     ...item,
+//                     key: item.id,
+//                     tab: item.name,
+//                     type: 'event',
+//                 });
+//             });
+//         }
+//     },
+//     {
+//         deep: true,
+//         immediate: true,
+//     },
+// );
 
 const onSearch = () => {
     const arr = [
@@ -90,7 +115,7 @@ const onSearch = () => {
             tab: '属性',
             type: 'property',
         },
-        ...events.map((item: any) => {
+        ...events.value.map((item: any) => {
             return {
                 ...item,
                 key: item.id,

@@ -21,7 +21,7 @@
                                 <j-input placeholder="请输入证书名称" v-model:value="formData.name" />
                             </j-form-item>
                             <j-form-item label="证书文件" :name="['configs','cert']" :rules="[
-                                { required: true, message: '请输入或上传文件', trigger: 'blur' },
+                                { required: true, message: '请输入或上传文件', trigger: 'change' },
                             ]">
                                 <CertificateFile name="cert" v-model:modelValue="formData.configs.cert"
                                     placeholder="请输入证书文件" />
@@ -41,7 +41,7 @@
                                 </j-radio-group>
                             </j-form-item> -->
                             <j-form-item label="证书私钥" v-if="formData.mode !== 'client'" :name="['configs','key']" :rules="[
-                                { required: true, message: '请输入或上传文件', trigger: 'blur' },
+                                { required: true, message: '请输入或上传文件', trigger: 'change' },
                             ]">
                                 <CertificateFile name="key" v-model:modelValue="formData.configs.key"
                                     placeholder="请输入证书私钥" />

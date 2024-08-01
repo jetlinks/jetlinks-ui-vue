@@ -39,8 +39,9 @@
                     :rules="functionRules"
                 >
                     <EditTable
-                        :functions="functions"
                         v-model:value="modelRef.message.inputs"
+                        v-model:columnMap="columnMap"
+                        :functions="functions"
                         :builtInList="builtInList"
                     />
                 </j-form-item>
@@ -58,8 +59,8 @@
                         @change="propertySelect"
                     >
                         <j-select-option
-                            v-for="item in (metadata?.properties || []).filter((i) =>
-                                i?.expands?.type?.includes('read'),
+                            v-for="item in (metadata?.properties || []).filter(
+                                (i) => i?.expands?.type?.includes('read'),
                             ) || []"
                             :value="item?.id"
                             :key="item?.id"
@@ -73,6 +74,7 @@
                 <WriteProperty
                     ref="writeFormRef"
                     v-model:value="modelRef.message.properties"
+                    v-model:columnMap="columnMap"
                     :metadata="metadata"
                     :builtInList="builtInList"
                     @change="onWriteChange"
@@ -82,7 +84,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="ActionDeviceActions">
 import { getImage } from '@/utils/comm';
 import TopCard from '../device/TopCard.vue';
 import { detail } from '@/api/device/instance';
@@ -101,18 +103,21 @@ const TypeList = [
         value: 'INVOKE_FUNCTION',
         image: getImage('/scene/invoke-function.png'),
         tip: '',
+        disabled: false,
     },
     {
         label: '读取属性',
         value: 'READ_PROPERTY',
         image: getImage('/scene/read-property.png'),
         tip: '',
+        disabled: false,
     },
     {
         label: '设置属性',
         value: 'WRITE_PROPERTY',
         image: getImage('/scene/write-property.png'),
         tip: '',
+        disabled: false,
     },
 ];
 
@@ -137,11 +142,16 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    columnMap: {
+        type: Object,
+        default: () => ({}),
+    },
 });
 
 const emit = defineEmits(['change']);
 
 const formRef = ref();
+const columnMap = ref(props.columnMap || {});
 
 const modelRef = reactive({
     message: {
@@ -156,6 +166,7 @@ const modelRef = reactive({
 const writeFormRef = ref();
 
 const functionSelect = (val: any, options?: any) => {
+    columnMap.value = {};
     modelRef.message.inputs = [];
     emit('change', {
         propertiesName: options?.label,
@@ -174,14 +185,15 @@ const functionRules = [
     {
         validator(_: string, value: any) {
             const arr = functions.value.filter((i: any) => {
-                return i?.expands?.required
-            })
-            if(arr.length){
-                if(!value?.length) {
+                return i?.expands?.required;
+            });
+            if (arr.length) {
+                if (!value?.length) {
                     return Promise.reject('请输入功能值');
                 } else {
                     const hasValue = value?.find(
-                        (item: { name: string; value: any }) => item.value === undefined,
+                        (item: { name: string; value: any }) =>
+                            item.value === undefined,
                     );
                     if (hasValue) {
                         const functionItem = arr?.find(
@@ -197,7 +209,7 @@ const functionRules = [
             }
             return Promise.resolve();
         },
-        trigger: ['change', 'blur']
+        trigger: ['change', 'blur'],
     },
 ];
 
@@ -252,6 +264,7 @@ const queryBuiltIn = async () => {
 };
 
 const onMessageTypeChange = (val: string) => {
+    columnMap.value = {};
     const flag = ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(val);
     modelRef.message = {
         messageType: val,
@@ -264,58 +277,19 @@ const onMessageTypeChange = (val: string) => {
     }
 };
 
-watch(
-    () => props.productDetail,
-    (newVal) => {
-        if (newVal?.id) {
-            if (props.values?.selector === 'fixed' && props.values?.selectorValues?.length === 1) {
-                const id = props.values?.selectorValues?.[0]?.value;
-                if (id) {
-                    detail(id).then((resp) => {
-                        if (resp.status === 200) {
-                            metadata.value = JSON.parse(
-                                resp.result?.metadata || '{}',
-                            );
-                          console.log(metadata.value, resp.result?.metadata)
-                        }
-                    });
-                }
-            } else {
-                metadata.value = JSON.parse(newVal?.metadata || '{}');
-            }
-        }
-    },
-    { immediate: true },
-);
-
-watch(
-    () => props.values?.message,
-    (newVal) => {
-        if (newVal?.messageType) {
-            modelRef.message = newVal;
-            if (
-                ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(
-                    newVal.messageType,
-                )
-            ) {
-                queryBuiltIn();
-            }else{
-                modelRef.message.properties =  [] as any;
-            }
-        }
-    },
-    { immediate: true },
-);
-
 const onWriteChange = (val: string, optionColumn: string[]) => {
     modelRef.propertiesValue = val;
-    emit('change', {
-        propertiesName:
-            deviceMessageType.value === 'INVOKE_FUNCTION'
-                ? _function.value?.name
-                : _property.value?.name,
-        propertiesValue: modelRef.propertiesValue,
-    }, optionColumn);
+    emit(
+        'change',
+        {
+            propertiesName:
+                deviceMessageType.value === 'INVOKE_FUNCTION'
+                    ? _function.value?.name
+                    : _property.value?.name,
+            propertiesValue: modelRef.propertiesValue,
+        },
+        optionColumn,
+    );
 };
 
 const onFormSave = () => {
@@ -349,5 +323,58 @@ const onFormSave = () => {
     });
 };
 
-defineExpose({ onFormSave });
+const getColumnMap = () => {
+    return columnMap.value;
+};
+
+watch(
+    () => props.productDetail,
+    (newVal) => {
+        if (newVal?.id) {
+            if (
+                props.values?.selector === 'fixed' &&
+                props.values?.selectorValues?.length === 1
+            ) {
+                const id = props.values?.selectorValues?.[0]?.value;
+                if (id) {
+                    detail(id).then((resp) => {
+                        if (resp.status === 200) {
+                            metadata.value = JSON.parse(
+                                resp.result?.metadata || '{}',
+                            );
+                        }
+                    });
+                }
+            } else {
+                metadata.value = JSON.parse(newVal?.metadata || '{}');
+            }
+        }
+    },
+    { immediate: true },
+);
+
+watch(
+    () => props.values?.message,
+    (newVal) => {
+        if (newVal?.messageType) {
+            modelRef.message = JSON.parse(JSON.stringify(newVal));
+            if (
+                ['WRITE_PROPERTY', 'INVOKE_FUNCTION'].includes(
+                    newVal.messageType,
+                )
+            ) {
+                queryBuiltIn();
+            } else {
+                if (!modelRef.message.properties) {
+                    modelRef.message = Object.assign(modelRef.message, {
+                        properties: [],
+                    });
+                }
+            }
+        }
+    },
+    { immediate: true },
+);
+
+defineExpose({ onFormSave, getColumnMap });
 </script>

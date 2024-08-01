@@ -38,12 +38,11 @@
                                 <j-list-item>
                                     {{ item.title }}
                                     <template #actions>
-                                        <j-popconfirm
-                                            title="确定删除?"
-                                            @confirm="_delete(item.key)"
-                                        >
-                                            <AIcon type="DeleteOutlined" />
-                                        </j-popconfirm>
+                                        <ConfirmModal
+                                            title="确认删除？"
+                                            :onConfirm="() => _delete(item.key)"
+                                            ><AIcon type="DeleteOutlined"
+                                        /></ConfirmModal>
                                     </template>
                                 </j-list-item>
                             </template>
@@ -65,12 +64,12 @@ const _props = defineProps({
     },
     metaData: {
         type: Array,
-        default: () => []
+        default: () => [],
     },
     deviceId: {
         type: String,
         default: '',
-    }
+    },
 });
 const _emits = defineEmits(['close', 'save']);
 
@@ -82,18 +81,22 @@ const rightList = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
 
-const handleData = (data: any[], type: string,provider?:string) => {
+const handleData = (data: any[], type: string, provider?: string) => {
     data.forEach((item) => {
         item.key = item.id;
         item.title = item.name;
         item.checkable = type === 'collectors';
-        provider ? item.provider = provider : ''
+        provider ? (item.provider = provider) : '';
         if (
             item.collectors &&
             Array.isArray(item.collectors) &&
             item.collectors.length
         ) {
-            item.children = handleData(item.collectors, 'collectors',item.provider);
+            item.children = handleData(
+                item.collectors,
+                'collectors',
+                item.provider,
+            );
         }
         if (item.points && Array.isArray(item.points) && item.points.length) {
             item.children = handleData(item.points, 'points');
@@ -135,7 +138,6 @@ const _delete = (_key: string) => {
 };
 
 const handleClick = async () => {
-   
     if (!rightList.value.length) {
         onlyMessage('请选择采集器', 'warning');
     } else {
@@ -146,16 +148,21 @@ const handleClick = async () => {
                 collectorId: element.collectorId,
                 pointId: element.id,
                 metadataType: 'property',
-                metadataId: (_props.metaData as any[]).find((i: any) => i.name === element.name)
-                    ?.metadataId,
-                provider: item.provider
+                metadataId: (_props.metaData as any[]).find(
+                    (i: any) => i.name === element.name,
+                )?.metadataId,
+                provider: item.provider,
             }));
             params.push(...array);
         });
-        
+
         const filterParms = params.filter((item) => !!item.metadataId);
         if (filterParms && filterParms.length !== 0) {
-            const res = await saveMapping(_props.deviceId, _props.type, filterParms);
+            const res = await saveMapping(
+                _props.deviceId,
+                _props.type,
+                filterParms,
+            );
             if (res.status === 200) {
                 onlyMessage('操作成功');
                 _emits('save');

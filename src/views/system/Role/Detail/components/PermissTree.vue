@@ -53,6 +53,7 @@
                     <j-checkbox
                         v-model:checked="record.granted"
                         :indeterminate="record.indeterminate"
+                        :disabled='record.code === USER_CENTER_MENU_CODE'
                         @change="menuChange(record, true)"
                         >{{ record.name }}</j-checkbox
                     >
@@ -65,6 +66,7 @@
                             v-for="button in record.buttons"
                             v-model:checked="button.granted"
                             @change="actionChange(record)"
+                            :disabled='record.code === USER_CENTER_MENU_CODE && button.id === "view"'
                             :key="button.id"
                             >{{ button.name }}</j-checkbox
                         >
@@ -239,7 +241,7 @@ const init = () => {
             const selected = cloneDeep(flatTableData).filter(
                 (item: any) =>
                     // (item.granted && item.parentId) ||
-                    (item.indeterminate && item.buttons) 
+                    (item.indeterminate && item.buttons)
                     || (item.granted), // 放开个人中心
             );
 
@@ -281,6 +283,16 @@ function getAllPermiss() {
         const _result = resp.result
         // 默认选中个人中心相关设置
         tableData.value = _result.filter((item: { code: string , buttons: any[], granted: boolean}) => {
+
+          if (item.code === USER_CENTER_MENU_CODE) {
+            item.buttons = item.buttons.map(buttonItem => {
+              if (buttonItem.id === 'view') {
+                buttonItem.granted = true
+              }
+              return buttonItem
+            })
+          }
+
           return (item.code !== NotificationSubscriptionCode)
         });
 
@@ -310,7 +322,6 @@ const hasIndirectMenus = (data: any) => {
 
   if (indirectMenus.length) {
       const ids = permissionsGranted(tableData.value)
-    console.log(ids, indirectMenus)
       const inMenu = false
   }
 
@@ -325,7 +336,6 @@ function menuChange(
     row: tableItemType,
     setButtonBool: boolean = true,
 ): undefined {
-  console.log('menuChange', row)
     // 判断是否需要对子菜单及操作权限进行选择
   // hasIndirectMenus(row)
     if (setButtonBool) {
@@ -336,8 +346,7 @@ function menuChange(
         row.children && setChildrenChecked(row.children, row.granted);
     }
     // 更新选中状态
-    if (row.buttons && row.buttons.length > 0) setStatus(row, 'buttons');
-    else setStatus(row, 'children');
+    setStatus(row, row.buttons && row.buttons.length > 0 ? 'buttons' : 'children')
     // 更新数据权限
     updateAuthority(row);
     // if (row.accessSupport && row.accessSupport.value === 'support') {

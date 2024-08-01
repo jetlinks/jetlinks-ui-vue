@@ -34,7 +34,7 @@
         <div style='max-width: 260px'>
           <ValueItem
             v-model:modelValue='record.value'
-            :itemType="record.type"
+            :itemType="record.type === 'date'? 'time' : record.type"
             :options="record.options"
             @change='valueChange'
           />

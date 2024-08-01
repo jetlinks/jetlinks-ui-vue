@@ -89,17 +89,18 @@
                             <j-badge v-else status="error" text="未绑定" />
                         </template>
                         <template v-if="column.key === 'action'">
-                            <j-tooltip title="解绑">
-                                <j-popconfirm
-                                    title="确认解绑"
-                                    :disabled="!record.id"
-                                    @confirm="unbind(record.id)"
-                                >
-                                    <j-button type="link" :disabled="!record.id"
-                                        ><AIcon type="icon-jiebang"
-                                    /></j-button>
-                                </j-popconfirm>
-                            </j-tooltip>
+                            <PermissionButton
+                                type="link"
+                                :tooltip="{
+                                    title: '解绑',
+                                }"
+                                :disabled="!record.id"
+                                :popConfirm="{
+                                    title: '确认解绑',
+                                    onConfirm: () => unbind(record.id),
+                                }"
+                                ><AIcon type="icon-jiebang"
+                            /></PermissionButton>
                         </template>
                     </template>
                 </j-table>
@@ -128,7 +129,7 @@ import {
     edgeChannel,
     addDevice,
     editDevice,
-    saveDeviceMapping
+    saveDeviceMapping,
 } from '@/api/device/instance';
 import MSelect from './MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
@@ -177,12 +178,11 @@ const filterOption = (input: string, option: any) => {
     return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 const props = defineProps(['productList']);
-const _emit = defineEmits(['close','getEdgeMap']);
+const _emit = defineEmits(['close', 'getEdgeMap']);
 const instanceStore = useInstanceStore();
 let _metadata = ref();
 const loading = ref<boolean>(false);
 const channelList = ref([]);
-
 
 const modelRef = reactive({
     dataSource: [],
@@ -216,19 +216,19 @@ const handleSearch = async () => {
  * 解绑映射
  * @param id 选择解绑id
  */
-const unbind = async (id: string) => {
+const unbind = (id: string) => {
     if (id) {
-        const resp = await removeEdgeMap(
-            instanceStore.current?.id || '',
-            {
-                deviceId: instanceStore.current.parentId,
-                idList: [id],
-            },
-        );
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            _emit('getEdgeMap');
-        }
+        const response = removeEdgeMap(instanceStore.current?.id || '', {
+            deviceId: instanceStore.current.parentId,
+            idList: [id],
+        });
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                _emit('getEdgeMap');
+            }
+        });
+        return response
     }
 };
 
@@ -276,12 +276,18 @@ const onSave = async () => {
                         (item: any) => item.channelId,
                     );
                     const params = {
-                      info: [
-                        { deviceId: resq.result?.id, deviceName: formData.name }
-                      ]
-                    }
-                    if(!instanceStore.current.parentId){
-                        const res = await saveDeviceMapping(instanceStore.current.id, params)
+                        info: [
+                            {
+                                deviceId: resq.result?.id,
+                                deviceName: formData.name,
+                            },
+                        ],
+                    };
+                    if (!instanceStore.current.parentId) {
+                        const res = await saveDeviceMapping(
+                            instanceStore.current.id,
+                            params,
+                        );
                     }
                     const submitData = {
                         deviceId: instanceStore.current.parentId
@@ -319,5 +325,4 @@ const showModal = async () => {
 };
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

@@ -9,7 +9,6 @@ export const useTrigger = () => {
 
     watchEffect(() => {
         const group = data.value.branches as BranchesGroup
-        console.log(group)
         open.value = !!group?.filter(item => item.filter(b => b)?.length).length
     })
 

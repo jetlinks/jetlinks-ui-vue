@@ -5,6 +5,9 @@
             <!-- <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox> -->
         </div>
         {{ unSelectKeys }}
+        <a-button block @click="allControl"
+            >{{ props.tableData.length ? '全部撤销' : '全部添加' }}
+        </a-button>
         <j-spin :spinning="spinning">
             <j-tree
                 v-if="!!treeData"
@@ -28,7 +31,7 @@
                             </span>
                         </j-ellipsis>
                         <j-button type="link" @click="onCheck(data)">
-                            <AIcon type="ArrowRightOutlined"/>
+                            <AIcon type="ArrowRightOutlined" />
                         </j-button>
                     </j-space>
                 </template>
@@ -56,8 +59,12 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    tableData: {
+        type: Array,
+        default: [],
+    },
 });
-const emits = defineEmits(['change']);
+const emits = defineEmits(['change', 'addAll', 'cancelAll']);
 
 const channelId = props.data?.channelId;
 const instanceNumber = props.data?.configuration?.instanceNumber;
@@ -70,8 +77,11 @@ const treeData = ref<TreeProps['treeData']>();
 const treeAllData = ref<TreeProps['treeData']>();
 
 const onLoadData = async () => {
-    spinning.value = true
-    const resp: any = await getBacnetObjectList(channelId, instanceNumber).finally(() => spinning.value = false);
+    spinning.value = true;
+    const resp: any = await getBacnetObjectList(
+        channelId,
+        instanceNumber,
+    ).finally(() => (spinning.value = false));
     if (resp.status === 200) {
         treeData.value = resp.result.map((item: any) => {
             return {
@@ -101,7 +111,7 @@ const handleData = (arr: any): any[] => {
     });
 };
 
-const onCheck = ( info: any) => {
+const onCheck = (info: any) => {
     const one: any = { ...info };
     const list: any = [];
     const last: any = list.length ? list[list.length - 1] : undefined;
@@ -175,27 +185,42 @@ const getPoint = async () => {
     if (res.status === 200) {
         selectKeys.value = res.result.map((item: any) => item.pointKey);
     }
-    // getScanOpcUAList();
 };
 
-onMounted(() => {
-    getPoint();
-    onLoadData();
-});
-
-const getScanOpcUAList = async () => {
-    spinning.value = true;
-    const res: any = await getBacnetObjectList(channelId, instanceNumber);
-    treeAllData.value = res.result.map((item: any) => ({
-        ...item,
-        key: item.id,
-        title: item.name,
-        disabled: item?.folder || false,
-    }));
-    spinning.value = false;
+const allControl = () => {
+    if (props.tableData.length) {
+        emits('cancelAll');
+    } else {
+        const allData = treeData.value?.map((i) => {
+            return {
+                features: {
+                    value: (i?.features || []).includes('changedOnly'),
+                    check: true,
+                },
+                nodeId:
+                    `${i?.objectId.type}:${i?.objectId.instanceNumber}` || '',
+                objectId: i?.objectId || {},
+                name: i?.name || '',
+                propertyId: i?.propertyId || '',
+                valueType: i?.valueType || '',
+                accessModes: {
+                    value: i?.accessModes || [],
+                    check: true,
+                },
+                type: i?.type,
+                configuration: {
+                    ...i?.configuration,
+                    interval: {
+                        value: i?.configuration?.interval || 3000,
+                        check: true,
+                    },
+                    nodeId: i?.id,
+                },
+            };
+        });
+        emits('addAll', allData);
+    }
 };
-// getScanOpcUAList();
-
 watch(
     () => isSelected.value,
     (value) => {
@@ -220,6 +245,11 @@ watch(
     },
     { deep: true },
 );
+
+onMounted(() => {
+    getPoint();
+    onLoadData();
+});
 </script>
 
 <style lang="less" scoped>

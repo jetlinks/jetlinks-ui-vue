@@ -42,112 +42,6 @@
                             :actions="batchActions"
                             @change="onCheckChange"
                         />
-                        <!-- <j-dropdown>
-                        <j-button
-                            >批量操作 <AIcon type="DownOutlined"
-                        /></j-button>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        @click="exportVisible = true"
-                                        hasPermission="device/Instance:export"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="ExportOutlined"
-                                        /></template>
-                                        批量导出设备
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        @click="importVisible = true"
-                                        hasPermission="device/Instance:import"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="ImportOutlined"
-                                        /></template>
-                                        批量导入设备
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        ghost
-                                        type="primary"
-                                        :popConfirm="{
-                                            title: '确认激活全部设备？',
-                                            onConfirm: activeAllDevice,
-                                        }"
-                                        hasPermission="device/Instance:action"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="CheckCircleOutlined"
-                                        /></template>
-                                        激活全部设备
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <PermissionButton
-                                        type="primary"
-                                        @click="syncDeviceStatus"
-                                        hasPermission="device/Instance:view"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="SyncOutlined"
-                                        /></template>
-                                        同步设备状态
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item v-if="_selectedRowKeys.length">
-                                    <PermissionButton
-                                        type="primary"
-                                        danger
-                                        :popConfirm="{
-                                            title: '已启用的设备无法删除，确认删除选中的禁用状态设备？',
-                                            onConfirm: delSelectedDevice,
-                                        }"
-                                        hasPermission="device/Instance:delete"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="DeleteOutlined"
-                                        /></template>
-                                        删除选中设备
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item v-if="_selectedRowKeys.length">
-                                    <PermissionButton
-                                        type="primary"
-                                        :popConfirm="{
-                                            title: '确认激活选中设备',
-                                            onConfirm: activeSelectedDevice,
-                                        }"
-                                        hasPermission="device/Instance:action"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="CheckOutlined"
-                                        /></template>
-                                        激活选中设备
-                                    </PermissionButton>
-                                </j-menu-item>
-                                <j-menu-item v-if="_selectedRowKeys.length">
-                                    <PermissionButton
-                                        type="primary"
-                                        danger
-                                        :popConfirm="{
-                                            title: '确认禁用选中设备?',
-                                            onConfirm: disabledSelectedDevice,
-                                        }"
-                                        hasPermission="device/Instance:action"
-                                    >
-                                        <template #icon
-                                            ><AIcon type="StopOutlined"
-                                        /></template>
-                                        禁用选中设备
-                                    </PermissionButton>
-                                </j-menu-item>
-                            </j-menu>
-                        </template>
-                    </j-dropdown> -->
                     </j-space>
                 </template>
                 <template #card="slotProps">
@@ -245,7 +139,7 @@
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -312,6 +206,7 @@ import {
     batchUndeployDevice,
     batchDeployDevice,
     batchDeleteDevice,
+    detail,
 } from '@/api/device/instance';
 import { getImage, LocalStore, onlyMessage } from '@/utils/comm';
 import Import from './Import/modal.vue';
@@ -335,7 +230,7 @@ import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import TagSearch from './components/TagSearch.vue';
-
+import { Modal } from 'ant-design-vue';
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -349,7 +244,10 @@ const type = ref<string>('');
 const isCheck = ref<boolean>(false);
 const routerParams = useRouterParams();
 const menuStory = useMenuStore();
-
+const modalVisible = ref(false);
+const deleteDeviceId = ref('');
+const deleteState = ref(false);
+const deleteTip = ref('确认删除？');
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
         return (arr || []).map((item: any) => {
@@ -697,12 +595,13 @@ const getActions = (
                 data.state.value !== 'notActive'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
+
             popConfirm: {
                 title: `确认${
                     data.state.value !== 'notActive' ? '禁用' : '启用'
                 }?`,
                 onConfirm: async () => {
-                    let response = undefined;
+                    let response;
                     if (data.state.value !== 'notActive') {
                         response = await _undeploy(data.id);
                     } else {
@@ -727,23 +626,30 @@ const getActions = (
                         ? '已启用的设备不能删除'
                         : '删除',
             },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await _delete(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        const index = _selectedRowKeys.value.findIndex(
-                            (id: any) => id === data.id,
-                        );
-                        if (index !== -1) {
-                            _selectedRowKeys.value.splice(index, 1);
-                        }
-                        instanceRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
-                },
+            onClick: async () => {
+                if (deleteState.value) {
+                    return;
+                }
+                deleteState.value = true;
+                deleteDeviceId.value = data.id;
+                const res = await detail(data.id).finally(() => {
+                    modalVisible.value = true;
+                });
+                if (res.success) {
+                    deleteTip.value =
+                        res.result?.accessProvider === 'Ctwing'
+                            ? '该操作仅可删除物联网平台数据Ctwing平台数据需另行删除'
+                            : '确认删除？';
+                }
+                Modal.confirm({
+                    title: deleteTip.value,
+                    onOk() {
+                        return deleteDevice();
+                    },
+                    onCancel() {
+                        deleteState.value = false;
+                    },
+                });
             },
             icon: 'DeleteOutlined',
         },
@@ -831,17 +737,20 @@ const syncDeviceStatus = () => {
     operationVisible.value = true;
 };
 
-const delSelectedDevice = async () => {
+const delSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择设备', 'error');
         return;
     }
-    const resp = await batchDeleteDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
+    const response = batchDeleteDevice(_selectedRowKeys.value);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            _selectedRowKeys.value = [];
+            instanceRef.value?.reload();
+        }
+    });
+    return response;
 };
 
 // const activeSelectedDevice = async () => {
@@ -857,17 +766,20 @@ const delSelectedDevice = async () => {
 //     }
 // };
 
-const disabledSelectedDevice = async () => {
+const disabledSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
         onlyMessage('请选择设备', 'error');
         return;
     }
-    const resp = await batchUndeployDevice(_selectedRowKeys.value);
-    if (resp.status === 200) {
-        onlyMessage('操作成功！');
-        _selectedRowKeys.value = [];
-        instanceRef.value?.reload();
-    }
+    const response = batchUndeployDevice(_selectedRowKeys.value);
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！');
+            _selectedRowKeys.value = [];
+            instanceRef.value?.reload();
+        }
+    });
+    return response;
 };
 
 const batchActions: BatchActionsType[] = [
@@ -1008,5 +920,22 @@ const handleSearch = (_params: any) => {
 
 const onRefresh = () => {
     instanceRef.value?.reload();
+};
+
+const deleteDevice = async () => {
+    const resp = await _delete(deleteDeviceId.value);
+    if (resp.status === 200) {
+        onlyMessage('操作成功！');
+        const index = _selectedRowKeys.value.findIndex(
+            (id: any) => id === deleteDeviceId.value,
+        );
+        if (index !== -1) {
+            _selectedRowKeys.value.splice(index, 1);
+        }
+        instanceRef.value?.reload();
+    } else {
+        onlyMessage('操作失败！', 'error');
+    }
+    deleteState.value = false;
 };
 </script>

@@ -11,11 +11,15 @@ export const remove = (id: string) => server.remove(`/firmware/${id}`);
 
 export const query = (data: object) => server.post(`/firmware/_query/`, data);
 
+export const queryPaginateNot = (data: object) => server.post('/firmware/_query/no-paging',data)
+
 export const querySystemApi = (data?: object) =>
     server.post(`/system/config/scopes`, data);
 
 export const task = (data: Record<string, unknown>) =>
     server.post(`/firmware/upgrade/task/detail/_query`, data);
+
+export const queryTaskPaginateNot = (data:any)=> server.post('/firmware/upgrade/task/detail/_query/no-paging',data)
 
 export const taskById = (id: string) =>
     server.get(`/firmware/upgrade/task/${id}`);
@@ -29,6 +33,10 @@ export const deleteTask = (id: string) =>
 export const history = (data: Record<string, unknown>) =>
     server.post(`/firmware/upgrade/history/_query`, data);
 
+export const historyPaginateNot =(data:Record<string,unknown>) =>
+    server.post('/firmware/upgrade/history/_query/no-paging',data)
+
+
 export const historyCount = (data: Record<string, unknown>) =>
     server.post(`/firmware/upgrade/history/_count`, data);
 
@@ -41,6 +49,8 @@ export const stopTask = (id: string) =>
 export const startOneTask = (data: string[]) =>
     server.post(`/firmware/upgrade/task/_start`, data);
 
+export const stopOneTask = (data: string[]) => 
+    server.post('/firmware/upgrade/task/_stop',data)
 // export const queryProduct = (data?: any) =>
 //     server.post(`/device-product/_query/no-paging`, data);
 export const queryProduct = (data?: any) =>

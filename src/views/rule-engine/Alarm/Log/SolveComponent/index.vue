@@ -12,6 +12,7 @@
         <j-form :rules="rules" layout="vertical" ref="formRef" :model="form">
             <j-form-item label="处理结果" name="describe">
                 <j-textarea
+                    :disabled="solveType === 'view'"
                     :rows="8"
                     :maxlength="200"
                     showCount
@@ -30,6 +31,14 @@ const props = defineProps({
     data: {
         type: Object,
     },
+    solveType: {
+        type: String,
+        default: 'handle',
+    },
+    handleDes: {
+        type: String,
+        default: '',
+    },
 });
 const loading = ref<boolean>(false);
 const formRef = ref();
@@ -44,12 +53,15 @@ const rules = {
 const form = reactive({
     describe: '',
 });
-let visible = ref(true);
-const emit = defineEmits(['closeSolve'])
+const emit = defineEmits(['closeSolve', 'refresh']);
 const handleCancel = () => {
     emit('closeSolve');
 };
 const handleSave = () => {
+    if (props.solveType === 'view') {
+        emit('closeSolve');
+        return;
+    }
     loading.value = true;
     formRef.value
         .validate()
@@ -58,13 +70,13 @@ const handleSave = () => {
                 describe: form.describe,
                 type: 'user',
                 state: 'normal',
-                alarmRecordId: props.data?.current?.id || '',
-                alarmConfigId: props.data?.current?.alarmConfigId || '',
-                alarmTime: props?.data?.current?.alarmTime || '',
+                alarmRecordId: props.data?.id || '',
+                alarmConfigId: props.data?.alarmConfigId || '',
+                alarmTime: props?.data?.alarmTime || '',
             });
             if (res.status === 200) {
                 onlyMessage('操作成功！');
-                emit('closeSolve');
+                emit('refresh');
             } else {
                 onlyMessage('操作失败！', 'error');
             }
@@ -75,6 +87,8 @@ const handleSave = () => {
             loading.value = false;
         });
 };
+onMounted(() => {
+    props.solveType === 'view' ? form.describe = props.handleDes : '';
+});
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

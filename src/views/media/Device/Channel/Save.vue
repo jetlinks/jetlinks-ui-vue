@@ -56,7 +56,10 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24" v-if="route.query.type === 'gb28181-2016'">
+                <j-col
+                    :span="24"
+                    v-if="typeOne"
+                >
                     <j-form-item
                         label="厂商"
                         name="manufacturer"
@@ -71,7 +74,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24" v-if="route.query.type === 'fixed-media'">
+                <j-col :span="24" v-if="typeTow">
                     <j-form-item
                         name="media_url"
                         :rules="[
@@ -99,7 +102,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="12">
+                <j-col :span="12" v-if="typeTow">
                     <j-form-item
                         name="media_username"
                         label="用户名"
@@ -111,7 +114,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="12">
+                <j-col :span="12" v-if="typeTow">
                     <j-form-item
                         name="media_password"
                         label="密码"
@@ -135,7 +138,7 @@
                         />
                     </j-form-item>
                 </j-col>
-                <j-col :span="24" v-if="route.query.type === 'gb28181-2016'">
+                <j-col :span="24" v-if="typeOne">
                     <j-form-item label="云台类型" name="ptzType">
                         <j-select
                             v-model:value="formData.ptzType"
@@ -193,6 +196,12 @@ const _vis = computed({
     set: (val) => emit('update:visible', val),
 });
 
+const typeOne = computed(()=>{
+    return ['gb28181-2016', 'onvif'].includes(route.query.type)
+})
+const typeTow = computed(()=>{
+    return ['fixed-media'].includes(route.query.type)
+})
 const formRef = ref();
 const formData = ref({
     id: undefined,
@@ -209,11 +218,10 @@ const formData = ref({
     media_username: '',
 });
 
-const loading = ref<boolean>(false)
+const loading = ref<boolean>(false);
 watch(
     () => props.channelData,
     (val: any) => {
-        console.log('val: ', val);
         const {
             id,
             address,
@@ -250,7 +258,7 @@ const validateChannelId = async (_rule: Rule, value: string) => {
     // ID非必填, 没有输入ID时, 不校验ID是否存在
     if (!value) return;
     // 编辑时不校验唯一性
-    if(!!formData.value?.id) return;
+    if (!!formData.value?.id) return;
     const { result } = await ChannelApi.validateField({
         deviceId: route.query.id,
         channelId: value,
@@ -290,20 +298,27 @@ const handleSubmit = () => {
                 media_url,
                 media_password,
                 media_username,
-                manufacturer,
+                // manufacturer,
                 // ptzType,
                 ...extraFormData
             } = formData.value;
-            if (media_url || media_password || media_username) {
-                extraFormData.others = {
-                    media_url,
-                    media_password,
-                    media_username,
-                };
-            }
+
+            extraFormData.others = {
+                media_url,
+                media_password,
+                media_username,
+            };
+
             const res = formData.value.id
-                ? await ChannelApi.update(formData.value.id, extraFormData).finally(() => {loading.value = false;})
-                : await ChannelApi.save(extraFormData).finally(() => {loading.value = false;});
+                ? await ChannelApi.update(
+                      formData.value.id,
+                      extraFormData,
+                  ).finally(() => {
+                      loading.value = false;
+                  })
+                : await ChannelApi.save(extraFormData).finally(() => {
+                      loading.value = false;
+                  });
             if (res.success) {
                 onlyMessage('操作成功');
                 _vis.value = false;

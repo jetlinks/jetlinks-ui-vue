@@ -3,11 +3,12 @@
     <div class="value-item-warp">
         <j-select
             v-if="typeMap.get(itemType) === 'select'"
-            :mode="mode"
             v-model:value="myValue"
-            :options="options"
-            allowClear
             style="width: 100%"
+            allowClear
+            :mode="mode"
+            v-bind="extra"
+            :options="options"
             :getPopupContainer="getPopupContainer"
             @change='selectChange'
         />
@@ -17,6 +18,7 @@
           allowClear
           valueFormat="HH:mm:ss"
           style="width: 100%"
+          v-bind="extra"
           :getPopupContainer="getPopupContainer"
           @change='timeChange'
         />
@@ -26,7 +28,8 @@
             allowClear
             showTime
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%"
+            style="width: 100%;"
+            v-bind="extra"
             :getPopupContainer="getPopupContainer"
             @change='dateChange'
         />
@@ -35,12 +38,14 @@
             v-model:value="myValue"
             allowClear
             style="width: 100%"
+            v-bind="extra"
             @change='inputChange'
         />
         <j-input
             allowClear
             v-else-if="typeMap.get(itemType) === 'object'"
             v-model:value="myValue"
+            v-bind="extra"
             @change='inputChange'
         >
             <template #addonAfter>
@@ -50,11 +55,13 @@
         <GeoComponent
             v-else-if="typeMap.get(itemType) === 'geoPoint'"
             v-model:point="myValue"
+            v-bind="extra"
             @change='inputChange'
         />
         <j-input
             v-else-if="typeMap.get(itemType) === 'file'"
             v-model:value="myValue"
+            v-bind="extra"
             placeholder="请输入链接"
             allowClear
             @change='inputChange'
@@ -75,6 +82,7 @@
             v-else-if="typeMap.get(itemType) === 'password'"
             allowClear
             type="password"
+            v-bind="extra"
             v-model:value="myValue"
             style="width: 100%"
             @change='inputChange'
@@ -85,6 +93,7 @@
             allowClear
             type="text"
             v-model:value="myValue"
+            v-bind="extra"
             style="width: 100%"
             @change='inputChange'
         />
@@ -113,11 +122,10 @@ import { PropType } from 'vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
 import GeoComponent from '@/components/GeoComponent/index.vue';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { ItemData, ITypes } from './types';
 import { FILE_UPLOAD } from '@/api/comm';
-import { Upload } from 'jetlinks-ui-components'
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;
@@ -157,6 +165,10 @@ const props = defineProps({
     getPopupContainer: {
         type: Function,
         default: undefined
+    },
+    extra: {
+      type: Object,
+      default: () => ({})
     }
 });
 // type Props = {
@@ -182,6 +194,7 @@ const componentsType = ref<ITypes>({
     object: 'object',
     geoPoint: 'geoPoint',
     file: 'file',
+    time: 'time',
 });
 const typeMap = new Map(Object.entries(componentsType.value));
 

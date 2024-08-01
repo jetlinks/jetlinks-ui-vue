@@ -42,9 +42,7 @@
                             </template>
                             <template #content>
                                 <div class="card-item-content">
-                                    <Ellipsis
-                                        style="margin-bottom: 18px;"
-                                    >
+                                    <Ellipsis style="margin-bottom: 18px">
                                         <span
                                             style="
                                                 font-size: 16px;
@@ -110,7 +108,7 @@
                         </CardBox>
                     </template>
                     <template #action="slotProps">
-                        <j-space>
+                        <j-space :size="16">
                             <template
                                 v-for="i in getActions(slotProps, 'table')"
                                 :key="i.key"
@@ -237,14 +235,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const res: any = await remove(data.id);
-                    if (res.status === 200) {
+                onConfirm:  () => {
+                    const response: any = remove(data.id);
+                    response.then((res)=>{
+                        if (res.status === 200) {
                         onlyMessage('操作成功', 'success');
                         tableRef.value.reload();
                     } else {
                         onlyMessage(res?.message, 'error');
                     }
+                    })
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

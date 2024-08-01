@@ -17,7 +17,7 @@
         <AddModel v-if='visible' @cancel='visible = false' @save='save' :value='data.trigger.device' :options='data.options.trigger' />
         <CheckItem />
     </j-form-item>
-    <Terms />
+    <Terms ref="termsRef" />
   </div>
 </template>
 
@@ -36,13 +36,13 @@ const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
 
 const visible = ref(false)
+const termsRef = ref()
 
 const rules = [{
   validator(_: any, v: any) {
     if (!v) {
       return Promise.reject(new Error('请配置设备触发规则'));
     } else {
-        console.log('device-validator', v)
         if (
           !v.productId ||
           (['fixed', 'org'].includes(v.selector) && !v.selectorValues) ||
@@ -67,6 +67,10 @@ const save = (device: TriggerDevice, options: Record<string, any>) => {
   visible.value = false
   EventEmitter.emit(DeviceEmitterKey, device)
 }
+
+defineExpose({
+  changePaneIndex: (index: number) => termsRef.value?.changePaneIndex(index)
+})
 
 </script>
 

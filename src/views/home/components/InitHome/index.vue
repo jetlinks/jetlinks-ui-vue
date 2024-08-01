@@ -1,11 +1,11 @@
 <template>
     <div class="init-home-container">
-        <div class="title">请选择首页视图</div>
+        <div class="title">{{ $t('InitHome.index.926510-0') }}</div>
 
         <div class="choose-view">
             <HomeView v-model:value="selectValue"/>
             <div class="btn">
-                <j-button type="primary" @click="confirm">保存修改</j-button>
+                <j-button type="primary" @click="confirm">{{ $t('InitHome.index.926510-1') }}</j-button>
             </div>
         </div>
     </div>
@@ -15,7 +15,9 @@
 import { setView_api } from '@/api/home';
 import { useUserInfo } from '@/store/userInfo';
 import HomeView from '@/components/HomeView/index.vue';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const user = useUserInfo();
 const emits = defineEmits(['refresh']);
 const selectValue = ref('device');

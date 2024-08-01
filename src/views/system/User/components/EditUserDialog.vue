@@ -74,7 +74,7 @@
             </j-row>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex" 
+                    <j-form-item name="roleIdList" label="角色" class="flex"
                         :rules="[
                             { required: form.data.username !== 'admin', message: '请选择角色' },
                         ]"
@@ -89,7 +89,7 @@
                             :fieldNames="{ label: 'name', value: 'id', children:'children' }"
                             :disabled="form.data.username === 'admin'"
                             :filterTreeNode="
-                                (v: string, node: any) => filterSelectNode(v, node, 'name')
+                                (v, node) => filterSelectNode(v, node, 'name')
                             "
                         >
                         <template #title="{ name }">
@@ -145,10 +145,10 @@
                         :validateFirst="true"
                         :rules="[
                             { required: true, message: '请输入用户名' },
-                            {
-                                validator: checkCh,
-                                trigger: ['change', 'blur'],
-                            },
+                            // {
+                            //     validator: checkCh,
+                            //     trigger: ['change', 'blur'],
+                            // },
                             {
                                 validator: form.rules.checkUserName,
                                 trigger: 'blur',
@@ -412,7 +412,7 @@ const  dealRoleList = (data:any) =>{
         }
     })
 }
-// 组织已删除在仍显示在列表中 
+// 组织已删除在仍显示在列表中
 // const _departmentOptions = computed(() => {
 //     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
 // })
@@ -468,8 +468,8 @@ type optionType = {
                 .ant-btn {
                     width: 32px;
                     height: 32px;
-                    border: 1px solid #1d39c4;
-                    color: #1d39c4;
+                    border: 1px solid @primary-color;
+                    color: @primary-color;
                     display: flex;
                     align-items: center;
                     justify-content: center;

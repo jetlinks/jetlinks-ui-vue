@@ -29,7 +29,10 @@
                     </span>
                 </template>
                 <template #handleType="slotProps">
-                    <span>{{ slotProps.handleType.text }}</span>
+                    <span>{{ slotProps.handleType?.text }}</span>
+                </template>
+                <template #alarmDuration="slotProps">
+                    <Ellipsis><Duration :data="slotProps" /></Ellipsis>
                 </template>
                 <template #alarmTime="slotProps">
                     <span>
@@ -49,6 +52,7 @@
 import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
+import Duration from '../components/Duration.vue';
 const route = useRoute();
 const id = route.query?.id;
 const terms = [
@@ -98,10 +102,17 @@ const columns = [
         search: {
             type: 'date',
         },
-        width:180,
+        width: 180,
     },
     {
-        title: '告警处理',
+        title: '告警持续时长',
+        dataIndex: 'alarmDuration',
+        key: 'alarmDuration',
+        scopedSlots: true,
+        width: 180,
+    },
+    {
+        title: '处理结果',
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -119,6 +130,18 @@ const emit = defineEmits(['closeLog']);
 const handleSearch = (e: any) => {
     params.value = e;
 };
+const calculateDuration = (startTime, endTime) => {
+    const diffInSeconds = endTime.diff(startTime, 'second');
+    let result;
+
+    if (diffInSeconds < 60) {
+        result = `${diffInSeconds.toFixed(1)} s`;
+    } else if (diffInSeconds < 3600) {
+        result = `${(diffInSeconds / 60).toFixed(1)} min`;
+    } else {
+        result = `${(diffInSeconds / 3600).toFixed(1)} h`;
+    }
+    return result;
+};
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

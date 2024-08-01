@@ -3,11 +3,10 @@
 </template>
 
 <script setup lang='ts' name='ActionCheckItem'>
-import { ActionsType, FormModelType, PlatformRelation } from '@/views/rule-engine/Scene/typings'
+import type { PlatformRelation } from '@/views/rule-engine/Scene/typings'
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { queryProductList } from '@/api/device/product'
-import { query as deviceQuery } from '@/api/device/instance'
 import noticeConfig from '@/api/notice/config'
 import noticeTemplate from '@/api/notice/template'
 import { Form } from 'jetlinks-ui-components'
@@ -15,6 +14,8 @@ import { EventEmitter, EventSubscribeKeys, getParams } from '@/views/rule-engine
 import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownButton/util'
 import { getBuildInData, getNotifyVariablesUser } from './util'
 import { defineExpose } from 'vue'
+import {queryDetailListNoPaging} from "@/api/device/firmware";
+
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -57,17 +58,27 @@ const checkDeviceDelete = async () => {
 
   const productDetail = proResp?.result?.data?.[0]
   let metadata = JSON.parse(productDetail?.metadata || '{}')
-
   if (item?.selector === 'fixed') {
     let hasDevice = false
     if (item!.selectorValues) {
       const deviceList = item!.selectorValues?.map(item => item.value) || []
-      const deviceResp = await deviceQuery({ terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}]})
-      hasDevice = deviceResp.success && (deviceResp.result as any)?.total === (item!.selectorValues?.length || 0)
+      const deviceResp = await queryDetailListNoPaging(
+        {
+          terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}],
+          context: {
+            "includeTags": false,
+            "includeBind": false,
+            "includeRelations": false,
+            "includeFirmwareInfos": false
+          }
+        })
+
+      hasDevice = deviceResp.success && deviceResp.result.length === (item!.selectorValues?.length || 0)
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
-        const deviceDetail = deviceResp?.result?.data?.[0]
-        metadata = JSON.parse(deviceDetail?.deriveMetadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
+        const deviceDetail = deviceResp.result?.[0]
+        // const deviceDetailResp = await getDeviceDetail(deviceList[0])
+        metadata = JSON.parse(deviceDetail?.metadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }
     if (!hasDevice) { // 某一个设备被删除
@@ -78,33 +89,47 @@ const checkDeviceDelete = async () => {
     }
 
   } else if (item!.selector === 'context') { // 如果是按变量，校验上一个设备输出的产品id
-    if (props.name === 0) {
+    // if (props.name === 0) {
+    //   _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+    //   formTouchOff()
+    //   return
+    // } else {
+    //   const prevItem = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].device
+    //   if (prevItem?.productId !== item?.productId) {
+    //     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+    //     _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
+    //     formTouchOff()
+    //     return
+    //   } else {
+    //     const _upperKey = item!.upperKey
+    //     const _params = {
+    //       branch: props.thenName,
+    //       branchGroup: props.branchesName,
+    //       action: props.name - 1,
+    //     };
+    //     const upperData = await getParams(_params, unref(_data.value));
+    //     const option = getOption(upperData, _upperKey, 'id')
+    //     if (!option) {
+    //       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+    //       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
+    //       formTouchOff()
+    //       return
+    //     }
+    //   }
+    // }
+    const _upperKey = item!.upperKey
+    const _params = {
+      branch: props.thenName,
+      branchGroup: props.branchesName,
+      action: props.name - 1,
+    };
+    const upperData = await getParams(_params, unref(_data.value));
+    const option = getOption(upperData, _upperKey, 'id')
+    if (!option) {
       _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
+      _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
       formTouchOff()
       return
-    } else {
-      const prevItem = _data.value.branches![props.branchesName].then[props.thenName].actions[props.name - 1].device
-      if (prevItem?.productId !== item?.productId) {
-        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
-        _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
-        formTouchOff()
-        return
-      } else {
-        const _upperKey = item!.upperKey
-        const _params = {
-          branch: props.thenName,
-          branchGroup: props.branchesName,
-          action: props.name - 1,
-        };
-        const upperData = await getParams(_params, unref(_data.value));
-        const option = getOption(upperData, _upperKey, 'id')
-        if (!option) {
-          _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.upperKey = undefined
-          _data.value.branches![props.branchesName].then[props.thenName].actions[props.name].device!.changeData = true
-          formTouchOff()
-          return
-        }
-      }
     }
   } else if (item!.selector === 'relation') {
     const _relationValue = (item!.selectorValues?.[0]?.value as any)?.relation
@@ -316,12 +341,15 @@ const checkNoticeDelete = async () => {
 }
 
 const check = () => {
-  console.log(_data.value.branches)
-  const _executor = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]?.executor
-  if (_executor === 'device' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.device) { // 设备输出，并且有值
-    checkDeviceDelete()
-  } else if (_executor === 'notify' && _data.value.branches![props.branchesName].then[props.thenName].actions[props.name]?.notify) {
-    checkNoticeDelete()
+  if (_data.value.branches![props.branchesName].then[props.thenName]) {
+
+    const action = _data.value.branches![props.branchesName].then[props.thenName].actions?.[props.name]
+    const _executor = action?.executor
+    if (_executor === 'device' && action?.device) { // 设备输出，并且有值
+      checkDeviceDelete()
+    } else if (_executor === 'notify' && action?.notify) {
+      checkNoticeDelete()
+    }
   }
 }
 
