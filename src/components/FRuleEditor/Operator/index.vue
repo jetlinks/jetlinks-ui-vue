@@ -23,7 +23,7 @@
                                 </div>
                                 <div
                                     :class="
-                                        node.children?.length > 0
+                                        !node.isLeaf
                                             ? 'parent'
                                             : 'add'
                                     "
@@ -35,6 +35,7 @@
                                         }"
                                         placement="right"
                                         title="请选择使用值"
+                                        :getPopupContainer="getPopupContainer"
                                     >
                                         <template #content>
                                             <j-space direction="vertical">
@@ -73,6 +74,7 @@
                                         }"
                                         placement="right"
                                         title="请选择使用值"
+                                        :getPopupContainer="getPopupContainer"
                                     >
                                         <template #content>
                                             <j-space direction="vertical">
@@ -119,7 +121,7 @@ import { treeFilter } from '@/utils/tree';
 import { PropertyMetadata } from '@/views/device/Product/typings';
 import { getOperator } from '@/api/device/product';
 import { inject } from 'vue';
-import { Descriptions } from 'ant-design-vue';
+import {useTableWrapper, useTableFullScreen} from "@/components/Metadata/Table/context";
 import Markdown from '@/components/Markdown'
 
 const props = defineProps({
@@ -136,6 +138,8 @@ const item = ref<Partial<OperatorItem>>();
 const data = ref<OperatorItem[]>([]);
 const dataRef = ref<OperatorItem[]>([]);
 const tagsMetadata: any = inject('_tagsDataSource');
+const tableWrapperRef = useTableWrapper()
+const fullScreen = useTableFullScreen()
 const search = (value: string) => {
     if (value) {
         const nodes = treeFilter(
@@ -176,30 +180,39 @@ const getData = async (id?: string) => {
         name: '属性',
         description: '',
         code: '',
+        isLeaf: false,
         children: _properties
             .filter((p: PropertyMetadata) => p.id !== id)
-            .map((p: PropertyMetadata) => ({
+            .map((p: PropertyMetadata) => {
+              const readOnly = p.expands.type.length === 1 && p.expands.type[0] === 'read' ? '是' : '否'
+
+              return {
                 id: p.id,
                 name: p.name,
+                isLeaf: true,
                 description: `### ${p.name}
-        \n 数据类型: ${p.valueType?.type}
-        \n 是否只读: ${p.expands?.readOnly || 'false'}
-        \n 可写数值范围: `,
+                \n 标识: ${p.id}
+                \n 数据类型: ${p.valueType?.type}
+                \n 是否只读: ${readOnly}
+                \n 可写数值范围: `,
                 type: 'property',
-            })),
+              }
+            }),
     };
     const tags = {
         id: 'tags',
         name: '标签',
         Description: '',
         code: '',
+        isLeaf: false,
         children: tagsMetadata.value.map((i: any) => ({
             id: i.id,
             name: i.name,
+          isLeaf: true,
             description: `### ${i.name}
-        \n 数据类型: ${i.valueType?.type}
-        \n 是否只读: ${i.expands?.readOnly || 'false'}
-        \n 可写数值范围: `,
+            \n 标识: ${i.id}
+            \n 数据类型: ${i.valueType?.type}
+            \n 可写数值范围: `,
             type: 'tags',
         })),
     };
@@ -217,6 +230,14 @@ const getData = async (id?: string) => {
         ];
     }
 };
+
+const getPopupContainer = (node: any) => {
+  if (fullScreen.value) {
+    return tableWrapperRef.value || node
+  }
+
+  return document.body
+}
 
 watch(
     () => props.id,
@@ -236,17 +257,21 @@ watch(
 .operator-box {
     width: 100%;
     display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
 
     .left,
     .right {
-        width: 50%;
-        height: 350px;
+        //width: 50%;
+        //height: 350px;
+      height: calc(50% - 7px);
         border: 1px solid lightgray;
     }
 
     .left {
         padding: 10px;
-        margin-right: 10px;
+        //margin-right: 10px;
         .tree {
             height: 300px;
             //overflow-y: auto;

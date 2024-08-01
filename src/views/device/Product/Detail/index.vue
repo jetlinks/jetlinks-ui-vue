@@ -16,60 +16,69 @@
                             {{ productStore.current.name }}
                         </div>
                     </j-tooltip>
-                    <div style="margin: -5px 0 0 20px" v-if="permissionStore.hasPermission('device/Product:action')">
-                            <j-popconfirm
-                                title="确认禁用"
-                                @confirm="handleUndeploy"
-                                v-if="productStore.current.state === 1"
-                                okText="确定"
-                                cancelText="取消"
-                                :disabled="!permissionStore.hasPermission('device/Product:action')"
-                            >
-                                <j-switch
-                                    :checked="productStore.current.state === 1"
-                                    checked-children="正常"
-                                    un-checked-children="禁用"
-                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
-                                />
-                            </j-popconfirm>
-                            <j-popconfirm
-                                title="确认启用"
-                                @confirm="handleDeploy"
-                                v-if="productStore.current.state === 0"
-                                okText="确定"
-                                cancelText="取消"
-                                :disabled="!permissionStore.hasPermission('device/Product:action')"
-                            >
-                                <j-switch
-                                    :unCheckedValue="
-                                        productStore.current.state === 0
-                                    "
-                                    checked-children="正常"
-                                    un-checked-children="禁用"
-                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
-                                />
-                            </j-popconfirm>
+                    <div
+                        style="margin: -5px 0 0 20px"
+                        v-if="
+                            permissionStore.hasPermission(
+                                'device/Product:action',
+                            )
+                        "
+                    >
+                        <PermissionButton
+                            style="padding: 0"
+                            type="text"
+                            hasPermission="device/Product:action"
+                            :popConfirm="{
+                                title:
+                                    productStore.current.state === 1
+                                        ? '确认禁用'
+                                        : '确认启用',
+                                onConfirm:
+                                    productStore.current.state === 1
+                                        ? handleUndeploy
+                                        : handleDeploy,
+                            }"
+                        >
+                            <j-switch
+                                :checked="productStore.current.state === 1"
+                                checked-children="正常"
+                                un-checked-children="禁用"
+                                :disabled="
+                                    !permissionStore.hasPermission(
+                                        'device/Product:action',
+                                    )
+                                "
+                            />
+                        </PermissionButton>
                     </div>
                     <div style="margin: -5px 0 0 20px" v-else>
                         <j-tooltip>
                             <template #title>暂无权限，请联系管理员</template>
-                                <j-switch
-                                    v-if="productStore.current.state === 1"
-                                    :checked="productStore.current.state === 1"
-                                    checked-children="正常"
-                                    un-checked-children="禁用"
-                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
-                                />
-                                <j-switch
-                                    v-if="productStore.current.state === 0"
-                                    :unCheckedValue="
-                                        productStore.current.state === 0
-                                    "
-                                    checked-children="正常"
-                                    un-checked-children="禁用"
-                                    :disabled="!permissionStore.hasPermission('device/Product:action')"
-                                />
-                            </j-tooltip>
+                            <j-switch
+                                v-if="productStore.current.state === 1"
+                                :checked="productStore.current.state === 1"
+                                checked-children="正常"
+                                un-checked-children="禁用"
+                                :disabled="
+                                    !permissionStore.hasPermission(
+                                        'device/Product:action',
+                                    )
+                                "
+                            />
+                            <j-switch
+                                v-if="productStore.current.state === 0"
+                                :unCheckedValue="
+                                    productStore.current.state === 0
+                                "
+                                checked-children="正常"
+                                un-checked-children="禁用"
+                                :disabled="
+                                    !permissionStore.hasPermission(
+                                        'device/Product:action',
+                                    )
+                                "
+                            />
+                        </j-tooltip>
                     </div>
                 </div>
             </div>
@@ -101,8 +110,7 @@
             <PermissionButton
                 type="primary"
                 :popConfirm="{
-                    title: `确定应用配置?`,
-                    placement: 'bottomRight',
+                    title: `确认应用配置?`,
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
@@ -117,7 +125,7 @@
             >
         </template>
         <FullPage>
-            <div style="height: 100%; padding: 24px;">
+            <div style="height: 100%; padding: 24px">
                 <component
                     :is="tabs[productStore.tabActiveKey]"
                     :class="
@@ -138,21 +146,22 @@ import Info from './BasicInfo/indev.vue';
 import Device from './DeviceAccess/index.vue';
 import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
-import MetadataMap from './MetadataMap'
-// import Metadata from '../../../components/Metadata/index.vue';
+import MetadataMap from './MetadataMap';
+import AlarmRecord from '@/views/device/Instance/Detail/AlarmRecord/index.vue';
+import Firmware from '@/views/device/Instance/Detail/Firmware/index.vue';
 import {
     _deploy,
     _undeploy,
     getDeviceNumber,
     getProtocolDetail,
 } from '@/api/device/product';
-import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
+import { handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import {EventEmitter} from "@/utils/utils";
+import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
 
-const permissionStore = usePermissionStore()
+const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
 const route = useRoute();
 const checked = ref<boolean>(true);
@@ -184,6 +193,10 @@ const list = ref([
         key: 'Device',
         tab: '设备接入',
     },
+    {
+        key: 'Firmware',
+        tab: '远程升级',
+    },
 ]);
 
 const tabs = {
@@ -191,63 +204,54 @@ const tabs = {
     Metadata,
     Device,
     DataAnalysis,
-    MetadataMap
+    MetadataMap,
+    AlarmRecord,
+    Firmware,
 };
 
-watch(
-    () => route.params.id,
-    (newId) => {
-        if (newId && route.name === 'device/Product/Detail') {
-            productStore.reSet();
-            productStore.tabActiveKey = 'Info';
-            productStore.refresh(newId as string);
-        }
-    },
-    { immediate: true, deep: true },
-);
-watch(
-    () => productStore.current,
-    () => {
-        getProtocol();
-    },
-);
 const onBack = () => {
     history.back();
 };
 
 const onTabChange = (e: string) => {
-  if (productStore.tabActiveKey === 'Metadata') {
-    EventEmitter.emit('MetadataTabs', () => {
-      productStore.tabActiveKey = e;
-    })
-  } else {
-    productStore.tabActiveKey = e;
-  }
+    if (productStore.tabActiveKey === 'Metadata') {
+        EventEmitter.emit('MetadataTabs', () => {
+            productStore.tabActiveKey = e;
+        });
+    } else {
+        productStore.tabActiveKey = e;
+    }
 };
 
 /**
  * 启用产品
  */
-const handleDeploy = async () => {
+const handleDeploy = () => {
     if (productStore.current.id) {
-        const resp = await _deploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _deploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
 /**
  * 禁用产品
  */
-const handleUndeploy = async () => {
+const handleUndeploy = () => {
     if (productStore.current.id) {
-        const resp = await _undeploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _undeploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
@@ -296,6 +300,10 @@ const getProtocol = async () => {
                         key: 'DataAnalysis',
                         tab: '数据解析',
                     },
+                    {
+                        key: 'Firmware',
+                        tab: '远程升级',
+                    },
                 ];
             } else {
                 list.value = [
@@ -312,13 +320,33 @@ const getProtocol = async () => {
                         key: 'Device',
                         tab: '设备接入',
                     },
+                    {
+                        key: 'Firmware',
+                        tab: '远程升级',
+                    },
                 ];
             }
         }
         //当前设备接入选择的协议
-        const protocol = res.result?.transports.find(item => item.id === productStore.current.transportProtocol);
-        if(protocol?.features.find(item => item.id === 'diffMetadataSameProduct')){
-          list.value.push({ key: 'MetadataMap', tab: '物模型映射'})
+        const protocol = res.result?.transports.find(
+            (item) => item.id === productStore.current.transportProtocol,
+        );
+        if (
+            protocol?.features.find(
+                (item) => item.id === 'diffMetadataSameProduct',
+            )
+        ) {
+            list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
+        }
+        if (
+            permissionStore.hasPermission(
+                'rule-engine/Alarm/Configuration:view',
+            )
+        ) {
+            list.value.push({
+                key: 'AlarmRecord',
+                tab: '预处理数据',
+            });
         }
     }
 };
@@ -341,10 +369,30 @@ const jumpDevice = () => {
         },
     );
 };
+
+watch(
+    () => productStore.current,
+    () => {
+        getProtocol();
+    },
+);
+
+// watch(
+//   () => route.params.id,
+//   (newId) => {
+//     if (newId && route.name === 'device/Product/Detail') {
+//       productStore.reSet();
+//       productStore.tabActiveKey = 'Info';
+//       productStore.refresh(newId as string);
+//     }
+//   },
+//   { immediate: true, deep: true },
+// );
+
 onMounted(() => {
-    if (routerParams.params?.value.tab) {
-        productStore.tabActiveKey = routerParams.params?.value.tab;
-    }
+    productStore.reSet();
+    productStore.refresh(route.params.id as string);
+    productStore.tabActiveKey = routerParams.params?.value.tab || 'Info';
 });
 </script>
 <style scoped lang="less">
@@ -356,7 +404,6 @@ onMounted(() => {
     max-width: 300px;
     overflow: hidden;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 </style>

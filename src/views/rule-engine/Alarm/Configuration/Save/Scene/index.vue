@@ -1,178 +1,146 @@
 <template>
-    <FullPage>
-        <JProTable
-            model="CARD"
-            :request="queryTable"
-            :defaultParams="{
+  <FullPage>
+    <JProTable
+      model="CARD"
+      :request="queryTable"
+      :gridColumns="[1, 2, 3]"
+      :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
-                terms,
+                terms: [
+                  {
+                      terms: [
+                          {
+                              column: 'id',
+                              termType: 'alarm-bind-rule',
+                              value: id,
+                          },
+                      ],
+                      type: 'and',
+                  },
+              ],
             }"
-            ref="actionRef"
+      ref="actionRef"
+    >
+      <template #headerTitle>
+        <j-space>
+          <PermissionButton
+            type="primary"
+            @click="showModal"
+            hasPermission="rule-engine/Alarm/Configuration:add"
+          >
+            <template #icon>
+              <AIcon type="PlusOutlined"/>
+            </template>
+            新增
+          </PermissionButton>
+        </j-space>
+      </template>
+      <template #card="slotProps">
+        <SceneCardBox
+          :value="slotProps"
+          :status="slotProps.state?.value"
+          :statusText="slotProps.state?.text"
+          :alarmId="id"
+          :activeKeys="activeKeys[slotProps.id]"
+          :showMask="false"
+          :showBranches="false"
+          :showBindTags="true"
+          :showRule="false"
+          @click="handleView(slotProps)"
         >
-            <template #headerTitle>
-                <j-space>
-                    <PermissionButton
-                        type="primary"
-                        @click="showModal"
-                        hasPermission="rule-engine/Alarm/Configuration:add"
-                    >
-                        <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
-                    </PermissionButton>
-                </j-space>
-            </template>
-            <template #card="slotProps">
-                <CardBox
-                    :value="slotProps"
-                    :actions="getActions(slotProps, 'card')"
-                    :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
-                    :statusNames="{
-                        started: 'processing',
-                        disable: 'error',
-                    }"
-                    @click="handleView(slotProps.id, slotProps.triggerType)"
-                >
-                    <template #type>
-                        <span
-                            ><img
-                                :height="16"
-                                :src="typeMap.get(slotProps.triggerType)?.icon"
-                                style="margin-right: 5px"
-                            />{{
-                                typeMap.get(slotProps.triggerType)?.text
-                            }}</span
-                        >
-                    </template>
-                    <template #img>
-                        <img :src="typeMap.get(slotProps.triggerType)?.img" />
-                    </template>
-                    <template #content>
-                      <div style="height: 102px;">
-                        <Ellipsis style="width: calc(100% - 100px)">
-                            <span style="font-size: 16px; font-weight: 600">
-                                {{ slotProps.name }}
-                            </span>
-                        </Ellipsis>
-                        <div v-if="slotProps.branchName">
-                          {{ slotProps.branchName }}
-                        </div>
-                        <Ellipsis :lineClamp="2">
-                            <div class="subTitle">
-                                说明：{{
-                                    slotProps?.description ||
-                                    typeMap.get(slotProps.triggerType)?.tip
-                                }}
-                            </div>
-                        </Ellipsis>
-                      </div>
-                    </template>
-                    <template #actions="item">
-                        <PermissionButton
-                            :disabled="item.disabled"
-                            :popConfirm="item.popConfirm"
-                            :tooltip="{
-                                ...item.tooltip,
-                            }"
-                            @click="item.onClick"
-                            :hasPermission="'rule-engine/Scene:' + item.key"
-                        >
-                            <AIcon
-                                type="DeleteOutlined"
-                                v-if="item.key === 'delete'"
-                            />
-                            <template v-else>
-                                <AIcon :type="item.icon" />
-                                <span>{{ item?.text }}</span>
-                            </template>
-                        </PermissionButton>
-                    </template>
-                </CardBox>
-            </template>
-        </JProTable>
-    </FullPage>
-    <Save
-        :id="id"
-        :type="configurationData.current?.targetType"
-        @close-save="closeSave"
-        @save-scene="saveSuccess"
-        v-if="visible"
-    ></Save>
+          <div class="scene-view">
+            查看详情
+          </div>
+        </SceneCardBox>
+      </template>
+    </JProTable>
+  </FullPage>
+  <Save
+    v-if="visible"
+    :id="id"
+    :type="configurationData.current?.targetType"
+    @close-save="closeSave"
+    @save-scene="saveSuccess"
+  ></Save>
+
+  <SceneDrawer
+    v-if="scene.visible"
+    :detail="scene.detail"
+    :id="id"
+    @cancel="sceneCancel"
+  />
+
 </template>
 
 <script lang="ts" setup>
-import { queryBranch , query} from '@/api/rule-engine/scene';
-import { unbindScene } from '@/api/rule-engine/configuration';
-import { useRoute } from 'vue-router';
-import type { ActionsType } from '@/components/Table';
-import { getImage, onlyMessage } from '@/utils/comm';
+import {query} from '@/api/rule-engine/scene';
+import {queryBindScene, unbindScene} from '@/api/rule-engine/configuration';
+import {useRoute} from 'vue-router';
+import type {ActionsType} from '@/components/Table';
+import {onlyMessage} from '@/utils/comm';
 import Save from './Save/index.vue';
-import { useAlarmConfigurationStore } from '@/store/alarm';
-import { storeToRefs } from 'pinia';
-import { useMenuStore } from 'store/menu';
+import {useAlarmConfigurationStore} from '@/store/alarm';
+import {storeToRefs} from 'pinia';
+import {useMenuStore} from 'store/menu';
+import SceneDrawer from './SceneDrawer.vue'
+import SceneCardBox from './Save/CardBox.vue'
+import {useRequest} from "@/hook";
+
 const menuStory = useMenuStore();
 const route = useRoute();
 const id = route.query?.id;
 
 const alarmConfigurationStore = useAlarmConfigurationStore();
-const { configurationData } = storeToRefs(alarmConfigurationStore);
+const {configurationData} = storeToRefs(alarmConfigurationStore);
+const scene = reactive({
+  visible: false,
+  detail: undefined
+})
 
-const terms = [
-    {
-        terms: [
-            {
-                column: 'id',
-                termType: 'alarm-bind-rule',
-                value: id,
-            },
-        ],
-        type: 'and',
-    },
-];
 const actionRef = ref();
-const typeMap = new Map();
-typeMap.set('manual', {
-    text: '手动触发',
-    img: getImage('/scene/scene-hand.png'),
-    icon: getImage('/scene/trigger-type-icon/manual.png'),
-    tip: '适用于第三方平台向物联网平台下发指令控制设备',
-});
-typeMap.set('timer', {
-    text: '定时触发',
-    img: getImage('/scene/scene-timer.png'),
-    icon: getImage('/scene/trigger-type-icon/timing.png'),
-    tip: '适用于定期执行固定任务',
-});
-typeMap.set('device', {
-    text: '设备触发',
-    img: getImage('/scene/scene-device.png'),
-    icon: getImage('/scene/trigger-type-icon/device.png'),
-    tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
-});
+
+const {data: activeKeys, reload} = useRequest(queryBindScene, {
+  defaultParams: {terms: [{column: 'alarmId', value: id}]},
+  onSuccess(res) {
+    const activeMap = res.result.data.reduce((prev, next) => {
+
+      if (prev[next.ruleId]) {
+        prev[next.ruleId].push(next.branchIndex)
+      } else {
+        prev[next.ruleId] = [next.branchIndex]
+      }
+      return prev
+    }, {})
+    return activeMap || {}
+  },
+  defaultValue: {}
+})
+
 const getActions = (
-    data: Partial<Record<string, any>>,
-    type: 'card' | 'table',
+  data: Partial<Record<string, any>>,
+  type: 'card' | 'table',
 ): ActionsType[] => {
-    if (!data) return [];
-    const actions: ActionsType[] = [
-        {
-            key: 'action',
-            text: '解绑',
-            icon: 'DisconnectOutlined',
-            popConfirm: {
-                title: '确定解绑？',
-                onConfirm: async () => {
-                    // const res = await unbindScene(id, [data.id], data.branchIndex);
-                    const res = await unbindScene(id, [data.id]);
-                    if (res.status === 200) {
-                        onlyMessage('操作成功');
-                        actionRef.value.reload();
-                    }
-                },
-            },
+  if (!data) return [];
+  const actions: ActionsType[] = [
+    {
+      key: 'action',
+      text: '解绑',
+      icon: 'DisconnectOutlined',
+      popConfirm: {
+        title: '确认解绑？',
+        onConfirm: async () => {
+          // const res = await unbindScene(id, [data.id], data.branchIndex);
+          const res = await unbindScene(id, [data.id]);
+          if (res.status === 200) {
+            onlyMessage('操作成功');
+            actionRef.value.reload();
+          }
+          return
         },
-    ];
-    return actions;
+      },
+    },
+  ];
+  return actions;
 };
 
 const queryTable = (_terms: any) => {
@@ -180,37 +148,61 @@ const queryTable = (_terms: any) => {
 }
 
 const visible = ref(false);
-const log = () => {
-    console.log();
-};
-log();
+
+
 const showModal = () => {
-    visible.value = true;
+  visible.value = true;
 };
 const closeSave = () => {
-    visible.value = false;
+  visible.value = false;
 };
 const saveSuccess = () => {
-    visible.value = false;
-    actionRef.value.reload();
+  visible.value = false;
+  actionRef.value.reload();
+  reload()
 };
 /**
  * 查看
- * @param id
- * @param triggerType 触发类型
+ * @param record
  */
- const handleView = (id: string, triggerType: string) => {
-    menuStory.jumpPage(
-        'rule-engine/Scene/Save',
-        {},
-        { triggerType: triggerType, id, type: 'view' },
-    );
+const handleView = (record: Record<string, any>) => {
+  scene.detail = record
+  scene.visible = true
 };
+
+const sceneCancel = () => {
+  scene.visible = false
+  scene.detail = undefined
+  actionRef.value?.reload()
+}
 </script>
 <style lang="less" scoped>
 .subTitle {
-    color: rgba(0, 0, 0, 0.65);
-    font-size: 14px;
-    margin-top: 10px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.scene-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 16px;
+  height: 100%;
+  color: transparent;
+  padding-top: 30px;
+  background-color: rgba(#000, 0);
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: rgba(#000, 0.4);
+    color: #fff;
+  }
 }
 </style>

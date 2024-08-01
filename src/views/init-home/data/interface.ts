@@ -13,7 +13,11 @@ export interface modalState  {
 export interface formState  {
   title: string; // 系统名称
   headerTheme: string; // 主题色
-  apikey: string; // 高德 API key
+  showRecordNumber: boolean; //是否显示备案号
+  recordNumber: string; //备案号
+  apiKey: string; // 高德 API key
+  webKey: string; // 高德 WEB key
+  secretKey: string; //高德 API 密钥
   basePath: string; // 系统后台访问的URL
   logo: string; // 系统logo
   ico: string; // 浏览器页签

@@ -137,7 +137,7 @@
     </j-input-group>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="NotifyUser">
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from '@/store/scene';
 import NoticeApi from '@/api/notice/config';
@@ -340,27 +340,42 @@ const onChange = (
     const _names: string[] = Array.isArray(_name) ? _name : [_name || ''];
     if (Array.isArray(_value)) {
         if (props?.notify?.notifyType === 'email') {
-            _values = _value.map((item) => {
-                const _item = treeDataMap.get(item)
-                const _isRelation = _item?.isRelation
-                if(_isRelation) {
-                    return getObj(_source, item, _isRelation);
-                } else {
-                    return {
-                        source: "relation",
-                        relation:{
-                            objectType: "user",
-                            objectId: item
-                        }
-                    }
-                }
-            });
+          if (_source === 'fixed') {
+            _values = {
+              source: "fixed",
+              value: _value
+            }
+          } else {
+            _values = {
+              source: "relation",
+              relation: {
+                objectType: "user",
+                objectId: _value?.[0]
+              }
+            }
+          }
+            // _values = _value.map((item) => {
+            //     const _item = treeDataMap.get(item)
+            //     const _isRelation = _item?.isRelation
+            //     if(_isRelation) {
+            //         return getObj(_source, item, _isRelation);
+            //     } else {
+            //         return {
+            //             source: "relation",
+            //             relation:{
+            //                 objectType: "user",
+            //                 objectId: item
+            //             }
+            //         }
+            //     }
+            // });
         }
     } else {
       const item = treeDataMap.get(_value)
       const _isRelation = item?.isRelation
         _values = getObj(_source, _value, _isRelation);
     }
+
     emit('update:value', _values);
     emit('change', _names.filter((item) => !!item).join(','));
 };

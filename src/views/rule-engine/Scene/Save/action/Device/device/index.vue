@@ -69,7 +69,7 @@
     </div>
 </template>
 
-<script setup lang='ts' name="Device">
+<script setup lang="ts" name="Device">
 import { useSceneStore } from '@/store/scene';
 import TopCard from './TopCard.vue';
 import { storeToRefs } from 'pinia';
@@ -81,6 +81,7 @@ import RelationSelect from './RelationSelect.vue';
 import { getParams } from '../../../util';
 import { handleParamsData } from '../../../components/Terms/util';
 import _ from 'lodash-es';
+import { TypeMap } from './util';
 
 const props = defineProps({
     values: {
@@ -133,52 +134,27 @@ const list = ref<any[]>([]);
 const builtInList = ref<any[]>([]);
 const tagList = ref<any[]>([]);
 
-const TypeList = [
-    {
-        label: '自定义',
-        value: 'fixed',
-        image: getImage('/scene/device-custom.png'),
-        tip: '自定义选择当前产品下的任意设备',
-    },
-    {
-        label: '按关系',
-        value: 'relation',
-        image: getImage('/scene/device-relation.png'),
-        tip: '选择与触发设备具有相同关系的设备',
-    },
-    {
-        label: '按标签',
-        value: 'tag',
-        image: getImage('/scene/device-tag.png'),
-        tip: '按标签选择产品下具有特定标签的设备',
-    },
-    {
-        label: '按变量',
-        value: 'context',
-        image: getImage('/scene/device-variable.png'),
-        tip: '选择设备ID为上游变量值的设备',
-    },
-];
-
 const filterTree = (nodes: any[]) => {
     if (!nodes?.length) {
         return nodes;
     }
-    const arr = nodes.filter((it) => {
-        if (
-            it.children.find(
-                (item: any) =>
-                    item?.id?.indexOf(
-                        'deviceId' || 'device_id' || 'device_Id',
-                    ) > -1,
-            ) &&
-            !it.children.find((item: any) => item?.id.indexOf('boolean') > -1)
-        ) {
-            return true;
-        }
-        return false;
-    });
-    return arr.map((item) => {
+    // const arr = nodes.filter((it) => {
+    //     const deviceAttr = ['deviceId', 'device_id', 'device_Id']
+    //     return it.children.some((item: any) => deviceAttr.includes(item.id) && !item.id.includes('boolean'))
+    //     // if (
+    //     //     it.children.find(
+    //     //         (item: any) =>
+    //     //             item?.id?.indexOf(
+    //     //                 'deviceId' || 'device_id' || 'device_Id',
+    //     //             ) > -1,
+    //     //     ) &&
+    //     //     !it.children.find((item: any) => item?.id.indexOf('boolean') > -1)
+    //     // ) {
+    //     //     return true;
+    //     // }
+    //     // return false;
+    // });
+    return nodes.map((item) => {
         if (item.children) {
         }
         return {
@@ -197,20 +173,46 @@ const sourceChangeEvent = async () => {
         action: props.name - 1,
     };
     //判断相同产品才有按变量
-    const productId =
-        data.value?.branches?.[props.branchesName].then?.[props.thenName]
-            ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;
-    if (productId === props?.productDetail?.id) {
-        const _data = await getParams(_params, unref(data));
-        builtInList.value = handleParamsData(filterTree(_data), 'id');
-    } else {
-        builtInList.value = [];
-    }
+    // const productId =
+    //     data.value?.branches?.[props.branchesName].then?.[props.thenName]
+    //         ?.actions?.[props.name > 0 ? props.name - 1 : 0]?.device?.productId;
+    // if (productId === props?.productDetail?.id) {
+    //     const _data = await getParams(_params, unref(data));
+    //     builtInList.value = handleParamsData(filterTree(_data), 'id');
+    // } else {
+    //     builtInList.value = [];
+    // }
+  const _data = await getParams(_params, unref(data));
+  builtInList.value = handleParamsData(filterTree(_data), 'id');
+
+  if (props.productDetail?.id) {
+    filterType(props.productDetail);
+  }
 };
 
 const filterType = async (newVal: any) => {
-    const _list = TypeList.filter((item) => item.value === 'fixed');
-    if (unref(data)?.trigger?.type === 'device') {
+    // const _typeList = [
+    //   TypeMap.fixed,
+    // ]
+    let _typeList = [
+        TypeMap.fixed,
+        TypeMap.context,
+        TypeMap.relation,
+        TypeMap.tag,
+    ];
+    const triggerType = unref(data)?.trigger?.type;
+
+    //标签
+    const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
+
+    tagList.value = tag || [];
+
+    if (tag?.length === 0) {
+      _typeList[3].disabled = true
+    }
+
+    if (triggerType === 'device') {
+        // _typeList.push(TypeMap.tag) // 设备输出一直展示标签
         //关系
         const res = await NoticeApi.getRelationUsers({
             paging: false,
@@ -219,38 +221,46 @@ const filterType = async (newVal: any) => {
                 { termType: 'eq', column: 'objectTypeName', value: '设备' },
             ],
         });
-        if (res.status === 200 && res.result.length !== 0) {
-            const array = TypeList.filter((item) => item.value === 'relation');
-            _list.push(...array);
-        }
-        //标签
-        const tag = JSON.parse(newVal?.metadata || '{}')?.tags;
-        if (tag && tag.length !== 0) {
-            tagList.value = tag || [];
-            const array = TypeList.filter((item) => item.value === 'tag');
-            _list.push(...array);
+        if (res.success && res.result.length !== 0) {
+            // _typeList.push(TypeMap.relation)
+            // TypeMap.relation.disabled = true;
+          _typeList[2].disabled = true
         }
         //变量
-        if (
-            builtInList.value.length !== 0 &&
-            !props.parallel &&
-            props.name !== 0
-        ) {
-            const array = TypeList.filter((item) => item.value === 'context');
-            _list.push(...array);
-        }
-        list.value = _list;
+
+        // if (builtInList.value.length) {
+        //     //   _typeList.push(TypeMap.context)
+        //     // TypeMap.context.disabled = true;
+        //
+        // }
+      _typeList[1].disabled = !builtInList.value.length
     } else {
-        if (
-            builtInList.value.length !== 0 &&
-            !props.parallel &&
-            props.name !== 0
-        ) {
-            const array = TypeList.filter((item) => item.value === 'context');
-            _list.push(...array);
-        }
-        list.value = _list;
+        // if (
+        //     // builtInList.value.length !== 0 &&
+        //     // !props.parallel &&
+        //     // props.name !== 0
+        //   builtInList.value.length
+        // ) {
+        //     //   _typeList.push(TypeMap.context)
+        //     // TypeMap.context.disabled = true;
+        //   _typeList[1].disabled = true
+        // }
+
+
+      if (props.name === 0) {
+        _typeList = [
+          TypeMap.fixed,
+          TypeMap.tag,
+        ]
+      } else {
+        _typeList.splice(2, 1)
+        _typeList[1].disabled = !builtInList.value.length
+      }
     }
+
+  console.log(_typeList)
+
+    list.value = _typeList;
 };
 
 const onSelectorChange = (val: string) => {
@@ -273,7 +283,7 @@ const onDeviceChange = (_detail: any) => {
             modelRef.deviceId = '';
             modelRef.selectorValues = [] as any;
         }
-        modelRef.upperKey = ''
+        modelRef.upperKey = '';
         emits('save', unref(modelRef), { name: _detail.name });
     }
 };
@@ -317,7 +327,7 @@ const onVariableChange = (val: any, node: any) => {
     modelRef.deviceId = val;
     modelRef.source = 'upper';
     modelRef.upperKey = val;
-    modelRef.selectorValues = undefined // [{ value: val, name: node.description }] as any;
+    modelRef.selectorValues = undefined; // [{ value: val, name: node.description }] as any;
     emits('save', unref(modelRef), { name: node.description });
 };
 
@@ -334,11 +344,8 @@ watch(
 
 watch(
     () => props.productDetail,
-    async (newVal) => {
-        await sourceChangeEvent();
-        if (newVal?.id) {
-            filterType(newVal);
-        }
+    (newVal) => {
+        sourceChangeEvent();
     },
     {
         immediate: true,
@@ -381,7 +388,7 @@ const onFormSave = () => {
                         });
                     }
                 } else {
-                    resolve({..._data});
+                    resolve({ ..._data });
                 }
             })
             .catch((err: any) => {
@@ -393,5 +400,4 @@ const onFormSave = () => {
 defineExpose({ onFormSave });
 </script>
 
-<style scoped lang='less'>
-</style>
+<style scoped lang="less"></style>

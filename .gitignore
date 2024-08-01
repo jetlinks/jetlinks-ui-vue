@@ -25,3 +25,4 @@ components.d.ts
 *.sln
 *.sw?
 .history
+du-i18n.config.json

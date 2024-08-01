@@ -33,7 +33,7 @@
                         <span>{{ slotProps.type.text }}</span>
                     </template>
                     <template #action="slotProps">
-                        <j-space>
+                        <j-space :size="16">
                             <template
                                 v-for="i in getActions(slotProps)"
                                 :key="i.key"
@@ -157,7 +157,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 okText: ' 确定',
                 cancelText: '取消',
                 onConfirm: async () => {
-                    handlDelete(data.id);
+                    return handleDelete(data.id);
                 },
             },
             icon: 'DeleteOutlined',
@@ -181,12 +181,15 @@ const handlEdit = (id: string) => {
     menuStory.jumpPage(`link/Certificate/Detail`, { id }, { view: false });
 };
 
-const handlDelete = async (id: string) => {
-    const res = await remove(id);
-    if (res.success) {
-        onlyMessage('操作成功', 'success');
-        tableRef.value.reload();
-    }
+const handleDelete = (id: string) => {
+    const response = remove(id);
+    response.then((res) => {
+        if (res.success) {
+            onlyMessage('操作成功', 'success');
+            tableRef.value.reload();
+        }
+    });
+    return response
 };
 
 /**

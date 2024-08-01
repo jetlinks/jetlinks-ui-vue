@@ -11,14 +11,23 @@
             style='width: 100%'
             @click='visible = true'
         >
+          <template #extra>
+            <span style="padding-right: 10px;">
+              系统时间到达
+            </span>
+          </template>
           <Title :options='data.options.trigger' />
         </AddButton>
       </j-form-item>
       <div class='actions-branches-item' >
+
         <j-form-item
           :rules="actionRules"
           :name="['branches', 0, 'then']"
         >
+          <template #label>
+            <TitleComponent data='执行动作' style='font-size: 14px;' />
+          </template>
           <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"
             :name="0"
@@ -49,7 +58,6 @@ const visible = ref(false)
 
 const rules = [{
   validator(_: any, v: any) {
-    console.log(v)
     if (!v) {
       return Promise.reject(new Error('请配置定时触发规则'));
     }

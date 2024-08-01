@@ -8,6 +8,11 @@ import server from '@/utils/request'
 export const query = (data: Record<string, any>) => server.post('/device/aliyun/bridge/_query', data)
 
 /**
+ * 查询数据不分页
+ */
+export const queryPaginateNot = (data: any) => server.post('/device/aliyun/bridge/_query/no-paging', data)
+
+/**
  * 查询产品列表
  * @param data 
  * @returns 

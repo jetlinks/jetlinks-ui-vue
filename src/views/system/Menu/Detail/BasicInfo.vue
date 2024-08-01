@@ -484,7 +484,7 @@ type assetType = {
                 left: 0;
                 width: 4px;
                 height: calc(100% - 10px);
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 2px;
                 content: ' ';
             }

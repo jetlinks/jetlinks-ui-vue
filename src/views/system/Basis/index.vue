@@ -28,10 +28,27 @@
                             </j-form-item>
                             <j-form-item>
                                 <template #label>
-                                    <span>高德API Key</span>
+                                    <span>高德地图 web服务api</span>
                                     <j-tooltip
-                                        title="配置后平台可调用高德地图GIS服务"
+                                        title="开发者可通过接口使用各类型的地理数据服务,返回结果支持JSON和XML格式"
                                     >
+                                        <img
+                                            class="img-style"
+                                            :src="
+                                                getImage('/init-home/mark.png')
+                                            "
+                                        />
+                                    </j-tooltip>
+                                </template>
+                                <j-input
+                                    v-model:value="formValue.webKey"
+                                    placeholder="请输入高德WebApi Key"
+                                />
+                            </j-form-item>
+                            <j-form-item>
+                                <template #label>
+                                    <span>高德地图 JSapi</span>
+                                    <j-tooltip title="提供浏览器精准定位">
                                         <img
                                             class="img-style"
                                             :src="
@@ -45,20 +62,36 @@
                                     placeholder="请输入高德API Key"
                                 />
                             </j-form-item>
+                            <j-form-item>
+                                <template #label>
+                                    <span>高德地图 密钥</span>
+                                    <j-tooltip title="降低明文传输被窃取的风险">
+                                        <img
+                                            class="img-style"
+                                            :src="
+                                                getImage('/init-home/mark.png')
+                                            "
+                                        />
+                                    </j-tooltip>
+                                </template>
+                                <j-input
+                                    v-model:value="formValue.secretKey"
+                                    placeholder="请输入高德API 密钥"
+                                />
+                            </j-form-item>
                             <j-form-item name="base-path">
                                 <template #label>
                                     <span>base-path</span>
-                                    <j-tooltip >
-                                      <template #title>
-                                        <div style='word-break: break-all;'>
-                                          <div>
-                                            系统后台访问的url。
-                                          </div>
-                                          <div>
-                                           格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
-                                          </div>
-                                        </div>
-                                      </template>
+                                    <j-tooltip>
+                                        <template #title>
+                                            <div style="word-break: break-all">
+                                                <div>系统后台访问的url。</div>
+                                                <div>
+                                                    格式：{http/https}:
+                                                    //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                                </div>
+                                            </div>
+                                        </template>
 
                                         <img
                                             class="img-style"
@@ -72,6 +105,25 @@
                                     v-model:value="formValue['base-path']"
                                     placeholder="{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api"
                                 />
+                            </j-form-item>
+                            <j-form-item
+                                name="showRecordNumber"
+                                label="展示备案号"
+                                :required="true"
+                            >
+                                <a-switch
+                                    v-model:checked="formValue.showRecordNumber"
+                                ></a-switch>
+                            </j-form-item>
+                            <j-form-item
+                                v-if="formValue.showRecordNumber"
+                                name="recordNumber"
+                                label="备案号内容"
+                                :required="true"
+                            >
+                                <a-input
+                                    v-model:value="formValue.recordNumber"
+                                ></a-input>
                             </j-form-item>
                             <j-row :gutter="24" :span="24">
                                 <j-col>
@@ -327,11 +379,11 @@ import { formType, uploaderType } from './typing';
 import { getImage } from '@/utils/comm.ts';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
-
 import { save_api } from '@/api/system/basis';
 import { usePermissionStore } from '@/store/permission';
 import { useSystem } from '@/store/system';
 import { settingDetail } from '@/api/login';
+import { omit } from 'lodash-es';
 const action = `${BASE_API_PATH}/file/static`;
 const headers = { [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) };
 const formRef = ref();
@@ -341,7 +393,11 @@ const form = reactive<formType>({
     formValue: {
         title: '',
         headerTheme: 'light',
+        showRecordNumber: true,
+        recordNumber: '',
         apiKey: '',
+        webKey: '',
+        secretKey: '',
         'base-path': `${window.location.origin}/api`,
         logo: '',
         ico: '',
@@ -372,14 +428,20 @@ const form = reactive<formType>({
                 trigger: 'blur',
             },
             {
-            validator: (rule, value, callback) => {
-                if (value && value.includes('localhost')) {
-                    callback('输入内容不能包含 localhost');
-                        } else {
-                            callback();
+                validator: (rule, value, callback) => {
+                    if (value && value.includes('localhost')) {
+                        callback('输入内容不能包含 localhost');
+                    } else {
+                        callback();
                     }
                 },
                 trigger: 'blur',
+            },
+        ],
+        recordNumber: [
+            {
+                max: 64,
+                message: '最多可输入64个字符',
             },
         ],
     },
@@ -388,7 +450,6 @@ const form = reactive<formType>({
     iconLoading: false, // 页签加载状态
     saveLoading: false,
     getDetails: async () => {
-
         // await system.getSystemConfig();
         // await settingDetail('front');
         const configInfo = system.configInfo;
@@ -397,9 +458,12 @@ const form = reactive<formType>({
             headerTheme: configInfo.front?.headerTheme,
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
-            background:
-                configInfo.front?.background || '/images/login.png',
+            showRecordNumber: configInfo.front?.showRecordNumber,
+            recordNumber: configInfo.front?.recordNumber,
+            background: configInfo.front?.background || '/images/login.png',
             apiKey: configInfo.amap?.apiKey,
+            webKey: configInfo.amap?.webKey,
+            secretKey: configInfo.amap?.secretKey,
             'base-path': configInfo.paths?.['base-path'],
         };
     },
@@ -412,15 +476,20 @@ const form = reactive<formType>({
                     {
                         scope: 'front',
                         properties: {
-                            ...form.formValue,
-                            apiKey: '',
-                            'base-path': '',
+                            ...omit(form.formValue, [
+                                'apiKey',
+                                'webKey',
+                                'secretKey',
+                                'base-path',
+                            ]),
                         },
                     },
                     {
                         scope: 'amap',
                         properties: {
                             apiKey: form.formValue.apiKey,
+                            webKey: form.formValue.webKey,
+                            secretKey: form.formValue.secretKey,
                         },
                     },
                     {
@@ -435,7 +504,7 @@ const form = reactive<formType>({
                     .then(async (resp) => {
                         if (resp.status === 200) {
                             onlyMessage('保存成功');
-                            await system.getSystemConfig()
+                            await system.getSystemConfig();
                             await form.getDetails();
                         }
                     })
@@ -469,7 +538,10 @@ const uploader: uploaderType = {
                 .filter((typeStr) => file.type.includes(typeStr)).length > 0;
         const sizeBool = file.size / 1024 / 1024 < 4;
         if (!typeBool) {
-            onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
+            onlyMessage(
+                `请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`,
+                'error',
+            );
         } else if (!sizeBool) {
             onlyMessage(`图片大小必须小于4M`, 'error');
         }

@@ -75,24 +75,20 @@
                                         >
                                             <j-space>
                                                 <span>{{ item.name }}</span>
-                                                <j-popconfirm
-                                                    title="确认删除?"
-                                                    ok-text="确认"
-                                                    cancel-text="取消"
-                                                    @confirm="(e: any) => {
+                                                <PermissionButton
+                                                    type="text"
+                                                    :popConfirm="{
+                                                    title: '确认删除？',
+                                                    onConfirm: (e: any) => {
                                                         e?.stopPropagation();
                                                         deleteHistory(item.key);
                                                     }
-                                                    "
+                                                }"
                                                 >
                                                     <AIcon
                                                         type="DeleteOutlined"
-                                                        @click="
-                                                            (e:any) =>
-                                                                e?.stopPropagation()
-                                                        "
                                                     />
-                                                </j-popconfirm>
+                                                </PermissionButton>
                                             </j-space>
                                         </j-menu-item>
                                     </j-menu>
@@ -316,12 +312,15 @@ const getHistory = async () => {
  * 删除历史分屏
  * @param id
  */
-const deleteHistory = async (id: string) => {
-    const res = await deleteSearchHistory(DEFAULT_SAVE_CODE, id);
-    if (res.success) {
-        getHistory();
-        visible.value = false;
-    }
+const deleteHistory =  (id: string) => {
+    const response =  deleteSearchHistory(DEFAULT_SAVE_CODE, id);
+    response.then((res)=>{
+        if(res.success){
+            getHistory();
+            visible.value = false;
+        }
+    })
+    return response
 };
 
 /**
@@ -458,16 +457,16 @@ defineExpose({
 
 <style lang="less" scoped>
 @import './index.less';
-:deep(.live-player-stretch-btn){
-  display: none;
+:deep(.live-player-stretch-btn) {
+    display: none;
 }
-:deep(.vjs-icon-spinner){
-  display: none;
+:deep(.vjs-icon-spinner) {
+    display: none;
 }
-.refreshBtn{
-   opacity: 0;
+.refreshBtn {
+    opacity: 0;
 }
-.refreshBtn:hover{
+.refreshBtn:hover {
     opacity: 1;
 }
 </style>

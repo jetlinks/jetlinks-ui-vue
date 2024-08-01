@@ -106,68 +106,49 @@
                         </template>
                         <template v-if="column.key === 'action'">
                             <j-space>
-                                <j-tooltip
-                                    :title="
-                                        isPermission
-                                            ? '解绑'
-                                            : '暂无权限，请联系管理员'
-                                    "
+                                <PermissionButton
+                                    type="link"
+                                    :disabled="!record.id"
+                                    :tooltip="{
+                                        title: '解绑',
+                                    }"
+                                    :popConfirm="{
+                                        title: '确认解绑？',
+                                        onConfirm: () => unbind(record.id),
+                                    }"
+                                    hasPermission="device/Instance:update"
                                 >
-                                    <j-popconfirm
-                                        title="确认解绑？"
-                                        :disabled="!record.id || !isPermission"
-                                        @confirm="unbind(record.id)"
-                                    >
-                                        <j-button
-                                            type="link"
-                                            :disabled="
-                                                !record.id || !isPermission
-                                            "
-                                            style="padding: 0 5px"
-                                        >
-                                            <AIcon type="icon-jiebang" />
-                                        </j-button>
-                                    </j-popconfirm>
-                                </j-tooltip>
+                                    <AIcon type="icon-jiebang"
+                                /></PermissionButton>
                                 <template v-if="record.id">
-                                    <j-tooltip
-                                        :title="
-                                            isPermission
-                                                ? record.state.value ===
-                                                  'enabled'
+                                    <PermissionButton
+                                        type="link"
+                                        hasPermission="device/Instance:update"
+                                        :tooltip="{
+                                            title:
+                                                record.state.value === 'enabled'
                                                     ? '禁用'
-                                                    : '启用'
-                                                : '暂无权限，请联系管理员'
-                                        "
-                                    >
-                                        <j-popconfirm
-                                            :title="
+                                                    : '启用',
+                                        }"
+                                        :popConfirm="{
+                                            title:
                                                 record.state.value === 'enabled'
                                                     ? '确认禁用？'
-                                                    : '确认启用?'
+                                                    : '确认启用?',
+                                            onConfirm: () => onAction(record),
+                                        }"
+                                    >
+                                        <AIcon
+                                            v-if="
+                                                record.state.value === 'enabled'
                                             "
-                                            :disabled="!isPermission"
-                                            @confirm="onAction(record)"
-                                        >
-                                            <j-button
-                                                type="link"
-                                                style="padding: 0 5px"
-                                                :disabled="!isPermission"
-                                            >
-                                                <AIcon
-                                                    v-if="
-                                                        record.state.value ===
-                                                        'enabled'
-                                                    "
-                                                    type="StopOutlined"
-                                                />
-                                                <AIcon
-                                                    v-else
-                                                    type="PlayCircleOutlined"
-                                                />
-                                            </j-button>
-                                        </j-popconfirm>
-                                    </j-tooltip>
+                                            type="StopOutlined"
+                                        />
+                                        <AIcon
+                                            v-else
+                                            type="PlayCircleOutlined"
+                                        />
+                                    </PermissionButton>
                                 </template>
                             </j-space>
                         </template>
@@ -252,7 +233,7 @@ const columns = [
 const permissionStore = usePermissionStore();
 
 const data: any = ref([]);
-const isPermission = permissionStore.hasPermission('device/Instance:update');
+// const isPermission = permissionStore.hasPermission('device/Instance:update');
 
 const current = ref<number>(1);
 const pageSize = ref<number>(10);
@@ -348,20 +329,20 @@ const handleSearch = async () => {
     loading.value = false;
 };
 
-const unbind = async (id: string) => {
+const unbind = (id: string) => {
     const _deviceId = instanceStore.current.id;
     if (id && _deviceId) {
-        const resp = await removeEdgeMap(
-            instanceStore.current?.parentId || '',
-            {
-                deviceId: _deviceId,
-                idList: [id],
-            },
-        );
-        if (resp.status === 200) {
-            onlyMessage('操作成功！', 'success');
-            handleSearch();
-        }
+        const response = removeEdgeMap(instanceStore.current?.parentId || '', {
+            deviceId: _deviceId,
+            idList: [id],
+        });
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！', 'success');
+                handleSearch();
+            }
+        });
+        return response;
     }
 };
 
@@ -415,7 +396,7 @@ const onSave = () => {
         });
 };
 
-const onAction = async (record: any) => {
+const onAction = (record: any) => {
     const array = (modelRef.dataSource || [])?.filter(
         (item: any) => item.channelId,
     );
@@ -430,14 +411,17 @@ const onAction = async (record: any) => {
         provider: array[0]?.provider,
         requestList: [...filterArray, arr],
     };
-    const resp = await saveEdgeMap(
+    const response = saveEdgeMap(
         instanceStore.current.parentId || '',
         submitData,
     );
-    if (resp.status === 200) {
-        onlyMessage('操作成功！', 'success');
-        onRefresh();
-    }
+    response.then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功！', 'success');
+            onRefresh();
+        }
+    });
+    return response
 };
 
 const onRefresh = async () => {

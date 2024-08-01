@@ -3,7 +3,10 @@
         <template v-for="(item, index) in tagList" :key="item.id">
             <j-row :gutter="24" style="margin-bottom: 12px">
                 <j-col :span="4">
-                    <span v-if="index === 0" class="tagName">标签选择</span>
+                    <span
+                      v-if="index === 0" class="tagName">
+                      标签选择
+                    </span>
                     <j-select
                         :options="[
                             { label: '并且', value: 'and' },
@@ -74,7 +77,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="DeviceTag">
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -109,7 +112,7 @@ const addItem = () => {
 
 const deleteItem = (_index: number) => {
     tagList.value.splice(_index, 1);
-    onValueChange();
+    onValueChange()
 };
 
 const onTypeSelect = (key: any, _index: number) => {
@@ -145,32 +148,31 @@ watch(
         options.value = newTag.map((item: any) => {
             return { label: item.name, value: item.id, ...item };
         });
-        if (newVal && newVal[0] && newVal[0]?.name && newTag && newTag.length) {
-            const names: string[] = [];
-            const newTagList = newVal[0]?.value
-                .filter((valueItem: any) => {
-                    return newTag.some(
-                        (item: any) => valueItem.column === item.id,
-                    );
-                })
-                .map((valueItem: any) => {
-                    const oldItem = newTag.find(
-                        (item: any) => item.id === valueItem.column,
-                    );
-                    if (oldItem) {
-                        names.push(oldItem.name);
-                        return {
-                            ...handleItem(oldItem),
-                            value: valueItem?.value,
-                            type: valueItem?.type,
-                        };
-                    }
-                    return valueItem;
-                });
-            tagList.value = newTagList;
-        } else {
-            tagList.value = [{}];
-        }
+
+      // const names: string[] = [];
+      const newTagList = newVal[0]?.value.map((valueItem: any) => {
+          const oldItem = newTag.find(
+            (item: any) => item.id === valueItem.column,
+          );
+          if (oldItem) {
+            // names.push(oldItem.name);
+            return {
+              ...handleItem(oldItem),
+              value: valueItem?.value,
+              type: valueItem?.type,
+            };
+          }
+          return valueItem;
+        }) || [{}];
+
+      tagList.value = newTagList;
+
+        // if (newVal && newVal[0] && newVal[0]?.name && newTag && newTag.length) {
+        //
+        //     tagList.value = newTagList;
+        // } else {
+        //     tagList.value = [{}];
+        // }
     },
     {
         immediate: true,
@@ -196,9 +198,14 @@ onMounted(() => {
 </script>
 
 <style lang="less" scoped>
-.tagName::before {
+.tagName {
+  display: inline-block;
+  height: 100%;
+  line-height: 32px;
+
+  &::before {
     position: relative;
-    left: 70px;
+    left: 72px;
     display: inline-block;
     margin-right: 4px;
     color: #ff4d4f;
@@ -206,5 +213,7 @@ onMounted(() => {
     font-family: SimSun, sans-serif;
     line-height: 1;
     content: '*';
+  }
 }
+
 </style>

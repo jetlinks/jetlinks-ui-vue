@@ -16,10 +16,11 @@
             <template v-else>
                 <FunctionItem
                     :builtInList="builtInList"
-                    @change="onChange"
                     v-model:source="record.source"
-                    :data="record"
                     v-model:value="record.value"
+                    v-model:upperKey="record.upperKey"
+                    :data="record"
+                    @change="onChange"
                 />
             </template>
         </template>
@@ -43,9 +44,13 @@ const _props = defineProps({
         type: Array,
         default: () => [],
     },
+    columnMap: {
+        type: Object,
+        default: () => ({})
+    }
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'update:columnMap']);
 
 const columns = [
     {
@@ -66,6 +71,7 @@ const columns = [
 ];
 
 const dataSource = ref<any[]>([]);
+const columnMap = ref(_props.columnMap || {})
 
 watchEffect(() => {
     const list = (_props.functions || []).map((item: any) => {
@@ -82,7 +88,10 @@ watchEffect(() => {
     dataSource.value = list;
 });
 
-const onChange = () => {
+const onChange = (v: any, obj: any, option: any, record: any) => {
+
+  columnMap.value[record.id] = v.source === 'fixed' ? undefined : obj.column
+
     const arr = [...dataSource.value].map((item) => {
         return {
             name: item.id,
@@ -94,5 +103,6 @@ const onChange = () => {
         };
     });
     emit('update:value', arr);
+    emit('update:columnMap', columnMap.value);
 };
 </script>

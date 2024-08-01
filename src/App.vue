@@ -1,5 +1,10 @@
 <template>
-  <ConfigProvider :locale='zhCN'>
+  <ConfigProvider
+    :locale='zhCN'
+    :IconConfig="{
+      scriptUrl: '//at.alicdn.com/t/c/font_4035907_i1jazcune3.js'
+    }"
+  >
     <router-view />
   </ConfigProvider>
 </template>
@@ -9,7 +14,6 @@ import { ConfigProvider } from 'jetlinks-ui-components'
 import zhCN from 'jetlinks-ui-components/es/locale/zh_CN';
 import { storeToRefs } from 'pinia';
 import { useSystem } from './store/system';
-import DefaultSetting from '../config/config'
 import {LocalStore} from "@/utils/comm";
 import {TOKEN_KEY} from "@/utils/variable";
 

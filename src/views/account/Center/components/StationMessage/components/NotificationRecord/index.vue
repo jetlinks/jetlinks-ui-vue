@@ -16,11 +16,6 @@
             :defaultParams="defaultParams"
             :scroll="{y:420}"
         >
-            <!-- <template #rightExtraRender>
-                <j-popconfirm title="确认全部已读？" @confirm="onAllRead">
-                    <j-button type="primary">全部已读</j-button>
-                </j-popconfirm>
-            </template> -->
             <template #topicProvider="slotProps">
                 {{ slotProps.topicName }}
             </template>
@@ -65,7 +60,7 @@
                         }"
                         @click="view(slotProps)"
                     >
-                        <AIcon type="SearchOutlined" />
+                        <AIcon type="EyeOutlined" />
                     </PermissionButton>
                 </j-space>
             </template>
@@ -231,13 +226,15 @@ const refresh = () => {
 
 const changeStatus = (row: any) => {
     const type = row.state.value === 'read' ? '_unread' : '_read';
-    changeStatus_api(type, [row.id]).then((resp: any) => {
+    const response =  changeStatus_api(type, [row.id])
+    response.then((resp: any) => {
         if (resp.status === 200) {
             onlyMessage('操作成功！');
             refresh();
             user.updateAlarm();
         }
     });
+    return response
 };
 
 watchEffect(() => {

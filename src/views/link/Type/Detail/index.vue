@@ -66,7 +66,11 @@
                                             )
                                         "
                                     >
-                                        <j-radio-button :value="true" :disabled="formData.type ==='MQTT_CLIENT'"
+                                        <j-radio-button
+                                            :value="true"
+                                            :disabled="
+                                                formData.type === 'MQTT_CLIENT'
+                                            "
                                             >共享配置</j-radio-button
                                         >
                                         <j-radio-button :value="false"
@@ -129,15 +133,15 @@
                                             </div>
                                         </template>
                                         <template #extra v-if="!shareCluster">
-                                            <j-popconfirm
-                                                @confirm.prevent="
-                                                    removeCluster(cluster)
-                                                "
+                                            <PermissionButton
+                                                danger
+                                                :popConfirm="{
+                                                    title: '确认删除？',
+                                                    onConfirm: () =>
+                                                        removeCluster(cluster),
+                                                }"
+                                                >删除</PermissionButton
                                             >
-                                                <span class="delete-btn">
-                                                    删除
-                                                </span>
-                                            </j-popconfirm>
                                         </template>
                                         <j-row :gutter="[24, 0]">
                                             <j-col
@@ -238,12 +242,35 @@
                                                         "
                                                     >
                                                     </j-select> -->
-                                                    <LocalAddressSelect 
-                                                        v-model:value="cluster.configuration.host"
-                                                        :serverId="cluster.serverId"
-                                                        :shareCluster="shareCluster"
-                                                        @change="(value) => changeHost(cluster.serverId, value, index)"
-                                                        @valueChange="(value) => changeHost(cluster.serverId, value, index, true)"
+                                                    <LocalAddressSelect
+                                                        v-model:value="
+                                                            cluster
+                                                                .configuration
+                                                                .host
+                                                        "
+                                                        :serverId="
+                                                            cluster.serverId
+                                                        "
+                                                        :shareCluster="
+                                                            shareCluster
+                                                        "
+                                                        @change="
+                                                            (value) =>
+                                                                changeHost(
+                                                                    cluster.serverId,
+                                                                    value,
+                                                                    index,
+                                                                )
+                                                        "
+                                                        @valueChange="
+                                                            (value) =>
+                                                                changeHost(
+                                                                    cluster.serverId,
+                                                                    value,
+                                                                    index,
+                                                                    true,
+                                                                )
+                                                        "
                                                     />
                                                 </j-form-item>
                                             </j-col>
@@ -284,7 +311,7 @@
                                                                 .configuration
                                                                 .port
                                                         "
-                                                         :options="
+                                                        :options="
                                                             portOptionsIndex[
                                                                 index
                                                             ]
@@ -296,7 +323,7 @@
                                                             filterPortOption
                                                         "
                                                     >
-                                                      <!-- <j-select-option
+                                                        <!-- <j-select-option
                                                           v-for="i in getPortList( portOptionsIndex[
                                                                 index
                                                             ], cluster
@@ -908,8 +935,12 @@
                                                                         .script
                                                                 "
                                                                 language="javascript"
-                                                                :init="editorInit"
-                                                                :registrationTypescript="typescriptTip"
+                                                                :init="
+                                                                    editorInit
+                                                                "
+                                                                :registrationTypescript="
+                                                                    typescriptTip
+                                                                "
                                                             />
                                                         </div>
                                                     </j-form-item>
@@ -1134,7 +1165,7 @@ import {
     start,
     resourceClusters,
     resourceClustersById,
-    getTs
+    getTs,
 } from '@/api/link/type';
 import {
     ParserConfiguration,
@@ -1166,8 +1197,8 @@ const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 const shareCluster = ref(true);
 
-const _typeStore = useTypeStore()
-const { configRef, resourcesClusters } = storeToRefs(_typeStore)
+const _typeStore = useTypeStore();
+const { configRef, resourcesClusters } = storeToRefs(_typeStore);
 
 const formData = ref<FormDataType>({
     ...FormStates,
@@ -1181,32 +1212,33 @@ const certIdOptions = ref([]);
 const configClustersList = ref<any[]>([]);
 
 const typescriptTip = reactive({
-  typescript: ''
-})
+    typescript: '',
+});
 
 const editorInit = (editor: any, monaco: any) => {
-  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-    noSemanticValidation: true,
-    noSyntaxValidation: false,
-  });
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: true,
+        noSyntaxValidation: false,
+    });
 
-  // compiler options
-  monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-    allowJs: true,
-    checkJs: true,
-    allowNonTsExtensions: true,
-    target: monaco.languages.typescript.ScriptTarget.ESNext,
-    strictNullChecks: false,
-    strictPropertyInitialization: true,
-    strictFunctionTypes: true,
-    strictBindCallApply: true,
-    useDefineForClassFields: true,//permit class static fields with private name to have initializer
-    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-    module: monaco.languages.typescript.ModuleKind.CommonJS,
-    typeRoots: ["types"],
-    lib: ["esnext"]
-  });
-}
+    // compiler options
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+        allowJs: true,
+        checkJs: true,
+        allowNonTsExtensions: true,
+        target: monaco.languages.typescript.ScriptTarget.ESNext,
+        strictNullChecks: false,
+        strictPropertyInitialization: true,
+        strictFunctionTypes: true,
+        strictBindCallApply: true,
+        useDefineForClassFields: true, //permit class static fields with private name to have initializer
+        moduleResolution:
+            monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+        module: monaco.languages.typescript.ModuleKind.CommonJS,
+        typeRoots: ['types'],
+        lib: ['esnext'],
+    });
+};
 
 const dynamicValidateForm = reactive<{ cluster: FormData2Type[] }>({
     cluster: [{ ...cloneDeep(FormStates2), id: '1' }],
@@ -1285,46 +1317,48 @@ const changeType = (value: string) => {
     if (value !== 'MQTT_CLIENT') {
         const { configuration } = dynamicValidateForm.cluster[0];
         value && (configuration.host = '0.0.0.0');
-    }else if(isNoCommunity){
-        formData.value.shareCluster  = false
-        changeShareCluster(formData.value.shareCluster)
+    } else if (isNoCommunity) {
+        formData.value.shareCluster = false;
+        changeShareCluster(formData.value.shareCluster);
     }
-    if(value ==='TCP_SERVER'){
-        getTs().then((res:any)=>{
-            if (res.status===200) {
-                typescriptTip.typescript = res.result
+    if (value === 'TCP_SERVER') {
+        getTs().then((res: any) => {
+            if (res.status === 200) {
+                typescriptTip.typescript = res.result;
             }
-        })
+        });
     }
 };
 
 const updateClustersListIndex = () => {
     const { cluster } = dynamicValidateForm;
     const filters = cluster?.map((item) => item.serverId);
-    const newConfigRef = shareCluster.value ? (configRef.value || [])?.filter(
-        (item: any) => !filters.includes(item.clusterNodeId),
-    ) : configClustersList.value?.filter(
-        (item: any) => !filters.includes(item.id),
-    )
+    const newConfigRef = shareCluster.value
+        ? (configRef.value || [])?.filter(
+              (item: any) => !filters.includes(item.clusterNodeId),
+          )
+        : configClustersList.value?.filter(
+              (item: any) => !filters.includes(item.id),
+          );
     cluster.forEach((item, index) => {
         clustersListIndex.value[index] = newConfigRef?.map((i: any) => {
-            if(shareCluster.value){
+            if (shareCluster.value) {
                 return {
                     value: i.clusterNodeId,
                     label: i.clusterNodeId,
-                }
+                };
             } else {
                 return {
                     value: i.id,
                     label: i.name,
-                }
+                };
             }
-        })
-        if(item.serverId) {
+        });
+        if (item.serverId) {
             clustersListIndex.value[index].push({
                 value: item.serverId,
-                label: item.serverId
-            })
+                label: item.serverId,
+            });
         }
     });
 };
@@ -1334,7 +1368,7 @@ const changeServerId = async (value: string | undefined, index: number) => {
     configuration.host = undefined;
     configuration.port = undefined;
     hostOptionsIndex.value[index] = [];
-    if(value){
+    if (value) {
         updateClustersListIndex();
     }
 };
@@ -1342,16 +1376,16 @@ const changeHost = (
     serverId: string | undefined,
     value: string | undefined,
     index: number,
-    flag?: boolean
+    flag?: boolean,
 ) => {
-    if(dynamicValidateForm.cluster?.[index]){
+    if (dynamicValidateForm.cluster?.[index]) {
         const { configuration } = dynamicValidateForm.cluster?.[index];
-        if(!flag){
+        if (!flag) {
             configuration.port = undefined;
         }
-        const checked = resourcesClusters.value?.[serverId || '']
-        if(checked){
-            getPortOptions(checked, index)
+        const checked = resourcesClusters.value?.[serverId || ''];
+        if (checked) {
+            getPortOptions(checked, index);
         }
     }
 };
@@ -1420,8 +1454,11 @@ const getSupports = async () => {
             label: item.name,
             value: item.id,
         }));
-        if (!typeOptions.value.every((item : any) => item.value === 'UDP') && !NetworkType) {
-          formData.value.type = typeOptions.value[0].value
+        if (
+            !typeOptions.value.every((item: any) => item.value === 'UDP') &&
+            !NetworkType
+        ) {
+            formData.value.type = typeOptions.value[0].value;
         }
     }
 };
@@ -1439,12 +1476,12 @@ const getCertificates = async () => {
 const getResourcesCurrent = () => {
     resourcesCurrent().then((resp: any) => {
         if (resp.status === 200) {
-            _typeStore.setConfigRef(resp.result || [])
+            _typeStore.setConfigRef(resp.result || []);
 
-            const clusterNodeId = resp.result?.[0]?.clusterNodeId
-            const _resourcesClusters = cloneDeep(resourcesClusters.value || {})
-            _resourcesClusters[clusterNodeId] = resp.result
-            _typeStore.setResourcesClusters(_resourcesClusters)
+            const clusterNodeId = resp.result?.[0]?.clusterNodeId;
+            const _resourcesClusters = cloneDeep(resourcesClusters.value || {});
+            _resourcesClusters[clusterNodeId] = resp.result;
+            _typeStore.setResourcesClusters(_resourcesClusters);
             getPortOptions(resp.result);
         }
     });
@@ -1453,7 +1490,7 @@ const getResourcesCurrent = () => {
 const getResourcesClusters = () => {
     resourceClusters().then((resp) => {
         if (resp.status === 200) {
-            configClustersList.value = resp.result as any[]
+            configClustersList.value = resp.result as any[];
         }
     });
 };
@@ -1502,7 +1539,7 @@ onMounted(() => {
     getSupports();
     getCertificates();
     getResourcesCurrent();
-    if(isNoCommunity){
+    if (isNoCommunity) {
         getResourcesClusters();
     }
     getDetail();

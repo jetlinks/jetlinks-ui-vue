@@ -22,15 +22,7 @@
                                 playStatus = 2;
                             }
                         "
-                        :on-ended="
-                            () => {
-                                playStatus = 0;
-                                if (playTimeNode && isEnded) {
-                                    isEnded = true;
-                                    playTimeNode.onNextPlay();
-                                }
-                            }
-                        "
+                        :on-ended="onEnded"
                         :on-error="
                             () => {
                                 playStatus = 0;
@@ -38,7 +30,7 @@
                         "
                         :on-time-update="
                             (e) => {
-                                playTime = e;
+                                playTime = e.currentTime;
                             }
                         "
                     />
@@ -140,26 +132,14 @@
                                                     />
                                                 </a>
                                             </j-tooltip>
-                                            <j-tooltip
-                                                key="download"
-                                                :title="
-                                                    type !== 'local'
-                                                        ? '下载录像文件'
-                                                        : item.isServer
-                                                        ? '查看'
-                                                        : '下载到云端'
+                                            <IconNode
+                                                :type="type"
+                                                :item="item"
+                                                :on-cloud-view="cloudView"
+                                                :on-down-load="
+                                                    () => downloadClick(item)
                                                 "
-                                            >
-                                                <IconNode
-                                                    :type="type"
-                                                    :item="item"
-                                                    :on-cloud-view="cloudView"
-                                                    :on-down-load="
-                                                        () =>
-                                                            downloadClick(item)
-                                                    "
-                                                />
-                                            </j-tooltip>
+                                            />
                                         </template>
 
                                         <div>
@@ -179,7 +159,6 @@
                                         </div>
                                     </j-list-item>
                                 </template>
-                                <div></div>
                             </j-list>
                         </div>
                     </j-spin>
@@ -233,13 +212,11 @@ const queryLocalRecords = async (date: Dayjs) => {
             startTime: date.format('YYYY-MM-DD 00:00:00'),
             endTime: date.format('YYYY-MM-DD 23:59:59'),
         };
-        const localResp = await playBackApi.queryRecordLocal(
-            deviceId.value,
-            channelId.value,
-            params,
-        ).finally(()=>{
-            loading.value = false;
-        })
+        const localResp = await playBackApi
+            .queryRecordLocal(deviceId.value, channelId.value, params)
+            .finally(() => {
+                loading.value = false;
+            });
         if (localResp.status === 200 && localResp.result.length) {
             const serviceResp = await playBackApi.recordsInServer(
                 deviceId.value,
@@ -326,6 +303,15 @@ const downloadClick = async (item: recordsItemType) => {
     downNode.click();
     document.body.removeChild(downNode);
 };
+
+const onEnded = () => {
+  playStatus.value = 0;
+  if (playTimeNode && !isEnded.value) {
+    isEnded.value = true;
+    playTimeNode.value.onNextPlay();
+  }
+}
+
 
 onMounted(() => {
     const _type = route.query.type as string;

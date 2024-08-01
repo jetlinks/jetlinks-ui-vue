@@ -25,7 +25,7 @@
                         >
                             <ValueItem
                                 v-model:modelValue="record.value"
-                                :itemType="record.type"
+                                :itemType="record.type || record.valueType"
                                 :options="
                                     record.type === 'enum'
                                         ? (
@@ -36,7 +36,7 @@
                                                   value: item.value,
                                               };
                                           })
-                                        : record.type === 'boolean'
+                                        : record.type === 'boolean' || record.valueType === 'boolean'
                                         ? [
                                               { label: '是', value: true },
                                               { label: '否', value: false },

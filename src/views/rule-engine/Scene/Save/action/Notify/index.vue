@@ -2,7 +2,7 @@
     <j-modal
         title="执行动作"
         visible
-        :width="800"
+        :width="900"
         @cancel="onCancel"
         @ok="onOk"
         :maskClosable="false"
@@ -234,5 +234,15 @@ const onOk = async () => {
 
 .steps-content {
     width: 100%;
+
+  :deep(.JSearch-item) {
+    .JSearch-item--column {
+      width: 130px !important;
+    }
+
+    .JSearch-item--termType {
+      width: 110px !important;
+    }
+  }
 }
 </style>

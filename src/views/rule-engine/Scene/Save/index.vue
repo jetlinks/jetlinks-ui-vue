@@ -2,7 +2,7 @@
   <page-container>
     <FullPage>
       <div class='scene-warp'>
-        <div class='header'>
+        <div class='header' v-if="data.name">
           <Ellipsis :tooltip='data.name' style='max-width: 50%'>
             <span class='title'>{{ data.name }}</span>
           </Ellipsis>
@@ -10,24 +10,27 @@
             <img :src='TriggerHeaderIcon[data.triggerType]' />
             {{ keyByLabel[data.triggerType] }}
           </div>
+          <div style='flex: 1 1 0;min-width: 0;margin-left: 8px'>
+            <Description v-model:value="data.description" />
+          </div>
         </div>
         <j-form ref='sceneForm' :model='data' :colon='false' layout='vertical'>
-          <Device v-if='data.triggerType === "device"' />
+          <Device ref="deviceRef" v-if='data.triggerType === "device"' />
           <Manual v-else-if='data.triggerType === "manual"' />
           <Timer v-else-if='data.triggerType === "timer"' />
-          <j-form-item
-          >
-            <template #label>
-              <TitleComponent data='说明' style='font-size: 14px;' />
-            </template>
-            <j-textarea
-                v-model:value="data.description"
-                placeholder='请输入说明'
-                :rows="4"
-                show-count
-                :maxLength="200"
-            />
-          </j-form-item>
+<!--          <j-form-item-->
+<!--          >-->
+<!--            <template #label>-->
+<!--              <TitleComponent data='说明' style='font-size: 14px;' />-->
+<!--            </template>-->
+<!--            <j-textarea-->
+<!--                v-model:value="data.description"-->
+<!--                placeholder='请输入说明'-->
+<!--                :rows="4"-->
+<!--                show-count-->
+<!--                :maxLength="200"-->
+<!--            />-->
+<!--          </j-form-item>-->
         </j-form>
         <PermissionButton
           type='primary'
@@ -53,6 +56,8 @@ import Timer from './Timer/index.vue'
 import { modify } from '@/api/rule-engine/scene'
 import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@/utils/comm';
+import Description from './components/Description.vue'
+import {handleFeatures} from "@/views/rule-engine/Scene/Save/util";
 
 const sceneStore = useSceneStore()
 const menuStore = useMenuStore()
@@ -62,18 +67,28 @@ const { getDetail, refresh } = sceneStore
 const route = useRoute();
 const sceneForm = ref()
 const loading = ref(false)
+const deviceRef = ref()
 
 const save = async () => {
-  const formData = await sceneForm.value.validateFields()
+  const formData = await sceneForm.value.validateFields().catch(err => {
+    const names = err.errorFields[0].name
+    deviceRef.value?.changePaneIndex(names[1])
+  })
   if (formData) {
     loading.value = true
     const branches = data.value.branches?.filter(item => item)
-    const resp: any = await modify(data.value.id!, { ...data.value, branches }).then(res => res).catch(() => {
+    const features = handleFeatures(branches)
+    const resp: any = await modify(data.value.id!, { ...data.value, features, branches }).then(res => res).catch(() => {
       loading.value = false
     })
     loading.value = false
     if (resp.success) {
-      menuStore.jumpPage('rule-engine/Scene');
+      if ((window as any).onTabSaveSuccess) {
+        (window as any).onTabSaveSuccess(resp);
+        setTimeout(() => window.close(), 300);
+      } else {
+        menuStore.jumpPage('rule-engine/Scene');
+      }
       onlyMessage('操作成功');
     }
   }

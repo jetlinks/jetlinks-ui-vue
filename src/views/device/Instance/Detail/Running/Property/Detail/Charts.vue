@@ -4,15 +4,11 @@
             <j-space>
                 <div>
                     统计周期：
-                    <j-select v-model:value="cycle" style="width: 120px">
-                        <j-select-option value="*" v-if="_type"
-                            >实际值</j-select-option
-                        >
-                        <j-select-option value="1m">按分钟统计</j-select-option>
-                        <j-select-option value="1h">按小时统计</j-select-option>
-                        <j-select-option value="1d">按天统计</j-select-option>
-                        <j-select-option value="1w">按周统计</j-select-option>
-                        <j-select-option value="1M">按月统计</j-select-option>
+                    <j-select
+                        v-model:value="cycle"
+                        style="width: 120px"
+                        :options="periodOptions"
+                    >
                     </j-select>
                 </div>
                 <div v-if="cycle !== '*' && _type">
@@ -38,8 +34,7 @@ import { getPropertiesInfo, getPropertiesList } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import Chart from './Chart.vue';
 import * as echarts from 'echarts';
-
-const list = ['int', 'float', 'double', 'long'];
+import dayjs from 'dayjs';
 
 const prop = defineProps({
     data: {
@@ -52,16 +47,18 @@ const prop = defineProps({
     },
 });
 
-const cycle = ref<string>('*');
+const cycle = ref<string>();
 const agg = ref<string>('AVG');
 const loading = ref<boolean>(false);
 const chartsList = ref<any[]>([]);
 const instanceStore = useInstanceStore();
+const periodOptions = ref<any>([]);
 const options = ref({});
+const list = ['int', 'float', 'double', 'long'];
 
 const _type = computed(() => {
     const flag = list.includes(prop.data?.valueType?.type || '');
-    cycle.value = flag ? '*' : '1m';
+    // cycle.value = flag ? '*' : '1m';
     return flag;
 });
 
@@ -77,7 +74,7 @@ const queryChartsAggList = async () => {
         ],
         query: {
             interval: cycle.value,
-            format: 'yyyy-MM-dd HH:mm:ss',
+            format: cycle.value === '1d' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss',
             from: prop.time[0],
             to: prop.time[1],
         },
@@ -85,12 +82,17 @@ const queryChartsAggList = async () => {
         loading.value = false;
     });
     if (resp.status === 200) {
+        let beginTime;
+        let endTime;
+        if (cycle.value === '1d') {
+            beginTime = dayjs(prop.time[0]).format('YYYY-MM-DD');
+            endTime = dayjs(prop.time[1]).format('YYYY-MM-DD');
+        } else {
+            beginTime = dayjs(prop.time[0]).format('YYYY-MM-DD HH:mm:ss');
+            endTime = dayjs(prop.time[1]).format('YYYY-MM-DD HH:mm:ss');
+        }
+
         const dataList: any[] = [
-            {
-                year: prop.time[1],
-                value: undefined,
-                type: prop.data?.name || '',
-            },
         ];
         (resp.result as any[]).forEach((i: any) => {
             dataList.push({
@@ -100,12 +102,27 @@ const queryChartsAggList = async () => {
                 type: prop.data?.name || '',
             });
         });
-        dataList.push({
-            year: prop.time[0],
-            value: undefined,
-            type: prop.data?.name || '',
-        });
         chartsList.value = (dataList || []).reverse();
+        if (
+            !chartsList.value?.[0]?.year ||
+            chartsList.value[0].year !== beginTime
+        ) {
+            chartsList.value.unshift({
+                year: prop.time[0],
+                value: undefined,
+                type: prop.data?.name || '',
+            });
+        }
+        if (
+            !chartsList.value?.[chartsList.value.length - 1]?.year ||
+            chartsList.value[chartsList.value.length - 1].year !== endTime
+        ) {
+            chartsList.value.push({
+                year: prop.time[1],
+                value: undefined,
+                type: prop.data?.name || '',
+            });
+        }
     }
 };
 
@@ -171,7 +188,9 @@ const getOptions = (arr: any[]) => {
             type: 'category',
             data: arr.map((item) => {
                 return echarts.format.formatTime(
-                    'yyyy-MM-dd\nhh:mm:ss',
+                    cycle.value === '1d'
+                        ? 'yyyy-MM-dd'
+                        : 'yyyy-MM-dd\nhh:mm:ss',
                     item.year,
                     false,
                 );
@@ -186,11 +205,11 @@ const getOptions = (arr: any[]) => {
             {
                 type: 'inside',
                 start: 0,
-                end: 10,
+                end: 100,
             },
             {
                 start: 0,
-                end: 10,
+                end: 100,
             },
         ],
         tooltip: {
@@ -209,6 +228,69 @@ const getOptions = (arr: any[]) => {
         ],
     };
 };
+watch(
+    () => prop.time,
+    (val) => {
+        const diffInSeconds = dayjs(val[1]).diff(dayjs(val[0]), 'minute');
+        if (diffInSeconds < 60) {
+            periodOptions.value = [
+                {
+                    label: '实际值',
+                    value: '*',
+                },
+                {
+                    label: '按分钟统计',
+                    value: '1m',
+                },
+            ];
+            cycle.value = '*';
+        } else if (diffInSeconds < 1440) {
+            periodOptions.value = [
+                {
+                    label: '实际值',
+                    value: '*',
+                },
+                {
+                    label: '按分钟统计',
+                    value: '1m',
+                },
+                {
+                    label: '按小时统计',
+                    value: '1h',
+                },
+            ];
+            cycle.value = '*';
+        } else if (diffInSeconds < 43200) {
+            periodOptions.value = [
+                {
+                    label: '按小时统计',
+                    value: '1h',
+                },
+                {
+                    label: '按天统计',
+                    value: '1d',
+                },
+            ];
+            cycle.value = '1h';
+        } else {
+            periodOptions.value = [
+                {
+                    label: '按天统计',
+                    value: '1d',
+                },
+                {
+                    label: '按周统计',
+                    value: '1w',
+                },
+            ];
+            cycle.value = '1d';
+        }
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 
 watch(
     () => [cycle.value, agg.value, prop.time],

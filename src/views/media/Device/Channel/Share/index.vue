@@ -1,5 +1,5 @@
 <template>
-    <ShareLive :visible="true" type="share" :data="playData"/>
+    <ShareLive :visible="true" type="share" :data="playData" :readOnly="true"/>
 </template>
 
 <script lang="ts" setup>

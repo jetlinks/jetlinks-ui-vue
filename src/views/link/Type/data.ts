@@ -141,7 +141,7 @@ const sizeValidator = (_rule:any, value: number):Promise<any> =>{
             return reject(_rule.message);
         }
     })
-} 
+}
 export const Rules = {
     name: [
         {
@@ -150,7 +150,7 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     type: [
@@ -230,7 +230,7 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     username: [
@@ -240,7 +240,7 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     password: [
@@ -250,13 +250,13 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     topicPrefix: [
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     maxMessageSize: [
@@ -283,7 +283,7 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     parserType: [
@@ -299,7 +299,7 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     lang: [
@@ -309,7 +309,7 @@ export const Rules = {
         },
         {
             max: 64,
-            message: '最大可输入64个字符',
+            message: '最多可输入64个字符',
         },
     ],
     script: [

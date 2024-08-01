@@ -41,7 +41,11 @@
                     <template #action="slotProps">
                         <j-space :size="16">
                             <j-tooltip>
-                                <template #title>{{ slotProps?.options?.LowCode ? '低码创建的菜单不支持编辑' : '编辑' }}</template>
+                                <template #title>{{
+                                    slotProps?.options?.LowCode
+                                        ? '低码创建的菜单不支持编辑'
+                                        : '编辑'
+                                }}</template>
                                 <j-button
                                     style="padding: 0"
                                     type="link"
@@ -54,8 +58,16 @@
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
-                                :tooltip="{ title: slotProps.level >= 3 ? '仅支持3级菜单' :   '新增子菜单' }"
-                                :disabled="slotProps.level >= 3 || slotProps?.options?.LowCode"
+                                :tooltip="{
+                                    title:
+                                        slotProps.level >= 3
+                                            ? '仅支持3级菜单'
+                                            : '新增子菜单',
+                                }"
+                                :disabled="
+                                    slotProps.level >= 3 ||
+                                    slotProps?.options?.LowCode
+                                "
                                 @click="table.addChildren(slotProps)"
                             >
                                 <AIcon type="PlusCircleOutlined" />
@@ -84,19 +96,19 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import { getMenuTree_api, delMenuInfo_api } from '@/api/system/menu';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/store/userInfo';
-import { USER_CENTER_MENU_CODE,messageSubscribe } from '@/utils/consts'
+import { USER_CENTER_MENU_CODE, messageSubscribe } from '@/utils/consts';
 import { storeToRefs } from 'pinia';
 import { onlyMessage } from '@/utils/comm';
 
 const permission = 'system/Menu';
 
 const router = useRouter();
-const userInfoStore = useUserInfo()
-const { userInfos } = storeToRefs(userInfoStore)
+const userInfoStore = useUserInfo();
+const { userInfos } = storeToRefs(userInfoStore);
 
 const admin = computed(() => {
-  return userInfos.value?.username === 'admin';
-})
+    return userInfos.value?.username === 'admin';
+});
 
 const columns = [
     {
@@ -196,15 +208,15 @@ const table = reactive({
                     ],
                 },
                 {
-                  type: 'or',
-                  terms:[
-                    {
-                      value:"%show\":true%",
-                      termType:"like",
-                      column:"options"
-                    }
-                  ]
-            }
+                    type: 'or',
+                    terms: [
+                        {
+                            value: '%show":true%',
+                            termType: 'like',
+                            column: 'options',
+                        },
+                    ],
+                },
             ],
         };
         const params = {
@@ -223,7 +235,12 @@ const table = reactive({
         return {
             code: resp.message,
             result: {
-                data: resp.result?.filter((item: { code: string }) => ![USER_CENTER_MENU_CODE,messageSubscribe].includes(item.code)),
+                data: resp.result?.filter(
+                    (item: { code: string }) =>
+                        ![USER_CENTER_MENU_CODE, messageSubscribe].includes(
+                            item.code,
+                        ),
+                ),
                 pageIndex: resp.pageIndex,
                 pageSize: resp.pageSize,
                 total: resp.total,
@@ -238,7 +255,6 @@ const table = reactive({
                 row.url || ''
             }&sortIndex=${sortIndex + 1}`,
         );
-
     },
     // 跳转至详情页
     toDetails: (row: any) => {
@@ -250,14 +266,14 @@ const table = reactive({
     },
     // 删除
     clickDel: (row: any) => {
-        console.log(row.id);
-
-        delMenuInfo_api(row.id).then((resp: any) => {
+        const response = delMenuInfo_api(row.id);
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
                 onlyMessage('操作成功!');
             }
         });
+        return response;
     },
     // 刷新列表
     refresh: () => {

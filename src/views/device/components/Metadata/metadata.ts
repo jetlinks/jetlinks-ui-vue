@@ -2,7 +2,7 @@ import { saveProductMetadata } from "@/api/device/product";
 import { saveMetadata } from "@/api/device/instance";
 import type { DeviceInstance } from "../../Instance/typings";
 import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "../../Product/typings";
-import { differenceBy , cloneDeep } from "lodash-es";
+import { omit } from "lodash-es";
 
 const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   const ids = productMetaData.map((item: any) => item.id)
@@ -51,8 +51,10 @@ const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   // }
   // console.log(metadata, type)
   metadata[type] = (item || []).sort((a, b) => b?.sortsIndex - a?.sortsIndex) as any[]
+
   data.metadata = JSON.stringify(metadata);
   onEvent?.(data.metadata)
+
   return data;
 };
 
@@ -70,11 +72,13 @@ export const asyncUpdateMetadata = (
       return saveProductMetadata(data);
     case 'device':
       const metadata = JSON.parse(data.metadata || '{}')
-      const dealMetadata = cloneDeep(metadata)
       const productMetaData = JSON.parse(data?.productMetadata || '{}')
+      const dealMetadata = JSON.parse(data.metadata || '{}')
       // 筛选出产品的物模型 剔除不传递给接口保存
       const productMetaDataMap = new Map()
+
       Object.keys(productMetaData).forEach((key:any)=>{
+      console.log('asyncUpdateMetadata',productMetaData, key)
         if(Array.isArray(productMetaData[key])){
            const ids = productMetaData[key].map((item:any)=>{
             return item.id
@@ -90,7 +94,17 @@ export const asyncUpdateMetadata = (
           })
         }
       })
-      return saveMetadata(data.id, dealMetadata);
+
+      const newMetadata = Object.keys(metadata).reduce((prev, key) => {
+        const productIds = new Set(productMetaData[key]?.map(item => item.id) || [])
+        console.log(metadata[key])
+        prev[key] = metadata[key].filter(item => !productIds.has(item.id))
+        return prev
+      }, { })
+
+      console.log(dealMetadata, newMetadata)
+
+      return saveMetadata(data.id, newMetadata);
   }
 };
 

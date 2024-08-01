@@ -216,15 +216,18 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
                 title: `确认${stateText}?`,
-                onConfirm: async () => {
-                    let res =
+                onConfirm: () => {
+                    let response =
                         state === 'enabled'
-                            ? await disable(data.id)
-                            : await enalbe(data.id);
-                    if (res.success) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value?.reload();
-                    }
+                            ? disable(data.id)
+                            : enalbe(data.id);
+                    response.then((res) => {
+                        if (res.success) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value?.reload();
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -237,12 +240,15 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const res = await remove(data.id);
-                    if (res.success) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value.reload();
-                    }
+                onConfirm: () => {
+                    const response = remove(data.id);
+                    response.then((res) => {
+                        if (res.success) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value.reload();
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',

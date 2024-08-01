@@ -12,7 +12,7 @@ const getParams = (dt: any) => {
             return {
                 limit: 7,
                 interval: '1d',
-                format: 'YYYY-MM-dd HH:mm',
+                format: 'YYYY-MM-dd',
             };
         case 'hour':
             return {
@@ -41,7 +41,7 @@ const getParams = (dt: any) => {
                 return {
                     limit: Math.abs(Math.ceil(time / days)) + 1,
                     interval: '1d',
-                    format: 'YYYY-MM-dd HH:mm',
+                    format: 'YYYY-MM-dd',
                 };
             } else if (time > days*90) {
                 return {
@@ -53,7 +53,7 @@ const getParams = (dt: any) => {
                 return {
                     limit: Math.abs(Math.ceil(time / days)) + 1,
                     interval: '1d',
-                    format: 'YYYY-MM-dd HH:mm',
+                    format: 'YYYY-MM-dd',
                 };
             }
     }
@@ -86,7 +86,7 @@ export const pointParams = (data: any) => {
                 from: Number(data.time.time[0]),
                 to: Number(data.time.time[1]),
                 interval: getParams(data.time).interval,
-                format: 'YYYY-MM-dd HH:mm',
+                format: getParams(data.time).format
             },
         },
     ];

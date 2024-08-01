@@ -104,10 +104,11 @@ export const modifySearchColumnValue = (e: any, column: object) => {
  * @param msg 消息内容
  * @param type 消息类型
  */
-export const onlyMessage = (msg: string, type: 'success' | 'error' | 'warning' = 'success') => {
+export const onlyMessage = (msg: string, type: 'success' | 'error' | 'warning' = 'success', extra?: any) => {
   message[type]({
     content: msg,
-    key: type
+    key: type,
+    ...extra
   })
 }
 
@@ -184,4 +185,12 @@ export const getBase64 = (img: File, callback: (base64Url: string) => void) => {
     console.log(result)
     callback(result.target.result)
   }
+}
+
+export const isFullScreen = () => {
+  return !!(document.fullscreen ||
+      document.mozFullScreen ||
+      document.webkitIsFullScreen ||
+      document.webkitFullScreen ||
+      document.msFullScreen)
 }

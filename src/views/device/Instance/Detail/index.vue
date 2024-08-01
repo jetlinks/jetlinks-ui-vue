@@ -98,7 +98,7 @@
             />
         </template>
         <FullPage>
-            <div style="padding: 24px;height: 100%">
+            <div style="padding: 24px; height: 100%">
                 <component
                     :is="tabs[instanceStore.tabActiveKey]"
                     v-bind="{ type: 'device' }"
@@ -122,14 +122,18 @@ import Modbus from './Modbus/index.vue';
 import OPCUA from './OPCUA/index.vue';
 import EdgeMap from './EdgeMap/index.vue';
 import Parsing from './Parsing/index.vue';
-import GateWay from './GateWay/index.vue'
+import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
+import AlarmRecord from './AlarmRecord/index.vue';
+import Firmware from './Firmware/index.vue';
+import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import { EventEmitter } from '@/utils/utils'
+import { EventEmitter } from '@/utils/utils';
+import { usePermissionStore } from '@/store/permission';
 
 const menuStory = useMenuStore();
 
@@ -166,6 +170,14 @@ const initList = [
         key: 'Log',
         tab: '日志管理',
     },
+    {
+        key: 'CardManagement',
+        tab: '物联网卡',
+    },
+    {
+        key: 'Firmware',
+        tab: '远程升级',
+    },
 ];
 
 const list = ref([...initList]);
@@ -183,9 +195,13 @@ const tabs = {
     Parsing,
     Log,
     MetadataMap,
-  GateWay
+    GateWay,
+    AlarmRecord,
+    CardManagement,
+    Firmware,
 };
 
+const permissionStore = usePermissionStore();
 const getStatus = (id: string) => {
     statusRef.value = getWebSocket(
         `instance-editor-info-status-${id}`,
@@ -193,8 +209,10 @@ const getStatus = (id: string) => {
         {
             deviceId: id,
         },
-    ).subscribe((message:any) => {
-        if(message.payload?.value?.type !== instanceStore.current?.state.value){
+    ).subscribe((message: any) => {
+        if (
+            message.payload?.value?.type !== instanceStore.current?.state.value
+        ) {
             instanceStore.refresh(id);
         }
     });
@@ -202,6 +220,12 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
+    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view')) {
+        list.value.push({
+            key: 'AlarmRecord',
+            tab: '预处理数据',
+        });
+    }
     if (
         instanceStore.current?.protocol &&
         !['modbus-tcp', 'opc-ua'].includes(instanceStore.current?.protocol) &&
@@ -245,10 +269,10 @@ const getDetail = () => {
         instanceStore.current?.protocol === 'collector-gateway' &&
         !keys.includes('GateWay')
     ) {
-      list.value.push({
-        key: 'GateWay',
-        tab: '数采映射',
-      });
+        list.value.push({
+            key: 'GateWay',
+            tab: '数采映射',
+        });
     }
     if (
         instanceStore.current?.deviceType?.value === 'gateway' &&
@@ -277,24 +301,26 @@ const getDetail = () => {
         ) &&
         !keys.includes('MetadataMap')
     ) {
-        list.value.push({ key: 'MetadataMap', tab: '物模型映射'});
+        list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
     }
 };
 
 const initPage = async (newId: any) => {
-  await instanceStore.refresh(String(newId));
-  getStatus(String(newId));
-  list.value = [...initList];
-  getDetail();
-  instanceStore.tabActiveKey = 'Info';
-}
+    await instanceStore.refresh(String(newId));
+    getStatus(String(newId));
+    list.value = [...initList];
+    getDetail();
+    instanceStore.tabActiveKey = 'Info';
+};
 
 onBeforeRouteUpdate((to: any) => {
-  if (to.params?.id!==instanceStore.current.id && to.name === 'device/Instance/Detail') {
-    initPage(to.params?.id)
-  }
-})
-
+    if (
+        to.params?.id !== instanceStore.current.id &&
+        to.name === 'device/Instance/Detail'
+    ) {
+        initPage(to.params?.id);
+    }
+});
 
 const getDetailFn = async () => {
     const _id = route.params?.id;
@@ -303,8 +329,11 @@ const getDetailFn = async () => {
         getStatus(String(_id));
         list.value = [...initList];
         getDetail();
+        instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+    }else{
+        instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
     }
-    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+    
 };
 
 onMounted(() => {
@@ -313,31 +342,37 @@ onMounted(() => {
 
 const onTabChange = (e: string) => {
     if (instanceStore.tabActiveKey === 'Metadata') {
-      EventEmitter.emit('MetadataTabs', () => {
-        instanceStore.tabActiveKey = e;
-      })
+        EventEmitter.emit('MetadataTabs', () => {
+            instanceStore.tabActiveKey = e;
+        });
     } else {
-      instanceStore.tabActiveKey = e;
+        instanceStore.tabActiveKey = e;
     }
 };
 
-const handleAction = async () => {
+const handleAction = () => {
     if (instanceStore.current?.id) {
-        const resp = await _deploy(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _deploy(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response;
     }
 };
 
-const handleDisconnect = async () => {
+const handleDisconnect = () => {
     if (instanceStore.current?.id) {
-        const resp = await _disconnect(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _disconnect(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response;
     }
 };
 
@@ -355,7 +390,7 @@ const jumpProduct = () => {
 };
 
 onUnmounted(() => {
-    instanceStore.current = {} as any
+    instanceStore.current = {} as any;
     statusRef.value && statusRef.value.unsubscribe();
 });
 </script>

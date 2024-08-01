@@ -16,4 +16,6 @@ export type ITypes = {
     object: string
     geoPoint: string
     file: string
+
+    time: string
 }

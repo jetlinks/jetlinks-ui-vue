@@ -1,29 +1,37 @@
 <template>
   <div :class='classNames'>
-    <div
-      v-for='item in options'
-      :key='item.value'
-      :class='[
-        "trigger-way-item",
-        value === item.value ? "active" : "",
-        labelBottom ? "label-bottom" : ""
-        ]'
-      @click='() => click(item.value)'
-    >
-      <div class='way-item-title'>
-        <span class='label'>{{ item.label }}</span>
-        <j-popover v-if='item.tip' :content='item.tip'>
-          <AIcon type='QuestionCircleOutlined' class='icon' />
-        </j-popover>
+
+      <div
+        v-for='item in options'
+        :key='item.value'
+        :class='[
+          "trigger-way-item",
+          value === item.value ? "active" : "",
+          labelBottom ? "label-bottom" : "",
+          item.disabled ? "item-disabled" : ""
+          ]'
+        @click='() => click(item.value, item)'
+      >
+        <div class='way-item-title'>
+          <span class='label'>{{ item.label }}</span>
+          <j-popover v-if='item.tip' :content='item.tip'>
+            <AIcon type='QuestionCircleOutlined' class='icon' />
+          </j-popover>
+        </div>
+        <div class='way-item-image'>
+          <img
+            width='48'
+            v-bind='item.imgProps'
+            :src='item.img'
+          />
+        </div>
+        <a-tooltip
+          title="该设备不支持"
+          v-if="item.disabled"
+        >
+          <div class="trigger-way-disabled-tip"></div>
+        </a-tooltip>
       </div>
-      <div class='way-item-image'>
-        <img
-          width='48'
-          v-bind='item.imgProps'
-          :src='item.img'
-        />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -77,9 +85,11 @@ const classNames = computed(() => {
 
 const emit = defineEmits<Emit>()
 
-const click = (value: string) => {
-  emit('update:value', value)
-  emit('select', value)
+const click = (value: string, record: any) => {
+  if (!record.disabled) {
+    emit('update:value', value)
+    emit('select', value)
+  }
 }
 
 </script>
@@ -102,6 +112,19 @@ const click = (value: string) => {
     border-radius: 2px;
     cursor: pointer;
     transition: all 0.3s;
+    position: relative;
+
+    .trigger-way-disabled-tip {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    &.item-disabled {
+      cursor: not-allowed;
+    }
 
     .way-item-title {
       span {
@@ -119,21 +142,14 @@ const click = (value: string) => {
 
     .way-item-image {
       margin: 0 !important;
-      opacity: 0.6;
     }
 
     &:hover {
-      //color: @primary-color-hover;
-      .way-item-image {
-        opacity: 0.8;
-      }
+      border-color: @primary-color-hover;
     }
 
     &.active {
       border-color: @primary-color-active;
-      .way-item-image {
-        opacity: 1;
-      }
     }
 
     &.label-bottom {
@@ -155,7 +171,6 @@ const click = (value: string) => {
 
       &:hover {
         color: initial;
-        opacity: 0.6;
       }
 
       &.active {

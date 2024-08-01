@@ -208,6 +208,7 @@ const columns = [
         title: '名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true,
     },
     {
         title: '状态',
@@ -219,6 +220,7 @@ const columns = [
         title: '说明',
         dataIndex: 'description',
         key: 'description',
+        ellipsis: true,
     },
     {
         title: '操作',
@@ -272,7 +274,7 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.state !== 'disable' ? '禁用' : '启用'}?`,
+                title: `确认${data.state.value !== 'disable' ? '禁用' : '启用'}?`,
                 onConfirm: async () => {
                     let response = undefined;
                     if (data.state?.value !== 'started') {

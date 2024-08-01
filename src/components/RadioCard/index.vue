@@ -114,15 +114,15 @@ const handleRadio = (item: any) => {
         border-radius: 2px;
         display: flex;
         align-items: center;
-        
+
         cursor: pointer;
         .img {
             width: 32px;
             height: 32px;
         }
         &.active {
-            color: #1d39c4;
-            border-color: #1d39c4;
+            color: @primary-color;
+            border-color: @primary-color;
         }
     }
 }
@@ -195,8 +195,8 @@ const handleRadio = (item: any) => {
             height: 100px;
         }
         &.active {
-            color: #1d39c4;
-            border-color: #1d39c4;
+            color: @primary-color;
+            border-color: @primary-color;
         }
 
     }

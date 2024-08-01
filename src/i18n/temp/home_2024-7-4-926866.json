@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.BasicCountCard.926510-0": "基础统计",
+		"components.BasicCountCard.926510-1": "详情",
+		"components.BasicCountCard.926510-2": "CPU使用率",
+		"components.BasicCountCard.926510-3": "JVM内存"
+	},
+	"en": {
+		"components.BasicCountCard.926510-0": "Basic statistics",
+		"components.BasicCountCard.926510-1": "details",
+		"components.BasicCountCard.926510-2": "CPU usage rate",
+		"components.BasicCountCard.926510-3": "JVM memory"
+	}
+}

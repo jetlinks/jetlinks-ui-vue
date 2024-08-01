@@ -63,49 +63,45 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <Ellipsis style="width: calc(100% - 100px)">
-                                    <span
-                                        style="
-                                            font-weight: 600;
-                                            font-size: 16px;
-                                        "
+                                <a-row>
+                                    <Ellipsis
+                                        style="max-width: calc(100% - 120px)"
                                     >
-                                        {{ slotProps.name }}
-                                    </span>
-                                </Ellipsis>
-                                <j-row>
-                                    <j-col :span="12">
-                                        <div class="content-des-title">
-                                            关联场景联动
-                                        </div>
-                                        <Ellipsis style="margin-bottom: 18px"
-                                            ><div>
-                                                {{
-                                                    (slotProps?.scene || [])
-                                                        .map(
-                                                            (item: any) =>
-                                                                item?.name,
-                                                        )
-                                                        .join(',') || ''
-                                                }}
-                                            </div></Ellipsis
+                                        <span
+                                            style="
+                                                font-weight: 600;
+                                                font-size: 16px;
+                                            "
                                         >
+                                            {{ slotProps.name }}
+                                        </span>
+                                    </Ellipsis>
+                                </a-row>
+                                <a-row>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            说明
+                                        </div>
+                                        <div style="height: 22px; width: 100%">
+                                            <Ellipsis style="max-width: 100%">
+                                                {{ slotProps.description }}
+                                            </Ellipsis>
+                                        </div>
                                     </j-col>
                                     <j-col :span="12">
-                                        <div class="content-des-title">
+                                        <div class="card-item-content-text">
                                             告警级别
                                         </div>
-                                        <Ellipsis>
-                                            {{
-                                                (defaultLevel || []).find(
-                                                    (item: any) =>
-                                                        item?.level ===
-                                                        slotProps.level,
-                                                )?.title || slotProps.level
-                                            }}
-                                        </Ellipsis>
+                                        <div style="display: flex">
+                                            <LevelIcon
+                                                :level="slotProps.level"
+                                            ></LevelIcon>
+                                            <Ellipsis>
+                                                {{ levelMap[slotProps.level] }}
+                                            </Ellipsis>
+                                        </div>
                                     </j-col>
-                                </j-row>
+                                </a-row>
                             </template>
                             <template #actions="item">
                                 <PermissionButton
@@ -133,22 +129,7 @@
                     <template #targetType="slotProps">
                         <span>{{ map[slotProps.targetType] }}</span>
                     </template>
-                    <template #level="slotProps">
-                        <Ellipsis>
-                            {{
-                                (defaultLevel || []).find(
-                                    (item) => item?.level === slotProps.level,
-                                )?.title || slotProps.level
-                            }}
-                        </Ellipsis>
-                    </template>
-                    <template #scene="slotProps">
-                        <span>{{
-                            (slotProps?.scene || [])
-                                .map((item) => item?.name)
-                                .join(',') || ''
-                        }}</span>
-                    </template>
+
                     <template #state="slotProps">
                         <BadgeStatus
                             :text="
@@ -162,6 +143,14 @@
                                 disabled: 'error',
                             }"
                         />
+                    </template>
+                    <template #level="slotProps">
+                        <div style="display: flex">
+                            <LevelIcon :level="slotProps.level"></LevelIcon>
+                            <Ellipsis>
+                                {{ levelMap[slotProps.level] }}
+                            </Ellipsis>
+                        </div>
                     </template>
                     <template #action="slotProps">
                         <j-space :size="16">
@@ -209,20 +198,24 @@ import {
     _enable,
     _disable,
     remove,
-    getScene,
 } from '@/api/rule-engine/configuration';
+import { query } from '@/api/rule-engine/log';
 import { queryLevel } from '@/api/rule-engine/config';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
-import encodeQuery from '@/utils/encodeQuery';
 import HandTrigger from './HandTrigger/index.vue';
+import { Modal } from 'ant-design-vue';
+import { useAlarmLevel } from '@/hook';
 
 const params = ref<Record<string, any>>({});
-let isAdd = ref<number>(0);
-let title = ref<string>('');
 const tableRef = ref<Record<string, any>>({});
 const menuStory = useMenuStore();
+const { levelMap } = useAlarmLevel();
+const visibleDelete = ref(false);
+const configId = ref();
+const deleteState = ref(false);
+const alarmRecordNumber = ref(0);
 const columns = [
     {
         title: '配置名称',
@@ -231,7 +224,7 @@ const columns = [
         search: {
             type: 'string',
         },
-        width: 220,
+        width: 300,
         ellipsis: true,
     },
     {
@@ -260,7 +253,38 @@ const columns = [
                 },
             ],
         },
-        width: 100,
+        width: 150,
+    },
+    {
+        title: '关联场景联动',
+        dataIndex: 'scene',
+        hideInTable:true,
+        key: 'scene',
+        search: {
+            type: 'select',
+            options: async () => {
+                const allData = await queryList({
+                    paging: false,
+                    sorts: [{ name: 'createTime', order: 'desc' }],
+                });
+                const result = allData.result?.data as any[];
+                if (allData.success && result && result.length) {
+                    const sceneDataMap = new Map(); // 用于去重
+                    result.forEach((item) => {
+                        item.scene.forEach((a: any) => {
+                            sceneDataMap.set(a.id, {
+                                label: a.name,
+                                value: a.id,
+                            });
+                        });
+                    });
+                    return [...sceneDataMap.values()];
+                }
+                return [];
+            },
+        },
+        width: 220,
+        ellipsis: true,
     },
     {
         title: '告警级别',
@@ -282,52 +306,7 @@ const columns = [
                 return [];
             },
         },
-        width: 200,
-    },
-    {
-        title: '关联场景联动',
-        dataIndex: 'scene',
-        scopedSlots: true,
-        key: 'scene',
-        search: {
-            type: 'select',
-            // defaultTermType: 'rule-bind-alarm',
-            options: async () => {
-                const allData = await queryList({
-                    paging: false,
-                    sorts: [{ name: 'createTime', order: 'desc' }],
-                });
-                const result = allData.result?.data as any[];
-                if (allData.success && result && result.length) {
-                    const sceneDataMap = new Map(); // 用于去重
-                    result.forEach((item) => {
-                        item.scene.forEach((a: any) => {
-                            sceneDataMap.set(a.id, {
-                                label: a.name,
-                                value: a.id,
-                            });
-                        });
-                    });
-
-                    return [...sceneDataMap.values()];
-                }
-
-                // const res = await getScene(
-                //     encodeQuery({
-                //         sorts: { createTime: 'desc' },
-                //     }),
-                // );
-                // if (res.status === 200) {
-                //     return res.result.map((item: any) => ({
-                //         label: item.name,
-                //         value: item.id,
-                //     }));
-                // }
-                return [];
-            },
-        },
-        width: 220,
-        ellipsis: true,
+        width: 150,
     },
     {
         title: '状态',
@@ -347,7 +326,7 @@ const columns = [
                 },
             ],
         },
-        width: 90,
+        width: 120,
     },
     {
         title: '说明',
@@ -362,14 +341,12 @@ const columns = [
         title: '操作',
         key: 'action',
         fixed: 'right',
-        width: 120,
+        width: 170,
         scopedSlots: true,
     },
 ];
 const visible = ref<boolean>(false);
 const current = ref<any>({});
-
-const defaultLevel = ref<any[]>([]);
 
 const map = {
     product: '产品',
@@ -378,32 +355,9 @@ const map = {
     other: '其他',
 };
 const handleSearch = (e: any) => {
-    const _terms = (e?.terms || []).map((item: any) => {
-        item.terms = item.terms.map((i: any) => {
-            if (i.column === 'scene') {
-                return {
-                    ...i,
-                    termType: 'rule-bind-alarm',
-                    column: 'id',
-                };
-            }
-            return i;
-        });
-        return item;
-    });
-    params.value = {
-        ...e,
-        terms: _terms,
-    };
+    params.value = e;
 };
-const queryDefaultLevel = () => {
-    queryLevel().then((res) => {
-        if (res.status === 200) {
-            defaultLevel.value = res.result?.levels || [];
-        }
-    });
-};
-queryDefaultLevel();
+
 const getActions = (
     data: Partial<Record<string, any>>,
     type?: 'card' | 'table',
@@ -426,7 +380,7 @@ const getActions = (
                 visible.value = true;
                 current.value = data;
             },
-            icon: 'LikeOutlined',
+            icon: 'icon-shoudongchufa',
         },
         {
             key: 'update',
@@ -473,6 +427,7 @@ const getActions = (
                     } else {
                         onlyMessage('操作失败！', 'error');
                     }
+                    return;
                 },
             },
         },
@@ -487,17 +442,40 @@ const getActions = (
                         : '删除',
                 placement: 'topLeft',
             },
-            popConfirm: {
-                title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await remove(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
-                },
+            onClick: async () => {
+                if (deleteState.value) {
+                    return;
+                }
+                deleteState.value = true;
+                const params = {
+                    paging: false,
+                    terms: [
+                        {
+                            termType: 'eq',
+                            column: 'alarmConfigId',
+                            value: data.id,
+                            type: 'and',
+                        },
+                    ],
+                };
+                const res = await query(params);
+                if (res.success) {
+                    alarmRecordNumber.value = res.result?.total || 0;
+                }
+                Modal.confirm({
+                    title: alarmRecordNumber.value
+                        ? `删除告警配置将同步删除相关联的${alarmRecordNumber.value}条告警记录,确认删除？`
+                        : '确认删除？',
+                    onOk() {
+                        return deleteConfig(data.id);
+                    },
+                    onCancel() {
+                        deleteState.value = false;
+                    },
+                });
+
+                visibleDelete.value = true;
+                configId.value = data.id;
             },
             icon: 'DeleteOutlined',
         },
@@ -513,9 +491,31 @@ const onSave = () => {
 const add = () => {
     menuStory.jumpPage('rule-engine/Alarm/Configuration/Save');
 };
+
+const deleteConfig = async (id: any) => {
+    const resp = await remove(id);
+    if (resp.success) {
+        onlyMessage('操作成功！');
+        refreshTable();
+    } else {
+        onlyMessage('操作失败！', 'error');
+    }
+    deleteState.value = false;
+};
+
+const refreshTable = () => {
+    visibleDelete.value = false;
+    tableRef.value.reload();
+};
 </script>
 <style lang="less" scoped>
 .content-des-title {
     font-size: 12px;
+}
+
+.card-item-content-text {
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 8px;
 }
 </style>

@@ -12,8 +12,7 @@
         <j-progress :percent="_percent" />
       </div>
       <div v-else>
-        <p>同步成功：{{ syncData.count }}条</p>
-        <p>同步失败：{{ syncData.error }}条</p>
+        <p>{{ syncData.count }}张物联卡已同步至最新状态</p>
       </div>
     </div>
     <template #footer>

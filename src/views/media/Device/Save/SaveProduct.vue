@@ -10,6 +10,25 @@
         width="660px"
     >
         <j-form ref="formRef" :model="formData" layout="vertical">
+            <j-form
+                ref="pluginFormRef"
+                :model="productData"
+                layout="vertical"
+                v-if="productTypes.length"
+            >
+                <j-form-item
+                    name="id"
+                    label="产品类型"
+                    :rules="[{ required: true, message: '请选择产品类型' }]"
+                >
+                    <j-select
+                        v-model:value="productData.id"
+                        :options="productTypes"
+                        @change="productTypeChange"
+                        placeholder="请选择产品类型"
+                    />
+                </j-form-item>
+            </j-form>
             <j-form-item
                 label="产品名称"
                 name="name"
@@ -115,10 +134,26 @@
                                 </slot>
                             </template>
                             <template #content>
-                                <h3 class="card-item-content-title">
+                                <Ellipsis
+                                    style="
+                                        cursor: pointer;
+                                        font-size: 16px;
+                                        font-weight: 700;
+                                        color: #1d39c4;
+                                        width: calc(100% - 100px);
+                                    "
+                                >
                                     {{ item.name }}
-                                </h3>
-                                <div class="desc">{{ item.description }}</div>
+                                </Ellipsis>
+                                <Ellipsis
+                                    style="
+                                        margin-top: 10px;
+                                        color: #666;
+                                        font-weight: 400;
+                                        font-size: 12px;
+                                    "
+                                    >{{ item.description }}</Ellipsis
+                                >
                                 <j-row v-if="props.channel === 'gb28181-2016'">
                                     <j-col :span="12">
                                         {{ item.channelInfo?.name }}
@@ -169,9 +204,12 @@
 <script setup lang="ts">
 import DeviceApi from '@/api/media/device';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { getProductsById, savePluginData } from '@/api/link/plugin';
 import { gatewayType } from '@/views/media/Device/typings';
 import { providerType } from '../const';
 import { usePermissionStore } from '@/store/permission';
+import { pick } from 'lodash-es';
+import { getAccessConfig } from '@/api/device/product';
 
 const isPermission = usePermissionStore().hasPermission(
     'link/AccessConfig:add',
@@ -182,7 +220,7 @@ type Emits = {
     (e: 'update:productId', data: string): void;
     (e: 'close'): void;
     (e: 'save', data: Record<string, any>): void;
-    (e: 'update:password',data:string):void
+    (e: 'update:password', data: string): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -202,6 +240,33 @@ const _vis = computed({
  * 获取接入网关
  */
 const gatewayList = ref<gatewayType[]>([]);
+
+//插件类型 插件产品映射
+const productData = reactive({
+    id: undefined,
+    metadata: {}, // 物模型
+});
+//插件类型 插件产品选择项
+const productTypes = ref([]);
+const pluginFormRef = ref();
+
+// 表单数据
+const formRef = ref();
+const formData = ref({
+    accessId: '',
+    accessName: '',
+    accessProvider: '',
+    configuration: {
+        access_pwd: '',
+        stream_mode: 'UDP',
+    },
+    deviceType: props.deviceType,
+    messageProtocol: '',
+    name: '',
+    protocolName: '',
+    transportProtocol: '',
+    metadata: '',
+});
 const getGatewayList = async () => {
     const params = {
         pageSize: 100,
@@ -226,33 +291,72 @@ const handleClick = async (e: any) => {
     formData.value.messageProtocol = e.protocolDetail.id;
     formData.value.protocolName = e.protocolDetail.name;
     formData.value.transportProtocol = e.transport;
-
-    const { result } = await DeviceApi.getConfiguration(
-        e.protocol,
-        e.transport,
-    );
-    if(e.protocol === 'onvif' && !result.scopes.find((i)=>{
-      return  i === 'product'
-    })){
-        return ''
+    if (props.channel === 'media-plugin') {
+        const res = await getProductsById(e.channelId);
+        if (res.success) {
+            productTypes.value = res.result?.map((item) => ({
+                ...item,
+                label: item.name,
+                value: item.id,
+            }));
+        }
+        const resp = await getAccessConfig('empty', e.id);
+        if (resp.success) {
+            const result = resp.result;
+            extendFormItem.value = result?.[0]?.properties?.map(
+                (item: any) => ({
+                    name: ['configuration', item.property],
+                    label: item.name,
+                    type: item.type?.type,
+                    value: item.type.expands?.defaultValue,
+                    options: item.type.elements?.map((e: any) => ({
+                        label: e.text,
+                        value: e.value,
+                    })),
+                    required: !!item.type.expands?.required,
+                    message:
+                        item.type?.type === 'enum'
+                            ? `请选择${item.name}`
+                            : `请输入${item.name}`,
+                }),
+            );
+        }
+    } else {
+        const res = await DeviceApi.getConfiguration(e.protocol, e.transport);
+        if (res.success) {
+            const result = res.result;
+            if (
+                e.protocol === 'onvif' &&
+                !result.scopes.find((i) => {
+                    return i === 'product';
+                })
+            ) {
+                return '';
+            }
+            extendFormItem.value = result?.properties?.map((item: any) => ({
+                name: ['configuration', item.property],
+                label: item.name,
+                type: item.type?.type,
+                value: item.type.expands?.defaultValue,
+                options: item.type.elements?.map((e: any) => ({
+                    label: e.text,
+                    value: e.value,
+                })),
+                required: !!item.type.expands?.required,
+                message:
+                    item.type?.type === 'enum'
+                        ? `请选择${item.name}`
+                        : `请输入${item.name}`,
+            }));
+        }
     }
-    extendFormItem.value = result?.properties?.map((item: any) => ({
-        name: ['configuration', item.property],
-        label: item.name,
-        type: item.type?.type,
-        value: item.type.expands?.defaultValue,
-        options: item.type.elements?.map((e: any) => ({
-            label: e.text,
-            value: e.value,
-        })),
-        required: !!item.type.expands?.required,
-        message:
-            item.type?.type === 'enum'
-                ? `请选择${item.name}`
-                : `请输入${item.name}`,
-    }));
 };
 
+const productTypeChange = (id: string, items: any) => {
+    productData.metadata = items?.metadata
+        ? pick(items.metadata, ['functions', 'properties', 'events', 'tags'])
+        : {};
+};
 watch(
     () => _vis.value,
     (val) => {
@@ -266,37 +370,38 @@ watch(
     },
 );
 
-// 表单数据
-const formRef = ref();
-const formData = ref({
-    accessId: '',
-    accessName: '',
-    accessProvider: '',
-    configuration: {
-        access_pwd: '',
-        stream_mode: 'UDP',
-    },
-    deviceType: props.deviceType,
-    messageProtocol: '',
-    name: '',
-    protocolName: '',
-    transportProtocol: '',
-});
-
 /**
  * 提交
  */
 const btnLoading = ref(false);
-const handleOk = () => {
+const handleOk = async () => {
+    if (pluginFormRef.value) {
+        // 插件
+        const pluginRef = await pluginFormRef.value.validate();
+        if (!pluginRef) return;
+    }
     formRef.value
         ?.validate()
         .then(async () => {
             btnLoading.value = true;
+            if (
+                productData.metadata &&
+                Object.keys(productData.metadata).length
+            ) {
+                formData.value.metadata = JSON.stringify(productData.metadata);
+            }
             const res = await DeviceApi.saveProduct(formData.value);
-            console.log(res)
             if (res.success) {
                 emit('update:productId', res.result.id);
-                emit('update:password', res.result.configuration.access_pwd)
+                emit('update:password', res.result.configuration.access_pwd);
+                if (props.channel === 'media-plugin' && productData.id) {
+                    await savePluginData(
+                        'product',
+                        formData.value.accessId,
+                        res.result.id,
+                        productData.id,
+                    ).catch(() => ({}));
+                }
                 const deployResp = await DeviceApi.deployProductById(
                     res.result.id,
                 );
@@ -340,14 +445,11 @@ const handleAdd = () => {
     .gateway-item {
         padding: 16px;
         text-align: left;
-        .card-item-content-title,
-        .desc,
         .subtitle {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-        .desc,
         .subtitle {
             margin-top: 10px;
             color: #666;

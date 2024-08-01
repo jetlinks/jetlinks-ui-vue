@@ -30,6 +30,7 @@
         <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
       <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
+      <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
     </j-descriptions>
     <template #footer>
       <j-button type="primary" @click="ok">确认</j-button>
@@ -43,6 +44,7 @@ import {omit} from "lodash-es";
 import {watch} from "vue";
 import JsonView from './JsonView.vue'
 import {getUnit} from "@/api/device/instance";
+import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
 
 const props = defineProps({
   data: {
@@ -51,6 +53,14 @@ const props = defineProps({
   },
   getPopupContainer: {
     type: Function,
+    default: undefined
+  },
+  unitOptions: {
+    type: Array,
+    default: () => []
+  },
+  type: {
+    type: String,
     default: undefined
   }
 })
@@ -63,6 +73,8 @@ const sourceMap = {
   'rule': '规则',
 }
 
+const { settingData } = useStoreType(props.type)
+
 const readTypeText = computed(() => {
   const type = {
     "read": "读",
@@ -73,7 +85,14 @@ const readTypeText = computed(() => {
   return props.data?.expands?.type?.map?.((key: string) => type[key]).join('、')
 })
 
-const unitLabel = ref('')
+const unitLabel = computed(() => {
+  let label = props.data.valueType?.unit
+  const item = props.unitOptions?.find(item => item.value === label)
+  if (item) {
+    label = item.label
+  }
+  return label
+})
 
 const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
   columns: [],
@@ -128,17 +147,17 @@ watch(() => props.data.valueType.type, () => {
   const type = props.data.valueType.type
   handleDataTable(props.data.valueType.type)
 
-  if (['float', 'double', 'int', 'long'].includes(type)) {
-    getUnit().then((res) => {
-      if (res.success) {
-        res.result.map((item) => {
-          if (item.id === props.data.valueType?.unit) {
-            unitLabel.value = item.description
-          }
-        })
-      }
-    });
-  }
+  // if (['float', 'double', 'int', 'long'].includes(type)) {
+  //   getUnit().then((res) => {
+  //     if (res.success) {
+  //       res.result.map((item) => {
+  //         if (item.id === props.data.valueType?.unit) {
+  //           unitLabel.value = item.description
+  //         }
+  //       })
+  //     }
+  //   });
+  // }
 }, { immediate: true })
 
 const cancel = () => {

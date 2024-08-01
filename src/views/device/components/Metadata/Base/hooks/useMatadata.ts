@@ -6,20 +6,28 @@ import { storeToRefs } from 'pinia'
 
 const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     data: Ref<MetadataItem[]>,
-    metadata: Ref<Partial<DeviceMetadata>>,
+    metadata: Ref<Partial<DeviceMetadata>[]>,
     noEdit: Ref<any>
     productNoEdit: Ref<any>
 } => {
     const instanceStore = useInstanceStore()
     const productStore = useProductStore()
-    const metadata = ref<Partial<DeviceMetadata>>({})
+    const metadata = ref<Partial<DeviceMetadata>[]>([])
     const noEdit = ref<any>({})
     const productNoEdit = ref<any>({})
     const data = ref<MetadataItem[]>([])
     const { current: instanceCurrent } = storeToRefs(instanceStore)
-    const { current: productCurrent } = storeToRefs(productStore)
+    const { detail: productCurrent } = storeToRefs(productStore)
+
+    const init = () => {
+        data.value = []
+        metadata.value = []
+        noEdit.value = {}
+        productNoEdit.value = {}
+    }
 
     const handleMetadata = (_metadataStr: string) => {
+
 
         if(!_metadataStr) return
 
@@ -29,7 +37,7 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
         const newMetadata = (key ? _metadata?.[key] || [] : []) as any[]
 
 
-        metadata.value = newMetadata as any
+        metadata.value = newMetadata as any[]
 
         const ids = newMetadata.map((item) => item.id)
         noEdit.value = {}
@@ -40,10 +48,17 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
             noEdit.value.source = ids
         }
 
+
         if (type === 'device' && instanceCurrent.value.productMetadata) {
             const productMetadata: any = JSON.parse(instanceCurrent.value.productMetadata)
+
             const metaArray = key ? productMetadata[key] : []
             const productIds = metaArray?.map((item:any) => item.id) || []
+            metadata.value.forEach((metaItem: any) => {
+                if (productIds.includes(metaItem.id)) {
+                    metaItem.expands = Object.assign(metaItem.expands || {}, { isProduct: true })
+                }
+            })
             // productNoEdit.value.ids = metaArray?.map((item: any) => item.id) || []
             productNoEdit.value.ids = productIds
             productNoEdit.value.id = productIds
@@ -78,6 +93,7 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     }
 
     watch(() => [instanceCurrent.value.metadata, productCurrent.value.metadata], () => {
+        init()
         if (type === 'device') {
             handleMetadata(instanceCurrent.value.metadata)
         } else {

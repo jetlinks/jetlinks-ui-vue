@@ -1,19 +1,23 @@
 <template>
-    <div class="scene-trigger-way-warp" :class="{disabled: disabled}">
+    <div class="scene-trigger-way-warp" >
         <template v-for="item in options" :key="item.value">
             <div
                 class="trigger-way-item"
-                :class="{ active: item?.value === value }"
-                :style="{width: `${cardSize}px`}"
-                @click="onSelect(item.value)"
+                :class="{
+                  active: item?.value === value,
+                  disabled: item.disabled || disabled
+                }"
+                @click="onSelect(item)"
             >
+                <div class="way-item-image">
+<!--                  <img :src="item.iconUrl" :width="imageSize" />-->
+                  <AIcon :type="item.iconUrl" />
+                </div>
                 <div class="way-item-title">
                     <p>{{ item.label }}</p>
-                    <span>{{ item.subLabel }}</span>
+                    <div>{{ item.subLabel }}</div>
                 </div>
-                <div class="way-item-image">
-                    <img :src="item.iconUrl" :width="imageSize" />
-                </div>
+
             </div>
         </template>
     </div>
@@ -43,56 +47,63 @@ const props = defineProps({
         type: Number,
         default: 48
     },
-    cardSize: {
-        type: Number,
-        default: 237
-    }
 });
 
 const emit = defineEmits(['update:value'])
 
-const onSelect = (_type: string) => {
-    if (!props.disabled) {
-      emit('update:value', _type)
+const onSelect = (record: any) => {
+    if (!props.disabled && !record.disabled) {
+      emit('update:value', record.value)
     }
 }
+
 </script>
 
 <style lang="less" scoped>
 .scene-trigger-way-warp {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px 24px;
+    display: grid;
+    gap: 24px;
     width: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
 
     .trigger-way-item {
         display: flex;
         justify-content: space-between;
         padding: 16px;
-        border: 1px solid #e0e4e8;
+        border: 1px solid transparent;
         border-radius: 2px;
         cursor: pointer;
         transition: all 0.3s;
+        background-color: #F5F5F5;
+        gap: 16px;
+        align-items: center;
 
         .way-item-title {
+          flex: 1 1 0;
+          min-width: 0;
             p {
                 margin-bottom: 8px;
                 font-weight: bold;
-                font-size: 16px;
+                font-size: 14px;
             }
 
-            span {
-                color: rgba(#000, 0.35);
+            div {
+                color: #777;
                 font-size: 12px;
             }
         }
 
         .way-item-image {
-            display: flex;
-            align-items: center;
-            height: 100%;
-            margin: 0 !important;
-            opacity: 0.6;
+
+          display: flex;
+          width: 40px;
+          height: 40px;
+          font-size: 24px;
+          color: #fff;
+          background-color: @primary-color;
+          border-radius: 2px;
+          align-items: center;
+          justify-content: center;
         }
 
         &:hover {
@@ -108,20 +119,18 @@ const onSelect = (_type: string) => {
                 opacity: 1;
             }
         }
-    }
 
-    &.disabled {
-        .trigger-way-item {
-            cursor: not-allowed;
+        &.disabled {
+          cursor: not-allowed;
 
-            &:hover {
-                color: initial;
-                opacity: 0.6;
-            }
+          &:hover {
+            color: initial;
+            opacity: 0.6;
+          }
 
-            &.active {
-                opacity: 1;
-            }
+          &.active {
+            opacity: 1;
+          }
         }
     }
 }

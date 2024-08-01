@@ -74,7 +74,7 @@ const save = reactive({
     save.loading = true
     formRef.value?.validateFields().then(async (formValue) => {
       const type = metadataStore.model.type
-      const _detail: ProductItem | DeviceInstance = props.type === 'device' ? instanceStore.detail : productStore.current
+      const _detail: ProductItem | DeviceInstance = props.type === 'device' ? instanceStore.detail : productStore.detail
       const _metadata = JSON.parse(_detail?.metadata || '{}')
       const list = (_metadata[type] as any[]) || []
       if (formValue.id) {
@@ -86,11 +86,11 @@ const save = reactive({
       }
       const updateStore = (metadata: string) => {
         if (props.type === 'device') {
-          const detail = instanceStore.current
+          const detail = instanceStore.detail
           detail.metadata = metadata
           instanceStore.setCurrent(detail)
         } else {
-          const detail = productStore.current || {} as ProductItem
+          const detail = productStore.detail || {} as ProductItem
           detail.metadata = metadata
           productStore.setCurrent(detail)
         }

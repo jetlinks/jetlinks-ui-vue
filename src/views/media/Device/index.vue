@@ -14,7 +14,6 @@
                     sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 :params="params"
-                :gridColumn="4"
             >
                 <template #headerTitle>
                     <PermissionButton
@@ -22,14 +21,13 @@
                         @click="handleAdd"
                         hasPermission="media/Device:add"
                     >
-                        <template #icon
-                            ><AIcon type="PlusOutlined" />新增</template
-                        >
+                        <template #icon><AIcon type="PlusOutlined" /></template>
+                        新增
                     </PermissionButton>
                 </template>
                 <template #card="slotProps">
                     <CardBox
-                        @click="()=>jumpDetail(slotProps)"
+                        @click="() => showSummary(slotProps)"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         v-bind="slotProps"
@@ -47,17 +45,17 @@
                             </slot>
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px);">
-                            <span style="font-size: 16px;font-weight: 700">
-                                {{ slotProps.name }}
-                            </span>
+                            <Ellipsis style="width: calc(100% - 100px)">
+                                <span style="font-size: 16px; font-weight: 700">
+                                    {{ slotProps.name }}
+                                </span>
                             </Ellipsis>
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
                                         厂商
                                     </div>
-                                    <Ellipsis style="width: calc(100% - 20px);">
+                                    <Ellipsis style="width: calc(100% - 20px)">
                                         <div>{{ slotProps.manufacturer }}</div>
                                     </Ellipsis>
                                 </j-col>
@@ -71,7 +69,10 @@
                                     <div class="card-item-content-text">
                                         型号
                                     </div>
-                                    <Ellipsis style="width: calc(100% - 20px);">{{ slotProps.model }}</Ellipsis>
+                                    <Ellipsis
+                                        style="width: calc(100% - 20px)"
+                                        >{{ slotProps.model }}</Ellipsis
+                                    >
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
@@ -163,6 +164,7 @@
                 </template>
             </JProTable>
         </FullPage>
+        <Summary v-if="visibleSummary" :deviceId="deviceId" @closeDrawer="visibleSummary = false"></Summary>
     </page-container>
 </template>
 
@@ -173,14 +175,15 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
 import { providerType } from './const';
 import encodeQuery from '@/utils/encodeQuery';
-
 import { useMenuStore } from 'store/menu';
+import Summary from './Summary/index.vue';
 
 const menuStory = useMenuStore();
 
 const listRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-
+const visibleSummary = ref(false);
+const deviceId = ref();
 const columns = [
     {
         title: 'ID',
@@ -208,7 +211,7 @@ const columns = [
         dataIndex: 'provider',
         key: 'provider',
         scopedSlots: true,
-        width:120,
+        width: 120,
         search: {
             type: 'select',
             options: PROVIDER_OPTIONS,
@@ -228,9 +231,6 @@ const columns = [
         title: '厂商',
         dataIndex: 'manufacturer',
         key: 'manufacturer',
-        search: {
-            type: 'string',
-        },
         ellipsis: true,
     },
     {
@@ -241,27 +241,9 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'select',
-            options: () =>
-                new Promise((resolve) => {
-                    DeviceApi.getProductList(
-                        encodeQuery({
-                            terms: {
-                                messageProtocol$in: [
-                                    'gb28181-2016',
-                                    'fixed-media',
-                                    'onvif',
-                                ],
-                            },
-                        }),
-                    ).then((resp: any) => {
-                        resolve(
-                            resp.result.map((pItem: any) => ({
-                                label: pItem.name,
-                                value: pItem.id,
-                            })),
-                        );
-                    });
-                }),
+            options: async () => {
+                return productList.value;
+            },
             handleValue: (v: any) => {
                 return v;
             },
@@ -365,32 +347,6 @@ const getActions = (
             },
         },
         {
-            key: 'updateChannel',
-            text: '更新通道',
-            tooltip: {
-                title:
-                    data.provider === 'fixed-media'
-                        ? '固定地址无法更新通道'
-                        : data.state.value === 'offline'
-                        ? '设备已离线'
-                        : data.state.value === 'notActive'
-                        ? '设备已禁用'
-                        : '更新通道',
-            },
-            disabled:
-                data.state.value === 'offline' ||
-                data.state.value === 'notActive' ||
-                data.provider === 'fixed-media',
-            icon: 'SyncOutlined',
-            onClick: async () => {
-                const res = await DeviceApi.updateChannels(data.id);
-                if (res.success) {
-                    onlyMessage('通道更新成功');
-                    listRef.value?.reload();
-                }
-            },
-        },
-        {
             key: 'delete',
             text: '删除',
             tooltip: {
@@ -400,14 +356,17 @@ const getActions = (
             disabled: data.state.value === 'online',
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await DeviceApi.del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = DeviceApi.del(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',
@@ -436,7 +395,12 @@ const getProductList = () => {
     DeviceApi.getProductList(
         encodeQuery({
             terms: {
-                messageProtocol$in: ['gb28181-2016', 'fixed-media'],
+                messageProtocol$in: [
+                    'gb28181-2016',
+                    'fixed-media',
+                    'onvif',
+                    'media-plugin',
+                ],
             },
         }),
     ).then((resp: any) => {
@@ -452,7 +416,10 @@ const getProductName = (pid: string) => {
     return productList.value.find((f: any) => f.value === pid)?.label;
 };
 
-const jumpDetail =  (data:any) =>{
-    menuStory.jumpPage('device/Instance/Detail', { id: data.id });
-}
+
+
+const showSummary = (data: any) => {
+    visibleSummary.value = true;
+    deviceId.value = data.id;
+};
 </script>

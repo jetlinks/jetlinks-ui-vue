@@ -476,7 +476,7 @@ const formRef1 = ref<FormInstance>();
 const formRef2 = ref<FormInstance>();
 
 const formState = ref<FormState>({
-    apiAddress: 'http://api.zj.cmcconenet.com/',
+    apiAddress:   props.provider.id === 'OneNet' ? 'http://api.zj.cmcconenet.com/' : 'https://iot-api.heclouds.com',
     apiKey: '',
     validateToken: '',
     aesKey: '',
@@ -526,7 +526,7 @@ const saveData = async () => {
         },
         protocol: procotolCurrent.value,
         provider: props.provider.id,
-        transport: 'HTTP_SERVER',
+        transport: 'HTTP',
     };
     const resp =
         id === ':id'
