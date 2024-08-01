@@ -16,7 +16,7 @@ module.exports = {
         'revert', // 撤销commit 回滚上一版本
         'perf', // 性能优化
           'remove', //删除
-          'release', //删除
+          'release', //
       ]
     ],
     'scope-case': [0],
