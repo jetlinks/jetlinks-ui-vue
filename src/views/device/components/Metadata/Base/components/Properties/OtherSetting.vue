@@ -353,9 +353,9 @@ const handleTip = computed(() => {
     if (extraForm.mode === 'ignore') {
         return '平台将忽略超出阈值的数据，无法查看上报记录';
     } else if (extraForm.mode === 'record') {
-        return '您可以在告警记录-无效数据页面查看超出阈值的数据上报记录';
+        return '您可以在预处理数据-无效数据页面查看超出阈值的数据上报记录';
     }
-    return '您可以在设备详情-告警记录 页面查看告警情况';
+    return '您可以在预处理数据-告警数据页面查看告警情况';
 });
 
 const showContent = computed(() => {
