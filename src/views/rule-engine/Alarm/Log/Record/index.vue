@@ -112,7 +112,7 @@ const columns = [
         width: 180,
     },
     {
-        title: '告警处理',
+        title: '处理结果',
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
