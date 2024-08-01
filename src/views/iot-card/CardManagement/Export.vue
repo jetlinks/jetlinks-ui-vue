@@ -55,7 +55,6 @@ const handleOk = () => {
     if (props.cardType === 'black') {
         if (props.data?.length > 0) {
             _export(type.value, props.data).then((res: any) => {
-                console.log('黑1111');
                 if (res) {
                     const blob = new Blob([res.data], { type: type.value });
                     const url = URL.createObjectURL(blob);
@@ -71,7 +70,6 @@ const handleOk = () => {
             });
         } else {
             exportIOTBlack(type.value, props.data).then((res: any) => {
-                console.log('黑2222');
                 if (res) {
                     const blob = new Blob([res.data], { type: type.value });
                     const url = URL.createObjectURL(blob);
@@ -92,7 +90,6 @@ const handleOk = () => {
     } else {
         if (props.data?.length > 0) {
             _export(type.value, props.data).then((res: any) => {
-                console.log('白1111');
                 if (res) {
                     const blob = new Blob([res.data], { type: type.value });
                     const url = URL.createObjectURL(blob);
@@ -108,7 +105,6 @@ const handleOk = () => {
             });
         } else {
             exportIOTWhite(type.value, props.data).then((res: any) => {
-                console.log('白2222');
                 if (res) {
                     const blob = new Blob([res.data], { type: type.value });
                     const url = URL.createObjectURL(blob);
