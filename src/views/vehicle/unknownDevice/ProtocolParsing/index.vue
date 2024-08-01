@@ -75,6 +75,7 @@ import {
     queryUnknownProtocol,
     exportUnknownProtocol,
 } from '@/api/vehicle/unknown';
+import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { Modal, Textarea } from 'ant-design-vue';
 import { onlyMessage } from '@/utils/comm';
 import { useProSearch } from '@/hook/useProSearch';
@@ -100,6 +101,7 @@ const type = ref<string>('xlsx');
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
+const vehicleTypeValue = ref('');
 
 const handelDetail = (data: any) => {
     let content = '';
@@ -120,7 +122,7 @@ const handelDetail = (data: any) => {
 };
 
 const { handleSearch } = useProSearch(globParams, handleClearSelected, [
-    'createTime',
+    'timestamp',
 ]);
 
 /**
@@ -167,14 +169,14 @@ const handleExport = async () => {
                     termType: 'in',
                 },
             ],
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            sorts: [{ name: 'timestamp', order: 'desc' }],
         };
     } else {
         // 当全不选时
         _params = {
             paging: false,
             pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            sorts: [{ name: 'timestamp', order: 'desc' }],
             terms: globParams.value.terms,
         };
     }
@@ -208,6 +210,20 @@ const columns = [
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
+        search: {
+            type: 'select',
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.text,
+                                value: item.value,
+                            })),
+                        );
+                    });
+                }),
+        },
     },
     // {
     //     title: '出厂编号',
@@ -264,13 +280,34 @@ const columns = [
 ];
 
 const queryData = async (_params: any) => {
+    console.log('_params', _params);
+    const { terms, ...params } = _params;
+    if (terms.length > 0) {
+        terms[0].terms?.map((item: any) => {
+            if (item.column === 'vehicleTypeEnum') {
+                vehicleTypeValue.value = item.value;
+            } else {
+                vehicleTypeValue.value = '';
+            }
+        });
+    } else {
+        vehicleTypeValue.value = '';
+    }
+    const myParams = {
+        queryParamEntity: {
+            ...params,
+            terms,
+        },
+        vehicleTypeEnum: vehicleTypeValue.value,
+    };
+    console.log('myParams', myParams);
     const resp: any = await queryUnknownProtocol(_params);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;
         currentPage.value = resp.result.pageIndex + 1 || 0;
         pageSize.value = resp.result.pageSize || 12;
         return {
-            // 3.仿造请求结果返回给表格
+            // 请求结果返回给表格
             code: resp.status,
             result: resp.result,
             status: resp.status,

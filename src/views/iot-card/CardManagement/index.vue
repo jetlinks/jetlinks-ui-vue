@@ -354,6 +354,7 @@
             v-if="exportVisible"
             @close="exportVisible = false"
             :data="_selectedRowKeys"
+            :cardType="'white'"
         />
         <!-- 绑定设备 -->
         <BindDevice
@@ -839,6 +840,17 @@ const bindDevice = (val: boolean) => {
 };
 
 /**
+ * 批量导出
+ */
+const handelExport = () => {
+    // if (!_selectedRowKeys.value.length) {
+    //     onlyMessage('请选择数据', 'error');
+    //     return;
+    // }
+    exportVisible.value = true;
+};
+
+/**
  * 批量激活
  */
 const handleActive = () => {
@@ -956,8 +968,15 @@ const batchActions: BatchActionsType[] = [
         text: '批量导出',
         permission: 'iot-card/CardManagement:export',
         icon: 'ExportOutlined',
-        onClick: () => {
-            exportVisible.value = true;
+        // onClick: () => {
+
+        //     handelExport
+        // },
+        selected: {
+            popConfirm: {
+                title: '确认导出吗？',
+                onConfirm: handelExport,
+            },
         },
     },
     {

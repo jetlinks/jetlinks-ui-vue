@@ -131,6 +131,7 @@
             v-if="exportVisible"
             @close="exportVisible = false"
             :data="_selectedRowKeys"
+            :cardType="'black'"
         />
     </page-container>
 </template>

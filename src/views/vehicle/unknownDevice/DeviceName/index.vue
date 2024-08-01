@@ -12,7 +12,7 @@
                 model="table"
                 :request="queryData"
                 :defaultParams="{
-                    sorts: [{ name: 'reportTime', order: 'desc' }],
+                    sorts: [{ name: 'createTime', order: 'desc' }],
                 }"
                 v-model:params="globParams"
                 :rowSelection="{
@@ -70,6 +70,7 @@ import { queryUnknownName, exportUnknownName } from '@/api/vehicle/unknown';
 import { vehicleTypeEnum } from '@/api/data-report/commonApi';
 import { onlyMessage } from '@/utils/comm';
 import { downloadFileByUrl } from '@/utils/utils';
+import { useProSearch } from '@/hook/useProSearch';
 import { useSelectableTable } from '@/hook/useSelectableTable';
 import moment from 'moment';
 const {
@@ -92,6 +93,11 @@ const type = ref<string>('xlsx');
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
+const vehicleTypeValue = ref('');
+
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    'timestamp',
+]);
 
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
@@ -234,13 +240,34 @@ const columns = [
 ];
 
 const queryData = async (_params: any) => {
+    // console.log('_params', _params);
+    const { terms, ...params } = _params;
+    if (terms.length > 0) {
+        terms[0].terms?.map((item: any) => {
+            if (item.column === 'vehicleTypeEnum') {
+                vehicleTypeValue.value = item.value;
+            } else {
+                vehicleTypeValue.value = '';
+            }
+        });
+    } else {
+        vehicleTypeValue.value = '';
+    }
+    const myParams = {
+        queryParamEntity: {
+            ...params,
+            terms,
+        },
+        vehicleTypeEnum: vehicleTypeValue.value,
+    };
+    // console.log('myParams', myParams);
     const resp: any = await queryUnknownName(_params);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;
         currentPage.value = resp.result.pageIndex + 1 || 0;
         pageSizePag.value = resp.result.pageSize || 12;
         return {
-            // 3.仿造请求结果返回给表格
+            // 请求结果返回给表格
             code: resp.status,
             result: resp.result,
             status: resp.status,
@@ -252,10 +279,6 @@ const queryData = async (_params: any) => {
             status: 200,
         };
     }
-};
-
-const handleSearch = (params: any) => {
-    globParams.value = params;
 };
 </script>
 
