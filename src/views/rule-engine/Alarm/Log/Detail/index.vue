@@ -216,11 +216,18 @@ watch(
                         dataIndex: 'sourceId',
                         key: 'sourceId',
                         scopedSlots: true,
+                        search: {
+                            type: 'string',
+                        },
                     },
                     {
                         title: '告警原因',
                         dataIndex: 'actualDesc',
                         key: 'actualDesc',
+                        scopedSlots: true,
+                        search: {
+                            type: 'string',
+                        },
                     },
                     {
                         title: '操作',
