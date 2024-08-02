@@ -1,7 +1,7 @@
 <template>
     <div class="choose-view">
         <HomeView v-model:value="currentView" />
-        <div class="btn">
+        <div class="home-view-bottom">
             <j-button type="primary" ghost @click="confirm">保存修改</j-button>
         </div>
     </div>
@@ -59,7 +59,7 @@ onMounted(() => {
     padding: 4% 9% 4% 9%;
     box-sizing: border-box;
 
-    .btn {
+    .home-view-bottom {
         display: flex;
         justify-content: flex-end;
         margin-top: 68px;

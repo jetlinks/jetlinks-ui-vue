@@ -1,106 +1,102 @@
 <template>
-    <page-container>
-        <pro-search :columns="columnsConf" @search="handleSearch" />
-        <full-page>
-            <j-pro-table
-                ref="tableRef"
-                :columns="columnsConf"
-                :request="queryData"
-                model="table"
-                :params="globParams"
-                :gridColumn="3"
-                :defaultParams="{
-                    sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
-                }"
-                :rowKey="(record: any) => record.id"
-                :rowSelection="{
-                    selectedRowKeys: selectedRowKeys,
-                    onSelect: handleRowSelected,
-                    onSelectAll: handleSelectAll,
-                    onSelectNone: handleClearSelected,
-                }"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            :popConfirm="{
-                                title: popTitle,
-                                onConfirm: () => handleExport(),
-                            }"
-                        >
-                            <AIcon type="ExportOutlined" />
-                            导出
-                        </PermissionButton>
-                    </j-space>
-                </template>
-                <!--      采集模型        -->
-                <template #model="record">
-                    {{ record.model ? record.model.text : '--' }}
-                </template>
-                <!--      设备类型        -->
-                <template #deviceType="record">
-                    {{ record.deviceType ? record.deviceType.text : '--' }}
-                </template>
-                <!--       离线时间       -->
-                <template #offlineTime="record">
-                    {{
-                        record.offlineTime
-                            ? dayjs(record.offlineTime).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : '--'
-                    }}
-                </template>
-                <template #state="{ state }">
-                    <template v-if="state">
-                        <z-tag :color="getState(state)">
-                            {{ state.text }}
-                        </z-tag>
+    <j-spin :spinning="pageLoading">
+        <page-container>
+            <pro-search :columns="columnsConf" @search="handleSearch" />
+            <full-page>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columnsConf"
+                    :request="queryData"
+                    model="table"
+                    :params="globParams"
+                    :gridColumn="3"
+                    :defaultParams="{
+                        sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
+                    }"
+                    :rowKey="(record: any) => record.id"
+                    :rowSelection="{
+                        selectedRowKeys: selectedRowKeys,
+                        onSelect: handleRowSelected,
+                        onSelectAll: handleSelectAll,
+                        onSelectNone: handleClearSelected,
+                    }"
+                >
+                    <template #headerTitle>
+                        <j-space>
+                            <PermissionButton
+                                :popConfirm="{
+                                    title: popTitle,
+                                    onConfirm: () => handleExport(),
+                                }"
+                            >
+                                <AIcon type="ExportOutlined" />
+                                导出
+                            </PermissionButton>
+                        </j-space>
                     </template>
-                    <template v-else> -- </template>
-                </template>
-                <template #offlineReason="record">
-                    {{ record.offlineReason ? record.offlineReason : '--' }}
-                </template>
-                <template #action="record">
-                    <a
-                        href="javascript: void(0);"
-                        @click.prevent="modalEvent.open(record)"
-                    >
-                        诊断
-                    </a>
-                </template>
-                <template #paginationRender>
-                    <a-pagination
-                        :showQuickJumper="true"
-                        :isShowContent="true"
-                        :showSizeChanger="true"
-                        :pageSize="pageSize"
-                        :pageSizeOptions="['12', '24', '48', '96']"
-                        :current="currentPage"
-                        :total="total"
-                        :show-total="handleShowTotal"
-                        @change="handleOnChange"
-                    />
-                </template>
-            </j-pro-table>
-        </full-page>
-        <diagnose-modal
-            v-if="modalVisible"
-            :device-id="deviceId"
-            :device-type="deviceType"
-            :device-state="deviceState"
-            :is-xieli-device="deviceIsXieli"
-            @update:close="modalEvent.close"
-        />
-        <div class="loading" v-if="pageLoading">
-            <div class="wrapper">
-                <a-button type="text" text loading size="large">
-                    加载中...
-                </a-button>
-            </div>
-        </div>
-    </page-container>
+                    <!--      采集模型        -->
+                    <template #model="record">
+                        {{ record.model ? record.model.text : '--' }}
+                    </template>
+                    <!--      设备类型        -->
+                    <template #deviceType="record">
+                        {{ record.deviceType ? record.deviceType.text : '--' }}
+                    </template>
+                    <!--       离线时间       -->
+                    <template #offlineTime="record">
+                        {{
+                            record.offlineTime
+                                ? dayjs(record.offlineTime).format(
+                                      'YYYY-MM-DD HH:mm:ss',
+                                  )
+                                : '--'
+                        }}
+                    </template>
+                    <template #state="{ state }">
+                        <template v-if="state">
+                            <z-tag :color="getState(state)">
+                                {{ state.text }}
+                            </z-tag>
+                        </template>
+                        <template v-else> -- </template>
+                    </template>
+                    <template #offlineReason="record">
+                        {{ record.offlineReason ? record.offlineReason : '--' }}
+                    </template>
+                    <template #action="record">
+                        <a
+                            href="javascript: void(0);"
+                            @click.prevent="modalEvent.open(record)"
+                        >
+                            诊断
+                        </a>
+                    </template>
+                    <template #paginationRender>
+                        <a-pagination
+                            :showQuickJumper="true"
+                            :isShowContent="true"
+                            :showSizeChanger="true"
+                            :pageSize="pageSize"
+                            :pageSizeOptions="['12', '24', '48', '96']"
+                            :current="currentPage"
+                            :total="total"
+                            :show-total="handleShowTotal"
+                            @change="handleOnChange"
+                        />
+                    </template>
+                </j-pro-table>
+            </full-page>
+
+            <diagnose-modal
+                v-if="modalVisible"
+                :device-id="deviceId"
+                :device-type="deviceType"
+                :device-state="deviceState"
+                :is-xieli-device="deviceIsXieli"
+                @update:close="modalEvent.close"
+            />
+        </page-container>
+    </j-spin>
 </template>
 
 <script setup lang="ts">
