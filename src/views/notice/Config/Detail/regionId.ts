@@ -1,119 +1,121 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 //  数据来源 https://help.aliyun.com/document_detail/188196.html
 export default [
   /** 公共云 */
   //中国地区（包含中国香港、中国澳门，不包含中国台湾）
   {
     value: 'cn-qingdao',
-    label: '华北1（青岛）',
+    label: $t('Detail.regionId.737431-0'),
   },
   {
     value: 'cn-beijing',
-    label: '华北2（北京）',
+    label: $t('Detail.regionId.737431-1'),
   },
   {
     value: 'cn-zhangjiakou',
-    label: '华北3（张家口）',
+    label: $t('Detail.regionId.737431-2'),
   },
   {
     value: 'cn-huhehaote',
-    label: '华北5（呼和浩特）',
+    label: $t('Detail.regionId.737431-3'),
   },
   {
     value: 'cn-wulanchabu',
-    label: '华北6（乌兰察布）',
+    label: $t('Detail.regionId.737431-4'),
   },
   {
     value: 'cn-hangzhou',
-    label: '华东1（杭州）',
+    label: $t('Detail.regionId.737431-5'),
   },
   {
     value: 'cn-shanghai',
-    label: '华东2（上海）',
+    label: $t('Detail.regionId.737431-6'),
   },
   {
     value: 'cn-nanjing',
-    label: '华东5 （南京-本地地域）',
+    label: $t('Detail.regionId.737431-7'),
   },
   {
     value: 'cn-fuzhou',
-    label: '华东6（福州-本地地域）',
+    label: $t('Detail.regionId.737431-8'),
   },
   {
     value: 'cn-shenzhen',
-    label: '华南1（深圳）',
+    label: $t('Detail.regionId.737431-9'),
   },
   {
     value: 'cn-heyuan',
-    label: '华南2（河源）',
+    label: $t('Detail.regionId.737431-10'),
   },
   {
     value: 'cn-guangzhou',
-    label: '华南3（广州）',
+    label: $t('Detail.regionId.737431-11'),
   },
   {
     value: 'cn-chengdu',
-    label: '西南1（成都）',
+    label: $t('Detail.regionId.737431-12'),
   },
   {
     value: 'cn-hongkong',
-    label: '中国香港',
+    label: $t('Detail.regionId.737431-13'),
   },
 
   //其他国家和地区
   {
     value: 'ap-southeast-1',
-    label: '新加坡',
+    label: $t('Detail.regionId.737431-14'),
   },
   {
     value: 'ap-southeast-2',
-    label: '澳大利亚（悉尼）',
+    label: $t('Detail.regionId.737431-15'),
   },
   {
     value: 'ap-southeast-3',
-    label: '马来西亚（吉隆坡）',
+    label: $t('Detail.regionId.737431-16'),
   },
   {
     value: 'ap-southeast-5',
-    label: '印度尼西亚（雅加达）',
+    label: $t('Detail.regionId.737431-17'),
   },
   {
     value: 'ap-southeast-6',
-    label: '菲律宾（马尼拉）',
+    label: $t('Detail.regionId.737431-18'),
   },
   {
     value: 'ap-southeast-7',
-    label: '泰国（曼谷）',
+    label: $t('Detail.regionId.737431-19'),
   },
   {
     value: 'ap-south-1',
-    label: '印度（孟买）',
+    label: $t('Detail.regionId.737431-20'),
   },
   {
     value: 'ap-northeast-1',
-    label: '日本（东京）',
+    label: $t('Detail.regionId.737431-21'),
   },
   {
     value: 'ap-northeast-2',
-    label: '韩国（首尔）',
+    label: $t('Detail.regionId.737431-22'),
   },
   {
     value: 'us-west-1',
-    label: '美国（硅谷）',
+    label: $t('Detail.regionId.737431-23'),
   },
   {
     value: 'us-east-1',
-    label: '美国（弗吉尼亚）',
+    label: $t('Detail.regionId.737431-24'),
   },
   {
     value: 'eu-central-1',
-    label: '德国（法兰克福）',
+    label: $t('Detail.regionId.737431-25'),
   },
   {
     value: 'eu-west-1',
-    label: '英国（伦敦）',
+    label: $t('Detail.regionId.737431-26'),
   },
   {
     value: 'me-east-1',
-    label: '阿联酋（迪拜）',
+    label: $t('Detail.regionId.737431-27'),
   },
 ];

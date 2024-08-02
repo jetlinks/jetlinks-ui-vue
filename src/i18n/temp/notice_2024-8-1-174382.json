@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"doc.AliyunSms.737449-0": "阿里云管理控制台：",
+		"doc.AliyunSms.737449-1": "1.概述",
+		"doc.AliyunSms.737449-2": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.AliyunSms.737449-3": "2.通知配置说明",
+		"doc.AliyunSms.737449-4": "阿里云内部给每台机器设置的唯一编号。请根据购买的阿里云服务器地址进行填写。",
+		"doc.AliyunSms.737449-5": "阿里云地域和可用区对照表地址：https://help.aliyun.com/document_detail/40654.html?spm=a2c6h.13066369.0.0.54a174710O7rWH",
+		"doc.AliyunSms.737449-6": "用于程序通知方式调用云服务费API的用户标识和秘钥",
+		"doc.AliyunSms.737449-7": "获取路径：“阿里云管理控制台”--“用户头像”--“”--“AccessKey管理”--“查看”"
+	},
+	"en": {
+		"doc.AliyunSms.737449-0": "Alibaba Cloud Management Console:",
+		"doc.AliyunSms.737449-1": "1. Overview",
+		"doc.AliyunSms.737449-2": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.AliyunSms.737449-3": "2. Notification configuration instructions",
+		"doc.AliyunSms.737449-4": "The unique number assigned to each machine within Alibaba Cloud. Please fill in according to the address of the purchased Alibaba Cloud server.",
+		"doc.AliyunSms.737449-5": "Alibaba Cloud Region and Availability Zone Comparison Table Address: https://help.aliyun.com/document_detail/40654.html?spm=a2c6h.13066369.0.0.54a174710O7rWH",
+		"doc.AliyunSms.737449-6": "User identification and key used for calling cloud service fee API through program notification method",
+		"doc.AliyunSms.737449-7": "Get path: \"Alibaba Cloud Management Console\" - \"User Avatar\" - \"\" - \"AccessKey Management\" - \"View\""
+	}
+}

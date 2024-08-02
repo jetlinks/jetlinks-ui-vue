@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Log.index.7374414-0": "通知记录",
+		"Log.index.7374414-1": "发送时间",
+		"Log.index.7374414-2": "状态",
+		"Log.index.7374414-3": "成功",
+		"Log.index.7374414-4": "失败",
+		"Log.index.7374414-5": "操作",
+		"Log.index.7374414-6": "错误信息",
+		"Log.index.7374414-7": "详情信息",
+		"Log.index.7374414-8": "模板中不存在变量"
+	},
+	"en": {
+		"Log.index.7374414-0": "Notification record",
+		"Log.index.7374414-1": "Sending time",
+		"Log.index.7374414-2": "state",
+		"Log.index.7374414-3": "success",
+		"Log.index.7374414-4": "fail",
+		"Log.index.7374414-5": "operation",
+		"Log.index.7374414-6": "error message",
+		"Log.index.7374414-7": "Details Information",
+		"Log.index.7374414-8": "There are no variables in the template"
+	}
+}

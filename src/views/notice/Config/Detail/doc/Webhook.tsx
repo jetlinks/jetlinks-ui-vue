@@ -1,20 +1,21 @@
 // import './index.less';
-
+import i18n from '@/i18n'
+const $t = i18n.global.t
 const Webhook = () => {
     return (
         <div class={'doc'}>
-            <h1>1. 概述</h1>
+            <h1>{$t('doc.Webhook.7374413-0')}</h1>
             <div>
-                WebHook是一个接收HTTP请求的URL（本平台默认只支持HTTP
-                POST请求），实现了WebHook的第三方系统可以基于该URL订阅本平台系统信息，本平台按配置把特定的事件结果推送到指定的地址，便于系统做后续处理。
+                {$t('doc.Webhook.7374413-1')}
+                {$t('doc.Webhook.7374413-2')}
             </div>
-            <h1>2.通知配置说明</h1>
+            <h1>{$t('doc.Webhook.7374413-3')}</h1>
             <h2>1、WebHook</h2>
-            <div>WebHook地址。</div>
+            <div>{$t('doc.Webhook.7374413-4')}</div>
 
-            <h2>2、请求头</h2>
+            <h2>{$t('doc.Webhook.7374413-5')}</h2>
             <div>
-                支持根据系统提供的接口设置不同的请求头。如 Accept-Language
+                {$t('doc.Webhook.7374413-6')}
                 、Content-Type
             </div>
         </div>

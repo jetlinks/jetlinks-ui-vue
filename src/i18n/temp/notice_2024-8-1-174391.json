@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"SyncUser.index.7374417-0": "同步用户",
+		"SyncUser.index.7374417-1": "请输入部门名称",
+		"SyncUser.index.7374417-2": "自动绑定",
+		"SyncUser.index.7374417-3": "第 {0} - {1} 条/总共 {2} 条",
+		"SyncUser.index.7374417-4": "绑定用户",
+		"SyncUser.index.7374417-5": "用户",
+		"SyncUser.index.7374417-6": "请选择用户",
+		"SyncUser.index.7374417-7": "钉钉用户名",
+		"SyncUser.index.7374417-8": "绑定状态",
+		"SyncUser.index.7374417-9": "操作",
+		"SyncUser.index.7374417-10": "绑定",
+		"SyncUser.index.7374417-11": "解绑",
+		"SyncUser.index.7374417-12": "确认解绑?",
+		"SyncUser.index.7374417-13": "操作成功",
+		"SyncUser.index.7374417-14": "已绑定",
+		"SyncUser.index.7374417-15": "未绑定"
+	},
+	"en": {
+		"SyncUser.index.7374417-0": "Synchronize users",
+		"SyncUser.index.7374417-1": "Please enter the department name",
+		"SyncUser.index.7374417-2": "Automatic binding",
+		"SyncUser.index.7374417-3": "Articles {0} - {1}/Total of {2}",
+		"SyncUser.index.7374417-4": "Bind user",
+		"SyncUser.index.7374417-5": "user",
+		"SyncUser.index.7374417-6": "Please select a user",
+		"SyncUser.index.7374417-7": "DingTalk username",
+		"SyncUser.index.7374417-8": "Binding status",
+		"SyncUser.index.7374417-9": "operation",
+		"SyncUser.index.7374417-10": "binding",
+		"SyncUser.index.7374417-11": "Unbind",
+		"SyncUser.index.7374417-12": "Confirm unbinding?",
+		"SyncUser.index.7374417-13": "Operation successful",
+		"SyncUser.index.7374417-14": "Already bound",
+		"SyncUser.index.7374417-15": "Unbound"
+	}
+}
