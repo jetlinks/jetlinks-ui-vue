@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Debug.index.214683-0": "调试",
+		"Debug.index.214683-1": "取消",
+		"Debug.index.214683-2": "确定",
+		"Debug.index.214683-3": "通知配置",
+		"Debug.index.214683-4": "请选择通知配置",
+		"Debug.index.214683-5": "变量",
+		"Debug.index.214683-6": "该字段为必填字段",
+		"Debug.index.214683-7": "最多可输入64个字符",
+		"Debug.index.214683-8": "请输入有效号码",
+		"Debug.index.214683-9": "名称",
+		"Debug.index.214683-10": "值",
+		"Debug.index.214683-11": "操作成功"
+	},
+	"en": {
+		"Debug.index.214683-0": "debugging",
+		"Debug.index.214683-1": "cancel",
+		"Debug.index.214683-2": "determine",
+		"Debug.index.214683-3": "Notification configuration",
+		"Debug.index.214683-4": "Please select notification configuration",
+		"Debug.index.214683-5": "variable",
+		"Debug.index.214683-6": "This field is mandatory",
+		"Debug.index.214683-7": "Up to 64 characters can be entered",
+		"Debug.index.214683-8": "Please enter a valid number",
+		"Debug.index.214683-9": "name",
+		"Debug.index.214683-10": "value",
+		"Debug.index.214683-11": "Operation successful"
+	}
+}

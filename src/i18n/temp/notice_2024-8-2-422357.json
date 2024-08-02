@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"doc.DingTalk.214687-0": "钉钉开放平台：",
+		"doc.DingTalk.214687-1": "钉钉管理后台：",
+		"doc.DingTalk.214687-2": "1. 概述",
+		"doc.DingTalk.214687-3": "通知模板结合通知配置为告警消息通知提供支撑。通知模板只能调用同一类型的通知配置服务。",
+		"doc.DingTalk.214687-4": "使用钉钉消息通知时需在钉钉开放平台中创建好对应的应用",
+		"doc.DingTalk.214687-5": "2.模板配置说明",
+		"doc.DingTalk.214687-6": "1、绑定配置",
+		"doc.DingTalk.214687-7": "使用固定的通知配置发送此通知模板",
+		"doc.DingTalk.214687-8": "应用唯一标识",
+		"doc.DingTalk.214687-9": "获取路径：“钉钉开放平台”--“应用开发”--“查看应用”",
+		"doc.DingTalk.214687-10": "3、收信人、收信部门",
+		"doc.DingTalk.214687-11": "若不填写收信人，则在模板调试和配置告警通知时手动填写。",
+		"doc.DingTalk.214687-12": "4、模板内容",
+		"doc.DingTalk.214687-13": "支持填写带变量的动态模板。变量填写规范示例：{0}。填写动态参数后，可对变量的名称、类型、格式进行配置，以便告警通知时填写。"
+	},
+	"en": {
+		"doc.DingTalk.214687-0": "DingTalk Open Platform:",
+		"doc.DingTalk.214687-1": "DingTalk Management Backend:",
+		"doc.DingTalk.214687-2": "1. Overview",
+		"doc.DingTalk.214687-3": "The notification template combined with notification configuration provides support for alarm message notifications. Notification templates can only call notification configuration services of the same type.",
+		"doc.DingTalk.214687-4": "When using DingTalk message notifications, it is necessary to create corresponding applications in the DingTalk open platform",
+		"doc.DingTalk.214687-5": "2. Template configuration instructions",
+		"doc.DingTalk.214687-6": "1. Binding configuration",
+		"doc.DingTalk.214687-7": "Send this notification template using a fixed notification configuration",
+		"doc.DingTalk.214687-8": "Unique identifier for application",
+		"doc.DingTalk.214687-9": "Access path: \"DingTalk Open Platform\" - \"Application Development\" - \"View Application\"",
+		"doc.DingTalk.214687-10": "3. Recipient, recipient department",
+		"doc.DingTalk.214687-11": "If the recipient is not specified, it will be manually filled in during template debugging and alarm notification configuration.",
+		"doc.DingTalk.214687-12": "4. Template Content",
+		"doc.DingTalk.214687-13": "Support filling in dynamic templates with variables. Example of variable filling standard: {0}. After filling in the dynamic parameters, the name, type, and format of the variables can be configured for filling in during alarm notifications."
+	}
+}

@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"doc.WeixinApp.2146920-0": "企业微信管理后台：",
+		"doc.WeixinApp.2146920-1": "1. 概述",
+		"doc.WeixinApp.2146920-2": "通知模板结合通知配置为告警消息通知提供支撑。通知模板只能调用同一类型的通知配置服务。",
+		"doc.WeixinApp.2146920-3": "2.模板配置说明",
+		"doc.WeixinApp.2146920-4": "1、绑定配置",
+		"doc.WeixinApp.2146920-5": "使用固定的通知配置发送此通知模板",
+		"doc.WeixinApp.2146920-6": "2、用户标签",
+		"doc.WeixinApp.2146920-7": "以标签的维度通知该标签下所有用户",
+		"doc.WeixinApp.2146920-8": "3、消息模板",
+		"doc.WeixinApp.2146920-9": "微信公众号中配置的消息模板",
+		"doc.WeixinApp.2146920-10": "4、模板跳转链接",
+		"doc.WeixinApp.2146920-11": "点击消息之后进行页面跳转",
+		"doc.WeixinApp.2146920-12": "5、跳转小程序Appid",
+		"doc.WeixinApp.2146920-13": "点击消息之后打开对应的小程序",
+		"doc.WeixinApp.2146920-14": "6、跳转小程序具体路径",
+		"doc.WeixinApp.2146920-15": "点击消息之后跳转到小程序的具体页面",
+		"doc.WeixinApp.2146920-16": "7、模板内容",
+		"doc.WeixinApp.2146920-17": "支持填写带变量的动态模板。变量填写规范示例：{0}。填写动态参数后，可对变量的名称、类型、格式进行配置，以便告警通知时填写。"
+	},
+	"en": {
+		"doc.WeixinApp.2146920-0": "Enterprise WeChat management backend:",
+		"doc.WeixinApp.2146920-1": "1. Overview",
+		"doc.WeixinApp.2146920-2": "The notification template combined with notification configuration provides support for alarm message notifications. Notification templates can only call notification configuration services of the same type.",
+		"doc.WeixinApp.2146920-3": "2. Template configuration instructions",
+		"doc.WeixinApp.2146920-4": "1. Binding configuration",
+		"doc.WeixinApp.2146920-5": "Send this notification template using a fixed notification configuration",
+		"doc.WeixinApp.2146920-6": "2. User tags",
+		"doc.WeixinApp.2146920-7": "Notify all users under the tag based on its dimensions",
+		"doc.WeixinApp.2146920-8": "3. Message Template",
+		"doc.WeixinApp.2146920-9": "Message template configured in WeChat official account",
+		"doc.WeixinApp.2146920-10": "4. Template jump link",
+		"doc.WeixinApp.2146920-11": "Click on the message to jump to the page",
+		"doc.WeixinApp.2146920-12": "5. Jump to mini program Appid",
+		"doc.WeixinApp.2146920-13": "After clicking on the message, open the corresponding mini program",
+		"doc.WeixinApp.2146920-14": "6. Jump to the specific path of the mini program",
+		"doc.WeixinApp.2146920-15": "After clicking on the message, you will be redirected to the specific page of the mini program",
+		"doc.WeixinApp.2146920-16": "7. Template Content",
+		"doc.WeixinApp.2146920-17": "Support filling in dynamic templates with variables. Example of variable filling standard: {0}. After filling in the dynamic parameters, the name, type, and format of the variables can be configured for filling in during alarm notifications."
+	}
+}

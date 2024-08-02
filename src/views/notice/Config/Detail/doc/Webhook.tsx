@@ -7,7 +7,6 @@ const Webhook = () => {
             <h1>{$t('doc.Webhook.7374413-0')}</h1>
             <div>
                 {$t('doc.Webhook.7374413-1')}
-                {$t('doc.Webhook.7374413-2')}
             </div>
             <h1>{$t('doc.Webhook.7374413-3')}</h1>
             <h2>1、WebHook</h2>
