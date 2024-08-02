@@ -52,11 +52,14 @@ import { useUserInfo } from '@/store/userInfo';
 import { isNoCommunity } from '@/utils/utils';
 import { getMe_api, getView_api } from '@/api/home';
 import { getAppInfo_api } from '@/api/system/apply';
+import { useAnalysisStore } from 'store/AnalysisReport';
 
 const currentView = ref<string>('');
 const clientId = useUserInfo().$state.userInfos.id;
 const secureKey = ref<string>('');
 const showKey = ref(false);
+
+const Analysis = useAnalysisStore();
 // 获取选择的视图
 const setCurrentView = () => {
     getView_api().then(({ status, result }: any) => {
@@ -70,6 +73,10 @@ const setCurrentView = () => {
             }
         }
     });
+};
+
+const getAnalysisStore = async () => {
+    await Analysis.refresh();
 };
 
 if (isNoCommunity) {
@@ -94,6 +101,8 @@ if (isNoCommunity) {
 } else {
     setCurrentView();
 }
+
+getAnalysisStore();
 </script>
 
 <style lang="less" scoped>

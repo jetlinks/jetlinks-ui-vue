@@ -27,35 +27,102 @@
 
 <script setup lang="ts">
 import moment from 'moment';
-import { _export } from '@/api/iot-card/cardManagement';
+import {
+    _export,
+    exportIOTBlack,
+    exportIOTWhite,
+} from '@/api/iot-card/cardManagement';
 import { downloadFileByUrl } from '@/utils/utils';
+import { onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close']);
 
 const props = defineProps({
+    cardType: {
+        type: String,
+        default: undefined,
+    },
     data: {
         type: Object,
-        default: undefined,
+        default: [],
     },
 });
 
 const type = ref<string>('xlsx');
 
 const handleOk = () => {
-    _export(type.value, props.data).then((res: any) => {
-        if (res) {
-            const blob = new Blob([res.data], { type: type.value });
-            const url = URL.createObjectURL(blob);
-            downloadFileByUrl(
-                url,
-                `物联卡管理-${moment(new Date()).format(
-                    'YYYY/MM/DD HH:mm:ss',
-                )}`,
-                type.value,
-            );
-            emit('close');
+    // console.log('props.data', props.data);
+    if (props.cardType === 'black') {
+        if (props.data?.length > 0) {
+            _export(type.value, props.data).then((res: any) => {
+                if (res) {
+                    const blob = new Blob([res.data], { type: type.value });
+                    const url = URL.createObjectURL(blob);
+                    downloadFileByUrl(
+                        url,
+                        `物联卡黑名单-${moment(new Date()).format(
+                            'YYYY/MM/DD HH:mm:ss',
+                        )}`,
+                        type.value,
+                    );
+                    emit('close');
+                }
+            });
+        } else {
+            exportIOTBlack(type.value, props.data).then((res: any) => {
+                if (res) {
+                    const blob = new Blob([res.data], { type: type.value });
+                    const url = URL.createObjectURL(blob);
+                    downloadFileByUrl(
+                        url,
+                        `物联卡黑名单-${moment(new Date()).format(
+                            'YYYY/MM/DD HH:mm:ss',
+                        )}`,
+                        type.value,
+                    );
+                    emit('close');
+                    onlyMessage('导出成功');
+                } else {
+                    onlyMessage('导出失败', 'error');
+                }
+            });
         }
-    });
+    } else {
+        if (props.data?.length > 0) {
+            _export(type.value, props.data).then((res: any) => {
+                if (res) {
+                    const blob = new Blob([res.data], { type: type.value });
+                    const url = URL.createObjectURL(blob);
+                    downloadFileByUrl(
+                        url,
+                        `物联卡白名单-${moment(new Date()).format(
+                            'YYYY/MM/DD HH:mm:ss',
+                        )}`,
+                        type.value,
+                    );
+                    emit('close');
+                }
+            });
+        } else {
+            exportIOTWhite(type.value, props.data).then((res: any) => {
+                if (res) {
+                    const blob = new Blob([res.data], { type: type.value });
+                    const url = URL.createObjectURL(blob);
+                    downloadFileByUrl(
+                        url,
+                        `物联卡白名单-${moment(new Date()).format(
+                            'YYYY/MM/DD HH:mm:ss',
+                        )}`,
+                        type.value,
+                    );
+                    emit('close');
+                    onlyMessage('导出成功');
+                } else {
+                    onlyMessage('导出失败', 'error');
+                }
+            });
+        }
+    }
 };
 
 const handleCancel = () => {

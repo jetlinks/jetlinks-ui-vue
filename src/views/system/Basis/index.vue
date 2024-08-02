@@ -26,6 +26,16 @@
                                     </j-select-option>
                                 </j-select>
                             </j-form-item>
+                            <!-- <j-form-item label="地图选择" name="mapType">
+                                <j-select v-model:value="formValue.mapType">
+                                    <j-select-option value="AMAP"
+                                        >高德地图</j-select-option
+                                    >
+                                    <j-select-option value="GoogleMaps"
+                                        >谷歌地图</j-select-option
+                                    >
+                                </j-select>
+                            </j-form-item> -->
                             <j-form-item>
                                 <template #label>
                                     <span>高德API Key</span>

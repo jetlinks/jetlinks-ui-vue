@@ -14,8 +14,11 @@ export const queryUnknownProtocol = (params: any) =>
  * @param params
  * @returns
  */
-export const exportUnknownProtocol = (format: string, data: any) =>
-    server.post(`/vehicle/unknown/protocol/${format}`, data);
+export const exportUnknownProtocol = (
+    name: string,
+    format: string,
+    data: any,
+) => server.postStream(`/vehicle/unknown/protocol/${name}.${format}`, data);
 
 /**
  * 设备命名异常
@@ -31,5 +34,5 @@ export const queryUnknownName = (params: any) =>
  * @param params
  * @returns
  */
-export const exportUnknownName = (format: string, data: any) =>
-    server.post(`/vehicle/unknown/name/${format}`, data);
+export const exportUnknownName = (name: string, format: string, data: any) =>
+    server.postStream(`/vehicle/unknown/name/${name}.${format}`, data);

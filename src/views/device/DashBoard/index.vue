@@ -37,6 +37,20 @@
             </j-row>
             <j-row :gutter="24">
                 <j-col :span="24">
+                    <div class="office-card">
+                        <Guide title="设备离线分析"> </Guide>
+                        <div class="office-chart">
+                            <Charts
+                                :options="
+                                    categoryOptions(totalCount, officeData)
+                                "
+                            ></Charts>
+                        </div>
+                    </div>
+                </j-col>
+            </j-row>
+            <j-row :gutter="24">
+                <j-col :span="24" v-if="deviceMessages">
                     <div class="message-card">
                         <Guide title="设备消息">
                             <template #extra>
@@ -58,7 +72,10 @@
                     </div>
                 </j-col>
             </j-row>
-            <j-row :span="24" v-if="AmapKey && isNoCommunity">
+            <j-row
+                :span="24"
+                v-if="AmapKey && isNoCommunity && deviceDistribution"
+            >
                 <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
@@ -80,6 +97,7 @@ import {
     deviceCount,
     dashboard,
     getGo,
+    getOfflineAnalysis,
 } from '@/api/device/dashboard';
 import encodeQuery from '@/utils/encodeQuery';
 import { getImage } from '@/utils/comm';
@@ -90,8 +108,13 @@ import Amap from './components/Amap.vue';
 import { useSystem } from '@/store/system';
 import dayjs from 'dayjs';
 import { isNoCommunity } from '@/utils/utils';
+import categoryOptions from './config';
+import { useAnalysisStore } from 'store/AnalysisReport';
 
 const system = useSystem();
+const Analysis = useAnalysisStore();
+const deviceMessages = Analysis.current.deviceMessages;
+const deviceDistribution = Analysis.current.deviceDistribution;
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([
@@ -138,7 +161,28 @@ let messageChartYData = ref<any[]>([]);
 let messageMaxChartYData = ref<number>();
 let onlineOptions = ref<any>({});
 let TodayDevOptions = ref<any>({});
+
+const officeData = ref();
+const totalCount = ref(0);
 let devMegOptions = ref<any>({});
+
+//设备离线分析
+const getOfficeOptions = () => {
+    getOfflineAnalysis({
+        terms: [
+            {
+                column: 'state',
+                value: 'offline',
+            },
+        ],
+    }).then((res: any) => {
+        if (res.result?.data) {
+            officeData.value = res.result.data;
+            totalCount.value = res.result.totalCount;
+        }
+    });
+};
+
 const menuStore = useMenuStore();
 // const quickBtnList = [
 //     { label: '昨日', value: 'yesterday' },
@@ -343,6 +387,7 @@ const setOnlineChartOption = (x: Array<any>, y: Array<number>): void => {
         ],
     };
 };
+
 const setTodayDevChartOption = (x: Array<any>, y: Array<number>): void => {
     TodayDevOptions = {
         tooltip: {
@@ -616,16 +661,22 @@ const getEcharts = (data: any) => {
 
 getOnline();
 getYesterdayOnline();
+getOfficeOptions();
 getDevice();
 </script>
 <style lang="less" scoped>
 .message-card,
+.office-card,
 .device-position {
     margin-top: 24px;
     padding: 24px;
     background-color: white;
 }
 .message-chart {
+    width: 100%;
+    height: 470px;
+}
+.office-chart {
     width: 100%;
     height: 470px;
 }

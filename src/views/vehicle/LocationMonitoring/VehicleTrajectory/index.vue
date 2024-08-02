@@ -293,7 +293,6 @@ const stopAni = () => {
 </script>
 
 <style scoped>
-@import 'https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css';
 .region-map {
     height: 100%;
     width: 100%;
@@ -311,10 +310,14 @@ const stopAni = () => {
     border-width: 0;
     opacity: 0.85;
     border-radius: 0.4rem;
+    padding-bottom: 1rem;
     box-shadow: 0 2px 6px 0 rgba(114, 124, 245, 0.5);
     position: relative;
-    bottom: 13rem;
+    bottom: 10rem;
     left: 4px;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0.75rem 1.25rem;
 }
 .search-card {
     display: flex;
@@ -328,7 +331,7 @@ const stopAni = () => {
     height: 40px;
     border-width: 0;
     opacity: 0.85;
-    border-radius: 0.4rem;
+    border-radius: 0.38rem;
     box-shadow: 0 2px 6px 0 rgba(114, 124, 245, 0.5);
     position: absolute;
     top: 100px;
@@ -352,7 +355,7 @@ const stopAni = () => {
 
 .input-card .btn {
     margin-right: 1.2rem;
-    width: 6rem;
+    width: 5rem;
 }
 
 .input-card .btn:last-child {
@@ -361,5 +364,174 @@ const stopAni = () => {
 
 .item-slider {
     width: 100%;
+}
+
+hr {
+    margin: 0.5rem 0;
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 0.4rem;
+}
+
+label,
+.btn {
+    margin-left: 0;
+    font-size: 0.8rem;
+}
+
+button,
+input,
+select {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    overflow: visible;
+    text-transform: none;
+}
+
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner,
+button::-moz-focus-inner {
+    padding: 0;
+    border-style: none;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+    box-sizing: border-box;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0 0.45rem 0 0;
+}
+
+h4 {
+    line-height: 1.8;
+    font-weight: 300;
+    font-size: 0.95rem;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: transparent;
+    background-image: none;
+    color: #25a5f7;
+    border-color: #25a5f7;
+    padding: 0.22rem 0.45rem;
+    line-height: 1.5;
+    border-radius: 0.9rem;
+    -webkit-appearance: button;
+    cursor: pointer;
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: #25a5f7;
+    border-color: #25a5f7;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.input-item {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    width: 100%;
+    height: 2rem;
+}
+
+.input-item:last-child {
+    margin-bottom: 0;
+}
+
+.input-item > select,
+.input-item > input[type='text'],
+.input-item > input[type='date'] {
+    position: relative;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+}
+
+.input-item > select:not(:last-child),
+.input-item > input[type='text']:not(:last-child),
+.input-item > input[type='date']:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-item > select:not(:first-child),
+.input-item > input[type='text']:not(:first-child),
+.input-item > input[type='date']:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-item-prepend {
+    margin-right: -1px;
+}
+
+.input-item-text,
+input[type='text'],
+input[type='date'],
+select {
+    height: calc(2.2rem + 2px);
+}
+
+.input-item-text {
+    width: 6rem;
+    text-align: justify;
+    padding: 0.4rem 0.7rem;
+    display: inline-block;
+    text-justify: distribute-all-lines;
+    text-align-last: justify;
+    -moz-text-align-last: justify;
+    -webkit-text-align-last: justify;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.input-item-text input[type='checkbox'],
+.input-item-text input[type='radio'] {
+    margin-top: 0;
 }
 </style>

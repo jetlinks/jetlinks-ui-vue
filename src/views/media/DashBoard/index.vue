@@ -35,7 +35,7 @@
                 />
             </j-col>
             <j-col :span="24" class="dash-board-bottom">
-                <full-page>
+                <full-page v-if="numberOfPlays">
                     <Card
                         title="播放数量(人次)"
                         :chartData="chartData"
@@ -57,6 +57,9 @@ import type { Footer } from '@/views/media/DashBoard/typings';
 import encodeQuery from '@/utils/encodeQuery';
 import { timestampFormat } from '@/utils/utils';
 import moment from 'moment';
+import { useAnalysisStore } from 'store/AnalysisReport';
+const Analysis = useAnalysisStore();
+const numberOfPlays = Analysis.current.numberOfPlays;
 
 // 设备
 const deviceFooter = ref<Footer[]>([]);
