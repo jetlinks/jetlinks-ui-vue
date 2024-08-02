@@ -34,7 +34,7 @@ router.beforeEach((to, from, next) => {
     // TODO 切换路由取消请求
     const token = getToken();
     const analysisStore = useAnalysisStore();
-    analysisStore.refresh();
+
     if (noTokenPath.includes(to.path)) {
         next();
     } else if (token) {
@@ -51,6 +51,7 @@ router.beforeEach((to, from, next) => {
                 userInfo
                     .getUserInfo()
                     .then(() => {
+                        analysisStore.refresh();
                         system.getSystemVersion().then((menuData: any[]) => {
                             menuData.forEach((r) => {
                                 router.addRoute('base', r);
