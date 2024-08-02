@@ -38,8 +38,10 @@
                     {{ handleVehicleType(vehicleTypeEnum) }}
                 </template>
                 <!-- 所属组织 -->
-                <template #orgName="{ orgName }">
-                    {{ orgName || '--' }}
+                <template #action="slotProps">
+                    <a @click="handelDetail(slotProps)" style="color: #f84914"
+                        >查看
+                    </a>
                 </template>
                 <!-- 告警时间 -->
                 <template #alarmTime="{ alarmTime }">
@@ -60,6 +62,7 @@
                 </template>
             </JProTable>
         </FullPage>
+        <Modal ref="formRef" />
     </page-container>
 </template>
 
@@ -79,6 +82,10 @@ import {
 } from '@/utils/dataReportUtils';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import Modal from './Modal/index.vue';
+import dayjs from 'dayjs';
+
+const formRef = ref();
 
 const configRef = ref<Record<string, any>>({});
 // 全局的搜索参数
@@ -110,20 +117,59 @@ const popTitle = computed(() => {
 });
 
 const { queryDataFactory, dicMap, tableColumns, handleVehicleType } =
-    useFilterAlarmDesc(columns, ['aa', 'bb', 'cc']);
+    useFilterAlarmDesc(columns);
 // 生成请求函数
 const queryDataFn = queryDataFactory(queryAlarmData, 'alarmTime');
+
+//测试数据
+const myData = [
+    {
+        id: '11111',
+        factoryNumber: '设备111',
+        simpleName: '产品111',
+        alarmTime: dayjs(new Date()).valueOf(),
+        lngLat: '温度',
+        deviceId: '300',
+        max: 200,
+        min: 0,
+    },
+    {
+        id: '22222',
+        factoryNumber: '设备222',
+        simpleName: '湿度',
+        alarmTime: dayjs(new Date()).valueOf(),
+        lngLat: '湿度',
+        deviceId: '120',
+        max: 100,
+        min: 0,
+    },
+    {
+        id: '33333',
+        factoryNumber: '设备333',
+        simpleName: '产品333',
+        alarmTime: dayjs(new Date()).valueOf(),
+        lngLat: '字段3',
+        deviceId: '278',
+        max: 200,
+        min: 0,
+    },
+];
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
     const resp = await queryDataFn(_params);
     if (resp.status === 200) {
-        dataTotal.value = resp.result.total;
+        dataTotal.value = myData.length;
         currentPage.value = resp.result.pageIndex + 1;
-        pageSize.value = resp.result.pageSize;
+        pageSize.value = resp.result.pageSize || 12;
         return {
             code: resp.status,
-            result: resp.result,
+            result: {
+                data: myData,
+                pageIndex: resp.result.pageSize || 12,
+                pageSize: resp.result.pageIndex + 1,
+                total: myData.length,
+            },
             status: resp.status,
         };
     } else {
@@ -176,6 +222,13 @@ const handleSearch = (_params: any) => {
     globParams.value = _params;
 };
 
+//查看
+const handelDetail = (data: any) => {
+    nextTick(() => {
+        formRef.value.show(data);
+    });
+};
+
 /**
  * @function handleExport 导出
  */
@@ -214,7 +267,7 @@ const handleExport = async () => {
         const url = URL.createObjectURL(blob);
         downloadFileByUrl(
             url,
-            `车辆告警数据-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            `设备清洗记录-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
             type.value,
         );
         if (

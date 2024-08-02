@@ -301,8 +301,8 @@ const columnsWork = [
 const columnsAss = [
     {
         title: 'ID',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'id',
+        key: 'id',
         ellipsis: true,
     },
     {
