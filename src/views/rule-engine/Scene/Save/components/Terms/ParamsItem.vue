@@ -36,7 +36,7 @@
                 v-model:value="paramsValue.termType"
                 @select="termsTypeSelect"
             />
-            <div v-if="!['notnull', 'isnull'].includes(paramsValue.termType)">
+            <div v-if="!['notnull', 'isnull'].includes(paramsValue.termType)" style="display: flex">
                 <DoubleParamsDropdown
                     v-if="showDouble"
                     icon="icon-canshu"
@@ -64,7 +64,7 @@
                 <ParamsDropdown
                     v-else
                     icon="icon-canshu"
-                    placeholder="参数值"
+                    :placeholder="tabsOptions[0]?.component === 'array' ? '多个值以英文逗号隔开':'参数值'"
                     :options="valueOptions"
                     :metricOptions="metricOption"
                     :tabsOptions="tabsOptions"
@@ -74,15 +74,9 @@
                     @select="valueSelect"
                 />
             </div>
-            <j-popconfirm
-                title="确认删除？"
-                @confirm="onDelete"
-                :overlayStyle="{ minWidth: '180px' }"
-            >
-                <div v-show="showDelete" class="button-delete">
-                    <AIcon type="CloseOutlined" />
-                </div>
-            </j-popconfirm>
+            <ConfirmModal title="确认删除？" :onConfirm="onDelete" className="button-delete" :show="showDelete">
+                <AIcon type="CloseOutlined" />
+            </ConfirmModal>
         </div>
         <div class="term-add" @click.stop="termAdd" v-if="isLast">
             <div class="terms-content">
@@ -308,7 +302,7 @@ watch(
 
 const showDouble = computed(() => {
     const isRange = paramsValue.termType
-        ? arrayParamsKey.includes(paramsValue.termType)
+        ? doubleParamsKey.includes(paramsValue.termType)
         : false;
     const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
@@ -330,7 +324,7 @@ const showDouble = computed(() => {
 
 const showArray = computed(()=>{
     const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false;
-                        const isSourceMetric = paramsValue.value?.source === 'metric';
+    const isSourceMetric = paramsValue.value?.source === 'metric';
     if (metricsCacheOption.value.length) {
         metricOption.value = metricsCacheOption.value.filter((item) =>
             isRange ? item.range : !item.range,
@@ -345,7 +339,7 @@ const showArray = computed(()=>{
         }
         return true;
     }
-    return false;                  
+    return false;
 })
 
 const mouseover = () => {
@@ -411,9 +405,10 @@ const columnSelect = (option: any) => {
     nextTick(() => {
         formItemContext.onFieldChange();
     });
+
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
-    ][0] = option.name;
+    ][0] = option.name || option.fullName;
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][1] = paramsValue.termType;
@@ -478,6 +473,7 @@ const valueSelect = (
     labelObj: Record<number, any>,
     option: any,
 ) => {
+
     if (paramsValue.value?.source === 'metric') {
         paramsValue.value.metric = option?.id;
     }
@@ -500,7 +496,7 @@ const typeSelect = (e: any) => {
 };
 
 const termAdd = () => {
-    const terms = {
+    const termsData = {
         column: undefined,
         value: {
             source: 'manual',
@@ -512,10 +508,9 @@ const termAdd = () => {
     };
     formModel.value.branches?.[props.branchName]?.when?.[
         props.whenName
-    ]?.terms?.push(terms);
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms[
-        props.termsName
-    ].push(['', '', '', '并且']);
+    ]?.terms?.push(termsData);
+
+    formModel.value.options!.when[props.branchName].terms[props.whenName].terms.push(['', '', '', '并且']);
 };
 
 const onDelete = () => {
@@ -526,6 +521,26 @@ const onDelete = () => {
         props.whenName
     ].terms.splice(props.termsName, 1);
 };
+
+watchEffect(() => {
+  const isRange = paramsValue.termType ? arrayParamsKey.includes(paramsValue.termType) : false;
+  const isSourceMetric = paramsValue.value?.source === 'metric';
+  if (metricsCacheOption.value.length) {
+    metricOption.value = metricsCacheOption.value.filter((item) =>
+      isRange ? item.range : !item.range,
+    );
+  } else {
+    metricOption.value = [];
+  }
+
+  if (isRange) {
+    if (isMetric.value) {
+      return !isSourceMetric;
+    }
+    return true;
+  }
+  return false;
+})
 
 nextTick(() => {
     Object.assign(

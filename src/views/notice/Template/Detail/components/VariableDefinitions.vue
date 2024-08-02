@@ -152,7 +152,7 @@ const handleTypeChange = (record: IVariable) => {
 
 <style lang="less" scoped>
 .table-wrapper {
-  background-color: #1d39c4;
+  background-color: @primary-color;
     .has-error {
         border-color: rgba(255, 77, 79);
         &:focus {

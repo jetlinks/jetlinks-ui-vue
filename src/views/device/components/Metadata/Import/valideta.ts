@@ -1,31 +1,31 @@
 import { onlyMessage } from "@/utils/comm"
 export const testProperties = (data:any) =>{
-    
+
 }
 
 export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolean)=>{
-    if(data.type === 'boolean'){
-        if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
-            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
-            return true
-        }
-    }
-    if(data.type === 'enum' && !isObject){
-        if(data?.elements?.length > 0){
-            data.elements.forEach((a:any,b:number)=>{
-                if(!a.value || !a.text){
-                    onlyMessage(`方法定义inputs第${index+1}个数组ValueType中elements缺失必填属性`,'error')
-                    return true
-                }
-            })
-        }else{
-            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elements属性`,'error')
-            return true
-        }
-    }
+    // if(data.type === 'boolean'){
+    //     if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
+    //         onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
+    //         return true
+    //     }
+    // }
+    // if(data.type === 'enum' && !isObject){
+    //     if(data?.elements?.length > 0){
+    //         data.elements.forEach((a:any,b:number)=>{
+    //             if(!a.value || !a.text){
+    //                 onlyMessage(`方法定义inputs第${index+1}个数组ValueType中elements缺失必填属性`,'error')
+    //                 return true
+    //             }
+    //         })
+    //     }else{
+    //         onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elements属性`,'error')
+    //         return true
+    //     }
+    // }
     if(data.type === 'array' && !isArray && !isObject){
         if(data?.elementType){
-            testType(data.elementType,index,true)
+           return testType(data.elementType,index,true)
         }else{
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elementType属性`,'error')
             return true
@@ -52,20 +52,20 @@ export const testObject = (data:any,index:number)=>{
         if(!i?.id){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失id属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.name){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失name属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.valueType?.type){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失valueType.type属性`,'error')
             check = true
-            return 
+            return
         }else{
            check =  testType(i,index,false,true)
-           return 
+           return
         }
     })
     return check
@@ -121,20 +121,20 @@ export const testAliObject = (data:any,index:number)=>{
         if(!i?.identifier){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失id属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.name){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失name属性`,'error')
             check = true
-            return 
+            return
         }
         if(!i?.dataType?.type){
             onlyMessage(`方法定义inputs第${index+1}个数组中缺失dataType.type属性`,'error')
             check = true
-            return 
+            return
         }else{
            check =  testAliType(i,index,false,true)
-           return 
+           return
         }
     })
     return check

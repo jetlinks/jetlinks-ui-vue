@@ -1,352 +1,400 @@
 <template>
-  <j-data-table
-        v-if="!heavyLoad"
-        ref="tableRef"
-        :data-source="dataSource"
-        :columns="columns"
-        :height="560"
-        :searchProps="{
-          placeholder: '请输入搜索名称'
-        }"
-        serial
-        @editStatus="editStatusChange"
-        @change="(data) => dataSourceCache = data"
-    >
-        <template #expand>
-          <!-- <PermissionButton
-              type="primary"
-              v-if="!showSave"
-              :hasPermission="`${permission}:update`"
-              key="add"
-
-              :disabled="hasOperate('add', type)"
-              :tooltip="{
-                    placement: hasOperate('add', type) ? 'topRight' : 'top',
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : '新增',
-                        getPopupContainer: getPopupContainer,
-                }"
-              @click="handleAddClick()"
-              placement="topRight"
+  <div class="metadata-base">
+  <EditTable
+      v-if="!heavyLoad"
+      ref="tableRef"
+      :data-source="dataSource"
+      :columns="columns"
+      :height="560"
+      :disableMenu="!hasOperate('add', type)"
+      :openGroup="type === 'properties'"
+      :rowSelection="{
+        selectedRowKeys: selectedRowKeys
+      }"
+      @scrollDown="scrollDown"
+      @rightMenuClick="rightMenuClick"
+      @groupEdit="groupEdit"
+      @groupDelete="groupDelete"
+  >
+    <template #extra="{ isFullscreen, fullScreenToggle }">
+      <div class="extra-header">
+        <div class="extra-left">
+          <a-space>
+            <Import
+              v-if="type === 'properties'"
+              :target="target"
+              :metadata="dataSource"
+              @ok="importMetadata"
+            />
+            <span v-if="searchData.show">
+              已查询到
+              <span style="color: #ff7875">{{ searchData.len}}</span>
+              条相关数据
+            </span>
+          </a-space>
+        </div>
+        <div class="extra-center">
+          <div v-if="copyDetail.index" class="extra-copy-tip">
+            <div class="extra-copy-tip-context">
+              <span> 已复制 </span>
+              <template v-if="type === 'properties'">
+                <Ellipsis style="max-width: 120px">
+                  {{ copyDetail.groupName }}
+                </Ellipsis>
+                <span >,</span>
+              </template>
+              <span>
+                第
+                {{ copyDetail.index }}
+                行
+              </span>
+            </div>
+            <div></div>
+              <div class="extra-copy-tip-icon" @click="copyDetail.index = 0">
+                <AIcon type="CloseOutlined" />
+              </div>
+          </div>
+        </div>
+        <div class="extra-right">
+          <a-button
+            @click="() => fullToggle(isFullscreen, fullScreenToggle)"
           >
-            新增
-          </PermissionButton> -->
+            <template #icon>
+              <AIcon
+                :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
+              />
+            </template>
+          </a-button>
+
           <PermissionButton
               type="primary"
-              :hasPermission="`${permission}:update`"
               key="update"
+              placement="topRight"
+              :hasPermission="`${permission}:update`"
               :loading="loading"
-              :disabled="hasOperate('add', type) || !editStatus"
+              :disabled="hasOperate('add', type)"
               :tooltip="{
                     title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : !editStatus ? '暂无改动数据': '保存',
+                        ? '当前的存储方式不支持删改、新增'
+                        : '保存',
                     placement: hasOperate('add', type) ? 'topRight' : 'top',
                     getPopupContainer: getPopupContainer,
                 }"
               @click="handleSaveClick()"
-              placement="topRight"
           >
             保存
           </PermissionButton>
-        </template>
-        <template #valueType="{ data }">
-            {{ TypeStringMap[data.record.valueType?.type] }}
-        </template>
-        <template #inputs="{ data }">
-          <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
-          >
-<!--            <ModelButton :disabled="true"/>-->
-              <j-button :disabled="true" type="link" >
-                <AIcon type="SettingOutlined" />
-                配置
-              </j-button>
-
-          </j-tooltip>
-          <InputParams
-              v-else
-              v-model:value="data.record.inputs"
-              :has-permission="`${permission}:update`"
+        </div>
+      </div>
+    </template>
+    <template #bodyExtra v-if="hasOperate('add', type)">
+      <div class="noEdit-tip">
+        <div>
+         该设备受所属产品的存储策略影响，无法进行删改、新增操作
+        </div>
+        <div>
+          <a-button type="link" @click="jumpProduct" style="font-size: 20px;">修改存储策略</a-button>
+        </div>
+      </div>
+    </template>
+    <template #id="{ record, index }">
+      <EditTableFormItem :name="[index, 'id']" @change="metadataChange">
+        <a-input v-model:value="record.id" placeholder="请输入标识" :disabled="record.expands?.isProduct"/>
+      </EditTableFormItem>
+    </template>
+    <template #name="{ record, index }">
+      <EditTableFormItem :name="[index, 'name']" @change="metadataChange">
+        <a-input v-model:value="record.name" placeholder="请输入名称" :disabled="record.expands?.isProduct"/>
+      </EditTableFormItem>
+    </template>
+    <template #valueType="{ record, index }">
+      <EditTableFormItem :name="[index, 'valueType']" @change="metadataChange">
+        <div style="display: flex; align-items: center" v-if="['properties', 'tags'].includes(type)">
+          <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
+          <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
+          <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" :disabled="record.expands?.isProduct"/>
+          <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" :disabled="record.expands?.isProduct"/>
+          <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" :disabled="record.expands?.isProduct"/>
+          <BooleanParams
+              v-else-if="record.valueType.type === 'boolean'"
+              v-model:falseText="record.valueType.falseText"
+              v-model:falseValue="record.valueType.falseValue"
+              v-model:trueText="record.valueType.trueText"
+              v-model:trueValue="record.valueType.trueValue"
+              :disabled="record.expands?.isProduct"
           />
-        </template>
-        <template #output="{ data }">
-          {{ data.record.output?.type }}
-        </template>
-        <template #async="{ data }">
-          {{ data.record.async ? '是' : '否' }}
-        </template>
-        <template #expands="{ data }" v-if="type === 'events'">
-          {{ levelMap?.[data.record.expands?.level] || '-' }}
-        </template>
-      <template v-else-if="type === 'properties'" #expands="{ data }">
-        {{ data.record.id && !data.record?.expands?.source ? '设备' : sourceMap?.[data.record?.expands?.source] || '' }}
-      </template>
-        <template #properties="{ data }">
-          <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
-          >
-<!--            <ModelButton :disabled="true"/>-->
-            <j-button :disabled="true" type="link">
-              <AIcon type="SettingOutlined" />
+          <ObjectParams v-else-if="record.valueType.type === 'object'" v-model:value="record.valueType.properties" :disabled="record.expands?.isProduct"/>
+          <ArrayParams v-else-if="record.valueType.type === 'array'" v-model:value="record.valueType.elementType" :disabled="record.expands?.isProduct"/>
+        </div>
+        <div v-else-if="type === 'events'">
+          <ObjectParams v-model:value="record.valueType.properties">
+            <a-button type="primary" :disabled="record.expands?.isProduct" :danger="!record.valueType.properties?.length && record.id">
+              <template #icon>
+                <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.valueType.properties?.length}"/>
+              </template>
               配置
-            </j-button>
-          </j-tooltip>
-          <ConfigParams
-              v-else
-              v-model:value="data.record.valueType"
-              :has-permission="`${permission}:update`"
+            </a-button>
+          </ObjectParams>
+        </div>
+      </EditTableFormItem>
+    </template>
+    <template #expands="{ record, index }">
+      <EditTableFormItem :name="[index, 'expands']" @change="metadataChange">
+        <Source
+            v-if="props.type === 'properties'"
+            v-model:value="record.expands"
+            :isProduct="record.expands?.isProduct"
+            :target="target"
+            :record="record"
+            :disabled="record.expands?.isProduct"
+        />
+        <a-select
+            v-else-if="props.type === 'events'"
+            v-model:value="record.expands.level"
+            style="width: 100%"
+            :options="EventLevel"
+            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
+            :disabled="record.expands?.isProduct"
+        />
+      </EditTableFormItem>
+    </template>
+    <template #other="{ record }">
+      <div>
+        <OtherSetting
+            v-model:value="record.expands"
+            :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
+            :id="record.id"
+            :name="record.name"
+            :metadataType="props.type"
+            :isProduct="record.expands?.isProduct"
+            :target="props.target"
+            :record="record"
+            :disabled="record.expands?.isProduct && !['int','long','float','double',].includes(record.valueType?.type)"
+            @change="metadataChange"
+        />
+      </div>
+    </template>
+    <template #async="{ record }">
+      <BooleanSelect
+          v-model:value="record.async"
+          style="width: 100%"
+          trueLabel="是"
+          falseLabel="否"
+          :true-value="true"
+          :false-value="false"
+          :disabled="record.expands?.isProduct"
+          @change="metadataChange"
+      />
+    </template>
+    <template #inputs="{ record, index }">
+      <EditTableFormItem :name="[index, 'inputs']" @change="metadataChange">
+        <ObjectParams v-model:value="record.inputs" :type="type">
+          <a-button type="primary" :disabled="record.expands?.isProduct">
+            <template #icon>
+              <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.inputs.length}"/>
+            </template>
+            配置
+          </a-button>
+        </ObjectParams>
+      </EditTableFormItem>
+    </template>
+    <template #output="{ record, index }">
+      <EditTableFormItem :name="[index, 'output']" @change="metadataChange">
+        <div style="display: flex; align-items: center">
+          <TypeSelect v-model:value="record.output.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <IntegerParams v-if="['int', 'long'].includes(record.output.type)" v-model:value="record.output.unit" :disabled="record.expands?.isProduct"/>
+          <DoubleParams v-else-if="['float', 'double'].includes(record.output.type)" v-model:value="record.output" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.output.type === 'string'" v-model:value="record.output.maxLength" :disabled="record.expands?.isProduct"/>
+          <DateParams v-else-if="record.output.type === 'date'" v-model:value="record.output.format" :disabled="record.expands?.isProduct"/>
+          <FileParams v-else-if="record.output.type === 'file'" v-model:value="record.output.bodyType" :disabled="record.expands?.isProduct"/>
+          <EnumParams v-else-if="record.output.type === 'enum'" v-model:value="record.output.elements" :disabled="record.expands?.isProduct"/>
+          <BooleanParams
+              v-else-if="record.output.type === 'boolean'"
+              v-model:falseText="record.output.falseText"
+              v-model:falseValue="record.output.falseValue"
+              v-model:trueText="record.output.trueText"
+              v-model:trueValue="record.output.trueValue"
+              :disabled="record.expands?.isProduct"
           />
-        </template>
-        <template #outInput>
-          object
-        </template>
-        <template #readType="{data}">
-          <j-tag v-for="item in data.record?.expands?.type || []" :key="item">
-            {{ expandsType[item] }}
-          </j-tag>
-        </template>
-        <template #other="{ data }">
-          <!-- <j-tooltip
-            v-if="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-            title="继承自产品物模型的数据不支持修改"
-          > -->
-<!--            <ModelButton :disabled="true"/>-->
-            <!-- <j-button :disabled="true" type="link" style="padding-left: 0;">
-              <AIcon type="SettingOutlined" />
-              配置
-            </j-button> -->
-          <!-- </j-tooltip> -->
-          <OtherSetting
-              v-model:value="data.record.expands"
-              :id="data.record.id"
-              :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-              :record="data.record"
-              :type="type === 'properties' ? data.record.valueType?.type : 'object'"
-              :has-permission="`${permission}:update`"
-              :medataType="type"
-              :tooltip="target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? {
-                title: '继承自产品物模型的数据不支持删除',
-              } : undefined"
+          <ObjectParams
+              v-else-if="record.output.type === 'object'"
+              v-model:value="record.output.properties"
+              :disabled="record.expands?.isProduct"
           />
-
-        </template>
-        <template #action="{data}">
-          <j-space>
-            <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="edit"
-                style="padding: 0"
-                :disabled="!!operateLimits('add', type)"
-                @click="copyItem(data.record, data.index)"
-                :tooltip="{
-                  title: operateLimits('add', type) ? '当前的存储方式不支持复制' : '复制',
-                  getPopupContainer: getPopupContainer,
-                }"
-            >
-              <AIcon type="CopyOutlined" />
-            </PermissionButton>
-            <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="edit"
-                style="padding: 0"
-                :disabled="!!operateLimits('add', type)"
-                @click="handleAddClick(null, data.index)"
-                :tooltip="{
-                  title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
-                  getPopupContainer: getPopupContainer,
-                }"
-            >
-              <AIcon type="PlusSquareOutlined" />
-            </PermissionButton>
-            <PermissionButton
-                :has-permission="true"
-                type="link"
-                key="edit"
-                style="padding: 0"
-                @click="showDetail(data.record)"
-                :tooltip="{
-                  title: '详情',
-                  getPopupContainer: getPopupContainer,
-                }"
-            >
-              <AIcon type="FileSearchOutlined" />
-            </PermissionButton>
-            <PermissionButton
-                :has-permission="`${permission}:update`"
-                type="link"
-                key="delete"
-                style="padding: 0"
-                danger
-                :pop-confirm="{
-                  placement: 'topRight',
-                  title: showLastDelete ? '这是最后一条数据了，确认删除？' : '确认删除？',
-                  onConfirm: async () => {
-                      await removeItem(data.index);
-                    },
-                    getPopupContainer: getPopupContainer
-                  }"
-                :disabled="target === 'device' && productNoEdit.id?.includes?.(data.record.id)"
-                :tooltip="{
-                  placement: 'topRight',
-                  getPopupContainer: getPopupContainer,
-                  title: target === 'device' && productNoEdit.id?.includes?.(data.record.id) ? '继承自产品物模型的数据不支持删除' :'删除',
-                }"
-            >
-              <AIcon type="DeleteOutlined" />
-            </PermissionButton>
-          </j-space>
-        </template>
-  </j-data-table>
-    <PermissionButton
-              type="primary"
-              block
-              ghost
-              :hasPermission="`${permission}:update`"
-              key="add"
-              :disabled="hasOperate('add', type)"
-              :tooltip="{
-                    placement:'top',
-                    title: hasOperate('add', type)
-                        ? '当前的存储方式不支持新增'
-                        : '新增',
-                        getPopupContainer: getPopupContainer,
-                }"
-              @click="handleAddClick()"
-              placement="topRight"
-          >
-          <template #icon><AIcon type="PlusOutlined"/></template>
-            新增行
-    </PermissionButton>
-    <PropertiesModal
-        v-if="type === 'properties' && detailData.visible"
-        :data="detailData.data"
-        :getPopupContainer="getPopupContainer"
-        @cancel="cancelDetailModal"
-    />
-    <FunctionModal
-        v-else-if="type === 'functions' && detailData.visible"
-        :data="detailData.data"
-        :getPopupContainer="getPopupContainer"
-        @cancel="cancelDetailModal"
-    />
-    <EventModal
-        v-else-if="type === 'events' && detailData.visible"
-        :data="detailData.data"
-        :getPopupContainer="getPopupContainer"
-        @cancel="cancelDetailModal"
-    />
-    <TagsModal
-        v-else-if="type === 'tags' && detailData.visible"
-        :data="detailData.data"
-        :getPopupContainer="getPopupContainer"
-        @cancel="cancelDetailModal"
-    />
+          <ArrayParams v-else-if="record.output.type === 'array'" v-model:value="record.output.elementType" :disabled="record.expands?.isProduct"/>
+        </div>
+      </EditTableFormItem>
+    </template>
+    <template #description="{ record }">
+      <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct" @change="metadataChange"/>
+    </template>
+    <template #properties="{ record, index }">
+      <EditTableFormItem :name="[index, 'properties']" @change="metadataChange">
+        <ObjectParams v-model:value="record.valueType.properties" :disabled="record.expands?.isProduct"/>
+      </EditTableFormItem>
+    </template>
+    <template #group="{ record }">
+      <GroupSelect v-model:value="record.expands.group" :disabled="record.expands?.isProduct" @change="metadataChange"/>
+    </template>
+  </EditTable>
+    <div>
+      可编辑数据列表共 <span class="metadata-result-total">{{ effectiveDataLength }}</span> 条数据
+    </div>
+  <PropertiesModal
+      v-if="type === 'properties' && detailData.visible"
+      :data="detailData.data"
+      :type="target"
+      :getPopupContainer="getPopupContainer"
+      :unitOptions="unitOptions"
+      @cancel="cancelDetailModal"
+  />
+  <FunctionModal
+      v-else-if="type === 'functions' && detailData.visible"
+      :data="detailData.data"
+      :getPopupContainer="getPopupContainer"
+      @cancel="cancelDetailModal"
+  />
+  <EventModal
+      v-else-if="type === 'events' && detailData.visible"
+      :data="detailData.data"
+      :getPopupContainer="getPopupContainer"
+      @cancel="cancelDetailModal"
+  />
+  <TagsModal
+      v-else-if="type === 'tags' && detailData.visible"
+      :data="detailData.data"
+      :getPopupContainer="getPopupContainer"
+      :unitOptions="unitOptions"
+      @cancel="cancelDetailModal"
+  />
+  </div>
 </template>
 
 <script setup lang="ts" name="MetadataBase">
 import type {
-    MetadataItem,
-    MetadataType,
-    ProductItem,
+  MetadataItem,
+  MetadataType,
+  ProductItem,
 } from '@/views/device/Product/typings';
-import type { PropType } from 'vue';
-import { TOKEN_KEY } from '@/utils/variable'
+import type {PropType} from 'vue';
+import {TOKEN_KEY} from '@/utils/variable'
 import {useRouter, onBeforeRouteUpdate} from 'vue-router'
-import { useMetadata, useOperateLimits } from './hooks';
-import {TypeStringMap, useColumns} from './columns';
-import { levelMap, sourceMap, expandsType, limitsMap } from './utils';
-import { Source, OtherSetting, InputParams, ConfigParams } from './components';
-import { saveProductVirtualProperty } from '@/api/device/product';
-import { saveDeviceVirtualProperty } from '@/api/device/instance';
-import { useInstanceStore } from '@/store/instance';
-import { useProductStore } from '@/store/product';
-import { asyncUpdateMetadata, updateMetadata } from '../metadata';
-import { useMetadataStore } from '@/store/metadata';
-import { DeviceInstance } from '@/views/device/Instance/typings';
-import { onlyMessage , LocalStore} from '@/utils/comm';
-import { omit , cloneDeep} from "lodash-es";
-import { PropertiesModal, FunctionModal, EventModal, TagsModal } from './DetailModal'
-import { Modal } from 'jetlinks-ui-components'
+import {useMetadata, useOperateLimits, useGroup} from './hooks';
+import {useColumns, useSaveUnit} from './columns';
+import {getMetadataItemByType, limitsMap} from './utils';
+import {Source, OtherSetting} from './components';
+import {saveProductVirtualProperty} from '@/api/device/product';
+import {saveDeviceVirtualProperty} from '@/api/device/instance';
+import {useInstanceStore} from '@/store/instance';
+import {useProductStore} from '@/store/product';
+import {asyncUpdateMetadata, updateMetadata} from '../metadata';
+import {DeviceInstance} from '@/views/device/Instance/typings';
+import {onlyMessage, LocalStore} from '@/utils/comm';
+import {omit} from "lodash-es";
+import {PropertiesModal, FunctionModal, EventModal, TagsModal} from './DetailModal'
+import {Modal} from 'jetlinks-ui-components'
 import {EventEmitter} from "@/utils/utils";
-import {computed, watch} from "vue";
-import {useSystem} from "store/system";
+import {watch} from "vue";
+import {useSystem} from "@/store/system";
+import {useMenuStore} from "@/store/menu";
 import {storeToRefs} from "pinia";
-import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
-import { usePermissionStore } from '@/store/permission';
-import App from '@/App.vue';
+import {usePermissionStore} from '@/store/permission';
+import {
+  EditTable,
+  TypeSelect,
+  IntegerParams,
+  StringParams,
+  DateParams,
+  FileParams,
+  EnumParams,
+  BooleanParams,
+  ObjectParams,
+  ArrayParams,
+  DoubleParams,
+  GroupSelect,
+  EditTableFormItem,
+  BooleanSelect
+} from '@/components/Metadata/Table'
+import {EventLevel} from "@/views/device/data";
+import {message } from "ant-design-vue";
+import { Import } from './components/Import'
 
 const props = defineProps({
-    target: {
-        type: String as PropType<'device' | 'product'>,
-        default: 'product',
-    },
-    type: {
-        type: String as PropType<MetadataType>,
-        default: undefined,
-    },
-    permission: {
-        type: [String, Array] as PropType<string | string[]>,
-        default: undefined,
-    },
+  target: {
+    type: String as PropType<'device' | 'product'>,
+    default: 'product',
+  },
+  type: {
+    type: String as PropType<MetadataType>,
+    default: undefined,
+  },
+  permission: {
+    type: [String, Array] as PropType<string | string[]>,
+    default: undefined,
+  },
 });
 
 const _target = inject<'device' | 'product'>('_metadataType', props.target);
 
-const tableContainer = ref()
 const system = useSystem();
 const {basicLayout} = storeToRefs(system);
 const router = useRouter()
 
-const { data: metadata, noEdit, productNoEdit } = useMetadata(_target, props.type);
-const { data: tagsMetadata } = useMetadata(_target,'tags')
-const { hasOperate } = useOperateLimits(_target);
+const { unitOptions } = useSaveUnit()
+
+const {data: metadata, noEdit, productNoEdit} = useMetadata(_target, props.type);
+const {data: tagsMetadata} = useMetadata(_target, 'tags')
+const {hasOperate} = useOperateLimits(_target);
 
 const permissionStore = usePermissionStore()
-const metadataStore = useMetadataStore()
 const instanceStore = useInstanceStore()
 const productStore = useProductStore()
 
-const dataSource = ref<MetadataItem[]>(metadata.value || []);
+const dataSource = ref<MetadataItem[]>(JSON.parse(JSON.stringify(metadata.value || '[]')) || []);
 const tableRef = ref();
 const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
+const selectedRowKeys = ref<string[]>([])
 
-// const columns = computed(() => MetadataMapping.get(props.type!));
-const {columns} = useColumns(props.type, _target, noEdit, productNoEdit)
+const _isFullscreen = ref(false)
+
+const copyDetail = reactive({
+  key: undefined,
+  index: 0,
+  groupName: undefined
+})
+
+const searchData = reactive({
+  len: 0,
+  show: false
+})
+
+const {initOptions} = useGroup()
+
+const {columns} = useColumns(dataSource, props.type, _target, noEdit, productNoEdit)
 
 const detailData = reactive({
   data: {},
-  visible:false
+  visible: false
 })
 
 const heavyLoad = ref<Boolean>(false)
 
-const showSave = ref(metadata.value.length !== 0)
-
-const dataSourceCache = ref<any[]>(metadata.value)
-const fullRef = inject(FULL_CODE);
-
-const getPopupContainer = (node: any) => {
-  const fullDom = tableRef.value?.fullRef?.()
-  return fullDom || node
-}
-
-const showLastDelete = computed(() => {
-  return dataSourceCache.value.length === 1
+const effectiveDataLength = computed(() => {
+  return dataSource.value.filter(item => item.id).length
 })
 
-provide('_dataSource', dataSourceCache);
-provide('_tagsDataSource',tagsMetadata)
-const showDetail = (data: any) => {
-  detailData.data = data
-  detailData.visible = true
+const getPopupContainer = () => {
+  if (_isFullscreen.value) {
+    return tableRef.value.getTableWrapperRef() || document.body
+  }
+  return document.body
 }
+
+provide('_tagsDataSource', tagsMetadata)
+provide('metadataSource', dataSource)
 
 const cancelDetailModal = () => {
   detailData.data = {}
@@ -356,175 +404,188 @@ const cancelDetailModal = () => {
 const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
   return (
       _target === 'device' &&
-      (instanceStore.detail.features || []).find((item: { id: string; name: string }) => item.id === limitsMap.get(`${types}-${action}`))
+      (instanceStore.detail.features || []).find((item: {
+        id: string;
+        name: string
+      }) => item.id === limitsMap.get(`${types}-${action}`))
   );
 };
 
-const handleSearch = (searchValue: string) => {
-    dataSource.value = searchValue
-        ? metadata.value
-              .filter((item) => item.name!.indexOf(searchValue) > -1)
-              .sort((a, b) => b?.sortsIndex - a?.sortsIndex)
-        : metadata.value;
-};
+// const handleSearch = (searchValue: string) => {
+//   const keys: string[] = []
+//   if (searchValue) {
+//     dataSource.value.forEach(item => {
+//       if (item.name && item.name.includes(searchValue)) {
+//         keys.push(item.id)
+//       }
+//     })
+//   }
+//
+//   if (keys.length) {
+//     tableRef.value.scrollToById(keys[0])
+//   }
+//   selectedRowKeys.value = keys
+//
+//   searchData.len = keys.length
+//   searchData.show = true
+// };
 
-const getDataByType = () => {
-  let _data: any = {
-    id: undefined,
-    name: undefined,
-    expands: {
-      source: 'device'
-    },
-    valueType: {
-      type: undefined
-    }
-  }
-
-  if (props.type === 'functions') {
-    _data = {
-      id: undefined,
-      name: undefined,
-      async: false,
-      inputs: [],
-      output: {
-        type: undefined
-      }
-    }
-  } else if (props.type === 'events') {
-    _data = {
-      id: undefined,
-      name: undefined,
-      async: false,
-      valueType: {
-        type: 'object',
-        properties: []
-      },
-      expands: {
-        level: 'ordinary'
-      }
-
-    }
-  } else if (props.type === 'tags') {
-    _data = {
-      id: undefined,
-      name: undefined,
-      valueType: {
-        type: undefined
-      },
-      expands: {
-        type: undefined
-      }
-    }
-  }
-
-  return _data
-}
-
-const handleAddClick = async (_data?: any, index?: number) => {
-
-  const newObject = _data || getDataByType()
-
-  const _addData = await tableRef.value.addItem(newObject, index)
-  nextTick(()=>{
-    if(tableContainer?.value?.classList?.value === 'tableContainer'){
-      tableContainer.value.classList.remove('tableContainer')
-    }
-  })
-  // if (_addData.length === 1) {
-  //   showLastDelete.value = true
-  // }
-  showSave.value = true
-};
-
-const copyItem = (record: any, index: number) => {
-  const copyData = cloneDeep(omit(record, ['_uuid', '_sortIndex']))
-  copyData.id = `copy_${copyData.id}`
-  handleAddClick(copyData, index)
-}
-
-const removeItem = (index: number) => {
-  // const data = [...dataSource.value];
-  // data.splice(index, 1);
-  // dataSource.value = data
-  const _data = tableRef.value.removeItem(index)
-  // if (_data.length === 1) {
-  //   showLastDelete.value = true
-  // }
-  if (_data.length === 0) {
-    showSave.value = false
-    handleSaveClick()
+const scrollDown = (len: number = 5) => {
+  if (!hasOperate('add', props.type)) {
+    dataSource.value.push(...(new Array(len).fill(1).map(() => getMetadataItemByType(props.type!))))
   }
 }
 
-const editStatusChange = (status: boolean) => {
-  console.log('editStatusChange',status)
-  editStatus.value = status
+const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  Record<string, any>) => {
+  const _index = record.__dataIndex
+  switch (type) {
+    case 'add':
+      dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
+      editStatus.value = true
+      nextTick(() => {
+        if (copyDetail.key) {
+          const copyItem = dataSource.value.find(item => item.__key === copyDetail.key)
+          copyDetail.index = copyItem!.__serial
+          copyDetail.groupName = copyItem!.expands.groupName
+        }
+      })
+      break;
+    case 'paste':
+      const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
+      cloneRecord.id = `copy_${cloneRecord.id}`
+      if (props.type === 'properties') {
+        // 获取当前分组id和name
+        const expandsItem = dataSource.value[_index + 1].expands
+        cloneRecord.expands.groupName = expandsItem.groupName
+        cloneRecord.expands.groupId = expandsItem.groupId
+      }
+
+      if (record.id) {
+        dataSource.value.splice(_index + 1, 0, cloneRecord)
+        // Modal.confirm({
+        //   title: '当前行存在数据',
+        //   onOk() {
+        //     dataSource.value.splice(_index, 1, cloneRecord)
+        //   },
+        //   onCancel() {
+        //     console.log('Cancel');
+        //   },
+        // })
+      } else {
+        dataSource.value.splice(_index, 1, cloneRecord)
+      }
+
+      editStatus.value = true
+      break;
+    case 'copy':
+      copyDetail.index = record.__serial
+      copyDetail.key = record.__key
+      copyDetail.groupName = dataSource.value[record.__dataIndex].expands.groupName
+      selectedRowKeys.value = [record.id]
+      break;
+    case 'detail':
+      detailData.data = record
+      detailData.visible = true
+      break;
+    case 'delete':
+      // Modal.confirm({
+      //   title: `确认删除【${record.id}】？`,
+      //   onOk() {
+      //     dataSource.value.splice(_index, 1)
+      //   },
+      //   onCancel() {
+      //     console.log('Cancel');
+      //   },
+      // })
+      if (copyDetail.key === record.__key) {
+        copyDetail.key = undefined
+        copyDetail.groupName = undefined
+        copyDetail.index = 0
+      }
+      dataSource.value.splice(_index, 1)
+      editStatus.value = true
+      break;
+  }
+
 }
 
 const handleSaveClick = async (next?: Function) => {
-    let resp = await tableRef.value.getData().finally(() => {
+  let resp = await tableRef.value.validate()
 
-    });
-    if(resp) {
-
-      const virtual: any[] = [];
-      const arr = resp.map((item: any) => {
-        if(item.expands?.virtualRule) {
-          const triggerProperties = item.expands.virtualRule.triggerProperties
-          const rule = omit(item.expands.virtualRule, ['triggerProperties'])
-          virtual.push({
-            triggerProperties,
-            rule,
-            type: rule.type,
-            propertyId: item.id
-          })
-        }
-        return {
-          ...item,
-          expands: {
-            ...omit(item.expands, ['virtualRule'])
-          }
-        }
-        // return item
-      })
-      // 保存规则
-      if(virtual.length) {
-        let res = undefined
-        if(_target === 'device') {
-          res = await saveDeviceVirtualProperty(instanceStore.current.productId, instanceStore.current.id, virtual)
-        } else {
-          res = await saveProductVirtualProperty(productStore.current.id, virtual)
+  if (resp) {
+    const virtual: any[] = [];
+    const arr = resp.map((item: any) => {
+      if (item.expands?.virtualRule) {
+        const triggerProperties = item.expands.virtualRule.triggerProperties
+        const rule = omit(item.expands.virtualRule, ['triggerProperties'])
+        virtual.push({
+          triggerProperties,
+          rule,
+          type: rule.type,
+          propertyId: item.id
+        })
+      }
+      return {
+        ...item,
+        expands: {
+          ...omit(item.expands, ['virtualRule'])
         }
       }
-      // 保存属性
-      const updateStore = (metadata: string) => {
-        if (_target === 'device') {
-          const detail = instanceStore.current
-          detail.metadata = metadata
-          instanceStore.setCurrent(detail)
-        } else {
-          const detail = productStore.current || {} as ProductItem
-          detail.metadata = metadata
-          productStore.setCurrent(detail)
-        }
-      }
-      const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
-      let _data = updateMetadata(props.type!, arr, _detail, updateStore)
-      loading.value = true
-      const result = await asyncUpdateMetadata(_target, _data).finally(() => {
-        loading.value = false
-      })
-      if(result.success) {
-        dataSource.value = resp
-        tableRef.value.cleanEditStatus()
-        editStatus.value = false
-        onlyMessage('操作成功！')
-        next?.()
+      // return item
+    })
+    // 保存规则
+    if (virtual.length) {
+      let res = undefined
+      if (_target === 'device') {
+        res = await saveDeviceVirtualProperty(instanceStore.current.productId, instanceStore.current.id, virtual)
+      } else {
+        res = await saveProductVirtualProperty(productStore.current.id, virtual)
       }
     }
+    // 保存属性
+    const updateStore = (metadata: string) => {
+      if (_target === 'device') {
+        const detail = instanceStore.current
+        detail.metadata = metadata
+        instanceStore.setCurrent(detail)
+      } else {
+        const detail = productStore.current || {} as ProductItem
+        detail.metadata = metadata
+        productStore.setCurrent(detail)
+      }
+    }
+
+    const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
+    let _data = updateMetadata(props.type!, arr, _detail, updateStore)
+    loading.value = true
+
+    const result = await asyncUpdateMetadata(_target, _data).finally(() => {
+      loading.value = false
+    })
+    if (result.success) {
+      // dataSource.value = resp
+      // tableRef.value.cleanEditStatus()
+      editStatus.value = false
+      message.config({
+        getContainer() {
+          return getPopupContainer()
+        }
+      })
+      onlyMessage('操作成功！')
+      next?.()
+    }
+  }
 };
 
-const tabsChange = inject('tabsChange')
+const metadataChange = () => {
+  editStatus.value = true
+}
+
+const jumpProduct = () => {
+  useMenuStore().jumpPage(
+    'device/Product/Detail', { id: instanceStore.detail.productId, tab: 'Device' }
+  )
+}
 
 const parentTabsChange = (next?: Function) => {
   if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`) && LocalStore.get(TOKEN_KEY)) {
@@ -553,16 +614,49 @@ const parentTabsChange = (next?: Function) => {
   }
 }
 
+const fullToggle = (type: boolean, cb: Function) => {
+  cb()
+  _isFullscreen.value = !type
+}
+
+const groupEdit = (record: { value: string, label: string}) => {
+  dataSource.value.forEach(item => {
+    if (item.expands?.groupId === record.value) {
+      item.expands.groupName = record.label
+    }
+  })
+}
+
+const groupDelete = (id: string) => {
+  dataSource.value = dataSource.value.filter(item => item.expands?.groupId !== id || item.expands?.isProduct)
+}
+
+const importMetadata = (_metadata: any[]) => {
+  dataSource.value = _metadata
+}
+
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
 onUnmounted(() => {
+  message.config({
+    getContainer() {
+      return document.body
+    },
+  })
   EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
 })
 
 watch(() => metadata.value, () => {
-  dataSource.value = metadata.value
-
-}, { immediate: true })
+  dataSource.value = JSON.parse(JSON.stringify(metadata.value || '[]')).map(item => {
+    if (!item.expands) {
+      item['expands'] = {
+        group: undefined
+      }
+    }
+    return item
+  })
+  initOptions(dataSource.value)
+}, {immediate: true})
 
 onBeforeRouteUpdate((to, from, next) => { // 设备管理内路由跳转
   parentTabsChange(next as Function)
@@ -574,10 +668,64 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
 
 </script>
 
-<style scoped>
-.table-header {
+<style scoped lang="less">
+.extra-header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  position: relative;
+}
+
+.extra-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.extra-copy-tip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 300px;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background-color: #fff;
+  box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.08),0px 3px 6px -4px rgba(0, 0, 0, 0.12),0px 9px 28px 8px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  transform: translateX(-150px);
+
+  .extra-copy-tip-icon {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  .extra-copy-tip-context {
     display: flex;
-    justify-content: space-between;
-    padding-bottom: 16px;
+    gap: 4px;
+  }
+}
+
+.noEdit-tip {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 22px;
+  color: #6f6f6f;
+  justify-content: center;
+  align-items: center
+}
+
+.metadata-base {
+  :deep(.ant-message) {
+    z-index: 1073;
+  }
+}
+
+.metadata-result-total {
+  color: @primary-color;
 }
 </style>

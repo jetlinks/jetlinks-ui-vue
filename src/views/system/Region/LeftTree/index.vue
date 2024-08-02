@@ -22,7 +22,7 @@
                     draggable
                     block-node
                     v-model:expandedKeys="expandedKeys"
-                    v-model:selectedKeys="selectedKeys"
+                    :selectedKeys="selectedKeys"
                     :tree-data="_treeData"
                     :show-line="{ showLeafIcon: false }"
                     :show-icon="true"
@@ -62,18 +62,18 @@
                                         </j-button>
                                     </j-tooltip>
                                     <j-tooltip title="删除">
-                                        <j-popconfirm
-                                            @confirm="onRemove(_data?.id)"
+                                        <PermissionButton
+                                            type="link"
+                                            style="margin: 0; padding: 0"
+                                            danger
+                                            :popConfirm="{
+                                                title: '确认删除？',
+                                                onConfirm: () =>
+                                                    onRemove(_data?.id),
+                                            }"
                                         >
-                                            <j-button
-                                                @click.stop
-                                                class="actions-btn"
-                                                type="link"
-                                                danger
-                                            >
-                                                <AIcon type="DeleteOutlined" />
-                                            </j-button>
-                                        </j-popconfirm>
+                                            <AIcon type="DeleteOutlined"
+                                        /></PermissionButton>
                                     </j-tooltip>
                                 </j-space>
                             </div>
@@ -87,8 +87,8 @@
         </div>
     </div>
     <Save
-        :mode="mode"
         v-if="visible"
+        :mode="mode"
         :data="current"
         :treeData="_treeData"
         :areaTree="areaTree"
@@ -100,11 +100,18 @@
 import { cloneDeep, debounce } from 'lodash-es';
 import { onMounted, ref, watch } from 'vue';
 import Save from '../Save/index.vue';
-import { getRegionTree, delRegion } from '@/api/system/region';
-import { useArea } from '../hooks';
+import {
+    getRegionTree,
+    delRegion,
+    updateRegion,
+    saveRegion,
+} from '@/api/system/region';
+import { useArea, useRegion } from '../hooks';
 import ResizeObserver from 'ant-design-vue/lib/vc-resize-observer';
 import { onlyMessage } from '@/utils/comm';
+import { title } from 'process';
 
+const regionState = useRegion();
 const treeData = ref<any[]>([]);
 const _treeData = ref<any[]>([]);
 const visible = ref<boolean>(false);
@@ -119,7 +126,7 @@ const type = ref<string | undefined>(undefined);
 
 const { areaTree } = useArea();
 
-const emit = defineEmits(['select']);
+const emit = defineEmits(['select', 'close']);
 
 const filterTreeNodes = (tree: any[], condition: string) => {
     return tree.filter((item) => {
@@ -169,6 +176,7 @@ const onSave = () => {
 
 const onClose = () => {
     visible.value = false;
+  emit('close');
 };
 
 const divResize = ({ height }) => {
@@ -181,14 +189,19 @@ const onEdit = (_data: any) => {
     mode.value = 'edit';
     current.value = _data;
     visible.value = true;
+    selectedKeys.value = [_data.id];
+    emit('select', _data?.code, _data);
 };
 
-const onRemove = async (id: string) => {
-    const resp = await delRegion(id);
-    if (resp.success) {
-        onlyMessage('操作成功！');
-        handleSearch();
-    }
+const onRemove = (id: string) => {
+    const response = delRegion(id);
+    response.then((resp) => {
+        if (resp.success) {
+            onlyMessage('操作成功！');
+            handleSearch();
+        }
+    });
+    return response
 };
 
 const onAdd = (_data?: any) => {
@@ -217,13 +230,19 @@ const onDrop = (info: any) => {
     const dropPos = info.node.pos.split('-');
     const dropPosition =
         info.dropPosition - Number(dropPos[dropPos.length - 1]);
-    const loop = (data: any, key: string | number, callback: any) => {
+
+    const loop = (
+        data: any,
+        key: string | number,
+        callback: any,
+        parent?: any,
+    ) => {
         data.forEach((item: any, index: number) => {
-            if (item.key === key) {
-                return callback(item, index, data);
+            if (item.id === key) {
+                return callback(item, index, data, parent);
             }
             if (item.children) {
-                return loop(item.children, key, callback);
+                return loop(item.children, key, callback, item);
             }
         });
     };
@@ -234,36 +253,67 @@ const onDrop = (info: any) => {
         arr.splice(index, 1);
         dragObj = item;
     });
+
     if (!info.dropToGap) {
         // Drop on the content
         loop(data, dropKey, (item: any) => {
             item.children = item.children || [];
             /// where to insert 示例添加到头部，可以是随意位置
+            dragObj.parentId = item.id;
             item.children.unshift(dragObj);
+            item.children = item.children.map((cl: any, clIndex: number) => {
+                cl.sortIndex = clIndex + 1;
+                return cl;
+            });
+            updateRegion(dragObj);
         });
     } else if (
         (info.node.children || []).length > 0 && // Has children
         info.node.expanded && // Is expanded
         dropPosition === 1 // On the bottom gap
     ) {
-        loop(data, dropKey, (item: any) => {
-            item.children = item.children || [];
-            // where to insert 示例添加到头部，可以是随意位置
-            item.children.unshift(dragObj);
-        });
+        loop(
+            data,
+            dropKey,
+            (item: any, index: number, _data: any[], parent: any) => {
+                item.children = item.children || [];
+                // where to insert 示例添加到头部，可以是随意位置
+                dragObj.parentId = item.parentId;
+                item.children = item.children.map(
+                    (cl: any, clIndex: number) => {
+                        cl.sortIndex = clIndex + 1;
+                        return cl;
+                    },
+                );
+
+                _data.splice(index + 1, 0, dragObj);
+                // 获取item的父级，将dragObj放入同级
+                updateRegion(item);
+                updateRegion(dragObj);
+            },
+        );
     } else {
-        let ar: any[] = [];
-        let i = 0;
-        loop(data, dropKey, (_item: any, index: number, arr: any[]) => {
-            ar = arr;
-            i = index;
-        });
-        if (dropPosition === -1) {
-            ar.splice(i, 0, dragObj);
-        } else {
-            ar.splice(i + 1, 0, dragObj);
-        }
+        loop(
+            data,
+            dropKey,
+            (_item: any, index: number, arr: any[], parent: any) => {
+                dragObj.parentId = parent ? parent.id : '';
+                dragObj.sortIndex = dropPosition === -1 ? index : index + 1;
+                arr.splice(dragObj.sortIndex, 0, dragObj);
+                const sortArray = arr.map((cl: any, clIndex: number) => {
+                    cl.sortIndex = clIndex + 1;
+                    return cl;
+                });
+                if (parent) {
+                    parent.children = sortArray;
+                    updateRegion(parent);
+                } else {
+                    updateRegion(arr);
+                }
+            },
+        );
     }
+
     treeData.value = data;
 };
 
@@ -286,8 +336,9 @@ watch(
  * 区域选择
  */
 const areaSelect = (key, { node }) => {
+    if (!key.length) return;
     selectedKeys.value = key;
-    emit('select', node?.code);
+    emit('select', node?.code, node);
 };
 
 const handleSearch = async () => {
@@ -301,10 +352,23 @@ const handleSearch = async () => {
         const dt = treeData.value?.[0];
         if (dt) {
             selectedKeys.value = dt?.id ? [dt?.id] : [];
-            emit('select', dt?.code);
+            emit('select', dt?.code, dt);
         }
     }
 };
+
+const openSave = (geoJson: Record<string, any>) => {
+    if (geoJson) {
+        regionState.saveCache.geoJson = geoJson;
+    }
+    current.value = regionState.saveCache;
+    visible.value = true;
+    regionState.treeMask = false;
+};
+
+defineExpose({
+    openSave: openSave,
+});
 
 onMounted(() => {
     handleSearch();
@@ -318,9 +382,8 @@ onMounted(() => {
 }
 
 .tree-content {
-    display: flex;
-    flex-grow: 1;
-    height: 0;
+    flex: 1 1 0;
+    min-height: 0;
     width: 100%;
 
     .tree-empty {

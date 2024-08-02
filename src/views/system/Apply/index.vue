@@ -62,7 +62,7 @@
                                         margin-bottom: 8px;
                                     "
                                 >
-                                        {{ slotProps.name }}
+                                    {{ slotProps.name }}
                                 </Ellipsis>
                                 <j-row>
                                     <j-col :span="12">
@@ -260,7 +260,6 @@ const columns = [
         ellipsis: true,
         search: {
             type: 'select',
-            options: typeOptions,
             options: () =>
                 new Promise((resolve) => {
                     queryType().then((resp: any) => {
@@ -320,8 +319,8 @@ const tableRef = ref();
 const current = ref<any>({});
 const table = {
     refresh: () => {
-        // tableRef.value.reload(queryParams.value);
-        window.location.reload();
+        tableRef.value.reload(queryParams.value);
+        // window.location.reload();
     },
     toAdd: () => {
         visible.value = true;
@@ -332,20 +331,24 @@ const table = {
     },
     changeStatus: (row: any) => {
         const state = row.state.value === 'enabled' ? 'disabled' : 'enabled';
-        changeApplyStatus_api(row.id, { state }).then((resp: any) => {
+        const response = changeApplyStatus_api(row.id, { state });
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功');
                 table.refresh();
             }
         });
+        return response;
     },
     clickDel: (row: any) => {
-        delApply_api(row.id).then((resp: any) => {
+        const response = delApply_api(row.id);
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 onlyMessage('操作成功');
                 table.refresh();
             }
         });
+        return response;
     },
     getActions: (
         data: Partial<Record<string, any>>,
@@ -475,6 +478,17 @@ const table = {
 const dialogVisible = ref(false);
 const selectId = ref<string>('');
 const selectProvider = ref<any>('');
+onMounted(() => {
+    queryType().then((resp: any) => {
+        if (resp.status === 200) {
+            const arr = resp.result.map((item: any) => ({
+                label: item.name,
+                value: item.provider,
+            }));
+            typeOptions.value = arr;
+        }
+    });
+});
 </script>
 
 <style lang="less" scoped>
