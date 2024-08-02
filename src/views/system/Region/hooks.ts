@@ -49,3 +49,61 @@ export const useArea = () => {
         getParentNameById
     }
 }
+
+export const REGION_KEY = Symbol('region_key')
+
+export const useRegion = () => {
+    return inject(REGION_KEY, {
+        edit: false,
+        type: undefined, // MAP_TOOL
+
+    })
+}
+
+export const useHistory = () => {
+    const history = ref([])
+
+    const addRecord = (record: Record<string, any>) => {
+        history.value.push(record)
+        if (history.value.length > 10) { // 最多记录10条
+            history.value = history.value.slice(1)
+        }
+
+    }
+
+    /**
+     * 撤销
+     */
+    const revoke = () => {
+        if (!hasHistory.value) {
+            return
+        }
+
+        if (history.value.length) {
+            // 删除最后一条
+            history.value.pop()
+        }
+
+        return getLastHistory()
+    }
+
+    const getLastHistory = () => {
+        return history.value[history.value.length - 1]
+    }
+
+    const hasHistory = computed(() => {
+        return history.value.length > 1
+    })
+
+    const reset = () => {
+        history.value = []
+    }
+
+    return {
+        revoke,
+        getLastHistory,
+        addRecord,
+        reset,
+        hasHistory
+    }
+}

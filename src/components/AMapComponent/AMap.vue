@@ -22,7 +22,7 @@ import '@vuemap/vue-amap/dist/style.css';
 import { getAMapUiPromise } from './utils';
 import { useSystem } from '@/store/system';
 
-const emit = defineEmits(['init'])
+const emit = defineEmits(['init']);
 
 const system = useSystem();
 interface AMapProps {
@@ -31,11 +31,12 @@ interface AMapProps {
     AMapUI?: string | boolean;
 }
 const amapKey = system.$state.configInfo.amap?.apiKey;
+const secretKey = system.$state.configInfo.amap?.secretKey;
 
 initAMapApiLoader({
-    key: amapKey || 'c86c1b22c6b223e3ed08815532676445',
-    securityJsCode: 'b0efcf1ce14cbf2d56d3cde630cd19cf',
-    plugins: ['AMap.DistrictSearch'],
+    key: amapKey,
+    securityJsCode: secretKey,
+    plugins: ['AMap.DistrictSearch', 'AMap.GeoJSON'],
 });
 
 const props = defineProps({
@@ -49,7 +50,7 @@ const mapRef = ref();
 
 const uiLoading = ref<boolean>(false);
 
-const map = ref<any>(null);
+let mapInstance:any = null;
 
 const isOpenUi = computed(() => {
     return 'AMapUI' in props || props.AMapUI;
@@ -65,13 +66,27 @@ const getAMapUI = () => {
 const marker = ref<any[]>([]);
 
 const initMap = (e: any) => {
-    map.value = e;
+    mapInstance = e;
     if (isOpenUi.value) {
         getAMapUI();
     }
-    emit('init', e)
+    emit('init', e);
 };
+
+const setBounds = (bounds: any) => {
+  console.log(bounds)
+  if (mapInstance) {
+    mapInstance.setBounds(bounds)
+  }
+}
+
+onMounted(()=>{
+    console.log(secretKey,'secretKey')
+})
+
+defineExpose({
+  setBounds
+})
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

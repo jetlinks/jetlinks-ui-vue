@@ -1,6 +1,6 @@
 <template>
   <div class='actions-terms'>
-    <TitleComponent data='触发条件' style='font-size: 14px;' >
+    <TitleComponent data='执行动作' style='font-size: 14px;' >
       <template #extra>
         <j-switch
           v-model:checked='open'
@@ -11,15 +11,20 @@
         />
       </template>
     </TitleComponent>
-    <template v-if='open'>
+<!--    <template v-if='open'>-->
       <div>
         <j-tabs type="editable-card" v-model:activeKey="activeKey" @edit="addGroup" @tabClick="showEditCondition">
           <j-tab-pane
             v-for="(b, i) in group"
             :key="b.id"
-            :tab="b.branchName || `条件${i+1}`"
             :closable="false"
+            :forceRender="true"
           >
+            <template #tab>
+              <TermsTabPane :showClose="group.length > 1" @close="() => addGroup(b.id, 'close')">
+                {{ b.branchName || `条件${i+1}` }}
+              </TermsTabPane>
+            </template>
             <template v-for='(item, index) in data.branches'>
               <template v-if="index >= b.start && index < (b.start + b.len)">
                 <Branches
@@ -29,12 +34,12 @@
                   :name='index'
                   :branches_Index='item.branches_Index'
                   :groupLen="b.start + b.len"
-                  :groupIndex="i"
+                  :groupIndex="i + 1"
                   :key='item.key'
                   :showGroupDelete="group.length !== 1"
-                  @delete='branchesDelete'
+                  @delete='branchesDelete(index)'
                   @deleteAll='branchesDeleteAll'
-                  @deleteGroup="() => groupDelete(b, i)"
+                  @add="branchesAdd"
                 />
                 <div v-else class='actions-terms-warp' :style='{ marginTop: data.branches.length === 2 ? 0 : 24 }'>
                   <div class='actions-terms-title' style='padding: 0;margin-bottom: 24px;'>
@@ -50,27 +55,26 @@
         </j-tabs>
       </div>
 
-    </template>
-    <div v-else class='actions-branches-item'>
-      <j-form-item
-        :name='["branches", 0, "then"]'
-        :rules='thenRules'
-      >
-        <Action
-          :name='0'
-          :openShakeLimit="true"
-          :thenOptions='data.branches[0]?.then'
-        />
-      </j-form-item>
-    </div>
+<!--    </template>-->
+<!--    <div v-else class='actions-branches-item'>-->
+<!--      <j-form-item-->
+<!--        :name='["branches", 0, "then"]'-->
+<!--        :rules='thenRules'-->
+<!--      >-->
+<!--        <Action-->
+<!--          :name='0'-->
+<!--          :openShakeLimit="true"-->
+<!--          :thenOptions='data.branches[0]?.then'-->
+<!--        />-->
+<!--      </j-form-item>-->
+<!--    </div>-->
   </div>
-  <j-modal v-if="editConditionVisible"  title="编辑" visible @cancel="editConditionVisible = false" @ok="changeBranchName">
-    <j-form layout='vertical'>
-      <j-form-item label="条件名称：" :required="true">
-        <j-input v-model:value="conditionName"></j-input>
-      </j-form-item>
-    </j-form>
-  </j-modal>
+  <BranchesNameEdit
+    v-if="editConditionVisible"
+    :name="conditionName"
+    @cancel="editConditionVisible = false"
+    @ok="changeBranchName"
+  />
 </template>
 
 <script setup lang='ts' name='Terms'>
@@ -78,12 +82,15 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from '@/store/scene'
 import { cloneDeep } from 'lodash-es'
 import { provide } from 'vue'
-import { ContextKey, handleParamsData, thenRules } from './util'
-import { getParseTerm } from '@/api/rule-engine/scene'
-import type { FormModelType } from '@/views/rule-engine/Scene/typings'
+import { ContextKey, handleParamsData } from './util'
+import {getParseTerm} from '@/api/rule-engine/scene'
+import type { FormModelType} from '@/views/rule-engine/Scene/typings'
 import Branches from './Branches.vue'
-import Action from '../../action/index.vue'
-import {randomString} from "@/utils/utils";
+import {randomNumber, randomString} from "@/utils/utils";
+import TermsTabPane from './TermsTabPane.vue'
+import BranchesNameEdit from "./BranchesNameEdit.vue";
+import {Modal} from "ant-design-vue";
+import {queryBindScene, unBindAlarmMultiple} from "@/api/rule-engine/configuration";
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -92,7 +99,7 @@ const columnOptions = ref<any>([])
 const group = ref<Array<{ id: string, len: number}>>([])
 const activeKey = ref('')
 const editConditionVisible = ref(false);
-const conditionName = ref<any>('')
+const conditionName = ref<any>()
 
 provide(ContextKey, columnOptions)
 
@@ -129,14 +136,14 @@ const queryColumn = (dataModel: FormModelType) => {
   const cloneDevice = cloneDeep(dataModel)
   cloneDevice.branches = cloneDevice.branches?.filter(item => !!item)
   getParseTerm(cloneDevice).then(res => {
-      columnOptions.value = handleParamsData(res.result as any[])
+      columnOptions.value = handleParamsData(res.result as any[], 'column', '0')
   })
 }
 
 const addBranches = (len: number) => {
   const branchesItem = {
     when: [],
-    key: `branches_${new Date().getTime()}`,
+    key: randomNumber(),
     shakeLimit: {
       enabled: false,
       time: 1,
@@ -144,100 +151,225 @@ const addBranches = (len: number) => {
       alarmFirst: false,
     },
     then: [],
-    branchId: Math.floor(Math.random() * 100000000)
+    branchId: randomNumber()
   }
   // const lastIndex = data.value.branches!.length - 1 || 0
   data.value.branches?.splice(len - 1, 1, branchesItem)
   data.value.options!.when.splice(len - 1, 1, {
     terms: []
   })
-  // data.value.options!.when = []
 }
 
-const branchesDelete = (index: number) => {
-  if (data.value.branches?.length === 2) {
-    data.value.branches?.splice(index, 1, null as any)
-  } else {
-    data.value.branches?.splice(index, 1)
-  }
-  data.value.options?.when?.splice(index, 1)
+const branchesDelete = (index: any) => {
+  groupDelete({
+    start: index,
+    len: 1
+  }, -1)
 }
 
-const addGroup = () => {
-  const branchesItem: any = {
-    when: [
-      {
-        terms: [
-          {
-            column: undefined,
-            value: {
-              source: 'fixed',
-              value: undefined
+const addGroup = (targetKey: string, action: string) => {
+  if (action === 'add') {
+    const lastGroup = group.value[group.value.length - 1]
+    const lastIndex = (lastGroup?.groupIndex || group.value.length) + 1
+    const key = randomNumber()
+
+    const branchesItem: any = {
+      when: [
+        {
+          terms: [
+            {
+              column: undefined,
+              value: {
+                source: 'fixed',
+                value: undefined
+              },
+              termType: undefined,
+              key: `params_${randomString()}`,
+              type: 'and',
             },
-            termType: undefined,
-            key: `params_${randomString()}`,
-            type: 'and',
-          },
-        ],
-        type: 'and',
-        key: `terms_${randomString()}`,
+          ],
+          type: 'and',
+          key: `terms_${randomString()}`,
+        },
+      ],
+      key: key,
+      shakeLimit: {
+        enabled: false,
+        time: 1,
+        threshold: 1,
+        alarmFirst: false,
       },
-    ],
-    key: `branches_${randomString()}`,
-    shakeLimit: {
-      enabled: false,
-      time: 1,
-      threshold: 1,
-      alarmFirst: false,
-    },
-    then: [],
-    executeAnyway: true,
-    branchId: Math.floor(Math.random() * 100000000),
-    branchName:''
+      then: [],
+      executeAnyway: true,
+      branchId: key,
+      branchName: ''
+    }
+    data.value.branches?.push(branchesItem, null)
+    // data.value.branches?.push(null as any)
+    activeKey.value = key
+    data.value.options!.when.push({
+      terms: [{
+        terms: [['','eq','','and']],
+      }],
+      branchName: '',
+      key,
+      executeAnyway: true,
+      groupIndex: lastIndex
+    })
+  } else {
+    const index = group.value.findIndex(item => item.branchId === targetKey)
+    groupDelete(group.value[index], index)
   }
-  data.value.branches?.push(branchesItem)
-  data.value.branches?.push(null as any)
-  activeKey.value = `group_${branchesItem.key}`
-  data.value.options!.when.push({
-    terms: [{
-      terms: [['','eq','','and']],
-    }]
-  })
 }
 
 const branchesDeleteAll = () => {
 
 }
 
-const groupDelete = (g: any, index: number) => {
-  let _index = index - 1
-  if (_index < 0) { // 左移
-    _index = 0
+const groupDelete = async (g: any, index: number) => {
+
+  // 校验当前条件下是否有数据
+  let actionLen = 0
+  let alarmTerms: Array<Record<string, string>> = []
+
+  for (let i = g.start; i < g.start + g.len; i++) {
+    const item = data.value.branches[i]
+    if (item) {
+      item.then?.forEach(thenItem => {
+        actionLen += thenItem.actions.length
+        if (thenItem.actions) {
+          thenItem.actions.forEach((actionItem) => {
+            const _actionId = actionItem.actionId
+            if (actionItem.executor === 'alarm') {
+              alarmTerms.push({
+                column: 'branchIndex',
+                value: _actionId || item.branchId,
+                type: 'or'
+              })
+            }
+          })
+        }
+      })
+    }
   }
-  group.value.splice(index, 1)
-  data.value.branches.splice(g.start, g.len)
-  data.value.options!.when.splice(g.start, g.len)
-  activeKey.value = group.value[_index].id
+
+  if (actionLen) {
+    if (alarmTerms.length) {
+      const resp = await queryBindScene({
+        terms: alarmTerms
+      })
+
+      Modal.confirm({
+        title: `已关联 ${resp.result.total} 条告警，删除该条件会同步解除对应的关联告警，确认删除？`,
+        onOk() {
+          const _data = resp.result.data.map(item => {
+            return {
+              "alarmId": item.alarmId,
+              "ruleId": item.ruleId,
+              "branchIndex": item.branchIndex
+            }
+          })
+          unBindAlarmMultiple(_data)
+          removeBranchesData(g, index)
+        }
+      })
+    } else {
+      Modal.confirm({
+        title: '该条件下有执行动作，确认删除？',
+        onOk() {
+          removeBranchesData(g, index)
+        }
+      })
+    }
+  } else {
+    removeBranchesData(g, index)
+  }
+
+}
+
+const removeBranchesData = (g: any, index: number) => {
+  const removeBranches = data.value.branches.splice(g.start, g.len)
+
+  removeBranches.forEach(item => {
+    if (item) {
+      let _index = data.value.options!.when.findIndex(whenItem => whenItem.key === item.branchId)
+      if (_index !== -1) {
+        _index = item.branches_Index
+      }
+      data.value.options!.when.splice(_index, 1)
+    }
+  })
+
+  if (index >= 0) { // 删除整个条件组
+    group.value.splice(index, 1)
+
+    if (g.id === activeKey.value) { //
+      let _moveIndex = index - 1
+
+      if (_moveIndex < 0) { // 左移
+        _moveIndex = 0
+      }
+
+      activeKey.value = group.value[_moveIndex].id
+    }
+  } else { // 单个条件删除
+    const groupItem = group.value.find(item => item.id === activeKey.value) // 获取当前条件组
+    groupItem!.len -= 1
+    const branchesItem = data.value.branches[g.start]
+    if (branchesItem === undefined || branchesItem?.executeAnyway) { // 当前位置为undefined或者是下一个条件组的开始 就插入null
+      data.value.branches?.splice(g.start, 0, null)
+    }
+  }
+}
+
+const branchesAdd = () => {
+  // const groupItem = group.value.find(item => item.id === activeKey.value) // 获取当前条件的组
+  // groupItem!.len += 1
 }
 
 const showEditCondition = (key:any) =>{
   if(key === activeKey.value){
     editConditionVisible.value = true;
     conditionName.value = group.value.find((i:any)=>{
-      return i.id === key
+      return i.branchId === key
     })?.branchName
   }
 }
 
-const changeBranchName = () =>{
-  console.log(data.value)
+const changeBranchName = (name: string) =>{
+  let _activeKey = activeKey.value
+
   data.value.branches?.forEach((item:any)=>{
-     if(item?.key === activeKey.value.slice(6)){
-      item.branchName = conditionName.value
+     if(item?.branchId === _activeKey){
+      item.branchName = name
      }
   })
+
+  let optionsItem = data.value.options!.when.find(item => item.key === _activeKey)
+
+  if (!optionsItem) {
+    const _index = group.value.findIndex(item => item.branchId === _activeKey)
+    if (_index !== -1) {
+      data.value.options!.when[_index].branchName = name
+    }
+  } else {
+    optionsItem.branchName = name
+  }
+
   editConditionVisible.value =false
 }
+
+const changePaneIndex = (index) => {
+  const _groupItem = group.value.find(item => {
+    return item.start >= index && index < (item.start + item.len)
+  })
+
+  if (_groupItem) {
+    activeKey.value = _groupItem.branchId
+  }
+
+}
+
 watchEffect(() => {
   if (data.value.trigger?.device) {
     queryColumn({ trigger: data.value.trigger })
@@ -246,7 +378,6 @@ watchEffect(() => {
 
 watchEffect(() => {
   const branches = data.value.branches
-
   if (data.value.branches?.filter(item => item).length) {
     open.value = !!data.value.branches[0].when.length
   } else {
@@ -254,33 +385,43 @@ watchEffect(() => {
   }
 
   let _group = []
+  let _branchesIndex = 0
   if (branches) {
     branches.forEach((item, index) => {
-      // if (index === 0) {
-      //   _group.push({
-      //     id: `group_${item.key}`,
-      //     len: 0,
-      //     start: 0,
-      //   })
-      // }
 
       const lastIndex = _group.length - 1
 
+      let whenItem = data.value.options!.when.find(when => item?.branchId === when.key)
+
+      if (!whenItem) {
+        whenItem = data.value.options!.when[_branchesIndex]
+      }
+
+
       if (index === 0 || item?.executeAnyway) {
         _group[lastIndex + 1] = {
-          id: `group_${item.key}`,
+          id: item.branchId,
           len: 1,
           start: index,
-          branchName:item.branchName
+          branchKey: item.key,
+          branchId: item.branchId,
+          // branchName: item.branchName || whenItem?.branchName || `条件 ${_branchesIndex + 1}`,
+          branchName: item.branchName || whenItem?.branchName || `条件`,
+          groupIndex: _branchesIndex
         }
       } else {
         _group[lastIndex].len += 1
       }
+
+      if (item) {
+        item.branches_Index = _branchesIndex
+        _branchesIndex += 1
+      }
     })
 
-    branches.filter(item => item).forEach((item, index) => {
-      item.branches_Index = index
-    })
+    // branches.filter(item => item).forEach((item, index) => {
+    //   item.branches_Index = index
+    // })
 
     group.value = _group
     if (!activeKey.value) {
@@ -289,8 +430,18 @@ watchEffect(() => {
   }
 })
 
+defineExpose({
+  changePaneIndex
+})
+
 </script>
 
 <style scoped lang='less'>
-
+.actions-terms {
+  :deep(.ant-tabs-tab-active) {
+    .ant-tabs-tab-remove {
+      color: #fff;
+    }
+  }
+}
 </style>

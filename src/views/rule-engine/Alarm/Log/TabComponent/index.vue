@@ -11,8 +11,9 @@
                 :columns="columns"
                 :request="handleSearch"
                 :params="params"
-                :gridColumns="[1, 1, 2]"
-                :gridColumn="2"
+                :gridColumns="[1, 1, 1]"
+                :gridColumn="1"
+                model="CARD"
                 ref="tableRef"
             >
                 <template #card="slotProps">
@@ -20,20 +21,13 @@
                         :value="slotProps"
                         v-bind="slotProps"
                         :actions="getActions(slotProps, 'card')"
-                        :statusText="
-                            data.defaultLevel.find(
-                                (i) => i.level === slotProps.level,
-                            )?.title || slotProps.level
-                        "
-                        :status="slotProps.level"
+                        :status="slotProps.state.value"
                         :statusNames="{
-                            1: 'level1',
-                            2: 'level2',
-                            3: 'level3',
-                            4: 'level4',
-                            5: 'level5',
+                            warning: 'error',
+                            normal: 'default',
                         }"
-                        :customBadge="true"
+                        :statusText="slotProps.state.text"
+                        @click="() => showDrawer(slotProps)"
                     >
                         <template #img>
                             <img
@@ -42,55 +36,120 @@
                             />
                         </template>
                         <template #content>
-                            <Ellipsis style="width: calc(100% - 100px)">
-                                <span style="font-weight: 500">
-                                    {{ slotProps.alarmName }}
-                                </span>
-                            </Ellipsis>
+                            <div class="alarmTitle">
+                                <div class="alarmName">
+                                    <Ellipsis style="width: 100%">
+                                        <span
+                                            style="
+                                                font-weight: 500;
+                                                font-size: 16px;
+                                            "
+                                        >
+                                            {{ slotProps.alarmName }}
+                                        </span>
+                                    </Ellipsis>
+                                </div>
+                                <!-- <div
+                                    class="alarmLevel"
+                                    :style="{
+                                        backgroundColor: levelColorMap.get(
+                                            'level' + slotProps.level,
+                                        ),
+                                    }"
+                                >
+                                    <Ellipsis>
+                                        <span>
+                                            {{
+                                                levelMap?.[slotProps.level] ||
+                                                slotProps.level
+                                            }}
+                                        </span>
+                                    </Ellipsis>
+                                </div> -->
+                              <div style="display: flex;max-width: 50%;">
+                                <LevelIcon :level="slotProps.level" ></LevelIcon>
+                                <Ellipsis>
+                                  {{ levelMap[slotProps.level] }}
+                                </Ellipsis>
+                              </div>
+                            </div>
                             <j-row :gutter="24">
-                                <j-col :span="8" class="content-left">
-                                    <div class="content-left-title">
-                                        {{ titleMap.get(slotProps.targetType) }}
-                                    </div>
+                                <j-col
+                                    :span="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                            ? 6
+                                            : 8
+                                    "
+                                    class="content-left"
+                                >
+                                    <div class="content-title">告警维度</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.targetName }}
                                         </div></Ellipsis
                                     >
                                 </j-col>
-                                <j-col :span="8">
-                                    <div class="content-right-title">
+                                <j-col
+                                    :span="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                            ? 6
+                                            : 8
+                                    "
+                                >
+                                    <div class="content-title">
                                         最近告警时间
                                     </div>
-                                    <Ellipsis
-                                        ><div>
+                                    <Ellipsis>
+                                        <div>
                                             {{
                                                 dayjs(
                                                     slotProps?.alarmTime,
-                                                ).format('YYYY-MM-DD HH:mm:ss')
+                                                ).format(
+                                                    'YYYY-MM-DD HH:mm:ss',
+                                                ) +
+                                                '至' +
+                                                (slotProps?.state?.value ===
+                                                'warning'
+                                                    ? '当前时间'
+                                                    : dayjs(
+                                                          slotProps?.handleTime,
+                                                      ).format(
+                                                          'YYYY-MM-DD HH:mm:ss',
+                                                      ))
                                             }}
+                                        </div>
+                                    </Ellipsis>
+                                </j-col>
+                                <j-col
+                                    :span="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                            ? 6
+                                            : 8
+                                    "
+                                >
+                                    <div class="content-title">
+                                        告警持续时长
+                                    </div>
+                                    <Ellipsis
+                                        ><Duration :data="slotProps"></Duration
+                                    ></Ellipsis>
+                                </j-col>
+                                <j-col
+                                    :span="6"
+                                    v-if="
+                                        props.type === 'device' ||
+                                        slotProps.targetType === 'device'
+                                    "
+                                >
+                                    <div class="content-title">告警原因</div>
+                                    <Ellipsis
+                                        ><div>
+                                            {{ slotProps?.actualDesc || '--' }}
                                         </div></Ellipsis
                                     >
-                                </j-col>
-                                <j-col :span="8">
-                                    <div class="content-right-title">状态</div>
-                                    <BadgeStatus
-                                        :status="slotProps.state.value"
-                                        :statusName="{
-                                            warning: 'warning',
-                                            normal: 'default',
-                                        }"
-                                    >
-                                    </BadgeStatus
-                                    ><span
-                                        :style="
-                                            slotProps.state.value === 'warning'
-                                                ? 'color: #E50012'
-                                                : 'color:black'
-                                        "
-                                    >
-                                        {{ slotProps.state.text }}
-                                    </span>
                                 </j-col>
                             </j-row>
                         </template>
@@ -116,77 +175,21 @@
                         </template>
                     </CardBox>
                 </template>
-                <template #targetType="slotProps">
-                    {{ titleMap.get(slotProps.targetType) }}
-                </template>
-                <template #alarmTime="slotProps">
-                    {{
-                        dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
-                    }}
-                </template>
-                <template #level="slotProps">
-                    <Ellipsis style="width: calc(100% - 20px)">
-                        {{
-                            data.defaultLevel.find((i) => {
-                                return i.level === slotProps.level;
-                            }).title
-                        }}
-                    </Ellipsis>
-                </template>
-                <template #state="slotProps">
-                    <BadgeStatus
-                        :status="slotProps.state.value"
-                        :statusName="{
-                            warning: 'warning',
-                            normal: 'default',
-                        }"
-                    >
-                    </BadgeStatus
-                    ><span
-                        :style="
-                            slotProps.state.value === 'warning'
-                                ? 'color: #E50012'
-                                : 'color:black'
-                        "
-                    >
-                        {{ slotProps.state.text }}
-                    </span>
-                </template>
-                <template #actions="slotProps">
-                    <j-space>
-                        <template
-                            v-for="i in getActions(slotProps, 'table')"
-                            :key="i.key"
-                        >
-                            <PermissionButton
-                                type="link"
-                                :disabled="
-                                    i.key === 'solve' &&
-                                    slotProps.state.value === 'normal'
-                                "
-                                :tooltip="{
-                                    ...i.tooltip,
-                                }"
-                                @click="i.onClick"
-                                :hasPermission="
-                                    i.key == 'solve'
-                                        ? 'rule-engine/Alarm/Log:action'
-                                        : 'rule-engine/Alarm/Log:view'
-                                "
-                            >
-                                <template #icon>
-                                    <AIcon :type="i.icon" />
-                                </template>
-                            </PermissionButton>
-                        </template>
-                    </j-space>
-                </template>
             </JProTable>
         </FullPage>
         <SolveComponent
-            :data="data"
+            :data="data.current"
             v-if="data.solveVisible"
             @closeSolve="closeSolve"
+            @refresh="refresh"
+        />
+        <LogDrawer
+            v-if="visibleDrawer"
+            :logData="drawerData"
+            :typeMap="titleMap"
+            :levelMap="levelMap"
+            @closeDrawer="visibleDrawer = false"
+            @refreshTable="refreshTable"
         />
     </div>
 </template>
@@ -194,27 +197,22 @@
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import { getOrgList, query, getAlarmProduct } from '@/api/rule-engine/log';
-import { queryLevel } from '@/api/rule-engine/config';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import SolveComponent from '../SolveComponent/index.vue';
 import { useMenuStore } from '@/store/menu';
-import { usePermissionStore } from '@/store/permission';
+import LogDrawer from './components/DetailDrawer.vue';
+import Duration from '../components/Duration.vue';
+import { useAlarmLevel } from '@/hook';
 const menuStory = useMenuStore();
 const tableRef = ref();
+const { levelMap, levelList } = useAlarmLevel();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
-
-const getDefaultLevel = () => {
-    queryLevel().then((res) => {
-        if (res.status === 200) {
-            data.value.defaultLevel = res.result?.levels || [];
-        }
-    });
-};
-getDefaultLevel();
+const drawerData = ref();
+const visibleDrawer = ref(false);
 const props = defineProps<{
     type: string;
     id?: string;
@@ -231,6 +229,7 @@ titleMap.set('product', '产品');
 titleMap.set('device', '设备');
 titleMap.set('other', '其他');
 titleMap.set('org', '组织');
+
 const columns = [
     {
         title: '配置名称',
@@ -255,12 +254,9 @@ const columns = [
         width: 200,
         search: {
             type: 'select',
-            options: data.value.defaultLevel.map((item: any) => {
-                return {
-                    label: item.title,
-                    value: item.level,
-                };
-            }),
+            options: async () => {
+                return levelList.value;
+            },
         },
         scopedSlots: true,
     },
@@ -306,48 +302,6 @@ const newColumns = computed(() => {
         title: '产品名称',
         dataIndex: 'targetName',
         key: 'targetName',
-        // search: {
-        //     type: 'select',
-        //     options: async () => {
-        //         const termType = [
-        //             {
-        //                 column: 'targetType',
-        //                 termType: 'eq',
-        //                 type: 'and',
-        //                 value: props.type,
-        //             },
-        //         ];
-
-        //         if (props.id) {
-        //             termType.push({
-        //                 termType: 'eq',
-        //                 column: 'alarmConfigId',
-        //                 value: props.id,
-        //                 type: 'and',
-        //             });
-        //         }
-
-        //         const resp: any = await handleSearch({
-        //             sorts: [{ name: 'alarmTime', order: 'desc' }],
-        //             terms: termType,
-        //         });
-        //         const listMap: Map<string, any> = new Map();
-
-        //         if (resp.status === 200) {
-        //             resp.result.data.forEach((item) => {
-        //                 if (item.targetId) {
-        //                     listMap.set(item.targetId, {
-        //                         label: item.targetName,
-        //                         value: item.targetId,
-        //                     });
-        //                 }
-        //             });
-
-        //             return [...listMap.values()];
-        //         }
-        //         return [];
-        //     },
-        // },
         search: {
             type: 'string',
         },
@@ -449,16 +403,17 @@ const search = (data: any) => {
             type: 'and',
         });
     }
-    if (
-        props.type === 'device' &&
-        data?.terms[0]?.terms[0]?.column === 'product_id'
-    ) {
-        params.value.terms = [
-            {
-                column: 'targetId$dev-instance',
-                value: [data?.terms[0]?.terms[0]],
-            },
-        ];
+    if (props.type === 'device') {
+        data?.terms.forEach((i: any, _index: number) => {
+            i.terms.forEach((item: any, index: number) => {
+                if (item.column === 'product_id') {
+                    params.value.terms[_index].terms[index] = {
+                        column: 'targetId$dev-instance',
+                        value: [data?.terms[0]?.terms[0]],
+                    };
+                }
+            });
+        });
     }
     if (props.id) {
         params.value.terms.push({
@@ -490,15 +445,6 @@ const getActions = (
                 data.value.current = currentData;
                 data.value.solveVisible = true;
             },
-            // popConfirm: {
-            //     title: !usePermissionStore().hasPermission(
-            //         'rule-engine/Alarm/Log:action',
-            //     )
-            //         ? '暂无权限，请联系管理员'
-            //         : data.state?.value === 'normal'
-            //         ? '无告警'
-            //         : '',
-            // },
         },
         {
             key: 'log',
@@ -536,7 +482,20 @@ const getActions = (
  */
 const closeSolve = () => {
     data.value.solveVisible = false;
+};
+const refresh = () => {
+    data.value.solveVisible = false;
     tableRef.value.reload(params.value);
+};
+
+const refreshTable = () => {
+    tableRef.value.reload(params.value);
+};
+const showDrawer = (data: any) => {
+    if (data.targetType === 'device') {
+        drawerData.value = data;
+        visibleDrawer.value = true;
+    }
 };
 onMounted(() => {
     if (props.type !== 'all' && !props.id) {
@@ -565,14 +524,23 @@ onMounted(() => {
 });
 </script>
 <style lang="less" scoped>
-.content-left {
-    border-right: 0.2px solid rgba(0, 0, 0, 0.2);
-}
-.content-right-title {
+.content-title {
     color: #666;
     font-size: 12px;
 }
-.content-left-title {
-    font-size: 18px;
+.alarmTitle {
+    display: flex;
+    width: 60%;
+
+    .alarmLevel {
+        width: 30%;
+        text-align: center;
+        padding: 5px;
+    }
+    .alarmName {
+        max-width: 30%;
+        color: #1a1a1a;
+        margin-right: 10px;
+    }
 }
 </style>
