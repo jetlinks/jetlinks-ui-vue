@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"notice.const.852948-0": "钉钉",
+		"notice.const.852948-1": "微信",
+		"notice.const.852948-2": "邮件",
+		"notice.const.852948-3": "语音",
+		"notice.const.852948-4": "短信",
+		"notice.const.852948-5": "钉钉消息",
+		"notice.const.852948-6": "群机器人消息",
+		"notice.const.852948-7": "企业消息",
+		"notice.const.852948-8": "阿里云语音",
+		"notice.const.852948-9": "阿里云短信",
+		"notice.const.852948-10": "语音通知",
+		"notice.const.852948-11": "语音验证码"
+	},
+	"en": {
+		"notice.const.852948-0": "DingTalk DingTalk",
+		"notice.const.852948-1": "WeChat",
+		"notice.const.852948-2": "mail",
+		"notice.const.852948-3": "voice",
+		"notice.const.852948-4": "short message",
+		"notice.const.852948-5": "DingTalk News",
+		"notice.const.852948-6": "Group robot message",
+		"notice.const.852948-7": "Enterprise News",
+		"notice.const.852948-8": "Alibaba Cloud Voice",
+		"notice.const.852948-9": "Alibaba Cloud SMS",
+		"notice.const.852948-10": "Voice notification",
+		"notice.const.852948-11": "Voice verification code"
+	}
+}

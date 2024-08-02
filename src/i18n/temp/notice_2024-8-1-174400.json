@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"doc.AliyunVoice.737448-0": "阿里云管理控制台：",
+		"doc.AliyunVoice.737448-1": "1. 概述",
+		"doc.AliyunVoice.737448-2": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.AliyunVoice.737448-3": "2.通知配置说明",
+		"doc.AliyunVoice.737448-4": "阿里云服务地域与对应的RegionID。请根据购买的阿里云服务器地域进行选择。",
+		"doc.AliyunVoice.737448-5": "用于程序通知方式调用云服务费API的用户标识和秘钥获取路径：“阿里云管理控制台”--“用户头像”--“”--“AccessKey管理”--“查看”"
+	},
+	"en": {
+		"doc.AliyunVoice.737448-0": "Alibaba Cloud Management Console:",
+		"doc.AliyunVoice.737448-1": "1. Overview",
+		"doc.AliyunVoice.737448-2": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.AliyunVoice.737448-3": "2. Notification configuration instructions",
+		"doc.AliyunVoice.737448-4": "Alibaba Cloud service region and corresponding RegionID. Please choose based on the region of the purchased Alibaba Cloud server.",
+		"doc.AliyunVoice.737448-5": "The user identifier and key acquisition path for calling the cloud service fee API through program notification: \"Alibaba Cloud Management Console\" - \"User Profile\" - \"\" - \"AccessKey Management\" - \"View\""
+	}
+}

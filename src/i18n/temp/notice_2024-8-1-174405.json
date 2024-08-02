@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"doc.WeixinCorp.7374411-0": "企业微信管理后台：",
+		"doc.WeixinCorp.7374411-1": "1. 概述",
+		"doc.WeixinCorp.7374411-2": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.WeixinCorp.7374411-3": "2.通知配置说明",
+		"doc.WeixinCorp.7374411-4": "企业号的唯一专属编号。",
+		"doc.WeixinCorp.7374411-5": "获取路径：“企业微信”管理后台--“我的企业”--“企业ID”",
+		"doc.WeixinCorp.7374411-6": "应用的唯一secret,一个企业微信中可以有多个corpSecret",
+		"doc.WeixinCorp.7374411-7": "获取路径：“企业微信”--“应用与小程序”--“自建应用”中获取"
+	},
+	"en": {
+		"doc.WeixinCorp.7374411-0": "Enterprise WeChat management backend:",
+		"doc.WeixinCorp.7374411-1": "1. Overview",
+		"doc.WeixinCorp.7374411-2": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.WeixinCorp.7374411-3": "2. Notification configuration instructions",
+		"doc.WeixinCorp.7374411-4": "The unique and exclusive identifier for the enterprise number.",
+		"doc.WeixinCorp.7374411-5": "Get path: \"Enterprise WeChat\" management backend - \"My Enterprise\" - \"Enterprise ID\"",
+		"doc.WeixinCorp.7374411-6": "The unique secret of the application, there can be multiple corpSecrets in one enterprise WeChat",
+		"doc.WeixinCorp.7374411-7": "Get path: \"Enterprise WeChat\" - \"Applications and Mini Programs\" - \"Self built Applications\""
+	}
+}

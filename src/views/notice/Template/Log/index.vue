@@ -1,6 +1,6 @@
 <!-- 通知记录 -->
 <template>
-    <j-modal visible title="通知记录" :footer="null" width="70%" @cancel="emit('cancel')">
+    <j-modal visible :title="$t('Log.index.214684-0')" :footer="null" width="70%" @cancel="emit('cancel')">
         <pro-search type="simple" :columns="columns" @search="handleSearch" />
 
         <JProTable
@@ -48,6 +48,9 @@ import { PropType } from 'vue';
 import moment from 'moment';
 import { Modal } from 'jetlinks-ui-components';
 import Record from './components/Record.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 type Emits = {
     (e: 'update:visible', data: boolean): void;
     (e: 'cancel'): void;
@@ -77,7 +80,7 @@ const columns = [
         },
     },
     {
-        title: '发送时间',
+        title: $t('Log.index.214684-1'),
         dataIndex: 'notifyTime',
         key: 'notifyTime',
         scopedSlots: true,
@@ -89,15 +92,15 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Log.index.214684-2'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '成功', value: 'success' },
-                { label: '失败', value: 'error' },
+                { label: $t('Log.index.214684-3'), value: 'success' },
+                { label: $t('Log.index.214684-4'), value: 'error' },
             ],
             handleValue: (v: any) => {
                 return v;
@@ -105,7 +108,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Log.index.214684-5'),
         key: 'action',
         scopedSlots: true,
     },
@@ -126,7 +129,7 @@ const handleSearch = (e: any) => {
  */
 const handleError = (e: any) => {
     Modal.info({
-        title: '错误信息',
+        title: $t('Log.index.214684-6'),
         content: h(
             'p',
             {
@@ -145,7 +148,7 @@ const handleError = (e: any) => {
  const handleDetail = (data: any) => {
     if(Object.keys(data.context).length == 0){
         Modal.info({
-        title: '详情信息',
+        title: $t('Log.index.214684-7'),
         content: h(
             "p",
             {
@@ -155,12 +158,12 @@ const handleError = (e: any) => {
                     overflowY: 'auto',
                 },
             },
-            '模板中不存在变量'
+            $t('Log.index.214684-8')
         ),
     });
     }else{
         Modal.info({
-        title: '详情信息',
+        title: $t('Log.index.214684-7'),
         content: h(
             Record,
             {

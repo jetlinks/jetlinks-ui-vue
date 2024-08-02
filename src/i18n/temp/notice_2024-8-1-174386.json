@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"doc.Email.737447-0": "1. 概述",
+		"doc.Email.737447-1": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.Email.737447-2": "2.通知配置说明",
+		"doc.Email.737447-3": "1、 服务器地址",
+		"doc.Email.737447-4": "下拉可选择国内常用的邮箱服务配置，也支持手动输入其他地址。",
+		"doc.Email.737447-5": "系统使用POP协议。POP允许电子邮件客户端下载服务器上的邮件，但是您在电子邮件客户端的操作（如：移动邮件、标记已读等），这时不会反馈到服务器上。",
+		"doc.Email.737447-6": "2、发件人",
+		"doc.Email.737447-7": "用于发送邮件时“发件人“信息的显示",
+		"doc.Email.737447-8": "3、 用户名",
+		"doc.Email.737447-9": "用该账号进行发送邮件。",
+		"doc.Email.737447-10": "4、密码",
+		"doc.Email.737447-11": "用于账号身份认证，认证通过后可通过该账号进行发送邮件。"
+	},
+	"en": {
+		"doc.Email.737447-0": "1. Overview",
+		"doc.Email.737447-1": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.Email.737447-2": "2. Notification configuration instructions",
+		"doc.Email.737447-3": "1. Server address",
+		"doc.Email.737447-4": "Drop down to select commonly used email service configurations in China, and also support manual input of other addresses.",
+		"doc.Email.737447-5": "The system uses POP protocol. POP allows email clients to download emails from the server, but your actions on the email client (such as moving emails, marking read, etc.) will not be fed back to the server.",
+		"doc.Email.737447-6": "2. Sender",
+		"doc.Email.737447-7": "Display of sender information when sending emails",
+		"doc.Email.737447-8": "3. Username",
+		"doc.Email.737447-9": "Use this account to send emails.",
+		"doc.Email.737447-10": "4. Password",
+		"doc.Email.737447-11": "Used for account identity authentication, once authenticated, emails can be sent through this account."
+	}
+}

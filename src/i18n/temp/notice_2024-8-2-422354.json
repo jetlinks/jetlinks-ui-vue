@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"doc.Webhook.2146811-0": "1. 概述",
+		"doc.Webhook.2146811-1": "通知模板结合通知配置为告警消息通知提供支撑。通知模板只能调用同一类型的通知配置服务。",
+		"doc.Webhook.2146811-2": "2.模板配置说明",
+		"doc.Webhook.2146811-3": "1、请求体 请求体中的数据来自于发送通知时指定的所有变量,也可通过自定义的方式进行变量配置。使用webhook通知时，系统会将该事件通过您指定的URL地址，以POST方式发送。"
+	},
+	"en": {
+		"doc.Webhook.2146811-0": "1. Overview",
+		"doc.Webhook.2146811-1": "The notification template combined with notification configuration provides support for alarm message notifications. Notification templates can only call notification configuration services of the same type.",
+		"doc.Webhook.2146811-2": "2. Template configuration instructions",
+		"doc.Webhook.2146811-3": "1. The data in the request body comes from all variables specified when sending notifications, and can also be configured through custom methods. When using a webhook notification, the system will send the event via POST to the URL address you specified."
+	}
+}

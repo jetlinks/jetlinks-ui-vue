@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"doc.WeixinCorp.2146919-0": "企业微信管理后台：",
+		"doc.WeixinCorp.2146919-1": "1. 概述",
+		"doc.WeixinCorp.2146919-2": "通知模板结合通知配置为告警消息通知提供支撑。通知模板只能调用同一类型的通知配置服务。",
+		"doc.WeixinCorp.2146919-3": "2.模板配置说明",
+		"doc.WeixinCorp.2146919-4": "1、绑定配置",
+		"doc.WeixinCorp.2146919-5": "使用固定的通知配置发送此通知模板",
+		"doc.WeixinCorp.2146919-6": "应用唯一标识",
+		"doc.WeixinCorp.2146919-7": "获取路径：“企业微信”管理后台--“应用管理”--“应用”--“查看应用”",
+		"doc.WeixinCorp.2146919-8": "3、收信人ID、收信部门ID、标签推送",
+		"doc.WeixinCorp.2146919-9": "接收通知的3种方式，3个字段若在此页面都没有填写，则在模板调试和配置告警通知时需要手动填写",
+		"doc.WeixinCorp.2146919-10": "收信人ID获取路径：【通讯录】->【成员信息】查看成员账号",
+		"doc.WeixinCorp.2146919-11": "收信组织ID获取路径：【通讯录】->【部门信息】查看部门ID"
+	},
+	"en": {
+		"doc.WeixinCorp.2146919-0": "Enterprise WeChat management backend:",
+		"doc.WeixinCorp.2146919-1": "1. Overview",
+		"doc.WeixinCorp.2146919-2": "The notification template combined with notification configuration provides support for alarm message notifications. Notification templates can only call notification configuration services of the same type.",
+		"doc.WeixinCorp.2146919-3": "2. Template configuration instructions",
+		"doc.WeixinCorp.2146919-4": "1. Binding configuration",
+		"doc.WeixinCorp.2146919-5": "Send this notification template using a fixed notification configuration",
+		"doc.WeixinCorp.2146919-6": "Unique identifier for application",
+		"doc.WeixinCorp.2146919-7": "Get path: \"Enterprise WeChat\" management backend - \"Application Management\" - \"Applications\" - \"View Applications\"",
+		"doc.WeixinCorp.2146919-8": "3. Recipient ID, recipient department ID, tag push",
+		"doc.WeixinCorp.2146919-9": "There are three ways to receive notifications. If none of the three fields are filled in on this page, they need to be manually filled in during template debugging and configuring alarm notifications",
+		"doc.WeixinCorp.2146919-10": "Recipient ID retrieval path: [Contacts] ->[Member Information] View member accounts",
+		"doc.WeixinCorp.2146919-11": "Receiving organization ID retrieval path: [Address Book] ->[Department Information] View department ID"
+	}
+}

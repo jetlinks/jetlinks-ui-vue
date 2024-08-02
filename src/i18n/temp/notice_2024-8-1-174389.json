@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Debug.index.737430-0": "调试",
+		"Debug.index.737430-1": "取消",
+		"Debug.index.737430-2": "确定",
+		"Debug.index.737430-3": "通知模板",
+		"Debug.index.737430-4": "该字段为必填字段",
+		"Debug.index.737430-5": "请选择通知模板",
+		"Debug.index.737430-6": "变量",
+		"Debug.index.737430-7": "最多可输入64个字符",
+		"Debug.index.737430-8": "请输入有效号码",
+		"Debug.index.737430-9": "名称",
+		"Debug.index.737430-10": "值",
+		"Debug.index.737430-11": "操作成功"
+	},
+	"en": {
+		"Debug.index.737430-0": "debugging",
+		"Debug.index.737430-1": "cancel",
+		"Debug.index.737430-2": "determine",
+		"Debug.index.737430-3": "Notification Template",
+		"Debug.index.737430-4": "This field is mandatory",
+		"Debug.index.737430-5": "Please select a notification template",
+		"Debug.index.737430-6": "variable",
+		"Debug.index.737430-7": "Up to 64 characters can be entered",
+		"Debug.index.737430-8": "Please enter a valid number",
+		"Debug.index.737430-9": "name",
+		"Debug.index.737430-10": "value",
+		"Debug.index.737430-11": "Operation successful"
+	}
+}

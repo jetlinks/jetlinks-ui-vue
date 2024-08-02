@@ -3,7 +3,7 @@
     <div>
         <j-modal
             v-model:visible="_vis"
-            title="同步用户"
+            :title="$t('SyncUser.index.7374417-0')"
             :footer="null"
             @cancel="_vis = false"
             width="80%"
@@ -14,7 +14,7 @@
                         v-model:value="deptName"
                         @keyup.enter="getDepartment"
                         allowClear
-                        placeholder="请输入部门名称"
+                        :placeholder="$t('SyncUser.index.7374417-1')"
                         style="margin-bottom: 8px"
                     >
                         <template #addonAfter>
@@ -38,7 +38,7 @@
                 </j-col>
                 <j-col :span="20">
                     <j-button type="primary" @click="handleAutoBind">
-                        自动绑定
+                        {{ $t('SyncUser.index.7374417-2') }}
                     </j-button>
                     <JTable
                         ref="tableRef"
@@ -52,7 +52,7 @@
                             pageSizeOptions: ['12', '24', '48', '96'],
                             showSizeChanger: true,
                             hideOnSinglePage: false,
-                            showTotal: (total: number, range: number) => `第 ${range[0]} - ${range[1]} 条/总共 ${total} 条`,
+                            showTotal: (total: number, range: number) => $t('SyncUser.index.7374417-3', [range[0],range[1],total]),
                         }"
                         @change="handleTableChange"
                     >
@@ -95,17 +95,17 @@
             </j-row>
         </j-modal>
 
-        <!-- 绑定用户 -->
+        <!-- {{ $t('SyncUser.index.7374417-4') }} -->
         <j-modal
             v-model:visible="bindVis"
-            title="绑定用户"
+            :title="$t('SyncUser.index.7374417-4')"
             :maskClosable="false"
             :confirm-loading="confirmLoading"
             @cancel="handleCancel"
             @ok="handleBindSubmit"
         >
             <j-form layout="vertical">
-                <j-form-item label="用户" v-bind="validateInfos.userId">
+                <j-form-item :label="$t('SyncUser.index.7374417-5')" v-bind="validateInfos.userId">
                     <j-select
                         v-model:value="formData.userId"
                         :options="allUserList"
@@ -113,7 +113,7 @@
                         show-search
                         option-filter-prop="children"
                         :filter-option="filterOption"
-                        placeholder="请选择用户"
+                        :placeholder="$t('SyncUser.index.7374417-6')"
                     />
                 </j-form-item>
             </j-form>
@@ -127,6 +127,9 @@ import { PropType } from 'vue';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { Form } from 'ant-design-vue';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const useForm = Form.useForm;
 
@@ -207,24 +210,24 @@ const onTreeSelect = (keys: any) => {
 
 const columns = [
     {
-        title: '钉钉用户名',
+        title: $t('SyncUser.index.7374417-7'),
         dataIndex: 'thirdPartyUserName',
         key: 'thirdPartyUserName',
     },
     {
-        title: '用户',
+        title: $t('SyncUser.index.7374417-5'),
         dataIndex: 'userName',
         key: 'userName',
         scopedSlots: true,
     },
     {
-        title: '绑定状态',
+        title: $t('SyncUser.index.7374417-8'),
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
     },
     {
-        title: '操作',
+        title: $t('SyncUser.index.7374417-9'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -238,9 +241,9 @@ const getActions = (
     const actions = [
         {
             key: 'bind',
-            text: '绑定',
+            text: $t('SyncUser.index.7374417-10'),
             tooltip: {
-                title: '绑定',
+                title: $t('SyncUser.index.7374417-10'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -249,17 +252,17 @@ const getActions = (
         },
         {
             key: 'unbind',
-            text: '解绑',
+            text: $t('SyncUser.index.7374417-11'),
             icon: 'DisconnectOutlined',
             popConfirm: {
-                title: '确认解绑?',
+                title: $t('SyncUser.index.7374417-12'),
                 onConfirm:  () => {
                     const response = configApi.unBindUser(
                         { bindingId: data.bindId },
                         data.bindId,
                     );
                     response.then(() => {
-                        onlyMessage('操作成功');
+                        onlyMessage($t('SyncUser.index.7374417-13'));
                         getTableData();
                     });
                     return response;
@@ -290,12 +293,12 @@ const handleAutoBind = async () => {
 
     if (props.data.type === 'dingTalk') {
         configApi.dingTalkBindUser(params, props.data.id).then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('SyncUser.index.7374417-13'));
             getTableData();
         });
     } else if (props.data.type === 'weixin') {
         configApi.weChatBindUser(params, props.data.id).then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('SyncUser.index.7374417-13'));
             getTableData();
         });
     }
@@ -377,7 +380,7 @@ const getTableData = (terms?: any) => {
                         ? `${unBindUser.name}(${unBindUser.username})`
                         : bindUser?.providerName,
                     status: {
-                        text: bindUser?.providerName ? '已绑定' : '未绑定',
+                        text: bindUser?.providerName ? $t('SyncUser.index.7374417-14') : $t('SyncUser.index.7374417-15'),
                         value: bindUser?.providerName ? 'success' : 'error',
                     },
                 });
@@ -419,7 +422,7 @@ const formData = ref({
     bindId: '',
 });
 const formRules = ref({
-    userId: [{ required: true, message: '请选择用户', trigger: 'change' }],
+    userId: [{ required: true, message: $t('SyncUser.index.7374417-6'), trigger: 'change' }],
 });
 
 const { resetFields, validate, validateInfos, clearValidate } = useForm(
@@ -462,7 +465,7 @@ const handleBindSubmit = () => {
             configApi
                 .dingTalkBindUser([params], props.data.id)
                 .then(() => {
-                    onlyMessage('操作成功');
+                    onlyMessage($t('SyncUser.index.7374417-13'));
                     bindVis.value = false;
                     getTableData();
                 })
@@ -473,7 +476,7 @@ const handleBindSubmit = () => {
             configApi
                 .weChatBindUser([params], props.data.id)
                 .then(() => {
-                    onlyMessage('操作成功');
+                    onlyMessage($t('SyncUser.index.7374417-13'));
                     bindVis.value = false;
                     getTableData();
                 })
