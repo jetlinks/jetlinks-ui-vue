@@ -274,7 +274,7 @@ const queryData = async (_params: any) => {
                 : false,
         chooseList: chooseList.value,
     };
-    console.log('命名myParams', myParams);
+    // console.log('命名myParams', myParams);
     const resp: any = await queryUnknownName(myParams);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;

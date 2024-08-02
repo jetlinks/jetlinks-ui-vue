@@ -69,7 +69,7 @@
             </j-card>
             <j-row :gutter="24">
                 <j-col :span="16">
-                    <div class="static-card" v-show="true">
+                    <div class="static-card" v-if="trafficStatistics">
                         <Guide title="流量统计">
                             <template #extra>
                                 <TimeSelect
@@ -95,7 +95,7 @@
                     </div>
                 </j-col>
                 <j-col :span="8">
-                    <div class="static-card" v-show="true">
+                    <div class="static-card" v-if="trafficUsage">
                         <Guide title="流量使用TOP10">
                             <template #extra>
                                 <TimeSelect
@@ -161,6 +161,7 @@ import dayjs from 'dayjs';
 import { queryFlow } from '@/api/iot-card/home';
 import TimeSelect from '@/views/iot-card/components/TimeSelect.vue';
 import { Empty } from 'ant-design-vue';
+import { useAnalysisStore } from 'store/AnalysisReport';
 
 const dayTotal = ref(0);
 const monthTotal = ref(0);
@@ -172,6 +173,10 @@ const yearOptions = ref<any[]>([]);
 const flowData = ref<any[]>([]);
 const topList = ref<any[]>([]);
 const topTotal = ref(0);
+
+const Analysis = useAnalysisStore();
+const trafficStatistics = Analysis.current.trafficStatistics;
+const trafficUsage = Analysis.current.trafficUsage;
 
 const quickBtnList = [
     { label: '昨日', value: 'yesterday' },

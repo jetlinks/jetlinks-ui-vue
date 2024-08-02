@@ -50,7 +50,7 @@
                 </j-col>
             </j-row>
             <j-row :gutter="24">
-                <j-col :span="24" v-show="true">
+                <j-col :span="24" v-if="deviceMessages">
                     <div class="message-card">
                         <Guide title="设备消息">
                             <template #extra>
@@ -72,7 +72,10 @@
                     </div>
                 </j-col>
             </j-row>
-            <j-row :span="24" v-if="AmapKey && isNoCommunity" v-show="true">
+            <j-row
+                :span="24"
+                v-if="AmapKey && isNoCommunity && deviceDistribution"
+            >
                 <j-col :span="24">
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
@@ -106,8 +109,12 @@ import { useSystem } from '@/store/system';
 import dayjs from 'dayjs';
 import { isNoCommunity } from '@/utils/utils';
 import categoryOptions from './config';
+import { useAnalysisStore } from 'store/AnalysisReport';
 
 const system = useSystem();
+const Analysis = useAnalysisStore();
+const deviceMessages = Analysis.current.deviceMessages;
+const deviceDistribution = Analysis.current.deviceDistribution;
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([

@@ -64,11 +64,13 @@
 <script setup lang="ts">
 import { getReportConfig, saveReportConfig } from '@/api/system/analysis';
 import { onlyMessage } from '@/utils/comm';
+import { useAnalysisStore } from 'store/AnalysisReport';
 
 const data = reactive({
     form: {} as Partial<Record<string, any>>,
 });
 
+const analysisStore = useAnalysisStore();
 const { form } = toRefs(data);
 const formRef = ref();
 
@@ -80,9 +82,9 @@ const submitData = () => {
         .validate()
         .then(async () => {
             // 保存
-            console.log('form', form.value);
             saveReportConfig(form.value).then((res: any) => {
                 if (res.status === 200) {
+                    analysisStore.setCurrent(form.value);
                     onlyMessage('保存成功');
                 }
             });
@@ -92,7 +94,6 @@ const submitData = () => {
 
 onMounted(() => {
     getReportConfig().then((resp: any) => {
-        console.log('resp', resp);
         if (resp.status === 200) {
             if (resp.result.length > 0) {
                 data.form = resp.result[0];

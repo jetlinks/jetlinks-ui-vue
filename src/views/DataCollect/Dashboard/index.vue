@@ -13,7 +13,7 @@
             </j-col>
         </j-row>
         <j-row :gutter="24" style="margin-top: 24px">
-            <j-col :span="24" v-show="true">
+            <j-col :span="24" v-if="pointDataVolume">
                 <Card />
             </j-col>
         </j-row>
@@ -27,6 +27,9 @@ import { getImage } from '@/utils/comm';
 import { queryCount } from '@/api/data-collect/dashboard';
 import { defaultParams, statusData } from './tool';
 import { useMenuStore } from '@/store/menu';
+import { useAnalysisStore } from 'store/AnalysisReport';
+const Analysis = useAnalysisStore();
+const pointDataVolume = Analysis.current.pointDataVolume;
 
 const menuPermission = useMenuStore().hasMenu;
 
