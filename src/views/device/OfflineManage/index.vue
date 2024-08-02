@@ -128,7 +128,7 @@ import {
     fetchOfflineDevice,
     offlineDeviceExport,
 } from '@/api/device/offlineManage';
-import { simDataExport } from '@/api/data-report/sim';
+import type { ISearchParams } from '@/global';
 
 const DEFAULT_ORDER_COLUMN = 'createTime';
 
@@ -152,17 +152,44 @@ const {
 } = useSelectableTable();
 
 // 解构搜索函数
-const { handleSearch } = useProSearch(globParams, handleClearSelected, [
-    DEFAULT_ORDER_COLUMN,
-]);
+const { handleSearch } = useProSearch(
+    globParams,
+    handleClearSelected,
+    [],
+    [handleSearchOfflineReasons],
+);
 
 // 处理设备诊断的钩子
 const instanceStore = useInstanceStore();
 
-//
 const popTitle = computed(() => {
     return selectedRowKeys.value.length === 0 ? EXPORT_ALL : EXPORT_SELECT;
 });
+
+// 声明为function方便提升作用域，处理离线原因搜索
+function handleSearchOfflineReasons(_params: ISearchParams) {
+    console.log('handleSearchOfflineReasons run', _params);
+    if (
+        _params.terms.length > 0 &&
+        _params.terms[0].terms &&
+        _params.terms[0].terms.length > 0 &&
+        _params.terms[0].terms[0].column === 'offlineReasons'
+    ) {
+        const offlineReasons = _params.terms[0].terms[0].value as string;
+        let isContains = true;
+        if (_params.terms[0].terms[0].termType === 'nlike') {
+            isContains = false;
+        }
+        _params.terms = [];
+        // 切除首尾的%符号
+        _params.offlineReasons = offlineReasons.slice(
+            1,
+            offlineReasons.length - 1,
+        );
+        _params.isContains = isContains;
+    }
+    return _params;
+}
 
 // 处理分页器的显示总数的格式
 const handleShowTotal = () => {
@@ -170,7 +197,7 @@ const handleShowTotal = () => {
 };
 
 // 处理网络请求
-const queryData = async (_params: Record<string, any>) => {
+const queryData = async (_params: ISearchParams) => {
     const resp = await fetchOfflineDevice(_params);
     if (resp.status === 200) {
         total.value = resp.result.total;
@@ -238,12 +265,24 @@ const handleExport = async () => {
             sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
         };
     } else {
-        _params = {
-            paging: false,
-            pageSize: total.value > 10000 ? 10000 : total.value,
-            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
-            terms: globParams.value.terms,
-        };
+        // 未选中数据时氛围已搜索和未搜索的情况
+        if (globParams.value.offlineReasons) {
+            _params = {
+                paging: false,
+                pageSize: total.value > 10000 ? 10000 : total.value,
+                sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
+                terms: globParams.value.terms,
+                offlineReasons: globParams.value.offlineReasons,
+                isContains: globParams.value.isContains,
+            };
+        } else {
+            _params = {
+                paging: false,
+                pageSize: total.value > 10000 ? 10000 : total.value,
+                sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
+                terms: globParams.value.terms,
+            };
+        }
     }
 
     const res = await offlineDeviceExport(type.value, _params);
@@ -298,7 +337,6 @@ const modalEvent = {
                 .result;
             // 将数据暂存到store中，用于status组件
             instanceStore.current = res;
-            console.log(res);
             // 判断accessId是否为空
             if (!res.accessId) {
                 onlyMessage('accessId缺失!', 'error');
