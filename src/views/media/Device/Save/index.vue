@@ -421,7 +421,7 @@
                         <div>不影响设备接入平台，可保持设备初始化值。</div>
                     </div>
 
-                    <div v-else class="doc" style="height: 600">
+                    <div v-else-if="formData.channel === 'fixed-media'" class="doc" style="height: 600">
                         <h1>1.概述</h1>
                         <div>
                             视频设备通过RTSP、RTMP固定地址接入平台分为2步。
@@ -440,6 +440,55 @@
                         <div>
                             只能选择接入方式为固定地址的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择固定地址类型的网关完成产品创建。
                         </div>
+                    </div>
+                    <div v-else-if="formData.channel === 'onvif'" class="doc" style="height: 600">
+                        <h1>1.概述</h1>
+                        <div>
+                            JetLinks平台支持通过Onvif方式接入视频设备。分为两个部分，包括平台端配置和设备端配置。本文通过海康摄像头为例将onvif视频接入到平台播放。
+                        </div>
+                        <h1>2.配置说明</h1>
+                        <div>
+                            设备端配置
+                        </div>
+                        <div>1.本文以海康监控为例演示，登录海康监控设备后台，进入配置>网络>高级配置>集成协议，用户自定义输入用户名和密码，完成用户添加。</div>
+                        <div class="image">
+                            <j-image
+                                width="100%"
+                                :src="getImage('/media/doc5.png')"
+                            />
+                        </div>
+                        <div>平台端配置</div>
+                        <div>ID：设备唯一标识，若不填写，系统将自动生成唯一标识</div>
+                        <div>设备名称：用户自定义输入小于或等于64位字符</div>
+                        <div>所属产品：选择接入方式为Onvif的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择Onvif类型的网关完成产品创建</div>
+                        <div>接入地址：不同平台的摄像头接入地址组合方式不一致，请参考对应品牌接入Onvif的地址设置。如海康：http://ip/onvif/device_service。IP地址来自于海康监控设备端后台：配置>网络>基本配置>TCP/IP</div>
+                        <div class="image">
+                            <j-image
+                                width="100%"
+                                :src="getImage('/media/doc6.png')"
+                            />
+                        </div>
+                        <div>接入账户：输入设备端配置时添加的用户名</div>
+                        <div>接入密码：输入设备端配置时添加的密码</div>
+                        <div class="image">
+                            <j-image
+                                width="100%"
+                                :src="getImage('/media/doc7.png')"
+                            />
+                        </div>
+                        <h1>3.所有配置项填写完成，点击保存。</h1>
+                    </div>
+                    <div v-else-if="formData.channel === 'media-plugin'" class="doc" style="height: 600">
+                        <h1>1.概述</h1>
+                        <div>
+                            JetLinks平台支持通过调用SDK或API请求将第三方系统视频设备数据接入到平台。
+                        </div>
+                        <h1>2.配置说明</h1>
+                        <div>2.1平台端配置</div>
+                        <div>ID：设备唯一标识，若不填写，系统将自动生成唯一标识</div>
+                        <div>设备名称：用户自定义输入小于或等于64位字符</div>
+                        <div>所属产品：选择接入方式为插件视频接入的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择插件类型的网关完成产品创建。</div>
+                        <h1>3.所有配置项填写完成，点击保存。</h1>
                     </div>
                 </j-col>
             </j-row>

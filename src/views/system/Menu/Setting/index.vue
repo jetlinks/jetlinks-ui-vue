@@ -85,6 +85,8 @@ import {
 import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
 import { isNoCommunity } from '@/utils/utils';
+import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
+
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
 const systemMenu: any = ref([]);
@@ -195,6 +197,7 @@ const handleOk = async () => {
     const _dataArr = dealTree(cloneDeep(treeData.value),selectedKeys.value)
     const _dataSorts = handleSorts(_dataArr)
     loading.value = true;
+    _dataSorts.push(USER_CENTER_MENU_DATA)
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
         onlyMessage('操作成功', 'success');
