@@ -68,14 +68,14 @@ export const columnsConf = [
         dataIndex: 'state',
         key: 'state',
         width: 100,
-        search: {
-            type: 'select',
-            options: [
-                { label: '在线', text: '在线', value: 'online' },
-                { label: '离线', text: '离线', value: 'offline' },
-                { label: '未激活', text: '未激活', value: 'notActive' },
-            ],
-        },
+        // search: {
+        //     type: 'select',
+        //     options: [
+        //         { label: '在线', text: '在线', value: 'online' },
+        //         { label: '离线', text: '离线', value: 'offline' },
+        //         { label: '未激活', text: '未激活', value: 'notActive' },
+        //     ],
+        // },
         scopedSlots: true,
     },
     {

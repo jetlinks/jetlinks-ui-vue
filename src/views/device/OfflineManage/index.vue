@@ -1,106 +1,102 @@
 <template>
-    <page-container>
-        <pro-search :columns="columnsConf" @search="handleSearch" />
-        <full-page>
-            <j-pro-table
-                ref="tableRef"
-                :columns="columnsConf"
-                :request="queryData"
-                model="table"
-                :params="globParams"
-                :gridColumn="3"
-                :defaultParams="{
-                    sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
-                }"
-                :rowKey="(record: any) => record.id"
-                :rowSelection="{
-                    selectedRowKeys: selectedRowKeys,
-                    onSelect: handleRowSelected,
-                    onSelectAll: handleSelectAll,
-                    onSelectNone: handleClearSelected,
-                }"
-            >
-                <template #headerTitle>
-                    <j-space>
-                        <PermissionButton
-                            :popConfirm="{
-                                title: popTitle,
-                                onConfirm: () => handleExport(),
-                            }"
-                        >
-                            <AIcon type="ExportOutlined" />
-                            导出
-                        </PermissionButton>
-                    </j-space>
-                </template>
-                <!--      采集模型        -->
-                <template #model="record">
-                    {{ record.model ? record.model.text : '--' }}
-                </template>
-                <!--      设备类型        -->
-                <template #deviceType="record">
-                    {{ record.deviceType ? record.deviceType.text : '--' }}
-                </template>
-                <!--       离线时间       -->
-                <template #offlineTime="record">
-                    {{
-                        record.offlineTime
-                            ? dayjs(record.offlineTime).format(
-                                  'YYYY-MM-DD HH:mm:ss',
-                              )
-                            : '--'
-                    }}
-                </template>
-                <template #state="{ state }">
-                    <template v-if="state">
-                        <z-tag :color="getState(state)">
-                            {{ state.text }}
-                        </z-tag>
+    <j-spin :spinning="pageLoading">
+        <page-container>
+            <pro-search :columns="columnsConf" @search="handleSearch" />
+            <full-page>
+                <j-pro-table
+                    ref="tableRef"
+                    :columns="columnsConf"
+                    :request="queryData"
+                    model="table"
+                    :params="globParams"
+                    :gridColumn="3"
+                    :defaultParams="{
+                        sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
+                    }"
+                    :rowKey="(record: any) => record.id"
+                    :rowSelection="{
+                        selectedRowKeys: selectedRowKeys,
+                        onSelect: handleRowSelected,
+                        onSelectAll: handleSelectAll,
+                        onSelectNone: handleClearSelected,
+                    }"
+                >
+                    <template #headerTitle>
+                        <j-space>
+                            <PermissionButton
+                                :popConfirm="{
+                                    title: popTitle,
+                                    onConfirm: () => handleExport(),
+                                }"
+                            >
+                                <AIcon type="ExportOutlined" />
+                                导出
+                            </PermissionButton>
+                        </j-space>
                     </template>
-                    <template v-else> -- </template>
-                </template>
-                <template #offlineReason="record">
-                    {{ record.offlineReason ? record.offlineReason : '--' }}
-                </template>
-                <template #action="record">
-                    <a
-                        href="javascript: void(0);"
-                        @click.prevent="modalEvent.open(record)"
-                    >
-                        诊断
-                    </a>
-                </template>
-                <template #paginationRender>
-                    <a-pagination
-                        :showQuickJumper="true"
-                        :isShowContent="true"
-                        :showSizeChanger="true"
-                        :pageSize="pageSize"
-                        :pageSizeOptions="['12', '24', '48', '96']"
-                        :current="currentPage"
-                        :total="total"
-                        :show-total="handleShowTotal"
-                        @change="handleOnChange"
-                    />
-                </template>
-            </j-pro-table>
-        </full-page>
-        <diagnose-modal
-            v-if="modalVisible"
-            :device-id="deviceId"
-            :device-type="deviceType"
-            :device-state="deviceState"
-            :is-xieli-device="deviceIsXieli"
-            @update:close="modalEvent.close"
-        />
-        <div class="loading" v-if="pageLoading">
-            <div class="wrapper">
-                <a-button type="text" text loading size="large">
-                    加载中...
-                </a-button>
-            </div>
-        </div>
-    </page-container>
+                    <!--      采集模型        -->
+                    <template #model="record">
+                        {{ record.model ? record.model.text : '--' }}
+                    </template>
+                    <!--      设备类型        -->
+                    <template #deviceType="record">
+                        {{ record.deviceType ? record.deviceType.text : '--' }}
+                    </template>
+                    <!--       离线时间       -->
+                    <template #offlineTime="record">
+                        {{
+                            record.offlineTime
+                                ? dayjs(record.offlineTime).format(
+                                      'YYYY-MM-DD HH:mm:ss',
+                                  )
+                                : '--'
+                        }}
+                    </template>
+                    <template #state="{ state }">
+                        <template v-if="state">
+                            <z-tag :color="getState(state)">
+                                {{ state.text }}
+                            </z-tag>
+                        </template>
+                        <template v-else> -- </template>
+                    </template>
+                    <template #offlineReason="record">
+                        {{ record.offlineReason ? record.offlineReason : '--' }}
+                    </template>
+                    <template #action="record">
+                        <a
+                            href="javascript: void(0);"
+                            @click.prevent="modalEvent.open(record)"
+                        >
+                            诊断
+                        </a>
+                    </template>
+                    <template #paginationRender>
+                        <a-pagination
+                            :showQuickJumper="true"
+                            :isShowContent="true"
+                            :showSizeChanger="true"
+                            :pageSize="pageSize"
+                            :pageSizeOptions="['12', '24', '48', '96']"
+                            :current="currentPage"
+                            :total="total"
+                            :show-total="handleShowTotal"
+                            @change="handlePageChange"
+                        />
+                    </template>
+                </j-pro-table>
+            </full-page>
+
+            <diagnose-modal
+                v-if="modalVisible"
+                :device-id="deviceId"
+                :device-type="deviceType"
+                :device-state="deviceState"
+                :is-xieli-device="deviceIsXieli"
+                @update:close="modalEvent.close"
+            />
+        </page-container>
+    </j-spin>
 </template>
 
 <script setup lang="ts">
@@ -128,8 +124,9 @@ import {
     fetchOfflineDevice,
     offlineDeviceExport,
 } from '@/api/device/offlineManage';
-import { simDataExport } from '@/api/data-report/sim';
+import type { ISearchParams } from '@/global';
 
+// 默认排序字段
 const DEFAULT_ORDER_COLUMN = 'createTime';
 
 const tableRef = ref();
@@ -151,18 +148,86 @@ const {
     handleClearSelected,
 } = useSelectableTable();
 
-// 解构搜索函数
-const { handleSearch } = useProSearch(globParams, handleClearSelected, [
-    DEFAULT_ORDER_COLUMN,
-]);
-
 // 处理设备诊断的钩子
 const instanceStore = useInstanceStore();
 
-//
 const popTitle = computed(() => {
     return selectedRowKeys.value.length === 0 ? EXPORT_ALL : EXPORT_SELECT;
 });
+
+/**
+ * 处理搜索事件，因为所有查询事件都会调用handleSearch，
+ */
+// 存储上一次查询的条件
+let prevSearchTerms: any = {};
+let offlineReasons: string = '';
+let isContains = true;
+
+const handleSearch = (_params: any) => {
+    // 处理需要清空选中行的情况
+    handleResetSelectedRows(_params);
+    // 如果搜索条件为离线原因则需要处理offlineReasons,isContains
+    handleSearchOfflineReasons(_params);
+    globParams.value = _params;
+};
+
+/**
+ * @function handleResetSelectedRows
+ * @description 处理重置和切换搜索条件时，清空选中的行
+ * @param params 搜索携带的条件对象
+ */
+const handleResetSelectedRows = (params: ISearchParams) => {
+    // 如果携带搜索条件时
+    if (
+        params.terms &&
+        params.terms.length > 0 &&
+        params.terms[0].terms &&
+        params.terms[0].terms.length > 0
+    ) {
+        // 搜索条件是否发生变化
+        let termsIsChange = false;
+        let terms = params.terms[0].terms[0];
+
+        // 如果上一次的搜索条件与这次的搜索条件不同
+        for (const key in terms) {
+            if (terms[key] !== prevSearchTerms[key]) {
+                termsIsChange = true;
+                termsIsChange && handleClearSelected();
+                break;
+            }
+        }
+
+        // 保存上一次的搜索条件
+        prevSearchTerms = terms;
+    } else {
+        // 如果本次未携带搜索条件，但上次搜索条件有值，则这次搜索可能为重置操作或空值搜索，需要清空选中的行
+        if (Reflect.ownKeys(prevSearchTerms).length > 0) {
+            handleClearSelected();
+            prevSearchTerms = {};
+            // 重置isContain, offlineReasons
+            isContains = true;
+            offlineReasons = '';
+        }
+    }
+};
+
+// 处理离线原因搜索
+const handleSearchOfflineReasons = (_params: ISearchParams) => {
+    if (
+        _params.terms.length > 0 &&
+        _params.terms[0].terms &&
+        _params.terms[0].terms.length > 0 &&
+        _params.terms[0].terms[0].column === 'offlineReasons'
+    ) {
+        const value = _params.terms[0].terms[0].value as string;
+        if (_params.terms[0].terms[0].termType === 'nlike') {
+            isContains = false;
+        }
+        // 切除首尾的%符号
+        offlineReasons = value.replace(/%/g, '');
+    }
+    return _params;
+};
 
 // 处理分页器的显示总数的格式
 const handleShowTotal = () => {
@@ -170,8 +235,8 @@ const handleShowTotal = () => {
 };
 
 // 处理网络请求
-const queryData = async (_params: Record<string, any>) => {
-    const resp = await fetchOfflineDevice(_params);
+const queryData = async (_params: ISearchParams) => {
+    const resp = await fetchOfflineDevice(_params, offlineReasons, isContains);
     if (resp.status === 200) {
         total.value = resp.result.total;
         currentPage.value = resp.result.pageIndex + 1;
@@ -205,7 +270,7 @@ const getState = (status: { text: string; value: string }) => {
 };
 
 // 点击分页器的点击事件
-const handleOnChange = (num: number, pageSize: number) => {
+const handlePageChange = (num: number, pageSize: number) => {
     const _params = {
         ...globParams.value,
 
@@ -235,18 +300,21 @@ const handleExport = async () => {
                     termType: 'in',
                 },
             ],
-            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
         };
     } else {
         _params = {
             paging: false,
             pageSize: total.value > 10000 ? 10000 : total.value,
-            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
             terms: globParams.value.terms,
         };
     }
 
-    const res = await offlineDeviceExport(type.value, _params);
+    const res = await offlineDeviceExport(
+        type.value,
+        _params,
+        offlineReasons,
+        isContains,
+    );
     if (res.status === 200) {
         const blob = new Blob([res.data], { type: type.value });
         const url = URL.createObjectURL(blob);
@@ -298,7 +366,6 @@ const modalEvent = {
                 .result;
             // 将数据暂存到store中，用于status组件
             instanceStore.current = res;
-            console.log(res);
             // 判断accessId是否为空
             if (!res.accessId) {
                 onlyMessage('accessId缺失!', 'error');
