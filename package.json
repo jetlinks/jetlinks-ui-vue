@@ -20,6 +20,7 @@
     "@vueuse/core": "^9.10.0",
     "ant-design-vue": "^3.2.15",
     "axios": "^1.2.1",
+    "cronstrue": "^2.50.0",
     "driver.js": "^0.9.8",
     "echarts": "^5.4.1",
     "event-source-polyfill": "^1.0.31",

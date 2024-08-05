@@ -105,6 +105,7 @@ import {cloneDeep, pick} from 'lodash-es'
 import type { OperationTimer } from '../../../typings'
 import { isCron } from '@/utils/regular'
 import { defineExpose } from 'vue'
+import cronstrue from 'cronstrue'
 
 type NameType = string[] | string
 
@@ -130,8 +131,11 @@ const cronRules = [
   { max: 64, message: '最多可输入64个字符' },
   {
     validator: async (_: any, v: string) => {
+
       if (v) {
-        if (!isCron(v)) {
+        try {
+          console.log(v, cronstrue.toString(v))
+        } catch (e) {
           return Promise.reject(new Error('请输入正确的cron表达式'));
         }
       } else {
