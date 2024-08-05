@@ -19,11 +19,11 @@
                 class="question-item"
             >
                 <template #label>
-                    <span>标识</span>
+                    <span>{{ $t('components.EditDialog.153828-0') }}</span>
                     <span class="required-icon">*</span>
                     <j-tooltip placement="top">
                         <template #title>
-                            <span>标识ID需与代码中的标识ID一致</span>
+                            <span>{{ $t('components.EditDialog.153828-1') }}</span>
                         </template>
                         <AIcon
                             type="QuestionCircleOutlined"
@@ -33,24 +33,24 @@
                 </template>
                 <j-input
                     v-model:value="form.data.id"
-                    placeholder="请输入标识(ID)"
-                    :disabled="dialogTitle === '编辑'"
+                    :placeholder="$t('components.EditDialog.153828-2')"
+                    :disabled="dialogTitle === $t('components.EditDialog.153828-3')"
                 />
             </j-form-item>
             <j-form-item
                 name="name"
-                label="名称"
+                :label="$t('components.EditDialog.153828-4')"
                 :rules="[
-                    { required: true, message: '请输入名称' },
+                    { required: true, message: $t('components.EditDialog.153828-5') },
                     {
                         max: 64,
-                        message: '最多可输入64个字符',
+                        message: $t('components.EditDialog.153828-6'),
                     },
                 ]"
             >
                 <j-input
                     v-model:value="form.data.name"
-                    placeholder="请输入名称"
+                    :placeholder="$t('components.EditDialog.153828-5')"
                 />
             </j-form-item>
 
@@ -79,11 +79,11 @@
                             :rules="[
                                 {
                                     required: column.key !== 'describe',
-                                    message: `请输入${column.title}`,
+                                    message: $t('components.EditDialog.153828-7', [column.title]),
                                 },
                                 {
                                     max: 64,
-                                    message: '最多可输入64个字符',
+                                    message: $t('components.EditDialog.153828-6'),
                                 },
                             ]"
                         >
@@ -118,7 +118,7 @@
         </div>
 
         <j-button type="dashed" style="width: 100%" @click="table.clickAdd">
-            <AIcon type="PlusOutlined" /> 添加
+            <AIcon type="PlusOutlined" /> {{ $t('components.EditDialog.153828-8') }}
         </j-button>
     </j-modal>
 </template>
@@ -134,11 +134,14 @@ import {
 } from '@/api/system/permission';
 import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const defaultAction = [
-    { action: 'query', name: '查询', describe: '查询' },
-    { action: 'save', name: '保存', describe: '保存' },
-    { action: 'delete', name: '删除', describe: '删除' },
+    { action: 'query', name: $t('components.EditDialog.153828-9'), describe: $t('components.EditDialog.153828-9') },
+    { action: 'save', name: $t('components.EditDialog.153828-10'), describe: $t('components.EditDialog.153828-10') },
+    { action: 'delete', name: $t('components.EditDialog.153828-11'), describe: $t('components.EditDialog.153828-11') },
 ];
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
@@ -147,7 +150,7 @@ const props = defineProps<{
 }>();
 
 const loading = ref(false);
-const dialogTitle = computed(() => (props.data?.id ? '编辑' : '新增'));
+const dialogTitle = computed(() => (props.data?.id ? $t('components.EditDialog.153828-3') : $t('components.EditDialog.153828-12')));
 const confirm = () => {
     loading.value = true;
     formRef.value
@@ -155,7 +158,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('components.EditDialog.153828-13'));
                 emits('refresh');
                 emits('update:visible', false);
             }
@@ -183,17 +186,17 @@ const form = reactive({
     rules: {
         // 校验标识是否可用
         idCheck: async (_rule: Rule, id: string): Promise<any> => {
-            if (!id) return Promise.reject('请输入标识(ID)');
+            if (!id) return Promise.reject($t('components.EditDialog.153828-2'));
             else if (id.length > 64)
-                return Promise.reject('最多可输入64个字符');
+                return Promise.reject($t('components.EditDialog.153828-6'));
             else if (!/^[a-zA-Z0-9_\-]+$/.test(id))
-                return Promise.reject('请输入英文或者数字或者-或者_');
+                return Promise.reject($t('components.EditDialog.153828-15'));
             else if (props.data?.id && props.data?.id === form.data?.id)
                 return Promise.resolve();
             else {
                 const resp: any = await checkId_api({ id });
                 if (resp.result.passed) return Promise.resolve();
-                else return Promise.reject("标识重复");
+                else return Promise.reject($t('components.EditDialog.153828-16'));
             }
         },
     },
@@ -218,25 +221,25 @@ const table = reactive({
             align: 'center',
         },
         {
-            title: '操作类型',
+            title: $t('components.EditDialog.153828-17'),
             dataIndex: 'action',
             key: 'action',
             width: 220,
         },
         {
-            title: '名称',
+            title: $t('components.EditDialog.153828-4'),
             dataIndex: 'name',
             key: 'name',
             width: 220,
         },
         {
-            title: '说明',
+            title: $t('components.EditDialog.153828-18'),
             dataIndex: 'describe',
             key: 'describe',
             width: 220,
         },
         {
-            title: '操作',
+            title: $t('components.EditDialog.153828-19'),
             dataIndex: 'act',
             key: 'act',
         },

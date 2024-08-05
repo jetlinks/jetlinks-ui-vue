@@ -23,10 +23,10 @@
                             :hasPermission="`${permission}:add`"
                             @click="table.openDialog(undefined)"
                         >
-                            <AIcon type="PlusOutlined" />新增
+                            <AIcon type="PlusOutlined" />{{ $t('Permission.index.616688-0') }}
                         </PermissionButton>
                         <j-dropdown trigger="hover">
-                            <j-button>批量操作</j-button>
+                            <j-button>{{ $t('Permission.index.616688-1') }}</j-button>
                             <template #overlay>
                                 <j-menu>
                                     <j-menu-item>
@@ -45,7 +45,7 @@
                                             <PermissionButton
                                                 :hasPermission="`${permission}:import`"
                                             >
-                                                导入
+                                                {{ $t('Permission.index.616688-2') }}
                                             </PermissionButton>
                                         </j-upload>
                                     </j-menu-item>
@@ -53,12 +53,12 @@
                                         <PermissionButton
                                             :hasPermission="`${permission}:export`"
                                             :popConfirm="{
-                                                title: `确认导出？`,
+                                                title: $t('Permission.index.616688-3'),
                                                 onConfirm: () =>
                                                     table.clickExport(),
                                             }"
                                         >
-                                            导出
+                                            {{ $t('Permission.index.616688-4') }}
                                         </PermissionButton>
                                     </j-menu-item>
                                 </j-menu>
@@ -68,7 +68,7 @@
                     <template #status="slotProps">
                         <BadgeStatus
                             :status="slotProps.status"
-                            :text="slotProps.status ? '启用' : '禁用'"
+                            :text="slotProps.status ? $t('Permission.index.616688-24') : $t('Permission.index.616688-25')"
                             :statusNames="{
                                 1: 'success',
                                 0: 'error',
@@ -81,7 +81,7 @@
                                 :hasPermission="`${permission}:update`"
                                 type="link"
                                 :tooltip="{
-                                    title: '编辑',
+                                    title: $t('Permission.index.616688-7'),
                                 }"
                                 @click="table.openDialog(slotProps)"
                             >
@@ -92,14 +92,14 @@
                                 :hasPermission="`${permission}:action`"
                                 type="link"
                                 :popConfirm="{
-                                    title: `确认${
-                                        slotProps.status ? '禁用' : '启用'
+                                    title: `${
+                                        slotProps.status ? $t('Permission.index.616688-8') : $t('Permission.index.616688-9')
                                     }？`,
                                     onConfirm: () =>
                                         table.changeStatus(slotProps),
                                 }"
                                 :tooltip="{
-                                    title: slotProps.status ? '禁用' : '启用',
+                                    title: slotProps.status ? $t('Permission.index.616688-6') : $t('Permission.index.616688-5'),
                                 }"
                             >
                                 <AIcon
@@ -116,11 +116,11 @@
                                 type="link"
                                 :tooltip="{
                                     title: slotProps.status
-                                        ? '请先禁用，再删除'
-                                        : '删除',
+                                        ? $t('Permission.index.616688-10')
+                                        : $t('Permission.index.616688-11'),
                                 }"
                                 :popConfirm="{
-                                    title: `确认删除`,
+                                    title: $t('Permission.index.616688-12'),
                                     onConfirm: () => table.clickDel(slotProps),
                                 }"
                                 :disabled="slotProps.status"
@@ -154,13 +154,16 @@ import {
 import { downloadObject } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permission = 'system/Permission';
 const hasPermission = usePermissionStore().hasPermission;
 
 const columns = [
     {
-        title: '标识',
+        title: $t('Permission.index.616688-13'),
         dataIndex: 'id',
         key: 'id',
         ellipsis: true,
@@ -170,7 +173,7 @@ const columns = [
         },
     },
     {
-        title: '名称',
+        title: $t('Permission.index.616688-14'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -180,15 +183,15 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Permission.index.616688-15'),
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '启用', value: 1 },
-                { label: '禁用', value: 0 },
+                { label: $t('Permission.index.616688-24'), value: 1 },
+                { label: $t('Permission.index.616688-25'), value: 0 },
             ],
             handleValue: (v: any) => {
                 return v;
@@ -196,7 +199,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Permission.index.616688-16'),
         dataIndex: 'action',
         key: 'action',
         width: 120,
@@ -226,15 +229,15 @@ const table = {
                     const data = JSON.parse(result.target.result);
                     editPermission_api(data).then((resp) => {
                         if (resp.status === 200) {
-                            onlyMessage('导入成功');
+                            onlyMessage($t('Permission.index.616688-17'));
                             table.refresh();
                         }
                     });
                 } catch (error) {
-                    onlyMessage('导入失败，请重试！', 'error');
+                    onlyMessage($t('Permission.index.616688-18'), 'error');
                 }
             };
-        } else onlyMessage('请上传json格式', 'error');
+        } else onlyMessage($t('Permission.index.616688-19'), 'error');
         return false;
     },
     // 导出数据
@@ -246,10 +249,10 @@ const table = {
         const response = exportPermission_api(params)
         response.then((resp) => {
             if (resp.status === 200) {
-                downloadObject(resp.result as any, '权限数据');
-                onlyMessage('导出成功');
+                downloadObject(resp.result as any, $t('Permission.index.616688-20'));
+                onlyMessage($t('Permission.index.616688-21'));
             } else {
-                onlyMessage('导出错误', 'error');
+                onlyMessage($t('Permission.index.616688-22'), 'error');
             }
         });
         return response
@@ -262,7 +265,7 @@ const table = {
         };
         const response = editPermission_api(params)
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('Permission.index.616688-23'));
             tableRef.value.reload();
         });
         return response
@@ -273,7 +276,7 @@ const table = {
         response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                onlyMessage('操作成功!');
+                onlyMessage($t('Permission.index.616688-23'));
             }
         });
         return response
