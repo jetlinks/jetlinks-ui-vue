@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"components.NextDialog.338026-0": "绑定",
+		"components.NextDialog.338026-1": "是否继续分配产品下的具体设备"
+	},
+	"en": {
+		"components.NextDialog.338026-0": "binding",
+		"components.NextDialog.338026-1": "Should we continue to allocate specific equipment under the product"
+	}
+}

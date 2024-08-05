@@ -3,7 +3,7 @@
         <j-input
             v-model:value="searchValue"
             @change="search"
-            placeholder="请输入组织名称"
+            :placeholder="$t('components.LeftTree.338027-0')"
             class="search-input"
             allowClear
         >
@@ -17,7 +17,7 @@
                 :hasPermission="`${permission}:add`"
                 @click="openDialog()"
             >
-                新增
+                {{ $t('components.LeftTree.338027-1') }}
             </PermissionButton>
         </div>
 
@@ -47,7 +47,7 @@
                                     :hasPermission="`${permission}:update`"
                                     type="link"
                                     :tooltip="{
-                                        title: '编辑',
+                                        title: $t('components.LeftTree.338027-2'),
                                     }"
                                     @click="openDialog(data)"
                                 >
@@ -57,7 +57,7 @@
                                     :hasPermission="`${permission}:add`"
                                     type="link"
                                     :tooltip="{
-                                        title: '新增子组织',
+                                        title: $t('components.LeftTree.338027-3'),
                                     }"
                                     @click="
                                         openDialog({
@@ -72,9 +72,9 @@
                                 <PermissionButton
                                     type="link"
                                     :hasPermission="`${permission}:delete`"
-                                    :tooltip="{ title: '删除' }"
+                                    :tooltip="{ title: $t('components.LeftTree.338027-4') }"
                                     :popConfirm="{
-                                        title: `确认删除？`,
+                                        title: $t('components.LeftTree.338027-5'),
                                         onConfirm: () => delDepartment(data.id),
                                     }"
                                 >
@@ -84,7 +84,7 @@
                         </div>
                     </template>
                 </jTree>
-                <j-empty v-else description="暂无数据" />
+                <j-empty v-else :description="$t('components.LeftTree.338027-6')" />
             </j-spin>
         </div>
         <!-- 编辑弹窗 -->
@@ -105,6 +105,9 @@ import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const route = useRoute();
 const permission = 'system/Department';
 
@@ -231,7 +234,7 @@ function handleTreeMap(_data: any[]) {
 function delDepartment(id: string) {
     const response = delDepartment_api(id);
     response.then(() => {
-        onlyMessage('操作成功');
+        onlyMessage($t('components.LeftTree.338027-7'));
         getTree();
     });
     return response;

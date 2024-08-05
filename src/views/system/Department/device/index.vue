@@ -34,24 +34,24 @@
                             type="primary"
                             @click="table.clickAdd('handle')"
                         >
-                            <AIcon type="PlusOutlined" />资产分配
+                            <AIcon type="PlusOutlined" />{{ $t('device.index.338025-0') }}
                         </PermissionButton>
                         <j-dropdown trigger="hover">
-                            <j-button>批量操作</j-button>
+                            <j-button>{{ $t('device.index.338025-1') }}</j-button>
                             <template #overlay>
                                 <j-menu>
                                     <j-menu-item>
                                         <PermissionButton
                                             :hasPermission="`${permission}:bind`"
                                             :popConfirm="{
-                                                title: `确认批量解除绑定？`,
+                                                title: $t('device.index.338025-2'),
                                                 onConfirm: () =>
                                                     table.clickUnBind(),
                                             }"
                                         >
                                             <AIcon
                                                 type="DisconnectOutlined"
-                                            />批量解绑
+                                            />{{ $t('device.index.338025-3') }}
                                         </PermissionButton>
                                     </j-menu-item>
                                     <j-menu-item>
@@ -61,7 +61,7 @@
                                         >
                                             <AIcon
                                                 type="EditOutlined"
-                                            />批量编辑
+                                            />{{ $t('device.index.338025-4') }}
                                         </PermissionButton>
                                     </j-menu-item>
                                 </j-menu>
@@ -113,7 +113,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        资产权限
+                                        {{ $t('device.index.338025-5') }}
                                     </div>
                                     <Ellipsis style="width: calc(100% - 20px);">
                                     <div
@@ -142,7 +142,7 @@
                             <PermissionButton
                                 :hasPermission="`${permission}:bind`"
                                 :popConfirm="{
-                                    title: `确认解除绑定？`,
+                                    title: $t('device.index.338025-6'),
                                     onConfirm: () =>
                                         table.clickUnBind(slotProps),
                                 }"
@@ -239,6 +239,9 @@ import { intersection } from 'lodash-es';
 import type { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const departmentStore = useDepartmentStore();
 
@@ -261,7 +264,7 @@ const columns = [
         },
     },
     {
-        title: '名称',
+        title: $t('device.index.338025-7'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -271,7 +274,7 @@ const columns = [
         },
     },
     {
-        title: '所属产品',
+        title: $t('device.index.338025-8'),
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,
@@ -303,14 +306,14 @@ const columns = [
         },
     },
     {
-        title: '资产权限',
+        title: $t('device.index.338025-5'),
         dataIndex: 'permission',
         key: 'permission',
         ellipsis: true,
         scopedSlots: true,
     },
     {
-        title: '注册时间',
+        title: $t('device.index.338025-9'),
         dataIndex: 'registryTime',
         key: 'registryTime',
         ellipsis: true,
@@ -320,16 +323,16 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('device.index.338025-10'),
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: $t('device.index.338025-11'), value: 'notActive' },
+                { label: $t('device.index.338025-12'), value: 'offline' },
+                { label: $t('device.index.338025-13'), value: 'online' },
             ],
         },
         scopedSlots: true,
@@ -337,7 +340,7 @@ const columns = [
     },
 
     {
-        title: '操作',
+        title: $t('device.index.338025-14'),
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
@@ -374,16 +377,16 @@ const table = {
                 {
                     permission: `${permission}:assert`,
                     key: 'edit',
-                    tooltip: { title: '编辑' },
+                    tooltip: { title: $t('device.index.338025-15') },
                     icon: 'EditOutlined',
                     onClick: () => table.clickEdit(data),
                 },
                 {
                     permission: `${permission}:bind`,
                     key: 'unbind',
-                    tooltip: { title: '解除绑定' },
+                    tooltip: { title: $t('device.index.338025-16') },
                     popConfirm: {
-                        title: `确认解除绑定？`,
+                        title: $t('device.index.338025-6'),
                         onConfirm: () => table.clickUnBind(data),
                     },
                     icon: 'DisconnectOutlined',
@@ -558,7 +561,7 @@ const table = {
     },
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
-        if (ids.length < 1) return onlyMessage('请勾选需要编辑的数据', 'warning');
+        if (ids.length < 1) return onlyMessage($t('device.index.338025-17'), 'warning');
 
         table.defaultPermission = row ? row?.permission : intersection(...table.selectedRows.map(
             (item) => item.permission,
@@ -571,7 +574,7 @@ const table = {
     },
     clickUnBind: (row?: any) => {
         const ids = row ? [row.id] : [...table._selectedRowKeys.value];
-        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
+        if (ids.length < 1) return onlyMessage($t('device.index.338025-18'), 'warning');
         const params = [
             {
                 targetType: 'org',
@@ -582,7 +585,7 @@ const table = {
         ];
         const response = unBindDeviceOrProduct_api('device', params)
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('device.index.338025-19'));
             table.refresh();
         });
         return response

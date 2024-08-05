@@ -1,7 +1,7 @@
 <template>
     <j-modal
         class="edit-permission-dialog-container"
-        title="编辑"
+        :title="$t('components.EditPermissionDialog.338038-0')"
         width="500px"
         @ok="confirm"
         :maskClosable="false"
@@ -12,11 +12,11 @@
         <div class="alert-info">
             <j-space>
                 <AIcon type="ExclamationCircleOutlined" />
-                <span>只能分配有'共享'权限的资产数据</span>
+                <span>{{ $t('components.EditPermissionDialog.338038-1') }} </span>
             </j-space>
         </div>
         <div style="margin-top: 5px">
-            <span>资产权限：</span>
+            <span>{{ $t('components.EditPermissionDialog.338038-2') }}</span>
             <j-checkbox-group
                 v-model:value="form.permission"
                 :options="options"
@@ -29,6 +29,9 @@
 import type { dictType, optionsType } from '../typing';
 import { updatePermission_api } from '@/api/system/department';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -46,7 +49,7 @@ const confirm = () => {
     loading.value = true;
     updatePermission_api(props.assetType, props.parentId, form)
         .then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('components.EditPermissionDialog.338038-3'));
             emits('confirm');
             emits('update:visible', false);
         })

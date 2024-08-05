@@ -31,24 +31,24 @@
                             type="primary"
                             @click="dialogs.addShow = true"
                         >
-                            <AIcon type="PlusOutlined" />资产分配
+                            <AIcon type="PlusOutlined" />{{ $t('product.index.338024-0') }}
                         </PermissionButton>
                         <j-dropdown trigger="hover">
-                            <j-button>批量操作</j-button>
+                            <j-button>{{ $t('product.index.338024-1') }}</j-button>
                             <template #overlay>
                                 <j-menu>
                                     <j-menu-item>
                                         <PermissionButton
                                             :hasPermission="`${permission}:bind`"
                                             :popConfirm="{
-                                                title: `确认批量解除绑定？`,
+                                                title: $t('product.index.338024-2'),
                                                 onConfirm: () =>
                                                     table.clickUnBind(),
                                             }"
                                         >
                                             <AIcon
                                                 type="DisconnectOutlined"
-                                            />批量解绑
+                                            />{{ $t('product.index.338024-3') }}
                                         </PermissionButton>
                                     </j-menu-item>
                                     <j-menu-item>
@@ -58,7 +58,7 @@
                                         >
                                             <AIcon
                                                 type="EditOutlined"
-                                            />批量编辑
+                                            />{{ $t('product.index.338024-4') }}
                                         </PermissionButton>
                                     </j-menu-item>
                                 </j-menu>
@@ -109,7 +109,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        资产权限
+                                        {{ $t('product.index.338024-5') }}
                                     </div>
                                     <Ellipsis style="width: calc(100% - 20px);">
                                     <div
@@ -257,6 +257,9 @@ import {
 } from '@/api/system/department';
 import { intersection } from 'lodash-es';
 import { useDepartmentStore } from '@/store/department';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const permission = 'system/Department';
 
 const departmentStore = useDepartmentStore();
@@ -277,7 +280,7 @@ const columns = [
         },
     },
     {
-        title: '名称',
+        title: $t('product.index.338024-6'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -287,20 +290,20 @@ const columns = [
         },
     },
     {
-        title: '资产权限',
+        title: $t('product.index.338024-5'),
         dataIndex: 'permission',
         key: 'permission',
         ellipsis: true,
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('product.index.338024-7'),
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
     },
     {
-        title: '状态',
+        title: $t('product.index.338024-8'),
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
@@ -309,11 +312,11 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('product.index.338024-9'),
                     value: 1,
                 },
                 {
-                    label: '禁用',
+                    label: $t('product.index.338024-10'),
                     value: 0,
                 },
             ],
@@ -322,7 +325,7 @@ const columns = [
     },
 
     {
-        title: '操作',
+        title: $t('product.index.338024-11'),
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
@@ -360,16 +363,16 @@ const table = {
                 {
                     permission: `${permission}:assert`,
                     key: 'edit',
-                    tooltip: { title: '编辑' },
+                    tooltip: { title: $t('product.index.338024-12') },
                     icon: 'EditOutlined',
                     onClick: () => table.clickEdit(data),
                 },
                 {
                     permission: `${permission}:bind`,
                     key: 'unbind',
-                    tooltip: { title: '解除绑定' },
+                    tooltip: { title: $t('product.index.338024-13') },
                     popConfirm: {
-                        title: `确认解除绑定？`,
+                        title: $t('product.index.338024-14'),
                         onConfirm: () => table.clickUnBind(data),
                     },
                     icon: 'DisconnectOutlined',
@@ -478,9 +481,9 @@ const table = {
                                         : '',
                                 text:
                                     item.state === 1
-                                        ? '正常'
+                                        ? $t('product.index.338024-9')
                                         : item.state === 0
-                                        ? '禁用'
+                                        ? $t('product.index.338024-10')
                                         : '',
                             };
                         });
@@ -553,7 +556,7 @@ const table = {
     },
     clickEdit: async (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1) return onlyMessage('请勾选需要编辑的数据', 'warning');
+        if (ids.length < 1) return onlyMessage($t('product.index.338024-15'), 'warning');
         tableData.defaultPermission = row ? row?.permission : intersection(...tableData.selectedRows.map(
             (item) => item.permission,
         )) as string[]
@@ -564,7 +567,7 @@ const table = {
     },
     clickUnBind: (row?: any) => {
         const ids = row ? [row.id] : [...tableData._selectedRowKeys];
-        if (ids.length < 1) return onlyMessage('请勾选需要解绑的数据', 'warning');
+        if (ids.length < 1) return onlyMessage($t('product.index.338024-16'), 'warning');
         const params = [
             {
                 targetType: 'org',
@@ -576,7 +579,7 @@ const table = {
         const response = unBindDeviceOrProduct_api('product', params)
         response.then(() => {
             tableData._selectedRowKeys = [];
-            onlyMessage('操作成功');
+            onlyMessage($t('product.index.338024-17'));
             table.refresh();
         });
         return response

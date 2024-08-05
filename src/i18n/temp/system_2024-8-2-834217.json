@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"components.EditDepartmentDialog.338039-0": "取消",
+		"components.EditDepartmentDialog.338039-1": "确定",
+		"components.EditDepartmentDialog.338039-2": "上级组织",
+		"components.EditDepartmentDialog.338039-3": "请选择上级组织",
+		"components.EditDepartmentDialog.338039-4": "名称",
+		"components.EditDepartmentDialog.338039-5": "请输入名称",
+		"components.EditDepartmentDialog.338039-6": "最多可输入64个字符",
+		"components.EditDepartmentDialog.338039-7": "排序",
+		"components.EditDepartmentDialog.338039-8": "请输入排序",
+		"components.EditDepartmentDialog.338039-9": "操作成功",
+		"components.EditDepartmentDialog.338039-10": "编辑",
+		"components.EditDepartmentDialog.338039-11": "新增子组织",
+		"components.EditDepartmentDialog.338039-12": "新增"
+	},
+	"en": {
+		"components.EditDepartmentDialog.338039-0": "cancel",
+		"components.EditDepartmentDialog.338039-1": "determine",
+		"components.EditDepartmentDialog.338039-2": "Superior organization",
+		"components.EditDepartmentDialog.338039-3": "Please select the superior organization",
+		"components.EditDepartmentDialog.338039-4": "name",
+		"components.EditDepartmentDialog.338039-5": "Please enter a name",
+		"components.EditDepartmentDialog.338039-6": "Up to 64 characters can be entered",
+		"components.EditDepartmentDialog.338039-7": "sort",
+		"components.EditDepartmentDialog.338039-8": "Please enter sorting",
+		"components.EditDepartmentDialog.338039-9": "Operation successful",
+		"components.EditDepartmentDialog.338039-10": "edit",
+		"components.EditDepartmentDialog.338039-11": "add a new sub organization",
+		"components.EditDepartmentDialog.338039-12": "newly added"
+	}
+}

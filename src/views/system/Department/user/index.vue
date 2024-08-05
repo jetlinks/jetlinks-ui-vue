@@ -32,7 +32,7 @@
                         style="margin-right: 15px"
                         :disabled="!parentId"
                     >
-                        <AIcon type="PlusOutlined" />绑定用户
+                        <AIcon type="PlusOutlined" />{{ $t('user.index.338020-0') }}
                     </PermissionButton>
                     <div
                         style="display: inline-block; width: 12px; height: 1px"
@@ -40,17 +40,17 @@
                     <PermissionButton
                         :hasPermission="`${permission}:bind`"
                         :popConfirm="{
-                            title: `确认解除绑定？`,
+                            title: $t('user.index.338020-1'),
                             onConfirm: () => table.unBind(),
                         }"
                     >
-                        <AIcon type="DisconnectOutlined" />批量解绑
+                        <AIcon type="DisconnectOutlined" />{{ $t('user.index.338020-2') }}
                     </PermissionButton>
                 </template>
                 <template #status="slotProps">
                     <BadgeStatus
                         :status="slotProps.status"
-                        :text="slotProps.status ? '正常' : '禁用'"
+                        :text="slotProps.status ? $t('user.index.338020-3') : $t('user.index.338020-4')"
                         :statusNames="{
                             1: 'success',
                             0: 'error',
@@ -63,7 +63,7 @@
                             type="link"
                             :hasPermission="`${permission}:bind`"
                             :popConfirm="{
-                                title: `确认解除绑定？`,
+                                title: $t('user.index.338020-1'),
                                 onConfirm: () => table.unBind(slotProps),
                             }"
                         >
@@ -90,6 +90,9 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import AddBindUserDialog from './components/AddBindUserDialog.vue';
 import { getBindUserList_api, unBindUser_api } from '@/api/system/department';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permission = 'system/Department';
 
@@ -99,7 +102,7 @@ const props = defineProps<{
 
 const columns = [
     {
-        title: '姓名',
+        title: $t('user.index.338020-5'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -109,7 +112,7 @@ const columns = [
         },
     },
     {
-        title: '用户名',
+        title: $t('user.index.338020-6'),
         dataIndex: 'username',
         key: 'username',
         ellipsis: true,
@@ -120,7 +123,7 @@ const columns = [
     },
 
     {
-        title: '状态',
+        title: $t('user.index.338020-7'),
         dataIndex: 'status',
         key: 'status',
         ellipsis: true,
@@ -129,11 +132,11 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('user.index.338020-3'),
                     value: 1,
                 },
                 {
-                    label: '禁用',
+                    label: $t('user.index.338020-4'),
                     value: 0,
                 },
             ],
@@ -141,7 +144,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '操作',
+        title: $t('user.index.338020-8'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -201,11 +204,11 @@ const table = reactive({
     unBind: (row?: any) => {
         const ids = row ? [row.id] : table._selectedRowKeys;
         if (ids.length < 1)
-            return onlyMessage('请勾选需要解绑的数据', 'warning');
+            return onlyMessage($t('user.index.338020-9'), 'warning');
 
         const response = unBindUser_api(props.parentId, ids);
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('user.index.338020-10'));
             table._selectedRowKeys = [];
             table.refresh();
         });
