@@ -23,7 +23,7 @@
                             :hasPermission="`${permission}:add`"
                             @click="table.openDialog(undefined)"
                         >
-                            <AIcon type="PlusOutlined" />新增
+                            <AIcon type="PlusOutlined" />{{ $t('Relationship.index.635690-0') }}
                         </PermissionButton>
                     </template>
                     <template #action="slotProps">
@@ -32,7 +32,7 @@
                                 :hasPermission="`${permission}:update`"
                                 type="link"
                                 :tooltip="{
-                                    title: '编辑',
+                                    title: $t('Relationship.index.635690-1'),
                                 }"
                                 @click="table.openDialog(slotProps)"
                             >
@@ -43,9 +43,9 @@
                                 :danger="true"
                                 :hasPermission="`${permission}:delete`"
                                 type="link"
-                                :tooltip="{ title: '删除' }"
+                                :tooltip="{ title: $t('Relationship.index.635690-2') }"
                                 :popConfirm="{
-                                    title: `确认删除`,
+                                    title: $t('Relationship.index.635690-3'),
                                     onConfirm: () => table.clickDel(slotProps),
                                 }"
                                 :disabled="slotProps.status"
@@ -76,12 +76,15 @@ import {
 } from '@/api/system/relationship';
 import EditDialog from './components/EditDialog.vue';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permission = 'system/Relationship';
 
 const columns = [
     {
-        title: '正向关系名称',
+        title: $t('Relationship.index.635690-4'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -91,7 +94,7 @@ const columns = [
         },
     },
     {
-        title: '反向关系名称',
+        title: $t('Relationship.index.635690-5'),
         dataIndex: 'reverseName',
         key: 'reverseName',
         ellipsis: true,
@@ -101,7 +104,7 @@ const columns = [
         },
     },
     {
-        title: '关联方',
+        title: $t('Relationship.index.635690-6'),
         dataIndex: 'objectTypeName',
         key: 'objectTypeName',
         ellipsis: true,
@@ -121,7 +124,7 @@ const columns = [
         }
     },
     {
-        title: '被关联方',
+        title: $t('Relationship.index.635690-7'),
         dataIndex: 'targetTypeName',
         key: 'targetTypeName',
         ellipsis: true,
@@ -141,7 +144,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Relationship.index.635690-8'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -151,7 +154,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Relationship.index.635690-9'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -173,7 +176,7 @@ const table = {
        response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                onlyMessage('操作成功!');
+                onlyMessage($t('Relationship.index.635690-10'));
             } else {
                 onlyMessage(resp.message, 'error');
             }

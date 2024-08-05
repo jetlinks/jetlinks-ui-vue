@@ -12,16 +12,16 @@
         <j-form ref="formRef" :model="form.data" layout="vertical">
             <j-form-item
                 name="relation"
-                label="关系标识"
+                :label="$t('components.EditDialog.635691-0')"
                 :rules="[
-                    { required: true, message: '请输入标识' },
-                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true, message: $t('components.EditDialog.635691-1') },
+                    { max: 64, message: $t('components.EditDialog.635691-2') },
                     { validator: form.rules.checkRelation, trigger: 'change' },
                 ]"
             >
                 <j-input
                     v-model:value="form.data.relation"
-                    placeholder="请输入标识"
+                    :placeholder="$t('components.EditDialog.635691-1')"
                     :disabled="!!form.data.id"
                 />
             </j-form-item>
@@ -30,14 +30,14 @@
                 <j-col :span="12">
                     <j-form-item
                         name="objectType"
-                        label="关联方"
-                        :rules="[{ required: true, message: '请选择关联方' }]"
+                        :label="$t('components.EditDialog.635691-3')"
+                        :rules="[{ required: true, message: $t('components.EditDialog.635691-4') }]"
                     >
                         <j-select
                             v-model:value="form.data.objectType"
                             :disabled="!!form.data.id"
                             @change="form.handleObjectTypeChange"
-                            placeholder="请选择关联方"
+                            :placeholder="$t('components.EditDialog.635691-4')"
                         >
                             <j-select-option
                                 v-for="item in form.objectList"
@@ -51,14 +51,14 @@
                 <j-col :span="12">
                     <j-form-item
                         name="targetType"
-                        label="被关联方"
-                        :rules="[{ required: true, message: '请选择被关联方' }]"
+                        :label="$t('components.EditDialog.635691-5')"
+                        :rules="[{ required: true, message: $t('components.EditDialog.635691-6') }]"
                     >
                         <j-select
                             v-model:value="form.data.targetType"
                             :disabled="!!form.data.id"
                             @change="form.rules.checkUnique"
-                            placeholder="请选择被关联方"
+                            :placeholder="$t('components.EditDialog.635691-6')"
                         >
                             <j-select-option
                                 v-for="item in targetList"
@@ -71,40 +71,40 @@
                 </j-col>
             </j-row>
             <j-form-item
-                label="正向关系名称"
+                :label="$t('components.EditDialog.635691-7')"
                 name="name"
                 :rules="[
-                    { required: true, message: '请输入名称' },
-                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true, message: $t('components.EditDialog.635691-8') },
+                    { max: 64, message: $t('components.EditDialog.635691-2') },
                     { required: true , validator:validateName, trigger: 'blur',}
                 ]"
             >
                 <j-input
                     v-model:value="form.data.name"
-                    placeholder="请输入名称"
+                    :placeholder="$t('components.EditDialog.635691-8')"
                 />
-                <span class="example">正向关系示例：用户张三是001号视频设备的管理员</span>
+                <span class="example">{{ $t('components.EditDialog.635691-9') }}</span>
             </j-form-item>
           
             <j-form-item
-                label="反向关系名称"
+                :label="$t('components.EditDialog.635691-10')"
                 name="reverseName"
                 :rules="[
-                    { required: true, message: '请输入名称' },
-                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true, message: $t('components.EditDialog.635691-8') },
+                    { max: 64, message: $t('components.EditDialog.635691-2') },
                     { required: true , validator:validateName, trigger: 'blur',}
                 ]"
             >
                 <j-input
                     v-model:value="form.data.reverseName"
-                    placeholder="请输入名称"
+                    :placeholder="$t('components.EditDialog.635691-8')"
                 />
-                <span class="example">反向关系示例：001号视频设备是用户张三的管辖设备</span>
+                <span class="example">{{ $t('components.EditDialog.635691-11') }}</span>
             </j-form-item>
-            <j-form-item name="description" label="说明">
+            <j-form-item name="description" :label="$t('components.EditDialog.635691-12')">
                 <j-textarea
                     v-model:value="form.data.description"
-                    placeholder="请输入说明"
+                    :placeholder="$t('components.EditDialog.635691-13')"
                     show-count
                     :maxlength="200"
                 />
@@ -125,6 +125,9 @@ import {
 } from '@/api/system/relationship';
 import { dictItemType } from '../../DataSource/typing';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emits = defineEmits(['refresh', 'update:visible']);
 const props = defineProps<{
@@ -134,7 +137,7 @@ const props = defineProps<{
 // 弹窗相关
 const loading = ref(false);
 const targetList = ref([])
-const dialogTitle = computed(() => (props.data.id ? '编辑' : '新增'));
+const dialogTitle = computed(() => (props.data.id ? $t('components.EditDialog.635691-14') : $t('components.EditDialog.635691-15')));
 const confirm = () => {
     loading.value = true;
     formRef.value
@@ -142,7 +145,7 @@ const confirm = () => {
         .then(() => form.submit())
         .then((resp: any) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('components.EditDialog.635691-16'));
                 emits('refresh');
                 emits('update:visible', false);
             }
@@ -164,7 +167,7 @@ const form = reactive({
             if (!value) return Promise.reject('');
             if (!reg.test(value))
                 return Promise.reject(
-                    '标识只能由数字、字母、下划线、中划线组成',
+                    $t('components.EditDialog.635691-17'),
                 );
             return form.rules.checkUnique();
         },
@@ -220,7 +223,7 @@ const validateName = async(_:any,value:any)=>{
    if(!value){
     return Promise.resolve()
    }
-   return form.data.reverseName === form.data.name ? Promise.reject('不能使用相同的关系名称') : Promise.resolve()
+   return form.data.reverseName === form.data.name ? Promise.reject($t('components.EditDialog.635691-18')) : Promise.resolve()
 }
 form.getObjectList();
 
