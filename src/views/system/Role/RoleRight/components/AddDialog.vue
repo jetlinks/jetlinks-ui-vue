@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        :title="modalType ==='add' ? '新增' : '编辑'"
+        :title="modalType ==='add' ? $t('components.AddDialog.529972-0') : $t('components.AddDialog.529972-1')"
         width="670px"
         @cancel="emits('update:visible', false)"
         @ok="confirm"
@@ -10,35 +10,35 @@
         <j-form ref="formRef" :model="form" layout="vertical">
             <j-form-item
                 name="name"
-                label="名称"
+                :label="$t('components.AddDialog.529972-2')"
                 :rules="[
-                    { required: true, message: '请输入名称' },
-                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true, message: $t('components.AddDialog.529972-3') },
+                    { max: 64, message: $t('components.AddDialog.529972-4') },
                 ]"
             >
                 <j-input
                     v-model:value="form.name"
-                    placeholder="请输入角色名称"
+                    :placeholder="$t('components.AddDialog.529972-5')"
                     allow-clear
                 />
             </j-form-item>
             <j-form-item
                 name="groupId"
-                label="分组"
+                :label="$t('components.AddDialog.529972-6')"
                 :rules="[
-                    { required: true, message: '请选择分组' },
+                    { required: true, message: $t('components.AddDialog.529972-7') },
                 ]"
             >
                 <j-select
                     v-model:value="form.groupId"
-                    placeholder="请选择分组"
+                    :placeholder="$t('components.AddDialog.529972-7')"
                     :options="groupOptions"
                 />
             </j-form-item>
-            <j-form-item name="name" label="说明">
+            <j-form-item name="name" :label="$t('components.AddDialog.529972-8')">
                 <j-textarea
                     v-model:value="form.description"
-                    placeholder="请输入说明"
+                    :placeholder="$t('components.AddDialog.529972-9')"
                     allow-clear
                     :maxlength="200"
                     show-count
@@ -54,6 +54,9 @@ import { saveRole_api , queryRoleGroup , updateRole_api} from '@/api/system/role
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 import { cloneDeep } from 'lodash-es'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const route = useRoute();
 const { jumpPage } = useMenuStore();
 
@@ -93,7 +96,7 @@ const confirm = async() => {
             if(props.modalType === 'add'){
                 saveRole_api(form.value).then((resp:any)=>{
                     if (resp.status === 200) {
-                    onlyMessage('操作成功');
+                    onlyMessage($t('components.AddDialog.529972-10'));
                     emits('update:visible', false);
                     if (route.query.save) {
                         // @ts-ignore
@@ -107,7 +110,7 @@ const confirm = async() => {
             }else{
                 updateRole_api(form.value).then((resp:any)=>{
                     if (resp.status === 200) {
-                    onlyMessage('操作成功');
+                    onlyMessage($t('components.AddDialog.529972-10'));
                     emits('refresh');
                     emits('update:visible', false);
                     }

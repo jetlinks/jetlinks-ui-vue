@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"RoleLeft.index.529974-0": "分组名称",
+		"RoleLeft.index.529974-1": "新增分组",
+		"RoleLeft.index.529974-2": "确认删除？",
+		"RoleLeft.index.529974-3": "删除",
+		"RoleLeft.index.529974-4": "编辑",
+		"RoleLeft.index.529974-5": "全局角色",
+		"RoleLeft.index.529974-6": "操作成功!",
+		"RoleLeft.index.529974-7": "操作失败!"
+	},
+	"en": {
+		"RoleLeft.index.529974-0": "Group name",
+		"RoleLeft.index.529974-1": "Add Group",
+		"RoleLeft.index.529974-2": "Are you sure to delete?",
+		"RoleLeft.index.529974-3": "Delete",
+		"RoleLeft.index.529974-4": "Edit",
+		"RoleLeft.index.529974-5": "Global Role",
+		"RoleLeft.index.529974-6": "Operation successful!",
+		"RoleLeft.index.529974-7": "Operation failed!"
+	}
+}

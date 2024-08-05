@@ -1,7 +1,7 @@
 <template>
     <div class="left-contain">
         <j-input
-            placeholder="分组名称"
+            :placeholder="$t('RoleLeft.index.529974-0')"
             v-model:value="searchValue"
             @pressEnter="search"
             @change="searchChange"
@@ -12,7 +12,7 @@
         </j-input>
         <div class="controls" v-if="admin">
             <j-button type="primary" @click="addGroup" style="width: 100%">
-                新增分组
+                {{ $t('RoleLeft.index.529974-1') }}
             </j-button>
         </div>
         <div class="listBox">
@@ -54,12 +54,13 @@
                                     style="padding: 0"
                                     hasPermission="system/Role:groupDelete"
                                     :popConfirm="{
-                                        title: `确认删除？`,
+                                        title: $t('RoleLeft.index.529974-2'),
                                         onConfirm: () => deleteGroup(item.id),
+                                        okText:'sdf'
                                     }"
                                     :disabled="item.id === 'default_group'"
                                 >
-                                    删除
+                                    {{ $t('RoleLeft.index.529974-3') }}
                                 </PermissionButton>
                                 <PermissionButton
                                     type="text"
@@ -67,7 +68,7 @@
                                     @click="editGroup(item.data)"
                                     :disabled="item.id === 'default_group'"
                                 >
-                                    编辑
+                                    {{ $t('RoleLeft.index.529974-4') }}
                                 </PermissionButton>
                             </div>
                         </template>
@@ -94,6 +95,9 @@ import {
 import { randomString } from '@/utils/utils';
 import { useUserInfo } from '@/store/userInfo';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const emit = defineEmits(['selectData']);
 const userInfoStore = useUserInfo();
 const { userInfos } = storeToRefs(userInfoStore);
@@ -102,7 +106,7 @@ const admin = computed(() => {
 });
 const listData: any = ref([
     {
-        name: '全局角色',
+        name: $t('RoleLeft.index.529974-5'),
         id: 'global_role',
         children: [],
     },
@@ -166,10 +170,10 @@ const saveGroup = async (data: any) => {
         };
         const res = await saveRoleGroup(saveData);
         if (res.status === 200) {
-            onlyMessage('操作成功!');
+            onlyMessage($t('RoleLeft.index.529974-6'));
             queryGroup();
         } else {
-            onlyMessage('操作失败!');
+            onlyMessage($t('RoleLeft.index.529974-7'));
         }
     }
     setTimeout(() => {
@@ -194,10 +198,10 @@ const selectGroup = (id: string) => {
 const deleteGroup = async (id: string) => {
     const res: any = await deleteRoleGroup(id);
     if (res.status === 200) {
-        onlyMessage('操作成功!');
+        onlyMessage($t('RoleLeft.index.529974-6'));
         queryGroup(true);
     } else {
-        onlyMessage('操作失败!');
+        onlyMessage($t('RoleLeft.index.529974-7'));
     }
 };
 const editGroup = (data: any) => {

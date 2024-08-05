@@ -33,7 +33,7 @@
         </section> -->
 
         <section class="card">
-            <h5>权限分配</h5>
+            <h5>{{ $t('Permiss.index.529976-0') }}</h5>
             <PermissTree v-model:select-items="form.menus" />
 
             <j-button
@@ -41,7 +41,7 @@
                 :confirm-loading="form.loading"
                 @click="form.clickSave"
                 style="margin-top: 24px"
-                >保存</j-button
+                >{{ $t('Permiss.index.529976-1') }}</j-button
             >
         </section>
     </div>
@@ -60,6 +60,9 @@ import {
   updatePrimissTree_api, clearPrimissTree_api,
 } from '@/api/system/role';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const { jumpPage } = useMenuStore();
 const route = useRoute();
@@ -90,13 +93,13 @@ const form = reactive({
               menus: form.menus,
             });
             Promise.all([ updateTree]).then((resp) => {
-              onlyMessage('操作成功');
+              onlyMessage($t('Permiss.index.529976-2'));
               // jumpPage(`system/Role`);
             })
           } else {
             clearPrimissTree_api(roleId).then(resp => {
               if(resp.success){
-                onlyMessage('操作成功');
+                onlyMessage($t('Permiss.index.529976-2'));
               }
             })
           }

@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.AddUserDialog.5299710-0": "新增",
+		"components.AddUserDialog.5299710-1": "姓名",
+		"components.AddUserDialog.5299710-2": "用户名",
+		"components.AddUserDialog.5299710-3": "请至少选择一项",
+		"components.AddUserDialog.5299710-4": "操作成功"
+	},
+	"en": {
+		"components.AddUserDialog.5299710-0": "add",
+		"components.AddUserDialog.5299710-1": "full name",
+		"components.AddUserDialog.5299710-2": "user name",
+		"components.AddUserDialog.5299710-3": "Please select at least one option",
+		"components.AddUserDialog.5299710-4": "Operation successful"
+	}
+}
