@@ -22,13 +22,13 @@
                             :hasPermission="`${permission}:add`"
                             @click="table.toDetails({})"
                         >
-                            <AIcon type="PlusOutlined" />新增
+                            <AIcon type="PlusOutlined" />{{ $t('Menu.index.159180-0') }}
                         </PermissionButton>
                         <j-button
                             v-if="admin"
                             style="margin-left: 12px"
                             @click="router.push('/system/Menu/Setting')"
-                            >菜单配置</j-button
+                            >{{ $t('Menu.index.159180-1') }}</j-button
                         >
                     </template>
                     <template #createTime="slotProps">
@@ -43,8 +43,8 @@
                             <j-tooltip>
                                 <template #title>{{
                                     slotProps?.options?.LowCode
-                                        ? '低码创建的菜单不支持编辑'
-                                        : '编辑'
+                                        ? $t('Menu.index.159180-2')
+                                        : $t('Menu.index.159180-3')
                                 }}</template>
                                 <j-button
                                     style="padding: 0"
@@ -61,8 +61,8 @@
                                 :tooltip="{
                                     title:
                                         slotProps.level >= 3
-                                            ? '仅支持3级菜单'
-                                            : '新增子菜单',
+                                            ? $t('Menu.index.159180-4')
+                                            : $t('Menu.index.159180-5'),
                                 }"
                                 :disabled="
                                     slotProps.level >= 3 ||
@@ -75,9 +75,9 @@
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:delete`"
-                                :tooltip="{ title: '删除' }"
+                                :tooltip="{ title: $t('Menu.index.159180-6') }"
                                 :popConfirm="{
-                                    title: `是否删除该菜单`,
+                                    title: $t('Menu.index.159180-7'),
                                     onConfirm: () => table.clickDel(slotProps),
                                 }"
                             >
@@ -99,6 +99,9 @@ import { useUserInfo } from '@/store/userInfo';
 import { USER_CENTER_MENU_CODE, messageSubscribe } from '@/utils/consts';
 import { storeToRefs } from 'pinia';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permission = 'system/Menu';
 
@@ -112,7 +115,7 @@ const admin = computed(() => {
 
 const columns = [
     {
-        title: '编码',
+        title: $t('Menu.index.159180-8'),
         dataIndex: 'code',
         key: 'code',
         ellipsis: true,
@@ -123,7 +126,7 @@ const columns = [
         width: 300,
     },
     {
-        title: '名称',
+        title: $t('Menu.index.159180-9'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -133,7 +136,7 @@ const columns = [
         // width: 220,
     },
     {
-        title: '页面地址',
+        title: $t('Menu.index.159180-10'),
         dataIndex: 'url',
         key: 'url',
         ellipsis: true,
@@ -142,7 +145,7 @@ const columns = [
         },
     },
     {
-        title: '排序',
+        title: $t('Menu.index.159180-11'),
         dataIndex: 'sortIndex',
         key: 'sortIndex',
         ellipsis: true,
@@ -152,14 +155,14 @@ const columns = [
         width: 80,
     },
     {
-        title: '说明',
+        title: $t('Menu.index.159180-12'),
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
         // width: 200,
     },
     {
-        title: '创建时间',
+        title: $t('Menu.index.159180-13'),
         dataIndex: 'createTime',
         key: 'createTime',
         ellipsis: true,
@@ -170,7 +173,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '操作',
+        title: $t('Menu.index.159180-14'),
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
@@ -270,7 +273,7 @@ const table = reactive({
         response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                onlyMessage('操作成功!');
+                onlyMessage($t('Menu.index.159180-15'));
             }
         });
         return response;
