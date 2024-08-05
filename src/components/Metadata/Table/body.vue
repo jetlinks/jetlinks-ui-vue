@@ -249,7 +249,7 @@ defineExpose({
     flex: 1 1 auto;
     min-width: 0;
     height: 100%;
-
+    
     .metadata-edit-table-row {
       width: 100%;
       display: flex;
@@ -257,7 +257,10 @@ defineExpose({
       //position: absolute;
       transition: top .2s, height .2s, background-color .1s;
       border-bottom: 1px solid #ebebeb;
-
+      .metadata-edit-table-cell{
+        position:absolute;
+        min-width: 0;;
+      }
       &:hover {
         background-color: rgb(248, 248, 248);
       }
