@@ -20,7 +20,11 @@ interface IOfflineDeviceRes {
     }[];
 }
 
-const handleReqParams = (params: ISearchParams) => {
+const handleReqParams = (
+    params: ISearchParams,
+    offlineReasons: string,
+    isContains: boolean,
+) => {
     // 这里接口文档有问题，照着接口文档写查询会有问题
     params.terms.unshift({
         type: 'or',
@@ -28,43 +32,43 @@ const handleReqParams = (params: ISearchParams) => {
         termType: 'eq',
         column: 'state',
     });
-    let res;
-    if (params.offlineReasons) {
-        const offlineReasons = params.offlineReasons;
-        const isContains = params.isContains;
-        Reflect.deleteProperty(params, 'offlineReasons');
-        Reflect.deleteProperty(params, 'isContains');
-        res = {
-            queryParamEntity: {
-                ...params,
-            },
-            offlineReasons,
-            isContains,
-        };
-    } else {
-        res = {
-            queryParamEntity: {
-                ...params,
-            },
-            offlineReasons: '',
-            isContains: true,
-        };
-    }
-    return res;
+    return {
+        queryParamEntity: {
+            ...params,
+        },
+        offlineReasons,
+        isContains,
+    };
 };
 
-export const fetchOfflineDevice = (params: ISearchParams) => {
+export const fetchOfflineDevice = (
+    params: ISearchParams,
+    offlineReasons: string,
+    isContains: boolean,
+) => {
     return request.post<IOfflineDeviceRes>(
         '/vehicle/device/offline/_query',
-        handleReqParams(params),
+        handleReqParams(params, offlineReasons, isContains),
     );
 };
 
 export const checkDevice = (deviceId: string) =>
     request.get<boolean>(`/vehicle/device/offline/check?deviceId=${deviceId}`);
 
-export const offlineDeviceExport = (format: string, params: ISearchParams) =>
+/**
+ * offlineDeviceExport 离线设备导出
+ * @param format 导出文件的格式
+ * @param params
+ * @param offlineReasons
+ * @param isContains 是否包含子设备
+ */
+export const offlineDeviceExport = (
+    format: string,
+    params: ISearchParams,
+    offlineReasons: string,
+    isContains: boolean,
+) =>
     request.postStream(
         `/vehicle/device/offline/${format}`,
-        handleReqParams(params),
+        handleReqParams(params, offlineReasons, isContains),
     );
