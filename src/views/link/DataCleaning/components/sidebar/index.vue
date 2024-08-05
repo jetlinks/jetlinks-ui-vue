@@ -47,15 +47,15 @@ const handleDeviceSearch = async () => {
 };
 
 // 列表组件及相关事件
-const deviceList = ref([
-    {
-        id: 1,
-        name: '发动机',
-    },
-    {
-        id: 2,
-        name: '变速箱',
-    },
+const deviceList = ref<any[]>([
+    // {
+    //     id: 1,
+    //     name: '发动机',
+    // },
+    // {
+    //     id: 2,
+    //     name: '变速箱',
+    // },
 ]);
 const handleDeviceClick = (id: number) => {
     emit('change', id);
@@ -67,14 +67,32 @@ const getDeviceList = async () => {
 
 async function handleRequest(id?: number) {
     loading.value = true;
-    let resp = {} as { status: number; result: any[] };
+    let resp: any;
     if (id) {
         // todo 根据id获取设备列表
     } else {
         // todo 获取全部设备
+        // mock
+        resp = await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({
+                    status: 200,
+                    result: [
+                        {
+                            id: 1,
+                            name: '发动机',
+                        },
+                        {
+                            id: 2,
+                            name: '变速箱',
+                        },
+                    ],
+                });
+            });
+        });
     }
     if (resp.status === 200) {
-        deviceList.value = resp.result.map((item: any) => ({
+        deviceList.value = (resp.result as any[]).map((item: any) => ({
             id: item.id,
             name: item.name,
         }));
@@ -84,6 +102,10 @@ async function handleRequest(id?: number) {
         loading.value = false;
     }
 }
+
+onMounted(() => {
+    getDeviceList();
+});
 </script>
 
 <style scoped lang="less">
