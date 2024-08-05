@@ -23,7 +23,7 @@
                             :hasPermission="`${permission}:add`"
                             @click="table.openDialog({})"
                         >
-                            <AIcon type="PlusOutlined" />新增
+                            <AIcon type="PlusOutlined" />{{ $t('DataSource.index.932357-0') }}
                         </PermissionButton>
                     </template>
                     <template #state="slotProps">
@@ -50,7 +50,7 @@
                                 :hasPermission="`${permission}:update`"
                                 type="link"
                                 :tooltip="{
-                                    title: '编辑',
+                                    title: $t('DataSource.index.932357-1'),
                                 }"
                                 @click="table.openDialog(slotProps)"
                             >
@@ -62,10 +62,10 @@
                                 :tooltip="{
                                     title:
                                         slotProps?.typeId === 'rabbitmq'
-                                            ? '暂不支持管理功能'
+                                            ? $t('DataSource.index.932357-2')
                                             : table.getRowStatus(slotProps)
-                                            ? '管理'
-                                            : '请先启用数据源',
+                                            ? $t('DataSource.index.932357-3')
+                                            : $t('DataSource.index.932357-4'),
                                 }"
                                 @click="
                                     () =>
@@ -84,18 +84,18 @@
                                 :hasPermission="`${permission}:action`"
                                 type="link"
                                 :popConfirm="{
-                                    title: `确认${
+                                    title: `${
                                         table.getRowStatus(slotProps)
-                                            ? '禁用'
-                                            : '启用'
+                                            ? $t('DataSource.index.932357-5')
+                                            : $t('DataSource.index.932357-6')
                                     }？`,
                                     onConfirm: () =>
                                         table.clickChangeStatus(slotProps),
                                 }"
                                 :tooltip="{
                                     title: table.getRowStatus(slotProps)
-                                        ? '禁用'
-                                        : '启用',
+                                        ? $t('DataSource.index.932357-7')
+                                        : $t('DataSource.index.932357-8'),
                                 }"
                             >
                                 <AIcon
@@ -113,12 +113,12 @@
                                 type="link"
                                 :tooltip="{
                                     title: table.getRowStatus(slotProps)
-                                        ? '请先禁用，再删除'
-                                        : '删除',
+                                        ? $t('DataSource.index.932357-9')
+                                        : $t('DataSource.index.932357-10'),
                                 }"
                                 :danger="true"
                                 :popConfirm="{
-                                    title: `确认删除`,
+                                    title: $t('DataSource.index.932357-11'),
                                     onConfirm: () => table.clickDel(slotProps),
                                 }"
                                 :disabled="table.getRowStatus(slotProps)"
@@ -154,6 +154,9 @@ import {
     delDataSource_api,
 } from '@/api/system/dataSource';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permission = 'system/DataSource';
 
@@ -161,7 +164,7 @@ const router = useRouter();
 
 const columns = [
     {
-        title: '名称',
+        title: $t('DataSource.index.932357-12'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -170,7 +173,7 @@ const columns = [
         width: '250px',
     },
     {
-        title: '类型',
+        title: $t('DataSource.index.932357-13'),
         dataIndex: 'typeId',
         key: 'typeId',
         search: {
@@ -193,7 +196,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('DataSource.index.932357-14'),
         dataIndex: 'description',
         key: 'description',
         search: {
@@ -202,18 +205,18 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '状态',
+        title: $t('DataSource.index.932357-15'),
         dataIndex: 'state',
         key: 'state',
         search: {
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('DataSource.index.932357-16'),
                     value: 'enabled',
                 },
                 {
-                    label: '禁用',
+                    label: $t('DataSource.index.932357-7'),
                     value: 'disabled',
                 },
             ],
@@ -222,7 +225,7 @@ const columns = [
         width: '120px',
     },
     {
-        title: '操作',
+        title: $t('DataSource.index.932357-17'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -265,7 +268,7 @@ const table = {
         response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
-                onlyMessage('操作成功!');
+                onlyMessage($t('DataSource.index.932357-18'));
             }
         });
         return response
@@ -274,7 +277,7 @@ const table = {
         const status = row.state.value === 'enabled' ? '_disable' : '_enable';
         const response = changeStatus_api(row.id as string, status);
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('DataSource.index.932357-19'));
             table.refresh();
         });
         return response;

@@ -13,28 +13,28 @@
                 <j-col :span="12">
                     <j-form-item
                         name="name"
-                        label="名称"
+                        :label="$t('components.EditDialog.039152-0')"
                         :rules="[
-                            { required: true, message: '请输入名称' },
-                            { max: 64, message: '最多可输入64个字符' },
+                            { required: true, message: $t('components.EditDialog.039152-1') },
+                            { max: 64, message: $t('components.EditDialog.039152-2') },
                         ]"
                     >
                         <j-input
                             v-model:value="form.data.name"
-                            placeholder="请输入名称"
+                            :placeholder="$t('components.EditDialog.039152-1')"
                         />
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
                     <j-form-item
                         name="typeId"
-                        label="类型"
-                        :rules="[{ required: true, message: '请选择类型' }]"
+                        :label="$t('components.EditDialog.039152-3')"
+                        :rules="[{ required: true, message: $t('components.EditDialog.039152-4') }]"
                     >
                         <j-select
                             v-model:value="form.data.typeId"
                             :options="form.typeOptions"
-                            placeholder="请选择类型"
+                            :placeholder="$t('components.EditDialog.039152-4')"
                             :disabled="!!form.data.id"
                         />
                     </j-form-item>
@@ -48,7 +48,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请输入URL',
+                                message: $t('components.EditDialog.039152-5'),
                                 trigger: 'change',
                             },
                             { validator: checkUrl, trigger: 'blur' },
@@ -56,7 +56,7 @@
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.url"
-                            placeholder="请输入r2bdc或者jdbc连接地址，示例：r2dbc:mysql://127.0.0.1:3306/test"
+                            :placeholder="$t('components.EditDialog.039152-6')"
                         />
                     </j-form-item>
                 </j-col>
@@ -65,15 +65,15 @@
                 <j-col :span="24">
                     <j-form-item
                         :name="['shareConfig', 'adminUrl']"
-                        label="管理地址"
+                        :label="$t('components.EditDialog.039152-7')"
                         :rules="[
-                            { required: true, message: '请输入管理地址' },
+                            { required: true, message: $t('components.EditDialog.039152-8') },
                             { validator: validateAdminUrl },
                         ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.adminUrl"
-                            placeholder="请输入管理地址，示例：http://localhost:15672"
+                            :placeholder="$t('components.EditDialog.039152-9')"
                         />
                     </j-form-item>
                 </j-col>
@@ -82,15 +82,15 @@
                 <j-col :span="24">
                     <j-form-item
                         :name="['shareConfig', 'addresses']"
-                        label="链接地址"
+                        :label="$t('components.EditDialog.039152-10')"
                         :rules="[
-                            { required: true, message: '请输入链接地址' },
+                            { required: true, message: $t('components.EditDialog.039152-11') },
                             { validator: validateAddress },
                         ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.addresses"
-                            placeholder="请输入链接地址，示例：localhost:5672"
+                            :placeholder="$t('components.EditDialog.039152-12')"
                         />
                     </j-form-item>
                 </j-col>
@@ -99,36 +99,36 @@
                 <j-col :span="12">
                     <j-form-item
                         :name="['shareConfig', 'username']"
-                        label="用户名"
+                        :label="$t('components.EditDialog.039152-13')"
                         :rules="[
-                            { required: true, message: '请输入用户名' },
+                            { required: true, message: $t('components.EditDialog.039152-14') },
                             {
                                 max: 64,
-                                message: '最多可输入64个字符',
+                                message: $t('components.EditDialog.039152-2'),
                             },
                         ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.username"
-                            placeholder="请输入用户名"
+                            :placeholder="$t('components.EditDialog.039152-14')"
                         />
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
                     <j-form-item
                         :name="['shareConfig', 'password']"
-                        label="密码"
+                        :label="$t('components.EditDialog.039152-15')"
                         :rules="[
-                            { required: true, message: '请输入密码' },
+                            { required: true, message: $t('components.EditDialog.039152-16') },
                             {
                                 max: 64,
-                                message: '最多可输入64个字符',
+                                message: $t('components.EditDialog.039152-2'),
                             },
                         ]"
                     >
                         <j-input-password
                             v-model:value="form.data.shareConfig.password"
-                            placeholder="请输入密码"
+                            :placeholder="$t('components.EditDialog.039152-16')"
                         />
                     </j-form-item>
                 </j-col>
@@ -137,18 +137,18 @@
                 <j-col :span="24">
                     <j-form-item
                         :name="['shareConfig', 'virtualHost']"
-                        label="虚拟域"
+                        :label="$t('components.EditDialog.039152-17')"
                         :rules="[
-                            { required: true, message: '请输入虚拟域' },
+                            { required: true, message: $t('components.EditDialog.039152-18') },
                             {
                                 max: 64,
-                                message: '最多可输入64个字符',
+                                message: $t('components.EditDialog.039152-2'),
                             },
                         ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.virtualHost"
-                            placeholder="请输入虚拟域"
+                            :placeholder="$t('components.EditDialog.039152-18')"
                         />
                     </j-form-item>
                 </j-col>
@@ -159,26 +159,26 @@
                         :name="['shareConfig', 'schema']"
                         label="schema"
                         :rules="[
-                            { required: true, message: '请输入schema' },
+                            { required: true, message: $t('components.EditDialog.039152-19') },
                             {
                                 max: 64,
-                                message: '最多可输入64个字符',
+                                message: $t('components.EditDialog.039152-2'),
                             },
                         ]"
                     >
                         <j-input
                             v-model:value="form.data.shareConfig.schema"
-                            placeholder="请输入schema"
+                            :placeholder="$t('components.EditDialog.039152-19')"
                         />
                     </j-form-item>
                 </j-col>
             </j-row>
             <j-row :gutter="24">
                 <j-col :span="24">
-                    <j-form-item name="description" label="说明">
+                    <j-form-item name="description" :label="$t('components.EditDialog.039152-20')">
                         <j-textarea
                             v-model:value="form.data.description"
-                            placeholder="请输入说明"
+                            :placeholder="$t('components.EditDialog.039152-21')"
                             :rows="3"
                             showCount
                             :maxlength="200"
@@ -199,6 +199,9 @@ import { FormInstance } from 'ant-design-vue';
 import { Rule } from 'ant-design-vue/lib/form';
 import type { dictItemType, optionItemType, sourceItemType } from '../typing';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emits = defineEmits(['confirm', 'cancel']);
 const props = defineProps<{
@@ -206,7 +209,7 @@ const props = defineProps<{
 }>();
 // 弹窗相关
 const dialogTitle = computed(() =>
-    props.data.id ? '编辑数据源' : '新增数据源',
+    props.data.id ? $t('components.EditDialog.039152-22') : $t('components.EditDialog.039152-23'),
 );
 const loading = ref(false);
 
@@ -216,7 +219,7 @@ const checkUrl = (_rule: Rule, value: string): Promise<any> => {
     if (arr?.[0] === 'jdbc' || arr?.[0] === 'r2dbc') {
         return Promise.resolve();
     } else {
-        return Promise.reject('请输入正确的URL');
+        return Promise.reject($t('components.EditDialog.039152-24'));
     }
 };
 
@@ -232,7 +235,7 @@ const validateAdminUrl = (_rule: Rule, value: string): Promise<any> => {
             if (arr[0] === 'http' || arr[0] === 'https') {
                 resolve('');
             } else {
-                reject('请输入正确的管理地址');
+                reject($t('components.EditDialog.039152-25'));
             }
         }
     });
@@ -252,7 +255,7 @@ const validateAddress = (_rule: Rule, value: string): Promise<any> => {
             if (reg.test(value)) {
                 resolve('');
             } else {
-                reject('请输入正确的链接地址');
+                reject($t('components.EditDialog.039152-26'));
             }
         }
     });
@@ -304,7 +307,7 @@ const confirm = () => {
         .then(async (_data: any) => {
             const resp = await saveDataSource_api({ ...props.data, ..._data });
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('components.EditDialog.039152-27'));
                 emits('confirm');
                 formRef.value?.resetFields();
             }
