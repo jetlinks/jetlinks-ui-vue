@@ -38,7 +38,7 @@ defineOptions({
 const props = defineProps<{
     deviceIndex: number;
 }>();
-const emit = defineEmits(['change']);
+const emit = defineEmits(['update:deviceIndex']);
 
 // search 组件
 const deviceName = ref('');
@@ -58,7 +58,7 @@ const deviceList = ref<any[]>([
     // },
 ]);
 const handleDeviceClick = (id: number) => {
-    emit('change', id);
+    emit('update:deviceIndex', id);
 };
 const loading = ref(false);
 const getDeviceList = async () => {
@@ -88,7 +88,7 @@ async function handleRequest(id?: number) {
                         },
                     ],
                 });
-            });
+            }, 1000);
         });
     }
     if (resp.status === 200) {
@@ -96,7 +96,7 @@ async function handleRequest(id?: number) {
             id: item.id,
             name: item.name,
         }));
-        emit('change', deviceList.value[0].id);
+        emit('update:deviceIndex', deviceList.value[0].id);
         loading.value = false;
     } else {
         loading.value = false;
@@ -117,8 +117,11 @@ onMounted(() => {
     .device-list {
         margin-top: 16px;
         border-top: 1px solid #f0f0f0;
+        padding-top: 16px;
+
+        width: 100%;
+        text-align: center;
         .device-item {
-            margin-top: 16px;
             font-size: 14px;
             color: var(--default-font-color);
             line-height: 22px;
@@ -137,6 +140,10 @@ onMounted(() => {
             &:hover {
                 color: var(--ant-primary-color-hover);
                 border-color: var(--ant-primary-color-hover);
+            }
+
+            &:not(&:first-child) {
+                margin-top: 16px;
             }
         }
     }

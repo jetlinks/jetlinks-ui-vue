@@ -108,6 +108,7 @@ import { FormState } from '@/views/link/DataCleaning/typings';
 
 const props = defineProps<{
     visible: boolean;
+    data: Record<string, any>;
 }>();
 
 const emit = defineEmits(['update:visible']);

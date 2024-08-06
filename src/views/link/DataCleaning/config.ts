@@ -64,12 +64,24 @@ export const config = [
 ];
 
 export const mockData = [
-    {
-        name: '温度',
-        desc: '温度高于100进行清洗',
-    },
-    {
-        name: '温度',
-        desc: '速度大于200km/h进行清洗',
-    },
+    [
+        {
+            name: '温度',
+            desc: '温度高于100进行清洗',
+        },
+        {
+            name: '速度',
+            desc: '速度大于200km/h进行清洗',
+        },
+    ],
+    [
+        {
+            name: '超重警告',
+            desc: '过滤发生超重警告的数据',
+        },
+        {
+            name: '过载警告',
+            desc: '过滤发生过载警告的数据',
+        },
+    ],
 ];
