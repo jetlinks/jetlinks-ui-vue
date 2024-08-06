@@ -9,7 +9,7 @@
                 v-if="props.showTitle"
                 style="font-size: 16px;margin-bottom: 48px;"
             >
-                API文档
+                {{ $t('Api.index.936827-0') }}
             </j-col>
             <j-col :span="5" class="tree-content">
                 <LeftTree
@@ -40,16 +40,16 @@
                         <j-button
                             @click="selectedApi = initSelectedApi"
                             style="margin-bottom: 24px"
-                            >返回</j-button
+                            >{{ $t('Api.index.936827-1') }}</j-button
                         >
                         <j-tabs v-model:activeKey="activeKey" type="card">
-                            <j-tab-pane key="does" tab="文档">
+                            <j-tab-pane key="does" :tab="$t('Api.index.936827-2')">
                                 <ApiDoes
                                     :select-api="selectedApi"
                                     :schemas="schemas"
                                 />
                             </j-tab-pane>
-                            <j-tab-pane key="test" tab="调试">
+                            <j-tab-pane key="test" :tab="$t('Api.index.936827-3')">
                                 <ApiTest
                                     :select-api="selectedApi"
                                     :schemas="schemas"
@@ -77,6 +77,9 @@ import ChooseApi from './components/ChooseApi.vue';
 import ApiDoes from './components/ApiDoes.vue';
 import ApiTest from './components/ApiTest.vue';
 import { useDepartmentStore } from '@/store/department';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const department = useDepartmentStore();
 
