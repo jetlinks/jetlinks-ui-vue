@@ -13,11 +13,11 @@
 		"components.AddDeviceOrProductDialog.3380310-10": "禁用"
 	},
 	"en": {
-		"components.AddDeviceOrProductDialog.3380310-0": "binding",
+		"components.AddDeviceOrProductDialog.3380310-0": "Bind",
 		"components.AddDeviceOrProductDialog.3380310-1": "Only asset data with \"share\" permission can be assigned",
 		"components.AddDeviceOrProductDialog.3380310-2": "Batch configuration",
 		"components.AddDeviceOrProductDialog.3380310-3": "open",
-		"components.AddDeviceOrProductDialog.3380310-4": "shut",
+		"components.AddDeviceOrProductDialog.3380310-4": "close",
 		"components.AddDeviceOrProductDialog.3380310-5": "asset permissions",
 		"components.AddDeviceOrProductDialog.3380310-6": "Please check the data first",
 		"components.AddDeviceOrProductDialog.3380310-7": "Operation successful",

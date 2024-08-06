@@ -7,7 +7,7 @@
 		"components.AddBindUserDialog.338021-4": "用户名"
 	},
 	"en": {
-		"components.AddBindUserDialog.338021-0": "binding",
+		"components.AddBindUserDialog.338021-0": "Bind",
 		"components.AddBindUserDialog.338021-1": "Operation successful",
 		"components.AddBindUserDialog.338021-2": "Please select the user to bind to",
 		"components.AddBindUserDialog.338021-3": "full name",
