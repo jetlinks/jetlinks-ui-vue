@@ -10,12 +10,12 @@
 		"RoleLeft.index.529974-7": "操作失败!"
 	},
 	"en": {
-		"RoleLeft.index.529974-0": "Group name",
+		"RoleLeft.index.529974-0": "group name",
 		"RoleLeft.index.529974-1": "Add Group",
 		"RoleLeft.index.529974-2": "Are you sure to delete?",
-		"RoleLeft.index.529974-3": "Delete",
-		"RoleLeft.index.529974-4": "Edit",
-		"RoleLeft.index.529974-5": "Global Role",
+		"RoleLeft.index.529974-3": "delete",
+		"RoleLeft.index.529974-4": "edit",
+		"RoleLeft.index.529974-5": "global Role",
 		"RoleLeft.index.529974-6": "Operation successful!",
 		"RoleLeft.index.529974-7": "Operation failed!"
 	}
