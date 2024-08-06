@@ -1,14 +1,14 @@
 <template>
-    <j-modal visible title="集成菜单" width="600px" @ok="handleOk" @cancel="cancel" class="edit-dialog-container"
+    <j-modal visible :title="$t('componenets.MenuDialog.522223-0')" width="600px" @ok="handleOk" @cancel="cancel" class="edit-dialog-container"
         :confirmLoading="loading">
         <j-select v-model:value="form.checkedSystem" @change="(value) => value && getTree(value)  " style="width: 200px"
-            placeholder="请选择集成系统">
+            :placeholder="$t('componenets.MenuDialog.522223-1')">
             <j-select-option v-for="item in form.systemList" :value="item.value" :key="item.value">{{ item.label
             }}</j-select-option>
         </j-select>
 
         <p style="margin: 20px 0 0 0" v-show="form.menuTree.length > 0">
-            当前集成菜单
+            {{ $t('componenets.MenuDialog.522223-2') }}
         </p>
         <j-tree v-model:checkedKeys="form.checkedMenu" v-model:expandedKeys="form.expandedKeys" checkable
             :tree-data="form.menuTree" :fieldNames="{ key: 'code', title: 'name' }" @check="treeCheck" :height="300">
@@ -33,6 +33,9 @@ import { CheckInfo } from 'ant-design-vue/lib/vc-tree/props';
 import { useMenuStore } from '@/store/menu';
 import { getMenuTree_api } from '@/api/system/menu';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const menuStory = useMenuStore();
 const emits = defineEmits(['update:visible', 'refresh']);
@@ -67,15 +70,15 @@ const handleOk = async () => {
             })
             if (resp.status === 200) {
                 // 保存集成菜单
-                onlyMessage('操作成功');
+                onlyMessage($t('componenets.MenuDialog.522223-3'));
                 emits('update:visible', false);
                 emits('refresh')
             }
         } else {
-            onlyMessage('请勾选配置菜单', 'warning');
+            onlyMessage($t('componenets.MenuDialog.522223-4'), 'warning');
         }
     } else {
-        onlyMessage('请选择所属系统', 'warning');
+        onlyMessage($t('componenets.MenuDialog.522223-5'), 'warning');
     }
 };
 const cancel = () => {

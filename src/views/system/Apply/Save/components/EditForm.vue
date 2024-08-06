@@ -8,31 +8,31 @@
             @validate="getErrorNum"
         >
             <j-form-item
-                label="名称"
+                :label="$t('components.EditForm.5222311-0')"
                 name="name"
                 :rules="[
                     {
                         required: true,
-                        message: '请输入名称',
+                        message: $t('components.EditForm.5222311-1'),
                     },
                     {
                         max: 64,
-                        message: '最多可输入64个字符',
+                        message: $t('components.EditForm.5222311-2'),
                     },
                 ]"
             >
                 <j-input
                     v-model:value="form.data.name"
-                    placeholder="请输入名称"
+                    :placeholder="$t('components.EditForm.5222311-1')"
                 />
             </j-form-item>
             <j-form-item
-                label="应用"
+                :label="$t('components.EditForm.5222311-3')"
                 name="provider"
                 :rules="[
                     {
                         required: true,
-                        message: '请选择应用',
+                        message: $t('components.EditForm.5222311-4'),
                     },
                 ]"
             >
@@ -46,12 +46,12 @@
             <j-row>
                 <j-col :span="joinOptions.length >= 3 ? 24 : 6 * joinOptions.length">
                     <j-form-item
-                        label="接入方式"
+                        :label="$t('components.EditForm.5222311-5')"
                         name="integrationModes"
                         :rules="[
                             {
                                 required: true,
-                                message: '请选择接入方式',
+                                message: $t('components.EditForm.5222311-6'),
                             },
                         ]"
                     >
@@ -97,7 +97,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入接入地址',
+                                    message: $t('components.EditForm.5222311-7'),
                                 },{
                                     validator:validateBaseUrl,
                                     trigger: 'change'
@@ -106,25 +106,25 @@
                         >
                             <template #label>
                                 <FormLabel
-                                    text="接入地址"
+                                    :text="$t('components.EditForm.5222311-8')"
                                     required
-                                    tooltip="填写访问其它平台的地址"
+                                    :tooltip="$t('components.EditForm.5222311-9')"
                                 />
                             </template>
                             
                             <!-- <j-input
                                 v-model:value="form.data.page.baseUrl"
-                                placeholder="请输入接入地址"
+                                :placeholder="$t('components.EditForm.5222311-7')"
                             /> -->
                             <InputGroup v-model:value="form.data.page.baseUrl" style="width: 100%;"/>
                         </j-form-item>
                         <j-form-item
-                            label="路由方式"
+                            :label="$t('components.EditForm.5222311-10')"
                             :name="['page', 'routeType']"
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请选择路由方式',
+                                    message: $t('components.EditForm.5222311-11'),
                                 },
                             ]"
                         >
@@ -142,8 +142,8 @@
                         >
                             <template #label>
                                 <FormLabel
-                                    text="参数"
-                                    tooltip="自定义参数,格式${name}"
+                                    :text="$t('components.EditForm.5222311-12')"
+                                    :tooltip="$t('components.EditForm.5222311-13')"
                                 />
                             </template>
 
@@ -161,20 +161,20 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入接口地址',
+                                    message: $t('components.EditForm.5222311-14'),
                                 },
                             ]"
                         >
                             <template #label>
                                 <FormLabel
-                                    text="接口地址"
+                                    :text="$t('components.EditForm.5222311-15')"
                                     required
-                                    tooltip="访问Api服务的地址"
+                                    :tooltip="$t('components.EditForm.5222311-16')"
                                 />
                             </template>
                             <j-input
                                 v-model:value="form.data.apiClient.baseUrl"
-                                placeholder="请输入接口地址"
+                                :placeholder="$t('components.EditForm.5222311-14')"
                             />
                         </j-form-item>
                         <div
@@ -191,15 +191,15 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入授权地址',
+                                        message: $t('components.EditForm.5222311-17'),
                                     },
                                 ]"
                             >
                                 <template #label>
                                     <FormLabel
-                                        text="授权地址"
+                                        :text="$t('components.EditForm.5222311-18')"
                                         required
-                                        tooltip="认证授权地址"
+                                        :tooltip="$t('components.EditForm.5222311-19')"
                                     />
                                 </template>
                                 <j-input
@@ -207,7 +207,7 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .authorizationUrl
                                     "
-                                    placeholder="请输入授权地址"
+                                    :placeholder="$t('components.EditForm.5222311-17')"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -221,15 +221,15 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入token地址',
+                                        message: $t('components.EditForm.5222311-20'),
                                     },
                                 ]"
                             >
                                 <template #label>
                                     <FormLabel
-                                        text="token地址"
+                                        :text="$t('components.EditForm.5222311-21')"
                                         required
-                                        tooltip="设置token令牌的地址"
+                                        :tooltip="$t('components.EditForm.5222311-22')"
                                     />
                                 </template>
                                 <j-input
@@ -237,14 +237,14 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .tokenUrl
                                     "
-                                    placeholder="请输入token地址"
+                                    :placeholder="$t('components.EditForm.5222311-20')"
                                 />
                             </j-form-item>
                             <j-form-item>
                                 <template #label>
                                     <FormLabel
-                                        text="回调地址"
-                                        tooltip="授权完成后跳转到具体页面的回调地址"
+                                        :text="$t('components.EditForm.5222311-23')"
+                                        :tooltip="$t('components.EditForm.5222311-24')"
                                     />
                                 </template>
                                 <j-input
@@ -252,7 +252,7 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .redirectUri
                                     "
-                                    placeholder="请输入回调地址"
+                                    :placeholder="$t('components.EditForm.5222311-25')"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -266,11 +266,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入appId',
+                                        message: $t('components.EditForm.5222311-26'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -278,7 +278,7 @@
                                     <FormLabel
                                         text="appId"
                                         required
-                                        tooltip="第三方应用唯一标识"
+                                        :tooltip="$t('components.EditForm.5222311-27')"
                                     />
                                 </template>
                                 <j-input
@@ -286,7 +286,7 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .clientId
                                     "
-                                    placeholder="请输入appId"
+                                    :placeholder="$t('components.EditForm.5222311-26')"
                                     :disabled="!!form.data.id"
                                 />
                             </j-form-item>
@@ -301,11 +301,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入appKey',
+                                        message: $t('components.EditForm.5222311-28'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -313,7 +313,7 @@
                                     <FormLabel
                                         text="appKey"
                                         required
-                                        tooltip="第三方应用唯一标识的密钥"
+                                        :tooltip="$t('components.EditForm.5222311-29')"
                                     />
                                 </template>
                                 <j-input
@@ -321,13 +321,13 @@
                                         form.data.apiClient.authConfig.oauth2
                                             .clientSecret
                                     "
-                                    placeholder="请输入appKey"
+                                    :placeholder="$t('components.EditForm.5222311-28')"
                                 />
                             </j-form-item>
                         </div>
                         <div v-else-if="form.data.provider === 'third-party'">
                             <j-form-item
-                                label="认证方式"
+                                :label="$t('components.EditForm.5222311-30')"
                                 :name="['apiClient', 'authConfig', 'type']"
                                 :rules="[{ required: true }]"
                             >
@@ -340,10 +340,10 @@
                                         OAuth2
                                     </j-select-option>
                                     <j-select-option value="basic">
-                                        基本认证
+                                        {{ $t('components.EditForm.5222311-31') }}
                                     </j-select-option>
                                     <j-select-option value="bearer">
-                                        bearer认证
+                                        {{ $t('components.EditForm.5222311-32') }}
                                     </j-select-option>
                                 </j-select>
                             </j-form-item>
@@ -364,15 +364,15 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入授权地址',
+                                            message: $t('components.EditForm.5222311-17'),
                                         },
                                     ]"
                                 >
                                     <template #label>
                                         <FormLabel
-                                            text="授权地址"
+                                            :text="$t('components.EditForm.5222311-18')"
                                             required
-                                            tooltip="认证授权地址"
+                                            :tooltip="$t('components.EditForm.5222311-19')"
                                         />
                                     </template>
                                     <j-input
@@ -380,12 +380,12 @@
                                             form.data.apiClient.authConfig
                                                 .oauth2.authorizationUrl
                                         "
-                                        placeholder="请输入授权地址"
+                                        :placeholder="$t('components.EditForm.5222311-17')"
                                     />
                                 </j-form-item>
 
                                 <j-form-item
-                                    label="请求方式"
+                                    :label="$t('components.EditForm.5222311-33')"
                                     :name="[
                                         'apiClient',
                                         'authConfig',
@@ -395,7 +395,7 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请选择请求方式',
+                                            message: $t('components.EditForm.5222311-34'),
                                         },
                                     ]"
                                 >
@@ -404,13 +404,13 @@
                                             form.data.apiClient.authConfig
                                                 .oauth2.tokenRequestType
                                         "
-                                        placeholder="请选择请求方式"
+                                        :placeholder="$t('components.EditForm.5222311-34')"
                                     >
                                         <j-select-option value="POST_BODY">
-                                            请求体
+                                            {{ $t('components.EditForm.5222311-35') }}
                                         </j-select-option>
                                         <j-select-option value="POST_URI">
-                                            请求头
+                                            {{ $t('components.EditForm.5222311-36') }}
                                         </j-select-option>
                                     </j-select>
                                 </j-form-item>
@@ -426,11 +426,11 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入client_id',
+                                            message: $t('components.EditForm.5222311-37'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: $t('components.EditForm.5222311-2'),
                                         },
                                     ]"
                                 >
@@ -438,7 +438,7 @@
                                         <FormLabel
                                             text="client_id"
                                             required
-                                            tooltip="应用唯一标识"
+                                            :tooltip="$t('components.EditForm.5222311-38')"
                                         />
                                     </template>
                                     <j-input
@@ -446,7 +446,7 @@
                                             form.data.apiClient.authConfig
                                                 .oauth2.clientId
                                         "
-                                        placeholder="请输入client_id"
+                                        :placeholder="$t('components.EditForm.5222311-37')"
                                     />
                                 </j-form-item>
                                 <j-form-item
@@ -460,11 +460,11 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入client_secret',
+                                            message: $t('components.EditForm.5222311-39'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: $t('components.EditForm.5222311-2'),
                                         },
                                     ]"
                                 >
@@ -472,7 +472,7 @@
                                         <FormLabel
                                             text="client_secret"
                                             required
-                                            tooltip="应用唯一标识的秘钥"
+                                            :tooltip="$t('components.EditForm.5222311-40')"
                                         />
                                     </template>
                                     <j-input
@@ -480,7 +480,7 @@
                                             form.data.apiClient.authConfig
                                                 .oauth2.clientSecret
                                         "
-                                        placeholder="请输入client_secret"
+                                        :placeholder="$t('components.EditForm.5222311-39')"
                                     />
                                 </j-form-item>
                             </div>
@@ -491,7 +491,7 @@
                                 "
                             >
                                 <j-form-item
-                                    label="用户名"
+                                    :label="$t('components.EditForm.5222311-41')"
                                     :name="[
                                         'apiClient',
                                         'authConfig',
@@ -501,11 +501,11 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入用户名',
+                                            message: $t('components.EditForm.5222311-42'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: $t('components.EditForm.5222311-2'),
                                         },
                                     ]"
                                 >
@@ -514,11 +514,11 @@
                                             form.data.apiClient.authConfig.basic
                                                 .username
                                         "
-                                        placeholder="请输入用户名"
+                                        :placeholder="$t('components.EditForm.5222311-42')"
                                     />
                                 </j-form-item>
                                 <j-form-item
-                                    label="密码"
+                                    :label="$t('components.EditForm.5222311-43')"
                                     :name="[
                                         'apiClient',
                                         'authConfig',
@@ -528,11 +528,11 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入密码',
+                                            message: $t('components.EditForm.5222311-44'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: $t('components.EditForm.5222311-2'),
                                         },
                                     ]"
                                 >
@@ -541,7 +541,7 @@
                                             form.data.apiClient.authConfig.basic
                                                 .password
                                         "
-                                        placeholder="请输入密码"
+                                        :placeholder="$t('components.EditForm.5222311-44')"
                                     />
                                 </j-form-item>
                             </div>
@@ -560,7 +560,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入token',
+                                        message: $t('components.EditForm.5222311-45'),
                                     },
                                 ]"
                             >
@@ -569,7 +569,7 @@
                                         form.data.apiClient.authConfig.bearer
                                             .token
                                     "
-                                    placeholder="请输入token"
+                                    :placeholder="$t('components.EditForm.5222311-45')"
                                 />
                             </j-form-item>
                         </div>
@@ -582,7 +582,7 @@
                                 :rules="[
                                     {
                                         required: !headerValid,
-                                        message: '请输入请求头',
+                                        message: $t('components.EditForm.5222311-46'),
                                     },
                                     {
                                         validator: headerValidator,
@@ -591,8 +591,8 @@
                             >
                                 <template #label>
                                     <FormLabel
-                                        text="请求头"
-                                        tooltip="根据不同应用的调用规范，自定义请求头内容"
+                                        :text="$t('components.EditForm.5222311-36')"
+                                        :tooltip="$t('components.EditForm.5222311-47')"
                                     />
                                 </template>
 
@@ -602,12 +602,12 @@
                                 />
                             </j-form-item>
                             <j-form-item
-                                label="参数"
+                                :label="$t('components.EditForm.5222311-12')"
                                 :name="['apiClient', 'parameters']"
                                 :rules="[
                                     {
                                         required: !paramsValid,
-                                        message: '请输入参数',
+                                        message: $t('components.EditForm.5222311-48'),
                                     },
                                     {
                                         validator: paramsValidator,
@@ -639,13 +639,13 @@
                                 <FormLabel
                                     text="appId"
                                     required
-                                    tooltip="第三方应用唯一标识"
+                                    :tooltip="$t('components.EditForm.5222311-27')"
                                 />
                             </template>
                             <j-input
                                 v-model:value="form.data.apiServer.appId"
                                 disabled
-                                placeholder="请输入appId"
+                                :placeholder="$t('components.EditForm.5222311-26')"
                             />
                         </j-form-item>
 
@@ -655,7 +655,7 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入secureKey',
+                                    message: $t('components.EditForm.5222311-49'),
                                 },
                             ]"
                         >
@@ -663,12 +663,12 @@
                                 <FormLabel
                                     text="secureKey"
                                     required
-                                    tooltip="第三方应用唯一标识匹配的秘钥"
+                                    :tooltip="$t('components.EditForm.5222311-50')"
                                 />
                             </template>
                             <j-input-password   
                                 v-model:value="form.data.apiServer.secureKey"
-                                placeholder="请输入secureKey"
+                                :placeholder="$t('components.EditForm.5222311-49')"
                             />
                         </j-form-item>
                         <j-form-item
@@ -679,13 +679,13 @@
                         >
                             <template #label>
                                 <FormLabel
-                                    text="回调地址"
-                                    tooltip="授权完成后跳转到具体页面的回调地址"
+                                    :text="$t('components.EditForm.5222311-23')"
+                                    :tooltip="$t('components.EditForm.5222311-24')"
                                 />
                             </template>
                             <j-input
                                 v-model:value="form.data.apiServer.redirectUri"
-                                placeholder="请输入redirectUri"
+                                :placeholder="$t('components.EditForm.5222311-51')"
                             />
                         </j-form-item>
                         <j-form-item
@@ -694,22 +694,22 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请选择角色',
+                                    message: $t('components.EditForm.5222311-52'),
                                 },
                             ]"
                         >
                             <template #label>
                                 <FormLabel
-                                    text="角色"
+                                    :text="$t('components.EditForm.5222311-53')"
                                     required
-                                    tooltip="为应用用户分配角色，根据绑定的角色，进行系统菜单赋权"
+                                    :tooltip="$t('components.EditForm.5222311-54')"
                                 />
                             </template>
                             <j-select
                                 v-model:value="form.data.apiServer.roleIdList"
                                 :options="form.roleIdList"
                                 mode="multiple"
-                                placeholder="请选择角色"
+                                :placeholder="$t('components.EditForm.5222311-52')"
                             ></j-select>
                             <PermissionButton
                                 :hasPermission="`${rolePermission}:update`"
@@ -728,8 +728,8 @@
                         <j-form-item>
                             <template #label>
                                 <FormLabel
-                                    text="组织"
-                                    tooltip="为应用用户分配所属组织，根据绑定的组织，进行数据隔离"
+                                    :text="$t('components.EditForm.5222311-55')"
+                                    :tooltip="$t('components.EditForm.5222311-56')"
                                 />
                             </template>
                             <j-tree-select
@@ -746,7 +746,7 @@
                                 }"
                                 multiple
                                 :tree-data="form.orgIdList"
-                                placeholder="请选择组织"
+                                :placeholder="$t('components.EditForm.5222311-57')"
                                 :filterTreeNode="
                                 (v: string, node: any) => filterSelectNode(v, node, 'name')
                             "
@@ -775,18 +775,18 @@
                                 <template #label>
                                     <FormLabel
                                         text="redirectUrl"
-                                        tooltip="授权后自动跳转的页面地址"
+                                        :tooltip="$t('components.EditForm.5222311-58')"
                                     />
                                 </template>
                                 <j-input
                                     v-model:value="
                                         form.data.apiServer.redirectUri
                                     "
-                                    placeholder="请输入redirectUrl"
+                                    :placeholder="$t('components.EditForm.5222311-59')"
                                 />
                             </j-form-item>
                             <j-form-item
-                                label="IP白名单"
+                                :label="$t('components.EditForm.5222311-60')"
                                 :name="['apiServer', 'ipWhiteList']"
                                 :rules="[
                                     {
@@ -798,7 +798,7 @@
                                     v-model:value="
                                         form.data.apiServer.ipWhiteList
                                     "
-                                    placeholder="请输入IP白名单，多个地址回车分隔，不填默认均可访问"
+                                    :placeholder="$t('components.EditForm.5222311-61')"
                                     :rows="3"
                                     style="width: 100%"
                                 />
@@ -810,7 +810,7 @@
                         <!-- 第三方应用 -->
                         <div v-if="form.data.provider === 'third-party'">
                             <j-form-item
-                                label="认证方式"
+                                :label="$t('components.EditForm.5222311-30')"
                                 :name="[
                                     'sso',
                                     'configuration',
@@ -820,7 +820,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请选择认证方式',
+                                        message: $t('components.EditForm.5222311-62'),
                                     },
                                 ]"
                             >
@@ -828,7 +828,7 @@
                                     v-model:value="
                                         form.data.sso.configuration.oauth2.type
                                     "
-                                    placeholder="请选择认证方式"
+                                    :placeholder="$t('components.EditForm.5222311-62')"
                                     :options="[
                                         { label: 'oauth2', value: 'oauth2' },
                                     ]"
@@ -846,11 +846,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入scope',
+                                        message: $t('components.EditForm.5222311-63'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -858,14 +858,14 @@
                                     <FormLabel
                                         text="scope"
                                         required
-                                        tooltip="限制用户访问应用程序的权限"
+                                        :tooltip="$t('components.EditForm.5222311-64')"
                                     />
                                 </template>
                                 <j-input
                                     v-model:value="
                                         form.data.sso.configuration.oauth2.scope
                                     "
-                                    placeholder="请输入scope"
+                                    :placeholder="$t('components.EditForm.5222311-63')"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -879,11 +879,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入client_id',
+                                        message: $t('components.EditForm.5222311-37'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -891,7 +891,7 @@
                                     <FormLabel
                                         text="client_id"
                                         required
-                                        tooltip="应用唯一标识"
+                                        :tooltip="$t('components.EditForm.5222311-38')"
                                     />
                                 </template>
                                 <j-input
@@ -899,7 +899,7 @@
                                         form.data.sso.configuration.oauth2
                                             .clientId
                                     "
-                                    placeholder="请输入client_id"
+                                    :placeholder="$t('components.EditForm.5222311-37')"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -913,11 +913,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入client_secret',
+                                        message: $t('components.EditForm.5222311-39'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -925,7 +925,7 @@
                                     <FormLabel
                                         text="client_secret"
                                         required
-                                        tooltip="应用唯一标识的秘钥"
+                                        :tooltip="$t('components.EditForm.5222311-40')"
                                     />
                                 </template>
                                 <j-input
@@ -933,7 +933,7 @@
                                         form.data.sso.configuration.oauth2
                                             .clientSecret
                                     "
-                                    placeholder="请输入client_secret"
+                                    :placeholder="$t('components.EditForm.5222311-39')"
                                 />
                             </j-form-item>
                         </div>
@@ -955,15 +955,15 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入授权地址',
+                                    message: $t('components.EditForm.5222311-17'),
                                 },
                             ]"
                         >
                             <template #label>
                                 <FormLabel
-                                    text="授权地址"
+                                    :text="$t('components.EditForm.5222311-18')"
                                     required
-                                    tooltip="认证授权地址"
+                                    :tooltip="$t('components.EditForm.5222311-19')"
                                 />
                             </template>
                             <j-input
@@ -971,7 +971,7 @@
                                     form.data.sso.configuration.oauth2
                                         .authorizationUrl
                                 "
-                                placeholder="请输入授权地址"
+                                :placeholder="$t('components.EditForm.5222311-17')"
                             />
                         </j-form-item>
 
@@ -988,15 +988,15 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入token地址',
+                                        message: $t('components.EditForm.5222311-20'),
                                     },
                                 ]"
                             >
                                 <template #label>
                                     <FormLabel
-                                        text="token地址"
+                                        :text="$t('components.EditForm.5222311-21')"
                                         required
-                                        tooltip="设置token令牌的地址"
+                                        :tooltip="$t('components.EditForm.5222311-22')"
                                     />
                                 </template>
                                 <j-input
@@ -1004,7 +1004,7 @@
                                         form.data.sso.configuration.oauth2
                                             .tokenUrl
                                     "
-                                    placeholder="请输入token地址"
+                                    :placeholder="$t('components.EditForm.5222311-20')"
                                 />
                             </j-form-item>
                             <!-- <j-form-item label="logo">
@@ -1047,7 +1047,7 @@
                         </j-form-item> -->
 
                             <j-form-item
-                                label="用户信息地址"
+                                :label="$t('components.EditForm.5222311-65')"
                                 :name="[
                                     'sso',
                                     'configuration',
@@ -1057,7 +1057,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入用户信息地址',
+                                        message: $t('components.EditForm.5222311-66'),
                                     },
                                 ]"
                             >
@@ -1066,7 +1066,7 @@
                                         form.data.sso.configuration.oauth2
                                             .userInfoUrl
                                     "
-                                    placeholder="请输入用户信息地址"
+                                    :placeholder="$t('components.EditForm.5222311-66')"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -1081,15 +1081,15 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入用户ID',
+                                        message: $t('components.EditForm.5222311-67'),
                                     },
                                 ]"
                             >
                                 <template #label>
                                     <FormLabel
-                                        text="用户ID"
+                                        :text="$t('components.EditForm.5222311-68')"
                                         required
-                                        tooltip="通过jsonpath表达式从授权结果中获取第三方平台用户的唯一标识"
+                                        :tooltip="$t('components.EditForm.5222311-69')"
                                     />
                                 </template>
                                 <j-input
@@ -1097,11 +1097,11 @@
                                         form.data.sso.configuration.oauth2
                                             .userProperty.userId
                                     "
-                                    placeholder="输入从用户信息接口返回数据中的用户ID字段。示例:result.id"
+                                    :placeholder="$t('components.EditForm.5222311-70')"
                                 />
                             </j-form-item>
                             <j-form-item
-                                label="用户名"
+                                :label="$t('components.EditForm.5222311-41')"
                                 :name="[
                                     'sso',
                                     'configuration',
@@ -1112,7 +1112,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入用户名',
+                                        message: $t('components.EditForm.5222311-42'),
                                     },
                                 ]"
                             >
@@ -1121,16 +1121,16 @@
                                         form.data.sso.configuration.oauth2
                                             .userProperty.username
                                     "
-                                    placeholder="输入从用户信息接口返回数据中的用户名字段。示例:result.name"
+                                    :placeholder="$t('components.EditForm.5222311-71')"
                                 />
                             </j-form-item>
-                            <j-form-item label="头像">
+                            <j-form-item :label="$t('components.EditForm.5222311-72')">
                                 <j-input
                                     v-model:value="
                                         form.data.sso.configuration.oauth2
                                             .userProperty.avatar
                                     "
-                                    placeholder="输入从用户信息接口返回数据中的用户头像字段。示例:result.avatar"
+                                    :placeholder="$t('components.EditForm.5222311-73')"
                                 />
                             </j-form-item>
                         </div>
@@ -1149,8 +1149,8 @@
                             >
                                 <template #label>
                                     <FormLabel
-                                        text="回调地址"
-                                        tooltip="授权完成后跳转到具体页面的回调地址"
+                                        :text="$t('components.EditForm.5222311-23')"
+                                        :tooltip="$t('components.EditForm.5222311-24')"
                                     />
                                 </template>
                                 <j-input
@@ -1158,7 +1158,7 @@
                                         form.data.sso.configuration.oauth2
                                             .redirectUri
                                     "
-                                    placeholder="请输入回调地址"
+                                    :placeholder="$t('components.EditForm.5222311-25')"
                                 />
                             </j-form-item>
                             <!-- 非钉钉 -->
@@ -1169,11 +1169,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入appId',
+                                        message: $t('components.EditForm.5222311-26'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -1181,14 +1181,14 @@
                                     <FormLabel
                                         text="appId"
                                         required
-                                        tooltip="第三方应用唯一标识"
+                                        :tooltip="$t('components.EditForm.5222311-27')"
                                     />
                                 </template>
                                 <j-input
                                     v-model:value="
                                         form.data.sso.configuration.appId
                                     "
-                                    placeholder="请输入appId"
+                                    :placeholder="$t('components.EditForm.5222311-26')"
                                 />
                             </j-form-item>
                             <!-- 非微信 -->
@@ -1202,11 +1202,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入appKey',
+                                        message: $t('components.EditForm.5222311-28'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -1214,14 +1214,14 @@
                                     <FormLabel
                                         text="appKey"
                                         required
-                                        tooltip="第三方应用唯一标识的密钥"
+                                        :tooltip="$t('components.EditForm.5222311-29')"
                                     />
                                 </template>
                                 <j-input
                                     v-model:value="
                                         form.data.sso.configuration.appKey
                                     "
-                                    placeholder="请输入appKey"
+                                    :placeholder="$t('components.EditForm.5222311-28')"
                                 />
                             </j-form-item>
 
@@ -1233,11 +1233,11 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入appSecret',
+                                        message: $t('components.EditForm.5222311-74'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('components.EditForm.5222311-2'),
                                     },
                                 ]"
                             >
@@ -1245,14 +1245,14 @@
                                     <FormLabel
                                         text="appSecret"
                                         required
-                                        tooltip="应用的唯一标识的秘钥"
+                                        :tooltip="$t('components.EditForm.5222311-75')"
                                     />
                                 </template>
                                 <j-input
                                     v-model:value="
                                         form.data.sso.configuration.appSecret
                                     "
-                                    placeholder="请输入appSecret"
+                                    :placeholder="$t('components.EditForm.5222311-74')"
                                 />
                             </j-form-item>
                         </div>
@@ -1260,9 +1260,9 @@
                         <j-form-item class="resetLabel">
                             <template #label>
                                 <FormLabel
-                                    text="自动创建用户"
+                                    :text="$t('components.EditForm.5222311-76')"
                                     required
-                                    tooltip="开启后，第三方用户第一次授权登录系统时，无需进入授权绑定页面。系统默认创建一个新用户与之绑定。"
+                                    :tooltip="$t('components.EditForm.5222311-77')"
                                 />
                             </template>
                             <j-switch
@@ -1272,12 +1272,12 @@
 
                         <div v-if="form.data.sso.autoCreateUser">
                             <j-form-item
-                                label="用户名前缀"
+                                :label="$t('components.EditForm.5222311-78')"
                                 :name="['sso', 'usernamePrefix']"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入用户名前缀',
+                                        message: $t('components.EditForm.5222311-79'),
                                     },
                                    {
                                         validator: checkCh,
@@ -1287,16 +1287,16 @@
                             >
                                 <j-input
                                     v-model:value="form.data.sso.usernamePrefix"
-                                    placeholder="请输入用户名前缀"
+                                    :placeholder="$t('components.EditForm.5222311-79')"
                                 />
                             </j-form-item>
                             <j-form-item
-                                label="默认密码"
+                                :label="$t('components.EditForm.5222311-80')"
                                 :name="['sso', 'defaultPasswd']"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入默认密码',
+                                        message: $t('components.EditForm.5222311-81'),
                                     },
                                     // {
                                     //     min: 8,
@@ -1304,7 +1304,7 @@
                                     // },
                                     // {
                                     //     max: 64,
-                                    //     message: '最多可输入64个字符',
+                                    //     message: $t('components.EditForm.5222311-2'),
                                     // },
                                     {
                                         validator: checkPassword,
@@ -1313,16 +1313,16 @@
                             >
                                 <j-input
                                     v-model:value="form.data.sso.defaultPasswd"
-                                    placeholder="请输入默认密码"
+                                    :placeholder="$t('components.EditForm.5222311-81')"
                                 />
                             </j-form-item>
 
-                            <j-form-item label="角色">
+                            <j-form-item :label="$t('components.EditForm.5222311-53')">
                                 <j-select
                                     v-model:value="form.data.sso.roleIdList"
                                     mode="multiple"
                                     :options="form.roleIdList"
-                                    placeholder="请选择角色"
+                                    :placeholder="$t('components.EditForm.5222311-52')"
                                 ></j-select>
                                 <PermissionButton
                                     :hasPermission="`${rolePermission}:update`"
@@ -1338,7 +1338,7 @@
                                     <AIcon type="PlusOutlined" />
                                 </PermissionButton>
                             </j-form-item>
-                            <j-form-item label="组织">
+                            <j-form-item :label="$t('components.EditForm.5222311-55')">
                                 <j-tree-select
                                     v-model:value="form.data.sso.orgIdList"
                                     show-search
@@ -1353,7 +1353,7 @@
                                     }"
                                     multiple
                                     :tree-data="form.orgIdList"
-                                    placeholder="请选择组织"
+                                    :placeholder="$t('components.EditForm.5222311-57')"
                                 >
                                     <template #title="{ name }">
                                         {{ name }}
@@ -1378,10 +1378,10 @@
                 </j-collapse-panel>
             </j-collapse>
 
-            <j-form-item label="说明" name="description">
+            <j-form-item :label="$t('components.EditForm.5222311-82')" name="description">
                 <j-textarea
                     v-model:value="form.data.description"
-                    placeholder="请输入说明"
+                    :placeholder="$t('components.EditForm.5222311-83')"
                     showCount
                     :maxlength="200"
                     :rows="3"
@@ -1396,7 +1396,7 @@
             type="primary"
             :loading="loading"
         >
-            保存
+            {{ $t('components.EditForm.5222311-84') }}
         </j-button>
 
         <div class="dialog">
@@ -1442,6 +1442,9 @@ import { useMenuStore } from '@/store/menu';
 import { Rule } from 'ant-design-vue/lib/form';
 import ApplyList from './ApplyList/index.vue';
 import InputGroup from './InputGroup.vue'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['changeApplyType']);
 
@@ -1572,7 +1575,7 @@ const form = reactive({
 
 const checkCh = (_rule:Rule,value:string): Promise<any> => 
             new Promise((resolve,reject) => {
-                if (/[\u4e00-\u9fa5]/.test(value)) return reject('用户名不能包含中文');
+                if (/[\u4e00-\u9fa5]/.test(value)) return reject($t('components.EditForm.5222311-85'));
                 else return resolve('')
             })
 
@@ -1581,12 +1584,12 @@ const headerValid = ref(true);
 const paramsValid = ref(true);
 const headerValidator = () => {
     return new Promise((resolve, reject) => {
-        headerValid.value ? resolve('') : reject('请输入完整的请求头');
+        headerValid.value ? resolve('') : reject($t('components.EditForm.5222311-86'));
     });
 };
 const paramsValidator = () => {
     return new Promise((resolve, reject) => {
-        paramsValid.value ? resolve('') : reject('请输入完整的请求参数');
+        paramsValid.value ? resolve('') : reject($t('components.EditForm.5222311-87'));
     });
 };
 const getType = async () => {
@@ -1626,10 +1629,10 @@ onMounted(async () => {
 const checkPassword = (_rule: Rule, value: string) =>  {
     return new Promise((resolve, reject) => {
         if (!value) return resolve('');
-        else if (value.length > 64) return reject('最多可输入64个字符');
-        else if (value.length < 8) return reject('密码不能少于8位');
+        else if (value.length > 64) return reject($t('components.EditForm.5222311-2'));
+        else if (value.length < 8) return reject($t('components.EditForm.5222311-88'));
         else if (!passwordRegEx(value)) {
-            return reject('密码必须包含大小写英文和数字');
+            return reject($t('components.EditForm.5222311-89'));
         } else {
             resolve('')
         }
@@ -1802,7 +1805,7 @@ function clickSave() {
                     params.integrationModes.includes('apiServer') &&
                     params.integrationModes.length === 2)
             ) {
-                return onlyMessage('配置单点登录需同时配置API客户端', 'warning');
+                return onlyMessage($t('components.EditForm.5222311-90'), 'warning');
             }
         }
 
@@ -1855,7 +1858,7 @@ function clickSave() {
                         };
                         dialog.visible = true;
                     } else {
-                        onlyMessage('保存成功');
+                        onlyMessage($t('components.EditForm.5222311-91'));
                         menuStory.jumpPage('system/Apply');
                     }
                 }
@@ -1909,7 +1912,7 @@ const validateIP = (_rule: Rule, value: string) => {
         return new Promise((resolve, reject) => {
             !errorIPList?.length
                 ? resolve('')
-                : reject(`[${errorIPList}]不是正确的IP地址`);
+                : reject($t('components.EditForm.5222311-92', [errorIPList]));
         });
     } else {
         return Promise.resolve();
@@ -1922,11 +1925,11 @@ const validateIP = (_rule: Rule, value: string) => {
 const validateBaseUrl = (_rule:Rule , value: string) =>{
     if(value){
         if(value === 'http://' || value === 'https://'){
-            return Promise.reject('请输入接入地址')
+            return Promise.reject($t('components.EditForm.5222311-7'))
         }
         return Promise.resolve()
     }else{
-        return Promise.reject('请输入接入地址')
+        return Promise.reject($t('components.EditForm.5222311-7'))
     }
 }
 </script>

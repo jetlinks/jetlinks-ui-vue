@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"components.RequestTable.522238-0": "该字段为必填字段",
+		"components.RequestTable.522238-1": "新增"
+	},
+	"en": {
+		"components.RequestTable.522238-0": "This field is mandatory",
+		"components.RequestTable.522238-1": "Add"
+	}
+}

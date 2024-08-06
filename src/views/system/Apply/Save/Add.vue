@@ -2,7 +2,7 @@
     <j-modal
         :width="810"
         visible
-        title="选择应用类型"
+        :title="$t('Save.Add.522224-0')"
         @cancel="emit('close')"
         @ok="onSave"
     >
@@ -15,6 +15,9 @@ import { queryType } from '@/api/system/apply';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
 import ApplyList from './components/ApplyList/index.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close']);
 
@@ -27,7 +30,7 @@ const onSave = () => {
     if(type.value){
         menuStory.jumpPage('system/Apply/Save', {}, { provider: type.value });
     } else {
-        onlyMessage('请先选择应用类型', 'error')
+        onlyMessage($t('Save.Add.522224-1'), 'error')
     }
 };
 

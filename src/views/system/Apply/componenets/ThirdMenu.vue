@@ -1,7 +1,7 @@
 <template>
     <j-modal
         class="edit-dialog-container"
-        title="集成菜单"
+        :title="$t('componenets.ThirdMenu.522222-0')"
         visible
         width="800px"
         :maskClosable="false"
@@ -10,14 +10,14 @@
     >
         <div style="display: flex">
             <div class="menuList">
-                菜单列表
+                {{ $t('componenets.ThirdMenu.522222-1') }}
                 <div class="content">
                     <PermissionButton
                         type="link"
                         :hasPermission="`${permission}:add`"
                         @click="addMenu"
                     >
-                        + 新增菜单
+                        {{ $t('componenets.ThirdMenu.522222-2') }}
                     </PermissionButton>
                     <div class="treeContainer">
                         <j-tree
@@ -38,7 +38,7 @@
                                             v-if="data.options?.owner"
                                             type="link"
                                             :hasPermission="`${permission}:update`"
-                                            tooltip="编辑"
+                                            :tooltip="$t('componenets.ThirdMenu.522222-3')"
                                             @click="() => editMenu(data)"
                                         >
                                             <AIcon type="EditOutlined" />
@@ -49,8 +49,8 @@
                                             :tooltip="{
                                                 title:
                                                     data.level >= 3
-                                                        ? '仅支持3级菜单'
-                                                        : '新增子菜单',
+                                                        ? $t('componenets.ThirdMenu.522222-4')
+                                                        : $t('componenets.ThirdMenu.522222-5'),
                                             }"
                                             :disabled="
                                                 data.level >= 3 ||
@@ -64,9 +64,9 @@
                                             v-if="data.options?.owner"
                                             type="link"
                                             :hasPermission="`${permission}:delete`"
-                                            tooltip="删除"
+                                            :tooltip="$t('componenets.ThirdMenu.522222-6')"
                                             :popConfirm="{
-                                                title: `是否删除该菜单`,
+                                                title: $t('componenets.ThirdMenu.522222-7'),
                                                 onConfirm: () =>
                                                     deleteMenu(data),
                                             }"
@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div class="configuration" v-if="showControls">
-                菜单配置
+                {{ $t('componenets.ThirdMenu.522222-8') }}
                 <div class="content">
                     <div class="saveBtn">
                         <PermissionButton
@@ -92,7 +92,7 @@
                             :loading="saveLoading"
                             @click="saveMenu"
                         >
-                            保存
+                            {{ $t('componenets.ThirdMenu.522222-9') }}
                         </PermissionButton>
                     </div>
                     <j-form
@@ -104,12 +104,12 @@
                         <div class="row" style="display: flex">
                             <j-form-item
                                 ref="uploadIcon"
-                                label="菜单图标"
+                                :label="$t('componenets.ThirdMenu.522222-10')"
                                 name="icon"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请上传图标',
+                                        message: $t('componenets.ThirdMenu.522222-11'),
                                         trigger: 'change',
                                     },
                                 ]"
@@ -126,7 +126,7 @@
                                     <span
                                         class="mark"
                                         @click="dialogVisible = true"
-                                        >点击修改</span
+                                        >{{ $t('componenets.ThirdMenu.522222-12') }}</span
                                     >
                                 </div>
 
@@ -140,45 +140,45 @@
                                             type="PlusOutlined"
                                             style="font-size: 30px"
                                         />
-                                        <p>点击选择图标</p>
+                                        <p>{{ $t('componenets.ThirdMenu.522222-13') }}</p>
                                     </span>
                                 </div>
                             </j-form-item>
                             <j-row>
                                 <j-col :span="24">
                                     <j-form-item
-                                        label="名称"
+                                        :label="$t('componenets.ThirdMenu.522222-14')"
                                         name="name"
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: '请输入名称',
+                                                message: $t('componenets.ThirdMenu.522222-15'),
                                             },
                                             {
                                                 max: 64,
-                                                message: '最多可输入64个字符',
+                                                message: $t('componenets.ThirdMenu.522222-16'),
                                             },
                                         ]"
                                     >
                                         <j-input
                                             v-model:value="formData.name"
-                                            placeholder="请输入名称"
+                                            :placeholder="$t('componenets.ThirdMenu.522222-15')"
                                         />
                                     </j-form-item>
                                 </j-col>
                                 <j-col :span="24">
                                     <j-form-item
-                                        label="编码"
+                                        :label="$t('componenets.ThirdMenu.522222-17')"
                                         name="code"
                                         :validateFirst="true"
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: '请输入编码',
+                                                message: $t('componenets.ThirdMenu.522222-18'),
                                             },
                                             {
                                                 max: 64,
-                                                message: '最多可输入64个字符',
+                                                message: $t('componenets.ThirdMenu.522222-16'),
                                             },
                                             {
                                                 validator: checkCode,
@@ -188,7 +188,7 @@
                                     >
                                         <j-input
                                             v-model:value="formData.code"
-                                            placeholder="请输入编码"
+                                            :placeholder="$t('componenets.ThirdMenu.522222-18')"
                                         />
                                     </j-form-item>
                                 </j-col>
@@ -207,24 +207,24 @@
                             </j-row>
                         </div>
                         <j-form-item
-                            label="页面地址"
+                            :label="$t('componenets.ThirdMenu.522222-19')"
                             name="url"
                             :validateFirst="true"
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入页面地址',
+                                    message: $t('componenets.ThirdMenu.522222-20'),
                                 },
-                                { max: 128, message: '最多可输入128个字符' },
+                                { max: 128, message: $t('componenets.ThirdMenu.522222-21') },
                                 {
                                     pattern: /^\//,
-                                    message: '请正确填写地址，以/开头',
+                                    message: $t('componenets.ThirdMenu.522222-22'),
                                 },
                             ]"
                         >
                             <j-input
                                 v-model:value="formData.url"
-                                placeholder="请输入页面地址"
+                                :placeholder="$t('componenets.ThirdMenu.522222-20')"
                             />
                         </j-form-item>
                         <!-- <j-form-item label="说明" name="describe">
@@ -257,6 +257,9 @@ import { USER_CENTER_MENU_CODE, messageSubscribe } from '@/utils/consts';
 import ChooseIconDialog from '../../Menu/components/ChooseIconDialog.vue';
 import { Rule } from 'ant-design-vue/lib/form';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     data: {
         type: Object,
@@ -362,7 +365,7 @@ const deleteMenu = (data: any) => {
     const response = delMenuInfo_api(data.id);
     response.then((resp: any) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功');
+            onlyMessage($t('componenets.ThirdMenu.522222-23'));
             queryMenu();
         }
     });
@@ -393,10 +396,10 @@ const saveMenu = () => {
         api(params)
             .then((res) => {
                 if (res.status === 200) {
-                    onlyMessage('操作成功');
+                    onlyMessage($t('componenets.ThirdMenu.522222-23'));
                     queryMenu();
                 } else {
-                    onlyMessage('操作失败');
+                    onlyMessage($t('componenets.ThirdMenu.522222-24'));
                 }
             })
             .finally(() => (saveLoading.value = false));
@@ -404,7 +407,7 @@ const saveMenu = () => {
 };
 const checkCode = async (_rule: Rule, value: string): Promise<any> => {
     if (!value) return Promise.reject('');
-    else if (value.length > 64) return Promise.reject('最多可输入64个字符');
+    else if (value.length > 64) return Promise.reject($t('componenets.ThirdMenu.522222-16'));
     // 编辑时不校验原本的编码
     else if ((editType.value = 'edit' && value === sourceCode.value))
         return Promise.resolve('');
@@ -414,7 +417,7 @@ const checkCode = async (_rule: Rule, value: string): Promise<any> => {
             owner: 'iot',
         });
         if (resp.result.passed) return Promise.resolve();
-        else return Promise.reject('该编码重复');
+        else return Promise.reject($t('componenets.ThirdMenu.522222-25'));
     }
 };
 const cancel = () => {
