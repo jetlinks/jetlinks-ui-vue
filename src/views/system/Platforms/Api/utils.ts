@@ -7,7 +7,7 @@ import { schemaObjType } from "./typing";
  * @param schemaName 实体类名称
  */
 export function findData(schemas: object, schemaName: string) {
-    const basicType = ['string', 'integer', 'boolean'];
+    const basicType = ['string', 'integer', 'boolean','number'];
 
     if (!schemaName || !schemas[schemaName]) {
         return [];
@@ -62,6 +62,9 @@ export function getCodeText(
             case 'object':
                 result[item.paramsName] = '';
                 break;
+            case 'number':
+                result[item.paramsName] = 0;
+                break;
             default: {
                 const properties = schemas[item.paramsType]?.properties as object || {};
                 const newArr = Object.entries(properties).map(
@@ -86,4 +89,33 @@ export function getCodeText(
     });
 
     return result;
+}
+
+/**
+ * 处理数据中没有$ref的情况
+ */
+export function dealNoRef(type:string,schema?:any){
+    let result;
+    switch (type) {
+        case 'string':
+            result = '';
+            break;
+        case 'integer':
+            result = 0;
+            break;
+        case 'boolean':
+            result = true;
+            break;
+        case 'array':
+            const itemType = schema?.items?.type
+            const item = dealNoRef(itemType)
+            result = [item];
+            break;
+        case 'number':
+            result = 0;
+            break;
+        default:
+            return;
+    }
+    return result
 }
