@@ -49,6 +49,20 @@ import { exportPermission_api } from '@/api/system/permission';
 import { Form } from 'jetlinks-ui-components';
 Form.useInjectFormItemContext();
 
+
+type permissionType = {
+    id: string;
+    name: string;
+    checkedList: string[];
+    checkAll: boolean;
+    indeterminate: boolean;
+    options: any[];
+    disabled: boolean;
+};
+type paramsType = {
+    paging: boolean;
+    terms?: object[];
+};
 const props = defineProps<{
     btnId: string;
     value: any[];
@@ -105,6 +119,7 @@ const permission = reactive({
                 props.value,
                 resp.result as any[],
             );
+            // console.log(props.value,'value')
         });
     },
     // 全选/取消全选
@@ -145,8 +160,8 @@ const permission = reactive({
                 permission: row.id,
                 actions: newValue,
             });
-        }else{
-            row.indeterminate = false
+        } else {
+            row.indeterminate = false;
         }
 
         emits('update:value', newProp);
@@ -158,10 +173,12 @@ const permission = reactive({
             );
 
             const options =
-            item.actions && item.actions.map((actionItem: any) => ({
-                    label: actionItem.name,
-                    value: actionItem.action,
-                })) || [];
+                (item.actions &&
+                    item.actions.map((actionItem: any) => ({
+                        label: actionItem.name,
+                        value: actionItem.action,
+                    }))) ||
+                [];
             return {
                 id: item.id,
                 name: item.name,
@@ -177,7 +194,7 @@ const permission = reactive({
                         checked.actions.length < item.actions.length) ||
                     false,
                 options,
-disabled: item.status === 0,
+                disabled: item.status === 0,
             };
         }) as permissionType[];
 
@@ -186,19 +203,6 @@ disabled: item.status === 0,
 });
 permission.init();
 
-type permissionType = {
-    id: string;
-    name: string;
-    checkedList: string[];
-    checkAll: boolean;
-    indeterminate: boolean;
-    options: any[];
-disabled: boolean;
-};
-type paramsType = {
-    paging: boolean;
-    terms?: object[];
-};
 </script>
 
 <style lang="less" scoped>
