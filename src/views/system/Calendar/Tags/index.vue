@@ -1,7 +1,7 @@
 <template>
     <div class="tagsContainer" ref="tags">
         <PermissionButton type="primary"  hasPermission="system/Calendar:add" ghost block @click="addTag" :disabled="rapidOn" style="margin-bottom: 10px;">
-            + 新增标签
+            {{ $t('Tags.index.478323-0') }}
         </PermissionButton>
         <div v-for="i in tagsList" class="tag">
             <div class="tagLeft">
@@ -25,7 +25,7 @@
                      hasPermission="system/Calendar:update"
                     :disabled="i.disabled || rapidOn"
                     :tooltip="{
-                        title: '编辑'
+                        title: $t('Tags.index.478323-1')
                     }"
                     @click="() => editData(i)"
                 >
@@ -38,10 +38,10 @@
                      hasPermission="system/Calendar:delete"
                     :disabled="i.disabled || rapidOn"
                     :tooltip="{
-                        title: '删除'
+                        title: $t('Tags.index.478323-2')
                     }"
                     :popConfirm="{
-                        title: `确认删除？`,
+                        title: $t('Tags.index.478323-3'),
                         onConfirm: () => deleteData(i.id),
                     }"
                 >
@@ -69,6 +69,9 @@ import { onlyMessage } from '@/utils/comm';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
 import { useSystem } from '@/store/system';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const system = useSystem();
 const calendarTagColor = system.$state.calendarTagColor;
 const tagsMap = inject('tagsMap');
@@ -140,7 +143,7 @@ const deleteData = async (id) => {
             });
             const deleteColor = await saveTagsColor(color);
         }
-        onlyMessage('操作成功');
+        onlyMessage($t('Tags.index.478323-4'));
         queryTagsData();
     }
 };

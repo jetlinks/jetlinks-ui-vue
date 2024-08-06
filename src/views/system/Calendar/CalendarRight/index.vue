@@ -2,14 +2,14 @@
     <div class="calendarRight">
         <div class="tips">
             <span
-                >将左侧标签拖拽至右侧日历中，日历中的标签在场景联动中可以被引用作为执行动作的触发条件</span
+                >{{ $t('CalendarRight.index.478322-0') }}</span
             >
             <permissionButton
                 type="text"
                 :disabled="rapidChecked"
                 :popConfirm="{
                     placement: 'bottomRight',
-                    title: `确认清空？`,
+                    title: $t('CalendarRight.index.478322-1'),
                     onConfirm: clearEvent,
                 }"
             >
@@ -17,7 +17,7 @@
                     ><AIcon
                         type="ClearOutlined"
                         style="font-size: 16px" /></template
-                >清空</permissionButton
+                >{{ $t('CalendarRight.index.478322-2') }}</permissionButton
             >
         </div>
         <FullCalendar
@@ -31,15 +31,15 @@
             <div class="rapidSwitch">
                 <a-tooltip>
                     <template #title
-                        >开启后以周/月为最小单位制定日期模板，确认后可快速覆盖日历生效期</template
+                        >{{ $t('CalendarRight.index.478322-3') }}</template
                     >
                     <AIcon type="QuestionCircleOutlined"></AIcon>
                 </a-tooltip>
-                快速作用：<a-switch v-model:checked="rapidChecked" />
+                {{ $t('CalendarRight.index.478322-4') }}<a-switch v-model:checked="rapidChecked" />
             </div>
             <div class="rapidActionControl" v-if="rapidChecked">
                 <div>
-                    已选择模板
+                    {{ $t('CalendarRight.index.478322-5') }}
                     <a-input
                         style="width: 300px"
                         v-model:value="selectedDate"
@@ -47,7 +47,7 @@
                     ></a-input>
                 </div>
                 <div style="margin-left: 10px">
-                    将模板快速作用于后续的
+                    {{ $t('CalendarRight.index.478322-6') }}
                     <a-input-number
                         style="width: 100px"
                         v-model:value="effectDays"
@@ -56,11 +56,11 @@
                         :precision="0"
                         :controls="false"
                     ></a-input-number>
-                    日内
+                    {{ $t('CalendarRight.index.478322-7') }}
                 </div>
                 <div>
-                    <a-button type="text" @click="reselect">重选</a-button>
-                    <a-button type="link" @click="rapid">快速作用</a-button>
+                    <a-button type="text" @click="reselect">{{ $t('CalendarRight.index.478322-8') }}</a-button>
+                    <a-button type="link" @click="rapid">{{ $t('CalendarRight.index.478322-9') }}</a-button>
                 </div>
             </div>
         </div>
@@ -72,6 +72,9 @@ import FullCalendar from '../FullCalendar/index.vue';
 import { inject } from 'vue';
 import { clearAll } from '@/api/system/calendar';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const Calendar = ref();
 const rapidChecked = ref(false);
 const rapidOn = inject('rapidOn');
@@ -99,7 +102,7 @@ const rapid = () => {
 const clearEvent = async () => {
     const res = await clearAll();
     if (res.success) {
-        onlyMessage('操作成功');
+        onlyMessage($t('CalendarRight.index.478322-10'));
         Calendar.value?.refresh();
     }
 };

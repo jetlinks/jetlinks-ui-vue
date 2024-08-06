@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Tags.index.478323-0": "+ 新增标签",
+		"Tags.index.478323-1": "编辑",
+		"Tags.index.478323-2": "删除",
+		"Tags.index.478323-3": "确认删除？",
+		"Tags.index.478323-4": "操作成功"
+	},
+	"en": {
+		"Tags.index.478323-0": "+ Add tags",
+		"Tags.index.478323-1": "Edit",
+		"Tags.index.478323-2": "Delete",
+		"Tags.index.478323-3": "Are you sure to delete?",
+		"Tags.index.478323-4": "Operation successful"
+	}
+}
