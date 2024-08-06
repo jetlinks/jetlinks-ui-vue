@@ -7,9 +7,9 @@
                     ref="tableRef"
                     :columns="columnsConf"
                     :request="queryData"
-                    model="table"
                     :params="globParams"
-                    :gridColumn="3"
+                    :gridColumn="4"
+                    v-model:modelValue="tableModel"
                     :defaultParams="{
                         sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
                     }"
@@ -58,7 +58,7 @@
                                 {{ state.text }}
                             </z-tag>
                         </template>
-                        <template v-else> -- </template>
+                        <template v-else> --</template>
                     </template>
                     <template #offlineReason="record">
                         {{ record.offlineReason ? record.offlineReason : '--' }}
@@ -70,6 +70,90 @@
                         >
                             诊断
                         </a>
+                    </template>
+                    <!-- 卡片模式 -->
+                    <template #card="slotProps">
+                        <CardBox
+                            :value="slotProps"
+                            @click="handleClick"
+                            :actions="getActions(slotProps)"
+                            :status="slotProps.state?.value"
+                            :statusText="slotProps.state?.text"
+                            :statusNames="{
+                                online: 'processing',
+                                offline: 'error',
+                                notActive: 'warning',
+                            }"
+                        >
+                            <template #img>
+                                <img
+                                    :width="80"
+                                    :height="80"
+                                    :src="
+                                        slotProps?.photoUrl ||
+                                        getImage(
+                                            '/device/instance/device-card.png',
+                                        )
+                                    "
+                                />
+                            </template>
+                            <template #content>
+                                <Ellipsis
+                                    style="
+                                        width: calc(100% - 100px);
+                                        margin-bottom: 18px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        "
+                                    >
+                                        {{ slotProps.name }}
+                                    </span>
+                                </Ellipsis>
+                                <j-row>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            设备类型
+                                        </div>
+                                        <div>
+                                            {{ slotProps.deviceType?.text }}
+                                        </div>
+                                    </j-col>
+                                    <j-col :span="12">
+                                        <div class="card-item-content-text">
+                                            物模型名称
+                                        </div>
+                                        <Ellipsis style="width: 100%">
+                                            {{ slotProps.productName }}
+                                        </Ellipsis>
+                                    </j-col>
+                                </j-row>
+                            </template>
+                            <template #actions="item">
+                                <PermissionButton
+                                    :popConfirm="item.popConfirm"
+                                    :tooltip="{
+                                        ...item.tooltip,
+                                    }"
+                                    @click="item.onClick"
+                                    :hasPermission="
+                                        'device/Instance:' + item.key
+                                    "
+                                >
+                                    <AIcon
+                                        type="DeleteOutlined"
+                                        v-if="item.key === 'delete'"
+                                    />
+                                    <template v-else>
+                                        <AIcon :type="item.icon" />
+                                        <span>{{ item?.text }}</span>
+                                    </template>
+                                </PermissionButton>
+                            </template>
+                        </CardBox>
                     </template>
                     <template #paginationRender>
                         <a-pagination
@@ -106,7 +190,7 @@ import { useSelectableTable } from '@/hook/useSelectableTable';
 import { useProSearch } from '@/hook/useProSearch';
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
-import { onlyMessage } from '@/utils/comm';
+import { getImage, onlyMessage } from '@/utils/comm';
 import {
     EXCEED_EXPORT_TIPS,
     EXPORT_ALL,
@@ -117,7 +201,13 @@ import PermissionButton from 'components/PermissionButton/index.vue';
 import ZTag from '@/views/device/OfflineManage/components/z-tag/index.vue';
 import DiagnoseModal from '@/views/device/OfflineManage/components/diagnose/index.vue';
 import dayjs from 'dayjs';
-import { detail, queryGatewayState } from '@/api/device/instance';
+import {
+    _delete,
+    _deploy,
+    _undeploy,
+    detail,
+    queryGatewayState,
+} from '@/api/device/instance';
 import { useInstanceStore } from 'store/instance';
 import {
     checkDevice,
@@ -125,11 +215,13 @@ import {
     offlineDeviceExport,
 } from '@/api/device/offlineManage';
 import type { ISearchParams } from '@/global';
+import type { ActionsType } from '@/views/device/Instance/typings';
 
 // 默认排序字段
 const DEFAULT_ORDER_COLUMN = 'createTime';
 
 const tableRef = ref();
+const tableModel = ref('TABLE');
 
 const globParams = ref<Record<string, any>>({});
 const total = ref<number>(0);
@@ -419,6 +511,26 @@ const handleProvider = (provider: string) => {
     return provider;
 };
 
+const handleClick = (dt: any) => {};
+
+const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
+    if (!data) return [];
+    const actions = [
+        {
+            key: 'view',
+            text: '诊断',
+            tooltip: {
+                title: '诊断',
+            },
+            icon: 'FileProtectOutlined',
+            onClick: () => {
+                modalEvent.open(data);
+            },
+        },
+    ];
+    return actions;
+};
+
 onMounted(() => {
     // 清空store避免切换到设备实例页面时数据未清空
     instanceStore.current = {} as any;
@@ -437,6 +549,7 @@ onMounted(() => {
 
     background-color: fade(#000, 45%);
     backdrop-filter: blur(2px);
+
     .wrapper {
         position: absolute;
         top: 0;
@@ -446,6 +559,7 @@ onMounted(() => {
         margin: auto;
         width: fit-content;
         height: fit-content;
+
         .ant-btn {
             color: #f84914;
         }
