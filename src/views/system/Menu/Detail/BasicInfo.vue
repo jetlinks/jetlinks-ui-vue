@@ -250,11 +250,13 @@
                 </j-form-item>
                 <j-form-item label="权限">
                     <PermissChoose
+                        v-if="showPermissionChoose"
                         :first-width="3"
                         max-height="350px"
                         v-model:value="form.data.permissions"
                         :key="form.data.id || ''"
                     />
+                    <a-spin v-else/>
                 </j-form-item>
             </j-form>
 
@@ -301,6 +303,7 @@ const permission = 'system/Menu';
 // 路由
 const route = useRoute();
 const router = useRouter();
+const showPermissionChoose = ref(false)
 const routeParams = {
     id: route.params.id === ':id' ? undefined : (route.params.id as string),
     ...route.query,
@@ -340,6 +343,7 @@ const form = reactive({
                         resp.result?.accessSupport?.value || 'unsupported',
                 };
                 form.sourceCode = resp.result.code;
+                showPermissionChoose.value = true
             });
 
         if (isNoCommunity) {
