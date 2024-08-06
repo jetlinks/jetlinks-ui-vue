@@ -46,7 +46,7 @@
 		"Management.index.039153-16": "type",
 		"Management.index.039153-17": "length",
 		"Management.index.039153-18": "accuracy",
-		"Management.index.039153-19": "cannot be empty",
+		"Management.index.039153-19": "not empty",
 		"Management.index.039153-20": "explain",
 		"Management.index.039153-21": "operation",
 		"Management.index.039153-22": "Please configure the dataSource fields",
