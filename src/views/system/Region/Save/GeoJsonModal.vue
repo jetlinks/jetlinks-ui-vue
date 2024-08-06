@@ -2,13 +2,13 @@
   <j-modal
     visible
     width="650px"
-    title="上传GeoJson"
+    :title="$t('Save.GeoJsonModal.101933-0')"
     :maskClosable="false"
     @ok="handleSave"
     @cancel="handleCancel"
   >
     <div>
-      仅支持获取单个区域数据
+      {{ $t('Save.GeoJsonModal.101933-1') }}
     </div>
     <j-monaco-editor
       language="json"
@@ -19,7 +19,9 @@
 </template>
 
 <script setup name="GeoJsonModal">
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const props = defineProps({
   value: {
     type: String,

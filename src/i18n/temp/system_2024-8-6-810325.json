@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"MapTool.map.101936-0": "保存描点",
+		"MapTool.map.101936-1": "取消操作",
+		"MapTool.map.101936-2": "矩形",
+		"MapTool.map.101936-3": "多边形",
+		"MapTool.map.101936-4": "撤销",
+		"MapTool.map.101936-5": "删除",
+		"MapTool.map.101936-6": "请绘制区域范围"
+	},
+	"en": {
+		"MapTool.map.101936-0": "Save trace points",
+		"MapTool.map.101936-1": "Cancel operation",
+		"MapTool.map.101936-2": "rectangle",
+		"MapTool.map.101936-3": "polygon",
+		"MapTool.map.101936-4": "Revoke",
+		"MapTool.map.101936-5": "Delete",
+		"MapTool.map.101936-6": "Please draw the area range"
+	}
+}
