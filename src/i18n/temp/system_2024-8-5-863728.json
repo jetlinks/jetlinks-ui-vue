@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Relationship.index.635690-0": "新增",
+		"Relationship.index.635690-1": "编辑",
+		"Relationship.index.635690-2": "删除",
+		"Relationship.index.635690-3": "确认删除",
+		"Relationship.index.635690-4": "正向关系名称",
+		"Relationship.index.635690-5": "反向关系名称",
+		"Relationship.index.635690-6": "关联方",
+		"Relationship.index.635690-7": "被关联方",
+		"Relationship.index.635690-8": "说明",
+		"Relationship.index.635690-9": "操作",
+		"Relationship.index.635690-10": "操作成功!"
+	},
+	"en": {
+		"Relationship.index.635690-0": "Add",
+		"Relationship.index.635690-1": "Edit",
+		"Relationship.index.635690-2": "Delete",
+		"Relationship.index.635690-3": "Confirm deletion",
+		"Relationship.index.635690-4": "positive relationship name",
+		"Relationship.index.635690-5": "reverse relationship name",
+		"Relationship.index.635690-6": "object parties",
+		"Relationship.index.635690-7": "related parties",
+		"Relationship.index.635690-8": "explain",
+		"Relationship.index.635690-9": "operation",
+		"Relationship.index.635690-10": "Operation successful!"
+	}
+}
