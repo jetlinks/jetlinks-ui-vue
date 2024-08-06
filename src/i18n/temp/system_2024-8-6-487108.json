@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"Item.index.8664411-0": "暂无权限，请联系管理员",
+		"Item.index.8664411-1": "通过角色控制【{0}】的所有的通知方式可被哪些用户订阅。",
+		"Item.index.8664411-2": "权限控制",
+		"Item.index.8664411-3": "查看",
+		"Item.index.8664411-4": "编辑",
+		"Item.index.8664411-5": "删除",
+		"Item.index.8664411-6": "操作成功！",
+		"Item.index.8664411-7": "站内信",
+		"Item.index.8664411-8": "开启后默认平台所有用户都能接收到该通知",
+		"Item.index.8664411-9": "关闭后平台所有用户都不能接收到该通知",
+		"Item.index.8664411-10": "取消",
+		"Item.index.8664411-11": "确认开启",
+		"Item.index.8664411-12": "确认关闭",
+		"Item.index.8664411-13": "不再提示"
+	},
+	"en": {
+		"Item.index.8664411-0": "No permission at the moment, please contact the administrator",
+		"Item.index.8664411-1": "Control which users can subscribe to all notification methods of {0} through roles.",
+		"Item.index.8664411-2": "Permission control",
+		"Item.index.8664411-3": "Show",
+		"Item.index.8664411-4": "Edit",
+		"Item.index.8664411-5": "Delete",
+		"Item.index.8664411-6": "Operation successful!",
+		"Item.index.8664411-7": "mail ",
+		"Item.index.8664411-8": "After activation, all users on the default platform can receive this notification",
+		"Item.index.8664411-9": "After closure, all users on the platform cannot receive this notification",
+		"Item.index.8664411-10": "cancel",
+		"Item.index.8664411-11": "Confirm activation",
+		"Item.index.8664411-12": "Confirm closure",
+		"Item.index.8664411-13": "No more prompts"
+	}
+}

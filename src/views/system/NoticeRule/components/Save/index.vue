@@ -2,7 +2,7 @@
     <j-modal
         :width="1056"
         visible
-        title="配置通知方式"
+        :title="$t('Save.index.866442-0')"
         @cancel="emit('close')"
         :bodyStyle="{ padding: 0 }"
         :maskClosable="false"
@@ -15,17 +15,17 @@
                         }}<j-tooltip v-if="index === 4">
                             <template #title>
                                 <span>
-                                    通过角色控制【{{ name }}】下的【{{ showName }}通知】可被哪些用户订阅。<br />
-                                    注意：当前配置会被外层【{{ name }}】中的权限控制覆盖。
+                                    {{ $t('Save.index.866442-1',[name,showName])}}<br />
+                                    {{ $t('Save.index.866442-2',[name])}}
                                 </span>
                             </template>
                             <AIcon type="QuestionCircleOutlined"
                         /></j-tooltip>
                     </template>
                     <template #description>
-                        <span v-if="current === index">进行中</span>
-                        <span v-if="current < index">未开始</span>
-                        <span v-if="current > index">已完成</span>
+                        <span v-if="current === index">{{ $t('Save.index.866442-6') }}</span>
+                        <span v-if="current < index">{{ $t('Save.index.866442-7') }}</span>
+                        <span v-if="current > index">{{ $t('Save.index.866442-8') }}</span>
                     </template>
                 </j-step>
             </j-steps>
@@ -64,7 +64,7 @@
             <template v-if="current === 4">
                 <div class="alert">
                     <AIcon type="InfoCircleOutlined" />
-                    通过角色控制哪些用户可以订阅从【{{ name }}】接收到【{{ showName }}】通知
+                    {{ $t('Save.index.866442-9',[name,showName]) }}
                 </div>
                 <Role type="add" v-model="formModel.grant.role.idList" />
             </template>
@@ -72,7 +72,7 @@
                 <div>
                     <div class="alert">
                         <AIcon type="InfoCircleOutlined" />
-                        被分配了接收权限的用户将根据名称判断是否订阅该通知
+                        {{ $t('Save.index.866442-12') }}
                     </div>
                     <div style="margin: 50px 200px">
                         <j-form
@@ -82,18 +82,18 @@
                         >
                             <j-form-item
                                 name="name"
-                                label="名称"
+                                :label="$t('Save.index.866442-13')"
                                 :rules="[
-                                    { required: true, message: '请输入名称' },
+                                    { required: true, message: $t('Save.index.866442-14') },
                                     {
                                         max: 8,
-                                        message: '最多可输入8个字符',
+                                        message: $t('Save.index.866442-15'),
                                     },
                                 ]"
                             >
                                 <j-input
                                     v-model:value="formModel.name"
-                                    placeholder="请输入名称"
+                                    :placeholder="$t('Save.index.866442-14')"
                                 />
                             </j-form-item>
                         </j-form>
@@ -104,21 +104,21 @@
         <template #footer>
             <j-space>
                 <j-button v-if="current === 0" @click="emit('close')"
-                    >取消</j-button
+                    >{{ $t('Save.index.866442-16') }}</j-button
                 >
-                <j-button v-else @click="onPrev">上一步</j-button>
+                <j-button v-else @click="onPrev">{{ $t('Save.index.866442-17') }}</j-button>
                 <j-button
                     type="primary"
                     @click="onNext"
                     v-if="current !== stepList.length - 1"
-                    >下一步</j-button
+                    >{{ $t('Save.index.866442-18') }}</j-button
                 >
                 <j-button
                     :loading="loading"
                     type="primary"
                     @click="onSave"
                     v-else
-                    >确认</j-button
+                    >{{ $t('Save.index.866442-19') }}</j-button
                 >
             </j-space>
         </template>
@@ -136,6 +136,9 @@ import Template from '@/api/notice/template';
 import { variableMap } from '../../data';
 import { cloneDeep } from 'lodash-es';
 import { isNoCommunity } from "@/utils/utils";
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 type GrantType = {
     role: {
@@ -172,12 +175,12 @@ const props = defineProps({
 });
 
 const stepList = [
-    '选择通知方式',
-    '选择通知配置',
-    '选择通知模板',
-    '配置模板变量',
-    '配置用户权限',
-    '完成',
+    $t('Save.index.866442-20'),
+    $t('Save.index.866442-21'),
+    $t('Save.index.866442-22'),
+    $t('Save.index.866442-23'),
+    $t('Save.index.866442-24'),
+    $t('Save.index.866442-25'),
 ] 
 const current = ref<number>(0);
 const variable = ref([]);
@@ -198,7 +201,7 @@ const formModel = reactive<{
 });
 const variableRef = ref();
 const formRef = ref();
-const showName = ref<string>('钉钉')
+const showName = ref<string>($t('Save.index.866442-26'))
 
 const _getType = computed(() => {
     if (['notifier-dingTalk'].includes(props.data?.channelProvider)) {
@@ -245,19 +248,19 @@ const handleVariable = (obj: any) => {
 const jumpStep = async (val: number) => {
     if (val >= 1) {
         if (!formModel.channelProvider) {
-            onlyMessage('请选择通知方式', 'error');
+            onlyMessage($t('Save.index.866442-27'), 'error');
             return;
         }
     }
     if (val >= 2) {
         if (!formModel.channelConfiguration.notifierId) {
-            onlyMessage('请选择通知配置', 'error');
+            onlyMessage($t('Save.index.866442-28'), 'error');
             return;
         }
     }
     if (val >= 3) {
         if (!formModel.channelConfiguration.templateId) {
-            onlyMessage('请选择通知模板', 'error');
+            onlyMessage($t('Save.index.866442-29'), 'error');
             return;
         } else {
             // 查询变量
@@ -277,7 +280,7 @@ const jumpStep = async (val: number) => {
                     if (obj) {
                         handleVariable(obj);
                     } else {
-                        onlyMessage('请配置模版变量', 'error');
+                        onlyMessage($t('Save.index.866442-30'), 'error');
                         return;
                     }
                 } else {
@@ -300,7 +303,7 @@ const jumpStep = async (val: number) => {
                         },
                     );
                     if (!flag) {
-                        onlyMessage('请配置模版变量', 'error');
+                        onlyMessage($t('Save.index.866442-30'), 'error');
                         return;
                     }
                 }

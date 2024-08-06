@@ -12,12 +12,12 @@
             type="primary"
             :hasPermission="['notice/Template:add']"
         >
-            新增
+            {{ $t('components.NotifyTemplate.866445-0') }}
         </PermissionButton>
     </div>
     <div class="alert">
         <AIcon type="InfoCircleOutlined" />
-        已规定固定收信人的模板在当前页面将被过滤
+        {{ $t('components.NotifyTemplate.866445-1') }}
     </div>
     <div style="max-height: 400px; overflow-y: auto">
         <JProTable
@@ -66,14 +66,14 @@
                         <j-row>
                             <j-col :span="12">
                                 <div class="card-item-content-text">
-                                    通知方式
+                                    {{ $t('components.NotifyTemplate.866445-2') }}
                                 </div>
                                 <div>
                                     {{ getMethodTxt(slotProps.type) }}
                                 </div>
                             </j-col>
                             <j-col :span="12">
-                                <div class="card-item-content-text">说明</div>
+                                <div class="card-item-content-text">{{ $t('components.NotifyTemplate.866445-3') }}</div>
                                 <Ellipsis>
                                     {{ slotProps.description }}
                                 </Ellipsis>
@@ -95,6 +95,9 @@
 import TemplateApi from '@/api/notice/template';
 import { MSG_TYPE, NOTICE_METHOD } from '@/views/notice/const';
 import { noticeType, _variableMap } from '../../../data';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     notifierId: {
         type: String,
@@ -127,7 +130,7 @@ const _selectedRowKeys = ref<string[]>([]);
 
 const columns = [
     {
-        title: '名称',
+        title: $t('components.NotifyTemplate.866445-4'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -143,7 +146,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('components.NotifyTemplate.866445-3'),
         dataIndex: 'description',
         key: 'description',
         search: {

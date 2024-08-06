@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"NoticeRule.index.866440-0": "启用通知类型后，你可以为每种通知类型配置不同的通知方式、通知模板、接收人。",
+		"NoticeRule.index.866440-1": "注意：接收人需要有告警配置页面查询权限，才能收到告警类通知",
+		"NoticeRule.index.866440-2": "告警",
+		"NoticeRule.index.866440-3": "产品告警",
+		"NoticeRule.index.866440-4": "设备告警",
+		"NoticeRule.index.866440-5": "部门告警",
+		"NoticeRule.index.866440-6": "其他告警",
+		"NoticeRule.index.866440-7": "系统监控",
+		"NoticeRule.index.866440-8": "系统运行异常",
+		"NoticeRule.index.866440-9": "业务监控",
+		"NoticeRule.index.866440-10": "透传消息解析异常",
+		"NoticeRule.index.866440-11": "工作流通知",
+		"NoticeRule.index.866440-12": "待办通知",
+		"NoticeRule.index.866440-13": "驳回通知",
+		"NoticeRule.index.866440-14": "抄送通知",
+		"NoticeRule.index.866440-15": "办结通知",
+		"NoticeRule.index.866440-16": "关闭通知",
+		"NoticeRule.index.866440-17": "转办通知"
+	},
+	"en": {
+		"NoticeRule.index.866440-0": "After enabling notification types, you can configure different notification methods, notification templates, and recipients for each notification type.",
+		"NoticeRule.index.866440-1": "Attention: The recipient needs to have the permission to query the alarm configuration page in order to receive alarm notifications",
+		"NoticeRule.index.866440-2": "Alarm",
+		"NoticeRule.index.866440-3": "Product alarm",
+		"NoticeRule.index.866440-4": "Device alarm ",
+		"NoticeRule.index.866440-5": "Departmental alarm",
+		"NoticeRule.index.866440-6": "Other alarms",
+		"NoticeRule.index.866440-7": "System monitor",
+		"NoticeRule.index.866440-8": "System runtime error",
+		"NoticeRule.index.866440-9": "Business monitor",
+		"NoticeRule.index.866440-10": "Transparent message parsing error",
+		"NoticeRule.index.866440-11": "Workflow notice",
+		"NoticeRule.index.866440-12": "Todo notice",
+		"NoticeRule.index.866440-13": "Reject notice",
+		"NoticeRule.index.866440-14": "CC notice",
+		"NoticeRule.index.866440-15": "Completed notice",
+		"NoticeRule.index.866440-16": "Close notice",
+		"NoticeRule.index.866440-17": "Transfer notice"
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Detail.index.8664413-0": "配置详情",
+		"Detail.index.8664413-1": "通知方式",
+		"Detail.index.8664413-2": "通知配置",
+		"Detail.index.8664413-3": "通知模板",
+		"Detail.index.8664413-4": "模版内容",
+		"Detail.index.8664413-5": "模板变量",
+		"Detail.index.8664413-6": "用户权限",
+		"Detail.index.8664413-7": "确定",
+		"Detail.index.8664413-8": "未配置权限"
+	},
+	"en": {
+		"Detail.index.8664413-0": "Configuration details",
+		"Detail.index.8664413-1": "Notification method",
+		"Detail.index.8664413-2": "Notification configuration",
+		"Detail.index.8664413-3": "Notification Template",
+		"Detail.index.8664413-4": "Template Content",
+		"Detail.index.8664413-5": "Template variables",
+		"Detail.index.8664413-6": "User Permissions",
+		"Detail.index.8664413-7": "Confirm",
+		"Detail.index.8664413-8": "No permissions configured"
+	}
+}

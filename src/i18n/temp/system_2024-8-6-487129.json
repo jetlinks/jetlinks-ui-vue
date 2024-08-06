@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.NotifyTemplate.866445-0": "新增",
+		"components.NotifyTemplate.866445-1": "已规定固定收信人的模板在当前页面将被过滤",
+		"components.NotifyTemplate.866445-2": "通知方式",
+		"components.NotifyTemplate.866445-3": "说明",
+		"components.NotifyTemplate.866445-4": "名称"
+	},
+	"en": {
+		"components.NotifyTemplate.866445-0": "Add",
+		"components.NotifyTemplate.866445-1": "The template for fixed recipients has been specified and will be filtered on the current page",
+		"components.NotifyTemplate.866445-2": "Notification method",
+		"components.NotifyTemplate.866445-3": "explain",
+		"components.NotifyTemplate.866445-4": "name"
+	}
+}

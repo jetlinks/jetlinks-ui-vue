@@ -2,8 +2,8 @@
     <j-input-group compact>
         <j-select
             :options="[
-                { label: '手动输入', value: 'fixed' },
-                { label: '内置参数', value: 'upper' },
+                { label: $t('variableItem.BuildIn.866449-0'), value: 'fixed' },
+                { label: $t('variableItem.BuildIn.866449-1'), value: 'upper' },
             ]"
             style="width: 120px"
             :value="value?.source"
@@ -13,7 +13,7 @@
             <j-tree-select
                 v-model:value="upperKey"
                 :treeData="builtInList"
-                placeholder="请选择参数"
+                :placeholder="$t('variableItem.BuildIn.866449-2')"
                 style="width: calc(100% - 120px)"
                 :fieldNames="{ label: 'name', value: 'id' }"
                 @change="(val) => itemOnChange(undefined, val)"
@@ -35,7 +35,7 @@
                 allowClear
                 style="width: calc(100% - 120px)"
                 v-else-if="item.type === 'number'"
-                :placeholder="`请输入${item.name}`"
+                :placeholder="$t('variableItem.BuildIn.866449-3', [item.name])"
                 @change="itemOnChange"
             />
             <j-input
@@ -43,7 +43,7 @@
                 allowClear
                 style="width: calc(100% - 120px)"
                 v-else
-                :placeholder="`请输入${item.name}`"
+                :placeholder="$t('variableItem.BuildIn.866449-3', [item.name])"
                 @change="(e) => itemOnChange(e.target.value)"
             />
         </template>
@@ -52,6 +52,9 @@
 
 <script lang="ts" setup name='NotifyBuildIn'>
 import { queryConfigVariables } from '@/api/system/noticeRule';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
     value: {

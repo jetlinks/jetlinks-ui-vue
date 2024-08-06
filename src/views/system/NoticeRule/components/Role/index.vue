@@ -4,7 +4,7 @@
             <j-input-search
                 allowClear
                 @search="onSearch"
-                placeholder="请输入名称"
+                :placeholder="$t('Role.index.8664410-0')"
             />
             <div class="role-alert">
                 <j-alert type="info">
@@ -14,17 +14,17 @@
                                 :indeterminate="indeterminate"
                                 :checked="checked"
                                 @change="onSelectAll"
-                                >全选</j-checkbox
+                                >{{ $t('Role.index.8664410-1') }}</j-checkbox
                             >
                             <j-space v-if="_selectedRowKeys.length">
                                 <span
-                                    >已选择{{ _selectedRowKeys.length }}项</span
+                                    >{{ $t('Role.index.8664410-2') }}{{ _selectedRowKeys.length }}{{ $t('Role.index.8664410-3') }}</span
                                 >
                                 <j-button
                                     style="padding: 0; height: 22px"
                                     type="link"
                                     @click="cancelSelect"
-                                    >取消选择</j-button
+                                    >{{ $t('Role.index.8664410-4') }}</j-button
                                 >
                             </j-space>
                         </div>
@@ -41,21 +41,21 @@
                             <j-input-search
                                 allowClear
                                 @search="onSearch"
-                                placeholder="请输入名称"
+                                :placeholder="$t('Role.index.8664410-0')"
                                 style="width: 300px"
                             />
                             <j-space>
                                 <template v-if="_selectedRowKeys.length">
                                     <span
-                                        >已选择{{
+                                        >{{ $t('Role.index.8664410-2') }}{{
                                             _selectedRowKeys.length
-                                        }}项</span
+                                        }}{{ $t('Role.index.8664410-3') }}</span
                                     >
                                     <j-button
                                         style="padding: 0; height: 22px"
                                         type="link"
                                         @click="cancelSelect"
-                                        >取消选择</j-button
+                                        >{{ $t('Role.index.8664410-4') }}</j-button
                                     >
                                 </template>
 
@@ -63,7 +63,7 @@
                                     :indeterminate="indeterminate"
                                     :checked="checked"
                                     @change="onSelectAll"
-                                    >全选</j-checkbox
+                                    >{{ $t('Role.index.8664410-1') }}</j-checkbox
                                 >
                             </j-space>
                         </div>
@@ -103,6 +103,9 @@
 <script lang="ts" setup>
 import { queryRoleList } from '@/api/system/noticeRule';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     modelValue: {
         type: Array as PropType<string[]>,
@@ -158,14 +161,14 @@ watchEffect(() => {
 
 const columns = [
     {
-        title: '标识',
+        title: $t('Role.index.8664410-5'),
         dataIndex: 'id',
         key: 'id',
         ellipsis: true,
         fixed: 'left',
     },
     {
-        title: '名称',
+        title: $t('Role.index.8664410-6'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -174,7 +177,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Role.index.8664410-7'),
         key: 'description',
         ellipsis: true,
         dataIndex: 'description',
