@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"components.VariableDefinitions.2146813-0": "该字段是必填字段",
+		"components.VariableDefinitions.2146813-1": "最多可输入64个字符",
+		"components.VariableDefinitions.2146813-2": "字符串",
+		"components.VariableDefinitions.2146813-3": "时间",
+		"components.VariableDefinitions.2146813-4": "数字",
+		"components.VariableDefinitions.2146813-5": "格式为：%.xf x代表数字保留的小数位数。当x=0时,代表格式为整数",
+		"components.VariableDefinitions.2146813-6": "变量",
+		"components.VariableDefinitions.2146813-7": "名称",
+		"components.VariableDefinitions.2146813-8": "类型",
+		"components.VariableDefinitions.2146813-9": "格式"
+	},
+	"en": {
+		"components.VariableDefinitions.2146813-0": "This field is mandatory",
+		"components.VariableDefinitions.2146813-1": "Up to 64 characters can be entered",
+		"components.VariableDefinitions.2146813-2": "character string",
+		"components.VariableDefinitions.2146813-3": "time",
+		"components.VariableDefinitions.2146813-4": "number",
+		"components.VariableDefinitions.2146813-5": "The format is:%. xf x represents the number of decimal places reserved for digits. When x=0, it represents the format as an integer",
+		"components.VariableDefinitions.2146813-6": "variable",
+		"components.VariableDefinitions.2146813-7": "name",
+		"components.VariableDefinitions.2146813-8": "type",
+		"components.VariableDefinitions.2146813-9": "format"
+	}
+}

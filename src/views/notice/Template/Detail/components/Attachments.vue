@@ -35,7 +35,7 @@
             <template #icon>
                 <plus-outlined />
             </template>
-            添加
+            {{ $t('components.Attachments.214685-0') }}
         </j-button>
     </div>
 </template>
@@ -52,7 +52,9 @@ import { FILE_UPLOAD } from '@/api/comm';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { UploadChangeParam } from 'ant-design-vue';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 type Emits = {
     (e: 'update:attachments', data: IAttachments[]): void;
 };

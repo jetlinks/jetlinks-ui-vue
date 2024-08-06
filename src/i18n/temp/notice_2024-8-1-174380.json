@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"doc.DingTalk.737446-0": "钉钉开放平台：",
+		"doc.DingTalk.737446-1": "1. 概述",
+		"doc.DingTalk.737446-2": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.DingTalk.737446-3": "2.通知配置说明",
+		"doc.DingTalk.737446-4": "企业内部应用的唯一身份标识。在钉钉开发者后台创建企业内部应用后，系统会自动生成一对AppKey和AppSecret。",
+		"doc.DingTalk.737446-5": "获取路径：“钉钉开放平台”--“应用开发”--“应用信息”",
+		"doc.DingTalk.737446-6": "钉钉应用对应的调用密钥"
+	},
+	"en": {
+		"doc.DingTalk.737446-0": "DingTalk Open Platform:",
+		"doc.DingTalk.737446-1": "1. Overview",
+		"doc.DingTalk.737446-2": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.DingTalk.737446-3": "2. Notification configuration instructions",
+		"doc.DingTalk.737446-4": "The unique identifier for internal applications within the enterprise. After creating an internal application in the DingTalk developer backend, the system will automatically generate a pair of AppKey and AppSecret.",
+		"doc.DingTalk.737446-5": "Access path: \"DingTalk Open Platform\" - \"Application Development\" - \"Application Information\"",
+		"doc.DingTalk.737446-6": "The calling key corresponding to the DingTalk application"
+	}
+}

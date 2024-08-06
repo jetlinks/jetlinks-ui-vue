@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"doc.WeixinApp.7374412-0": "微信公众平台：",
+		"doc.WeixinApp.7374412-1": "1. 概述",
+		"doc.WeixinApp.7374412-2": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.WeixinApp.7374412-3": "2.通知配置说明",
+		"doc.WeixinApp.7374412-4": "微信服务号的唯一专属编号。",
+		"doc.WeixinApp.7374412-5": "获取路径：“微信公众平台”管理后台--“设置与开发”--“基本配置”",
+		"doc.WeixinApp.7374412-6": "公众号开发者身份的密码"
+	},
+	"en": {
+		"doc.WeixinApp.7374412-0": "WeChat public platform:",
+		"doc.WeixinApp.7374412-1": "1. Overview",
+		"doc.WeixinApp.7374412-2": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.WeixinApp.7374412-3": "2. Notification configuration instructions",
+		"doc.WeixinApp.7374412-4": "The unique and exclusive identifier for the WeChat service account.",
+		"doc.WeixinApp.7374412-5": "Access path: \"WeChat Public Platform\" management backend - \"Settings and Development\" - \"Basic Configuration\"",
+		"doc.WeixinApp.7374412-6": "Password of official account developer"
+	}
+}

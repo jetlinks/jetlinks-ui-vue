@@ -2,7 +2,7 @@
     <j-select
         :options="options"
         @change="change"
-        placeholder="请选择收信人"
+        :placeholder="$t('components.ToUser.2146812-0')"
         style="width: 100%"
         :allowClear="true"
         v-model:value="_value"
@@ -11,7 +11,9 @@
 
 <script setup lang="ts">
 import templateApi from '@/api/notice/template';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 type Emits = {
     (e: 'update:toUser', data: string | undefined): void;
 };

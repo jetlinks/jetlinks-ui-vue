@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"doc.DingTalkRebot.737445-0": "1. 概述",
+		"doc.DingTalkRebot.737445-1": "通知配置可以结合通知配置为告警消息通知提供支撑。也可以用于系统中其他自定义模块的调用。",
+		"doc.DingTalkRebot.737445-2": "2.通知配置说明",
+		"doc.DingTalkRebot.737445-3": "在钉钉群内每创建一个钉钉群自定义机器人都会产生唯一的WebHook地址。",
+		"doc.DingTalkRebot.737445-4": "获取路径：“钉钉桌面客户端”--“群设置”--“智能群助手”--“机器人信息”",
+		"doc.DingTalkRebot.737445-5": "1、登录钉钉桌面客户端，进入群设置",
+		"doc.DingTalkRebot.737445-6": "2、点击智能群助手，查看机器人信息"
+	},
+	"en": {
+		"doc.DingTalkRebot.737445-0": "1. Overview",
+		"doc.DingTalkRebot.737445-1": "Notification configuration can be combined with notification configuration to provide support for alarm message notifications. It can also be used for calling other custom modules in the system.",
+		"doc.DingTalkRebot.737445-2": "2. Notification configuration instructions",
+		"doc.DingTalkRebot.737445-3": "Each custom robot created in the DingTalk group will generate a unique WebHook address.",
+		"doc.DingTalkRebot.737445-4": "Get path: \"DingTalk Desktop Client\" - \"Group Settings\" - \"Intelligent Group Assistant\" - \"Robot Information\"",
+		"doc.DingTalkRebot.737445-5": "1. Log in to the DingTalk desktop client and enter the group settings",
+		"doc.DingTalkRebot.737445-6": "2. Click on the intelligent group assistant to view robot information"
+	}
+}

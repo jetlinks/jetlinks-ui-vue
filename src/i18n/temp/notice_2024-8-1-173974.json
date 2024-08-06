@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.EditTable.737433-0": "最多可输入64个字符",
+		"components.EditTable.737433-1": "请输入{0}",
+		"components.EditTable.737433-2": "添加",
+		"components.EditTable.737433-3": "操作"
+	},
+	"en": {
+		"components.EditTable.737433-0": "Up to 64 characters can be entered",
+		"components.EditTable.737433-1": "Please enter {0}",
+		"components.EditTable.737433-2": "add to",
+		"components.EditTable.737433-3": "operation"
+	}
+}

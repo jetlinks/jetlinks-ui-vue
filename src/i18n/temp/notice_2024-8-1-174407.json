@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"doc.Webhook.7374413-0": "1. 概述",
+		"doc.Webhook.7374413-1": "WebHook是一个接收HTTP请求的URL（本平台默认只支持HTTP",
+		"doc.Webhook.7374413-2": "POST请求），实现了WebHook的第三方系统可以基于该URL订阅本平台系统信息，本平台按配置把特定的事件结果推送到指定的地址，便于系统做后续处理。",
+		"doc.Webhook.7374413-3": "2.通知配置说明",
+		"doc.Webhook.7374413-4": "WebHook地址。",
+		"doc.Webhook.7374413-5": "2、请求头",
+		"doc.Webhook.7374413-6": "支持根据系统提供的接口设置不同的请求头。如 Accept-Language"
+	},
+	"en": {
+		"doc.Webhook.7374413-0": "1. Overview",
+		"doc.Webhook.7374413-1": "WebHook is a URL that receives HTTP requests (this platform only supports HTTP by default)",
+		"doc.Webhook.7374413-2": "POST request), a third-party system that implements WebHook can subscribe to the platform's system information based on this URL. The platform pushes specific event results to the specified address according to configuration, which facilitates subsequent processing by the system.",
+		"doc.Webhook.7374413-3": "2. Notification configuration instructions",
+		"doc.Webhook.7374413-4": "WebHook address.",
+		"doc.Webhook.7374413-5": "2. Request header",
+		"doc.Webhook.7374413-6": "Support setting different request headers based on the interface provided by the system. Like Accept Language"
+	}
+}

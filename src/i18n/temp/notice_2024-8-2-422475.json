@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"doc.DingTalkRebot.214686-0": "钉钉开放平台：",
+		"doc.DingTalkRebot.214686-1": "1. 概述",
+		"doc.DingTalkRebot.214686-2": "通知模板结合通知配置为告警消息通知提供支撑。通知模板只能调用同一类型的通知配置服务。",
+		"doc.DingTalkRebot.214686-3": "使用钉钉群机器人消息通知时需在钉钉开放平台中创建好对应的机器人，再到钉钉客户端在对应的群中绑定智能机器人。",
+		"doc.DingTalkRebot.214686-4": "2.模板配置说明",
+		"doc.DingTalkRebot.214686-5": "1、绑定配置",
+		"doc.DingTalkRebot.214686-6": "使用固定的通知配置发送此通知模板",
+		"doc.DingTalkRebot.214686-7": "2、消息类型",
+		"doc.DingTalkRebot.214686-8": "目前支持text、markdown、link3种。",
+		"doc.DingTalkRebot.214686-9": "3、模板内容",
+		"doc.DingTalkRebot.214686-10": "支持填写带变量的动态模板。变量填写规范示例：{0}。填写动态参数后，可对变量的名称、类型、格式进行配置，以便告警通知时填写。"
+	},
+	"en": {
+		"doc.DingTalkRebot.214686-0": "DingTalk Open Platform:",
+		"doc.DingTalkRebot.214686-1": "1. Overview",
+		"doc.DingTalkRebot.214686-2": "The notification template combined with notification configuration provides support for alarm message notifications. Notification templates can only call notification configuration services of the same type.",
+		"doc.DingTalkRebot.214686-3": "When using DingTalk group robot message notifications, it is necessary to create the corresponding robot in the DingTalk open platform, and then bind the intelligent robot in the corresponding group on the DingTalk client.",
+		"doc.DingTalkRebot.214686-4": "2. Template configuration instructions",
+		"doc.DingTalkRebot.214686-5": "1. Binding configuration",
+		"doc.DingTalkRebot.214686-6": "Send this notification template using a fixed notification configuration",
+		"doc.DingTalkRebot.214686-7": "2. Message type",
+		"doc.DingTalkRebot.214686-8": "Currently supports three types: text, markdown, and link.",
+		"doc.DingTalkRebot.214686-9": "3. Template Content",
+		"doc.DingTalkRebot.214686-10": "Dynamic templates with variables are supported. Example of variable filling: {0}. After setting dynamic parameters, you can set the name, type, and format of variables for alarm notification."
+	}
+}

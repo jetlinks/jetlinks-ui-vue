@@ -1,5 +1,6 @@
+import i18n from '@/i18n'
 import { getImage } from '@/utils/comm';
-
+const $t = i18n.global.t
 interface INoticeMethod {
     label: string;
     value: string;
@@ -8,23 +9,23 @@ interface INoticeMethod {
 // 通知方式
 export const NOTICE_METHOD: INoticeMethod[] = [
     {
-        label: '钉钉',
+        label: $t('notice.const.852948-0'),
         value: 'dingTalk',
     },
     {
-        label: '微信',
+        label: $t('notice.const.852948-1'),
         value: 'weixin',
     },
     {
-        label: '邮件',
+        label: $t('notice.const.852948-2'),
         value: 'email',
     },
     {
-        label: '语音',
+        label: $t('notice.const.852948-3'),
         value: 'voice',
     },
     {
-        label: '短信',
+        label: $t('notice.const.852948-4'),
         value: 'sms',
     },
     {
@@ -37,38 +38,33 @@ export const NOTICE_METHOD: INoticeMethod[] = [
 export const MSG_TYPE = {
     dingTalk: [
         {
-            label: '钉钉消息',
+            label: $t('notice.const.852948-5'),
             value: 'dingTalkMessage',
             logo: getImage('/notice/dingtalk.png'),
         },
         {
-            label: '群机器人消息',
+            label: $t('notice.const.852948-6'),
             value: 'dingTalkRobotWebHook',
             logo: getImage('/notice/dingTalk-rebot.png'),
         },
     ],
     weixin: [
         {
-            label: '企业消息',
+            label: $t('notice.const.852948-7'),
             value: 'corpMessage',
             logo: getImage('/notice/weixin-corp.png'),
         },
-        // {
-        //   label: '服务号消息',
-        //   value: 'officialMessage'
-        //   logo: getImage('/notice/weixin-official.png'),
-        // }
     ],
     voice: [
         {
-            label: '阿里云语音',
+            label: $t('notice.const.852948-8'),
             value: 'aliyun',
             logo: getImage('/notice/voice.png'),
         },
     ],
     sms: [
         {
-            label: '阿里云短信',
+            label: $t('notice.const.852948-9'),
             value: 'aliyunSms',
             logo: getImage('/notice/sms.png'),
         },
@@ -82,7 +78,7 @@ export const MSG_TYPE = {
     ],
     email: [
         {
-            label: '邮件',
+            label: $t('notice.const.852948-2'),
             value: 'embedded',
             logo: getImage('/notice/email.png'),
         },
@@ -220,6 +216,6 @@ export const ROBOT_MSG_TYPE = [
 ]
 // 语音通知类型
 export const VOICE_TYPE = [
-    { label: '语音通知', value: 'voice' },
-    { label: '语音验证码', value: 'tts' },
+    { label: $t('notice.const.852948-10'), value: 'voice' },
+    { label: $t('notice.const.852948-11'), value: 'tts' },
 ]

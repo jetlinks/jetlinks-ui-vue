@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"doc.AliyunSms.214689-0": "阿里云短信服务平台：",
+		"doc.AliyunSms.214689-1": "1. 概述",
+		"doc.AliyunSms.214689-2": "通知模板结合通知配置为告警消息通知提供支撑。通知模板只能调用同一类型的通知配置服务。使用阿里云短信时需先在阿里云短信服务平台创建短信模板。",
+		"doc.AliyunSms.214689-3": "2.模板配置说明",
+		"doc.AliyunSms.214689-4": "1、绑定配置",
+		"doc.AliyunSms.214689-5": "使用固定的通知配置发送此通知模板",
+		"doc.AliyunSms.214689-6": "2、模板",
+		"doc.AliyunSms.214689-7": "阿里云短信平台自定义的模板名称",
+		"doc.AliyunSms.214689-8": "3、收信人",
+		"doc.AliyunSms.214689-9": "当前仅支持国内手机号，此处若不填，则在模板调试和配置告警通知时手动填写",
+		"doc.AliyunSms.214689-10": "4、签名",
+		"doc.AliyunSms.214689-11": "用于短信内容签名信息显示，需在阿里云短信进行配置。",
+		"doc.AliyunSms.214689-12": "5、变量属性",
+		"doc.AliyunSms.214689-13": "需要在当前页面手动设置与阿里云短信模板中一样的变量，否则会导致发送异常。"
+	},
+	"en": {
+		"doc.AliyunSms.214689-0": "Alibaba Cloud SMS Service Platform:",
+		"doc.AliyunSms.214689-1": "1. Overview",
+		"doc.AliyunSms.214689-2": "The notification template combined with notification configuration provides support for alarm message notifications. Notification templates can only call notification configuration services of the same type. When using Alibaba Cloud SMS, you need to first create a SMS template on the Alibaba Cloud SMS service platform.",
+		"doc.AliyunSms.214689-3": "2. Template configuration instructions",
+		"doc.AliyunSms.214689-4": "1. Binding configuration",
+		"doc.AliyunSms.214689-5": "Send this notification template using a fixed notification configuration",
+		"doc.AliyunSms.214689-6": "2. Template",
+		"doc.AliyunSms.214689-7": "Customized template name for Alibaba Cloud SMS platform",
+		"doc.AliyunSms.214689-8": "3. Recipient",
+		"doc.AliyunSms.214689-9": "Currently, only domestic mobile phone numbers are supported. If not filled in here, it will be manually filled in during template debugging and alarm notification configuration",
+		"doc.AliyunSms.214689-10": "4. Signature",
+		"doc.AliyunSms.214689-11": "Used for displaying SMS content signature information, it needs to be configured in Alibaba Cloud SMS.",
+		"doc.AliyunSms.214689-12": "5. Variable attribute",
+		"doc.AliyunSms.214689-13": "It is necessary to manually set the same variables as in the Alibaba Cloud SMS template on the current page, otherwise it will cause abnormal sending."
+	}
+}
