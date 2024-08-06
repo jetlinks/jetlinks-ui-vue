@@ -1,6 +1,6 @@
 <template>
   <j-modal 
-    :title="type==='add'?'新增字典':'编辑字典'" 
+    :title="type==='add'?$t('save.index.464662-0'):$t('save.index.464662-1')" 
     visible 
     @cancel="closeModal"
     @ok="submitData"  
@@ -9,19 +9,19 @@
     :confirmLoading="loading"
   >
     <j-form layout="vertical" :rules="rules" ref="formRef" :model="form" >
-        <j-form-item label="字典ID" name="id">
+        <j-form-item :label="$t('save.index.464662-2')" name="id">
             <j-input v-model:value="form.id" :disabled="type ==='edit'"></j-input>
         </j-form-item>
-        <j-form-item label="字典名称" name="name">
+        <j-form-item :label="$t('save.index.464662-3')" name="name">
             <j-input v-model:value="form.name"></j-input>
         </j-form-item>
-        <j-form-item label="状态" name="status">
+        <j-form-item :label="$t('save.index.464662-4')" name="status">
             <j-radio-group v-model:value="form.status">
-                <j-radio-button :value="1">启用</j-radio-button>
-                <j-radio-button :value="0">禁用</j-radio-button>
+                <j-radio-button :value="1">{{ $t('save.index.464662-5') }}</j-radio-button>
+                <j-radio-button :value="0">{{ $t('save.index.464662-6') }}</j-radio-button>
             </j-radio-group>
         </j-form-item>
-        <j-form-item label="说明" name="describe">
+        <j-form-item :label="$t('save.index.464662-7')" name="describe">
             <j-textarea :rows="4" :maxlength="200" v-model:value="form.describe"></j-textarea>
         </j-form-item>
     </j-form>
@@ -33,6 +33,9 @@ import { isInput } from '@/utils/regular';
 import type { Rule } from 'ant-design-vue/es/form';
 import { verifyId,addDictionary } from '@/api/system/dictionary'
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     type:{
         type:String,
@@ -58,12 +61,12 @@ const form = reactive({
  const validateInput = async (_rule: Rule, value: string) => {
     if (value) {
         if (!isInput(value)) {
-            return Promise.reject('请输入英文或者数字或者-或者_');
+            return Promise.reject($t('save.index.464662-8'));
         } else {
             if (props.type === 'add') {
                 const res:any = await verifyId(value);
                 if (res.status === 200 && res.result) {
-                    return Promise.reject('该字典ID已存在');
+                    return Promise.reject($t('save.index.464662-9'));
                 } else {
                     return Promise.resolve();
                 }
@@ -76,8 +79,8 @@ const form = reactive({
 
 const rules = {
     id: [
-        { required:true,message:'请输入ID',trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { required:true,message:$t('save.index.464662-10'),trigger: 'blur' },
+        { max: 64, message: $t('save.index.464662-11'), trigger: 'change' },
         {  validator: (rule: Rule, value: string) => {
                 // 判断是否满足执行后续验证逻辑的条件
                 if (value && value.length <= 64) {
@@ -88,18 +91,18 @@ const rules = {
             },  trigger: 'blur' },
     ],
     name: [
-        { required: true, message: '请输入名称', trigger: 'blur' },
-        { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+        { required: true, message: $t('save.index.464662-12'), trigger: 'blur' },
+        { max: 64, message: $t('save.index.464662-11'), trigger: 'change' },
     ],
     status: [
         {
             required: true,
-            message:'请选择状态',
+            message:$t('save.index.464662-13'),
             trigger: 'blur',
         },
     ],
     description: [
-        { max: 200, message: '最多可输入200位字符', trigger: 'blur' },
+        { max: 200, message: $t('save.index.464662-14'), trigger: 'blur' },
     ],
 }
 
@@ -108,10 +111,10 @@ const submitData = () =>{
         loading.value = true
         const res = await addDictionary(form)
             if(res.status === 200){
-                onlyMessage('保存成功!')
+                onlyMessage($t('save.index.464662-15'))
                 emit('success')
             }else{
-                onlyMessage('操作失败!','error')
+                onlyMessage($t('save.index.464662-16'),'error')
             }
         loading.value = false
     })

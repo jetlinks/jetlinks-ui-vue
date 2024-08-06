@@ -1,9 +1,9 @@
 <template>
     <div class="des">
         <div class="des_head">
-            <div>字典ID：<span>{{ data.id }}</span></div>
-            <div style="display: flex;">说明：<Ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></Ellipsis></div>
-            <div>创建日期：<span> {{
+            <div>{{ $t('Right.index.464664-0') }}<span>{{ data.id }}</span></div>
+            <div style="display: flex;">{{ $t('Right.index.464664-1') }}<Ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></Ellipsis></div>
+            <div>{{ $t('Right.index.464664-2') }}<span> {{
                 dayjs(
                     data?.createTime,
                 ).format(
@@ -16,7 +16,7 @@
             <JProTable :columns="columns" model="TABLE" :request="queryItem" :params="params" ref="tableRef">
                 <template #headerTitle>
                     <PermissionButton type="primary" @click="add" hasPermission="system/Dictionary:add">
-                        新增
+                        {{ $t('Right.index.464664-3') }}
                     </PermissionButton>
                 </template>
                 <template #action="slotProps">
@@ -48,6 +48,9 @@ import type { ActionsType } from './typings';
 import { onlyMessage } from '@/utils/comm';
 import { cloneDeep } from 'lodash-es';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     data: {
         type: Object,
@@ -62,7 +65,7 @@ const modalType = ref('add')
 const current = ref()
 const columns = [
     {
-        title: '检索码',
+        title: $t('Right.index.464664-4'),
         dataIndex: 'searchCode',
         hideInTable: true,
         search: {
@@ -96,7 +99,7 @@ const columns = [
             type: 'string'
         }
     }, {
-        title: '操作',
+        title: $t('Right.index.464664-5'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -111,9 +114,9 @@ const getActions = (
     const actions = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Right.index.464664-6'),
             tooltip: {
-                title: '编辑',
+                title: $t('Right.index.464664-6'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -124,19 +127,19 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Right.index.464664-7'),
             tooltip: {
-                title: '删除',
+                title: $t('Right.index.464664-7'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Right.index.464664-8'),
                 onConfirm: async () => {
                     const res = await deleteDicItem(data.id)
                     if (res.status === 200) {
-                        onlyMessage('操作成功!')
+                        onlyMessage($t('Right.index.464664-9'))
                         tableRef.value.reload()
                     } else {
-                        onlyMessage('操作失败!', 'error')
+                        onlyMessage($t('Right.index.464664-10'), 'error')
                     }
                 },
             },
