@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Menu.index.159180-0": "新增",
+		"Menu.index.159180-1": "菜单配置",
+		"Menu.index.159180-2": "低码创建的菜单不支持编辑",
+		"Menu.index.159180-3": "编辑",
+		"Menu.index.159180-4": "仅支持3级菜单",
+		"Menu.index.159180-5": "新增子菜单",
+		"Menu.index.159180-6": "删除",
+		"Menu.index.159180-7": "是否删除该菜单",
+		"Menu.index.159180-8": "编码",
+		"Menu.index.159180-9": "名称",
+		"Menu.index.159180-10": "页面地址",
+		"Menu.index.159180-11": "排序",
+		"Menu.index.159180-12": "说明",
+		"Menu.index.159180-13": "创建时间",
+		"Menu.index.159180-14": "操作",
+		"Menu.index.159180-15": "操作成功!"
+	},
+	"en": {
+		"Menu.index.159180-0": "Add",
+		"Menu.index.159180-1": "Menu configuration",
+		"Menu.index.159180-2": "The menu created with low code does not support editing",
+		"Menu.index.159180-3": "Edit",
+		"Menu.index.159180-4": "Only supports 3-level menus",
+		"Menu.index.159180-5": "Add submenu",
+		"Menu.index.159180-6": "Delete",
+		"Menu.index.159180-7": "Do you want to delete this menu",
+		"Menu.index.159180-8": "code",
+		"Menu.index.159180-9": "name",
+		"Menu.index.159180-10": "page address",
+		"Menu.index.159180-11": "sort",
+		"Menu.index.159180-12": "explain",
+		"Menu.index.159180-13": "creation time",
+		"Menu.index.159180-14": "operation",
+		"Menu.index.159180-15": "Operation successful!"
+	}
+}

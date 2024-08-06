@@ -11,9 +11,9 @@
                 <PermissionButton
                     type="primary"
                     :hasPermission="`${permission}:update`"
-                    @click="openDialog('新增', {})"
+                    @click="openDialog($t('Detail.ButtonMange.159184-0'), {})"
                 >
-                    <AIcon type="PlusOutlined" />新增
+                    <AIcon type="PlusOutlined" />{{ $t('Detail.ButtonMange.159184-0') }}
                 </PermissionButton>
             </template>
             <template #action="slotProps">
@@ -21,24 +21,24 @@
                     <PermissionButton
                         type="link"
                         :hasPermission="`${permission}:update`"
-                        :tooltip="{ title: '编辑' }"
-                        @click="openDialog('编辑', slotProps)"
+                        :tooltip="{ title: $t('Detail.ButtonMange.159184-1') }"
+                        @click="openDialog($t('Detail.ButtonMange.159184-1'), slotProps)"
                     >
                         <AIcon type="EditOutlined" />
                     </PermissionButton>
                     <PermissionButton
                         type="link"
                         :hasPermission="`${permission}:view`"
-                        :tooltip="{ title: '查看' }"
-                        @click="openDialog('查看', slotProps)"
+                        :tooltip="{ title: $t('Detail.ButtonMange.159184-2') }"
+                        @click="openDialog($t('Detail.ButtonMange.159184-2'), slotProps)"
                     >
                         <AIcon type="SearchOutlined" />
                     </PermissionButton>
                     <PermissionButton
                         type="link"
-                        :tooltip="{ title: '删除' }"
+                        :tooltip="{ title: $t('Detail.ButtonMange.159184-3') }"
                         :popConfirm="{
-                            title: `确认删除`,
+                            title: $t('Detail.ButtonMange.159184-4'),
                             onConfirm: () => table.clickDel(slotProps),
                         }"
                     >
@@ -67,6 +67,9 @@ import PermissionButton from '@/components/PermissionButton/index.vue';
 import ButtonAddDialog from '../components/ButtonAddDialog.vue';
 import { getMenuInfo_api, saveMenuInfo_api } from '@/api/system/menu';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permission = 'system/Menu';
 // 路由
@@ -80,10 +83,10 @@ const paramsId = ref('');
 // 弹窗相关
 const selectItem = ref<any>({});
 const dialogVisible = ref(false);
-const dialogTitle = ref<'查看' | '新增' | '编辑'>('新增');
-const openDialog = (mode: '查看' | '新增' | '编辑', row: object) => {
+const dialogTitle = ref();
+const openDialog = (mode:any, row: object) => {
     if (!routeParams.id && !paramsId.value) {
-        return onlyMessage('请先新增菜单基本信息', 'warning');
+        return onlyMessage($t('Detail.ButtonMange.159184-5'), 'warning');
     }
     selectItem.value = { ...row };
     dialogTitle.value = mode;
@@ -95,25 +98,25 @@ const menuInfo = ref<any>({});
 const table = reactive({
     columns: [
         {
-            title: '编码',
+            title: $t('Detail.ButtonMange.159184-6'),
             dataIndex: 'id',
             key: 'id',
             width: 220,
         },
         {
-            title: '名称',
+            title: $t('Detail.ButtonMange.159184-7'),
             dataIndex: 'name',
             key: 'name',
             width: 300,
         },
         {
-            title: '说明',
+            title: $t('Detail.ButtonMange.159184-8'),
             dataIndex: 'description',
             key: 'description',
             ellipsis: true,
         },
         {
-            title: '操作',
+            title: $t('Detail.ButtonMange.159184-9'),
             dataIndex: 'action',
             key: 'action',
             scopedSlots: true,
@@ -139,7 +142,7 @@ const table = reactive({
         };
         const response = saveMenuInfo_api(params)
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('Detail.ButtonMange.159184-10'));
             table.getList();
         });
         return response
