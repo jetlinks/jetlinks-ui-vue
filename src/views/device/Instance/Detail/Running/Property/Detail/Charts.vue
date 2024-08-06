@@ -233,7 +233,7 @@ watch(
     (val) => {
         const diffInSeconds = dayjs(val[1]).diff(dayjs(val[0]), 'minute');
         if (diffInSeconds < 60) {
-            periodOptions.value = [
+            periodOptions.value = _type.value ? [
                 {
                     label: '实际值',
                     value: '*',
@@ -242,10 +242,15 @@ watch(
                     label: '按分钟统计',
                     value: '1m',
                 },
-            ];
-            cycle.value = '*';
+            ] : [
+                {
+                    label: '按分钟统计',
+                    value: '1m',
+                },
+            ]
+            cycle.value = _type.value ? '*' : '1m';
         } else if (diffInSeconds < 1440) {
-            periodOptions.value = [
+            periodOptions.value = _type.value ? [
                 {
                     label: '实际值',
                     value: '*',
@@ -258,8 +263,17 @@ watch(
                     label: '按小时统计',
                     value: '1h',
                 },
-            ];
-            cycle.value = '*';
+            ] :  [
+                {
+                    label: '按分钟统计',
+                    value: '1m',
+                },
+                {
+                    label: '按小时统计',
+                    value: '1h',
+                },
+            ]
+            cycle.value = _type.value ? '*' : '1m';
         } else if (diffInSeconds < 43200) {
             periodOptions.value = [
                 {
