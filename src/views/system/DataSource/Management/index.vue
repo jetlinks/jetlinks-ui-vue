@@ -5,7 +5,7 @@
                 <div class="left">
                     <j-input-search
                         v-model:value="leftData.searchValue"
-                        placeholder="请输入"
+                        :placeholder="$t('Management.index.039153-0')"
                         style="margin-bottom: 24px"
                     />
                     <!-- 使用v-if用于解决异步加载数据后不展开的问题 -->
@@ -50,7 +50,7 @@
                 <div class="right">
                     <div class="btns">
                         <j-button type="primary" @click="clickSave"
-                            >保存</j-button
+                            >{{ $t('Management.index.039153-1') }}</j-button
                         >
                     </div>
                     <j-form ref="formRef" :model="table">
@@ -67,18 +67,18 @@
                                         :rules="[
                                             {
                                                 max: 64,
-                                                message: '最多可输入64个字符',
+                                                message: $t('Management.index.039153-2'),
                                             },
                                             {
                                                 required: true,
-                                                message: '请输入名称',
+                                                message: $t('Management.index.039153-3'),
                                             },
                                         ]"
                                     >
                                         <j-input
                                             :disabled="record.old_id"
                                             v-model:value="record.name"
-                                            placeholder="请输入名称"
+                                            :placeholder="$t('Management.index.039153-3')"
                                         />
                                     </j-form-item>
                                 </template>
@@ -88,18 +88,18 @@
                                         :rules="[
                                             {
                                                 max: 64,
-                                                message: '最多可输入64个字符',
+                                                message: $t('Management.index.039153-2'),
                                             },
                                             {
                                                 required: true,
-                                                message: '请输入类型',
+                                                message: $t('Management.index.039153-4'),
                                             },
                                         ]"
                                     >
                                         <j-input
                                             :disabled="record.old_id"
                                             v-model:value="record.type"
-                                            placeholder="请输入类型"
+                                            :placeholder="$t('Management.index.039153-4')"
                                         />
                                     </j-form-item>
                                 </template>
@@ -133,7 +133,7 @@
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: '请选择是否不能为空',
+                                                message: $t('Management.index.039153-5'),
                                             },
                                         ]"
                                     >
@@ -142,10 +142,10 @@
                                             button-style="solid"
                                         >
                                             <j-radio-button :value="true"
-                                                >是</j-radio-button
+                                                >{{ $t('Management.index.039153-6') }}</j-radio-button
                                             >
                                             <j-radio-button :value="false"
-                                                >否</j-radio-button
+                                                >{{ $t('Management.index.039153-7') }}</j-radio-button
                                             >
                                         </j-radio-group>
                                     </j-form-item>
@@ -156,7 +156,7 @@
                                     >
                                         <j-input
                                             v-model:value="record.comment"
-                                            placeholder="请输入说明"
+                                            :placeholder="$t('Management.index.039153-8')"
                                         />
                                     </j-form-item>
                                 </template>
@@ -164,10 +164,10 @@
                                     <PermissionButton
                                         hasPermission="system/DataSource:delete"
                                         type="link"
-                                        :tooltip="{ title: '删除' }"
+                                        :tooltip="{ title: $t('Management.index.039153-9') }"
                                         :danger="true"
                                         :popConfirm="{
-                                            title: `确认删除`,
+                                            title: $t('Management.index.039153-10'),
                                             onConfirm: () =>
                                                 clickDel(record, index),
                                         }"
@@ -181,7 +181,7 @@
                     </j-form>
 
                     <j-button class="add-row" @click="addRow">
-                        <AIcon type="PlusOutlined" /> 新增行
+                        <AIcon type="PlusOutlined" /> {{ $t('Management.index.039153-11') }}
                     </j-button>
                 </div>
             </div>
@@ -189,41 +189,41 @@
         <j-modal
             :visible="true"
             v-if="dialog.visible"
-            title="新增"
+            :title="$t('Management.index.039153-12')"
             @ok="handleOk"
             @cancel="handleCancel"
         >
             <j-form :model="dialog.form" ref="addFormRef" :layout="'vertical'">
                 <j-form-item
-                    label="名称"
+                    :label="$t('Management.index.039153-13')"
                     name="name"
                     :required="true"
                     :rules="[
                         {
                             required: true,
-                            message: '请输入名称',
+                            message: $t('Management.index.039153-3'),
                         },
                         {
                             max: 64,
-                            message: '最多可输入64个字符',
+                            message: $t('Management.index.039153-2'),
                             trigger: 'change',
                         },
                         {
                             // pattern: /^[0-9].*$/,
-                            // message: '不能以数字开头',
+                            // message: $t('Management.index.039153-24'),
                             trigger: 'change',
                             validator: checkName,
                         },
                         {
                             pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/,
-                            message: '名称只能由英文、汉字、下划线、数字组成',
+                            message: $t('Management.index.039153-14'),
                             trigger: 'change',
                         },
                     ]"
                 >
                     <j-input
                         v-model:value="dialog.form.name"
-                        placeholder="请输入名称"
+                        :placeholder="$t('Management.index.039153-3')"
                     />
                 </j-form-item>
             </j-form>
@@ -244,43 +244,45 @@ import { randomString } from '@/utils/utils';
 import { FormInstance } from 'ant-design-vue';
 import _, { cloneDeep } from 'lodash-es';
 import type { dbColumnType, dictItemType, sourceItemType } from '../typing';
+import { useI18n } from 'vue-i18n';
 
+const { t: $t } = useI18n();
 const id = useRoute().query.id as string;
 
 const columns = [
     {
-        title: '列名',
+        title: $t('Management.index.039153-15'),
         dataIndex: 'name',
         key: 'name',
     },
     {
-        title: '类型',
+        title: $t('Management.index.039153-16'),
         dataIndex: 'type',
         key: 'type',
     },
     {
-        title: '长度',
+        title: $t('Management.index.039153-17'),
         dataIndex: 'length',
         key: 'length',
     },
     {
-        title: '精度',
+        title: $t('Management.index.039153-18'),
         dataIndex: 'scale',
         key: 'scale',
     },
     {
-        title: '不能为空',
+        title: $t('Management.index.039153-19'),
         dataIndex: 'notnull',
         key: 'notnull',
         width: 130,
     },
     {
-        title: '说明',
+        title: $t('Management.index.039153-20'),
         dataIndex: 'comment',
         key: 'comment',
     },
     {
-        title: '操作',
+        title: $t('Management.index.039153-21'),
         dataIndex: 'action',
         key: 'action',
     },
@@ -406,7 +408,7 @@ const clickSave = () => {
             delete item?.index;
         });
         if (!columns.length) {
-            onlyMessage('请配置数据源字段', 'error');
+            onlyMessage($t('Management.index.039153-22'), 'error');
             return;
         }
         const params = {
@@ -415,7 +417,7 @@ const clickSave = () => {
         };
         saveTable_api(id, params).then((resp) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('Management.index.039153-23'));
                 queryTables(params.name);
             }
         });
@@ -449,7 +451,7 @@ const handleOk = () => {
         columns: [],
     }).then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功');
+            onlyMessage($t('Management.index.039153-23'));
         }
     });
 };
@@ -503,7 +505,7 @@ const checkName = (_: any, value: any) =>
         if (value) {
             const first = value.slice(0, 1);
             if (typeof Number(first) === 'number' && !isNaN(Number(first))) {
-                reject('不能以数字开头');
+                reject($t('Management.index.039153-24'));
             } else {
                 resolve('');
             }
