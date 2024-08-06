@@ -108,7 +108,7 @@
                     </j-button>
                 </div>
                 <j-monaco-editor
-                    v-if=" method !=='get' && method !=='patch'"
+                    v-if="showRequestBody"
                     ref="editorRef"
                     language="json"
                     style="height: 100% ; min-height: 200px;"
@@ -144,6 +144,7 @@ const responsesContent = ref({});
 const editorRef = ref();
 const formRef = ref<FormInstance>();
 const method = ref()
+const showRequestBody = ref(!!props.selectApi?.requestBody)
 const requestBody = reactive({
     tableColumns: [
         {

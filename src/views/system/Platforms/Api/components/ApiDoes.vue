@@ -159,7 +159,6 @@ const requestCard = reactive<cardType>({
             const schemaName = _ref?.split('/').pop();
             const type = schema.type || '';
             const tableData = findData(props.schemas, schemaName);
-
             requestCard.codeText =
                 type === 'array'
                     ? [getCodeText(props.schemas, tableData, 3)]

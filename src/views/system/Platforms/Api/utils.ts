@@ -94,8 +94,8 @@ export function getCodeText(
 /**
  * 处理数据中没有$ref的情况
  */
-export function dealNoRef(type:string,schema?:any){
-    let result;
+export function dealNoRef(type:string,schema?:any):any{
+    let result = undefined;
     switch (type) {
         case 'string':
             result = '';
