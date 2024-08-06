@@ -359,7 +359,7 @@ const handleSearch = (e: any) => {
     e.terms.map((i:any)=>{
         i.terms.forEach((item:any)=>{
             if(item.column === 'id'){
-                item.termType = 'alarm-config-bind-rule'
+                item.termType = 'rule-bind-alarm'
             }
         })
     })
