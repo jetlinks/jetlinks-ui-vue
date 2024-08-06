@@ -2,7 +2,7 @@
     <div>
         <a-input
             @change="onChange"
-            placeholder="请输入"
+            :placeholder="$t('components.InputGroup.522239-0')"
             v-model:value="_value.last"
         >
             <template #addonBefore>
@@ -11,7 +11,7 @@
                     v-model:value="_value.first"
                     :options="options"
                     style="width: 100px"
-                    placeholder="请选择"
+                    :placeholder="$t('components.InputGroup.522239-1')"
                 />
             </template>
         </a-input>
@@ -19,6 +19,9 @@
 </template>
 
 <script setup name="InputGroup">
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     value: {
         type: String,

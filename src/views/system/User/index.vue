@@ -26,7 +26,7 @@
                             type="primary"
                             @click="table.openDialog('add')"
                         >
-                            <AIcon type="PlusOutlined" />新增
+                            <AIcon type="PlusOutlined" />{{ $t('User.index.363800-0') }}
                         </PermissionButton>
                     </template>
                     <template #username="slotProps">
@@ -51,7 +51,7 @@
                     <template #status="slotProps">
                         <BadgeStatus
                             :status="slotProps.status"
-                            :text="slotProps.status ? '正常' : '禁用'"
+                            :text="slotProps.status ? $t('User.index.363800-1') : $t('User.index.363800-2')"
                             :statusNames="{
                                 1: 'success',
                                 0: 'error',
@@ -64,7 +64,7 @@
                                 :hasPermission="`${permission}:update`"
                                 type="link"
                                 :tooltip="{
-                                    title: '编辑',
+                                    title: $t('User.index.363800-3'),
                                 }"
                                 @click="table.openDialog('edit', slotProps)"
                             >
@@ -74,14 +74,11 @@
                                 :hasPermission="`${permission}:action`"
                                 type="link"
                                 :tooltip="{
-                                    title: `${
-                                        slotProps.status ? '禁用' : '启用'
+                                    title: `${ slotProps.status ? $t('User.index.363800-2') : $t('User.index.363800-4')
                                     }`,
                                 }"
                                 :popConfirm="{
-                                    title: `确认${
-                                        slotProps.status ? '禁用' : '启用'
-                                    }？`,
+                                    title: `${slotProps.status ? $t('User.index.363800-5') : $t('User.index.363800-6')}？`,
                                     onConfirm: () =>
                                         table.changeStatus(slotProps),
                                 }"
@@ -98,7 +95,7 @@
                                 :hasPermission="`${permission}:update`"
                                 type="link"
                                 :tooltip="{
-                                    title: '重置密码',
+                                    title: $t('User.index.363800-7'),
                                 }"
                                 @click="table.openDialog('reset', slotProps)"
                             >
@@ -109,11 +106,11 @@
                                 :hasPermission="`${permission}:delete`"
                                 :tooltip="{
                                     title: slotProps.status
-                                        ? '请先禁用，再删除'
-                                        : '删除',
+                                        ? $t('User.index.363800-8')
+                                        : $t('User.index.363800-9'),
                                 }"
                                 :popConfirm="{
-                                    title: '确认删除?',
+                                    title: $t('User.index.363800-10'),
                                     onConfirm: () =>
                                         table.clickDel(slotProps.id),
                                 }"
@@ -148,12 +145,14 @@ import {
     queryRole_api,
 } from '@/api/system/user';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+const { t: $t } = useI18n();
 
 const permission = 'system/User';
 
 const columns = [
     {
-        title: '姓名',
+        title: $t('User.index.363800-11'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -162,7 +161,7 @@ const columns = [
         },
     },
     {
-        title: '用户名',
+        title: $t('User.index.363800-12'),
         dataIndex: 'username',
         key: 'username',
         scopedSlots: true,
@@ -171,7 +170,7 @@ const columns = [
         },
     },
     {
-        title: '用户类型',
+        title: $t('User.index.363800-13'),
         dataIndex: 'type',
         key: 'type',
         ellipsis: true,
@@ -192,7 +191,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '角色',
+        title: $t('User.index.363800-14'),
         dataIndex: 'roleList',
         key: 'roleList',
         search: {
@@ -219,7 +218,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '状态',
+        title: $t('User.index.363800-15'),
         dataIndex: 'status',
         key: 'status',
         ellipsis: true,
@@ -228,11 +227,11 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('User.index.363800-1'),
                     value: 1,
                 },
                 {
-                    label: '禁用',
+                    label: $t('User.index.363800-2'),
                     value: 0,
                 },
             ],
@@ -240,7 +239,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '手机号',
+        title: $t('User.index.363800-16'),
         dataIndex: 'telephone',
         key: 'telephone',
         ellipsis: true,
@@ -249,7 +248,7 @@ const columns = [
         },
     },
     {
-        title: '邮箱',
+        title: $t('User.index.363800-17'),
         dataIndex: 'email',
         key: 'email',
         ellipsis: true,
@@ -258,7 +257,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('User.index.363800-18'),
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
@@ -283,7 +282,7 @@ const table = {
         };
         const response = changeUserStatus_api(params);
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('User.index.363800-19'));
             table.refresh();
         });
         return response;
@@ -292,7 +291,7 @@ const table = {
     clickDel: (id: string) => {
         const response = deleteUser_api(id);
         response.then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('User.index.363800-19'));
             table.refresh();
         });
         return response;

@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.EditPermissionDialog.338038-0": "编辑",
+		"components.EditPermissionDialog.338038-1": "只能分配有“共享”权限的资产数据",
+		"components.EditPermissionDialog.338038-2": "资产权限：",
+		"components.EditPermissionDialog.338038-3": "操作成功"
+	},
+	"en": {
+		"components.EditPermissionDialog.338038-0": "edit",
+		"components.EditPermissionDialog.338038-1": "Only asset data with \"share\" permission can be assigned",
+		"components.EditPermissionDialog.338038-2": "Asset permissions:",
+		"components.EditPermissionDialog.338038-3": "Operation successful"
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"componenets.MenuDialog.522223-0": "集成菜单",
+		"componenets.MenuDialog.522223-1": "请选择集成系统",
+		"componenets.MenuDialog.522223-2": "当前集成菜单",
+		"componenets.MenuDialog.522223-3": "操作成功",
+		"componenets.MenuDialog.522223-4": "请勾选配置菜单",
+		"componenets.MenuDialog.522223-5": "请选择所属系统"
+	},
+	"en": {
+		"componenets.MenuDialog.522223-0": "Integrated menu",
+		"componenets.MenuDialog.522223-1": "Please select an integrated system",
+		"componenets.MenuDialog.522223-2": "Current integrated menu",
+		"componenets.MenuDialog.522223-3": "Operation successful",
+		"componenets.MenuDialog.522223-4": "Please check the configuration menu",
+		"componenets.MenuDialog.522223-5": "Please select the system to which you belong"
+	}
+}

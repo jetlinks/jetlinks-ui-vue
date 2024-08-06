@@ -1,15 +1,15 @@
 <template>
-    <j-modal class="add-device-or-product-dialog-container" title="绑定" width="1440px" :maskClosable="false" @ok="confirm"
+    <j-modal class="add-device-or-product-dialog-container" :title="$t('components.AddDeviceOrProductDialog.3380310-0')" width="1440px" :maskClosable="false" @ok="confirm"
         :confirmLoading="loading" @cancel="cancel" visible>
         <h5 class="row">
             <AIcon type="ExclamationCircleOutlined" style="margin-right: 6px" />
-            只能分配有“共享”权限的资产数据
+            {{ $t('components.AddDeviceOrProductDialog.3380310-1') }}
         </h5>
 
         <div style="display: flex; margin-left: 24px;">
                 <div class="row">
-                <span style="margin-right: 8px">批量配置</span>
-                <j-switch v-model:checked="bulkBool" checked-children="开" un-checked-children="关" style="width: 56px" />
+                <span style="margin-right: 8px">{{ $t('components.AddDeviceOrProductDialog.3380310-2') }}</span>
+                <j-switch v-model:checked="bulkBool" :checked-children="$t('components.AddDeviceOrProductDialog.3380310-3')" :un-checked-children="$t('components.AddDeviceOrProductDialog.3380310-4')" style="width: 56px" />
             </div>
             <div v-show="bulkBool" style="margin-left: 30px;">
                 <j-checkbox-group v-model:value="bulkList" :options="options" />
@@ -73,7 +73,7 @@
                             </j-col>
                             <j-col :span="12">
                                 <div class="card-item-content-text">
-                                    资产权限
+                                    {{ $t('components.AddDeviceOrProductDialog.3380310-5') }}
                                 </div>
                                 <div style="cursor: pointer" class="card-item-content-value"
                                     @click="(e) => e.stopPropagation()">
@@ -120,6 +120,9 @@ import {
 import { dictType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const departmentStore = useDepartmentStore();
 
@@ -138,7 +141,7 @@ const queryCount = ref(0);
 
 const confirm = () => {
     if (table.selectedRows.length < 1) {
-        return onlyMessage('请先勾选数据', 'warning');
+        return onlyMessage($t('components.AddDeviceOrProductDialog.3380310-6'), 'warning');
     }
 
     const params = table.selectedRows.map((item: any) => ({
@@ -158,7 +161,7 @@ const confirm = () => {
     loading.value = true;
     bindDeviceOrProductList_api(props.assetType, params)
         .then(() => {
-            onlyMessage('操作成功');
+            onlyMessage($t('components.AddDeviceOrProductDialog.3380310-7'));
             emits('confirm');
             emits('next',table.selectedRows.map((item: any) => item.id))
             if(props.assetType === 'device'){
@@ -273,7 +276,7 @@ const table: any = {
     onSelectChange: (row: any) => {
         // 若该项的可选权限中没有分享权限，则不支持任何操作
         if (!row.permissionList.find((item: any) => item.value === 'share')) {
-            onlyMessage('该资产不支持共享', 'warning');
+            onlyMessage($t('components.AddDeviceOrProductDialog.3380310-8'), 'warning');
             return;
         }
         const selectedRowKeys = table._selectedRowKeys.value;
@@ -351,9 +354,9 @@ const table: any = {
                                                 : '',
                                     text:
                                         item.state === 1
-                                            ? '正常'
+                                            ? $t('components.AddDeviceOrProductDialog.3380310-9')
                                             : item.state === 0
-                                                ? '禁用'
+                                                ? $t('components.AddDeviceOrProductDialog.3380310-10')
                                                 : '',
                                 };
                             }

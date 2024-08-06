@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"ApplyList.MUpload.5222314-0": "替换图标",
+		"ApplyList.MUpload.5222314-1": "删除图标",
+		"ApplyList.MUpload.5222314-2": "更改图标",
+		"ApplyList.MUpload.5222314-3": "请上传正确格式的图片",
+		"ApplyList.MUpload.5222314-4": "图片大小必须小于{0}M"
+	},
+	"en": {
+		"ApplyList.MUpload.5222314-0": "Replace icon",
+		"ApplyList.MUpload.5222314-1": "delete icon",
+		"ApplyList.MUpload.5222314-2": "Change icon",
+		"ApplyList.MUpload.5222314-3": "Please upload images in the correct format",
+		"ApplyList.MUpload.5222314-4": "The image size must be smaller than {0}M"
+	}
+}

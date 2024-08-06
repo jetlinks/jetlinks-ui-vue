@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"user.index.338020-0": "绑定用户",
+		"user.index.338020-1": "确认解除绑定？",
+		"user.index.338020-2": "批量解绑",
+		"user.index.338020-3": "正常",
+		"user.index.338020-4": "禁用",
+		"user.index.338020-5": "姓名",
+		"user.index.338020-6": "用户名",
+		"user.index.338020-7": "状态",
+		"user.index.338020-8": "操作",
+		"user.index.338020-9": "请勾选需要解绑的数据",
+		"user.index.338020-10": "操作成功"
+	},
+	"en": {
+		"user.index.338020-0": "Bind user",
+		"user.index.338020-1": "Are you sure to unbind?",
+		"user.index.338020-2": "batch unbinding",
+		"user.index.338020-3": "normal",
+		"user.index.338020-4": "Disable",
+		"user.index.338020-5": "full name",
+		"user.index.338020-6": "user name",
+		"user.index.338020-7": "state",
+		"user.index.338020-8": "operation",
+		"user.index.338020-9": "Please check the data that needs to be unbound",
+		"user.index.338020-10": "Operation successful"
+	}
+}

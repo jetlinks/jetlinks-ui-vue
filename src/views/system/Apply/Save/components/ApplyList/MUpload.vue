@@ -16,8 +16,8 @@
                 <div class="upload-image-content" :style="props.style">
                     <template v-if="imageUrl">
                         <img :src="imageUrl" width="100%" class="upload-image" />
-                        <div v-if="imageUrl === defaultValue" class="upload-image-mask">替换图标</div>
-                        <div v-else @click.stop="onDelete" class="upload-image-mask">删除图标</div>
+                        <div v-if="imageUrl === defaultValue" class="upload-image-mask">{{ $t('ApplyList.MUpload.5222314-0') }}</div>
+                        <div v-else @click.stop="onDelete" class="upload-image-mask">{{ $t('ApplyList.MUpload.5222314-1') }}</div>
                     </template>
                     <template v-else>
                         <AIcon
@@ -39,7 +39,7 @@
     :img="cropperImg"
     @cancel="cropperVisible = false"
     @ok="saveImage"
-    title="更改图标"
+    :title="$t('ApplyList.MUpload.5222314-2')"
   />
 </template>
 
@@ -50,6 +50,9 @@ import { TOKEN_KEY } from '@/utils/variable';
 import {getBase64, LocalStore, onlyMessage} from '@/utils/comm';
 import { CSSProperties } from 'vue';
 import ImageCropper from '@/components/Upload/Cropper.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
@@ -126,13 +129,13 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
         if (props.errorMessage) {
             onlyMessage(props.errorMessage, 'error');
         } else {
-            onlyMessage(`请上传正确格式的图片`, 'error');
+            onlyMessage($t('ApplyList.MUpload.5222314-3'), 'error');
         }
         return false;
     }
     const isSize = file.size / 1024 / 1024 < maxSize;
     if (!isSize) {
-        onlyMessage(`图片大小必须小于${maxSize}M`, 'error');
+        onlyMessage($t('ApplyList.MUpload.5222314-4', [maxSize]), 'error');
         return false
     }
 

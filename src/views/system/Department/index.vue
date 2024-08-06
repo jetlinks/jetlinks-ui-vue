@@ -7,19 +7,19 @@
             </div>
             <div class="right">
               <j-tabs v-if='isNoCommunity' v-model:activeKey="activeKey" destroyInactiveTabPane>
-                <j-tab-pane key="product" tab="产品">
+                <j-tab-pane key="product" :tab="$t('Department.index.338023-0')">
                   <Product
                     :parentId="departmentId"
                     @open-device-bind="openDeviceBind"
                   />
                 </j-tab-pane>
-                <j-tab-pane key="device" tab="设备">
+                <j-tab-pane key="device" :tab="$t('Department.index.338023-1')">
                   <Device
                     :parentId="departmentId"
                     v-model:bindBool="bindBool"
                   />
                 </j-tab-pane>
-                <j-tab-pane key="user" tab="用户">
+                <j-tab-pane key="user" :tab="$t('Department.index.338023-2')">
                   <User :parentId="departmentId" />
                 </j-tab-pane>
               </j-tabs>
@@ -36,6 +36,9 @@ import Product from './product/index.vue';
 import Device from './device/index.vue';
 import User from './user/index.vue';
 import { isNoCommunity } from '@/utils/utils'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const activeKey = ref<'product' | 'device' | 'user'>('product');
 

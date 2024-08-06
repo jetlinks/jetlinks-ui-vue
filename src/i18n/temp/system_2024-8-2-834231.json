@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"components.AddDeviceOrProductDialog.3380310-0": "绑定",
+		"components.AddDeviceOrProductDialog.3380310-1": "只能分配有“共享”权限的资产数据",
+		"components.AddDeviceOrProductDialog.3380310-2": "批量配置",
+		"components.AddDeviceOrProductDialog.3380310-3": "开",
+		"components.AddDeviceOrProductDialog.3380310-4": "关",
+		"components.AddDeviceOrProductDialog.3380310-5": "资产权限",
+		"components.AddDeviceOrProductDialog.3380310-6": "请先勾选数据",
+		"components.AddDeviceOrProductDialog.3380310-7": "操作成功",
+		"components.AddDeviceOrProductDialog.3380310-8": "该资产不支持共享",
+		"components.AddDeviceOrProductDialog.3380310-9": "正常",
+		"components.AddDeviceOrProductDialog.3380310-10": "禁用"
+	},
+	"en": {
+		"components.AddDeviceOrProductDialog.3380310-0": "binding",
+		"components.AddDeviceOrProductDialog.3380310-1": "Only asset data with \"share\" permission can be assigned",
+		"components.AddDeviceOrProductDialog.3380310-2": "Batch configuration",
+		"components.AddDeviceOrProductDialog.3380310-3": "open",
+		"components.AddDeviceOrProductDialog.3380310-4": "shut",
+		"components.AddDeviceOrProductDialog.3380310-5": "asset permissions",
+		"components.AddDeviceOrProductDialog.3380310-6": "Please check the data first",
+		"components.AddDeviceOrProductDialog.3380310-7": "Operation successful",
+		"components.AddDeviceOrProductDialog.3380310-8": "This asset does not support sharing",
+		"components.AddDeviceOrProductDialog.3380310-9": "normal",
+		"components.AddDeviceOrProductDialog.3380310-10": "Disable"
+	}
+}

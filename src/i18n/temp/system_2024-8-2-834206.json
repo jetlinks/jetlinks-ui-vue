@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"components.LeftTree.338027-0": "请输入组织名称",
+		"components.LeftTree.338027-1": "新增",
+		"components.LeftTree.338027-2": "编辑",
+		"components.LeftTree.338027-3": "新增子组织",
+		"components.LeftTree.338027-4": "删除",
+		"components.LeftTree.338027-5": "确认删除？",
+		"components.LeftTree.338027-6": "暂无数据",
+		"components.LeftTree.338027-7": "操作成功"
+	},
+	"en": {
+		"components.LeftTree.338027-0": "Please enter the organization name",
+		"components.LeftTree.338027-1": "add",
+		"components.LeftTree.338027-2": "edit",
+		"components.LeftTree.338027-3": "add a new sub organization",
+		"components.LeftTree.338027-4": "delete",
+		"components.LeftTree.338027-5": "Are you sure to delete?",
+		"components.LeftTree.338027-6": "No data available at the moment",
+		"components.LeftTree.338027-7": "Operation successful"
+	}
+}

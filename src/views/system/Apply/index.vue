@@ -24,14 +24,14 @@
                                 type="primary"
                                 @click="() => table.toAdd()"
                             >
-                                <AIcon type="PlusOutlined" />新增
+                                <AIcon type="PlusOutlined" />{{ $t('Apply.index.996228-0') }}
                             </PermissionButton>
                             <p style="margin: 0 0 0 30px; color: #0000008c">
                                 <AIcon
                                     type="ExclamationCircleOutlined"
                                     style="margin-right: 12px"
                                 />
-                                应用管理将多个应用系统的登录简化为一次登录，实现多处访问、集中管控的业务场景。
+                                {{ $t('Apply.index.996228-1') }}
                             </p>
                         </div>
                     </template>
@@ -67,7 +67,7 @@
                                 <j-row>
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
-                                            类型
+                                            {{ $t('Apply.index.996228-2') }}
                                         </div>
                                         <div>
                                             {{
@@ -79,7 +79,7 @@
                                     </j-col>
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
-                                            说明
+                                            {{ $t('Apply.index.996228-3') }}
                                         </div>
                                         <Ellipsis>
                                             {{ slotProps.description }}
@@ -234,6 +234,9 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import Add from './Save/Add.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const menuStory = useMenuStore();
 const permission = 'system/Apply';
@@ -244,7 +247,7 @@ const addMenuVisible = ref<boolean>(false);
 
 const columns = [
     {
-        title: '名称',
+        title: $t('Apply.index.996228-4'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -254,7 +257,7 @@ const columns = [
     },
 
     {
-        title: '类型',
+        title: $t('Apply.index.996228-2'),
         dataIndex: 'provider',
         key: 'provider',
         ellipsis: true,
@@ -275,7 +278,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '状态',
+        title: $t('Apply.index.996228-5'),
         dataIndex: 'status',
         key: 'status',
         ellipsis: true,
@@ -284,11 +287,11 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('Apply.index.996228-6'),
                     value: 'enabled',
                 },
                 {
-                    label: '禁用',
+                    label: $t('Apply.index.996228-7'),
                     value: 'disabled',
                 },
             ],
@@ -296,7 +299,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('Apply.index.996228-3'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -305,7 +308,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Apply.index.996228-8'),
         dataIndex: 'action',
         key: 'action',
         scopedSlots: true,
@@ -334,7 +337,7 @@ const table = {
         const response = changeApplyStatus_api(row.id, { state });
         response.then((resp: any) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('Apply.index.996228-9'));
                 table.refresh();
             }
         });
@@ -344,7 +347,7 @@ const table = {
         const response = delApply_api(row.id);
         response.then((resp: any) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('Apply.index.996228-9'));
                 table.refresh();
             }
         });
@@ -361,9 +364,9 @@ const table = {
             {
                 permission: `${permission}:update`,
                 key: 'edit',
-                text: '编辑',
+                text: $t('Apply.index.996228-10'),
                 tooltip: {
-                    title: '编辑',
+                    title: $t('Apply.index.996228-10'),
                 },
                 icon: 'EditOutlined',
                 onClick: () => table.toSave(data.id),
@@ -371,12 +374,12 @@ const table = {
             {
                 permission: `${permission}:action`,
                 key: 'action',
-                text: disabled ? '禁用' : '启用',
+                text: disabled ? $t('Apply.index.996228-7') : $t('Apply.index.996228-11'),
                 tooltip: {
-                    title: disabled ? '禁用' : '启用',
+                    title: disabled ? $t('Apply.index.996228-7') : $t('Apply.index.996228-11'),
                 },
                 popConfirm: {
-                    title: `确认${disabled ? '禁用' : '启用'}`,
+                    title: `${disabled ? $t('Apply.index.996228-12') : $t('Apply.index.996228-13')}`,
                     onConfirm: () => table.changeStatus(data),
                 },
                 icon: disabled ? 'StopOutlined' : 'PlayCircleOutlined',
@@ -384,12 +387,12 @@ const table = {
             {
                 permission: `${permission}:delete`,
                 key: 'delete',
-                text: '删除',
+                text: $t('Apply.index.996228-14'),
                 tooltip: {
-                    title: disabled ? '请先禁用再删除' : '删除',
+                    title: disabled ? $t('Apply.index.996228-15') : $t('Apply.index.996228-14'),
                 },
                 popConfirm: {
-                    title: '确认删除?',
+                    title: $t('Apply.index.996228-16'),
                     onConfirm: () => table.clickDel(data),
                 },
                 disabled,
@@ -401,7 +404,7 @@ const table = {
         );
         const others = {
             key: 'others',
-            text: '其他',
+            text: $t('Apply.index.996228-17'),
             icon: 'EllipsisOutlined',
             children: [] as any[],
         };
@@ -410,9 +413,9 @@ const table = {
             others.children?.push({
                 permission: [`${permission}:add`, `${permission}:update`],
                 key: 'page',
-                text: '集成菜单',
+                text: $t('Apply.index.996228-18'),
                 tooltip: {
-                    title: !disabled ? '请先启用' : '集成菜单',
+                    title: !disabled ? $t('Apply.index.996228-19') : $t('Apply.index.996228-18'),
                 },
                 icon: 'MenuUnfoldOutlined',
                 disabled: !disabled,
@@ -429,9 +432,9 @@ const table = {
                 {
                     permission: [`${permission}:add`, `${permission}:update`],
                     key: 'empowerment',
-                    text: '赋权',
+                    text: $t('Apply.index.996228-20'),
                     tooltip: {
-                        title: '赋权',
+                        title: $t('Apply.index.996228-20'),
                     },
                     icon: 'icon-fuquan',
                     onClick: () => {
@@ -445,9 +448,9 @@ const table = {
                 {
                     permission: [`${permission}:add`, `${permission}:update`],
                     key: 'viewApi',
-                    text: '查看API',
+                    text: $t('Apply.index.996228-21'),
                     tooltip: {
-                        title: '查看API',
+                        title: $t('Apply.index.996228-21'),
                     },
                     icon: 'icon-chakanAPI',
                     onClick: () => {

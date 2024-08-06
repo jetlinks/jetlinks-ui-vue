@@ -3,7 +3,7 @@
         <Api :mode="'home'" hasHome showTitle :code="clientId">
             <template #top>
                 <div class="card">
-                    <h3 style="margin: 0 0 24px 0">基本信息</h3>
+                    <h3 style="margin: 0 0 24px 0">{{ $t('View.index.522225-0') }}</h3>
                     <p>
                         <span style="font-weight: bold">clientId: </span>
                         <span>{{ clientId }}</span>
@@ -21,6 +21,9 @@
 <script setup lang="ts" name="apiPage">
 import { getAppInfo_api } from '@/api/system/apply';
 import Api from '@/views/system/Platforms/Api/index.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const route = useRoute();
 const clientId = route.query.code as string;
 
