@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"components.AddDialog.529972-0": "新增",
+		"components.AddDialog.529972-1": "编辑",
+		"components.AddDialog.529972-2": "名称",
+		"components.AddDialog.529972-3": "请输入名称",
+		"components.AddDialog.529972-4": "最多可输入64个字符",
+		"components.AddDialog.529972-5": "请输入角色名称",
+		"components.AddDialog.529972-6": "分组",
+		"components.AddDialog.529972-7": "请选择分组",
+		"components.AddDialog.529972-8": "说明",
+		"components.AddDialog.529972-9": "请输入说明",
+		"components.AddDialog.529972-10": "操作成功"
+	},
+	"en": {
+		"components.AddDialog.529972-0": "Add",
+		"components.AddDialog.529972-1": "Edit",
+		"components.AddDialog.529972-2": "name",
+		"components.AddDialog.529972-3": "Please enter a name",
+		"components.AddDialog.529972-4": "Up to 64 characters can be entered",
+		"components.AddDialog.529972-5": "Please enter the role name",
+		"components.AddDialog.529972-6": "group",
+		"components.AddDialog.529972-7": "Please select a group",
+		"components.AddDialog.529972-8": "explain",
+		"components.AddDialog.529972-9": "Please enter instructions",
+		"components.AddDialog.529972-10": "Operation successful"
+	}
+}

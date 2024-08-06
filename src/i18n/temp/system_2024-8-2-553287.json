@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"User.index.529977-0": "新增",
+		"User.index.529977-1": "确认批量解除绑定？",
+		"User.index.529977-2": "批量解绑",
+		"User.index.529977-3": "正常",
+		"User.index.529977-4": "禁用",
+		"User.index.529977-5": "解绑",
+		"User.index.529977-6": "确认解绑",
+		"User.index.529977-7": "姓名",
+		"User.index.529977-8": "用户名",
+		"User.index.529977-9": "创建时间",
+		"User.index.529977-10": "状态",
+		"User.index.529977-11": "操作",
+		"User.index.529977-12": "请勾选数据",
+		"User.index.529977-13": "操作成功"
+	},
+	"en": {
+		"User.index.529977-0": "Add",
+		"User.index.529977-1": "Confirm batch unbinding?",
+		"User.index.529977-2": "Batch unbinding",
+		"User.index.529977-3": "normal",
+		"User.index.529977-4": "Disable",
+		"User.index.529977-5": "Unbind",
+		"User.index.529977-6": "Confirm unbinding",
+		"User.index.529977-7": "full name",
+		"User.index.529977-8": "user name",
+		"User.index.529977-9": "Creation time",
+		"User.index.529977-10": "state",
+		"User.index.529977-11": "operation",
+		"User.index.529977-12": "Please check the data",
+		"User.index.529977-13": "Operation successful"
+	}
+}

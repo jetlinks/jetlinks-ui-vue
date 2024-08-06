@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"components.PermissTree.529979-0": "菜单权限",
+		"components.PermissTree.529979-1": "数据权限",
+		"components.PermissTree.529979-2": "勾选任意数据权限均能看到自己创建的数据权限",
+		"components.PermissTree.529979-3": "批量设置",
+		"components.PermissTree.529979-4": "请选择",
+		"components.PermissTree.529979-5": "不支持数据权限配置，默认可查看全部数据",
+		"components.PermissTree.529979-6": "操作权限"
+	},
+	"en": {
+		"components.PermissTree.529979-0": "Menu permissions",
+		"components.PermissTree.529979-1": "Data permissions",
+		"components.PermissTree.529979-2": "Checking any data permission will allow you to see the data permissions you have created",
+		"components.PermissTree.529979-3": "Batch settings",
+		"components.PermissTree.529979-4": "Please choose",
+		"components.PermissTree.529979-5": "Not supporting data permission configuration, default can view all data",
+		"components.PermissTree.529979-6": "Operation permissions"
+	}
+}
