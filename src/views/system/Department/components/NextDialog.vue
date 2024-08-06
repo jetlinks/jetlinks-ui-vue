@@ -1,19 +1,22 @@
 <template>
     <j-modal
         visible
-        title="绑定"
+        :title="$t('components.NextDialog.338026-0')"
         width="520px"
         @ok="handleOk"
         :maskClosable="false"
         class="edit-dialog-container"
         @cancel="cancel"
     >
-        是否继续分配产品下的具体设备
+        {{ $t('components.NextDialog.338026-1') }}
     </j-modal>
 </template>
 
 <script setup lang="ts">
 import { useDepartmentStore } from 'store/department'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emits = defineEmits(['confirm','update:visible']);
 const departmentStore = useDepartmentStore();
