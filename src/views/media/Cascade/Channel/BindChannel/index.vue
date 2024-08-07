@@ -1,19 +1,19 @@
 <!-- 国标级联-绑定通道 -->
 <template>
     <j-modal
-        v-model:visible="_vis"
+        visible
         title="绑定通道"
         cancelText="取消"
         okText="确定"
         width="80%"
         @ok="handleSave"
-        @cancel="_vis = false"
+        @cancel="$emit('cancel')"
         :confirmLoading="loading"
     >
         <pro-search
             :columns="columns"
-            target="media-bind"
             @search="handleSearch"
+            type="simple"
         />
 
         <JProTable
@@ -68,36 +68,14 @@
 <script setup lang="ts">
 import CascadeApi from '@/api/media/cascade';
 import { onlyMessage } from '@/utils/comm';
-import { PropType } from 'vue';
 
 const route = useRoute();
 
 type Emits = {
-    (e: 'update:visible', data: boolean): void;
+    (e: 'cancel'): void;
     (e: 'submit'): void;
 };
 const emit = defineEmits<Emits>();
-
-const props = defineProps({
-    visible: { type: Boolean, default: false },
-    data: {
-        type: Object as PropType<Partial<Record<string, any>>>,
-        default: () => ({}),
-    },
-});
-
-const _vis = computed({
-    get: () => props.visible,
-    set: (val) => emit('update:visible', val),
-});
-
-watch(
-    () => _vis.value,
-    (val) => {
-        if (val) handleSearch({ terms: [] });
-        else _selectedRowKeys.value = [];
-    },
-);
 
 const columns = [
     {
@@ -211,10 +189,13 @@ const handleSave = async () => {
     })
     if (resp.success) {
         onlyMessage('操作成功！');
-        _vis.value = false;
         emit('submit');
     } else {
         onlyMessage('操作失败！', 'error');
     }
 };
+
+onMounted(()=>{
+    handleSearch({ terms: [] })
+})
 </script>

@@ -170,14 +170,6 @@ const initList = [
         key: 'Log',
         tab: '日志管理',
     },
-    {
-        key: 'CardManagement',
-        tab: '物联网卡',
-    },
-    {
-        key: 'Firmware',
-        tab: '远程升级',
-    },
 ];
 
 const list = ref([...initList]);
@@ -224,6 +216,18 @@ const getDetail = () => {
         list.value.push({
             key: 'AlarmRecord',
             tab: '预处理数据',
+        });
+    }
+    if (permissionStore.hasPermission('iot-card/CardManagement:view')) {
+        list.value.push({
+            key: 'CardManagement',
+            tab: '物联网卡',
+        });
+    }
+    if (permissionStore.hasPermission('device/Firmware:view')) {
+        list.value.push({
+            key: 'Firmware',
+            tab: '远程升级',
         });
     }
     if (
@@ -330,15 +334,10 @@ const getDetailFn = async () => {
         list.value = [...initList];
         getDetail();
         instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
-    }else{
+    } else {
         instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
     }
-    
 };
-
-onMounted(() => {
-    getDetailFn();
-});
 
 const onTabChange = (e: string) => {
     if (instanceStore.tabActiveKey === 'Metadata') {
@@ -388,6 +387,10 @@ const jumpProduct = () => {
         id: instanceStore.current?.productId,
     });
 };
+
+onMounted(() => {
+    getDetailFn();
+});
 
 onUnmounted(() => {
     instanceStore.current = {} as any;
