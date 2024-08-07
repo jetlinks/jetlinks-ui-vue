@@ -257,11 +257,12 @@ const columns = [
     },
     {
         title: '关联场景联动',
-        dataIndex: 'scene',
+        dataIndex: 'id',
         hideInTable:true,
-        key: 'scene',
+        key: 'id',
         search: {
             type: 'select',
+            termOptions: ['in'],
             options: async () => {
                 const allData = await queryList({
                     paging: false,
@@ -355,6 +356,14 @@ const map = {
     other: '其他',
 };
 const handleSearch = (e: any) => {
+    e.terms.map((i:any)=>{
+        i.terms.forEach((item:any)=>{
+            if(item.column === 'id'){
+                item.termType = 'rule-bind-alarm'
+            }
+        })
+    })
+    console.log(e,'e')
     params.value = e;
 };
 

@@ -287,7 +287,7 @@
                                             .clientId
                                     "
                                     placeholder="请输入appId"
-                                    :disabled="!!form.data.id"
+                                    :disabled="!!form.data.id && !!form.data.apiClient.authConfig.oauth2.clientId"
                                 />
                             </j-form-item>
                             <j-form-item
