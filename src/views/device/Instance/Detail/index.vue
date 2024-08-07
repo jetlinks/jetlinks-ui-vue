@@ -224,7 +224,12 @@ const getDetail = () => {
             tab: '物联网卡',
         });
     }
-    if (permissionStore.hasPermission('device/Firmware:view')) {
+    if (
+        permissionStore.hasPermission('device/Firmware:view') &&
+        instanceStore.current?.features?.find(
+            (item: any) => item?.id === 'supportFirmware',
+        )
+    ) {
         list.value.push({
             key: 'Firmware',
             tab: '远程升级',
