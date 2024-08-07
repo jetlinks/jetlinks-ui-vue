@@ -3370,5 +3370,15 @@
 	"Home.index.849899-10": "未激活",
 	"Home.index.849899-11": "停用",
 	"Home.index.849899-12": "暂无权限，请联系管理员",
-	"Home.index.849899-13": "流量消耗"
+	"Home.index.849899-13": "流量消耗",
+	"Dashboard.index.033176-0": "数据统计",
+	"Dashboard.index.033176-1": "昨日流量消耗",
+	"Dashboard.index.033176-2": "当月流量消耗",
+	"Dashboard.index.033176-3": "本年流量消耗",
+	"Dashboard.index.033176-4": "流量统计",
+	"Dashboard.index.033176-5": "流量使用TOP10",
+	"Dashboard.index.033176-6": "昨日",
+	"Dashboard.index.033176-7": "近一周",
+	"Dashboard.index.033176-8": "近一月",
+	"Dashboard.index.033176-9": "近一年"
 }

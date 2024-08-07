@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Dashboard.index.033176-0": "数据统计",
+		"Dashboard.index.033176-1": "昨日流量消耗",
+		"Dashboard.index.033176-2": "当月流量消耗",
+		"Dashboard.index.033176-3": "本年流量消耗",
+		"Dashboard.index.033176-4": "流量统计",
+		"Dashboard.index.033176-5": "流量使用TOP10",
+		"Dashboard.index.033176-6": "昨日",
+		"Dashboard.index.033176-7": "近一周",
+		"Dashboard.index.033176-8": "近一月",
+		"Dashboard.index.033176-9": "近一年"
+	},
+	"en": {
+		"Dashboard.index.033176-0": "Data statistics",
+		"Dashboard.index.033176-1": "Yesterday's traffic consumption",
+		"Dashboard.index.033176-2": "Monthly traffic consumption",
+		"Dashboard.index.033176-3": "Yearly traffic consumption",
+		"Dashboard.index.033176-4": "Traffic statistics",
+		"Dashboard.index.033176-5": "Top 10 traffic users",
+		"Dashboard.index.033176-6": "Yesterday",
+		"Dashboard.index.033176-7": "Past week",
+		"Dashboard.index.033176-8": "Past month",
+		"Dashboard.index.033176-9": "Past year"
+	}
+}

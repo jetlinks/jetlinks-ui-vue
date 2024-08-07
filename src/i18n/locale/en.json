@@ -3370,5 +3370,15 @@
 	"Home.index.849899-10": "inactive",
 	"Home.index.849899-11": "disabled",
 	"Home.index.849899-12": "No permission at the moment, please contact the administrator",
-	"Home.index.849899-13": "Traffic consumption"
+	"Home.index.849899-13": "Traffic consumption",
+	"Dashboard.index.033176-0": "Data statistics",
+	"Dashboard.index.033176-1": "Yesterday's traffic consumption",
+	"Dashboard.index.033176-2": "Monthly traffic consumption",
+	"Dashboard.index.033176-3": "Yearly traffic consumption",
+	"Dashboard.index.033176-4": "Traffic statistics",
+	"Dashboard.index.033176-5": "Top 10 traffic users",
+	"Dashboard.index.033176-6": "Yesterday",
+	"Dashboard.index.033176-7": "Past week",
+	"Dashboard.index.033176-8": "Past month",
+	"Dashboard.index.033176-9": "Past year"
 }
