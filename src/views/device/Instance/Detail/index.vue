@@ -126,6 +126,7 @@ import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
 import AlarmRecord from './AlarmRecord/index.vue';
 import Firmware from './Firmware/index.vue';
+import Shadow from './Shadow/index.vue';
 import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
@@ -178,6 +179,10 @@ const initList = [
         key: 'Firmware',
         tab: '远程升级',
     },
+    {
+        key:'Shadow',
+        tab:'设备影子'
+    }
 ];
 
 const list = ref([...initList]);
@@ -199,6 +204,7 @@ const tabs = {
     AlarmRecord,
     CardManagement,
     Firmware,
+    Shadow
 };
 
 const permissionStore = usePermissionStore();
