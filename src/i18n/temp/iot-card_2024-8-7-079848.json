@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Recharge.index.797372-0": "充值",
+		"Recharge.index.797372-1": "本平台仅提供充值入口，具体充值结果需以运营商的充值结果为准",
+		"Recharge.index.797372-2": "充值金额",
+		"Recharge.index.797372-3": "支付方式",
+		"Recharge.index.797372-4": "订单号",
+		"Recharge.index.797372-5": "支付URL",
+		"Recharge.index.797372-6": "订单时间",
+		"Recharge.index.797372-7": "操作",
+		"Recharge.index.797372-8": "查看"
+	},
+	"en": {
+		"Recharge.index.797372-0": "Recharge",
+		"Recharge.index.797372-1": "This platform only provides a recharge entrance, and the specific recharge results shall be subject to the recharge results of the operator",
+		"Recharge.index.797372-2": "Recharge amount",
+		"Recharge.index.797372-3": "Payment method",
+		"Recharge.index.797372-4": "Order number",
+		"Recharge.index.797372-5": "Payment URL",
+		"Recharge.index.797372-6": "Order Time",
+		"Recharge.index.797372-7": "Operation",
+		"Recharge.index.797372-8": "Show"
+	}
+}
