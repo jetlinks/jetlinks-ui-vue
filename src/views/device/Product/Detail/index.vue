@@ -160,6 +160,7 @@ import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
+import { isNoCommunity } from '@/utils/utils';
 
 const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
@@ -291,7 +292,7 @@ const getProtocol = async () => {
             }
             if (
                 supportFirmware &&
-                permissionStore.hasPermission('device/Firmware:view')
+                permissionStore.hasPermission('device/Firmware:view') && isNoCommunity
             ) {
                 list.value.push({
                     key: 'Firmware',
@@ -313,7 +314,7 @@ const getProtocol = async () => {
         if (
             permissionStore.hasPermission(
                 'rule-engine/Alarm/Configuration:view',
-            )
+            ) && isNoCommunity
         ) {
             list.value.push({
                 key: 'AlarmRecord',
