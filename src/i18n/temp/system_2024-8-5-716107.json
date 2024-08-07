@@ -10,7 +10,7 @@
 	"en": {
 		"Setting.index.159182-0": "Click to switch between menu unselected/selected status; When operating the parent menu, the corresponding sub menu status will be synchronized with it by default and can be adjusted separately; Support dragging and dropping menus to adjust display order.",
 		"Setting.index.159182-1": "Menu configuration",
-		"Setting.index.159182-2": "save",
+		"Setting.index.159182-2": "Save",
 		"Setting.index.159182-3": "After saving, the current system menu data will be overwritten. Are you sure about the operation?",
 		"Setting.index.159182-4": "Operation successful",
 		"Setting.index.159182-5": "Only supports 3-level menus"
