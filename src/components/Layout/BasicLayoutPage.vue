@@ -2,7 +2,7 @@
     <j-pro-layout
         v-bind="layoutConf"
         v-model:collapsed="basicLayout.collapsed"
-        v-model:openKeys="basicLayout.openKeys"
+        :openKeys="basicLayout.collapsed  ? [] : basicLayout.openKeys"
         :selectedKeys="basicLayout.selectedKeys"
         :breadcrumb="basicLayout.pure ? undefined : { routes: breadcrumbs }"
         :headerHeight='basicLayout.pure ? 1 : layout.headerHeight'
