@@ -102,7 +102,8 @@
                                     <PermissionButton
                                         v-if="
                                             i.key !== 'play' &&
-                                            i.key !== 'backPlay'
+                                            i.key !== 'backPlay' &&
+                                            i.key !== 'share'
                                         "
                                         :danger="i.key === 'delete'"
                                         :disabled="i.disabled"
@@ -161,6 +162,7 @@
             :data="playData"
             @refresh="listRef.reload()"
         />
+        <Address v-if="visible" :data="channelData" @close="visible = false"/>
     </page-container>
 </template>
 
@@ -171,6 +173,7 @@ import { useMenuStore } from 'store/menu';
 import Save from './Save.vue';
 import Live from './Live/index.vue';
 import Tree from './Tree/index.vue';
+import Address from './Address/index.vue';
 import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import DeviceApi from '@/api/media/device';
@@ -259,6 +262,7 @@ const listRef = ref();
 const playerVis = ref(false);
 const channelData = ref();
 const playData = ref();
+const visible = ref(false)
 
 /**
  * 表格操作按钮
@@ -312,6 +316,18 @@ const getActions = (
                         channelId: data.channelId,
                     },
                 );
+            },
+        },
+        {
+            key: 'share',
+            text: '分享地址',
+            tooltip: {
+                title: '分享地址',
+            },
+            icon: 'ShareAltOutlined',
+            onClick: () => {
+                visible.value = true;
+                channelData.value = cloneDeep(data);
             },
         },
         {
