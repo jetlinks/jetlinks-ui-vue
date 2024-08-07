@@ -193,10 +193,6 @@ const list = ref([
         key: 'Device',
         tab: '设备接入',
     },
-    {
-        key: 'Firmware',
-        tab: '远程升级',
-    },
 ]);
 
 const tabs = {
@@ -300,10 +296,6 @@ const getProtocol = async () => {
                         key: 'DataAnalysis',
                         tab: '数据解析',
                     },
-                    {
-                        key: 'Firmware',
-                        tab: '远程升级',
-                    },
                 ];
             } else {
                 list.value = [
@@ -319,10 +311,6 @@ const getProtocol = async () => {
                     {
                         key: 'Device',
                         tab: '设备接入',
-                    },
-                    {
-                        key: 'Firmware',
-                        tab: '远程升级',
                     },
                 ];
             }
@@ -346,6 +334,12 @@ const getProtocol = async () => {
             list.value.push({
                 key: 'AlarmRecord',
                 tab: '预处理数据',
+            });
+        }
+        if (permissionStore.hasPermission('device/Firmware:view')) {
+            list.value.push({
+                key: 'Firmware',
+                tab: '远程升级',
             });
         }
     }
