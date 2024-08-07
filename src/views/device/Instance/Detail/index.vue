@@ -134,6 +134,7 @@ import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
+import { isNoCommunity } from '@/utils/utils';
 
 const menuStory = useMenuStore();
 
@@ -212,19 +213,24 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
-    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view')) {
+    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity) {
         list.value.push({
             key: 'AlarmRecord',
             tab: '预处理数据',
         });
     }
-    if (permissionStore.hasPermission('iot-card/CardManagement:view')) {
+    if (permissionStore.hasPermission('iot-card/CardManagement:view') && isNoCommunity) {
         list.value.push({
             key: 'CardManagement',
             tab: '物联网卡',
         });
     }
-    if (permissionStore.hasPermission('device/Firmware:view')) {
+    if (
+        permissionStore.hasPermission('device/Firmware:view') &&
+        instanceStore.current?.features?.find(
+            (item: any) => item?.id === 'supportFirmware',
+        ) && isNoCommunity
+    ) {
         list.value.push({
             key: 'Firmware',
             tab: '远程升级',
