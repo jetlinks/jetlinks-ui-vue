@@ -10,19 +10,19 @@
     >
         <j-form :model="form.data" class="basic-form" ref="formRef">
             <j-form-item
-                label="编码"
+                :label="$t('components.ButtonAddDialog.159197-0')"
                 name="id"
                 :rules="[
-                    { required: true, message: '请输入编码' },
-                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true, message: $t('components.ButtonAddDialog.159197-1') },
+                    { max: 64, message: $t('components.ButtonAddDialog.159197-2') },
                     { validator: validateIdRepeat, trigger: 'blur' },
                 ]"
             >
                 <j-auto-complete
                     v-model:value="form.data.id"
                     :options="codeOptions"
-                    placeholder="请输入编码"
-                    :disabled="props.mode !== '新增'"
+                    :placeholder="$t('components.ButtonAddDialog.159197-1')"
+                    :disabled="props.mode !== $t('components.ButtonAddDialog.159197-3')"
                 >
                     <template #option="{ value: val, message }">
                         {{ val }}
@@ -31,26 +31,26 @@
                 </j-auto-complete>
             </j-form-item>
             <j-form-item
-                label="名称"
+                :label="$t('components.ButtonAddDialog.159197-4')"
                 name="name"
                 :rules="[
-                    { required: true, message: '请输入名称' },
-                    { max: 64, message: '最多可输入64个字符' },
+                    { required: true, message: $t('components.ButtonAddDialog.159197-5') },
+                    { max: 64, message: $t('components.ButtonAddDialog.159197-2') },
                 ]"
             >
                 <j-input
                     v-model:value="form.data.name"
-                    :disabled="props.mode === '查看'"
-                    placeholder="请输入名称"
+                    :disabled="props.mode === $t('components.ButtonAddDialog.159197-6')"
+                    :placeholder="$t('components.ButtonAddDialog.159197-5')"
                 />
             </j-form-item>
             <j-form-item
-                label="权限"
+                :label="$t('components.ButtonAddDialog.159197-7')"
                 name="permissions"
                 :rules="[
                     {
                         required: true,
-                        message: '请选择权限',
+                        message: $t('components.ButtonAddDialog.159197-8'),
                         validator: form.checkPermission,
                     },
                 ]"
@@ -59,19 +59,19 @@
                     :first-width="8"
                     max-height="350px"
                     v-model:value="form.data.permissions"
-                    :disabled="props.mode === '查看'"
+                    :disabled="props.mode === $t('components.ButtonAddDialog.159197-6')"
                     :btnId="form.data.id"
                 />
             </j-form-item>
-            <j-form-item label="说明" name="description"
+            <j-form-item :label="$t('components.ButtonAddDialog.159197-9')" name="description"
             :rules="[
-                    { max: 200, message: '最多可输入200个字符' },
+                    { max: 200, message: $t('components.ButtonAddDialog.159197-10') },
                 ]">
                 <j-textarea
                     v-model:value="form.data.description"
                     :rows="4"
-                    placeholder="请输入说明"
-                    :disabled="props.mode === '查看'"
+                    :placeholder="$t('components.ButtonAddDialog.159197-11')"
+                    :disabled="props.mode === $t('components.ButtonAddDialog.159197-6')"
                 />
             </j-form-item>
         </j-form>
@@ -84,6 +84,9 @@ import { Rule } from 'ant-design-vue/es/form';
 import PermissChoose from '../components/PermissChoose.vue';
 import { saveMenuInfo_api } from '@/api/system/menu';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
@@ -92,7 +95,7 @@ const props = defineProps<{
         id: string;
     };
     visible: boolean;
-    mode: '查看' | '新增' | '编辑';
+    mode: string;
     data: formType;
     menuData: {
         type: Array<any>;
@@ -120,7 +123,7 @@ const confirm = () => {
             loading.value = true;
             saveMenuInfo_api(params)
                 .then((resp) => {
-                    onlyMessage('操作成功');
+                    onlyMessage($t('components.ButtonAddDialog.159197-13'));
                     emits('confirm');
                     emits('update:visible', false);
                 })
@@ -140,24 +143,24 @@ const formRef = ref<FormInstance>();
 const form = reactive({
     data: { ...initForm, ...props.data },
     checkPermission: (_rule: Rule, value: string[]) => {
-        if (!value || value.length < 1) return Promise.reject('请选择权限');
+        if (!value || value.length < 1) return Promise.reject($t('components.ButtonAddDialog.159197-8'));
         return Promise.resolve();
     },
 });
 const codeOptions = [
-    { label: 'add', value: 'add', message: '新增' },
-    { label: 'delete', value: 'delete', message: '删除' },
-    { label: 'update', value: 'update', message: '更新' },
+    { label: 'add', value: 'add', message: $t('components.ButtonAddDialog.159197-3') },
+    { label: 'delete', value: 'delete', message: $t('components.ButtonAddDialog.159197-14') },
+    { label: 'update', value: 'update', message: $t('components.ButtonAddDialog.159197-15') },
 ];
 const validateIdRepeat = (rule: any, val: any) => {
-    if (props.mode === '编辑'|| props.mode === '查看') {
+    if (props.mode === $t('components.ButtonAddDialog.159197-12')|| props.mode === $t('components.ButtonAddDialog.159197-6')) {
         return Promise.resolve('');
     }
     const isRepeat = props.menuData.find((i: any) => {
         return i.id === val;
     });
     if (isRepeat) {
-        return Promise.reject('编码重复');
+        return Promise.reject($t('components.ButtonAddDialog.159197-16'));
     } else {
         return Promise.resolve('');
     }

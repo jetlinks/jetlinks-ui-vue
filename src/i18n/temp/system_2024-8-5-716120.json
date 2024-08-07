@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Detail.ButtonMange.159184-0": "新增",
+		"Detail.ButtonMange.159184-1": "编辑",
+		"Detail.ButtonMange.159184-2": "查看",
+		"Detail.ButtonMange.159184-3": "删除",
+		"Detail.ButtonMange.159184-4": "确认删除",
+		"Detail.ButtonMange.159184-5": "请先新增菜单基本信息",
+		"Detail.ButtonMange.159184-6": "编码",
+		"Detail.ButtonMange.159184-7": "名称",
+		"Detail.ButtonMange.159184-8": "说明",
+		"Detail.ButtonMange.159184-9": "操作",
+		"Detail.ButtonMange.159184-10": "操作成功"
+	},
+	"en": {
+		"Detail.ButtonMange.159184-0": "Add",
+		"Detail.ButtonMange.159184-1": "Edit",
+		"Detail.ButtonMange.159184-2": "Show",
+		"Detail.ButtonMange.159184-3": "Delete",
+		"Detail.ButtonMange.159184-4": "Confirm deletion",
+		"Detail.ButtonMange.159184-5": "Please add basic menu information first",
+		"Detail.ButtonMange.159184-6": "code",
+		"Detail.ButtonMange.159184-7": "name",
+		"Detail.ButtonMange.159184-8": "explain",
+		"Detail.ButtonMange.159184-9": "operation",
+		"Detail.ButtonMange.159184-10": "Operation successful"
+	}
+}

@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"save.index.464662-0": "新增字典",
+		"save.index.464662-1": "编辑字典",
+		"save.index.464662-2": "字典ID",
+		"save.index.464662-3": "字典名称",
+		"save.index.464662-4": "状态",
+		"save.index.464662-5": "启用",
+		"save.index.464662-6": "禁用",
+		"save.index.464662-7": "说明",
+		"save.index.464662-8": "请输入英文或者数字或者-或者_",
+		"save.index.464662-9": "该字典ID已存在",
+		"save.index.464662-10": "请输入ID",
+		"save.index.464662-11": "最多可输入64位字符",
+		"save.index.464662-12": "请输入名称",
+		"save.index.464662-13": "请选择状态",
+		"save.index.464662-14": "最多可输入200位字符",
+		"save.index.464662-15": "保存成功!",
+		"save.index.464662-16": "操作失败!"
+	},
+	"en": {
+		"save.index.464662-0": "Add dictionary",
+		"save.index.464662-1": "Edit Dictionary",
+		"save.index.464662-2": "dictionary ID",
+		"save.index.464662-3": "dictionary name",
+		"save.index.464662-4": "state",
+		"save.index.464662-5": "enable",
+		"save.index.464662-6": "disable",
+		"save.index.464662-7": "explain",
+		"save.index.464662-8": "Please enter English or numbers or - or_",
+		"save.index.464662-9": "The dictionary ID already exists",
+		"save.index.464662-10": "Please enter your ID",
+		"save.index.464662-11": "Up to 64 characters can be input",
+		"save.index.464662-12": "Please enter a name",
+		"save.index.464662-13": "Please select the status",
+		"save.index.464662-14": "Up to 200 characters can be entered",
+		"save.index.464662-15": "Saved successfully!",
+		"save.index.464662-16": "Operation failed!"
+	}
+}

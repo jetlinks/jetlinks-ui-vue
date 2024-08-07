@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"components.ApiTest.577950-0": "发送",
+		"components.ApiTest.577950-1": "请求参数",
+		"components.ApiTest.577950-2": "该字段是必填字段",
+		"components.ApiTest.577950-3": "确认删除",
+		"components.ApiTest.577950-4": "新增",
+		"components.ApiTest.577950-5": "响应参数",
+		"components.ApiTest.577950-6": "参数名称",
+		"components.ApiTest.577950-7": "参数值",
+		"components.ApiTest.577950-8": "操作"
+	},
+	"en": {
+		"components.ApiTest.577950-0": "Send",
+		"components.ApiTest.577950-1": "Request parameters",
+		"components.ApiTest.577950-2": "This field is mandatory",
+		"components.ApiTest.577950-3": "Confirm deletion",
+		"components.ApiTest.577950-4": "Add",
+		"components.ApiTest.577950-5": "Response parameters",
+		"components.ApiTest.577950-6": "Parameter Name",
+		"components.ApiTest.577950-7": "Parameter values",
+		"components.ApiTest.577950-8": "operation"
+	}
+}

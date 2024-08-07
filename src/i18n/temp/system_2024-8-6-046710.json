@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Right.index.464664-0": "字典ID：",
+		"Right.index.464664-1": "说明：",
+		"Right.index.464664-2": "创建日期：",
+		"Right.index.464664-3": "新增",
+		"Right.index.464664-4": "检索码",
+		"Right.index.464664-5": "操作",
+		"Right.index.464664-6": "编辑",
+		"Right.index.464664-7": "删除",
+		"Right.index.464664-8": "确认删除?",
+		"Right.index.464664-9": "操作成功!",
+		"Right.index.464664-10": "操作失败!"
+	},
+	"en": {
+		"Right.index.464664-0": "Dictionary ID:",
+		"Right.index.464664-1": "Explain:",
+		"Right.index.464664-2": "Creation date:",
+		"Right.index.464664-3": "Add",
+		"Right.index.464664-4": "Search code",
+		"Right.index.464664-5": "operation",
+		"Right.index.464664-6": "Edit",
+		"Right.index.464664-7": "Delete",
+		"Right.index.464664-8": "Are you sure to delete?",
+		"Right.index.464664-9": "Operation successful!",
+		"Right.index.464664-10": "Operation failed!"
+	}
+}

@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"components.ButtonAddDialog.159197-0": "编码",
+		"components.ButtonAddDialog.159197-1": "请输入编码",
+		"components.ButtonAddDialog.159197-2": "最多可输入64个字符",
+		"components.ButtonAddDialog.159197-3": "新增",
+		"components.ButtonAddDialog.159197-4": "名称",
+		"components.ButtonAddDialog.159197-5": "请输入名称",
+		"components.ButtonAddDialog.159197-6": "查看",
+		"components.ButtonAddDialog.159197-7": "权限",
+		"components.ButtonAddDialog.159197-8": "请选择权限",
+		"components.ButtonAddDialog.159197-9": "说明",
+		"components.ButtonAddDialog.159197-10": "最多可输入200个字符",
+		"components.ButtonAddDialog.159197-11": "请输入说明",
+		"components.ButtonAddDialog.159197-12": "编辑",
+		"components.ButtonAddDialog.159197-13": "操作成功",
+		"components.ButtonAddDialog.159197-14": "删除",
+		"components.ButtonAddDialog.159197-15": "更新",
+		"components.ButtonAddDialog.159197-16": "编码重复"
+	},
+	"en": {
+		"components.ButtonAddDialog.159197-0": "code",
+		"components.ButtonAddDialog.159197-1": "Please enter the code",
+		"components.ButtonAddDialog.159197-2": "Up to 64 characters can be entered",
+		"components.ButtonAddDialog.159197-3": "newly added",
+		"components.ButtonAddDialog.159197-4": "name",
+		"components.ButtonAddDialog.159197-5": "Please enter a name",
+		"components.ButtonAddDialog.159197-6": "see",
+		"components.ButtonAddDialog.159197-7": "jurisdiction",
+		"components.ButtonAddDialog.159197-8": "Please select permissions",
+		"components.ButtonAddDialog.159197-9": "explain",
+		"components.ButtonAddDialog.159197-10": "Up to 200 characters can be entered",
+		"components.ButtonAddDialog.159197-11": "Please enter instructions",
+		"components.ButtonAddDialog.159197-12": "edit",
+		"components.ButtonAddDialog.159197-13": "Operation successful",
+		"components.ButtonAddDialog.159197-14": "delete",
+		"components.ButtonAddDialog.159197-15": "to update",
+		"components.ButtonAddDialog.159197-16": "Duplicate encoding"
+	}
+}

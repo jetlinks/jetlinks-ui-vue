@@ -2,7 +2,7 @@
     <j-select
         style="width: 100%"
         v-model:value="keys"
-        placeholder="请选择标签"
+        :placeholder="$t('variableItem.Tag.866447-0')"
         :options="tagsList"
         @change="onChange"
     />
@@ -10,6 +10,9 @@
 
 <script lang="ts" setup>
 import TemplateApi from '@/api/notice/template';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
     notify: {

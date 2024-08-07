@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"components.ApiDoes.148101-0": "请求数据类型",
+		"components.ApiDoes.148101-1": "响应数据类型",
+		"components.ApiDoes.148101-2": "接口描述",
+		"components.ApiDoes.148101-3": "请求示例",
+		"components.ApiDoes.148101-4": "请求参数",
+		"components.ApiDoes.148101-5": "响应状态",
+		"components.ApiDoes.148101-6": "响应参数",
+		"components.ApiDoes.148101-7": "参数名",
+		"components.ApiDoes.148101-8": "参数说明",
+		"components.ApiDoes.148101-9": "请求类型",
+		"components.ApiDoes.148101-10": "是否必须",
+		"components.ApiDoes.148101-11": "参数类型",
+		"components.ApiDoes.148101-12": "状态码",
+		"components.ApiDoes.148101-13": "说明",
+		"components.ApiDoes.148101-14": "参数名称",
+		"components.ApiDoes.148101-15": "参数说明",
+		"components.ApiDoes.148101-16": "类型"
+	},
+	"en": {
+		"components.ApiDoes.148101-0": "Request data type",
+		"components.ApiDoes.148101-1": "Response data type",
+		"components.ApiDoes.148101-2": "Interface description",
+		"components.ApiDoes.148101-3": "Request Example",
+		"components.ApiDoes.148101-4": "Request parameters",
+		"components.ApiDoes.148101-5": "Response status",
+		"components.ApiDoes.148101-6": "Response parameters",
+		"components.ApiDoes.148101-7": "parameter Name",
+		"components.ApiDoes.148101-8": "parameter Description",
+		"components.ApiDoes.148101-9": "request type",
+		"components.ApiDoes.148101-10": "Is it necessary",
+		"components.ApiDoes.148101-11": "parameter type",
+		"components.ApiDoes.148101-12": "status code",
+		"components.ApiDoes.148101-13": "explain",
+		"components.ApiDoes.148101-14": "parameter Name",
+		"components.ApiDoes.148101-15": "parameter Description",
+		"components.ApiDoes.148101-16": "type"
+	}
+}

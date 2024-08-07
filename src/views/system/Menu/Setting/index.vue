@@ -4,11 +4,11 @@
             <div class="top">
                 <AIcon style="padding: 12px" type="ExclamationCircleOutlined" />
                 <span
-                    >单击可切换菜单未选中/选中状态；操作父级菜单时，对应子菜单状态将默认与其同步，可以单独操作调整；支持拖拽菜单调整展示顺序。
+                    >{{ $t('Setting.index.159182-0') }}
                 </span>
             </div>
             <div class="content">
-                <j-card title="菜单配置" style="width: 80%">
+                <j-card :title="$t('Setting.index.159182-1')" style="width: 80%">
                     <div class="tree">
                       <j-scrollbar>
                         <j-tree
@@ -41,7 +41,7 @@
                 type="primary"
                 @click="() => (visible = true)"
                 style="margin-left: 10%"
-                >保存</j-button
+                >{{ $t('Setting.index.159182-2') }}</j-button
             >
         </j-card>
         <j-modal
@@ -51,7 +51,7 @@
             @ok="handleOk"
             @cancel="handleCancel"
         >
-            保存后当前系统菜单数据将被覆盖，确认操作？
+            {{ $t('Setting.index.159182-3') }}
         </j-modal>
     </page-container>
 </template>
@@ -86,6 +86,9 @@ import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
 import { isNoCommunity } from '@/utils/utils';
 import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
@@ -200,7 +203,7 @@ const handleOk = async () => {
     _dataSorts.push(USER_CENTER_MENU_DATA)
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Setting.index.159182-4'), 'success');
         location.reload()
     }
     loading.value = false;
@@ -219,7 +222,7 @@ const onDrop = (info: AntTreeNodeDropEvent) => {
     const newTreeData = drop(info, treeData.value);
     const maxDepth = getMaxDepth(newTreeData);
     if (maxDepth > 3) {
-        onlyMessage('仅支持3级菜单', 'error');
+        onlyMessage($t('Setting.index.159182-5'), 'error');
         treeDataDropChange.value = false;
         treeData.value = TreeData;
     } else {
@@ -293,7 +296,7 @@ const filterMenus = (menus: any[]) => {
 <style lang="less" scoped>
 .top {
     background: #f6f6f6;
-    height: 40px;
+    height: auto;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;

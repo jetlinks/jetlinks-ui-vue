@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Role.index.8664410-0": "请输入名称",
+		"Role.index.8664410-1": "全选",
+		"Role.index.8664410-2": "已选择",
+		"Role.index.8664410-3": "项",
+		"Role.index.8664410-4": "取消选择",
+		"Role.index.8664410-5": "标识",
+		"Role.index.8664410-6": "名称",
+		"Role.index.8664410-7": "说明"
+	},
+	"en": {
+		"Role.index.8664410-0": "Please enter a name",
+		"Role.index.8664410-1": "Select All",
+		"Role.index.8664410-2": "Selected",
+		"Role.index.8664410-3": "term",
+		"Role.index.8664410-4": "Cancel selection",
+		"Role.index.8664410-5": "ID",
+		"Role.index.8664410-6": "name",
+		"Role.index.8664410-7": "explain"
+	}
+}

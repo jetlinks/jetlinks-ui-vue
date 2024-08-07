@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.VariableDefinitions.866443-0": "当前模版暂无变量",
+		"components.VariableDefinitions.866443-1": "请输入",
+		"components.VariableDefinitions.866443-2": "最多64个字符",
+		"components.VariableDefinitions.866443-3": "请选择"
+	},
+	"en": {
+		"components.VariableDefinitions.866443-0": "There are currently no variables in the template",
+		"components.VariableDefinitions.866443-1": "Please enter",
+		"components.VariableDefinitions.866443-2": "Up to 64 characters",
+		"components.VariableDefinitions.866443-3": "Please choose"
+	}
+}

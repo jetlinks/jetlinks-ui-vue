@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"CalendarRight.index.478322-0": "将左侧标签拖拽至右侧日历中，日历中的标签在场景联动中可以被引用作为执行动作的触发条件",
+		"CalendarRight.index.478322-1": "确认清空？",
+		"CalendarRight.index.478322-2": "清空",
+		"CalendarRight.index.478322-3": "开启后以周/月为最小单位制定日期模板，确认后可快速覆盖日历生效期",
+		"CalendarRight.index.478322-4": "快速作用：",
+		"CalendarRight.index.478322-5": "已选择的模板",
+		"CalendarRight.index.478322-6": "将模板快速作用于后续的",
+		"CalendarRight.index.478322-7": "日内",
+		"CalendarRight.index.478322-8": "重选",
+		"CalendarRight.index.478322-9": "快速作用",
+		"CalendarRight.index.478322-10": "操作成功"
+	},
+	"en": {
+		"CalendarRight.index.478322-0": "Drag the left label to the right calendar, and the labels in the calendar can be referenced as trigger conditions for executing actions in scene linkage",
+		"CalendarRight.index.478322-1": "Confirm to clear?",
+		"CalendarRight.index.478322-2": "Clear",
+		"CalendarRight.index.478322-3": "After activation, create a date template based on the minimum unit of week/month, which can quickly overwrite the effective period of the calendar after confirmation",
+		"CalendarRight.index.478322-4": "Quick action:",
+		"CalendarRight.index.478322-5": "selected templates",
+		"CalendarRight.index.478322-6": "Quickly apply the template to subsequent tasks within",
+		"CalendarRight.index.478322-7": "day",
+		"CalendarRight.index.478322-8": "Re Select",
+		"CalendarRight.index.478322-9": "Quick action",
+		"CalendarRight.index.478322-10": "Operation successful"
+	}
+}

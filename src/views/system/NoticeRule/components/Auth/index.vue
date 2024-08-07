@@ -2,14 +2,14 @@
     <j-modal
         :width="540"
         visible
-        title="权限控制"
+        :title="$t('Auth.index.8664412-0')"
         @cancel="emit('close')"
         @ok="onSave"
         :maskClosable="false"
     >
         <div class="alert">
             <AIcon type="InfoCircleOutlined" />
-            通过角色控制哪些用户可以订阅【{{ name }}】下所有的通知方式。
+            {{ $t('Auth.index.8664412-1',[name]) }}
         </div>
         <Role v-model="_selectedRowKeys" :gridColumn="2" />
     </j-modal>
@@ -18,6 +18,9 @@
 <script lang="ts" setup>
 import { PropType } from 'vue';
 import Role from '../Role/index.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({

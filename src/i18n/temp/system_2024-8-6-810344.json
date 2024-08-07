@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Save.BuildIn.101934-0": "1级区域不需要选择",
+		"Save.BuildIn.101934-1": "同步添加下一级区域",
+		"Save.BuildIn.101934-2": "中国"
+	},
+	"en": {
+		"Save.BuildIn.101934-0": "Level 1 area does not require selection",
+		"Save.BuildIn.101934-1": "Synchronize the addition of the next level region",
+		"Save.BuildIn.101934-2": "China"
+	}
+}

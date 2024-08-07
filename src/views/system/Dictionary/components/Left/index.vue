@@ -1,7 +1,7 @@
 <template>
     <div class="left-contain">
         <j-input
-            placeholder="字典名称"
+            :placeholder="$t('Left.index.464661-0')"
             v-model:value="searchValue"
             @pressEnter="search"
             @change="searchChange"
@@ -17,14 +17,14 @@
                 @click="showSave"
                 style="width: 160px"
             >
-                新增字典
+                {{ $t('Left.index.464661-1') }}
             </PermissionButton>
             <PermissionButton
                 type="text"
                 hasPermission="system/Dictionary:down"
                 @click="downVisible = true"
             >
-                下载
+                {{ $t('Left.index.464661-2') }}
             </PermissionButton>
             <j-upload
                 :before-upload="beforeUpload"
@@ -36,7 +36,7 @@
                     type="text"
                     hasPermission="system/Dictionary:import"
                 >
-                    导入
+                    {{ $t('Left.index.464661-3') }}
                 </PermissionButton>
             </j-upload>
         </div>
@@ -63,8 +63,8 @@
                                 "
                                 :title="
                                     item.data.status === 1
-                                        ? '禁用后引用该字典的页面将受到影响，确认禁用？'
-                                        : '确认启用？'
+                                        ? $t('Left.index.464661-4')
+                                        : $t('Left.index.464661-5')
                                 "
                                 :onConfirm="() => updateDic(item.data)"
                             >
@@ -84,8 +84,8 @@
                                 placement="top"
                                 :title="
                                     !hasPermission('system/Dictionary:action')
-                                        ? '暂无权限,请联系管理员'
-                                        : '内置数据不支持修改'
+                                        ? $t('Left.index.464661-6')
+                                        : $t('Left.index.464661-7')
                                 "
                             >
                                 <j-switch
@@ -105,28 +105,28 @@
                                 :disabled="item.data.classified === 'system'"
                                 :tooltip="
                                     item.data.classified === 'system'
-                                        ? { title: '内置数据不支持修改' }
+                                        ? { title: $t('Left.index.464661-7') }
                                         : null
                                 "
                                 :popConfirm="{
-                                    title: `确认删除？`,
+                                    title: $t('Left.index.464661-8'),
                                     onConfirm: () => deleteDic(item.id),
                                 }"
                             >
-                                删除
+                                {{ $t('Left.index.464661-9') }}
                             </PermissionButton>
                             <PermissionButton
                                 type="text"
                                 :disabled="item.data.classified === 'system'"
                                 :tooltip="
                                     item.data.classified === 'system'
-                                        ? { title: '内置数据不支持修改' }
+                                        ? { title: $t('Left.index.464661-7') }
                                         : null
                                 "
                                 hasPermission="system/Dictionary:update"
                                 @click="showEdit(item.data)"
                             >
-                                编辑
+                                {{ $t('Left.index.464661-10') }}
                             </PermissionButton>
                         </div>
                     </div>
@@ -156,6 +156,9 @@ import Save from './save/index.vue';
 import { onlyMessage } from '@/utils/comm';
 import Export from './Export/index.vue';
 import { usePermissionStore } from '@/store/permission';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const emit = defineEmits(['selectData']);
 const hasPermission = usePermissionStore().hasPermission;
 const saveShow = ref(false);
@@ -242,10 +245,10 @@ const deleteDic = (id: string) => {
     const response = deleteDictionary(id);
     response.then((res: any) => {
         if (res.status === 200) {
-            onlyMessage('操作成功!');
+            onlyMessage($t('Left.index.464661-11'));
             queryData(true);
         } else {
-            onlyMessage('操作失败!', 'error');
+            onlyMessage($t('Left.index.464661-12'), 'error');
         }
     });
     return response;
@@ -258,10 +261,10 @@ const updateDic = (data: any) => {
     const response = addDictionary(data);
     response.then((res: any) => {
         if (res.status === 200) {
-            onlyMessage('操作成功!');
+            onlyMessage($t('Left.index.464661-11'));
             reload();
         } else {
-            onlyMessage('操作失败!', 'error');
+            onlyMessage($t('Left.index.464661-12'), 'error');
         }
     });
     return response;
@@ -287,20 +290,20 @@ const beforeUpload = (file: any) => {
                 try {
                     data = JSON.parse(text);
                 } catch {
-                    onlyMessage('请上传json格式的文件', 'error');
+                    onlyMessage($t('Left.index.464661-13'), 'error');
                     return false;
                 }
                 const res = await addDictionary(data);
                 if (res.status === 200) {
                     reload();
-                    onlyMessage('操作成功！');
+                    onlyMessage($t('Left.index.464661-14'));
                 }
             } else {
-                onlyMessage('文件内容不能为空', 'error');
+                onlyMessage($t('Left.index.464661-15'), 'error');
             }
         };
     } else {
-        onlyMessage('请上传json格式的文件', 'error');
+        onlyMessage($t('Left.index.464661-13'), 'error');
     }
 };
 

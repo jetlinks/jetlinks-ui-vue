@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.ChooseApi.491186-0": "保存",
+		"components.ChooseApi.491186-1": "说明",
+		"components.ChooseApi.491186-2": "操作成功",
+		"components.ChooseApi.491186-3": "与上次勾选数据一致，未执行调用操作"
+	},
+	"en": {
+		"components.ChooseApi.491186-0": "save",
+		"components.ChooseApi.491186-1": "explain",
+		"components.ChooseApi.491186-2": "Operation successful",
+		"components.ChooseApi.491186-3": "Consistent with the data selected last time, no call operation was performed"
+	}
+}

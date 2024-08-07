@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        :title="editType === 'add' ? '新增标签' : '编辑标签'"
+        :title="editType === 'add' ? $t('components.editTag.478324-0') : $t('components.editTag.478324-1')"
         @cancel="emit('closeEditTag')"
         @ok="submit"
         :confirmLoading="loading"
@@ -25,17 +25,17 @@
                         :rules="[
                             {
                                 required: true,
-                                message:'请为标签命名'
+                                message:$t('components.editTag.478324-2')
                             },
                             {
                                 max: 16,
-                                message: '最多可输入16个字符',
+                                message: $t('components.editTag.478324-3'),
                             },
                         ]"
                     >
                         <a-input
                             v-model:value="tagInfo.name"
-                            placeholder="请为标签命名"
+                            :placeholder="$t('components.editTag.478324-2')"
                         ></a-input>
                     </a-form-item>
                 </a-col>
@@ -50,6 +50,9 @@ import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import ColorPicker from 'colorpicker-v3';
 import 'colorpicker-v3/style.css';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const props = defineProps({
     editType: {
         type: String,
@@ -103,7 +106,7 @@ const submit = () => {
                 loading.value = false
             });
             if (saveRes.success) {
-                onlyMessage('操作成功');
+                onlyMessage($t('components.editTag.478324-4'));
                 emit('refresh');
             }
         }

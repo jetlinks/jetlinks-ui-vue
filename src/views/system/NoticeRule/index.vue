@@ -5,7 +5,7 @@
                 <div style="margin-bottom: 15px;">
                     <div class="alert">
                         <AIcon type="InfoCircleOutlined" />
-                        启用通知类型后，你可以为每种通知类型配置不同的通知方式、通知模板、接收人。
+                        {{ $t('NoticeRule.index.866440-0') }}
                     </div>
                 </div>
                 <div class="content-collapse">
@@ -27,7 +27,7 @@
                             <template #header>
                                 <div>
                                     {{ item.name }}
-                                    <span style="margin-left: 10px;" class="alert" v-if="item.provider === 'alarm'">注意：接收人需要有告警配置页面查询权限，才能收到告警类通知</span>
+                                    <span style="margin-left: 10px;" class="alert" v-if="item.provider === 'alarm'">{{ $t('NoticeRule.index.866440-1') }}</span>
                                 </div>
                             </template>
                             <div>
@@ -55,48 +55,51 @@
 import { queryChannelConfig } from '@/api/system/noticeRule';
 import Item from './components/Item/index.vue';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const menuStore = useMenuStore();
 let dataSource:any[] =[] 
 const systemNotice = [
     {
         provider: 'alarm',
-        name: '告警',
+        name: $t('NoticeRule.index.866440-2'),
         children: [
             {
                 provider: 'alarm-product',
-                name: '产品告警',
+                name: $t('NoticeRule.index.866440-3'),
             },
             {
                 provider: 'alarm-device',
-                name: '设备告警',
+                name: $t('NoticeRule.index.866440-4'),
             },
             {
                 provider: 'alarm-org',
-                name: '部门告警',
+                name: $t('NoticeRule.index.866440-5'),
             },
             {
                 provider: 'alarm-other',
-                name: '其他告警',
+                name: $t('NoticeRule.index.866440-6'),
             },
         ],
     },
     {
         provider: 'system-monitor',
-        name: '系统监控',
+        name: $t('NoticeRule.index.866440-7'),
         children: [
             {
                 provider: 'system-event',
-                name: '系统运行异常',
+                name: $t('NoticeRule.index.866440-8'),
             },
         ],
     },
     {
         provider: 'system-business',
-        name: '业务监控',
+        name: $t('NoticeRule.index.866440-9'),
         children: [
             {
                 provider: 'device-transparent-codec',
-                name: '透传消息解析异常',
+                name: $t('NoticeRule.index.866440-10'),
             },
         ],
     },
@@ -104,31 +107,31 @@ const systemNotice = [
 const lowCodeNotice = [
     {
         provider: 'workflow-notification',
-        name: '工作流通知',
+        name: $t('NoticeRule.index.866440-11'),
         children: [
             {
                 provider: 'workflow-task-todo',
-                name: '待办通知',
+                name: $t('NoticeRule.index.866440-12'),
             },
             {
                 provider: 'workflow-task-reject',
-                name: '驳回通知',
+                name: $t('NoticeRule.index.866440-13'),
             },
             {
                 provider: 'workflow-task-cc',
-                name: '抄送通知',
+                name: $t('NoticeRule.index.866440-14'),
             },
             {
                 provider: 'workflow-process-finish',
-                name: '办结通知',
+                name: $t('NoticeRule.index.866440-15'),
             },
             {
                 provider: 'workflow-process-repealed',
-                name: '关闭通知',
+                name: $t('NoticeRule.index.866440-16'),
             },
             {
                 provider: 'workflow-task-transfer-todo',
-                name: '转办通知'
+                name: $t('NoticeRule.index.866440-17')
             }
         ],
     },

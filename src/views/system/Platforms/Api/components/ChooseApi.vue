@@ -25,7 +25,7 @@
             v-if="props.mode !== 'home'"
             style="margin-left: 20px;"
         >
-            保存
+            {{ $t('components.ChooseApi.491186-0') }}
         </PermissionButton>
     </div>
 </template>
@@ -40,6 +40,9 @@ import { modeType } from '../typing';
 import { useDepartmentStore } from '@/store/department';
 import { onlyMessage } from '@/utils/comm';
 import { uniqBy } from 'lodash-es';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const department = useDepartmentStore();
 const emits = defineEmits([
@@ -65,7 +68,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('components.ChooseApi.491186-1'),
         dataIndex: 'summary',
         key: 'summary',
     },
@@ -141,7 +144,7 @@ const save = async () => {
         //     delOperations_api(removeKeys)
         //         .finally(() => addOperations_api(addKeys))
         //         .then(() => {
-        //             onlyMessage('操作成功');
+        //             onlyMessage($t('components.ChooseApi.491186-2'));
         //             emits('refresh');
         //         });
         // fix: bug#10829
@@ -149,11 +152,11 @@ const save = async () => {
             removeKeys.length && (await delOperations_api(removeKeys));
             const res = await addOperations_api(addKeys);
             if (res.success) {
-                onlyMessage('操作成功');
+                onlyMessage($t('components.ChooseApi.491186-2'));
                 emits('refresh');
             }
         } else {
-            onlyMessage('与上次勾选数据一致，未执行调用操作','error')
+            onlyMessage($t('components.ChooseApi.491186-3'),'error')
             return
         }
     } else if (props.mode === 'appManger') {
@@ -174,13 +177,13 @@ const save = async () => {
         //     updateOperations_api(code, '_add', { operations: addItems }),
         // ]).then((resps) => {
         //     if (resps[0].status === 200 && resps[1].status === 200) {
-        //         onlyMessage('操作成功');
+        //         onlyMessage($t('components.ChooseApi.491186-2'));
         //         emits('refresh');
         //     }
         // });
         updateOperations_api(code,{operations:items}).then((resp)=>{
             if(resp.status === 200){
-                onlyMessage('操作成功');
+                onlyMessage($t('components.ChooseApi.491186-2'));
                 emits('refresh')
             }
         })

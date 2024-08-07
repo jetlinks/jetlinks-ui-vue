@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Save.index.464665-0": "新增",
+		"Save.index.464665-1": "编辑",
+		"Save.index.464665-2": "连接失败",
+		"Save.index.464665-3": "请输入英文或者数字或者-或者_",
+		"Save.index.464665-4": "value已存在，请重新输入",
+		"Save.index.464665-5": "请输入name",
+		"Save.index.464665-6": "最多可输入64位字符",
+		"Save.index.464665-7": "请输入value",
+		"Save.index.464665-8": "请输入text",
+		"Save.index.464665-9": "操作成功!",
+		"Save.index.464665-10": "操作失败!"
+	},
+	"en": {
+		"Save.index.464665-0": "Add",
+		"Save.index.464665-1": "Edit",
+		"Save.index.464665-2": "Connection failed",
+		"Save.index.464665-3": "Please enter English or numbers or - or_",
+		"Save.index.464665-4": "Value already exists, please re-enter",
+		"Save.index.464665-5": "Please enter your name",
+		"Save.index.464665-6": "Up to 64 characters can be input",
+		"Save.index.464665-7": "Please enter value",
+		"Save.index.464665-8": "Please enter text",
+		"Save.index.464665-9": "Operation successful!",
+		"Save.index.464665-10": "Operation failed!"
+	}
+}

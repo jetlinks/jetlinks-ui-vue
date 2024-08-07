@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"Auth.index.8664412-0": "权限控制",
+		"Auth.index.8664412-1": "通过角色控制哪些用户可以订阅【{0}】下所有的通知方式。"
+	},
+	"en": {
+		"Auth.index.8664412-0": "Permission control",
+		"Auth.index.8664412-1": "Control which users can subscribe to all notification methods under [{0}] through roles."
+	}
+}

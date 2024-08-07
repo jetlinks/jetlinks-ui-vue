@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.editTag.478324-0": "新增标签",
+		"components.editTag.478324-1": "编辑标签",
+		"components.editTag.478324-2": "请为标签命名",
+		"components.editTag.478324-3": "最多可输入16个字符",
+		"components.editTag.478324-4": "操作成功"
+	},
+	"en": {
+		"components.editTag.478324-0": "Add tags",
+		"components.editTag.478324-1": "Edit tags",
+		"components.editTag.478324-2": "Please name the label",
+		"components.editTag.478324-3": "Up to 16 characters can be entered",
+		"components.editTag.478324-4": "Operation successful"
+	}
+}

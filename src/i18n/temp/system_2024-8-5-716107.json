@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Setting.index.159182-0": "单击可切换菜单未选中/选中状态；操作父级菜单时，对应子菜单状态将默认与其同步，可以单独操作调整；支持拖拽菜单调整展示顺序。",
+		"Setting.index.159182-1": "菜单配置",
+		"Setting.index.159182-2": "保存",
+		"Setting.index.159182-3": "保存后当前系统菜单数据将被覆盖，确认操作？",
+		"Setting.index.159182-4": "操作成功",
+		"Setting.index.159182-5": "仅支持3级菜单"
+	},
+	"en": {
+		"Setting.index.159182-0": "Click to switch between menu unselected/selected status; When operating the parent menu, the corresponding sub menu status will be synchronized with it by default and can be adjusted separately; Support dragging and dropping menus to adjust display order.",
+		"Setting.index.159182-1": "Menu configuration",
+		"Setting.index.159182-2": "save",
+		"Setting.index.159182-3": "After saving, the current system menu data will be overwritten. Are you sure about the operation?",
+		"Setting.index.159182-4": "Operation successful",
+		"Setting.index.159182-5": "Only supports 3-level menus"
+	}
+}

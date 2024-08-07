@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"FullCalendar.index.478321-0": "上月",
+		"FullCalendar.index.478321-1": "今天",
+		"FullCalendar.index.478321-2": "下月",
+		"FullCalendar.index.478321-3": "日历维护",
+		"FullCalendar.index.478321-4": "点击确认完成本次日历维护",
+		"FullCalendar.index.478321-5": "确认",
+		"FullCalendar.index.478321-6": "点击选中模板结束日期",
+		"FullCalendar.index.478321-7": "点击选中模板开始日期",
+		"FullCalendar.index.478321-8": "该日期已超出可配置标签上限",
+		"FullCalendar.index.478321-9": "操作成功",
+		"FullCalendar.index.478321-10": "结束时间必须大于开始时间"
+	},
+	"en": {
+		"FullCalendar.index.478321-0": "Last month",
+		"FullCalendar.index.478321-1": "Today",
+		"FullCalendar.index.478321-2": "Next month",
+		"FullCalendar.index.478321-3": "Calendar maintenance",
+		"FullCalendar.index.478321-4": "Click confirm to complete this calendar maintenance",
+		"FullCalendar.index.478321-5": "Confirm",
+		"FullCalendar.index.478321-6": "Click to select the end date of the template",
+		"FullCalendar.index.478321-7": "Click to select the template start date",
+		"FullCalendar.index.478321-8": "The date has exceeded the configurable label limit",
+		"FullCalendar.index.478321-9": "Operation successful",
+		"FullCalendar.index.478321-10": "The end time must be greater than the start time"
+	}
+}

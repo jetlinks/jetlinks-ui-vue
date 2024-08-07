@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="菜单图标"
+        :title="$t('components.ChooseIconDialog.159196-0')"
         width="800px"
         :maskClosable="false"
         @cancel="emits('update:visible', false)"
@@ -22,6 +22,9 @@
 
 <script setup lang="ts">
 import iconKeys from './fields';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
     visible: boolean;

@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.NotifyConfig.866446-0": "新增",
+		"components.NotifyConfig.866446-1": "钉钉群机器人类型的配置在当前页面将被过滤",
+		"components.NotifyConfig.866446-2": "通知方式",
+		"components.NotifyConfig.866446-3": "说明",
+		"components.NotifyConfig.866446-4": "名称"
+	},
+	"en": {
+		"components.NotifyConfig.866446-0": "Add",
+		"components.NotifyConfig.866446-1": "The configuration of DingTalk group robot types will be filtered on the current page",
+		"components.NotifyConfig.866446-2": "Notification method",
+		"components.NotifyConfig.866446-3": "explain",
+		"components.NotifyConfig.866446-4": "name"
+	}
+}

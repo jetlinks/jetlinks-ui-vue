@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"RoleRight.index.529973-0": "新增",
+		"RoleRight.index.529973-1": "标识",
+		"RoleRight.index.529973-2": "名称",
+		"RoleRight.index.529973-3": "说明",
+		"RoleRight.index.529973-4": "操作",
+		"RoleRight.index.529973-5": "编辑",
+		"RoleRight.index.529973-6": "权限配置",
+		"RoleRight.index.529973-7": "删除",
+		"RoleRight.index.529973-8": "确认删除?",
+		"RoleRight.index.529973-9": "操作成功!",
+		"RoleRight.index.529973-10": "操作失败!"
+	},
+	"en": {
+		"RoleRight.index.529973-0": "Add",
+		"RoleRight.index.529973-1": "ID",
+		"RoleRight.index.529973-2": "name",
+		"RoleRight.index.529973-3": "explain",
+		"RoleRight.index.529973-4": "operation",
+		"RoleRight.index.529973-5": "Edit",
+		"RoleRight.index.529973-6": "Permission configuration",
+		"RoleRight.index.529973-7": "Delete",
+		"RoleRight.index.529973-8": "Are you sure to delete?",
+		"RoleRight.index.529973-9": "Operation successful!",
+		"RoleRight.index.529973-10": "Operation failed!"
+	}
+}

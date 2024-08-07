@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Left.index.464661-0": "字典名称",
+		"Left.index.464661-1": "新增字典",
+		"Left.index.464661-2": "下载",
+		"Left.index.464661-3": "导入",
+		"Left.index.464661-4": "禁用后引用该字典的页面将受到影响，确认禁用？",
+		"Left.index.464661-5": "确认启用？",
+		"Left.index.464661-6": "暂无权限,请联系管理员",
+		"Left.index.464661-7": "内置数据不支持修改",
+		"Left.index.464661-8": "确认删除？",
+		"Left.index.464661-9": "删除",
+		"Left.index.464661-10": "编辑",
+		"Left.index.464661-11": "操作成功!",
+		"Left.index.464661-12": "操作失败!",
+		"Left.index.464661-13": "请上传json格式的文件",
+		"Left.index.464661-14": "操作成功！",
+		"Left.index.464661-15": "文件内容不能为空"
+	},
+	"en": {
+		"Left.index.464661-0": "dictionary name",
+		"Left.index.464661-1": "Add dictionary",
+		"Left.index.464661-2": "Download",
+		"Left.index.464661-3": "Import",
+		"Left.index.464661-4": "After disabling, pages that reference this dictionary will be affected. Are you sure you want to disable it?",
+		"Left.index.464661-5": "Confirm activation?",
+		"Left.index.464661-6": "No permission at the moment, please contact the administrator",
+		"Left.index.464661-7": "Built in data does not support modification",
+		"Left.index.464661-8": "Are you sure to delete?",
+		"Left.index.464661-9": "Delete",
+		"Left.index.464661-10": "Edit",
+		"Left.index.464661-11": "Operation successful!",
+		"Left.index.464661-12": "Operation failed!",
+		"Left.index.464661-13": "Please upload a file in JSON format",
+		"Left.index.464661-14": "Operation successful!",
+		"Left.index.464661-15": "The file content cannot be empty"
+	}
+}

@@ -15,9 +15,9 @@
 		"components.EditDepartmentDialog.338039-12": "新增"
 	},
 	"en": {
-		"components.EditDepartmentDialog.338039-0": "cancel",
-		"components.EditDepartmentDialog.338039-1": "determine",
-		"components.EditDepartmentDialog.338039-2": "Superior organization",
+		"components.EditDepartmentDialog.338039-0": "Cancel",
+		"components.EditDepartmentDialog.338039-1": "Confirm",
+		"components.EditDepartmentDialog.338039-2": "superior organization",
 		"components.EditDepartmentDialog.338039-3": "Please select the superior organization",
 		"components.EditDepartmentDialog.338039-4": "name",
 		"components.EditDepartmentDialog.338039-5": "Please enter a name",
@@ -25,8 +25,8 @@
 		"components.EditDepartmentDialog.338039-7": "sort",
 		"components.EditDepartmentDialog.338039-8": "Please enter sorting",
 		"components.EditDepartmentDialog.338039-9": "Operation successful",
-		"components.EditDepartmentDialog.338039-10": "edit",
-		"components.EditDepartmentDialog.338039-11": "add a new sub organization",
-		"components.EditDepartmentDialog.338039-12": "newly added"
+		"components.EditDepartmentDialog.338039-10": "Edit",
+		"components.EditDepartmentDialog.338039-11": "Add sub organization",
+		"components.EditDepartmentDialog.338039-12": "Add"
 	}
 }

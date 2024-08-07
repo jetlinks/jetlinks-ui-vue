@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"variableItem.InputFile.866448-0": "请上传文件",
+		"variableItem.InputFile.866448-1": "上传附件",
+		"variableItem.InputFile.866448-2": "请上传正确格式图片",
+		"variableItem.InputFile.866448-3": "图片大小必须小于4M"
+	},
+	"en": {
+		"variableItem.InputFile.866448-0": "Please upload the file",
+		"variableItem.InputFile.866448-1": "Upload attachments",
+		"variableItem.InputFile.866448-2": "Please upload images in the correct format",
+		"variableItem.InputFile.866448-3": "The image size must be less than 4M"
+	}
+}

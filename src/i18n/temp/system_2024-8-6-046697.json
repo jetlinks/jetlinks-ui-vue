@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Export.index.464663-0": "下载",
+		"Export.index.464663-1": "请选择需要下载的字典",
+		"Export.index.464663-2": "字典名称：",
+		"Export.index.464663-3": "字典ID：",
+		"Export.index.464663-4": "数据字典",
+		"Export.index.464663-5": "至少选择一条数据!"
+	},
+	"en": {
+		"Export.index.464663-0": "Download",
+		"Export.index.464663-1": "Please select the dictionary that needs to be downloaded",
+		"Export.index.464663-2": "dictionary name:",
+		"Export.index.464663-3": "dictionary ID:",
+		"Export.index.464663-4": "data dictionary",
+		"Export.index.464663-5": "Select at least one piece of data!"
+	}
+}

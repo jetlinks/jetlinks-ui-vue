@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"Save.GeoJsonModal.101933-0": "上传GeoJson",
+		"Save.GeoJsonModal.101933-1": "仅支持获取单个区域数据"
+	},
+	"en": {
+		"Save.GeoJsonModal.101933-0": "Upload GeoJson",
+		"Save.GeoJsonModal.101933-1": "Only supports obtaining data from a single region"
+	}
+}
