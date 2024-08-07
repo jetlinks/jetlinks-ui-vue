@@ -40,7 +40,7 @@
                                 ><AIcon type="KeyOutlined"
                             /></span>
                             <span class="child-item-left-auth-text"
-                                >{{ $t('Item.index.8664411-3') }}</span
+                                >{{ $t('Item.index.8664411-2') }}</span
                             >
                         </j-button>
                     </j-tooltip>
@@ -75,7 +75,7 @@
                                                 type="link"
                                                 :hasPermission="true"
                                             >
-                                                {{ $t('Item.index.8664411-4') }}
+                                                {{ $t('Item.index.8664411-3') }}
                                             </PermissionButton>
                                         </j-menu-item>
                                         <j-menu-item>
@@ -86,7 +86,7 @@
                                                     'system/NoticeRule:update',
                                                 ]"
                                             >
-                                                {{ $t('Item.index.8664411-5') }}
+                                                {{ $t('Item.index.8664411-4') }}
                                             </PermissionButton>
                                         </j-menu-item>
                                         <j-menu-item>
@@ -98,7 +98,7 @@
                                                     'system/NoticeRule:delete',
                                                 ]"
                                             >
-                                                {{ $t('Item.index.8664411-6') }}
+                                                {{ $t('Item.index.8664411-5') }}
                                             </PermissionButton>
                                         </j-menu-item>
                                     </j-menu>
@@ -229,7 +229,7 @@ const onDelete = async (id: string) => {
     if (id) {
         const resp = await deleteChannelConfig(id);
         if (resp.status === 200) {
-            onlyMessage($t('Item.index.8664411-7'));
+            onlyMessage($t('Item.index.8664411-6'));
             emits('refresh');
         }
     }
@@ -255,7 +255,7 @@ const onAuthSave = (_data: string[]) => {
     editChannelConfig(props.data.id, obj)
         .then((resp) => {
             if (resp.status === 200) {
-                onlyMessage($t('Item.index.8664411-7'), 'success');
+                onlyMessage($t('Item.index.8664411-6'), 'success');
                 authVisible.value = false;
                 emits('refresh');
             }
@@ -279,7 +279,7 @@ const onAction = (e: boolean) => {
             actionChannelConfig(props.data.id, 'enable')
                 .then((resp) => {
                     if (resp.status === 200) {
-                        onlyMessage($t('Item.index.8664411-7'));
+                        onlyMessage($t('Item.index.8664411-6'));
                         emits('refresh');
                     }
                 })
@@ -306,7 +306,7 @@ const onAction = (e: boolean) => {
                         : props.data.grant,
                 channels: [
                     {
-                        name: $t('Item.index.8664411-8'),
+                        name: $t('Item.index.8664411-7'),
                         channelProvider: 'inside-mail',
                         grant: {
                             role: {
@@ -329,7 +329,7 @@ const onAction = (e: boolean) => {
             saveChannelConfig([obj])
                 .then((resp) => {
                     if (resp.status === 200) {
-                        onlyMessage($t('Item.index.8664411-7'), 'success');
+                        onlyMessage($t('Item.index.8664411-6'), 'success');
                         emits('refresh');
                     }
                 })
@@ -340,7 +340,7 @@ const onAction = (e: boolean) => {
     } else {
         actionChannelConfig(props.data.id, 'disable').then((resp) => {
             if (resp.status === 200) {
-                onlyMessage($t('Item.index.8664411-7'));
+                onlyMessage($t('Item.index.8664411-6'));
                 emits('refresh');
             }
         });
@@ -358,10 +358,10 @@ const onSwitchChange = (e: boolean) => {
         } else {
             Modal.confirm({
                 title: e
-                    ? $t('Item.index.8664411-9')
-                    : $t('Item.index.8664411-10'),
-                cancelText: $t('Item.index.8664411-11'),
-                okText: e ? $t('Item.index.8664411-12') : $t('Item.index.8664411-13'),
+                    ? $t('Item.index.8664411-8')
+                    : $t('Item.index.8664411-9'),
+                cancelText: $t('Item.index.8664411-10'),
+                okText: e ? $t('Item.index.8664411-11') : $t('Item.index.8664411-12'),
                 content: h(
                     'div',
                     {
@@ -390,7 +390,7 @@ const onSwitchChange = (e: boolean) => {
                                     );
                                 },
                             },
-                            $t('Item.index.8664411-14'),
+                            $t('Item.index.8664411-13'),
                         ),
                     ],
                 ),
@@ -408,7 +408,7 @@ const onSave = (_data: any) => {
     updateChannelConfig(props.data.id, [_data])
         .then((resp) => {
             if (resp.status === 200) {
-                onlyMessage($t('Item.index.8664411-7'), 'success');
+                onlyMessage($t('Item.index.8664411-6'), 'success');
                 visible.value = false;
                 emits('refresh');
             }
