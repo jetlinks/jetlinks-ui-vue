@@ -3861,5 +3861,9 @@
 	"Platform.index.387410-18": "请先禁用再删除",
 	"Platform.index.387410-19": "确认删除?",
 	"Platform.index.387410-20": "操作成功！",
-	"Platform.index.387410-21": "操作失败！"
+	"Platform.index.387410-21": "操作失败！",
+	"Record.index.745799-0": "卡号",
+	"Record.index.745799-1": "操作类型",
+	"Record.index.745799-2": "操作时间",
+	"Record.index.745799-3": "操作人"
 }
