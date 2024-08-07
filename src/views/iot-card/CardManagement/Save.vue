@@ -3,9 +3,9 @@
         :maskClosable="false"
         width="600px"
         :visible="true"
-        :title="type === 'add' ? '新增' : '编辑'"
-        okText="确定"
-        cancelText="取消"
+        :title="type === 'add' ? $t('CardManagement.Save.237327-0') : $t('CardManagement.Save.237327-1')"
+        :okText="$t('CardManagement.Save.237327-2')"
+        :cancelText="$t('CardManagement.Save.237327-3')"
         @ok="handleOk"
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
@@ -17,10 +17,10 @@
                 :rules="rules"
                 :model="modelRef"
             >
-                <j-form-item label="卡号" name="id">
+                <j-form-item :label="$t('CardManagement.Save.237327-4')" name="id">
                     <j-input
                         v-model:value="modelRef.id"
-                        placeholder="请输入卡号"
+                        :placeholder="$t('CardManagement.Save.237327-5')"
                         :disabled="type === 'edit'"
                     ></j-input>
                 </j-form-item>
@@ -28,7 +28,7 @@
                     <template #label>
                         <span>
                             ICCID
-                            <j-tooltip title="IC卡的唯一识别号码">
+                            <j-tooltip :title="$t('CardManagement.Save.237327-6')">
                                 <AIcon
                                     type="QuestionCircleOutlined"
                                     style="margin-left: 2px"
@@ -38,11 +38,11 @@
                     </template>
                     <j-input
                         v-model:value="modelRef.iccId"
-                        placeholder="请输入ICCID"
+                        :placeholder="$t('CardManagement.Save.237327-7')"
                         :disabled="type === 'edit'"
                     />
                 </j-form-item>
-                <j-form-item label="运营商" name="operatorName">
+                <j-form-item :label="$t('CardManagement.Save.237327-8')" name="operatorName">
                   <j-select
                     allowClear
                     showSearch
@@ -50,14 +50,14 @@
                     :disabled="type === 'edit'"
                     :options="OperatorList"
                     v-model:value="modelRef.operatorName"
-                    placeholder="请选择运营商"
+                    :placeholder="$t('CardManagement.Save.237327-9')"
                     @select='() => {
                       modelRef.platformConfigId = undefined
                     }'
                   >
                   </j-select>
                 </j-form-item>
-                <j-form-item label="平台对接" name="platformConfigId">
+                <j-form-item :label="$t('CardManagement.Save.237327-10')" name="platformConfigId">
                     <j-select
                         showSearch
                         :filter-option="filterOption"
@@ -65,13 +65,13 @@
                         allowClear
                         :options="platformConfigList"
                         v-model:value="modelRef.platformConfigId"
-                        placeholder="请选择平台对接"
+                        :placeholder="$t('CardManagement.Save.237327-11')"
                     >
                 </j-select>
                 </j-form-item>
 
 
-                <j-form-item label="类型" name="cardType">
+                <j-form-item :label="$t('CardManagement.Save.237327-12')" name="cardType">
                     <j-select
                         allowClear
                         showSearch
@@ -79,14 +79,14 @@
                         :filter-option="filterOption"
                         :options="TypeList"
                         v-model:value="modelRef.cardType"
-                        placeholder="请选择类型"
+                        :placeholder="$t('CardManagement.Save.237327-13')"
                     >
                     </j-select>
                 </j-form-item>
-                <j-form-item label="说明" name="describe">
+                <j-form-item :label="$t('CardManagement.Save.237327-14')" name="describe">
                     <j-textarea
                         v-model:value="modelRef.describe"
-                        placeholder="请输入说明"
+                        :placeholder="$t('CardManagement.Save.237327-15')"
                         showCount
                         :maxlength="200"
                     />
@@ -105,6 +105,9 @@ import {
 } from '@/api/iot-card/cardManagement';
 import { onlyMessage } from '@/utils/comm';
 import { OperatorList, TypeList } from '@/views/iot-card/data';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['change']);
 const props = defineProps({
@@ -140,7 +143,7 @@ const isValidateId = async (id: string) => {
             return res.result.reason;
         }
     } else {
-        return '请输入输入正确的ICCID';
+        return $t('CardManagement.Save.237327-16');
     }
 };
 
@@ -154,7 +157,7 @@ const vailIccId = async (_: Record<string, any>, value: string) => {
             return Promise.reject(new Error(`${validateId}`));
         }
         // } else {
-        //     return Promise.reject(new Error('请输入卡号'));
+        //     return Promise.reject(new Error($t('CardManagement.Save.237327-5')));
     }
 };
 
@@ -162,11 +165,11 @@ const rules = {
     id: [
         {
             required: true,
-            message: '请输入卡号',
+            message: $t('CardManagement.Save.237327-5'),
         },
         {
             max: 64,
-            message: '最多输入64个字符',
+            message: $t('CardManagement.Save.237327-17'),
         },
         {
             validator: vailIccId,
@@ -176,29 +179,29 @@ const rules = {
     iccId: [
         {
             required: true,
-            message: '请输入ICCID',
+            message: $t('CardManagement.Save.237327-7'),
         },
         {
             max: 64,
-            message: '最多输入64个字符',
+            message: $t('CardManagement.Save.237327-17'),
         },
     ],
     platformConfigId: [
         {
             required: true,
-            message: '请选择平台对接',
+            message: $t('CardManagement.Save.237327-11'),
         },
     ],
     operatorName: [
       {
         required: true,
-        message: '请选择运营商',
+        message: $t('CardManagement.Save.237327-9'),
       },
     ],
     cardType: [
         {
             required: true,
-            message: '请选择类型',
+            message: $t('CardManagement.Save.237327-13'),
         },
     ],
 };
@@ -248,7 +251,7 @@ const handleOk = () => {
                     : await edit(toRaw(modelRef)).catch(err => err);
             btnLoading.value = false;
             if (resp.status === 200) {
-                onlyMessage('操作成功')
+                onlyMessage($t('CardManagement.Save.237327-18'))
                 emit('change', true);
                 formRef.value.resetFields();
             }

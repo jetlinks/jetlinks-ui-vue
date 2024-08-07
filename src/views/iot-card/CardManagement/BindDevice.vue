@@ -1,6 +1,6 @@
 <!-- 绑定设备 -->
 <template>
-  <j-modal :maskClosable='false' width='1100px' :visible='true' title='选择设备' okText='确定' cancelText='取消' @ok='handleOk'
+  <j-modal :maskClosable='false' width='1100px' :visible='true' :title="$t('CardManagement.BindDevice.237310-0')" :okText="$t('CardManagement.BindDevice.237310-1')" :cancelText="$t('CardManagement.BindDevice.237310-2')" @ok='handleOk'
            @cancel='handleCancel' :confirmLoading='btnLoading'>
     <div style='margin-top: 10px'>
       <pro-search :columns='columns' target='iot-card-bind-device' @search='handleSearch' type='simple' />
@@ -41,6 +41,9 @@
 import { queryUnbounded, bind } from '@/api/iot-card/cardManagement'
 import moment from 'moment'
 import { onlyMessage } from '@/utils/comm'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['change'])
 
@@ -72,7 +75,7 @@ const columns = [
     }
   },
   {
-    title: '设备名称',
+    title: $t('CardManagement.BindDevice.237310-3'),
     dataIndex: 'name',
     key: 'name',
     ellipsis: true,
@@ -81,7 +84,7 @@ const columns = [
     }
   },
   {
-    title: '注册时间',
+    title: $t('CardManagement.BindDevice.237310-4'),
     dataIndex: 'registryTime',
     key: 'registryTime',
     scopedSlots: true,
@@ -91,16 +94,16 @@ const columns = [
     // sorter: true,
   },
   {
-    title: '状态',
+    title: $t('CardManagement.BindDevice.237310-5'),
     dataIndex: 'state',
     key: 'state',
     scopedSlots: true,
     search: {
       type: 'select',
       options: [
-        { label: '禁用', value: 'notActive' },
-        { label: '离线', value: 'offline' },
-        { label: '在线', value: 'online' }
+        { label: $t('CardManagement.BindDevice.237310-6'), value: 'notActive' },
+        { label: $t('CardManagement.BindDevice.237310-7'), value: 'offline' },
+        { label: $t('CardManagement.BindDevice.237310-8'), value: 'online' }
       ]
     }
     // filterMultiple: false,
@@ -124,7 +127,7 @@ const handleOk = () => {
   bind(props.cardId, _selectedRowKeys.value[0])
     .then((resp: any) => {
       if (resp.status === 200) {
-        onlyMessage('操作成功')
+        onlyMessage($t('CardManagement.BindDevice.237310-9'))
         emit('change', true)
       }
     })
