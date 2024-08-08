@@ -13,28 +13,28 @@
                 }}</Ellipsis>
             </div>
             <div class="deviceId">
-                <span> 设备ID： </span>
+                <span> {{ $t('Summary.index.1174514-0') }} </span>
                 <a @click="jumpDetail">{{ deviceData?.id }}</a>
             </div>
         </template>
         <div>
             <a-descriptions bordered :column="1">
-                <a-descriptions-item label="接入方式">{{
+                <a-descriptions-item :label="$t('Summary.index.1174514-1')">{{
                     PROVIDER_OPTIONS.find(
                         (i) => i.value === deviceData?.provider,
                     )?.label
                 }}</a-descriptions-item>
-                <a-descriptions-item label="所属产品">{{
+                <a-descriptions-item :label="$t('Summary.index.1174514-2')">{{
                     deviceData?.productName
                 }}</a-descriptions-item>
                 <a-descriptions-item
                     v-if="deviceData?.provider === 'onvif'"
-                    label="接入地址"
+                    :label="$t('Summary.index.1174514-3')"
                     >{{ deviceData?.others?.onvifUrl }}</a-descriptions-item
                 >
                 <a-descriptions-item
                     v-if="deviceData?.provider === 'onvif'"
-                    label="接入账户"
+                    :label="$t('Summary.index.1174514-4')"
                     >{{
                         deviceData?.others?.onvifUsername
                     }}</a-descriptions-item
@@ -43,7 +43,7 @@
                     v-if="
                         ['onvif', 'gb28181-2016'].includes(deviceData?.provider)
                     "
-                    label="接入密码"
+                    :label="$t('Summary.index.1174514-5')"
                     ><div class="password">
                         <span>{{ showPassword }}</span>
                         <AIcon
@@ -56,7 +56,7 @@
                             class="passwordIcon"
                         ></AIcon></div
                 ></a-descriptions-item>
-                <a-descriptions-item label="说明">{{
+                <a-descriptions-item :label="$t('Summary.index.1174514-6')">{{
                     deviceData?.description || '--'
                 }}</a-descriptions-item>
             </a-descriptions>
@@ -68,6 +68,9 @@
 import { useMenuStore } from 'store/menu';
 import DeviceApi from '@/api/media/device';
 import { PROVIDER_OPTIONS } from '../const';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     deviceId: {
         type: Object,

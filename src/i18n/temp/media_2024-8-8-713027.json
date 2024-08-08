@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Live.Preset.1174521-0": "设置",
+		"Live.Preset.1174521-1": "删除",
+		"Live.Preset.1174521-2": "调用",
+		"Live.Preset.1174521-3": "序号",
+		"Live.Preset.1174521-4": "预置点位",
+		"Live.Preset.1174521-5": "操作",
+		"Live.Preset.1174521-6": "预置点{0}",
+		"Live.Preset.1174521-7": "操作成功！"
+	},
+	"en": {
+		"Live.Preset.1174521-0": "Settings",
+		"Live.Preset.1174521-1": "Delete",
+		"Live.Preset.1174521-2": "Call",
+		"Live.Preset.1174521-3": "Serial number",
+		"Live.Preset.1174521-4": "Pre set points",
+		"Live.Preset.1174521-5": "Operation",
+		"Live.Preset.1174521-6": "Pre set point {0}",
+		"Live.Preset.1174521-7": "Operation successful!"
+	}
+}

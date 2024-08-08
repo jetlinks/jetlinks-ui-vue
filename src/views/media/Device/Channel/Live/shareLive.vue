@@ -13,7 +13,7 @@
             <div class="media-live-share" v-if="type !== 'share'">
                 <j-button type="link" @click="onShare">
                     <AIcon type="ShareAltOutlined" />
-                    分享视频
+                    {{ $t('Live.shareLive.1174519-0') }}
                 </j-button>
             </div>
         </div>
@@ -31,14 +31,14 @@
                                 @visibleChange="visibleChange"
                                 @click="showToolLock = true"
                             >
-                                <div>开始录像</div>
+                                <div>{{ $t('Live.shareLive.1174519-1') }}</div>
                                 <template #overlay>
                                     <j-menu @click="recordStart">
                                         <j-menu-item key="true" v-if="_type">
                                             <span style="padding-right: 12px"
-                                                >本地存储</span
+                                                >{{ $t('Live.shareLive.1174519-2') }}</span
                                             >
-                                            <j-tooltip title="存储在设备本地">
+                                            <j-tooltip :title="$t('Live.shareLive.1174519-3')">
                                                 <a-icon
                                                     type="QuestionCircleOutlined"
                                                 />
@@ -46,9 +46,9 @@
                                         </j-menu-item>
                                         <j-menu-item key="false">
                                             <span style="padding-right: 12px"
-                                                >云端存储</span
+                                                >{{ $t('Live.shareLive.1174519-4') }}</span
                                             >
-                                            <j-tooltip title="存储在服务器中">
+                                            <j-tooltip :title="$t('Live.shareLive.1174519-5')">
                                                 <a-icon
                                                     type="QuestionCircleOutlined"
                                                 />
@@ -58,23 +58,23 @@
                                 </template>
                             </j-dropdown>
                         </template>
-                        <div v-else-if="isRecord === 1">请求录像中</div>
+                        <div v-else-if="isRecord === 1">{{ $t('Live.shareLive.1174519-6') }}</div>
                         <div
                             v-else-if="isRecord === 2"
                             @click.stop="recordStop"
                         >
-                            停止录像
+                            {{ $t('Live.shareLive.1174519-7') }}
                         </div>
                     </div>
 
                     <div class="tool-item" @click.stop="handleRefresh">
-                        刷新
+                        {{ $t('Live.shareLive.1174519-8') }}
                     </div>
                     <ConfirmModal
-                        title="重置将断开直播, 可能会影响其他播放者"
+                        :title="$t('Live.shareLive.1174519-9')"
                         :onConfirm="handleReset"
                     >
-                        <div class="tool-item">重置</div></ConfirmModal
+                        <div class="tool-item">{{ $t('Live.shareLive.1174519-10') }}</div></ConfirmModal
                     >
                 </div>
                 <LivePlayer
@@ -93,7 +93,7 @@
                     >
                         <template #center>
                             <div class="center">
-                                <div>转速控制</div>
+                                <div>{{ $t('Live.shareLive.1174519-11') }}</div>
                                 <j-dropdown>
                                     <span
                                         >{{ _speed }}<AIcon type="DownOutlined"
@@ -128,6 +128,9 @@ import MediaTool from '@/components/Player/mediaTool.vue';
 import channelApi from '@/api/media/channel';
 import Preset from './Preset.vue';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -174,9 +177,9 @@ const _type = computed(() => {
 });
 
 const speedList = [
-    { label: '高', value: 180 },
-    { label: '中', value: 90 },
-    { label: '低', value: 45 },
+    { label: $t('Live.shareLive.1174519-12'), value: 180 },
+    { label: $t('Live.shareLive.1174519-13'), value: 90 },
+    { label: $t('Live.shareLive.1174519-14'), value: 45 },
 ];
 const speed = ref(90);
 
@@ -281,7 +284,7 @@ const handleRefresh = () => {
 const handleReset =  () => {
     const response = channelApi.mediaStop(props.data.deviceId, props.data.channelId);
     response.then((res)=>{
-      onlyMessage('操作成功!')
+      onlyMessage($t('Live.shareLive.1174519-15'))
     })
     return response
 };

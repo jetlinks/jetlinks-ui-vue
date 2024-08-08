@@ -49,23 +49,23 @@
                     <j-spin :spinning="loading">
                         <j-tooltip placement="topLeft">
                             <template #title>
-                                <div>云端：存储在服务器中</div>
-                                <div>本地：存储在设备本地</div>
+                                <div>{{ $t('Playback.index.1174513-0') }}</div>
+                                <div>{{ $t('Playback.index.1174513-1') }}</div>
                             </template>
                             <div>
-                                类型: <AIcon type="QuestionCircleOutlined" />
+                                {{ $t('Playback.index.1174513-2') }} <AIcon type="QuestionCircleOutlined" />
                             </div>
                         </j-tooltip>
                         <RadioCard
                             layout="horizontal"
                             :options="[
                                 {
-                                    label: '云端',
+                                    label: $t('Playback.index.1174513-3'),
                                     value: 'cloud',
                                     logo: getImage('/media/cloud.png'),
                                 },
                                 {
-                                    label: '本地',
+                                    label: $t('Playback.index.1174513-4'),
                                     value: 'local',
                                     logo: getImage('/local.png'),
                                     disabled: deviceType === 'fixed-media',
@@ -90,7 +90,7 @@
                         >
                             <j-empty
                                 v-if="!historyList.length"
-                                description="暂无数据"
+                                :description="$t('Playback.index.1174513-5')"
                             />
                             <j-list
                                 v-else
@@ -108,8 +108,8 @@
                                                         item.mediaStartTime) ===
                                                         playNowTime &&
                                                     playStatus === 1
-                                                        ? '暂停'
-                                                        : '播放'
+                                                        ? $t('Playback.index.1174513-6')
+                                                        : $t('Playback.index.1174513-7')
                                                 "
                                             >
                                                 <a
@@ -177,6 +177,9 @@ import LivePlayer from '@/components/Player/index.vue';
 import { getImage } from '@/utils/comm';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute();
 

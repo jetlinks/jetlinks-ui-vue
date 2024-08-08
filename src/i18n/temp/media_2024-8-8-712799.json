@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Summary.index.1174514-0": "设备ID：",
+		"Summary.index.1174514-1": "接入方式",
+		"Summary.index.1174514-2": "所属产品",
+		"Summary.index.1174514-3": "接入地址",
+		"Summary.index.1174514-4": "接入账户",
+		"Summary.index.1174514-5": "接入密码",
+		"Summary.index.1174514-6": "说明"
+	},
+	"en": {
+		"Summary.index.1174514-0": "Device ID:",
+		"Summary.index.1174514-1": "Access method",
+		"Summary.index.1174514-2": "Belonging products",
+		"Summary.index.1174514-3": "Access address",
+		"Summary.index.1174514-4": "Access account",
+		"Summary.index.1174514-5": "Access password",
+		"Summary.index.1174514-6": "Explain"
+	}
+}

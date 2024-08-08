@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Device.const.117442-0": "固定地址",
+		"Device.const.117442-1": "插件",
+		"Device.const.117442-2": "TCP被动"
+	},
+	"en": {
+		"Device.const.117442-0": "Fixed address",
+		"Device.const.117442-1": "Plug-in unit",
+		"Device.const.117442-2": "TCP Passive"
+	}
+}

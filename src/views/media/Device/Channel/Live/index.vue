@@ -2,7 +2,7 @@
 <template>
     <j-modal
         v-model:visible="_vis"
-        title="播放"
+        :title="$t('Live.index.1174522-0')"
         :width="type === 'share' ? '100%' : _type ? 1200 : 900"
         :class="{ share: type === 'share' }"
         :maskClosable="false"
@@ -47,14 +47,14 @@
                                 trigger="click"
                                 @click="showToolLock = true"
                             >
-                                <div>开始录像</div>
+                                <div>{{ $t('Live.index.1174522-1') }}</div>
                                 <template #overlay>
                                     <j-menu @click="recordStart">
                                         <j-menu-item key="true" v-if="_type">
                                             <span style="padding-right: 12px"
-                                                >本地存储</span
+                                                >{{ $t('Live.index.1174522-2') }}</span
                                             >
-                                            <j-tooltip title="存储在设备本地">
+                                            <j-tooltip :title="$t('Live.index.1174522-3')">
                                                 <a-icon
                                                     type="QuestionCircleOutlined"
                                                 />
@@ -62,9 +62,9 @@
                                         </j-menu-item>
                                         <j-menu-item key="false">
                                             <span style="padding-right: 12px"
-                                                >云端存储</span
+                                                >{{ $t('Live.index.1174522-4') }}</span
                                             >
-                                            <j-tooltip title="存储在服务器中">
+                                            <j-tooltip :title="$t('Live.index.1174522-5')">
                                                 <a-icon
                                                     type="QuestionCircleOutlined"
                                                 />
@@ -74,21 +74,21 @@
                                 </template>
                             </j-dropdown>
                         </template>
-                        <div v-else-if="isRecord === 1">请求录像中</div>
+                        <div v-else-if="isRecord === 1">{{ $t('Live.index.1174522-6') }}</div>
                         <div
                             v-else-if="isRecord === 2"
                             @click.stop="recordStop"
                         >
-                            停止录像
+                            {{ $t('Live.index.1174522-7') }}
                         </div>
                     </div>
 
                     <div class="tool-item" @click.stop="handleRefresh">
-                        刷新
+                        {{ $t('Live.index.1174522-8') }}
                     </div>
-                    <ConfirmModal title="重置将断开直播, 可能会影响其他播放者" :onConfirm="handleReset">
+                    <ConfirmModal :title="$t('Live.index.1174522-9')" :onConfirm="handleReset">
                         <div class="tool-item">
-                            重置
+                            {{ $t('Live.index.1174522-10') }}
                         </div></ConfirmModal
                     >
                 </div>
@@ -108,7 +108,7 @@
                     >
                         <template #center>
                             <div class="center">
-                                <div>转速控制</div>
+                                <div>{{ $t('Live.index.1174522-11') }}</div>
                                 <j-dropdown>
                                     <span
                                         >{{ _speed }}<AIcon type="DownOutlined"
@@ -137,8 +137,8 @@
         </div>
         <template #footer>
             <j-space v-if="type !== 'share'">
-                <j-button @click="_vis = false">取消</j-button>
-                <j-button @click="_vis = false" type="primary">确定</j-button>
+                <j-button @click="_vis = false">{{ $t('Live.index.1174522-12') }}</j-button>
+                <j-button @click="_vis = false" type="primary">{{ $t('Live.index.1174522-13') }}</j-button>
             </j-space>
         </template>
     </j-modal>
@@ -155,6 +155,9 @@ import Preset from './Preset.vue';
 import { useSystem } from '@/store/system';
 import { mediaConfigMap } from '../data';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -207,9 +210,9 @@ const showActions = computed(() => {
 });
 
 const speedList = [
-    { label: '高', value: 180 },
-    { label: '中', value: 90 },
-    { label: '低', value: 45 },
+    { label: $t('Live.index.1174522-14'), value: 180 },
+    { label: $t('Live.index.1174522-15'), value: 90 },
+    { label: $t('Live.index.1174522-16'), value: 45 },
 ];
 const speed = ref(90);
 const local = ref();
@@ -318,7 +321,7 @@ const handleReset =  () => {
     const resp = channelApi.mediaStop(props.data.deviceId, props.data.channelId);
     resp.then((res)=>{
         if(res.success){
-            onlyMessage('操作成功！')
+            onlyMessage($t('Live.index.1174522-17'))
         }
     })
     return resp

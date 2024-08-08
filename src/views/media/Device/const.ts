@@ -1,17 +1,19 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 export const PROVIDER_OPTIONS = [
     { label: 'GB/T28181', value: 'gb28181-2016' },
-    { label: '固定地址', value: 'fixed-media' },
+    { label: $t('Device.const.117442-0'), value: 'fixed-media' },
     { label: 'Onvif', value: 'onvif'},
-    { label: '插件', value: 'media-plugin'}
+    { label: $t('Device.const.117442-1'), value: 'media-plugin'}
 ]
 export const streamMode = [
     { label: 'UDP', value: 'UDP' },
-    { label: 'TCP被动', value: 'TCP_PASSIVE' },
+    { label: $t('Device.const.117442-2'), value: 'TCP_PASSIVE' },
 ]
 
 export const providerType = {
     'gb28181-2016': 'GB/T28181',
-    'fixed-media': '固定地址',
+    'fixed-media': $t('Device.const.117442-0'),
     'onvif': 'Onvif',
-    'media-plugin': '插件'
+    'media-plugin': $t('Device.const.117442-1')
 };
