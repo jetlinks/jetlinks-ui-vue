@@ -156,6 +156,7 @@ export const TokenLose = () => {
  * @returns {Promise<never>}
  */
 const errorHandler = (error: any) => {
+  console.log(error,'error')
   if (error.response) {
     const data = error.response.data
     const status = error.response.status

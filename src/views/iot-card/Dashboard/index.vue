@@ -45,7 +45,7 @@
                     <j-col :span="8">
                         <div class="data-statistics-item">
                             <div class="flow-info" style="width: 100%">
-                                <div class="label">本年流量消耗1</div>
+                                <div class="label">本年流量消耗</div>
                                 <j-tooltip placement="bottomLeft">
                                     <template #title>
                                         <span>{{ yearTotal }} M</span>
