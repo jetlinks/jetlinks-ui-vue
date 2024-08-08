@@ -161,7 +161,9 @@ import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
 import { isNoCommunity } from '@/utils/utils';
+import { useSystem } from '@/store/system';
 
+const { showThreshold } = useSystem()
 const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -314,7 +316,7 @@ const getProtocol = async () => {
         if (
             permissionStore.hasPermission(
                 'rule-engine/Alarm/Configuration:view',
-            ) && isNoCommunity
+            ) && isNoCommunity && showThreshold
         ) {
             list.value.push({
                 key: 'AlarmRecord',

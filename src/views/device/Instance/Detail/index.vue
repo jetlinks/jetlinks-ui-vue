@@ -135,9 +135,10 @@ import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
 import { isNoCommunity } from '@/utils/utils';
+import { useSystem } from '@/store/system';
 
 const menuStory = useMenuStore();
-
+const { showThreshold } = useSystem();
 const route = useRoute();
 const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
@@ -213,7 +214,7 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
-    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity) {
+    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity && showThreshold) {
         list.value.push({
             key: 'AlarmRecord',
             tab: '预处理数据',
