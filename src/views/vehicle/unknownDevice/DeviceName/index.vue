@@ -93,6 +93,7 @@ const type = ref<string>('xlsx');
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
+const isContains = ref(false);
 const vehicleTypeValue = ref('');
 const chooseList = ref<string[]>([]);
 
@@ -112,27 +113,37 @@ const handleExport = async () => {
     if (selectedRowKeys.value.length > 0) {
         // 当部分选中时
         _params = {
-            paging: false,
-            pageSize:
-                selectedRowKeys.value.length > 10000
-                    ? 10000
-                    : selectedRowKeys.value.length,
-            terms: [
-                {
-                    column: 'id',
-                    value: selectedRowKeys.value,
-                    termType: 'in',
-                },
-            ],
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            queryParamEntity: {
+                paging: false,
+                pageSize:
+                    selectedRowKeys.value.length > 10000
+                        ? 10000
+                        : selectedRowKeys.value.length,
+                terms: [
+                    {
+                        column: 'id',
+                        value: selectedRowKeys.value,
+                        termType: 'in',
+                    },
+                ],
+                sorts: [{ name: 'createTime', order: 'desc' }],
+            },
+            vehicleTypeEnum: vehicleTypeValue.value,
+            isContains: isContains.value,
+            chooseList: chooseList.value,
         };
     } else {
         // 当全不选时
         _params = {
-            paging: false,
-            pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
-            sorts: [{ name: 'createTime', order: 'desc' }],
-            terms: globParams.value.terms,
+            queryParamEntity: {
+                paging: false,
+                pageSize: dataTotal.value > 10000 ? 10000 : dataTotal.value,
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms: globParams.value.terms,
+            },
+            vehicleTypeEnum: vehicleTypeValue.value,
+            isContains: isContains.value,
+            chooseList: chooseList.value,
         };
     }
     const res: any = await exportUnknownName(
@@ -246,11 +257,21 @@ const queryData = async (_params: any) => {
     if (terms.length > 0) {
         terms[0].terms?.map((item: any) => {
             if (item.column === 'vehicleTypeEnum') {
-                if (item.termType === 'eq' || item.termType === 'not') {
+                if (item.termType === 'eq') {
                     vehicleTypeValue.value = item.value;
+                    isContains.value = true;
                     chooseList.value = [];
-                } else {
+                } else if (item.termType === 'not') {
+                    vehicleTypeValue.value = item.value;
+                    isContains.value = false;
+                    chooseList.value = [];
+                } else if (item.termType === 'in') {
                     chooseList.value = item.value;
+                    isContains.value = true;
+                    vehicleTypeValue.value = chooseList.value.join(',');
+                } else if (item.termType === 'nin') {
+                    chooseList.value = item.value;
+                    isContains.value = false;
                     vehicleTypeValue.value = chooseList.value.join(',');
                 }
             } else {
@@ -268,13 +289,9 @@ const queryData = async (_params: any) => {
             terms,
         },
         vehicleTypeEnum: vehicleTypeValue.value,
-        isContains:
-            vehicleTypeValue.value || chooseList.value.length > 0
-                ? true
-                : false,
+        isContains: isContains.value,
         chooseList: chooseList.value,
     };
-    // console.log('命名myParams', myParams);
     const resp: any = await queryUnknownName(myParams);
     if (resp.status === 200) {
         dataTotal.value = resp.result.total || 12;
