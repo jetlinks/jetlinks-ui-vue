@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Player.index.318843-0": "-播放开始-",
+		"Player.index.318843-1": "-播放暂停-",
+		"Player.index.318843-2": "-结束播放-",
+		"Player.index.318843-3": "-媒体数据加载好了-",
+		"Player.index.318843-4": "-跳着播放-",
+		"Player.index.318843-5": "-播放错误-"
+	},
+	"en": {
+		"Player.index.318843-0": "-Play starts-",
+		"Player.index.318843-1": "-Play pause-",
+		"Player.index.318843-2": "-End playback-",
+		"Player.index.318843-3": "-The media data has been loaded-",
+		"Player.index.318843-4": "-Jump Play-",
+		"Player.index.318843-5": "-Play error-"
+	}
+}
