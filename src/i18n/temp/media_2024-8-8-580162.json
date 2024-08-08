@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"DashBoard.index.800201-0": "设备数量",
+		"DashBoard.index.800201-1": "通道数量",
+		"DashBoard.index.800201-2": "录像数量",
+		"DashBoard.index.800201-3": "播放中数量",
+		"DashBoard.index.800201-4": "当前正在播放的通道数量之和",
+		"DashBoard.index.800201-5": "播放数量（人次）",
+		"DashBoard.index.800201-6": "在线",
+		"DashBoard.index.800201-7": "离线",
+		"DashBoard.index.800201-8": "总时长",
+		"DashBoard.index.800201-9": "播放人数",
+		"DashBoard.index.800201-10": "M月dd日",
+		"DashBoard.index.800201-11": "YYYY年-MM月"
+	},
+	"en": {
+		"DashBoard.index.800201-0": "Number of devices",
+		"DashBoard.index.800201-1": "Number of channels",
+		"DashBoard.index.800201-2": "Number of recordings",
+		"DashBoard.index.800201-3": "Quantity in playback",
+		"DashBoard.index.800201-4": "The sum of the number of channels currently being played",
+		"DashBoard.index.800201-5": "View count(people)",
+		"DashBoard.index.800201-6": "On-line",
+		"DashBoard.index.800201-7": "Off-line",
+		"DashBoard.index.800201-8": "Total duration",
+		"DashBoard.index.800201-9": "Number of viewers",
+		"DashBoard.index.800201-10": "M month dd day",
+		"DashBoard.index.800201-11": "YYYY-MM"
+	}
+}
