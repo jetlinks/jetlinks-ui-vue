@@ -849,32 +849,31 @@ const submitDevice = async () => {
         return item?.validate()
     })
     const res = await Promise.all(allValidate)
-    console.log(res,'res')
     // const res = await formRef.value.validate();
-    // if (!res) return;
-    // const values = { storePolicy: form.storePolicy, ...formData.data };
-    // const id = productStore.current?.id;
-    // // 该产品是否有物模型，有则弹窗进行处理
-    // const _metadata = JSON.parse(productStore.current?.metadata || '{}');
-    // if (
-    //     (_metadata.properties?.length ||
-    //         _metadata.events?.length ||
-    //         _metadata.functions?.length ||
-    //         _metadata.tags?.length) &&
-    //     (productData.metadata?.properties?.length ||
-    //         productData.metadata?.events?.length ||
-    //         productData.metadata?.functions?.length ||
-    //         productData.metadata?.tags?.length)
-    // ) {
-    //     metadataModalCacheData.value = {
-    //         id,
-    //         values,
-    //         productTypeId: productData.id,
-    //     };
-    //     metadataVisible.value = true;
-    // } else {
-    //     updateAccessData(id, values);
-    // }
+    if (!res) return;
+    const values = { storePolicy: form.storePolicy, ...formData.data };
+    const id = productStore.current?.id;
+    // 该产品是否有物模型，有则弹窗进行处理
+    const _metadata = JSON.parse(productStore.current?.metadata || '{}');
+    if (
+        (_metadata.properties?.length ||
+            _metadata.events?.length ||
+            _metadata.functions?.length ||
+            _metadata.tags?.length) &&
+        (productData.metadata?.properties?.length ||
+            productData.metadata?.events?.length ||
+            productData.metadata?.functions?.length ||
+            productData.metadata?.tags?.length)
+    ) {
+        metadataModalCacheData.value = {
+            id,
+            values,
+            productTypeId: productData.id,
+        };
+        metadataVisible.value = true;
+    } else {
+        updateAccessData(id, values);
+    }
 };
 
 const updateAccessData = async (id: string, values: any) => {
