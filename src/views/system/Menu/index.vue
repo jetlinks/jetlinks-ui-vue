@@ -211,8 +211,8 @@ const table = reactive({
                     type: 'or',
                     terms: [
                         {
-                            value: '%show":true%',
-                            termType: 'like',
+                            value: '%show":false%',
+                            termType: 'nlike',
                             column: 'options',
                         },
                     ],
