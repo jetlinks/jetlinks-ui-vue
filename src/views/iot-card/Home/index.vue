@@ -4,7 +4,7 @@
         <j-row :gutter="[24, 24]">
             <j-col :xxl="14" :xl='24'>
                 <div class="home-guide">
-                    <Guide title="物联卡引导"></Guide>
+                    <Guide :title="$t('Home.index.849899-0')"></Guide>
                     <div
                         class="home-guide-items"
                         :style="`grid-template-columns: repeat(${
@@ -28,16 +28,16 @@
             </j-col>
             <j-col :xxl="10" :xl='24'>
                 <div class="home-statistics">
-                    <Guide title="基础统计">
+                    <Guide :title="$t('Home.index.849899-1')">
                         <template #extra>
                             <span class="extra-text" @click="jumpDashboard"
-                                >详情</span
+                                >{{ $t('Home.index.849899-2') }}</span
                             >
                         </template>
                     </Guide>
                     <div class="home-statistics-body">
                         <div class="home-guide-item">
-                            <div class="item-english">昨日流量统计</div>
+                            <div class="item-english">{{ $t('Home.index.849899-3') }}</div>
                             <div class="item-title">{{ currentSource }} M</div>
                             <div
                                 class="item-index-echarts"
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="home-guide-item">
-                            <div class="item-english">物联卡</div>
+                            <div class="item-english">{{ $t('Home.index.849899-4') }}</div>
                             <div class="item-content">
                                 <div
                                     v-for="item in pieChartData"
@@ -75,7 +75,7 @@
             <j-col :span="24">
                 <div class="home-body">
                     <Guide
-                        title="平台架构图"
+                        :title="$t('Home.index.849899-5')"
                         english="PLATFORM ARCHITECTURE DIAGRAM"
                     />
                     <div class="home-body-img">
@@ -95,6 +95,9 @@ import { queryFlow, list } from '@/api/iot-card/home';
 import * as echarts from 'echarts';
 import { useMenuStore } from '@/store/menu';
 import { usePermissionStore } from '@/store/permission';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const { proxy } = <any>getCurrentInstance();
 
@@ -129,7 +132,7 @@ const Image = {
 const guideList = [
     {
         key: 'EQUIPMENT',
-        name: '平台对接',
+        name: $t('Home.index.849899-6'),
         english: 'STEP1',
         auth: paltformPermission,
         // url: platformUrl,
@@ -137,7 +140,7 @@ const guideList = [
     },
     {
         key: 'SCREEN',
-        name: '物联卡管理',
+        name: $t('Home.index.849899-7'),
         english: 'STEP2',
         auth: !!cardPermission,
         // url: cardUrl,
@@ -146,7 +149,7 @@ const guideList = [
     },
     {
         key: 'CASCADE',
-        name: '操作记录',
+        name: $t('Home.index.849899-8'),
         english: 'STEP3',
         auth: !!recordUrl,
         // url: recordUrl,
@@ -159,19 +162,19 @@ const barChartData = ref<any[]>([]);
 const pieChartData = ref<any[]>([
     {
         key: 'using',
-        name: '激活',
+        name: $t('Home.index.849899-9'),
         value: 0,
         className: 'normal',
     },
     {
         key: 'toBeActivated',
-        name: '未激活',
+        name: $t('Home.index.849899-10'),
         value: 0,
         className: 'notActive',
     },
     {
         key: 'deactivate',
-        name: '停用',
+        name: $t('Home.index.849899-11'),
         value: 0,
         className: 'stopped',
     },
@@ -179,7 +182,7 @@ const pieChartData = ref<any[]>([
 
 const jumpPage = (data: GuideItemProps) => {
     if (!data.auth){
-        onlyMessage('暂无权限，请联系管理员', 'warning');
+        onlyMessage($t('Home.index.849899-12'), 'warning');
         return
     }
     if (data.key === 'EQUIPMENT') {
@@ -276,7 +279,7 @@ const createBarChart = () => {
         },
         series: [
             {
-                name: '流量消耗',
+                name: $t('Home.index.849899-13'),
                 type: 'bar',
                 color: '#FACD89',
                 // barWidth: '5%', // 设单柱状置宽度

@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Recharge.Detail.797371-0": "详情",
+		"Recharge.Detail.797371-1": "确定",
+		"Recharge.Detail.797371-2": "取消",
+		"Recharge.Detail.797371-3": "充值金额",
+		"Recharge.Detail.797371-4": "账户id",
+		"Recharge.Detail.797371-5": "平台对接",
+		"Recharge.Detail.797371-6": "订单号",
+		"Recharge.Detail.797371-7": "支付方式",
+		"Recharge.Detail.797371-8": "支付URL",
+		"Recharge.Detail.797371-9": "订单时间"
+	},
+	"en": {
+		"Recharge.Detail.797371-0": "Detail",
+		"Recharge.Detail.797371-1": "Confirm",
+		"Recharge.Detail.797371-2": "Cancel",
+		"Recharge.Detail.797371-3": "Recharge amount",
+		"Recharge.Detail.797371-4": "Account ID",
+		"Recharge.Detail.797371-5": "Platform docking",
+		"Recharge.Detail.797371-6": "Order ID",
+		"Recharge.Detail.797371-7": "Payment method",
+		"Recharge.Detail.797371-8": "Payment URL",
+		"Recharge.Detail.797371-9": "Order Time"
+	}
+}

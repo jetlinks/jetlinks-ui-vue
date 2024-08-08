@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"CardManagement.BindDevice.237310-0": "选择设备",
+		"CardManagement.BindDevice.237310-1": "确定",
+		"CardManagement.BindDevice.237310-2": "取消",
+		"CardManagement.BindDevice.237310-3": "设备名称",
+		"CardManagement.BindDevice.237310-4": "注册时间",
+		"CardManagement.BindDevice.237310-5": "状态",
+		"CardManagement.BindDevice.237310-6": "禁用",
+		"CardManagement.BindDevice.237310-7": "离线",
+		"CardManagement.BindDevice.237310-8": "在线",
+		"CardManagement.BindDevice.237310-9": "操作成功"
+	},
+	"en": {
+		"CardManagement.BindDevice.237310-0": "Select device",
+		"CardManagement.BindDevice.237310-1": "Confirm",
+		"CardManagement.BindDevice.237310-2": "Cancel",
+		"CardManagement.BindDevice.237310-3": "Divice name",
+		"CardManagement.BindDevice.237310-4": "Registry time",
+		"CardManagement.BindDevice.237310-5": "State",
+		"CardManagement.BindDevice.237310-6": "not-active",
+		"CardManagement.BindDevice.237310-7": "off-line",
+		"CardManagement.BindDevice.237310-8": "on-line",
+		"CardManagement.BindDevice.237310-9": "Operation successful"
+	}
+}

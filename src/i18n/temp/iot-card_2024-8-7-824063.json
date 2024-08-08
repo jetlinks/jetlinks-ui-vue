@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"CardManagement.Export.237323-0": "导出",
+		"CardManagement.Export.237323-1": "确定",
+		"CardManagement.Export.237323-2": "取消",
+		"CardManagement.Export.237323-3": "文件格式：",
+		"CardManagement.Export.237323-4": "请选择文件格式",
+		"CardManagement.Export.237323-5": "物联卡管理-{0}"
+	},
+	"en": {
+		"CardManagement.Export.237323-0": "Export",
+		"CardManagement.Export.237323-1": "Confirm",
+		"CardManagement.Export.237323-2": "Cancel",
+		"CardManagement.Export.237323-3": "File format:",
+		"CardManagement.Export.237323-4": "Please choose a file format",
+		"CardManagement.Export.237323-5": "IoT Card Management - {0}"
+	}
+}

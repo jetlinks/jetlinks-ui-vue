@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"CardManagement.Sync.237326-0": "同步",
+		"CardManagement.Sync.237326-1": "正在同步物联卡状态",
+		"CardManagement.Sync.237326-2": "张物联卡已同步至最新状态",
+		"CardManagement.Sync.237326-3": "完成"
+	},
+	"en": {
+		"CardManagement.Sync.237326-0": "Sync",
+		"CardManagement.Sync.237326-1": "Syncing IoT card status",
+		"CardManagement.Sync.237326-2": "IoT card has been synchronized to the latest status",
+		"CardManagement.Sync.237326-3": "Complete"
+	}
+}

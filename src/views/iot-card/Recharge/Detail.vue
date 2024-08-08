@@ -3,9 +3,9 @@
         :maskClosable="false"
         width="1000px"
         :visible="true"
-        title="详情"
-        okText="确定"
-        cancelText="取消"
+        :title="$t('Recharge.Detail.797371-0')"
+        :okText="$t('Recharge.Detail.797371-1')"
+        :cancelText="$t('Recharge.Detail.797371-2')"
         @ok="handleCancel"
         @cancel="handleCancel"
     >
@@ -16,27 +16,27 @@
                 :contentStyle="{ minWidth: '300px' }"
                 :labelStyle="{ minWidth: '120px' }"
             >
-                <j-descriptions-item label="充值金额">{{
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-3')">{{
                     data.chargeMoney
                 }}</j-descriptions-item>
-                <j-descriptions-item label="账户id">{{
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-4')">{{
                     data?.rechargeId
                 }}</j-descriptions-item>
-                <j-descriptions-item label="平台对接">{{
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-5')">{{
                     data.configName
                 }}</j-descriptions-item>
-                <j-descriptions-item label="订单号">{{
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-6')">{{
                     data.orderNumber
                 }}</j-descriptions-item>
-                <j-descriptions-item label="支付方式">{{
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-7')">{{
                     data.paymentType
                 }}</j-descriptions-item>
-                <j-descriptions-item label="支付URL">
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-8')">
                     <div style="height: 100px; overflow: auto">
                         {{ data.url ? data.url : '' }}
                     </div>
                 </j-descriptions-item>
-                <j-descriptions-item label="订单时间">{{
+                <j-descriptions-item :label="$t('Recharge.Detail.797371-9')">{{
                     data.createTime
                         ? moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
                         : '-'
@@ -48,6 +48,9 @@
 
 <script lang="ts" setup>
 import moment from 'moment';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const emit = defineEmits(['close']);
 
 const props = defineProps({

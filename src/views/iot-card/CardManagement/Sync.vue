@@ -3,20 +3,20 @@
     visible
     width="800px"
     :maskClosable="false"
-    title="同步"
+    :title="$t('CardManagement.Sync.237326-0')"
     :closable="false"
   >
     <div style="margin: 10px 0px 20px 0px; padding-right: 10px;">
       <div v-if="flag">
-        <div>正在同步物联卡状态</div>
+        <div>{{ $t('CardManagement.Sync.237326-1') }}</div>
         <j-progress :percent="_percent" />
       </div>
       <div v-else>
-        <p>{{ syncData.count }}张物联卡已同步至最新状态</p>
+        <p>{{ syncData.count }}{{ $t('CardManagement.Sync.237326-2') }}</p>
       </div>
     </div>
     <template #footer>
-      <a-button v-if="!flag" type="primary" @click="handleCancel">完成</a-button>
+      <a-button v-if="!flag" type="primary" @click="handleCancel">{{ $t('CardManagement.Sync.237326-3') }}</a-button>
     </template>
   </j-modal>
 </template>
@@ -27,6 +27,9 @@ import {paramsEncodeQuery} from "@/utils/encodeQuery";
 import {getToken} from "@/utils/comm";
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import {queryCount} from "@/api/iot-card/cardManagement";
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close']);
 

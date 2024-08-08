@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"Home.index.849899-0": "物联卡引导",
+		"Home.index.849899-1": "基础统计",
+		"Home.index.849899-2": "详情",
+		"Home.index.849899-3": "昨日流量统计",
+		"Home.index.849899-4": "物联卡",
+		"Home.index.849899-5": "平台架构图",
+		"Home.index.849899-6": "平台对接",
+		"Home.index.849899-7": "物联卡管理",
+		"Home.index.849899-8": "操作记录",
+		"Home.index.849899-9": "激活",
+		"Home.index.849899-10": "未激活",
+		"Home.index.849899-11": "停用",
+		"Home.index.849899-12": "暂无权限，请联系管理员",
+		"Home.index.849899-13": "流量消耗"
+	},
+	"en": {
+		"Home.index.849899-0": "IoT Card Guidance",
+		"Home.index.849899-1": "Basic statistics",
+		"Home.index.849899-2": "Detail",
+		"Home.index.849899-3": "Yesterday's flow statistics",
+		"Home.index.849899-4": "IoT card",
+		"Home.index.849899-5": "Platform architecture diagram",
+		"Home.index.849899-6": "Platform docking",
+		"Home.index.849899-7": "IoT card management",
+		"Home.index.849899-8": "Operation record",
+		"Home.index.849899-9": "active",
+		"Home.index.849899-10": "inactive",
+		"Home.index.849899-11": "disabled",
+		"Home.index.849899-12": "No permission at the moment, please contact the administrator",
+		"Home.index.849899-13": "Flow consumption"
+	}
+}

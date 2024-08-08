@@ -33,7 +33,7 @@
                             :hasPermission="'iot-card/CardManagement:add'"
                             type="primary"
                         >
-                            <AIcon type="PlusOutlined" />新增
+                            <AIcon type="PlusOutlined" />{{ $t('CardManagement.index.237321-0') }}
                         </PermissionButton>
                         <BatchDropdown
                             v-model:isCheck="isCheck"
@@ -73,7 +73,7 @@
                             <j-row style="margin-top: 20px">
                                 <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        平台对接
+                                        {{ $t('CardManagement.index.237321-1') }}
                                     </div>
                                     <Ellipsis style="width: calc(100% - 20px)">
                                         <div>
@@ -83,7 +83,7 @@
                                 </j-col>
                                 <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        运营商状态
+                                        {{ $t('CardManagement.index.237321-2') }}
                                     </div>
                                     <BadgeStatus
                                         :status="slotProps.cardState?.value"
@@ -97,13 +97,13 @@
                                 </j-col>
                                 <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        类型
+                                        {{ $t('CardManagement.index.237321-3') }}
                                     </div>
                                     <div>{{ slotProps.cardType.text }}</div>
                                 </j-col>
                                 <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        绑定设备
+                                        {{ $t('CardManagement.index.237321-4') }}
                                     </div>
                                     <Ellipsis>{{
                                         slotProps.deviceName
@@ -127,7 +127,7 @@
                                             %
                                         </div>
                                         <div class="card-item-content-text">
-                                            总共 {{ slotProps.totalFlow }} M
+                                            {{ $t('CardManagement.index.237321-5') }} {{ slotProps.totalFlow }} M
                                         </div>
                                     </div>
                                     <j-progress
@@ -275,25 +275,25 @@
                 </template>
             </j-pro-table>
         </FullPage>
-        <!-- 批量导入 -->
+        <!-- {{ $t('CardManagement.index.237321-64') }} -->
         <Import
             v-if="importVisible"
             @close="importVisible = false"
             @save="importSave"
         />
-        <!-- 批量导出 -->
+        <!-- {{ $t('CardManagement.index.237321-63') }} -->
         <Export
             v-if="exportVisible"
             @close="exportVisible = false"
             :data="_selectedRowKeys"
         />
-        <!-- 绑定设备 -->
+        <!-- {{ $t('CardManagement.index.237321-4') }} -->
         <BindDevice
             v-if="bindDeviceVisible"
             :cardId="cardId"
             @change="bindDevice"
         />
-        <!-- 新增、编辑 -->
+        <!-- {{ $t('CardManagement.index.237321-0') }}、{{ $t('CardManagement.index.237321-46') }} -->
         <Save
             v-if="visible"
             :type="saveType"
@@ -337,6 +337,9 @@ import { useRouterParams } from '@/utils/hooks/useParams';
 import { OperatorMap } from '@/views/iot-card/data';
 import SyncModal from './Sync.vue';
 import { OperatorList } from '../data';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const router = useRouter();
 const menuStory = useMenuStore();
@@ -356,7 +359,7 @@ const syncVisible = ref(false);
 
 const columns = [
     {
-        title: '卡号',
+        title: $t('CardManagement.index.237321-6'),
         dataIndex: 'id',
         key: 'id',
         width: 200,
@@ -377,7 +380,7 @@ const columns = [
         },
     },
     {
-        title: '绑定设备',
+        title: $t('CardManagement.index.237321-4'),
         dataIndex: 'deviceId',
         key: 'deviceId',
         ellipsis: true,
@@ -389,7 +392,7 @@ const columns = [
         },
     },
     {
-        title: '平台对接',
+        title: $t('CardManagement.index.237321-1'),
         dataIndex: 'platformConfigName',
         key: 'platformConfigName',
         width: 200,
@@ -413,7 +416,7 @@ const columns = [
         },
     },
     {
-        title: '运营商',
+        title: $t('CardManagement.index.237321-7'),
         dataIndex: 'operatorName',
         key: 'operatorName',
         width: 120,
@@ -425,7 +428,7 @@ const columns = [
         },
     },
     {
-        title: '类型',
+        title: $t('CardManagement.index.237321-3'),
         dataIndex: 'cardType',
         key: 'cardType',
         scopedSlots: true,
@@ -433,34 +436,34 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '年卡', value: 'year' },
-                { label: '季卡', value: 'season' },
-                { label: '月卡', value: 'month' },
-                { label: '其他', value: 'other' },
+                { label: $t('CardManagement.index.237321-8'), value: 'year' },
+                { label: $t('CardManagement.index.237321-9'), value: 'season' },
+                { label: $t('CardManagement.index.237321-10'), value: 'month' },
+                { label: $t('CardManagement.index.237321-11'), value: 'other' },
             ],
         },
     },
     {
-        title: '总流量',
+        title: $t('CardManagement.index.237321-12'),
         key: 'totalFlow',
         dataIndex: 'totalFlow',
         width: 120,
         scopedSlots: true,
     },
     {
-        title: '使用流量',
+        title: $t('CardManagement.index.237321-13'),
         dataIndex: 'usedFlow',
         width: 120,
         scopedSlots: true,
     },
     {
-        title: '剩余流量',
+        title: $t('CardManagement.index.237321-14'),
         dataIndex: 'residualFlow',
         width: 120,
         scopedSlots: true,
     },
     {
-        title: '激活日期',
+        title: $t('CardManagement.index.237321-15'),
         dataIndex: 'activationDate',
         key: 'activationDate',
         scopedSlots: true,
@@ -470,7 +473,7 @@ const columns = [
         },
     },
     {
-        title: '更新时间',
+        title: $t('CardManagement.index.237321-16'),
         dataIndex: 'updateTime',
         key: 'updateTime',
         scopedSlots: true,
@@ -480,7 +483,7 @@ const columns = [
         },
     },
     {
-        title: '平台状态',
+        title: $t('CardManagement.index.237321-17'),
         dataIndex: 'cardStateType',
         key: 'cardStateType',
         width: 180,
@@ -488,56 +491,56 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '未同步', value: 'notReady' },
-                { label: '同步失败', value: 'error' },
-                { label: '激活', value: 'using' },
-                { label: '未激活', value: 'toBeActivated' },
-                { label: '停机', value: 'deactivate' },
-                { label: '其它', value: 'other' },
+                { label: $t('CardManagement.index.237321-18'), value: 'notReady' },
+                { label: $t('CardManagement.index.237321-19'), value: 'error' },
+                { label: $t('CardManagement.index.237321-20'), value: 'using' },
+                { label: $t('CardManagement.index.237321-21'), value: 'toBeActivated' },
+                { label: $t('CardManagement.index.237321-22'), value: 'deactivate' },
+                { label: $t('CardManagement.index.237321-23'), value: 'other' },
             ],
         },
     },
     {
-        title: '运营商状态',
+        title: $t('CardManagement.index.237321-2'),
         dataIndex: 'cardState',
         key: 'cardState',
         width: 180,
         scopedSlots: true,
     },
     {
-        title: '运营商状态',
+        title: $t('CardManagement.index.237321-2'),
         dataIndex: 'operatorState',
         key: 'operatorState',
         hidden: true,
         search: {
             type: 'select',
             options: [
-                { label: '激活(正常)', value: 'using' },
-                { label: '测试激活', value: 'testActivation' },
-                { label: '拆机', value: 'disassemble' },
-                { label: '停用(已停用)', value: 'deactivate' },
-                { label: '运营商管理状态', value: 'operatorManagement' },
-                { label: '可激活(电信)', value: 'beActivated' },
-                { label: '待激活', value: 'toBeActivated' },
-                { label: '测试去激活', value: 'testToActivation' },
-                { label: '可测试', value: 'testable' },
-                { label: '库存(移动)', value: 'inStock' },
-                { label: '预销户', value: 'preSeller' },
-                { label: '单向停机', value: 'oneWayShutdown' },
-                { label: '预销号', value: 'preSale' },
-                { label: '过户', value: 'transfer' },
-                { label: '休眠', value: 'dormant' },
-                { label: '可激活(联通)', value: 'activatable' },
-                { label: '已失效', value: 'expired' },
-                { label: '已清除', value: 'cleared' },
-                { label: '已更换', value: 'replaced' },
-                { label: '库存（联通）', value: 'stock' },
-                { label: '开始', value: 'start' },
+                { label: $t('CardManagement.index.237321-24'), value: 'using' },
+                { label: $t('CardManagement.index.237321-25'), value: 'testActivation' },
+                { label: $t('CardManagement.index.237321-26'), value: 'disassemble' },
+                { label: $t('CardManagement.index.237321-27'), value: 'deactivate' },
+                { label: $t('CardManagement.index.237321-28'), value: 'operatorManagement' },
+                { label: $t('CardManagement.index.237321-29'), value: 'beActivated' },
+                { label: $t('CardManagement.index.237321-30'), value: 'toBeActivated' },
+                { label: $t('CardManagement.index.237321-31'), value: 'testToActivation' },
+                { label: $t('CardManagement.index.237321-32'), value: 'testable' },
+                { label: $t('CardManagement.index.237321-33'), value: 'inStock' },
+                { label: $t('CardManagement.index.237321-34'), value: 'preSeller' },
+                { label: $t('CardManagement.index.237321-35'), value: 'oneWayShutdown' },
+                { label: $t('CardManagement.index.237321-36'), value: 'preSale' },
+                { label: $t('CardManagement.index.237321-37'), value: 'transfer' },
+                { label: $t('CardManagement.index.237321-38'), value: 'dormant' },
+                { label: $t('CardManagement.index.237321-39'), value: 'activatable' },
+                { label: $t('CardManagement.index.237321-40'), value: 'expired' },
+                { label: $t('CardManagement.index.237321-41'), value: 'cleared' },
+                { label: $t('CardManagement.index.237321-42'), value: 'replaced' },
+                { label: $t('CardManagement.index.237321-43'), value: 'stock' },
+                { label: $t('CardManagement.index.237321-44'), value: 'start' },
             ],
         },
     },
     {
-        title: '操作',
+        title: $t('CardManagement.index.237321-45'),
         key: 'action',
         fixed: 'right',
         width: 200,
@@ -561,9 +564,9 @@ const getActions = (
     const arr = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('CardManagement.index.237321-46'),
             tooltip: {
-                title: '编辑',
+                title: $t('CardManagement.index.237321-46'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -574,21 +577,21 @@ const getActions = (
         },
         {
             key: 'bind',
-            text: data.deviceId ? '解绑设备' : '绑定设备',
+            text: data.deviceId ? $t('CardManagement.index.237321-47') : $t('CardManagement.index.237321-4'),
             tooltip: {
-                title: data.deviceId ? '解绑设备' : '绑定设备',
+                title: data.deviceId ? $t('CardManagement.index.237321-47') : $t('CardManagement.index.237321-4'),
             },
             icon: data.deviceId ? 'DisconnectOutlined' : 'LinkOutlined',
             popConfirm: data.deviceId
                 ? {
-                      title: '确认解绑设备？',
-                      okText: '确定',
-                      cancelText: '取消',
+                      title: $t('CardManagement.index.237321-48'),
+                      okText: $t('CardManagement.index.237321-49'),
+                      cancelText: $t('CardManagement.index.237321-50'),
                       onConfirm: () => {
                           const response = unbind(data.id);
                           response.then((resp: any) => {
                               if (resp.status === 200) {
-                                  onlyMessage('操作成功');
+                                  onlyMessage($t('CardManagement.index.237321-51'));
                                   cardManageRef.value?.reload();
                               }
                           });
@@ -610,17 +613,17 @@ const getActions = (
                     : 'action',
             text:
                 data.cardStateType?.value === 'toBeActivated'
-                    ? '激活'
+                    ? $t('CardManagement.index.237321-20')
                     : data.cardStateType?.value === 'deactivate'
-                    ? '复机'
-                    : '停用',
+                    ? $t('CardManagement.index.237321-52')
+                    : $t('CardManagement.index.237321-53'),
             tooltip: {
                 title:
                     data.cardStateType?.value === 'toBeActivated'
-                        ? '激活'
+                        ? $t('CardManagement.index.237321-20')
                         : data.cardStateType?.value === 'deactivate'
-                        ? '复机'
-                        : '停用',
+                        ? $t('CardManagement.index.237321-52')
+                        : $t('CardManagement.index.237321-53'),
             },
             icon:
                 data.cardStateType?.value === 'toBeActivated'
@@ -631,19 +634,19 @@ const getActions = (
             popConfirm: {
                 title:
                     data.cardStateType?.value === 'toBeActivated'
-                        ? '确认激活？'
+                        ? $t('CardManagement.index.237321-54')
                         : data.cardStateType?.value === 'deactivate'
-                        ? '确认复机？'
-                        : '确认停用?',
-                okText: '确定',
-                cancelText: '取消',
+                        ? $t('CardManagement.index.237321-55')
+                        : $t('CardManagement.index.237321-56'),
+                okText: $t('CardManagement.index.237321-49'),
+                cancelText: $t('CardManagement.index.237321-50'),
                 onConfirm: () => {
                     let response;
                     if (data.cardStateType?.value === 'toBeActivated') {
                         response = changeDeploy(data.id);
                         response.then((resp) => {
                             if (resp.status === 200) {
-                                onlyMessage('操作成功');
+                                onlyMessage($t('CardManagement.index.237321-51'));
                                 cardManageRef.value?.reload();
                             }
                         });
@@ -651,7 +654,7 @@ const getActions = (
                         response = resumption(data.id);
                         response.then((resp) => {
                             if (resp.status === 200) {
-                                onlyMessage('操作成功');
+                                onlyMessage($t('CardManagement.index.237321-51'));
                                 cardManageRef.value?.reload();
                             }
                         });
@@ -659,7 +662,7 @@ const getActions = (
                         response = unDeploy(data.id);
                         response.then((resp) => {
                             if (resp.status === 200) {
-                                onlyMessage('操作成功');
+                                onlyMessage($t('CardManagement.index.237321-51'));
                                 cardManageRef.value?.reload();
                             }
                         });
@@ -670,19 +673,19 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('CardManagement.index.237321-57'),
             tooltip: {
-                title: '删除',
+                title: $t('CardManagement.index.237321-57'),
             },
             popConfirm: {
-                title: '确认删除?',
-                okText: '确定',
-                cancelText: '取消',
+                title: $t('CardManagement.index.237321-58'),
+                okText: $t('CardManagement.index.237321-49'),
+                cancelText: $t('CardManagement.index.237321-50'),
                 onConfirm: () => {
                     const response: any = del(data.id);
                     response.then((resp: any) => {
                         if (resp.status === 200) {
-                            onlyMessage('操作成功');
+                            onlyMessage($t('CardManagement.index.237321-51'));
                             const index = _selectedRowKeys.value.findIndex(
                                 (id: any) => id === data.id,
                             );
@@ -691,7 +694,7 @@ const getActions = (
                             }
                             cardManageRef.value?.reload();
                         } else {
-                            onlyMessage('操作失败！', 'error');
+                            onlyMessage($t('CardManagement.index.237321-59'), 'error');
                         }
                     });
                     return response;
@@ -706,9 +709,9 @@ const getActions = (
         return [
             {
                 key: 'view',
-                text: '查看',
+                text: $t('CardManagement.index.237321-60'),
                 tooltip: {
-                    title: '查看',
+                    title: $t('CardManagement.index.237321-60'),
                 },
                 icon: 'EyeOutlined',
                 onClick: () => {
@@ -795,7 +798,7 @@ const bindDevice = (val: boolean) => {
  */
 const handleActive = () => {
     if (!_selectedRowKeys.value.length) {
-        return onlyMessage('请选择数据', 'warning');
+        return onlyMessage($t('CardManagement.index.237321-61'), 'warning');
     }
     if (
         _selectedRowKeys.value.length >= 10 &&
@@ -803,12 +806,12 @@ const handleActive = () => {
     ) {
         changeDeployBatch(_selectedRowKeys.value).then((res: any) => {
             if (res.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('CardManagement.index.237321-51'));
             }
         });
     } else {
         onlyMessage(
-            '仅支持同一个运营商下且最少10条数据,最多100条数据',
+            $t('CardManagement.index.237321-62'),
             'warning',
         );
     }
@@ -825,13 +828,13 @@ const handleStop = () => {
         const response = unDeployBatch(_selectedRowKeys.value);
         response.then((res: any) => {
             if (res.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('CardManagement.index.237321-51'));
             }
         });
         return response;
     } else {
         onlyMessage(
-            '仅支持同一个运营商下且最少10条数据,最多100条数据',
+            $t('CardManagement.index.237321-62'),
             'warning',
         );
     }
@@ -848,13 +851,13 @@ const handleResumption = () => {
         const response = resumptionBatch(_selectedRowKeys.value);
         response.then((res: any) => {
             if (res.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('CardManagement.index.237321-51'));
             }
         });
         return response;
     } else {
         onlyMessage(
-            '仅支持同一个运营商下且最少10条数据,最多100条数据',
+            $t('CardManagement.index.237321-62'),
             'warning',
         );
     }
@@ -866,7 +869,7 @@ const handleResumption = () => {
 const handleSync = async () => {
     syncVisible.value = true;
     // if (!_selectedRowKeys.value.length) {
-    //     onlyMessage('请选择数据', 'error');
+    //     onlyMessage($t('CardManagement.index.237321-61'), 'error');
     //     return;
     // }
 
@@ -893,7 +896,7 @@ const handleSync = async () => {
  */
 const handelRemove = () => {
     if (!_selectedRowKeys.value.length) {
-        onlyMessage('请选择数据', 'error');
+        onlyMessage($t('CardManagement.index.237321-61'), 'error');
         return;
     }
     const response = removeCards(
@@ -901,7 +904,7 @@ const handelRemove = () => {
     );
     response.then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功');
+            onlyMessage($t('CardManagement.index.237321-51'));
             _selectedRowKeys.value = [];
             // _selectedRow.value = [];
             cardManageRef.value?.reload();
@@ -912,7 +915,7 @@ const handelRemove = () => {
 const batchActions: BatchActionsType[] = [
     {
         key: 'export',
-        text: '批量导出',
+        text: $t('CardManagement.index.237321-63'),
         permission: 'iot-card/CardManagement:export',
         icon: 'ExportOutlined',
         onClick: () => {
@@ -921,7 +924,7 @@ const batchActions: BatchActionsType[] = [
     },
     {
         key: 'import',
-        text: '批量导入',
+        text: $t('CardManagement.index.237321-64'),
         permission: 'iot-card/CardManagement:import',
         icon: 'ImportOutlined',
         onClick: () => {
@@ -930,33 +933,33 @@ const batchActions: BatchActionsType[] = [
     },
     {
         key: 'stop',
-        text: '批量停用',
+        text: $t('CardManagement.index.237321-65'),
         permission: 'iot-card/CardManagement:action',
         icon: 'StopOutlined',
         selected: {
             popConfirm: {
-                title: '确认停用吗？',
+                title: $t('CardManagement.index.237321-66'),
                 onConfirm: handleStop,
             },
         },
     },
     {
         key: 'resumption',
-        text: '批量复机',
+        text: $t('CardManagement.index.237321-67'),
         ghost: true,
         type: 'primary',
         permission: 'iot-card/CardManagement:action',
         icon: 'PoweroffOutlined',
         selected: {
             popConfirm: {
-                title: '确认复机吗？',
+                title: $t('CardManagement.index.237321-68'),
                 onConfirm: handleResumption,
             },
         },
     },
     {
         key: 'sync',
-        text: '同步状态',
+        text: $t('CardManagement.index.237321-69'),
         ghost: true,
         type: 'primary',
         permission: 'iot-card/CardManagement:sync',
@@ -965,13 +968,13 @@ const batchActions: BatchActionsType[] = [
     },
     {
         key: 'delete',
-        text: '批量删除',
+        text: $t('CardManagement.index.237321-70'),
         danger: true,
         permission: 'iot-card/CardManagement:delete',
         icon: 'StopOutlined',
         selected: {
             popConfirm: {
-                title: '确认删除吗？',
+                title: $t('CardManagement.index.237321-71'),
                 onConfirm: handelRemove,
             },
         },

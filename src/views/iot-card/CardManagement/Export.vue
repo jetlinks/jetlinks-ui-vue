@@ -3,18 +3,18 @@
     <j-modal
         :maskClosable="false"
         :visible="true"
-        title="导出"
-        okText="确定"
-        cancelText="取消"
+        :title="$t('CardManagement.Export.237323-0')"
+        :okText="$t('CardManagement.Export.237323-1')"
+        :cancelText="$t('CardManagement.Export.237323-2')"
         @ok="handleOk"
         @cancel="handleCancel"
     >
         <div style="margin-top: 10px">
             <j-space>
-                <span>文件格式：</span>
+                <span>{{ $t('CardManagement.Export.237323-3') }}</span>
                 <j-radio-group
                     v-model:value="type"
-                    placeholder="请选择文件格式"
+                    :placeholder="$t('CardManagement.Export.237323-4')"
                     button-style="solid"
                 >
                     <j-radio-button value="xlsx">xlsx</j-radio-button>
@@ -29,6 +29,9 @@
 import moment from 'moment';
 import { _export } from '@/api/iot-card/cardManagement';
 import { downloadFileByUrl } from '@/utils/utils';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close']);
 
@@ -48,9 +51,9 @@ const handleOk = () => {
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `物联卡管理-${moment(new Date()).format(
+                $t('CardManagement.Export.237323-5', [moment(new Date()).format(
                     'YYYY/MM/DD HH:mm:ss',
-                )}`,
+                )]),
                 type.value,
             );
             emit('close');

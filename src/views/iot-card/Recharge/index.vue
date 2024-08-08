@@ -16,13 +16,13 @@
             <template #headerTitle>
                 <j-space>
                     <PermissionButton @click="visible = true" :hasPermission="'iot-card/Recharge:pay'" type="primary">
-                        充值
+                        {{ $t('Recharge.index.797372-0') }}
                     </PermissionButton>
                     <div class="tips-text">
                         <span style="margin-right: 8px; font-size: 16px">
                             <AIcon type="ExclamationCircleOutlined"></AIcon>
                         </span>
-                        本平台仅提供充值入口，具体充值结果需以运营商的充值结果为准
+                        {{ $t('Recharge.index.797372-1') }}
                     </div>
                 </j-space>
             </template>
@@ -59,7 +59,7 @@
             </template>
         </j-pro-table>
         </FullPage>
-        <!-- 充值 -->
+        <!-- {{ $t('Recharge.index.797372-0') }} -->
         <Save v-if="visible" @change="saveChange" />
         <Detail v-if="detailVisible" :data="current" @close="close" />
     </page-container>
@@ -71,6 +71,9 @@ import type { ActionsType } from '@/components/Table';
 import { queryRechargeList } from '@/api/iot-card/cardManagement';
 import Save from './Save.vue';
 import Detail from './Detail.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const rechargeRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -80,7 +83,7 @@ const current = ref<Record<string, any>>({});
 
 const columns = [
     {
-        title: '充值金额',
+        title: $t('Recharge.index.797372-2'),
         dataIndex: 'chargeMoney',
         key: 'chargeMoney',
         ellipsis: true,
@@ -89,7 +92,7 @@ const columns = [
         },
     },
     {
-        title: '支付方式',
+        title: $t('Recharge.index.797372-3'),
         dataIndex: 'paymentType',
         key: 'paymentType',
         search: {
@@ -97,19 +100,19 @@ const columns = [
         },
     },
     {
-        title: '订单号',
+        title: $t('Recharge.index.797372-4'),
         dataIndex: 'orderNumber',
         key: 'orderNumber',
         ellipsis: true,
     },
     {
-        title: '支付URL',
+        title: $t('Recharge.index.797372-5'),
         dataIndex: 'url',
         key: 'url',
         ellipsis: true,
     },
     {
-        title: '订单时间',
+        title: $t('Recharge.index.797372-6'),
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
@@ -119,7 +122,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Recharge.index.797372-7'),
         key: 'action',
         fixed: 'right',
         width: 60,
@@ -132,9 +135,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     return [
         {
             key: 'view',
-            text: '查看',
+            text: $t('Recharge.index.797372-8'),
             tooltip: {
-                title: '查看',
+                title: $t('Recharge.index.797372-8'),
             },
             icon: 'EyeOutlined',
             onClick: () => {

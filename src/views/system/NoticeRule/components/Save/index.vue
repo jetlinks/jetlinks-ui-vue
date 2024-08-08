@@ -16,7 +16,7 @@
                             <template #title>
                                 <span>
                                     {{ $t('Save.index.866442-1',[name,showName])}}<br />
-                                    {{ $t('Save.index.866442-2',[name])}}
+                                    {{ $t('Save.index.866442-4',[name])}}
                                 </span>
                             </template>
                             <AIcon type="QuestionCircleOutlined"
