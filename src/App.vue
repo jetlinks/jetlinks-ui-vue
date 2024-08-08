@@ -33,7 +33,7 @@ watch(() => JSON.stringify(route.query || {}), () => {
 
 ConfigProvider.config({
   theme: {
-    primaryColor: "#315efb"
+    primaryColor: "#1677FF"
   }
 })
 </script>
