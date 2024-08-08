@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.BasicCountCard.895072-0": "基础统计",
+		"components.BasicCountCard.895072-1": "详情",
+		"components.BasicCountCard.895072-2": "设备数量",
+		"components.BasicCountCard.895072-3": "通道数量"
+	},
+	"en": {
+		"components.BasicCountCard.895072-0": "Basic Statistics",
+		"components.BasicCountCard.895072-1": "detail",
+		"components.BasicCountCard.895072-2": "Number of devices",
+		"components.BasicCountCard.895072-3": "Number of channels"
+	}
+}

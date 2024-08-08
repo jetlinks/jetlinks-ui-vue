@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"Player.ScreenPlayer.130901-0": "单屏",
+		"Player.ScreenPlayer.130901-1": "四分屏",
+		"Player.ScreenPlayer.130901-2": "九分屏",
+		"Player.ScreenPlayer.130901-3": "全屏",
+		"Player.ScreenPlayer.130901-4": "可保存分屏配置记录",
+		"Player.ScreenPlayer.130901-5": "分屏名称",
+		"Player.ScreenPlayer.130901-6": "请输入名称",
+		"Player.ScreenPlayer.130901-7": "最多可输入64个字符",
+		"Player.ScreenPlayer.130901-8": "保存",
+		"Player.ScreenPlayer.130901-9": "暂无数据",
+		"Player.ScreenPlayer.130901-10": "确认删除？",
+		"Player.ScreenPlayer.130901-11": "刷新",
+		"Player.ScreenPlayer.130901-12": "保存成功",
+		"Player.ScreenPlayer.130901-13": "保存失败"
+	},
+	"en": {
+		"Player.ScreenPlayer.130901-0": "Single screen",
+		"Player.ScreenPlayer.130901-1": "Four split screen",
+		"Player.ScreenPlayer.130901-2": "Nine split screen",
+		"Player.ScreenPlayer.130901-3": "Full screen",
+		"Player.ScreenPlayer.130901-4": "can save split screen configuration records",
+		"Player.ScreenPlayer.130901-5": "Split screen name",
+		"Player.ScreenPlayer.130901-6": "Please enter a name",
+		"Player.ScreenPlayer.130901-7": "Up to 64 characters can be entered",
+		"Player.ScreenPlayer.130901-8": "Save",
+		"Player.ScreenPlayer.130901-9": "No data available",
+		"Player.ScreenPlayer.130901-10": "Are you sure to delete?",
+		"Player.ScreenPlayer.130901-11": "Refresh",
+		"Player.ScreenPlayer.130901-12": "Saved successfully",
+		"Player.ScreenPlayer.130901-13": "Save failed"
+	}
+}

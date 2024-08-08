@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"components.Card.800203-0": "今日",
+		"components.Card.800203-1": "近一周",
+		"components.Card.800203-2": "近一月",
+		"components.Card.800203-3": "近一年",
+		"components.Card.800203-4": "暂无数据",
+		"components.Card.800203-5": "播放数量（人次）"
+	},
+	"en": {
+		"components.Card.800203-0": "Today",
+		"components.Card.800203-1": "Last week",
+		"components.Card.800203-2": "Last month",
+		"components.Card.800203-3": "Last year",
+		"components.Card.800203-4": "No data available",
+		"components.Card.800203-5": "View count(people)"
+	}
+}

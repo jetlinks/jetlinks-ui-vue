@@ -4,10 +4,10 @@
         key="download"
         :title="
             type !== 'local'
-                ? '下载录像文件'
+                ? $t('Playback.iconNode.1174516-0')
                 : item.isServer || status === 2
-                ? '查看'
-                : '下载到云端'
+                ? $t('Playback.iconNode.1174516-1')
+                : $t('Playback.iconNode.1174516-2')
         "
     >
         <a @click="handleClick">
@@ -20,6 +20,9 @@
 import type { recordsItemType } from './typings';
 import playBackApi from '@/api/media/playback';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 interface Props {
     type: string;
@@ -58,7 +61,7 @@ const downLoadCloud = (item: recordsItemType) => {
         .then((res) => {
             if (res.status === 200) {
                 onlyMessage(
-                    '操作成功。上传云端需要一定时间，请稍后查看云端数据',
+                    $t('Playback.iconNode.1174516-3'),
                 );
             }
             status.value = res.status === 200 ? 2 : 0;

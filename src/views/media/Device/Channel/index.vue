@@ -31,14 +31,10 @@
                                         route.query.type,
                                     )
                                 "
-                                :title="`接入方式为${
-                                    route.query.type === 'onvif'
-                                        ? 'Onvif'
-                                        : 'GB/T28181'
-                                }时，不支持新增`"
+                                :title="$t('Channel.index.117446-0', [accessMethod])"
                             >
                                 <j-button type="primary" disabled>
-                                    新增
+                                    {{ $t('Channel.index.117446-1') }}
                                 </j-button>
                             </j-tooltip>
                             <PermissionButton
@@ -48,7 +44,7 @@
                                 hasPermission="media/Device:add"
                             >
                                 <template #icon
-                                    ><AIcon type="PlusOutlined" />新增</template
+                                    ><AIcon type="PlusOutlined" />{{ $t('Channel.index.117446-1') }}</template
                                 >
                             </PermissionButton>
                         </template>
@@ -58,14 +54,14 @@
                                 :tooltip="{
                                     title:
                                         route?.query?.type === 'fixed-media'
-                                            ? '固定地址无法更新通道'
+                                            ? $t('Channel.index.117446-2')
                                             : deviceData?.state?.value ===
                                               'offline'
-                                            ? '设备已离线'
+                                            ? $t('Channel.index.117446-3')
                                             : deviceData?.state?.value ===
                                               'notActive'
-                                            ? '设备已禁用'
-                                            : '更新通道',
+                                            ? $t('Channel.index.117446-4')
+                                            : $t('Channel.index.117446-5'),
                                 }"
                                 :disabled="
                                     deviceData?.state?.value === 'offline' ||
@@ -77,7 +73,7 @@
                                 <template #icon
                                     ><AIcon
                                         type="SyncOutlined"
-                                    />更新通道</template
+                                    />{{ $t('Channel.index.117446-5') }}</template
                                 ></PermissionButton
                             >
                         </template>
@@ -119,7 +115,7 @@
                                             ><AIcon :type="i.icon"
                                         /></template>
                                     </PermissionButton>
-                                    <!-- 回放/播放不要权限控制 -->
+                                    <!-- {{ $t('Channel.index.117446-16') }}/播放不要权限控制 -->
                                     <template v-else>
                                         <j-tooltip
                                             :key="i.key"
@@ -174,13 +170,18 @@ import Tree from './Tree/index.vue';
 import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import DeviceApi from '@/api/media/device';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 const route: any = useRoute();
-
+const accessMethod=computed(()=> route.query.type === 'onvif'
+  ? 'Onvif'
+  : 'GB/T28181')
 const columns = [
     {
-        title: '通道ID',
+        title: $t('Channel.index.117446-6'),
         dataIndex: 'channelId',
         key: 'channelId',
         ellipsis: true,
@@ -189,7 +190,7 @@ const columns = [
         },
     },
     {
-        title: '名称',
+        title: $t('Channel.index.117446-7'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -199,13 +200,13 @@ const columns = [
         },
     },
     {
-        title: '厂商',
+        title: $t('Channel.index.117446-8'),
         dataIndex: 'manufacturer',
         key: 'manufacturer',
         ellipsis: true,
     },
     {
-        title: '安装地址',
+        title: $t('Channel.index.117446-9'),
         dataIndex: 'address',
         ellipsis: true,
         key: 'address',
@@ -214,7 +215,7 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Channel.index.117446-10'),
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
@@ -222,8 +223,8 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '已连接', value: 'online' },
-                { label: '未连接', value: 'offline' },
+                { label: $t('Channel.index.117446-11'), value: 'online' },
+                { label: $t('Channel.index.117446-12'), value: 'offline' },
             ],
             handleValue: (v: any) => {
                 return v;
@@ -231,7 +232,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Channel.index.117446-13'),
         key: 'action',
         width: 200,
         scopedSlots: true,
@@ -273,9 +274,9 @@ const getActions = (
     const actions = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Channel.index.117446-14'),
             tooltip: {
-                title: '编辑',
+                title: $t('Channel.index.117446-14'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -285,9 +286,9 @@ const getActions = (
         },
         {
             key: 'play',
-            text: '播放',
+            text: $t('Channel.index.117446-15'),
             tooltip: {
-                title: '播放',
+                title: $t('Channel.index.117446-15'),
             },
             icon: 'VideoCameraOutlined',
             onClick: () => {
@@ -297,9 +298,9 @@ const getActions = (
         },
         {
             key: 'backPlay',
-            text: '回放',
+            text: $t('Channel.index.117446-16'),
             tooltip: {
-                title: '回放',
+                title: $t('Channel.index.117446-16'),
             },
             icon: 'HistoryOutlined',
             onClick: () => {
@@ -316,20 +317,20 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Channel.index.117446-17'),
             tooltip: {
-                title: '删除',
+                title: $t('Channel.index.117446-17'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Channel.index.117446-18'),
                 onConfirm: () => {
                     const response = ChannelApi.del(data.id);
                     response.then((resp) => {
                         if (resp.status === 200) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('Channel.index.117446-19'));
                             listRef.value?.reload();
                         } else {
-                            onlyMessage('操作失败！', 'error');
+                            onlyMessage($t('Channel.index.117446-20'), 'error');
                         }
                     });
                     return response;
@@ -363,7 +364,7 @@ const handleSelect = (key: string) => {
 const refreshChanel = async () => {
     const res = await DeviceApi.updateChannels(deviceData.value.id);
     if (res.success) {
-        onlyMessage('通道更新成功');
+        onlyMessage($t('Channel.index.117446-21'));
         listRef.value?.reload();
     }
 };

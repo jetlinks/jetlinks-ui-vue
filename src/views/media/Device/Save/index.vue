@@ -6,11 +6,11 @@
                 <j-col :span="12">
                     <j-form ref="formRef" :model="formData" layout="vertical">
                         <j-form-item
-                            label="接入方式"
+                            :label="$t('Save.index.117444-0')"
                             name="channel"
                             :rules="{
                                 required: true,
-                                message: '请选择接入方式',
+                                message: $t('Save.index.117444-1'),
                             }"
                         >
                             <RadioCard
@@ -37,59 +37,59 @@
                                             required:
                                                 formData.channel ===
                                                 'gb28181-2016',
-                                            message: '请输入ID',
+                                            message: $t('Save.index.117444-2'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多输入64个字符',
+                                            message: $t('Save.index.117444-3'),
                                         },
                                         {
                                             pattern: /^[a-zA-Z0-9_\-]+$/,
                                             message:
-                                                '请输入英文或者数字或者-或者_',
+                                                $t('Save.index.117444-4'),
                                         },
                                     ]"
                                 >
                                     <j-input
                                         v-model:value="formData.id"
-                                        placeholder="请输入ID"
+                                        :placeholder="$t('Save.index.117444-2')"
                                         :disabled="!!route.query.id"
                                     />
                                 </j-form-item>
                                 <j-form-item
-                                    label="设备名称"
+                                    :label="$t('Save.index.117444-5')"
                                     name="name"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入设备名称',
+                                            message: $t('Save.index.117444-6'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: $t('Save.index.117444-7'),
                                         },
                                     ]"
                                 >
                                     <j-input
                                         v-model:value="formData.name"
-                                        placeholder="请输入设备名称"
+                                        :placeholder="$t('Save.index.117444-6')"
                                     />
                                 </j-form-item>
                             </j-col>
                         </j-row>
                         <j-form-item
-                            label="所属产品"
+                            :label="$t('Save.index.117444-8')"
                             name="productId"
                             :rules="{
                                 required: true,
-                                message: '请选择所属产品',
+                                message: $t('Save.index.117444-9'),
                             }"
                         >
                             <j-row :gutter="[0, 10]">
                                 <j-col :span="!!route.query.id ? 24 : 22">
                                     <j-select
                                         v-model:value="formData.productId"
-                                        placeholder="请选择所属产品"
+                                        :placeholder="$t('Save.index.117444-9')"
                                         :disabled="!!route.query.id"
                                         showSearch
                                         @change="handleProductChange"
@@ -116,56 +116,56 @@
                             </j-row>
                         </j-form-item>
                         <j-form-item
-                            label="接入密码"
+                            :label="$t('Save.index.117444-10')"
                             :name="['others', 'access_pwd']"
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入接入密码',
+                                    message: $t('Save.index.117444-11'),
                                 },
                                 {
                                     max: 64,
-                                    message: '最多可输入64个字符',
+                                    message: $t('Save.index.117444-7'),
                                 },
                             ]"
                             v-if="formData.channel === 'gb28181-2016'"
                         >
                             <j-input-password
                                 v-model:value="formData.others.access_pwd"
-                                placeholder="请输入接入密码"
+                                :placeholder="$t('Save.index.117444-11')"
                             />
                         </j-form-item>
                         <template v-if="formData.channel === 'onvif'">
                             <j-form-item
-                                label="接入地址"
+                                :label="$t('Save.index.117444-12')"
                                 :name="['others', 'onvifUrl']"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入接入地址',
+                                        message: $t('Save.index.117444-13'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('Save.index.117444-7'),
                                     },
                                 ]"
                             >
                                 <j-input
                                     v-model:value="formData.others.onvifUrl"
-                                    placeholder="请输入接入地址"
+                                    :placeholder="$t('Save.index.117444-13')"
                                 ></j-input>
                             </j-form-item>
                             <j-form-item
-                                label="接入账户"
+                                :label="$t('Save.index.117444-14')"
                                 :name="['others', 'onvifUsername']"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入接入账户',
+                                        message: $t('Save.index.117444-15'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('Save.index.117444-7'),
                                     },
                                 ]"
                             >
@@ -173,20 +173,20 @@
                                     v-model:value="
                                         formData.others.onvifUsername
                                     "
-                                    placeholder="请输入接入账户"
+                                    :placeholder="$t('Save.index.117444-15')"
                                 ></j-input>
                             </j-form-item>
                             <j-form-item
-                                label="接入密码"
+                                :label="$t('Save.index.117444-10')"
                                 :name="['others', 'onvifPassword']"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入接入密码',
+                                        message: $t('Save.index.117444-11'),
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('Save.index.117444-7'),
                                     },
                                 ]"
                             >
@@ -194,7 +194,7 @@
                                     v-model:value="
                                         formData.others.onvifPassword
                                     "
-                                    placeholder="请输入接入密码"
+                                    :placeholder="$t('Save.index.117444-11')"
                                 ></j-input-password>
                             </j-form-item>
                         </template>
@@ -211,28 +211,28 @@
                                         message: `${
                                             item.type.type === 'enum' ||
                                             'boolean'
-                                                ? '请选择'
-                                                : '请输入'
+                                                ? $t('Save.index.117444-16')
+                                                : $t('Save.index.117444-17')
                                         }${item.name}`,
                                     },
                                 ]"
                             >
                                 <j-input
-                                    placeholder="请输入"
+                                    :placeholder="$t('Save.index.117444-17')"
                                     v-if="item.type.type === 'string'"
                                     v-model:value="
                                         formData.others[item.property]
                                     "
                                 ></j-input>
                                 <j-input-password
-                                    placeholder="请输入"
+                                    :placeholder="$t('Save.index.117444-17')"
                                     v-if="item.type.type === 'password'"
                                     v-model:value="
                                         formData.others[item.property]
                                     "
                                 ></j-input-password>
                                 <j-select
-                                    placeholder="请选择"
+                                    :placeholder="$t('Save.index.117444-16')"
                                     v-if="
                                         item.type.type === 'enum' ||
                                         item.type.type === 'boolean'
@@ -255,18 +255,18 @@
                                     v-model:value="
                                         formData.others[item.property]
                                     "
-                                    placeholder="请输入"
+                                    :placeholder="$t('Save.index.117444-17')"
                                 ></j-input-number>
                             </j-form-item>
                         </template>
                         <template v-if="!!route.query.id">
                             <j-form-item
                                 v-if="formData.channel === 'gb28181-2016'"
-                                label="流传输模式"
+                                :label="$t('Save.index.117444-18')"
                                 name="streamMode"
                                 :rules="{
                                     required: true,
-                                    message: '请选择流传输模式',
+                                    message: $t('Save.index.117444-19'),
                                 }"
                             >
                                 <j-radio-group
@@ -277,66 +277,66 @@
                                         UDP
                                     </j-radio-button>
                                     <j-radio-button value="TCP_PASSIVE">
-                                        TCP被动
+                                        {{ $t('Save.index.117444-20') }}
                                     </j-radio-button>
                                 </j-radio-group>
                             </j-form-item>
                             <j-form-item
-                                label="设备厂商"
+                                :label="$t('Save.index.117444-21')"
                                 name="manufacturer"
                                 :rules="[
                                     {
                                         max: 64,
-                                        message: '最多可输入64位字符',
+                                        message: $t('Save.index.117444-22'),
                                         trigger: 'change',
                                     },
                                 ]"
                             >
                                 <j-input
                                     v-model:value="formData.manufacturer"
-                                    placeholder="请输入设备厂商"
+                                    :placeholder="$t('Save.index.117444-23')"
                                 />
                             </j-form-item>
                             <j-form-item
-                                label="设备型号"
+                                :label="$t('Save.index.117444-24')"
                                 name="model"
                                 :rules="[
                                     {
                                         max: 64,
-                                        message: '最多可输入64位字符',
+                                        message: $t('Save.index.117444-22'),
                                         trigger: 'change',
                                     },
                                 ]"
                             >
                                 <j-input
                                     v-model:value="formData.model"
-                                    placeholder="请输入设备型号"
+                                    :placeholder="$t('Save.index.117444-25')"
                                 />
                             </j-form-item>
                             <j-form-item
-                                label="固件版本"
+                                :label="$t('Save.index.117444-26')"
                                 name="firmware"
                                 :rules="[
                                     {
                                         max: 64,
-                                        message: '最多可输入64位字符',
+                                        message: $t('Save.index.117444-22'),
                                         trigger: 'change',
                                     },
                                 ]"
                             >
                                 <j-input
                                     v-model:value="formData.firmware"
-                                    placeholder="请输入固件版本"
+                                    :placeholder="$t('Save.index.117444-27')"
                                 />
                             </j-form-item>
                         </template>
-                        <j-form-item label="说明">
+                        <j-form-item :label="$t('Save.index.117444-28')">
                             <j-textarea
                                 v-model:value="formData.description"
                                 show-count
                                 :maxlength="200"
                                 :rows="5"
-                                placeholder="请输入说明"
+                                :placeholder="$t('Save.index.117444-29')"
                             />
                         </j-form-item>
                         <j-form-item>
@@ -345,7 +345,7 @@
                                 @click="handleSubmit"
                                 :loading="btnLoading"
                             >
-                                保存
+                                {{ $t('Save.index.117444-30') }}
                             </j-button>
                         </j-form-item>
                     </j-form>
@@ -356,25 +356,25 @@
                         class="doc"
                         style="height: 800"
                     >
-                        <h1>1.概述</h1>
+                        <h1>{{ $t('Save.index.117444-31') }}</h1>
                         <div>
-                            视频设备通过GB/T28181接入平台整体分为2部分，包括平台端配置和设备端配置，不同的设备端配置的路径或页面存在差异，但配置项基本大同小异。
+                            {{ $t('Save.index.117444-32') }}
                         </div>
-                        <h1>2.配置说明</h1>
-                        <h1>平台端配置</h1>
+                        <h1>{{ $t('Save.index.117444-33') }}</h1>
+                        <h1>{{ $t('Save.index.117444-34') }}</h1>
                         <h2>1、ID</h2>
-                        <div>设备唯一标识，请填写设备端配置的设备编号。</div>
-                        <h2>2、所属产品</h2>
+                        <div>{{ $t('Save.index.117444-35') }}</div>
+                        <h2>2、{{ $t('Save.index.117444-8') }}</h2>
                         <div>
-                            只能选择接入方式为GB/T28281的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择GB/T28181类型的网关完成产品创建
+                            {{ $t('Save.index.117444-37') }}
                         </div>
-                        <h2>3、接入密码</h2>
+                        <h2>3、{{ $t('Save.index.117444-10') }}</h2>
                         <div>
-                            配置接入密码，设备端配置的密码需与该密码一致。该字段可在产品-设备接入页面进行统一配置，配置后所有设备将继承产品配置。设备单独修改后将脱离继承关系。
+                            {{ $t('Save.index.117444-39') }}
                         </div>
-                        <h1>设备端配置</h1>
+                        <h1>{{ $t('Save.index.117444-40') }}</h1>
                         <div>
-                            各个厂家、不同设备型号的设备端配置页面布局存在差异，但配置项基本大同小异，此处以大华摄像头为例作为接入配置示例
+                            {{ $t('Save.index.117444-41') }}
                         </div>
                         <div class="image">
                             <j-image
@@ -382,10 +382,10 @@
                                 :src="getImage('/media/doc1.png')"
                             />
                         </div>
-                        <h2>1、SIP服务器编号/SIP域</h2>
+                        <h2>{{ $t('Save.index.117444-42') }}</h2>
                         <div>
-                            SIP服务器编号填入该设备所属产品-接入方式页面“连接信息”的SIP。
-                            SIP域通常为SIP服务器编号的前10位。
+                            {{ $t('Save.index.117444-43') }}
+                            {{ $t('Save.index.117444-44') }}
                         </div>
                         <div class="image">
                             <j-image
@@ -393,9 +393,9 @@
                                 :src="getImage('/media/doc2.png')"
                             />
                         </div>
-                        <h2>2、SIP服务器IP/端口</h2>
+                        <h2>{{ $t('Save.index.117444-45') }}</h2>
                         <div>
-                            SIP服务器IP/端口填入该设备所属产品-接入方式页面中“连接信息”的IP/端口。
+                            {{ $t('Save.index.117444-46') }}
                         </div>
                         <div class="image">
                             <j-image
@@ -403,13 +403,13 @@
                                 :src="getImage('/media/doc3.png')"
                             />
                         </div>
-                        <h2>3、设备编号</h2>
+                        <h2>{{ $t('Save.index.117444-47') }}</h2>
                         <div>
-                            设备编号为设备唯一性标识，物联网平台的设备接入没有校验该字段，输入任意数字均不影响设备接入平台。
+                            {{ $t('Save.index.117444-48') }}
                         </div>
-                        <h2>4、注册密码</h2>
+                        <h2>{{ $t('Save.index.117444-49') }}</h2>
                         <div>
-                            填入该设备所属产品-接入方式页面中“GB28281配置”处的接入密码
+                            {{ $t('Save.index.117444-50') }}
                         </div>
                         <div class="image">
                             <j-image
@@ -417,78 +417,78 @@
                                 :src="getImage('/media/doc4.png')"
                             />
                         </div>
-                        <h2>5、其他字段</h2>
-                        <div>不影响设备接入平台，可保持设备初始化值。</div>
+                        <h2>{{ $t('Save.index.117444-51') }}</h2>
+                        <div>{{ $t('Save.index.117444-52') }}</div>
                     </div>
 
                     <div v-else-if="formData.channel === 'fixed-media'" class="doc" style="height: 600">
-                        <h1>1.概述</h1>
+                        <h1>{{ $t('Save.index.117444-31') }}</h1>
                         <div>
-                            视频设备通过RTSP、RTMP固定地址接入平台分为2步。
+                            {{ $t('Save.index.117444-53') }}
                         </div>
-                        <div>1、添加视频设备</div>
-                        <div>2、添加视频下的通道地址。</div>
+                        <div>{{ $t('Save.index.117444-54') }}</div>
+                        <div>{{ $t('Save.index.117444-55') }}</div>
                         <div>
-                            注：当前页面为新增视频设备，新增完成后点击设备的“通道”按钮，添加通道。
+                            {{ $t('Save.index.117444-56') }}
                         </div>
-                        <h1>2.配置说明</h1>
+                        <h1>{{ $t('Save.index.117444-33') }}</h1>
                         <h2>1、ID</h2>
                         <div>
-                            设备唯一标识，若不填写，系统将自动生成唯一标识。
+                            {{ $t('Save.index.117444-57') }}
                         </div>
-                        <h2>2、所属产品</h2>
+                        <h2>2、{{ $t('Save.index.117444-8') }}</h2>
                         <div>
-                            只能选择接入方式为固定地址的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择固定地址类型的网关完成产品创建。
+                            {{ $t('Save.index.117444-58') }}
                         </div>
                     </div>
                     <div v-else-if="formData.channel === 'onvif'" class="doc" style="height: 600">
-                        <h1>1.概述</h1>
+                        <h1>{{ $t('Save.index.117444-31') }}</h1>
                         <div>
-                            JetLinks平台支持通过Onvif方式接入视频设备。分为两个部分，包括平台端配置和设备端配置。本文通过海康摄像头为例将onvif视频接入到平台播放。
+                            {{ $t('Save.index.117444-59') }}
                         </div>
-                        <h1>2.配置说明</h1>
+                        <h1>{{ $t('Save.index.117444-33') }}</h1>
                         <div>
-                            设备端配置
+                            {{ $t('Save.index.117444-40') }}
                         </div>
-                        <div>1.本文以海康监控为例演示，登录海康监控设备后台，进入配置>网络>高级配置>集成协议，用户自定义输入用户名和密码，完成用户添加。</div>
+                        <div>{{ $t('Save.index.117444-60') }}</div>
                         <div class="image">
                             <j-image
                                 width="100%"
                                 :src="getImage('/media/doc5.png')"
                             />
                         </div>
-                        <div>平台端配置</div>
-                        <div>ID：设备唯一标识，若不填写，系统将自动生成唯一标识</div>
-                        <div>设备名称：用户自定义输入小于或等于64位字符</div>
-                        <div>所属产品：选择接入方式为Onvif的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择Onvif类型的网关完成产品创建</div>
-                        <div>接入地址：不同平台的摄像头接入地址组合方式不一致，请参考对应品牌接入Onvif的地址设置。如海康：http://ip/onvif/device_service。IP地址来自于海康监控设备端后台：配置>网络>基本配置>TCP/IP</div>
+                        <div>{{ $t('Save.index.117444-34') }}</div>
+                        <div>{{ $t('Save.index.117444-64') }}</div>
+                        <div>{{ $t('Save.index.117444-65') }}</div>
+                        <div>{{ $t('Save.index.117444-66') }}</div>
+                        <div>{{ $t('Save.index.117444-67') }}</div>
                         <div class="image">
                             <j-image
                                 width="100%"
                                 :src="getImage('/media/doc6.png')"
                             />
                         </div>
-                        <div>接入账户：输入设备端配置时添加的用户名</div>
-                        <div>接入密码：输入设备端配置时添加的密码</div>
+                        <div>{{ $t('Save.index.117444-68') }}</div>
+                        <div>{{ $t('Save.index.117444-69') }}</div>
                         <div class="image">
                             <j-image
                                 width="100%"
                                 :src="getImage('/media/doc7.png')"
                             />
                         </div>
-                        <h1>3.所有配置项填写完成，点击保存。</h1>
+                        <h1>{{ $t('Save.index.117444-70') }}</h1>
                     </div>
                     <div v-else-if="formData.channel === 'media-plugin'" class="doc" style="height: 600">
-                        <h1>1.概述</h1>
+                        <h1>{{ $t('Save.index.117444-31') }}</h1>
                         <div>
-                            JetLinks平台支持通过调用SDK或API请求将第三方系统视频设备数据接入到平台。
+                            {{ $t('Save.index.117444-71') }}
                         </div>
-                        <h1>2.配置说明</h1>
-                        <div>2.1平台端配置</div>
-                        <div>ID：设备唯一标识，若不填写，系统将自动生成唯一标识</div>
-                        <div>设备名称：用户自定义输入小于或等于64位字符</div>
-                        <div>所属产品：选择接入方式为插件视频接入的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择插件类型的网关完成产品创建。</div>
-                        <h1>3.所有配置项填写完成，点击保存。</h1>
+                        <h1>{{ $t('Save.index.117444-33') }}</h1>
+                        <div>2.1{{ $t('Save.index.117444-34') }}</div>
+                        <div>{{ $t('Save.index.117444-64') }}</div>
+                        <div>{{ $t('Save.index.117444-65') }}</div>
+                        <div>{{ $t('Save.index.117444-73') }}</div>
+                        <h1>{{ $t('Save.index.117444-70') }}</h1>
                     </div>
                 </j-col>
             </j-row>
@@ -513,6 +513,9 @@ import SaveProduct from './SaveProduct.vue';
 import { notification } from 'jetlinks-ui-components';
 import { omit } from 'lodash-es';
 import { queryDeviceConfig } from '@/api/device/instance';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute();
 
@@ -725,14 +728,14 @@ const handleSubmit = () => {
                 } else {
                     notification.error({
                         key: 'error',
-                        message: '设备ID已重复',
+                        message: $t('Save.index.117444-74'),
                     });
                 }
             } else {
                 res = await DeviceApi.update(params);
             }
             if (res?.success) {
-                onlyMessage('保存成功');
+                onlyMessage($t('Save.index.117444-75'));
                 history.back();
             }
         })

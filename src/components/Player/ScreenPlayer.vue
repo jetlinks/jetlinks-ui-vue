@@ -9,20 +9,20 @@
                     button-style="solid"
                     @change="handleScreenChange"
                 >
-                    <j-radio-button :value="1">单屏</j-radio-button>
-                    <j-radio-button :value="4">四分屏</j-radio-button>
-                    <j-radio-button :value="9">九分屏</j-radio-button>
-                    <j-radio-button :value="0">全屏</j-radio-button>
+                    <j-radio-button :value="1">{{ $t('Player.ScreenPlayer.130901-0') }}</j-radio-button>
+                    <j-radio-button :value="4">{{ $t('Player.ScreenPlayer.130901-1') }}</j-radio-button>
+                    <j-radio-button :value="9">{{ $t('Player.ScreenPlayer.130901-2') }}</j-radio-button>
+                    <j-radio-button :value="0">{{ $t('Player.ScreenPlayer.130901-3') }}</j-radio-button>
                 </j-radio-group>
                 <div class="screen-tool-save">
                     <j-space>
-                        <j-tooltip title="可保存分屏配置记录">
+                        <j-tooltip :title="$t('Player.ScreenPlayer.130901-4')">
                             <AIcon type="QuestionCircleOutlined" />
                         </j-tooltip>
                         <j-popover
                             v-model:visible="visible"
                             trigger="click"
-                            title="分屏名称"
+                            :title="$t('Player.ScreenPlayer.130901-5')"
                         >
                             <template #content>
                                 <j-form
@@ -35,11 +35,11 @@
                                         :rules="[
                                             {
                                                 required: true,
-                                                message: '请输入名称',
+                                                message: $t('Player.ScreenPlayer.130901-6'),
                                             },
                                             {
                                                 max: 64,
-                                                message: '最多可输入64个字符',
+                                                message: $t('Player.ScreenPlayer.130901-7'),
                                             },
                                         ]"
                                     >
@@ -53,7 +53,7 @@
                                         :loading="loading"
                                         style="width: 100%; margin-top: 16px"
                                     >
-                                        保存
+                                        {{ $t('Player.ScreenPlayer.130901-8') }}
                                     </j-button>
                                 </j-form>
                             </template>
@@ -61,12 +61,12 @@
                                 type="primary"
                                 @click="visible = true"
                             >
-                                保存
+                                {{ $t('Player.ScreenPlayer.130901-8') }}
                                 <template #overlay>
                                     <j-menu>
                                         <j-empty
                                             v-if="!historyList.length"
-                                            description="暂无数据"
+                                            :description="$t('Player.ScreenPlayer.130901-9')"
                                         />
                                         <j-menu-item
                                             v-for="(item, index) in historyList"
@@ -78,7 +78,7 @@
                                                 <PermissionButton
                                                     type="text"
                                                     :popConfirm="{
-                                                    title: '确认删除？',
+                                                    title: $t('Player.ScreenPlayer.130901-10'),
                                                     onConfirm: (e: any) => {
                                                         e?.stopPropagation();
                                                         deleteHistory(item.key);
@@ -125,7 +125,7 @@
                                 }"
                                 @click="handleRefresh($event, item, index)"
                             >
-                                刷新
+                                {{ $t('Player.ScreenPlayer.130901-11') }}
                             </div>
                             <LivePlayer :live="true" :url="item.url" autoplay />
                         </div>
@@ -346,10 +346,10 @@ const saveHistory = async () => {
             if (res.success) {
                 visible.value = false;
                 getHistory();
-                onlyMessage('保存成功');
+                onlyMessage($t('Player.ScreenPlayer.130901-12'));
                 formRef.value.resetFields();
             } else {
-                onlyMessage('保存失败', 'error');
+                onlyMessage($t('Player.ScreenPlayer.130901-13'), 'error');
             }
         })
         .catch((err: any) => {

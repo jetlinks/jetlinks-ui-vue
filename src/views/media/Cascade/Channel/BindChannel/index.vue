@@ -2,9 +2,9 @@
 <template>
     <j-modal
         v-model:visible="_vis"
-        title="绑定通道"
-        cancelText="取消"
-        okText="确定"
+        :title="$t('BindChannel.index.755834-0')"
+        :cancelText="$t('BindChannel.index.755834-1')"
+        :okText="$t('BindChannel.index.755834-2')"
         width="80%"
         @ok="handleSave"
         @cancel="_vis = false"
@@ -47,7 +47,7 @@
             }"
         >
             <template #headerTitle>
-                <h3>通道列表</h3>
+                <h3>{{ $t('BindChannel.index.755834-3') }}</h3>
             </template>
             <template #status="slotProps">
                 <j-space>
@@ -69,6 +69,9 @@
 import CascadeApi from '@/api/media/cascade';
 import { onlyMessage } from '@/utils/comm';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute();
 
@@ -101,7 +104,7 @@ watch(
 
 const columns = [
     {
-        title: '设备名称',
+        title: $t('BindChannel.index.755834-4'),
         dataIndex: 'deviceName',
         key: 'deviceName',
         ellipsis: true,
@@ -110,7 +113,7 @@ const columns = [
         },
     },
     {
-        title: '通道名称',
+        title: $t('BindChannel.index.755834-5'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -120,7 +123,7 @@ const columns = [
         },
     },
     {
-        title: '安装地址',
+        title: $t('BindChannel.index.755834-6'),
         dataIndex: 'address',
         key: 'address',
         ellipsis: true,
@@ -129,7 +132,7 @@ const columns = [
         },
     },
     {
-        title: '厂商',
+        title: $t('BindChannel.index.755834-7'),
         dataIndex: 'manufacturer',
         key: 'manufacturer',
         ellipsis: true,
@@ -138,7 +141,7 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('BindChannel.index.755834-8'),
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
@@ -146,8 +149,8 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '已连接', value: 'online' },
-                { label: '未连接', value: 'offline' },
+                { label: $t('BindChannel.index.755834-9'), value: 'online' },
+                { label: $t('BindChannel.index.755834-10'), value: 'offline' },
             ],
             handleValue: (v: any) => {
                 return v;
@@ -199,7 +202,7 @@ const onAllSelect = (selected: boolean, _: any, keys: any[]) => {
 const loading = ref(false);
 const handleSave = async () => {
     if (!_selectedRowKeys.value.length) {
-        onlyMessage('请勾选数据', 'error');
+        onlyMessage($t('BindChannel.index.755834-11'), 'error');
         return;
     }
     loading.value = true;
@@ -210,11 +213,11 @@ const handleSave = async () => {
         loading.value = false;
     })
     if (resp.success) {
-        onlyMessage('操作成功！');
+        onlyMessage($t('BindChannel.index.755834-12'));
         _vis.value = false;
         emit('submit');
     } else {
-        onlyMessage('操作失败！', 'error');
+        onlyMessage($t('BindChannel.index.755834-13'), 'error');
     }
 };
 </script>

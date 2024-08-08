@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"BindChannel.index.755834-0": "绑定通道",
+		"BindChannel.index.755834-1": "取消",
+		"BindChannel.index.755834-2": "确定",
+		"BindChannel.index.755834-3": "通道列表",
+		"BindChannel.index.755834-4": "设备名称",
+		"BindChannel.index.755834-5": "通道名称",
+		"BindChannel.index.755834-6": "安装地址",
+		"BindChannel.index.755834-7": "厂商",
+		"BindChannel.index.755834-8": "状态",
+		"BindChannel.index.755834-9": "已连接",
+		"BindChannel.index.755834-10": "未连接",
+		"BindChannel.index.755834-11": "请勾选数据",
+		"BindChannel.index.755834-12": "操作成功！",
+		"BindChannel.index.755834-13": "操作失败！"
+	},
+	"en": {
+		"BindChannel.index.755834-0": "Bind channel",
+		"BindChannel.index.755834-1": "Cancel",
+		"BindChannel.index.755834-2": "Confirm",
+		"BindChannel.index.755834-3": "Channel List",
+		"BindChannel.index.755834-4": "Device name",
+		"BindChannel.index.755834-5": "Channel name",
+		"BindChannel.index.755834-6": "Installation address",
+		"BindChannel.index.755834-7": "Manufacturer",
+		"BindChannel.index.755834-8": "State",
+		"BindChannel.index.755834-9": "on-line",
+		"BindChannel.index.755834-10": "off-line",
+		"BindChannel.index.755834-11": "Please check the data",
+		"BindChannel.index.755834-12": "Operation successful!",
+		"BindChannel.index.755834-13": "Operation failed!"
+	}
+}

@@ -2,7 +2,7 @@
     <j-modal visible @cancel="emit('close')" :closable="false">
         <div class="content">
             <div style="margin-bottom: 5px;">
-                复制下方链接，分享{{ data.name }}视频界面
+                {{ $t('Live.Share.1174520-0',[data.name]) }}
             </div>
             <j-input-group compact>
                 <j-input
@@ -10,7 +10,7 @@
                     ref="urlRef"
                     style="width: calc(100% - 50px)"
                 />
-                <j-tooltip title="复制">
+                <j-tooltip :title="$t('Live.Share.1174520-2')">
                     <j-button @click="onCopy">
                         <template #icon><AIcon type="CopyOutlined" /></template>
                     </j-button>
@@ -18,7 +18,7 @@
             </j-input-group>
         </div>
         <template #footer>
-            <j-button type="primary" @click="emit('close')">确定</j-button>
+            <j-button type="primary" @click="emit('close')">{{ $t('Live.Share.1174520-3') }}</j-button>
         </template>
     </j-modal>
 </template>
@@ -27,6 +27,9 @@
 import { getToken } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({

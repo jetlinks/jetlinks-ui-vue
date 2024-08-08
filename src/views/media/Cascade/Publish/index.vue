@@ -2,35 +2,35 @@
 <template>
     <j-modal
         v-model:visible="_vis"
-        title="推送"
-        cancelText="取消"
-        okText="确定"
+        :title="$t('Publish.index.755835-0')"
+        :cancelText="$t('Publish.index.755835-1')"
+        :okText="$t('Publish.index.755835-2')"
         width="900px"
         @ok="_vis = false"
         @cancel="_vis = false"
     >
         <j-row :gutter="20">
             <j-col :span="8">
-                <p>成功：{{ successCount }}</p>
+                <p>{{ $t('Publish.index.755835-3') }}{{ successCount }}</p>
                 <j-space>
-                    <p>失败：{{ failCount }}</p>
+                    <p>{{ $t('Publish.index.755835-4') }}{{ failCount }}</p>
                     <a
                         v-if="errMessage.length"
                         @click="
                             downloadObject(
                                 errMessage || '',
-                                data.name + '-推送失败',
+                                data.name + $t('Publish.index.755835-5'),
                             )
                         "
-                        >下载</a
+                        >{{ $t('Publish.index.755835-6') }}</a
                     >
                 </j-space>
             </j-col>
             <j-col :span="8">
-                <p>推送通道数量：{{ data.count }}</p>
+                <p>{{ $t('Publish.index.755835-7') }}{{ data.count }}</p>
             </j-col>
             <j-col :span="8">
-                <p>已推送通道数量：{{ successCount + failCount }}</p>
+                <p>{{ $t('Publish.index.755835-8') }}{{ successCount + failCount }}</p>
             </j-col>
         </j-row>
         <div v-if="flag">
@@ -45,6 +45,9 @@ import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import { PropType } from 'vue';
 import { downloadObject } from '@/utils/utils';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;

@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Playback.index.1174513-0": "云端：存储在服务器中",
+		"Playback.index.1174513-1": "本地：存储在设备本地",
+		"Playback.index.1174513-2": "类型:",
+		"Playback.index.1174513-3": "云端",
+		"Playback.index.1174513-4": "本地",
+		"Playback.index.1174513-5": "暂无数据",
+		"Playback.index.1174513-6": "暂停",
+		"Playback.index.1174513-7": "播放"
+	},
+	"en": {
+		"Playback.index.1174513-0": "Cloud: stored on servers",
+		"Playback.index.1174513-1": "Local: stored locally on the device",
+		"Playback.index.1174513-2": "Type:",
+		"Playback.index.1174513-3": "Cloud",
+		"Playback.index.1174513-4": "Local",
+		"Playback.index.1174513-5": "No data available",
+		"Playback.index.1174513-6": "Suspend",
+		"Playback.index.1174513-7": "Play"
+	}
+}

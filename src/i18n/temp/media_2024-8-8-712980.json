@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"Live.index.1174522-0": "播放",
+		"Live.index.1174522-1": "开始录像",
+		"Live.index.1174522-2": "本地存储",
+		"Live.index.1174522-3": "存储在设备本地",
+		"Live.index.1174522-4": "云端存储",
+		"Live.index.1174522-5": "存储在服务器中",
+		"Live.index.1174522-6": "请求录像中",
+		"Live.index.1174522-7": "停止录像",
+		"Live.index.1174522-8": "刷新",
+		"Live.index.1174522-9": "重置将断开直播, 可能会影响其他播放者",
+		"Live.index.1174522-10": "重置",
+		"Live.index.1174522-11": "转速控制",
+		"Live.index.1174522-12": "取消",
+		"Live.index.1174522-13": "确定",
+		"Live.index.1174522-14": "高",
+		"Live.index.1174522-15": "中",
+		"Live.index.1174522-16": "低",
+		"Live.index.1174522-17": "操作成功！"
+	},
+	"en": {
+		"Live.index.1174522-0": "Play",
+		"Live.index.1174522-1": "Start recording",
+		"Live.index.1174522-2": "Local storage",
+		"Live.index.1174522-3": "Store locally on the device",
+		"Live.index.1174522-4": "Cloud storage",
+		"Live.index.1174522-5": "Stored on the server",
+		"Live.index.1174522-6": "Request video recording",
+		"Live.index.1174522-7": "Stop recording",
+		"Live.index.1174522-8": "Refresh",
+		"Live.index.1174522-9": "Resetting will disconnect the live stream, which may affect other players",
+		"Live.index.1174522-10": "Reset",
+		"Live.index.1174522-11": "Speed control ",
+		"Live.index.1174522-12": "Cancel",
+		"Live.index.1174522-13": "Confirm",
+		"Live.index.1174522-14": "high",
+		"Live.index.1174522-15": "medium",
+		"Live.index.1174522-16": "low",
+		"Live.index.1174522-17": "Operation successful!"
+	}
+}

@@ -22,26 +22,26 @@
                 }"
             >
                 <template #headerTitle>
-                    <h3>通道列表</h3>
+                    <h3>{{ $t('Channel.index.755831-0') }}</h3>
                 </template>
                 <template #rightExtraRender>
                     <j-space>
                         <j-button type="primary" @click="bindVis = true">
-                            绑定通道
+                            {{ $t('Channel.index.755831-1') }}
                         </j-button>
                         <PermissionButton
                             type="primary"
                             :popConfirm="{
-                                title: '确认解绑？',
+                                title: $t('Channel.index.755831-2'),
                                 onConfirm: handleMultipleUnbind,
                             }"
-                            >批量解绑</PermissionButton
+                            >{{ $t('Channel.index.755831-3') }}</PermissionButton
                         >
                     </j-space>
                 </template>
                 <template #gbChannelIdHeader="title">
                     <j-tooltip
-                        title="国标级联有16位、20位两种格式。在当前页面修改不会修改视频设备-通道页面中的国标ID"
+                        :title="$t('Channel.index.755831-4')"
                     >
                         <j-space>
                             <span>{{ title }}</span>
@@ -60,7 +60,7 @@
                         >
                             <template #title>
                                 <div class="header">
-                                    <span>编辑国标ID</span>
+                                    <span>{{ $t('Channel.index.755831-5') }}</span>
                                     <AIcon
                                         type="CloseOutlined"
                                         @click="handleClose(slotProps)"
@@ -72,14 +72,14 @@
                                     <j-input
                                         v-model:value="gbID"
                                         @change="validField(slotProps)"
-                                        placeholder="请输入国标ID"
+                                        :placeholder="$t('Channel.index.755831-6')"
                                     />
                                     <div
                                         class="error"
                                         v-if="valid && !valid?.passed"
                                     >
                                         <!-- {{ valid?.reason }} -->
-                                        该国标ID在同一设备下已存在
+                                        {{ $t('Channel.index.755831-7') }}
                                     </div>
                                 </div>
                                 <j-button
@@ -88,7 +88,7 @@
                                     :loading="loading"
                                     style="width: 100%"
                                 >
-                                    保存
+                                    {{ $t('Channel.index.755831-8') }}
                                 </j-button>
                             </template>
                             <j-button
@@ -147,12 +147,15 @@ import CascadeApi from '@/api/media/cascade';
 import { onlyMessage } from '@/utils/comm';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import BindChannel from './BindChannel/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute();
 
 const columns = [
     {
-        title: '设备名称',
+        title: $t('Channel.index.755831-9'),
         dataIndex: 'deviceName',
         key: 'deviceName',
         // width: 200,
@@ -163,7 +166,7 @@ const columns = [
         },
     },
     {
-        title: '通道名称',
+        title: $t('Channel.index.755831-10'),
         dataIndex: 'name',
         ellipsis: true,
         key: 'name',
@@ -173,7 +176,7 @@ const columns = [
         },
     },
     {
-        title: '国标ID',
+        title: $t('Channel.index.755831-11'),
         dataIndex: 'gbChannelId',
         key: 'gbChannelId',
         scopedSlots: true,
@@ -184,7 +187,7 @@ const columns = [
         },
     },
     {
-        title: '安装地址',
+        title: $t('Channel.index.755831-12'),
         dataIndex: 'address',
         key: 'address',
         ellipsis: true,
@@ -193,7 +196,7 @@ const columns = [
         },
     },
     {
-        title: '厂商',
+        title: $t('Channel.index.755831-13'),
         dataIndex: 'manufacturer',
         key: 'manufacturer',
         ellipsis: true,
@@ -202,7 +205,7 @@ const columns = [
         },
     },
     {
-        title: '在线状态',
+        title: $t('Channel.index.755831-14'),
         dataIndex: 'status',
         key: 'status',
         scopedSlots: true,
@@ -210,8 +213,8 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '已连接', value: 'online' },
-                { label: '未连接', value: 'offline' },
+                { label: $t('Channel.index.755831-15'), value: 'online' },
+                { label: $t('Channel.index.755831-16'), value: 'offline' },
             ],
             handleValue: (v: any) => {
                 return v;
@@ -219,7 +222,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Channel.index.755831-17'),
         key: 'action',
         width: 100,
         scopedSlots: true,
@@ -328,13 +331,13 @@ const getActions = (
     const actions = [
         {
             key: 'delete',
-            text: '解绑',
+            text: $t('Channel.index.755831-18'),
             tooltip: {
-                title: '解绑',
+                title: $t('Channel.index.755831-18'),
             },
             icon: 'DisconnectOutlined',
             popConfirm: {
-                title: '确认解绑?',
+                title: $t('Channel.index.755831-19'),
                 onConfirm: () => {
                     const response = CascadeApi.unbindChannel(
                         route.query.id as string,
@@ -342,10 +345,10 @@ const getActions = (
                     );
                     response.then((resp) => {
                         if (resp.success) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('Channel.index.755831-20'));
                             listRef.value?.reload();
                         } else {
-                            onlyMessage('操作失败！', 'error');
+                            onlyMessage($t('Channel.index.755831-21'), 'error');
                         }
                     });
                     return response
@@ -361,19 +364,19 @@ const getActions = (
  */
 const handleMultipleUnbind = async () => {
     if (!_selectedRowKeys.value.length) {
-        onlyMessage('请先选择需要解绑的通道列表', 'error');
+        onlyMessage($t('Channel.index.755831-22'), 'error');
         return;
     }
     const resp = await CascadeApi.unbindChannel(route.query.id as string, [
         ...channelIdMap.values(),
     ]);
     if (resp.success) {
-        onlyMessage('操作成功！');
+        onlyMessage($t('Channel.index.755831-20'));
         _selectedRowKeys.value = [];
         channelIdMap.clear();
         listRef.value?.reload();
     } else {
-        onlyMessage('操作失败！', 'error');
+        onlyMessage($t('Channel.index.755831-21'), 'error');
     }
 };
 
@@ -383,7 +386,7 @@ const handleMultipleUnbind = async () => {
 const gbID = ref('');
 const loading = ref(false);
 const handleSave = async (data: any) => {
-    if (!gbID.value) onlyMessage('请输入国标ID', 'error');
+    if (!gbID.value) onlyMessage($t('Channel.index.755831-6'), 'error');
     if (!valid.value?.passed) return;
 
     loading.value = true;
@@ -392,12 +395,12 @@ const handleSave = async (data: any) => {
     });
     loading.value = false;
     if (resp.success) {
-        onlyMessage('操作成功！');
+        onlyMessage($t('Channel.index.755831-20'));
         listRef.value?.reload();
         valid.value = undefined;
         gbID.value = '';
     } else {
-        onlyMessage('操作失败！', 'error');
+        onlyMessage($t('Channel.index.755831-21'), 'error');
     }
 };
 

@@ -8,10 +8,10 @@
                         v-model:value="dimension"
                         button-style="solid"
                     >
-                        <j-radio-button value="today">今日</j-radio-button>
-                        <j-radio-button value="week">近一周</j-radio-button>
-                        <j-radio-button value="month">近一月</j-radio-button>
-                        <j-radio-button value="year">近一年</j-radio-button>
+                        <j-radio-button value="today">{{ $t('components.Card.800203-0') }}</j-radio-button>
+                        <j-radio-button value="week">{{ $t('components.Card.800203-1') }}</j-radio-button>
+                        <j-radio-button value="month">{{ $t('components.Card.800203-2') }}</j-radio-button>
+                        <j-radio-button value="year">{{ $t('components.Card.800203-3') }}</j-radio-button>
                     </j-radio-group>
                     <j-range-picker
                         format="YYYY-MM-DD HH:mm:ss"
@@ -22,13 +22,16 @@
             </div>
         </div>
         <div v-if="chartData.length" class="chart" ref="chartRef"></div>
-        <j-empty v-else class="no-data" description="暂无数据" ></j-empty>
+        <j-empty v-else class="no-data" :description="$t('components.Card.800203-4')" ></j-empty>
     </div>
 </template>
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
 import moment from 'moment';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 // const { proxy } = <any>getCurrentInstance();
 type Emits = {
@@ -106,7 +109,7 @@ const createChart = () => {
                 //     data: sData,
                 // },
                 {
-                    name: '播放数量(人次)',
+                    name: $t('components.Card.800203-5'),
                     data: sData,
                     type: 'line',
                     smooth: true,
