@@ -2,15 +2,15 @@
     <div class="sidebar">
         <div class="search-box">
             <j-input
-                v-model:value="deviceName"
-                @change="handleDeviceSearch"
-                placeholder="请输入设备名称"
+                v-model:value="productName"
+                placeholder="请输入产品名称"
                 class="search-input"
                 allowClear
                 size="large"
+                @keydown.enter="handleDeviceSearch"
             >
                 <template #suffix>
-                    <AIcon type="SearchOutlined" />
+                    <AIcon type="SearchOutlined" @click="handleDeviceSearch" />
                 </template>
             </j-input>
         </div>
@@ -19,7 +19,7 @@
                 <template v-for="item in deviceList" :key="item.id">
                     <div
                         class="device-item"
-                        :class="deviceIndex === item.id ? 'active' : ''"
+                        :class="productId === item.id ? 'active' : ''"
                         @click="handleDeviceClick(item.id)"
                     >
                         {{ item.name }}
@@ -31,72 +31,68 @@
 </template>
 
 <script setup lang="ts">
+import { queryProductList } from '@/api/device/product';
+
 defineOptions({
     name: 'Sidebar',
 });
 
-const props = defineProps<{
-    deviceIndex: number;
+defineProps<{
+    productId: string;
 }>();
-const emit = defineEmits(['update:deviceIndex']);
+const emit = defineEmits(['update:productId']);
 
 // search 组件
-const deviceName = ref('');
+const productName = ref('');
 const handleDeviceSearch = async () => {
-    await handleRequest(props.deviceIndex);
+    await handleRequest(productName.value);
 };
 
 // 列表组件及相关事件
-const deviceList = ref<any[]>([
-    // {
-    //     id: 1,
-    //     name: '发动机',
-    // },
-    // {
-    //     id: 2,
-    //     name: '变速箱',
-    // },
-]);
+const deviceList = ref<any[]>([]);
 const handleDeviceClick = (id: number) => {
-    emit('update:deviceIndex', id);
+    emit('update:productId', id);
 };
 const loading = ref(false);
 const getDeviceList = async () => {
     await handleRequest();
 };
 
-async function handleRequest(id?: number) {
+async function handleRequest(name?: string) {
     loading.value = true;
-    let resp: any;
-    if (id) {
-        // todo 根据id获取设备列表
-    } else {
-        // todo 获取全部设备
-        // mock
-        resp = await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    status: 200,
-                    result: [
+    let resp = null;
+    if (name) {
+        resp = await queryProductList({
+            pageIndex: 0,
+            pageSize: 10000,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: [
+                {
+                    terms: [
                         {
-                            id: 1,
-                            name: '发动机',
-                        },
-                        {
-                            id: 2,
-                            name: '变速箱',
+                            type: 'or',
+                            value: `%${name}%`,
+                            termType: 'like',
+                            column: 'name',
                         },
                     ],
-                });
-            }, 1000);
+                },
+            ],
+        });
+    } else {
+        // 获取全部设备
+        resp = await queryProductList({
+            pageIndex: 0,
+            pageSize: 10000,
+            sorts: [{ name: 'createTime', order: 'desc' }],
         });
     }
     if (resp.status === 200) {
-        deviceList.value = (resp.result as any[]).map((item: any) => ({
+        deviceList.value = (resp as any).result.data.map((item: any) => ({
             id: item.id,
             name: item.name,
         }));
-        emit('update:deviceIndex', deviceList.value[0].id);
+        emit('update:productId', deviceList.value[0].id);
         loading.value = false;
     } else {
         loading.value = false;
@@ -121,6 +117,7 @@ onMounted(() => {
 
         width: 100%;
         text-align: center;
+
         .device-item {
             font-size: 14px;
             color: var(--default-font-color);
@@ -143,7 +140,7 @@ onMounted(() => {
             }
 
             &:not(&:first-child) {
-                margin-top: 16px;
+                margin-top: 12px;
             }
         }
     }

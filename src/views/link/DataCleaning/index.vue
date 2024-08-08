@@ -3,20 +3,20 @@
         <full-page>
             <div class="container">
                 <div class="flex-lf">
-                    <sidebar v-model:device-index="deviceIndex" />
+                    <sidebar v-model:product-id="productId" />
                 </div>
                 <div class="flex-rt">
                     <div class="main">
                         <j-tabs type="card">
                             <j-tab-pane key="property" tab="属性">
-                                <device-property
-                                    :device-index="deviceIndex"
+                                <property-table
+                                    :product-id="productId"
                                     @show-modal="showModal"
                                 />
                             </j-tab-pane>
                             <j-tab-pane key="event" tab="事件">
-                                <device-event
-                                    :device-index="deviceIndex"
+                                <event-table
+                                    :product-id="productId"
                                     @show-modal="showModal"
                                 />
                             </j-tab-pane>
@@ -33,11 +33,11 @@
 import { FullPage } from 'components/Layout';
 import Sidebar from './components/sidebar/index.vue';
 import modal from './components/modal/index.vue';
-import DeviceProperty from './components/deviceProperty/index.vue';
-import DeviceEvent from './components/deviceEvent/index.vue';
+import PropertyTable from '@/views/link/DataCleaning/components/propertyTable/index.vue';
+import EventTable from '@/views/link/DataCleaning/components/eventTable/index.vue';
 
 // 左侧设备的选项卡的tab索引
-const deviceIndex = ref<number>(0);
+const productId = ref<string>('');
 
 // 控制modal框
 const isShowModal = ref(false);

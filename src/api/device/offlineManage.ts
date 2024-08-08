@@ -20,35 +20,10 @@ interface IOfflineDeviceRes {
     }[];
 }
 
-const handleReqParams = (
-    params: ISearchParams,
-    offlineReasons: string,
-    isContains: boolean,
-) => {
-    // 这里接口文档有问题，照着接口文档写查询会有问题
-    params.terms.unshift({
-        type: 'or',
-        value: 'offline',
-        termType: 'eq',
-        column: 'state',
-    });
-    return {
-        queryParamEntity: {
-            ...params,
-        },
-        offlineReasons,
-        isContains,
-    };
-};
-
-export const fetchOfflineDevice = (
-    params: ISearchParams,
-    offlineReasons: string,
-    isContains: boolean,
-) => {
+export const fetchOfflineDevice = (params: ISearchParams) => {
     return request.post<IOfflineDeviceRes>(
         '/vehicle/device/offline/_query',
-        handleReqParams(params, offlineReasons, isContains),
+        params,
     );
 };
 
@@ -59,16 +34,6 @@ export const checkDevice = (deviceId: string) =>
  * offlineDeviceExport 离线设备导出
  * @param format 导出文件的格式
  * @param params
- * @param offlineReasons
- * @param isContains 是否包含子设备
  */
-export const offlineDeviceExport = (
-    format: string,
-    params: ISearchParams,
-    offlineReasons: string,
-    isContains: boolean,
-) =>
-    request.postStream(
-        `/vehicle/device/offline/${format}`,
-        handleReqParams(params, offlineReasons, isContains),
-    );
+export const offlineDeviceExport = (format: string, params: ISearchParams) =>
+    request.postStream(`/vehicle/device/offline/${format}`, params);

@@ -3,8 +3,8 @@ import { IDiagnoseItem } from '@/views/device/OfflineManage/typings';
 export const columnsConf = [
     {
         title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: false,
         innerWidth: 300,
         search: {

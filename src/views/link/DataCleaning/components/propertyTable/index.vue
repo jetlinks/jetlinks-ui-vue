@@ -50,16 +50,16 @@ import { useProSearch } from '@/hook/useProSearch';
 import { config, mockData } from '../../config';
 
 defineOptions({
-    name: 'DeviceEvent',
+    name: 'PropertyTable',
 });
 
 const props = defineProps<{
-    deviceIndex: number;
+    productId: string;
 }>();
 const emit = defineEmits(['showModal']);
 
 // 数据表的配置项
-const tableConf = reactive(config[1]);
+const tableConf = reactive(config[0]);
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
@@ -90,7 +90,7 @@ const fetchData = async (params: any) => {
                 status: 200,
                 message: 'success',
                 result: {
-                    data: mockData[1],
+                    data: mockData[0],
                 },
             });
         }, 1000);
@@ -132,6 +132,15 @@ const handlePageChange = (num: number, pageSize: number) => {
     };
     handleSearch(_params);
 };
+
+watch(
+    () => props.deviceIndex,
+    (newVal, oldVal) => {
+        if (newVal !== oldVal) {
+            fetchData(globParams.value);
+        }
+    },
+);
 </script>
 
 <style scoped lang="less"></style>

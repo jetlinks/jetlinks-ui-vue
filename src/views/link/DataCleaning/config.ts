@@ -1,6 +1,18 @@
 export const config = [
     [
         {
+            title: '属性标识',
+            dataIndex: 'id',
+            key: 'id',
+            // width: 100,
+            // align: 'center',
+            // ellipsis: true,
+            // scopedSlots: { customRender: 'id' }
+            search: {
+                type: 'string',
+            },
+        },
+        {
             title: '属性名称',
             dataIndex: 'name',
             key: 'name',

@@ -4,16 +4,17 @@ import { ReactiveSet } from '@/utils/reactiveSet';
  * @function useSelectableTable
  * @description 封装了table组件的selectedRowKeys属性，
  * 同时实现了rowSelection的onSelect事件和onSelectAll事件以及onSelectNone事件，用于实现多选功能
+ * @param columnName 需要用于选择的列名，否则则默认监听id
  */
-export function useSelectableTable() {
+export function useSelectableTable<T = string>(columnName?: string) {
     // 用于computed监听set的依赖项，同时记录选中的行数
     const setLength = ref(0);
     // 选中行的id集合
-    const idSet = new ReactiveSet(setLength);
+    const dataSet = new ReactiveSet<T>(setLength);
 
     const selectedRowKeys = computed(() => {
         let keys = setLength.value;
-        return Array.from(idSet.value);
+        return Array.from(dataSet.value);
     });
 
     /**
@@ -23,14 +24,22 @@ export function useSelectableTable() {
      * @param selectedRows 选中的所有数据项的对象数组
      */
     const handleRowSelected = (
-        record: any,
+        record: Record<string, any>,
         selected: boolean,
         selectedRows: any,
     ) => {
-        if (selected) {
-            idSet.setItem(record.id);
+        if (!columnName) {
+            if (selected) {
+                dataSet.setItem(record.id);
+            } else {
+                dataSet.removeItem(record.id);
+            }
         } else {
-            idSet.removeItem(record.id);
+            if (selected) {
+                dataSet.setItem(record[columnName]);
+            } else {
+                dataSet.removeItem(record[columnName]);
+            }
         }
     };
 
@@ -45,13 +54,23 @@ export function useSelectableTable() {
         selectedRows: any,
         changeRows: any,
     ) => {
-        if (selected) {
-            changeRows.forEach((row: any) => {
-                idSet.setItem(row.id);
-            });
+        if (!columnName) {
+            if (selected) {
+                changeRows.forEach((row: any) => {
+                    dataSet.setItem(row.id);
+                });
+            } else {
+                changeRows.forEach((row: any) => {
+                    dataSet.removeItem(row.id);
+                });
+            }
         } else {
             changeRows.forEach((row: any) => {
-                idSet.removeItem(row.id);
+                if (selected) {
+                    dataSet.setItem(row[columnName]);
+                } else {
+                    dataSet.removeItem(row[columnName]);
+                }
             });
         }
     };
@@ -60,17 +79,17 @@ export function useSelectableTable() {
      * @function handleClearSelected 清空选中的数据项，对应rowSelection的onSelectNone事件
      */
     const handleClearSelected = () => {
-        idSet.reset();
+        dataSet.reset();
     };
 
     /**
      * @function handleDefaultSelected 设置默认选中的数据项
-     * @param idList
+     * @param dataList
      */
-    const handleDefaultSelected = (idList: (string | number)[]) => {
-        idSet.reset();
-        idList.forEach((id: string | number) => {
-            idSet.setItem(id);
+    const handleDefaultSelected = (dataList: T[]) => {
+        dataSet.reset();
+        dataList.forEach((data: T) => {
+            dataSet.setItem(data);
         });
     };
 

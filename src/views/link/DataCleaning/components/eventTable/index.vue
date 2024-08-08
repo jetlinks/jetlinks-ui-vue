@@ -50,16 +50,16 @@ import { useProSearch } from '@/hook/useProSearch';
 import { config, mockData } from '../../config';
 
 defineOptions({
-    name: 'DeviceProperty',
+    name: 'EventTable',
 });
 
 const props = defineProps<{
-    deviceIndex: number;
+    productId: string;
 }>();
 const emit = defineEmits(['showModal']);
 
 // 数据表的配置项
-const tableConf = reactive(config[0]);
+const tableConf = reactive(config[1]);
 
 // 全局的搜索参数
 const globParams = ref<Record<string, any>>({});
@@ -83,14 +83,14 @@ const handleShowModal = (record: Record<string, any>) => {
 };
 
 const fetchData = async (params: any) => {
-    // todo 发送网络请求
+    // todo 发送网络请求3
     let resp = await new Promise<any>((resolve) => {
         setTimeout(() => {
             resolve({
                 status: 200,
                 message: 'success',
                 result: {
-                    data: mockData[0],
+                    data: mockData[1],
                 },
             });
         }, 1000);
@@ -132,15 +132,6 @@ const handlePageChange = (num: number, pageSize: number) => {
     };
     handleSearch(_params);
 };
-
-watch(
-    () => props.deviceIndex,
-    (newVal, oldVal) => {
-        if (newVal !== oldVal) {
-            fetchData(globParams.value);
-        }
-    },
-);
 </script>
 
 <style scoped lang="less"></style>
