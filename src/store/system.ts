@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { systemVersion } from '@/api/comm'
 import { useMenuStore } from './menu'
 import {getDetails_api, settingDetail} from '@/api/system/basis';
+import { queryProductThreshold } from '@/api/device/instance'
 import type { ConfigInfoType } from '@/views/system/Basis/typing';
 import { LocalStore } from '@/utils/comm'
 import { SystemConst } from '@/utils/consts'
@@ -24,6 +25,7 @@ type SystemStateType = {
         pure: boolean
     }
     calendarTagColor:Map<string,string>
+    showThreshold:boolean
 }
 
 export const useSystem = defineStore('system', {
@@ -42,11 +44,13 @@ export const useSystem = defineStore('system', {
             collapsed: false,
             pure: false
         },
-        calendarTagColor:new Map()
+        calendarTagColor:new Map(),
+        showThreshold: true
     }),
     actions: {
         getSystemVersion(): Promise<any[]> {
             this.getSystemConfig();
+            this.getThreshold()
             return new Promise(async (res, rej) => {
                 const resp = await systemVersion()
                 if (resp.success && resp.result) {
@@ -100,6 +104,13 @@ export const useSystem = defineStore('system', {
                     this.calendarTagColor.set(i, answer.result[i]);
                 });
             }
+        },
+        async getThreshold(){
+            await queryProductThreshold('test','test').catch((res:any)=>{
+                if(res.response.status === 404){
+                    this.showThreshold = false
+                }
+            })
         }
     }
 })
