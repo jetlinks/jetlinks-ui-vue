@@ -35,6 +35,15 @@
                         </j-space>
                     </template>
                     <!--      采集模型        -->
+                    <template #productName="record">
+                        {{
+                            record.productName ? record.productName : '--'
+                        }} </template
+                    >]
+                    <!--      采集模型        -->
+                    <template #name="record">
+                        {{ record.name ? record.name : '--' }}
+                    </template>
                     <template #model="record">
                         {{ record.model ? record.model.text : '--' }}
                     </template>
@@ -110,7 +119,7 @@
                                             font-weight: 600;
                                         "
                                     >
-                                        {{ slotProps.name }}
+                                        {{ slotProps.deviceId }}
                                     </span>
                                 </Ellipsis>
                                 <j-row>
@@ -119,7 +128,10 @@
                                             设备类型
                                         </div>
                                         <div>
-                                            {{ slotProps.deviceType?.text }}
+                                            {{
+                                                slotProps.deviceType?.text ||
+                                                '--'
+                                            }}
                                         </div>
                                     </j-col>
                                     <j-col :span="12">
@@ -127,7 +139,7 @@
                                             物模型名称
                                         </div>
                                         <Ellipsis style="width: 100%">
-                                            {{ slotProps.productName }}
+                                            {{ slotProps.productName || '--' }}
                                         </Ellipsis>
                                     </j-col>
                                 </j-row>
@@ -201,13 +213,7 @@ import PermissionButton from 'components/PermissionButton/index.vue';
 import ZTag from '@/views/device/OfflineManage/components/z-tag/index.vue';
 import DiagnoseModal from '@/views/device/OfflineManage/components/diagnose/index.vue';
 import dayjs from 'dayjs';
-import {
-    _delete,
-    _deploy,
-    _undeploy,
-    detail,
-    queryGatewayState,
-} from '@/api/device/instance';
+import { detail, queryGatewayState } from '@/api/device/instance';
 import { useInstanceStore } from 'store/instance';
 import {
     checkDevice,
@@ -230,7 +236,6 @@ const pageSize = ref<number>(12);
 const pageLoading = ref(false);
 
 const type = ref<string>('xlsx');
-const dataSource = ref<Record<string, any>[]>([]);
 
 // 解构可选表格相关函数
 const {
@@ -240,86 +245,16 @@ const {
     handleClearSelected,
 } = useSelectableTable();
 
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    DEFAULT_ORDER_COLUMN,
+]);
+
 // 处理设备诊断的钩子
 const instanceStore = useInstanceStore();
 
 const popTitle = computed(() => {
     return selectedRowKeys.value.length === 0 ? EXPORT_ALL : EXPORT_SELECT;
 });
-
-/**
- * 处理搜索事件，因为所有查询事件都会调用handleSearch，
- */
-// 存储上一次查询的条件
-let prevSearchTerms: any = {};
-let offlineReasons: string = '';
-let isContains = true;
-
-const handleSearch = (_params: any) => {
-    // 处理需要清空选中行的情况
-    handleResetSelectedRows(_params);
-    // 如果搜索条件为离线原因则需要处理offlineReasons,isContains
-    handleSearchOfflineReasons(_params);
-    globParams.value = _params;
-};
-
-/**
- * @function handleResetSelectedRows
- * @description 处理重置和切换搜索条件时，清空选中的行
- * @param params 搜索携带的条件对象
- */
-const handleResetSelectedRows = (params: ISearchParams) => {
-    // 如果携带搜索条件时
-    if (
-        params.terms &&
-        params.terms.length > 0 &&
-        params.terms[0].terms &&
-        params.terms[0].terms.length > 0
-    ) {
-        // 搜索条件是否发生变化
-        let termsIsChange = false;
-        let terms = params.terms[0].terms[0];
-
-        // 如果上一次的搜索条件与这次的搜索条件不同
-        for (const key in terms) {
-            if (terms[key] !== prevSearchTerms[key]) {
-                termsIsChange = true;
-                termsIsChange && handleClearSelected();
-                break;
-            }
-        }
-
-        // 保存上一次的搜索条件
-        prevSearchTerms = terms;
-    } else {
-        // 如果本次未携带搜索条件，但上次搜索条件有值，则这次搜索可能为重置操作或空值搜索，需要清空选中的行
-        if (Reflect.ownKeys(prevSearchTerms).length > 0) {
-            handleClearSelected();
-            prevSearchTerms = {};
-            // 重置isContain, offlineReasons
-            isContains = true;
-            offlineReasons = '';
-        }
-    }
-};
-
-// 处理离线原因搜索
-const handleSearchOfflineReasons = (_params: ISearchParams) => {
-    if (
-        _params.terms.length > 0 &&
-        _params.terms[0].terms &&
-        _params.terms[0].terms.length > 0 &&
-        _params.terms[0].terms[0].column === 'offlineReasons'
-    ) {
-        const value = _params.terms[0].terms[0].value as string;
-        if (_params.terms[0].terms[0].termType === 'nlike') {
-            isContains = false;
-        }
-        // 切除首尾的%符号
-        offlineReasons = value.replace(/%/g, '');
-    }
-    return _params;
-};
 
 // 处理分页器的显示总数的格式
 const handleShowTotal = () => {
@@ -328,12 +263,11 @@ const handleShowTotal = () => {
 
 // 处理网络请求
 const queryData = async (_params: ISearchParams) => {
-    const resp = await fetchOfflineDevice(_params, offlineReasons, isContains);
+    const resp = await fetchOfflineDevice(_params);
     if (resp.status === 200) {
         total.value = resp.result.total;
         currentPage.value = resp.result.pageIndex + 1;
         pageSize.value = resp.result.pageSize;
-        dataSource.value = resp.result.data;
         return {
             // 3.仿造请求结果返回给表格
             code: resp.status,
@@ -392,21 +326,18 @@ const handleExport = async () => {
                     termType: 'in',
                 },
             ],
+            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
         };
     } else {
         _params = {
             paging: false,
             pageSize: total.value > 10000 ? 10000 : total.value,
             terms: globParams.value.terms,
+            sorts: [{ name: DEFAULT_ORDER_COLUMN, order: 'desc' }],
         };
     }
 
-    const res = await offlineDeviceExport(
-        type.value,
-        _params,
-        offlineReasons,
-        isContains,
-    );
+    const res = await offlineDeviceExport(type.value, _params);
     if (res.status === 200) {
         const blob = new Blob([res.data], { type: type.value });
         const url = URL.createObjectURL(blob);
