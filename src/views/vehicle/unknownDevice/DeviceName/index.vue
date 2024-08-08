@@ -199,28 +199,8 @@ const columns = [
             type: 'string',
         },
     },
-    // {
-    //     title: '所属车辆简称',
-    //     dataIndex: 'simpleName',
-    //     key: 'simpleName',
-    //     ellipsis: true,
-    //     search: {
-    //         type: 'string',
-    //     },
-    // },
-    // {
-    //     title: '出厂编号',
-    //     dataIndex: 'factoryNumber',
-    //     key: 'factoryNumber',
-    //     ellipsis: true,
-    //     scopedSlots: true,
-    //     width: 200,
-    //     search: {
-    //         type: 'string',
-    //     },
-    // },
     {
-        title: '车辆类型',
+        title: '设备类型',
         dataIndex: 'vehicleTypeEnum',
         key: 'vehicleTypeEnum',
         scopedSlots: true,
@@ -276,11 +256,13 @@ const queryData = async (_params: any) => {
                 }
             } else {
                 vehicleTypeValue.value = '';
+                isContains.value = false;
                 chooseList.value = [];
             }
         });
     } else {
         vehicleTypeValue.value = '';
+        isContains.value = false;
         chooseList.value = [];
     }
     const myParams = {

@@ -318,11 +318,13 @@ const queryData = async (_params: any) => {
                 }
             } else {
                 vehicleTypeValue.value = '';
+                isContains.value = false;
                 chooseList.value = [];
             }
         });
     } else {
         vehicleTypeValue.value = '';
+        isContains.value = false;
         chooseList.value = [];
     }
     const myParams = {
