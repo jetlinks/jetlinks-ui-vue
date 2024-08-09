@@ -1,11 +1,13 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 //引导页数据
 export const steps = [
   {
     element: '.objectModel',
     popover: {
       className: 'driver',
-      title: `<div id='title'>配置物模型</div><div id='guide'>1/3</div>`,
-      description: `配置产品物模型，实现设备在云端的功能描述。`,
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-0')}</div><div id='guide'>1/3</div>`,
+      description:$t('DeviceAccess.util.064569-1'),
       position: 'bottom',
     },
   },
@@ -13,8 +15,8 @@ export const steps = [
     element: '.ant-switch',
     popover: {
       className: 'driver',
-      title: `<div id='title'>启用产品</div><div id='guide'>2/3</div>`,
-      description: '启用产品后，可在产品下新增设备。',
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-2')}</div><div id='guide'>2/3</div>`,
+      description: $t('DeviceAccess.util.064569-3'),
       position: 'bottom',
     },
   },
@@ -22,8 +24,8 @@ export const steps = [
     element: '.ant-descriptions-item-label',
     popover: {
       className: 'driver',
-      title: `<div id='title'>添加设备</div><div id='guide'>3/3</div>`,
-      description: '添加设备，并连接到平台。',
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-4')}</div><div id='guide'>3/3</div>`,
+      description: $t('DeviceAccess.util.064569-5'),
       position: 'bottom',
     },
   },
@@ -34,8 +36,8 @@ export const steps1 = [
     element: '.config',
     popover: {
       className: 'driver',
-      title: `<div id='title'>填写配置</div><div id='guide'>1/4</div>`,
-      description: `填写设备接入所需的配置参数。`,
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-6')}</div><div id='guide'>1/4</div>`,
+      description: $t('DeviceAccess.util.064569-7'),
       position: 'right',
     },
   },
@@ -43,8 +45,8 @@ export const steps1 = [
     element: '.objectModel',
     popover: {
       className: 'driver',
-      title: `<div id='title'>配置物模型</div><div id='guide'>2/4</div>`,
-      description: `配置产品物模型，实现设备在云端的功能描述。`,
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-0')}</div><div id='guide'>2/4</div>`,
+      description: $t('DeviceAccess.util.064569-1'),
       position: 'bottom',
     },
   },
@@ -52,8 +54,8 @@ export const steps1 = [
     element: '.ant-switch',
     popover: {
       className: 'driver',
-      title: `<div id='title'>启用产品</div><div id='guide'>3/4</div>`,
-      description: '启用产品后，可在产品下新增设备。',
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-2')}</div><div id='guide'>3/4</div>`,
+      description: $t('DeviceAccess.util.064569-3'),
       position: 'bottom',
     },
   },
@@ -61,8 +63,8 @@ export const steps1 = [
     element: '.ant-descriptions-item-label',
     popover: {
       className: 'driver',
-      title: `<div id='title'>添加设备</div><div id='guide'>4/4</div>`,
-      description: '添加设备，并连接到平台。',
+      title: `<div id='title'>${$t('DeviceAccess.util.064569-4')}</div><div id='guide'>4/4</div>`,
+      description: $t('DeviceAccess.util.064569-5'),
       position: 'bottom',
     },
   },

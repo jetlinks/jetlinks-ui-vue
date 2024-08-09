@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"DeviceAccess.util.064569-0": "配置物模型",
+		"DeviceAccess.util.064569-1": "配置产品物模型，实现设备在云端的功能描述。",
+		"DeviceAccess.util.064569-2": "启用产品",
+		"DeviceAccess.util.064569-3": "启用产品后，可在产品下新增设备。",
+		"DeviceAccess.util.064569-4": "添加设备",
+		"DeviceAccess.util.064569-5": "添加设备，并连接到平台。",
+		"DeviceAccess.util.064569-6": "填写配置",
+		"DeviceAccess.util.064569-7": "填写设备接入所需的配置参数。"
+	},
+	"en": {
+		"DeviceAccess.util.064569-0": "Configuration IoT model",
+		"DeviceAccess.util.064569-1": "Configure product IoT model to achieve functional description of devices in the cloud.",
+		"DeviceAccess.util.064569-2": "Enable product",
+		"DeviceAccess.util.064569-3": "After enabling the product, devices can be added under the product.",
+		"DeviceAccess.util.064569-4": "Add device",
+		"DeviceAccess.util.064569-5": "Add devices and connect to the platform.",
+		"DeviceAccess.util.064569-6": "Fill in configuration",
+		"DeviceAccess.util.064569-7": "Fill in the configuration parameters required for device access."
+	}
+}

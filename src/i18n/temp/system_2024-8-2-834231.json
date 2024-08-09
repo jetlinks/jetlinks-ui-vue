@@ -22,7 +22,7 @@
 		"components.AddDeviceOrProductDialog.3380310-6": "Please check the data first",
 		"components.AddDeviceOrProductDialog.3380310-7": "Operation successful",
 		"components.AddDeviceOrProductDialog.3380310-8": "This asset does not support sharing",
-		"components.AddDeviceOrProductDialog.3380310-9": "normal",
-		"components.AddDeviceOrProductDialog.3380310-10": "Disable"
+		"components.AddDeviceOrProductDialog.3380310-9": "enabled",
+		"components.AddDeviceOrProductDialog.3380310-10": "disabled"
 	}
 }

@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Detail.index.064554-0": "确认禁用",
+		"Detail.index.064554-1": "确认启用",
+		"Detail.index.064554-2": "正常",
+		"Detail.index.064554-3": "禁用",
+		"Detail.index.064554-4": "暂无权限，请联系管理员",
+		"Detail.index.064554-5": "设备数量",
+		"Detail.index.064554-6": "确认应用配置?",
+		"Detail.index.064554-7": "请先启用产品",
+		"Detail.index.064554-8": "应用配置",
+		"Detail.index.064554-9": "配置信息",
+		"Detail.index.064554-10": "物模型",
+		"Detail.index.064554-11": "设备接入",
+		"Detail.index.064554-12": "远程升级",
+		"Detail.index.064554-13": "操作成功！",
+		"Detail.index.064554-14": "数据解析",
+		"Detail.index.064554-15": "物模型映射",
+		"Detail.index.064554-16": "预处理数据"
+	},
+	"en": {
+		"Detail.index.064554-0": "Confirm to disable",
+		"Detail.index.064554-1": "Confirm activation",
+		"Detail.index.064554-2": "enabled",
+		"Detail.index.064554-3": "disabled",
+		"Detail.index.064554-4": "No permission at the moment, please contact the administrator",
+		"Detail.index.064554-5": "Number of devices",
+		"Detail.index.064554-6": "Confirm application configuration?",
+		"Detail.index.064554-7": "Please activate the product first",
+		"Detail.index.064554-8": "Application configuration",
+		"Detail.index.064554-9": "Configuration",
+		"Detail.index.064554-10": "IoT model",
+		"Detail.index.064554-11": "Device access",
+		"Detail.index.064554-12": "Remote upgrade",
+		"Detail.index.064554-13": "Operation successful!",
+		"Detail.index.064554-14": "Data parsing",
+		"Detail.index.064554-15": "IoT model mapping",
+		"Detail.index.064554-16": "Preprocess data"
+	}
+}

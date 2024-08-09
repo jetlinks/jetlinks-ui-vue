@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"BasicInfo.indev.064553-0": "配置信息",
+		"BasicInfo.indev.064553-1": "产品分类",
+		"BasicInfo.indev.064553-2": "设备类型",
+		"BasicInfo.indev.064553-3": "接入方式",
+		"BasicInfo.indev.064553-4": "配置接入方式",
+		"BasicInfo.indev.064553-5": "创建时间",
+		"BasicInfo.indev.064553-6": "更新时间",
+		"BasicInfo.indev.064553-7": "说明",
+		"BasicInfo.indev.064553-8": "编辑"
+	},
+	"en": {
+		"BasicInfo.indev.064553-0": "Configuration",
+		"BasicInfo.indev.064553-1": "Product classification",
+		"BasicInfo.indev.064553-2": "Equipment type",
+		"BasicInfo.indev.064553-3": "Access method",
+		"BasicInfo.indev.064553-4": "Configure access method",
+		"BasicInfo.indev.064553-5": "Creation time",
+		"BasicInfo.indev.064553-6": "Update time",
+		"BasicInfo.indev.064553-7": "Explain",
+		"BasicInfo.indev.064553-8": "Edit"
+	}
+}

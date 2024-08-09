@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"DialogTips.index.0645616-0": "产品创建成功",
+		"DialogTips.index.0645616-1": "关闭",
+		"DialogTips.index.0645616-2": "产品ID:",
+		"DialogTips.index.0645616-3": "查看详情",
+		"DialogTips.index.0645616-4": "接下来推荐操作:",
+		"DialogTips.index.0645616-5": "1、配置产品接入方式",
+		"DialogTips.index.0645616-6": "点击具体产品的查看按钮,进入“设备接入”tab页，并参照设备铭牌说明选择匹配的接入方式",
+		"DialogTips.index.0645616-7": "2、添加测试设备",
+		"DialogTips.index.0645616-8": "进入设备列表，添加单个设备，用于验证产品模型是否配置正确",
+		"DialogTips.index.0645616-9": "3、功能调试",
+		"DialogTips.index.0645616-10": "点击查看具体设备，进入“设备诊断”对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确",
+		"DialogTips.index.0645616-11": "4、批量添加设备",
+		"DialogTips.index.0645616-12": "进入设备列表页面，点击批量导入设备，批量添加同一产品下的设备"
+	},
+	"en": {
+		"DialogTips.index.0645616-0": "Product creation successful",
+		"DialogTips.index.0645616-1": "Close",
+		"DialogTips.index.0645616-2": "Product ID:",
+		"DialogTips.index.0645616-3": "View details",
+		"DialogTips.index.0645616-4": "Next recommended action:",
+		"DialogTips.index.0645616-5": "1. Configure product access method",
+		"DialogTips.index.0645616-6": "Click the view button for the specific product to enter the \"Device Access\" tab page, and refer to the device nameplate instructions to select the matching access method",
+		"DialogTips.index.0645616-7": "2. Add testing equipment",
+		"DialogTips.index.0645616-8": "Enter the device list and add a single device to verify if the product model is configured correctly",
+		"DialogTips.index.0645616-9": "3. Function debugging",
+		"DialogTips.index.0645616-10": "Click to view specific devices, enter \"Device Diagnosis\" to debug the added testing devices, verify whether they can connect to the platform, and whether the device functions are configured correctly",
+		"DialogTips.index.0645616-11": "4. Batch add devices",
+		"DialogTips.index.0645616-12": "Enter the device list page, click on batch import devices, and batch add devices under the same product"
+	}
+}

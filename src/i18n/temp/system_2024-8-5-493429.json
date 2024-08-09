@@ -19,7 +19,8 @@
 		"DataSource.index.932357-16": "正常",
 		"DataSource.index.932357-17": "操作",
 		"DataSource.index.932357-18": "操作成功!",
-		"DataSource.index.932357-19": "操作成功"
+		"DataSource.index.932357-19": "操作成功",
+		"DataSource.index.932357-20": "禁用"
 	},
 	"en": {
 		"DataSource.index.932357-0": "Add",
@@ -38,9 +39,10 @@
 		"DataSource.index.932357-13": "type",
 		"DataSource.index.932357-14": "explain",
 		"DataSource.index.932357-15": "state",
-		"DataSource.index.932357-16": "normal",
+		"DataSource.index.932357-16": "enabled",
 		"DataSource.index.932357-17": "operation",
 		"DataSource.index.932357-18": "Operation successful!",
-		"DataSource.index.932357-19": "Operation successful"
+		"DataSource.index.932357-19": "Operation successful",
+		"DataSource.index.932357-20": "disabled"
 	}
 }

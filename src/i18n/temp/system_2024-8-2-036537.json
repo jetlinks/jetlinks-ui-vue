@@ -23,8 +23,8 @@
 	},
 	"en": {
 		"User.index.363800-0": "Add",
-		"User.index.363800-1": "normal",
-		"User.index.363800-2": "Disable",
+		"User.index.363800-1": "enabled",
+		"User.index.363800-2": "disabled",
 		"User.index.363800-3": "Edit",
 		"User.index.363800-4": "Enable",
 		"User.index.363800-5": "Confirm to disable",

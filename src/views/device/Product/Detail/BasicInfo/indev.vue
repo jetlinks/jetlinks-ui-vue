@@ -3,7 +3,7 @@
     <j-descriptions bordered>
         <template #title>
             <div style="display: flex">
-                <h3>配置信息</h3>
+                <h3>{{ $t('BasicInfo.indev.064553-0') }}</h3>
                 <!-- <div style="margin: 0 0px 0 15px; color: #1d39c4">
                         <AIcon type="EditOutlined" @click="editConfig" />
                     </div> -->
@@ -20,13 +20,13 @@
         <j-descriptions-item label="ID">
             <Ellipsis>{{ productStore.current.id }}</Ellipsis>
         </j-descriptions-item>
-        <j-descriptions-item label="产品分类">
+        <j-descriptions-item :label="$t('BasicInfo.indev.064553-1')">
             <Ellipsis>{{ productStore.current.classifiedName }}</Ellipsis>
         </j-descriptions-item>
-        <j-descriptions-item label="设备类型">{{
+        <j-descriptions-item :label="$t('BasicInfo.indev.064553-2')">{{
             productStore.current.deviceType?.text
         }}</j-descriptions-item>
-        <j-descriptions-item label="接入方式">
+        <j-descriptions-item :label="$t('BasicInfo.indev.064553-3')">
             <PermissionButton
                     type="link"
                     style="width:100%;padding:0"
@@ -37,25 +37,25 @@
                     <Ellipsis>{{
                         productStore.current.accessName
                             ? productStore.current.accessName
-                            : '配置接入方式'
+                            : $t('BasicInfo.indev.064553-4')
                     }}</Ellipsis>
                     </div>
                     </PermissionButton
                 >
         </j-descriptions-item>
-        <j-descriptions-item label="创建时间">{{
+        <j-descriptions-item :label="$t('BasicInfo.indev.064553-5')">{{
             dayjs(productStore.current.createTime).format('YYYY-MM-DD HH:mm:ss')
         }}</j-descriptions-item>
-        <j-descriptions-item label="更新时间">{{
+        <j-descriptions-item :label="$t('BasicInfo.indev.064553-6')">{{
             dayjs(productStore.current.modifyTime).format('YYYY-MM-DD HH:mm:ss')
         }}</j-descriptions-item>
 
-        <j-descriptions-item label="说明" :span="3">
+        <j-descriptions-item :label="$t('BasicInfo.indev.064553-7')" :span="3">
             {{ productStore.current.describe }}
         </j-descriptions-item>
     </j-descriptions>
 
-    <!-- 编辑 -->
+    <!-- {{ $t('BasicInfo.indev.064553-8') }} -->
     <Save ref="saveRef" :isAdd="isAdd" :title="title" @success="refresh" />
 </template>
 
@@ -65,12 +65,15 @@ import Save from '../../Save/index.vue';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const menuSotre = useMenuStore();
 const productStore = useProductStore();
 const route = useRoute();
 const saveRef = ref();
 const isAdd = ref(2);
-const title = ref('编辑');
+const title = ref($t('BasicInfo.indev.064553-8'));
 /**
  * 编辑配置信息
  */
