@@ -35,7 +35,7 @@
                         <Charts :options="TodayDevOptions"></Charts> </TopCard
                 ></j-col>
             </j-row>
-            <j-row :gutter="24">
+            <j-row :gutter="24" v-if="offlineStyle">
                 <j-col :span="24">
                     <div class="office-card">
                         <Guide title="设备离线分析"> </Guide>
@@ -115,6 +115,7 @@ const system = useSystem();
 const Analysis = useAnalysisStore();
 const deviceMessages = Analysis.current.deviceMessages;
 const deviceDistribution = Analysis.current.deviceDistribution;
+const offlineStyle = Analysis.current.offlineStyle;
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([

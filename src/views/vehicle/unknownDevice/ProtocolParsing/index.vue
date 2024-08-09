@@ -114,7 +114,7 @@ const handelDetail = (data: any) => {
         content = data.errorMessage;
     }
     Modal.info({
-        title: '详细信息',
+        title: '异常信息',
         width: 700,
         content: h(Textarea, {
             bordered: false,
@@ -203,7 +203,7 @@ const handleExport = async () => {
         const url = URL.createObjectURL(blob);
         downloadFileByUrl(
             url,
-            `设备命名异常-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            `协议解析异常-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
             type.value,
         );
         if (

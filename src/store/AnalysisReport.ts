@@ -4,6 +4,7 @@ type AnalysisReport = {
     id: string;
     deviceMessages: boolean;
     deviceDistribution: boolean;
+    offlineStyle: boolean;
     traffic: boolean;
     cpuUsageTrend: boolean;
     jvmUsageTrend: boolean;

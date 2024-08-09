@@ -5,6 +5,9 @@
             <div class="analysis-form">
                 <j-form layout="vertical" :model="form" ref="formRef">
                     <j-form-item label="首页" name="index">
+                        <j-checkbox v-model:checked="form.offlineStyle"
+                            >设备离线分析</j-checkbox
+                        >
                         <j-checkbox v-model:checked="form.deviceMessages"
                             >设备消息</j-checkbox
                         >
@@ -102,6 +105,7 @@ onMounted(() => {
                     id: '',
                     deviceMessages: false,
                     deviceDistribution: false,
+                    offlineStyle: false,
                     traffic: false,
                     cpuUsageTrend: false,
                     jvmUsageTrend: false,
