@@ -57,6 +57,9 @@
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const _props = defineProps({
     type: {
         type: String,

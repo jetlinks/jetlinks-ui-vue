@@ -53,6 +53,9 @@
 import { query, bindDevice } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['cancel', 'ok']);
 

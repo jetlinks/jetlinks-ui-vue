@@ -140,6 +140,9 @@ import {
 import MSelect from '../MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const columns = [
     {
