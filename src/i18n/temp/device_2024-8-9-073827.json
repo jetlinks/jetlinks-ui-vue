@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Relation.Save.735524-0": "编辑",
+		"Relation.Save.735524-1": "保存",
+		"Relation.Save.735524-2": "请选择{0}",
+		"Relation.Save.735524-3": "操作成功！"
+	},
+	"en": {
+		"Relation.Save.735524-0": "Edit",
+		"Relation.Save.735524-1": "Save",
+		"Relation.Save.735524-2": "Please select {0}",
+		"Relation.Save.735524-3": "Operation successful!"
+	}
+}

@@ -13,9 +13,9 @@
                         type="CloseOutlined"
                         style="margin-right: 5px"
                         @click="onClose"
-                    />编辑</span
+                    />{{ $t('Relation.Save.735524-0') }}</span
                 >
-                <j-button type="primary" @click="saveBtn">保存</j-button>
+                <j-button type="primary" @click="saveBtn">{{ $t('Relation.Save.735524-1') }}</j-button>
             </div>
         </template>
         <j-form layout="vertical" ref="formRef" :model="modelRef">
@@ -29,7 +29,7 @@
                     showSearch
                     mode="multiple"
                     v-model:value="modelRef[item.relation]"
-                    :placeholder="`请选择${item.relationName}`"
+                    :placeholder="$t('Relation.Save.735524-2', [item.relationName])"
                 >
                     <j-select-option
                         :value="item.value"
@@ -47,6 +47,9 @@
 import { queryUserListNoPaging, saveRelations } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close', 'save']);
 
@@ -114,7 +117,7 @@ const saveBtn = () => {
             if(param.length && instanceStore.current.id){
                 const resp = await saveRelations(instanceStore.current.id, param);
                 if (resp.status === 200) {
-                    onlyMessage('操作成功！');
+                    onlyMessage($t('Relation.Save.735524-3'));
                     emit('save');
                     formRef.value.resetFields();
                 }

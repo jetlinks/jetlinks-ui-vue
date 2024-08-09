@@ -4,9 +4,9 @@
         :maskClosable="false"
         width="1000px"
         :visible="true"
-        title="绑定父设备"
-        okText="确定"
-        cancelText="取消"
+        :title="$t('BindParentDevice.index.920633-0')"
+        :okText="$t('BindParentDevice.index.920633-1')"
+        :cancelText="$t('BindParentDevice.index.920633-2')"
         @ok="handleOk"
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
@@ -100,7 +100,7 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
+        title: $t('BindParentDevice.index.920633-3'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -109,7 +109,7 @@ const columns = [
         },
     },
     {
-        title: '所属产品',
+        title: $t('BindParentDevice.index.920633-4'),
         dataIndex: 'productName',
         key: 'productName',
         search: {
@@ -117,7 +117,7 @@ const columns = [
         },
     },
     {
-        title: '注册时间',
+        title: $t('BindParentDevice.index.920633-5'),
         dataIndex: 'registryTime',
         key: 'registryTime',
         scopedSlots: true,
@@ -126,16 +126,16 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('BindParentDevice.index.920633-6'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: $t('BindParentDevice.index.920633-7'), value: 'notActive' },
+                { label: $t('BindParentDevice.index.920633-8'), value: 'offline' },
+                { label: $t('BindParentDevice.index.920633-9'), value: 'online' },
             ],
         },
     },
@@ -151,7 +151,7 @@ const onSelectChange = (keys: string[]) => {
 
 const handleOk = () => {
     if (_selectedRowKeys.value.length === 0) {
-        onlyMessage('请选择需要绑定的设备', 'warning');
+        onlyMessage($t('BindParentDevice.index.920633-10'), 'warning');
         return;
     }
     btnLoading.value = true;
@@ -159,7 +159,7 @@ const handleOk = () => {
         .then((resp) => {
             if(resp.status === 200){
                 emit('ok', _selectedRowKeys.value[0]);
-                onlyMessage('操作成功');
+                onlyMessage($t('BindParentDevice.index.920633-11'));
             }
         })
         .finally(() => {

@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Relation.index.735523-0": "关系信息",
+		"Relation.index.735523-1": "编辑",
+		"Relation.index.735523-2": "管理设备与其他业务的关联关系，关系来源于关系配置"
+	},
+	"en": {
+		"Relation.index.735523-0": "Relations Info",
+		"Relation.index.735523-1": "Edit",
+		"Relation.index.735523-2": "Manage the association between devices and other businesses, which comes from relationship configuration"
+	}
+}

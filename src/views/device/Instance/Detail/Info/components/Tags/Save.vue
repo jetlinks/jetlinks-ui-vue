@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        title="编辑标签"
+        :title="$t('Tags.Save.735511-0')"
         :width="1000"
         :visible="true"
         :confirmLoading="loading"
@@ -53,6 +53,9 @@ import { useInstanceStore } from '@/store/instance';
 import _ from 'lodash-es';
 import { saveTags, delTags } from '@/api/device/instance'
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close', 'save']);
 
@@ -63,12 +66,12 @@ const columns = [
         with: '33%',
     },
     {
-        title: '名称',
+        title: $t('Tags.Save.735511-1'),
         dataIndex: 'name',
         with: '33%',
     },
     {
-        title: '值',
+        title: $t('Tags.Save.735511-2'),
         dataIndex: 'value',
         with: '34%',
     },
@@ -96,7 +99,7 @@ const handleOk = async () => {
             // 填值
             const resp = await saveTags(instanceStore.current?.id || '', list);
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Tags.Save.735511-3'));
             }
           }
           const _list = (dataSource.value || []).filter((item: any) => item?.key && !item?.value);

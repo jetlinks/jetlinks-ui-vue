@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Config.Save.735527-0": "编辑配置",
+		"Config.Save.735527-1": "保存",
+		"Config.Save.735527-2": "请输入{0}",
+		"Config.Save.735527-3": "操作成功！"
+	},
+	"en": {
+		"Config.Save.735527-0": "Edit configuration",
+		"Config.Save.735527-1": "Save",
+		"Config.Save.735527-2": "Please enter {0}",
+		"Config.Save.735527-3": "Operation successful!"
+	}
+}

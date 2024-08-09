@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Config.index.735528-0": "配置",
+		"Config.index.735528-1": "编辑",
+		"Config.index.735528-2": "确认重新应用该配置？",
+		"Config.index.735528-3": "应用配置",
+		"Config.index.735528-4": "修改配置后需重新应用后才能生效。",
+		"Config.index.735528-5": "确认恢复默认配置？",
+		"Config.index.735528-6": "恢复默认",
+		"Config.index.735528-7": "该设备单独编辑过配置信息，点击此将恢复成默认的配置信息，请谨慎操作。",
+		"Config.index.735528-8": "有效值:{0}",
+		"Config.index.735528-9": "操作成功",
+		"Config.index.735528-10": "恢复默认配置成功"
+	},
+	"en": {
+		"Config.index.735528-0": "Configuration",
+		"Config.index.735528-1": "Edit",
+		"Config.index.735528-2": "Are you sure to reapply this configuration?",
+		"Config.index.735528-3": "Application configuration",
+		"Config.index.735528-4": "After modifying the configuration, it needs to be reapplied before it can take effect.",
+		"Config.index.735528-5": "Are you sure to restore the default configuration?",
+		"Config.index.735528-6": "Restore default",
+		"Config.index.735528-7": "This device has edited its configuration information separately. Clicking on this button will restore it to its default configuration information. Please operate with caution.",
+		"Config.index.735528-8": "Valid values: {0}",
+		"Config.index.735528-9": "Operation successful",
+		"Config.index.735528-10": "Successfully restored default configuration"
+	}
+}

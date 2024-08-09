@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Info.index.735510-0": "设备信息",
+		"Info.index.735510-1": "编辑",
+		"Info.index.735510-2": "设备ID",
+		"Info.index.735510-3": "通过调用SDK或HTTP请求的方式接入第三方系统设备数据时，第三方系统与平台当前设备对应的设备ID。",
+		"Info.index.735510-4": "如双方ID值一致，则无需填写",
+		"Info.index.735510-5": "未映射",
+		"Info.index.735510-6": "已映射",
+		"Info.index.735510-7": "产品名称",
+		"Info.index.735510-8": "设备类型",
+		"Info.index.735510-9": "固件版本",
+		"Info.index.735510-10": "连接协议",
+		"Info.index.735510-11": "消息协议",
+		"Info.index.735510-12": "创建时间",
+		"Info.index.735510-13": "注册时间",
+		"Info.index.735510-14": "最后上线时间",
+		"Info.index.735510-15": "父设备",
+		"Info.index.735510-16": "说明"
+	},
+	"en": {
+		"Info.index.735510-0": "Device info",
+		"Info.index.735510-1": "Edit",
+		"Info.index.735510-2": "Device ID",
+		"Info.index.735510-3": "When accessing third-party system device data through calling SDK or HTTP requests, the device ID corresponding to the current device on the platform of the third-party system.",
+		"Info.index.735510-4": "If the ID values of both parties are consistent, there is no need to fill in",
+		"Info.index.735510-5": "Not mapped",
+		"Info.index.735510-6": "Mapped",
+		"Info.index.735510-7": "Product Name",
+		"Info.index.735510-8": "Device type",
+		"Info.index.735510-9": "Firmware version",
+		"Info.index.735510-10": "Connection Protocol",
+		"Info.index.735510-11": "Message Protocol",
+		"Info.index.735510-12": "Creation time",
+		"Info.index.735510-13": "Registration time",
+		"Info.index.735510-14": "Last online time",
+		"Info.index.735510-15": "Father device",
+		"Info.index.735510-16": "Explain"
+	}
+}

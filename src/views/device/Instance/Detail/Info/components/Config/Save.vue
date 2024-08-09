@@ -13,9 +13,9 @@
                         type="CloseOutlined"
                         style="margin-right: 5px"
                         @click="onClose"
-                    />编辑配置</span
+                    />{{ $t('Config.Save.735527-0') }}</span
                 >
-                <j-button type="primary" @click="saveBtn">保存</j-button>
+                <j-button type="primary" @click="saveBtn">{{ $t('Config.Save.735527-1') }}</j-button>
             </div>
         </template>
         <j-form layout="vertical" ref="formRef" :model="modelRef">
@@ -27,7 +27,7 @@
                     :required="!!i.type.expands?.required"
                     :rules="
                         !!i.type.expands?.required
-                            ? [{ required: true, message: `请输入${i.name}` }]
+                            ? [{ required: true, message: $t('Config.Save.735527-2', [i.name]) }]
                             : []
                     "
                 >
@@ -52,6 +52,9 @@
 import { modify } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const emit = defineEmits(['close', 'save']);
 
@@ -116,7 +119,7 @@ const saveBtn = () => {
                 configuration: { ...values },
             });
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Config.Save.735527-3'));
                 emit('save');
             }
         }
