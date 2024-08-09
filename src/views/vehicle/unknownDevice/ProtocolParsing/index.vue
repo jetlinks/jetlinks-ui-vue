@@ -238,19 +238,6 @@ const columns = [
                 }),
         },
     },
-    // {
-    //     title: '出厂编号',
-    //     dataIndex: 'factoryNumber',
-    //     key: 'factoryNumber',
-    //     ellipsis: true,
-    // },
-    // {
-    //     title: '车辆简称',
-    //     dataIndex: 'simpleName',
-    //     key: 'simpleName',
-    //     ellipsis: true,
-    // },
-
     {
         title: '设备id',
         dataIndex: 'deviceId',

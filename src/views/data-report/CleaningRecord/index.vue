@@ -1,18 +1,17 @@
 <template>
     <page-container>
         <pro-search
-            :columns="tableColumns"
+            :columns="columns"
             target="notice-config"
             @search="handleSearch"
         />
         <FullPage>
             <JProTable
                 ref="configRef"
-                :columns="tableColumns"
+                :columns="columns"
                 :request="queryData"
                 model="table"
                 :params="globParams"
-                :gridColumn="3"
                 :rowKey="(record: any) => record.id"
                 :rowSelection="{
                     selectedRowKeys: selectedRowKeys,
@@ -35,15 +34,13 @@
                     </j-space>
                 </template>
                 <template #vehicleTypeEnum="{ vehicleTypeEnum }">
-                    {{ handleVehicleType(vehicleTypeEnum) }}
+                    {{ vehicleTypeEnum.text || '' }}
                 </template>
-                <!-- 所属组织 -->
                 <template #action="slotProps">
                     <a @click="handelDetail(slotProps)" style="color: #f84914"
                         >查看
                     </a>
                 </template>
-                <!-- 告警时间 -->
                 <template #alarmTime="{ alarmTime }">
                     {{ formatDate(alarmTime) }}
                 </template>
@@ -70,18 +67,13 @@
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { queryAlarmData, _export } from '@/api/data-report/alarmSheet';
-import useFilterAlarmDesc from '@/hook/useFilterAlarmDesc';
 import { FullPage } from 'components/Layout';
 import { onlyMessage } from '@/utils/comm';
 import { columns } from './columnConfig';
-import {
-    formatDate,
-    handleResetSelectedRows,
-    handleSearchByDate,
-    handleSearchByDescription,
-} from '@/utils/dataReportUtils';
+import { formatDate } from '@/utils/dataReportUtils';
 import { EXCEED_EXPORT_TIPS, EXPORT_TIPS } from '@/utils/consts';
 import { useSelectableTable } from '@/hook/useSelectableTable';
+import { useProSearch } from '@/hook/useProSearch';
 import Modal from './Modal/index.vue';
 import dayjs from 'dayjs';
 
@@ -115,11 +107,6 @@ const popTitle = computed(() => {
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
-
-const { queryDataFactory, dicMap, tableColumns, handleVehicleType } =
-    useFilterAlarmDesc(columns);
-// 生成请求函数
-const queryDataFn = queryDataFactory(queryAlarmData, 'alarmTime');
 
 //测试数据
 const myData = [
@@ -157,7 +144,7 @@ const myData = [
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
-    const resp = await queryDataFn(_params);
+    const resp: any = await queryAlarmData(_params);
     if (resp.status === 200) {
         dataTotal.value = myData.length;
         currentPage.value = resp.result.pageIndex + 1;
@@ -204,23 +191,10 @@ const handleOnChange = (num: number, pageSize: number) => {
     handleSearch(_params);
 };
 
-// 上一次搜索的条件，这里不能使用null，null.property会报错，而{}.property 是 undefined 不会报错
-let prevSearchTerms = ref<any>({});
-
-/**
- * @function handleSearch 搜索组件的搜索事件
- * @param _params
- */
-const handleSearch = (_params: any) => {
-    // 处理需要清空选中行的情况
-    handleResetSelectedRows(_params, prevSearchTerms, handleClearSelected);
-
-    // 处理搜索的字段是时间类型的情况
-    handleSearchByDate(_params, ['alarmTime']);
-    // 处理搜索的字段是故障描述类型的情况
-    handleSearchByDescription(_params, tableColumns);
-    globParams.value = _params;
-};
+// 调用useProSearch获取handleSearch方法
+const { handleSearch } = useProSearch(globParams, handleClearSelected, [
+    'alarmTime',
+]);
 
 //查看
 const handelDetail = (data: any) => {

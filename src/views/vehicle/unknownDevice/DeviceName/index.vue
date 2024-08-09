@@ -180,9 +180,6 @@ const handleOnChange = (num: number, pageSize: number) => {
     // pageSizePag.value = pageSize;
     const _params = {
         ...globParams.value,
-
-        // 因为分页器发生改变时会自动改变当前页码和每页条数
-        // 因此在这覆盖globSearchParam中的pageIndex和pageSize
         pageIndex: num - 1,
         pageSize: pageSize,
     };
@@ -232,7 +229,6 @@ const columns = [
 ];
 
 const queryData = async (_params: any) => {
-    // console.log('_params', _params);
     const { terms, ...params } = _params;
     if (terms.length > 0) {
         terms[0].terms?.map((item: any) => {
