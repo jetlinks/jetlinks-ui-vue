@@ -458,7 +458,7 @@ const form = reactive<formType>({
             headerTheme: configInfo.front?.headerTheme,
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
-            showRecordNumber: configInfo.front?.showRecordNumber,
+            showRecordNumber: configInfo.front?.showRecordNumber || false,
             recordNumber: configInfo.front?.recordNumber,
             background: configInfo.front?.background || '/images/login.png',
             apiKey: configInfo.amap?.apiKey,

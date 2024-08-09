@@ -268,6 +268,7 @@ import { omit, cloneDeep } from 'lodash-es';
 import { PopoverModal } from '@/components/Metadata/Table';
 import { useTableWrapper } from '@/components/Metadata/Table/context';
 import { useThreshold } from './hooks';
+import { useSystem } from '@/store/system';
 
 const props = defineProps({
     value: {
@@ -309,6 +310,7 @@ const props = defineProps({
 
 const type = inject('_metadataType');
 
+const { showThreshold } = useSystem()
 const productStore = useProductStore();
 const deviceStore = useInstanceStore();
 const tableWrapperRef = useTableWrapper();
@@ -382,7 +384,7 @@ const showMetrics = computed(() => {
 const showExtra = computed(() => {
     return (
         ['int', 'long', 'float', 'double'].includes(props.type as any) &&
-        props.metadataType === 'properties'
+        props.metadataType === 'properties' && showThreshold
     );
 });
 

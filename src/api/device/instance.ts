@@ -662,7 +662,7 @@ export const queryDeviceThreshold = (productId: string, deviceId: string,  prope
  * @param productId
  * @param propertyId
  */
-export const queryProductThreshold = (productId: string, propertyId: string) => server.get(`/message/preprocessor/product/${productId}/property/${propertyId}`)
+export const queryProductThreshold = (productId: string, propertyId: string,hiddenError:boolean) => server.get(`/message/preprocessor/product/${productId}/property/${propertyId}`,{},{},hiddenError)
 
 /**
  * 阈值限制-删除产品物模型的阈值
