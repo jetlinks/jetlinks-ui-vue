@@ -13,7 +13,7 @@
                     />
                 </div>
                 <div class="multiple" v-if="multiple">
-                    <j-checkbox @change="checkChange">全选</j-checkbox>
+                    <j-checkbox @change="checkChange">{{ $t('InklingDevice.index.862977-0') }}</j-checkbox>
                 </div>
             </div>
             <div class="device-list-warp">
@@ -22,7 +22,7 @@
                         <div class="device-list-items">
                             <template v-for="item in deviceList">
                                 <template v-if="disabledKeys.includes(item.id)">
-                                    <j-tooltip title="该设备已绑定平台设备">
+                                    <j-tooltip :title="$t('InklingDevice.index.862977-1')">
                                         <div
                                             :class="{
                                                 'device-list-item': true,
@@ -84,7 +84,7 @@
                 </j-scrollbar>
                 <j-empty
                     v-else
-                    description="暂无数据"
+                    :description="$t('InklingDevice.index.862977-2')"
                     style="padding-top: 24px"
                 />
                 <div class="device-list-pagination">
@@ -100,11 +100,7 @@
                                 const MaxSize =
                                     (pageData.pageIndex + 1) *
                                     pageData.pageSize;
-                                return `第 ${minSize} - ${
-                                    MaxSize > pageData.total
-                                        ? pageData.total
-                                        : MaxSize
-                                } 条/总共 ${pageData.total} 条`;
+                                return $t('InklingDevice.index.862977-3', [minSize,MaxSize > pageData.total?pageData.total:MaxSize,pageData.total]);
                             }
                         "
                         @change="pageChange"
@@ -122,6 +118,9 @@ import {
 } from '@/api/link/accessConfig';
 import { isArray } from 'lodash-es';
 import { getInkingDevices } from '@/api/device/instance';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
     (e: 'update:value', data: string | string[]): void;

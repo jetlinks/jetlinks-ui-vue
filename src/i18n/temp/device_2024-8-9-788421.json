@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"Import.file.881387-0": "文件上传",
+		"Import.file.881387-1": "导入系统已存在的设备数据，不会更改已存在设备的所属产品信息",
+		"Import.file.881387-2": "点击或拖拽上传文件",
+		"Import.file.881387-3": "格式：.xlsx, .csv",
+		"Import.file.881387-4": "导入并启用",
+		"Import.file.881387-5": "正在导入",
+		"Import.file.881387-6": "导入完成",
+		"Import.file.881387-7": "导入成功：",
+		"Import.file.881387-8": "个",
+		"Import.file.881387-9": "导入失败：",
+		"Import.file.881387-10": "下载",
+		"Import.file.881387-11": "下载模板",
+		"Import.file.881387-12": "模板格式 .xlsx",
+		"Import.file.881387-13": "模板格式 .csv",
+		"Import.file.881387-14": "设备导入模板",
+		"Import.file.881387-15": "请上传 .xlsx 或 .csv格式文件",
+		"Import.file.881387-16": "暂无权限，请联系管理员",
+		"Import.file.881387-17": "请先上传文件"
+	},
+	"en": {
+		"Import.file.881387-0": "File upload",
+		"Import.file.881387-1": "Importing existing device data into the system will not change the product information of the existing devices",
+		"Import.file.881387-2": "Click or drag to upload files",
+		"Import.file.881387-3": "Format: .xlsx, .csv",
+		"Import.file.881387-4": "Import and enable",
+		"Import.file.881387-5": "Importing in progress",
+		"Import.file.881387-6": "Import completed",
+		"Import.file.881387-7": "Import successful:",
+		"Import.file.881387-8": "",
+		"Import.file.881387-9": "Import failed:",
+		"Import.file.881387-10": "Download",
+		"Import.file.881387-11": "Download Template",
+		"Import.file.881387-12": "Template format .xlsx",
+		"Import.file.881387-13": "Template format .csv",
+		"Import.file.881387-14": "Equipment Import Template",
+		"Import.file.881387-15": "Please upload .xlsx or .csv format files",
+		"Import.file.881387-16": "No permission at the moment, please contact the administrator",
+		"Import.file.881387-17": "Please upload the file first"
+	}
+}

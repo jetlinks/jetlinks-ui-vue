@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"InklingDevice.index.862977-0": "全选",
+		"InklingDevice.index.862977-1": "该设备已绑定平台设备",
+		"InklingDevice.index.862977-2": "暂无数据",
+		"InklingDevice.index.862977-3": "第 {0} - {1} 条/总共 {2} 条"
+	},
+	"en": {
+		"InklingDevice.index.862977-0": "Select All",
+		"InklingDevice.index.862977-1": "The device has been bound to the platform device",
+		"InklingDevice.index.862977-2": "No data available at the moment",
+		"InklingDevice.index.862977-3": "Articles {0} - {1} / {2} in total"
+	}
+}

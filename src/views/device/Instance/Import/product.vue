@@ -6,7 +6,7 @@
     class="device-import-product"
     target="device-import-product"
   />
-  <div class="alert">请选择产品，本次批量导入的设备将成为该产品的所属设备</div>
+  <div class="alert">{{ $t('Import.product.077384-0') }}</div>
   <j-scrollbar :height='400'>
     <j-pro-table
       model='CARD'
@@ -39,7 +39,7 @@
           :value='slotProps'
           :active="rowKey === slotProps.id"
           :status="slotProps.state"
-          :statusText="slotProps.state === 1 ? '正常' : '禁用'"
+          :statusText="slotProps.state === 1 ? $t('Import.product.077384-1') : $t('Import.product.077384-2')"
           :statusNames="{ 1: 'processing', 0: 'error',  }"
           @click="handleClick"
         >
@@ -59,7 +59,7 @@
             <j-row>
               <j-col :span="12">
                 <div class="card-item-content-text">
-                  设备类型
+                  {{ $t('Import.product.077384-3') }}
                 </div>
                 <div>{{ slotProps?.deviceType?.text }}</div>
               </j-col>
@@ -77,6 +77,9 @@ import { queryTree } from '@/api/device/category'
 import { getTreeData_api } from '@/api/system/department'
 import { getImage } from '@/utils/comm'
 import { accessConfigTypeFilter } from '@/utils/setting'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'update:rowKey', data: string): void
@@ -106,7 +109,7 @@ const columns = [
     },
   },
   {
-    title: '名称',
+    title: $t('Import.product.077384-4'),
     dataIndex: 'name',
     width: 200,
     ellipsis: true,
@@ -116,7 +119,7 @@ const columns = [
     }
   },
   {
-    title: '网关类型',
+    title: $t('Import.product.077384-5'),
     dataIndex: 'accessProvider',
     width: 150,
     ellipsis: true,
@@ -129,7 +132,7 @@ const columns = [
     }
   },
   {
-    title: '设备类型',
+    title: $t('Import.product.077384-3'),
     dataIndex: 'deviceType',
     width: 150,
     // search: {
@@ -142,19 +145,19 @@ const columns = [
     // }
   },
   {
-    title: '状态',
+    title: $t('Import.product.077384-6'),
     dataIndex: 'state',
     width: '90px',
     search: {
       type: 'select',
       options: [
-        { label: '禁用', value: 0 },
-        { label: '正常', value: 1 },
+        { label: $t('Import.product.077384-2'), value: 0 },
+        { label: $t('Import.product.077384-1'), value: 1 },
       ]
     }
   },
   {
-    title: '说明',
+    title: $t('Import.product.077384-7'),
     dataIndex: 'describe',
     ellipsis: true,
     width: 300,

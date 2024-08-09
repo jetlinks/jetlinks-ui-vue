@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.TagSearch.665533-0": "筛选条件",
+		"components.TagSearch.665533-1": "设备标签:",
+		"components.TagSearch.665533-2": "请输入标签key",
+		"components.TagSearch.665533-3": "请输入标签value",
+		"components.TagSearch.665533-4": "添加"
+	},
+	"en": {
+		"components.TagSearch.665533-0": "Filter criteria",
+		"components.TagSearch.665533-1": "Equipment label:",
+		"components.TagSearch.665533-2": "Please enter the tag key",
+		"components.TagSearch.665533-3": "Please enter the tag value",
+		"components.TagSearch.665533-4": "Add"
+	}
+}

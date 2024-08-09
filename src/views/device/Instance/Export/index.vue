@@ -3,24 +3,24 @@
         :maskClosable="false"
         width="800px"
         :visible="true"
-        title="导出"
+        :title="$t('Export.index.778931-0')"
         @ok="handleOk"
         @cancel="handleCancel"
     >
         <div style="background-color: rgb(236, 237, 238)">
             <p style="padding: 10px">
                 <AIcon type="ExclamationCircleOutlined" />
-                选择单个产品时可导出其下属设备的详细数据,不选择产品时导出所有设备的基础数据。
+                {{ $t('Export.index.778931-1') }}
             </p>
         </div>
         <div style="margin-top: 20px">
             <j-form :layout="'vertical'">
-                <j-form-item label="产品">
+                <j-form-item :label="$t('Export.index.778931-2')">
                     <j-select
                         show-search
                         :filter-option="filterOption"
                         v-model:value="modelRef.product"
-                        placeholder="请选择产品"
+                        :placeholder="$t('Export.index.778931-3')"
                         allowClear
                     >
                         <j-select-option
@@ -32,11 +32,11 @@
                         >
                     </j-select>
                 </j-form-item>
-                <j-form-item label="文件格式">
+                <j-form-item :label="$t('Export.index.778931-4')">
                     <j-radio-group
                         button-style="solid"
                         v-model:value="modelRef.fileType"
-                        placeholder="请选择文件格式"
+                        :placeholder="$t('Export.index.778931-5')"
                     >
                         <j-radio-button value="xlsx">xlsx</j-radio-button>
                         <j-radio-button value="csv">csv</j-radio-button>
@@ -55,6 +55,9 @@ import { deviceExport , deviceExportPath} from '@/api/device/instance';
 import { getToken } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore, onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['close']);
 const props = defineProps({

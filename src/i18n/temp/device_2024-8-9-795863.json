@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Import.modal.957443-0": "批量导入",
+		"Import.modal.957443-1": "选择导入方式",
+		"Import.modal.957443-2": "取消",
+		"Import.modal.957443-3": "上一步",
+		"Import.modal.957443-4": "下一步",
+		"Import.modal.957443-5": "确认",
+		"Import.modal.957443-6": "导入完成",
+		"Import.modal.957443-7": "已完成 新增设备",
+		"Import.modal.957443-8": "文件导入",
+		"Import.modal.957443-9": "支持上传XLSX、CSV格式文件",
+		"Import.modal.957443-10": "插件导入",
+		"Import.modal.957443-11": "读取插件中的设备信息同步至平台",
+		"Import.modal.957443-12": "请选择产品",
+		"Import.modal.957443-13": "请选择导入方式",
+		"Import.modal.957443-14": "操作成功",
+		"Import.modal.957443-15": "请选择设备"
+	},
+	"en": {
+		"Import.modal.957443-0": "Batch import",
+		"Import.modal.957443-1": "Select import method",
+		"Import.modal.957443-2": "Cancel",
+		"Import.modal.957443-3": "Previous step",
+		"Import.modal.957443-4": "Next step",
+		"Import.modal.957443-5": "Confirm",
+		"Import.modal.957443-6": "Import completed",
+		"Import.modal.957443-7": "Completed,add device",
+		"Import.modal.957443-8": "File import",
+		"Import.modal.957443-9": "Support uploading XLSX and CSV format files",
+		"Import.modal.957443-10": "Plugin import",
+		"Import.modal.957443-11": "Read device information from the plugin and synchronize it to the platform",
+		"Import.modal.957443-12": "Please select a product",
+		"Import.modal.957443-13": "Please choose the import method",
+		"Import.modal.957443-14": "Operation successful",
+		"Import.modal.957443-15": "Please select a device"
+	}
+}

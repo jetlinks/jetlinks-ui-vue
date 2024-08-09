@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Metadata.index.519563-0": "确认重置？",
+		"Metadata.index.519563-1": "重置后将使用产品的物模型配置",
+		"Metadata.index.519563-2": "重置操作",
+		"Metadata.index.519563-3": "快速导入",
+		"Metadata.index.519563-4": "物模型TSL",
+		"Metadata.index.519563-5": "设备会默认继承产品的物模型，继承的物模型不支持删改",
+		"Metadata.index.519563-6": "属性定义",
+		"Metadata.index.519563-7": "功能定义",
+		"Metadata.index.519563-8": "事件定义",
+		"Metadata.index.519563-9": "标签定义",
+		"Metadata.index.519563-10": "操作成功"
+	},
+	"en": {
+		"Metadata.index.519563-0": "Confirm reset?",
+		"Metadata.index.519563-1": "After resetting, the product's IOT model configuration will be used",
+		"Metadata.index.519563-2": "Reset operation",
+		"Metadata.index.519563-3": "Quick import",
+		"Metadata.index.519563-4": "IOT Model TSL",
+		"Metadata.index.519563-5": "The device will inherit the product's IOT model by default, and the inherited IOT model does not support deletion or modification",
+		"Metadata.index.519563-6": "Attribute definition",
+		"Metadata.index.519563-7": "Function definition",
+		"Metadata.index.519563-8": "Event definition",
+		"Metadata.index.519563-9": "Label definition",
+		"Metadata.index.519563-10": "Operation successful"
+	}
+}

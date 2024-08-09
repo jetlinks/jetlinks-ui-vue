@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Import.product.077384-0": "请选择产品，本次批量导入的设备将成为该产品的所属设备",
+		"Import.product.077384-1": "正常",
+		"Import.product.077384-2": "禁用",
+		"Import.product.077384-3": "设备类型",
+		"Import.product.077384-4": "名称",
+		"Import.product.077384-5": "网关类型",
+		"Import.product.077384-6": "状态",
+		"Import.product.077384-7": "说明"
+	},
+	"en": {
+		"Import.product.077384-0": "Please select a product, the devices imported in this batch will become the devices to which the product belongs",
+		"Import.product.077384-1": "enabled",
+		"Import.product.077384-2": "disabled",
+		"Import.product.077384-3": "Equipment type",
+		"Import.product.077384-4": "Name",
+		"Import.product.077384-5": "Gateway Type ",
+		"Import.product.077384-6": "State",
+		"Import.product.077384-7": "Explain"
+	}
+}
