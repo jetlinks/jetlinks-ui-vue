@@ -106,7 +106,7 @@ export const useSystem = defineStore('system', {
             }
         },
         async getThreshold(){
-            await queryProductThreshold('test','test').catch((res:any)=>{
+            await queryProductThreshold('test','test',true).catch((res:any)=>{
                 if(res.response.status === 404){
                     this.showThreshold = false
                 }

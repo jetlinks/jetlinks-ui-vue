@@ -90,7 +90,7 @@ export const useThreshold = (props: Record<string, any>) => {
     }
     const thresholdDetailQuery = () => {
         if (props.target === 'product') {
-            queryProduct(productStore.current.id, props.id)
+            queryProduct(productStore.current.id, props.id,false)
         } else {
             queryDevice(deviceStore.current.productId, deviceStore.current.id, props.id)
         }

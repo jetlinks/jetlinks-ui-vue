@@ -90,11 +90,12 @@ export const patch = function <T>(url: string, data = {}, ext: any = {}) {
  * @param {Object} [ext] 扩展参数
  * @returns {AxiosInstance}
  */
-export const get = function <T>(url: string, params = {}, ext?: any) {
+export const get = function <T>(url: string, params = {}, ext?: any, _hideError = false) {
   return request<any, AxiosResponseRewrite<T>>({
     method: 'GET',
     url,
     params,
+    _hideError,
     ...ext
   })
 }
@@ -156,7 +157,6 @@ export const TokenLose = () => {
  * @returns {Promise<never>}
  */
 const errorHandler = (error: any) => {
-  console.log(error,'error')
   if (error.response) {
     const data = error.response.data
     const status = error.response.status
@@ -201,7 +201,7 @@ const errorHandler = (error: any) => {
              path: LoginPath
            })
          }, 0)
-       } else if (status === 404) {
+       } else if (status === 404 && !error.config._hideError) {
          const data = error?.response?.data
          const message = error?.response?.data?.message || `${data?.error} ${data?.path}`
          showNotification(error?.code, message, '404')
