@@ -24,7 +24,7 @@
             </j-form-item>
             <j-form-item label="上报数据" class="item_title">
                 <j-textarea
-                    v-model:value="form.reportData"
+                    v-model:value="form.data"
                     placeholder="这里回显设备上报数据json"
                     :disabled="isDisabled"
                     :rows="6"
@@ -54,9 +54,11 @@ const form = ref<any>({});
 const show = (data: any) => {
     visible.value = true;
     form.value = {
-        maxNumber: data.max,
-        minNumber: data.min,
+        maxNumber: data?.clearRule?.maxValue,
+        minNumber: data?.clearRule?.mimValue,
+        originJson: data?.originJson,
     };
+    console.log('clearRule', data?.clearRule);
 };
 
 defineExpose({

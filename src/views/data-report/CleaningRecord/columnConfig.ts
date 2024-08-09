@@ -1,17 +1,17 @@
 export const columns = [
     {
-        title: '设备名称',
-        dataIndex: 'factoryNumber',
-        key: 'factoryNumber',
+        title: '设备ID',
+        dataIndex: 'deviceId',
+        key: 'deviceId',
         ellipsis: true,
         search: {
             type: 'string',
         },
     },
     {
-        title: '所属产品',
-        dataIndex: 'simpleName',
-        key: 'simpleName',
+        title: '物模型ID',
+        dataIndex: 'productId',
+        key: 'productId',
         ellipsis: true,
         search: {
             type: 'string',
@@ -19,8 +19,8 @@ export const columns = [
     },
     {
         title: '清洗时间',
-        dataIndex: 'alarmTime',
-        key: 'alarmTime',
+        dataIndex: 'cleanTime',
+        key: 'cleanTime',
         width: 180,
         scopedSlots: true,
         search: {
@@ -29,8 +29,8 @@ export const columns = [
     },
     {
         title: '清洗字段',
-        dataIndex: 'lngLat',
-        key: 'lngLat',
+        dataIndex: 'cleanField',
+        key: 'cleanField',
         ellipsis: true,
         scopedSlots: true,
         search: {
@@ -39,8 +39,8 @@ export const columns = [
     },
     {
         title: '上报值',
-        dataIndex: 'deviceId',
-        key: 'deviceId',
+        dataIndex: 'reportValue',
+        key: 'reportValue',
         scopedSlots: true,
         ellipsis: true,
         search: {
