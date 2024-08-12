@@ -3,7 +3,7 @@
     <page-container>
         <pro-search
             :columns="columns"
-            target="notice-config"
+            target="notice-template"
             @search="handleSearch"
         />
         <FullPage>
