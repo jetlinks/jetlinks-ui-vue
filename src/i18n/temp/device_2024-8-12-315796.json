@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"components.Simple.155741-0": "精简模式下参数只支持输入框的方式录入",
+		"components.Simple.155741-1": "请按照json格式输入",
+		"components.Simple.155741-2": "该字段为必填字段",
+		"components.Simple.155741-3": "执行",
+		"components.Simple.155741-4": "清空",
+		"components.Simple.155741-5": "执行结果：",
+		"components.Simple.155741-6": "参数名称",
+		"components.Simple.155741-7": "输入类型",
+		"components.Simple.155741-8": "值",
+		"components.Simple.155741-9": "操作成功"
+	},
+	"en": {
+		"components.Simple.155741-0": "In simplified mode, parameters only support input box input",
+		"components.Simple.155741-1": "Please input in JSON format",
+		"components.Simple.155741-2": "This field is mandatory",
+		"components.Simple.155741-3": "Execute",
+		"components.Simple.155741-4": "Clear",
+		"components.Simple.155741-5": "Execution result:",
+		"components.Simple.155741-6": "Parameter Name",
+		"components.Simple.155741-7": "Input type",
+		"components.Simple.155741-8": "value",
+		"components.Simple.155741-9": "Operation successful"
+	}
+}

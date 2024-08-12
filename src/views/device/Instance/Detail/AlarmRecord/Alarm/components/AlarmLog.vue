@@ -7,7 +7,7 @@
         :destroyInactiveTabPane="true"
     >
         <div class="alarmInfo">
-            <div class="title">告警日志</div>
+            <div class="title">{{ $t('components.AlarmLog.584343-0') }}</div>
             <div class="alarmInfoRight">
                 <div>
                     {{ levelMap?.[AlarmData?.level] || AlarmData?.level }}
@@ -28,7 +28,7 @@
                         v-if="AlarmData?.state.value === 'warning'"
                         type="link"
                         @click="dealAlarm"
-                        >处理</a-button
+                        >{{ $t('components.AlarmLog.584343-1') }}</a-button
                     >
                 </div>
             </div>
@@ -48,6 +48,9 @@ import { queryLevel } from '@/api/rule-engine/config';
 import Log from '@/views/rule-engine/Alarm/Log/TabComponent/components/Log.vue';
 import SolveComponent from '@/views/rule-engine/Alarm/Log/SolveComponent/index.vue';
 import { useAlarmLevel } from '@/hook';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
