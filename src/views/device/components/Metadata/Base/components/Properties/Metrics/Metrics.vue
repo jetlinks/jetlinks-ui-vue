@@ -8,12 +8,12 @@
     >
       <template #id="{ record, index }">
         <EditTableFormItem :name="[index, 'id']">
-          <a-input v-model:value="record.id" placeholder="请输入标识"/>
+          <a-input v-model:value="record.id" :placeholder="$t('Metrics.Metrics.6916335-0')"/>
         </EditTableFormItem>
       </template>
       <template #name="{ record, index }">
         <EditTableFormItem :name="[index, 'name']">
-          <a-input v-model:value="record.name" placeholder="请输入名称"/>
+          <a-input v-model:value="record.name" :placeholder="$t('Metrics.Metrics.6916335-1')"/>
         </EditTableFormItem>
       </template>
       <template #range="{record}">
@@ -41,7 +41,7 @@
     </EditTable>
     <j-button style="width: 100%;margin-top: 16px;" @click="addItem" >
       <template #icon><AIcon type="PlusOutlined" /></template>
-      添加指标值
+      {{ $t('Metrics.Metrics.6916335-2') }}
     </j-button>
   </div>
 </template>
@@ -51,6 +51,9 @@ import { defineExpose, provide } from 'vue'
 import MetricValueItem from './ValueItem.vue'
 import BooleanSelect from "@/views/device/components/Metadata/Base/components/Properties/Metrics/BooleanSelect.vue";
 import { EditTable, EditTableFormItem } from '@/components/Metadata/Table'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {
@@ -77,7 +80,7 @@ provide('metricsType', props.type)
 
 const columns: any = [
   {
-    title: '指标标识',
+    title: $t('Metrics.Metrics.6916335-3'),
     dataIndex: 'id',
     width: 120,
     type: 'text',
@@ -91,23 +94,23 @@ const columns: any = [
               const option = setting[2]
 
               if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
-                return Promise.reject('该标识已存在')
+                return Promise.reject($t('Metrics.Metrics.6916335-4'))
               }
               return Promise.resolve()
             }
-            return Promise.reject('请输入标识')
+            return Promise.reject($t('Metrics.Metrics.6916335-0'))
           }
         },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Metrics.Metrics.6916335-5') },
         {
           pattern: /^[a-zA-Z0-9_\-]+$/,
-          message: '标识只能由数字、字母、下划线、中划线组成',
+          message: $t('Metrics.Metrics.6916335-6'),
         },
       ]
     },
   },
   {
-    title: '指标名称',
+    title: $t('Metrics.Metrics.6916335-7'),
     dataIndex: 'name',
     type: 'text',
     form: {
@@ -116,18 +119,18 @@ const columns: any = [
         {
           asyncValidator(rule:any,value: any) {
             if (!value) {
-              return Promise.reject('请输入指标名称')
+              return Promise.reject($t('Metrics.Metrics.6916335-8'))
             }
             return Promise.resolve()
           }
         },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Metrics.Metrics.6916335-5') },
       ]
     },
   },
 
   {
-    title: '指标配置',
+    title: $t('Metrics.Metrics.6916335-9'),
     dataIndex: 'value',
     width: 100,
     form: {
@@ -135,7 +138,7 @@ const columns: any = [
         {
           asyncValidator(rule:any,value: any) {
             if (!value || (Array.isArray(value) && value.some(item => !item))) {
-              return Promise.reject('请配置指标')
+              return Promise.reject($t('Metrics.Metrics.6916335-10'))
             }
             return Promise.resolve()
           }
@@ -144,7 +147,7 @@ const columns: any = [
     },
   },
   {
-    title: '操作',
+    title: $t('Metrics.Metrics.6916335-11'),
     dataIndex: 'action',
     width: 60,
   },
@@ -155,7 +158,7 @@ const newColumns = computed(() => {
   if (props.type && !['string', 'boolean', 'date'].includes(props.type)) {
     const data = [...columns]
     data.splice(2, 0, {
-        title: '指标值',
+        title: $t('Metrics.Metrics.6916335-12'),
         dataIndex: 'range',
         width: 120,
     })

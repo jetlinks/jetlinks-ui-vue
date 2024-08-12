@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"components.Constraint.6916447-0": "不必填",
+		"components.Constraint.6916447-1": "必填"
+	},
+	"en": {
+		"components.Constraint.6916447-0": "Not required",
+		"components.Constraint.6916447-1": "Required"
+	}
+}

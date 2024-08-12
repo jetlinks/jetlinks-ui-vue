@@ -13,7 +13,7 @@
             type="link"
         >
           <AIcon type="SettingOutlined" />
-          配置
+          {{ $t('Events.ConfigParams.6916456-0') }}
         </PermissionButton>
         </DataTableObject>
 </template>
@@ -29,10 +29,14 @@ import ConfigModal from '@/views/device/components/Metadata/Base/components/Conf
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
 import {TypeStringMap, validatorConfig} from "../../columns";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const columns = [
     {
-        title: '参数标识',
+        title: $t('Events.ConfigParams.6916456-1'),
         dataIndex: 'id',
         type: 'text',
       placement: 'Left',
@@ -45,37 +49,37 @@ const columns = [
                     const fieldIndex = Number(field[1])
                     const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
                     if (hasId) {
-                        return Promise.reject('该标识已存在')
+                        return Promise.reject($t('Events.ConfigParams.6916456-2'))
                     }
                     return Promise.resolve()
                     }
-                    return Promise.reject('请输入标识')
+                    return Promise.reject($t('Events.ConfigParams.6916456-3'))
                 }
             },
-              { max: 64, message: '最多可输入64个字符' },
+              { max: 64, message: $t('Events.ConfigParams.6916456-4') },
               {
                 pattern: /^[a-zA-Z0-9_\-]+$/,
-                message: '标识只能由数字、字母、下划线、中划线组成',
+                message: $t('Events.ConfigParams.6916456-5'),
               },
             ]
         }
     },
     {
-        title: '参数名称',
+        title: $t('Events.ConfigParams.6916456-6'),
         dataIndex: 'name',
         type: 'text',
         form: {
             required: true,
             rules: [{
                 required: true,
-                message: '请输入参数名称'
+                message: $t('Events.ConfigParams.6916456-7')
             },
-              { max: 64, message: '最多可输入64个字符' },
+              { max: 64, message: $t('Events.ConfigParams.6916456-4') },
             ]
         }
     },
     {
-        title: '数据类型',
+        title: $t('Events.ConfigParams.6916456-8'),
         type: 'components',
         dataIndex: 'valueType',
         components: {
@@ -86,7 +90,7 @@ const columns = [
           rules: [{
             validator(_: any, value: any) {
               if (!value?.type) {
-                return Promise.reject('请选择数据类型')
+                return Promise.reject($t('Events.ConfigParams.6916456-9'))
               }
               return Promise.resolve()
             }
@@ -97,7 +101,7 @@ const columns = [
       },
     },
     {
-        title: '其他配置',
+        title: $t('Events.ConfigParams.6916456-10'),
         dataIndex: 'config',
         form: {
           required: true,
@@ -122,7 +126,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Events.ConfigParams.6916456-11'),
         dataIndex: 'action',
         width: 80
     },
@@ -141,7 +145,6 @@ const props = defineProps({
     },
     placeholder: {
         type: String,
-        default: '请选择',
     },
     options: {
         type: Array as PropType<{ label: string; value: string }[]>,

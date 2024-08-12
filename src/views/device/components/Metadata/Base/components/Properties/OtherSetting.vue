@@ -7,6 +7,8 @@
         :disabled="disabled"
         @ok="confirm"
         @cancel="cancel"
+        :okText=" $t('Properties.OtherSetting.6916232-27')"
+        :cancelText=" $t('Properties.OtherSetting.6916232-28')"
     >
         <template #content>
             <j-scrollbar height="350" v-if="showContent">
@@ -78,9 +80,9 @@
                         "
                     >
                         <template #header>
-                            指标配置
+                            {{ $t('Properties.OtherSetting.6916232-0') }}
                             <j-tooltip
-                                title="场景联动页面可引用指标配置作为触发条件"
+                                :title="$t('Properties.OtherSetting.6916232-1')"
                             >
                                 <AIcon
                                     type="ExclamationCircleOutlined"
@@ -98,7 +100,7 @@
                     <j-collapse-panel key="extra" v-if="showExtra">
                         <template #header>
                             <a-space>
-                                <div>阈值限制</div>
+                                <div>{{ $t('Properties.OtherSetting.6916232-2') }}</div>
                                 <template
                                     v-if="
                                         props.isProduct && target === 'device'
@@ -112,11 +114,11 @@
                                         <template #icon>
                                             <AIcon type="RedoOutlined" />
                                         </template>
-                                        重置
+                                        {{ $t('Properties.OtherSetting.6916232-3') }}
                                     </a-button>
                                     <a-tooltip>
                                         <template #title
-                                            >重置后阀值限制继承于产品</template
+                                            >{{ $t('Properties.OtherSetting.6916232-4') }}</template
                                         >
                                         <AIcon type="QuestionCircleOutlined" />
                                     </a-tooltip>
@@ -130,7 +132,7 @@
                                     <template #icon>
                                         <AIcon type="RedoOutlined" />
                                     </template>
-                                    清空
+                                    {{ $t('Properties.OtherSetting.6916232-5') }}
                                 </a-button>
                             </a-space>
                         </template>
@@ -145,7 +147,7 @@
                                         v-model:value="extraForm.type"
                                         :options="[
                                             {
-                                                label: '上下限',
+                                                label: $t('Properties.OtherSetting.6916232-6'),
                                                 value: 'number-range',
                                             },
                                         ]"
@@ -160,7 +162,7 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入上下限',
+                                        message: $t('Properties.OtherSetting.6916232-7'),
                                     },
                                     {
                                         validator: validateLimit,
@@ -170,7 +172,7 @@
                             >
                                 <template #label
                                     ><div class="extra-title">
-                                        阈值
+                                        {{ $t('Properties.OtherSetting.6916232-8') }}
                                     </div></template
                                 >
                                 <a-space
@@ -179,14 +181,14 @@
                                     <a-input-number
                                         v-model:value="extraForm.limit.lower"
                                         style="width: 178px"
-                                        placeholder="请输入下限"
+                                        :placeholder="$t('Properties.OtherSetting.6916232-9')"
                                     />
                                     <span>~</span>
                                     <a-input-number
                                         v-model:value="extraForm.limit.upper"
                                         style="width: 178px"
                                         :min="extraForm.limit.lower"
-                                        placeholder="请输入上限"
+                                        :placeholder="$t('Properties.OtherSetting.6916232-10')"
                                     />
                                 </a-space>
                             </a-form-item>
@@ -196,23 +198,23 @@
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请选择处理方式',
+                                        message: $t('Properties.OtherSetting.6916232-11'),
                                     },
                                 ]"
                             >
                                 <template #label>
                                     <div class="extra-title">
-                                        超出阈值数据处理方式
+                                        {{ $t('Properties.OtherSetting.6916232-12') }}
                                     </div></template
                                 >
                                 <div class="extra-handle extra-check-group">
                                     <CardSelect
                                         v-model:value="extraForm.mode"
                                         :options="[
-                                            { label: '忽略', value: 'ignore' },
-                                            { label: '记录', value: 'record' },
+                                            { label: $t('Properties.OtherSetting.6916232-13'), value: 'ignore' },
+                                            { label: $t('Properties.OtherSetting.6916232-14'), value: 'record' },
                                             {
-                                                label: '告警',
+                                                label: $t('Properties.OtherSetting.6916232-15'),
                                                 value: 'device-alarm',
                                             },
                                         ]"
@@ -228,7 +230,7 @@
                 </j-collapse>
             </j-scrollbar>
             <div v-else style="padding-top: 24px">
-                <j-empty description="没有动态配置项" />
+                <j-empty :description="$t('Properties.OtherSetting.6916232-16')" />
             </div>
         </template>
         <PermissionButton
@@ -239,7 +241,7 @@
             type="primary"
         >
             <AIcon type="EditOutlined" />
-            配置
+            {{ $t('Properties.OtherSetting.6916232-17') }}
         </PermissionButton>
     </PopoverModal>
     <PermissionButton
@@ -251,7 +253,7 @@
         type="primary"
     >
         <AIcon type="EditOutlined" />
-        配置
+        {{ $t('Properties.OtherSetting.6916232-17') }}
     </PermissionButton>
 </template>
 
@@ -268,6 +270,10 @@ import { omit, cloneDeep } from 'lodash-es';
 import { PopoverModal } from '@/components/Metadata/Table';
 import { useTableWrapper } from '@/components/Metadata/Table/context';
 import { useThreshold } from './hooks';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
     value: {
@@ -351,11 +357,11 @@ const typeMap = {
 
 const handleTip = computed(() => {
     if (extraForm.mode === 'ignore') {
-        return '平台将忽略超出阈值的数据，无法查看上报记录';
+        return $t('Properties.OtherSetting.6916232-18');
     } else if (extraForm.mode === 'record') {
-        return '您可以在预处理数据-无效数据页面查看超出阈值的数据上报记录';
+        return $t('Properties.OtherSetting.6916232-19');
     }
-    return '您可以在预处理数据-告警数据页面查看告警情况';
+    return $t('Properties.OtherSetting.6916232-20');
 });
 
 const showContent = computed(() => {
@@ -387,24 +393,24 @@ const showExtra = computed(() => {
 });
 
 const booleanOptions = ref([
-    { label: '否', value: 'false' },
-    { label: '是', value: 'true' },
+    { label: $t('Properties.OtherSetting.6916232-21'), value: 'false' },
+    { label: $t('Properties.OtherSetting.6916232-22'), value: 'true' },
 ]);
 
 const columns = ref([
     {
-        title: '参数名称',
+        title: $t('Properties.OtherSetting.6916232-23'),
         dataIndex: 'name',
         width: 150,
         ellipsis: true,
     },
     {
-        title: '输入类型',
+        title: $t('Properties.OtherSetting.6916232-24'),
         dataIndex: 'type',
         width: 150,
     },
     {
-        title: '值',
+        title: $t('Properties.OtherSetting.6916232-25'),
         dataIndex: 'value',
     },
 ]);
@@ -438,10 +444,10 @@ const resetThreshold = async (e: any) => {
 const validateLimit = (_: any, value: any) => {
     if (value.lower !== null && value.upper !== null) {
         return value.upper < value.lower
-            ? Promise.reject('上限必须大于下限')
+            ? Promise.reject($t('Properties.OtherSetting.6916232-26'))
             : Promise.resolve();
     } else {
-        return Promise.reject('请输入上下限');
+        return Promise.reject($t('Properties.OtherSetting.6916232-7'));
     }
 };
 
@@ -454,11 +460,11 @@ const getConfig = async () => {
     if (props.type === 'boolean') {
         const booleanValue = props.record.valueType;
         booleanOptions.value[0] = {
-            label: booleanValue.falseText || '否',
+            label: booleanValue.falseText || $t('Properties.OtherSetting.6916232-21'),
             value: booleanValue.falseValue || 'false',
         };
         booleanOptions.value[1] = {
-            label: booleanValue.trueText || '是',
+            label: booleanValue.trueText || $t('Properties.OtherSetting.6916232-22'),
             value: booleanValue.trueValue || 'true',
         };
     }

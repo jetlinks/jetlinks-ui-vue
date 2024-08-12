@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Function.InputParams.6916451-0": "必填",
+		"Function.InputParams.6916451-1": "不必填",
+		"Function.InputParams.6916451-2": "配置",
+		"Function.InputParams.6916451-3": "请选择",
+		"Function.InputParams.6916451-4": "参数标识",
+		"Function.InputParams.6916451-5": "该标识已存在",
+		"Function.InputParams.6916451-6": "请输入标识",
+		"Function.InputParams.6916451-7": "最多可输入64个字符",
+		"Function.InputParams.6916451-8": "标识只能由数字、字母、下划线、中划线组成",
+		"Function.InputParams.6916451-9": "参数名称",
+		"Function.InputParams.6916451-10": "请输入名称",
+		"Function.InputParams.6916451-11": "填写约束",
+		"Function.InputParams.6916451-12": "数据类型",
+		"Function.InputParams.6916451-13": "请选择数据类型",
+		"Function.InputParams.6916451-14": "其他配置",
+		"Function.InputParams.6916451-15": "操作"
+	},
+	"en": {
+		"Function.InputParams.6916451-0": "Required",
+		"Function.InputParams.6916451-1": "Not required",
+		"Function.InputParams.6916451-2": "Configuration",
+		"Function.InputParams.6916451-3": "Please choose",
+		"Function.InputParams.6916451-4": "Parameter ID",
+		"Function.InputParams.6916451-5": "This ID already exists",
+		"Function.InputParams.6916451-6": "Please enter the ID",
+		"Function.InputParams.6916451-7": "Up to 64 characters can be entered",
+		"Function.InputParams.6916451-8": "ID can only be composed of numbers, letters, underscores, and dashes",
+		"Function.InputParams.6916451-9": "Parameter Name",
+		"Function.InputParams.6916451-10": "Please enter a name",
+		"Function.InputParams.6916451-11": "Fill in constraints",
+		"Function.InputParams.6916451-12": "Data type",
+		"Function.InputParams.6916451-13": "Please select data type",
+		"Function.InputParams.6916451-14": "Other configurations",
+		"Function.InputParams.6916451-15": "Operation"
+	}
+}

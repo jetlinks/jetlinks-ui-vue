@@ -4,7 +4,7 @@
       <span>{{ TypeStringMap[data.record.valueType?.type] }}</span>
     </template>
     <template #required="{ data }">
-      <span>{{ data.record.expands?.required ? "必填": '不必填' }}</span>
+      <span>{{ data.record.expands?.required ? $t('Function.InputParams.6916451-0'): $t('Function.InputParams.6916451-1') }}</span>
     </template>
     <template #config="{ data }">
       <ConfigModal v-model:value="data.record.valueType" :showOther="false" />
@@ -15,7 +15,7 @@
         type="link"
     >
       <AIcon type="SettingOutlined" />
-      配置
+      {{ $t('Function.InputParams.6916451-2') }}
     </PermissionButton>
   </DataTableObject>
 </template>
@@ -30,6 +30,10 @@ import { ConstraintSelect, ValueObject } from '../index'
 import {TypeStringMap, validatorConfig} from "../../columns";
 import ModelButton from '@/views/device/components/Metadata/Base/components/ModelButton.vue'
 import {omit} from "lodash-es";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 type Emits = {
     (e: 'update:value', data: Record<string, any>): void;
@@ -44,7 +48,6 @@ const props = defineProps({
     },
     placeholder: {
         type: String,
-        default: '请选择',
     },
     options: {
         type: Array as PropType<{ label: string; value: string }[]>,
@@ -69,7 +72,7 @@ const addItem = () => {
 
 const columns = ref([
   {
-    title: '参数标识',
+    title: $t('Function.InputParams.6916451-4'),
     dataIndex: 'id',
     type: 'text',
     placement: 'Left',
@@ -83,32 +86,32 @@ const columns = ref([
               const fieldIndex = Number(field[1])
               const hasId = _dataSource.some((item, index) => item.id === value && fieldIndex !== index)
               if (hasId) {
-                return Promise.reject('该标识已存在')
+                return Promise.reject($t('Function.InputParams.6916451-5'))
               }
               return Promise.resolve()
             }
-            return Promise.reject('请输入标识')
+            return Promise.reject($t('Function.InputParams.6916451-6'))
           }
         },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Function.InputParams.6916451-7') },
         {
           pattern: /^[a-zA-Z0-9_\-]+$/,
-          message: '标识只能由数字、字母、下划线、中划线组成',
+          message: $t('Function.InputParams.6916451-8'),
         },
       ]
     }
   },
   {
-    title: '参数名称',
+    title: $t('Function.InputParams.6916451-9'),
     dataIndex: 'name',
     type: 'text',
     form: {
       required: true,
-      rules: [{ required: true, message: '请输入名称'}, { max: 64, message: '最多可输入64个字符' },]
+      rules: [{ required: true, message: $t('Function.InputParams.6916451-10')}, { max: 64, message: $t('Function.InputParams.6916451-7') },]
     }
   },
   {
-    title: '填写约束',
+    title: $t('Function.InputParams.6916451-11'),
     dataIndex: 'required',
     type: 'components',
     width: 100,
@@ -120,7 +123,7 @@ const columns = ref([
     },
   },
   {
-    title: '数据类型',
+    title: $t('Function.InputParams.6916451-12'),
     type: 'components',
     dataIndex: 'valueType',
     components: {
@@ -131,7 +134,7 @@ const columns = ref([
       rules: [{
         validator(_: any, value: any) {
           if (!value?.type) {
-            return Promise.reject('请选择数据类型')
+            return Promise.reject($t('Function.InputParams.6916451-13'))
           }
           return Promise.resolve()
         }
@@ -142,7 +145,7 @@ const columns = ref([
     },
   },
   {
-    title: '其他配置',
+    title: $t('Function.InputParams.6916451-14'),
     dataIndex: 'config',
     form: {
       required: true,
@@ -168,7 +171,7 @@ const columns = ref([
     },
   },
   {
-    title: '操作',
+    title: $t('Function.InputParams.6916451-15'),
     dataIndex: 'action',
     width: 60
   },

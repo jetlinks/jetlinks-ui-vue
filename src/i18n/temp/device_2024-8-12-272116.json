@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Metrics.ValueItem.6916334-0": "请输入指标值",
+		"Metrics.ValueItem.6916334-1": "配置",
+		"Metrics.ValueItem.6916334-2": "是",
+		"Metrics.ValueItem.6916334-3": "否",
+		"Metrics.ValueItem.6916334-4": "请输入",
+		"Metrics.ValueItem.6916334-5": "请选择",
+		"Metrics.ValueItem.6916334-6": "{0}指标值",
+		"Metrics.ValueItem.6916334-7": "需大于左侧数值",
+		"Metrics.ValueItem.6916334-8": "最多可输入64个字符"
+	},
+	"en": {
+		"Metrics.ValueItem.6916334-0": "Please enter the indicator value",
+		"Metrics.ValueItem.6916334-1": "Configuration",
+		"Metrics.ValueItem.6916334-2": "yes",
+		"Metrics.ValueItem.6916334-3": "no",
+		"Metrics.ValueItem.6916334-4": "Please enter",
+		"Metrics.ValueItem.6916334-5": "Please choose",
+		"Metrics.ValueItem.6916334-6": "{0} indicator value",
+		"Metrics.ValueItem.6916334-7": "Need to be greater than the value on the left",
+		"Metrics.ValueItem.6916334-8": "Up to 64 characters can be entered"
+	}
+}

@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Edit.ValueTypeForm.6915918-0": "请选择{0}",
+		"Edit.ValueTypeForm.6915918-1": "单位",
+		"Edit.ValueTypeForm.6915918-2": "精度",
+		"Edit.ValueTypeForm.6915918-3": "请输入精度",
+		"Edit.ValueTypeForm.6915918-4": "时间格式",
+		"Edit.ValueTypeForm.6915918-5": "布尔值",
+		"Edit.ValueTypeForm.6915918-6": "枚举项",
+		"Edit.ValueTypeForm.6915918-7": "最大长度",
+		"Edit.ValueTypeForm.6915918-8": "字节",
+		"Edit.ValueTypeForm.6915918-9": "请输入最大长度",
+		"Edit.ValueTypeForm.6915918-10": "元素配置",
+		"Edit.ValueTypeForm.6915918-11": "JSON对象",
+		"Edit.ValueTypeForm.6915918-12": "文件类型",
+		"Edit.ValueTypeForm.6915918-13": "请选择文件类型",
+		"Edit.ValueTypeForm.6915918-14": "数据类型",
+		"Edit.ValueTypeForm.6915918-15": "结构体"
+	},
+	"en": {
+		"Edit.ValueTypeForm.6915918-0": "Please select {0}",
+		"Edit.ValueTypeForm.6915918-1": "Company",
+		"Edit.ValueTypeForm.6915918-2": "Accuracy",
+		"Edit.ValueTypeForm.6915918-3": "Please input the precision",
+		"Edit.ValueTypeForm.6915918-4": "Time format",
+		"Edit.ValueTypeForm.6915918-5": "Boolean value",
+		"Edit.ValueTypeForm.6915918-6": "Enumeration item",
+		"Edit.ValueTypeForm.6915918-7": "Maximum length",
+		"Edit.ValueTypeForm.6915918-8": "Byte",
+		"Edit.ValueTypeForm.6915918-9": "Please enter the maximum length",
+		"Edit.ValueTypeForm.6915918-10": "Element configuration",
+		"Edit.ValueTypeForm.6915918-11": "JSON object",
+		"Edit.ValueTypeForm.6915918-12": "File type",
+		"Edit.ValueTypeForm.6915918-13": "Please select file type",
+		"Edit.ValueTypeForm.6915918-14": "Data type",
+		"Edit.ValueTypeForm.6915918-15": "Structural morphology"
+	}
+}

@@ -1,25 +1,25 @@
 <template>
   <j-form-item :label="title" :name="name.concat(['type'])" :rules="[
-    required ? { required: true, message: `请选择${title}` } : {},
+    required ? { required: true, message: $t('Edit.ValueTypeForm.6915918-0', [title]) } : {},
   ]">
     <j-select v-model:value="_value.type" :disabled="onlyObject"
       :options="onlyObject ? eventDataTypeList : _dataTypeList" size="small"
-      @change="changeType" :placeholder="`请选择${title}`"></j-select>
+      @change="changeType" :placeholder="$t('Edit.ValueTypeForm.6915918-0', [title])"></j-select>
   </j-form-item>
-  <j-form-item label="单位" :name="name.concat(['unit'])" v-if="['int', 'float', 'long', 'double'].includes(_value.type)">
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-1')" :name="name.concat(['unit'])" v-if="['int', 'float', 'long', 'double'].includes(_value.type)">
     <InputSelect v-model:value="_value.unit" :options="unit.unitOptions" size="small"></InputSelect>
   </j-form-item>
-  <j-form-item label="精度" :name="name.concat(['scale'])" v-if="['float', 'double'].includes(_value.type)">
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-2')" :name="name.concat(['scale'])" v-if="['float', 'double'].includes(_value.type)">
     <j-input-number v-model:value="_value.scale" size="small" :min="0" :max="2147483647" :precision="0"
-      style="width: 100%" placeholder="请输入精度"></j-input-number>
+      style="width: 100%" :placeholder="$t('Edit.ValueTypeForm.6915918-3')"></j-input-number>
   </j-form-item>
-  <j-form-item label="时间格式" :name="name.concat(['format'])" v-if="['date'].includes(_value.type)" v-show="false">
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-4')" :name="name.concat(['format'])" v-if="['date'].includes(_value.type)" v-show="false">
     <j-input v-model:value="_value.format" size="small"></j-input>
   </j-form-item>
-  <j-form-item label="布尔值" name="booleanConfig" v-if="['boolean'].includes(_value.type)">
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-5')" name="booleanConfig" v-if="['boolean'].includes(_value.type)">
     <BooleanParam :name="name" v-model:value="_value"></BooleanParam>
   </j-form-item>
-  <j-form-item label="枚举项" :name="name.concat(['elements'])" v-if="['enum'].includes(_value.type)" :rules="[
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-6')" :name="name.concat(['elements'])" v-if="['enum'].includes(_value.type)" :rules="[
     { required: true, validator: validateEnum }
   ]">
     <EnumParam v-model:value="_value.elements" :name="name.concat(['elements'])"></EnumParam>
@@ -27,31 +27,31 @@
   <j-form-item :name="name.concat(['expands', 'maxLength'])" v-if="['string', 'password'].includes(_value.type)">
     <template #label>
       <j-space>
-        最大长度
-        <j-tooltip title="字节">
+        {{ $t('Edit.ValueTypeForm.6915918-7') }}
+        <j-tooltip :title="$t('Edit.ValueTypeForm.6915918-8')">
           <AIcon type="QuestionCircleOutlined" style="color: rgb(136, 136, 136); font-size: 12px;" />
           <!-- <question-circle-outlined style="color: rgb(136, 136, 136); font-size: 12px;" /> -->
         </j-tooltip>
       </j-space>
     </template>
     <j-input-number v-model:value="_value.expands.maxLength" size="small" :max="2147483647" :min="1" :precision="0"
-      style="width: 100%;" placeholder="请输入最大长度"></j-input-number>
+      style="width: 100%;" :placeholder="$t('Edit.ValueTypeForm.6915918-9')"></j-input-number>
   </j-form-item>
-  <j-form-item label="元素配置" :name="name.concat(['elementType'])" v-if="['array'].includes(_value.type)" :rules="[
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-10')" :name="name.concat(['elementType'])" v-if="['array'].includes(_value.type)" :rules="[
     { validator: validateArray }
   ]">
     <ArrayParam v-model:value="_value.elementType" :name="name.concat(['elementType'])"></ArrayParam>
   </j-form-item>
-  <j-form-item label="JSON对象" :name="name.concat(['properties'])" v-if="['object'].includes(_value.type)" :rules="[
-    { validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, 'JSON对象') }
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-11')" :name="name.concat(['properties'])" v-if="['object'].includes(_value.type)" :rules="[
+    { validator: (_rule: Rule, val: Record<any, any>[]) => validateJson(_rule, val, $t('Edit.ValueTypeForm.6915918-11')) }
   ]">
     <JsonParam v-model:value="_value.properties" :name="name.concat(['properties'])"></JsonParam>
   </j-form-item>
-  <j-form-item label="文件类型" :name="name.concat(['bodyType'])" v-if="['file'].includes(_value.type)" initialValue="url"
+  <j-form-item :label="$t('Edit.ValueTypeForm.6915918-12')" :name="name.concat(['bodyType'])" v-if="['file'].includes(_value.type)" initialValue="url"
     :rules="[
-      { required: true, message: '请选择文件类型' },
+      { required: true, message: $t('Edit.ValueTypeForm.6915918-13') },
     ]">
-    <j-select v-model:value="_value.bodyType" :options="FileTypeList" size="small" placeholder="请选择文件类型"></j-select>
+    <j-select v-model:value="_value.bodyType" :options="FileTypeList" size="small" :placeholder="$t('Edit.ValueTypeForm.6915918-13')"></j-select>
   </j-form-item>
 </template>
 <script lang="ts" setup mame="BaseForm">
@@ -67,6 +67,10 @@ import JsonParam from '@/components/Metadata/JsonParam/index.vue'
 import { useMetadataStore } from '@/store/metadata';
 import { validateEnum, validateArray, validateJson } from './validator'
 import { Rule } from 'ant-design-vue/es/form';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 type ValueType = Record<any, any>;
 const props = defineProps({
@@ -85,7 +89,6 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: '数据类型'
   },
   required: {
     type: Boolean,
@@ -180,7 +183,7 @@ const changeType = (val: SelectValue) => {
 //     { validator: validateJson, message: '请输入配置参数' }
 //   ],
 //   fileType: [
-//     { required: true, message: '请选择文件类型' },
+//     { required: true, message: $t('Edit.ValueTypeForm.6915918-13') },
 //   ]
 // })
 

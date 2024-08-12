@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Cat.index.691582-0": "查看物模型",
+		"Cat.index.691582-1": "导出",
+		"Cat.index.691582-2": "物模型是对设备在云端的功能描述，包括设备的属性、服务和事件。物联网平台通过定义一种物的描述语言来描述物模型，称之为TSL（即 Thing Specification Language），采用 JSON 格式，您可以根据 TSL组装上报设备的数据。您可以导出完整物模型，用于云端应用开发。",
+		"Cat.index.691582-3": "{0}-物模型",
+		"Cat.index.691582-4": "请先配置物模型",
+		"Cat.index.691582-5": "标准物模型"
+	},
+	"en": {
+		"Cat.index.691582-0": "View IOT model",
+		"Cat.index.691582-1": "Export",
+		"Cat.index.691582-2": "A IOT model is a description of the functionality of a device in the cloud, including its attributes, services, and events. The IoT platform describes the object model by defining a description language for the object, called TSL (Thing Specification Language), in JSON format. You can assemble and report device data based on TSL. You can export the complete physical model for cloud application development.",
+		"Cat.index.691582-3": "{0}- IOT model",
+		"Cat.index.691582-4": "Please configure the IOT model first",
+		"Cat.index.691582-5": "Standard IOT model"
+	}
+}

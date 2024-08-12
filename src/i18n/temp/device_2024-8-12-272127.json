@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Metrics.Metrics.6916335-0": "请输入标识",
+		"Metrics.Metrics.6916335-1": "请输入名称",
+		"Metrics.Metrics.6916335-2": "添加指标值",
+		"Metrics.Metrics.6916335-3": "指标标识",
+		"Metrics.Metrics.6916335-4": "该标识已存在",
+		"Metrics.Metrics.6916335-5": "最多可输入64个字符",
+		"Metrics.Metrics.6916335-6": "标识只能由数字、字母、下划线、中划线组成",
+		"Metrics.Metrics.6916335-7": "指标名称",
+		"Metrics.Metrics.6916335-8": "请输入指标名称",
+		"Metrics.Metrics.6916335-9": "指标配置",
+		"Metrics.Metrics.6916335-10": "请配置指标",
+		"Metrics.Metrics.6916335-11": "操作",
+		"Metrics.Metrics.6916335-12": "指标值"
+	},
+	"en": {
+		"Metrics.Metrics.6916335-0": "Please enter the identifier",
+		"Metrics.Metrics.6916335-1": "Please enter a name",
+		"Metrics.Metrics.6916335-2": "Add indicator values",
+		"Metrics.Metrics.6916335-3": "Indicator identification",
+		"Metrics.Metrics.6916335-4": "This identifier already exists",
+		"Metrics.Metrics.6916335-5": "Up to 64 characters can be entered",
+		"Metrics.Metrics.6916335-6": "Identification can only be composed of numbers, letters, underscores, and dashes",
+		"Metrics.Metrics.6916335-7": "Indicator Name",
+		"Metrics.Metrics.6916335-8": "Please enter the indicator name",
+		"Metrics.Metrics.6916335-9": "Indicator configuration",
+		"Metrics.Metrics.6916335-10": "Please configure indicators",
+		"Metrics.Metrics.6916335-11": "Operation",
+		"Metrics.Metrics.6916335-12": "Indicator value"
+	}
+}

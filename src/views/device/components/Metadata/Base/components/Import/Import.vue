@@ -3,12 +3,12 @@
     <template #icon>
       <AIcon type="DownloadOutlined"/>
     </template>
-    导入
+    {{ $t('Import.Import.6916344-0') }}
   </a-button>
   <a-modal
     v-if="visible"
     visible
-    :title="step === 1 ? '批量导入' : '导入结果'"
+    :title="step === 1 ? $t('Import.Import.6916344-1') : $t('Import.Import.6916344-2')"
     :width="600"
     :keyboard="false"
     :maskClosable="false"
@@ -20,7 +20,7 @@
     @ok="onOk"
   >
     <a-form v-if="step === 1" layout="vertical">
-      <a-form-item label="上传文件">
+      <a-form-item :label="$t('Import.Import.6916344-3')">
         <a-upload-dragger
           name="file"
           :headers="{[TOKEN_KEY]: LocalStore.get(TOKEN_KEY)}"
@@ -33,29 +33,29 @@
         >
           <div class="dragger-box">
             <AIcon class="icon" type="PlusCircleFilled"/>
-            <span style="margin: 16px 0 8px 0">点击或拖拽上传文件</span>
-            <span>格式：.xlsx, .csv</span>
+            <span style="margin: 16px 0 8px 0">{{ $t('Import.Import.6916344-4') }}</span>
+            <span>{{ $t('Import.Import.6916344-5') }}</span>
           </div>
         </a-upload-dragger>
       </a-form-item>
-      <a-form-item label="下载模版">
+      <a-form-item :label="$t('Import.Import.6916344-6')">
         <div class="file-download">
-          <j-button class="btn" @click="downFile('xlsx')">模板格式.xlsx</j-button>
-          <j-button class="btn" @click="downFile('csv')">模板格式.csv</j-button>
+          <j-button class="btn" @click="downFile('xlsx')">{{ $t('Import.Import.6916344-7') }}</j-button>
+          <j-button class="btn" @click="downFile('csv')">{{ $t('Import.Import.6916344-8') }}</j-button>
         </div>
       </a-form-item>
     </a-form>
     <div v-else-if="step === 2">
       <span>
-        正在导入，请稍后...
+        {{ $t('Import.Import.6916344-9') }}
       </span>
     </div>
     <div v-else>
       <div>
-        导入成功： {{ successCount }}条
+        {{ $t('Import.Import.6916344-10') }} {{ successCount }}{{ $t('Import.Import.6916344-11') }}
       </div>
       <div>
-        导入失败： {{ errorCount }}条
+        {{ $t('Import.Import.6916344-12') }} {{ errorCount }}{{ $t('Import.Import.6916344-11') }}
       </div>
     </div>
   </a-modal>
@@ -69,6 +69,10 @@ import { getTemplate, uploadAnalyzeMetadata} from '@/api/device/instance'
 import {getTemplate as getProductTemplate} from '@/api/device/product'
 import {downloadFileByUrl} from "@/utils/utils";
 import {useGroupActive, useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   target: {
@@ -144,7 +148,7 @@ const submitData = async (metadataStr) => {
     })
     step.value = 3
   } else {
-    onlyMessage('请先上传文件', 'error');
+    onlyMessage($t('Import.Import.6916344-13'), 'error');
   }
 };
 
@@ -156,7 +160,7 @@ const onOk = () => {
 const downFile = (type) => {
   const url = props.target === 'device' ? getTemplate(route.params.id, type) : getProductTemplate(route.params.id, type)
 
-  downloadFileByUrl(url + `?${TOKEN_KEY_URL}=${getToken()}`, '物模型模版', type)
+  downloadFileByUrl(url + `?${TOKEN_KEY_URL}=${getToken()}`, $t('Import.Import.6916344-14'), type)
 }
 
 const handleDrop = () => {
@@ -168,7 +172,7 @@ const beforeUpload = (file) => {
     file.type ===
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   if (!isCsv && !isXlsx) {
-    onlyMessage('请上传.xlsx或.csv格式文件', 'warning');
+    onlyMessage($t('Import.Import.6916344-15'), 'warning');
   }
 
   const formData = new FormData()
@@ -198,7 +202,7 @@ const uploadChange = async (info) => {
     await submitData(resp?.result || '');
   }
   if (info.file.status === 'error') {
-    onlyMessage('上传失败', 'error');
+    onlyMessage($t('Import.Import.6916344-16'), 'error');
   }
 };
 </script>

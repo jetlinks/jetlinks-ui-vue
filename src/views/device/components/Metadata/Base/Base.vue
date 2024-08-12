@@ -27,9 +27,9 @@
               @ok="importMetadata"
             />
             <span v-if="searchData.show">
-              已查询到
+              {{ $t('Base.Base.6916024-0') }}
               <span style="color: #ff7875">{{ searchData.len}}</span>
-              条相关数据
+              {{ $t('Base.Base.6916024-1') }}
             </span>
           </a-space>
         </div>
@@ -90,21 +90,21 @@
     <template #bodyExtra v-if="hasOperate('add', type)">
       <div class="noEdit-tip">
         <div>
-         该设备受所属产品的存储策略影响，无法进行删改、新增操作
+         {{ $t('Base.Base.6916024-7') }}
         </div>
         <div>
-          <a-button type="link" @click="jumpProduct" style="font-size: 20px;">修改存储策略</a-button>
+          <a-button type="link" @click="jumpProduct" style="font-size: 20px;">{{ $t('Base.Base.6916024-8') }}</a-button>
         </div>
       </div>
     </template>
     <template #id="{ record, index }">
       <EditTableFormItem :name="[index, 'id']" @change="metadataChange">
-        <a-input v-model:value="record.id" placeholder="请输入标识" :disabled="record.expands?.isProduct"/>
+        <a-input v-model:value="record.id" :placeholder="$t('Base.Base.6916024-9')" :disabled="record.expands?.isProduct"/>
       </EditTableFormItem>
     </template>
     <template #name="{ record, index }">
       <EditTableFormItem :name="[index, 'name']" @change="metadataChange">
-        <a-input v-model:value="record.name" placeholder="请输入名称" :disabled="record.expands?.isProduct"/>
+        <a-input v-model:value="record.name" :placeholder="$t('Base.Base.6916024-10')" :disabled="record.expands?.isProduct"/>
       </EditTableFormItem>
     </template>
     <template #valueType="{ record, index }">
@@ -134,7 +134,7 @@
               <template #icon>
                 <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.valueType.properties?.length}"/>
               </template>
-              配置
+              {{ $t('Base.Base.6916024-11') }}
             </a-button>
           </ObjectParams>
         </div>
@@ -180,8 +180,8 @@
       <BooleanSelect
           v-model:value="record.async"
           style="width: 100%"
-          trueLabel="是"
-          falseLabel="否"
+          :trueLabel="$t('Base.Base.6916024-12')"
+          :falseLabel="$t('Base.Base.6916024-13')"
           :true-value="true"
           :false-value="false"
           :disabled="record.expands?.isProduct"
@@ -195,7 +195,7 @@
             <template #icon>
               <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.inputs.length}"/>
             </template>
-            配置
+            {{ $t('Base.Base.6916024-11') }}
           </a-button>
         </ObjectParams>
       </EditTableFormItem>
@@ -228,7 +228,7 @@
       </EditTableFormItem>
     </template>
     <template #description="{ record }">
-      <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct" @change="metadataChange"/>
+      <a-input v-model:value="record.description" :placeholder="$t('Base.Base.6916024-14')" :disabled="record.expands?.isProduct" @change="metadataChange"/>
     </template>
     <template #properties="{ record, index }">
       <EditTableFormItem :name="[index, 'properties']" @change="metadataChange">
@@ -240,7 +240,7 @@
     </template>
   </EditTable>
     <div>
-      可编辑数据列表共 <span class="metadata-result-total">{{ effectiveDataLength }}</span> 条数据
+      {{ $t('Base.Base.6916024-15') }} <span class="metadata-result-total">{{ effectiveDataLength }}</span> {{ $t('Base.Base.6916024-16') }}
     </div>
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
@@ -320,6 +320,9 @@ import {
 import {EventLevel} from "@/views/device/data";
 import {message } from "ant-design-vue";
 import { Import } from './components/Import'
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
   target: {
@@ -571,7 +574,7 @@ const handleSaveClick = async (next?: Function) => {
           return getPopupContainer()
         }
       })
-      onlyMessage('操作成功！')
+      onlyMessage($t('Base.Base.6916024-17'))
       next?.()
     }
   }
@@ -590,9 +593,9 @@ const jumpProduct = () => {
 const parentTabsChange = (next?: Function) => {
   if (editStatus.value && permissionStore.hasPermission(`${props.permission}:update`) && LocalStore.get(TOKEN_KEY)) {
     const modal = Modal.confirm({
-      content: '页面改动数据未保存',
-      okText: '保存',
-      cancelText: '不保存',
+      content: $t('Base.Base.6916024-18'),
+      okText: $t('Base.Base.6916024-6'),
+      cancelText: $t('Base.Base.6916024-19'),
       zIndex: 1400,
       closable: true,
       onOk: () => {

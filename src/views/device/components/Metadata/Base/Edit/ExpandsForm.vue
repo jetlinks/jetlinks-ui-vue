@@ -1,18 +1,18 @@
 <template>
-  <j-form-item label="来源" :name="name.concat(['source'])" v-if="type === 'product'" :rules="[
-    { required: true, message: '请选择来源' },
+  <j-form-item :label="$t('Edit.ExpandsForm.6916021-0')" :name="name.concat(['source'])" v-if="type === 'product'" :rules="[
+    { required: true, message: $t('Edit.ExpandsForm.6916021-1') },
   ]">
     <j-select v-model:value="_value.source" :options="PropertySource" size="small"
       :disabled="metadataStore.model.action === 'edit'" @change="changeSource"></j-select>
   </j-form-item>
   <virtual-rule-param v-if="type === 'product' && _value.source === 'rule'" v-model:value="_value.virtualRule"
     :name="name.concat(['virtualRule'])" :id="id" :showWindow="_value.source === 'rule'"></virtual-rule-param>
-  <j-form-item label="读写类型" :name="name.concat(['type'])" :rules="[
-    { required: true, message: '请选择读写类型' },
+  <j-form-item :label="$t('Edit.ExpandsForm.6916021-2')" :name="name.concat(['type'])" :rules="[
+    { required: true, message: $t('Edit.ExpandsForm.6916021-3') },
   ]">
     <j-select v-model:value="_value.type" :options="ExpandsTypeList" mode="multiple" size="small" :disabled="['manual', 'rule'].includes(_value.source)"></j-select>
   </j-form-item>
-  <j-form-item label="其它配置" v-if="config.length > 0">
+  <j-form-item :label="$t('Edit.ExpandsForm.6916021-4')" v-if="config.length > 0">
     <j-form-item v-for="(item, index) in config" :key="index">
       <config-param v-model:value="_value" :config="item" :name="name"></config-param>
     </j-form-item>
@@ -20,12 +20,12 @@
   <j-form-item
     v-if="type === 'product' && ['int', 'float', 'double', 'long', 'date', 'string', 'boolean'].includes(valueType.type)"
     :name="name.concat(['metrics'])" :rules="[
-      { validator: () => validateMetrics(_value.metrics), message: '请输入指标配置' }
+      { validator: () => validateMetrics(_value.metrics), message: $t('Edit.ExpandsForm.6916021-5') }
     ]">
     <template #label>
       <j-space>
-        指标配置
-        <j-tooltip title="场景联动页面可引用指标配置作为触发条件">
+        {{ $t('Edit.ExpandsForm.6916021-6') }}
+        <j-tooltip :title="$t('Edit.ExpandsForm.6916021-7')">
               <AIcon type="QuestionCircleOutlined" style="color: rgb(136, 136, 136); font-size: 12px;"/>
             </j-tooltip>
       </j-space>
@@ -41,6 +41,10 @@ import { PropType } from 'vue';
 import VirtualRuleParam from '@/components/Metadata/VirtualRuleParam/index.vue';
 import ConfigParam from '@/components/Metadata/ConfigParam/index.vue'
 import MetricsParam from '@/components/Metadata/MetricsParam/index.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 type ValueType = Record<any, any>;
 const props = defineProps({
@@ -103,7 +107,7 @@ const validateMetrics = (value: Record<any, any>[]) => {
     return item.id && item.name && item.value;
   });
   if (!flag) {
-    return Promise.reject(new Error('请输入指标配置'));
+    return Promise.reject(new Error($t('Edit.ExpandsForm.6916021-5')));
   }
   return Promise.resolve();
 }

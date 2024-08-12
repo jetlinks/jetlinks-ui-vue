@@ -1,17 +1,19 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
 
 export const sourceType = [
     {
         value: 'device',
-        label: '设备',
+        label: $t('Base.utils.691583-0'),
     },
     {
         value: 'manual',
-        label: '手动',
+        label: $t('Base.utils.691583-1'),
     },
     {
         value: 'rule',
-        label: '规则',
+        label: $t('Base.utils.691583-2'),
     },
 ]
 

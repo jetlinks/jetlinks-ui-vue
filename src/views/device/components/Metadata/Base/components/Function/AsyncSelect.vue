@@ -2,7 +2,7 @@
     <j-select
         v-model:value="value"
         :options="options"
-        :placeholder="placeholder"
+        :placeholder="placeholder||$t('Function.AsyncSelect.6916452-0')"
         :get-popup-container="(node) => fullRef || node"
         @change="change"
     />
@@ -12,6 +12,9 @@
   import type { PropType } from 'vue';
   import { ref, watch } from 'vue';
   import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
+  import { useI18n } from 'vue-i18n';
+  
+  const { t: $t } = useI18n();
 
   type Emits = {
     (e: 'update:value', data: Record<string, any>): void;
@@ -27,7 +30,6 @@
     },
     placeholder: {
       type: String,
-      default: '请选择'
     },
     options: {
       type: Array as PropType<{label: string, value: string}[]>,

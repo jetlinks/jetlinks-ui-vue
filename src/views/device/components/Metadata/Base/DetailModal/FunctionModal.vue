@@ -1,7 +1,7 @@
 <template>
   <j-modal
       visible
-      title="功能详情"
+      :title="$t('DetailModal.FunctionModal.6915916-0')"
       width="650px"
       :maskClosable="false"
       :getContainer="getPopupContainer"
@@ -16,21 +16,21 @@
           justifyContent: 'end'
         }"
     >
-      <a-descriptions-item label="功能标识">{{ data.id }}</a-descriptions-item>
-      <a-descriptions-item label="功能名称">{{ data.name }}</a-descriptions-item>
-      <a-descriptions-item label="是否异步">{{ data.async ? '是' : '否' }}</a-descriptions-item>
-      <a-descriptions-item label="输入参数"></a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.FunctionModal.6915916-1')">{{ data.id }}</a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.FunctionModal.6915916-2')">{{ data.name }}</a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.FunctionModal.6915916-3')">{{ data.async ? $t('DetailModal.FunctionModal.6915916-4') : $t('DetailModal.FunctionModal.6915916-5') }}</a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.FunctionModal.6915916-6')"></a-descriptions-item>
       <a-descriptions-item>
         <JsonView :value="dataTypeTable.input"/>
       </a-descriptions-item>
-      <a-descriptions-item label="输出参数"></a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.FunctionModal.6915916-7')"></a-descriptions-item>
       <a-descriptions-item>
         <JsonView :value="dataTypeTable.output"/>
       </a-descriptions-item>
-      <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
+      <a-descriptions-item v-if="showSetting && data.expands?.storageType" :label="$t('DetailModal.FunctionModal.6915916-8')">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
     </j-descriptions>
     <template #footer>
-      <j-button type="primary" @click="ok">确认</j-button>
+      <j-button type="primary" @click="ok">{{ $t('DetailModal.FunctionModal.6915916-9') }}</j-button>
     </template>
   </j-modal>
 </template>
@@ -38,6 +38,10 @@
 <script setup lang="ts" name="FunctionModal">
 import JsonView from './JsonView.vue'
 import {useStoreType} from "@/views/device/components/Metadata/Base/utils";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   data: {

@@ -75,6 +75,10 @@ import {
   validatorConfig
 } from "@/views/device/components/Metadata/Base/columns";
 import Type from './Type.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
     value: {
@@ -102,7 +106,7 @@ const typeChange = (e: string) => {
 
 const columns = [
   {
-    title: '参数标识',
+    title: $t('Function.OutputParams.6916450-0'),
     dataIndex: 'id',
     type: 'text',
     placement: 'Left',
@@ -115,37 +119,37 @@ const columns = [
             const fieldIndex = Number(field[1])
             const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
             if (hasId) {
-              return Promise.reject('该标识已存在')
+              return Promise.reject($t('Function.OutputParams.6916450-1'))
             }
             return Promise.resolve()
           }
-          return Promise.reject('请输入标识')
+          return Promise.reject($t('Function.OutputParams.6916450-2'))
         }
       },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Function.OutputParams.6916450-3') },
         {
           pattern: /^[a-zA-Z0-9_\-]+$/,
-          message: '标识只能由数字、字母、下划线、中划线组成',
+          message: $t('Function.OutputParams.6916450-4'),
         },
       ]
     }
   },
   {
-    title: '参数名称',
+    title: $t('Function.OutputParams.6916450-5'),
     dataIndex: 'name',
     type: 'text',
     form: {
       required: true,
       rules: [{
         required: true,
-        message: '请输入参数名称'
+        message: $t('Function.OutputParams.6916450-6')
       },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Function.OutputParams.6916450-3') },
       ]
     }
   },
   {
-    title: '数据类型',
+    title: $t('Function.OutputParams.6916450-7'),
     type: 'components',
     dataIndex: 'valueType',
     components: {
@@ -157,7 +161,7 @@ const columns = [
         validator(_: any, value: any) {
           console.log('validator',value)
           if (!value?.type) {
-            return Promise.reject('请选择数据类型')
+            return Promise.reject($t('Function.OutputParams.6916450-8'))
           }
           return Promise.resolve()
         }
@@ -168,7 +172,7 @@ const columns = [
     },
   },
   {
-    title: '其他配置',
+    title: $t('Function.OutputParams.6916450-9'),
     dataIndex: 'config',
     form: {
       required: true,
@@ -194,7 +198,7 @@ const columns = [
     },
   },
   {
-    title: '操作',
+    title: $t('Function.OutputParams.6916450-10'),
     dataIndex: 'action',
     width: 60
   }

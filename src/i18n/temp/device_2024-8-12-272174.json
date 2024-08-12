@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Tags.Type.6916229-0": "读",
+		"Tags.Type.6916229-1": "写",
+		"Tags.Type.6916229-2": "上报",
+		"Tags.Type.6916229-3": "请选择读写类型"
+	},
+	"en": {
+		"Tags.Type.6916229-0": "Read",
+		"Tags.Type.6916229-1": "Write",
+		"Tags.Type.6916229-2": "Report",
+		"Tags.Type.6916229-3": "Please select read-write type"
+	}
+}

@@ -9,14 +9,14 @@
         <template v-if="source === 'rule'">
             <j-form-item :name="['virtualRule', 'triggerProperties']" :rules="[{
                 required: true,
-                message: '请选择触发属性'
+                message: $t('VirtualRule.index.6916230-0')
             }]">
                 <template #label>
-                    触发属性
+                    {{ $t('VirtualRule.index.6916230-1') }}
                     <j-tooltip>
                         <template #title>
-                            <div>选择当前产品物模型下的属性作为触发属性</div>
-                            <div>任意属性值更新时将触发下方计算规则</div>
+                            <div>{{ $t('VirtualRule.index.6916230-2') }}</div>
+                            <div>{{ $t('VirtualRule.index.6916230-3') }}</div>
                         </template>
                         <AIcon
                             type="QuestionCircleOutlined"
@@ -27,7 +27,7 @@
                 <j-select
                     v-model:value="formData.virtualRule.triggerProperties"
                     mode="multiple"
-                    placeholder="请选择触发属性"
+                    :placeholder="$t('VirtualRule.index.6916230-0')"
                     show-search
                     max-tag-count="responsive"
                     :getPopupContainer="(node) => tableWrapperRef || node"
@@ -44,7 +44,7 @@
                             )
                         "
                         value="*"
-                        >任意属性</j-select-option
+                        >{{ $t('VirtualRule.index.6916230-4') }}</j-select-option
                     >
                     <j-select-option
                         :disabled="
@@ -60,7 +60,7 @@
             </j-form-item>
             <j-form-item
                 :name="['virtualRule', 'script']"
-                label="计算规则"
+                :label="$t('VirtualRule.index.6916230-5')"
                 required
             >
                 <Rule
@@ -72,21 +72,21 @@
                 />
             </j-form-item>
             <j-form-item
-                label="窗口"
+                :label="$t('VirtualRule.index.6916230-6')"
                 :name="['virtualRule', 'windowType']"
                 :rules="[{
                     required: true,
-                    message: '请选择窗口类型'
+                    message: $t('VirtualRule.index.6916230-7')
                 }]"
             >
                 <j-select
                     show-search
-                    placeholder="请选择窗口类型"
+                    :placeholder="$t('VirtualRule.index.6916230-7')"
                     v-model:value="formData.virtualRule.windowType"
                     :options="[
-                        { label: '无', value: 'undefined' },
-                        { label: '时间窗口', value: 'time' },
-                        { label: '频次窗口', value: 'num' },
+                        { label: $t('VirtualRule.index.6916230-8'), value: 'undefined' },
+                        { label: $t('VirtualRule.index.6916230-9'), value: 'time' },
+                        { label: $t('VirtualRule.index.6916230-10'), value: 'num' },
                     ]"
                     :getPopupContainer="(node) => tableWrapperRef || node"
                     :dropdownStyle="{
@@ -99,15 +99,15 @@
                 v-if="formData.virtualRule?.windowType !== 'undefined'"
             >
                 <j-form-item
-                    label="聚合函数"
+                    :label="$t('VirtualRule.index.6916230-11')"
                     :name="['virtualRule', 'aggType']"
                     :rules="[{
                         required: true,
-                        message: '请选择聚合函数'
+                        message: $t('VirtualRule.index.6916230-12')
                     }]"
                 >
                     <j-select
-                        placeholder="请选择聚合函数"
+                        :placeholder="$t('VirtualRule.index.6916230-12')"
                         v-model:value="formData.virtualRule.aggType"
                         :options="aggList"
                         :getPopupContainer="(node) => tableWrapperRef || node"
@@ -119,19 +119,19 @@
                 <j-form-item
                     :label="
                         formData.virtualRule?.windowType === 'time'
-                            ? '窗口长度(s)'
-                            : '窗口长度(次)'
+                            ?  $t('VirtualRule.index.6916230-13')
+                            : $t('VirtualRule.index.6916230-22')
                     "
                     :name="['virtualRule', 'window', 'span']"
                     required
                     :rules="[
                         {
                             required: true,
-                            message: '请输入窗口长度',
+                            message: $t('VirtualRule.index.6916230-15'),
                         },
                         {
                             pattern: /^\d+$/,
-                            message: '请输入1-999999之间的正整数',
+                            message: $t('VirtualRule.index.6916230-16'),
                         },
                     ]"
                 >
@@ -139,33 +139,33 @@
                         v-model:value="formData.virtualRule.window.span"
                         :max="999999"
                         :min="1"
-                        placeholder="请输入窗口长度"
+                        :placeholder="$t('VirtualRule.index.6916230-15')"
                         style="width: 100%"
                     />
                 </j-form-item>
                 <j-form-item
                     :label="
                         formData.virtualRule?.windowType === 'time'
-                            ? '步长(s)'
-                            : '步长(次)'
+                            ? $t('VirtualRule.index.6916230-17')
+                            : $t('VirtualRule.index.6916230-23')
                     "
                     :name="['virtualRule', 'window', 'every']"
                     required
                     :rules="[
                         {
                             required: true,
-                            message: '请输入步长',
+                            message: $t('VirtualRule.index.6916230-18'),
                         },
                         {
                             pattern: /^\d+$/,
-                            message: '请输入1-999999之间的正整数',
+                            message: $t('VirtualRule.index.6916230-16'),
                         },
                     ]"
                 >
                     <j-input-number
                         style="width: 100%"
                         v-model:value="formData.virtualRule.window.every"
-                        placeholder="请输入步长"
+                        :placeholder="$t('VirtualRule.index.6916230-18')"
                         :max="999999"
                         :min="1"
                     />
@@ -187,6 +187,10 @@ import { useProductStore } from '@/store/product';
 import {PropType, Ref} from 'vue';
 import { ReadType } from '@/components/Metadata/components';
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 type SourceType = 'device' | 'manual' | 'rule';
 
@@ -262,14 +266,14 @@ const windowTypeChange = () => {
 
 const typeOptions = computed(() => {
     if (props.source === 'manual') {
-        return [{ value: 'write', label: '写' }];
+        return [{ value: 'write', label: $t('VirtualRule.index.6916230-19') }];
     } else if (props.source === 'rule') {
-        return [{ value: 'report', label: '上报' }];
+        return [{ value: 'report', label: $t('VirtualRule.index.6916230-20') }];
     } else {
         return [
-            { value: 'read', label: '读' },
-            { value: 'write', label: '写' },
-            { value: 'report', label: '上报' },
+            { value: 'read', label: $t('VirtualRule.index.6916230-21') },
+            { value: 'write', label: $t('VirtualRule.index.6916230-19') },
+            { value: 'report', label: $t('VirtualRule.index.6916230-20') },
         ];
     }
 });

@@ -38,6 +38,10 @@ import {
     DataTableFile,
     DataTableDate,
 } from 'jetlinks-ui-components';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 const props = defineProps({
     value: {
         type: Object,
@@ -105,7 +109,7 @@ const text = computed(() => {
                 return value?.maxLength;
             case 'int':
             case 'long':
-                return '无'
+                return $t('components.DataTypeObjectChild.6916445-0')
         }
     } else {
         return ''

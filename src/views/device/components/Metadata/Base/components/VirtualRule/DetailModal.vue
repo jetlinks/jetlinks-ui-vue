@@ -1,7 +1,7 @@
 <template>
   <a-modal
     visible
-    title="规则"
+    :title="$t('VirtualRule.DetailModal.6916339-0')"
     :maskClosable="false"
     :width="1000"
     :getContainer="getPopupContainer"
@@ -17,6 +17,10 @@
 </template>
 
 <script setup name="DetailModal">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 defineProps({
   value: {
     type: String,

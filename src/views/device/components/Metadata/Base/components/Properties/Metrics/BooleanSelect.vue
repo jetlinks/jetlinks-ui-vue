@@ -2,8 +2,8 @@
   <j-select
       v-model:value="myValue"
       :options="[
-          { label: '固定值', value: 'false' },
-          { label: '范围值', value: 'true' },
+          { label: $t('Metrics.BooleanSelect.6916338-0'), value: 'false' },
+          { label: $t('Metrics.BooleanSelect.6916338-1'), value: 'true' },
       ]"
       :dropdownStyle="{
         zIndex: 1071
@@ -15,6 +15,9 @@
 
 <script name="BooleanSelect" setup>
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
   value: {

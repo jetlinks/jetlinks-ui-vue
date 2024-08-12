@@ -1,11 +1,15 @@
 <template>
   <j-button type="link" style="padding-left: 0;" :disabled="disabled">
     <AIcon type="SettingOutlined" />
-    配置
+    {{ $t('components.ModelButton.6916340-0') }}
   </j-button>
 </template>
 
 <script setup name="ModelButton">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   disabled: {
