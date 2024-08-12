@@ -653,6 +653,11 @@ watch(() => metadata.value, () => {
         group: undefined
       }
     }
+    if(props.type === 'functions' && !item.output){
+      item['output'] = {
+        
+      }
+    }
     return item
   })
   initOptions(dataSource.value)
