@@ -328,7 +328,7 @@ async function checkOtherInputMapping(_rule: Rule, value: string) {
     if (value !== '') {
         const regex = /^-?\d+$/;
         if (!regex.test(value)) {
-            return Promise.reject('请输入');
+            return Promise.reject('请输入整数！');
         }
         return Promise.resolve();
     }
@@ -349,6 +349,7 @@ watch(
     (newVal) => {
         for (const key in newVal) {
             formState[key] = newVal[key];
+            formRef.value?.validate();
         }
     },
     {
