@@ -366,7 +366,7 @@ const showContent = computed(() => {
         return showExtra.value;
     }
 
-    return showMetrics.value || config.value.length > 0;
+    return (showMetrics.value || config.value.length > 0) && props.id;
 });
 
 const showMetrics = computed(() => {
