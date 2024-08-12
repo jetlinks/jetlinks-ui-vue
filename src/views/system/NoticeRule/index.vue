@@ -72,7 +72,7 @@ const systemNotice = [
             },
             {
                 provider: 'alarm-org',
-                name: '部门告警',
+                name: '组织告警',
             },
             {
                 provider: 'alarm-other',

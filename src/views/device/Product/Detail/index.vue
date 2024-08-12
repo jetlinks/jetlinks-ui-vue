@@ -160,7 +160,10 @@ import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
+import { isNoCommunity } from '@/utils/utils';
+import { useSystem } from '@/store/system';
 
+const { showThreshold } = useSystem()
 const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -274,45 +277,29 @@ const getProtocol = async () => {
             productStore.current?.messageProtocol,
         );
         if (res.status === 200) {
-            const paring = res.result?.transports[0]?.features?.find(
+            const transport = res.result?.transports?.find((item: any) => {
+                return item.id === productStore.current?.transportProtocol;
+            });
+            const paring = transport?.features?.find(
                 (item: any) => item.id === 'transparentCodec',
             );
+            const supportFirmware = transport?.features?.find(
+                (item: any) => item.id === 'supportFirmware',
+            );
             if (paring) {
-                list.value = [
-                    {
-                        key: 'Info',
-                        tab: '配置信息',
-                    },
-                    {
-                        key: 'Metadata',
-                        tab: '物模型',
-                        class: 'objectModel',
-                    },
-                    {
-                        key: 'Device',
-                        tab: '设备接入',
-                    },
-                    {
-                        key: 'DataAnalysis',
-                        tab: '数据解析',
-                    },
-                ];
-            } else {
-                list.value = [
-                    {
-                        key: 'Info',
-                        tab: '配置信息',
-                    },
-                    {
-                        key: 'Metadata',
-                        tab: '物模型',
-                        class: 'objectModel',
-                    },
-                    {
-                        key: 'Device',
-                        tab: '设备接入',
-                    },
-                ];
+                list.value.push({
+                    key: 'DataAnalysis',
+                    tab: '数据解析',
+                });
+            }
+            if (
+                supportFirmware &&
+                permissionStore.hasPermission('device/Firmware:view') && isNoCommunity
+            ) {
+                list.value.push({
+                    key: 'Firmware',
+                    tab: '远程升级',
+                });
             }
         }
         //当前设备接入选择的协议
@@ -329,17 +316,11 @@ const getProtocol = async () => {
         if (
             permissionStore.hasPermission(
                 'rule-engine/Alarm/Configuration:view',
-            )
+            ) && isNoCommunity && showThreshold
         ) {
             list.value.push({
                 key: 'AlarmRecord',
                 tab: '预处理数据',
-            });
-        }
-        if (permissionStore.hasPermission('device/Firmware:view')) {
-            list.value.push({
-                key: 'Firmware',
-                tab: '远程升级',
             });
         }
     }

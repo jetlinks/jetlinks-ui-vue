@@ -96,8 +96,8 @@ export default defineConfig(({ mode}) => {
                   // target: 'http://192.168.32.244:8881',
                 //   target: 'http://192.168.32.217:8844', //张本地
                 //   target: 'http://120.77.179.54:8844', // 120测试
-                target: 'http://192.168.33.46:8844', // 本地开发环境
-                // target: 'http://192.168.32.167:8844', // 本地开发环境1
+                // target: 'http://192.168.33.46:8844', // 本地开发环境
+                target: 'http://192.168.33.97:8844', // 本地开发环境1
                 // target: 'http://192.168.33.6:38848', // 社区版开发环境
                 //   target: 'http://192.168.32.207:8844', // 刘本地
                 //   target: 'http://192.168.32.187:8844', // 谭本地
@@ -114,7 +114,6 @@ export default defineConfig(({ mode}) => {
               less: {
                   modifyVars: {
                       'root-entry-name': 'variable',
-                      'primary-color': '#1677FF',
                       hack: `true; @import (reference) "${path.resolve('src/style/variable.less')}";`,
                   },
                   javascriptEnabled: true,

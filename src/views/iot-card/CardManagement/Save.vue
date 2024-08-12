@@ -204,11 +204,7 @@ const rules = {
 };
 
 const filterOption = (input: string, option: any) => {
-    return (
-        option.componentOptions.children[0].text
-            .toLowerCase()
-            .indexOf(input.toLowerCase()) >= 0
-    );
+    return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 const platformConfigList = computed(() => {

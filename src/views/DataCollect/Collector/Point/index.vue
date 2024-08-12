@@ -570,10 +570,18 @@ const onCheckChange = () => {
 };
 
 const handleBatchDelete = () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('至少选择一条数据', 'error');
+        return
+    }
     handleDelete();
 };
 
 const handleBatchUpdate = () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('至少选择一条数据', 'error');
+        return
+    }
     const dataSet = new Set(_selectedRowKeys.value);
     const dataMap = new Map();
     tableRef?.value?._dataSource.forEach((i: any) => {

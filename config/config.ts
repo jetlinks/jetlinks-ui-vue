@@ -1,7 +1,4 @@
 export default {
-  theme: {
-    'primary-color': '#1677FF',
-  },
   logo: '/favicon.ico', // 浏览器标签页logo
   title: 'Jetlinks', // 浏览器标签页title
   layout: {

@@ -326,7 +326,7 @@ const form = reactive({
 
     init: () => {
         // 获取菜单详情
-        routeParams.id &&
+        routeParams.id ?
             getMenuInfo_api(routeParams.id).then((resp: any) => {
                 form.data = {
                     ...(resp.result as formType),
@@ -338,7 +338,7 @@ const form = reactive({
                 };
                 form.sourceCode = resp.result.code;
                 showPermissionChoose.value = true
-            });
+            }) : showPermissionChoose.value = true
 
         if (isNoCommunity) {
             // 获取关联菜单
@@ -350,8 +350,8 @@ const form = reactive({
                             {
                                 terms: [
                                     {
-                                        value: '%show":true%',
-                                        termType: 'like',
+                                        value: '%show":false%',
+                                        termType: 'nlike',
                                         column: 'options',
                                     },
                                 ],

@@ -207,7 +207,7 @@ const onTreeSelect = (keys: any) => {
 
 const columns = [
     {
-        title: '钉钉用户名',
+        title: props.data.type === 'weixin' ? '企业微信用户名' : '钉钉用户名',
         dataIndex: 'thirdPartyUserName',
         key: 'thirdPartyUserName',
     },

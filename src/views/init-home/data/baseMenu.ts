@@ -4692,1386 +4692,1386 @@ export default [
   },
   //物联卡
 
-  {
-    "path": "3n23",
-    "sortIndex": 5,
-    "level": 1,
-    "owner": "iot",
-    "name": "WEB IDE",
-    "code": "web_ide",
-    "url": "/web_ide",
-    "icon": "MenuUnfoldOutlined",
-    showPage: ["low-code-info", "low-code-editor"],
-    "options": {
-      isShow: false,
-    },
-    "accessSupport": {
-      "text": "不支持",
-      "value": "unsupported"
-    },
-    "indirectMenus": [],
-    permissions: [
-      {
-        "permission": "low-code-info",
-        "actions": [
-          "add", "query", "save", "delete"
-        ]
-      },
-      {
-        "permission": "low-code-editor",
-        "actions": [
-          "query", "deploy"
-        ]
-      }
-    ],
-    "creatorId": "1199596756811550720",
-    "createTime": 1698735482730,
-    "supportDataAccess": false
-  },
-  {
-    "path": "3nkE",
-    "sortIndex": 6,
-    "level": 1,
-    "owner": "iot",
-    "name": "流程引擎",
-    "code": "process",
-    "url": "/workflow",
-    "icon": "MenuUnfoldOutlined",
-    showPage: ["process-form","process-deployment", "process-runtime"],
-    "options": {
-      "show": true,
-      "isShow": false
-    },
-    "permissions": [
-      {
-        "permission": "low-code-info",
-        "actions": [
-          "query"
-        ]
-      },
-      {
-        "permission": "process-runtime",
-        "actions": [
-          "transfer",
-          "reject",
-          "query",
-          "start",
-          "save",
-          "self",
-          "claim",
-          "delete-ready",
-          "complete",
-          "createAndStart",
-          "repeal"
-        ]
-      }
-    ],
-    "accessSupport": {
-      "text": "不支持",
-      "value": "unsupported"
-    },
-    "indirectMenus": [],
-    "children": [
-      // {
-      //   "path": "3nkE-n7lJ",
-      //   "sortIndex": 1,
-      //   "level": 2,
-      //   "name": "工作流",
-      //   "code": "process/home",
-      //   "describe": "",
-      //   "url": "/workflow/home",
-      //   "icon": "UpCircleOutlined",
-      //   showPage: ["process-form"],
-      //   "permissions": [
-      //     {
-      //       "permission": "process-form",
-      //       "actions": [
-      //         "query"
-      //       ]
-      //     },
-      //     {
-      //       "permission": "low-code-info",
-      //       "actions": [
-      //         "query"
-      //       ]
-      //     },
-      //   ],
-      //   "accessSupport": {
-      //     "text": "不支持",
-      //     "value": "unsupported"
-      //   },
-      //   "indirectMenus": [],
-      //   "buttons": [],
-      //   "options": {
-      //     "show": true
-      //   },
-      //   "creatorId": "1199596756811550720",
-      //   "createTime": 1699263818795,
-      //   "supportDataAccess": false
-      // },
-      {
-        "path": "3nkE-n7lJ",
-        "sortIndex": 2,
-        "level": 2,
-        "name": "表单",
-        "code": "process/form",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/form",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-form"],
-        "permissions": [
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "buttons": [
-          {
-            "id": "add",
-            "name": "新增",
-            "permissions": [
-              {
-                "permission": "process-form",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "save",
-            "name": "保存",
-            "permissions": [
-              {
-                "permission": "process-form",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "update",
-            "name": "编辑",
-            "permissions": [
-              {
-                "permission": "process-form",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "delete",
-            "name": "删除",
-            "permissions": [
-              {
-                "permission": "process-form",
-                "actions": [
-                  "delete"
-                ]
-              }
-            ]
-          }
-        ],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699263818795,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-ysKb",
-        "sortIndex": 3,
-        "level": 2,
-        "name": "流程模型",
-        "code": "process/model",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/model",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-definition"],
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "buttons": [
-          {
-            "id": "add",
-            "name": "新增",
-            "permissions": [
-              {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "delete",
-            "name": "删除",
-            "permissions": [
-              {
-                "permission": "process-definition",
-                "actions": [
-                  "delete"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "update",
-            "name": "编辑",
-            "permissions": [
-              {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "save",
-            "name": "保存",
-            "permissions": [
-              {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "deploy",
-            "name": "部署",
-            "permissions": [
-              {
-                "permission": "process-definition",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          }
-        ],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699264341009,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-fJkR",
-        "sortIndex": 4,
-        "level": 2,
-        "name": "流程实例",
-        "code": "process/instance",
-        "describe": "",
-        "owner": "iot",
-        showPage: ["process-deployment"],
-        "url": "/workflow/instance",
-        "icon": "UpCircleOutlined",
-        "status": 1,
-        "permissions": [
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "buttons": [
-          {
-            "id": "action",
-            "name": "启/禁用",
-            "permissions": [
-              {
-                "permission": "process-deployment",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "auth",
-            "name": "权限控制",
-            "permissions": [
-              {
-                "permission": "process-deployment",
-                "actions": [
-                  "save"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "delete",
-            "name": "删除",
-            "permissions": [
-              {
-                "permission": "process-deployment",
-                "actions": [
-                  "delete"
-                ]
-              }
-            ]
-          }
-        ],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699264485954,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-i2nG",
-        "sortIndex": 5,
-        "level": 2,
-        "name": "发起流程",
-        "code": "process/initiate",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/initiate",
-        "icon": "UpOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269393605,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-4T1D",
-        "sortIndex": 6,
-        "level": 2,
-        "name": "待办事项",
-        "code": "process/me/todo",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/todo",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269425041,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-RXP3",
-        "sortIndex": 7,
-        "level": 2,
-        "name": "已办事项",
-        "code": "process/me/finished",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/finished",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269455412,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-ibau",
-        "sortIndex": 8,
-        "level": 2,
-        "name": "我发起的",
-        "code": "process/me/initiate",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/initiate",
-        "icon": "UpCircleOutlined",
-        showPage: ["process-runtime"],
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699269488928,
-        "supportDataAccess": false
-      },
-      {
-        "path": "3nkE-vCQb",
-        "sortIndex": 9,
-        "level": 2,
-        "name": "抄送给我",
-        "code": "process/me/cc",
-        "describe": "",
-        "owner": "iot",
-        "url": "/workflow/me/cc",
-        "icon": "BorderInnerOutlined",
-        "status": 1,
-        showPage: ["process-runtime"],
-        "permissions": [
-          {
-            "permission": "process-definition",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-runtime",
-            "actions": [
-              "transfer",
-              "reject",
-              "query",
-              "start",
-              "save",
-              "self",
-              "claim",
-              "delete-ready",
-              "complete",
-              "createAndStart",
-              "repeal"
-            ]
-          },
-          {
-            "permission": "process-deployment",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "process-form",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "role-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-third-party-manager",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "user-token",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-category",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "edge-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dueros-product",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-gateway",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-msg-task",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-group",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "opc-point",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "device-mapping",
-            "actions": [
-              "query"
-            ]
-          },
-          {
-            "permission": "dictionary",
-            "actions": [
-              "query"
-            ]
-          }
-        ],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "options": {
-          "show": true
-        },
-        "creatorId": "1199596756811550720",
-        "createTime": 1699348851779,
-        "supportDataAccess": false
-      }
-    ],
-    "creatorId": "8004214f8141f29cb951befdca3615f0",
-    "createTime": 1699262480040,
-    "supportDataAccess": false
-  }
+  // {
+  //   "path": "3n23",
+  //   "sortIndex": 5,
+  //   "level": 1,
+  //   "owner": "iot",
+  //   "name": "WEB IDE",
+  //   "code": "web_ide",
+  //   "url": "/web_ide",
+  //   "icon": "MenuUnfoldOutlined",
+  //   showPage: ["low-code-info", "low-code-editor"],
+  //   "options": {
+  //     isShow: false,
+  //   },
+  //   "accessSupport": {
+  //     "text": "不支持",
+  //     "value": "unsupported"
+  //   },
+  //   "indirectMenus": [],
+  //   permissions: [
+  //     {
+  //       "permission": "low-code-info",
+  //       "actions": [
+  //         "add", "query", "save", "delete"
+  //       ]
+  //     },
+  //     {
+  //       "permission": "low-code-editor",
+  //       "actions": [
+  //         "query", "deploy"
+  //       ]
+  //     }
+  //   ],
+  //   "creatorId": "1199596756811550720",
+  //   "createTime": 1698735482730,
+  //   "supportDataAccess": false
+  // },
+  // {
+  //   "path": "3nkE",
+  //   "sortIndex": 6,
+  //   "level": 1,
+  //   "owner": "iot",
+  //   "name": "流程引擎",
+  //   "code": "process",
+  //   "url": "/workflow",
+  //   "icon": "MenuUnfoldOutlined",
+  //   showPage: ["process-form","process-deployment", "process-runtime"],
+  //   "options": {
+  //     "show": true,
+  //     "isShow": false
+  //   },
+  //   "permissions": [
+  //     {
+  //       "permission": "low-code-info",
+  //       "actions": [
+  //         "query"
+  //       ]
+  //     },
+  //     {
+  //       "permission": "process-runtime",
+  //       "actions": [
+  //         "transfer",
+  //         "reject",
+  //         "query",
+  //         "start",
+  //         "save",
+  //         "self",
+  //         "claim",
+  //         "delete-ready",
+  //         "complete",
+  //         "createAndStart",
+  //         "repeal"
+  //       ]
+  //     }
+  //   ],
+  //   "accessSupport": {
+  //     "text": "不支持",
+  //     "value": "unsupported"
+  //   },
+  //   "indirectMenus": [],
+  //   "children": [
+  //     // {
+  //     //   "path": "3nkE-n7lJ",
+  //     //   "sortIndex": 1,
+  //     //   "level": 2,
+  //     //   "name": "工作流",
+  //     //   "code": "process/home",
+  //     //   "describe": "",
+  //     //   "url": "/workflow/home",
+  //     //   "icon": "UpCircleOutlined",
+  //     //   showPage: ["process-form"],
+  //     //   "permissions": [
+  //     //     {
+  //     //       "permission": "process-form",
+  //     //       "actions": [
+  //     //         "query"
+  //     //       ]
+  //     //     },
+  //     //     {
+  //     //       "permission": "low-code-info",
+  //     //       "actions": [
+  //     //         "query"
+  //     //       ]
+  //     //     },
+  //     //   ],
+  //     //   "accessSupport": {
+  //     //     "text": "不支持",
+  //     //     "value": "unsupported"
+  //     //   },
+  //     //   "indirectMenus": [],
+  //     //   "buttons": [],
+  //     //   "options": {
+  //     //     "show": true
+  //     //   },
+  //     //   "creatorId": "1199596756811550720",
+  //     //   "createTime": 1699263818795,
+  //     //   "supportDataAccess": false
+  //     // },
+  //     {
+  //       "path": "3nkE-n7lJ",
+  //       "sortIndex": 2,
+  //       "level": 2,
+  //       "name": "表单",
+  //       "code": "process/form",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/form",
+  //       "icon": "UpCircleOutlined",
+  //       showPage: ["process-form"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-form",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "buttons": [
+  //         {
+  //           "id": "add",
+  //           "name": "新增",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-form",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "save",
+  //           "name": "保存",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-form",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "update",
+  //           "name": "编辑",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-form",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "delete",
+  //           "name": "删除",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-form",
+  //               "actions": [
+  //                 "delete"
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       ],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699263818795,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-ysKb",
+  //       "sortIndex": 3,
+  //       "level": 2,
+  //       "name": "流程模型",
+  //       "code": "process/model",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/model",
+  //       "icon": "UpCircleOutlined",
+  //       showPage: ["process-definition"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-definition",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "buttons": [
+  //         {
+  //           "id": "add",
+  //           "name": "新增",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-definition",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "delete",
+  //           "name": "删除",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-definition",
+  //               "actions": [
+  //                 "delete"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "update",
+  //           "name": "编辑",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-definition",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "save",
+  //           "name": "保存",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-definition",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "deploy",
+  //           "name": "部署",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-definition",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       ],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699264341009,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-fJkR",
+  //       "sortIndex": 4,
+  //       "level": 2,
+  //       "name": "流程实例",
+  //       "code": "process/instance",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       showPage: ["process-deployment"],
+  //       "url": "/workflow/instance",
+  //       "icon": "UpCircleOutlined",
+  //       "status": 1,
+  //       "permissions": [
+  //         {
+  //           "permission": "process-deployment",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "buttons": [
+  //         {
+  //           "id": "action",
+  //           "name": "启/禁用",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-deployment",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "auth",
+  //           "name": "权限控制",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-deployment",
+  //               "actions": [
+  //                 "save"
+  //               ]
+  //             }
+  //           ]
+  //         },
+  //         {
+  //           "id": "delete",
+  //           "name": "删除",
+  //           "permissions": [
+  //             {
+  //               "permission": "process-deployment",
+  //               "actions": [
+  //                 "delete"
+  //               ]
+  //             }
+  //           ]
+  //         }
+  //       ],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699264485954,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-i2nG",
+  //       "sortIndex": 5,
+  //       "level": 2,
+  //       "name": "发起流程",
+  //       "code": "process/initiate",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/initiate",
+  //       "icon": "UpOutlined",
+  //       showPage: ["process-runtime"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-definition",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-deployment",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-form",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-runtime",
+  //           "actions": [
+  //             "transfer",
+  //             "reject",
+  //             "query",
+  //             "start",
+  //             "save",
+  //             "self",
+  //             "claim",
+  //             "delete-ready",
+  //             "complete",
+  //             "createAndStart",
+  //             "repeal"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699269393605,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-4T1D",
+  //       "sortIndex": 6,
+  //       "level": 2,
+  //       "name": "待办事项",
+  //       "code": "process/me/todo",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/me/todo",
+  //       "icon": "UpCircleOutlined",
+  //       showPage: ["process-runtime"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-definition",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-deployment",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-form",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-runtime",
+  //           "actions": [
+  //             "transfer",
+  //             "reject",
+  //             "query",
+  //             "start",
+  //             "save",
+  //             "self",
+  //             "claim",
+  //             "delete-ready",
+  //             "complete",
+  //             "createAndStart",
+  //             "repeal"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699269425041,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-RXP3",
+  //       "sortIndex": 7,
+  //       "level": 2,
+  //       "name": "已办事项",
+  //       "code": "process/me/finished",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/me/finished",
+  //       "icon": "UpCircleOutlined",
+  //       showPage: ["process-runtime"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-definition",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-deployment",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-form",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-runtime",
+  //           "actions": [
+  //             "transfer",
+  //             "reject",
+  //             "query",
+  //             "start",
+  //             "save",
+  //             "self",
+  //             "claim",
+  //             "delete-ready",
+  //             "complete",
+  //             "createAndStart",
+  //             "repeal"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699269455412,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-ibau",
+  //       "sortIndex": 8,
+  //       "level": 2,
+  //       "name": "我发起的",
+  //       "code": "process/me/initiate",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/me/initiate",
+  //       "icon": "UpCircleOutlined",
+  //       showPage: ["process-runtime"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-definition",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-deployment",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-form",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-runtime",
+  //           "actions": [
+  //             "transfer",
+  //             "reject",
+  //             "query",
+  //             "start",
+  //             "save",
+  //             "self",
+  //             "claim",
+  //             "delete-ready",
+  //             "complete",
+  //             "createAndStart",
+  //             "repeal"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699269488928,
+  //       "supportDataAccess": false
+  //     },
+  //     {
+  //       "path": "3nkE-vCQb",
+  //       "sortIndex": 9,
+  //       "level": 2,
+  //       "name": "抄送给我",
+  //       "code": "process/me/cc",
+  //       "describe": "",
+  //       "owner": "iot",
+  //       "url": "/workflow/me/cc",
+  //       "icon": "BorderInnerOutlined",
+  //       "status": 1,
+  //       showPage: ["process-runtime"],
+  //       "permissions": [
+  //         {
+  //           "permission": "process-definition",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-runtime",
+  //           "actions": [
+  //             "transfer",
+  //             "reject",
+  //             "query",
+  //             "start",
+  //             "save",
+  //             "self",
+  //             "claim",
+  //             "delete-ready",
+  //             "complete",
+  //             "createAndStart",
+  //             "repeal"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-deployment",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "process-form",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "role-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-third-party-manager",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "user-token",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-category",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "edge-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dueros-product",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-gateway",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-msg-task",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-group",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "opc-point",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "device-mapping",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         },
+  //         {
+  //           "permission": "dictionary",
+  //           "actions": [
+  //             "query"
+  //           ]
+  //         }
+  //       ],
+  //       "accessSupport": {
+  //         "text": "不支持",
+  //         "value": "unsupported"
+  //       },
+  //       "indirectMenus": [],
+  //       "options": {
+  //         "show": true
+  //       },
+  //       "creatorId": "1199596756811550720",
+  //       "createTime": 1699348851779,
+  //       "supportDataAccess": false
+  //     }
+  //   ],
+  //   "creatorId": "8004214f8141f29cb951befdca3615f0",
+  //   "createTime": 1699262480040,
+  //   "supportDataAccess": false
+  // }
 ];
