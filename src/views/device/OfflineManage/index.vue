@@ -53,13 +53,7 @@
                     </template>
                     <!--       离线时间       -->
                     <template #offlineTime="record">
-                        {{
-                            record.offlineTime
-                                ? dayjs(record.offlineTime).format(
-                                      'YYYY-MM-DD HH:mm:ss',
-                                  )
-                                : '--'
-                        }}
+                        {{ handleOfflineTime(record) }}
                     </template>
                     <template #state="{ state }">
                         <template v-if="state">
@@ -255,6 +249,16 @@ const instanceStore = useInstanceStore();
 const popTitle = computed(() => {
     return selectedRowKeys.value.length === 0 ? EXPORT_ALL : EXPORT_SELECT;
 });
+
+const handleOfflineTime = (record: Record<string, any>) => {
+    if (record.offlineTime === 1) {
+        return '--';
+    } else {
+        return record.offlineTime
+            ? dayjs(record.offlineTime).format('YYYY-MM-DD HH:mm:ss')
+            : '--';
+    }
+};
 
 // 处理分页器的显示总数的格式
 const handleShowTotal = () => {

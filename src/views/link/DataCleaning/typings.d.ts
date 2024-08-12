@@ -1,9 +1,9 @@
 export interface FormState {
-    maxVal: string;
-    minVal: string;
-    exceptionVal: string;
-    transitionedExceptionVal: string;
-    invalidVal: string;
-    transitionedInvalidVal: string;
-    description: string;
+    maxValue: string;
+    minValue: string;
+    exceptionKey: string;
+    exceptionValue: string;
+    invalidKey: string;
+    invalidValue: string;
+    description?: string;
 }

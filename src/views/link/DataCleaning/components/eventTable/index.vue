@@ -1,24 +1,14 @@
 <template>
-    <div class="content">
-        <pro-search :columns="tableConf" @search="handleSearch" />
+    <j-spin :spinning="loading">
         <full-page>
-            <j-pro-table
-                :columns="tableConf"
-                :request="fetchData"
-                model="table"
-                :defaultParams="{
-                    sorts: [
-                        {
-                            name: 'createTime',
-                            order: 'desc',
-                        },
-                    ],
-                }"
-                :params="globParams"
-                :gridColumn="3"
-                :rowKey="(record: any) => record.id"
+            <j-data-table
+                :columns="columns"
+                :serial="true"
+                :dataSource="dataSource"
+                :height="600"
+                ref="tableRef"
             >
-                <template #action="record">
+                <template #action="{ record }">
                     <a
                         href="javascript: void(0);"
                         @click="handleShowModal(record)"
@@ -26,112 +16,116 @@
                         清洗规则
                     </a>
                 </template>
-                <template #paginationRender>
-                    <a-pagination
-                        :showQuickJumper="true"
-                        :isShowContent="true"
-                        :showSizeChanger="true"
-                        :pageSize="pageSize"
-                        :default-page-size="12"
-                        :pageSizeOptions="['12', '24', '48', '96']"
-                        :current="currentPage"
-                        :total="dataTotal"
-                        @change="handlePageChange"
-                    />
-                </template>
-            </j-pro-table>
+            </j-data-table>
         </full-page>
-    </div>
+    </j-spin>
 </template>
 
 <script setup lang="ts">
 import { FullPage } from 'components/Layout';
 import { useProSearch } from '@/hook/useProSearch';
 import { config, mockData } from '../../config';
+import { useMetadata } from '@/views/device/components/Metadata/Base/hooks';
+import { useProductStore } from 'store/product';
 
 defineOptions({
-    name: 'EventTable',
+    name: 'PropertyTable',
 });
 
 const props = defineProps<{
     productId: string;
+    // metadataType: 'properties' | 'events';
 }>();
 const emit = defineEmits(['showModal']);
 
-// 数据表的配置项
-const tableConf = reactive(config[1]);
+const productStore = useProductStore();
+productStore.reSet();
 
-// 全局的搜索参数
-const globParams = ref<Record<string, any>>({});
+const dataSource = ref([]);
+const loading = ref(false);
 
-// 表格数据总数
-const dataTotal = ref<number>(0);
-// 表格当前属于多少页
-const currentPage = ref<number>(1);
-// 表格每页显示多少条数据
-const pageSize = ref<number>(12);
+const columns = ref([
+    {
+        title: '事件标识',
+        dataIndex: 'id',
+        // width: 200,
+        type: 'text',
+    },
+    {
+        title: '事件名称',
+        dataIndex: 'name',
+        // width: 200,
+        type: 'text',
+    },
+    {
+        title: '事件级别',
+        dataIndex: 'level',
+        // width: 200,
+        type: 'text',
+    },
+    {
+        title: '输出参数',
+        dataIndex: 'type',
+        // width: 200,
+        type: 'text',
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        width: 140,
+    },
+]);
 
-// 每次请求后的数据
-const dataSource = ref<any[]>([]);
-
-// 处理搜索，依赖另一个hooks中的reset方法
-const { handleSearch } = useProSearch(globParams, () => {});
+// const init = () => {
+//     dataSource.value = metadata.value.map((item: any) => {
+//         return {
+//             id: item.id,
+//             name: item.name,
+//             type: item.valueType.type,
+//         };
+//     });
+// };
 
 const handleShowModal = (record: Record<string, any>) => {
-    console.log('table btn click');
     emit('showModal', record);
 };
 
-const fetchData = async (params: any) => {
-    // todo 发送网络请求3
-    let resp = await new Promise<any>((resolve) => {
-        setTimeout(() => {
-            resolve({
-                status: 200,
-                message: 'success',
-                result: {
-                    data: mockData[1],
-                },
-            });
-        }, 1000);
-    });
-    console.log(resp);
-    if (resp.status === 200) {
-        dataTotal.value = resp.result.total;
-        currentPage.value = resp.result.pageIndex + 1;
-        pageSize.value = resp.result.pageSize;
-        dataSource.value = resp.result.data;
-        return {
-            // 3.仿造请求结果返回给表格
-            code: resp.status,
-            result: resp.result,
-            status: resp.status,
-        };
-    } else {
-        return {
-            code: 200,
-            result: { data: [] },
-            status: 200,
-        };
-    }
-};
-
-/**
- * @function handlePageChange 分页器改变的回调事件
- * @param num
- * @param pageSize
- */
-const handlePageChange = (num: number, pageSize: number) => {
-    const _params = {
-        ...globParams.value,
-
-        // 因为分页器发生改变时会自动改变当前页码和每页条数
-        // 因此在这覆盖globSearchParam中的pageIndex和pageSize
-        pageIndex: num - 1,
-        pageSize: pageSize,
-    };
-    handleSearch(_params);
-};
+watch(
+    () => props.productId,
+    (newVal, oldVal) => {
+        console.log('watch', newVal, oldVal);
+        if (newVal !== oldVal) {
+            if (newVal !== '') {
+                loading.value = true;
+                productStore
+                    .getDetail(newVal)
+                    .then(() => {
+                        const { data: metadata } = useMetadata(
+                            'product',
+                            'events',
+                        );
+                        loading.value = false;
+                        dataSource.value = metadata.value.map((item: any) => {
+                            return {
+                                id: item.id,
+                                name: item.name,
+                                level: item.expands.level,
+                                type: item.valueType.type,
+                            };
+                        });
+                    })
+                    .catch(() => {
+                        loading.value = false;
+                    });
+            }
+        }
+    },
+    { immediate: true },
+);
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+:deep(.full-page-warp-content) {
+    padding: 32px 12px 16px;
+}
+</style>
