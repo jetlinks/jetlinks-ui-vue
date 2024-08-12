@@ -163,7 +163,7 @@ import { usePermissionStore } from '@/store/permission';
 import { isNoCommunity } from '@/utils/utils';
 import { useSystem } from '@/store/system';
 
-const { showThreshold } = useSystem()
+const { showThreshold } = useSystem();
 const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -272,6 +272,21 @@ const handleUndeploy = () => {
  * 是否显示数据解析模块
  */
 const getProtocol = async () => {
+    list.value = [
+        {
+            key: 'Info',
+            tab: '配置信息',
+        },
+        {
+            key: 'Metadata',
+            tab: '物模型',
+            class: 'objectModel',
+        },
+        {
+            key: 'Device',
+            tab: '设备接入',
+        },
+    ];
     if (productStore.current?.messageProtocol) {
         const res: any = await getProtocolDetail(
             productStore.current?.messageProtocol,
@@ -294,7 +309,8 @@ const getProtocol = async () => {
             }
             if (
                 supportFirmware &&
-                permissionStore.hasPermission('device/Firmware:view') && isNoCommunity
+                permissionStore.hasPermission('device/Firmware:view') &&
+                isNoCommunity
             ) {
                 list.value.push({
                     key: 'Firmware',
@@ -316,7 +332,9 @@ const getProtocol = async () => {
         if (
             permissionStore.hasPermission(
                 'rule-engine/Alarm/Configuration:view',
-            ) && isNoCommunity && showThreshold
+            ) &&
+            isNoCommunity &&
+            showThreshold
         ) {
             list.value.push({
                 key: 'AlarmRecord',
