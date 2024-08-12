@@ -9,7 +9,7 @@
             />
             <div class="right">
                 <pro-search
-                    :columns="columns"
+                    :columns="newColumns"
                     target="channel"
                     @search="handleSearch"
                 />
@@ -17,7 +17,7 @@
                     <JProTable
                         ref="listRef"
                         model="table"
-                        :columns="columns"
+                        :columns="newColumns"
                         :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
                         :defaultParams="{
                             sorts: [{ name: 'modifyTime', order: 'desc' }],
@@ -237,6 +237,14 @@ const columns = [
         scopedSlots: true,
     },
 ];
+
+const newColumns = computed(()=>{
+    if(route.query.type=== 'fixed-media'){
+        return columns.filter(item=>item.key!=='manufacturer')
+    }else{
+        return columns
+    }
+});
 
 const params = ref<Record<string, any>>({});
 const deviceData = ref<any>();
