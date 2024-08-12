@@ -7,7 +7,7 @@
                 class="search-input"
                 allowClear
                 size="large"
-                @keydown.enter="handleDeviceSearch"
+                @pressEnter="handleDeviceSearch"
             >
                 <template #suffix>
                     <AIcon type="SearchOutlined" @click="handleDeviceSearch" />
@@ -108,15 +108,37 @@ onMounted(() => {
 .sidebar {
     --default-font-color: #000000d9;
     --default-border-color: #d9d9d9;
-    overflow-y: auto;
+    width: 260px;
+    height: 800px;
 
     .device-list {
         margin-top: 16px;
         border-top: 1px solid #f0f0f0;
         padding-top: 16px;
+        padding-right: 2px;
 
         width: 100%;
+        height: 744px;
         text-align: center;
+        overflow-y: auto;
+
+        /* WebKit 浏览器滚动条样式 */
+        &::-webkit-scrollbar {
+            width: 8px; /* 宽度 */
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1; /* 轨道背景颜色 */
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 2px;
+            background: #b5b5b5; /* 滑块颜色 */
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #9a9a9a; /* 鼠标悬停时滑块颜色 */
+        }
 
         .device-item {
             font-size: 14px;
