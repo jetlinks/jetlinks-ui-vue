@@ -207,7 +207,9 @@ const handleExport = async () => {
         const url = URL.createObjectURL(blob);
         downloadFileByUrl(
             url,
-            `设备清洗记录-${moment(new Date()).format('YYYY/MM/DD HH:mm:ss')}`,
+            `设备清洗记录中心-${moment(new Date()).format(
+                'YYYY/MM/DD HH:mm:ss',
+            )}`,
             type.value,
         );
         if (

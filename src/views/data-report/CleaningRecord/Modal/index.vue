@@ -4,27 +4,43 @@
         :maskClosable="false"
         destroy-on-close
         v-model:visible="visible"
-        width="400px"
+        width="500px"
         :confirmLoading="loading"
     >
         <j-form layout="vertical" :model="form" ref="formRef">
             <j-form-item label="清洗规则" class="item_title">
-                <j-form-item label="最大值"
+                <j-form-item label="最大值" v-if="form.maxValue ? true : false"
                     ><j-input-number
-                        v-model:value="form.maxNumber"
+                        v-model:value="form.maxValue"
                         :disabled="isDisabled"
                         style="width: 90%"
                 /></j-form-item>
-                <j-form-item label="最小值"
+                <j-form-item label="最小值" v-if="form.mimValue ? true : false"
                     ><j-input-number
-                        v-model:value="form.minNumber"
+                        v-model:value="form.mimValue"
+                        :disabled="isDisabled"
+                        style="width: 90%"
+                /></j-form-item>
+                <j-form-item
+                    label="异常值"
+                    v-if="form.exceptionValue ? true : false"
+                    ><j-input-number
+                        v-model:value="form.exceptionValue"
+                        :disabled="isDisabled"
+                        style="width: 90%"
+                /></j-form-item>
+                <j-form-item
+                    label="无效值"
+                    v-if="form.invalidValue ? true : false"
+                    ><j-input-number
+                        v-model:value="form.invalidValue"
                         :disabled="isDisabled"
                         style="width: 90%"
                 /></j-form-item>
             </j-form-item>
             <j-form-item label="上报数据" class="item_title">
                 <j-textarea
-                    v-model:value="form.data"
+                    v-model:value="form.originJson"
                     placeholder="这里回显设备上报数据json"
                     :disabled="isDisabled"
                     :rows="6"
@@ -54,11 +70,12 @@ const form = ref<any>({});
 const show = (data: any) => {
     visible.value = true;
     form.value = {
-        maxNumber: data?.clearRule?.maxValue,
-        minNumber: data?.clearRule?.mimValue,
+        maxValue: data?.cleanRule?.maxValue,
+        mimValue: data?.cleanRule?.mimValue,
+        exceptionValue: data?.cleanRule?.exceptionValue,
+        invalidValue: data?.cleanRule?.invalidValue,
         originJson: data?.originJson,
     };
-    console.log('clearRule', data?.clearRule);
 };
 
 defineExpose({
