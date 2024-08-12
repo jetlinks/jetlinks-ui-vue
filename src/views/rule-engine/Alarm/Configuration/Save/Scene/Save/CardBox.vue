@@ -34,7 +34,7 @@
                   {{ value.name }}
                 </span>
               </Ellipsis>
-              <div v-if="showBindTags && activeBranches.length">
+              <div v-if="showBindTags && activeBranches.length  && value.triggerType === 'device'">
                 <div style="margin-top: 16px; margin-bottom: 8px" class="card-item-content-text">
                   关联条件
                 </div>
