@@ -5,14 +5,14 @@
             button-style="solid"
             @change="onRadioChange"
         >
-            <j-radio-button value="today">今日</j-radio-button>
-            <j-radio-button value="week">近一周</j-radio-button>
-            <j-radio-button value="month">近一月</j-radio-button>
+            <j-radio-button value="today">{{ $t('Detail.TimeComponent.286679-0') }}</j-radio-button>
+            <j-radio-button value="week">{{ $t('Detail.TimeComponent.286679-1') }}</j-radio-button>
+            <j-radio-button value="month">{{ $t('Detail.TimeComponent.286679-2') }}</j-radio-button>
         </j-radio-group>
         <j-range-picker
             show-time
             v-model:value="dateValue"
-            :placeholder="['开始时间', '结束时间']"
+            :placeholder="[$t('Detail.TimeComponent.286679-3'), $t('Detail.TimeComponent.286679-4')]"
             @change="onRangeChange"
             :allowClear="false"
         />
@@ -23,6 +23,9 @@
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 type Props = [Dayjs, Dayjs] | undefined;
 

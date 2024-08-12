@@ -50,7 +50,7 @@
             </div>
             <div class="bottom">
                 <div style="color: rgba(0, 0, 0, 0.65); font-size: 12px">
-                    更新时间
+                    {{ $t('Property.PropertyCard.286675-0') }}
                 </div>
                 <div class="time-value">
                     {{ _props?.data?.timeString || '--' }}
@@ -63,6 +63,9 @@
 
 <script lang="ts" setup>
 import ValueRender from './ValueRender.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const _props = defineProps({
     data: {
         type: Object,

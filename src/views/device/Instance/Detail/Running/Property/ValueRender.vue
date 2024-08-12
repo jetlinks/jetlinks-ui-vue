@@ -16,7 +16,7 @@
                 </div>
             </template>
             <div
-                v-else-if="data?.valueType?.bodyType === 'Binary(二进制)'"
+                v-else-if="data?.valueType?.bodyType ===  $t('Property.ValueRender.286662-0')"
                 :class="valueClass"
             >
                 <img :src="imgMap.get('other')" />
@@ -110,6 +110,9 @@
 import { getImage, onlyMessage } from '@/utils/comm';
 import ValueDetail from './ValueDetail.vue';
 import { getType, imgMap, imgList, videoList, fileList } from './index';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const _data = defineProps({
     data: {
@@ -150,9 +153,9 @@ const getDetail = (_type: string) => {
     let flag: string = '';
     if (_type === 'img') {
         if (isHttps && value?.formatValue.indexOf('http:') !== -1) {
-            onlyMessage('域名为https时，不支持访问http地址', 'error');
+            onlyMessage($t('Property.ValueRender.286662-1'), 'error');
         } else if (temp.value) {
-            onlyMessage('该图片无法访问', 'error');
+            onlyMessage($t('Property.ValueRender.286662-2'), 'error');
         } else {
             flag =
                 ['.jpg', '.png'].find((item) =>
@@ -163,11 +166,11 @@ const getDetail = (_type: string) => {
         }
     } else if (_type === 'video') {
         if (isHttps && value?.formatValue.indexOf('http:') !== -1) {
-            onlyMessage('域名为https时，不支持访问http地址', 'error');
+            onlyMessage($t('Property.ValueRender.286662-1'), 'error');
         } else if (
             ['.rmvb', '.mvb'].some((item) => value?.formatValue.includes(item))
         ) {
-            onlyMessage('当前仅支持播放.mp4,.flv,.m3u8格式的视频', 'error');
+            onlyMessage($t('Property.ValueRender.286662-3'), 'error');
         } else {
             flag =
                 ['.m3u8', '.flv', '.mp4'].find((item) =>

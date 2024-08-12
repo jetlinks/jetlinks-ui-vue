@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Property.index.286677-0": "请输入名称",
+		"Property.index.286677-1": "名称",
+		"Property.index.286677-2": "值",
+		"Property.index.286677-3": "更新时间",
+		"Property.index.286677-4": "操作",
+		"Property.index.286677-5": "设置属性至设备",
+		"Property.index.286677-6": "指标",
+		"Property.index.286677-7": "获取最新属性值",
+		"Property.index.286677-8": "操作成功！",
+		"Property.index.286677-9": "详情"
+	},
+	"en": {
+		"Property.index.286677-0": "Please enter a name",
+		"Property.index.286677-1": "Name",
+		"Property.index.286677-2": "Value",
+		"Property.index.286677-3": "Update time",
+		"Property.index.286677-4": "Operation",
+		"Property.index.286677-5": "Set properties to device",
+		"Property.index.286677-6": "Metrics",
+		"Property.index.286677-7": "Get the latest attribute values",
+		"Property.index.286677-8": "Operation successful!",
+		"Property.index.286677-9": "Detail"
+	}
+}

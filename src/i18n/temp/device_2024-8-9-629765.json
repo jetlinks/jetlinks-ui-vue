@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Property.ValueRender.286662-0": "二进制",
+		"Property.ValueRender.286662-1": "域名为https时，不支持访问http地址",
+		"Property.ValueRender.286662-2": "该图片无法访问",
+		"Property.ValueRender.286662-3": "当前仅支持播放.mp4,.flv,.m3u8格式的视频"
+	},
+	"en": {
+		"Property.ValueRender.286662-0": "Binary",
+		"Property.ValueRender.286662-1": "When the domain name is HTTPS, accessing HTTP addresses is not supported",
+		"Property.ValueRender.286662-2": "This image cannot be accessed",
+		"Property.ValueRender.286662-3": "Currently only supports playing videos in .mp4, .flv, and .m3u8 formats"
+	}
+}

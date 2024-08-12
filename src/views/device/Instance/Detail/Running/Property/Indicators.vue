@@ -2,13 +2,13 @@
     <j-modal
         :maskClosable="false"
         :visible="true"
-        title="编辑指标"
+        :title="$t('Property.Indicators.286676-0')"
         @ok="handleSave"
         @cancel="handleCancel"
         :confirmLoading="loading"
     >
         <j-alert
-            message="场景联动页面可引用指标配置触发条件"
+            :message="$t('Property.Indicators.286676-1')"
             type="warning"
             showIcon
         />
@@ -24,18 +24,18 @@
                         <j-form-item
                             :rules="{
                                 required: true,
-                                message: `请${
+                                message:`${
                                     ['date', 'boolean'].includes(
                                         data?.valueType?.type,
                                     )
-                                        ? '选择'
-                                        : '输入'
-                                }指标值`,
+                                        ? $t('Property.Indicators.286676-2')
+                                        : $t('Property.Indicators.286676-3')
+                                }`,
                             }"
                             :name="['metrics', index, 'value', 0]"
                         >
                             <template #label>
-                                <Ellipsis>{{ item?.name || '指标值' }}</Ellipsis>
+                                <Ellipsis>{{ item?.name || $t('Property.Indicators.286676-4') }}</Ellipsis>
                             </template>
                             <ValueItem
                                 v-model:modelValue="item.value[0]"
@@ -71,13 +71,13 @@
                                 :name="['metrics', index, 'value', 1]"
                                 :rules="{
                                     required: true,
-                                    message: `请${
-                                        ['date', 'boolean'].includes(
-                                            data?.valueType?.type,
-                                        )
-                                            ? '选择'
-                                            : '输入'
-                                    }指标值`,
+                                   message:`${
+                                    ['date', 'boolean'].includes(
+                                       data?.valueType?.type,
+                                    )
+                                        ? $t('Property.Indicators.286676-2')
+                                        : $t('Property.Indicators.286676-3')
+                                }`,
                                 }"
                             >
                                 <ValueItem
@@ -98,6 +98,9 @@ import { queryMetric, saveMetric } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { onlyMessage } from '@/utils/comm';
 import { isNumber } from 'lodash-es';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
     data: {
@@ -202,7 +205,7 @@ const handleSave = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Property.Indicators.286676-5'));
                 emit('close');
                 formRef.value.resetFields();
             }

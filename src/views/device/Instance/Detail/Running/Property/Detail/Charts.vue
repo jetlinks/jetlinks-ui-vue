@@ -3,7 +3,7 @@
         <div>
             <j-space>
                 <div>
-                    统计周期：
+                    {{ $t('Detail.Charts.2866713-0') }}
                     <j-select
                         v-model:value="cycle"
                         style="width: 120px"
@@ -12,12 +12,12 @@
                     </j-select>
                 </div>
                 <div v-if="cycle !== '*' && _type">
-                    统计规则：
+                    {{ $t('Detail.Charts.2866713-1') }}
                     <j-select v-model:value="agg" style="width: 120px">
-                        <j-select-option value="AVG">平均值</j-select-option>
-                        <j-select-option value="MAX">最大值</j-select-option>
-                        <j-select-option value="MIN">最小值</j-select-option>
-                        <j-select-option value="COUNT">总数</j-select-option>
+                        <j-select-option value="AVG">{{ $t('Detail.Charts.2866713-2') }}</j-select-option>
+                        <j-select-option value="MAX">{{ $t('Detail.Charts.2866713-3') }}</j-select-option>
+                        <j-select-option value="MIN">{{ $t('Detail.Charts.2866713-4') }}</j-select-option>
+                        <j-select-option value="COUNT">{{ $t('Detail.Charts.2866713-5') }}</j-select-option>
                     </j-select>
                 </div>
             </j-space>
@@ -35,6 +35,9 @@ import { useInstanceStore } from '@/store/instance';
 import Chart from './Chart.vue';
 import * as echarts from 'echarts';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const prop = defineProps({
     data: {
@@ -195,7 +198,7 @@ const getOptions = (arr: any[]) => {
                     false,
                 );
             }),
-            name: '时间',
+            name: $t('Detail.Charts.2866713-6'),
         },
         yAxis: {
             type: 'value',
@@ -235,11 +238,11 @@ watch(
         if (diffInSeconds < 60) {
             periodOptions.value = [
                 {
-                    label: '实际值',
+                    label: $t('Detail.Charts.2866713-7'),
                     value: '*',
                 },
                 {
-                    label: '按分钟统计',
+                    label: $t('Detail.Charts.2866713-8'),
                     value: '1m',
                 },
             ];
@@ -247,15 +250,15 @@ watch(
         } else if (diffInSeconds < 1440) {
             periodOptions.value = [
                 {
-                    label: '实际值',
+                    label: $t('Detail.Charts.2866713-7'),
                     value: '*',
                 },
                 {
-                    label: '按分钟统计',
+                    label: $t('Detail.Charts.2866713-8'),
                     value: '1m',
                 },
                 {
-                    label: '按小时统计',
+                    label: $t('Detail.Charts.2866713-9'),
                     value: '1h',
                 },
             ];
@@ -263,11 +266,11 @@ watch(
         } else if (diffInSeconds < 43200) {
             periodOptions.value = [
                 {
-                    label: '按小时统计',
+                    label: $t('Detail.Charts.2866713-9'),
                     value: '1h',
                 },
                 {
-                    label: '按天统计',
+                    label: $t('Detail.Charts.2866713-10'),
                     value: '1d',
                 },
             ];
@@ -275,11 +278,11 @@ watch(
         } else {
             periodOptions.value = [
                 {
-                    label: '按天统计',
+                    label: $t('Detail.Charts.2866713-10'),
                     value: '1d',
                 },
                 {
-                    label: '按周统计',
+                    label: $t('Detail.Charts.2866713-11'),
                     value: '1w',
                 },
             ];
