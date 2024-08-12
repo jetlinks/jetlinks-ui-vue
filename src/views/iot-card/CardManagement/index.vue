@@ -217,7 +217,8 @@
                 </template>
                 <template #cardState="slotProps">
                     <BadgeStatus
-                        :status="slotProps.cardState?.value"
+                        v-if="slotProps.cardState?.state"
+                        :status="slotProps.cardState?.state"
                         :text="slotProps.cardState?.text"
                         :statusNames="{
                             using: 'processing',
@@ -508,7 +509,8 @@ const columns = [
         title: '运营商状态',
         dataIndex: 'operatorState',
         key: 'operatorState',
-        hidden: true,
+        // hidden: true,
+        hideInTable: true,
         search: {
             type: 'select',
             options: [
