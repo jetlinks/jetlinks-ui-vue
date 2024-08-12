@@ -46,8 +46,9 @@
                                 }}</Ellipsis>
                             </div>
                             <div
+                                
                                 @click="(e) => e.stopPropagation()"
-                                v-if="item.id !== 'default_group'"
+                                v-if="item.id !== 'default_group' && admin"
                             >
                                 <PermissionButton
                                     type="text"
@@ -94,6 +95,7 @@ import {
 import { randomString } from '@/utils/utils';
 import { useUserInfo } from '@/store/userInfo';
 import { storeToRefs } from 'pinia';
+
 const emit = defineEmits(['selectData']);
 const userInfoStore = useUserInfo();
 const { userInfos } = storeToRefs(userInfoStore);
