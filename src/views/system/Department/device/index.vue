@@ -17,9 +17,6 @@
                 }"
                 :params="queryParams"
                 :rowSelection="{
-                    // selectedRowKeys: table._selectedRowKeys.value,
-                    // onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys],
-                    // onSelectNone: table.cancelSelect
                     selectedRowKeys: table._selectedRowKeys.value,
                     onSelect: table.onSelect,
                     onSelectAll: table.onSelectAll,
@@ -307,6 +304,7 @@ const columns = [
         dataIndex: 'permission',
         key: 'permission',
         ellipsis: true,
+        width: 300,
         scopedSlots: true,
     },
     {

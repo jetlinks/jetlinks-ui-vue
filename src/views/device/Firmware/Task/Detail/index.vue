@@ -170,7 +170,7 @@ const columns = [
         dataIndex: 'completeTime',
     },
     {
-        title: '设备版本',
+        title: '固件版本',
         key: 'version',
         dataIndex: 'version',
         width: 100,

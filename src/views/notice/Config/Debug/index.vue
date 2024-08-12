@@ -151,8 +151,10 @@ const getTemplateList = async () => {
     };
     const { result } = await ConfigApi.getTemplate(params, props.data.id);
     templateList.value = result;
-    formData.value.templateId = result[0]?.id as string;
-    getTemplateDetail();
+    if (result.length) {
+        formData.value.templateId = result[0]?.id as string;
+        getTemplateDetail();
+    }
 };
 
 watch(
@@ -173,7 +175,7 @@ const getTemplateDetail = async () => {
         (m: any) => ({
             ...m,
             type: m.expands ? m.expands.businessType : m.type,
-            value: undefined, 
+            value: undefined,
             // 电话字段校验
             otherRules:
                 m.id === 'calledNumber' || m.id === 'phoneNumber'
