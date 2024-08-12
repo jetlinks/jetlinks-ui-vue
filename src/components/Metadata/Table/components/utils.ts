@@ -115,7 +115,7 @@ export const useMask = (propVisible: boolean, options: { visibleChange: (visible
             updateStyle(maskNode, {
                 display: 'block'
             })
-        }, 110)
+        }, 150)
     }
 
     const hideMask = () => {
