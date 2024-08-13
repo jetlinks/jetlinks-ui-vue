@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Message.index.585603-0": "调试",
+		"Message.index.585603-1": "日志",
+		"Message.index.585603-2": "上行消息诊断中",
+		"Message.index.585603-3": "下行消息诊断中",
+		"Message.index.585603-4": "下行消息通信异常",
+		"Message.index.585603-5": "下行消息通信正常",
+		"Message.index.585603-6": "上行消息通信异常",
+		"Message.index.585603-7": "上行消息通信正常"
+	},
+	"en": {
+		"Message.index.585603-0": "Debug",
+		"Message.index.585603-1": "Journal",
+		"Message.index.585603-2": "Upstream message diagnosis in progress",
+		"Message.index.585603-3": "Downward message diagnosis in progress",
+		"Message.index.585603-4": "Downward message communication abnormality",
+		"Message.index.585603-5": "The downlink message communication is normal",
+		"Message.index.585603-6": "Upstream message communication abnormality",
+		"Message.index.585603-7": "Upward message communication is normal"
+	}
+}

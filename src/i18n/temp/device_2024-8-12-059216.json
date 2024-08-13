@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Log.index.585609-0": "连接",
+		"Log.index.585609-1": "权限验证",
+		"Log.index.585609-2": "解码",
+		"Log.index.585609-3": "编码",
+		"Log.index.585609-4": "请求",
+		"Log.index.585609-5": "响应",
+		"Log.index.585609-6": "下行消息",
+		"Log.index.585609-7": "上行消息"
+	},
+	"en": {
+		"Log.index.585609-0": "Connect",
+		"Log.index.585609-1": "Permission verification",
+		"Log.index.585609-2": "Decode",
+		"Log.index.585609-3": "Encode",
+		"Log.index.585609-4": "Request",
+		"Log.index.585609-5": "Response",
+		"Log.index.585609-6": "Downward message",
+		"Log.index.585609-7": "Upward message"
+	}
+}

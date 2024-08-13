@@ -15,6 +15,8 @@ import PermissionButton from '@/components/PermissionButton/index.vue'
 import { useMenuStore } from "@/store/menu"
 import BindParentDevice from '../../components/BindParentDevice/index.vue'
 import { onlyMessage } from "@/utils/comm"
+import i18n from '@/i18n'
+const $t = i18n.global.t
 
 type TypeProps = 'network' | 'child-device' | 'media' | 'cloud' | 'channel'
 
@@ -35,8 +37,8 @@ const Status = defineComponent({
 
         const device = ref(instanceStore.current)
         const gateway = ref<Partial<Record<string, any>>>({}) // 网关信息
-        const parent = ref<Partial<Record<string, any>>>({}) // 父设备
-        const product = ref<Partial<Record<string, any>>>({}) // 产品
+        const parent = ref<Partial<Record<string, any>>>({}) // 父{$t('Status.index.585606-38')}
+        const product = ref<Partial<Record<string, any>>>({}) // {$t('Status.index.585606-33')}
 
         const artificialVisible = ref<boolean>(false)
         const artificialData = ref<Partial<Record<string, any>>>()
@@ -76,10 +78,10 @@ const Status = defineComponent({
                 setTimeout(() => {
                     list.value = modifyArrayList(unref(list), {
                         key: 'network',
-                        name: '网络组件',
-                        desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                        name: $t('Status.index.585606-0'),
+                        desc: $t('Status.index.585606-1'),
                         status: 'success',
-                        text: '正常',
+                        text: $t('Status.index.585606-2'),
                         info: null,
                     });
                     resolve({})
@@ -98,47 +100,47 @@ const Status = defineComponent({
                         if (health === 1) {
                             _item = {
                                 key: 'network',
-                                name: '网络组件',
-                                desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                name: $t('Status.index.585606-0'),
+                                desc: $t('Status.index.585606-1'),
                                 status: 'success',
-                                text: '正常',
+                                text: $t('Status.index.585606-2'),
                                 info: null,
                             };
                         } else {
                             _item = {
                                 key: 'network',
-                                name: '网络组件',
-                                desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                name: $t('Status.index.585606-0'),
+                                desc: $t('Status.index.585606-1'),
                                 status: 'error',
-                                text: '异常',
+                                text: $t('Status.index.585606-3'),
                                 info: health === -1 ? (
                                     <div>
                                         <div class={styles.infoItem}>
                                             <Badge
                                                 status="default"
                                                 text={
-                                                    <span>网络组件已禁用，请先
+                                                    <span>{$t('Status.index.585606-4')}
                                                         <PermissionButton
                                                             type="link"
                                                             style="padding: 0"
                                                             hasPermission="link/Type:action"
                                                             popConfirm={{
-                                                                title: '确认启用',
+                                                                title: $t('Status.index.585606-5'),
                                                                 onConfirm:  () => {
                                                                     const response =  startNetwork(
                                                                         unref(gateway)?.channelId,
                                                                     );
                                                                     response.then((res)=>{
                                                                         if (res.status === 200) {
-                                                                            onlyMessage('操作成功！');
+                                                                            onlyMessage($t('Status.index.585606-6'));
                                                                             list.value = modifyArrayList(
                                                                                 list.value,
                                                                                 {
                                                                                     key: 'network',
-                                                                                    name: '网络组件',
-                                                                                    desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                                                                    name: $t('Status.index.585606-0'),
+                                                                                    desc: $t('Status.index.585606-1'),
                                                                                     status: 'success',
-                                                                                    text: '正常',
+                                                                                    text: $t('Status.index.585606-2'),
                                                                                     info: null,
                                                                                 },
                                                                             );
@@ -148,7 +150,7 @@ const Status = defineComponent({
                                                                 }
                                                             }}
                                                         >
-                                                            启用
+                                                            {$t('Status.index.585606-7')}
                                                         </PermissionButton>
                                                     </span>
                                                 }
@@ -160,13 +162,13 @@ const Status = defineComponent({
                                         <div class={styles.infoItem}>
                                             <Badge
                                                 status="default"
-                                                text="请检查服务器端口是否开放，如未开放，请开放后尝试重新连接"
+                                                text={$t('Status.index.585606-8')}
                                             />
                                         </div>
                                         <div class={styles.infoItem}>
                                             <Badge
                                                 status="default"
-                                                text="请检查服务器防火策略，如有开启防火墙，请关闭防火墙或调整防火墙策略后重试"
+                                                text={$t('Status.index.585606-9')}
                                             />
                                         </div>
                                     </div>
@@ -180,27 +182,27 @@ const Status = defineComponent({
                             resolve({});
                         }, time);
                     } else {
-                        onlyMessage('请求发生错误', 'error')
+                        onlyMessage($t('Status.index.585606-10'), 'error')
                     }
                 } else {
-                    onlyMessage('设备不含accessId', 'error')
+                    onlyMessage($t('Status.index.585606-11'), 'error')
                 }
             }
         })
 
-        // 设备接入网关
+        // {$t('Status.index.585606-14')}
         const diagnoseGateway = () => new Promise(async (resolve) => {
             const desc = props.providerType && ['child-device', 'cloud'].includes(props.providerType)
-                ? '诊断设备接入网关状态是否正常，网关配置是否正确'
-                : '诊断设备接入网关状态是否正常，禁用状态将导致连接失败';
+                ? $t('Status.index.585606-12')
+                : $t('Status.index.585606-13');
             if (unref(device).state.value === 'online') {
                 setTimeout(() => {
                     list.value = modifyArrayList(list.value, {
                         key: 'gateway',
-                        name: '设备接入网关',
+                        name: $t('Status.index.585606-14'),
                         desc: desc,
                         status: 'success',
-                        text: '正常',
+                        text: $t('Status.index.585606-2'),
                         info: null,
                     });
                     resolve({});
@@ -217,10 +219,10 @@ const Status = defineComponent({
                                 if (props.providerType === 'cloud' || unref(device)?.accessProvider === 'gb28181-2016') {
                                     _item = {
                                         key: 'gateway',
-                                        name: '设备接入网关',
+                                        name: $t('Status.index.585606-14'),
                                         desc: desc,
                                         status: 'warning',
-                                        text: '可能存在异常',
+                                        text: $t('Status.index.585606-15'),
                                         info: (
                                             <div>
                                                 <div class={styles.infoItem}>
@@ -228,7 +230,7 @@ const Status = defineComponent({
                                                         status="default"
                                                         text={
                                                             <span>
-                                                                请<Button type="link" style="padding: 0" onClick={async () => {
+                                                                {$t('Status.index.585606-16')}<Button type="link" style="padding: 0" onClick={async () => {
                                                                     const config: any = await getGatewayDetail(
                                                                         response.result?.id || '',
                                                                     );
@@ -236,35 +238,35 @@ const Status = defineComponent({
                                                                         manualInspection({
                                                                             type: props.providerType,
                                                                             key: `gateway`,
-                                                                            name: `设备接入网关`,
+                                                                            name: $t('Status.index.585606-14'),
                                                                             desc: desc,
-                                                                            data: { name: `${unref(device)?.accessProvider}配置` },
+                                                                            data: { name: $t('Status.index.585606-17', [unref(device)?.accessProvider]) },
                                                                             configuration: { ...config.result },
                                                                         });
                                                                     }
-                                                                }}>人工检查</Button>网关配置是否已填写正确，若您确定该项无需诊断可
+                                                                }}>{$t('Status.index.585606-18')}</Button>{$t('Status.index.585606-19')}
                                                                 <PermissionButton
                                                                     
                                                                     type="link"
                                                                     style="padding: 0"
                                                                     popConfirm={{
-                                                                        title:"确认忽略？",
+                                                                        title:$t('Status.index.585606-20'),
                                                                         onConfirm:() => {
                                                                             list.value = modifyArrayList(
                                                                                 list.value,
                                                                                 {
                                                                                     key: 'gateway',
-                                                                                    name: '设备接入网关',
+                                                                                    name: $t('Status.index.585606-14'),
                                                                                     desc: desc,
                                                                                     status: 'success',
-                                                                                    text: '正常',
+                                                                                    text: $t('Status.index.585606-2'),
                                                                                     info: null,
                                                                                 },
                                                                             );
                                                                         }
                                                                     }}
                                                                 >
-                                                                    忽略
+                                                                    {$t('Status.index.585606-21')}
                                                                 </PermissionButton>
                                                             </span>
                                                         }
@@ -276,45 +278,45 @@ const Status = defineComponent({
                                 } else {
                                     _item = {
                                         key: 'gateway',
-                                        name: '设备接入网关',
+                                        name: $t('Status.index.585606-14'),
                                         desc: desc,
                                         status: 'success',
-                                        text: '正常',
+                                        text: $t('Status.index.585606-2'),
                                         info: null,
                                     };
                                 }
                             } else {
                                 _item = {
                                     key: 'gateway',
-                                    name: '设备接入网关',
+                                    name: $t('Status.index.585606-14'),
                                     desc: desc,
                                     status: 'error',
-                                    text: '异常',
+                                    text: $t('Status.index.585606-3'),
                                     info: (
                                         <div>
                                             <div class={styles.infoItem}>
                                                 <Badge
                                                     status="default"
-                                                    text={<span>设备接入网关已禁用，请先
+                                                    text={<span>{$t('Status.index.585606-22')}
                                                         <PermissionButton
                                                             hasPermission="link/Type:action"
                                                             type="link"
                                                             style="padding: 0"
                                                             popConfirm={{
-                                                                title: '确认启用',
+                                                                title: $t('Status.index.585606-5'),
                                                                 onConfirm:  () => {
                                                                     const response =  startGateway(unref(device).accessId || '');
                                                                     response.then((resp)=>{
                                                                         if (resp.status === 200) {
-                                                                            onlyMessage('操作成功！');
+                                                                            onlyMessage($t('Status.index.585606-6'));
                                                                             list.value = modifyArrayList(
                                                                                 list.value,
                                                                                 {
                                                                                     key: 'gateway',
-                                                                                    name: '设备接入网关',
+                                                                                    name: $t('Status.index.585606-14'),
                                                                                     desc: desc,
                                                                                     status: 'success',
-                                                                                    text: '正常',
+                                                                                    text: $t('Status.index.585606-2'),
                                                                                     info: null,
                                                                                 },
                                                                             );
@@ -324,7 +326,7 @@ const Status = defineComponent({
                                                                 }
                                                             }}
                                                         >
-                                                            启用
+                                                            {$t('Status.index.585606-7')}
                                                         </PermissionButton>
                                                     </span>}
                                                 />
@@ -340,20 +342,20 @@ const Status = defineComponent({
                                 resolve({});
                             }, time);
                         } else {
-                            onlyMessage('请求发生错误', 'error')
+                            onlyMessage($t('Status.index.585606-10'), 'error')
                         }
                     } else {
-                        onlyMessage('设备不含accessId', 'error')
+                        onlyMessage($t('Status.index.585606-11'), 'error')
                     }
                 } else {
                     if (unref(gateway)?.state?.value === 'enabled') {
                         if (props.providerType === 'cloud' || unref(device)?.accessProvider === 'gb28181-2016') {
                             _item = {
                                 key: 'gateway',
-                                name: '设备接入网关',
+                                name: $t('Status.index.585606-14'),
                                 desc: desc,
                                 status: 'warning',
-                                text: '可能存在异常',
+                                text: $t('Status.index.585606-15'),
                                 info: (
                                     <div>
                                         <div class={styles.infoItem}>
@@ -361,7 +363,7 @@ const Status = defineComponent({
                                                 status="default"
                                                 text={
                                                     <span>
-                                                        请<Button type="link" style="padding: 0"
+                                                        {$t('Status.index.585606-16')}<Button type="link" style="padding: 0"
                                                             onClick={async () => {
                                                                 const config: any = await getGatewayDetail(
                                                                     unref(gateway)?.id || '',
@@ -370,36 +372,36 @@ const Status = defineComponent({
                                                                     manualInspection({
                                                                         type: props.providerType,
                                                                         key: `gateway`,
-                                                                        name: `设备接入网关`,
+                                                                        name: $t('Status.index.585606-14'),
                                                                         desc: desc,
-                                                                        data: { name: `${unref(device)?.accessProvider}配置` },
+                                                                        data: { name: $t('Status.index.585606-17', [unref(device)?.accessProvider]) },
                                                                         configuration: { ...config.result },
                                                                     });
                                                                 }
                                                             }}
-                                                        >人工检查</Button>
-                                                        网关配置是否已填写正确，若您确定该项无需诊断可
+                                                        >{$t('Status.index.585606-18')}</Button>
+                                                        {$t('Status.index.585606-19')}
                                                         <PermissionButton
                                                             type="link"
                                                             style="padding: 0"
                                                             popConfirm={{
-                                                                title:"确认忽略？",
+                                                                title:$t('Status.index.585606-20'),
                                                                 onConfirm:() => {
                                                                     list.value = modifyArrayList(
                                                                         list.value,
                                                                         {
                                                                             key: 'gateway',
-                                                                            name: '设备接入网关',
+                                                                            name: $t('Status.index.585606-14'),
                                                                             desc: desc,
                                                                             status: 'success',
-                                                                            text: '正常',
+                                                                            text: $t('Status.index.585606-2'),
                                                                             info: null,
                                                                         },
                                                                     );
                                                                 }
                                                             }}
                                                         >
-                                                            忽略
+                                                            {$t('Status.index.585606-21')}
                                                         </PermissionButton>
                                                     </span>
                                                 }
@@ -411,20 +413,20 @@ const Status = defineComponent({
                         } else {
                             _item = {
                                 key: 'gateway',
-                                name: '设备接入网关',
+                                name: $t('Status.index.585606-14'),
                                 desc: desc,
                                 status: 'success',
-                                text: '正常',
+                                text: $t('Status.index.585606-2'),
                                 info: null,
                             };
                         }
                     } else {
                         _item = {
                             key: 'gateway',
-                            name: '设备接入网关',
+                            name: $t('Status.index.585606-14'),
                             desc: desc,
                             status: 'error',
-                            text: '异常',
+                            text: $t('Status.index.585606-3'),
                             info: (
                                 <div>
                                     <div class={styles.infoItem}>
@@ -432,26 +434,26 @@ const Status = defineComponent({
                                             status="default"
                                             text={
                                                 <span>
-                                                    设备接入网关已禁用，请先
+                                                    {$t('Status.index.585606-22')}
                                                     <PermissionButton
                                                         hasPermission="link/AccessConfig:action"
                                                         type="link"
                                                         style="padding: 0"
                                                         popConfirm={{
-                                                            title: '确认启用',
+                                                            title: $t('Status.index.585606-5'),
                                                             onConfirm:  () => {
                                                                 const response =  startGateway(unref(device).accessId || '');
                                                                 response.then((resp)=>{
                                                                     if (resp.status === 200) {
-                                                                        onlyMessage('操作成功！');
+                                                                        onlyMessage($t('Status.index.585606-6'));
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
                                                                                 key: 'gateway',
-                                                                                name: '设备接入网关',
+                                                                                name: $t('Status.index.585606-14'),
                                                                                 desc: desc,
                                                                                 status: 'success',
-                                                                                text: '正常',
+                                                                                text: $t('Status.index.585606-2'),
                                                                                 info: null,
                                                                             },
                                                                         );
@@ -461,7 +463,7 @@ const Status = defineComponent({
                                                             }
                                                         }}
                                                     >
-                                                        启用
+                                                        {$t('Status.index.585606-7')}
                                                     </PermissionButton>
                                                 </span>
                                             }
@@ -481,16 +483,16 @@ const Status = defineComponent({
             }
         })
 
-        // 网关父设备
+        // {$t('Status.index.585606-23')}
         const diagnoseParentDevice = () => new Promise(async (resolve) => {
             if (unref(device).state.value === 'online') {
                 setTimeout(() => {
                     list.value = modifyArrayList(unref(list), {
                         key: 'parent-device',
-                        name: '网关父设备',
-                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                        name: $t('Status.index.585606-23'),
+                        desc: $t('Status.index.585606-24'),
                         status: 'success',
-                        text: '正常',
+                        text: $t('Status.index.585606-2'),
                         info: null,
                     });
                     resolve({});
@@ -501,10 +503,10 @@ const Status = defineComponent({
                     setTimeout(() => {
                         list.value = modifyArrayList(unref(list), {
                             key: 'parent-device',
-                            name: '网关父设备',
-                            desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                            name: $t('Status.index.585606-23'),
+                            desc: $t('Status.index.585606-24'),
                             status: 'error',
-                            text: '异常',
+                            text: $t('Status.index.585606-3'),
                             info: (
                                 <div>
                                     <div class={styles.infoItem}>
@@ -512,15 +514,15 @@ const Status = defineComponent({
                                             status="default"
                                             text={
                                                 <span>
-                                                    未绑定父设备，请先
+                                                    {$t('Status.index.585606-25')}
                                                     <Button type="link" style="padding: 0"
                                                         onClick={() => {
                                                             bindParentVisible.value = true
                                                         }}
                                                     >
-                                                        绑定
+                                                        {$t('Status.index.585606-26')}
                                                     </Button>
-                                                    父设备后重试
+                                                    {$t('Status.index.585606-27')}
                                                 </span>
                                             }
                                         />
@@ -538,10 +540,10 @@ const Status = defineComponent({
                         if (response?.result?.state?.value === 'notActive') {
                             _item = {
                                 key: 'parent-device',
-                                name: '网关父设备',
-                                desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                name: $t('Status.index.585606-23'),
+                                desc: $t('Status.index.585606-24'),
                                 status: 'error',
-                                text: '异常',
+                                text: $t('Status.index.585606-3'),
                                 info: (
                                     <div>
                                         <div class={styles.infoItem}>
@@ -549,26 +551,26 @@ const Status = defineComponent({
                                                 status="default"
                                                 text={
                                                     <span>
-                                                        网关父设备已禁用，请先
+                                                        {$t('Status.index.585606-28')}
                                                         <PermissionButton
                                                             hasPermission="device/Product:action"
                                                             type="link"
                                                             style="padding: 0"
                                                             popConfirm={{
-                                                                title: '确认启用',
+                                                                title: $t('Status.index.585606-5'),
                                                                 onConfirm: () => {
                                                                     const response =  _deploy(response?.result?.id || '');
                                                                     response.then((resp)=>{
                                                                         if (resp.status === 200) {
-                                                                            onlyMessage('操作成功！');
+                                                                            onlyMessage($t('Status.index.585606-6'));
                                                                             list.value = modifyArrayList(
                                                                                 list.value,
                                                                                 {
                                                                                     key: 'parent-device',
-                                                                                    name: '网关父设备',
-                                                                                    desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                                                                    name: $t('Status.index.585606-23'),
+                                                                                    desc: $t('Status.index.585606-24'),
                                                                                     status: 'success',
-                                                                                    text: '正常',
+                                                                                    text: $t('Status.index.585606-2'),
                                                                                     info: null,
                                                                                 },
                                                                             );
@@ -578,7 +580,7 @@ const Status = defineComponent({
                                                                 }
                                                             }}
                                                         >
-                                                            启用
+                                                            {$t('Status.index.585606-7')}
                                                         </PermissionButton>
                                                     </span>
                                                 }
@@ -590,25 +592,25 @@ const Status = defineComponent({
                         } else if (response?.result?.state?.value === 'online') {
                             _item = {
                                 key: 'parent-device',
-                                name: '网关父设备',
-                                desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                name: $t('Status.index.585606-23'),
+                                desc: $t('Status.index.585606-24'),
                                 status: 'success',
-                                text: '正常',
+                                text: $t('Status.index.585606-2'),
                                 info: null,
                             };
                         } else {
                             _item = {
                                 key: 'parent-device',
-                                name: '网关父设备',
-                                desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                name: $t('Status.index.585606-23'),
+                                desc: $t('Status.index.585606-24'),
                                 status: 'error',
-                                text: '异常',
+                                text: $t('Status.index.585606-3'),
                                 info: (
                                     <div>
                                         <div class={styles.infoItem}>
                                             <Badge
                                                 status="default"
-                                                text={<span>网关父设备已离线，请先排查网关设备故障</span>}
+                                                text={<span>{$t('Status.index.585606-29')}</span>}
                                             />
                                         </div>
                                     </div>
@@ -626,16 +628,16 @@ const Status = defineComponent({
             }
         })
 
-        // 产品状态
+        // {$t('Status.index.585606-30')}
         const diagnoseProduct = () => new Promise(async (resolve) => {
             if (unref(device).state?.value === 'online') {
                 setTimeout(() => {
                     list.value = modifyArrayList(unref(list), {
                         key: 'product',
-                        name: '产品状态',
-                        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                        name: $t('Status.index.585606-30'),
+                        desc: $t('Status.index.585606-31'),
                         status: 'success',
-                        text: '正常',
+                        text: $t('Status.index.585606-2'),
                         info: null,
                     });
                     resolve({});
@@ -650,10 +652,10 @@ const Status = defineComponent({
                         const state = response.result?.state
                         _item = {
                             key: 'product',
-                            name: '产品状态',
-                            desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                            name: $t('Status.index.585606-30'),
+                            desc: $t('Status.index.585606-31'),
                             status: state === 1 ? 'success' : 'error',
-                            text: state === 1 ? '正常' : '异常',
+                            text: state === 1 ? $t('Status.index.585606-2') : $t('Status.index.585606-3'),
                             info:
                                 state === 1 ? null : (
                                     <div>
@@ -662,26 +664,26 @@ const Status = defineComponent({
                                                 status="default"
                                                 text={
                                                     <span>
-                                                        产品已禁用，请
+                                                        {$t('Status.index.585606-32')}
                                                         <PermissionButton
                                                             hasPermission="device/Product:action"
                                                             type="link"
                                                             style="padding: 0"
                                                             popConfirm={{
-                                                                title: '确认启用',
+                                                                title: $t('Status.index.585606-5'),
                                                                 onConfirm:  () => {
                                                                     const response =  _deployProduct(unref(device).productId || '');
                                                                     response.then((resp)=>{
                                                                         if (resp.status === 200) {
-                                                                            onlyMessage('操作成功！');
+                                                                            onlyMessage($t('Status.index.585606-6'));
                                                                             list.value = modifyArrayList(
                                                                                 list.value,
                                                                                 {
                                                                                     key: 'product',
-                                                                                    name: '产品状态',
-                                                                                    desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                                                                    name: $t('Status.index.585606-30'),
+                                                                                    desc: $t('Status.index.585606-31'),
                                                                                     status: 'success',
-                                                                                    text: '正常',
+                                                                                    text: $t('Status.index.585606-2'),
                                                                                     info: null,
                                                                                 },
                                                                             );
@@ -691,9 +693,9 @@ const Status = defineComponent({
                                                                 }
                                                             }}
                                                         >
-                                                            启用
+                                                            {$t('Status.index.585606-7')}
                                                         </PermissionButton>
-                                                        产品
+                                                        {$t('Status.index.585606-33')}
                                                     </span>
                                                 }
                                             />
@@ -712,17 +714,17 @@ const Status = defineComponent({
             }
         })
 
-        // 设备状态
+        // {$t('Status.index.585606-34')}
         const diagnoseDevice = () => new Promise(resolve => {
             const _device = unref(device)
             if (_device.state?.value === 'online') {
                 setTimeout(() => {
                     list.value = modifyArrayList(unref(list), {
                         key: 'device',
-                        name: '设备状态',
-                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                        name: $t('Status.index.585606-34'),
+                        desc: $t('Status.index.585606-35'),
                         status: 'success',
-                        text: '正常',
+                        text: $t('Status.index.585606-2'),
                         info: null,
                     });
                     resolve({});
@@ -732,10 +734,10 @@ const Status = defineComponent({
                 if (_device.state?.value === 'notActive') {
                     item = {
                         key: 'device',
-                        name: '设备状态',
-                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                        name: $t('Status.index.585606-34'),
+                        desc: $t('Status.index.585606-35'),
                         status: 'error',
-                        text: '异常',
+                        text: $t('Status.index.585606-3'),
                         info: (
                             <div>
                                 <div class={styles.infoItem}>
@@ -743,27 +745,27 @@ const Status = defineComponent({
                                         status="default"
                                         text={
                                             <span>
-                                                设备已禁用，请
+                                                {$t('Status.index.585606-36')}
                                                 <PermissionButton
                                                     hasPermission="device/Instance:action"
                                                     type="link"
                                                     style="padding: 0"
                                                     popConfirm={{
-                                                        title: '确认启用',
+                                                        title: $t('Status.index.585606-5'),
                                                         onConfirm:  () => {
                                                             const response =  _deploy(unref(device)?.id || '');
                                                             response.then((resp)=>{
                                                                 if (resp.status === 200) {
-                                                                    instanceStore.current.state = { value: 'offline', text: '离线' }
-                                                                    onlyMessage('操作成功！');
+                                                                    instanceStore.current.state = { value: 'offline', text: $t('Status.index.585606-37') }
+                                                                    onlyMessage($t('Status.index.585606-6'));
                                                                     list.value = modifyArrayList(
                                                                         list.value,
                                                                         {
                                                                             key: 'device',
-                                                                            name: '设备状态',
-                                                                            desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                                                                            name: $t('Status.index.585606-34'),
+                                                                            desc: $t('Status.index.585606-35'),
                                                                             status: 'success',
-                                                                            text: '正常',
+                                                                            text: $t('Status.index.585606-2'),
                                                                             info: null,
                                                                         },
                                                                     );
@@ -773,9 +775,9 @@ const Status = defineComponent({
                                                         }
                                                     }}
                                                 >
-                                                    启用
+                                                    {$t('Status.index.585606-7')}
                                                 </PermissionButton>
-                                                设备
+                                                {$t('Status.index.585606-38')}
                                             </span>
                                         }
                                     />
@@ -786,10 +788,10 @@ const Status = defineComponent({
                 } else {
                     item = {
                         key: 'device',
-                        name: '设备状态',
-                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                        name: $t('Status.index.585606-34'),
+                        desc: $t('Status.index.585606-35'),
                         status: 'success',
-                        text: '正常',
+                        text: $t('Status.index.585606-2'),
                         info: null,
                     };
                 }
@@ -802,7 +804,7 @@ const Status = defineComponent({
             }
         })
 
-        // 产品认证配置
+        // {$t('Status.index.585606-33')}认证配置
         const diagnoseProductAuthConfig = () => new Promise(async (resolve) => {
             const _device = unref(device)
             if (_device.productId) {
@@ -817,10 +819,10 @@ const Status = defineComponent({
                                 list.value,
                                 {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-39', [item?.name]),
+                                    desc: $t('Status.index.585606-40', [item?.name]),
                                     status: 'loading',
-                                    text: '正在诊断中...',
+                                    text: $t('Status.index.585606-41'),
                                     info: null,
                                 },
                                 list.value.length,
@@ -831,10 +833,10 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-39', [item?.name]),
+                                    desc: $t('Status.index.585606-40', [item?.name]),
                                     status: 'success',
-                                    text: '正常',
+                                    text: $t('Status.index.585606-2'),
                                     info: null,
                                 });
                                 resolve({});
@@ -848,10 +850,10 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-39', [item?.name]),
+                                    desc: $t('Status.index.585606-40', [item?.name]),
                                     status: 'error',
-                                    text: '异常',
+                                    text: $t('Status.index.585606-3'),
                                     info: (
                                         <div>
                                             <div class={styles.infoItem}>
@@ -859,36 +861,36 @@ const Status = defineComponent({
                                                     status="default"
                                                     text={
                                                         <span>
-                                                            请根据设备接入配置需要
+                                                            {$t('Status.index.585606-42')}
                                                             <Button type="link" style="padding: 0"
                                                                 onClick={() => {
                                                                     jumpAccessConfig();
                                                                 }}
                                                             >
-                                                                填写
+                                                                {$t('Status.index.585606-43')}
                                                             </Button>
-                                                            ，若您确定该项无需诊断可
+                                                            {$t('Status.index.585606-44')}
                                                             <PermissionButton
                                                                 type="link" 
                                                                 style="padding: 0"
                                                                 popConfirm={{
-                                                                     title:"确认忽略？",
+                                                                     title:$t('Status.index.585606-20'),
                                                                      onConfirm:() => {
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
                                                                                 key: `product-auth${i}`,
-                                                                                name: `产品-${item?.name}`,
-                                                                                desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                name: $t('Status.index.585606-39', [item?.name]),
+                                                                                desc: $t('Status.index.585606-40', [item?.name]),
                                                                                 status: 'success',
-                                                                                text: '正常',
+                                                                                text: $t('Status.index.585606-2'),
                                                                                 info: null,
                                                                             },
                                                                         );
                                                                     }
                                                                 }}
                                                             >
-                                                                忽略
+                                                                {$t('Status.index.585606-21')}
                                                             </PermissionButton>
                                                         </span>
                                                     }
@@ -903,10 +905,10 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `product-auth${i}`,
-                                    name: `产品-${item?.name}`,
-                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-39', [item?.name]),
+                                    desc: $t('Status.index.585606-40', [item?.name]),
                                     status: 'warning',
-                                    text: '可能存在异常',
+                                    text: $t('Status.index.585606-15'),
                                     info: (
                                         <div>
                                             <div class={styles.infoItem}>
@@ -914,39 +916,38 @@ const Status = defineComponent({
                                                     status="default"
                                                     text={
                                                         <span>
-                                                            请
+                                                            {$t('Status.index.585606-16')}
                                                             <Button type="link" style="padding: 0"
                                                                 onClick={() => {
                                                                     manualInspection({
                                                                         type: 'product',
                                                                         key: `product-auth${i}`,
-                                                                        name: `产品-${item?.name}`,
-                                                                        desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                        name: $t('Status.index.585606-39', [item?.name]),
+                                                                        desc: $t('Status.index.585606-40', [item?.name]),
                                                                         data: { ...item },
                                                                         configuration: _configuration,
                                                                         productId: unref(device).productId,
                                                                     });
                                                                 }}
                                                             >
-                                                                人工检查
+                                                                {$t('Status.index.585606-18')}
                                                             </Button>
-                                                            产品{item.name}
-                                                            配置是否已填写正确,若您确定该项无需诊断可
+                                                            {$t('Status.index.585606-45', [item.name])}
                                                             <PermissionButton      
                                                                 type="link" 
                                                                 style="padding: 0"
                                                                 popConfirm={
                                                                     {
-                                                                        title:"确认忽略？",
+                                                                        title:$t('Status.index.585606-20'),
                                                                         onConfirm:() => {
                                                                             list.value = modifyArrayList(
                                                                                 list.value,
                                                                                 {
                                                                                     key: `product-auth${i}`,
-                                                                                    name: `产品-${item?.name}`,
-                                                                                    desc: `诊断产品${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                    name: $t('Status.index.585606-39', [item?.name]),
+                                                                                    desc: $t('Status.index.585606-40', [item?.name]),
                                                                                     status: 'success',
-                                                                                    text: '正常',
+                                                                                    text: $t('Status.index.585606-2'),
                                                                                     info: null,
                                                                                 },
                                                                             );
@@ -955,7 +956,7 @@ const Status = defineComponent({
                                                                 }
                                                                 
                                                             >
-                                                               忽略
+                                                               {$t('Status.index.585606-21')}
                                                             </PermissionButton>
                                                         </span>
                                                     }
@@ -974,7 +975,7 @@ const Status = defineComponent({
             }
         })
 
-        // 设备认证配置
+        // {$t('Status.index.585606-38')}认证配置
         const diagnoseDeviceAuthConfig = () => new Promise(async (resolve) => {
             const _device = unref(device)
             if (_device.id) {
@@ -989,10 +990,10 @@ const Status = defineComponent({
                                 list.value,
                                 {
                                     key: `device-auth${i}`,
-                                    name: `设备-${item?.name}`,
-                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-46', [item?.name]),
+                                    desc: $t('Status.index.585606-47', [item?.name]),
                                     status: 'loading',
-                                    text: '正在诊断中...',
+                                    text: $t('Status.index.585606-41'),
                                     info: null,
                                 },
                                 list.value.length,
@@ -1003,10 +1004,10 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `device-auth${i}`,
-                                    name: `设备-${item?.name}`,
-                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-46', [item?.name]),
+                                    desc: $t('Status.index.585606-47', [item?.name]),
                                     status: 'success',
-                                    text: '正常',
+                                    text: $t('Status.index.585606-2'),
                                     info: null,
                                 });
                                 resolve({});
@@ -1020,10 +1021,10 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `device-auth${i}`,
-                                    name: `设备-${item?.name}`,
-                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-46', [item?.name]),
+                                    desc: $t('Status.index.585606-47', [item?.name]),
                                     status: 'error',
-                                    text: '异常',
+                                    text: $t('Status.index.585606-3'),
                                     info: (
                                         <div>
                                             <div class={styles.infoItem}>
@@ -1031,36 +1032,36 @@ const Status = defineComponent({
                                                     status="default"
                                                     text={
                                                         <span>
-                                                            请根据设备接入配置需要
+                                                            {$t('Status.index.585606-42')}
                                                             <Button type="link" style="padding: 0"
                                                                 onClick={() => {
                                                                     jumpDeviceConfig();
                                                                 }}
                                                             >
-                                                                填写
+                                                                {$t('Status.index.585606-43')}
                                                             </Button>
-                                                            ，若您确定该项无需诊断可
+                                                            {$t('Status.index.585606-44')}
                                                             <PermissionButton
                                                                 type="link"
                                                                 style="padding: 0"
                                                                 popConfirm={{
-                                                                     title:"确认忽略？",
+                                                                     title:$t('Status.index.585606-20'),
                                                                      onConfirm:() => {
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
                                                                                 key: `device-auth${i}`,
-                                                                                name: `设备-${item?.name}`,
-                                                                                desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                name: $t('Status.index.585606-46', [item?.name]),
+                                                                                desc: $t('Status.index.585606-47', [item?.name]),
                                                                                 status: 'success',
-                                                                                text: '正常',
+                                                                                text: $t('Status.index.585606-2'),
                                                                                 info: null,
                                                                             },
                                                                         );
                                                                     }}
                                                                 }
                                                             >
-                                                               忽略
+                                                               {$t('Status.index.585606-21')}
                                                             </PermissionButton>
                                                         </span>
                                                     }
@@ -1075,10 +1076,10 @@ const Status = defineComponent({
                             setTimeout(() => {
                                 list.value = modifyArrayList(list.value, {
                                     key: `device-auth${i}`,
-                                    name: `设备-${item?.name}`,
-                                    desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                    name: $t('Status.index.585606-46', [item?.name]),
+                                    desc: $t('Status.index.585606-47', [item?.name]),
                                     status: 'warning',
-                                    text: '可能存在异常',
+                                    text: $t('Status.index.585606-15'),
                                     info: (
                                         <div>
                                             <div class={styles.infoItem}>
@@ -1086,45 +1087,44 @@ const Status = defineComponent({
                                                     status="default"
                                                     text={
                                                         <span>
-                                                            请
+                                                            {$t('Status.index.585606-16')}
                                                             <Button type="link" style="padding: 0"
                                                                 onClick={() => {
                                                                     manualInspection({
                                                                         type: 'device',
                                                                         key: `device-auth${i}`,
-                                                                        name: `设备-${item?.name}`,
-                                                                        desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                        name: $t('Status.index.585606-46', [item?.name]),
+                                                                        desc: $t('Status.index.585606-47', [item?.name]),
                                                                         data: { ...item },
                                                                         configuration: _configuration,
                                                                         productId: unref(device).productId,
                                                                     });
                                                                 }}
                                                             >
-                                                                人工检查
+                                                                {$t('Status.index.585606-18')}
                                                             </Button>
-                                                            设备{item.name}
-                                                            配置是否已填写正确,若您确定该项无需诊断可
+                                                            {$t('Status.index.585606-70', [item.name])}
                                                             <PermissionButton
                                                                 type="link" 
                                                                 style="padding: 0"
                                                                 popConfirm={{
-                                                                      title:"确认忽略？",
+                                                                      title:$t('Status.index.585606-20'),
                                                                       onConfirm:() => {
                                                                         list.value = modifyArrayList(
                                                                             list.value,
                                                                             {
                                                                                 key: `device-auth${i}`,
-                                                                                name: `设备-${item?.name}`,
-                                                                                desc: `诊断设备${item?.name}认证配置是否正确，错误的配置将导致连接失败`,
+                                                                                name: $t('Status.index.585606-46', [item?.name]),
+                                                                                desc: $t('Status.index.585606-47', [item?.name]),
                                                                                 status: 'success',
-                                                                                text: '正常',
+                                                                                text: $t('Status.index.585606-2'),
                                                                                 info: null,
                                                                             },
                                                                         );
                                                                     }}
                                                                 }
                                                             >
-                                                                忽略
+                                                                {$t('Status.index.585606-21')}
                                                             </PermissionButton>
                                                         </span>
                                                     }
@@ -1159,47 +1159,47 @@ const Status = defineComponent({
                 ) {
                     item = {
                         key: `onenet`,
-                        name: `设备-OneNet配置`,
-                        desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
+                        name: $t('Status.index.585606-48'),
+                        desc: $t('Status.index.585606-49'),
                         status: 'warning',
-                        text: '可能存在异常',
+                        text: $t('Status.index.585606-15'),
                         info: (
                             <div>
                                 <div class={styles.infoItem}>
-                                    请
+                                    {$t('Status.index.585606-16')}
                                     <Button type="link" style="padding: 0"
                                         onClick={() => {
                                             manualInspection({
                                                 type: 'device',
                                                 key: `onenet`,
-                                                name: `设备-OneNet配置`,
-                                                desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
+                                                name: $t('Status.index.585606-48'),
+                                                desc: $t('Status.index.585606-49'),
                                                 data: { ...response.result[0] },
                                                 configuration: _configuration,
                                             });
                                         }}
                                     >
-                                        人工检查
+                                        {$t('Status.index.585606-18')}
                                     </Button>
-                                    设备-OneNet配置是否已填写正确,若您确定该项无需诊断可
+                                    {$t('Status.index.585606-50')}
                                     <PermissionButton
                                         type="link" 
                                         style="padding: 0"
                                         popConfirm={{
-                                            title:"确认忽略？",
+                                            title:$t('Status.index.585606-20'),
                                             onConfirm:() => {
                                                 list.value = modifyArrayList(list.value, {
                                                     key: `onenet`,
-                                                    name: `设备-OneNet配置`,
-                                                    desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
+                                                    name: $t('Status.index.585606-48'),
+                                                    desc: $t('Status.index.585606-49'),
                                                     status: 'success',
-                                                    text: '正常',
+                                                    text: $t('Status.index.585606-2'),
                                                     info: null,
                                                 });
                                             }}
                                         }
                                     >
-                                        忽略
+                                        {$t('Status.index.585606-21')}
                                     </PermissionButton>
                                 </div>
                             </div>
@@ -1208,38 +1208,38 @@ const Status = defineComponent({
                 } else {
                     item = {
                         key: `onenet`,
-                        name: `设备-OneNet配置`,
-                        desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
+                        name: $t('Status.index.585606-48'),
+                        desc: $t('Status.index.585606-49'),
                         status: 'error',
-                        text: '异常',
+                        text: $t('Status.index.585606-3'),
                         info: (
                             <div>
                                 <div class={styles.infoItem}>
-                                    请根据设备接入配置需要
+                                    {$t('Status.index.585606-42')}
                                     <Button type="link" style="padding: 0"
                                         onClick={() => {
                                             jumpDeviceConfig();
                                         }}
                                     >
-                                        填写
+                                        {$t('Status.index.585606-43')}
                                     </Button>
-                                    ，若您确定该项无需诊断可
+                                    {$t('Status.index.585606-44')}
                                     <PermissionButton
-                                        title="确认忽略？"
+                                        title={$t('Status.index.585606-20')}
                                         type="link" 
                                         style="padding: 0"
                                         onConfirm={() => {
                                             list.value = modifyArrayList(list.value, {
                                                 key: `onenet`,
-                                                name: `设备-OneNet配置`,
-                                                desc: '诊断设备OneNet是否已配置，未配置将导致连接失败',
+                                                name: $t('Status.index.585606-48'),
+                                                desc: $t('Status.index.585606-49'),
                                                 status: 'success',
-                                                text: '正常',
+                                                text: $t('Status.index.585606-2'),
                                                 info: null,
                                             });
                                         }}
                                     >
-                                        忽略
+                                        {$t('Status.index.585606-21')}
                                     </PermissionButton>
                                 </div>
                             </div>
@@ -1277,47 +1277,47 @@ const Status = defineComponent({
                 ) {
                     item = {
                         key: `ctwing`,
-                        name: `设备-CTWing配置`,
-                        desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                        name: $t('Status.index.585606-51'),
+                        desc: $t('Status.index.585606-52'),
                         status: 'warning',
-                        text: '可能存在异常',
+                        text: $t('Status.index.585606-15'),
                         info: (
                             <div>
                                 <div class={styles.infoItem}>
-                                    请
+                                    {$t('Status.index.585606-16')}
                                     <Button type="link" style="padding: 0"
                                         onClick={() => {
                                             manualInspection({
                                                 type: 'device',
                                                 key: `ctwing`,
-                                                name: `设备-CTWing配置`,
-                                                desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                                                name: $t('Status.index.585606-51'),
+                                                desc: $t('Status.index.585606-52'),
                                                 data: { ...response.result[0] },
                                                 configuration: _configuration,
                                             });
                                         }}
                                     >
-                                        人工检查
+                                        {$t('Status.index.585606-18')}
                                     </Button>
-                                    设备-CTWing配置是否已填写正确,若您确定该项无需诊断可
+                                    {$t('Status.index.585606-53')}
                                     <PermissionButton
                                         type="link" 
                                         style="padding: 0"
                                         popConfirm={{
-                                            title:"确认忽略？",
+                                            title:$t('Status.index.585606-20'),
                                             onConfirm:() => {
                                                 list.value = modifyArrayList(list.value, {
                                                     key: `ctwing`,
-                                                    name: `设备-CTWing配置`,
-                                                    desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                                                    name: $t('Status.index.585606-51'),
+                                                    desc: $t('Status.index.585606-52'),
                                                     status: 'success',
-                                                    text: '正常',
+                                                    text: $t('Status.index.585606-2'),
                                                     info: null,
                                                 });
                                             }
                                         }}
                                     >
-                                        忽略
+                                        {$t('Status.index.585606-21')}
                                     </PermissionButton>
                                 </div>
                             </div>
@@ -1326,35 +1326,35 @@ const Status = defineComponent({
                 } else {
                     item = {
                         key: `ctwing`,
-                        name: `设备-CTWing配置`,
-                        desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                        name: $t('Status.index.585606-51'),
+                        desc: $t('Status.index.585606-52'),
                         status: 'error',
-                        text: '异常',
+                        text: $t('Status.index.585606-3'),
                         info: (
                             <div>
                                 <div class={styles.infoItem}>
-                                    请根据设备接入配置需要
+                                    {$t('Status.index.585606-42')}
                                     <Button type="link" style="padding: 0"
                                         onClick={() => {
                                             jumpDeviceConfig();
                                         }}
                                     >
-                                        填写
+                                        {$t('Status.index.585606-43')}
                                     </Button>
-                                    ，若您确定该项无需诊断可
+                                    {$t('Status.index.585606-44')}
                                     <PermissionButton
                                         type="link" 
                                         style="padding: 0"
                                         popConfirm={
                                             {
-                                                title:"确认忽略？",
+                                                title:$t('Status.index.585606-20'),
                                                 onConfirm:() => {
                                                     list.value = modifyArrayList(list.value, {
                                                         key: `ctwing`,
-                                                        name: `设备-CTWing配置`,
-                                                        desc: '诊断设备CTWing是否已配置，未配置将导致连接失败',
+                                                        name: $t('Status.index.585606-51'),
+                                                        desc: $t('Status.index.585606-52'),
                                                         status: 'success',
-                                                        text: '正常',
+                                                        text: $t('Status.index.585606-2'),
                                                         info: null,
                                                     });
                                                 }
@@ -1362,7 +1362,7 @@ const Status = defineComponent({
                                         }
                                         
                                     >
-                                        忽略
+                                        {$t('Status.index.585606-21')}
                                     </PermissionButton>
                                 </div>
                             </div>
@@ -1390,7 +1390,7 @@ const Status = defineComponent({
                 let info: any = {
                     id: unref(device).id,
                 };
-                item.push(<Badge status="default" text="请检查设备运行状态是否正常" />);
+                item.push(<Badge status="default" text={$t('Status.index.585606-54')} />);
                 if (props.providerType === 'network') {
                     item.push(
                         <Badge
@@ -1398,7 +1398,7 @@ const Status = defineComponent({
                             text={
                                 (unref(gateway)?.channelInfo?.addresses || []).length > 1 ? (
                                     <>
-                                        请检查设备网络是否畅通，并确保设备已连接到以下地址之一:
+                                        {$t('Status.index.585606-55')}
                                         <div class="serverItem">
                                             {(unref(gateway)?.channelInfo?.addresses || []).map((i: any) => (
                                                 <span style={{ marginLeft: 15 }} key={i.address}>
@@ -1410,7 +1410,7 @@ const Status = defineComponent({
                                     </>
                                 ) : (
                                     <>
-                                        请检查设备网络是否畅通，并确保设备已连接到:
+                                        {$t('Status.index.585606-56')}
                                         {(unref(gateway)?.channelInfo?.addresses || []).map((i: any) => (
                                             <span style={{ marginLeft: 15 }} key={i.address}>
                                                 <Badge color={i.health === -1 ? 'red' : 'green'} />
@@ -1435,15 +1435,15 @@ const Status = defineComponent({
                                         status="default"
                                         text={
                                             <span>
-                                                请根据
+                                                {$t('Status.index.585606-57')}
                                                 <Button type="link" style="padding: 0"
                                                     onClick={() => {
                                                         jumpAccessConfig();
                                                     }}
                                                 >
-                                                    设备接入配置
+                                                    {$t('Status.index.585606-58')}
                                                 </Button>
-                                                中{urlMap.get(unref(device)?.accessProvider) || ''}信息，任意上报一条数据
+                                                {$t('Status.index.585606-59')}{urlMap.get(unref(device)?.accessProvider) || ''}{$t('Status.index.585606-60')}
                                             </span>
                                         }
                                     />,
@@ -1454,8 +1454,8 @@ const Status = defineComponent({
                                         status="default"
                                         text={
                                             <span>
-                                                请联系管理员提供{urlMap.get(unref(device)?.accessProvider) || ''}
-                                                信息，并根据URL信息任意上报一条数据
+                                                {$t('Status.index.585606-61')}{urlMap.get(unref(device)?.accessProvider) || ''}
+                                                {$t('Status.index.585606-62')}
                                             </span>
                                         }
                                     />,
@@ -1477,7 +1477,7 @@ const Status = defineComponent({
                                     status="default"
                                     text={
                                         <span>
-                                            请检查设备网络是否畅通，并确保设备已连接到：SIP{' '}
+                                            {$t('Status.index.585606-63')}{' '}
                                             <span style={{ marginLeft: 15 }}>
                                                 <Badge color={address.health === -1 ? 'red' : 'green'} />
                                                 {address.address}
@@ -1501,7 +1501,7 @@ const Status = defineComponent({
                                     status="default"
                                     text={
                                         <span>
-                                            请检查设备网络是否畅通，并确保设备已连接到：SIP{' '}
+                                           {$t('Status.index.585606-63')}{' '}
                                             <span style={{ marginLeft: 15 }}>
                                                 <Badge color={address.health === -1 ? 'red' : 'green'} />
                                                 {address.address}
@@ -1520,10 +1520,10 @@ const Status = defineComponent({
                     item.push(
                         <Badge
                             status="default"
-                            text="需要三方云平台主动发送一条消息通知到本平台，触发设备状态为在线"
+                            text={$t('Status.index.585606-64')}
                         />,
                     );
-                    item.push(<Badge status="default" text="请检查三方平台配置项是否填写正确" />);
+                    item.push(<Badge status="default" text={$t('Status.index.585606-65')} />);
                 } else if (props.providerType === 'channel') {
                 }
                 info = {
@@ -1574,7 +1574,7 @@ const Status = defineComponent({
                 list.value = [...cloudInitList];
                 arr = [diagnoseGateway, diagnoseProduct, diagnoseDevice, diagnoseCTWing, diagnoseOnenet];
             } else if (providerType === 'channel') {
-                onlyMessage('未开发', 'error');
+                onlyMessage($t('Status.index.585606-66'), 'error');
                 return;
             }
             if (arr.length > 0) {
@@ -1613,7 +1613,7 @@ const Status = defineComponent({
 
         return () => <div class={styles['statusBox']}>
             <div class={styles["statusHeader"]}>
-                <TitleComponent data="连接详情" />
+                <TitleComponent data={$t('Status.index.585606-67')} />
                 <Space>
                     {
                         status.value === 'finish' && unref(device).state?.value !== 'online' && <Button type="primary" onClick={async () => {
@@ -1626,10 +1626,10 @@ const Status = defineComponent({
                                 if (resp.status === 200) {
                                     list.value = modifyArrayList(list.value, {
                                         key: 'gateway',
-                                        name: '设备接入网关',
-                                        desc: '诊断设备接入网关状态是否正常，禁用状态将导致连接失败',
+                                        name: $t('Status.index.585606-14'),
+                                        desc: $t('Status.index.585606-13'),
                                         status: 'success',
-                                        text: '正常',
+                                        text: $t('Status.index.585606-2'),
                                         info: null,
                                     });
                                 } else {
@@ -1641,10 +1641,10 @@ const Status = defineComponent({
                                 if (resp.status === 200) {
                                     list.value = modifyArrayList(list.value, {
                                         key: 'product',
-                                        name: '产品状态',
-                                        desc: '诊断产品状态是否正常，禁用状态将导致设备连接失败',
+                                        name: $t('Status.index.585606-30'),
+                                        desc: $t('Status.index.585606-31'),
                                         status: 'success',
-                                        text: '正常',
+                                        text: $t('Status.index.585606-2'),
                                         info: null,
                                     });
                                 } else {
@@ -1654,13 +1654,13 @@ const Status = defineComponent({
                             if (unref(device)?.state?.value === 'notActive') {
                                 const resp = await deployDevice(unref(device)?.id || '');
                                 if (resp.status === 200) {
-                                    unref(device).state = { value: 'offline', text: '离线' };
+                                    unref(device).state = { value: 'offline', text: $t('Status.index.585606-37') };
                                     list.value = modifyArrayList(list.value, {
                                         key: 'device',
-                                        name: '设备状态',
-                                        desc: '诊断设备状态是否正常，禁用状态将导致设备连接失败',
+                                        name: $t('Status.index.585606-34'),
+                                        desc: $t('Status.index.585606-35'),
                                         status: 'success',
-                                        text: '正常',
+                                        text: $t('Status.index.585606-2'),
                                         info: null,
                                     });
                                 } else {
@@ -1677,10 +1677,10 @@ const Status = defineComponent({
                                     if (res.status === 200) {
                                         list.value = modifyArrayList(list.value, {
                                             key: 'network',
-                                            name: '网络组件',
-                                            desc: '诊断网络组件配置是否正确，配置错误将导致设备连接失败',
+                                            name: $t('Status.index.585606-0'),
+                                            desc: $t('Status.index.585606-1'),
                                             status: 'success',
-                                            text: '正常',
+                                            text: $t('Status.index.585606-2'),
                                             info: null,
                                         });
                                     } else {
@@ -1694,10 +1694,10 @@ const Status = defineComponent({
                                     if (resp.status === 200) {
                                         list.value = modifyArrayList(list.value, {
                                             key: 'parent-device',
-                                            name: '网关父设备',
-                                            desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                            name: $t('Status.index.585606-23'),
+                                            desc: $t('Status.index.585606-24'),
                                             status: 'success',
-                                            text: '正常',
+                                            text: $t('Status.index.585606-2'),
                                             info: null,
                                         });
                                     } else {
@@ -1706,13 +1706,13 @@ const Status = defineComponent({
                                 }
                             }
                             if (flag) {
-                                onlyMessage('操作成功！');
+                                onlyMessage($t('Status.index.585606-6'));
                             }
-                        }}>一键修复</Button>
+                        }}>{$t('Status.index.585606-68')}</Button>
                     }
                     <Button onClick={() => {
                         handleSearch()
-                    }}>重新诊断</Button>
+                    }}>{$t('Status.index.585606-69')}</Button>
                 </Space>
             </div>
             <div class={styles["statusContent"]}>
@@ -1760,7 +1760,7 @@ const Status = defineComponent({
                             name: params.name,
                             desc: params.desc,
                             status: 'success',
-                            text: '正常',
+                            text: $t('Status.index.585606-2'),
                             info: null,
                         });
                         artificialVisible.value = false
@@ -1781,10 +1781,10 @@ const Status = defineComponent({
                                 if (response?.result?.state?.value === 'notActive') {
                                     item = {
                                         key: 'parent-device',
-                                        name: '网关父设备',
-                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                        name: $t('Status.index.585606-23'),
+                                        desc: $t('Status.index.585606-24'),
                                         status: 'error',
-                                        text: '异常',
+                                        text: $t('Status.index.585606-3'),
                                         info: (
                                             <div>
                                                 <div class={styles.infoItem}>
@@ -1792,26 +1792,26 @@ const Status = defineComponent({
                                                         status="default"
                                                         text={
                                                             <span>
-                                                                网关父设备已禁用，请先
+                                                                {$t('Status.index.585606-28')}
                                                                 <PermissionButton
                                                                     hasPermission="device/Product:action"
                                                                     type="link"
                                                                     style="padding: 0"
                                                                     popConfirm={{
-                                                                        title: '确认启用',
+                                                                        title: $t('Status.index.585606-5'),
                                                                         onConfirm:  () => {
                                                                             const response =  _deploy(response?.result?.id || '');
                                                                             response.then((resp)=>{
                                                                                 if (resp.status === 200) {
-                                                                                    onlyMessage('操作成功！');
+                                                                                    onlyMessage($t('Status.index.585606-6'));
                                                                                     list.value = modifyArrayList(
                                                                                         list.value,
                                                                                         {
                                                                                             key: 'parent-device',
-                                                                                            name: '网关父设备',
-                                                                                            desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                                                                            name: $t('Status.index.585606-23'),
+                                                                                            desc: $t('Status.index.585606-24'),
                                                                                             status: 'success',
-                                                                                            text: '正常',
+                                                                                            text: $t('Status.index.585606-2'),
                                                                                             info: null,
                                                                                         },
                                                                                     );
@@ -1822,7 +1822,7 @@ const Status = defineComponent({
                                                                         }
                                                                     }}
                                                                 >
-                                                                    启用
+                                                                    {$t('Status.index.585606-7')}
                                                                 </PermissionButton>
                                                             </span>
                                                         }
@@ -1834,25 +1834,25 @@ const Status = defineComponent({
                                 } else if (response?.state?.value === 'online') {
                                     item = {
                                         key: 'parent-device',
-                                        name: '网关父设备',
-                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                        name: $t('Status.index.585606-23'),
+                                        desc: $t('Status.index.585606-24'),
                                         status: 'success',
-                                        text: '正常',
+                                        text: $t('Status.index.585606-2'),
                                         info: null,
                                     };
                                 } else {
                                     item = {
                                         key: 'parent-device',
-                                        name: '网关父设备',
-                                        desc: '诊断网关父设备状态是否正常，禁用或离线将导致连接失败',
+                                        name: $t('Status.index.585606-23'),
+                                        desc: $t('Status.index.585606-24'),
                                         status: 'error',
-                                        text: '异常',
+                                        text: $t('Status.index.585606-3'),
                                         info: (
                                             <div>
                                                 <div class={styles.infoItem}>
                                                     <Badge
                                                         status="default"
-                                                        text={<span>网关父设备已离线，请先排查网关设备故障</span>}
+                                                        text={<span>{$t('Status.index.585606-29')}</span>}
                                                     />
                                                 </div>
                                             </div>

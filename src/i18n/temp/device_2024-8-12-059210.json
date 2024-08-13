@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Dialog.index.5856012-0": "连接",
+		"Dialog.index.5856012-1": "权限验证",
+		"Dialog.index.5856012-2": "解码",
+		"Dialog.index.5856012-3": "编码",
+		"Dialog.index.5856012-4": "请求",
+		"Dialog.index.5856012-5": "响应",
+		"Dialog.index.5856012-6": "下行消息",
+		"Dialog.index.5856012-7": "上行消息"
+	},
+	"en": {
+		"Dialog.index.5856012-0": "Connect",
+		"Dialog.index.5856012-1": "Permission verification",
+		"Dialog.index.5856012-2": "Decode",
+		"Dialog.index.5856012-3": "Encode",
+		"Dialog.index.5856012-4": "Request",
+		"Dialog.index.5856012-5": "Response",
+		"Dialog.index.5856012-6": "Downward message",
+		"Dialog.index.5856012-7": "Upward message"
+	}
+}

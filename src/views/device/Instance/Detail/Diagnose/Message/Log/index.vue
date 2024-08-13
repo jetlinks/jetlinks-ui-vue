@@ -28,16 +28,19 @@
 
 <script lang="ts" setup>
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const operationMap = new Map();
-operationMap.set('connection', '连接');
-operationMap.set('auth', '权限验证');
-operationMap.set('decode', '解码');
-operationMap.set('encode', '编码');
-operationMap.set('request', '请求');
-operationMap.set('response', '响应');
-operationMap.set('downstream', '下行消息');
-operationMap.set('upstream', '上行消息');
+operationMap.set('connection', $t('Log.index.585609-0'));
+operationMap.set('auth', $t('Log.index.585609-1'));
+operationMap.set('decode', $t('Log.index.585609-2'));
+operationMap.set('encode', $t('Log.index.585609-3'));
+operationMap.set('request', $t('Log.index.585609-4'));
+operationMap.set('response', $t('Log.index.585609-5'));
+operationMap.set('downstream', $t('Log.index.585609-6'));
+operationMap.set('upstream', $t('Log.index.585609-7'));
 
 const visible = ref<boolean>(false);
 

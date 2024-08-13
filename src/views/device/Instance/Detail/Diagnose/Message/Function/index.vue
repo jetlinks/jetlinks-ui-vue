@@ -7,23 +7,23 @@
                         name="type"
                         :rules="{
                             required: true,
-                            message: '请选择',
+                            message: $t('Function.index.5856010-0'),
                         }"
                     >
                         <j-select
-                            placeholder="请选择"
+                            :placeholder="$t('Function.index.5856010-0')"
                             v-model:value="modelRef.type"
                             show-search
                             :filter-option="filterOption"
                         >
                             <j-select-option value="READ_PROPERTY"
-                                >读取属性</j-select-option
+                                >{{ $t('Function.index.5856010-1') }}</j-select-option
                             >
                             <j-select-option value="WRITE_PROPERTY"
-                                >修改属性</j-select-option
+                                >{{ $t('Function.index.5856010-2') }}</j-select-option
                             >
                             <j-select-option value="INVOKE_FUNCTION"
-                                >调用功能</j-select-option
+                                >{{ $t('Function.index.5856010-3') }}</j-select-option
                             >
                         </j-select>
                     </j-form-item>
@@ -40,11 +40,11 @@
                         name="properties"
                         :rules="{
                             required: true,
-                            message: '请选择属性',
+                            message: $t('Function.index.5856010-4'),
                         }"
                     >
                         <j-select
-                            placeholder="请选择属性"
+                            :placeholder="$t('Function.index.5856010-4')"
                             v-model:value="modelRef.properties"
                             show-search
                             :filter-option="filterOption"
@@ -64,7 +64,7 @@
                         name="propertyValue"
                         :rules="{
                             required: true,
-                            message: '请输入值',
+                            message: $t('Function.index.5856010-5'),
                         }"
                     >
                         <j-input v-model:value="modelRef.propertyValue" />
@@ -75,11 +75,11 @@
                         name="function"
                         :rules="{
                             required: true,
-                            message: '请选择功能',
+                            message: $t('Function.index.5856010-6'),
                         }"
                     >
                         <j-select
-                            placeholder="请选择功能"
+                            :placeholder="$t('Function.index.5856010-6')"
                             v-model:value="modelRef.function"
                             show-search
                             :filter-option="filterOption"
@@ -96,7 +96,7 @@
                     </j-form-item>
                 </j-col>
                 <j-col :span="4">
-                    <j-button type="primary" @click="saveBtn">发送</j-button>
+                    <j-button type="primary" @click="saveBtn">{{ $t('Function.index.5856010-7') }}</j-button>
                 </j-col>
                 <j-col
                     :span="24"
@@ -108,7 +108,7 @@
                 >
                     <!-- <j-form-item
                         name="inputs"
-                        label="参数列表"
+                        :label="$t('Function.index.5856010-8')"
                         :rules="{
                             required: true,
                             message: '请输入参数列表',
@@ -116,7 +116,7 @@
                     >
                         <EditTable v-model="modelRef.inputs" />
                     </j-form-item> -->
-                    <div>参数列表</div>
+                    <div>{{ $t('Function.index.5856010-8') }}</div>
                     <EditTable v-model="modelRef.inputs" ref="inputsRef" />
                 </j-col>
             </j-row>
@@ -132,6 +132,9 @@ import {
     readProperties,
     settingProperties,
 } from '@/api/device/instance';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const instanceStore = useInstanceStore();
 

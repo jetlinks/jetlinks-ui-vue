@@ -2,6 +2,8 @@ import { useInstanceStore } from "@/store/instance";
 import { useMenuStore } from "@/store/menu";
 import { AIcon, Button, Modal, Descriptions, DescriptionsItem, Space } from "jetlinks-ui-components"
 import styles from './index.module.less'
+import i18n from '@/i18n'
+const $t = i18n.global.t
 
 const ManualInspection = defineComponent({
     props: {
@@ -26,13 +28,13 @@ const ManualInspection = defineComponent({
                         <div style={{ flex: 1 }}>
                             <div class={styles.alert}>
                                 <span style={{ marginRight: '10px' }}><AIcon type="InfoCircleOutlined" /></span>
-                                请检查配置项是否填写正确，若您确定该项无需诊断可
+                                {$t('Status.ManualInspection.585605-0')}
                                 <Button type="link" style="padding: 0"
                                     onClick={() => {
                                         emit('save', data)
                                     }}
                                 >
-                                    忽略
+                                    {$t('Status.ManualInspection.585605-1')}
                                 </Button>
                             </div>
                             <div style={{ marginTop: '10px' }}>
@@ -52,7 +54,7 @@ const ManualInspection = defineComponent({
                             <div
                                 style={{ width: '50%', border: '1px solid #f0f0f0', padding: '10px', borderLeft: 'none' }}
                             >
-                                <h4>诊断项说明</h4>
+                                <h4>{$t('Status.ManualInspection.585605-2')}</h4>
                                 <p>{data?.data?.description}</p>
                             </div>
                         ) : (
@@ -66,26 +68,26 @@ const ManualInspection = defineComponent({
                         <div style={{ flex: 1 }}>
                             <div class={styles.alert}>
                                 <span style={{ marginRight: '10px' }}><AIcon type="InfoCircleOutlined" /></span>
-                                请检查配置项是否填写正确，若您确定该项无需诊断可
+                                {$t('Status.ManualInspection.585605-0')}
                                 <Button type="link" style="padding: 0"
                                     onClick={() => {
                                         emit('save', data)
                                     }}
                                 >
-                                    忽略
+                                    {$t('Status.ManualInspection.585605-1')}
                                 </Button>
                             </div>
                             <div style={{ marginTop: '10px' }}>
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {data.configuration?.provider === 'OneNet' ? (
                                         <>
-                                            <DescriptionsItem label={'接口地址'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-3')}>
                                                 {data?.configuration?.configuration?.apiAddress || ''}
                                             </DescriptionsItem>
                                             <DescriptionsItem label={'apiKey'}>
                                                 {data?.configuration?.configuration?.apiKey || ''}
                                             </DescriptionsItem>
-                                            <DescriptionsItem label={'通知Token'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-4')}>
                                                 {data?.configuration?.configuration?.validateToken || ''}
                                             </DescriptionsItem>
                                             <DescriptionsItem label={'aesKey'}>
@@ -94,7 +96,7 @@ const ManualInspection = defineComponent({
                                         </>
                                     ) : (
                                         <>
-                                            <DescriptionsItem label={'接口地址'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-3')}>
                                                 {data?.configuration?.configuration?.apiAddress || ''}
                                             </DescriptionsItem>
                                             <DescriptionsItem label={'appKey'}>
@@ -112,7 +114,7 @@ const ManualInspection = defineComponent({
                             <div
                                 style={{ width: '50%', border: '1px solid #f0f0f0', padding: '10px', borderLeft: 'none' }}
                             >
-                                <h4>诊断项说明</h4>
+                                <h4>{$t('Status.ManualInspection.585605-2')}</h4>
                                 <p>{data?.configuration?.configuration?.description}</p>
                             </div>
                         ) : (
@@ -126,56 +128,56 @@ const ManualInspection = defineComponent({
                         <div style={{ flex: 1 }}>
                             <div class={styles.alert}>
                                 <span style={{ marginRight: '10px' }}><AIcon type="InfoCircleOutlined" /></span>
-                                请检查配置项是否填写正确，若您确定该项无需诊断可
+                                {$t('Status.ManualInspection.585605-0')}
                                 <Button type="link" style="padding: 0"
                                     onClick={() => {
                                         emit('save', data)
                                     }}
                                 >
-                                    忽略
+                                    {$t('Status.ManualInspection.585605-1')}
                                 </Button>
                             </div>
                             <div style={{ marginTop: '10px' }}>
                                 <Descriptions title={data?.data?.name} layout="vertical" bordered>
                                     {data?.configuration?.configuration?.shareCluster ? (
                                         <>
-                                            <DescriptionsItem label={'SIP 域'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-5')}>
                                                 {data?.configuration?.configuration?.domain || ''}
                                             </DescriptionsItem>
                                             <DescriptionsItem label={'SIP ID'}>
                                                 {data?.configuration?.configuration?.sipId || ''}
                                             </DescriptionsItem>
-                                            <DescriptionsItem label={'集群'}>
-                                                {data?.configuration?.configuration?.shareCluster ? '共享配置' : '独立配置'}
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-6')}>
+                                                {data?.configuration?.configuration?.shareCluster ? $t('Status.ManualInspection.585605-7') : $t('Status.ManualInspection.585605-8')}
                                             </DescriptionsItem>
-                                            <DescriptionsItem label={'SIP 地址'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-9')}>
                                                 {`${data?.configuration?.configuration?.hostPort?.host}:${data?.configuration?.configuration?.hostPort?.port}`}
                                             </DescriptionsItem>
-                                            <DescriptionsItem label={'公网 Host'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-10')}>
                                                 {`${data?.configuration?.configuration?.hostPort?.publicHost}:${data?.configuration?.configuration?.hostPort?.publicPort}`}
                                             </DescriptionsItem>
                                         </>
                                     ) : (
                                         <>
-                                            <DescriptionsItem label={'SIP 域'}>
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-5')}>
                                                 {data?.configuration?.configuration?.domain || ''}
                                             </DescriptionsItem>
                                             <DescriptionsItem label={'SIP ID'}>
                                                 {data?.configuration?.configuration?.sipId || ''}
                                             </DescriptionsItem>
-                                            <DescriptionsItem label={'集群'}>
-                                                {data?.configuration?.configuration?.shareCluster ? '共享配置' : '独立配置'}
+                                            <DescriptionsItem label={$t('Status.ManualInspection.585605-6')}>
+                                                {data?.configuration?.configuration?.shareCluster ? $t('Status.ManualInspection.585605-7') : $t('Status.ManualInspection.585605-8')}
                                             </DescriptionsItem>
                                             {data?.configuration?.configuration?.cluster.map((i: any, it: number) => (
                                                 <div key={it}>
-                                                    <div>节点{it + 1}</div>
-                                                    <DescriptionsItem label={'节点名称'}>
+                                                    <div>{$t('Status.ManualInspection.585605-11')}{it + 1}</div>
+                                                    <DescriptionsItem label={$t('Status.ManualInspection.585605-12')}>
                                                         {i?.clusterNodeId || ''}
                                                     </DescriptionsItem>
-                                                    <DescriptionsItem label={'SIP 地址'}>
+                                                    <DescriptionsItem label={$t('Status.ManualInspection.585605-9')}>
                                                         {`${i.host}:${i?.port}`}
                                                     </DescriptionsItem>
-                                                    <DescriptionsItem label={'公网 Host'}>
+                                                    <DescriptionsItem label={$t('Status.ManualInspection.585605-10')}>
                                                         {`${i?.publicHost}:${i?.publicPort}`}
                                                     </DescriptionsItem>
                                                 </div>
@@ -189,7 +191,7 @@ const ManualInspection = defineComponent({
                             <div
                                 style={{ width: '50%', border: '1px solid #f0f0f0', padding: '10px', borderLeft: 'none' }}
                             >
-                                <h4>诊断项说明</h4>
+                                <h4>{$t('Status.ManualInspection.585605-2')}</h4>
                                 <p>{data?.configuration?.description}</p>
                             </div>
                         ) : (
@@ -203,7 +205,7 @@ const ManualInspection = defineComponent({
         };
 
         return () => <Modal
-            title="人工检查"
+            title={$t('Status.ManualInspection.585605-13')}
             visible
             width={1000}
             onOk={() => {
@@ -222,10 +224,10 @@ const ManualInspection = defineComponent({
                         } else {
                             menuStory.jumpPage('link/AccessConfig/Detail', { id: data.configuration?.id });
                         }
-                    }}>去修改</Button>
+                    }}>{$t('Status.ManualInspection.585605-14')}</Button>
                     <Button onClick={() => {
                         emit('save', data)
-                    }}>确认无误</Button>
+                    }}>{$t('Status.ManualInspection.585605-15')}</Button>
                 </Space>
             }}
         >

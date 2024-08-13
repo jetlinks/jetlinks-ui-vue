@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Diagnose.index.585600-0": "已诊断",
+		"Diagnose.index.585600-1": "个",
+		"Diagnose.index.585600-2": "连接状态",
+		"Diagnose.index.585600-3": "消息通信"
+	},
+	"en": {
+		"Diagnose.index.585600-0": "Diagnosed ",
+		"Diagnose.index.585600-1": "individual",
+		"Diagnose.index.585600-2": "Connection status",
+		"Diagnose.index.585600-3": "Message communication"
+	}
+}

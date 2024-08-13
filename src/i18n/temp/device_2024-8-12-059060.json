@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Status.util.585604-0": "网络组件",
+		"Status.util.585604-1": "诊断网络组件配置是否正确，配置错误将导致设备连接失败",
+		"Status.util.585604-2": "正在诊断中...",
+		"Status.util.585604-3": "设备接入网关",
+		"Status.util.585604-4": "诊断设备接入网关状态是否正常，禁用状态将导致连接失败",
+		"Status.util.585604-5": "产品状态",
+		"Status.util.585604-6": "诊断产品状态是否正常，禁用状态将导致设备连接失败",
+		"Status.util.585604-7": "设备状态",
+		"Status.util.585604-8": "诊断设备状态是否正常，禁用状态将导致设备连接失败",
+		"Status.util.585604-9": "诊断设备接入网关状态是否正常，网关配置是否正确",
+		"Status.util.585604-10": "网关父设备",
+		"Status.util.585604-11": "诊断网关父设备状态是否正常，禁用或离线将导致连接失败"
+	},
+	"en": {
+		"Status.util.585604-0": "Network components",
+		"Status.util.585604-1": "Diagnose whether the network component configuration is correct. Incorrect configuration will cause device connection failure",
+		"Status.util.585604-2": "Under diagnosis",
+		"Status.util.585604-3": "Device access gateway",
+		"Status.util.585604-4": "Diagnose whether the device's access gateway status is normal. Disabling the status will result in connection failure",
+		"Status.util.585604-5": "Product status",
+		"Status.util.585604-6": "Diagnose whether the product status is normal, disabling the status will cause device connection failure",
+		"Status.util.585604-7": "Equipment status",
+		"Status.util.585604-8": "Diagnose whether the device status is normal, disabling the status will cause device connection failure",
+		"Status.util.585604-9": "Check if the diagnostic device is connected to the gateway and if the gateway configuration is correct",
+		"Status.util.585604-10": "Gateway parent device",
+		"Status.util.585604-11": "Diagnosing whether the parent device status of the gateway is normal, disabling or going offline will result in connection failure"
+	}
+}

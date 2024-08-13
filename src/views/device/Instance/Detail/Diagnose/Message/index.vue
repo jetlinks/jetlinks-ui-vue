@@ -16,7 +16,7 @@
                 </j-col>
             </j-row>
             <div>
-                <TitleComponent data="调试" />
+                <TitleComponent :data="$t('Message.index.585603-0')" />
                 <div class="content">
                     <div class="dialog" id="dialog">
                         <template v-for="item in dialogList" :key="item.key">
@@ -29,7 +29,7 @@
         </j-col>
         <j-col :span="8">
             <div class="right-log">
-                <TitleComponent data="日志" />
+                <TitleComponent :data="$t('Message.index.585603-1')" />
                 <div class="right-log-box">
                     <template v-if="logList.length">
                         <Log
@@ -58,14 +58,17 @@ import { useInstanceStore } from '@/store/instance';
 import { getWebSocket } from '@/utils/websocket';
 import { randomString } from '@/utils/utils';
 import _ from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const message = reactive<MessageType>({
     up: {
-        text: '上行消息诊断中',
+        text: $t('Message.index.585603-2'),
         status: 'loading',
     },
     down: {
-        text: '下行消息诊断中',
+        text: $t('Message.index.585603-3'),
         status: 'loading',
     },
 });
@@ -111,12 +114,12 @@ const subscribeLog = () => {
                     });
                 if (!data.upstream) {
                     message.down = {
-                        text: !flag ? '下行消息通信异常' : '下行消息通信正常',
+                        text: !flag ? $t('Message.index.585603-4') : $t('Message.index.585603-5'),
                         status: !flag ? 'error' : 'success',
                     };
                 } else {
                     message.up = {
-                        text: !flag ? '上行消息通信异常' : '上行消息通信正常',
+                        text: !flag ? $t('Message.index.585603-6') : $t('Message.index.585603-7'),
                         status: !flag ? 'error' : 'success',
                     };
                 }

@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Function.index.5856010-0": "请选择",
+		"Function.index.5856010-1": "读取属性",
+		"Function.index.5856010-2": "修改属性",
+		"Function.index.5856010-3": "调用功能",
+		"Function.index.5856010-4": "请选择属性",
+		"Function.index.5856010-5": "请输入值",
+		"Function.index.5856010-6": "请选择功能",
+		"Function.index.5856010-7": "发送",
+		"Function.index.5856010-8": "参数列表"
+	},
+	"en": {
+		"Function.index.5856010-0": "Please choose",
+		"Function.index.5856010-1": "read attribute",
+		"Function.index.5856010-2": "modify attribute",
+		"Function.index.5856010-3": "call function",
+		"Function.index.5856010-4": "Please select attributes",
+		"Function.index.5856010-5": "Please enter a value",
+		"Function.index.5856010-6": "Please select the function",
+		"Function.index.5856010-7": "Send out",
+		"Function.index.5856010-8": "Parameter list"
+	}
+}

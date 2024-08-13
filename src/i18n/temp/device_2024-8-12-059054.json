@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Status.DiagnosticAdvice.585608-0": "设备诊断",
+		"Status.DiagnosticAdvice.585608-1": "诊断建议",
+		"Status.DiagnosticAdvice.585608-2": "所有诊断均无异常但设备仍未上线，请检查以下内容",
+		"Status.DiagnosticAdvice.585608-3": "连接信息",
+		"Status.DiagnosticAdvice.585608-4": "设备ID",
+		"Status.DiagnosticAdvice.585608-5": "连接地址"
+	},
+	"en": {
+		"Status.DiagnosticAdvice.585608-0": "Device diagnosis",
+		"Status.DiagnosticAdvice.585608-1": "Diagnostic recommendations",
+		"Status.DiagnosticAdvice.585608-2": "All diagnoses are normal but the device is still not online. Please check the following content",
+		"Status.DiagnosticAdvice.585608-3": "Connection information",
+		"Status.DiagnosticAdvice.585608-4": "Device ID",
+		"Status.DiagnosticAdvice.585608-5": "Connection address"
+	}
+}
