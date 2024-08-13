@@ -4,7 +4,7 @@
         :maskClosable="false"
         destroy-on-close
         v-model:visible="visible"
-        width="500px"
+        width="550px"
         :confirmLoading="loading"
     >
         <j-form layout="vertical" :model="form" ref="formRef">
@@ -42,8 +42,7 @@
                 <j-textarea
                     v-model:value="form.originJson"
                     placeholder="这里回显设备上报数据json"
-                    :disabled="isDisabled"
-                    :rows="6"
+                    :rows="8"
                     :maxlength="6"
                 />
             </j-form-item>
@@ -55,8 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import { onlyMessage } from '@/utils/comm';
-
 const visible = ref(false);
 const loading = ref(false);
 const formRef = ref();
@@ -81,18 +78,6 @@ const show = (data: any) => {
 defineExpose({
     show: show,
 });
-
-const submitData = () => {
-    loading.value = true;
-    formRef.value.validate().then(async () => {
-        onlyMessage('确定', 'warning');
-    });
-
-    setTimeout(() => {
-        loading.value = false;
-        visible.value = false;
-    }, 1000);
-};
 
 const close = () => {
     visible.value = false;

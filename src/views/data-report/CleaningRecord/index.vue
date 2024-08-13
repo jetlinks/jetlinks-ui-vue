@@ -12,6 +12,9 @@
                 :request="queryData"
                 model="table"
                 :params="globParams"
+                :defaultParams="{
+                    sorts: [{ name: 'cleanTime', order: 'desc' }],
+                }"
                 :rowKey="(record: any) => record.cleanTime"
                 :rowSelection="{
                     selectedRowKeys: selectedRowKeys,
@@ -158,7 +161,7 @@ const handleOnChange = (num: number, pageSize: number) => {
 
 // 调用useProSearch获取handleSearch方法
 const { handleSearch } = useProSearch(globParams, handleClearSelected, [
-    'alarmTime',
+    'cleanTime',
 ]);
 
 //查看
