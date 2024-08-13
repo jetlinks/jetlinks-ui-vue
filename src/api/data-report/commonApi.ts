@@ -1,5 +1,7 @@
 import request from '@/utils/request';
 import server from '@/utils/request';
+import { number } from 'echarts';
+import Record from '@/views/notice/Template/Log/components/Record.vue';
 
 /**
  * 页面索引枚举，用于表示应用中的不同报表页面。
@@ -49,7 +51,12 @@ export const query = (index: PageIndex, data?: any) =>
     request.post(`/vehicle/es/query/${index}`, data);
 
 export const getDicList = (data?: any) =>
-    server.post(`/dictionary-item/_query`, data);
+    server.post<{
+        pageIndex: number;
+        pageSize: number;
+        total: number;
+        data: Record<string, any>[];
+    }>(`/dictionary-item/_query`, data);
 
 /**
  * 车辆类型
