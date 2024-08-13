@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Media.Onvif.4283017-0": "基本信息",
+		"Media.Onvif.4283017-1": "名称",
+		"Media.Onvif.4283017-2": "请输入名称",
+		"Media.Onvif.4283017-3": "最多可输入64个字符",
+		"Media.Onvif.4283017-4": "说明",
+		"Media.Onvif.4283017-5": "请输入说明",
+		"Media.Onvif.4283017-6": "保存",
+		"Media.Onvif.4283017-7": "Onvif视频接入",
+		"Media.Onvif.4283017-8": "适用于使用RSTP或RTMP固定地址接入的视频设备",
+		"Media.Onvif.4283017-9": "消息协议",
+		"Media.Onvif.4283017-10": "内置Onvif协议",
+		"Media.Onvif.4283017-11": "操作成功"
+	},
+	"en": {
+		"Media.Onvif.4283017-0": "Basic information",
+		"Media.Onvif.4283017-1": "Name",
+		"Media.Onvif.4283017-2": "Please enter a name",
+		"Media.Onvif.4283017-3": "Up to 64 characters can be entered",
+		"Media.Onvif.4283017-4": "Explain",
+		"Media.Onvif.4283017-5": "Please enter instructions",
+		"Media.Onvif.4283017-6": "Save",
+		"Media.Onvif.4283017-7": "Onvif video access",
+		"Media.Onvif.4283017-8": "Suitable for video devices using RSTP or RTMP fixed address access",
+		"Media.Onvif.4283017-9": "Message Protocol",
+		"Media.Onvif.4283017-10": "Built in Onvif protocol",
+		"Media.Onvif.4283017-11": "Operation successful"
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"components.FirstKind.428297-0": "网络组件",
+		"components.FirstKind.428297-1": "等",
+		"components.FirstKind.428297-2": "条",
+		"components.FirstKind.428297-3": "消息协议",
+		"components.FirstKind.428297-4": "URL信息",
+		"components.FirstKind.428297-5": "上行、下行",
+		"components.FirstKind.428297-6": "上行",
+		"components.FirstKind.428297-7": "下行",
+		"components.FirstKind.428297-8": "分组"
+	},
+	"en": {
+		"components.FirstKind.428297-0": "NSetwork components",
+		"components.FirstKind.428297-1": "etc.,a total of",
+		"components.FirstKind.428297-2": "",
+		"components.FirstKind.428297-3": "Message Protocol",
+		"components.FirstKind.428297-4": "URL information",
+		"components.FirstKind.428297-5": "upstream and downstream",
+		"components.FirstKind.428297-6": "upstream",
+		"components.FirstKind.428297-7": "downstream",
+		"components.FirstKind.428297-8": "Group"
+	}
+}

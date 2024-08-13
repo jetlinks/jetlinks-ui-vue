@@ -1,0 +1,36 @@
+{
+	"zh": {
+		"Edge.geteway.4282914-0": "基本信息",
+		"Edge.geteway.4282914-1": "请输入名称",
+		"Edge.geteway.4282914-2": "最多可输入64个字符",
+		"Edge.geteway.4282914-3": "名称",
+		"Edge.geteway.4282914-4": "说明",
+		"Edge.geteway.4282914-5": "请输入说明",
+		"Edge.geteway.4282914-6": "保存",
+		"Edge.geteway.4282914-7": "配置概览",
+		"Edge.geteway.4282914-8": "接入方式：",
+		"Edge.geteway.4282914-9": "设备接入指引",
+		"Edge.geteway.4282914-10": "1、数据采集菜单中配置数采通道、点位",
+		"Edge.geteway.4282914-11": "2、创建数采设备接入网关",
+		"Edge.geteway.4282914-12": "3、创建产品，并选中接入方式为数采设备接入",
+		"Edge.geteway.4282914-13": "4、添加设备，单独为每一个设备进行数据点绑定",
+		"Edge.geteway.4282914-14": "操作成功"
+	},
+	"en": {
+		"Edge.geteway.4282914-0": "Basic information",
+		"Edge.geteway.4282914-1": "Please enter a name",
+		"Edge.geteway.4282914-2": "Up to 64 characters can be entered",
+		"Edge.geteway.4282914-3": "Name",
+		"Edge.geteway.4282914-4": "Explain",
+		"Edge.geteway.4282914-5": "Please enter instructions",
+		"Edge.geteway.4282914-6": "Save",
+		"Edge.geteway.4282914-7": "Configuration Overview",
+		"Edge.geteway.4282914-8": "Access method:",
+		"Edge.geteway.4282914-9": "Equipment Access Guidelines",
+		"Edge.geteway.4282914-10": "1. Configure data acquisition channels and points in the data acquisition menu",
+		"Edge.geteway.4282914-11": "2. Create data acquisition device access gateway",
+		"Edge.geteway.4282914-12": "3. Create a product and select the access method as data acquisition device access",
+		"Edge.geteway.4282914-13": "4. Add devices and bind data points separately for each device",
+		"Edge.geteway.4282914-14": "Operation successful"
+	}
+}

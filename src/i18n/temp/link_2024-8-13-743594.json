@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"components.SixthKind.428295-0": "集群",
+		"components.SixthKind.428295-1": "共享配置",
+		"components.SixthKind.428295-2": "独立配置",
+		"components.SixthKind.428295-3": "SIP 域",
+		"components.SixthKind.428295-4": "SIP 地址",
+		"components.SixthKind.428295-5": "公网 Host"
+	},
+	"en": {
+		"components.SixthKind.428295-0": "Colony",
+		"components.SixthKind.428295-1": "Shared configuration",
+		"components.SixthKind.428295-2": "Independent configuration",
+		"components.SixthKind.428295-3": "SIP Domain",
+		"components.SixthKind.428295-4": "SIP address",
+		"components.SixthKind.428295-5": "Public Host"
+	}
+}

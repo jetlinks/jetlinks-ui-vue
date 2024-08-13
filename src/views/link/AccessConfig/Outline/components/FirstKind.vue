@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TitleComponent data="网络组件"> </TitleComponent>
+        <TitleComponent :data="$t('components.FirstKind.428297-0')"> </TitleComponent>
         <AccessCard
             v-if="network"
             :data="{
@@ -24,14 +24,14 @@
                         >
                             <j-badge :status="getColor(i)" :text="i.address" />
                             <span v-if="(network.addresses || []).length > 1"
-                                >等{{ network.addresses.length }}条</span
+                                >{{ $t('components.FirstKind.428297-1') }}{{ network.addresses.length }}{{ $t('components.FirstKind.428297-2') }}</span
                             >
                         </div>
                     </j-tooltip>
                 </div>
             </template>
         </AccessCard>
-        <TitleComponent data="消息协议" style="margin-top: 20px">
+        <TitleComponent :data="$t('components.FirstKind.428297-3')" style="margin-top: 20px">
         </TitleComponent>
         <AccessCard v-if="protocol" :data="{ ...protocol, type: 'protocol' }">
         </AccessCard>
@@ -41,7 +41,7 @@
                 data.provider === 'mqtt-server-gateway' ||
                 data.provider === 'mqtt-client-gateway'
                     ? 'topic'
-                    : 'URL信息'
+                    : $t('components.FirstKind.428297-4')
             "
             style="margin-top: 20px"
         >
@@ -81,6 +81,9 @@ import {
     ColumnsHTTP,
 } from '../../data';
 import AccessCard from '../../components/AccessCard/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
@@ -104,9 +107,9 @@ function generateUUID() {
 }
 const getStream = (record) => {
     let stream = '';
-    if (record.upstream && record.downstream) stream = '上行、下行';
-    else if (record.upstream) stream = '上行';
-    else if (record.downstream) stream = '下行';
+    if (record.upstream && record.downstream) stream = $t('components.FirstKind.428297-5');
+    else if (record.upstream) stream = $t('components.FirstKind.428297-6');
+    else if (record.downstream) stream = $t('components.FirstKind.428297-7');
     return stream;
 };
 const queryNetwork = async () => {
@@ -143,7 +146,7 @@ const queryConfig = async () => {
     if (resp.success) {
         config.value = resp.result;
         const Group = {
-            title: '分组',
+            title: $t('components.FirstKind.428297-8'),
             dataIndex: 'group',
             key: 'group',
             ellipsis: true,

@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.ThirdKind.428294-0": "接入配置",
+		"components.ThirdKind.428294-1": "消息协议",
+		"components.ThirdKind.428294-2": "接口地址",
+		"components.ThirdKind.428294-3": "说明",
+		"components.ThirdKind.428294-4": "通知Token"
+	},
+	"en": {
+		"components.ThirdKind.428294-0": "Access configuration",
+		"components.ThirdKind.428294-1": "Message Protocol",
+		"components.ThirdKind.428294-2": "Interface address",
+		"components.ThirdKind.428294-3": "Explain",
+		"components.ThirdKind.428294-4": "Notify Token"
+	}
+}

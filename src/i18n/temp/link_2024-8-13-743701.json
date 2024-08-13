@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Channel.index.4283022-0": "基本信息",
+		"Channel.index.4283022-1": "名称",
+		"Channel.index.4283022-2": "请输入名称",
+		"Channel.index.4283022-3": "最多可输入64个字符",
+		"Channel.index.4283022-4": "说明",
+		"Channel.index.4283022-5": "请输入说明",
+		"Channel.index.4283022-6": "保存",
+		"Channel.index.4283022-7": "配置概览",
+		"Channel.index.4283022-8": "接入方式：",
+		"Channel.index.4283022-9": "设备接入指引",
+		"Channel.index.4283022-10": "1、配置",
+		"Channel.index.4283022-11": "通道",
+		"Channel.index.4283022-12": "2、创建",
+		"Channel.index.4283022-13": "设备接入网关",
+		"Channel.index.4283022-14": "3、创建产品，并选中接入方式为",
+		"Channel.index.4283022-15": "4、添加设备，单独为每一个设备进行数据点绑定",
+		"Channel.index.4283022-16": "操作成功"
+	},
+	"en": {
+		"Channel.index.4283022-0": "Basic information",
+		"Channel.index.4283022-1": "Name",
+		"Channel.index.4283022-2": "Please enter a name",
+		"Channel.index.4283022-3": "Up to 64 characters can be entered",
+		"Channel.index.4283022-4": "Explain",
+		"Channel.index.4283022-5": "Please enter instructions",
+		"Channel.index.4283022-6": "Save",
+		"Channel.index.4283022-7": "Configuration Overview",
+		"Channel.index.4283022-8": "Access method:",
+		"Channel.index.4283022-9": "Equipment Access Guidelines",
+		"Channel.index.4283022-10": "1. Configuration",
+		"Channel.index.4283022-11": "Passageway",
+		"Channel.index.4283022-12": "2. Create",
+		"Channel.index.4283022-13": "Device access gateway",
+		"Channel.index.4283022-14": "3. Create a product and select the access method as",
+		"Channel.index.4283022-15": "4. Add devices and bind data points separately for each device",
+		"Channel.index.4283022-16": "Operation successful"
+	}
+}

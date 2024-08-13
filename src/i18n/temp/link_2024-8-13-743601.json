@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"AccessConfig.index.428280-0": "新增",
+		"AccessConfig.index.428280-1": "协议",
+		"AccessConfig.index.428280-2": "名称",
+		"AccessConfig.index.428280-3": "网关类型",
+		"AccessConfig.index.428280-4": "状态",
+		"AccessConfig.index.428280-5": "禁用",
+		"AccessConfig.index.428280-6": "正常",
+		"AccessConfig.index.428280-7": "说明",
+		"AccessConfig.index.428280-8": "操作",
+		"AccessConfig.index.428280-9": "启用",
+		"AccessConfig.index.428280-10": "编辑",
+		"AccessConfig.index.428280-11": "确认{0}?",
+		"AccessConfig.index.428280-12": "操作成功",
+		"AccessConfig.index.428280-13": "删除",
+		"AccessConfig.index.428280-14": "请先禁用，再删除",
+		"AccessConfig.index.428280-15": "确认删除?",
+		"AccessConfig.index.428280-16": "禁用"
+	},
+	"en": {
+		"AccessConfig.index.428280-0": "Add",
+		"AccessConfig.index.428280-1": "Agreement",
+		"AccessConfig.index.428280-2": "Name",
+		"AccessConfig.index.428280-3": "Gateway Type ",
+		"AccessConfig.index.428280-4": "State",
+		"AccessConfig.index.428280-5": "disabled",
+		"AccessConfig.index.428280-6": "enabled",
+		"AccessConfig.index.428280-7": "Explain",
+		"AccessConfig.index.428280-8": "Operation",
+		"AccessConfig.index.428280-9": "Enable",
+		"AccessConfig.index.428280-10": "Edit",
+		"AccessConfig.index.428280-11": "Confirm {0}?",
+		"AccessConfig.index.428280-12": "Operation successful",
+		"AccessConfig.index.428280-13": "Delete",
+		"AccessConfig.index.428280-14": "Please disable first, then delete",
+		"AccessConfig.index.428280-15": "Are you sure to delete?",
+		"AccessConfig.index.428280-16": "Disable"
+	}
+}

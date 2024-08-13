@@ -11,7 +11,7 @@
                 <j-card :bordered="false">
                     <div>
                         <div class="go-back" v-if="id === ':id'">
-                            <a @click="goBack">返回</a>
+                            <a @click="goBack">{{ $t('Detail.index.428299-0') }}</a>
                         </div>
                       <template v-if="showType === 'network'">
                         <Plugin
@@ -78,6 +78,9 @@ import Plugin from '../components/Plugin/index.vue'
 import { getProviders, detail } from '@/api/link/accessConfig';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { queryProductList } from '@/api/device/product';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute();
 const id = route.params.id as string;
@@ -119,18 +122,18 @@ const TypeMap = new Map([
 ]);
 // DataMap后期优化
 const DataMap = new Map();
-DataMap.set('fixed-media', { type: 'media', title: '视频类设备接入' });
-DataMap.set('gb28181-2016', { type: 'media', title: '视频类设备接入' });
-DataMap.set('onvif',{ type: 'media' , title:'视频类设备接入'});
-DataMap.set('media-plugin', { type: 'media', title: '视频类设备接入' });
-DataMap.set('OneNet', { type: 'cloud', title: '云平台接入' });
-DataMap.set('OneNet-platform', { type: 'cloud', title: '云平台接入' });
-DataMap.set('Ctwing', { type: 'cloud', title: '云平台接入' });
-DataMap.set('modbus-tcp', { type: 'channel', title: '通道类设备接入' });
-DataMap.set('opc-ua', { type: 'channel', title: '通道类设备接入' });
-DataMap.set('official-edge-gateway', { type: 'edge', title: '官方接入' });
-DataMap.set('edge-child-device', { type: 'edge', title: '官方接入' });
-DataMap.set('network', { type: 'network', title: '自定义设备接入' });
+DataMap.set('fixed-media', { type: 'media', title: $t('Detail.index.428299-1') });
+DataMap.set('gb28181-2016', { type: 'media', title: $t('Detail.index.428299-1') });
+DataMap.set('onvif',{ type: 'media' , title:$t('Detail.index.428299-1')});
+DataMap.set('media-plugin', { type: 'media', title: $t('Detail.index.428299-1') });
+DataMap.set('OneNet', { type: 'cloud', title: $t('Detail.index.428299-2') });
+DataMap.set('OneNet-platform', { type: 'cloud', title: $t('Detail.index.428299-2') });
+DataMap.set('Ctwing', { type: 'cloud', title: $t('Detail.index.428299-2') });
+DataMap.set('modbus-tcp', { type: 'channel', title: $t('Detail.index.428299-3') });
+DataMap.set('opc-ua', { type: 'channel', title: $t('Detail.index.428299-3') });
+DataMap.set('official-edge-gateway', { type: 'edge', title: $t('Detail.index.428299-4') });
+DataMap.set('edge-child-device', { type: 'edge', title: $t('Detail.index.428299-4') });
+DataMap.set('network', { type: 'network', title: $t('Detail.index.428299-5') });
 
 const getTypeList = (result: Record<string, any>) => {
     const list = [];
@@ -166,27 +169,27 @@ const getTypeList = (result: Record<string, any>) => {
     network.length &&
         list.push({
             list: [...network],
-            title: '自定义设备接入',
+            title: $t('Detail.index.428299-5'),
         });
     media.length &&
         list.push({
             list: [...media],
-            title: '视频类设备接入',
+            title: $t('Detail.index.428299-1'),
         });
     cloud.length &&
         list.push({
             list: [...cloud],
-            title: '云平台接入',
+            title: $t('Detail.index.428299-2'),
         });
     channel.length &&
         list.push({
             list: [...channel],
-            title: '通道类设备接入',
+            title: $t('Detail.index.428299-3'),
         });
     edge.length &&
         list.push({
             list: [...edge],
-            title: '官方接入',
+            title: $t('Detail.index.428299-4'),
         });
 
     return list;

@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Media.index.4283018-0": "基本信息",
+		"Media.index.4283018-1": "名称",
+		"Media.index.4283018-2": "请输入名称",
+		"Media.index.4283018-3": "最多可输入64个字符",
+		"Media.index.4283018-4": "说明",
+		"Media.index.4283018-5": "请输入说明",
+		"Media.index.4283018-6": "保存",
+		"Media.index.4283018-7": "接入方式",
+		"Media.index.4283018-8": "消息协议",
+		"Media.index.4283018-9": "操作成功"
+	},
+	"en": {
+		"Media.index.4283018-0": "Basic information",
+		"Media.index.4283018-1": "Name",
+		"Media.index.4283018-2": "Please enter a name",
+		"Media.index.4283018-3": "Up to 64 characters can be entered",
+		"Media.index.4283018-4": "Explain",
+		"Media.index.4283018-5": "Please enter instructions",
+		"Media.index.4283018-6": "Save",
+		"Media.index.4283018-7": "Access method",
+		"Media.index.4283018-8": "Message Protocol",
+		"Media.index.4283018-9": "Operation successful"
+	}
+}

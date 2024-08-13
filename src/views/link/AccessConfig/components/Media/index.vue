@@ -3,7 +3,7 @@
         <div v-if="channel === 'fixed-media'" class="card-last">
             <j-row :gutter="[24, 24]">
                 <j-col :span="12">
-                    <title-component data="基本信息" />
+                    <title-component :data="$t('Media.index.4283018-0')" />
                     <div>
                         <j-form
                             :model="formState"
@@ -13,29 +13,29 @@
                             @finish="onFinish"
                         >
                             <j-form-item
-                                label="名称"
+                                :label="$t('Media.index.4283018-1')"
                                 name="name"
                                 :rules="[
                                     {
                                         required: true,
-                                        message: '请输入名称',
+                                        message: $t('Media.index.4283018-2'),
                                         trigger: 'blur',
                                     },
                                     {
                                         max: 64,
-                                        message: '最多可输入64个字符',
+                                        message: $t('Media.index.4283018-3'),
                                         trigger: 'blur',
                                     },
                                 ]"
                             >
                                 <j-input
-                                    placeholder="请输入名称"
+                                    :placeholder="$t('Media.index.4283018-2')"
                                     v-model:value="formState.name"
                                 />
                             </j-form-item>
-                            <j-form-item label="说明" name="description">
+                            <j-form-item :label="$t('Media.index.4283018-4')" name="description">
                                 <j-textarea
-                                    placeholder="请输入说明"
+                                    :placeholder="$t('Media.index.4283018-5')"
                                     :rows="4"
                                     v-model:value="formState.description"
                                     show-count
@@ -52,7 +52,7 @@
                                     }`"
                                     :loading="loading"
                                 >
-                                    保存
+                                    {{ $t('Media.index.4283018-6') }}
                                 </PermissionButton>
                             </j-form-item>
                         </j-form>
@@ -60,14 +60,14 @@
                 </j-col>
                 <j-col :span="12">
                     <div class="doc">
-                        <h1>接入方式</h1>
+                        <h1>{{ $t('Media.index.4283018-7') }}</h1>
                         <p>
                             {{ provider.name }}
                         </p>
                         <p>
                             {{ provider.description }}
                         </p>
-                        <h1>消息协议</h1>
+                        <h1>{{ $t('Media.index.4283018-8') }}</h1>
                         <p>
                             {{ provider.id === 'fixed-media' ? 'URL' : 'SIP' }}
                         </p>
@@ -97,6 +97,9 @@ import GB28181 from './GB28181.vue';
 import Onvif from './Onvif.vue';
 import Plugin from '../Plugin/index.vue';
 import { update, save } from '@/api/link/accessConfig';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 interface FormState {
     name: string;
@@ -139,7 +142,7 @@ const onFinish = async (values: any) => {
     const resp =
         id === ':id' ? await save(params) : await update({ ...params, id });
     if (resp.status === 200) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Media.index.4283018-9'), 'success');
 
         if (route.query.save) {
             // @ts-ignore
