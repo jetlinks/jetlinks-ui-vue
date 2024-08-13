@@ -1,5 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import * as echarts from 'echarts';
+import i18n from '@/i18n'
+const $t = i18n.global.t
 
 // export const getInterval = (type: string) => {
 //     switch (type) {
@@ -59,7 +61,7 @@ export const arrayReverse = (data: string) => {
 export const networkParams = (val: any) => {
     let _time = '1h';
     let _limit = 12;
-    let format = 'M月dd日 HH:mm';
+    let format = $t('components.tool.542304-0');
     // @ts-ignore
     const dt = dayjs(val.time.time[1]) - dayjs(val.time.time[0])
     const hour = 60 * 60 * 1000;
@@ -76,15 +78,15 @@ export const networkParams = (val: any) => {
     } else if (dt > days && dt <= months * 3) {
         _limit = Math.abs(Math.ceil(dt / days)) + 1;
         _time = '1d';
-        format = 'M月dd日';
+        format = $t('components.tool.542304-1');
     } else if (dt > months * 3 && dt < year) {
         _limit = Math.abs(Math.ceil(dt / months)) + 1;
         _time = '1M';
-        format = 'M月dd日';
+        format = $t('components.tool.542304-1');
     } else if (dt >= year) {
         _limit = Math.abs(Math.floor(dt / months));
         _time = '1M';
-        format = 'yyyy年-M月';
+        format = $t('components.tool.542304-2');
     }
     return [
         {

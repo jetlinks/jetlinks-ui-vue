@@ -1,0 +1,11 @@
+{
+	"zh": {
+		"components.tool.542304-0": "M月dd日 HH:mm",
+		"components.tool.542304-1": "M月dd日",
+		"components.tool.542304-2": "yyyy年-M月"
+	},
+	"en": {
+		"components.tool.542304-0": "MM Month DD Day HH: mm",
+		"components.tool.542304-1": "M month dd day",
+		"components.tool.542304-2": "YYYY year-M month"
+	}

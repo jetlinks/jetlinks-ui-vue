@@ -11,33 +11,33 @@
           ></j-select>
           <div class="dash-board-items">
             <div class="dash-board-item">
-              <TopEchartsItemNode :value="topValues.cpu" title="CPU使用率" />
+              <TopEchartsItemNode :value="topValues.cpu" :title="$t('components.TopCard.542305-0')" />
             </div>
             <div class="dash-board-item">
               <TopEchartsItemNode
-                  :bottom="`总JVM内存 ${topValues.jvmTotal}G`"
+                  :bottom="$t('components.TopCard.542305-1', [topValues.jvmTotal])"
                   :max="topValues.jvmTotal"
                   :value="topValues.jvm"
                   formatter="G"
-                  title="JVM内存"
+                  :title="$t('components.TopCard.542305-2')"
               />
             </div>
             <div class="dash-board-item">
               <TopEchartsItemNode
-                  :bottom="`总磁盘大小 ${topValues.usageTotal}G`"
+                  :bottom="$t('components.TopCard.542305-3', [topValues.usageTotal])"
                   :max="topValues.usageTotal"
                   :value="topValues.usage"
                   formatter="G"
-                  title="磁盘占用"
+                  :title="$t('components.TopCard.542305-4')"
               />
             </div>
             <div class="dash-board-item">
               <TopEchartsItemNode
-                  :bottom="`系统内存 ${topValues.systemUsageTotal}G`"
+                  :bottom="$t('components.TopCard.542305-5', [topValues.systemUsageTotal])"
                   :max="topValues.systemUsageTotal"
                   :value="topValues.systemUsage"
                   formatter="G"
-                  title="系统内存"
+                  :title="$t('components.TopCard.542305-6')"
               />
             </div>
           </div>
@@ -52,6 +52,9 @@ import TopEchartsItemNode from './TopEchartsItemNode.vue';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import { isNoCommunity } from '@/utils/utils'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const serverId = ref();
 const serverNodeOptions = ref<Array<any>>([]);

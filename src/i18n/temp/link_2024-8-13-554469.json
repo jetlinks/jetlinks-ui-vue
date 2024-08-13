@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"components.TopCard.542305-0": "CPU使用率",
+		"components.TopCard.542305-1": "总JVM内存 {0}G",
+		"components.TopCard.542305-2": "JVM内存",
+		"components.TopCard.542305-3": "总磁盘大小 {0}G",
+		"components.TopCard.542305-4": "磁盘占用",
+		"components.TopCard.542305-5": "系统内存 {0}G",
+		"components.TopCard.542305-6": "系统内存"
+	},
+	"en": {
+		"components.TopCard.542305-0": "CPU usage rate",
+		"components.TopCard.542305-1": "Total JVM memory {0}G",
+		"components.TopCard.542305-2": "JVM memory",
+		"components.TopCard.542305-3": "Total disk size {0}G",
+		"components.TopCard.542305-4": "Disk occupancy",
+		"components.TopCard.542305-5": "System memory {0}G",
+		"components.TopCard.542305-6": "System memory"
+	}
+}
