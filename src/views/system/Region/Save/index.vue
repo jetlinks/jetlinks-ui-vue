@@ -66,10 +66,10 @@
                             max: 64,
                             message: '最多输入64个字符',
                         },
-                        {
-                            validator: vailName,
-                            trigger: 'blur',
-                        },
+                        // {
+                        //     validator: vailName,
+                        //     trigger: 'blur',
+                        // },
                     ]"
           >
             <j-input
@@ -86,10 +86,10 @@
                             required: true,
                             message: '请输入区划代码',
                         },
-                        {
-                            validator: vailCode,
-                            trigger: 'blur',
-                        },
+                        // {
+                        //     validator: vailCode,
+                        //     trigger: 'blur',
+                        // },
                     ]"
           >
             <j-input-number
@@ -294,7 +294,6 @@ const handleSave = () => {
 
       if (newData.properties.sync) {
         const _syncChildren = syncChildren(newData.code, props.areaTree)
-
         const different = _syncChildren.filter(item => {
           if (newData.children && newData.children.some(oldItem => oldItem.code === item.code)) {
             return false
@@ -310,7 +309,10 @@ const handleSave = () => {
         newData.children = [
           ...(newData.children || []),
           ...different
-        ]
+        ].map(item=>{
+          const {id,...extra} =item
+          return extra
+        })
       }
 
       loading.value = true;
