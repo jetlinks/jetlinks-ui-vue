@@ -47,11 +47,11 @@
   ]">
     <JsonParam v-model:value="_value.properties" :name="name.concat(['properties'])"></JsonParam>
   </j-form-item>
-  <j-form-item label="文件类型" :name="name.concat(['fileType'])" v-if="['file'].includes(_value.type)" initialValue="url"
+  <j-form-item label="文件类型" :name="name.concat(['bodyType'])" v-if="['file'].includes(_value.type)" initialValue="url"
     :rules="[
       { required: true, message: '请选择文件类型' },
     ]">
-    <j-select v-model:value="_value.fileType" :options="FileTypeList" size="small" placeholder="请选择文件类型"></j-select>
+    <j-select v-model:value="_value.bodyType" :options="FileTypeList" size="small" placeholder="请选择文件类型"></j-select>
   </j-form-item>
 </template>
 <script lang="ts" setup mame="BaseForm">
@@ -158,7 +158,7 @@ const changeType = (val: SelectValue) => {
     _value.value.scale = 2
   }
   if (['file'].includes(val as string)) {
-    _value.value.fileType = _value.value.fileType || 'url'
+    _value.value.bodyType = _value.value.bodyType || 'url'
   }
   if (['date'].includes(val as string)) {
     _value.value.format = _value.value.format || 'yyyy-MM-dd HH:mm:ss'
