@@ -8,10 +8,10 @@
                 :height="600"
                 ref="tableRef"
             >
-                <template #action="{ record }">
+                <template #action="{ data }">
                     <a
                         href="javascript: void(0);"
-                        @click="handleShowModal(record)"
+                        @click="handleShowModal(data)"
                     >
                         清洗规则
                     </a>
@@ -23,10 +23,10 @@
 
 <script setup lang="ts">
 import { FullPage } from 'components/Layout';
-import { useProSearch } from '@/hook/useProSearch';
-import { config, mockData } from '../../config';
 import { useMetadata } from '@/views/device/components/Metadata/Base/hooks';
 import { useProductStore } from 'store/product';
+import { getMetadataConfig } from '@/api/device/product';
+import { onlyMessage } from '@/utils/comm';
 
 defineOptions({
     name: 'PropertyTable',
@@ -38,10 +38,11 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(['showModal']);
 
+const METADATA_TYPE = 'events';
 const productStore = useProductStore();
 productStore.reSet();
 
-const dataSource = ref([]);
+const dataSource = ref<Record<string, any>>([]);
 const loading = ref(false);
 
 const columns = ref([
@@ -76,18 +77,46 @@ const columns = ref([
     },
 ]);
 
-// const init = () => {
-//     dataSource.value = metadata.value.map((item: any) => {
-//         return {
-//             id: item.id,
-//             name: item.name,
-//             type: item.valueType.type,
-//         };
-//     });
-// };
-
-const handleShowModal = (record: Record<string, any>) => {
-    emit('showModal', record);
+const handleShowModal = async (data: Record<string, any>) => {
+    loading.value = true;
+    // modal框中显示输入框的权限
+    const modalPermissions: string[] = [];
+    // 获取当前属性标识的配置
+    const resp = await getMetadataConfig({
+        deviceId: props.productId,
+        metadata: {
+            type: 'property',
+            id: data.record.id,
+            dataType: data.record.type,
+        },
+    });
+    if (resp.status === 200) {
+        const flag = resp.result.some((item: any) => {
+            // 如果遍历到 data_clean 则返回 true ，标记当前属性标识支持配置清洗规则
+            if (item.description === 'data_clean') {
+                // 同时获取modal的权限
+                item.properties.forEach((item: any) =>
+                    modalPermissions.push(item.property),
+                );
+                return true;
+            }
+        });
+        if (!flag) {
+            onlyMessage('该事件不支持配置清洗规则', 'warning');
+            loading.value = false;
+            return;
+        }
+        loading.value = false;
+    } else {
+        onlyMessage('网络异常请重试', 'error');
+        loading.value = false;
+        return;
+    }
+    loading.value = false;
+    emit('showModal', {
+        record: data.record,
+        permissions: modalPermissions,
+    });
 };
 
 watch(
@@ -102,7 +131,7 @@ watch(
                     .then(() => {
                         const { data: metadata } = useMetadata(
                             'product',
-                            'events',
+                            METADATA_TYPE,
                         );
                         loading.value = false;
                         dataSource.value = metadata.value.map((item: any) => {
