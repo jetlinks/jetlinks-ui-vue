@@ -26,7 +26,7 @@
                                     </j-select-option>
                                 </j-select>
                             </j-form-item>
-                            <!-- <j-form-item label="地图选择" name="mapType">
+                            <j-form-item label="地图选择" name="mapType">
                                 <j-select v-model:value="formValue.mapType">
                                     <j-select-option value="AMAP"
                                         >高德地图</j-select-option
@@ -35,12 +35,12 @@
                                         >谷歌地图</j-select-option
                                     >
                                 </j-select>
-                            </j-form-item> -->
+                            </j-form-item>
                             <j-form-item>
                                 <template #label>
-                                    <span>高德API Key</span>
+                                    <span>地图API Key</span>
                                     <j-tooltip
-                                        title="配置后平台可调用高德地图GIS服务"
+                                        title="配置后平台可调用地图GIS服务"
                                     >
                                         <img
                                             class="img-style"
@@ -52,7 +52,7 @@
                                 </template>
                                 <j-input
                                     v-model:value="formValue.apiKey"
-                                    placeholder="请输入高德API Key"
+                                    placeholder="请输入地图API Key"
                                 />
                             </j-form-item>
                             <j-form-item name="base-path">
@@ -359,6 +359,7 @@ const form = reactive<formType>({
     formValue: {
         title: '',
         headerTheme: 'light',
+        mapType: '',
         apiKey: '',
         'base-path': `${window.location.origin}/api`,
         reportPath: '',
@@ -381,6 +382,13 @@ const form = reactive<formType>({
             {
                 required: true,
                 message: '请选择主题色',
+                trigger: 'blur',
+            },
+        ],
+        mapType: [
+            {
+                required: true,
+                message: '请选择地图',
                 trigger: 'blur',
             },
         ],
@@ -422,6 +430,7 @@ const form = reactive<formType>({
             headerTheme: configInfo.front?.headerTheme,
             logo: configInfo.front?.logo || '/logo.png',
             ico: configInfo.front?.ico || '/favicon.ico',
+            mapType: configInfo.front?.mapType || 'AMAP',
             background: configInfo.front?.background || '/images/login.png',
             apiKey: configInfo.amap?.apiKey,
             'base-path': configInfo.paths?.['base-path'],

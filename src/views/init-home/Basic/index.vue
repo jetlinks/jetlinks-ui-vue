@@ -23,7 +23,7 @@
                         <j-select-option value="dark">黑色</j-select-option>
                     </j-select>
                 </j-form-item>
-                <!-- <j-form-item
+                <j-form-item
                     label="地图选择"
                     name="mapType"
                     v-bind="validateInfos.mapType"
@@ -34,11 +34,11 @@
                             >谷歌地图</j-select-option
                         >
                     </j-select>
-                </j-form-item> -->
+                </j-form-item>
                 <j-form-item>
                     <template #label>
-                        <span>高德API Key</span>
-                        <j-tooltip title="配置后平台可调用高德地图GIS服务">
+                        <span>地图API Key</span>
+                        <j-tooltip title="配置后平台可调用地图GIS服务">
                             <img
                                 class="img-style"
                                 :src="'/images/init-home/mark.png'"
@@ -47,7 +47,7 @@
                     </template>
                     <j-input
                         v-model:value="form.apikey"
-                        placeholder="请输入高德API Key"
+                        placeholder="请输入地图API Key"
                     />
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
@@ -309,6 +309,7 @@ const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 const form = ref<formState>({
     title: '',
     headerTheme: 'light',
+    mapType: '',
     apikey: '',
     basePath: `${window.location.origin}/api`,
     reportPath: '',
