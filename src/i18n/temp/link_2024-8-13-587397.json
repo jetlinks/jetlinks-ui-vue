@@ -8,11 +8,11 @@
 		"Save.FileUpload.871193-5": "系统未知错误，请反馈给管理员"
 	},
 	"en": {
-		"Save.FileUpload.871193-0": "",
-		"Save.FileUpload.871193-1": "",
-		"Save.FileUpload.871193-2": "",
-		"Save.FileUpload.871193-3": "",
-		"Save.FileUpload.871193-4": "",
-		"Save.FileUpload.871193-5": ""
+		"Save.FileUpload.871193-0": "Please upload the file",
+		"Save.FileUpload.871193-1": "Upload jar package",
+		"Save.FileUpload.871193-2": "Please upload a file in. zip. jar format",
+		"Save.FileUpload.871193-3": "Upload successful!",
+		"Save.FileUpload.871193-4": "System prompt",
+		"Save.FileUpload.871193-5": "Unknown system error, please provide feedback to the administrator"
 	}
 }

@@ -60,52 +60,52 @@
             </template>
         </j-pro-table>
     </div>
-    <j-modal :width="1100" v-model:visible="visible" title="详情">
+    <j-modal :width="1100" v-model:visible="visible" :title="$t('Access.index.384922-0')">
         <j-descriptions :data="descriptionsData" title="" bordered :column="2">
             <j-descriptions-item label="URL">
                 {{ descriptionsData?.url }}
             </j-descriptions-item>
-            <j-descriptions-item label="请求方法">
+            <j-descriptions-item :label="$t('Access.index.384922-1')">
                 {{ descriptionsData?.httpMethod }}
             </j-descriptions-item>
-            <j-descriptions-item label="动作">
+            <j-descriptions-item :label="$t('Access.index.384922-2')">
                 {{ descriptionsData?.action }}
             </j-descriptions-item>
-            <j-descriptions-item label="类名">
+            <j-descriptions-item :label="$t('Access.index.384922-3')">
                 {{ descriptionsData?.target }}
             </j-descriptions-item>
-            <j-descriptions-item label="方法名">
+            <j-descriptions-item :label="$t('Access.index.384922-4')">
                 {{ descriptionsData?.method }}
             </j-descriptions-item>
             <j-descriptions-item label="IP">
                 {{ descriptionsData?.ip }}
             </j-descriptions-item>
-            <j-descriptions-item label="请求时间">
+            <j-descriptions-item :label="$t('Access.index.384922-5')">
                 {{
                     moment(descriptionsData?.requestTime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                 }}
             </j-descriptions-item>
-            <j-descriptions-item label="请求耗时">
+            <j-descriptions-item :label="$t('Access.index.384922-6')">
                 {{
                     descriptionsData?.responseTime -
                     descriptionsData?.requestTime +
                     'ms'
                 }}
             </j-descriptions-item>
-            <j-descriptions-item label="请求头" :span="2">
+            <j-descriptions-item :label="$t('Access.index.384922-7')" :span="2">
                 {{ descriptionsData?.httpHeaders }}
             </j-descriptions-item>
-            <j-descriptions-item label="请求参数" :span="2">
+            <j-descriptions-item :label="$t('Access.index.384922-8')" :span="2">
                 {{ descriptionsData?.parameters }}
             </j-descriptions-item>
-            <j-descriptions-item label="异常信息" :span="2">
+            <j-descriptions-item :label="$t('Access.index.384922-9')" :span="2">
                 {{ descriptionsData.exception }}
             </j-descriptions-item>
         </j-descriptions>
         <template #footer>
-            <j-button type="primary" @click="handleOk">关闭</j-button>
+            <j-button type="primary" @click="handleOk">{{ $t('Access.index.384922-10') }}</j-button>
         </template>
     </j-modal>
 </template>
@@ -115,6 +115,9 @@ import type { AccessLogItem } from '../typings';
 import { queryAccess } from '@/api/link/log';
 import moment from 'moment';
 import { modifySearchColumnValue } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -132,7 +135,7 @@ const columns = [
         fixed: 'left',
     },
     {
-        title: '请求路径',
+        title: $t('Access.index.384922-11'),
         dataIndex: 'url',
         key: 'url',
         search: {
@@ -141,7 +144,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '说明',
+        title: $t('Access.index.384922-12'),
         dataIndex: 'description',
         key: 'description',
         scopedSlots: true,
@@ -151,7 +154,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '请求方法',
+        title: $t('Access.index.384922-1'),
         dataIndex: 'httpMethod',
         key: 'httpMethod',
         search: {
@@ -183,7 +186,7 @@ const columns = [
         width: 100,
     },
     {
-        title: '请求时间',
+        title: $t('Access.index.384922-5'),
         dataIndex: 'requestTime',
         key: 'requestTime',
         scopedSlots: true,
@@ -193,14 +196,14 @@ const columns = [
         width: 200,
     },
     {
-        title: '请求耗时',
+        title: $t('Access.index.384922-6'),
         dataIndex: 'responseTime',
         key: 'responseTime',
         scopedSlots: true,
         width: 100,
     },
     {
-        title: '请求用户',
+        title: $t('Access.index.384922-13'),
         dataIndex: 'username',
         key: 'username',
         // search: {
@@ -210,7 +213,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '操作',
+        title: $t('Access.index.384922-14'),
         key: 'action',
         fixed: 'right',
         width: 60,
@@ -244,9 +247,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     return [
         {
             key: 'eye',
-            text: '查看',
+            text: $t('Access.index.384922-15'),
             tooltip: {
-                title: '查看',
+                title: $t('Access.index.384922-15'),
             },
             icon: 'EyeOutlined',
             onClick: () => {

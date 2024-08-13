@@ -11,14 +11,14 @@
 		"Protocol.index.871190-8": "操作成功"
 	},
 	"en": {
-		"Protocol.index.871190-0": "",
-		"Protocol.index.871190-1": "",
-		"Protocol.index.871190-2": "",
-		"Protocol.index.871190-3": "",
-		"Protocol.index.871190-4": "",
-		"Protocol.index.871190-5": "",
-		"Protocol.index.871190-6": "",
-		"Protocol.index.871190-7": "",
-		"Protocol.index.871190-8": ""
+		"Protocol.index.871190-0": "Add",
+		"Protocol.index.871190-1": "Type",
+		"Protocol.index.871190-2": "Name",
+		"Protocol.index.871190-3": "Explain",
+		"Protocol.index.871190-4": "Operation",
+		"Protocol.index.871190-5": "Edit",
+		"Protocol.index.871190-6": "Delete",
+		"Protocol.index.871190-7": "Are you sure to delete?",
+		"Protocol.index.871190-8": "Operation successful"
 	}
 }

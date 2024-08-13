@@ -16,19 +16,19 @@
 		"Save.index.871192-13": "上传成功！"
 	},
 	"en": {
-		"Save.index.871192-0": "",
-		"Save.index.871192-1": "",
-		"Save.index.871192-2": "",
-		"Save.index.871192-3": "",
-		"Save.index.871192-4": "",
-		"Save.index.871192-5": "",
-		"Save.index.871192-6": "",
-		"Save.index.871192-7": "",
-		"Save.index.871192-8": "",
-		"Save.index.871192-9": "",
-		"Save.index.871192-10": "",
-		"Save.index.871192-11": "",
-		"Save.index.871192-12": "",
-		"Save.index.871192-13": ""
+		"Save.index.871192-0": "Edit",
+		"Save.index.871192-1": "Add",
+		"Save.index.871192-2": "Name",
+		"Save.index.871192-3": "Please enter a name",
+		"Save.index.871192-4": "Up to 64 characters can be entered",
+		"Save.index.871192-5": "Type",
+		"Save.index.871192-6": "Please select type",
+		"Save.index.871192-7": "File address",
+		"Save.index.871192-8": "Please enter the file address",
+		"Save.index.871192-9": "Explain",
+		"Save.index.871192-10": "Please enter instructions",
+		"Save.index.871192-11": "Cancel",
+		"Save.index.871192-12": "Confirm",
+		"Save.index.871192-13": "Upload successful!"
 	}
 }

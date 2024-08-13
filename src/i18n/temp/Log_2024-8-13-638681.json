@@ -18,21 +18,21 @@
 		"Access.index.384922-15": "查看"
 	},
 	"en": {
-		"Access.index.384922-0": "",
-		"Access.index.384922-1": "",
-		"Access.index.384922-2": "",
-		"Access.index.384922-3": "",
-		"Access.index.384922-4": "",
-		"Access.index.384922-5": "",
-		"Access.index.384922-6": "",
-		"Access.index.384922-7": "",
-		"Access.index.384922-8": "",
-		"Access.index.384922-9": "",
-		"Access.index.384922-10": "",
-		"Access.index.384922-11": "",
-		"Access.index.384922-12": "",
-		"Access.index.384922-13": "",
-		"Access.index.384922-14": "",
-		"Access.index.384922-15": ""
+		"Access.index.384922-0": "Detail",
+		"Access.index.384922-1": "Request method",
+		"Access.index.384922-2": "Action",
+		"Access.index.384922-3": "Class name",
+		"Access.index.384922-4": "Method Name",
+		"Access.index.384922-5": "Request time",
+		"Access.index.384922-6": "Request time consumption",
+		"Access.index.384922-7": "Request header",
+		"Access.index.384922-8": "Request parameters",
+		"Access.index.384922-9": "Abnormal information",
+		"Access.index.384922-10": "Close",
+		"Access.index.384922-11": "Request path",
+		"Access.index.384922-12": "Explain",
+		"Access.index.384922-13": "Request user",
+		"Access.index.384922-14": "Operation",
+		"Access.index.384922-15": "Show"
 	}
 }

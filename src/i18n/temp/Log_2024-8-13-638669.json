@@ -11,14 +11,14 @@
 		"System.index.384923-8": "查看"
 	},
 	"en": {
-		"System.index.384923-0": "",
-		"System.index.384923-1": "",
-		"System.index.384923-2": "",
-		"System.index.384923-3": "",
-		"System.index.384923-4": "",
-		"System.index.384923-5": "",
-		"System.index.384923-6": "",
-		"System.index.384923-7": "",
-		"System.index.384923-8": ""
+		"System.index.384923-0": "Detail",
+		"System.index.384923-1": "Close",
+		"System.index.384923-2": "Name",
+		"System.index.384923-3": "Log level",
+		"System.index.384923-4": "Log content",
+		"System.index.384923-5": "Service name",
+		"System.index.384923-6": "Creation time",
+		"System.index.384923-7": "Operation",
+		"System.index.384923-8": "Show"
 	}
 }
