@@ -38,7 +38,7 @@
 
 <script setup name="SceneDrawer">
 import {useRequest} from "@/hook";
-import {queryBindScene} from "@/api/rule-engine/configuration";
+import {queryBindScene, unbindScene} from "@/api/rule-engine/configuration";
 import {handleGroupAndFilter, typeMap} from "./Save/utils";
 import BranchesTabs from './Save/BranchesTabs.vue'
 import { unBindAlarm, bindScene } from "@/api/rule-engine/configuration";
@@ -97,11 +97,13 @@ const handleBind = (id, selected) => {
       loading.value = false
     })
   } else {
-    unBindAlarm(props.detail.id, props.id, [id]).then(res => {
+    const request = id === -1 ? unbindScene(props.id, [props.detail.id]) : unBindAlarm(props.detail.id, props.id, [id])
+    request.then(res => {
       activeKeys.value = activeKeys.value.filter(key => key !== id)
     }).finally(() => {
       loading.value = false
     })
+
   }
 }
 
