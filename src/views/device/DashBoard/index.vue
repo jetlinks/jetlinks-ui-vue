@@ -80,7 +80,8 @@
                     <div class="device-position">
                         <Guide title="设备分布"></Guide>
                         <div class="device-map">
-                            <Amap></Amap>
+                            <Amap v-if="mapType === 'AMAP'"></Amap>
+                            <GoogleMapComponent v-else-if="mapType === 'GoogleMaps'"></GoogleMapComponent>
                         </div>
                     </div>
                 </j-col>
@@ -116,6 +117,7 @@ const Analysis = useAnalysisStore();
 const deviceMessages = Analysis.current.deviceMessages;
 const deviceDistribution = Analysis.current.deviceDistribution;
 const offlineStyle = Analysis.current.offlineStyle;
+const mapType = system.$state.configInfo.front?.mapType;
 const AmapKey = system.$state.configInfo.amap?.apiKey;
 let productTotal = ref(0);
 let productFooter = ref<Footer[]>([
