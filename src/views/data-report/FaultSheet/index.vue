@@ -1,14 +1,14 @@
 <template>
     <page-container>
         <pro-search
-            :columns="tableColumns"
+            :columns="columnConfig"
             target="fault-config"
             @search="handleSearch"
         />
         <FullPage>
             <JProTable
                 ref="configRef"
-                :columns="tableColumns"
+                :columns="columnConfig"
                 :request="queryData"
                 model="table"
                 :params="globParams"
@@ -35,7 +35,7 @@
                     </j-space>
                 </template>
                 <template #vehicleTypeEnum="{ vehicleTypeEnum }">
-                    {{ handleVehicleType(vehicleTypeEnum) }}
+                    {{ valueMapping2VehicleType(vehicleTypeEnum) }}
                 </template>
                 <template #orgName="{ orgName }">
                     {{ orgName || '--' }}
@@ -64,11 +64,10 @@
 <script setup lang="ts">
 import { downloadFileByUrl } from '@/utils/utils';
 import { faultDataExport, queryFaultData } from '@/api/data-report/faultSheet';
-import useFilterAlarmDesc from '@/hook/useFilterAlarmDesc';
+import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
 import moment from 'moment/moment';
 import { onlyMessage } from '@/utils/comm';
-import { columns } from './columnConfig';
-
+import { columnConfig } from './columnConfig';
 import {
     formatDate,
     handleResetSelectedRows,
@@ -92,6 +91,9 @@ const pageSize = ref<number>(12);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
+// 字典列表
+const dicMap = ref<Record<string, any>>({});
+
 const {
     selectedRowKeys,
     handleRowSelected,
@@ -99,19 +101,21 @@ const {
     handleClearSelected,
 } = useSelectableTable();
 
+// 生成请求函数
+const { queryDataFactory, valueMapping2VehicleType } = useFilterAlarmDesc(
+    dicMap,
+    ['dd'],
+);
+
+// 生成请求函数
+const queryDataFn = queryDataFactory(queryFaultData, 'faultTime');
+
 // 处理导出按钮的提示，无需修改复制即可
 const popTitle = computed(() => {
     return selectedRowKeys.value.length === 0
         ? '确认导出全部数据？'
         : '确认导出选中数据？';
 });
-
-// 生成请求函数
-const { queryDataFactory, dicMap, tableColumns, handleVehicleType } =
-    useFilterAlarmDesc(columns, ['dd']);
-
-// 生成请求函数
-const queryDataFn = queryDataFactory(queryFaultData, 'faultTime');
 
 // 为了能够取到请求的条件，需要对请求再包装一层请求
 const queryData = async (_params: any) => {
@@ -171,7 +175,7 @@ const handleSearch = (_params: any) => {
     // 处理搜索的字段是时间类型的情况
     handleSearchByDate(_params, ['faultTime']);
     // 处理搜索的字段是故障描述类型的情况
-    handleSearchByDescription(_params, tableColumns);
+    handleSearchByDescription(_params);
     globParams.value = _params;
 };
 

@@ -1,5 +1,6 @@
+import { getDicList, vehicleTypeEnum } from '@/api/data-report/commonApi';
 
-export const columns = [
+export const columnConfig = [
     {
         title: '车辆类型',
         dataIndex: 'vehicleTypeEnum',
@@ -8,7 +9,17 @@ export const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: [],
+            options: () =>
+                new Promise((resolve) => {
+                    vehicleTypeEnum().then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.text,
+                                value: item.value,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
@@ -86,7 +97,32 @@ export const columns = [
         ellipsis: true,
         search: {
             type: 'select',
-            options: [],
+            options: () =>
+                new Promise((resolve) => {
+                    getDicList({
+                        pageSize: 9999,
+                        pageNum: 0,
+                        sorts: [
+                            {
+                                name: 'ordinal',
+                                order: 'desc',
+                            },
+                        ],
+                        terms: [
+                            {
+                                column: 'dictId',
+                                value: ['aa', 'bb', 'cc'],
+                                termType: 'in',
+                            },
+                        ],
+                    }).then((resp) => {
+                        const res = resp.result.data.map((item: any) => ({
+                            label: item.text,
+                            value: `${item.dictId}_${item.value}`,
+                        }));
+                        resolve(res);
+                    });
+                }),
         },
     },
 ];

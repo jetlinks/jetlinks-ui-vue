@@ -46,12 +46,8 @@ export const handleSearchByDate = (_params: any, columns: string[]) => {
 /**
  * @function handleSearchByDescription 处理搜索条件为描述的情况
  * @param _params
- * @param tableColumns
  */
-export const handleSearchByDescription = (
-    _params: any,
-    tableColumns: any[],
-) => {
+export const handleSearchByDescription = (_params: any) => {
     if (
         _params.terms &&
         _params.terms.length > 0 &&
@@ -61,35 +57,30 @@ export const handleSearchByDescription = (
         // 获取当前搜索字段
         const column = _params.terms[0].terms[0].column;
         if (column === 'description') {
+            console.log('搜索条件为描述');
             // 解构出搜索条件和值
             const { termType, value } = _params.terms[0].terms[0];
+            console.log(_params.terms[0].terms[0], termType, value);
             // 遍历表格列，找到缓存表格列对应的描述字段
-            tableColumns.forEach((column: any) => {
-                if (column.dataIndex === 'description') {
-                    column.search.options.forEach((item: any) => {
-                        // 找到匹配的描述字段
-                        if (item.value === value) {
-                            // 替换原本的搜索条件
-                            _params.terms[0] = {
-                                terms: [
-                                    {
-                                        type: 'and',
-                                        value: item.alarmDictionaryValue,
-                                        termType: termType,
-                                        column: 'alarmDictionaryValue',
-                                    },
-                                    {
-                                        type: 'and',
-                                        value: item.alarmDictionaryKey,
-                                        termType: termType,
-                                        column: 'alarmDictionaryKey',
-                                    },
-                                ],
-                            };
-                        }
-                    });
-                }
-            });
+            const [alarmDictionaryKey, alarmDictionaryValue] = (
+                value as string
+            ).split('_');
+            _params.terms[0] = {
+                terms: [
+                    {
+                        type: 'and',
+                        value: alarmDictionaryValue,
+                        termType: termType,
+                        column: 'alarmDictionaryValue',
+                    },
+                    {
+                        type: 'and',
+                        value: alarmDictionaryKey,
+                        termType: termType,
+                        column: 'alarmDictionaryKey',
+                    },
+                ],
+            };
         }
     }
 };

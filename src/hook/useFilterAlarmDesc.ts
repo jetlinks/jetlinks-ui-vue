@@ -1,64 +1,24 @@
 import { getDicList, vehicleTypeEnum } from '@/api/data-report/commonApi';
-
-interface IAlarmDesc {
-    alarmValue: string;
-    dicDesc: string;
-}
-
-interface IDicMap {
-    alarmKey: string;
-    alarmDescArr: IAlarmDesc[];
-}
+import { Ref } from 'vue';
+import { onlyMessage } from '@/utils/comm';
 
 /**
- * @param columns 表格列的配置项，用于浅拷贝并为其加上告警和车辆的下拉选项
+ * @param dicMap 数据字典字面量对象，之所以用响应式数据，便于外层能使用
  * @param dicIds 字典id数组，用于查询告警信息
  */
-const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
+export const useFilterAlarmDesc = (
+    dicMap: Ref<Record<string, any>>,
+    dicIds: string[],
+) => {
     // 存储告警信息
-    const dicMap = reactive<IDicMap[]>([]);
-    const tableColumns = reactive([...columns]);
-
-    const vehicleType = ref<{ label: string; value: string }[]>();
-
-    // 确保数据渲染完成
-    const vehicleTypeComputed = computed(() => {
-        return vehicleType.value?.map((item) => ({
-            label: item.label,
-            value: item.value,
-        }));
-    });
-
-    const handleVehicleType = (type: string) => {
-        const item = vehicleType.value?.find((item) => item.value === type);
-        return item?.label || type;
-    };
-
-    (async () => {
-        const res = await vehicleTypeEnum();
-        if (res.status == 200) {
-            vehicleType.value = res.result.map((item: any) => ({
-                label: item.text,
-                value: item.value,
-            }));
-        }
-    })();
+    const vehicleTypeMap = ref<{ label: string; value: string }[]>([]);
 
     /**
      * @description 设置字典
-     * @description 将接口返回的字典处理为[{字典id，[{字典value, 字典描述}, {字典value, 字典描述},...]}]的格式
      */
-    const setDicMap = async () => {
+    const initDicMap = async () => {
         // 如果存在条件
-        let term: any = {};
-        if (dicIds) {
-            term = {
-                column: 'dictId',
-                value: dicIds,
-                termType: 'in',
-            };
-        }
-        const res: any = await getDicList({
+        const resp = await getDicList({
             pageSize: 9999,
             pageNum: 0,
             sorts: [
@@ -67,74 +27,34 @@ const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
                     order: 'desc',
                 },
             ],
-            terms: [term],
+            terms: [
+                {
+                    column: 'dictId',
+                    value: dicIds,
+                    termType: 'in',
+                },
+            ],
         });
-        if (res.status === 200) {
-            const dicList = res.result.data;
-            dicList &&
-                dicList.forEach((dic: any) => {
-                    const dictIdIndex = dicMap.findIndex(
-                        (item) => item.alarmKey === dic.dictId,
-                    );
-                    // 判断dictId是否在dicMap中，如果在，则添加dicDesc，否则创建新的字典
-                    if (dictIdIndex === -1) {
-                        dicMap.push({
-                            alarmKey: dic.dictId,
-                            alarmDescArr: [
-                                { alarmValue: dic.value, dicDesc: dic.text },
-                            ],
-                        });
-                    } else {
-                        const alarmDescArr = dicMap[dictIdIndex].alarmDescArr;
-                        let addFlag = true;
-                        for (let i = 0; i < alarmDescArr.length; i++) {
-                            if (alarmDescArr[i].alarmValue === dic.value) {
-                                addFlag = false;
-                                break;
-                            }
-                        }
-                        addFlag &&
-                            alarmDescArr.push({
-                                alarmValue: dic.value,
-                                dicDesc: dic.text,
-                            });
-                    }
-                });
-            return true;
+        if (resp.status === 200) {
+            resp.result.data.forEach((dic) => {
+                dicMap.value[`${dic.dictId}_${dic.value}`] = dic.text;
+            });
         }
     };
 
     /**
-     * @description 将字典数据映射为下拉框option的结构
+     * @function getVehicleTypeMap
+     * @description 获取车辆类型数据集合
      */
-    const setAlarmDesc = async () => {
-        // 请求告警的字典数据
-        const resp = await setDicMap();
-        if (resp) {
-            const options: any[] = [];
-            // 展开树结构的告警字典，用于搜索的下拉框显示
-            dicMap.forEach((dicItem) => {
-                const alarmKey = dicItem.alarmKey;
-                dicItem.alarmDescArr.forEach((alarmDesc: any) => {
-                    options.push({
-                        label: alarmDesc.dicDesc,
-                        alarmDictionaryValue: alarmDesc.alarmValue,
-                        alarmDictionaryKey: alarmKey,
-                        value: alarmDesc.dicDesc,
-                    });
-                });
-            });
-            tableColumns.forEach((item) => {
-                if (item.key === 'description') {
-                    item.search.options = options;
-                }
-                if (item.key === 'vehicleTypeEnum') {
-                    item.search.options = vehicleTypeComputed;
-                }
-            });
+    const getVehicleTypeMap = async () => {
+        const res = await vehicleTypeEnum();
+        if (res.status == 200) {
+            vehicleTypeMap.value = res.result.map((item: any) => ({
+                label: item.text,
+                value: item.value,
+            }));
         }
     };
-    setAlarmDesc();
 
     /**
      * @function queryDataFactory 请求函数工厂
@@ -154,35 +74,29 @@ const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
                 ],
             };
 
-            // 包装实际的请求函数，添加字典数据对应的描述
+            // 获取字典和车辆类型
+            const resp1 = await Promise.allSettled([
+                initDicMap(),
+                getVehicleTypeMap(),
+            ]);
+            const flag = resp1.every((item) => item.status === 'fulfilled');
+            if (!flag) onlyMessage('获取数据异常请刷新重试！', 'warning');
+
+            // 包装实际的请求函数，添加字典数据对应的描述，如果前两个请求未能成功不影响显示，只是存在显示异常
             const resp: any = await requestFunc(data);
             if (resp.status === 200) {
                 const records = resp.result.data;
 
-                // 2.为表格的每条数据对象添加描述（description）字段
                 records.forEach((record: any) => {
+                    // 获取字典数据key和value
                     const { alarmDictionaryKey, alarmDictionaryValue } = record;
 
                     // 默认无内容时显示--
                     let description: string = '--';
+                    const key = `${alarmDictionaryKey}_${alarmDictionaryValue}`;
 
-                    // 获取当前数据的alarmDictionaryKey在字典中的索引，判断这条数据的告警是否存在对应的字典
-                    const index = dicMap.findIndex(
-                        (item) => item.alarmKey === alarmDictionaryKey,
-                    );
-
-                    // 字典存在则遍历告警字典数组，找到对应的告警描述添加到当前数据对象中
-                    if (index !== -1) {
-                        const alarmDescArr = dicMap[index].alarmDescArr;
-                        for (let i = 0; i < alarmDescArr.length; i++) {
-                            if (
-                                alarmDescArr[i].alarmValue ===
-                                alarmDictionaryValue
-                            ) {
-                                description = alarmDescArr[i].dicDesc;
-                                break;
-                            }
-                        }
+                    if (dicMap.value[key]) {
+                        description = dicMap.value[key];
                     }
                     record.description = description;
                 });
@@ -207,41 +121,19 @@ const useFilterAlarmDesc = (columns: any[], dicIds?: string[]) => {
         };
     };
 
-    // 监听字典变化，更新搜索下拉框
-    // watch(dicMap, (newDicMap) => {
-    //     const options: any[] = [];
-    //     // 展开树结构的告警字典，用于搜索的下拉框显示
-    //     newDicMap.forEach((dicItem) => {
-    //         const alarmKey = dicItem.alarmKey;
-    //         dicItem.alarmDescArr.forEach((alarmDesc: any) => {
-    //             options.push({
-    //                 label: alarmDesc.dicDesc,
-    //                 alarmDictionaryValue: alarmDesc.alarmValue,
-    //                 alarmDictionaryKey: alarmKey,
-    //                 value: alarmDesc.dicDesc,
-    //             });
-    //         });
-    //     });
-    //     tableColumns.forEach((item) => {
-    //         if (item.key === 'description') {
-    //             item.search.options = options;
-    //         }
-    //         if (item.key === 'vehicleTypeEnum') {
-    //             item.search.options = vehicleType.value;
-    //         }
-    //     });
-    // });
-
-    onActivated(() => {
-        setAlarmDesc();
-    });
+    /**
+     * @function valueMapping2VehicleType
+     * @description 根据value获取vehicleTypeMap中对应的label
+     * @param value 值
+     */
+    const valueMapping2VehicleType = (value: string) => {
+        const item = vehicleTypeMap.value.find((item) => item.value === value);
+        if (!item) return '--';
+        return item.label;
+    };
 
     return {
         queryDataFactory,
-        dicMap,
-        tableColumns,
-        handleVehicleType,
+        valueMapping2VehicleType,
     };
 };
-
-export default useFilterAlarmDesc;
