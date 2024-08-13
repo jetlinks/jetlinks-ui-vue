@@ -283,7 +283,7 @@ const getActions = (
 ): ActionsType[] => {
     if (!data) return [];
     const state = data.state.value;
-    const stateText = state === 'enabled' ? $t('Type.index.962511-9') : $t('Type.index.962511-12');
+    const stateText = state === 'enabled' ? $t('Type.index.962511-23') : $t('Type.index.962511-12');
     const actions = [
         {
             key: 'view',
