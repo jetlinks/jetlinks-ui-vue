@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"Save.index.871192-0": "编辑",
+		"Save.index.871192-1": "新增",
+		"Save.index.871192-2": "名称",
+		"Save.index.871192-3": "请输入名称",
+		"Save.index.871192-4": "最多可输入64个字符",
+		"Save.index.871192-5": "类型",
+		"Save.index.871192-6": "请选择类型",
+		"Save.index.871192-7": "文件地址",
+		"Save.index.871192-8": "请输入文件地址",
+		"Save.index.871192-9": "说明",
+		"Save.index.871192-10": "请输入说明",
+		"Save.index.871192-11": "取消",
+		"Save.index.871192-12": "确认",
+		"Save.index.871192-13": "上传成功！"
+	},
+	"en": {
+		"Save.index.871192-0": "",
+		"Save.index.871192-1": "",
+		"Save.index.871192-2": "",
+		"Save.index.871192-3": "",
+		"Save.index.871192-4": "",
+		"Save.index.871192-5": "",
+		"Save.index.871192-6": "",
+		"Save.index.871192-7": "",
+		"Save.index.871192-8": "",
+		"Save.index.871192-9": "",
+		"Save.index.871192-10": "",
+		"Save.index.871192-11": "",
+		"Save.index.871192-12": "",
+		"Save.index.871192-13": ""
+	}
+}
