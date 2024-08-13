@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { queryLogList } from '@/api/rule-engine/log';
+import { queryLogList ,queryPreconditioningLogList } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import LogDetail from './LogDetail.vue';
@@ -62,6 +62,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    goal:{
+        type:String,
+        default: ''
+    }
 });
 const menuStory = useMenuStore();
 const exceed = ref();
@@ -97,7 +101,7 @@ const columns = [
     }
 ];
 const queryData = async () => {
-    const res = await queryLogList(props.configId, {
+    const params = {
         pageIndex: 0,
         pageSize: 51,
         terms: [
@@ -114,7 +118,8 @@ const queryData = async () => {
                 order: 'desc',
             },
         ],
-    });
+    }
+    const res = props.goal ? await queryPreconditioningLogList(props.configId,params) : await queryLogList(props.configId, params);
     if (res.success) {
         if (res.result.data?.length > 50) {
             exceed.value = true;

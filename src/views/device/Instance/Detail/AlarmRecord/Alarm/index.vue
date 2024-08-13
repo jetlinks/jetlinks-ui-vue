@@ -65,6 +65,7 @@
         v-if="solveVisible"
         :data="currentAlarm"
         :solveType="solveType"
+        :goal="goal"
         :handleDes="handleDescription"
         @closeSolve="closeSolve"
         @refresh="solveRefresh"
@@ -72,6 +73,7 @@
     <AlarmLog
         v-if="visibleDrawer"
         :data="currentAlarm"
+        :goal="goal"
         @closeDrawer="visibleDrawer = false"
         @refreshTable="refresh"
     />
