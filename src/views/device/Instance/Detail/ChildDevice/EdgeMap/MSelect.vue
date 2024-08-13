@@ -1,5 +1,5 @@
 <template>
-    <j-select allowClear v-model:value="_value" @change="onChange" placeholder="请选择" style="width: 100%">
+    <j-select allowClear v-model:value="_value" @change="onChange" :placeholder="$t('EdgeMap.MSelect.423143-0')" style="width: 100%">
         <j-select-option
             v-for="item in list"
             :key="item.id"
@@ -16,6 +16,9 @@ import {
     edgeCollector,
     edgePoint,
 } from '@/api/device/instance';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const _props = defineProps({
     modelValue: {

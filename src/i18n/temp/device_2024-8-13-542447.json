@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"SaveChild.index.423141-0": "基本信息",
+		"SaveChild.index.423141-1": "返回",
+		"SaveChild.index.423141-2": "设备名称",
+		"SaveChild.index.423141-3": "请输入设备名称",
+		"SaveChild.index.423141-4": "产品名称",
+		"SaveChild.index.423141-5": "请选择产品名称"
+	},
+	"en": {
+		"SaveChild.index.423141-0": "Basic information",
+		"SaveChild.index.423141-1": "Return",
+		"SaveChild.index.423141-2": "Device name",
+		"SaveChild.index.423141-3": "Please enter the device name",
+		"SaveChild.index.423141-4": "Product Name",
+		"SaveChild.index.423141-5": "Please choose a product name"
+	}
+}

@@ -4,9 +4,9 @@
         :maskClosable="false"
         width="1000px"
         :visible="true"
-        title="绑定子设备"
-        okText="确定"
-        cancelText="取消"
+        :title="$t('BindChildDevice.index.423145-0')"
+        :okText="$t('BindChildDevice.index.423145-1')"
+        :cancelText="$t('BindChildDevice.index.423145-2')"
         @ok="handleOk"
         @cancel="handleCancel"
         :confirmLoading="btnLoading"
@@ -99,6 +99,9 @@ import moment from 'moment';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     parentIds: {
@@ -135,7 +138,7 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
+        title: $t('BindChildDevice.index.423145-3'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -144,7 +147,7 @@ const columns = [
         },
     },
     {
-        title: '所属产品',
+        title: $t('BindChildDevice.index.423145-4'),
         dataIndex: 'productName',
         key: 'productName',
         search: {
@@ -152,7 +155,7 @@ const columns = [
         },
     },
     {
-        title: '注册时间',
+        title: $t('BindChildDevice.index.423145-5'),
         dataIndex: 'registryTime',
         key: 'registryTime',
         scopedSlots: true,
@@ -161,16 +164,16 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('BindChildDevice.index.423145-6'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: $t('BindChildDevice.index.423145-7'), value: 'notActive' },
+                { label: $t('BindChildDevice.index.423145-8'), value: 'offline' },
+                { label: $t('BindChildDevice.index.423145-9'), value: 'online' },
             ],
         },
     },
@@ -196,7 +199,7 @@ const cancelSelect = () => {
 
 const handleOk = () => {
     if (_selectedRowKeys.value.length === 0) {
-        onlyMessage('请选择需要绑定的设备', 'warning');
+        onlyMessage($t('BindChildDevice.index.423145-10'), 'warning');
         return;
     }
     btnLoading.value = true;
@@ -230,7 +233,7 @@ const handleOk = () => {
             .then((res) => {
                 emit('change', true);
                 cancelSelect();
-                onlyMessage('操作成功');
+                onlyMessage($t('BindChildDevice.index.423145-11'));
             })
             .finally(() => {
                 btnLoading.value = false;
@@ -240,7 +243,7 @@ const handleOk = () => {
             .then((res) => {
                 emit('change', true);
                 cancelSelect();
-                onlyMessage('操作成功');
+                onlyMessage($t('BindChildDevice.index.423145-11'));
             })
             .finally(() => {
                 btnLoading.value = false;

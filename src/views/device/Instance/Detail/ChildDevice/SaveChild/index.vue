@@ -1,26 +1,26 @@
 <template>
     <div>
-        <TitleComponent data="基本信息">
+        <TitleComponent :data="$t('SaveChild.index.423141-0')">
             <template #extra>
-                <j-button @click="comeBack" style="margin-left: 10px;">返回</j-button>
+                <j-button @click="comeBack" style="margin-left: 10px;">{{ $t('SaveChild.index.423141-1') }}</j-button>
             </template>
         </TitleComponent>
         <j-form layout="vertical" :model="form" ref="formRef">
             <j-row :gutter="24">
                 <j-col :span="12">
                     <j-form-item
-                        label="设备名称"
+                        :label="$t('SaveChild.index.423141-2')"
                         name="name"
-                        :rules="{ required: true, message: '请输入设备名称' }"
+                        :rules="{ required: true, message: $t('SaveChild.index.423141-3') }"
                     >
                         <j-input v-model:value="form.name"></j-input>
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
                     <j-form-item
-                        label="产品名称"
+                        :label="$t('SaveChild.index.423141-4')"
                         name="productId"
-                        :rules="{ required: true, message: '请选择产品名称' }"
+                        :rules="{ required: true, message: $t('SaveChild.index.423141-5') }"
                     >
                         <j-select
                             :disabled="props.childData?.id"
@@ -56,6 +56,9 @@ import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { provide } from 'vue';
 import { getEdgeMap, removeEdgeMap } from '@/api/device/instance';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const instanceStore = useInstanceStore();
 const { current } = storeToRefs(instanceStore);
 const props = defineProps(['childData']);
