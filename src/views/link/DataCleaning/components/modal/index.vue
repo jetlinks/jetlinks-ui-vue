@@ -228,10 +228,8 @@ const modalEvent = {
             const data = copyFormData(formState);
             // 获取到store中的metadata字符串
             const current = productStore.current;
-            console.log('current', current);
             // 将字符串转为对象
             const metadata = metadata2Object(current.metadata);
-            console.log('metadata', metadata);
 
             // 将弹窗表单中的数据传入metadata对应的属性中
             metadata.properties.find((item: any) => {

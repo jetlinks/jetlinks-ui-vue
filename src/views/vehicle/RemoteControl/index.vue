@@ -59,7 +59,7 @@
                     </j-space>
                 </template>
                 <template #vehicleTypeEnum="{ vehicleTypeEnum }">
-                    {{ handleVehicleType(vehicleTypeEnum) }}
+                    {{ valueMapping2VehicleType(vehicleTypeEnum) }}
                 </template>
                 <!-- 所属组织 -->
                 <template #orgName="{ orgName }">
@@ -146,7 +146,7 @@
 import { downloadFileByUrl } from '@/utils/utils';
 import moment from 'moment';
 import { queryAlarmData, _export } from '@/api/data-report/alarmSheet';
-import useFilterAlarmDesc from '@/hook/useFilterAlarmDesc';
+import { useFilterAlarmDesc } from '@/hook/useFilterAlarmDesc';
 import { FullPage } from 'components/Layout';
 import { onlyMessage } from '@/utils/comm';
 import { columns, data } from './columnConfig';
@@ -181,6 +181,9 @@ const pageSize = ref<number>(12);
 // 导出文件的类型
 const type = ref<string>('xlsx');
 
+// 字典列表
+const dicMap = ref<Record<string, any>>({});
+
 // 从hooks中解构获取表格的选中事件以及响应式的被选中id集合
 const {
     selectedRowKeys,
@@ -196,8 +199,10 @@ const popTitle = computed(() => {
         : '确认导出选中数据？';
 });
 
-const { queryDataFactory, dicMap, tableColumns, handleVehicleType } =
-    useFilterAlarmDesc(columns, ['aa', 'bb', 'cc']);
+const { queryDataFactory, valueMapping2VehicleType } = useFilterAlarmDesc(
+    dicMap,
+    ['aa', 'bb', 'cc'],
+);
 // 生成请求函数
 const queryDataFn = queryDataFactory(queryAlarmData, 'alarmTime');
 
@@ -323,7 +328,7 @@ const handleSearch = (_params: any) => {
     // 处理搜索的字段是时间类型的情况
     handleSearchByDate(_params, ['alarmTime']);
     // 处理搜索的字段是故障描述类型的情况
-    handleSearchByDescription(_params, tableColumns);
+    handleSearchByDescription(_params);
     globParams.value = _params;
 };
 </script>

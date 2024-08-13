@@ -99,15 +99,11 @@ const showModal = (payload: {
     const targetObj = metadata.properties.find(
         (item: any) => item.id === payload.record.id,
     ).expands;
-    console.log('targetObj', targetObj);
-
     for (const key in targetObj) {
         if (modalDefaultData[key] !== undefined) {
             modalDefaultData[key] = targetObj[key];
         }
     }
-
-    console.log('before open modal', toRaw(modalDefaultData));
 };
 
 const tabs = reactive([
