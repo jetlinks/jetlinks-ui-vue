@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"modifyModal.index.882522-0": "确定",
+		"modifyModal.index.882522-1": "取消",
+		"modifyModal.index.882522-2": "名称",
+		"modifyModal.index.882522-3": "请输入名称",
+		"modifyModal.index.882522-4": "排序",
+		"modifyModal.index.882522-5": "请输入排序",
+		"modifyModal.index.882522-6": "说明",
+		"modifyModal.index.882522-7": "请输入说明",
+		"modifyModal.index.882522-8": "最多可输入64个字符",
+		"modifyModal.index.882522-9": "请输入正整数",
+		"modifyModal.index.882522-10": "操作成功！",
+		"modifyModal.index.882522-11": "操作失败！",
+		"modifyModal.index.882522-12": "树形结构最多添加5层"
+	},
+	"en": {
+		"modifyModal.index.882522-0": "Confirm",
+		"modifyModal.index.882522-1": "Cancel",
+		"modifyModal.index.882522-2": "Name",
+		"modifyModal.index.882522-3": "Please enter a name",
+		"modifyModal.index.882522-4": "Sort",
+		"modifyModal.index.882522-5": "Please enter sorting",
+		"modifyModal.index.882522-6": "Explain",
+		"modifyModal.index.882522-7": "Please enter instructions",
+		"modifyModal.index.882522-8": "Up to 64 characters can be entered",
+		"modifyModal.index.882522-9": "Please enter a positive integer",
+		"modifyModal.index.882522-10": "Operation successful!",
+		"modifyModal.index.882522-11": "Operation failed!",
+		"modifyModal.index.882522-12": "Add up to 5 layers to the tree structure"
+	}
+}
