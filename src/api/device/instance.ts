@@ -682,4 +682,4 @@ export const deleteDeviceThreshold = (productId:string,deviceId:string,propertyI
 
 export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/instance/${id}/property-metadata/template.${format}`
 
-export const uploadAnalyzeMetadata = (data: any) => server.post('/device/instance/property-metadata/file/analyze', data)
+export const uploadAnalyzeMetadata = (productId:string,data: any) => server.post(`/device/instance/${productId}/property-metadata/file/analyze`, data)

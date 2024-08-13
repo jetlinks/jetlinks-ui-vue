@@ -2,10 +2,10 @@
 <template>
     <div>
         <j-modal
-            v-model:visible="_vis"
+            visible
             title="同步用户"
             :footer="null"
-            @cancel="_vis = false"
+            @cancel="$emit('cancel')"
             width="80%"
         >
             <j-row :gutter="10" class="model-body">
@@ -131,33 +131,16 @@ import { onlyMessage } from '@/utils/comm';
 const useForm = Form.useForm;
 
 type Emits = {
-    (e: 'update:visible', data: boolean): void;
+    (e: 'cancel'): void;
 };
 const emit = defineEmits<Emits>();
 
 const props = defineProps({
-    visible: { type: Boolean, default: false },
     data: {
         type: Object as PropType<Partial<Record<string, any>>>,
         default: () => ({}),
     },
 });
-
-const _vis = computed({
-    get: () => props.visible,
-    set: (val) => emit('update:visible', val),
-});
-
-watch(
-    () => _vis.value,
-    (val) => {
-        if (val) {
-            getDepartment();
-        } else {
-            dataSource.value = [];
-        }
-    },
-);
 
 // 左侧部门
 const deptTreeData = ref([]);
@@ -182,15 +165,10 @@ const getDepartment = async () => {
     }
 
     deptTreeData.value = _result;
-    deptId.value = _result[0]?.id;
+    if(_result.length){
+        deptId.value = _result[0]?.id;
+    }
 };
-
-watch(
-    () => deptName.value,
-    (val: any) => {
-        if (!val) getDepartment();
-    },
-);
 
 /**
  * 部门点击
@@ -253,7 +231,7 @@ const getActions = (
             icon: 'DisconnectOutlined',
             popConfirm: {
                 title: '确认解绑?',
-                onConfirm:  () => {
+                onConfirm: () => {
                     const response = configApi.unBindUser(
                         { bindingId: data.bindId },
                         data.bindId,
@@ -357,7 +335,7 @@ const getTableData = (terms?: any) => {
             (deptUsers || []).forEach((deptUser: any) => {
                 // 未绑定的用户
                 let unBindUser = unBindUsers.find(
-                    (f: any) => f.name === deptUser?.name,
+                    (f: any) => f.id === deptUser?.id,
                 );
                 // 绑定的用户
                 const bindUser = bindUsers.find(
@@ -398,14 +376,6 @@ const handleTableChange = (pagination: any) => {
     current.value = pagination.current;
     pageSize.value = pagination.pageSize;
 };
-
-watch(
-    () => deptId.value,
-    () => {
-        getTableData();
-    },
-    { immediate: true },
-);
 
 /**
  * 绑定用户
@@ -487,6 +457,23 @@ const handleCancel = () => {
     bindVis.value = false;
     resetFields();
 };
+
+watch(
+    () => deptId.value,
+    () => {
+        getTableData();
+    },
+    { immediate: true },
+);
+watch(
+    () => deptName.value,
+    (val: any) => {
+        if (!val) getDepartment();
+    },
+);
+onMounted(() => {
+    getDepartment();
+});
 </script>
 
 <style lang="less" scoped>

@@ -69,6 +69,7 @@ import { getTemplate, uploadAnalyzeMetadata} from '@/api/device/instance'
 import {getTemplate as getProductTemplate} from '@/api/device/product'
 import {downloadFileByUrl} from "@/utils/utils";
 import {useGroupActive, useTableWrapper} from "@/components/Metadata/Table/context";
+import { useProductStore } from '@/store/product';
 
 const props = defineProps({
   target: {
@@ -82,7 +83,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['ok'])
-
+const { current } = useProductStore()
 const visible = ref(false);
 const successCount = ref(0);
 const errorCount = ref(0);
@@ -117,7 +118,6 @@ const onCancel = () => {
 }
 
 const submitData = async (metadataStr) => {
-  console.log(metadataStr)
   if (metadataStr) {
     const _metadataObject = JSON.parse(metadataStr || "{}")
     const properties = _metadataObject.properties
@@ -176,7 +176,7 @@ const beforeUpload = (file) => {
   formData.append('file', file)
 
   step.value = 2
-  uploadAnalyzeMetadata(formData).then(res => {
+  uploadAnalyzeMetadata(current.id , formData).then(res => {
     if (res.success) {
       submitData(res.result)
     }
@@ -189,7 +189,6 @@ const beforeUpload = (file) => {
 
 
 const uploadChange = async (info) => {
-  console.log(info)
   if (info.file.status === 'uploading') {
     step.value = 2
   }

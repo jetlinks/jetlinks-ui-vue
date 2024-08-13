@@ -14,12 +14,13 @@ import templateApi from '@/api/notice/template';
 
 type Emits = {
     (e: 'update:toUser', data: string | undefined): void;
+    (e: 'update:canSave', data: boolean): void;
 };
 type Props = {
     toUser: string | undefined;
     type: string | undefined;
     configId: string | undefined;
-}
+};
 
 const emit = defineEmits<Emits>();
 
@@ -37,14 +38,16 @@ const typeObj = {
 const options = ref([]);
 const queryData = async () => {
     if (!props.configId) return;
-    const { result } = await templateApi.getUser(
-        typeObj[props.type],
-        props.configId,
-    );
-    options.value = result.map((item: any) => ({
-        label: item.name,
-        value: item.id,
-    }));
+    const res = await templateApi.getUser(typeObj[props.type], props.configId);
+
+    if (res.status === 200) {
+        options.value = res?.result.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+        }));
+    } else {
+        emit('update:canSave', false);
+    }
 };
 queryData();
 
