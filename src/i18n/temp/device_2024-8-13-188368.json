@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Category.index.882521-0": "新增",
+		"Category.index.882521-1": "名称",
+		"Category.index.882521-2": "排序",
+		"Category.index.882521-3": "说明",
+		"Category.index.882521-4": "操作",
+		"Category.index.882521-5": "编辑",
+		"Category.index.882521-6": "编辑分类",
+		"Category.index.882521-7": "添加子分类",
+		"Category.index.882521-8": "新增子分类",
+		"Category.index.882521-9": "删除",
+		"Category.index.882521-10": "确认删除?",
+		"Category.index.882521-11": "确定",
+		"Category.index.882521-12": "取消",
+		"Category.index.882521-13": "操作成功！",
+		"Category.index.882521-14": "操作失败！",
+		"Category.index.882521-15": "新增分类"
+	},
+	"en": {
+		"Category.index.882521-0": "Add",
+		"Category.index.882521-1": "Name",
+		"Category.index.882521-2": "Sort",
+		"Category.index.882521-3": "Explain",
+		"Category.index.882521-4": "Operation",
+		"Category.index.882521-5": "Edit",
+		"Category.index.882521-6": "Edit Category",
+		"Category.index.882521-7": "Add Subcategory",
+		"Category.index.882521-8": "Add Subcategory",
+		"Category.index.882521-9": "Delete",
+		"Category.index.882521-10": "Are you sure to delete?",
+		"Category.index.882521-11": "determine",
+		"Category.index.882521-12": "cancel",
+		"Category.index.882521-13": "Operation successful!",
+		"Category.index.882521-14": "Operation failed!",
+		"Category.index.882521-15": "Add Category"
+	}
+}
