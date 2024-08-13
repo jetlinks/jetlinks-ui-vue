@@ -53,7 +53,7 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
     return Promise.reject('请添加参数')
   }
 
-  if (value.type === 'file' && (!value.fileType || (isObject(value.fileType) && !Object.keys(value.fileType).length))) {
+  if (value.type === 'file' && (!value.bodyType || (isObject(value.bodyType) && !Object.keys(value.bodyType).length))) {
     return Promise.reject('请选择文件类型')
   }
 
@@ -87,7 +87,7 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.unit = value
       break;
     case 'file':
-      obj.fileType = value
+      obj.bodyType = value
       break;
     case 'date':
       obj.format = value
@@ -126,7 +126,7 @@ export const typeSelectChange = (type: string) => {
       obj.unit = undefined
       break;
     case 'file':
-      obj.fileType = undefined
+      obj.bodyType = undefined
       break;
     case 'date':
       obj.format = undefined
