@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        title="任务详情"
+        :title="$t('Detail.index.378845-0')"
         :width="1200"
         :closable="false"
         :maskClosable="false"
@@ -12,7 +12,7 @@
                     @click="stopAll"
                     hasPermission="device/Firmware:update"
                     ><template #icon><AIcon type="PauseOutlined" /> </template
-                    >全部暂停
+                    >{{ $t('Detail.index.378845-1') }}
                 </PermissionButton>
                 <PermissionButton
                     style="margin-left: 20px"
@@ -20,7 +20,7 @@
                     @click="startAll"
                     ><template #icon
                         ><AIcon type="CaretRightOutlined" /> </template
-                    >全部开始</PermissionButton
+                    >{{ $t('Detail.index.378845-2') }}</PermissionButton
                 >
                 <PermissionButton
                     v-if="data?.mode?.value === 'push'"
@@ -28,7 +28,7 @@
                     hasPermission="device/Firmware:update"
                     @click="batchRetry"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
-                    批量重试
+                    {{ $t('Detail.index.378845-3') }}
                 </PermissionButton>
                 <PermissionButton
                     type="text"
@@ -36,12 +36,12 @@
                     style="float: right"
                     @click="refreshState"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
-                    刷新状态
+                    {{ $t('Detail.index.378845-4') }}
                 </PermissionButton>
             </div>
             <div class="progress">
                 <div style="width: 90%">
-                    <span>当前进度</span>
+                    <span>{{ $t('Detail.index.378845-5') }}</span>
                     <a-progress
                         style="width: 90%; margin-left: 20px"
                         :strokeWidth="10"
@@ -49,7 +49,7 @@
                         :format="(percent) => `${percent}%`"
                     ></a-progress>
                 </div>
-                <span class="total">共{{ general.total }}个任务</span>
+                <span class="total">{{ $t('Detail.index.378845-6') }}{{ general.total }}{{ $t('Detail.index.378845-7') }}</span>
             </div>
         </div>
         <j-table
@@ -119,9 +119,9 @@
             </template>
         </j-table>
         <template #footer>
-            <span class="tip">关闭弹窗不会影响任务执行状态</span>
+            <span class="tip">{{ $t('Detail.index.378845-8') }}</span>
             <a-button value="large" type="primary" @click="$emit('closeDetail')"
-                >关闭</a-button
+                >{{ $t('Detail.index.378845-9') }}</a-button
             >
         </template>
     </a-modal>
@@ -137,6 +137,9 @@ import {
 } from '@/api/device/firmware';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
@@ -149,34 +152,34 @@ const props = defineProps({
 const emit = defineEmits(['closeDetail', 'refresh']);
 const columns = [
     {
-        title: '设备名称',
+        title: $t('Detail.index.378845-10'),
         dataIndex: 'deviceName',
         key: 'deviceName',
     },
     {
-        title: '所属产品',
+        title: $t('Detail.index.378845-11'),
         dataIndex: 'productName',
         key: 'productName',
     },
     {
-        title: '创建时间',
+        title: $t('Detail.index.378845-12'),
         key: 'createTime',
         dataIndex: 'createTime',
         width: 200,
     },
     {
-        title: '完成时间',
+        title: $t('Detail.index.378845-13'),
         key: 'completeTime',
         dataIndex: 'completeTime',
     },
     {
-        title: '设备版本',
+        title: $t('Detail.index.378845-14'),
         key: 'version',
         dataIndex: 'version',
         width: 100,
     },
     {
-        title: '状态',
+        title: $t('Detail.index.378845-15'),
         dataIndex: 'state',
         width: 300,
         key: 'state',
@@ -225,7 +228,7 @@ const queryHistoryList = async () => {
 const refreshState = async () => {
     emit('refresh');
     await queryHistoryList();
-    onlyMessage('操作成功');
+    onlyMessage($t('Detail.index.378845-16'));
 };
 //全部开始
 const startAll = async () => {
@@ -235,7 +238,7 @@ const startAll = async () => {
     //         : ['canceled'];
     const res = await startTask(props.data.id,  ['canceled', 'failed']);
     if (res.success) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Detail.index.378845-16'), 'success');
         queryHistoryList();
         emit('refresh');
     }
@@ -244,7 +247,7 @@ const startAll = async () => {
 const batchRetry = async () => {
     const res = await startTask(props.data.id, ['failed']);
     if (res.success) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Detail.index.378845-16'), 'success');
         queryHistoryList();
         emit('refresh');
     }
@@ -253,7 +256,7 @@ const batchRetry = async () => {
 const stopAll = async () => {
     const res = await stopTask(props.data.id);
     if (res.success) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Detail.index.378845-16'), 'success');
         queryHistoryList();
         emit('refresh');
     }
@@ -262,7 +265,7 @@ const stopAll = async () => {
 const startUpgrades = async (id) => {
     const res = await startOneTask([id]);
     if (res.success) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Detail.index.378845-16'), 'success');
         queryHistoryList();
         emit('refresh');
     }
@@ -271,7 +274,7 @@ const startUpgrades = async (id) => {
 const stopUpgrades = async (id) => {
     const res = await stopOneTask([id]);
     if (res.success) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Detail.index.378845-16'), 'success');
         queryHistoryList();
         emit('refresh');
     }

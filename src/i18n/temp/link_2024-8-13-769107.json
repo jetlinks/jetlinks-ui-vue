@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"plugin.index.688244-0": "新增",
+		"plugin.index.688244-1": "插件ID",
+		"plugin.index.688244-2": "插件类型",
+		"plugin.index.688244-3": "插件名称",
+		"plugin.index.688244-4": "版本",
+		"plugin.index.688244-5": "文件",
+		"plugin.index.688244-6": "描述",
+		"plugin.index.688244-7": "操作",
+		"plugin.index.688244-8": "编辑",
+		"plugin.index.688244-9": "删除",
+		"plugin.index.688244-10": "确认删除?",
+		"plugin.index.688244-11": "操作成功！",
+		"plugin.index.688244-12": "操作失败！"
+	},
+	"en": {
+		"plugin.index.688244-0": "Add",
+		"plugin.index.688244-1": "Plugin ID",
+		"plugin.index.688244-2": "Plugin type",
+		"plugin.index.688244-3": "Plugin Name",
+		"plugin.index.688244-4": "Edition",
+		"plugin.index.688244-5": "File",
+		"plugin.index.688244-6": "Describe",
+		"plugin.index.688244-7": "Operation",
+		"plugin.index.688244-8": "Edit",
+		"plugin.index.688244-9": "Delete",
+		"plugin.index.688244-10": "Are you sure to delete?",
+		"plugin.index.688244-11": "Operation successful!",
+		"plugin.index.688244-12": "Operation failed!"
+	}
+}

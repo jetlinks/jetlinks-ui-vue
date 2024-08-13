@@ -1,0 +1,36 @@
+{
+	"zh": {
+		"plugin.Save.688243-0": "编辑",
+		"plugin.Save.688243-1": "新增",
+		"plugin.Save.688243-2": "插件ID",
+		"plugin.Save.688243-3": "若不填写，系统将自动生成唯一ID",
+		"plugin.Save.688243-4": "请输入插件ID",
+		"plugin.Save.688243-5": "插件名称",
+		"plugin.Save.688243-6": "请输入插件名称",
+		"plugin.Save.688243-7": "文件",
+		"plugin.Save.688243-8": "插件类型：",
+		"plugin.Save.688243-9": "版本：",
+		"plugin.Save.688243-10": "描述",
+		"plugin.Save.688243-11": "请输入说明",
+		"plugin.Save.688243-12": "ID重复",
+		"plugin.Save.688243-13": "请上传文件",
+		"plugin.Save.688243-14": "操作成功！"
+	},
+	"en": {
+		"plugin.Save.688243-0": "Edit",
+		"plugin.Save.688243-1": "Add",
+		"plugin.Save.688243-2": "Plugin ID",
+		"plugin.Save.688243-3": "If not filled in, the system will automatically generate a unique ID",
+		"plugin.Save.688243-4": "Please enter the plugin ID",
+		"plugin.Save.688243-5": "Plugin Name",
+		"plugin.Save.688243-6": "Please enter the plugin name",
+		"plugin.Save.688243-7": "File",
+		"plugin.Save.688243-8": "Plugin type:",
+		"plugin.Save.688243-9": "Edition:",
+		"plugin.Save.688243-10": "Describe",
+		"plugin.Save.688243-11": "Please enter instructions",
+		"plugin.Save.688243-12": "ID duplication",
+		"plugin.Save.688243-13": "Please upload the file",
+		"plugin.Save.688243-14": "Operation successful!"
+	}
+}

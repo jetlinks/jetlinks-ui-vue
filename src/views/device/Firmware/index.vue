@@ -26,7 +26,7 @@
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
-                            新增
+                            {{ $t('Firmware.index.378847-0') }}
                         </PermissionButton>
                     </template>
                     <template #productId="slotProps">
@@ -90,6 +90,9 @@ import _ from 'lodash-es';
 import Save from './Save/index.vue';
 import type { FormDataType } from './type';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -103,7 +106,7 @@ const productId = ref();
 
 const columns = [
     {
-        title: '固件名称',
+        title: $t('Firmware.index.378847-1'),
         key: 'name',
         dataIndex: 'name',
         fixed: 'left',
@@ -114,7 +117,7 @@ const columns = [
         },
     },
     {
-        title: '固件版本',
+        title: $t('Firmware.index.378847-2'),
         dataIndex: 'version',
         key: 'version',
         ellipsis: true,
@@ -123,7 +126,7 @@ const columns = [
         },
     },
     {
-        title: '所属产品',
+        title: $t('Firmware.index.378847-3'),
         dataIndex: 'productId',
         key: 'productId',
         ellipsis: true,
@@ -135,7 +138,7 @@ const columns = [
         },
     },
     {
-        title: '签名方式',
+        title: $t('Firmware.index.378847-4'),
         dataIndex: 'signMethod',
         key: 'signMethod',
         scopedSlots: true,
@@ -155,7 +158,7 @@ const columns = [
         width: 150,
     },
     {
-        title: '创建时间',
+        title: $t('Firmware.index.378847-5'),
         key: 'createTime',
         dataIndex: 'createTime',
         search: {
@@ -165,7 +168,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('Firmware.index.378847-6'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -175,7 +178,7 @@ const columns = [
     },
 
     {
-        title: '操作',
+        title: $t('Firmware.index.378847-7'),
         key: 'action',
         fixed: 'right',
         width: 120,
@@ -190,9 +193,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     return [
         {
             key: 'view',
-            text: '升级任务',
+            text: $t('Firmware.index.378847-8'),
             tooltip: {
-                title: '升级任务',
+                title: $t('Firmware.index.378847-8'),
             },
             icon: 'FileTextOutlined',
             onClick: async () => {
@@ -201,9 +204,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Firmware.index.378847-9'),
             tooltip: {
-                title: '编辑',
+                title: $t('Firmware.index.378847-9'),
             },
             icon: 'EditOutlined',
             onClick: async () => {
@@ -212,12 +215,12 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Firmware.index.378847-10'),
             tooltip: {
-                title: '删除',
+                title: $t('Firmware.index.378847-10'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Firmware.index.378847-11'),
                 onConfirm: () => {
                    return handleDelete(data.id);
                 },
@@ -248,7 +251,7 @@ const saveChange = (value: FormDataType) => {
     visible.value = false;
     current.value = {};
     if (value) {
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Firmware.index.378847-12'), 'success');
         tableRef.value.reload();
     }
 };
@@ -257,7 +260,7 @@ const handleDelete = (id: string) => {
     const response = remove(id);
     response.then((res:any) => {
         if (res.status === 200) {
-            onlyMessage('操作成功', 'success');
+            onlyMessage($t('Firmware.index.378847-12'), 'success');
             tableRef.value.reload();
         } else {
             onlyMessage(res?.message, 'error');

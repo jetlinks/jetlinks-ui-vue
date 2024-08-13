@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Task.index.378841-0": "升级任务",
+		"Task.index.378841-1": "+ 新增任务",
+		"Task.index.378841-2": "完成比例",
+		"Task.index.378841-3": "任务详情",
+		"Task.index.378841-4": "响应超时时间",
+		"Task.index.378841-5": "升级超时时间",
+		"Task.index.378841-6": "升级设备",
+		"Task.index.378841-7": "选择设备",
+		"Task.index.378841-8": "所有设备",
+		"Task.index.378841-9": "说明",
+		"Task.index.378841-10": "操作成功"
+	},
+	"en": {
+		"Task.index.378841-0": "Upgrade task",
+		"Task.index.378841-1": "+ Add Task",
+		"Task.index.378841-2": "Completion ratio",
+		"Task.index.378841-3": "Task Details",
+		"Task.index.378841-4": "Response timeout",
+		"Task.index.378841-5": "Upgrade timeout",
+		"Task.index.378841-6": "Upgrade equipment",
+		"Task.index.378841-7": "Select device",
+		"Task.index.378841-8": "All devices",
+		"Task.index.378841-9": "Explain",
+		"Task.index.378841-10": "Operation successful"
+	}
+}

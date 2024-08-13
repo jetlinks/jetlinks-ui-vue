@@ -1,7 +1,7 @@
 <template>
     <j-spin :spinning="loading">
         <j-input
-            placeholder="请上传文件"
+            :placeholder="$t('Save.FileUpload.378846-0')"
             v-model:value="fileValue"
             style="width: calc(100% - 110px)"
             @change="fileValueChange"
@@ -20,7 +20,7 @@
             <j-button type="primary">
                 <div>
                     <AIcon type="UploadOutlined" /><span class="upload-text"
-                        >上传文件</span
+                        >{{ $t('Save.FileUpload.378846-1') }}</span
                     >
                 </div>
             </j-button>
@@ -36,6 +36,9 @@ import { onlyMessage } from '@/utils/comm';
 import type { UploadChangeParam } from 'ant-design-vue';
 import { notification as Notification } from 'jetlinks-ui-components';
 import { useSystem } from '@/store/system';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:modelValue', 'update:extraValue', 'change']);
 
@@ -61,7 +64,7 @@ const handleChange = async (info: UploadChangeParam) => {
         const f = `${paths || ''}/file/${result.id}?accessKey=${
             result.others.accessKey
         }`;
-        onlyMessage('上传成功！', 'success');
+        onlyMessage($t('Save.FileUpload.378846-2'), 'success');
         fileValue.value = f;
         emit('update:modelValue', f);
         emit('update:extraValue', result);
@@ -69,8 +72,8 @@ const handleChange = async (info: UploadChangeParam) => {
         if (info.file.error) {
             Notification.error({
                 // key: '403',
-                message: '系统提示',
-                description: '系统未知错误，请反馈给管理员',
+                message: $t('Save.FileUpload.378846-3'),
+                description: $t('Save.FileUpload.378846-4'),
             });
             loading.value = false;
         } else if (info.file.response) {

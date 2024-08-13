@@ -1,6 +1,6 @@
-<template lang="">
+<template>
     <j-input
-        placeholder="请选择设备"
+        :placeholder="$t('Save.SelectDevices.378843-0')"
         v-model:value="checkLable"
         :disabled="true"
     >
@@ -14,9 +14,9 @@
     </j-input>
     <j-modal
         v-if="visible"
-        title="选择设备"
-        ok-text="确认"
-        cancel-text="取消"
+        :title="$t('Save.SelectDevices.378843-1')"
+        :ok-text="$t('Save.SelectDevices.378843-2')"
+        :cancel-text="$t('Save.SelectDevices.378843-3')"
         :visible="true"
         width="80%"
         @cancel="handleCancel"
@@ -50,7 +50,7 @@
                     @change="onCheckAllChange"
                     style="margin-left: 8px"
                 >
-                    全选
+                    {{ $t('Save.SelectDevices.378843-4') }}
                 </j-checkbox>
             </template>
             <template #productId="slotProps">
@@ -146,7 +146,7 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
+        title: $t('Save.SelectDevices.378843-5'),
         key: 'name',
         dataIndex: 'name',
         ellipsis: true,
@@ -155,7 +155,7 @@ const columns = [
         },
     },
     {
-        title: '固件版本',
+        title: $t('Save.SelectDevices.378843-6'),
         dataIndex: 'version',
         key: 'version',
         ellipsis: true,
@@ -165,7 +165,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '注册时间',
+        title: $t('Save.SelectDevices.378843-7'),
         key: 'registerTime',
         dataIndex: 'registerTime',
         search: {
@@ -176,16 +176,16 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '状态',
+        title: $t('Save.SelectDevices.378843-8'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '在线', value: 'online' },
-                { label: '离线', value: 'offline' },
-                { label: '禁用', value: 'notActive' },
+                { label: $t('Save.SelectDevices.378843-9'), value: 'online' },
+                { label: $t('Save.SelectDevices.378843-10'), value: 'offline' },
+                { label: $t('Save.SelectDevices.378843-11'), value: 'notActive' },
             ],
         },
         width: 150,

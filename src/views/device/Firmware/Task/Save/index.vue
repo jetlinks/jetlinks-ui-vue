@@ -1,8 +1,8 @@
 <template>
     <j-modal
-        :title="data.id ? '查看' : '新增' + '任务'"
-        ok-text="确认"
-        cancel-text="取消"
+        :title="data.id ? $t('Save.index.378844-0') : $t('Save.index.378844-1') + $t('Save.index.378844-2')"
+        :ok-text="$t('Save.index.378844-3')"
+        :cancel-text="$t('Save.index.378844-4')"
         :visible="true"
         width="700px"
         :confirm-loading="loading"
@@ -21,22 +21,22 @@
         >
             <j-row :gutter="[24, 0]">
                 <j-col :span="24">
-                    <j-form-item label="任务名称" name="name">
+                    <j-form-item :label="$t('Save.index.378844-5')" name="name">
                         <j-input
-                            placeholder="请输入任务名称"
+                            :placeholder="$t('Save.index.378844-6')"
                             v-model:value="formData.name"
                             :disabled="view"
                     /></j-form-item>
                 </j-col>
                 <j-col :span="24"
-                    ><j-form-item label="推送方式" name="mode">
+                    ><j-form-item :label="$t('Save.index.378844-7')" name="mode">
                         <j-select
                             v-model:value="formData.mode"
                             :options="[
-                                { label: '平台推送', value: 'push' },
-                                { label: '设备拉取', value: 'pull' },
+                                { label: $t('Save.index.378844-8'), value: 'push' },
+                                { label: $t('Save.index.378844-9'), value: 'pull' },
                             ]"
-                            placeholder="请选择推送方式"
+                            :placeholder="$t('Save.index.378844-10')"
                             allowClear
                             show-search
                             :filter-option="filterOption"
@@ -46,11 +46,11 @@
                 ></j-col>
                 <j-col :span="12" v-if="formData.mode === 'push'"
                     ><j-form-item
-                        label="响应超时时间"
+                        :label="$t('Save.index.378844-11')"
                         name="responseTimeoutSeconds"
                     >
                         <j-input-number
-                            placeholder="请输入响应超时时间(秒)"
+                            :placeholder="$t('Save.index.378844-12')"
                             style="width: 100%"
                             :min="1"
                             :max="99999"
@@ -62,9 +62,9 @@
                 <j-col
                     :span="formData.mode === 'push' ? 12 : 24"
                     v-if="formData.mode === 'push' || formData.mode === 'pull'"
-                    ><j-form-item label="升级超时时间" name="timeoutSeconds">
+                    ><j-form-item :label="$t('Save.index.378844-14')" name="timeoutSeconds">
                         <j-input-number
-                            placeholder="请输入升级超时时间(秒)"
+                            :placeholder="$t('Save.index.378844-15')({{ $t('Save.index.378844-13') }})"
                             style="width: 100%"
                             :min="1"
                             :max="99999"
@@ -74,20 +74,20 @@
                             " /></j-form-item
                 ></j-col>
                 <j-col :span="12" v-if="!!formData.mode"
-                    ><j-form-item label="升级设备" name="releaseType">
+                    ><j-form-item :label="$t('Save.index.378844-16')" name="releaseType">
                         <j-radio-group
                             v-model:value="formData.releaseType"
                             button-style="solid"
                             @change="changeShareCluster"
                             :disabled="view"
                         >
-                            <j-radio value="all">所有设备</j-radio>
-                            <j-radio value="part">选择设备</j-radio>
+                            <j-radio value="all">{{ $t('Save.index.378844-17') }}</j-radio>
+                            <j-radio value="part">{{ $t('Save.index.378844-18') }}</j-radio>
                         </j-radio-group>
                     </j-form-item>
                 </j-col>
                 <j-col :span="12" v-if="formData.releaseType === 'part'">
-                    <j-form-item label="选择设备" name="deviceId">
+                    <j-form-item :label="$t('Save.index.378844-18')" name="deviceId">
                         <SelectDevices
                             v-model:modelValue="formData.deviceId"
                             :data="data"
@@ -95,9 +95,9 @@
                         ></SelectDevices> </j-form-item
                 ></j-col>
                 <j-col :span="24">
-                    <j-form-item label="说明" name="description">
+                    <j-form-item :label="$t('Save.index.378844-19')" name="description">
                         <j-textarea
-                            placeholder="请输入说明"
+                            :placeholder="$t('Save.index.378844-20')"
                             v-model:value="formData.description"
                             :maxlength="200"
                             :rows="3"
@@ -113,6 +113,9 @@
 import { queryProduct, saveTask } from '@/api/device/firmware';
 import type { FormInstance } from 'ant-design-vue';
 import SelectDevices from './SelectDevices.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -152,15 +155,15 @@ const formData: any = ref({
 
 const rules = {
     name: [
-        { required: true, message: '请输入任务名称' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: $t('Save.index.378844-6') },
+        { max: 64, message: $t('Save.index.378844-21') },
     ],
-    mode: [{ required: true, message: '请选择推送方式' }],
-    responseTimeoutSeconds: [{ required: true, message: '请输入响应超时时间' }],
-    timeoutSeconds: [{ required: true, message: '请输入升级超时时间' }],
+    mode: [{ required: true, message: $t('Save.index.378844-10') }],
+    responseTimeoutSeconds: [{ required: true, message: $t('Save.index.378844-12') }],
+    timeoutSeconds: [{ required: true, message: $t('Save.index.378844-15') }],
     releaseType: [{ required: true }],
-    deviceId: [{ required: true, message: '请选择设备' }],
-    description: [{ max: 200, message: '最多可输入200个字符' }],
+    deviceId: [{ required: true, message: $t('Save.index.378844-22') }],
+    description: [{ max: 200, message: $t('Save.index.378844-23') }],
 };
 
 const filterOption = (input: string, option: any) => {
