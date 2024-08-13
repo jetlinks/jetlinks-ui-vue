@@ -165,7 +165,9 @@ const getDepartment = async () => {
     }
 
     deptTreeData.value = _result;
-    deptId.value = _result[0]?.id;
+    if(_result.length){
+        deptId.value = _result[0]?.id;
+    }
 };
 
 /**
