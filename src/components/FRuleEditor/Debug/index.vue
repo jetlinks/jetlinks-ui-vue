@@ -46,7 +46,7 @@
                                 showSearch
                                 :options="options"
                                 v-model:value="record.id"
-                                :getPopupContainer="(node) => tableWrapperRef || node"
+                                :getPopupContainer="getPopupContainer"
                                 size="small"
                                 style="width: 100%;"
                                 :virtual="true"
@@ -105,7 +105,7 @@
                                 size="small"
                                 style="width: 100%;"
                                 :virtual="true"
-                                :getPopupContainer="(node) => tableWrapperRef || node"
+                                :getPopupContainer="getPopupContainer"
                                 :dropdownStyle="{
                                   zIndex: 1072
                                 }"
@@ -202,6 +202,7 @@ import { getWebSocket } from '@/utils/websocket';
 import {useTableWrapper} from "@/components/Metadata/Table/context";
 import { onlyMessage } from '@/utils/comm';
 import {message} from "ant-design-vue";
+import { useTableFullScreen} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
@@ -222,7 +223,7 @@ type propertyType = {
 const property = ref<propertyType[]>([]);
 const tag = ref<Array<any>>([]);
 const tableWrapperRef = useTableWrapper()
-
+const fullScreen = useTableFullScreen()
 const columns = [
     {
         title: '属性名称',
@@ -287,6 +288,14 @@ const ruleEditorStore = useRuleEditorStore();
 const time = ref<number>(0);
 const timer = ref<any>(null);
 
+//是否全屏监听
+const getPopupContainer = (node: any) => {
+  if (fullScreen.value) {
+    return tableWrapperRef.value || node
+  }
+
+  return document.body
+}
 const runScript = () => {
     const propertiesList = medataSource?.value || []
     const _properties = property.value.map((item: any) => {

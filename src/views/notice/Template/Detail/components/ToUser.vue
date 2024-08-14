@@ -38,15 +38,18 @@ const typeObj = {
 const options = ref([]);
 const queryData = async () => {
     if (!props.configId) return;
-    const res = await templateApi.getUser(typeObj[props.type], props.configId);
+    const res: any = await templateApi
+        .getUser(typeObj[props.type], props.configId)
+        .catch(() => {
+            emit('update:canSave', false);
+        });
 
     if (res.status === 200) {
         options.value = res?.result.map((item: any) => ({
             label: item.name,
             value: item.id,
         }));
-    } else {
-        emit('update:canSave', false);
+        emit('update:canSave', true);
     }
 };
 queryData();

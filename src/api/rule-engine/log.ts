@@ -65,6 +65,11 @@ export const queryHistoryList = (data:any) => server.post('/alarm/history/_query
 export const queryHandleHistory = (data:any) => server.post('/alarm/record/handle-history/_query',data);
 
 /**
+ * 获取预处理数据告警处理结果
+ */
+export const queryPreHandleHistory = (recordId:any,data:any) => server.post(`/alarm/record/handle-history/device/${recordId}/_query`,data)
+
+/**
  * 获取告警日志（新）
  */
 export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data)

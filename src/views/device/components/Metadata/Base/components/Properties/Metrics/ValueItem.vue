@@ -75,9 +75,9 @@ const formData = reactive<{
   value: ValueType;
   rangeValue: ValueType;
 }>({
-  value: props.value?.range === false ? props.value?.value : undefined,
-  rangeValue: props.value?.range === true
-      ? cloneDeep(props.value?.value) || [undefined, undefined]
+  value: props.range === false ? props.value : undefined,
+  rangeValue: props.range === true
+      ? cloneDeep(props.value) || [undefined, undefined]
       : [undefined, undefined],
 });
 
@@ -87,10 +87,10 @@ const showText = computed(() => {
   if (props.range === false) {
     switch (type) {
       case 'date':
-        return props.value?.value;
+        return props.value;
       case 'boolean':
-        const _value = props.value?.value
-        const item = props.options.find(item => item.value === props.value?.value)
+        const _value = props.value
+        const item = props.options.find(item => item.value === props.value)
         if (item) {
           return item.label
         }else if (_value) {
@@ -99,10 +99,10 @@ const showText = computed(() => {
           return ''
         }
       default:
-        return props.value?.value
+        return props.value
     }
   } else {
-    return props.value?.value?.[0] ? props.value.value.join('-') : ''
+    return props.value?.[0] ? props.value.join('-') : ''
   }
 })
 
@@ -169,7 +169,7 @@ const confirm = () => {
 
 watch(() => props.range, (value, oldValue) => {
   if (value !== oldValue  ) {
-    formData.rangeValue = value ? [undefined, undefined] : undefined
+    formData.rangeValue = value ? cloneDeep(props.value) || [undefined, undefined] : undefined
   }
 }, { immediate: true})
 </script>

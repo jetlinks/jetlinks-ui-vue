@@ -463,7 +463,7 @@ watch(
     () => {
         getTableData();
     },
-    { immediate: true },
+    // { immediate: true },
 );
 watch(
     () => deptName.value,
