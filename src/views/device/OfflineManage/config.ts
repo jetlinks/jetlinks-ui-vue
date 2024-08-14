@@ -12,16 +12,6 @@ export const columnsConf = [
         },
     },
     {
-        title: '采集模型',
-        dataIndex: 'productName',
-        key: 'productName',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-        scopedSlots: true,
-    },
-    {
         title: '设备名称',
         dataIndex: 'name',
         key: 'name',
@@ -32,26 +22,12 @@ export const columnsConf = [
         scopedSlots: true,
     },
     {
-        title: '设备类型',
-        dataIndex: 'deviceType',
-        key: 'deviceType',
+        title: '采集模型',
+        dataIndex: 'productName',
+        key: 'productName',
         ellipsis: true,
         search: {
-            type: 'select',
-            options: [
-                {
-                    label: '直连设备',
-                    value: 'device',
-                },
-                {
-                    label: '网关设备',
-                    value: 'gateway',
-                },
-                {
-                    label: '网关子设备',
-                    value: 'childrenDevice',
-                },
-            ],
+            type: 'string',
         },
         scopedSlots: true,
     },
@@ -61,13 +37,13 @@ export const columnsConf = [
         key: 'offlineTime',
         ellipsis: true,
         scopedSlots: true,
-        width: 180,
+        width: 200,
     },
     {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
-        width: 100,
+        width: 120,
         // search: {
         //     type: 'select',
         //     options: [
@@ -84,7 +60,26 @@ export const columnsConf = [
         key: 'offlineReasons',
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            options: [
+                {
+                    label: '连接超时',
+                    value: '连接超时',
+                },
+                {
+                    label: '自主关机',
+                    value: '自主关机',
+                },
+                {
+                    label: 'T-BOX拆除',
+                    value: 'T-BOX拆除',
+                },
+                {
+                    label: '其他',
+                    value: '其他',
+                },
+            ],
+            termFilter: ['in', 'nin'],
         },
         scopedSlots: true,
     },
@@ -92,7 +87,7 @@ export const columnsConf = [
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 100,
+        width: 120,
         // fixed: 'right',
         scopedSlots: true,
     },

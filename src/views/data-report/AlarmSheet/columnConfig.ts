@@ -123,6 +123,7 @@ export const columnConfig = [
                         resolve(res);
                     });
                 }),
+            termFilter: ['in', 'nin'],
         },
     },
 ];

@@ -110,6 +110,8 @@ const handleFix = () => {
 // 重新诊断
 const handleDiagnose = () => {
     // @ts-ignore
+    statusRef.value!.showOtherDiagnose = false;
+    // @ts-ignore
     statusRef?.value?.handleSearch().then(() => {
         btnList[1].loading = false;
     });
@@ -228,10 +230,8 @@ onMounted(() => {
         // @ts-ignore ts报错showOtherDiagnose，实际上已做expose但由于tsx组件的支持较差，这里需要忽略检测
         () => statusRef.value.showOtherDiagnose,
         (val) => {
-            console.log('watch status', val);
-            if (val === true) {
-                otherDiagnoseIsShow.value = true;
-            }
+            console.log('监听到诊断结果');
+            otherDiagnoseIsShow.value = val;
         },
     );
 });
