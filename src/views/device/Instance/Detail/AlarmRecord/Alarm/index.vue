@@ -82,7 +82,7 @@
 <script setup>
 import {
     queryByDevice as queryAlarmRecord,
-    queryHandleHistory,
+    queryPreHandleHistory,
 } from '@/api/rule-engine/log';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
@@ -331,16 +331,8 @@ const handleSearch = (e) => {
     params.value = e;
 };
 const queryHandle = async (id) => {
-    const res = await queryHandleHistory({
-        sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [
-            {
-                column: 'alarmRecordId',
-                termType: 'eq',
-                value: id,
-                type: 'and',
-            },
-        ],
+    const res = await queryPreHandleHistory(id,{
+        sorts: [{ name: 'handleTime', order: 'desc' }],
     });
     if (res.status === 200 && res.result?.data.length) {
         handleDescription.value = res.result.data?.[0]?.description;
