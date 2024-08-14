@@ -135,11 +135,7 @@ const change = (e: boolean,groupItem:any,index:number) => {
   if(!e){
     data.value.branches?.splice(start + 1 , len - 1)
     data.value.branches![start].when = []
-    if(data.value.branches![len -1]){
-      data.value.options!.when.splice(start,len)
-    }else{
-      data.value.options!.when.splice(start,len - 1)
-    }
+    data.value.options!.when.splice(start,len - 1)
   }else{
     data.value.branches!.splice(start + 1,0,null)
        data.value.branches![start].when = [
