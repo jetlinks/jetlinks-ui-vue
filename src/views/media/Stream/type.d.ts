@@ -4,6 +4,8 @@ export interface Configuration {
     apiPort: number | string;
     rtpIp: string | string;
     rtpPort: number | string;
+    rtspPort: number | string;
+    rtmpPort: number | string;
     dynamicRtpPort: boolean;
     dynamicRtpPortRange?: array<any>;
     dynamicRtpPortRange0?: number | string | undefined;
