@@ -20,11 +20,11 @@
                 <template #alarmTime="slotProps">{{
                     dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</template>
-                <template #sourceId="slotProps"
-                    >设备ID：<a-button
+                <template #sourceName="slotProps"
+                    >设备名称：<a-button
                         type="link"
                         @click="() => gotoDevice(slotProps.sourceId)"
-                        >{{ slotProps.sourceId }}</a-button
+                        >{{ slotProps.sourceName }}</a-button
                     ></template
                 >
                 <template #action="slotProps">
@@ -213,8 +213,8 @@ watch(
                     },
                     {
                         title: '告警源',
-                        dataIndex: 'sourceId',
-                        key: 'sourceId',
+                        dataIndex: 'sourceName',
+                        key: 'sourceName',
                         scopedSlots: true,
                         search: {
                             type: 'string',

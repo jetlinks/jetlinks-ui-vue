@@ -12,9 +12,9 @@
                     >{{ dayjs(text).format('YYYY-MM-DD HH:mm:ss')
                     }}</span
             ></template>
-            <template v-if="column.dataIndex === 'sourceId'">
+            <template v-if="column.dataIndex === 'sourceName'">
                 <Ellipsis>
-                    设备ID：
+                    设备名称：
                     <span class="deviceId" @click="() => gotoDevice(text)">{{
                         text
                     }}</span></Ellipsis
@@ -85,8 +85,8 @@ const columns = [
     },
     {
         title: '告警源',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
+        dataIndex: 'sourceName',
+        key: 'sourceName',
     },
     {
         title: '告警原因',
