@@ -723,7 +723,7 @@
                         </j-form-item>
                         <j-form-item>
                             <j-button
-                                :disabled="canSave"
+                                :disabled="!canSave"
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
@@ -1186,12 +1186,12 @@ const templateList = ref();
 const getTemplateList = async () => {
     if (!formData.value.configId) return
     const id = formData.value.configId || undefined;
-    const res = await templateApi.getAliTemplate(id)
+    const res:any = await templateApi.getAliTemplate(id).catch(()=>{
+        canSave.value = false
+    })
     if(res.status === 200){
         canSave.value = true
         templateList.value = res.result;
-    }else{
-        canSave.value = false
     }
 };
 
