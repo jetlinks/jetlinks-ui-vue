@@ -149,8 +149,7 @@ const setOptions = (optionsData: any, key: string) => ({
 const handleJVMOptions = (optionsData: any, xAxis: any) => {
   const dataKeys = Object.keys(optionsData);
   serverActive.value = dataKeys
-  // serverOptions.value = dataKeys
-  serverOptions.value = Array.from({ length: 12}).map((_, index) => `jetlinks-${index}`)
+  serverOptions.value = dataKeys
   serverData.xAxis = xAxis
   serverData.data = optionsData
 };
