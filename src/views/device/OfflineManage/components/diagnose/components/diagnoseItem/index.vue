@@ -15,9 +15,7 @@
                             v-for="(item, index) in data.additional"
                             :key="index"
                         >
-                            <p v-if="!isXieliDevice && index === 3">
-                                <a-badge status="default" :text="item" />
-                            </p>
+                            <div><a-badge status="default" :text="item" /></div>
                         </template>
                     </slot>
                 </div>
@@ -34,21 +32,37 @@ defineOptions({
     name: 'DiagnoseItem',
 });
 
-defineProps<{ isXieliDevice: boolean }>();
+const props = defineProps<{ isXieliDevice: boolean }>();
 
-const data = {
+const data = reactive<{
+    path: string;
+    title: string;
+    desc: string;
+    additional: string[];
+    result: string;
+}>({
     path: '/images/diagnose/status/warning.png',
     title: '其他可能异常',
     desc: '当以上诊断均无异常时，请检查以下内容',
-    additional: [
+    additional: [],
+    result: '可能存在异常',
+});
+if (props.isXieliDevice) {
+    data.additional = [
         '产品-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
         '设备-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
         '请根据设备接入配置中${URL}信息，任意上报一条数据',
         '请检查电池电量是否充足',
         '其他设备请检查是否存在网络通信故障',
-    ],
-    result: '可能存在异常',
-};
+    ];
+} else {
+    data.additional = [
+        '产品-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
+        '设备-${MQTT认证配置}规则可能有加密处理，请认真查看设备接入配置中【消息协议】说明',
+        '请根据设备接入配置中${URL}信息，任意上报一条数据',
+        '其他设备请检查是否存在网络通信故障',
+    ];
+}
 </script>
 
 <style scoped lang="less">
@@ -72,31 +86,17 @@ const data = {
 
     .flex-lt {
         display: flex;
-        gap: 24px;
         align-items: center;
+        flex-flow: row nowrap;
 
         .icon {
             height: 32px;
             width: 32px;
-            overflow: hidden;
-            //margin-right: 16px;
+            margin-right: 20px;
             img {
                 display: block;
                 height: 32px;
-                width: auto;
-            }
-
-            .rotate {
-                animation: rotate 1s linear infinite;
-            }
-
-            @keyframes rotate {
-                from {
-                    transform: rotate(0deg);
-                }
-                to {
-                    transform: rotate(360deg);
-                }
+                width: 32px;
             }
         }
 
@@ -108,7 +108,6 @@ const data = {
             }
             .additional {
                 margin: 0;
-                //list-style: none;
             }
             p {
                 margin-bottom: 0;

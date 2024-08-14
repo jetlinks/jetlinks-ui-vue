@@ -38,7 +38,6 @@ export const useProSearch = (
                 _params = fn(_params);
             });
         globParams.value = _params;
-        console.log('globParams', toRaw(globParams.value));
     };
 
     /**

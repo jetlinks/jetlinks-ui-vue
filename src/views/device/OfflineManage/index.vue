@@ -1,5 +1,5 @@
 <template>
-    <j-spin :spinning="pageLoading">
+    <j-spin :spinning="pageLoading" style="margin-top: 300px">
         <page-container>
             <pro-search :columns="columnsConf" @search="handleSearch" />
             <full-page>
@@ -47,10 +47,6 @@
                     <template #model="record">
                         {{ record.model ? record.model.text : '--' }}
                     </template>
-                    <!--      设备类型        -->
-                    <template #deviceType="record">
-                        {{ record.deviceType ? record.deviceType.text : '--' }}
-                    </template>
                     <!--       离线时间       -->
                     <template #offlineTime="record">
                         {{ handleOfflineTime(record) }}
@@ -67,12 +63,22 @@
                         {{ record.offlineReason ? record.offlineReason : '--' }}
                     </template>
                     <template #action="record">
-                        <a
-                            href="javascript: void(0);"
-                            @click.prevent="modalEvent.open(record)"
-                        >
-                            诊断
-                        </a>
+                        <template v-if="record.offlineReasons === '其他'">
+                            <a
+                                href="javascript: void(0);"
+                                @click.prevent="modalEvent.open(record)"
+                            >
+                                诊断
+                            </a>
+                        </template>
+                        <template v-else>
+                            <j-tooltip placement="top">
+                                <template #title>
+                                    <span>此原因离线的设备无需诊断！</span>
+                                </template>
+                                <span class="diagnose-disabled">诊断</span>
+                            </j-tooltip>
+                        </template>
                     </template>
                     <!-- 卡片模式 -->
                     <template #card="slotProps">
@@ -119,23 +125,13 @@
                                 <j-row>
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
-                                            设备类型
-                                        </div>
-                                        <div>
-                                            {{
-                                                slotProps.deviceType?.text ||
-                                                '--'
-                                            }}
-                                        </div>
-                                    </j-col>
-                                    <j-col :span="12">
-                                        <div class="card-item-content-text">
-                                            物模型名称
+                                            产品名称
                                         </div>
                                         <Ellipsis style="width: 100%">
                                             {{ slotProps.productName || '--' }}
                                         </Ellipsis>
                                     </j-col>
+                                    <j-col :span="12"> </j-col>
                                 </j-row>
                             </template>
                             <template #actions="item">
@@ -239,9 +235,12 @@ const {
     handleClearSelected,
 } = useSelectableTable();
 
-const { handleSearch } = useProSearch(globParams, handleClearSelected, [
-    DEFAULT_ORDER_COLUMN,
-]);
+const { handleSearch } = useProSearch(
+    globParams,
+    handleClearSelected,
+    [DEFAULT_ORDER_COLUMN],
+    [handleSearchOfflineReasons],
+);
 
 // 处理设备诊断的钩子
 const instanceStore = useInstanceStore();
@@ -249,6 +248,31 @@ const instanceStore = useInstanceStore();
 const popTitle = computed(() => {
     return selectedRowKeys.value.length === 0 ? EXPORT_ALL : EXPORT_SELECT;
 });
+
+/**
+ * @description 处理搜索条件为离线原因的字段
+ * @param _params
+ */
+function handleSearchOfflineReasons(_params: ISearchParams) {
+    if (
+        _params.terms &&
+        _params.terms.length > 0 &&
+        _params.terms[0].terms &&
+        _params.terms[0].terms.length > 0
+    ) {
+        const { column, value, termType } = _params.terms[0].terms[0];
+        if (column === 'offlineReasons') {
+            if (termType === 'eq') {
+                _params.terms[0].terms[0].value = `%${value}%`;
+                _params.terms[0].terms[0].termType = 'like';
+            } else if (termType === 'not') {
+                _params.terms[0].terms[0].value = `%${value}%`;
+                _params.terms[0].terms[0].termType = 'nlike';
+            }
+        }
+    }
+    return _params;
+}
 
 const handleOfflineTime = (record: Record<string, any>) => {
     if (record.offlineTime === 1) {
@@ -473,31 +497,8 @@ onMounted(() => {
 </script>
 
 <style scoped lang="less">
-.loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    z-index: 9999;
-    cursor: wait;
-
-    background-color: fade(#000, 45%);
-    backdrop-filter: blur(2px);
-
-    .wrapper {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: auto;
-        width: fit-content;
-        height: fit-content;
-
-        .ant-btn {
-            color: #f84914;
-        }
-    }
+.diagnose-disabled {
+    color: #8c8c8c;
+    cursor: not-allowed;
 }
 </style>
