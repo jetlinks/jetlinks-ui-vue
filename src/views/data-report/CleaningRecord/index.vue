@@ -176,7 +176,6 @@ const handelDetail = (data: any) => {
  */
 const handleExport = async () => {
     let _params: any = {};
-    console.log('selectedRowKeys.value', selectedRowKeys.value);
     if (selectedRowKeys.value.length > 0) {
         // 当部分选中时
         _params = {

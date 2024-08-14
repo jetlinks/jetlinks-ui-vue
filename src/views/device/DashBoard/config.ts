@@ -28,8 +28,8 @@ const categoryOptions = (totalCount: number, data: categoryType[]) => {
         title: {
             text: `${totalCount ?? 0}`,
             subtext: '离线设备数量',
-            left: '32%',
-            top: '40%',
+            left: '28%',
+            top: '38%',
             itemGap: 8,
             textAlign: 'center',
             textStyle: {
@@ -49,7 +49,7 @@ const categoryOptions = (totalCount: number, data: categoryType[]) => {
         legend: [
             {
                 orient: 'vertical',
-                left: '50%',
+                left: '56%',
                 top: '30%',
                 padding: [0, 30, 0, 0],
                 itemHeight: 14,
@@ -90,7 +90,7 @@ const categoryOptions = (totalCount: number, data: categoryType[]) => {
                     const list = data?.filter((val) => val.name == params)[0];
                     return (
                         ` {name|${params}}   ` +
-                        `{rate|${list.rate}%}    {value|${list.value}}`
+                        `{rate|${list.rate}%}     {value|${list.value}}`
                     );
                 },
             },
@@ -98,14 +98,14 @@ const categoryOptions = (totalCount: number, data: categoryType[]) => {
         series: [
             {
                 type: 'pie',
-                center: ['32%', '48%'],
-                radius: ['50%', '70%'],
+                center: ['28%', '44%'],
+                radius: ['46%', '60%'],
                 // itemStyle: {
                 //     borderColor: '#fafbfc',
                 //     borderWidth: 12,
                 // },
                 color: colors,
-                startAngle: 100,
+                startAngle: 80,
                 labelLine: {
                     length: 15,
                 },

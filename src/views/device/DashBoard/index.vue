@@ -35,10 +35,18 @@
                         <Charts :options="TodayDevOptions"></Charts> </TopCard
                 ></j-col>
             </j-row>
-            <j-row :gutter="24" v-if="offlineStyle">
-                <j-col :span="24">
+            <j-row :gutter="24">
+                <j-col :span="10" v-if="offlineStyle">
                     <div class="office-card">
-                        <Guide title="设备离线分析"> </Guide>
+                        <Guide title="设备离线分析">
+                            <template #extra>
+                                <a
+                                    @click="handelDetail()"
+                                    style="color: #f84914"
+                                    >查看详情
+                                </a>
+                            </template>
+                        </Guide>
                         <div class="office-chart">
                             <Charts
                                 :options="
@@ -48,9 +56,7 @@
                         </div>
                     </div>
                 </j-col>
-            </j-row>
-            <j-row :gutter="24">
-                <j-col :span="24" v-if="deviceMessages">
+                <j-col :span="14" v-if="deviceMessages">
                     <div class="message-card">
                         <Guide title="设备消息">
                             <template #extra>
@@ -81,7 +87,9 @@
                         <Guide title="设备分布"></Guide>
                         <div class="device-map">
                             <Amap v-if="mapType === 'AMAP'"></Amap>
-                            <GoogleMapComponent v-else-if="mapType === 'GoogleMaps'"></GoogleMapComponent>
+                            <GoogleMapComponent
+                                v-else-if="mapType === 'GoogleMaps'"
+                            ></GoogleMapComponent>
                         </div>
                     </div>
                 </j-col>
@@ -168,6 +176,10 @@ let TodayDevOptions = ref<any>({});
 const officeData = ref();
 const totalCount = ref(0);
 let devMegOptions = ref<any>({});
+
+const handelDetail = () => {
+    menuStore.jumpPage('device/OfflineManage');
+};
 
 //设备离线分析
 const getOfficeOptions = () => {

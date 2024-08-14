@@ -37,7 +37,10 @@
                     </j-space>
                 </template>
                 <template #vehicleTypeEnum="{ vehicleTypeEnum }">
-                    <Ellipsis>{{ vehicleTypeEnum?.text || '' }}</Ellipsis>
+                    <Ellipsis>{{ vehicleTypeEnum?.text || '--' }}</Ellipsis>
+                </template>
+                <template #deviceFactory="{ deviceFactory }">
+                    <Ellipsis>{{ deviceFactory || '--' }}</Ellipsis>
                 </template>
                 <template #timestamp="{ timestamp }">
                     {{
@@ -45,7 +48,7 @@
                             ? moment(Number(timestamp)).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
-                            : ''
+                            : '--'
                     }}
                 </template>
                 <template #action="slotProps">
@@ -88,7 +91,7 @@ const {
     handleRowSelected,
     handleSelectAll,
     handleClearSelected,
-} = useSelectableTable<number>('timestamp');
+} = useSelectableTable<number>('eid');
 const tableRef = ref<Record<string, any>>({});
 // 表格数据总数
 const dataTotal = ref<number>(0);
@@ -168,7 +171,7 @@ const handleExport = async () => {
                         : selectedRowKeys.value.length,
                 terms: [
                     {
-                        column: 'timestamp',
+                        column: 'eid',
                         value: selectedRowKeys.value,
                         termType: 'in',
                     },
@@ -248,6 +251,13 @@ const columns = [
         },
     },
     {
+        title: '设备厂商',
+        dataIndex: 'deviceFactory',
+        key: 'deviceFactory',
+        scopedSlots: true,
+        ellipsis: true,
+    },
+    {
         title: '异常时间',
         dataIndex: 'timestamp',
         key: 'timestamp',
@@ -279,7 +289,7 @@ const columns = [
     },
 ];
 
-const rowKeyAccessor = (record: any) => record.timestamp;
+const rowKeyAccessor = (record: any) => record.eid;
 
 const queryData = async (_params: any) => {
     const { terms, ...params } = _params;

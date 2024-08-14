@@ -16,7 +16,7 @@ import { GoogleMap, Marker } from 'vue3-google-map';
 import { useSystem } from '@/store/system';
 const system = useSystem();
 
-type IPosition = { lat: number; lng: number };
+// type IPosition = { lat: number; lng: number };
 const configInfo = system.configInfo;
 
 const googleMapApiKey = ref();
