@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"components.Log.891327-0": "设备ID：",
+		"components.Log.891327-1": "查看更多",
+		"components.Log.891327-2": "已展示全部数据",
+		"components.Log.891327-3": "告警时间",
+		"components.Log.891327-4": "触发条件",
+		"components.Log.891327-5": "告警源",
+		"components.Log.891327-6": "告警原因",
+		"components.Log.891327-7": "操作"
+	},
+	"en": {
+		"components.Log.891327-0": "Device ID:",
+		"components.Log.891327-1": "View more",
+		"components.Log.891327-2": "All data has been displayed",
+		"components.Log.891327-3": "Alarm time",
+		"components.Log.891327-4": "Trigger condition",
+		"components.Log.891327-5": "Alarm source",
+		"components.Log.891327-6": "Reason for alarm",
+		"components.Log.891327-7": "Operation"
+	}
+}

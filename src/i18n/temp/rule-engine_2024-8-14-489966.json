@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Detail.info.891329-0": "详情",
+		"Detail.info.891329-1": "确定",
+		"Detail.info.891329-2": "取消",
+		"Detail.info.891329-3": "告警名称",
+		"Detail.info.891329-4": "告警时间",
+		"Detail.info.891329-5": "告警级别",
+		"Detail.info.891329-6": "告警说明",
+		"Detail.info.891329-7": "告警流水"
+	},
+	"en": {
+		"Detail.info.891329-0": "Detail",
+		"Detail.info.891329-1": "Confirm",
+		"Detail.info.891329-2": "Cancel",
+		"Detail.info.891329-3": "Alarm name ",
+		"Detail.info.891329-4": "Alarm time",
+		"Detail.info.891329-5": "Alarm level",
+		"Detail.info.891329-6": "Alarm Description",
+		"Detail.info.891329-7": "Alarm flow"
+	}
+}

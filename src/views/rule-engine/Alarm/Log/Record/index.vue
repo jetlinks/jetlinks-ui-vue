@@ -17,7 +17,7 @@
                 :params="params"
             >
                 <template #headerTitle>
-                    <h3>记录列表</h3>
+                    <h3>{{ $t('Record.index.8913310-0') }}</h3>
                 </template>
                 <template #handleTime="slotsProps">
                     <span>
@@ -53,6 +53,9 @@ import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
 import Duration from '../components/Duration.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const route = useRoute();
 const id = route.query?.id;
 const terms = [
@@ -65,7 +68,7 @@ const terms = [
 ];
 const columns = [
     {
-        title: '处理时间',
+        title: $t('Record.index.8913310-1'),
         dataIndex: 'handleTime',
         key: 'handleTime',
         scopedSlots: true,
@@ -76,7 +79,7 @@ const columns = [
     },
     {
         dataIndex: 'handleType',
-        title: '处理类型',
+        title: $t('Record.index.8913310-2'),
         key: 'handleType',
         scopedSlots: true,
         width: 120,
@@ -84,18 +87,18 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '系统',
+                    label: $t('Record.index.8913310-3'),
                     value: 'system',
                 },
                 {
-                    label: '人工',
+                    label: $t('Record.index.8913310-4'),
                     value: 'user',
                 },
             ],
         },
     },
     {
-        title: '告警时间',
+        title: $t('Record.index.8913310-5'),
         dataIndex: 'alarmTime',
         key: 'alarmTime',
         scopedSlots: true,
@@ -105,14 +108,14 @@ const columns = [
         width: 180,
     },
     {
-        title: '告警持续时长',
+        title: $t('Record.index.8913310-6'),
         dataIndex: 'alarmDuration',
         key: 'alarmDuration',
         scopedSlots: true,
         width: 180,
     },
     {
-        title: '处理结果',
+        title: $t('Record.index.8913310-7'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,

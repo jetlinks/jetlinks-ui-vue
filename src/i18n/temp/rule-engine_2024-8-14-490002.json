@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.DetailDrawer.891328-0": "暂无说明",
+		"components.DetailDrawer.891328-1": "处理",
+		"components.DetailDrawer.891328-2": "处理记录",
+		"components.DetailDrawer.891328-3": "告警日志"
+	},
+	"en": {
+		"components.DetailDrawer.891328-0": "No explanation available at the moment",
+		"components.DetailDrawer.891328-1": "Handle",
+		"components.DetailDrawer.891328-2": "Processing records",
+		"components.DetailDrawer.891328-3": "Alarm Log "
+	}
+}
