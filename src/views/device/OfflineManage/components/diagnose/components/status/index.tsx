@@ -122,19 +122,7 @@ const Status = defineComponent({
             diagnoseOnenetRes,
         ];
 
-        const showOtherDiagnose = computed(() => {
-            let flag;
-            if (props.providerType === 'network') {
-                flag = networkDevice.every((item) => item.value);
-            } else if (props.providerType === 'child-device') {
-                flag = childDevice.every((item) => item.value);
-            } else if (props.providerType === 'media') {
-                flag = mediaDevice.every((item) => item.value);
-            } else if (props.providerType === 'cloud') {
-                flag = cloudDevice.every((item) => item.value);
-            }
-            return flag;
-        });
+        const showOtherDiagnose = ref(false);
 
         const getDiagnoseRes = () => {
             let flag;
@@ -2028,6 +2016,9 @@ const Status = defineComponent({
             if (arr.length > 0) {
                 for (let i = 0; i < arr.length; i++) {
                     await arr[i]();
+                    if (i === arr.length - 1) {
+                        showOtherDiagnose.value = true;
+                    }
                     emit('percentChange');
                 }
                 emit('percentChange', 100);
