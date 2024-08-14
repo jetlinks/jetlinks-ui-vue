@@ -314,7 +314,7 @@ const getAllUsers = async (terms?: any) => {
     };
     const { result } = await configApi.getPlatformUsers(params);
     allUserList.value = result.map((m: any) => ({
-        label: m.name,
+        label: m.name + ` (${m.username})`,
         value: m.id,
         ...m,
     }));

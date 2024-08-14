@@ -26,10 +26,10 @@
                     : '--'
             }}
         </template>
-        <template #sourceId="slotProps">
+        <template #sourceName="slotProps">
             <Ellipsis>
-                设备ID：
-                <span class="deviceId"  @click="() => gotoDevice(slotProps.sourceId)">{{ slotProps.sourceId }}</span></Ellipsis
+                设备名称：
+                <span class="deviceId"  @click="() => gotoDevice(slotProps.sourceId)">{{ slotProps.sourceName }}</span></Ellipsis
             >
         </template>
         <template #handleType="slotProps">
@@ -206,8 +206,8 @@ const columns =
               },
               {
                   title: '告警源',
-                  dataIndex: 'sourceId',
-                  key: 'sourceId',
+                  dataIndex: 'sourceName',
+                  key: 'sourceName',
                   scopedSlots: true,
                   search: {
                       type: 'string',
