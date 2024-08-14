@@ -156,7 +156,7 @@ import type {PropType} from 'vue';
 import {reactive, ref, watch} from 'vue';
 import BuildIn from './BuildIn.vue';
 import {updateRegion, validateName, validateCode} from '@/api/system/region';
-import {omit} from "lodash-es";
+import {cloneDeep, omit} from "lodash-es";
 import {onlyMessage} from "@/utils/comm";
 import RadioButton from '@/components/CardSelect/RadioButton.vue'
 import GeoJsonModal from './GeoJsonModal.vue'
@@ -293,7 +293,8 @@ const handleSave = () => {
       newData.parentId = newData.parentId || ''
 
       if (newData.properties.sync) {
-        const _syncChildren = syncChildren(newData.code, props.areaTree)
+        const arr = cloneDeep(props.areaTree)
+        const _syncChildren = syncChildren(newData.code, arr)
         const different = _syncChildren.filter(item => {
           if (newData.children && newData.children.some(oldItem => oldItem.code === item.code)) {
             return false
