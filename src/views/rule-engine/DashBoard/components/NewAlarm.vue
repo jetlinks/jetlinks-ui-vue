@@ -1,6 +1,6 @@
 <template>
     <div class="new-alarm">
-        <div class="title">最新告警</div>
+        <div class="title">{{ $t('components.NewAlarm.835094-0') }}</div>
         <div v-if="alarmList.length" class="new-alarm-items">
             <ul>
                 <li v-for="item in alarmList.slice(0, 3)" :key="item">
@@ -75,6 +75,9 @@ import { Empty } from 'jetlinks-ui-components';
 import { getImage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     alarmList: {
         type: Array,

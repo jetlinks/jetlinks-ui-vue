@@ -19,7 +19,7 @@
                             >
                                 <template #title>
                                     <div class="alarmLevelTitle">
-                                        告警级别配置
+                                        {{ $t('Config.index.233000-0') }}
                                     </div>
                                 </template>
                                 <div
@@ -36,7 +36,7 @@
                                             "
                                             alt=""
                                         />
-                                        <span>{{ `级别${i + 1}` }}</span>
+                                        <span>{{ $t('Config.index.233000-1', [i + 1]) }}</span>
                                     </div>
                                     <div>
                                         <j-input
@@ -51,14 +51,14 @@
                             type="primary"
                             size="middle"
                             @click="handleSaveLevel"
-                            >保存</j-button
+                            >{{ $t('Config.index.233000-2') }}</j-button
                         > -->
                             <PermissionButton
                                 type="primary"
                                 size="middle"
                                 @click="handleSaveLevel"
                                 hasPermission="rule-engine/Alarm/Config:update"
-                                >保存</PermissionButton
+                                >{{ $t('Config.index.233000-2') }}</PermissionButton
                             >
                         </div>
                     </FullPage>
@@ -66,12 +66,12 @@
                 <j-col :span="10">
                     <FullPage>
                         <div class="description">
-                            <h1>功能说明</h1>
+                            <h1>{{ $t('Config.index.233000-3') }}</h1>
                             <div>
-                                1、告警级别用于描述告警的严重程度，请根据业务管理方式进行自定义。
+                                {{ $t('Config.index.233000-4') }}
                             </div>
-                            <div>2、告警级别将会在告警配置中被引用。</div>
-                            <div>3、最多可配置5个级别。</div>
+                            <div>{{ $t('Config.index.233000-5') }}</div>
+                            <div>{{ $t('Config.index.233000-6') }}</div>
                         </div>
                     </FullPage>
                 </j-col>
@@ -87,19 +87,22 @@ import { queryLevel, saveLevel } from '@/api/rule-engine/config';
 import { LevelItem } from './typing';
 import Io from './Io/index.vue';
 import { isNoCommunity } from '@/utils/utils';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const list = isNoCommunity ?[
     {
         key: 'config',
-        tab: '告警级别',
+        tab: $t('Config.index.233000-7'),
     },
     {
         key: 'io',
-        tab: '数据流转',
+        tab: $t('Config.index.233000-8'),
     },
 ] : [
     {
         key: 'config',
-        tab: '告警级别',
+        tab: $t('Config.index.233000-7'),
     }
 ]
 let levels = ref<LevelItem[]>([]);
@@ -115,7 +118,7 @@ getAlarmLevel();
 const handleSaveLevel = async () => {
     saveLevel(levels.value).then((res) => {
         if (res.status === 200) {
-            onlyMessage('操作成功');
+            onlyMessage($t('Config.index.233000-9'));
         }
     });
 };

@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Save.input.233003-0": "编辑",
+		"Save.input.233003-1": "取消",
+		"Save.input.233003-2": "确定",
+		"Save.input.233003-3": "状态",
+		"Save.input.233003-4": "启用",
+		"Save.input.233003-5": "kafka地址",
+		"Save.input.233003-6": "请输入topic",
+		"Save.input.233003-7": "最多输入64个字符",
+		"Save.input.233003-8": "请输入kafka地址",
+		"Save.input.233003-9": "操作成功"
+	},
+	"en": {
+		"Save.input.233003-0": "Edit",
+		"Save.input.233003-1": "Cancel",
+		"Save.input.233003-2": "Confirm",
+		"Save.input.233003-3": "State",
+		"Save.input.233003-4": "enabled",
+		"Save.input.233003-5": "Kafka address",
+		"Save.input.233003-6": "Please enter the topic",
+		"Save.input.233003-7": "Enter a maximum of 64 characters",
+		"Save.input.233003-8": "Please enter the Kafka address",
+		"Save.input.233003-9": "Operation successful"
+	}
+}

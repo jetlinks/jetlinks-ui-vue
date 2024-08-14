@@ -31,6 +31,9 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 interface BtnOptions {
     label: string;
@@ -51,13 +54,7 @@ const props = defineProps({
     },
     // 快捷按钮列表
     quickBtnList: {
-        type: Array as PropType<BtnOptions[]>,
-        default: [
-            { label: '今日', value: 'today' },
-            { label: '近一周', value: 'week' },
-            { label: '近一月', value: 'month' },
-            { label: '近一年', value: 'year' },
-        ],
+        type: Array as PropType<BtnOptions[]>
     },
     type: {
         type: String,
