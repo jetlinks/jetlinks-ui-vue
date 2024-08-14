@@ -14,7 +14,8 @@
                             type="color"
                             :hex="tagInfo.color"
                             :rgba="tagInfo.color"
-                            :themeColor="themeColor" 
+                            :themeColor="themeColor"
+                            :show-opacity="false"
                             @change="changeColor"
                         />
                     </a-form-item>
