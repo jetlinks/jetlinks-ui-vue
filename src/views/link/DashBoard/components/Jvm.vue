@@ -140,7 +140,7 @@ const getJVMEcharts = async (val: any) => {
 
 const setOptions = (optionsData: any, key: string) => ({
     data: arrayReverse(optionsData[key]),
-    // name: key!= 'undefined' ? key : '',
+    name: key !== 'undefined' ? key : '',
     type: 'line',
     smooth: true,
     symbol: 'none',
@@ -149,7 +149,8 @@ const setOptions = (optionsData: any, key: string) => ({
 const handleJVMOptions = (optionsData: any, xAxis: any) => {
   const dataKeys = Object.keys(optionsData);
   serverActive.value = dataKeys
-  serverOptions.value = dataKeys
+  // serverOptions.value = dataKeys
+  serverOptions.value = Array.from({ length: 12}).map((_, index) => `jetlinks-${index}`)
   serverData.xAxis = xAxis
   serverData.data = optionsData
 };
@@ -158,6 +159,7 @@ const echartsOptions = computed(() => {
   const series = serverActive.value.length
       ? serverActive.value.map((key) => setOptions(serverData.data, key))
       : typeDataLine
+
   return {
     xAxis: {
       type: 'category',
