@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"components.Actions.426537-0": "满足条件后将触发当前告警",
+		"components.Actions.426537-1": "满足条件后将解除当前告警"
+	},
+	"en": {
+		"components.Actions.426537-0": "After meeting the conditions, the current alarm will be triggered",
+		"components.Actions.426537-1": "After meeting the conditions, the current alarm will be cleared"
+	}
+}

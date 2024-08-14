@@ -1,9 +1,9 @@
 <template>
   <j-modal
     visible
-    title="新增"
-    okText="确定"
-    cancelText="取消"
+    :title="$t('Save.index.426539-0')"
+    :okText="$t('Save.index.426539-1')"
+    :cancelText="$t('Save.index.426539-2')"
     :maskClosable="false"
     :width="1000"
     :loading="loading"
@@ -72,10 +72,13 @@ import {bindScene, queryBindScene} from '@/api/rule-engine/configuration';
 import { onlyMessage} from '@/utils/comm';
 import SceneCardBox from './CardBox.vue'
 import { useRequest } from '@/hook'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const columns = [
   {
-    title: '场景名称',
+    title: $t('Save.index.426539-3'),
     dataIndex: 'name',
     key: 'name',
     search: {
@@ -83,40 +86,40 @@ const columns = [
     },
   },
   {
-    title: '触发方式',
+    title: $t('Save.index.426539-4'),
     dataIndex: 'triggerType',
     key: 'triggerType',
     search: {
       type: 'select',
       options: [
         {
-          label: '手动触发',
+          label: $t('Save.index.426539-5'),
           value: 'manual',
         },
         {
-          label: '定时触发',
+          label: $t('Save.index.426539-6'),
           value: 'timer',
         },
         {
-          label: '设备触发',
+          label: $t('Save.index.426539-7'),
           value: 'device',
         },
       ],
     },
   },
   {
-    title: '状态',
+    title: $t('Save.index.426539-8'),
     dataIndex: 'state',
     key: 'state',
     search: {
       type: 'select',
       options: [
         {
-          label: '正常',
+          label: $t('Save.index.426539-9'),
           value: 'started',
         },
         {
-          label: '禁用',
+          label: $t('Save.index.426539-10'),
           value: 'disable',
         },
       ],
@@ -198,11 +201,11 @@ const saveCorrelation = async () => {
       loading.value = false
     });
     if (res.success) {
-      onlyMessage('操作成功');
+      onlyMessage($t('Save.index.426539-11'));
       emit('saveScene');
     }
   } else {
-    onlyMessage('请选择至少一条数据', 'error');
+    onlyMessage($t('Save.index.426539-12'), 'error');
   }
 };
 const closeModal = () => {

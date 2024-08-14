@@ -36,13 +36,13 @@
               </Ellipsis>
               <div v-if="showBindTags && activeBranches.length">
                 <div style="margin-top: 16px; margin-bottom: 8px" class="card-item-content-text">
-                  关联条件
+                  {{ $t('Save.CardBox.4265310-0') }}
                 </div>
                 <Tags :tags="activeBranches"/>
               </div>
               <Ellipsis v-else>
                 <div class="subTitle">
-                  说明：{{
+                  {{ $t('Save.CardBox.4265310-1') }}{{
                     value?.description ||
                     itemType.tip
                   }}
@@ -60,12 +60,12 @@
                 <DeviceTitle v-if="value.triggerType === 'device'" :options='value.options?.trigger'/>
                   <template v-if="value.triggerType === 'timer'" #extra>
                     <span style="padding-right: 10px;">
-                      系统时间到达
+                      {{ $t('Save.CardBox.4265310-2') }}
                     </span>
                   </template>
                   <TimerTitle v-if="value.triggerType === 'timer'" :options='value.options?.trigger'/>
                 <span v-if="value.triggerType === 'manual'">
-                  系统在接收到手动触发指令时，触发场景
+                  {{ $t('Save.CardBox.4265310-3') }}
                 </span>
               </AddButton>
             </div>
@@ -75,14 +75,14 @@
             <div class="mask-content">
               <slot name="mask">
                 <div>
-                  当前告警已关联：
+                  {{ $t('Save.CardBox.4265310-4') }}
                 </div>
                 <Tags :tags="activeBranches" :styles="{ justifyContent: 'center' }"/>
               </slot>
             </div>
           </div>
           <div v-if="isInvalid" class="card-mask mask-full" style="background-color: rgba(0, 0, 0, 0.2);" @click.stop="jumpView">
-            <a-button style="font-size: 16px;" type="link" >无效数据，请重新保存场景</a-button>
+            <a-button style="font-size: 16px;" type="link" >{{ $t('Save.CardBox.4265310-5') }}</a-button>
           </div>
         </div>
         <div class="card-content-tabs" v-if="showBranches && showBranchesVisible" @click.stop>
@@ -104,7 +104,7 @@
           <div class="card-state-content">
             <BadgeStatus
               :status="status"
-              :text="statusText"
+              :text="statusText|| $t('Save.CardBox.4265310-6') "
               :statusNames="statusNames"
             ></BadgeStatus>
           </div>
@@ -127,6 +127,9 @@ import {PropType} from 'vue';
 import {handleActiveBranches, handleGroupAndFilter, typeMap} from './utils'
 import {useMenuStore} from "@/store/menu";
 import Tags from './tags.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type EmitProps = {
   (e: 'click'): void;
@@ -143,7 +146,6 @@ const props = defineProps({
   },
   statusText: {
     type: String,
-    default: '正常',
   },
   status: {
     type: [String, Number] as PropType<string | number>,

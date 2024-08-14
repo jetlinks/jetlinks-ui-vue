@@ -28,7 +28,7 @@
                                 <template #icon
                                     ><AIcon type="PlusOutlined"
                                 /></template>
-                                新增
+                                {{ $t('Configuration.index.426500-0') }}
                             </PermissionButton>
                         </j-space>
                     </template>
@@ -80,7 +80,7 @@
                                 <a-row>
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
-                                            说明
+                                            {{ $t('Configuration.index.426500-1') }}
                                         </div>
                                         <div style="height: 22px; width: 100%">
                                             <Ellipsis style="max-width: 100%">
@@ -90,7 +90,7 @@
                                     </j-col>
                                     <j-col :span="12">
                                         <div class="card-item-content-text">
-                                            告警级别
+                                            {{ $t('Configuration.index.426500-2') }}
                                         </div>
                                         <div style="display: flex">
                                             <LevelIcon
@@ -134,8 +134,8 @@
                         <BadgeStatus
                             :text="
                                 slotProps.state?.value === 'enabled'
-                                    ? '正常'
-                                    : '禁用'
+                                    ? $t('Configuration.index.426500-3')
+                                    : $t('Configuration.index.426500-4')
                             "
                             :status="slotProps.state?.value"
                             :statusNames="{
@@ -207,6 +207,9 @@ import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
 import { Modal } from 'ant-design-vue';
 import { useAlarmLevel } from '@/hook';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
@@ -218,7 +221,7 @@ const deleteState = ref(false);
 const alarmRecordNumber = ref(0);
 const columns = [
     {
-        title: '配置名称',
+        title: $t('Configuration.index.426500-5'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -228,7 +231,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '类型',
+        title: $t('Configuration.index.426500-6'),
         dataIndex: 'targetType',
         key: 'targetType',
         scopedSlots: true,
@@ -236,19 +239,19 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '产品',
+                    label: $t('Configuration.index.426500-7'),
                     value: 'product',
                 },
                 {
-                    label: '设备',
+                    label: $t('Configuration.index.426500-8'),
                     value: 'device',
                 },
                 {
-                    label: '组织',
+                    label: $t('Configuration.index.426500-9'),
                     value: 'org',
                 },
                 {
-                    label: '其他',
+                    label: $t('Configuration.index.426500-10'),
                     value: 'other',
                 },
             ],
@@ -256,7 +259,7 @@ const columns = [
         width: 150,
     },
     {
-        title: '关联场景联动',
+        title: $t('Configuration.index.426500-11'),
         dataIndex: 'scene',
         hideInTable:true,
         key: 'scene',
@@ -287,7 +290,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '告警级别',
+        title: $t('Configuration.index.426500-2'),
         dataIndex: 'level',
         key: 'level',
         scopedSlots: true,
@@ -309,7 +312,7 @@ const columns = [
         width: 150,
     },
     {
-        title: '状态',
+        title: $t('Configuration.index.426500-12'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
@@ -317,11 +320,11 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('Configuration.index.426500-3'),
                     value: 'enabled',
                 },
                 {
-                    label: '禁用',
+                    label: $t('Configuration.index.426500-4'),
                     value: 'disabled',
                 },
             ],
@@ -329,7 +332,7 @@ const columns = [
         width: 120,
     },
     {
-        title: '说明',
+        title: $t('Configuration.index.426500-1'),
         dataIndex: 'description',
         key: 'description',
         search: {
@@ -338,7 +341,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '操作',
+        title: $t('Configuration.index.426500-13'),
         key: 'action',
         fixed: 'right',
         width: 170,
@@ -349,10 +352,10 @@ const visible = ref<boolean>(false);
 const current = ref<any>({});
 
 const map = {
-    product: '产品',
-    device: '设备',
-    org: '组织',
-    other: '其他',
+    product: $t('Configuration.index.426500-7'),
+    device: $t('Configuration.index.426500-8'),
+    org: $t('Configuration.index.426500-9'),
+    other: $t('Configuration.index.426500-10'),
 };
 const handleSearch = (e: any) => {
     params.value = e;
@@ -368,13 +371,13 @@ const getActions = (
     const actions = [
         {
             key: 'tigger',
-            text: '手动触发',
+            text: $t('Configuration.index.426500-14'),
             disabled: data?.state?.value === 'disabled',
             tooltip: {
                 title:
                     data?.state?.value === 'disabled'
-                        ? '未启用,不能手动触发'
-                        : '手动触发',
+                        ? $t('Configuration.index.426500-15')
+                        : $t('Configuration.index.426500-14'),
             },
             onClick: () => {
                 visible.value = true;
@@ -384,9 +387,9 @@ const getActions = (
         },
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Configuration.index.426500-16'),
             tooltip: {
-                title: '编辑',
+                title: $t('Configuration.index.426500-16'),
             },
 
             icon: 'EditOutlined',
@@ -400,9 +403,9 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'disabled' ? '禁用' : '启用',
+            text: data.state?.value !== 'disabled' ? $t('Configuration.index.426500-26') : $t('Configuration.index.426500-17'),
             tooltip: {
-                title: data.state?.value !== 'disabled' ? '禁用' : '启用',
+                title: data.state?.value !== 'disabled' ? $t('Configuration.index.426500-26') : $t('Configuration.index.426500-17'),
             },
             icon:
                 data.state?.value !== 'disabled'
@@ -411,8 +414,8 @@ const getActions = (
             popConfirm: {
                 title: `${
                     data.state?.value !== 'disabled'
-                        ? '禁用告警不会影响关联的场景状态，确定要禁用吗'
-                        : '确认启用'
+                        ? $t('Configuration.index.426500-18')
+                        : $t('Configuration.index.426500-19')
                 }?`,
                 onConfirm: async () => {
                     let response = undefined;
@@ -422,10 +425,10 @@ const getActions = (
                         response = await _disable(data.id);
                     }
                     if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Configuration.index.426500-20'));
                         tableRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Configuration.index.426500-21'), 'error');
                     }
                     return;
                 },
@@ -433,13 +436,13 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Configuration.index.426500-22'),
             disabled: data?.state?.value !== 'disabled',
             tooltip: {
                 title:
                     data?.state?.value !== 'disabled'
-                        ? '请先禁用该告警，再删除'
-                        : '删除',
+                        ? $t('Configuration.index.426500-23')
+                        : $t('Configuration.index.426500-22'),
                 placement: 'topLeft',
             },
             onClick: async () => {
@@ -464,8 +467,8 @@ const getActions = (
                 }
                 Modal.confirm({
                     title: alarmRecordNumber.value
-                        ? `删除告警配置将同步删除相关联的${alarmRecordNumber.value}条告警记录,确认删除？`
-                        : '确认删除？',
+                        ? $t('Configuration.index.426500-24', [alarmRecordNumber.value])
+                        : $t('Configuration.index.426500-25'),
                     onOk() {
                         return deleteConfig(data.id);
                     },
@@ -495,10 +498,10 @@ const add = () => {
 const deleteConfig = async (id: any) => {
     const resp = await remove(id);
     if (resp.success) {
-        onlyMessage('操作成功！');
+        onlyMessage($t('Configuration.index.426500-20'));
         refreshTable();
     } else {
-        onlyMessage('操作失败！', 'error');
+        onlyMessage($t('Configuration.index.426500-21'), 'error');
     }
     deleteState.value = false;
 };

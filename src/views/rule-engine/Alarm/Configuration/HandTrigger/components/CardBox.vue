@@ -43,7 +43,7 @@
                             </div>
                             <Ellipsis v-else>
                                 <div class="subTitle">
-                                    说明：{{
+                                    {{ $t('components.CardBox.426524-0') }}{{
                                         value?.description || itemType.tip
                                     }}
                                 </div>
@@ -70,7 +70,7 @@
                     <div class="card-state-content">
                         <BadgeStatus
                             :status="status"
-                            :text="statusText"
+                            :text="statusText|| $t('Save.CardBox.4265310-6')"
                             :statusNames="statusNames"
                         ></BadgeStatus>
                     </div>
@@ -83,7 +83,7 @@
             >
                 <div class="mask-content">
                     <slot name="mask">
-                        <div>该场景为禁用状态,无法触发告警</div>
+                        <div>{{ $t('components.CardBox.426524-1') }}</div>
                     </slot>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                 style="background-color: rgba(0, 0, 0, 0.2)"
             >
                 <a-button style="font-size: 16px" type="link" @click="jumpView"
-                    >无效数据，请重新保存场景</a-button
+                    >{{ $t('components.CardBox.426524-2') }}</a-button
                 >
             </div>
         </div>
@@ -107,6 +107,9 @@ import BranchesTabs from './BranchesTabs.vue';
 import { PropType } from 'vue';
 import { handleActiveBranches, handleGroupAndFilter, typeMap } from '../../Save/Scene/Save/utils';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type EmitProps = {
     (e: 'click'): void;
@@ -123,7 +126,6 @@ const props = defineProps({
     },
     statusText: {
         type: String,
-        default: '正常',
     },
     status: {
         type: [String, Number] as PropType<string | number>,

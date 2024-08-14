@@ -1,9 +1,9 @@
 <template>
     <j-modal
         visible
-        title="选择触发场景"
-        okText="确定"
-        cancelText="取消"
+        :title="$t('HandTrigger.index.426511-0')"
+        :okText="$t('HandTrigger.index.426511-1')"
+        :cancelText="$t('HandTrigger.index.426511-2')"
         :width="1000"
         @cancel="closeModal"
         @ok="saveCorrelation"
@@ -99,10 +99,13 @@ import { queryBindScene } from '@/api/rule-engine/configuration';
 import { _execute } from '@/api/rule-engine/configuration';
 import SceneCardBox from './components/CardBox.vue';
 import { useRequest } from '@/hook';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const columns = [
     {
-        title: '场景名称',
+        title: $t('HandTrigger.index.426511-3'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -139,23 +142,23 @@ const columns = [
         },
     },
     {
-        title: '触发方式',
+        title: $t('HandTrigger.index.426511-4'),
         dataIndex: 'triggerType',
         key: 'triggerType',
     },
     {
-        title: '状态',
+        title: $t('HandTrigger.index.426511-5'),
         dataIndex: 'state',
         key: 'state',
         search: {
             type: 'select',
             options: [
                 {
-                    label: '正常',
+                    label: $t('HandTrigger.index.426511-6'),
                     value: 'started',
                 },
                 {
-                    label: '禁用',
+                    label: $t('HandTrigger.index.426511-7'),
                     value: 'disable',
                 },
             ],
@@ -206,17 +209,17 @@ const params = ref();
 
 const typeMap = new Map();
 typeMap.set('manual', {
-    text: '手动触发',
+    text: $t('HandTrigger.index.426511-8'),
     img: getImage('/scene/scene-hand.png'),
     icon: getImage('/scene/trigger-type-icon/manual.png'),
-    tip: '适用于第三方平台向物联网平台下发指令控制设备',
+    tip: $t('HandTrigger.index.426511-9'),
 });
 
 const _selectedRowKeys = ref([]);
 
 const handleClick = (dt) => {
     if (dt.state?.value === 'disable') {
-        onlyMessage('该场景为禁用状态，无法触发告警', 'error');
+        onlyMessage($t('HandTrigger.index.426511-10'), 'error');
         return;
     }
     if (_selectedRowKeys.value.includes(dt.id)) {
@@ -247,14 +250,14 @@ const saveCorrelation = async () => {
         });
         _execute(scene).then((res) => {
             if (res.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('HandTrigger.index.426511-11'));
                 emit('save');
             } else {
-                onlyMessage('操作失败', 'error');
+                onlyMessage($t('HandTrigger.index.426511-12'), 'error');
             }
         });
     } else {
-        onlyMessage('请选择至少一条数据', 'error');
+        onlyMessage($t('HandTrigger.index.426511-13'), 'error');
     }
 };
 const closeModal = () => {
