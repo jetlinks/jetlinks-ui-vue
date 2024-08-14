@@ -31,7 +31,7 @@ export const saveMetadata = (id: string, data: DeviceMetadata) => server.put(`/d
  * @param id 设备ID
  * @returns 设备详情
  */
-export const detail = (id: string) => server.get<DeviceInstance>(`/device-instance/${id}/detail`)
+export const detail = (id: string, _hideError?: any) => server.get<DeviceInstance>(`/device-instance/${id}/detail`, {}, {} , _hideError)
 
 /**
  * 查询数据
@@ -666,17 +666,17 @@ export const queryProductThreshold = (productId: string, propertyId: string,hidd
 
 /**
  * 阈值限制-删除产品物模型的阈值
- * @param productId 
- * @param propertyId 
- * @returns 
+ * @param productId
+ * @param propertyId
+ * @returns
  */
 export const deleteProductThreshold = (productId:string,propertyId:string,data:any) => server.remove(`/message/preprocessor/product/${productId}/property/${propertyId}`,data)
 
 /**
  * 阈值限制-删除产品物模型的阈值
- * @param productId 
- * @param propertyId 
- * @returns 
+ * @param productId
+ * @param propertyId
+ * @returns
  */
 export const deleteDeviceThreshold = (productId:string,deviceId:string,propertyId:string,data:any) => server.remove(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`,data)
 
