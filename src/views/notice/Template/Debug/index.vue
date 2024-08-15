@@ -51,30 +51,13 @@
                         <template v-else>
                             <j-form-item
                                 :name="['templateDetailTable', index, 'value']"
-                                :rules="
-                                    ['toUser', 'toParty', 'toTag','departmentIdList','userIdList'].includes(
-                                        record.id,
-                                    )
-                                        ? [
-                                              {
-                                                  required: record.required,
-                                                  message: '该字段为必填字段',
-                                              },
-                                              {
-                                                  validator:
-                                                      validateSelectReceiving,
-                                                  trigger: 'change',
-                                              },
-                                              ...record.otherRules,
-                                          ]
-                                        : [
-                                              {
-                                                  required: record.required,
-                                                  message: '该字段为必填字段',
-                                              },
-                                              ...record.otherRules,
-                                          ]
-                                "
+                                :rules="[
+                                    {
+                                        required: record.required,
+                                        message: '该字段为必填字段',
+                                    },
+                                    ...record.otherRules,
+                                ]"
                             >
                                 <template
                                     v-if="
@@ -198,17 +181,6 @@ const formData = ref<{
 const formRef = ref();
 const btnLoading = ref(false);
 
-/**
- * 校验收信必需选中其中一个
- */
-const validateSelectReceiving = (rule: any, value: any) => {
-    return formData.value.templateDetailTable.some((i: any) => {
-        return (i.id === 'toUser' || 'toParty' || 'toTag' || 'departmentIdList' || 'departmentIdList') && i.value;
-    })
-        ? Promise.resolve()
-        : Promise.reject('至少选择一种收信方式');
-};
-
 const getConfigList = async () => {
     const params = {
         terms: [
@@ -257,6 +229,24 @@ const getTemplateDetail = async () => {
 };
 
 const handleOk = () => {
+    const filterData = formData.value.templateDetailTable.filter((item: any) =>
+        ['user', 'org', 'tag', 'departmentIdList', 'departmentIdList'].includes(
+            item.id,
+        ),
+    );
+    const pass = filterData.length
+        ? filterData.some((i: any) => {
+              return i.value;
+          })
+        : true;
+    if (!pass && props.data.type === 'dingTalk') {
+        onlyMessage('收信人，收信人部门至少填写一个', 'warning');
+        return;
+    }
+    if (!pass && props.data.type === 'weixin') {
+        onlyMessage('收信人，收信人部门，收信人标签至少填写一个', 'warning');
+        return;
+    }
     formRef.value
         .validate()
         .then(async () => {

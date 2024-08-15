@@ -231,7 +231,7 @@ const onChange = (val: any, type: any, index: number, options?: string) => {
 
 const onSave = () =>
     new Promise((resolve, reject) => {
-        const pass = props.variableDefinitions
+        const filterData = props.variableDefinitions
             .filter((item) =>
                 [
                     'user',
@@ -241,9 +241,10 @@ const onSave = () =>
                     'departmentIdList',
                 ].includes(getType(item)),
             )
+        const pass = filterData.length ? filterData
             .some((item) => {
                 return modelRef[item.id];
-            });
+            }) : true;
         if (!pass && props.notify.notifyType === 'weixin') {
             onlyMessage(
                 '收信人，收信人部门，收信人标签至少填写一个',
