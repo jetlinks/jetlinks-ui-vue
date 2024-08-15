@@ -159,32 +159,30 @@
                                         </j-tooltip>
                                     </template>
                                     <j-input
-                                        placeholder="请输入RTP IP"
-                                        style="width: 50%"
+                                        placeholder="请输入IP"
                                         v-model:value="
                                             formData.configuration.rtpIp
                                         "
                                     />
                                 </j-form-item>
                             </j-col>
-                            <j-col :span="12" class="item">
-                                <j-row :gutter="[16, 0]">
-                                    <j-col :span="20" v-if="!checked">
-                                        <j-form-item
-                                            class="form-item"
-                                            :name="['configuration', 'rtpPort']"
-                                            :rules="[
-                                                {
-                                                    required: true,
-                                                    message: '请输入端口',
-                                                },
-                                            ]"
+                            <j-col :span="8" v-if="!checked">
+                                <j-form-item
+                                    class="form-item"
+                                    :name="['configuration', 'rtpPort']"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入RTP端口',
+                                        },
+                                    ]"
+                                >
+                                    <template #label>
+                                        RTP 端口
+                                        <j-tooltip
+                                            title="视频设备将流推送到该IP地址对应的RTP端口下，部分设备仅支持IP地址，建议全是用IP地址"
                                         >
-                                            <template #label>
-                                                RTP 端口
-                                                <j-tooltip
-                                                    title="视频设备将流推送到该IP地址对应的RTP端口下，部分设备仅支持IP地址，建议全是用IP地址"
-                                                >
+                                           
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
                                                         style="margin-left: 2px"
@@ -192,38 +190,38 @@
                                                 </j-tooltip>
                                             </template>
 
-                                            <j-input-number
-                                                style="width: 100%"
-                                                :min="1"
-                                                :max="65535"
-                                                :precision="0"
-                                                placeholder="请输入端口"
-                                                v-model:value="
-                                                    formData.configuration
-                                                        .rtpPort
-                                                "
-                                            />
-                                        </j-form-item>
-                                    </j-col>
-                                    <j-col :span="8" v-if="checked">
-                                        <j-form-item
-                                            class="form-item"
-                                            :name="[
-                                                'configuration',
-                                                'dynamicRtpPortRange0',
-                                            ]"
-                                            :rules="[
-                                                {
-                                                    required: true,
-                                                    message: '请输入起始端口',
-                                                },
-                                            ]"
+                                    <j-input-number
+                                        style="width: 100%"
+                                        :min="1"
+                                        :max="65535"
+                                        :precision="0"
+                                        placeholder="请输入RTP端口"
+                                        v-model:value="
+                                            formData.configuration.rtpPort
+                                        "
+                                    />
+                                </j-form-item>
+                            </j-col>
+                            <j-col :span="4" v-if="checked">
+                                <j-form-item
+                                    class="form-item"
+                                    :name="[
+                                        'configuration',
+                                        'dynamicRtpPortRange0',
+                                    ]"
+                                    :rules="[
+                                        {
+                                            required: true,
+                                            message: '请输入起始端口',
+                                        },
+                                    ]"
+                                >
+                                    <template #label>
+                                        RTP 端口
+                                        <j-tooltip
+                                            title="视频设备将流推送到该IP地址对应的RTP端口下，部分设备仅支持IP地址，建议全是用IP地址"
                                         >
-                                            <template #label>
-                                                RTP 端口
-                                                <j-tooltip
-                                                    title="视频设备将流推送到该IP地址对应的RTP端口下，部分设备仅支持IP地址，建议全是用IP地址"
-                                                >
+                                           
                                                     <AIcon
                                                         type="QuestionCircleOutlined"
                                                         style="margin-left: 2px"
