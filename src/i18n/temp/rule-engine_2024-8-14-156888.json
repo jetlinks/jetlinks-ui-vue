@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Device.WriteProperty.5425838-0": "请输入修改值",
+		"Device.WriteProperty.5425838-1": "请选择属性",
+		"Device.WriteProperty.5425838-2": "定时调用所选属性",
+		"Device.WriteProperty.5425838-3": "修改{0}",
+		"Device.WriteProperty.5425838-4": "请选择属性值",
+		"Device.WriteProperty.5425838-5": "请输入{0}值",
+		"Device.WriteProperty.5425838-6": "请输入属性值"
+	},
+	"en": {
+		"Device.WriteProperty.5425838-0": "Please enter the modification value",
+		"Device.WriteProperty.5425838-1": "Please select attributes",
+		"Device.WriteProperty.5425838-2": "Regularly call the selected attribute",
+		"Device.WriteProperty.5425838-3": "Modify {0}",
+		"Device.WriteProperty.5425838-4": "Please select attribute value",
+		"Device.WriteProperty.5425838-5": "Please enter the value of {0}",
+		"Device.WriteProperty.5425838-6": "Please enter the attribute value"
+	}
+}

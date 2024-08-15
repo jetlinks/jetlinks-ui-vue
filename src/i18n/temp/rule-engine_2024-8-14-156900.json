@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Terms.TermsItem.5425725-0": "该数据已发生变更，请重新配置",
+		"Terms.TermsItem.5425725-1": "请选择参数",
+		"Terms.TermsItem.5425725-2": "请选择操作符",
+		"Terms.TermsItem.5425725-3": "请选择或输入参数值"
+	},
+	"en": {
+		"Terms.TermsItem.5425725-0": "This data has been changed, please reconfigure",
+		"Terms.TermsItem.5425725-1": "Please select parameters",
+		"Terms.TermsItem.5425725-2": "Please select an operator",
+		"Terms.TermsItem.5425725-3": "Please select or enter parameter values"
+	}
+}

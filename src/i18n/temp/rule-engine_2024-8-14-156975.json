@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"variableItem.BuildIn.5425868-0": "手动输入",
+		"variableItem.BuildIn.5425868-1": "内置参数",
+		"variableItem.BuildIn.5425868-2": "请选择参数",
+		"variableItem.BuildIn.5425868-3": "请输入{0}"
+	},
+	"en": {
+		"variableItem.BuildIn.5425868-0": "Manual input",
+		"variableItem.BuildIn.5425868-1": "Built in parameters",
+		"variableItem.BuildIn.5425868-2": "Please select parameters",
+		"variableItem.BuildIn.5425868-3": "Please enter {0}"
+	}
+}

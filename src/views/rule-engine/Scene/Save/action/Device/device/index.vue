@@ -3,9 +3,9 @@
         <j-form :layout="'vertical'" ref="formRef" :model="modelRef">
             <j-form-item
                 name="selector"
-                label="选择方式"
+                :label="$t('device.index.5425999-0')"
                 v-show="!(list.length === 1)"
-                :rules="[{ required: true, message: '请选择方式' }]"
+                :rules="[{ required: true, message: $t('device.index.5425999-1') }]"
             >
                 <TopCard
                     :typeList="list"
@@ -21,9 +21,9 @@
             />
             <j-form-item
                 v-else-if="modelRef.selector === 'relation'"
-                label="关系"
+                :label="$t('device.index.5425999-2')"
                 name="selectorValues"
-                :rules="[{ required: true, message: '请选择关系' }]"
+                :rules="[{ required: true, message: $t('device.index.5425999-3') }]"
             >
                 <RelationSelect
                     @change="onRelationChange"
@@ -33,7 +33,7 @@
             <j-form-item
                 v-else-if="modelRef.selector === 'tag' && isTags"
                 name="selectorValues"
-                :rules="[{ required: true, message: '请选择标签' }]"
+                :rules="[{ required: true, message: $t('device.index.5425999-4') }]"
             >
                 <Tag
                     v-model:value="modelRef.selectorValues"
@@ -44,14 +44,14 @@
             <j-form-item
                 v-else
                 name="upperKey"
-                label="变量"
-                :rules="[{ required: true, message: '请选择' }]"
+                :label="$t('device.index.5425999-5')"
+                :rules="[{ required: true, message: $t('device.index.5425999-6') }]"
             >
                 <j-tree-select
                     style="width: 100%; height: 100%"
                     :tree-data="builtInList"
                     v-model:value="modelRef.upperKey"
-                    placeholder="请选择参数"
+                    :placeholder="$t('device.index.5425999-7')"
                     @select="onVariableChange"
                     :fieldNames="{ label: 'name', value: 'id' }"
                 >
@@ -82,6 +82,9 @@ import { getParams } from '../../../util';
 import { handleParamsData } from '../../../components/Terms/util';
 import _ from 'lodash-es';
 import { TypeMap } from './util';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     values: {
@@ -315,10 +318,10 @@ const onTagChange = (val: any[], arr: any[]) => {
         const _type =
             _index !== 0 && _index !== (arr || []).length && i.type
                 ? i.type === 'and'
-                    ? '并且'
-                    : '或者'
+                    ? $t('device.index.5425999-8')
+                    : $t('device.index.5425999-9')
                 : '';
-        return `${_type}${i.name}为${i.value}`;
+        return `${_type}${i.name}${$t('device.index.5425999-10')}${i.value}`;
     });
     emits('save', unref(modelRef), { tagName: tagName.join('') });
 };
@@ -379,7 +382,7 @@ const onFormSave = () => {
             .then(async (_data: any) => {
                 if (modelRef.selector === 'fixed') {
                     if (!modelRef?.selectorValues?.[0]?.value) {
-                        onlyMessage('请选择设备', 'error');
+                        onlyMessage($t('device.index.5425999-11'), 'error');
                         reject(false);
                     } else {
                         resolve({

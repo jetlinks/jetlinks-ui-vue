@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Device.DeviceSelect.5425846-0": "自定义",
+		"Device.DeviceSelect.5425846-1": "自定义选择当前产品下的任意设备",
+		"Device.DeviceSelect.5425846-2": "全部",
+		"Device.DeviceSelect.5425846-3": "产品下的所有设备",
+		"Device.DeviceSelect.5425846-4": "按组织",
+		"Device.DeviceSelect.5425846-5": "选择产品下归属于具体组织的设备"
+	},
+	"en": {
+		"Device.DeviceSelect.5425846-0": "custom",
+		"Device.DeviceSelect.5425846-1": "Customize the selection of any device under the current product",
+		"Device.DeviceSelect.5425846-2": "all",
+		"Device.DeviceSelect.5425846-3": "All devices under the product",
+		"Device.DeviceSelect.5425846-4": "By organization",
+		"Device.DeviceSelect.5425846-5": "Select equipment belonging to a specific organization under the product"
+	}
+}

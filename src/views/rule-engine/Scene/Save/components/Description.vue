@@ -4,12 +4,12 @@
       <template #icon>
         <AIcon type="PlusOutlined"/>
       </template>
-      场景说明
+      {{ $t('components.Description.5425835-0') }}
     </a-button>
     <div class="scene-description-content" v-if="showEditBtn">
-      <a-input v-model:value="myValue" show-count :maxlength="200" placeholder='请输入说明' style="flex: 1 1 0"/>
-      <a-button @click="cancel">取消</a-button>
-      <a-button type="primary" @click="save">确认</a-button>
+      <a-input v-model:value="myValue" show-count :maxlength="200" :placeholder="$t('components.Description.5425835-1')" style="flex: 1 1 0"/>
+      <a-button @click="cancel">{{ $t('components.Description.5425835-2') }}</a-button>
+      <a-button type="primary" @click="save">{{ $t('components.Description.5425835-3') }}</a-button>
     </div>
     <div class="scene-description-content " v-if="showDetail">
       <div style="max-width: calc(100% - 32px);">
@@ -27,7 +27,9 @@
 </template>
 
 <script setup name="Description">
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const props = defineProps({
   value: {
     type: String,

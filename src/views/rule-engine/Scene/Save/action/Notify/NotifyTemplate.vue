@@ -53,14 +53,14 @@
                         <j-row>
                             <j-col :span="12">
                                 <div class="card-item-content-text">
-                                    通知方式
+                                    {{ $t('Notify.NotifyTemplate.5425861-0') }}
                                 </div>
                                 <div>
                                     {{ getMethodTxt(slotProps.type) }}
                                 </div>
                             </j-col>
                             <j-col :span="12">
-                                <div class="card-item-content-text">说明</div>
+                                <div class="card-item-content-text">{{ $t('Notify.NotifyTemplate.5425861-1') }}</div>
                                 <Ellipsis>
                                     {{ slotProps.description }}
                                 </Ellipsis>
@@ -76,6 +76,9 @@
 <script lang="ts" setup>
 import TemplateApi from '@/api/notice/template';
 import { MSG_TYPE, NOTICE_METHOD } from '@/views/notice/const';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     notifierId: {
         type: String,
@@ -107,7 +110,7 @@ const tableRef = ref<any>();
 
 const columns = [
     {
-        title: '名称',
+        title: $t('Notify.NotifyTemplate.5425861-2'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -123,7 +126,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Notify.NotifyTemplate.5425861-1'),
         dataIndex: 'description',
         key: 'description',
         search: {

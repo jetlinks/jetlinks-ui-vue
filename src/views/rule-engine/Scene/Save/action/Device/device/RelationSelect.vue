@@ -1,6 +1,6 @@
 <template>
     <j-select
-        placeholder="请选择关系"
+        :placeholder="$t('device.RelationSelect.5425998-0')"
         :options="relationList"
         show-search
         :value="value ? value[0]?.value?.relation : undefined"
@@ -10,6 +10,9 @@
 
 <script lang="ts" setup>
 import NoticeApi from '@/api/notice/config';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     value: {
         type: Array,

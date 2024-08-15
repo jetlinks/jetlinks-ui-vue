@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"device.Tag.5425997-0": "标签选择",
+		"device.Tag.5425997-1": "并且",
+		"device.Tag.5425997-2": "或者",
+		"device.Tag.5425997-3": "请选择标签",
+		"device.Tag.5425997-4": "是",
+		"device.Tag.5425997-5": "否",
+		"device.Tag.5425997-6": "标签"
+	},
+	"en": {
+		"device.Tag.5425997-0": "Tag selection",
+		"device.Tag.5425997-1": "and",
+		"device.Tag.5425997-2": "or",
+		"device.Tag.5425997-3": "Please select a label",
+		"device.Tag.5425997-4": "true",
+		"device.Tag.5425997-5": "false",
+		"device.Tag.5425997-6": "Label"
+	}
+}

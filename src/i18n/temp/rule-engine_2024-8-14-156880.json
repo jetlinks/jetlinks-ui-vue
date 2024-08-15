@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Device.ReadProperties.5425841-0": "请选择属性",
+		"Device.ReadProperties.5425841-1": "定时读取所选属性值",
+		"Device.ReadProperties.5425841-2": "等{0}个属性",
+		"Device.ReadProperties.5425841-3": "读取 {0}"
+	},
+	"en": {
+		"Device.ReadProperties.5425841-0": "Please select attributes",
+		"Device.ReadProperties.5425841-1": "Regularly read the selected attribute values",
+		"Device.ReadProperties.5425841-2": "etc.,a total of {0} attributes",
+		"Device.ReadProperties.5425841-3": "Read {0}"
+	}
+}

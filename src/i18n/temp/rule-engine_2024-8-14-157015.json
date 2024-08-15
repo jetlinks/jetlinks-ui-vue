@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"TriggerAlarm.AlarmModal.5425858-0": "新增关联告警",
+		"TriggerAlarm.AlarmModal.5425858-1": "操作成功！",
+		"TriggerAlarm.AlarmModal.5425858-2": "类型",
+		"TriggerAlarm.AlarmModal.5425858-3": "配置名称",
+		"TriggerAlarm.AlarmModal.5425858-4": "状态",
+		"TriggerAlarm.AlarmModal.5425858-5": "正常",
+		"TriggerAlarm.AlarmModal.5425858-6": "禁用",
+		"TriggerAlarm.AlarmModal.5425858-7": "等级",
+		"TriggerAlarm.AlarmModal.5425858-8": "请选择告警"
+	},
+	"en": {
+		"TriggerAlarm.AlarmModal.5425858-0": "Add associated alarm",
+		"TriggerAlarm.AlarmModal.5425858-1": "Operation successful!",
+		"TriggerAlarm.AlarmModal.5425858-2": "Type",
+		"TriggerAlarm.AlarmModal.5425858-3": "Configuration Name",
+		"TriggerAlarm.AlarmModal.5425858-4": "State",
+		"TriggerAlarm.AlarmModal.5425858-5": "enabled",
+		"TriggerAlarm.AlarmModal.5425858-6": "disabled",
+		"TriggerAlarm.AlarmModal.5425858-7": "Grade",
+		"TriggerAlarm.AlarmModal.5425858-8": "Please select alarm"
+	}
+}

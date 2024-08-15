@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Device.util.5425839-0": "设备上线",
+		"Device.util.5425839-1": "设备离线",
+		"Device.util.5425839-2": "事件上报",
+		"Device.util.5425839-3": "属性上报",
+		"Device.util.5425839-4": "读取属性",
+		"Device.util.5425839-5": "修改属性",
+		"Device.util.5425839-6": "功能调用"
+	},
+	"en": {
+		"Device.util.5425839-0": "Equipment online",
+		"Device.util.5425839-1": "Device offline",
+		"Device.util.5425839-2": "Event reporting",
+		"Device.util.5425839-3": "Attribute reporting",
+		"Device.util.5425839-4": "Eead attribute",
+		"Device.util.5425839-5": "Modify attribute",
+		"Device.util.5425839-6": "Function call"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"FunctionCall.FunctionCall.5425833-0": "请按照json格式输入",
+		"FunctionCall.FunctionCall.5425833-1": "参数名称",
+		"FunctionCall.FunctionCall.5425833-2": "类型",
+		"FunctionCall.FunctionCall.5425833-3": "值"
+	},
+	"en": {
+		"FunctionCall.FunctionCall.5425833-0": "Please input in JSON format",
+		"FunctionCall.FunctionCall.5425833-1": "Parameter Name",
+		"FunctionCall.FunctionCall.5425833-2": "Type",
+		"FunctionCall.FunctionCall.5425833-3": "Value"
+	}
+}

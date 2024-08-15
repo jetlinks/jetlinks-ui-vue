@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Device.index.5425975-0": "执行动作",
+		"Device.index.5425975-1": "选择产品",
+		"Device.index.5425975-2": "选择设备",
+		"Device.index.5425975-3": "取消",
+		"Device.index.5425975-4": "上一步",
+		"Device.index.5425975-5": "下一步",
+		"Device.index.5425975-6": "确定",
+		"Device.index.5425975-7": "触发设备",
+		"Device.index.5425975-8": "执行",
+		"Device.index.5425975-9": "读取",
+		"Device.index.5425975-10": "设置",
+		"Device.index.5425975-11": "请选择产品",
+		"Device.index.5425975-12": "请选择设备"
+	},
+	"en": {
+		"Device.index.5425975-0": "Execute action",
+		"Device.index.5425975-1": "Select product",
+		"Device.index.5425975-2": "Select device",
+		"Device.index.5425975-3": "Cancel",
+		"Device.index.5425975-4": "Previous step",
+		"Device.index.5425975-5": "Next step",
+		"Device.index.5425975-6": "Confirm",
+		"Device.index.5425975-7": "Trigger device",
+		"Device.index.5425975-8": "Execute",
+		"Device.index.5425975-9": "Read",
+		"Device.index.5425975-10": "Set up",
+		"Device.index.5425975-11": "Please select a product",
+		"Device.index.5425975-12": "Please select a device"
+	}
+}

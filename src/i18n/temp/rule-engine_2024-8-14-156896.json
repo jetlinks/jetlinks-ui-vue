@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Terms.ParamsItem.5425727-0": "并且",
+		"Terms.ParamsItem.5425727-1": "或者",
+		"Terms.ParamsItem.5425727-2": "请选择参数",
+		"Terms.ParamsItem.5425727-3": "操作符",
+		"Terms.ParamsItem.5425727-4": "参数值",
+		"Terms.ParamsItem.5425727-5": "多个值以英文逗号隔开",
+		"Terms.ParamsItem.5425727-6": "确认删除？",
+		"Terms.ParamsItem.5425727-7": "手动输入",
+		"Terms.ParamsItem.5425727-8": "指标值",
+		"Terms.ParamsItem.5425727-9": "是",
+		"Terms.ParamsItem.5425727-10": "否"
+	},
+	"en": {
+		"Terms.ParamsItem.5425727-0": "and",
+		"Terms.ParamsItem.5425727-1": "or",
+		"Terms.ParamsItem.5425727-2": "Please select parameters",
+		"Terms.ParamsItem.5425727-3": "Operator",
+		"Terms.ParamsItem.5425727-4": "Parameter values",
+		"Terms.ParamsItem.5425727-5": "Multiple values separated by commas in English",
+		"Terms.ParamsItem.5425727-6": "Are you sure to delete?",
+		"Terms.ParamsItem.5425727-7": "Manual input",
+		"Terms.ParamsItem.5425727-8": "Indicator value",
+		"Terms.ParamsItem.5425727-9": "true",
+		"Terms.ParamsItem.5425727-10": "false"
+	}
+}

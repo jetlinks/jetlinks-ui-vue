@@ -1,10 +1,10 @@
 <template>
   <div :class='WarpClass'>
     <div class='actions-terms-title'>
-      {{ isFirst ? '当' : '否则' }}
+      {{ isFirst ? $t('Terms.Branches.5425717-0') : $t('Terms.Branches.5425717-1') }}
     </div>
     <div :class='optionsClass'>
-        <ConfirmModal title="确认删除？" v-if='!isFirst' :onConfirm="onDelete" className="terms-params-delete danger show">
+        <ConfirmModal :title="$t('Terms.Branches.5425717-2')" v-if='!isFirst' :onConfirm="onDelete" className="terms-params-delete danger show">
           <AIcon type='DeleteOutlined' />
         </ConfirmModal>
       <div
@@ -12,7 +12,7 @@
         @mouseover='mouseover'
         @mouseout='mouseout'
       >
-        <ConfirmModal title="该操作将清空过滤条件，确认删除？" :show='showDelete && whenData.length' :onConfirm="onDeleteAll" className="terms-params-delete">
+        <ConfirmModal title="{{ $t('Terms.Branches.5425717-3') }}" :show='showDelete && whenData.length' :onConfirm="onDeleteAll" className="terms-params-delete">
           <AIcon type='CloseOutlined' />
         </ConfirmModal>
         <div class='actions-terms-list-content'>
@@ -37,7 +37,7 @@
           <div v-else style="display: flex; padding-top: 10px;">
             <span class='when-add' @click='addWhen' :style='{ padding: isFirst ? "16px 0" : 0 }'>
               <AIcon type='PlusCircleOutlined' style='padding: 4px' />
-              添加过滤条件
+              {{ $t('Terms.Branches.5425717-4') }}
             </span>
           </div>
         </div>
@@ -67,6 +67,9 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import Action from '../../action/index.vue'
 import {randomNumber, randomString} from '@/utils/utils'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore()
 const { data: FormModel } = storeToRefs(sceneStore)
@@ -199,10 +202,10 @@ const optionsClass = computed(() => {
 const rules = [{
   validator(_: string, value: any) {
     if (!value || (value && !value.length)) {
-      return Promise.reject('至少配置一个执行动作')
+      return Promise.reject($t('Terms.Branches.5425717-5'))
     } else {
       const isActions = value.some((item: any) => item.actions && item.actions.length)
-      return isActions ? Promise.resolve() : Promise.reject('至少配置一个执行动作');
+      return isActions ? Promise.resolve() : Promise.reject($t('Terms.Branches.5425717-5'));
     }
     return Promise.resolve();
   }

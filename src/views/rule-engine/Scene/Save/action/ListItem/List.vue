@@ -16,7 +16,7 @@
         <div class="actions-add-list" :class="{ 'border': props.actions.length }">
             <j-button type="primary" ghost style="width: 100%" @click="onAdd">
                 <template #icon><AIcon type="PlusOutlined" /></template>
-                添加执行动作
+                {{ $t('ListItem.List.5425977-0') }}
             </j-button>
         </div>
         <Modal
@@ -38,6 +38,9 @@ import Modal from '../Modal/index.vue';
 import Item from './Item.vue';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);

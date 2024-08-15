@@ -1,7 +1,7 @@
 <template>
   <j-modal
     visible
-    title="新增关联告警"
+    :title="$t('TriggerAlarm.AlarmModal.5425858-0')"
     :width="1000"
     :keyboard="false"
     :mask="false"
@@ -89,6 +89,9 @@ import {queryAlarmPage} from '@/api/rule-engine/scene';
 import { useAlarmLevel, useRequest } from '@/hook'
 import {bindScene, getTargetTypes} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   id: {
@@ -117,7 +120,7 @@ const { run, loading } = useRequest(bindScene, {
   immediate: false,
   onSuccess() {
     emit('ok')
-    onlyMessage('操作成功！')
+    onlyMessage($t('TriggerAlarm.AlarmModal.5425858-1'))
   }
 })
 
@@ -125,7 +128,7 @@ const { levelMap, levelList } = useAlarmLevel()
 
 const columns = [
   {
-    title: '类型',
+    title: $t('TriggerAlarm.AlarmModal.5425858-2'),
     dataIndex: 'targetType',
     search: {
       type: 'select',
@@ -142,7 +145,7 @@ const columns = [
     }
   },
   {
-    title: '配置名称',
+    title: $t('TriggerAlarm.AlarmModal.5425858-3'),
     dataIndex: 'name',
     key: 'name',
     search: {
@@ -152,7 +155,7 @@ const columns = [
     ellipsis: true,
   },
   {
-    title: '状态',
+    title: $t('TriggerAlarm.AlarmModal.5425858-4'),
     dataIndex: 'state',
     key: 'state',
     scopedSlots: true,
@@ -160,11 +163,11 @@ const columns = [
       type: 'select',
       options: [
         {
-          label: '正常',
+          label: $t('TriggerAlarm.AlarmModal.5425858-5'),
           value: 'enabled',
         },
         {
-          label: '禁用',
+          label: $t('TriggerAlarm.AlarmModal.5425858-6'),
           value: 'disabled',
         },
       ],
@@ -172,7 +175,7 @@ const columns = [
     width: 90,
   },
   {
-    title: '等级',
+    title: $t('TriggerAlarm.AlarmModal.5425858-7'),
     dataIndex: 'level',
     key: 'level',
     scopedSlots: true,
@@ -221,7 +224,7 @@ const onOk = async () => {
       }
     }))
   } else {
-    onlyMessage('请选择告警', 'warning')
+    onlyMessage($t('TriggerAlarm.AlarmModal.5425858-8'), 'warning')
   }
 
 }

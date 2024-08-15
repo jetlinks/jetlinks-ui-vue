@@ -1,6 +1,6 @@
 <template>
   <div :class='["trigger-options-content", isAdd ? "is-add" : ""]'>
-    <span v-if='!isAdd'> 点击配置设备触发 </span>
+    <span v-if='!isAdd'> {{ $t('components.Title.5425715-0') }} </span>
     <template v-else>
       <div class='center-item'>
         <AIcon v-if='options.selectorIcon' :type='options.selectorIcon' class='icon-padding-right' />
@@ -40,6 +40,9 @@
 </template>
 
 <script setup lang='ts' name='DeviceTitle'>
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   options: {

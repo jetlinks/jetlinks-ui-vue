@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"components.TriggerWay.5425713-0": "设备触发",
+		"components.TriggerWay.5425713-1": "适用于设备数据或行为满足触发条件时，执行指定的动作",
+		"components.TriggerWay.5425713-2": "手动触发",
+		"components.TriggerWay.5425713-3": "适用于第三方平台向物联网平台下发指令控制设备",
+		"components.TriggerWay.5425713-4": "定时触发",
+		"components.TriggerWay.5425713-5": "适用于定期执行固定任务"
+	},
+	"en": {
+		"components.TriggerWay.5425713-0": "Device triggered",
+		"components.TriggerWay.5425713-1": "Applicable to executing specified actions when device data or behavior meets triggering conditions",
+		"components.TriggerWay.5425713-2": "Manually triggered",
+		"components.TriggerWay.5425713-3": "Applicable to third-party platforms issuing instructions to IoT platforms to control devices",
+		"components.TriggerWay.5425713-4": "Timed trigger",
+		"components.TriggerWay.5425713-5": "Suitable for regularly executing fixed tasks"
+	}
+}

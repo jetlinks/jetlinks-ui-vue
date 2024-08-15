@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Device.AddModal.5425849-0": "触发规则",
+		"Device.AddModal.5425849-1": "选择产品",
+		"Device.AddModal.5425849-2": "选择设备",
+		"Device.AddModal.5425849-3": "触发类型",
+		"Device.AddModal.5425849-4": "取消",
+		"Device.AddModal.5425849-5": "上一步",
+		"Device.AddModal.5425849-6": "下一步",
+		"Device.AddModal.5425849-7": "确定",
+		"Device.AddModal.5425849-8": "等{0}台设备",
+		"Device.AddModal.5425849-9": "的",
+		"Device.AddModal.5425849-10": "所有的",
+		"Device.AddModal.5425849-11": "上线",
+		"Device.AddModal.5425849-12": "离线",
+		"Device.AddModal.5425849-13": "属性上报",
+		"Device.AddModal.5425849-14": "请选择产品",
+		"Device.AddModal.5425849-15": "请选择设备",
+		"Device.AddModal.5425849-16": "请选择部门"
+	},
+	"en": {
+		"Device.AddModal.5425849-0": "Trigger rules",
+		"Device.AddModal.5425849-1": "Select product",
+		"Device.AddModal.5425849-2": "Select device",
+		"Device.AddModal.5425849-3": "Trigger type",
+		"Device.AddModal.5425849-4": "Cancel",
+		"Device.AddModal.5425849-5": "Previous step",
+		"Device.AddModal.5425849-6": "Next step",
+		"Device.AddModal.5425849-7": "Confirm",
+		"Device.AddModal.5425849-8": "etc.,a total of {0} devices",
+		"Device.AddModal.5425849-9": "'s",
+		"Device.AddModal.5425849-10": "all",
+		"Device.AddModal.5425849-11": "on-line",
+		"Device.AddModal.5425849-12": "off-line",
+		"Device.AddModal.5425849-13": "Attribute reporting",
+		"Device.AddModal.5425849-14": "Please select a product",
+		"Device.AddModal.5425849-15": "Please select a device",
+		"Device.AddModal.5425849-16": "Please select department"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.Description.5425835-0": "场景说明",
+		"components.Description.5425835-1": "请输入说明",
+		"components.Description.5425835-2": "取消",
+		"components.Description.5425835-3": "确认"
+	},
+	"en": {
+		"components.Description.5425835-0": "Scenario description",
+		"components.Description.5425835-1": "Please enter instructions",
+		"components.Description.5425835-2": "Cancel",
+		"components.Description.5425835-3": "Confirm"
+	}
+}

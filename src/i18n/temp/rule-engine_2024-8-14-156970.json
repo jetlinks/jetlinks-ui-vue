@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Modal.index.5425969-0": "类型",
+		"Modal.index.5425969-1": "请选择类型",
+		"Modal.index.5425969-2": "告警类型执行动作涉及绑定告警配置，不支持修改为其它类型",
+		"Modal.index.5425969-3": "设备输出",
+		"Modal.index.5425969-4": "配置设备调用功能、读取属性、设置属性规则",
+		"Modal.index.5425969-5": "消息通知",
+		"Modal.index.5425969-6": "配置向指定用户发邮件、钉钉、微信、短信等通知",
+		"Modal.index.5425969-7": "延迟执行",
+		"Modal.index.5425969-8": "等待一段时间后，再执行后续动作",
+		"Modal.index.5425969-9": "触发告警",
+		"Modal.index.5425969-10": "配置触发告警规则，需配合“告警配置”使用",
+		"Modal.index.5425969-11": "解除告警",
+		"Modal.index.5425969-12": "配置解除告警规则，需配合“告警配置”使用"
+	},
+	"en": {
+		"Modal.index.5425969-0": "Type",
+		"Modal.index.5425969-1": "Please select type",
+		"Modal.index.5425969-2": "The execution action of alarm type involves binding alarm configuration and cannot be modified to other types",
+		"Modal.index.5425969-3": "Device output",
+		"Modal.index.5425969-4": "Configure device calling function, read properties, and set property rules",
+		"Modal.index.5425969-5": "Message notification",
+		"Modal.index.5425969-6": "Configure notifications to be sent to designated users via email, DingTalk, WeChat, SMS, etc",
+		"Modal.index.5425969-7": "Delayed execution",
+		"Modal.index.5425969-8": "Wait for a period of time before executing subsequent actions",
+		"Modal.index.5425969-9": "Trigger alarm",
+		"Modal.index.5425969-10": "Configure trigger alarm rules, which need to be used in conjunction with \"alarm configuration\"",
+		"Modal.index.5425969-11": "Release the alarm",
+		"Modal.index.5425969-12": "Configure the rules for clearing alarms, which need to be used in conjunction with \"Alarm Configuration\""
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"device.util.5425995-0": "自定义",
+		"device.util.5425995-1": "自定义选择当前产品下的任意设备",
+		"device.util.5425995-2": "按关系",
+		"device.util.5425995-3": "选择与触发设备具有相同关系的设备",
+		"device.util.5425995-4": "按标签",
+		"device.util.5425995-5": "按标签选择产品下具有特定标签的设备",
+		"device.util.5425995-6": "按变量",
+		"device.util.5425995-7": "选择设备ID为上游变量值的设备"
+	},
+	"en": {
+		"device.util.5425995-0": "Custom",
+		"device.util.5425995-1": "Customize the selection of any device under the current product",
+		"device.util.5425995-2": "By relationship",
+		"device.util.5425995-3": "Select devices with the same relationship as the triggering device",
+		"device.util.5425995-4": "By label",
+		"device.util.5425995-5": "Select devices with specific labels under the product by label",
+		"device.util.5425995-6": "By variable",
+		"device.util.5425995-7": "Select the device with device ID as the upstream variable value"
+	}
+}

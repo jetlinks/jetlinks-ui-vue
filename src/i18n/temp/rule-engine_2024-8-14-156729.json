@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Manual.index.5425710-0": "触发规则",
+		"Manual.index.5425710-1": "系统在接收到手动触发指令时，触发场景",
+		"Manual.index.5425710-2": "执行动作",
+		"Manual.index.5425710-3": "至少配置一个执行动作"
+	},
+	"en": {
+		"Manual.index.5425710-0": "Trigger rules",
+		"Manual.index.5425710-1": "When the system receives a manual trigger command, it triggers the scene",
+		"Manual.index.5425710-2": "Execute action",
+		"Manual.index.5425710-3": "Configure at least one execution action"
+	}
+}

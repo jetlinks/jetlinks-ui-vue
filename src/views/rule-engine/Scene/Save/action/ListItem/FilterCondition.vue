@@ -3,8 +3,8 @@
         <div v-if="!isFirst" class="term-type-warp">
             <DropdownButton
                 :options="[
-                    { label: '并且', value: 'and' },
-                    { label: '或者', value: 'or' },
+                    { label: $t('ListItem.FilterCondition.5425981-0'), value: 'and' },
+                    { label: $t('ListItem.FilterCondition.5425981-1'), value: 'or' },
                 ]"
                 type="type"
                 v-model:value="paramsValue.type"
@@ -22,7 +22,7 @@
                 type="column"
                 value-name="id"
                 label-name="fullName"
-                placeholder="请选择参数"
+                :placeholder="$t('ListItem.FilterCondition.5425981-2')"
                 v-model:value="paramsValue.column"
                 component="treeSelect"
                 @select="columnSelect"
@@ -31,7 +31,7 @@
                 v-if="showAlarm"
                 :options="alarmOptions"
                 type="alarm"
-                placeholder="请选择告警配置"
+                :placeholder="$t('ListItem.FilterCondition.5425981-3')"
                 v-model:value="paramsValue.alarm"
                 @select="alarmSelect"
             />
@@ -40,14 +40,14 @@
                 type="termType"
                 value-name="id"
                 label-name="name"
-                placeholder="操作符"
+                :placeholder="$t('ListItem.FilterCondition.5425981-4')"
                 v-model:value="paramsValue.termType"
                 @select="termsTypeSelect"
             />
             <DoubleParamsDropdown
                 v-if="showDouble"
                 icon="icon-canshu"
-                placeholder="参数值"
+                :placeholder="$t('ListItem.FilterCondition.5425981-5')"
                 value-name="id"
                 label-name="name"
                 :options="valueOptions"
@@ -60,7 +60,7 @@
             <ParamsDropdown
                 v-else
                 icon="icon-canshu"
-                placeholder="参数值"
+                :placeholder="$t('ListItem.FilterCondition.5425981-5')"
                 value-name="id"
                 label-name="name"
                 :options="showAlarmSelect ? alarmOptions : valueOptions"
@@ -71,7 +71,7 @@
                 @select="valueSelect"
             />
             <ConfirmModal
-                title="确认删除？"
+                :title="$t('ListItem.FilterCondition.5425981-6')"
                 :onConfirm="onDelete"
                 :show="showDelete"
                 className="button-delete"
@@ -105,6 +105,9 @@ import { timeTypeKeys } from '@/views/rule-engine/Scene/Save/components/Terms/ut
 import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
 import {queryAlarmList} from '@/api/rule-engine/scene';
 import {analysisFilterTerms, handleFilterTerms, useCheckFilter } from "@/views/rule-engine/Scene/Save/action/ListItem/util";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 
 const sceneStore = useSceneStore();
@@ -197,8 +200,8 @@ const showAlarmKey = ['lastAlarmTime', 'firstAlarm', 'alarmTime', 'level']
 const showAlarmSelectKey = ['alarmConfigId', 'alarmName']
 
 const tabsOptions = ref<Array<TabsOption>>([
-    { label: '手动输入', key: 'fixed', component: 'string' },
-    { label: '内置参数', key: 'upper', component: 'tree' },
+    { label: $t('ListItem.FilterCondition.5425981-7'), key: 'fixed', component: 'string' },
+    { label: $t('ListItem.FilterCondition.5425981-8'), key: 'upper', component: 'tree' },
 ]);
 
 const alarmOptions = ref([])
@@ -255,8 +258,8 @@ const handOptionByColumn = (option: any) => {
                     label: item.name,
                     value: item.id,
                 })) || [
-                    { label: '是', name: '是', value: 'true', id: 'true' },
-                    { label: '否', name: '否', value: 'false', id: 'false' },
+                    { label: $t('ListItem.FilterCondition.5425981-9'), name: $t('ListItem.FilterCondition.5425981-9'), value: 'true', id: 'true' },
+                    { label: $t('ListItem.FilterCondition.5425981-10'), name: $t('ListItem.FilterCondition.5425981-10'), value: 'false', id: 'false' },
                 ];
             }
         } else if (_type === 'enum') {

@@ -1,6 +1,6 @@
 <template>
   <j-modal
-      title='触发规则'
+      :title="$t('Timer.AddModal.542576-0')"
       visible
       :width='820'
       :maskClosable="false"
@@ -20,6 +20,9 @@ import type { OperationTimer } from '@/views/rule-engine/Scene/typings'
 import { PropType} from "vue";
 import {handleTimerOptions} from "@/views/rule-engine/Scene/Save/components/Timer/util";
 import {cloneDeep} from "lodash-es";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'cancel'): void
