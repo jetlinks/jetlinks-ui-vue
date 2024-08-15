@@ -195,7 +195,7 @@
                                         :min="1"
                                         :max="65535"
                                         :precision="0"
-                                        placeholder="请输入端口"
+                                        placeholder="请输入RTP端口"
                                         v-model:value="
                                             formData.configuration.rtpPort
                                         "
