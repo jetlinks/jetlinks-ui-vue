@@ -23,7 +23,7 @@ import notice from '@/api/notice/config';
 
 const iconMap = new Map();
 iconMap.set('dingTalk', getImage('/notice/dingtalk.png'));
-iconMap.set('weixin', getImage('/notice/wechat.png'));
+iconMap.set('weixin', getImage('/notice/weixin-corp.png'));
 iconMap.set('email', getImage('/notice/email.png'));
 iconMap.set('voice', getImage('/notice/voice.png'));
 iconMap.set('sms', getImage('/notice/sms.png'));
