@@ -241,7 +241,6 @@ const onSave = () =>
                 getType(item),
             ),
         );
-        console.log(modelRef);
         const pass = filterData.length
             ? filterData.some((item) => {
                 
