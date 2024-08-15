@@ -189,9 +189,9 @@ const validatorConfig = (value, _isObject = false) => {
         return Promise.reject('请选择元素类型');
     }
 
-    if (_isObject && value.type === 'object' && !value.properties?.length) {
-        return Promise.reject('请添加参数');
-    }
+    // if (_isObject && value.type === 'object' && !value.properties?.length) {
+    //     return Promise.reject('请添加参数');
+    // }
 
     if (value.type === 'date' && !value.format) {
         return Promise.reject('请选择时间格式');
