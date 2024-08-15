@@ -51,13 +51,30 @@
                         <template v-else>
                             <j-form-item
                                 :name="['templateDetailTable', index, 'value']"
-                                :rules="[
-                                    {
-                                        required: record.required,
-                                        message: '该字段为必填字段',
-                                    },
-                                    ...record.otherRules,
-                                ]"
+                                :rules="
+                                    ['toUser', 'toParty', 'toTag','departmentIdList','userIdList'].includes(
+                                        record.id,
+                                    )
+                                        ? [
+                                              {
+                                                  required: record.required,
+                                                  message: '该字段为必填字段',
+                                              },
+                                              {
+                                                  validator:
+                                                      validateSelectReceiving,
+                                                  trigger: 'change',
+                                              },
+                                              ...record.otherRules,
+                                          ]
+                                        : [
+                                              {
+                                                  required: record.required,
+                                                  message: '该字段为必填字段',
+                                              },
+                                              ...record.otherRules,
+                                          ]
+                                "
                             >
                                 <template
                                     v-if="
@@ -142,62 +159,6 @@ const _vis = computed({
  * 获取通知模板
  */
 const configList = ref<BindConfig[]>([]);
-const getConfigList = async () => {
-    const params = {
-        terms: [
-            { column: 'type', value: props.data.type },
-            { column: 'provider', value: props.data.provider },
-        ],
-    };
-    const { result } = await TemplateApi.getConfig(params);
-    configList.value = result;
-    // 设置默认配置
-    if (configList.value.length) formData.value.configId = props.data.configId;
-};
-
-watch(
-    () => _vis.value,
-    (val) => {
-        if (val) {
-            getConfigList();
-            getTemplateDetail();
-        }
-    },
-);
-
-/**
- * 获取模板详情
- */
-const getTemplateDetail = async () => {
-    const { result } = await TemplateApi.getTemplateDetail(props.data.id);
-    formData.value.templateDetailTable = result.variableDefinitions.map(
-        (m: any) => ({
-            ...m,
-            type: m.expands?.businessType ? m.expands.businessType : m.type,
-            value: undefined,
-            // 电话字段校验
-            otherRules:
-                m.id === 'calledNumber' || m.id === 'phoneNumber'
-                    ? [
-                          {
-                              max: 64,
-                              message: '最多可输入64个字符',
-                              trigger: 'change',
-                          },
-                          {
-                              trigger: 'change',
-                              validator(_rule: Rule, value: string) {
-                                  if (!value) return Promise.resolve();
-                                  if (!phoneRegEx(value))
-                                      return Promise.reject('请输入有效号码');
-                                  return Promise.resolve();
-                              },
-                          },
-                      ]
-                    : [],
-        }),
-    );
-};
 
 const columns = [
     {
@@ -236,6 +197,65 @@ const formData = ref<{
  */
 const formRef = ref();
 const btnLoading = ref(false);
+
+/**
+ * 校验收信必需选中其中一个
+ */
+const validateSelectReceiving = (rule: any, value: any) => {
+    return formData.value.templateDetailTable.some((i: any) => {
+        return (i.id === 'toUser' || 'toParty' || 'toTag' || 'departmentIdList' || 'departmentIdList') && i.value;
+    })
+        ? Promise.resolve()
+        : Promise.reject('至少选择一种收信方式');
+};
+
+const getConfigList = async () => {
+    const params = {
+        terms: [
+            { column: 'type', value: props.data.type },
+            { column: 'provider', value: props.data.provider },
+        ],
+    };
+    const { result } = await TemplateApi.getConfig(params);
+    configList.value = result;
+    // 设置默认配置
+    if (configList.value.length) formData.value.configId = props.data.configId;
+};
+
+/**
+ * 获取模板详情
+ */
+const getTemplateDetail = async () => {
+    const { result } = await TemplateApi.getTemplateDetail(props.data.id);
+    formData.value.templateDetailTable = result.variableDefinitions.map(
+        (m: any) => ({
+            ...m,
+            type: m.expands?.businessType ? m.expands.businessType : m.type,
+            value: undefined,
+            // 电话字段校验
+            otherRules:
+                m.id === 'calledNumber' || m.id === 'phoneNumber'
+                    ? [
+                          {
+                              max: 64,
+                              message: '最多可输入64个字符',
+                              trigger: 'change',
+                          },
+                          {
+                              trigger: 'change',
+                              validator(_rule: Rule, value: string) {
+                                  if (!value) return Promise.resolve();
+                                  if (!phoneRegEx(value))
+                                      return Promise.reject('请输入有效号码');
+                                  return Promise.resolve();
+                              },
+                          },
+                      ]
+                    : [],
+        }),
+    );
+};
+
 const handleOk = () => {
     formRef.value
         .validate()
@@ -267,6 +287,16 @@ const handleCancel = () => {
     formRef.value.resetFields();
     formData.value.templateDetailTable = [];
 };
+
+watch(
+    () => _vis.value,
+    (val) => {
+        if (val) {
+            getConfigList();
+            getTemplateDetail();
+        }
+    },
+);
 </script>
 
 <style lang="less" scoped>
