@@ -44,6 +44,7 @@
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 :value="relationData"
                 showSearch
+                allowClear
                 treeNodeFilterProp="title"
             >
                 <template #title="{ key, username, title }">
@@ -72,6 +73,7 @@
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 :value="relationData"
                 showSearch
+                allowClear
                 treeNodeFilterProp="title"
             >
                 <template #title="{ key, username, title }">
@@ -97,6 +99,7 @@
                 placeholder="请选择收信人"
                 :value="value?.value"
                 showSearch
+                allowClear
                 @change="
                     (val, option) =>
                         onChange(

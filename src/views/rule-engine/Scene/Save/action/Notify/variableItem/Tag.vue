@@ -4,6 +4,7 @@
         v-model:value="keys"
         placeholder="请选择标签"
         :options="tagsList"
+        allowClear
         @change="onChange"
     />
 </template>
