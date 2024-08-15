@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Issue.index.925642-0": "下发设备",
+		"Issue.index.925642-1": "离线设备无法进行设备模板下发",
+		"Issue.index.925642-2": "产品名称",
+		"Issue.index.925642-3": "设备名称",
+		"Issue.index.925642-4": "注册时间",
+		"Issue.index.925642-5": "状态",
+		"Issue.index.925642-6": "禁用",
+		"Issue.index.925642-7": "离线",
+		"Issue.index.925642-8": "在线",
+		"Issue.index.925642-9": "请选择设备"
+	},
+	"en": {
+		"Issue.index.925642-0": "Distribute equipment",
+		"Issue.index.925642-1": "Offline devices are unable to distribute device templates",
+		"Issue.index.925642-2": "Product Name",
+		"Issue.index.925642-3": "Equipment name",
+		"Issue.index.925642-4": "Registration time",
+		"Issue.index.925642-5": "State",
+		"Issue.index.925642-6": "disabled",
+		"Issue.index.925642-7": "off-line",
+		"Issue.index.925642-8": "on-line",
+		"Issue.index.925642-9": "Please select a device"
+	}
+}

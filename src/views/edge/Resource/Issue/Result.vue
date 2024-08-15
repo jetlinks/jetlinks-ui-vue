@@ -1,23 +1,23 @@
 <template>
     <j-modal
         visible
-        title="下发结果"
+        :title="$t('Issue.Result.925641-0')"
         :width="900"
         @ok="emit('close')"
         @cancel="emit('close')"
     >
         <j-row>
             <j-col :span="8">
-                <div>成功：{{ count }}</div>
+                <div>{{ $t('Issue.Result.925641-1') }}{{ count }}</div>
                 <div>
-                    失败：{{ countErr }}
-                    <j-button @click="_download(errMessage || '', '下发失败原因')" v-if="errMessage.length" type="link"
-                        >下载</j-button
+                    {{ $t('Issue.Result.925641-2') }}{{ countErr }}
+                    <j-button @click="_download(errMessage || '', $t('Issue.Result.925641-3'))" v-if="errMessage.length" type="link"
+                        >{{ $t('Issue.Result.925641-4') }}</j-button
                     >
                 </div>
             </j-col>
-            <j-col :span="8">下发设备数量：{{ list.length || 0 }}</j-col>
-            <j-col :span="8">已下发数量：{{ countErr + count }}</j-col>
+            <j-col :span="8">{{ $t('Issue.Result.925641-5') }}{{ list.length || 0 }}</j-col>
+            <j-col :span="8">{{ $t('Issue.Result.925641-6') }}{{ countErr + count }}</j-col>
         </j-row>
         <div v-if="!flag">
             <j-textarea :rows="10" :value="JSON.stringify(errMessage)" />
@@ -30,6 +30,9 @@ import { LocalStore } from '@/utils/comm';
 import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import dayjs from 'dayjs';
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
