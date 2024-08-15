@@ -31,12 +31,12 @@
         ><template #createTime="slotProps">
             {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
-        <template #thingId="slotProps">
+        <template #thingName="slotProps">
             <Ellipsis>
                 设备ID：
                 <span
                     class="deviceId"
-                    >{{ slotProps.thingId }}</span
+                    >{{ slotProps.thingName }}</span
                 ></Ellipsis
             >
         </template>
@@ -92,9 +92,9 @@ const columns = props.goal === 'device' ? [
         scopedSlots: true,
     },
     {
-        title: '告警源',
-        dataIndex: 'thingId',
-        key: 'thingId',
+        title: '数据源',
+        dataIndex: 'thingName',
+        key: 'thingName',
         scopedSlots: true,
         search: {
             type: 'string',

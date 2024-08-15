@@ -142,62 +142,6 @@ const _vis = computed({
  * 获取通知模板
  */
 const configList = ref<BindConfig[]>([]);
-const getConfigList = async () => {
-    const params = {
-        terms: [
-            { column: 'type', value: props.data.type },
-            { column: 'provider', value: props.data.provider },
-        ],
-    };
-    const { result } = await TemplateApi.getConfig(params);
-    configList.value = result;
-    // 设置默认配置
-    if (configList.value.length) formData.value.configId = props.data.configId;
-};
-
-watch(
-    () => _vis.value,
-    (val) => {
-        if (val) {
-            getConfigList();
-            getTemplateDetail();
-        }
-    },
-);
-
-/**
- * 获取模板详情
- */
-const getTemplateDetail = async () => {
-    const { result } = await TemplateApi.getTemplateDetail(props.data.id);
-    formData.value.templateDetailTable = result.variableDefinitions.map(
-        (m: any) => ({
-            ...m,
-            type: m.expands?.businessType ? m.expands.businessType : m.type,
-            value: undefined,
-            // 电话字段校验
-            otherRules:
-                m.id === 'calledNumber' || m.id === 'phoneNumber'
-                    ? [
-                          {
-                              max: 64,
-                              message: '最多可输入64个字符',
-                              trigger: 'change',
-                          },
-                          {
-                              trigger: 'change',
-                              validator(_rule: Rule, value: string) {
-                                  if (!value) return Promise.resolve();
-                                  if (!phoneRegEx(value))
-                                      return Promise.reject('请输入有效号码');
-                                  return Promise.resolve();
-                              },
-                          },
-                      ]
-                    : [],
-        }),
-    );
-};
 
 const columns = [
     {
@@ -236,7 +180,73 @@ const formData = ref<{
  */
 const formRef = ref();
 const btnLoading = ref(false);
+
+const getConfigList = async () => {
+    const params = {
+        terms: [
+            { column: 'type', value: props.data.type },
+            { column: 'provider', value: props.data.provider },
+        ],
+    };
+    const { result } = await TemplateApi.getConfig(params);
+    configList.value = result;
+    // 设置默认配置
+    if (configList.value.length) formData.value.configId = props.data.configId;
+};
+
+/**
+ * 获取模板详情
+ */
+const getTemplateDetail = async () => {
+    const { result } = await TemplateApi.getTemplateDetail(props.data.id);
+    formData.value.templateDetailTable = result.variableDefinitions.map(
+        (m: any) => ({
+            ...m,
+            type: m.expands?.businessType ? m.expands.businessType : m.type,
+            value: undefined,
+            // 电话字段校验
+            otherRules:
+                m.id === 'calledNumber' || m.id === 'phoneNumber'
+                    ? [
+                          {
+                              max: 64,
+                              message: '最多可输入64个字符',
+                              trigger: 'change',
+                          },
+                          {
+                              trigger: 'change',
+                              validator(_rule: Rule, value: string) {
+                                  if (!value) return Promise.resolve();
+                                  if (!phoneRegEx(value))
+                                      return Promise.reject('请输入有效号码');
+                                  return Promise.resolve();
+                              },
+                          },
+                      ]
+                    : [],
+        }),
+    );
+};
+
 const handleOk = () => {
+    const filterData = formData.value.templateDetailTable.filter((item: any) =>
+        ['user', 'org', 'tag', 'departmentIdList', 'departmentIdList'].includes(
+            item.id,
+        ),
+    );
+    const pass = filterData.length
+        ? filterData.some((i: any) => {
+              return i.value;
+          })
+        : true;
+    if (!pass && props.data.type === 'dingTalk') {
+        onlyMessage('收信人，收信人部门至少填写一个', 'warning');
+        return;
+    }
+    if (!pass && props.data.type === 'weixin') {
+        onlyMessage('收信人，收信人部门，收信人标签至少填写一个', 'warning');
+        return;
+    }
     formRef.value
         .validate()
         .then(async () => {
@@ -267,6 +277,16 @@ const handleCancel = () => {
     formRef.value.resetFields();
     formData.value.templateDetailTable = [];
 };
+
+watch(
+    () => _vis.value,
+    (val) => {
+        if (val) {
+            getConfigList();
+            getTemplateDetail();
+        }
+    },
+);
 </script>
 
 <style lang="less" scoped>
