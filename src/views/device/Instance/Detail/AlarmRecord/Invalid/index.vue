@@ -33,7 +33,7 @@
         </template>
         <template #thingName="slotProps">
             <Ellipsis>
-                设备ID：
+                设备名称：
                 <span
                     class="deviceId"
                     >{{ slotProps.thingName }}</span
