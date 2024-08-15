@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Dashboard.tool.368780-0": "异常通道",
+		"Dashboard.tool.368780-1": "通道数量",
+		"Dashboard.tool.368780-2": "异常采集器",
+		"Dashboard.tool.368780-3": "采集器数量",
+		"Dashboard.tool.368780-4": "异常点位",
+		"Dashboard.tool.368780-5": "采集点位"
+	},
+	"en": {
+		"Dashboard.tool.368780-0": "Abnormal channel",
+		"Dashboard.tool.368780-1": "Number of channels",
+		"Dashboard.tool.368780-2": "Abnormal collector",
+		"Dashboard.tool.368780-3": "Number of collectors",
+		"Dashboard.tool.368780-4": "Abnormal point location",
+		"Dashboard.tool.368780-5": "Collection point location"
+	}
+}

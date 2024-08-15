@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.Card.368795-0": "点位数据量",
+		"components.Card.368795-1": "最近1小时",
+		"components.Card.368795-2": "今日",
+		"components.Card.368795-3": "近一周",
+		"components.Card.368795-4": "消息量"
+	},
+	"en": {
+		"components.Card.368795-0": "Point data volume",
+		"components.Card.368795-1": "Last hour",
+		"components.Card.368795-2": "Today",
+		"components.Card.368795-3": "Last week",
+		"components.Card.368795-4": "Message volume"
+	}
+}
