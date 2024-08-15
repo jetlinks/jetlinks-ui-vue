@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"Instance.index.052151-0": "新增",
+		"Instance.index.052151-1": "正常",
+		"Instance.index.052151-2": "禁用",
+		"Instance.index.052151-3": "名称",
+		"Instance.index.052151-4": "状态",
+		"Instance.index.052151-5": "说明",
+		"Instance.index.052151-6": "操作",
+		"Instance.index.052151-7": "编辑",
+		"Instance.index.052151-8": "查看",
+		"Instance.index.052151-9": "启用",
+		"Instance.index.052151-10": "确认启用",
+		"Instance.index.052151-11": "操作成功！",
+		"Instance.index.052151-12": "操作失败！",
+		"Instance.index.052151-13": "删除",
+		"Instance.index.052151-14": "请先禁用再删除",
+		"Instance.index.052151-15": "确认删除?",
+		"Instance.index.052151-16": "禁用",
+		"Instance.index.052151-17": "确认禁用"
+	},
+	"en": {
+		"Instance.index.052151-0": "Add",
+		"Instance.index.052151-1": "enabled",
+		"Instance.index.052151-2": "disabled",
+		"Instance.index.052151-3": "Name",
+		"Instance.index.052151-4": "State",
+		"Instance.index.052151-5": "Explain",
+		"Instance.index.052151-6": "Operation",
+		"Instance.index.052151-7": "Edit",
+		"Instance.index.052151-8": "Show",
+		"Instance.index.052151-9": "Enable",
+		"Instance.index.052151-10": "Confirm activation",
+		"Instance.index.052151-11": "Operation successful!",
+		"Instance.index.052151-12": "Operation failed!",
+		"Instance.index.052151-13": "Delete",
+		"Instance.index.052151-14": "Please disable before deleting",
+		"Instance.index.052151-15": "Are you sure to delete?",
+		"Instance.index.052151-16": "Disable",
+		"Instance.index.052151-17": "Confirm to disable"
+	}
+}

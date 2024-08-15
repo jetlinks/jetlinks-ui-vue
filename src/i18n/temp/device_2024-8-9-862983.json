@@ -23,7 +23,7 @@
 		"Instance.index.628798-20": "查看",
 		"Instance.index.628798-21": "编辑",
 		"Instance.index.628798-22": "启用",
-		"Instance.index.628798-23": "确认禁用?",
+		"Instance.index.628798-23": "确认禁用",
 		"Instance.index.628798-24": "操作成功！",
 		"Instance.index.628798-25": "操作失败！",
 		"Instance.index.628798-26": "删除",
@@ -39,7 +39,7 @@
 		"Instance.index.628798-36": "已启用的设备无法删除，确认删除选中的禁用状态设备？",
 		"Instance.index.628798-37": "批量禁用设备",
 		"Instance.index.628798-38": "确认禁用选中设备?",
-		"Instance.index.628798-39": "确认启用?",
+		"Instance.index.628798-39": "确认启用",
 		"Instance.index.628798-40": "禁用"
 	},
 	"en": {
@@ -66,7 +66,7 @@
 		"Instance.index.628798-20": "Show",
 		"Instance.index.628798-21": "Edit",
 		"Instance.index.628798-22": "Enable",
-		"Instance.index.628798-23": "Are you sure to disable?",
+		"Instance.index.628798-23": "Are you sure to disable",
 		"Instance.index.628798-24": "Operation successful!",
 		"Instance.index.628798-25": "Operation failed!",
 		"Instance.index.628798-26": "Delete",
@@ -82,7 +82,7 @@
 		"Instance.index.628798-36": "The enabled device cannot be deleted. Are you sure to delete the selected disabled device?",
 		"Instance.index.628798-37": "Batch disable devices",
 		"Instance.index.628798-38": "Are you sure to disable the selected device?",
-		"Instance.index.628798-39": "Confirm activation?",
+		"Instance.index.628798-39": "Confirm activation",
 		"Instance.index.628798-40": "Disable"
 	}
 }

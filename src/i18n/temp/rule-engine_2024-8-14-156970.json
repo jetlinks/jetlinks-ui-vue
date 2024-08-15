@@ -26,7 +26,7 @@
 		"Modal.index.5425969-8": "Wait for a period of time before executing subsequent actions",
 		"Modal.index.5425969-9": "Trigger alarm",
 		"Modal.index.5425969-10": "Configure trigger alarm rules, which need to be used in conjunction with \"alarm configuration\"",
-		"Modal.index.5425969-11": "Release the alarm",
+		"Modal.index.5425969-11": "Clear Alarm",
 		"Modal.index.5425969-12": "Configure the rules for clearing alarms, which need to be used in conjunction with \"Alarm Configuration\""
 	}
 }

@@ -16,7 +16,7 @@
 		"Product.index.0645615-13": "导出",
 		"Product.index.0645615-14": "产品",
 		"Product.index.0645615-15": "启用",
-		"Product.index.0645615-16": "确认禁用?",
+		"Product.index.0645615-16": "确认禁用",
 		"Product.index.0645615-17": "操作成功！",
 		"Product.index.0645615-18": "操作失败！",
 		"Product.index.0645615-19": "删除",
@@ -35,7 +35,7 @@
 		"Product.index.0645615-32": "产品分类",
 		"Product.index.0645615-33": "所属组织",
 		"Product.index.0645615-34": "禁用",
-		"Product.index.0645615-35": "确认启用?"
+		"Product.index.0645615-35": "确认启用"
 	},
 	"en": {
 		"Product.index.0645615-0": "Add",
@@ -54,7 +54,7 @@
 		"Product.index.0645615-13": "Export",
 		"Product.index.0645615-14": "product",
 		"Product.index.0645615-15": "Enable",
-		"Product.index.0645615-16": "Confirm to disable?",
+		"Product.index.0645615-16": "Confirm to disable",
 		"Product.index.0645615-17": "Operation successful!",
 		"Product.index.0645615-18": "Operation failed!",
 		"Product.index.0645615-19": "Delete",
@@ -73,6 +73,6 @@
 		"Product.index.0645615-32": "Product classification",
 		"Product.index.0645615-33": "Belonging organization",
 		"Product.index.0645615-34": "Disable",
-		"Product.index.0645615-35": "Confirm activation?"
+		"Product.index.0645615-35": "Confirm activation"
 	}
 }

@@ -9,7 +9,7 @@
           show-search
           mode='multiple'
           max-tag-count='responsive'
-          :placeholder='$t('Device.ReadProperties.5425841-0')'
+          :placeholder="$t('Device.ReadProperties.5425841-0')"
           style='width: 100%'
           v-model:value='readProperties'
           :options='properties'

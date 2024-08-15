@@ -26,7 +26,7 @@
           :name="['branches', 0, 'then']"
         >
           <template #label>
-            <TitleComponent :data='$t('Timer.index.542575-2')' style='font-size: 14px;' />
+            <TitleComponent :data="$t('Timer.index.542575-2')" style='font-size: 14px;' />
           </template>
           <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"

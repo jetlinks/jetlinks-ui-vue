@@ -64,7 +64,7 @@
                     v-if="formData.mode === 'push' || formData.mode === 'pull'"
                     ><j-form-item :label="$t('Save.index.378844-14')" name="timeoutSeconds">
                         <j-input-number
-                            :placeholder="$t('Save.index.378844-15')({{ $t('Save.index.378844-13') }})"
+                            :placeholder="$t('Save.index.378844-15')"
                             style="width: 100%"
                             :min="1"
                             :max="99999"
