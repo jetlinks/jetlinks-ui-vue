@@ -5,7 +5,7 @@
         :name="['trigger', 'timer']"
       >
         <template #label>
-          <TitleComponent data='触发规则' style='font-size: 14px;' />
+          <TitleComponent :data="$t('Timer.index.542575-0')" style='font-size: 14px;' />
         </template>
         <AddButton
             style='width: 100%'
@@ -13,7 +13,7 @@
         >
           <template #extra>
             <span style="padding-right: 10px;">
-              系统时间到达
+              {{ $t('Timer.index.542575-1') }}
             </span>
           </template>
           <Title :options='data.options.trigger' />
@@ -26,7 +26,7 @@
           :name="['branches', 0, 'then']"
         >
           <template #label>
-            <TitleComponent data='执行动作' style='font-size: 14px;' />
+            <TitleComponent :data='$t('Timer.index.542575-2')' style='font-size: 14px;' />
           </template>
           <Action
             :thenOptions="data.branches ? data?.branches[0].then : []"
@@ -51,6 +51,9 @@ import AddModel from './AddModal.vue'
 import AddButton from '../components/AddButton.vue'
 import Title from './Title.vue'
 import type { OperationTimer, BranchesThen } from '@/views/rule-engine/Scene/typings'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -59,7 +62,7 @@ const visible = ref(false)
 const rules = [{
   validator(_: any, v: any) {
     if (!v) {
-      return Promise.reject(new Error('请配置定时触发规则'));
+      return Promise.reject(new Error($t('Timer.index.542575-3')));
     }
     return Promise.resolve();
   },
@@ -68,7 +71,7 @@ const rules = [{
 const actionRules = [{
   validator(_: any, v?: BranchesThen[]) {
     if (!v || (v && !v.length) || !v.some(item => item.actions && item.actions.length)) {
-      return Promise.reject('至少配置一个执行动作');
+      return Promise.reject($t('Timer.index.542575-4'));
     }
     return Promise.resolve();
   },

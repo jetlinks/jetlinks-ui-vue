@@ -22,19 +22,19 @@
                             v-if="data?.executor === 'alarm'"
                         >
                             <template v-if="data?.alarm?.mode === 'trigger'">
-                                满足条件后将触发<j-button
+                                {{ $t('ListItem.Item.5425978-0') }}<j-button
                                     style="padding: 0"
                                     type="link"
                                     @click.stop="triggerVisible = true"
-                                    >关联告警</j-button
+                                    >{{ $t('ListItem.Item.5425978-1') }}</j-button
                                 >
                             </template>
                             <template v-else>
-                                满足条件后将解除<j-button
+                                {{ $t('ListItem.Item.5425978-2') }}<j-button
                                     style="padding: 0"
                                     type="link"
                                     @click.stop="triggerVisible = true"
-                                    >关联告警</j-button
+                                    >{{ $t('ListItem.Item.5425978-1') }}</j-button
                                 >
                             </template>
                         </div>
@@ -53,10 +53,10 @@
                                     "
                                 >
                                     <div>
-                                        通过<span class="notify-text-highlight"
-                                            >群机器人消息</span
+                                        {{ $t('ListItem.Item.5425978-3') }}<span class="notify-text-highlight"
+                                            >{{ $t('ListItem.Item.5425978-4') }}</span
                                         >
-                                        发送
+                                        {{ $t('ListItem.Item.5425978-5') }}
                                         <span class="notify-text-highlight">
                                             {{
                                                 options?.templateName ||
@@ -67,7 +67,7 @@
                                 </template>
                                 <template v-else>
                                     <div>
-                                        通过
+                                        {{ $t('ListItem.Item.5425978-3') }}
                                         <span class="notify-text-highlight">
                                             <img
                                                 style="width: 18px"
@@ -78,11 +78,11 @@
                                                     )
                                                 "
                                             />
-                                            钉钉
+                                            {{ $t('ListItem.Item.5425978-6') }}
                                         </span>
                                         {{
                                             options?.sendTo || options?.orgName
-                                                ? '向'
+                                                ? $t('ListItem.Item.5425978-7')
                                                 : ''
                                         }}<span class="notify-text-highlight">{{
                                             options?.sendTo || ''
@@ -90,7 +90,7 @@
                                         <span class="notify-text-highlight">{{
                                             options?.orgName || ''
                                         }}</span>
-                                        发送
+                                        {{ $t('ListItem.Item.5425978-5') }}
                                         <span class="notify-text-highlight">
                                             {{
                                                 options?.templateName ||
@@ -106,7 +106,7 @@
                                 "
                             >
                                 <div>
-                                    通过
+                                    {{ $t('ListItem.Item.5425978-3') }}
                                     <span class="notify-text-highlight">
                                         <img
                                             style="width: 18px"
@@ -116,13 +116,13 @@
                                                 )
                                             "
                                         />
-                                        微信
+                                        {{ $t('ListItem.Item.5425978-8') }}
                                     </span>
                                     {{
                                         options?.sendTo ||
                                         options?.orgName ||
                                         options?.tagName
-                                            ? '向'
+                                            ? $t('ListItem.Item.5425978-7')
                                             : ''
                                     }}<span class="notify-text-highlight">{{
                                         options?.sendTo || ''
@@ -133,7 +133,7 @@
                                     <span class="notify-text-highlight">{{
                                         options?.tagName || ''
                                     }}</span>
-                                    发送
+                                    {{ $t('ListItem.Item.5425978-5') }}
                                     <span class="notify-text-highlight">
                                         {{
                                             options?.templateName ||
@@ -146,7 +146,7 @@
                                 v-else-if="data?.notify?.notifyType === 'email'"
                             >
                                 <div style="display: flex">
-                                    通过
+                                    {{ $t('ListItem.Item.5425978-3') }}
                                     <span class="notify-text-highlight">
                                         <img
                                             style="width: 18px"
@@ -156,15 +156,15 @@
                                                 )
                                             "
                                         />
-                                        邮件
+                                        {{ $t('ListItem.Item.5425978-9') }}
                                     </span>
-                                    {{ options?.sendTo ? '向' : ''
+                                    {{ options?.sendTo ? $t('ListItem.Item.5425978-7') : ''
                                     }}<span class="notify-text-highlight">
                                         <Ellipsis style="max-width: 400px">
                                             {{ options?.sendTo || '' }}
                                         </Ellipsis>
                                     </span>
-                                    发送
+                                    {{ $t('ListItem.Item.5425978-5') }}
                                     <span class="notify-text-highlight">
                                         {{
                                             options?.templateName ||
@@ -177,7 +177,7 @@
                                 v-else-if="data?.notify?.notifyType === 'voice'"
                             >
                                 <div>
-                                    通过
+                                    {{ $t('ListItem.Item.5425978-3') }}
                                     <span class="notify-text-highlight">
                                         <img
                                             style="width: 18px"
@@ -187,13 +187,13 @@
                                                 )
                                             "
                                         />
-                                        语音
+                                        {{ $t('ListItem.Item.5425978-10') }}
                                     </span>
-                                    {{ options?.sendTo ? '向' : ''
+                                    {{ options?.sendTo ? $t('ListItem.Item.5425978-7') : ''
                                     }}<span class="notify-text-highlight">{{
                                         options?.sendTo || ''
                                     }}</span>
-                                    发送
+                                    {{ $t('ListItem.Item.5425978-5') }}
                                     <span class="notify-text-highlight">
                                         {{
                                             options?.templateName ||
@@ -206,7 +206,7 @@
                                 v-else-if="data?.notify?.notifyType === 'sms'"
                             >
                                 <div>
-                                    通过
+                                    {{ $t('ListItem.Item.5425978-3') }}
                                     <span class="notify-text-highlight">
                                         <img
                                             style="width: 18px"
@@ -216,13 +216,13 @@
                                                 )
                                             "
                                         />
-                                        短信
+                                        {{ $t('ListItem.Item.5425978-11') }}
                                     </span>
-                                    {{ options?.sendTo ? '向' : ''
+                                    {{ options?.sendTo ? $t('ListItem.Item.5425978-7') : ''
                                     }}<span class="notify-text-highlight">{{
                                         options?.sendTo || ''
                                     }}</span>
-                                    发送
+                                    {{ $t('ListItem.Item.5425978-5') }}
                                     <span class="notify-text-highlight">
                                         {{
                                             options?.templateName ||
@@ -237,7 +237,7 @@
                                 "
                             >
                                 <div>
-                                    通过
+                                    {{ $t('ListItem.Item.5425978-3') }}
                                     <span class="notify-text-highlight">
                                         <img
                                             style="width: 18px"
@@ -249,7 +249,7 @@
                                         />
                                         WebHook
                                     </span>
-                                    发送
+                                    {{ $t('ListItem.Item.5425978-5') }}
                                     <span>{{
                                         options?.templateName ||
                                         data?.notify?.templateId
@@ -310,7 +310,7 @@
                                                 data?.options?.propertiesValue,
                                             ) && data?.options?.propertiesValue
                                         "
-                                        >为
+                                        >{{ $t('ListItem.Item.5425978-12') }}
                                     </span>
                                     <Ellipsis style="max-width: 200px">
                                         {{
@@ -346,7 +346,7 @@
                                     />
                                     {{ data?.options?.type }}
                                     <span>{{ data?.options?.tagName }}</span>
-                                    的{{ data?.options?.productName }}
+                                    {{ $t('ListItem.Item.5425978-13') }}{{ data?.options?.productName }}
                                     {{ data?.options?.propertiesName }}
                                 </div>
                             </template>
@@ -365,24 +365,17 @@
                                             ]
                                         "
                                     />
-                                    {{ data?.options?.type }}与<span>{{
-                                        data?.options?.triggerName
-                                    }}</span
-                                    >具有相同
-                                    {{ data?.options?.relationName }}的{{
-                                        data?.options?.productName
-                                    }}设备的
-                                    {{ data?.options?.propertiesName }}
+                                    {{ $t('ListItem.Item.5425978-14',[data?.options?.type,data?.options?.triggerName,data?.options?.relationName,data?.options?.productName,data?.options?.propertiesName]) }}
                                 </div>
                             </template>
                         </div>
                         <j-button v-else @click="onAdd"
-                            >点击配置执行动作</j-button
+                            >{{ $t('ListItem.Item.5425978-15') }}</j-button
                         >
                     </div>
                     <div class="item-number">{{ name + 1 }}</div>
                     <ConfirmModal
-                        title="确认删除？"
+                        :title="$t('ListItem.Item.5425978-16')"
                         :onConfirm="onDelete"
                         className="actions-item-delete"
                     >
@@ -400,7 +393,7 @@
             >
                 <template v-if="termsOptions.length">
                     <div class="actions-item-filter-warp-tip">
-                        满足此条件后执行后续动作
+                        {{ $t('ListItem.Item.5425978-17') }}
                     </div>
                     <div class="actions-item-filter-overflow">
                         <FilterGroup
@@ -417,7 +410,7 @@
                 </template>
                 <div v-else class="filter-add-button" @click="addFilterParams">
                     <AIcon type="PlusOutlined" style="padding-right: 4px" />
-                    <span>添加过滤条件</span>
+                    <span>{{ $t('ListItem.Item.5425978-18') }}</span>
                 </div>
             </div>
         </template>
@@ -481,6 +474,9 @@ import {
     EventEmitterKeys,
 } from '@/views/rule-engine/Scene/Save/util';
 import CheckItem from './CheckItem.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore();
 const { data: _data } = storeToRefs(sceneStore);
@@ -685,7 +681,7 @@ const rules = [
                     _device?.changeData === true
                 ) {
                     return Promise.reject(
-                        new Error('该数据已发生变更，请重新配置'),
+                        new Error($t('ListItem.Item.5425978-19')),
                     );
                 }
             } else if (v?.executor === 'notify') {
@@ -696,7 +692,7 @@ const rules = [
                     _notify?.changeData === true
                 ) {
                     return Promise.reject(
-                        new Error('该数据已发生变更，请重新配置'),
+                        new Error($t('ListItem.Item.5425978-19')),
                     );
                 }
             }

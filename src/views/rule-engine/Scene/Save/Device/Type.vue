@@ -2,12 +2,12 @@
   <div class='type'>
     <div class="alert">
       <AIcon type="InfoCircleOutlined"/>
-      <span style="padding-left: 10px;">只能依据产品物模型进行配置</span>
+      <span style="padding-left: 10px;">{{ $t('Device.Type.5425840-0') }}</span>
     </div>
     <j-form ref='typeForm' :model='formModel' layout='vertical' :colon='false'>
       <j-form-item
         required
-        label='触发类型'
+        :label="$t('Device.Type.5425840-1')"
       >
         <TopCard
           :label-bottom='true'
@@ -34,13 +34,13 @@
       <j-form-item
         v-if='showReportEvent'
         name='eventId'
-        :rules="[{ required: true, message: '请选择事件' }]"
+        :rules="[{ required: true, message: $t('Device.Type.5425840-2') }]"
       >
         <j-select
           v-model:value='formModel.eventId'
           :filter-option='filterSelectNode'
           :options='eventOptions'
-          placeholder='请选择事件'
+          :placeholder="$t('Device.Type.5425840-2')"
           style='width: 100%'
           @select='eventSelect'
         />
@@ -69,6 +69,9 @@ import WriteProperty from './WriteProperty.vue'
 import InvokeFunction from './InvokeFunction.vue'
 import { defineExpose } from 'vue'
 import { cloneDeep, omit } from 'lodash-es'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   metadata: {
@@ -111,12 +114,12 @@ const topOptions = computed(() => {
   const cloneTypeEnum = cloneDeep(TypeEnum)
   const baseOptions = [
     {
-      label: '设备上线',
+      label: $t('Device.Type.5425840-3'),
       value: 'online',
       img: getImage('/scene/online.png')
     },
     {
-      label: '设备离线',
+      label: $t('Device.Type.5425840-4'),
       value: 'offline',
       img: getImage('/scene/offline.png')
     },
@@ -204,7 +207,7 @@ const showTimer = computed(() => {
 })
 
 const eventSelect = (_: string, eventItem: any) => {
-  optionCache.action = `${eventItem.name}上报`
+  optionCache.action = $t('Device.Type.5425840-5', [eventItem.name])
 }
 
 defineExpose({

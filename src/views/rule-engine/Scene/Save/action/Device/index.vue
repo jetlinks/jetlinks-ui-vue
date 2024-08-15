@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        title="执行动作"
+        :title="$t('Device.index.5425975-0')"
         visible
         :width="860"
         @cancel="onCancel"
@@ -9,13 +9,13 @@
     >
         <j-steps :current="current" @change="stepChange">
             <j-step>
-                <template #title>选择产品</template>
+                <template #title>{{ $t('Device.index.5425975-1') }}</template>
             </j-step>
             <j-step>
-                <template #title>选择设备</template>
+                <template #title>{{ $t('Device.index.5425975-2') }}</template>
             </j-step>
             <j-step>
-                <template #title>执行动作</template>
+                <template #title>{{ $t('Device.index.5425975-0') }}</template>
             </j-step>
         </j-steps>
         <j-divider style="margin-bottom: 10px" />
@@ -51,13 +51,13 @@
         </div>
         <template #footer>
             <div class="steps-action">
-                <j-button v-if="current === 0" @click="onCancel">取消</j-button>
-                <j-button v-else @click="prev">上一步</j-button>
+                <j-button v-if="current === 0" @click="onCancel">{{ $t('Device.index.5425975-3') }}</j-button>
+                <j-button v-else @click="prev">{{ $t('Device.index.5425975-4') }}</j-button>
                 <j-button type="primary" v-if="current < 2" @click="saveClick"
-                    >下一步</j-button
+                    >{{ $t('Device.index.5425975-5') }}</j-button
                 >
                 <j-button type="primary" v-else @click="saveClick"
-                    >确定</j-button
+                    >{{ $t('Device.index.5425975-6') }}</j-button
                 >
             </div>
         </template>
@@ -74,6 +74,9 @@ import { onlyMessage } from '@/utils/comm';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
 import { isActionChange } from '../../util';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);
@@ -154,20 +157,20 @@ const onSave = (_data: any, _columnMap: any = {}) => {
         // properties: '', //属性功能
         // propertiesValue: '', //设置功能
         selector: DeviceModel.selector, //选择器标识
-        triggerName: data.value.options?.trigger?.name || '触发设备',
+        triggerName: data.value.options?.trigger?.name || $t('Device.index.5425975-7'),
         ...DeviceOptions.value,
         otherColumns: [],
         columnMap: _columnMap
     };
     const _type = _data.message.messageType;
     if (_type === 'INVOKE_FUNCTION') {
-        _options.type = '执行';
+        _options.type = $t('Device.index.5425975-8');
     }
     if (_type === 'READ_PROPERTY') {
-        _options.type = '读取';
+        _options.type = $t('Device.index.5425975-9');
     }
     if (_type === 'WRITE_PROPERTY') {
-        _options.type = '设置';
+        _options.type = $t('Device.index.5425975-10');
         _options.propertiesValue =
             (typeof _options?.propertiesValue === 'object'
                 ? JSON.stringify(_options?.propertiesValue)
@@ -218,7 +221,7 @@ const save = async (step?: number) => {
     if (_step === 0) {
         DeviceModel.productId
             ? (current.value = 1)
-            : onlyMessage('请选择产品', 'error');
+            : onlyMessage($t('Device.index.5425975-11'), 'error');
     } else if (_step === 1) {
         if (deviceRef.value) {
             await deviceRef.value?.onFormSave();
@@ -226,7 +229,7 @@ const save = async (step?: number) => {
         } else if (DeviceModel.selectorValues?.length) {
             current.value = 2;
         } else {
-            onlyMessage('请选择设备', 'error');
+            onlyMessage($t('Device.index.5425975-12'), 'error');
         }
     } else {
         if (actionRef.value) {

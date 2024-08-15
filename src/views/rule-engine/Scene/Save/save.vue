@@ -16,18 +16,18 @@
     >
       <j-form-item
         name='name'
-        label='名称'
+        :label="$t('Save.save.542578-0')"
         :rules="[
-          { required: true, message: '请输入名称' },
-          { max: 64, message: '最多输入64个字符' }
+          { required: true, message: $t('Save.save.542578-1') },
+          { max: 64, message: $t('Save.save.542578-2') }
         ]"
       >
-        <j-input v-model:value='formModel.name' placeholder='请输入名称' />
+        <j-input v-model:value='formModel.name' :placeholder="$t('Save.save.542578-1')" />
       </j-form-item>
       <j-form-item
         :name='["trigger", "type"]'
-        label='触发方式'
-        :rules="[{ required: true, message: '请选择触发方式' }]"
+        :label="$t('Save.save.542578-3')"
+        :rules="[{ required: true, message: $t('Save.save.542578-4') }]"
       >
         <TriggerWay v-model:modelValue='formModel.trigger.type' :disabled='disabled' />
       </j-form-item>
@@ -43,6 +43,9 @@ import type { PropType } from 'vue'
 import type { FormInstance } from 'ant-design-vue';
 import { save, modify } from '@/api/rule-engine/scene'
 import { useMenuStore } from 'store/menu'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'close'): void
@@ -73,7 +76,7 @@ watchEffect(() => {
 const emit = defineEmits<Emit>()
 
 const title = computed(() => {
-  return props.data?.id ? '编辑' : '新增'
+  return props.data?.id ? $t('Save.save.542578-5') : $t('Save.save.542578-6')
 })
 
 const disabled = computed(() => {

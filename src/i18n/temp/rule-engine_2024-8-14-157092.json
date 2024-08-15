@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"ListItem.FilterGroup.5425980-0": "并且",
+		"ListItem.FilterGroup.5425980-1": "或者",
+		"ListItem.FilterGroup.5425980-2": "确认删除？",
+		"ListItem.FilterGroup.5425980-3": "分组",
+		"ListItem.FilterGroup.5425980-4": "该数据已发生变更，请重新配置",
+		"ListItem.FilterGroup.5425980-5": "请选择参数"
+	},
+	"en": {
+		"ListItem.FilterGroup.5425980-0": "and",
+		"ListItem.FilterGroup.5425980-1": "or",
+		"ListItem.FilterGroup.5425980-2": "Are you sure to delete?",
+		"ListItem.FilterGroup.5425980-3": "Group",
+		"ListItem.FilterGroup.5425980-4": "This data has been changed, please reconfigure",
+		"ListItem.FilterGroup.5425980-5": "Please select parameters"
+	}
+}

@@ -2,7 +2,7 @@
     <j-tree-select
         :listHeight="200"
         v-model:value="keys"
-        placeholder="请选择组织"
+        :placeholder="$t('variableItem.Org.5425867-0')"
         :tree-data="departmentTree"
         @change="onChange"
         :fieldNames="{
@@ -14,6 +14,9 @@
 
 <script lang="ts" setup>
 import ConfigApi from '@/api/notice/config';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     notify: {

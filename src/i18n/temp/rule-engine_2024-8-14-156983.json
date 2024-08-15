@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Notify.index.5425863-0": "执行动作",
+		"Notify.index.5425863-1": "通知方式",
+		"Notify.index.5425863-2": "通知配置",
+		"Notify.index.5425863-3": "通知模板",
+		"Notify.index.5425863-4": "模板变量",
+		"Notify.index.5425863-5": "应用",
+		"Notify.index.5425863-6": "请选择通知方式",
+		"Notify.index.5425863-7": "取消",
+		"Notify.index.5425863-8": "上一步",
+		"Notify.index.5425863-9": "下一步",
+		"Notify.index.5425863-10": "确定",
+		"Notify.index.5425863-11": "请选择通知配置",
+		"Notify.index.5425863-12": "请选择通知模板"
+	},
+	"en": {
+		"Notify.index.5425863-0": "Execute action",
+		"Notify.index.5425863-1": "Notification method",
+		"Notify.index.5425863-2": "Notification configuration",
+		"Notify.index.5425863-3": "Notification Template",
+		"Notify.index.5425863-4": "Template variables",
+		"Notify.index.5425863-5": "Application",
+		"Notify.index.5425863-6": "Please choose a notification method",
+		"Notify.index.5425863-7": "Cancel",
+		"Notify.index.5425863-8": "Previous step",
+		"Notify.index.5425863-9": "Next step",
+		"Notify.index.5425863-10": "Confirm",
+		"Notify.index.5425863-11": "Please select notification configuration",
+		"Notify.index.5425863-12": "Please select a notification template"
+	}
+}

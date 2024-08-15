@@ -1,6 +1,6 @@
 <template>
   <div class='timer-when-warp'>
-    <div :class='["when-item-option", allActive ? "active" : ""]' @click='() => change(0)'>每天</div>
+    <div :class='["when-item-option", allActive ? "active" : ""]' @click='() => change(0)'>{{ $t('Timer.WhenOption.5425716-0') }}</div>
     <div
       v-for='item in timeOptions'
       :class='["when-item-option", rowKeys.includes(item.value) ? "active" : ""]'
@@ -14,6 +14,9 @@
 <script setup lang='ts' name='WhenOption'>
 import type { PropType } from 'vue'
 import { numberToString } from './util'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'update:value', data: Array<number>):void
@@ -67,7 +70,7 @@ watch(() => props.type, () => {
     .map((_, index) => {
       const _value = index + 1
       return {
-        label: isMonth ? `${_value}号` : numberToString[_value],
+        label: isMonth ? $t('Timer.WhenOption.5425716-1', [_value]) : numberToString[_value],
         value: _value
       }
     })

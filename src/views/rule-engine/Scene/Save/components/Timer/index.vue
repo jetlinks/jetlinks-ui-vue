@@ -15,7 +15,7 @@
       />
     </j-form-item>
     <j-form-item v-if='showCron' name='cron' :rules="cronRules">
-      <j-input placeholder='corn表达式' v-model:value='formModel.cron' @change='updateValue' />
+      <j-input :placeholder="$t('Timer.index.5425719-0')" v-model:value='formModel.cron' @change='updateValue' />
     </j-form-item>
     <j-form-item v-else-if="showMulti" name="multi" :rules="multiRules">
       <Calendar v-model:value="formModel.multi" @change='updateValue'/>
@@ -27,10 +27,10 @@
       <j-form-item name='mod'>
         <j-radio-group
           v-model:value='formModel.mod'
-          :options='[
-          { label: "周期执行", value: "period" },
-          { label: "执行一次", value: "once" },
-        ]'
+          :options="[
+          { label: $t('Timer.index.5425719-1'), value: 'period' },
+          { label: $t('Timer.index.5425719-2'), value: 'once' },
+        ]"
           option-type='button'
           button-style='solid'
           @change='updateValue'
@@ -47,7 +47,7 @@
           @change='updateValue'
         />
       </j-form-item>
-      <j-form-item> 执行一次</j-form-item>
+      <j-form-item> {{ $t('Timer.index.5425719-2') }}</j-form-item>
     </j-space>
     <j-space v-if='showPeriod && !showMulti' style='display: flex;gap: 24px'>
       <j-form-item>
@@ -64,13 +64,13 @@
               }'
         />
       </j-form-item>
-      <j-form-item>每</j-form-item>
+      <j-form-item>{{ $t('Timer.index.5425719-3') }}</j-form-item>
       <j-form-item
         :name='["period", "every"]'
-        :rules='[{ required: true, message: "请输入时间" }]'
+        :rules="[{ required: true, message: $t('Timer.index.5425719-4') }]"
       >
         <j-input-number
-          placeholder='请输入时间'
+          :placeholder="$t('Timer.index.5425719-4')"
           style='max-width: 170px'
           :precision='0'
           :min='1'
@@ -81,17 +81,17 @@
           <template #addonAfter>
             <j-select
               v-model:value='formModel.period.unit'
-              :options='[
-                { label: "秒", value: "seconds" },
-                { label: "分", value: "minutes" },
-                { label: "小时", value: "hours" },
-              ]'
+              :options="[
+                { label: $t('Timer.index.5425719-5'), value: 'seconds' },
+                { label: $t('Timer.index.5425719-6'), value: 'minutes' },
+                { label: $t('Timer.index.5425719-7'), value: 'hours' },
+              ]"
               @select='periodUnitChange'
             />
           </template>
         </j-input-number>
       </j-form-item>
-      <j-form-item>执行一次</j-form-item>
+      <j-form-item>{{ $t('Timer.index.5425719-2') }}</j-form-item>
     </j-space>
   </j-form>
 </template>
@@ -105,6 +105,9 @@ import type { OperationTimer } from '../../../typings'
 import { defineExpose } from 'vue'
 import Calendar from './Calendar.vue'
 import cronstrue from 'cronstrue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type NameType = string[] | string
 
@@ -131,7 +134,7 @@ const emit = defineEmits<Emit>()
 const unitMax = ref<number>(99)
 
 const cronRules = [
-  { max: 64, message: '最多可输入64个字符' },
+  { max: 64, message: $t('Timer.index.5425719-8') },
   {
     validator: async (_: any, v: string) => {
 
@@ -139,10 +142,10 @@ const cronRules = [
         try {
           console.log(v, cronstrue.toString(v))
         } catch (e) {
-          return Promise.reject(new Error('请输入正确的cron表达式'));
+          return Promise.reject(new Error($t('Timer.index.5425719-9')));
         }
       } else {
-        return Promise.reject(new Error('请输入cron表达式'));
+        return Promise.reject(new Error($t('Timer.index.5425719-10')));
       }
       return Promise.resolve();
     }
@@ -153,11 +156,11 @@ const multiRules = [
   {
     validator: async (_: any, v: string) => {
       if (!v.spec?.length) {
-        return Promise.reject('请添加自定义日历规则');
+        return Promise.reject($t('Timer.index.5425719-11'));
       } else {
         const index = v.spec.findIndex(item => !item.scheduleTags.length)
         if (index > -1) {
-          return Promise.reject(`规则【${index + 1}】请选择日期类型`);
+          return Promise.reject($t('Timer.index.5425719-12', [index + 1]));
         }
       }
 
@@ -168,15 +171,15 @@ const multiRules = [
 
 const triggerOptions = computed(() => {
   let _options = [
-    { label: "按周", value: "week" },
-    { label: "按月", value: "month" },
-    { label: "cron表达式", value: "cron" },
-    { label: "自定义日历", value: "multi" }
+    { label: $t('Timer.index.5425719-13'), value: "week" },
+    { label: $t('Timer.index.5425719-14'), value: "month" },
+    { label: $t('Timer.index.5425719-15'), value: "cron" },
+    { label: $t('Timer.index.5425719-16'), value: "multi" }
   ]
 
   // if (props.type === 'timer') {
   //   _options = [..._options, {
-  //     label: "自定义日历", value: "multi"
+  //     label: $t('Timer.index.5425719-16'), value: "multi"
   //   }]
   // }
   return _options

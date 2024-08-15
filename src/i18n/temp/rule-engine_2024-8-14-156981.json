@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"variableItem.User.5425865-0": "平台用户",
+		"variableItem.User.5425865-1": "钉钉用户",
+		"variableItem.User.5425865-2": "微信用户",
+		"variableItem.User.5425865-3": "固定邮箱",
+		"variableItem.User.5425865-4": "固定号码",
+		"variableItem.User.5425865-5": "请选择收信人",
+		"variableItem.User.5425865-6": "请输入收件人邮箱,多个收件人用换行分隔",
+		"variableItem.User.5425865-7": "请输入固定号码",
+		"variableItem.User.5425865-8": "关系用户"
+	},
+	"en": {
+		"variableItem.User.5425865-0": "Platform users",
+		"variableItem.User.5425865-1": "DingTalk users",
+		"variableItem.User.5425865-2": "WeChat users",
+		"variableItem.User.5425865-3": "Fixed email address",
+		"variableItem.User.5425865-4": "Fixed number",
+		"variableItem.User.5425865-5": "Please select the recipient",
+		"variableItem.User.5425865-6": "Please enter recipient email, separate multiple recipients with line breaks",
+		"variableItem.User.5425865-7": "Please enter a fixed number",
+		"variableItem.User.5425865-8": "Relationship users"
+	}
+}

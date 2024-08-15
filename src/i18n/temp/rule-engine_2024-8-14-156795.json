@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Timer.index.542575-0": "触发规则",
+		"Timer.index.542575-1": "系统时间到达",
+		"Timer.index.542575-2": "执行动作",
+		"Timer.index.542575-3": "请配置定时触发规则",
+		"Timer.index.542575-4": "至少配置一个执行动作"
+	},
+	"en": {
+		"Timer.index.542575-0": "Trigger rules",
+		"Timer.index.542575-1": "The system time triggers the scheduled task.",
+		"Timer.index.542575-2": "Execute action",
+		"Timer.index.542575-3": "Please configure timed triggering rules",
+		"Timer.index.542575-4": "Configure at least one execution action"
+	}
+}

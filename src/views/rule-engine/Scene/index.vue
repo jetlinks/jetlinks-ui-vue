@@ -18,7 +18,7 @@
                         hasPermission="rule-engine/Scene:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
+                        {{ $t('Scene.index.542572-0') }}
                     </PermissionButton>
                 </j-space>
             </template>
@@ -56,7 +56,7 @@
                         </Ellipsis>
                       <div class="subTitle">
                         <span class='subTitle-title'>
-                        说明：
+                        {{ $t('Scene.index.542572-1') }}
                         </span>
                         <span class='subTitle-content'>
                           <Ellipsis :lineClamp="2">
@@ -144,6 +144,9 @@ import type { ActionsType } from '@/components/Table';
 import { getImage, onlyMessage } from '@/utils/comm';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { Modal } from 'jetlinks-ui-components'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 const visible = ref<boolean>(false);
@@ -158,22 +161,22 @@ const sceneRef = ref<Record<string, any>>({});
 
 const typeMap = new Map();
 typeMap.set('manual', {
-    text: '手动触发',
+    text: $t('Scene.index.542572-2'),
     img: getImage('/scene/scene-hand.png'),
     icon: getImage('/scene/trigger-type-icon/manual.png'),
-    tip: '适用于第三方平台向物联网平台下发指令控制设备',
+    tip: $t('Scene.index.542572-3'),
 });
 typeMap.set('timer', {
-    text: '定时触发',
+    text: $t('Scene.index.542572-4'),
     img: getImage('/scene/scene-timer.png'),
     icon: getImage('/scene/trigger-type-icon/timing.png'),
-    tip: '适用于定期执行固定任务',
+    tip: $t('Scene.index.542572-5'),
 });
 typeMap.set('device', {
-    text: '设备触发',
+    text: $t('Scene.index.542572-6'),
     img: getImage('/scene/scene-device.png'),
     icon: getImage('/scene/trigger-type-icon/device.png'),
-    tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
+    tip: $t('Scene.index.542572-7'),
 });
 
 const columns = [
@@ -182,14 +185,14 @@ const columns = [
         fixed: 'left',
         ellipsis: true,
         width: 300,
-        title: '名称',
+        title: $t('Scene.index.542572-8'),
         search: {
             type: 'string',
         },
     },
     {
         dataIndex: 'triggerType',
-        title: '触发方式',
+        title: $t('Scene.index.542572-9'),
         scopedSlots: true,
         search: {
             type: 'select',
@@ -203,19 +206,19 @@ const columns = [
     },
     {
         dataIndex: 'state',
-        title: '状态',
+        title: $t('Scene.index.542572-10'),
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '正常', value: 'started' },
-                { label: '禁用', value: 'disable' },
+                { label: $t('Scene.index.542572-11'), value: 'started' },
+                { label: $t('Scene.index.542572-12'), value: 'disable' },
             ],
         },
     },
     {
         dataIndex: 'description',
-        title: '说明',
+        title: $t('Scene.index.542572-13'),
         ellipsis: true,
         search: {
             type: 'string',
@@ -223,7 +226,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '操作',
+        title: $t('Scene.index.542572-14'),
         key: 'action',
         fixed: 'right',
         width: 200,
@@ -234,16 +237,16 @@ const columns = [
 const deleteScene = async (id: string) => {
   const resp = await _delete(id);
   if (resp.status === 200) {
-    onlyMessage('操作成功！');
+    onlyMessage($t('Scene.index.542572-15'));
     sceneRef.value?.reload();
   } else {
-    onlyMessage('操作失败！', 'error');
+    onlyMessage($t('Scene.index.542572-16'), 'error');
   }
 }
 
 const deleteModal = (id: string) => {
   Modal.confirm({
-    title: '该场景已绑定告警，确定删除？',
+    title: $t('Scene.index.542572-17'),
     onOk: async () => {
       await deleteScene(id)
     }
@@ -260,9 +263,9 @@ const getActions = (
     const actions: ActionsType[] = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Scene.index.542572-18'),
             tooltip: {
-                title: '编辑',
+                title: $t('Scene.index.542572-18'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -272,13 +275,13 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'disable' ? '禁用' : '启用',
+            text: data.state?.value !== 'disable' ? $t('Scene.index.542572-28') : $t('Scene.index.542572-19'),
             tooltip: {
                 title: !(!!data.triggerType && (data.branches || [])?.length)
-                    ? '未配置规则的不能启用'
+                    ? $t('Scene.index.542572-20')
                     : data.state?.value !== 'disable'
-                    ? '禁用'
-                    : '启用',
+                    ? $t('Scene.index.542572-28')
+                    : $t('Scene.index.542572-19'),
             },
             disabled: !(!!data?.triggerType && (data?.branches || [])?.length),
             icon:
@@ -286,8 +289,8 @@ const getActions = (
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${
-                    data.state.value !== 'disable' ? '禁用' : '启用'
+                title: `${
+                    data.state.value !== 'disable' ? $t('Scene.index.542572-21') : $t('Scene.index.542572-29')
                 }?`,
                 onConfirm: async () => {
                     let response = undefined;
@@ -297,26 +300,26 @@ const getActions = (
                         response = await _action(data.id, '_enable');
                     }
                     if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Scene.index.542572-15'));
                         sceneRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Scene.index.542572-16'), 'error');
                     }
                 },
             },
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Scene.index.542572-22'),
             disabled: data.state?.value !== 'disable',
             tooltip: {
                 title:
                     data.state.value !== 'disable'
-                        ? '请先禁用该场景,再删除'
-                        : '删除',
+                        ? $t('Scene.index.542572-23')
+                        : $t('Scene.index.542572-22'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Scene.index.542572-24'),
                 onConfirm: async () => {
                   // 查询该场景是否绑定告警
                   const resp = await queryList({
@@ -350,24 +353,24 @@ const getActions = (
     if (data.triggerType === 'manual') {
         const _item: ActionsType = {
             key: 'tigger',
-            text: '手动触发',
+            text: $t('Scene.index.542572-2'),
             disabled: data.state?.value === 'disable',
             tooltip: {
                 title:
                     data.state.value !== 'disable'
-                        ? '手动触发'
-                        : '未启用，不能手动触发',
+                        ? $t('Scene.index.542572-2')
+                        : $t('Scene.index.542572-25'),
             },
             icon: 'LikeOutlined',
             popConfirm: {
-                title: '确认手动触发？',
+                title: $t('Scene.index.542572-26'),
                 onConfirm: async () => {
                     const resp = await _execute(data.id);
                     if (resp.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Scene.index.542572-15'));
                         sceneRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Scene.index.542572-16'), 'error');
                     }
                 },
             },
@@ -377,9 +380,9 @@ const getActions = (
     if (type === 'table') {
         actions.splice(0, 0, {
             key: 'view',
-            text: '查看',
+            text: $t('Scene.index.542572-27'),
             tooltip: {
-                title: '查看',
+                title: $t('Scene.index.542572-27'),
             },
             icon: 'EyeOutlined',
             onClick: () => {

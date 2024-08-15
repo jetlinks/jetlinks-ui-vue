@@ -20,15 +20,18 @@
 <script lang='ts' setup name='TriggerWay'>
 
 import { getImage } from '@/utils/comm'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'update:modelValue', data: string): void
 }
 
 const options = [
-  { value: 'device', label: '设备触发', tip: '适用于设备数据或行为满足触发条件时，执行指定的动作', image: getImage('/device-trigger.png') },
-  { value: 'manual', label: '手动触发', tip: '适用于第三方平台向物联网平台下发指令控制设备', image: getImage('/manual-trigger.png') },
-  { value: 'timer', label: '定时触发', tip: '适用于定期执行固定任务', image: getImage('/timing-trigger.png') },
+  { value: 'device', label: $t('components.TriggerWay.5425713-0'), tip: $t('components.TriggerWay.5425713-1'), image: getImage('/device-trigger.png') },
+  { value: 'manual', label: $t('components.TriggerWay.5425713-2'), tip: $t('components.TriggerWay.5425713-3'), image: getImage('/manual-trigger.png') },
+  { value: 'timer', label: $t('components.TriggerWay.5425713-4'), tip: $t('components.TriggerWay.5425713-5'), image: getImage('/timing-trigger.png') },
 ]
 
 const props = defineProps({

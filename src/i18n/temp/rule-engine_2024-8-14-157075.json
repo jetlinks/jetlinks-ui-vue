@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"actions.index.5425990-0": "动作类型",
+		"actions.index.5425990-1": "请选择动作类型",
+		"actions.index.5425990-2": "功能调用",
+		"actions.index.5425990-3": "请选择功能",
+		"actions.index.5425990-4": "读取属性",
+		"actions.index.5425990-5": "请选择读取属性",
+		"actions.index.5425990-6": "请选择属性",
+		"actions.index.5425990-7": "设置属性",
+		"actions.index.5425990-8": "请输入功能值",
+		"actions.index.5425990-9": "请输入{0}值"
+	},
+	"en": {
+		"actions.index.5425990-0": "Action type",
+		"actions.index.5425990-1": "Please select action type",
+		"actions.index.5425990-2": "Function call",
+		"actions.index.5425990-3": "Please select the function",
+		"actions.index.5425990-4": "Read attribute",
+		"actions.index.5425990-5": "Please select to read attributes",
+		"actions.index.5425990-6": "Please select attributes",
+		"actions.index.5425990-7": "Set attributes",
+		"actions.index.5425990-8": "Please enter the function value",
+		"actions.index.5425990-9": "Please enter the value of {0}"
+	}
+}

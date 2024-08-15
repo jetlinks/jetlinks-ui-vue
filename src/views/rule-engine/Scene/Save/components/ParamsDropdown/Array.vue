@@ -26,7 +26,7 @@
                         :tab="item.label"
                         :key="item.key"
                     >
-                      <a-input placeholder="多个值以英文逗号隔开" v-model:value="myValue" @change="onSelect"/>
+                      <a-input :placeholder="$t('ParamsDropdown.Array.5425856-0')" v-model:value="myValue" @change="onSelect"/>
                     </j-tab-pane>
                 </j-tabs>
             </div>
@@ -40,6 +40,9 @@ import { defaultSetting } from './typings';
 import ArrayItem from './ArrayItem.vue';
 import { cloneDeep } from 'lodash-es';
 import { getOption } from '../DropdownButton/util';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 type Emit = {
     (e: 'update:value', data: Array<ValueType>): void;
     (e: 'update:source', data: string): void;

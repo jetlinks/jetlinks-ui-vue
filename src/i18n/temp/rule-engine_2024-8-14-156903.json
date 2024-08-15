@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Timer.Calendar.5425721-0": "预览日历",
+		"Timer.Calendar.5425721-1": "规则：",
+		"Timer.Calendar.5425721-2": "请选择日期类型",
+		"Timer.Calendar.5425721-3": "周期执行",
+		"Timer.Calendar.5425721-4": "执行一次",
+		"Timer.Calendar.5425721-5": "每",
+		"Timer.Calendar.5425721-6": "请输入时间",
+		"Timer.Calendar.5425721-7": "秒",
+		"Timer.Calendar.5425721-8": "分",
+		"Timer.Calendar.5425721-9": "小时",
+		"Timer.Calendar.5425721-10": "新增规则",
+		"Timer.Calendar.5425721-11": "关闭",
+		"Timer.Calendar.5425721-12": "正在预览日历"
+	},
+	"en": {
+		"Timer.Calendar.5425721-0": "Preview Calendar",
+		"Timer.Calendar.5425721-1": "Rule:",
+		"Timer.Calendar.5425721-2": "Please select a date type",
+		"Timer.Calendar.5425721-3": "Periodic execution",
+		"Timer.Calendar.5425721-4": "Execute once",
+		"Timer.Calendar.5425721-5": "per",
+		"Timer.Calendar.5425721-6": "Please enter the time",
+		"Timer.Calendar.5425721-7": "second",
+		"Timer.Calendar.5425721-8": "minute",
+		"Timer.Calendar.5425721-9": "hour",
+		"Timer.Calendar.5425721-10": "Add new rules",
+		"Timer.Calendar.5425721-11": "Close",
+		"Timer.Calendar.5425721-12": "Previewing calendar"
+	}
+}

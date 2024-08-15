@@ -4,8 +4,8 @@
             <div v-if="!isFirst" class="term-type-warp">
                 <DropdownButton
                     :options="[
-                        { label: '并且', value: 'and' },
-                        { label: '或者', value: 'or' },
+                        { label: $t('Terms.WhenItem.5425722-0'), value: 'and' },
+                        { label: $t('Terms.WhenItem.5425722-1'), value: 'or' },
                     ]"
                     type="type"
                     v-model:value="
@@ -20,7 +20,7 @@
                 @mouseout="mouseout"
             >
                 <ConfirmModal
-                    title="确认删除？"
+                    :title="$t('Terms.WhenItem.5425722-2')"
                     :onConfirm="onDelete"
                     :show="showDelete"
                     className="terms-params-delete"
@@ -43,7 +43,7 @@
             <div class="terms-group-add" @click="addWhen" v-if="isLast">
                 <div class="terms-content">
                     <AIcon type="PlusOutlined" />
-                    <span>分组</span>
+                    <span>{{ $t('Terms.WhenItem.5425722-3') }}</span>
                 </div>
             </div>
         </div>
@@ -58,6 +58,9 @@ import { useSceneStore } from 'store/scene';
 import DropdownButton from '../DropdownButton';
 import { storeToRefs } from 'pinia';
 import { randomString } from '@/utils/utils';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore();
 const { data: formModel } = storeToRefs(sceneStore);
@@ -152,7 +155,7 @@ const addWhen = () => {
     formModel.value.branches?.[props.branchName]?.when?.push(terms);
     if (!formModel.value.options!.when[props.branches_Index]) {
         formModel.value.options!.when[props.branches_Index] = {
-            terms: [{ terms: [['', '', '', '并且']] }],
+            terms: [{ terms: [['', '', '', $t('Terms.WhenItem.5425722-0')]] }],
         };
     }
     formModel.value.options?.when?.[props.branches_Index]?.terms.push({

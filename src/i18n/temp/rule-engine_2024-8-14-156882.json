@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Device.Type.5425840-0": "只能依据产品物模型进行配置",
+		"Device.Type.5425840-1": "触发类型",
+		"Device.Type.5425840-2": "请选择事件",
+		"Device.Type.5425840-3": "设备上线",
+		"Device.Type.5425840-4": "设备离线",
+		"Device.Type.5425840-5": "{0}上报"
+	},
+	"en": {
+		"Device.Type.5425840-0": "Configuration can only be based on the product model",
+		"Device.Type.5425840-1": "Trigger type",
+		"Device.Type.5425840-2": "Please select an event",
+		"Device.Type.5425840-3": "Equipment online",
+		"Device.Type.5425840-4": "Device offline",
+		"Device.Type.5425840-5": "{0} reporting"
+	}
+}

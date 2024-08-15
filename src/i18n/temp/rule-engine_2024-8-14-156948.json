@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Delay.index.5425976-0": "延迟执行",
+		"Delay.index.5425976-1": "请输入时间",
+		"Delay.index.5425976-2": "秒",
+		"Delay.index.5425976-3": "分",
+		"Delay.index.5425976-4": "小时",
+		"Delay.index.5425976-5": "{0}{1}后，执行后续动作"
+	},
+	"en": {
+		"Delay.index.5425976-0": "Delayed execution",
+		"Delay.index.5425976-1": "Please enter the time",
+		"Delay.index.5425976-2": "seconds",
+		"Delay.index.5425976-3": "minutes",
+		"Delay.index.5425976-4": "hours",
+		"Delay.index.5425976-5": "After {0} {1}, perform subsequent actions"
+	}
+}

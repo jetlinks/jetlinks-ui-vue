@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"Device.Product.5425974-0": "正常",
+		"Device.Product.5425974-1": "禁用",
+		"Device.Product.5425974-2": "设备类型",
+		"Device.Product.5425974-3": "接入方式",
+		"Device.Product.5425974-4": "未接入",
+		"Device.Product.5425974-5": "名称",
+		"Device.Product.5425974-6": "网关类型",
+		"Device.Product.5425974-7": "直连设备",
+		"Device.Product.5425974-8": "网关子设备",
+		"Device.Product.5425974-9": "网关设备",
+		"Device.Product.5425974-10": "状态",
+		"Device.Product.5425974-11": "说明",
+		"Device.Product.5425974-12": "分类",
+		"Device.Product.5425974-13": "所属组织"
+	},
+	"en": {
+		"Device.Product.5425974-0": "enabled",
+		"Device.Product.5425974-1": "disabled",
+		"Device.Product.5425974-2": "Equipment type",
+		"Device.Product.5425974-3": "Access method",
+		"Device.Product.5425974-4": "Not connected",
+		"Device.Product.5425974-5": "Name",
+		"Device.Product.5425974-6": "Gateway Type ",
+		"Device.Product.5425974-7": "Directly connected devices",
+		"Device.Product.5425974-8": "Internet gateway sub device",
+		"Device.Product.5425974-9": "Gateway device",
+		"Device.Product.5425974-10": "State",
+		"Device.Product.5425974-11": "Explain",
+		"Device.Product.5425974-12": "Classification",
+		"Device.Product.5425974-13": "Belonging organization"
+	}
+}

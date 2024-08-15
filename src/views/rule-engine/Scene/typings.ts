@@ -1,7 +1,10 @@
+import i18n from '@/i18n'
+
+const $t = i18n.global.t
 export const keyByLabel = {
-  manual: '手动触发',
-  timer: '定时触发',
-  device: '设备触发',
+  manual: $t('Scene.typings.542571-0'),
+  timer: $t('Scene.typings.542571-1'),
+  device: $t('Scene.typings.542571-2'),
 }
 
 type State = {

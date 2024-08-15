@@ -10,7 +10,7 @@
     @select="onChange"
   >
     <template v-slot="{ label }">
-      <j-input :value="label" readonly placeholder="请选择"/>
+      <j-input :value="label" readonly :placeholder="$t('actions.FunctionItem.5425993-0')"/>
     </template>
   </ParamsDropdown>
 </template>
@@ -19,6 +19,9 @@
 import {cloneDeep} from 'lodash-es';
 import ParamsDropdown from '../../../components/ParamsDropdown';
 import {handleParamsData} from './index';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   data: {
@@ -50,12 +53,12 @@ const _source = ref();
 const tabOptions = computed(() => {
   return [
     {
-      label: '手动输入',
+      label: $t('actions.FunctionItem.5425993-1'),
       component: props.data?.valueType?.type,
       key: 'fixed',
     },
     {
-      label: '内置参数',
+      label: $t('actions.FunctionItem.5425993-2'),
       component: 'tree',
       key: 'upper',
     },

@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        title="执行动作"
+        :title="$t('Notify.index.5425863-0')"
         visible
         :width="900"
         @cancel="onCancel"
@@ -9,22 +9,22 @@
     >
         <div class="steps-steps">
             <j-steps :current="current" size="small" @change="onChange">
-                <j-step title="通知方式" key="way" />
-                <j-step title="通知配置" key="config" />
-                <j-step title="通知模板" key="template" />
-                <j-step title="模板变量" key="variable" />
+                <j-step :title="$t('Notify.index.5425863-1')" key="way" />
+                <j-step :title="$t('Notify.index.5425863-2')" key="config" />
+                <j-step :title="$t('Notify.index.5425863-3')" key="template" />
+                <j-step :title="$t('Notify.index.5425863-4')" key="variable" />
             </j-steps>
         </div>
         <div class="steps-content">
             <j-form ref="actionForm" :model="formModel" layout="vertical">
                 <template v-if="current === 0">
                     <j-form-item
-                        label="应用"
+                        :label="$t('Notify.index.5425863-5')"
                         name="notifyType"
                         :rules="[
                             {
                                 required: true,
-                                message: '请选择通知方式',
+                                message: $t('Notify.index.5425863-6'),
                             },
                         ]"
                     >
@@ -71,13 +71,13 @@
         </div>
         <template #footer>
             <j-space>
-                <j-button v-if="current === 0" @click="onCancel">取消</j-button>
-                <j-button v-if="current > 0" @click="prev">上一步</j-button>
+                <j-button v-if="current === 0" @click="onCancel">{{ $t('Notify.index.5425863-7') }}</j-button>
+                <j-button v-if="current > 0" @click="prev">{{ $t('Notify.index.5425863-8') }}</j-button>
                 <j-button v-if="current < 3" type="primary" @click="next"
-                    >下一步</j-button
+                    >{{ $t('Notify.index.5425863-9') }}</j-button
                 >
                 <j-button v-if="current === 3" type="primary" @click="onOk"
-                    >确定</j-button
+                    >{{ $t('Notify.index.5425863-10') }}</j-button
                 >
             </j-space>
         </template>
@@ -93,6 +93,9 @@ import { onlyMessage } from '@/utils/comm';
 import Template from '@/api/notice/template';
 import { PropType } from 'vue';
 import { NotifyProps } from '../../../typings';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     value: {
@@ -176,13 +179,13 @@ const jumpStep = async (val: number) => {
         if (formModel.notifyType) {
             current.value = val;
         } else {
-            onlyMessage('请选择通知方式', 'error');
+            onlyMessage($t('Notify.index.5425863-6'), 'error');
         }
     } else if (val === 2) {
         if (formModel.notifierId) {
             current.value = val;
         } else {
-            onlyMessage('请选择通知配置', 'error');
+            onlyMessage($t('Notify.index.5425863-11'), 'error');
         }
     } else if (val === 3) {
         if (formModel.templateId) {
@@ -192,7 +195,7 @@ const jumpStep = async (val: number) => {
                 current.value = val;
             }
         } else {
-            onlyMessage('请选择通知模板', 'error');
+            onlyMessage($t('Notify.index.5425863-12'), 'error');
         }
     }
 };

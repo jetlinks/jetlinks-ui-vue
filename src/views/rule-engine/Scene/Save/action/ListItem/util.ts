@@ -1,3 +1,6 @@
+import i18n from '@/i18n'
+
+const $t = i18n.global.t
 import { getImage } from '@/utils/comm'
 import NoticeApi from '@/api/notice/config'
 import { getParams } from '@/views/rule-engine/Scene/Save/util'
@@ -101,21 +104,21 @@ export const handleFilterTerms = (terms: any) => {
 
 const termsValidator = (terms: any) => {
   if (!terms.column) {
-    return Promise.reject(new Error('请选择参数'));
+    return Promise.reject(new Error($t('ListItem.util.5425973-0')));
   }
 
   if (!terms.termType) {
-    return Promise.reject(new Error('请选择操作符'));
+    return Promise.reject(new Error($t('ListItem.util.5425973-1')));
   }
 
   if (terms.value.value === undefined) {
-    return Promise.reject(new Error('请选择或输入参数值'));
+    return Promise.reject(new Error($t('ListItem.util.5425973-2')));
   } else {
     if (
         isArray(terms.value.value) &&
         terms.value.value.some((_v: any) => _v === undefined) || terms.value.value === undefined
     ) {
-      return Promise.reject(new Error('请选择或输入参数值'));
+      return Promise.reject(new Error($t('ListItem.util.5425973-2')));
     }
   }
 
@@ -128,7 +131,7 @@ export const filterTermsValidator = (terms: any) => {
     const alarmTerms = terms.terms[1]
 
     if (!alarmTerms.value.value) {
-      return Promise.reject(new Error('请选择告警配置'))
+      return Promise.reject(new Error($t('ListItem.util.5425973-3')))
     }
     return termsValidator(realTerms)
   } else {

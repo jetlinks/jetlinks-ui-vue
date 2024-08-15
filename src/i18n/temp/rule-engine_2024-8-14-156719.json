@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"Timer.WhenOption.5425716-0": "每天",
+		"Timer.WhenOption.5425716-1": "{0}号"
+	},
+	"en": {
+		"Timer.WhenOption.5425716-0": "Every day",
+		"Timer.WhenOption.5425716-1": "day {0}"
+	}
+}

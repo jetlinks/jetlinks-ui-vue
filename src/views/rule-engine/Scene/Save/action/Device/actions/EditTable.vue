@@ -30,6 +30,9 @@
 <script lang="ts" setup>
 import { PropType } from 'vue';
 import FunctionItem from './FunctionItem.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const _props = defineProps({
     value: {
@@ -54,17 +57,17 @@ const emit = defineEmits(['update:value', 'update:columnMap']);
 
 const columns = [
     {
-        title: '参数名称',
+        title: $t('actions.EditTable.5425994-0'),
         dataIndex: 'name',
         with: '33%',
     },
     {
-        title: '类型',
+        title: $t('actions.EditTable.5425994-1'),
         dataIndex: 'valueType',
         with: '33%',
     },
     {
-        title: '值',
+        title: $t('actions.EditTable.5425994-2'),
         dataIndex: 'value',
         with: '34%',
     },

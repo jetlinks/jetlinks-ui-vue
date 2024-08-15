@@ -49,11 +49,11 @@
                     </div>
                     <j-row style="margin-top: 20px">
                         <j-col :span="12">
-                            <div class="card-item-content-text">设备类型</div>
+                            <div class="card-item-content-text">{{ $t('device.Device.54259100-0') }}</div>
                             <div>{{ slotProps.deviceType?.text }}</div>
                         </j-col>
                         <j-col :span="12">
-                            <div class="card-item-content-text">产品名称</div>
+                            <div class="card-item-content-text">{{ $t('device.Device.54259100-1') }}</div>
                             <Ellipsis style="width: 100%">
                                 {{ slotProps.productName }}
                             </Ellipsis>
@@ -69,6 +69,9 @@
 import { query, detail } from '@/api/device/instance';
 import { getImage } from '@/utils/comm';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
     (e: 'update:value', data: any): void;
@@ -106,7 +109,7 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
+        title: $t('device.Device.54259100-2'),
         dataIndex: 'name',
         search: {
             type: 'string',
@@ -114,7 +117,7 @@ const columns = [
         },
     },
     {
-        title: '创建时间',
+        title: $t('device.Device.54259100-3'),
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
@@ -123,16 +126,16 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('device.Device.54259100-4'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: $t('device.Device.54259100-5'), value: 'notActive' },
+                { label: $t('device.Device.54259100-6'), value: 'offline' },
+                { label: $t('device.Device.54259100-7'), value: 'online' },
             ],
         },
     },

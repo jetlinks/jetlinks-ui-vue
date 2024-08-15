@@ -11,7 +11,7 @@
 	"en": {
 		"Save.CardBox.4265310-0": "Related conditions",
 		"Save.CardBox.4265310-1": "Explain:",
-		"Save.CardBox.4265310-2": "The system time has arrived",
+		"Save.CardBox.4265310-2": "The system time triggers the scheduled task.",
 		"Save.CardBox.4265310-3": "When the system receives a manual trigger command, it triggers the scene",
 		"Save.CardBox.4265310-4": "The current alarm has been associated with:",
 		"Save.CardBox.4265310-5": "Invalid data, please save the scene again",

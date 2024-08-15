@@ -38,7 +38,7 @@
           :loading='loading'
           @click='save'
         >
-          保存
+          {{ $t('Save.index.542579-0') }}
         </PermissionButton>
       </div>
     </FullPage>
@@ -58,6 +58,9 @@ import { useMenuStore } from '@/store/menu'
 import { onlyMessage } from '@/utils/comm';
 import Description from './components/Description.vue'
 import {handleFeatures} from "@/views/rule-engine/Scene/Save/util";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore()
 const menuStore = useMenuStore()
@@ -89,7 +92,7 @@ const save = async () => {
       } else {
         menuStore.jumpPage('rule-engine/Scene');
       }
-      onlyMessage('操作成功');
+      onlyMessage($t('Save.index.542579-1'));
     }
   }
 }
