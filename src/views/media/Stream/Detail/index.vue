@@ -159,7 +159,7 @@
                                         </j-tooltip>
                                     </template>
                                     <j-input
-                                        placeholder="请输入RTP IP"
+                                        placeholder="请输入IP"
                                         v-model:value="
                                             formData.configuration.rtpIp
                                         "
@@ -173,7 +173,7 @@
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入端口',
+                                            message: '请输入RTP端口',
                                         },
                                     ]"
                                 >
