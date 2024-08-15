@@ -49,12 +49,14 @@ import { queryInvalidData } from '@/api/rule-engine/log';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import dayjs from 'dayjs';
+import { useMenuStore } from 'store/menu';
 const props = defineProps({
     goal: {
         type: String,
         default: 'device',
     },
 });
+const menuStory = useMenuStore();
 const { current } =
     props.goal === 'device' ? useInstanceStore() : useProductStore();
 const columns = props.goal === 'device' ? [
