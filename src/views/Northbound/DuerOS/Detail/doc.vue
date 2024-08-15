@@ -1,7 +1,7 @@
 <template>
     <div class="doc">
         <div class="url">
-            小度智能家居开放平台：
+            {{ $t('Detail.doc.613233-0') }}
             <a
                 href="https://dueros.baidu.com/dbp/bot/index#/iotopenplatform"
                 target="_blank"
@@ -10,22 +10,22 @@
                 https://dueros.baidu.com/dbp/bot/index#/iotopenplatform
             </a>
         </div>
-        <h1>1. 概述</h1>
+        <h1>{{ $t('Detail.doc.613233-1') }}</h1>
         <div>
-            DuerOS支持在家居场景下进行云端控制，该页面主要将平台的产品与DuerOS支持语音控制的产品进行映射，达到小度平台控制本平台设备的目的。
+            {{ $t('Detail.doc.613233-2') }}
         </div>
-        <h1>2. 操作步骤</h1>
+        <h1>{{ $t('Detail.doc.613233-3') }}</h1>
         <div>
-            <div>1、在百度小度技能平台创建技能，并授权。</div>
+            <div>{{ $t('Detail.doc.613233-4') }}</div>
             <div>
-                2、在物联网平台 系统管理--应用管理中配置应用完成与DuerOS的关联。
+                {{ $t('Detail.doc.613233-5') }}
             </div>
             <div class="image">
                 <j-image
                     width="100%"
                     :src="getImage('/cloud/dueros-doc.jpg')"
                 />
-                <div class="desc">新建DuerOS</div>
+                <div class="desc">{{ $t('Detail.doc.613233-6') }}</div>
             </div>
             <j-descriptions
                 bordered
@@ -33,24 +33,24 @@
                 :column="1"
                 :labelStyle="{ width: '100px' }"
             >
-                <j-descriptions-item label="参数">说明</j-descriptions-item>
-                <j-descriptions-item label="授权地址"
-                    >物联网平台的登录地址http://host:port/JetLinks.cn</j-descriptions-item
+                <j-descriptions-item :label="$t('Detail.doc.613233-7')">{{ $t('Detail.doc.613233-8') }}</j-descriptions-item>
+                <j-descriptions-item :label="$t('Detail.doc.613233-9')"
+                    >{{ $t('Detail.doc.613233-10') }}</j-descriptions-item
                 >
                 <j-descriptions-item label="Client_Id">
-                    请复制并填写物联网平台的appId
+                    {{ $t('Detail.doc.613233-11') }}
                 </j-descriptions-item>
                 <j-descriptions-item label="Scope">
-                    以空格分割的权限列表，若不传递此参数，代表请求用户的默认权限
+                    {{ $t('Detail.doc.613233-12') }}
                 </j-descriptions-item>
-                <j-descriptions-item label="Token地址">
-                    请复制并填写：HTTPS://host:port/api/v1/token
+                <j-descriptions-item :label="$t('Detail.doc.613233-13')">
+                    {{ $t('Detail.doc.613233-14') }}
                 </j-descriptions-item>
                 <j-descriptions-item label="ClientSecret">
-                    请复制并填写物联网平台的secureKey
+                    {{ $t('Detail.doc.613233-15') }}
                 </j-descriptions-item>
                 <j-descriptions-item label="WebService">
-                    请复制并填写：/dueros/product/_query
+                    {{ $t('Detail.doc.613233-16') }}
                 </j-descriptions-item>
             </j-descriptions>
             <div class="image">
@@ -58,7 +58,7 @@
                     width="100%"
                     :src="getImage('/cloud/dueros-doc1.png')"
                 />
-                <div class="desc">新建应用</div>
+                <div class="desc">{{ $t('Detail.doc.613233-17') }}</div>
             </div>
             <j-descriptions
                 bordered
@@ -66,40 +66,43 @@
                 :column="1"
                 :labelStyle="{ width: '100px' }"
             >
-                <j-descriptions-item label="参数">说明</j-descriptions-item>
+                <j-descriptions-item :label="$t('Detail.doc.613233-7')">{{ $t('Detail.doc.613233-8') }}</j-descriptions-item>
                 <j-descriptions-item label="appId">
-                    第三方应用唯一标识，物联网平台的自动生成
+                    {{ $t('Detail.doc.613233-18') }}
                 </j-descriptions-item>
                 <j-descriptions-item label="secureKey">
-                    secureKey 第三方应用唯一标识匹配的秘钥，物联网平台的自动生成
+                    {{ $t('Detail.doc.613233-19') }}
                 </j-descriptions-item>
-                <j-descriptions-item label="角色">
-                    为应用用户分配角色，根据绑定的角色，进行系统菜单赋权
+                <j-descriptions-item :label="$t('Detail.doc.613233-20')">
+                    {{ $t('Detail.doc.613233-21') }}
                 </j-descriptions-item>
-                <j-descriptions-item label="组织">
-                    为应用用户分配所属组织，根据绑定的组织，进行数据隔离
+                <j-descriptions-item :label="$t('Detail.doc.613233-22')">
+                    {{ $t('Detail.doc.613233-23') }}
                 </j-descriptions-item>
                 <j-descriptions-item label="redirectUrl">
-                    请复制并填写小度平台的回调地址
+                    {{ $t('Detail.doc.613233-24') }}
                 </j-descriptions-item>
-                <j-descriptions-item label="IP白名单">
-                    允许指定IP地址访问
+                <j-descriptions-item :label="$t('Detail.doc.613233-25')">
+                    {{ $t('Detail.doc.613233-26') }}
                 </j-descriptions-item>
             </j-descriptions>
-            <div>3、登录物联网平台，进行平台内产品与DuerOS产品的数据映射。</div>
+            <div>{{ $t('Detail.doc.613233-27') }}</div>
             <div>
-                4、智能家居用户通过物联网平台中的用户，登录小度APP，获取平台内当前用户的所属设备。获取后即可进行语音控制。
+                {{ $t('Detail.doc.613233-28') }}
             </div>
         </div>
-        <h1>配置说明</h1>
+        <h1>{{ $t('Detail.doc.613233-29') }}</h1>
         <div>
-            “设备类型”为DuerOS平台拟定的标准规范，设备类型将决定【动作映射】中“动作”的下拉选项，以及【属性映射】中“Dueros属性”的下拉选项
+            {{ $t('Detail.doc.613233-30') }}
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 </script>
 
 <style lang="less" scoped>

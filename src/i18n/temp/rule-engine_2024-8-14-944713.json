@@ -78,7 +78,7 @@
 		"Save.utils.426526-35": "Applicable to third-party platforms issuing instructions to IoT platforms to control devices",
 		"Save.utils.426526-36": "Timed trigger",
 		"Save.utils.426526-37": "Suitable for regularly executing fixed tasks",
-		"Save.utils.426526-38": "Device triggered",
+		"Save.utils.426526-38": "Device trigger",
 		"Save.utils.426526-39": "Applicable to executing specified actions when device data or behavior meets triggering conditions",
 		"Save.utils.426526-40": "Condition {0}"
 	}

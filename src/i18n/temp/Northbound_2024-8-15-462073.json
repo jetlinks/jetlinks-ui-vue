@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"command.EditTable.613236-0": "请选择",
+		"command.EditTable.613236-1": "请输入",
+		"command.EditTable.613236-2": "是",
+		"command.EditTable.613236-3": "否",
+		"command.EditTable.613236-4": "参数名称",
+		"command.EditTable.613236-5": "类型",
+		"command.EditTable.613236-6": "值"
+	},
+	"en": {
+		"command.EditTable.613236-0": "Please choose",
+		"command.EditTable.613236-1": "Please enter",
+		"command.EditTable.613236-2": "true",
+		"command.EditTable.613236-3": "false",
+		"command.EditTable.613236-4": "Parameter Name",
+		"command.EditTable.613236-5": "Type",
+		"command.EditTable.613236-6": "Value"
+	}
+}

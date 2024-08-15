@@ -5,8 +5,8 @@
 		"Scene.typings.542571-2": "设备触发"
 	},
 	"en": {
-		"Scene.typings.542571-0": "Manually triggered",
+		"Scene.typings.542571-0": "Manually trigger",
 		"Scene.typings.542571-1": "Timed trigger",
-		"Scene.typings.542571-2": "Device triggered"
+		"Scene.typings.542571-2": "Device trigger"
 	}
 }

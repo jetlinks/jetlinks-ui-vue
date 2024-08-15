@@ -21,13 +21,16 @@
 <script setup>
 import Tree from './Tree/index.vue';
 import Detail from './Detail/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const params = ref({});
 const current = ref();
 const TreeRef = ref();
 
 const columns = [
     {
-        title: '名称',
+        title: $t('AliCloud.index.613237-0'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -35,7 +38,7 @@ const columns = [
         },
     },
     {
-        title: '网桥产品',
+        title: $t('AliCloud.index.613237-1'),
         dataIndex: 'bridgeProductName',
         key: 'bridgeProductName',
         search: {
@@ -43,7 +46,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('AliCloud.index.613237-2'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -52,15 +55,15 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('AliCloud.index.613237-3'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '正常', value: 'enabled' },
-                { label: '禁用', value: 'disabled' },
+                { label: $t('AliCloud.index.613237-4'), value: 'enabled' },
+                { label: $t('AliCloud.index.613237-5'), value: 'disabled' },
             ],
         },
     },
