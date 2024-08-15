@@ -105,7 +105,7 @@
                                 </j-form-item>
                                 <j-row :gutter="10">
                                     <j-col :span="12">
-                                        <j-form-item label="收信部门">
+                                        <j-form-item label="收信人部门">
                                             <ToOrg
                                                 v-model:toParty="
                                                     formData.template
@@ -295,7 +295,7 @@
                                     </j-form-item>
                                 </j-col>
                                 <j-col :span="12">
-                                    <j-form-item label="收信部门">
+                                    <j-form-item label="收信人部门">
                                         <ToOrg
                                             v-model:toParty="
                                                 formData.template.toParty
@@ -309,7 +309,7 @@
                             <j-form-item>
                                 <template #label>
                                     <span>
-                                        标签推送
+                                        收信人标签
                                         <j-tooltip
                                             title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模板发送通知时进行指定"
                                         >
