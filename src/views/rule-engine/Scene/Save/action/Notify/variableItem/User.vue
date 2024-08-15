@@ -222,7 +222,6 @@ const treeData = ref<any[]>([
 const mySource = ref<string>('relation');
 const treeDataMap = new Map()
 
-const index = ref()
 
 const getRelationUsers = async (notifyType: string, notifierId: string) => {
     let resp = undefined;
