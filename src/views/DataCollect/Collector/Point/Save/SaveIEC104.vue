@@ -1,45 +1,45 @@
 <template>
-    <j-modal :title="data.id ? '编辑' : '新增'" visible @cancel="handleCancel">
+    <j-modal :title="data.id ? $t('Save.SaveIEC104.3217215-0') : $t('Save.SaveIEC104.3217215-1')" visible @cancel="handleCancel">
         <j-form :model="formData" layout="vertical" ref="formRef">
             <j-form-item
-                label="点位名称"
+                :label="$t('Save.SaveIEC104.3217215-2')"
                 name="name"
                 :rules="rules.name"
             >
                 <j-input
-                    placeholder="请输入点位名称"
+                    :placeholder="$t('Save.SaveIEC104.3217215-3')"
                     v-model:value="formData.name"
                     :maxlength="64"
                 />
             </j-form-item>
             <j-form-item
-                label="类型标识"
+                :label="$t('Save.SaveIEC104.3217215-4')"
                 :name="['configuration', 'typeIdentifierName']"
                 :rules="rules.configuration.typeIdentifierName"
             >
                 <j-select
                     v-model:value="formData.configuration.typeIdentifierName"
                     :options="dataTypeList"
-                    placeholder="请选择类型标识"
+                    :placeholder="$t('Save.SaveIEC104.3217215-5')"
                     allowClear
                     show-search
                 />
             </j-form-item>
             <j-form-item
-                label="地址"
+                :label="$t('Save.SaveIEC104.3217215-6')"
                 :name="['configuration', 'pointAddress']"
                 :rules="rules.configuration.pointAddress"
             >
                 <j-input
                     v-model:value="formData.configuration.pointAddress"
-                    placeholder="请输入地址"
+                    :placeholder="$t('Save.SaveIEC104.3217215-7')"
                     :min="1"
                     :max="65535"
                     :precision="0"
                 />
             </j-form-item>
             <j-form-item
-                label="访问类型"
+                :label="$t('Save.SaveIEC104.3217215-8')"
                 name="accessModes"
                 :rules="rules.accessModes"
             >
@@ -48,9 +48,9 @@
                     :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="[
-                        { label: '读', value: 'read' },
-                        { label: '写', value: 'write' },
-                        { label: '订阅', value: 'subscribe' },
+                        { label: $t('Save.SaveIEC104.3217215-9'), value: 'read' },
+                        { label: $t('Save.SaveIEC104.3217215-10'), value: 'write' },
+                        { label: $t('Save.SaveIEC104.3217215-11'), value: 'subscribe' },
                     ]"
                     :column="3"
                 />
@@ -61,25 +61,25 @@
             }]">
                 <template #label>
                     <j-space>
-                        <span>点位死区</span><span class="explain">点位死区范围内的异常数据将被过滤（请勿配置非数值类型）</span>
+                        <span>{{ $t('Save.SaveIEC104.3217215-12') }}</span><span class="explain">{{ $t('Save.SaveIEC104.3217215-13') }}</span>
                     </j-space>
                 </template>
                 <DeathArea v-model:value="formData.configuration.terms" />
             </j-form-item>
-            <j-form-item label="轮询任务" :name="['configuration', 'interval']" :rules="rules.configuration.interval">
+            <j-form-item :label="$t('Save.SaveIEC104.3217215-14')" :name="['configuration', 'interval']" :rules="rules.configuration.interval">
                 <p>
-                    采集频率<span
+                    {{ $t('Save.SaveIEC104.3217215-15') }}<span
                         style="
                             margin-left: 5px;
                             color: #9d9ea1;
                             font-size: 12px;
                         "
-                        >采集频率为0时不执行轮询任务</span
+                        >{{ $t('Save.SaveIEC104.3217215-16') }}</span
                     >
                 </p>
                 <j-input-number
                     style="width: 100%"
-                    placeholder="请输入采集频率"
+                    :placeholder="$t('Save.SaveIEC104.3217215-17')"
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
                     :max="2147483648"
@@ -89,13 +89,13 @@
             <j-form-item name="features">
                 <j-checkbox-group v-model:value="formData.features">
                     <j-checkbox value="changedOnly"
-                        >只推送变化的数据</j-checkbox
+                        >{{ $t('Save.SaveIEC104.3217215-18') }}</j-checkbox
                     >
                 </j-checkbox-group>
             </j-form-item>
-            <j-form-item label="说明" name="description">
+            <j-form-item :label="$t('Save.SaveIEC104.3217215-19')" name="description">
                 <j-textarea
-                    placeholder="请输入说明"
+                    :placeholder="$t('Save.SaveIEC104.3217215-20')"
                     v-model:value="formData.description"
                     :maxlength="200"
                     :rows="3"
@@ -104,7 +104,7 @@
             </j-form-item>
         </j-form>
         <template #footer>
-            <j-button @click="handleCancel">取消</j-button>
+            <j-button @click="handleCancel">{{ $t('Save.SaveIEC104.3217215-21') }}</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -115,7 +115,7 @@
                     data.id ? 'update' : 'add'
                 }`"
             >
-                确认
+                {{ $t('Save.SaveIEC104.3217215-22') }}
             </PermissionButton>
         </template>
     </j-modal>
@@ -127,6 +127,9 @@ import {
 } from '@/api/data-collect/collector';
 import { randomString } from '@/utils/utils';
 import DeathArea from './DeathArea.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
@@ -139,9 +142,9 @@ const emit = defineEmits(['change']);
 const loading = ref(false);
 const formRef = ref()
 const dataTypeList = ref([
-    { label: '单点开关量', value: 'onePointTelecontrol' },
-    { label: '双点开关量', value: 'twoPointTelecontrol' },
-    { label: '归一化值', value: 'prefabActivationOneParameter' },
+    { label: $t('Save.SaveIEC104.3217215-23'), value: 'onePointTelecontrol' },
+    { label: $t('Save.SaveIEC104.3217215-24'), value: 'twoPointTelecontrol' },
+    { label: $t('Save.SaveIEC104.3217215-25'), value: 'prefabActivationOneParameter' },
 ]);
 const formData = ref({
     name: props.data.name,
@@ -159,7 +162,7 @@ const rules = {
     name: [
         {
             required: true,
-            message: '请输入名称',
+            message: $t('Save.SaveIEC104.3217215-26'),
             trigger: 'blur',
         },
     ],
@@ -167,21 +170,21 @@ const rules = {
         typeIdentifierName: [
             {
                 required: true,
-                message: '请输入类型标识',
+                message: $t('Save.SaveIEC104.3217215-27'),
                 trigger: 'change',
             },
         ],
         pointAddress: [
             {
                 required: true,
-                message: '请输入地址',
+                message: $t('Save.SaveIEC104.3217215-7'),
                 trigger: 'blur',
             },
         ],
         interval: [
             {
                 required: true,
-                message: '请输入采集频率',
+                message: $t('Save.SaveIEC104.3217215-17'),
                 trigger: 'change',
             },
         ],
@@ -189,7 +192,7 @@ const rules = {
     accessModes: [
         {
             required: true,
-            message: '请选择访问类型',
+            message: $t('Save.SaveIEC104.3217215-28'),
             trigger: 'change',
         },
     ],
@@ -203,22 +206,22 @@ const Area = (_: any, value: any): Promise<any> =>
         if (value?.length === 0) {
             return resolve('')
         } else if (value?.length === 1) {
-            return value[0].value && value[0].termType ? resolve('') : reject('请配置点位死区');
+            return value[0].value && value[0].termType ? resolve('') : reject($t('Save.SaveIEC104.3217215-29'));
         } else {
             if (value?.[0].column === 'currentValue') {
                 // value.forEach((item:any) => {
                 //     if(item.termType && item.value){
                 //        return resolve('')
                 //     }else{
-                //         return reject('请配置点位死区')
+                //         return reject($t('Save.SaveIEC104.3217215-29'))
                 //     }
                 // });
                 const pass = value.every((item: any) => item.termType && item.value)
-                return pass ? resolve('') : reject('请配置点位死区')
+                return pass ? resolve('') : reject($t('Save.SaveIEC104.3217215-29'))
             } else {
                 value.forEach((item: any) => {
                     if (item.column === `this['currentValue'] - this['lastValue']*init/100`) {
-                        return reject('请配置点位死区')
+                        return reject($t('Save.SaveIEC104.3217215-29'))
                     } else {
                         return resolve('')
                     }

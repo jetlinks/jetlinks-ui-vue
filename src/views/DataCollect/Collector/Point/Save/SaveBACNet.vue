@@ -1,22 +1,22 @@
 <template>
-    <j-modal :title="data.id ? '编辑' : '新增'" visible @cancel="handleCancel">
+    <j-modal :title="data.id ? $t('Save.SaveBACNet.3217216-0') : $t('Save.SaveBACNet.3217216-1')" visible @cancel="handleCancel">
         <j-form :model="formData" layout="vertical" ref="formRef">
-            <j-form-item label="点位名称" name="name" :rules="rules.name">
+            <j-form-item :label="$t('Save.SaveBACNet.3217216-2')" name="name" :rules="rules.name">
                 <j-input
-                    placeholder="请输入点位名称"
+                    :placeholder="$t('Save.SaveBACNet.3217216-3')"
                     v-model:value="formData.name"
                     :maxlength="64"
                 />
             </j-form-item>
-            <j-form-item label="对象ID" :name="['configuration', 'ObjectId']">
+            <j-form-item :label="$t('Save.SaveBACNet.3217216-4')" :name="['configuration', 'ObjectId']">
                 <j-card>
-                    <j-form-item label="对象类型">
+                    <j-form-item :label="$t('Save.SaveBACNet.3217216-5')">
                         <j-input
                             v-model:value="formData.configuration.objectId.type"
                             disabled
                         ></j-input>
                     </j-form-item>
-                    <j-form-item label="对象实例号">
+                    <j-form-item :label="$t('Save.SaveBACNet.3217216-6')">
                         <j-input
                             v-model:value="
                                 formData.configuration.objectId.instanceNumber
@@ -27,7 +27,7 @@
                 </j-card>
             </j-form-item>
             <j-form-item
-                label="属性ID"
+                :label="$t('Save.SaveBACNet.3217216-7')"
                 :name="['configuration', 'propertyId']"
                 :rules="rules.configuration.pointAddress"
             >
@@ -36,7 +36,7 @@
                     disabled
                 ></j-input>
             </j-form-item>
-            <j-form-item label="值类型" :name="['configuration', 'valueType']">
+            <j-form-item :label="$t('Save.SaveBACNet.3217216-8')" :name="['configuration', 'valueType']">
                 <j-select v-model:value="formData.configuration.valueType">
                     <j-select-option
                         v-for="item in bacnetValueType"
@@ -47,7 +47,7 @@
                 </j-select>
             </j-form-item>
             <j-form-item
-                label="访问类型"
+                :label="$t('Save.SaveBACNet.3217216-9')"
                 name="accessModes"
                 :rules="rules.accessModes"
             >
@@ -56,9 +56,9 @@
                     :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="[
-                        { label: '读', value: 'read' },
-                        { label: '写', value: 'write' },
-                        { label: '订阅', value: 'subscribe' },
+                        { label: $t('Save.SaveBACNet.3217216-10'), value: 'read' },
+                        { label: $t('Save.SaveBACNet.3217216-11'), value: 'write' },
+                        { label: $t('Save.SaveBACNet.3217216-12'), value: 'subscribe' },
                     ]"
                     :column="3"
                 />
@@ -74,32 +74,32 @@
             >
                 <template #label>
                     <j-space>
-                        <span>点位死区</span
+                        <span>{{ $t('Save.SaveBACNet.3217216-13') }}</span
                         ><span class="explain"
-                            >点位死区范围内的异常数据将被过滤（请勿配置非数值类型）</span
+                            >{{ $t('Save.SaveBACNet.3217216-14') }}</span
                         >
                     </j-space>
                 </template>
                 <DeathArea v-model:value="formData.configuration.terms" />
             </j-form-item>
             <j-form-item
-                label="轮询任务"
+                :label="$t('Save.SaveBACNet.3217216-15')"
                 :name="['configuration', 'interval']"
                 :rules="rules.configuration.interval"
             >
                 <p>
-                    采集频率<span
+                    {{ $t('Save.SaveBACNet.3217216-16') }}<span
                         style="
                             margin-left: 5px;
                             color: #9d9ea1;
                             font-size: 12px;
                         "
-                        >采集频率为0时不执行轮询任务</span
+                        >{{ $t('Save.SaveBACNet.3217216-17') }}</span
                     >
                 </p>
                 <j-input-number
                     style="width: 100%"
-                    placeholder="请输入采集频率"
+                    :placeholder="$t('Save.SaveBACNet.3217216-18')"
                     v-model:value="formData.configuration.interval"
                     addon-after="ms"
                     :max="2147483648"
@@ -109,13 +109,13 @@
             <j-form-item name="features">
                 <j-checkbox-group v-model:value="formData.features">
                     <j-checkbox value="changedOnly"
-                        >只推送变化的数据</j-checkbox
+                        >{{ $t('Save.SaveBACNet.3217216-19') }}</j-checkbox
                     >
                 </j-checkbox-group>
             </j-form-item>
-            <j-form-item label="说明" name="description">
+            <j-form-item :label="$t('Save.SaveBACNet.3217216-20')" name="description">
                 <j-textarea
-                    placeholder="请输入说明"
+                    :placeholder="$t('Save.SaveBACNet.3217216-21')"
                     v-model:value="formData.description"
                     :maxlength="200"
                     :rows="3"
@@ -124,7 +124,7 @@
             </j-form-item>
         </j-form>
         <template #footer>
-            <j-button @click="handleCancel">取消</j-button>
+            <j-button @click="handleCancel">{{ $t('Save.SaveBACNet.3217216-22') }}</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -135,7 +135,7 @@
                     data.id ? 'update' : 'add'
                 }`"
             >
-                确认
+                {{ $t('Save.SaveBACNet.3217216-23') }}
             </PermissionButton>
         </template>
     </j-modal>
@@ -148,6 +148,9 @@ import {
 } from '@/api/data-collect/collector';
 import { randomString } from '@/utils/utils';
 import DeathArea from './DeathArea.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
@@ -175,7 +178,7 @@ const rules = {
     name: [
         {
             required: true,
-            message: '请输入名称',
+            message: $t('Save.SaveBACNet.3217216-24'),
             trigger: 'blur',
         },
     ],
@@ -183,21 +186,21 @@ const rules = {
         typeIdentifierName: [
             {
                 required: true,
-                message: '请输入类型标识',
+                message: $t('Save.SaveBACNet.3217216-25'),
                 trigger: 'change',
             },
         ],
         pointAddress: [
             {
                 required: true,
-                message: '请输入地址',
+                message: $t('Save.SaveBACNet.3217216-26'),
                 trigger: 'blur',
             },
         ],
         interval: [
             {
                 required: true,
-                message: '请输入采集频率',
+                message: $t('Save.SaveBACNet.3217216-18'),
                 trigger: 'change',
             },
         ],
@@ -205,7 +208,7 @@ const rules = {
     accessModes: [
         {
             required: true,
-            message: '请选择访问类型',
+            message: $t('Save.SaveBACNet.3217216-27'),
             trigger: 'change',
         },
     ],
@@ -221,26 +224,26 @@ const Area = (_: any, value: any): Promise<any> =>
         } else if (value?.length === 1) {
             return value[0].value && value[0].termType
                 ? resolve('')
-                : reject('请配置点位死区');
+                : reject($t('Save.SaveBACNet.3217216-28'));
         } else {
             if (value?.[0].column === 'currentValue') {
                 // value.forEach((item:any) => {
                 //     if(item.termType && item.value){
                 //        return resolve('')
                 //     }else{
-                //         return reject('请配置点位死区')
+                //         return reject($t('Save.SaveBACNet.3217216-28'))
                 //     }
                 // });
                 const pass = value.every(
                     (item: any) => item.termType && item.value,
                 );
-                return pass ? resolve('') : reject('请配置点位死区');
+                return pass ? resolve('') : reject($t('Save.SaveBACNet.3217216-28'));
             } else {
                 const validate = value.find((item: any) => {
                     item.column ===
                         `this['currentValue'] - this['lastValue']*init/100`;
                 });
-                return validate ? reject('请配置点位死区') : resolve('');
+                return validate ? reject($t('Save.SaveBACNet.3217216-28')) : resolve('');
             }
         }
     });

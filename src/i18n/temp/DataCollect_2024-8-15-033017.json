@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"ScanBacnet.Tree.321715-0": "数据源",
+		"ScanBacnet.Tree.321715-1": "全部撤销",
+		"ScanBacnet.Tree.321715-2": "全部添加"
+	},
+	"en": {
+		"ScanBacnet.Tree.321715-0": "Data source",
+		"ScanBacnet.Tree.321715-1": "All revoked",
+		"ScanBacnet.Tree.321715-2": "Add all"
+	}
+}

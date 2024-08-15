@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"ScanBacnet.index.3217211-0": "扫描",
+		"ScanBacnet.index.3217211-1": "取消",
+		"ScanBacnet.index.3217211-2": "确认"
+	},
+	"en": {
+		"ScanBacnet.index.3217211-0": "Scanning",
+		"ScanBacnet.index.3217211-1": "Cancel",
+		"ScanBacnet.index.3217211-2": "Confirm"
+	}
+}

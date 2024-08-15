@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Tree.index.3217321-0": "请输入",
+		"Tree.index.3217321-1": "新增采集器",
+		"Tree.index.3217321-2": "编辑",
+		"Tree.index.3217321-3": "启用",
+		"Tree.index.3217321-4": "禁用",
+		"Tree.index.3217321-5": "确认启用？",
+		"Tree.index.3217321-6": "确认禁用？",
+		"Tree.index.3217321-7": "请先禁用，再删除",
+		"Tree.index.3217321-8": "删除",
+		"Tree.index.3217321-9": "该操作将会删除下属点位，确定删除？",
+		"Tree.index.3217321-10": "暂无数据",
+		"Tree.index.3217321-11": "全部",
+		"Tree.index.3217321-12": "操作成功"
+	},
+	"en": {
+		"Tree.index.3217321-0": "Please enter",
+		"Tree.index.3217321-1": "Add collector",
+		"Tree.index.3217321-2": "Edit",
+		"Tree.index.3217321-3": "Enable",
+		"Tree.index.3217321-4": "Disable",
+		"Tree.index.3217321-5": "Confirm activation?",
+		"Tree.index.3217321-6": "Are you sure to disable?",
+		"Tree.index.3217321-7": "Please disable first, then delete",
+		"Tree.index.3217321-8": "Delete",
+		"Tree.index.3217321-9": "This operation will delete subordinate points. Are you sure to delete them?",
+		"Tree.index.3217321-10": "No data available at the moment",
+		"Tree.index.3217321-11": "all",
+		"Tree.index.3217321-12": "Operation successful"
+	}
+}

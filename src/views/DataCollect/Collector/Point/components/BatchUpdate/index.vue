@@ -1,14 +1,13 @@
 <template>
     <j-modal
-        title="批量编辑"
+        :title="$t('BatchUpdate.index.3217220-0')"
         :visible="true"
         width="700px"
         @cancel="handleCancel"
         :destroyOnClose="true"
     >
         <div class="sizeText">
-            将批量修改
-            {{ data.length }} 条数据的【{{ labelName.join(',') }}】
+            {{ $t('BatchUpdate.index.3217220-1',[data.length,labelName.join(',')]) }}
         </div>
         <j-form
             class="form"
@@ -18,11 +17,11 @@
             autocomplete="off"
             ref="formRef"
         >
-            <j-form-item label="值类型" v-if="provider === 'BACNetIp'">
+            <j-form-item :label="$t('BatchUpdate.index.3217220-3')" v-if="provider === 'BACNetIp'">
                 <j-select
                     v-model:value="formData.valueType"
                     allowClear
-                    placeholder="请选择值类型"
+                    :placeholder="$t('BatchUpdate.index.3217220-4')"
                 >
                     <j-select-option
                         v-for="item in bacnetValueType"
@@ -32,15 +31,15 @@
                     >
                 </j-select>
             </j-form-item>
-            <j-form-item label="访问类型" name="accessModes">
+            <j-form-item :label="$t('BatchUpdate.index.3217220-5')" name="accessModes">
                 <j-card-select
                     multiple
                     :showImage="false"
                     v-model:value="formData.accessModes"
                     :options="[
-                        { label: '读', value: 'read' },
-                        { label: '写', value: 'write' },
-                        { label: '订阅', value: 'subscribe' },
+                        { label: $t('BatchUpdate.index.3217220-6'), value: 'read' },
+                        { label: $t('BatchUpdate.index.3217220-7'), value: 'write' },
+                        { label: $t('BatchUpdate.index.3217220-8'), value: 'subscribe' },
                     ]"
                 />
             </j-form-item>
@@ -49,14 +48,14 @@
                 :rules="[
                     {
                         pattern: regOnlyNumber,
-                        message: '请输入0或者正整数',
+                        message: $t('BatchUpdate.index.3217220-9'),
                     },
                 ]"
             >
                 <template #label>
                     <span>
-                        采集频率
-                        <j-tooltip title="采集频率为0时不执行轮询任务">
+                        {{ $t('BatchUpdate.index.3217220-10') }}
+                        <j-tooltip :title="$t('BatchUpdate.index.3217220-11')">
                             <AIcon
                                 type="QuestionCircleOutlined"
                                 style="margin-left: 2px"
@@ -66,7 +65,7 @@
                 </template>
                 <j-input-number
                     style="width: 100%"
-                    placeholder="请输入采集频率"
+                    :placeholder="$t('BatchUpdate.index.3217220-12')"
                     v-model:value="formData.interval"
                     addon-after="ms"
                     :max="2147483648"
@@ -74,19 +73,19 @@
                     :precision="0"
                 />
             </j-form-item>
-            <j-form-item label="推送控制">
+            <j-form-item :label="$t('BatchUpdate.index.3217220-13')">
                 <a-switch v-model:checked="formData.pushControl"></a-switch>
             </j-form-item>
             <j-form-item :name="['features']" v-if="formData.pushControl"> 
                 <j-checkbox-group v-model:value="formData.features">
                     <j-checkbox value="changedOnly" name="type"
-                        >只推送变化的数据</j-checkbox
+                        >{{ $t('BatchUpdate.index.3217220-14') }}</j-checkbox
                     >
                 </j-checkbox-group>
             </j-form-item>
         </j-form>
         <template #footer>
-            <j-button key="back" @click="handleCancel">取消</j-button>
+            <j-button key="back" @click="handleCancel">{{ $t('BatchUpdate.index.3217220-15') }}</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -95,7 +94,7 @@
                 style="margin-left: 8px"
                 :hasPermission="`DataCollect/Collector:update`"
             >
-                确认
+                {{ $t('BatchUpdate.index.3217220-16') }}
             </PermissionButton>
         </template>
     </j-modal>
@@ -108,6 +107,9 @@ import {
 } from '@/api/data-collect/collector';
 import { cloneDeep, isObject , omit } from 'lodash-es';
 import { regOnlyNumber } from '../../../data';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -208,19 +210,19 @@ watch(
 const labelName = computed(() => {
     const arr = [];
     if (formData.value.accessModes.length) {
-        arr.push('访问类型');
+        arr.push($t('BatchUpdate.index.3217220-5'));
     }
     if (!!formData.value.interval) {
-        arr.push('采集频率');
+        arr.push($t('BatchUpdate.index.3217220-10'));
     }
     if (formData.value.features.length) {
-        arr.push('只推送变化的数据');
+        arr.push($t('BatchUpdate.index.3217220-14'));
     }
     if (formData.value.type) {
-        arr.push('数据类型');
+        arr.push($t('BatchUpdate.index.3217220-17'));
     }
     if (formData.value.valueType) {
-        arr.push('值类型');
+        arr.push($t('BatchUpdate.index.3217220-3'));
     }
     return arr;
 });
