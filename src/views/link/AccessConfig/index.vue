@@ -38,7 +38,7 @@
                             :actions="getActions(slotProps)"
                             v-bind="slotProps"
                             :status="slotProps.state.value"
-                            :statusText="slotProps.state.text"
+                            :statusText="slotProps.state.value==='enabled'?$t('AccessConfig.index.428280-6'):$t('AccessConfig.index.428280-5')"
                             :statusNames="{
                                 enabled: 'processing',
                                 disabled: 'error',

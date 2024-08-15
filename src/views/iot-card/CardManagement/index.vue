@@ -50,7 +50,13 @@
                         v-bind="slotProps"
                         :active="_selectedRowKeys.includes(slotProps.id)"
                         :status="slotProps.cardStateType?.value"
-                        :statusText="slotProps.cardStateType?.text"
+                        :statusText="
+                        slotProps.cardStateType?.value==='notReady'?$t('CardManagement.index.237321-18'):
+                        slotProps.cardStateType?.value==='error'?$t('CardManagement.index.237321-19'):
+                        slotProps.cardStateType?.value==='using'?$t('CardManagement.index.237321-20'):
+                        slotProps.cardStateType?.value==='toBeActivated'?$t('CardManagement.index.237321-21'):
+                        slotProps.cardStateType?.value==='deactivate'?$t('CardManagement.index.237321-22'):
+                        $t('Cascade.index.755836-23')"
                         :statusNames="{
                             using: 'processing',
                             toBeActivated: 'default',
@@ -613,14 +619,14 @@ const getActions = (
                     : 'action',
             text:
                 data.cardStateType?.value === 'toBeActivated'
-                    ? $t('CardManagement.index.237321-20')
+                    ? $t('CardManagement.index.237321-72')
                     : data.cardStateType?.value === 'deactivate'
                     ? $t('CardManagement.index.237321-52')
                     : $t('CardManagement.index.237321-53'),
             tooltip: {
                 title:
                     data.cardStateType?.value === 'toBeActivated'
-                        ? $t('CardManagement.index.237321-20')
+                        ? $t('CardManagement.index.237321-72')
                         : data.cardStateType?.value === 'deactivate'
                         ? $t('CardManagement.index.237321-52')
                         : $t('CardManagement.index.237321-53'),

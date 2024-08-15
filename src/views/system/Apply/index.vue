@@ -41,7 +41,7 @@
                             :actions="table.getActions(slotProps, 'card')"
                             v-bind="slotProps"
                             :status="slotProps.state?.value"
-                            :statusText="slotProps.state?.text"
+                            :statusText="slotProps.state?.value==='enabled'?$t('Apply.index.996228-6'):$t('Apply.index.996228-7')"
                             :statusNames="{
                                 enabled: 'processing',
                                 disabled: 'error',
@@ -374,9 +374,9 @@ const table = {
             {
                 permission: `${permission}:action`,
                 key: 'action',
-                text: disabled ? $t('Apply.index.996228-7') : $t('Apply.index.996228-11'),
+                text: disabled ? $t('Apply.index.996228-22') : $t('Apply.index.996228-11'),
                 tooltip: {
-                    title: disabled ? $t('Apply.index.996228-7') : $t('Apply.index.996228-11'),
+                    title: disabled ? $t('Apply.index.996228-22') : $t('Apply.index.996228-11'),
                 },
                 popConfirm: {
                     title: `${disabled ? $t('Apply.index.996228-12') : $t('Apply.index.996228-13')}`,

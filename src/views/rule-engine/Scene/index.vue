@@ -28,7 +28,7 @@
                     @click="handleView(slotProps.id, slotProps.triggerType)"
                     :actions="getActions(slotProps, 'card')"
                     :status="slotProps.state?.value"
-                    :statusText="slotProps.state?.text"
+                    :statusText="slotProps.state.value==='started'?$t('Instance.index.052151-1'):$t('Instance.index.052151-2')"
                     :statusNames="{
                         started: 'processing',
                         disable: 'error',

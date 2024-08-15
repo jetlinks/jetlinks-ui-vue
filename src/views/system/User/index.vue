@@ -74,7 +74,7 @@
                                 :hasPermission="`${permission}:action`"
                                 type="link"
                                 :tooltip="{
-                                    title: `${ slotProps.status ? $t('User.index.363800-2') : $t('User.index.363800-4')
+                                    title: `${ slotProps.status ? $t('User.index.363800-20') : $t('User.index.363800-4')
                                     }`,
                                 }"
                                 :popConfirm="{

@@ -52,7 +52,7 @@
 		"Permission.index.616688-21": "Export successful",
 		"Permission.index.616688-22": "Export error",
 		"Permission.index.616688-23": "Operation successful",
-		"Permission.index.616688-24": "enable",
-		"Permission.index.616688-25": "disable"
+		"Permission.index.616688-24": "enabled",
+		"Permission.index.616688-25": "disabled"
 	}
 }

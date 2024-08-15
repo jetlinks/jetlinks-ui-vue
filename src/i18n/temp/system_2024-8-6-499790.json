@@ -21,7 +21,8 @@
 		"Apply.index.996228-18": "集成菜单",
 		"Apply.index.996228-19": "请先启用",
 		"Apply.index.996228-20": "赋权",
-		"Apply.index.996228-21": "查看API"
+		"Apply.index.996228-21": "查看API",
+		"Apply.index.996228-22": "禁用"
 	},
 	"en": {
 		"Apply.index.996228-0": "Add",
@@ -45,6 +46,7 @@
 		"Apply.index.996228-18": "Integrated menu",
 		"Apply.index.996228-19": "Please activate first",
 		"Apply.index.996228-20": "Empowerment ",
-		"Apply.index.996228-21": "View API"
+		"Apply.index.996228-21": "View API",
+		"Apply.index.996228-22": "Disable"
 	}
 }

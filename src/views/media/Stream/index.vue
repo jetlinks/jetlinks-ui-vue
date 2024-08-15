@@ -38,7 +38,7 @@
                             :actions="getActions(slotProps)"
                             v-bind="slotProps"
                             :status="slotProps.state.value"
-                            :statusText="slotProps.state.text"
+                            :statusText="slotProps.state.value==='enabled'?$t('Stream.index.217871-5'):$t('Stream.index.217871-4')"
                             :statusNames="{
                                 enabled: 'processing',
                                 disabled: 'error',

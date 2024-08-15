@@ -71,7 +71,8 @@
 		"CardManagement.index.237321-68": "确认复机吗？",
 		"CardManagement.index.237321-69": "同步状态",
 		"CardManagement.index.237321-70": "批量删除",
-		"CardManagement.index.237321-71": "确认删除吗？"
+		"CardManagement.index.237321-71": "确认删除吗？",
+		"CardManagement.index.237321-72": "激活"
 	},
 	"en": {
 		"CardManagement.index.237321-0": "Add",
@@ -98,7 +99,7 @@
 		"CardManagement.index.237321-21": "not activate",
 		"CardManagement.index.237321-22": "shutdown",
 		"CardManagement.index.237321-23": "other",
-		"CardManagement.index.237321-24": "activate (normal)",
+		"CardManagement.index.237321-24": "activated (normal)",
 		"CardManagement.index.237321-25": "test activation",
 		"CardManagement.index.237321-26": "disassemble",
 		"CardManagement.index.237321-27": "deactivate (deactivated)",
@@ -119,17 +120,17 @@
 		"CardManagement.index.237321-42": "replaced",
 		"CardManagement.index.237321-43": "stock (Unicom)",
 		"CardManagement.index.237321-44": "start",
-		"CardManagement.index.237321-45": "operation",
+		"CardManagement.index.237321-45": "Operation",
 		"CardManagement.index.237321-46": "Edit",
 		"CardManagement.index.237321-47": "Unbind device",
 		"CardManagement.index.237321-48": "Confirm unbinding device?",
 		"CardManagement.index.237321-49": "Confirm",
 		"CardManagement.index.237321-50": "Cancel",
 		"CardManagement.index.237321-51": "Operation successful",
-		"CardManagement.index.237321-52": "Reactivate",
+		"CardManagement.index.237321-52": "Re machine",
 		"CardManagement.index.237321-53": "Deactivate",
 		"CardManagement.index.237321-54": "Confirm the activation?",
-		"CardManagement.index.237321-55": "Confirm the reactivation?",
+		"CardManagement.index.237321-55": "Confirm the resumption of the machine?",
 		"CardManagement.index.237321-56": "Are you sure to stop using it?",
 		"CardManagement.index.237321-57": "Delete",
 		"CardManagement.index.237321-58": "Are you sure to delete?",
@@ -145,6 +146,7 @@
 		"CardManagement.index.237321-68": "Confirm the reactivation?",
 		"CardManagement.index.237321-69": "sync status",
 		"CardManagement.index.237321-70": "Batch deletion",
-		"CardManagement.index.237321-71": "Are you sure to delete?"
+		"CardManagement.index.237321-71": "Are you sure to delete?",
+		"CardManagement.index.237321-72": "Activate"
 	}
 }
