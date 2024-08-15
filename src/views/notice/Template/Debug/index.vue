@@ -229,8 +229,9 @@ const getTemplateDetail = async () => {
 };
 
 const handleOk = () => {
+    console.log(formData.value.templateDetailTable)
     const filterData = formData.value.templateDetailTable.filter((item: any) =>
-        ['user', 'org', 'tag', 'departmentIdList', 'departmentIdList'].includes(
+        ['user', 'org', 'tag', 'userIdList', 'departmentIdList'].includes(
             item.id,
         ),
     );

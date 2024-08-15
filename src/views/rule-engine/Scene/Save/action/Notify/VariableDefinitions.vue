@@ -237,7 +237,7 @@ const onSave = () =>
                     'user',
                     'org',
                     'tag',
-                    'departmentIdList',
+                    'userIdList',
                     'departmentIdList',
                 ].includes(getType(item)),
             )
