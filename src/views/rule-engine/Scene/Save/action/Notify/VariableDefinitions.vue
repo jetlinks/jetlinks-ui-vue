@@ -11,12 +11,18 @@
             v-for="(item, index) in variableDefinitions"
             :key="item.id"
             :required="!['file', 'user', 'org', 'tag'].includes(getType(item)) ? true : false"
-            :rules="[
+            :rules="['user', 'org', 'tag'] ? [
                 {
+                    validator:validateSelectReceiving,
+                    trigger: ['blur', 'change'],
+                },{
                     validator: (_rule, value) => checkValue(_rule, value, item),
                     trigger: ['blur', 'change'],
-                },
-            ]"
+                }
+            ] : [{
+                    validator: (_rule, value) => checkValue(_rule, value, item),
+                    trigger: ['blur', 'change'],
+                }]"
         >
             <User
                 :notify="notify"
@@ -106,6 +112,17 @@ watchEffect(() => {
 
 const getType = (item: any) => {
     return item.expands?.businessType || item.type;
+};
+
+/**
+ * 校验收信必需选中其中一个
+ */
+ const validateSelectReceiving = (rule: any, value: any) => {
+    return props.variableDefinitions.some((i: any) => {
+        return (i.id === 'toUser' || 'toParty' || 'toTag' || 'departmentIdList' || 'departmentIdList') && modelRef[i.id];
+    })
+        ? Promise.resolve()
+        : Promise.reject('至少选择一种收信方式');
 };
 
 const checkValue = (_rule: any, value: any, item: any) => {
