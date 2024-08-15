@@ -129,6 +129,11 @@ const checkValue = (_rule: any, value: any, item: any) => {
         return Promise.resolve();
     }
     const type = item.expands?.businessType || item?.type;
+    if (
+        ['user', 'org', 'tag', 'userIdList', 'departmentIdList'].includes(type)
+    ) {
+        return Promise.resolve();
+    }
     if (type === 'file') {
         return Promise.resolve();
     } else if (type === 'link') {
@@ -231,20 +236,34 @@ const onChange = (val: any, type: any, index: number, options?: string) => {
 
 const onSave = () =>
     new Promise((resolve, reject) => {
-        const filterData = props.variableDefinitions
-            .filter((item) =>
-                [
-                    'user',
-                    'org',
-                    'tag',
-                    'userIdList',
-                    'departmentIdList',
-                ].includes(getType(item)),
-            )
-        const pass = filterData.length ? filterData
-            .some((item) => {
-                return modelRef[item.id];
-            }) : true;
+        const filterData = props.variableDefinitions.filter((item) =>
+            ['user', 'org', 'tag', 'userIdList', 'departmentIdList'].includes(
+                getType(item),
+            ),
+        );
+        console.log(modelRef);
+        const pass = filterData.length
+            ? filterData.some((item) => {
+                
+                  if (
+                      item.id === 'toUser' &&
+                      modelRef[item.id]?.source === 'relation'
+                  ) {
+                    
+                      return (
+                          modelRef[item.id].relation?.objectId ||
+                          modelRef[item.id].relation?.related
+                      );
+                  } else if (item.id === 'userIdList') {
+                      return (
+                          modelRef[item.id]?.value ||
+                          modelRef[item.id]?.relation?.objectId
+                      );
+                  } else {
+                      return modelRef[item.id]?.value;
+                  }
+              })
+            : true;
         if (!pass && props.notify.notifyType === 'weixin') {
             onlyMessage(
                 '收信人，收信人部门，收信人标签至少填写一个',
@@ -252,11 +271,8 @@ const onSave = () =>
             );
             return reject(false);
         }
-        if(!pass && props.notify.notifyType === 'dingTalk'){
-            onlyMessage(
-                '收信人，收信人部门至少填写一个',
-                'warning',
-            );
+        if (!pass && props.notify.notifyType === 'dingTalk') {
+            onlyMessage('收信人，收信人部门至少填写一个', 'warning');
             return reject(false);
         }
         formRef.value
