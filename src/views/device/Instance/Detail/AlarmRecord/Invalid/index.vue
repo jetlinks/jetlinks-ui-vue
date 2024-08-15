@@ -36,6 +36,7 @@
                 设备名称：
                 <span
                     class="deviceId"
+                     @click="() => gotoDevice(slotProps.thingId)"
                     >{{ slotProps.thingName }}</span
                 ></Ellipsis
             >
@@ -114,6 +115,10 @@ const columns = props.goal === 'device' ? [
         },
     },
 ]
+
+const gotoDevice = (id) => {
+    menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
+};
 const handleSearch = (e) => {
     params.value = e;
 };
