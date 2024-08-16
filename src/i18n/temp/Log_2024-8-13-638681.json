@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Access.index.384922-0": "详情",
+		"Access.index.384922-1": "请求方法",
+		"Access.index.384922-2": "动作",
+		"Access.index.384922-3": "类名",
+		"Access.index.384922-4": "方法名",
+		"Access.index.384922-5": "请求时间",
+		"Access.index.384922-6": "请求耗时",
+		"Access.index.384922-7": "请求头",
+		"Access.index.384922-8": "请求参数",
+		"Access.index.384922-9": "异常信息",
+		"Access.index.384922-10": "关闭",
+		"Access.index.384922-11": "请求路径",
+		"Access.index.384922-12": "说明",
+		"Access.index.384922-13": "请求用户",
+		"Access.index.384922-14": "操作",
+		"Access.index.384922-15": "查看"
+	},
+	"en": {
+		"Access.index.384922-0": "Detail",
+		"Access.index.384922-1": "Request method",
+		"Access.index.384922-2": "Action",
+		"Access.index.384922-3": "Class name",
+		"Access.index.384922-4": "Method Name",
+		"Access.index.384922-5": "Request time",
+		"Access.index.384922-6": "Request time consumption",
+		"Access.index.384922-7": "Request header",
+		"Access.index.384922-8": "Request parameters",
+		"Access.index.384922-9": "Abnormal information",
+		"Access.index.384922-10": "Close",
+		"Access.index.384922-11": "Request path",
+		"Access.index.384922-12": "Explain",
+		"Access.index.384922-13": "Request user",
+		"Access.index.384922-14": "Operation",
+		"Access.index.384922-15": "Show"
+	}
+}

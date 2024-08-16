@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Save.index.426539-0": "新增",
+		"Save.index.426539-1": "确定",
+		"Save.index.426539-2": "取消",
+		"Save.index.426539-3": "场景名称",
+		"Save.index.426539-4": "触发方式",
+		"Save.index.426539-5": "手动触发",
+		"Save.index.426539-6": "定时触发",
+		"Save.index.426539-7": "设备触发",
+		"Save.index.426539-8": "状态",
+		"Save.index.426539-9": "正常",
+		"Save.index.426539-10": "禁用",
+		"Save.index.426539-11": "操作成功",
+		"Save.index.426539-12": "请选择至少一条数据"
+	},
+	"en": {
+		"Save.index.426539-0": "Add",
+		"Save.index.426539-1": "Confirm",
+		"Save.index.426539-2": "Cancel",
+		"Save.index.426539-3": "Scene name",
+		"Save.index.426539-4": "Trigger method",
+		"Save.index.426539-5": "Manually trigger",
+		"Save.index.426539-6": "Timed trigger",
+		"Save.index.426539-7": "Device trigger",
+		"Save.index.426539-8": "State",
+		"Save.index.426539-9": "enabled",
+		"Save.index.426539-10": "disabled",
+		"Save.index.426539-11": "Operation successful",
+		"Save.index.426539-12": "Please select at least one piece of data"
+	}
+}

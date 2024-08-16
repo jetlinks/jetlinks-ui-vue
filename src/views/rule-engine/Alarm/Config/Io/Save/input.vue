@@ -2,39 +2,39 @@
     <j-modal
         :maskClosable="false"
         width="45vw"
-        title="编辑"
+        :title="$t('Save.input.233003-0')"
         @cancel="close"
         @ok="save"
         visible
-        cancelText="取消"
-        okText="确定"
+        :cancelText="$t('Save.input.233003-1')"
+        :okText="$t('Save.input.233003-2')"
     >
         <j-form layout="vertical" :model="inputData" ref="formRef">
-            <j-form-item label="状态">
+            <j-form-item :label="$t('Save.input.233003-3')">
                 <j-switch
-                    checked-children="启用"
-                    un-checked-children="启用"
+                    :checked-children="$t('Save.input.233003-4')"
+                    :un-checked-children="$t('Save.input.233003-4')"
                     v-model:checked="inputData.status"
                 ></j-switch>
             </j-form-item>
             <j-form-item
                 v-if="inputData.status"
-                label="kafka地址"
+                :label="$t('Save.input.233003-5')"
                 name="address"
                 :rules="[
                     {
                         required: true,
-                        message: '请输入topic',
+                        message: $t('Save.input.233003-6'),
                     },
                     {
                         max: 64,
-                        message: '最多输入64个字符',
+                        message: $t('Save.input.233003-7'),
                     },
                 ]"
             >
                 <j-input
                     v-model:value="inputData.address"
-                    placeholder="请输入kafka地址"
+                    :placeholder="$t('Save.input.233003-8')"
                 ></j-input>
             </j-form-item>
             <j-form-item
@@ -44,11 +44,11 @@
                 :rules="[
                     {
                         required: true,
-                        message: '请输入topic',
+                        message: $t('Save.input.233003-6'),
                     },
                     {
                         max: 64,
-                        message: '最多输入64个字符',
+                        message: $t('Save.input.233003-7'),
                     },
                 ]"
             >
@@ -62,6 +62,9 @@
 import { saveOutputData } from '@/api/rule-engine/config';
 import { onlyMessage } from '@/utils/comm';
 import { Form } from 'jetlinks-ui-components';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const useForm = Form.useForm;
 const formRef = ref();
 const Myprops = defineProps({
@@ -100,7 +103,7 @@ const save = () => {
             exchangeType: 'consume',
         }).then((res) => {
             if (res.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('Save.input.233003-9'));
                 emit('saveSuc');
             }
         });

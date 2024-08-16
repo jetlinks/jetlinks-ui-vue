@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"components.AlarmLog.584343-0": "告警日志",
+		"components.AlarmLog.584343-1": "处理"
+	},
+	"en": {
+		"components.AlarmLog.584343-0": "Alarm Log",
+		"components.AlarmLog.584343-1": "Handle"
+	}
+}

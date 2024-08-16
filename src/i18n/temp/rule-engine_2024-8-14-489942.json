@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Detail.index.8913311-0": "设备ID：",
+		"Detail.index.8913311-1": "告警时间",
+		"Detail.index.8913311-2": "告警名称",
+		"Detail.index.8913311-3": "说明",
+		"Detail.index.8913311-4": "操作",
+		"Detail.index.8913311-5": "查看",
+		"Detail.index.8913311-6": "触发条件",
+		"Detail.index.8913311-7": "告警源",
+		"Detail.index.8913311-8": "告警原因"
+	},
+	"en": {
+		"Detail.index.8913311-0": "Device ID:",
+		"Detail.index.8913311-1": "Alarm time",
+		"Detail.index.8913311-2": "Alarm name ",
+		"Detail.index.8913311-3": "Explain",
+		"Detail.index.8913311-4": "Operation",
+		"Detail.index.8913311-5": "Show",
+		"Detail.index.8913311-6": "Trigger condition",
+		"Detail.index.8913311-7": "Alarm source",
+		"Detail.index.8913311-8": "Reason for alarm"
+	}
+}

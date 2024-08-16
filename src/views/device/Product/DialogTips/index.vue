@@ -9,10 +9,10 @@
         width="650px"
     >
         <template #title>
-            <span>产品创建成功</span>
+            <span>{{ $t('DialogTips.index.0645616-0') }}</span>
         </template>
         <template #footer>
-            <j-button @click="cancel">关闭</j-button>
+            <j-button @click="cancel">{{ $t('DialogTips.index.0645616-1') }}</j-button>
         </template>
         <div class="product-tips">
             <div style="display: flex">
@@ -22,34 +22,34 @@
                         class="icon-style"
                     ></AIcon>
                 </div>
-                <div class="product-title">产品创建成功</div>
+                <div class="product-title">{{ $t('DialogTips.index.0645616-0') }}</div>
             </div>
             <div style="display: flex">
-                <div class="product-id">产品ID: {{ idValue }}</div>
+                <div class="product-id">{{ $t('DialogTips.index.0645616-2') }} {{ idValue }}</div>
                 <div
                     class="product-btn"
                     @click="showDetail"
                     style="cursor: pointer"
                 >
-                    查看详情
+                    {{ $t('DialogTips.index.0645616-3') }}
                 </div>
             </div>
-            <div>接下来推荐操作:</div>
-            <div class="product-main">1、配置产品接入方式</div>
+            <div>{{ $t('DialogTips.index.0645616-4') }}</div>
+            <div class="product-main">{{ $t('DialogTips.index.0645616-5') }}</div>
             <div class="product-text">
-                点击具体产品的查看按钮,进入“设备接入”tab页，并参照设备铭牌说明选择匹配的接入方式
+                {{ $t('DialogTips.index.0645616-6') }}
             </div>
-            <div class="product-main">2、添加测试设备</div>
+            <div class="product-main">{{ $t('DialogTips.index.0645616-7') }}</div>
             <div class="product-text">
-                进入设备列表，添加单个设备，用于验证产品模型是否配置正确
+                {{ $t('DialogTips.index.0645616-8') }}
             </div>
-            <div class="product-main">3、功能调试</div>
+            <div class="product-main">{{ $t('DialogTips.index.0645616-9') }}</div>
             <div class="product-text">
-                点击查看具体设备，进入“设备诊断”对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确
+                {{ $t('DialogTips.index.0645616-10') }}
             </div>
-            <div class="product-main">4、批量添加设备</div>
+            <div class="product-main">{{ $t('DialogTips.index.0645616-11') }}</div>
             <div class="product-text">
-                进入设备列表页面，点击批量导入设备，批量添加同一产品下的设备
+                {{ $t('DialogTips.index.0645616-12') }}
             </div>
         </div>
     </j-modal>
@@ -58,6 +58,9 @@
 import { getImage } from '@/utils/comm.ts';
 import { useProductStore } from '@/store/product';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const visible = ref<boolean>(false);
 const productStore = useProductStore();
 const router = useRouter();

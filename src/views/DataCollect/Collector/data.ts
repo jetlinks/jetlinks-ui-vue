@@ -1,3 +1,5 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import { testIpv4_6 } from '@/utils/validate';
 export const colorMap = new Map();
 colorMap.set('running', 'success');
@@ -15,7 +17,7 @@ export const getState = (record: any) => {
     if (record) {
         return {
             value: enabled ? record?.runningState?.value : 'processing',
-            text: enabled ? record?.runningState?.text : '禁用',
+            text: enabled ? record?.runningState?.text : $t('Collector.data.321710-0'),
         };
     } else {
         return {};
@@ -60,61 +62,61 @@ export const ModBusRules = {
     name: [
         {
             required: true,
-            message: '请输入点位名称',
+            message: $t('Collector.data.321710-1'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Collector.data.321710-2'),
         },
     ],
     function: [
         {
             required: true,
-            message: '请选择功能码',
+            message: $t('Collector.data.321710-3'),
         },
     ],
     pointKey: [
         {
             required: true,
-            message: '请输入地址',
+            message: $t('Collector.data.321710-4'),
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入0-999999之间的正整数',
+            message: $t('Collector.data.321710-5'),
         },
     ],
     quantity: [
         {
             required: true,
-            message: '请输入寄存器数量',
+            message: $t('Collector.data.321710-6'),
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入1-255之间的正整数',
+            message: $t('Collector.data.321710-7'),
         },
     ],
     provider: [
         {
             required: true,
-            message: '请选择数据类型',
+            message: $t('Collector.data.321710-8'),
         },
     ],
     scaleFactor: [
         {
             required: true,
-            message: '请输入缩放因子',
+            message: $t('Collector.data.321710-9'),
         },
     ],
     accessModes: [
         {
             required: true,
-            message: '请选择访问类型',
+            message: $t('Collector.data.321710-10'),
         },
     ],
     writeByteCount: [
         {
             required: true,
-            message: '请选择是否写入数据区长度',
+            message: $t('Collector.data.321710-11'),
         },
     ],
     byteCount: [
@@ -126,61 +128,61 @@ export const ModBusRules = {
     interval: [
         {
             required: true,
-            message: '请输入采集频率',
+            message: $t('Collector.data.321710-13'),
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入0或者正整数',
+            message: $t('Collector.data.321710-14'),
         },
     ],
 
-    description: [{ max: 200, message: '最多可输入200个字符' }],
+    description: [{ max: 200, message: $t('Collector.data.321710-15') }],
 };
 
 export const OPCUARules = {
     name: [
         {
             required: true,
-            message: '请输入点位名称',
+            message: $t('Collector.data.321710-1'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Collector.data.321710-2'),
         },
     ],
     type: [
         {
             required: true,
-            message: '请选择数据类型',
+            message: $t('Collector.data.321710-8'),
         },
     ],
     accessModes: [
         {
             required: true,
-            message: '请选择访问类型',
+            message: $t('Collector.data.321710-10'),
         },
     ],
     interval: [
         {
             required: true,
-            message: '请输入采集频率',
+            message: $t('Collector.data.321710-13'),
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入0或者正整数',
+            message: $t('Collector.data.321710-14'),
         },
     ],
-    description: [{ max: 200, message: '最多可输入200个字符' }],
+    description: [{ max: 200, message: $t('Collector.data.321710-15') }],
 };
 
 const validatorUrl = (rule:any, value:any, callback:any)  => {
     const reg = regular.DOMAIN_NAME
     const reg1 = regular.IP_URL
     if(value === undefined || value === '' || value === null) {
-      return Promise.reject("请输入通道Ip")
+      return Promise.reject($t('Collector.data.321710-16'))
     } else {
       if(reg.test(value) === false && reg1.test(value) === false) {
-        return Promise.reject("请输入正确的域名或ip地址")
+        return Promise.reject($t('Collector.data.321710-17'))
       }
       return Promise.resolve()
     }
@@ -190,10 +192,10 @@ const validatorUrl = (rule:any, value:any, callback:any)  => {
  */
 const validator1 = (rule:any, value:any, callback:any)  => {
     if(value === undefined || value === '' || value === null) {
-      return Promise.reject("请输入通道端口")
+      return Promise.reject($t('Collector.data.321710-18'))
     } else {
       if(value < 1 || value > 65535) {
-        return Promise.reject("请输入1~65535的整数")
+        return Promise.reject($t('Collector.data.321710-19'))
       }
       return Promise.resolve()
     }
@@ -204,10 +206,10 @@ const validator1 = (rule:any, value:any, callback:any)  => {
    */
   const validator2 = (rule:any, value:any, callback:any)  => {
     if(value === undefined || value === '' || value === null) {
-      return Promise.reject("请输入机架号")
+      return Promise.reject($t('Collector.data.321710-20'))
     } else {
       if(value < 0 || value > 65535) {
-        return Promise.reject("请输入0~65535的整数")
+        return Promise.reject($t('Collector.data.321710-21'))
       }
       return Promise.resolve()
     }
@@ -218,10 +220,10 @@ const validator1 = (rule:any, value:any, callback:any)  => {
    */
   const validator3 = (rule:any, value:any, callback:any)  => {
     if(value === undefined || value === '' || value === null) {
-      return Promise.reject("请输入槽位")
+      return Promise.reject($t('Collector.data.321710-22'))
     } else {
       if(value < 0 || value > 65535) {
-        return Promise.reject("请输入0~65535的整数")
+        return Promise.reject($t('Collector.data.321710-21'))
       }
       return Promise.resolve()
     }
@@ -232,10 +234,10 @@ const validator1 = (rule:any, value:any, callback:any)  => {
    */
   const validator4 = (rule:any, value:any, callback:any)  => {
     if(value === undefined || value === '' || value === null) {
-      return Promise.reject("请输入超时时间")
+      return Promise.reject($t('Collector.data.321710-23'))
     } else {
       if(value < 0 || value > 65535) {
-        return Promise.reject("请输入0~65535的整数")
+        return Promise.reject($t('Collector.data.321710-21'))
       }
       return Promise.resolve()
     }
@@ -248,33 +250,33 @@ const validateUrl = async (_rule: any, value: string) => {
         return Promise.resolve();
     } else {
         if (!testIpv4_6(value)) {
-            return Promise.reject('请输入正确的IP地址');
+            return Promise.reject($t('Collector.data.321710-24'));
         }
         return Promise.resolve();
     }
 };
 export const LeftTreeRules = {
-    channelId: [{ required: true, message: '请选择所属通道', trigger: 'blur' }],
+    channelId: [{ required: true, message: $t('Collector.data.321710-25'), trigger: 'blur' }],
     name: [
-        { required: true, message: '请输入采集器名称', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: $t('Collector.data.321710-26'), trigger: 'blur' },
+        { max: 64, message: $t('Collector.data.321710-2') },
     ],
     unitId: [
-        { required: true, message: '请输入从机地址', trigger: 'blur' },
+        { required: true, message: $t('Collector.data.321710-27'), trigger: 'blur' },
         {
             pattern: regOnlyNumber,
-            message: '请输入0-255之间的正整数',
+            message: $t('Collector.data.321710-28'),
         },
     ],
     // type: [{ required: true, message: '请选择处理方式', trigger: 'blur' }],
     endian: [
-        { required: true, message: '请选择双字高低位切换', trigger: 'blur' },
+        { required: true, message: $t('Collector.data.321710-29'), trigger: 'blur' },
     ],
     endianIn: [
-        { required: true, message: '请选择单字高低位切换', trigger: 'blur' },
+        { required: true, message: $t('Collector.data.321710-30'), trigger: 'blur' },
     ],
     requestTimeout:[
-        { pattern: /^\d+$/, message:'请输入2000-60000的正整数',trigger: 'change'}
+        { pattern: /^\d+$/, message:$t('Collector.data.321710-31'),trigger: 'change'}
     ],
     host: [
         { required: true, trigger: 'blur', validator: validatorUrl, },
@@ -283,16 +285,16 @@ export const LeftTreeRules = {
     rack: [{ required: true, trigger: 'blur', validator: validator2 }],
     slot: [{ required: true, trigger: 'blur', validator: validator3 }],
     timeout: [{ required: true, trigger: 'blur', validator: validator4 }],
-    type: [{required: true, trigger: 'change', message: '请选择型号'}],
-    serializable: [{required: true, trigger: 'change', message: '请选择型号'}],
-    terminnalAddress: [{required: true, trigger: 'blur', message: '请输入分组地址'}],
-    frameAmountMax: [{required: true, message: '请输入确认帧数量', trigger: 'blur'}],
-    address: [{ trigger: 'blur',validator: validateUrl,message: '请输入正确的ip地址'}],
+    type: [{required: true, trigger: 'change', message: $t('Collector.data.321710-32')}],
+    serializable: [{required: true, trigger: 'change', message: $t('Collector.data.321710-32')}],
+    terminnalAddress: [{required: true, trigger: 'blur', message: $t('Collector.data.321710-33')}],
+    frameAmountMax: [{required: true, message: $t('Collector.data.321710-34'), trigger: 'blur'}],
+    address: [{ trigger: 'blur',validator: validateUrl,message: $t('Collector.data.321710-35')}],
 };
 
 export const FormTableColumns = [
     {
-        title: '名称',
+        title: $t('Collector.data.321710-36'),
         dataIndex: 'name',
         key: 'name',
         width: 140,
@@ -306,25 +308,25 @@ export const FormTableColumns = [
         ellipsis: true,
     },
     {
-        title: '访问类型',
+        title: $t('Collector.data.321710-37'),
         dataIndex: 'accessModes',
         key: 'accessModes',
         width: 260,
     },
     {
-        title: '采集频率',
+        title: $t('Collector.data.321710-38'),
         key: 'interval',
         dataIndex: 'interval',
         width: 200,
     },
     {
-        title: '只推送变化的数据',
+        title: $t('Collector.data.321710-39'),
         key: 'features',
         dataIndex: 'features',
         width: 140,
     },
     {
-        title: '操作',
+        title: $t('Collector.data.321710-40'),
         key: 'action',
         dataIndex: 'action',
         fixed: 'right',
@@ -334,7 +336,7 @@ export const FormTableColumns = [
 
 export const BacnetFormTableColumns = [
     {
-        title: '名称',
+        title: $t('Collector.data.321710-36'),
         dataIndex: 'name',
         key: 'name',
         width: 140,
@@ -344,7 +346,7 @@ export const BacnetFormTableColumns = [
         }
     },
     {
-        title: '对象类型',
+        title: $t('Collector.data.321710-41'),
         dataIndex: 'type',
         key: 'type',
         form:{
@@ -352,7 +354,7 @@ export const BacnetFormTableColumns = [
         }
     },
     {
-        title: '对象号',
+        title: $t('Collector.data.321710-42'),
         dataIndex: 'instanceNumber',
         key: 'instanceNumber',
         form:{
@@ -360,7 +362,7 @@ export const BacnetFormTableColumns = [
         }
     },
     {
-        title: '属性ID',
+        title: $t('Collector.data.321710-43'),
         dataIndex: 'propertyId',
         key: 'propertyId',
          form:{
@@ -369,7 +371,7 @@ export const BacnetFormTableColumns = [
         width: 200,
     },
     {
-        title: '值类型',
+        title: $t('Collector.data.321710-44'),
         dataIndex: 'valueType',
         key: 'valueType',
         form:{
@@ -378,7 +380,7 @@ export const BacnetFormTableColumns = [
         width: 200,
     },
     {
-        title: '访问类型',
+        title: $t('Collector.data.321710-37'),
         dataIndex: 'accessModes',
         key: 'accessModes',
         form:{
@@ -387,7 +389,7 @@ export const BacnetFormTableColumns = [
         width: 260,
     },
     {
-        title: '采集频率',
+        title: $t('Collector.data.321710-38'),
         key: 'interval',
         dataIndex: 'interval',
         form:{
@@ -396,7 +398,7 @@ export const BacnetFormTableColumns = [
         width: 200,
     },
     {
-        title: '只推送变化的数据',
+        title: $t('Collector.data.321710-39'),
         key: 'features',
         dataIndex: 'features',
         form:{
@@ -405,7 +407,7 @@ export const BacnetFormTableColumns = [
         width: 150,
     },
     {
-        title: '操作',
+        title: $t('Collector.data.321710-40'),
         key: 'action',
         dataIndex: 'action',
         fixed: 'right',

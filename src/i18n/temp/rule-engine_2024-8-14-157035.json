@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Device.InvokeFunction.5425844-0": "请选择功能",
+		"Device.InvokeFunction.5425844-1": "定时调用所选功能",
+		"Device.InvokeFunction.5425844-2": "是",
+		"Device.InvokeFunction.5425844-3": "否",
+		"Device.InvokeFunction.5425844-4": "请输入功能值",
+		"Device.InvokeFunction.5425844-5": "请输入{0}值",
+		"Device.InvokeFunction.5425844-6": "执行{0}"
+	},
+	"en": {
+		"Device.InvokeFunction.5425844-0": "Please select a function",
+		"Device.InvokeFunction.5425844-1": "Scheduled call of selected function",
+		"Device.InvokeFunction.5425844-2": "true",
+		"Device.InvokeFunction.5425844-3": "false",
+		"Device.InvokeFunction.5425844-4": "Please enter the function value",
+		"Device.InvokeFunction.5425844-5": "Please enter a value of {0}",
+		"Device.InvokeFunction.5425844-6": "Execute {0}"
+	}
+}

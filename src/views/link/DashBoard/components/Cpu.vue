@@ -2,7 +2,7 @@
     <j-spin :spinning="loading">
         <div class="dash-board">
             <div class="header">
-                <h3>CPU使用率趋势</h3>
+                <h3>{{ $t('components.Cpu.542302-0') }}</h3>
                 <j-range-picker
                     @change="pickerTimeChange"
                     :allowClear="false"
@@ -21,10 +21,10 @@
                             v-model:value="data.type"
                         >
                           <j-radio-button value="hour">
-                            最近1小时
+                            {{ $t('components.Cpu.542302-1') }}
                           </j-radio-button>
-                          <j-radio-button value="day"> 最近24小时 </j-radio-button>
-                          <j-radio-button value="week"> 近一周 </j-radio-button>
+                          <j-radio-button value="day"> {{ $t('components.Cpu.542302-2') }} </j-radio-button>
+                          <j-radio-button value="week"> {{ $t('components.Cpu.542302-3') }} </j-radio-button>
                         </j-radio-group>
                     </template>
                 </j-range-picker>
@@ -67,6 +67,9 @@ import {
 import { DataType } from '../typings';
 import ServerList from './ServerList.vue'
 import Echarts from './echarts.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   serviceId: {

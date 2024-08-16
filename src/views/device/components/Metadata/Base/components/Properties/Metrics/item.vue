@@ -2,7 +2,7 @@
     <j-input
         v-if="type === 'string'"
         v-model:value="myValue"
-        placeholder="请输入"
+        :placeholder="$t('Metrics.item.6916336-0')"
         @change="change"
     />
     <j-input-number
@@ -12,7 +12,7 @@
         :max="2147483647"
         :min="-2147483648"
         style="width: 100%"
-        placeholder="请输入"
+        :placeholder="$t('Metrics.item.6916336-0')"
         @change="change"
     />
     <j-input-number
@@ -21,7 +21,7 @@
         :max="999999999999999"
         :min="-999999999999999"
         :precision="0"
-        placeholder="请输入"
+        :placeholder="$t('Metrics.item.6916336-0')"
         style="width: 100%"
         @change="change"
     />
@@ -30,13 +30,13 @@
         v-model:value="myValue"
         :max="999999999999999"
         :min="-999999999999999"
-        placeholder="请输入"
+        :placeholder="$t('Metrics.item.6916336-0')"
         style="width: 100%"
         @change="change"
     />
     <j-select
         v-else-if="type === 'boolean'"
-        placeholder="请选择"
+        :placeholder="$t('Metrics.item.6916336-1')"
         v-model:value="myValue"
         style="width: 100%"
         :dropdownStyle="{
@@ -53,7 +53,7 @@
         format="YYYY-MM-DD HH:mm:ss"
         style="width: 100%;z-index: 1071"
         :popupStyle="{ zIndex: 1072}"
-        placeholder="请选择"
+        :placeholder="$t('Metrics.item.6916336-1')"
         :get-popup-container="(node) => tableWrapperRef || node"
         valueFormat="YYYY-MM-DD HH:mm:ss"
         @change="change"
@@ -62,6 +62,9 @@
 <script setup name="MetricValueItem">
 import { Form } from 'ant-design-vue'
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     value: {

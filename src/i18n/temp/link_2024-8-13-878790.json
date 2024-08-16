@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Certificate.index.786731-0": "新增",
+		"Certificate.index.786731-1": "证书标准",
+		"Certificate.index.786731-2": "国际标准",
+		"Certificate.index.786731-3": "证书名称",
+		"Certificate.index.786731-4": "说明",
+		"Certificate.index.786731-5": "操作",
+		"Certificate.index.786731-6": "编辑",
+		"Certificate.index.786731-7": "删除",
+		"Certificate.index.786731-8": "确认删除?",
+		"Certificate.index.786731-9": "确定",
+		"Certificate.index.786731-10": "取消",
+		"Certificate.index.786731-11": "操作成功"
+	},
+	"en": {
+		"Certificate.index.786731-0": "Add",
+		"Certificate.index.786731-1": "Certificate standards",
+		"Certificate.index.786731-2": "International standard",
+		"Certificate.index.786731-3": "Certificate Name",
+		"Certificate.index.786731-4": "Explain",
+		"Certificate.index.786731-5": "Operation",
+		"Certificate.index.786731-6": "Edit",
+		"Certificate.index.786731-7": "Delete",
+		"Certificate.index.786731-8": "Are you sure to delete?",
+		"Certificate.index.786731-9": "Confirm",
+		"Certificate.index.786731-10": "Cancel",
+		"Certificate.index.786731-11": "Operation successful"
+	}
+}

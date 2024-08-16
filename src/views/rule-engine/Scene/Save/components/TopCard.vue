@@ -26,7 +26,7 @@
           />
         </div>
         <a-tooltip
-          title="该设备不支持"
+          :title="$t('components.TopCard.5425714-0')"
           v-if="item.disabled"
         >
           <div class="trigger-way-disabled-tip"></div>
@@ -38,6 +38,9 @@
 <script setup lang='ts' name='TopCard'>
 
 import type { PropType } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type optionsType = {
   label: string

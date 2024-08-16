@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Import.Import.6916344-0": "导入",
+		"Import.Import.6916344-1": "批量导入",
+		"Import.Import.6916344-2": "导入结果",
+		"Import.Import.6916344-3": "上传文件",
+		"Import.Import.6916344-4": "点击或拖拽上传文件",
+		"Import.Import.6916344-5": "格式：.xlsx, .csv",
+		"Import.Import.6916344-6": "下载模版",
+		"Import.Import.6916344-7": "模板格式.xlsx",
+		"Import.Import.6916344-8": "模板格式.csv",
+		"Import.Import.6916344-9": "正在导入，请稍后...",
+		"Import.Import.6916344-10": "导入成功：",
+		"Import.Import.6916344-11": "条",
+		"Import.Import.6916344-12": "导入失败：",
+		"Import.Import.6916344-13": "请先上传文件",
+		"Import.Import.6916344-14": "物模型模版",
+		"Import.Import.6916344-15": "请上传.xlsx或.csv格式文件",
+		"Import.Import.6916344-16": "上传失败"
+	},
+	"en": {
+		"Import.Import.6916344-0": "Import",
+		"Import.Import.6916344-1": "Batch import",
+		"Import.Import.6916344-2": "Import results",
+		"Import.Import.6916344-3": "Upload files",
+		"Import.Import.6916344-4": "Click or drag to upload files",
+		"Import.Import.6916344-5": "Format: .xlsx, .csv",
+		"Import.Import.6916344-6": "Download Template",
+		"Import.Import.6916344-7": "Template format. xlsx",
+		"Import.Import.6916344-8": "Template format. csv",
+		"Import.Import.6916344-9": "Importing, please wait",
+		"Import.Import.6916344-10": "Import successful:",
+		"Import.Import.6916344-11": "",
+		"Import.Import.6916344-12": "Import failed:",
+		"Import.Import.6916344-13": "Please upload the file first",
+		"Import.Import.6916344-14": "Object model template",
+		"Import.Import.6916344-15": "Please upload .xlsx or .csv format files",
+		"Import.Import.6916344-16": "Upload failed"
+	}
+}

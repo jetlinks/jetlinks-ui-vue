@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Save.FileUpload.871193-0": "请上传文件",
+		"Save.FileUpload.871193-1": "上传jar包",
+		"Save.FileUpload.871193-2": "请上传.zip.jar格式的文件",
+		"Save.FileUpload.871193-3": "上传成功！",
+		"Save.FileUpload.871193-4": "系统提示",
+		"Save.FileUpload.871193-5": "系统未知错误，请反馈给管理员"
+	},
+	"en": {
+		"Save.FileUpload.871193-0": "Please upload the file",
+		"Save.FileUpload.871193-1": "Upload jar package",
+		"Save.FileUpload.871193-2": "Please upload a file in. zip. jar format",
+		"Save.FileUpload.871193-3": "Upload successful!",
+		"Save.FileUpload.871193-4": "System prompt",
+		"Save.FileUpload.871193-5": "Unknown system error, please provide feedback to the administrator"
+	}
+}

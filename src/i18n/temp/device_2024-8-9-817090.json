@@ -1,0 +1,25 @@
+{
+	"zh": {
+		"Process.index.170026-0": "启用",
+		"Process.index.170026-1": "同步",
+		"Process.index.170026-2": "正在启用全部设备",
+		"Process.index.170026-3": "正在同步设备状态",
+		"Process.index.170026-4": "启用成功：",
+		"Process.index.170026-5": "条",
+		"Process.index.170026-6": "启用失败：",
+		"Process.index.170026-7": "实例信息页面中的配置项未完善",
+		"Process.index.170026-8": "完成",
+		"Process.index.170026-9": "同步成功："
+	},
+	"en": {
+		"Process.index.170026-0": "Enable",
+		"Process.index.170026-1": "synchronization",
+		"Process.index.170026-2": "Enabling all devices",
+		"Process.index.170026-3": "Syncing device status",
+		"Process.index.170026-4": "Successfully enabled:",
+		"Process.index.170026-5": "",
+		"Process.index.170026-6": "Enabling failed:",
+		"Process.index.170026-7": "The configuration items on the instance information page are incomplete",
+		"Process.index.170026-8": "Complete"
+	}
+}

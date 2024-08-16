@@ -21,11 +21,11 @@
                         </div>
                         <div class="firmwareFoot">
                             <div>
-                                <span class="firmwareFootTitle">签名方式：</span
+                                <span class="firmwareFootTitle">{{ $t('Firmware.index.150364-0') }}</span
                                 >{{ i.signMethod }}
                             </div>
                             <div>
-                                <span class="firmwareFootTitle">创建时间：</span
+                                <span class="firmwareFootTitle">{{ $t('Firmware.index.150364-1') }}</span
                                 >{{
                                     dayjs(i.createTime).format(
                                         'YYYY-MM-DD HH:mm:ss',
@@ -56,6 +56,9 @@ import { useProductStore } from '@/store/product';
 import { queryPaginateNot, historyPaginateNot } from '@/api/device/firmware';
 import Task from '@/views/device/Firmware/Task/index.vue';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     type: {
         type: String,

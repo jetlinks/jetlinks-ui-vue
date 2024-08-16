@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"DataAnalysis.index.064558-0": "脚本语言:",
+		"DataAnalysis.index.064558-1": "模拟输入",
+		"DataAnalysis.index.064558-2": "请输入Topic",
+		"DataAnalysis.index.064558-3": "请输入URL",
+		"DataAnalysis.index.064558-4": "运行结果",
+		"DataAnalysis.index.064558-5": "需输入脚本和模拟数据后再点击",
+		"DataAnalysis.index.064558-6": "调试",
+		"DataAnalysis.index.064558-7": "请先调试",
+		"DataAnalysis.index.064558-8": "保存",
+		"DataAnalysis.index.064558-9": "保存成功",
+		"DataAnalysis.index.064558-10": "请输入topic",
+		"DataAnalysis.index.064558-11": "请输入url"
+	},
+	"en": {
+		"DataAnalysis.index.064558-0": "Script language:",
+		"DataAnalysis.index.064558-1": "Analog input",
+		"DataAnalysis.index.064558-2": "Please enter Topic",
+		"DataAnalysis.index.064558-3": "Please enter URL",
+		"DataAnalysis.index.064558-4": "Operation results",
+		"DataAnalysis.index.064558-5": "You need to input the script and simulation data before clicking",
+		"DataAnalysis.index.064558-6": "Debug",
+		"DataAnalysis.index.064558-7": "Please debug first",
+		"DataAnalysis.index.064558-8": "Save",
+		"DataAnalysis.index.064558-9": "Saved successfully",
+		"DataAnalysis.index.064558-10": "Please enter the topic",
+		"DataAnalysis.index.064558-11": "Please enter the URL"
+	}
+}

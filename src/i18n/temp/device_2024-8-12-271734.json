@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"DetailModal.FunctionModal.6915916-0": "功能详情",
+		"DetailModal.FunctionModal.6915916-1": "功能标识",
+		"DetailModal.FunctionModal.6915916-2": "功能名称",
+		"DetailModal.FunctionModal.6915916-3": "是否异步",
+		"DetailModal.FunctionModal.6915916-4": "是",
+		"DetailModal.FunctionModal.6915916-5": "否",
+		"DetailModal.FunctionModal.6915916-6": "输入参数",
+		"DetailModal.FunctionModal.6915916-7": "输出参数",
+		"DetailModal.FunctionModal.6915916-8": "存储方式",
+		"DetailModal.FunctionModal.6915916-9": "确认"
+	},
+	"en": {
+		"DetailModal.FunctionModal.6915916-0": "Function details",
+		"DetailModal.FunctionModal.6915916-1": "Function identification",
+		"DetailModal.FunctionModal.6915916-2": "Function Name",
+		"DetailModal.FunctionModal.6915916-3": "Is asynchronous",
+		"DetailModal.FunctionModal.6915916-4": "yes",
+		"DetailModal.FunctionModal.6915916-5": "no",
+		"DetailModal.FunctionModal.6915916-6": "Input parameter ",
+		"DetailModal.FunctionModal.6915916-7": "Output parameters",
+		"DetailModal.FunctionModal.6915916-8": "Storage method",
+		"DetailModal.FunctionModal.6915916-9": "Confirm"
+	}
+}

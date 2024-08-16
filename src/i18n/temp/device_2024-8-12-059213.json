@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Function.EditTable.5856011-0": "该字段为必填字段",
+		"Function.EditTable.5856011-1": "是",
+		"Function.EditTable.5856011-2": "否",
+		"Function.EditTable.5856011-3": "参数名称",
+		"Function.EditTable.5856011-4": "类型",
+		"Function.EditTable.5856011-5": "值"
+	},
+	"en": {
+		"Function.EditTable.5856011-0": "This field is mandatory",
+		"Function.EditTable.5856011-1": "yes",
+		"Function.EditTable.5856011-2": "no",
+		"Function.EditTable.5856011-3": "Parameter Name",
+		"Function.EditTable.5856011-4": "type",
+		"Function.EditTable.5856011-5": "value"
+	}
+}

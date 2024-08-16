@@ -1,15 +1,15 @@
 <template>
     <div>
         <j-steps :current="current">
-            <j-step disabled :key="0" title="选择插件" />
-            <j-step disabled :key="1" title="完成" />
+            <j-step disabled :key="0" :title="$t('Plugin.index.4283020-0')" />
+            <j-step disabled :key="1" :title="$t('Plugin.index.4283020-1')" />
         </j-steps>
         <div class="steps-content">
             <div class="steps-box" v-if="current === 0">
                 <div class="search">
                     <j-input-search
                         allowClear
-                        placeholder="请输入"
+                        :placeholder="$t('Plugin.index.4283020-2')"
                         style="width: 300px"
                         @search="pluginSearch"
                     />
@@ -20,7 +20,7 @@
                         hasPermission="link/plugin:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
+                        {{ $t('Plugin.index.4283020-3') }}
                     </PermissionButton>
                 </div>
                 <j-scrollbar height="480">
@@ -44,7 +44,7 @@
                                     <div class="plugin-other">
                                         <div class="plugin-id">
                                             <div class="plugin-text">
-                                                插件ID：
+                                                {{ $t('Plugin.index.4283020-4') }}
                                             </div>
                                             <div class="other-content">
                                                 <j-ellipsis>
@@ -54,7 +54,7 @@
                                         </div>
                                         <div class="plugin-version">
                                             <div class="plugin-text">
-                                                版本号：
+                                                {{ $t('Plugin.index.4283020-5') }}
                                             </div>
                                             <div class="other-content">
                                                 <j-ellipsis>
@@ -70,7 +70,7 @@
                     <j-empty
                         style="margin-top: 10%"
                         v-else
-                        description="暂无数据"
+                        :description="$t('Plugin.index.4283020-6')"
                     />
                 </j-scrollbar>
             </div>
@@ -83,23 +83,23 @@
                 >
                     <j-row :gutter="[24, 24]">
                         <j-col :span="16">
-                            <title-component data="基本信息" />
+                            <title-component :data="$t('Plugin.index.4283020-7')" />
                             <j-form
                                 ref="formRef"
                                 :model="formData"
                                 layout="vertical"
                             >
                                 <j-form-item
-                                    label="名称"
+                                    :label="$t('Plugin.index.4283020-8')"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入名称',
+                                            message: $t('Plugin.index.4283020-9'),
                                             trigger: 'blur',
                                         },
                                         {
                                             max: 64,
-                                            message: '最多可输入64个字符',
+                                            message: $t('Plugin.index.4283020-10'),
                                         },
                                     ]"
                                     name="name"
@@ -107,21 +107,21 @@
                                     <j-input
                                         v-model:value="formData.name"
                                         allowClear
-                                        placeholder="请输入名称"
+                                        :placeholder="$t('Plugin.index.4283020-9')"
                                     />
                                 </j-form-item>
                                 <j-form-item
-                                    label="说明"
+                                    :label="$t('Plugin.index.4283020-11')"
                                     :rules="[
                                         {
                                             max: 200,
-                                            message: '最多可输入200个字符',
+                                            message: $t('Plugin.index.4283020-12'),
                                         },
                                     ]"
                                     name="description"
                                 >
                                     <j-textarea
-                                        placeholder="请输入说明"
+                                        :placeholder="$t('Plugin.index.4283020-13')"
                                         :rows="4"
                                         v-model:value="formData.description"
                                         show-count
@@ -129,7 +129,7 @@
                                     />
                                 </j-form-item>
                                 <template v-if="config.length">
-                                    <title-component data="通用配置" />
+                                    <title-component :data="$t('Plugin.index.4283020-14')" />
                                     <j-form-item
                                         v-for="item in config"
                                         :key="item.name"
@@ -162,7 +162,7 @@
                 @click="prev"
                 style="margin-right: 8px"
             >
-                上一步
+                {{ $t('Plugin.index.4283020-15') }}
             </j-button>
 
             <PermissionButton
@@ -175,10 +175,10 @@
                 }`"
                 :loading="loading"
             >
-                保存
+                {{ $t('Plugin.index.4283020-16') }}
             </PermissionButton>
             <j-button v-if="current === 0" type="primary" @click="next">
-                下一步
+                {{ $t('Plugin.index.4283020-17') }}
             </j-button>
         </div>
     </div>
@@ -196,6 +196,9 @@ import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
 import { CreteRuleByType } from 'components/Form/rules';
 import { termType } from '@/components/Search/util';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     provider: {
@@ -261,17 +264,17 @@ const showAddBtn = computed(() => {
 });
 
 const getRules = (item: any) => {
-    let typeName = '输入';
+    let typeName = $t('Plugin.index.4283020-18');
     let rules: any[] = [];
 
     if (['select', 'date'].includes(item.type?.type || 'string')) {
-        typeName = '选择';
+        typeName = $t('Plugin.index.4283020-19');
     }
 
     if (item.type?.expands?.required) {
         rules.push({
             required: true,
-            message: `请${typeName}${item.name}`,
+            message: $t('Plugin.index.4283020-20', [typeName,item.name]),
         });
     }
 
@@ -335,7 +338,7 @@ const addPlugin = () => {
  */
 const next = () => {
     if (!AccessCurrent.value) {
-        return onlyMessage('请选择插件！', 'error');
+        return onlyMessage($t('Plugin.index.4283020-21'), 'error');
     }
     current.value += 1;
 };
@@ -377,7 +380,7 @@ const saveData = () => {
                       });
             loading.value = false;
             if (resp.success) {
-                onlyMessage('操作成功', 'success');
+                onlyMessage($t('Plugin.index.4283020-22'), 'success');
                 history.back();
                 if ((window as any).onTabSaveSuccess) {
                     if (resp.result?.id) {

@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"components.Network.542308-0": "网络流量",
+		"components.Network.542308-1": "上行",
+		"components.Network.542308-2": "下行",
+		"components.Network.542308-3": "最近1小时",
+		"components.Network.542308-4": "最近24小时",
+		"components.Network.542308-5": "近一周"
+	},
+	"en": {
+		"components.Network.542308-0": "Network flow",
+		"components.Network.542308-1": "Upstream",
+		"components.Network.542308-2": "Downstream",
+		"components.Network.542308-3": "Last hour",
+		"components.Network.542308-4": "Last 24 hours",
+		"components.Network.542308-5": "Last week"
+	}
+}

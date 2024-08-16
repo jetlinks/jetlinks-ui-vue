@@ -1,32 +1,35 @@
+import i18n from '@/i18n'
+
+const $t = i18n.global.t
 import {getImage} from "@/utils/comm";
 
 export const TypeMap = {
     fixed: {
-        label: '自定义',
+        label: $t('device.util.5425995-0'),
         value: 'fixed',
         image: getImage('/scene/device-custom.png'),
-        tip: '自定义选择当前产品下的任意设备',
+        tip: $t('device.util.5425995-1'),
         disabled: false
     },
     relation: {
-        label: '按关系',
+        label: $t('device.util.5425995-2'),
         value: 'relation',
         image: getImage('/scene/device-relation.png'),
-        tip: '选择与触发设备具有相同关系的设备',
+        tip: $t('device.util.5425995-3'),
         disabled: false
     },
     tag: {
-        label: '按标签',
+        label: $t('device.util.5425995-4'),
         value: 'tag',
         image: getImage('/scene/device-tag.png'),
-        tip: '按标签选择产品下具有特定标签的设备',
+        tip: $t('device.util.5425995-5'),
         disabled: false
     },
     context: {
-        label: '按变量',
+        label: $t('device.util.5425995-6'),
         value: 'context',
         image: getImage('/scene/device-variable.png'),
-        tip: '选择设备ID为上游变量值的设备',
+        tip: $t('device.util.5425995-7'),
         disabled: false
     },
 }

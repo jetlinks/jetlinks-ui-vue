@@ -1,3 +1,6 @@
+import i18n from '@/i18n'
+
+const $t = i18n.global.t
 export const ParserConfiguration = {
     delimited: '',
     lang: '',
@@ -81,11 +84,11 @@ export const VisibleData = {
 };
 
 export const ParserTypeOptions = [
-    { value: 'DIRECT', label: '不处理' },
-    { value: 'DELIMITED', label: '分隔符' },
-    { value: 'SCRIPT', label: '自定义脚本' },
-    { value: 'FIXED_LENGTH', label: '固定长度' },
-    { value: 'LENGTH_FIELD', label: '长度字段' },
+    { value: 'DIRECT', label: $t('Type.data.962512-0') },
+    { value: 'DELIMITED', label: $t('Type.data.962512-1') },
+    { value: 'SCRIPT', label: $t('Type.data.962512-2') },
+    { value: 'FIXED_LENGTH', label: $t('Type.data.962512-3') },
+    { value: 'LENGTH_FIELD', label: $t('Type.data.962512-4') },
 ];
 export const LengthOptions = [
     { value: '1', label: '1' },
@@ -95,8 +98,8 @@ export const LengthOptions = [
     { value: '8', label: '8' },
 ];
 export const LittleOptions = [
-    { label: '大端', value: 'false' },
-    { label: '小端', value: 'true' },
+    { label: $t('Type.data.962512-5'), value: 'false' },
+    { label: $t('Type.data.962512-6'), value: 'true' },
 ];
 
 export const isVisible = (
@@ -127,7 +130,7 @@ const validateAddress = (_rule: any, value: string): Promise<any> => {
         ) {
             return resolve('');
         } else {
-            return value ? reject('请输入正确的IP地址或者域名') : resolve('');
+            return value ? reject($t('Type.data.962512-7')) : resolve('');
         }
     });
 };
@@ -146,123 +149,123 @@ export const Rules = {
     name: [
         {
             required: true,
-            message: '请输入名称',
+            message: $t('Type.data.962512-8'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     type: [
         {
             required: true,
-            message: '请选择类型',
+            message: $t('Type.data.962512-10'),
         },
     ],
     shareCluster: [
         {
             required: true,
-            message: '请选择集群',
+            message: $t('Type.data.962512-11'),
         },
     ],
     serverId: [
         {
             required: true,
-            message: '请选择节点名称',
+            message: $t('Type.data.962512-12'),
         },
     ],
     host: [
         {
             required: true,
-            message: '请选择本地地址',
+            message: $t('Type.data.962512-13'),
         },
     ],
     port: [
         {
             required: true,
-            message: '请选择本地端口',
+            message: $t('Type.data.962512-14'),
         },
     ],
     publicHost: [
         {
             required: true,
-            message: '请输入公网地址',
+            message: $t('Type.data.962512-15'),
         },
         {
             validator: validateAddress,
-            message: '请输入正确的IP地址或者域名',
+            message: $t('Type.data.962512-7'),
         },
     ],
     publicPort: [
         {
             required: true,
-            message: '请输入公网端口',
+            message: $t('Type.data.962512-16'),
         },
         {
             pattern: Validator.regOnlyNumber,
-            message: '请输入1-65535之间的正整数',
+            message: $t('Type.data.962512-17'),
         },
     ],
     remoteHost: [
         {
             required: true,
-            message: '请输入远程地址',
+            message: $t('Type.data.962512-18'),
         },
         {
             validator: validateAddress,
-            message: '请输入正确格式的域名或ip',
+            message: $t('Type.data.962512-19'),
         },
     ],
     remotePort: [
         {
             required: true,
-            message: '输入远程端口',
+            message: $t('Type.data.962512-20'),
         },
         {
             pattern: Validator.regOnlyNumber,
-            message: '请输入1-65535之间的正整数',
+            message: $t('Type.data.962512-17'),
         },
     ],
     clientId: [
         {
             required: true,
-            message: '请输入ClientId',
+            message: $t('Type.data.962512-21'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     username: [
         {
             required: true,
-            message: '请输入用户名',
+            message: $t('Type.data.962512-22'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     password: [
         {
             required: true,
-            message: '请输入密码',
+            message: $t('Type.data.962512-23'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     topicPrefix: [
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     maxMessageSize: [
         {
             required: true,
-            message: '请输入最大消息长度',
+            message: $t('Type.data.962512-24'),
         },
     ],
     secure: [
@@ -273,72 +276,72 @@ export const Rules = {
     certId: [
         {
             required: true,
-            message: '请选择证书',
+            message: $t('Type.data.962512-25'),
         },
     ],
     privateKeyAlias: [
         {
             required: true,
-            message: '请输入私钥别名',
+            message: $t('Type.data.962512-26'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     parserType: [
         {
             required: true,
-            message: '请选择粘拆包规则',
+            message: $t('Type.data.962512-27'),
         },
     ],
     delimited: [
         {
             required: true,
-            message: '请输入分隔符',
+            message: $t('Type.data.962512-28'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     lang: [
         {
             required: true,
-            message: '请选择脚本语言',
+            message: $t('Type.data.962512-29'),
         },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('Type.data.962512-9'),
         },
     ],
     script: [
         {
             required: true,
-            message: '请输入脚本',
+            message: $t('Type.data.962512-30'),
         },
     ],
     size: [
         {
             required: true,
-            message: '请输入长度值',
+            message: $t('Type.data.962512-31'),
         },
         {
             validator:sizeValidator,
-            message:'请输入0~65535之间的正整数',
+            message:$t('Type.data.962512-32'),
             trigger:'change'
         }
     ],
     length: [
         {
             required: true,
-            message: '请选择长度',
+            message: $t('Type.data.962512-33'),
         },
     ],
     offset: [
         {
             pattern: Validator.regOnlyNumber,
-            message: '请输入0-65535之间的正整数',
+            message: $t('Type.data.962512-34'),
         },
     ],
 };

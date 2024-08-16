@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Detail.TimeComponent.286679-0": "今日",
+		"Detail.TimeComponent.286679-1": "近一周",
+		"Detail.TimeComponent.286679-2": "近一月",
+		"Detail.TimeComponent.286679-3": "开始时间",
+		"Detail.TimeComponent.286679-4": "结束时间"
+	},
+	"en": {
+		"Detail.TimeComponent.286679-0": "Today",
+		"Detail.TimeComponent.286679-1": "Last week",
+		"Detail.TimeComponent.286679-2": "Last month",
+		"Detail.TimeComponent.286679-3": "Start time",
+		"Detail.TimeComponent.286679-4": "End time"
+	}
+}

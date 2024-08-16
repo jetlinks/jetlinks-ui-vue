@@ -6,8 +6,8 @@
                 zIndex: 1072
               }"
     :options="[
-        { label: '不必填', value: 'false'},
-        { label: '必填', value: 'true'},
+        { label: $t('components.Constraint.6916447-0'), value: 'false'},
+        { label: $t('components.Constraint.6916447-1'), value: 'true'},
     ]"
     @change="change"
   >
@@ -17,6 +17,10 @@
 
 <script setup name="ConstraintSelect">
 import {FULL_CODE} from "jetlinks-ui-components/es/DataTable";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   value: {

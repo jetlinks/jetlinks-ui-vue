@@ -43,7 +43,7 @@
                     <div class="card-state-content">
                         <BadgeStatus
                             :status="status"
-                            :text="statusText"
+                            :text="statusText|| $t('PointCardBox.index.3217219-0')"
                             :statusNames="statusNames"
                         ></BadgeStatus>
                     </div>
@@ -81,6 +81,9 @@
 import type { ActionsType } from '@/components/Table/index';
 import { PropType } from 'vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type EmitProps = {
     // (e: 'update:modelValue', data: Record<string, any>): void;
@@ -105,8 +108,7 @@ const props = defineProps({
         default: true,
     },
     statusText: {
-        type: String,
-        default: '正常',
+        type: String
     },
     status: {
         type: [String, Number],

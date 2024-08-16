@@ -4,7 +4,7 @@
             <j-row :gutter="24">
                 <j-col :span="6">
                     <TopCard
-                        title="今日告警"
+                        :title="$t('DashBoard.index.835091-0')"
                         :value="state.today"
                         :footer="currentMonAlarm"
                     >
@@ -13,7 +13,7 @@
                 </j-col>
                 <j-col :span="6">
                     <TopCard
-                        title="告警配置"
+                        :title="$t('DashBoard.index.835091-1')"
                         :value="state.config"
                         :footer="alarmState"
                         :img="getImage('/device/device-number.png')"
@@ -28,7 +28,7 @@
                     <div class="alarm-card">
                         <Guide>
                             <template #title>
-                                <span style="margin-right: 24px">告警统计</span>
+                                <span style="margin-right: 24px">{{ $t('DashBoard.index.835091-2') }}</span>
                                 <j-select
                                     style="width: 40%"
                                     v-model:value="queryCodition.targetType"
@@ -43,9 +43,9 @@
                                     key="flow-static"
                                     :type="'week'"
                                     :quickBtnList="[
-                                        { label: '最近1小时', value: 'hour' },
-                                        { label: '最近24小时', value: 'day' },
-                                        { label: '近一周', value: 'week' },
+                                        { label: $t('DashBoard.index.835091-3'), value: 'hour' },
+                                        { label: $t('DashBoard.index.835091-4'), value: 'day' },
+                                        { label: $t('DashBoard.index.835091-5'), value: 'week' },
                                     ]"
                                     @change="initQueryTime"
                                 />
@@ -58,7 +58,7 @@
                                 ></Charts>
                             </div>
                             <div class="alarmRank">
-                                <h4>告警排名</h4>
+                                <h4>{{ $t('DashBoard.index.835091-6') }}</h4>
                                 <ul
                                     v-if="state.ranking.length"
                                     class="rankingList"
@@ -124,37 +124,40 @@ import {
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import { query } from '@/api/rule-engine/scene';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 let currentMonAlarm = ref<Footer[]>([
     {
-        title: '当月告警',
+        title: $t('DashBoard.index.835091-7'),
         value: 0,
         status: 'success',
     },
 ]);
 let alarmState = ref<Footer[]>([
     {
-        title: '正常',
+        title: $t('DashBoard.index.835091-8'),
         value: 0,
         status: 'success',
     },
     {
-        title: '禁用',
+        title: $t('DashBoard.index.835091-9'),
         value: 0,
         status: 'error',
     },
 ]);
 const selectOpt1 = ref<Object[]>([
-    { label: '设备', value: 'device' },
-    { label: '产品', value: 'product' },
-    { label: '组织', value: 'org' },
-    { label: '其它', value: 'other' },
+    { label: $t('DashBoard.index.835091-10'), value: 'device' },
+    { label: $t('DashBoard.index.835091-11'), value: 'product' },
+    { label: $t('DashBoard.index.835091-12'), value: 'org' },
+    { label: $t('DashBoard.index.835091-13'), value: 'other' },
 ]);
 const selectOpt2 = ref<SelectTypes['options']>([
-    { label: '设备', value: 'device' },
-    { label: '产品', value: 'product' },
-    { label: '其它', value: 'other' },
+    { label: $t('DashBoard.index.835091-10'), value: 'device' },
+    { label: $t('DashBoard.index.835091-11'), value: 'product' },
+    { label: $t('DashBoard.index.835091-13'), value: 'other' },
 ]);
 let queryCodition = reactive({
     startTime: 0,
@@ -272,7 +275,7 @@ const getDashBoard = () => {
                 },
                 series: [
                     {
-                        name: '告警数',
+                        name: $t('DashBoard.index.835091-14'),
                         data: fifteenData.map((item) => item.value),
                         type: 'line',
                         color: '#FF595E',
@@ -366,7 +369,7 @@ const initQueryTime = (data: any) => {
 };
 const selectChange = () => {
     let time = '1m';
-    let format = 'M月dd日 HH:mm';
+    let format = $t('DashBoard.index.835091-15');
     let limit = 12;
     const dt = queryCodition.endTime - queryCodition.startTime;
     const hour = 60 * 60 * 1000;
@@ -383,11 +386,11 @@ const selectChange = () => {
     } else if (dt > day && dt < year) {
         limit = Math.abs(Math.ceil(dt / day)) + 1;
         time = '1d';
-        format = 'M月dd日 HH:mm:ss';
+        format = $t('DashBoard.index.835091-16');
     } else if (dt >= year) {
         limit = Math.abs(Math.floor(dt / month));
         time = '1M';
-        format = 'yyyy年-M月';
+        format = $t('DashBoard.index.835091-17');
     }
 
     // 告警趋势
@@ -427,13 +430,13 @@ const selectChange = () => {
             limit: 9,
         },
     };
-    let tip = '其它';
+    let tip = $t('DashBoard.index.835091-13');
     if (queryCodition.targetType === 'device') {
-        tip = '设备';
+        tip = $t('DashBoard.index.835091-10');
     } else if (queryCodition.targetType === 'product') {
-        tip = '产品';
+        tip = $t('DashBoard.index.835091-11');
     } else if (queryCodition.targetType === 'org') {
-        tip = '组织';
+        tip = $t('DashBoard.index.835091-12');
     }
     // 网络请求
     dashboard([chartData, order]).then((res) => {
@@ -550,7 +553,7 @@ const jumpToDetail = (id: string) => {
                         const scene = res.result.data[0]
                          menuStory.jumpPage('rule-engine/Scene/Save',{}, { triggerType: scene.trigger.type, id: id });
                     }else{
-                        onlyMessage('数据已经删除','error')
+                        onlyMessage($t('DashBoard.index.835091-18'),'error')
                     }
                 }
             });

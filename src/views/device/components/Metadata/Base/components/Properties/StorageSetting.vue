@@ -32,6 +32,10 @@ import { defineExpose } from 'vue'
 import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
 import { omit } from 'lodash-es'
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   type: {
@@ -56,18 +60,18 @@ const configValue = ref(props.record?.expands)
 
 const columns = ref([
   {
-    title: '参数名称',
+    title: $t('Properties.StorageSetting.6916231-0'),
     dataIndex: 'name',
     width: 150,
     ellipsis: true,
   },
   {
-    title: '输入类型',
+    title: $t('Properties.StorageSetting.6916231-1'),
     dataIndex: 'type',
     width: 150,
   },
   {
-    title: '值',
+    title: $t('Properties.StorageSetting.6916231-2'),
     dataIndex: 'value',
   },
 ]);

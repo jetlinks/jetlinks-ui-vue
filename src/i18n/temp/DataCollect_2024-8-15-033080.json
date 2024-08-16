@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Scan.Table.3217212-0": "请输入",
+		"Scan.Table.3217212-1": "请选择",
+		"Scan.Table.3217212-2": "读",
+		"Scan.Table.3217212-3": "写",
+		"Scan.Table.3217212-4": "订阅",
+		"Scan.Table.3217212-5": "同上",
+		"Scan.Table.3217212-6": "请输入0或者正整数",
+		"Scan.Table.3217212-7": "是",
+		"Scan.Table.3217212-8": "否",
+		"Scan.Table.3217212-9": "删除",
+		"Scan.Table.3217212-10": "确认删除？",
+		"Scan.Table.3217212-11": "最多可输入64个字符"
+	},
+	"en": {
+		"Scan.Table.3217212-0": "Please enter",
+		"Scan.Table.3217212-1": "Please choose",
+		"Scan.Table.3217212-2": "read",
+		"Scan.Table.3217212-3": "write",
+		"Scan.Table.3217212-4": "subscribe",
+		"Scan.Table.3217212-5": "ditto",
+		"Scan.Table.3217212-6": "Please enter 0 or a positive integer",
+		"Scan.Table.3217212-7": "yes",
+		"Scan.Table.3217212-8": "no",
+		"Scan.Table.3217212-9": "Delete",
+		"Scan.Table.3217212-10": "Are you sure to delete?",
+		"Scan.Table.3217212-11": "Up to 64 characters can be entered"
+	}
+}

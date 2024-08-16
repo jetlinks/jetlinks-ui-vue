@@ -34,7 +34,7 @@
                         v-bind="slotProps"
                         :showStatus="true"
                         :status="slotProps.status?.value"
-                        :statusText="slotProps.status?.text"
+                        :statusText="slotProps.status?.value==='enabled'?$t('Cascade.index.755836-7'):$t('Cascade.index.755836-8')"
                         :statusNames="{
                             enabled: 'success',
                             disabled: 'error',
@@ -341,9 +341,9 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.status?.value === 'enabled' ? $t('Cascade.index.755836-8') : $t('Cascade.index.755836-17'),
+            text: data.status?.value === 'enabled' ? $t('Cascade.index.755836-25') : $t('Cascade.index.755836-17'),
             tooltip: {
-                title: data.status?.value === 'enabled' ? $t('Cascade.index.755836-8') : $t('Cascade.index.755836-17'),
+                title: data.status?.value === 'enabled' ? $t('Cascade.index.755836-25') : $t('Cascade.index.755836-17'),
             },
             icon:
                 data.status?.value === 'enabled'

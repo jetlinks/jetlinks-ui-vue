@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"BindChildDevice.index.423145-0": "绑定子设备",
+		"BindChildDevice.index.423145-1": "确定",
+		"BindChildDevice.index.423145-2": "取消",
+		"BindChildDevice.index.423145-3": "设备名称",
+		"BindChildDevice.index.423145-4": "所属产品",
+		"BindChildDevice.index.423145-5": "注册时间",
+		"BindChildDevice.index.423145-6": "状态",
+		"BindChildDevice.index.423145-7": "禁用",
+		"BindChildDevice.index.423145-8": "离线",
+		"BindChildDevice.index.423145-9": "在线",
+		"BindChildDevice.index.423145-10": "请选择需要绑定的设备",
+		"BindChildDevice.index.423145-11": "操作成功"
+	},
+	"en": {
+		"BindChildDevice.index.423145-0": "Bind sub devices",
+		"BindChildDevice.index.423145-1": "Confirm",
+		"BindChildDevice.index.423145-2": "Cancel",
+		"BindChildDevice.index.423145-3": "Equipment name",
+		"BindChildDevice.index.423145-4": "Belonging products",
+		"BindChildDevice.index.423145-5": "Registration time",
+		"BindChildDevice.index.423145-6": "State",
+		"BindChildDevice.index.423145-7": "disabled",
+		"BindChildDevice.index.423145-8": "off-line",
+		"BindChildDevice.index.423145-9": "on-line",
+		"BindChildDevice.index.423145-10": "Please select the device that needs to be bound",
+		"BindChildDevice.index.423145-11": "Operation successful"
+	}
+}

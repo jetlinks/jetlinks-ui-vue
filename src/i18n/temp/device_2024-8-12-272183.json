@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.Source.6916227-0": "请选择来源",
+		"components.Source.6916227-1": "编辑",
+		"components.Source.6916227-2": "重置",
+		"components.Source.6916227-3": "重置为产品属性规则",
+		"components.Source.6916227-4": "操作成功！"
+	},
+	"en": {
+		"components.Source.6916227-0": "Please select the source",
+		"components.Source.6916227-1": "Edit",
+		"components.Source.6916227-2": "Reset",
+		"components.Source.6916227-3": "Reset to product attribute rules",
+		"components.Source.6916227-4": "Operation successful!"
+	}
+}

@@ -1,3 +1,5 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import dayjs from 'dayjs';
 
 const getParams = (dt: any) => {
@@ -132,9 +134,9 @@ export const statusData = [
     [
         {
             type: 'channel',
-            title: '异常通道',
+            title: $t('Dashboard.tool.368780-0'),
             status: 'error',
-            label: '通道数量',
+            label: $t('Dashboard.tool.368780-1'),
             value: 0,
             total: 0,
             permission: 'DataCollect/Channel'
@@ -143,9 +145,9 @@ export const statusData = [
     [
         {
             type: 'collector',
-            title: '异常采集器',
+            title: $t('Dashboard.tool.368780-2'),
             status: 'error',
-            label: '采集器数量',
+            label: $t('Dashboard.tool.368780-3'),
             value: 0,
             total: 0,
             permission: 'DataCollect/Collector'
@@ -154,9 +156,9 @@ export const statusData = [
     [
         {
             type: 'point',
-            title: '异常点位',
+            title: $t('Dashboard.tool.368780-4'),
             status: 'error',
-            label: '采集点位',
+            label: $t('Dashboard.tool.368780-5'),
             value: 0,
             total: 0,
             permission: 'DataCollect/Collector'

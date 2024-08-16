@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Config.index.233000-0": "告警级别配置",
+		"Config.index.233000-1": "级别{0}",
+		"Config.index.233000-2": "保存",
+		"Config.index.233000-3": "功能说明",
+		"Config.index.233000-4": "1、告警级别用于描述告警的严重程度，请根据业务管理方式进行自定义。",
+		"Config.index.233000-5": "2、告警级别将会在告警配置中被引用。",
+		"Config.index.233000-6": "3、最多可配置5个级别。",
+		"Config.index.233000-7": "告警级别",
+		"Config.index.233000-8": "数据流转",
+		"Config.index.233000-9": "操作成功"
+	},
+	"en": {
+		"Config.index.233000-0": "Alarm level configuration",
+		"Config.index.233000-1": "Level {0}",
+		"Config.index.233000-2": "Save",
+		"Config.index.233000-3": "Function Description",
+		"Config.index.233000-4": "1. The alarm level is used to describe the severity of the alarm, please customize it according to the business management method.",
+		"Config.index.233000-5": "2. The alarm level will be referenced in the alarm configuration.",
+		"Config.index.233000-6": "3. Up to 5 levels can be configured.",
+		"Config.index.233000-7": "Alarm level",
+		"Config.index.233000-8": "Data flow",
+		"Config.index.233000-9": "Operation successful"
+	}
+}

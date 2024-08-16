@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"ListItem.FilterCondition.5425981-0": "并且",
+		"ListItem.FilterCondition.5425981-1": "或者",
+		"ListItem.FilterCondition.5425981-2": "请选择参数",
+		"ListItem.FilterCondition.5425981-3": "请选择告警配置",
+		"ListItem.FilterCondition.5425981-4": "操作符",
+		"ListItem.FilterCondition.5425981-5": "参数值",
+		"ListItem.FilterCondition.5425981-6": "确认删除？",
+		"ListItem.FilterCondition.5425981-7": "手动输入",
+		"ListItem.FilterCondition.5425981-8": "内置参数",
+		"ListItem.FilterCondition.5425981-9": "是",
+		"ListItem.FilterCondition.5425981-10": "否"
+	},
+	"en": {
+		"ListItem.FilterCondition.5425981-0": "and",
+		"ListItem.FilterCondition.5425981-1": "or",
+		"ListItem.FilterCondition.5425981-2": "Please select parameters",
+		"ListItem.FilterCondition.5425981-3": "Please select alarm configuration",
+		"ListItem.FilterCondition.5425981-4": "Operator",
+		"ListItem.FilterCondition.5425981-5": "Parameter values",
+		"ListItem.FilterCondition.5425981-6": "Are you sure to delete?",
+		"ListItem.FilterCondition.5425981-7": "Manual input",
+		"ListItem.FilterCondition.5425981-8": "Built in parameters",
+		"ListItem.FilterCondition.5425981-9": "true",
+		"ListItem.FilterCondition.5425981-10": "false"
+	}
+}

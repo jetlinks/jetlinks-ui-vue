@@ -1,6 +1,6 @@
 <template>
     <div>
-        <j-select v-model:value="propertyId" show-search style="width: 80%" placeholder="请选择">
+        <j-select v-model:value="propertyId" show-search style="width: 80%" :placeholder="$t('ScanBacnet.PropertyId.321719-0')">
             <j-select-option
                 v-for="item in propertyIdListInUse"
                 :key="item"
@@ -12,6 +12,9 @@
 </template>
 <script setup lang="ts" name="propertyId">
 import { getBacnetPropertyIdNotUse } from '@/api/data-collect/collector';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     value: {
         type: String,

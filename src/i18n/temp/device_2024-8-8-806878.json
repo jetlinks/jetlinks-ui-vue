@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"DeviceAccess.metadataModal.0645610-0": "选择处理方式",
+		"DeviceAccess.metadataModal.0645610-1": "确定",
+		"DeviceAccess.metadataModal.0645610-2": "取消",
+		"DeviceAccess.metadataModal.0645610-3": "平台",
+		"DeviceAccess.metadataModal.0645610-4": "物模型",
+		"DeviceAccess.metadataModal.0645610-5": "中已有数据，请选择处理方式。",
+		"DeviceAccess.metadataModal.0645610-6": "默认采用覆盖的方式处理功能、事件、标签下的数据",
+		"DeviceAccess.metadataModal.0645610-7": "处理方式",
+		"DeviceAccess.metadataModal.0645610-8": "请选择处理方式",
+		"DeviceAccess.metadataModal.0645610-9": "取交集",
+		"DeviceAccess.metadataModal.0645610-10": "仅保留标识一致的属性",
+		"DeviceAccess.metadataModal.0645610-11": "取并集",
+		"DeviceAccess.metadataModal.0645610-12": "保留平台、插件中的所有属性",
+		"DeviceAccess.metadataModal.0645610-13": "忽略",
+		"DeviceAccess.metadataModal.0645610-14": "仅保留平台中的属性",
+		"DeviceAccess.metadataModal.0645610-15": "覆盖",
+		"DeviceAccess.metadataModal.0645610-16": "仅保留插件中的属性",
+		"DeviceAccess.metadataModal.0645610-17": "操作成功！"
+	},
+	"en": {
+		"DeviceAccess.metadataModal.0645610-0": "Select processing method",
+		"DeviceAccess.metadataModal.0645610-1": "Confirm",
+		"DeviceAccess.metadataModal.0645610-2": "Cancel",
+		"DeviceAccess.metadataModal.0645610-3": "There is already data in the platform ",
+		"DeviceAccess.metadataModal.0645610-4": "IOT model",
+		"DeviceAccess.metadataModal.0645610-5": ", please choose a processing method.",
+		"DeviceAccess.metadataModal.0645610-6": "By default, data under functions, events, and tags will be processed using overlay",
+		"DeviceAccess.metadataModal.0645610-7": "Handling method",
+		"DeviceAccess.metadataModal.0645610-8": "Please choose a Handling method",
+		"DeviceAccess.metadataModal.0645610-9": "Intersect",
+		"DeviceAccess.metadataModal.0645610-10": "Only retain attributes with consistent identification",
+		"DeviceAccess.metadataModal.0645610-11": "Merge set",
+		"DeviceAccess.metadataModal.0645610-12": "Retain all attributes in the platform and plugins",
+		"DeviceAccess.metadataModal.0645610-13": "Ignore",
+		"DeviceAccess.metadataModal.0645610-14": "Only retain attributes from the platform",
+		"DeviceAccess.metadataModal.0645610-15": "Cover",
+		"DeviceAccess.metadataModal.0645610-16": "Keep only the attributes in the plugin",
+		"DeviceAccess.metadataModal.0645610-17": "Operation successful!"
+	}
+}

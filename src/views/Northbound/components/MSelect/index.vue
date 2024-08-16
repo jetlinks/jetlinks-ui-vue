@@ -1,7 +1,7 @@
 <template>
     <j-select
         :disabled="disabled"
-        placeholder="请选择"
+        :placeholder="$t('MSelect.index.613232-0')"
         :value="_value"
         show-search
         @change="productChange"
@@ -19,6 +19,9 @@
 <script lang="ts" setup>
 import { PropType } from 'vue';
 import { Form } from 'jetlinks-ui-components';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     disabled: {

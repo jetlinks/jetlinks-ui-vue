@@ -1,7 +1,7 @@
 <template>
     <div class="tree-content">
         <div class="tree-header">
-            <div>数据源</div>
+            <div>{{ $t('Scan.Tree.3217110-0') }}</div>
             <!-- <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox> -->
         </div>
         <j-spin :spinning="spinning">
@@ -15,7 +15,7 @@
                 >
             </a-breadcrumb>
             <a-button @click="allControl" block style="margin-bottom: 10px">{{
-                controlAllType ? '全部撤销' : '全部添加'
+                controlAllType ? $t('Scan.Tree.3217110-1') : $t('Scan.Tree.3217110-2')
             }}</a-button>
             <div v-if="!!treeData" class="treeContainer">
                 <div
@@ -50,6 +50,9 @@ import {
     queryPointNoPaging,
 } from '@/api/data-collect/collector';
 import { cloneDeep } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -71,7 +74,7 @@ const isSelected = ref(false);
 const treeData = ref<TreeProps['treeData']>();
 const breadcrumb = ref([
     {
-        breadcrumbName: '全部',
+        breadcrumbName: $t('Scan.Tree.3217110-3'),
         nodeId: undefined,
     },
 ]);

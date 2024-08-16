@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"Function.OutputParams.6916450-0": "参数标识",
+		"Function.OutputParams.6916450-1": "该标识已存在",
+		"Function.OutputParams.6916450-2": "请输入标识",
+		"Function.OutputParams.6916450-3": "最多可输入64个字符",
+		"Function.OutputParams.6916450-4": "标识只能由数字、字母、下划线、中划线组成",
+		"Function.OutputParams.6916450-5": "参数名称",
+		"Function.OutputParams.6916450-6": "请输入参数名称",
+		"Function.OutputParams.6916450-7": "数据类型",
+		"Function.OutputParams.6916450-8": "请选择数据类型",
+		"Function.OutputParams.6916450-9": "其他配置",
+		"Function.OutputParams.6916450-10": "操作"
+	},
+	"en": {
+		"Function.OutputParams.6916450-0": "Parameter ID",
+		"Function.OutputParams.6916450-1": "This ID already exists",
+		"Function.OutputParams.6916450-2": "Please enter the ID",
+		"Function.OutputParams.6916450-3": "Up to 64 characters can be entered",
+		"Function.OutputParams.6916450-4": "ID can only be composed of numbers, letters, underscores, and dashes",
+		"Function.OutputParams.6916450-5": "Parameter Name",
+		"Function.OutputParams.6916450-6": "Please enter the parameter name",
+		"Function.OutputParams.6916450-7": "Data type",
+		"Function.OutputParams.6916450-8": "Please select data type",
+		"Function.OutputParams.6916450-9": "Other configurations",
+		"Function.OutputParams.6916450-10": "Operation"
+	}
+}

@@ -35,7 +35,7 @@
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
-                            新增
+                            {{ $t('Instance.index.628798-0') }}
                         </PermissionButton>
                         <BatchDropdown
                             v-model:isCheck="isCheck"
@@ -51,7 +51,7 @@
                         :actions="getActions(slotProps, 'card')"
                         :active="_selectedRowKeys.includes(slotProps.id)"
                         :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
+                        :statusText="slotProps.state?.value==='notActive'? $t('Instance.index.628798-7'):slotProps.state?.value==='offline'? $t('Instance.index.628798-8'): $t('Instance.index.628798-9')"
                         :statusNames="{
                             online: 'processing',
                             offline: 'error',
@@ -82,13 +82,13 @@
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        设备类型
+                                        {{ $t('Instance.index.628798-1') }}
                                     </div>
                                     <div>{{ slotProps.deviceType?.text }}</div>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        产品名称
+                                        {{ $t('Instance.index.628798-2') }}
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ slotProps.productName }}
@@ -96,6 +96,9 @@
                                 </j-col>
                             </j-row>
                         </template>
+                       <template #state="slotProps">
+                         {{ slotProps.state }}
+                      </template>
                         <template #actions="item">
                             <PermissionButton
                                 :disabled="item.disabled"
@@ -231,6 +234,9 @@ import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import TagSearch from './components/TagSearch.vue';
 import { Modal } from 'ant-design-vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -247,7 +253,7 @@ const menuStory = useMenuStore();
 const modalVisible = ref(false);
 const deleteDeviceId = ref('');
 const deleteState = ref(false);
-const deleteTip = ref('确认删除？');
+const deleteTip = ref($t('Instance.index.628798-3'));
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
         return (arr || []).map((item: any) => {
@@ -274,7 +280,7 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
+        title: $t('Instance.index.628798-4'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -284,7 +290,7 @@ const columns = [
         },
     },
     {
-        title: '产品名称',
+        title: $t('Instance.index.628798-2'),
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,
@@ -305,7 +311,7 @@ const columns = [
         },
     },
     {
-        title: '创建时间',
+        title: $t('Instance.index.628798-5'),
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
@@ -315,23 +321,23 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Instance.index.628798-6'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: $t('Instance.index.628798-7'), value: 'notActive' },
+                { label: $t('Instance.index.628798-8'), value: 'offline' },
+                { label: $t('Instance.index.628798-9'), value: 'online' },
             ],
         },
     },
     {
         key: 'classifiedId',
         dataIndex: 'classifiedId',
-        title: '产品分类',
+        title: $t('Instance.index.628798-10'),
         hideInTable: true,
         search: {
             type: 'treeSelect',
@@ -346,7 +352,7 @@ const columns = [
     },
     {
         key: 'accessProvider',
-        title: '网关类型',
+        title: $t('Instance.index.628798-11'),
         dataIndex: 'accessProvider',
         valueType: 'select',
         hideInTable: true,
@@ -370,7 +376,7 @@ const columns = [
     {
         key: 'accessId',
         dataIndex: 'accessId',
-        title: '接入方式',
+        title: $t('Instance.index.628798-12'),
         hideInTable: true,
         search: {
             type: 'select',
@@ -397,21 +403,21 @@ const columns = [
     },
     {
         dataIndex: 'deviceType',
-        title: '设备类型',
+        title: $t('Instance.index.628798-1'),
         valueType: 'select',
         hideInTable: true,
         search: {
             type: 'select',
             options: [
-                { label: '直连设备', value: 'device' },
-                { label: '网关子设备', value: 'childrenDevice' },
-                { label: '网关设备', value: 'gateway' },
+                { label: $t('Instance.index.628798-13'), value: 'device' },
+                { label: $t('Instance.index.628798-14'), value: 'childrenDevice' },
+                { label: $t('Instance.index.628798-15'), value: 'gateway' },
             ],
         },
     },
     {
         dataIndex: 'id$dim-assets',
-        title: '所属组织',
+        title: $t('Instance.index.628798-16'),
         hideInTable: true,
         search: {
             type: 'treeSelect',
@@ -459,7 +465,7 @@ const columns = [
     {
         key: 'id$dev-tag',
         dataIndex: 'id$dev-tag',
-        title: '设备标签',
+        title: $t('Instance.index.628798-17'),
         hideInTable: true,
         search: {
             type: 'component',
@@ -468,7 +474,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Instance.index.628798-18'),
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
@@ -477,7 +483,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Instance.index.628798-19'),
         key: 'action',
         fixed: 'right',
         width: 200,
@@ -564,9 +570,9 @@ const getActions = (
     const actions = [
         {
             key: 'view',
-            text: '查看',
+            text: $t('Instance.index.628798-20'),
             tooltip: {
-                title: '查看',
+                title: $t('Instance.index.628798-20'),
             },
             icon: 'EyeOutlined',
             onClick: () => {
@@ -575,9 +581,9 @@ const getActions = (
         },
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Instance.index.628798-21'),
             tooltip: {
-                title: '编辑',
+                title: $t('Instance.index.628798-21'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -587,9 +593,9 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'notActive' ? '禁用' : '启用',
+            text: data.state?.value !== 'notActive' ? $t('Instance.index.628798-40') : $t('Instance.index.628798-22'),
             tooltip: {
-                title: data.state?.value !== 'notActive' ? '禁用' : '启用',
+                title: data.state?.value !== 'notActive' ? $t('Instance.index.628798-40') : $t('Instance.index.628798-22'),
             },
             icon:
                 data.state.value !== 'notActive'
@@ -597,8 +603,8 @@ const getActions = (
                     : 'CheckCircleOutlined',
 
             popConfirm: {
-                title: `确认${
-                    data.state.value !== 'notActive' ? '禁用' : '启用'
+                title: `${
+                    data.state.value !== 'notActive' ? $t('Instance.index.628798-23') : $t('Instance.index.628798-39')
                 }?`,
                 onConfirm: async () => {
                     let response;
@@ -608,23 +614,23 @@ const getActions = (
                         response = await _deploy(data.id);
                     }
                     if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Instance.index.628798-24'));
                         instanceRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Instance.index.628798-25'), 'error');
                     }
                 },
             },
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Instance.index.628798-26'),
             disabled: data.state?.value !== 'notActive',
             tooltip: {
                 title:
                     data.state.value !== 'notActive'
-                        ? '已启用的设备不能删除'
-                        : '删除',
+                        ? $t('Instance.index.628798-27')
+                        : $t('Instance.index.628798-26'),
             },
             onClick: async () => {
                 if (deleteState.value) {
@@ -638,8 +644,8 @@ const getActions = (
                 if (res.success) {
                     deleteTip.value =
                         res.result?.accessProvider === 'Ctwing'
-                            ? '该操作仅可删除物联网平台数据Ctwing平台数据需另行删除'
-                            : '确认删除？';
+                            ? $t('Instance.index.628798-28')
+                            : $t('Instance.index.628798-3');
                 }
                 Modal.confirm({
                     title: deleteTip.value,
@@ -739,13 +745,13 @@ const syncDeviceStatus = () => {
 
 const delSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
-        onlyMessage('请选择设备', 'error');
+        onlyMessage($t('Instance.index.628798-29'), 'error');
         return;
     }
     const response = batchDeleteDevice(_selectedRowKeys.value);
     response.then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功！');
+            onlyMessage($t('Instance.index.628798-24'));
             _selectedRowKeys.value = [];
             instanceRef.value?.reload();
         }
@@ -755,12 +761,12 @@ const delSelectedDevice = () => {
 
 // const activeSelectedDevice = async () => {
 //     if(!_selectedRowKeys.value.length){
-//         onlyMessage('请选择设备', 'error')
+//         onlyMessage($t('Instance.index.628798-29'), 'error')
 //         return
 //     }
 //     const resp = await batchDeployDevice(_selectedRowKeys.value);
 //     if (resp.status === 200) {
-//         onlyMessage('操作成功！');
+//         onlyMessage($t('Instance.index.628798-24'));
 //         _selectedRowKeys.value = [];
 //         instanceRef.value?.reload();
 //     }
@@ -768,13 +774,13 @@ const delSelectedDevice = () => {
 
 const disabledSelectedDevice = () => {
     if (!_selectedRowKeys.value.length) {
-        onlyMessage('请选择设备', 'error');
+        onlyMessage($t('Instance.index.628798-29'), 'error');
         return;
     }
     const response = batchUndeployDevice(_selectedRowKeys.value);
     response.then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功！');
+            onlyMessage($t('Instance.index.628798-24'));
             _selectedRowKeys.value = [];
             instanceRef.value?.reload();
         }
@@ -785,7 +791,7 @@ const disabledSelectedDevice = () => {
 const batchActions: BatchActionsType[] = [
     {
         key: 'export',
-        text: '批量导出设备',
+        text: $t('Instance.index.628798-30'),
         permission: 'device/Instance:export',
         icon: 'ExportOutlined',
         onClick: () => {
@@ -794,7 +800,7 @@ const batchActions: BatchActionsType[] = [
     },
     {
         key: 'import',
-        text: '批量导入设备',
+        text: $t('Instance.index.628798-31'),
         permission: 'device/Instance:import',
         icon: 'ImportOutlined',
         onClick: () => {
@@ -803,19 +809,19 @@ const batchActions: BatchActionsType[] = [
     },
     {
         key: 'activeAll',
-        text: '启用全部设备',
+        text: $t('Instance.index.628798-32'),
         ghost: true,
         type: 'primary',
         permission: 'device/Instance:action',
         icon: 'CheckCircleOutlined',
         popConfirm: {
-            title: '确认启用全部设备？',
+            title: $t('Instance.index.628798-33'),
             onConfirm: activeAllDevice,
         },
     },
     {
         key: 'sync',
-        text: '同步设备状态',
+        text: $t('Instance.index.628798-34'),
         type: 'primary',
         ghost: true,
         icon: 'SyncOutlined',
@@ -823,13 +829,13 @@ const batchActions: BatchActionsType[] = [
     },
     {
         key: 'delete',
-        text: '批量删除设备',
+        text: $t('Instance.index.628798-35'),
         danger: true,
         permission: 'device/Instance:delete',
         icon: 'DeleteOutlined',
         selected: {
             popConfirm: {
-                title: '已启用的设备无法删除，确认删除选中的禁用状态设备？',
+                title: $t('Instance.index.628798-36'),
                 onConfirm: delSelectedDevice,
             },
         },
@@ -850,13 +856,13 @@ const batchActions: BatchActionsType[] = [
     // },
     {
         key: 'disable',
-        text: '批量禁用设备',
+        text: $t('Instance.index.628798-37'),
         danger: true,
         icon: 'StopOutlined',
         permission: 'device/Instance:action',
         selected: {
             popConfirm: {
-                title: '确认禁用选中设备?',
+                title: $t('Instance.index.628798-38'),
                 onConfirm: disabledSelectedDevice,
             },
         },
@@ -925,7 +931,7 @@ const onRefresh = () => {
 const deleteDevice = async () => {
     const resp = await _delete(deleteDeviceId.value);
     if (resp.status === 200) {
-        onlyMessage('操作成功！');
+        onlyMessage($t('Instance.index.628798-24'));
         const index = _selectedRowKeys.value.findIndex(
             (id: any) => id === deleteDeviceId.value,
         );
@@ -934,7 +940,7 @@ const deleteDevice = async () => {
         }
         instanceRef.value?.reload();
     } else {
-        onlyMessage('操作失败！', 'error');
+        onlyMessage($t('Instance.index.628798-25'), 'error');
     }
     deleteState.value = false;
 };

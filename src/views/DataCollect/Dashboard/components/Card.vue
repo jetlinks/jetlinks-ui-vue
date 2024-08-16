@@ -4,7 +4,7 @@
             <div class="dash-board">
                 <div class="header">
                     <div class="left">
-                        <h3 style="width: 100px">点位数据量</h3>
+                        <h3 style="width: 100px">{{ $t('components.Card.368795-0') }}</h3>
                     </div>
                     <div class="right">
                         <j-radio-group
@@ -13,13 +13,13 @@
                             v-model:value="data.time.type"
                         >
                             <j-radio-button value="hour">
-                                最近1小时
+                                {{ $t('components.Card.368795-1') }}
                             </j-radio-button>
                             <j-radio-button value="today">
-                                今日
+                                {{ $t('components.Card.368795-2') }}
                             </j-radio-button>
                             <j-radio-button value="week">
-                                近一周
+                                {{ $t('components.Card.368795-3') }}
                             </j-radio-button>
                         </j-radio-group>
                         <j-range-picker
@@ -49,6 +49,9 @@ import { dashboard } from '@/api/data-collect/dashboard';
 import { getTimeByType, pointParams, pointOptionsSeries } from '../tool.ts';
 import * as echarts from 'echarts';
 import dayjs from 'dayjs';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const chartRef = ref<Record<string, any>>({});
 const loading = ref(false);
@@ -105,7 +108,7 @@ const handleOptions = (x = [], y = []) => {
             color: ['#979AFF'],
             series: [
                 {
-                    name: '消息量',
+                    name: $t('components.Card.368795-4'),
                     data: y,
                     ...pointOptionsSeries,
                 },

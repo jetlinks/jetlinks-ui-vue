@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Device.index.5425845-0": "触发规则",
+		"Device.index.5425845-1": "请配置设备触发规则",
+		"Device.index.5425845-2": "该数据已发生变更，请重新配置"
+	},
+	"en": {
+		"Device.index.5425845-0": "Trigger rules",
+		"Device.index.5425845-1": "Please configure device triggering rules",
+		"Device.index.5425845-2": "This data has been changed, please reconfigure"
+	}
+}

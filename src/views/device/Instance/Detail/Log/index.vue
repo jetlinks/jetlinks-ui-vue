@@ -49,13 +49,16 @@ import { queryLog, queryLogsType } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import moment from 'moment';
 import { Modal, Textarea } from 'jetlinks-ui-components';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const params = ref<Record<string, any>>({});
 const instanceStore = useInstanceStore();
 
 const columns = [
     {
-        title: '类型',
+        title: $t('Log.index.647359-0'),
         dataIndex: 'type',
         key: 'type',
         scopedSlots: true,
@@ -76,7 +79,7 @@ const columns = [
         },
     },
     {
-        title: '时间',
+        title: $t('Log.index.647359-1'),
         dataIndex: 'timestamp',
         key: 'timestamp',
         scopedSlots: true,
@@ -86,7 +89,7 @@ const columns = [
         },
     },
     {
-        title: '内容',
+        title: $t('Log.index.647359-2'),
         ellipsis: true,
         dataIndex: 'content',
         key: 'content',
@@ -96,7 +99,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Log.index.647359-3'),
         key: 'action',
         fixed: 'right',
         width: 250,
@@ -112,9 +115,9 @@ const getActions = (
     return [
         {
             key: 'view',
-            text: '查看',
+            text: $t('Log.index.647359-4'),
             tooltip: {
-                title: '查看',
+                title: $t('Log.index.647359-4'),
             },
             icon: 'SearchOutlined',
             onClick: () => {
@@ -125,7 +128,7 @@ const getActions = (
                     content = data.content;
                 }
                 Modal.info({
-                    title: '详细信息',
+                    title: $t('Log.index.647359-5'),
                     width: 700,
                     content: h(Textarea, {
                         bordered: false,

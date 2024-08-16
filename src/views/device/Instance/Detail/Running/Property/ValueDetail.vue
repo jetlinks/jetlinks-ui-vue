@@ -3,9 +3,9 @@
         :maskClosable="false"
         width="600px"
         :visible="true"
-        title="详情"
-        okText="确定"
-        cancelText="取消"
+        :title="$t('Property.ValueDetail.286663-0')"
+        :okText="$t('Property.ValueDetail.286663-1')"
+        :cancelText="$t('Property.ValueDetail.286663-2')"
         @ok="handleCancel"
         @cancel="handleCancel"
     >
@@ -27,6 +27,9 @@
 <script lang="ts" setup>
 import JsonViewer from 'vue-json-viewer';
 import LivePlayer from '@/components/Player/index.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const _data = defineProps({
     type: {

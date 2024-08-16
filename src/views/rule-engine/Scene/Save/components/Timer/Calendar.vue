@@ -1,7 +1,7 @@
 <template>
   <div class="calendar-form-item-content">
     <div class="header">
-      <a-button type="link" @click="onView" style="padding-right: 2px">预览日历</a-button>
+      <a-button type="link" @click="onView" style="padding-right: 2px">{{ $t('Timer.Calendar.5425721-0') }}</a-button>
     </div>
     <div class="calendar-items">
       <j-scrollbar :maxHeight="350">
@@ -11,11 +11,11 @@
           </div>
           <div class="calendar-item-tags">
             <div class="calendar-item-name">
-              规则：{{ index + 1 }}
+              {{ $t('Timer.Calendar.5425721-1') }}{{ index + 1 }}
             </div>
             <div style="flex: 1 1 0;min-width: 0">
               <j-select
-                placeholder="请选择日期类型"
+                :placeholder="$t('Timer.Calendar.5425721-2')"
                 v-model:value="item.scheduleTags"
                 style="width: calc(100% - 30px)"
                 mode="multiple"
@@ -34,10 +34,10 @@
               <div>
                 <j-radio-group
                   :value='item.mod'
-                  :options='[
-                    { label: "周期执行", value: "period" },
-                    { label: "执行一次", value: "once" },
-                  ]'
+                  :options="[
+                    { label: $t('Timer.Calendar.5425721-3'), value: 'period' },
+                    { label: $t('Timer.Calendar.5425721-4'), value:'once'},
+                  ]"
                   option-type='button'
                   button-style='solid'
                   @change='(e) => modChange(e, index)'
@@ -53,7 +53,7 @@
                   format='HH:mm:ss'
                   @change='updateValue'
                 />
-                <div>执行一次</div>
+                <div>{{ $t('Timer.Calendar.5425721-4') }}</div>
               </template>
               <template v-if="item.mod === 'period'">
                 <j-time-range-picker
@@ -68,9 +68,9 @@
                           updateValue()
                     }'
                 />
-                <span>每</span>
+                <span>{{ $t('Timer.Calendar.5425721-5') }}</span>
                 <j-input-number
-                  placeholder='请输入时间'
+                  :placeholder="$t('Timer.Calendar.5425721-6')"
                   style='max-width: 170px'
                   :precision='0'
                   :min='1'
@@ -81,11 +81,11 @@
                   <template #addonAfter>
                     <j-select
                       v-model:value='item.period.unit'
-                      :options='[
-                        { label: "秒", value: "seconds" },
-                        { label: "分", value: "minutes" },
-                        { label: "小时", value: "hours" },
-                      ]'
+                      :options="[
+                        { label: $t('Timer.Calendar.5425721-7'), value: 'seconds' },
+                        { label: $t('Timer.Calendar.5425721-8'), value: 'minutes' },
+                        { label: $t('Timer.Calendar.5425721-9'), value: 'hours' },
+                      ]"
                       @select='e => periodUnitChange(e, index)'
                     />
                   </template>
@@ -98,20 +98,20 @@
       </j-scrollbar>
     </div>
     <a-button @click="addItem" style="width: 100%;">
-      新增规则
+      {{ $t('Timer.Calendar.5425721-10') }}
     </a-button>
     <j-modal
       v-model:visible="visible"
       :width="1000"
-      okText="关闭"
+      :okText="$t('Timer.Calendar.5425721-11')"
     >
       <div>
-        正在预览日历
+        {{ $t('Timer.Calendar.5425721-12') }}
       </div>
       <FullCalendar  :preview="true"/>
       <template #footer>
         <a-button type="primary" @click="visible = false">
-          关闭
+          {{ $t('Timer.Calendar.5425721-11') }}
         </a-button>
       </template>
     </j-modal>
@@ -123,6 +123,9 @@ import dayjs from "dayjs";
 import { useRequest } from '@/hook'
 import {queryTags} from "@/api/system/calendar";
 import FullCalendar from '@/views/system/Calendar/FullCalendar/index.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {

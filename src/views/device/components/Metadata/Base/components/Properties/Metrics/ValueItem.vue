@@ -13,13 +13,13 @@
           </j-form-item>
           <div v-else class="data-table-boolean-item">
             <div class="data-table-boolean-item--value">
-              <j-form-item :name="['rangeValue', 0]" :rules="[{ required: true, message: '请输入指标值'}]">
+              <j-form-item :name="['rangeValue', 0]" :rules="[{ required: true, message: $t('Metrics.ValueItem.6916334-0')}]">
                 <Item v-model:value="formData.rangeValue[0]" />
               </j-form-item>
             </div>
             <div style="line-height: 32px">-</div>
             <div class="data-table-boolean-item--value">
-              <j-form-item :name="['rangeValue', 1]" :rules="[{ required: true, message: '请输入指标值'}, { validator: validator}]">
+              <j-form-item :name="['rangeValue', 1]" :rules="[{ required: true, message: $t('Metrics.ValueItem.6916334-0')}, { validator: validator}]">
                 <Item v-model:value="formData.rangeValue[1]" />
               </j-form-item>
             </div>
@@ -30,7 +30,7 @@
         <template #icon>
           <AIcon type="SettingOutlined"/>
         </template>
-        配置
+        {{ $t('Metrics.ValueItem.6916334-1') }}
       </a-button>
     </PopoverModal>
   </div>
@@ -43,6 +43,10 @@ import Item from './item.vue'
 import {Form} from "jetlinks-ui-components";
 import { cloneDeep } from "lodash-es";
 import { PopoverModal } from '@/components/Metadata/Table'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 type ValueType = number | Array<number | undefined> | undefined;
 
@@ -94,7 +98,7 @@ const showText = computed(() => {
         if (item) {
           return item.label
         }else if (_value) {
-          return _value === 'true' ? '是' : '否'
+          return _value === 'true' ? $t('Metrics.ValueItem.6916334-2') : $t('Metrics.ValueItem.6916334-3')
         } else {
           return ''
         }
@@ -107,17 +111,17 @@ const showText = computed(() => {
 })
 
 const validatorTip = () =>{
-  let tip = '请输入'
+  let tip = $t('Metrics.ValueItem.6916334-4')
   if (['boolean', 'date'].includes(type!)) {
-    tip = '请选择'
+    tip = $t('Metrics.ValueItem.6916334-5')
   }
-  return `${tip}指标值`
+  return $t('Metrics.ValueItem.6916334-6', [tip])
 }
 
 const validator = (_: any, value: any) => {
 
   if (props.range && formData.rangeValue![0] >= formData.rangeValue![1]) {
-    return Promise.reject('需大于左侧数值')
+    return Promise.reject($t('Metrics.ValueItem.6916334-7'))
   }
   return Promise.resolve()
 }
@@ -127,7 +131,7 @@ const typeValidator = (_: any, value: any) => {
     return  Promise.reject(validatorTip())
   }
   if (type === 'string' && value?.length > 64) {
-    return Promise.reject('最多可输入64个字符')
+    return Promise.reject($t('Metrics.ValueItem.6916334-8'))
   }
   return Promise.resolve()
 }

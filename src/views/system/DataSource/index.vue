@@ -216,7 +216,7 @@ const columns = [
                     value: 'enabled',
                 },
                 {
-                    label: $t('DataSource.index.932357-7'),
+                    label: $t('DataSource.index.932357-20'),
                     value: 'disabled',
                 },
             ],

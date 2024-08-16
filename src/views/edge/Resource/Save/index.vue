@@ -1,5 +1,5 @@
 <template>
-    <j-modal visible title="编辑" :width="700" @ok="onSave" @cancel="onCancel">
+    <j-modal visible :title="$t('Save.index.925640-0')" :width="700" @ok="onSave" @cancel="onCancel">
         <MonacoEditor
             style="width: 100%; height: 370px"
             theme="vs"
@@ -13,6 +13,9 @@
 import MonacoEditor from '@/components/MonacoEditor/index.vue';
 import { modify } from '@/api/edge/resource';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -32,7 +35,7 @@ const onSave = async () => {
     const resp = await modify(props.data.id, { metadata: unref(monacoValue) });
     if (resp.status === 200) {
         emit('save');
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Save.index.925640-1'), 'success');
     }
 };
 

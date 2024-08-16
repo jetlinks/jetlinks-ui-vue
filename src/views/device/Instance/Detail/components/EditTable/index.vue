@@ -3,8 +3,8 @@
         <j-card :bordered="false" borderStyle="padding: 0">
             <template #extra>
                 <j-space>
-                    <j-button @click="visible = true">批量映射</j-button>
-                    <j-button type="primary" @click="onSave">保存</j-button>
+                    <j-button @click="visible = true">{{ $t('EditTable.index.920632-0') }}</j-button>
+                    <j-button type="primary" @click="onSave">{{ $t('EditTable.index.920632-1') }}</j-button>
                 </j-space>
             </template>
             <j-form ref="formRef" :model="modelRef">
@@ -15,8 +15,8 @@
                 >
                     <template #headerCell="{ column }">
                         <template v-if="column.key === 'collectorId'">
-                            采集器
-                            <j-tooltip title="数据采集中配置的真实物理设备">
+                            {{ $t('EditTable.index.920632-2') }}
+                            <j-tooltip :title="$t('EditTable.index.920632-3')">
                                 <AIcon type="QuestionCircleOutlined" />
                             </j-tooltip>
                         </template>
@@ -33,7 +33,7 @@
                                 <j-select
                                     style="width: 100%"
                                     v-model:value="record[column.dataIndex]"
-                                    placeholder="请选择"
+                                    :placeholder="$t('EditTable.index.920632-4')"
                                     allowClear
                                     show-search
                                     :filter-option="filterOption"
@@ -57,7 +57,7 @@
                                 :rules="[
                                     {
                                         required: !!record.channelId,
-                                        message: '请选择采集器',
+                                        message: $t('EditTable.index.920632-5'),
                                     },
                                 ]"
                             >
@@ -78,7 +78,7 @@
                                 :rules="[
                                     {
                                         required: !!record.channelId,
-                                        message: '请选择点位',
+                                        message: $t('EditTable.index.920632-6'),
                                     },
                                 ]"
                             >
@@ -93,18 +93,18 @@
                             <j-badge
                                 v-if="record[column.dataIndex]"
                                 status="success"
-                                text="已绑定"
+                                :text="$t('EditTable.index.920632-7')"
                             />
-                            <j-badge v-else status="error" text="未绑定" />
+                            <j-badge v-else status="error" :text="$t('EditTable.index.920632-8')" />
                         </template>
                         <template v-if="column.key === 'action'">
                             <PermissionButton
                                 type="link"
                                 :tooltip="{
-                                    title: '解绑',
+                                    title: $t('EditTable.index.920632-9'),
                                 }"
                                 :popConfirm="{
-                                    title: '确认解绑',
+                                    title: $t('EditTable.index.920632-10'),
                                     onConfirm: () => unbind(record.id),
                                 }"
                                 :disabled="!record.id"
@@ -125,7 +125,7 @@
         />
     </j-spin>
     <j-card v-else :bordered="false" borderStyle="padding: 0">
-        <JEmpty description="暂无数据，请配置物模型" style="margin: 10% 0" />
+        <JEmpty :description="$t('EditTable.index.920632-11')" style="margin: 10% 0" />
     </j-card>
 </template>
 
@@ -140,40 +140,43 @@ import {
 import MSelect from '../MSelect.vue';
 import PatchMapping from './PatchMapping.vue';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const columns = [
     {
-        title: '名称',
+        title: $t('EditTable.index.920632-12'),
         dataIndex: 'metadataName',
         key: 'metadataName',
         width: '20%',
     },
     {
-        title: '通道',
+        title: $t('EditTable.index.920632-13'),
         dataIndex: 'channelId',
         key: 'channelId',
         width: '20%',
     },
     {
-        title: '采集器',
+        title: $t('EditTable.index.920632-2'),
         dataIndex: 'collectorId',
         key: 'collectorId',
         width: '20%',
     },
     {
-        title: '点位',
+        title: $t('EditTable.index.920632-14'),
         key: 'pointId',
         dataIndex: 'pointId',
         width: '20%',
     },
     {
-        title: '状态',
+        title: $t('EditTable.index.920632-15'),
         key: 'id',
         dataIndex: 'id',
         width: '10%',
     },
     {
-        title: '操作',
+        title: $t('EditTable.index.920632-16'),
         key: 'action',
         width: '10%',
     },
@@ -271,7 +274,7 @@ const unbind = (id: string) => {
         ]);
         response.then((resp) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('EditTable.index.920632-17'));
                 handleSearch();
             }
         });
@@ -303,7 +306,7 @@ const onSave = () => {
                     arr,
                 );
                 if (resp.status === 200) {
-                    onlyMessage('操作成功！');
+                    onlyMessage($t('EditTable.index.920632-17'));
                     handleSearch();
                 }
             }

@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Detail.Charts.2866713-0": "统计周期：",
+		"Detail.Charts.2866713-1": "统计规则：",
+		"Detail.Charts.2866713-2": "平均值",
+		"Detail.Charts.2866713-3": "最大值",
+		"Detail.Charts.2866713-4": "最小值",
+		"Detail.Charts.2866713-5": "总数",
+		"Detail.Charts.2866713-6": "时间",
+		"Detail.Charts.2866713-7": "实际值",
+		"Detail.Charts.2866713-8": "按分钟统计",
+		"Detail.Charts.2866713-9": "按小时统计",
+		"Detail.Charts.2866713-10": "按天统计",
+		"Detail.Charts.2866713-11": "按周统计"
+	},
+	"en": {
+		"Detail.Charts.2866713-0": "Statistical cycle:",
+		"Detail.Charts.2866713-1": "Statistical rules:",
+		"Detail.Charts.2866713-2": "average value",
+		"Detail.Charts.2866713-3": "maximum value",
+		"Detail.Charts.2866713-4": "minimum value",
+		"Detail.Charts.2866713-5": "total",
+		"Detail.Charts.2866713-6": "time",
+		"Detail.Charts.2866713-7": "actual value",
+		"Detail.Charts.2866713-8": "statistics by minute",
+		"Detail.Charts.2866713-9": "statistics by hour",
+		"Detail.Charts.2866713-10": "daily statistics",
+		"Detail.Charts.2866713-11": "weekly statistics"
+	}
+}

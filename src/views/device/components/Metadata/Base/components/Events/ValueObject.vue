@@ -12,6 +12,10 @@ import {
 } from 'jetlinks-ui-components';
 import { DataType } from '../index'
 import {typeSelectChange} from "@/views/device/components/Metadata/Base/columns";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 
 type Emits = {
@@ -27,7 +31,6 @@ const props = defineProps({
     },
     placeholder: {
         type: String,
-        default: '请选择',
     },
     options: {
         type: Array as PropType<{ label: string; value: string }[]>,

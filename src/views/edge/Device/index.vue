@@ -24,7 +24,7 @@
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
-                            新增
+                            {{ $t('Device.index.697800-0') }}
                         </PermissionButton>
                         <PermissionButton
                             @click="importVisible = true"
@@ -33,7 +33,7 @@
                             <template #icon
                                 ><AIcon type="ImportOutlined"
                             /></template>
-                            导入
+                            {{ $t('Device.index.697800-1') }}
                         </PermissionButton>
                     </j-space>
                 </template>
@@ -42,7 +42,7 @@
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
                         :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
+                        :statusText="slotProps.state?.value==='notActive'?$t('Device.index.697800-7'):slotProps.state?.value==='offline'?$t('Device.index.697800-8'):$t('Device.index.697800-9')"
                         @click="handleView(slotProps.id)"
                         :statusNames="{
                             online: 'processing',
@@ -69,13 +69,13 @@
                             <j-row style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        设备类型
+                                        {{ $t('Device.index.697800-2') }}
                                     </div>
                                     <div>{{ slotProps.deviceType?.text }}</div>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        产品名称
+                                        {{ $t('Device.index.697800-3') }}
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ slotProps.productName }}
@@ -221,6 +221,9 @@ import { restPassword } from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 
@@ -276,7 +279,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '设备名称',
+        title: $t('Device.index.697800-4'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -286,7 +289,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '产品名称',
+        title: $t('Device.index.697800-3'),
         dataIndex: 'productName',
         key: 'productName',
         search: {
@@ -307,7 +310,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '注册时间',
+        title: $t('Device.index.697800-5'),
         dataIndex: 'registryTime',
         key: 'registryTime',
         scopedSlots: true,
@@ -316,23 +319,23 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Device.index.697800-6'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: $t('Device.index.697800-7'), value: 'notActive' },
+                { label: $t('Device.index.697800-8'), value: 'offline' },
+                { label: $t('Device.index.697800-9'), value: 'online' },
             ],
         },
     },
     {
         key: 'productId$product-info',
         dataIndex: 'productId$product-info',
-        title: '产品分类',
+        title: $t('Device.index.697800-10'),
         hideInTable: true,
         search: {
             type: 'treeSelect',
@@ -366,20 +369,20 @@ const columns = [
     // },
     {
         dataIndex: 'deviceType',
-        title: '设备类型',
+        title: $t('Device.index.697800-2'),
         valueType: 'select',
         hideInTable: true,
         search: {
             type: 'select',
             options: [
-                { label: '直连设备', value: 'device' },
-                { label: '网关子设备', value: 'childrenDevice' },
-                { label: '网关设备', value: 'gateway' },
+                { label: $t('Device.index.697800-11'), value: 'device' },
+                { label: $t('Device.index.697800-12'), value: 'childrenDevice' },
+                { label: $t('Device.index.697800-13'), value: 'gateway' },
             ],
         },
     },
     {
-        title: '说明',
+        title: $t('Device.index.697800-14'),
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
@@ -388,7 +391,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Device.index.697800-15'),
         key: 'action',
         fixed: 'right',
         width: 250,
@@ -404,9 +407,9 @@ const getActions = (
     const actions = [
         {
             key: 'view',
-            text: '查看',
+            text: $t('Device.index.697800-16'),
             tooltip: {
-                title: '查看',
+                title: $t('Device.index.697800-16'),
             },
             icon: 'EyeOutlined',
             onClick: () => {
@@ -415,9 +418,9 @@ const getActions = (
         },
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Device.index.697800-17'),
             tooltip: {
-                title: '编辑',
+                title: $t('Device.index.697800-17'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -427,17 +430,17 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'notActive' ? '禁用' : '启用',
+            text: data.state?.value !== 'notActive' ? $t('Device.index.697800-30') : $t('Device.index.697800-18'),
             tooltip: {
-                title: data.state?.value !== 'notActive' ? '禁用' : '启用',
+                title: data.state?.value !== 'notActive' ? $t('Device.index.697800-30') : $t('Device.index.697800-18'),
             },
             icon:
                 data.state.value !== 'notActive'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${
-                    data.state.value !== 'notActive' ? '禁用' : '启用'
+                title: `${
+                    data.state.value !== 'notActive' ? $t('Device.index.697800-19') : $t('Device.index.697800-29')
                 }?`,
                 onConfirm: () => {
                     let response = undefined;
@@ -448,10 +451,10 @@ const getActions = (
                     }
                     response.then((res) => {
                         if (res && res.status === 200) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('Device.index.697800-20'));
                             edgeDeviceRef.value?.reload();
                         } else {
-                            onlyMessage('操作失败！', 'error');
+                            onlyMessage($t('Device.index.697800-21'), 'error');
                         }
                     });
                     return response;
@@ -462,9 +465,9 @@ const getActions = (
     const others = [
         {
             key: 'setting',
-            text: '远程控制',
+            text: $t('Device.index.697800-22'),
             tooltip: {
-                title: '远程控制',
+                title: $t('Device.index.697800-22'),
             },
             icon: 'ControlOutlined',
             onClick: () => {
@@ -475,18 +478,18 @@ const getActions = (
         },
         {
             key: 'password',
-            text: '重置密码',
+            text: $t('Device.index.697800-23'),
             tooltip: {
-                title: '重置密码',
+                title: $t('Device.index.697800-23'),
             },
             icon: 'RedoOutlined',
             popConfirm: {
-                title: '确认重置密码为Jetlinks123？',
+                title: $t('Device.index.697800-24'),
                 onConfirm: () => {
                     const response = restPassword(data.id);
                     response.then((resp: any) => {
                         if (resp.status === 200) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('Device.index.697800-20'));
                             edgeDeviceRef.value?.reload();
                         }
                     });
@@ -498,24 +501,24 @@ const getActions = (
 
     const deleteItem = {
         key: 'delete',
-        text: '删除',
+        text: $t('Device.index.697800-25'),
         disabled: data.state?.value !== 'notActive',
         tooltip: {
             title:
                 data.state.value !== 'notActive'
-                    ? '已启用的设备不能删除'
-                    : '删除',
+                    ? $t('Device.index.697800-26')
+                    : $t('Device.index.697800-25'),
         },
         popConfirm: {
-            title: '确认删除?',
+            title: $t('Device.index.697800-27'),
             onConfirm: () => {
                 const response = _delete(data.id);
                 response.then((resp) => {
                     if (resp.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Device.index.697800-20'));
                         edgeDeviceRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Device.index.697800-21'), 'error');
                     }
                 });
                 return response;
@@ -530,7 +533,7 @@ const getActions = (
             ...arr,
             {
                 key: 'others',
-                text: '其他',
+                text: $t('Device.index.697800-28'),
                 icon: 'EllipsisOutlined',
                 children: [...others],
             },

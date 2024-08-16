@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"action.index.5425971-0": "执行",
+		"action.index.5425971-1": "串行",
+		"action.index.5425971-2": "按顺序依次执行动作，适用于基于动作输出参数，判断是否执行后续动作的场景",
+		"action.index.5425971-3": "并行",
+		"action.index.5425971-4": "同时执行所有动作，适用于不需要关注执行动作先后顺序和结果的场景",
+		"action.index.5425971-5": "已关联 {0} 条告警，删除该执行动作会同步解除对应的关联告警，确认删除？"
+	},
+	"en": {
+		"action.index.5425971-0": "Execute",
+		"action.index.5425971-1": "Serial ",
+		"action.index.5425971-2": "Execute actions in sequence, suitable for scenarios where the output parameters of actions are used to determine whether to execute subsequent actions",
+		"action.index.5425971-3": "Parallel",
+		"action.index.5425971-4": "Simultaneously execute all actions, suitable for scenarios where there is no need to focus on the order and results of executing actions",
+		"action.index.5425971-5": "{0} alarms have been associated. Deleting this execution action will synchronously release the corresponding associated alarms. Are you sure you want to delete them?"
+	}
+}

@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Firmware.index.378847-0": "新增",
+		"Firmware.index.378847-1": "固件名称",
+		"Firmware.index.378847-2": "固件版本",
+		"Firmware.index.378847-3": "所属产品",
+		"Firmware.index.378847-4": "签名方式",
+		"Firmware.index.378847-5": "创建时间",
+		"Firmware.index.378847-6": "说明",
+		"Firmware.index.378847-7": "操作",
+		"Firmware.index.378847-8": "升级任务",
+		"Firmware.index.378847-9": "编辑",
+		"Firmware.index.378847-10": "删除",
+		"Firmware.index.378847-11": "确认删除?",
+		"Firmware.index.378847-12": "操作成功"
+	},
+	"en": {
+		"Firmware.index.378847-0": "Add",
+		"Firmware.index.378847-1": "Firmware Name",
+		"Firmware.index.378847-2": "Firmware version",
+		"Firmware.index.378847-3": "Belonging products",
+		"Firmware.index.378847-4": "Signature method",
+		"Firmware.index.378847-5": "Creation time",
+		"Firmware.index.378847-6": "Explain",
+		"Firmware.index.378847-7": "Operation",
+		"Firmware.index.378847-8": "Upgrade task",
+		"Firmware.index.378847-9": "Edit",
+		"Firmware.index.378847-10": "Delete",
+		"Firmware.index.378847-11": "Are you sure to delete?",
+		"Firmware.index.378847-12": "Operation successful"
+	}
+}

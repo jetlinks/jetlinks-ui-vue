@@ -3,7 +3,7 @@
         <div class="box" v-if="!noData">
             <div class="left">
                 <div class="left-content">
-                    <TitleComponent data="基本信息" />
+                    <TitleComponent :data="$t('Detail.index.613231-0')" />
                     <j-alert
                         v-if="_error && modelRef?.id"
                         style="margin: 10px 0"
@@ -26,13 +26,13 @@
                                 >
                                 <PermissionButton
                                     :popConfirm="{
-                                        title: '确认启用',
+                                        title: $t('Detail.index.613231-1'),
                                         onConfirm: onActiveProduct,
                                     }"
                                     size="small"
                                     :hasPermission="'device/Product:action'"
                                 >
-                                    立即启用
+                                    {{ $t('Detail.index.613231-2') }}
                                 </PermissionButton>
                             </div>
                         </template>
@@ -45,33 +45,33 @@
                         <j-row :gutter="24">
                             <j-col :span="24">
                                 <j-form-item
-                                    label="名称"
+                                    :label="$t('Detail.index.613231-3')"
                                     name="name"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请输入名称',
+                                            message: $t('Detail.index.613231-4'),
                                         },
                                         {
                                             max: 64,
-                                            message: '最多输入64个字符',
+                                            message: $t('Detail.index.613231-5'),
                                         },
                                     ]"
                                 >
                                     <j-input
-                                        placeholder="请输入名称"
+                                        :placeholder="$t('Detail.index.613231-4')"
                                         v-model:value="modelRef.name"
                                     />
                                 </j-form-item>
                             </j-col>
                             <j-col :span="12">
                                 <j-form-item
-                                    label="产品"
+                                    :label="$t('Detail.index.613231-6')"
                                     name="id"
                                     :rules="[
                                         {
                                             required: true,
-                                            message: '请选择产品',
+                                            message: $t('Detail.index.613231-7'),
                                         },
                                         {
                                             validator: _validator,
@@ -91,14 +91,14 @@
                                     name="applianceType"
                                     :rules="{
                                         required: true,
-                                        message: '请选择设备类型',
+                                        message: $t('Detail.index.613231-8'),
                                     }"
                                 >
                                     <template #label>
                                         <span>
-                                            设备类型
+                                            {{ $t('Detail.index.613231-9') }}
                                             <j-tooltip
-                                                title="DuerOS平台拟定的规范"
+                                                :title="$t('Detail.index.613231-10')"
                                             >
                                                 <AIcon
                                                     type="QuestionCircleOutlined"
@@ -108,7 +108,7 @@
                                         </span>
                                     </template>
                                     <j-select
-                                        placeholder="请选择设备类型"
+                                        :placeholder="$t('Detail.index.613231-8')"
                                         v-model:value="modelRef.applianceType"
                                         show-search
                                         @change="typeChange"
@@ -125,7 +125,7 @@
                                 <j-form-item
                                     name="productName"
                                     v-show="false"
-                                    label="产品名称"
+                                    :label="$t('Detail.index.613231-11')"
                                 >
                                     <j-input
                                         v-model:value="modelRef.productName"
@@ -133,7 +133,7 @@
                                 </j-form-item>
                             </j-col>
                             <j-col :span="24">
-                                <p>动作映射</p>
+                                <p>{{ $t('Detail.index.613231-12') }}</p>
                                 <j-collapse
                                     v-if="modelRef.actionMappings.length"
                                     :activeKey="actionActiveKey"
@@ -152,7 +152,7 @@
                                                       (i) =>
                                                           i.id === item.action,
                                                   )?.name
-                                                : `动作映射${index + 1}`
+                                                : `{{ $t('Detail.index.613231-12') }}${index + 1}`
                                         "
                                     >
                                         <template #extra>
@@ -161,7 +161,7 @@
                                                 @click.stop
                                             >
                                                 <ConfirmModal
-                                                    title="确认删除？"
+                                                    :title="$t('Detail.index.613231-14')"
                                                     :onConfirm="
                                                         () => delItem(index)
                                                     "
@@ -182,14 +182,14 @@
                                                     ]"
                                                     :rules="{
                                                         required: true,
-                                                        message: '请选择动作',
+                                                        message: $t('Detail.index.613231-15'),
                                                     }"
                                                 >
                                                     <template #label>
                                                         <span>
-                                                            动作
+                                                            {{ $t('Detail.index.613231-16') }}
                                                             <j-tooltip
-                                                                title="DuerOS平台拟定的设备类型具有的相关动作"
+                                                                :title="$t('Detail.index.613231-17')"
                                                             >
                                                                 <AIcon
                                                                     type="QuestionCircleOutlined"
@@ -198,7 +198,7 @@
                                                         </span>
                                                     </template>
                                                     <j-select
-                                                        placeholder="请选择动作"
+                                                        :placeholder="$t('Detail.index.613231-15')"
                                                         v-model:value="
                                                             item.action
                                                         "
@@ -228,14 +228,14 @@
                                                     ]"
                                                     :rules="{
                                                         required: true,
-                                                        message: '请选择操作',
+                                                        message: $t('Detail.index.613231-18'),
                                                     }"
                                                 >
                                                     <template #label>
                                                         <span>
-                                                            操作
+                                                            {{ $t('Detail.index.613231-19') }}
                                                             <j-tooltip
-                                                                title="映射物联网平台中所选产品具备的动作"
+                                                                :title="$t('Detail.index.613231-20')"
                                                             >
                                                                 <AIcon
                                                                     type="QuestionCircleOutlined"
@@ -244,7 +244,7 @@
                                                         </span>
                                                     </template>
                                                     <j-select
-                                                        placeholder="请选择操作"
+                                                        :placeholder="$t('Detail.index.613231-18')"
                                                         v-model:value="
                                                             item.actionType
                                                         "
@@ -258,11 +258,11 @@
                                                     >
                                                         <j-select-option
                                                             value="command"
-                                                            >下发指令</j-select-option
+                                                            >{{ $t('Detail.index.613231-21') }}</j-select-option
                                                         >
                                                         <j-select-option
                                                             value="latestData"
-                                                            >获取历史数据</j-select-option
+                                                            >{{ $t('Detail.index.613231-22') }}</j-select-option
                                                         >
                                                     </j-select>
                                                 </j-form-item>
@@ -308,11 +308,11 @@
                                     <AIcon
                                         type="PlusOutlined"
                                         style="margin-left: 2px"
-                                    />新增动作
+                                    />{{ $t('Detail.index.613231-23') }}
                                 </j-button>
                             </j-col>
                             <j-col :span="24">
-                                <p style="margin-top: 20px">属性映射</p>
+                                <p style="margin-top: 20px">{{ $t('Detail.index.613231-24') }}</p>
                                 <j-collapse
                                     v-if="modelRef.propertyMappings.length"
                                     :activeKey="propertyActiveKey"
@@ -331,7 +331,7 @@
                                                       (i) =>
                                                           i.id === item.source,
                                                   )?.name
-                                                : `属性映射${index + 1}`
+                                                : `{{ $t('Detail.index.613231-24') }}${index + 1}`
                                         "
                                     >
                                         <template #extra>
@@ -340,7 +340,7 @@
                                                 @click.stop
                                             >
                                                 <ConfirmModal
-                                                    title="确认删除？"
+                                                    :title="$t('Detail.index.613231-14')"
                                                     :onConfirm="
                                                         () =>
                                                             delPropertyItem(
@@ -357,7 +357,7 @@
                                         <j-row :gutter="24">
                                             <j-col :span="12">
                                                 <j-form-item
-                                                    label="DuerOS属性"
+                                                    :label="$t('Detail.index.613231-26')"
                                                     :name="[
                                                         'propertyMappings',
                                                         index,
@@ -366,11 +366,11 @@
                                                     :rules="{
                                                         required: true,
                                                         message:
-                                                            '请选择DuerOS属性',
+                                                            $t('Detail.index.613231-27'),
                                                     }"
                                                 >
                                                     <j-select
-                                                        placeholder="请选择DuerOS属性"
+                                                        :placeholder="$t('Detail.index.613231-27')"
                                                         v-model:value="
                                                             item.source
                                                         "
@@ -392,7 +392,7 @@
                                             </j-col>
                                             <j-col :span="12">
                                                 <j-form-item
-                                                    label="平台属性"
+                                                    :label="$t('Detail.index.613231-28')"
                                                     :name="[
                                                         'propertyMappings',
                                                         index,
@@ -402,7 +402,7 @@
                                                         {
                                                             required: true,
                                                             message:
-                                                                '请选择平台属性',
+                                                                $t('Detail.index.613231-29'),
                                                         },
                                                     ]"
                                                 >
@@ -435,21 +435,21 @@
                                     <AIcon
                                         type="PlusOutlined"
                                         style="margin-left: 2px"
-                                    />新增属性
+                                    />{{ $t('Detail.index.613231-30') }}
                                 </j-button>
                             </j-col>
                             <j-col :span="24" style="margin-top: 20px">
                                 <j-form-item
-                                    label="说明"
+                                    :label="$t('Detail.index.613231-31')"
                                     name="description"
                                     :rules="{
                                         max: 200,
-                                        message: '最多输入200个字符',
+                                        message: $t('Detail.index.613231-32'),
                                     }"
                                 >
                                     <j-textarea
                                         v-model:value="modelRef.description"
-                                        placeholder="请输入说明"
+                                        :placeholder="$t('Detail.index.613231-33')"
                                         showCount
                                         :maxlength="200"
                                     />
@@ -472,14 +472,14 @@
                         :tooltip="{
                             title:
                                 data?.state?.value !== 'disabled'
-                                    ? '请先禁用该数据，再删除。'
-                                    : '删除',
+                                    ? $t('Detail.index.613231-34')
+                                    : $t('Detail.index.613231-35'),
                         }"
                         :popConfirm="{
-                            title: `确认删除`,
+                            title: $t('Detail.index.613231-36'),
                             onConfirm: deleteData,
                         }"
-                        >删除
+                        >{{ $t('Detail.index.613231-35') }}
                     </PermissionButton>
                     <PermissionButton
                         v-if="data?.id"
@@ -489,19 +489,19 @@
                         :tooltip="{
                             title:
                                 data?.state?.value !== 'disabled'
-                                    ? '禁用'
-                                    : '启用',
+                                    ? $t('Detail.index.613231-37')
+                                    : $t('Detail.index.613231-38'),
                         }"
                         :popConfirm="{
-                            title: `确认${
+                            title: `${
                                 data?.state?.value !== 'disabled'
-                                    ? '禁用'
-                                    : '启用'
-                            }?`,
+                                    ? $t('Detail.index.613231-39')
+                                    : $t('Detail.index.613231-45')
+                            }`,
                             onConfirm: actionDuerOS,
                         }"
                         >{{
-                            data?.state?.value !== 'disabled' ? '禁用' : '启用'
+                            data?.state?.value !== 'disabled' ? $t('Detail.index.613231-37') : $t('Detail.index.613231-38')
                         }}
                     </PermissionButton>
                     <PermissionButton
@@ -513,7 +513,7 @@
                             'Northbound/DuerOS:update',
                         ]"
                     >
-                        保存
+                        {{ $t('Detail.index.613231-40') }}
                     </PermissionButton>
                 </a-space>
             </div>
@@ -541,6 +541,9 @@ import _, { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import MSelect from '../../components/MSelect/index.vue';
 import { _deploy as deploy } from '@/api/device/product';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -762,7 +765,7 @@ const onActiveProduct = () => {
         const response = deploy(modelRef.id);
         response.then((resp) => {
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Detail.index.613231-41'));
                 getProduct(modelRef.id);
                 _error.value = '';
             }
@@ -778,10 +781,10 @@ const _validator = (_rule: any, value: string): Promise<any> =>
             return resolve('');
         } else if (!_item && value) {
             productChange(value);
-            return reject('关联产品已被删除，请重新选择');
+            return reject($t('Detail.index.613231-42'));
         } else {
             if (!_item?.state) {
-                _error.value = `当前选择的${_item.name}产品为禁用状态`;
+                _error.value = $t('Detail.index.613231-43', [_item.name]);
             } else {
                 _error.value = '';
             }
@@ -819,7 +822,7 @@ const saveBtn = async () => {
                     loading.value = false;
                 });
                 if (resp.status === 200) {
-                    onlyMessage('操作成功！');
+                    onlyMessage($t('Detail.index.613231-41'));
                     if (props.data?.id) {
                         emit('refreshList', true);
                     } else {
@@ -858,10 +861,10 @@ const actionDuerOS = () => {
     }
     response.then((res) => {
         if (res && res.status === 200) {
-            onlyMessage('操作成功！');
+            onlyMessage($t('Detail.index.613231-41'));
             emit('refreshList', true);
         } else {
-            onlyMessage('操作失败！', 'error');
+            onlyMessage($t('Detail.index.613231-44'), 'error');
         }
     });
     return response;
@@ -871,10 +874,10 @@ const deleteData = () => {
     const response = _delete(props.data?.id);
     response.then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功！');
+            onlyMessage($t('Detail.index.613231-41'));
             emit('refreshList');
         } else {
-            onlyMessage('操作失败！', 'error');
+            onlyMessage($t('Detail.index.613231-44'), 'error');
         }
     });
     return response;

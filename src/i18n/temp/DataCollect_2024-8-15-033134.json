@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"WritePoint.index.3217217-0": "写入",
+		"WritePoint.index.3217217-1": "请输入{0}",
+		"WritePoint.index.3217217-2": "请输入",
+		"WritePoint.index.3217217-3": "是",
+		"WritePoint.index.3217217-4": "否",
+		"WritePoint.index.3217217-5": "请选择",
+		"WritePoint.index.3217217-6": "请选择写入优先级",
+		"WritePoint.index.3217217-7": "写入优先级",
+		"WritePoint.index.3217217-8": "写优先级允许系统管理员或控制策略决定哪些写入请求应被优先处理",
+		"WritePoint.index.3217217-9": "·1表示最高优先级，16表示最低优先级",
+		"WritePoint.index.3217217-10": "·当多个控制器或系统尝试写入同一个点位时，较高优先级的写入请求会覆盖较低优先级的写入请求",
+		"WritePoint.index.3217217-11": "·如果高优先级的写入请求失效，系统会自动恢复次高优先级的写入值，依次类推直至找到有效的写入请求",
+		"WritePoint.index.3217217-12": "取消",
+		"WritePoint.index.3217217-13": "确认",
+		"WritePoint.index.3217217-14": "请输入16进制",
+		"WritePoint.index.3217217-15": "请输入{0}"
+	},
+	"en": {
+		"WritePoint.index.3217217-0": "Write in",
+		"WritePoint.index.3217217-1": "Please enter {0}",
+		"WritePoint.index.3217217-2": "Please enter",
+		"WritePoint.index.3217217-3": "yes",
+		"WritePoint.index.3217217-4": "no",
+		"WritePoint.index.3217217-5": "Please choose",
+		"WritePoint.index.3217217-6": "Please select write priority",
+		"WritePoint.index.3217217-7": "Write priority",
+		"WritePoint.index.3217217-8": "Write priority allows system administrators or control policies to determine which write requests should be prioritized for processing",
+		"WritePoint.index.3217217-9": "·1 Represents the highest priority, 16 represents the lowest priority",
+		"WritePoint.index.3217217-10": "·When multiple controllers or systems attempt to write to the same point, higher priority write requests will overwrite lower priority write requests",
+		"WritePoint.index.3217217-11": "·If a high priority write request fails, the system will automatically restore the next highest priority write value, and so on until a valid write request is found",
+		"WritePoint.index.3217217-12": "Cancel",
+		"WritePoint.index.3217217-13": "Confirm",
+		"WritePoint.index.3217217-14": "Please enter hexadecimal",
+		"WritePoint.index.3217217-15": "Please enter {0}"
+	}
+}

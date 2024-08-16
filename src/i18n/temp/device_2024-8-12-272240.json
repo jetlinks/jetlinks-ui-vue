@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"components.DataType.6916446-0": "参数标识",
+		"components.DataType.6916446-1": "该标识已存在",
+		"components.DataType.6916446-2": "请输入标识",
+		"components.DataType.6916446-3": "最多可输入64个字符",
+		"components.DataType.6916446-4": "标识只能由数字、字母、下划线、中划线组成",
+		"components.DataType.6916446-5": "参数名称",
+		"components.DataType.6916446-6": "请输入参数名称",
+		"components.DataType.6916446-7": "数据类型",
+		"components.DataType.6916446-8": "请选择数据类型",
+		"components.DataType.6916446-9": "其他配置",
+		"components.DataType.6916446-10": "操作"
+	},
+	"en": {
+		"components.DataType.6916446-0": "Parameter ID",
+		"components.DataType.6916446-1": "This identifier already exists",
+		"components.DataType.6916446-2": "Please enter the identifier",
+		"components.DataType.6916446-3": "Up to 64 characters can be entered",
+		"components.DataType.6916446-4": "ID can only be composed of numbers, letters, underscores, and dashes",
+		"components.DataType.6916446-5": "Parameter Name",
+		"components.DataType.6916446-6": "Please enter the parameter name",
+		"components.DataType.6916446-7": "Data type",
+		"components.DataType.6916446-8": "Please select data type",
+		"components.DataType.6916446-9": "Other configurations",
+		"components.DataType.6916446-10": "Operation"
+	}
+}

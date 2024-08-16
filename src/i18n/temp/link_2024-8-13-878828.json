@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Detail.CertificateFile.786733-0": "上传文件",
+		"Detail.CertificateFile.786733-1": "上传成功！",
+		"Detail.CertificateFile.786733-2": "请上传.pem格式的文件"
+	},
+	"en": {
+		"Detail.CertificateFile.786733-0": "Upload files",
+		"Detail.CertificateFile.786733-1": "Upload successful!",
+		"Detail.CertificateFile.786733-2": "Please upload a file in .pem format"
+	}
+}

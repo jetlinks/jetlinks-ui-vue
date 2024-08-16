@@ -31,7 +31,7 @@
             <template #icon>
               <AIcon type="PlusOutlined"/>
             </template>
-            新增
+            {{ $t('Scene.index.426523-0') }}
           </PermissionButton>
         </j-space>
       </template>
@@ -49,7 +49,7 @@
           @click="handleView(slotProps)"
         >
           <div class="scene-view">
-            查看详情
+            {{ $t('Scene.index.426523-1') }}
           </div>
         </SceneCardBox>
       </template>
@@ -85,6 +85,9 @@ import {useMenuStore} from 'store/menu';
 import SceneDrawer from './SceneDrawer.vue'
 import SceneCardBox from './Save/CardBox.vue'
 import {useRequest} from "@/hook";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -124,15 +127,15 @@ const getActions = (
   const actions: ActionsType[] = [
     {
       key: 'action',
-      text: '解绑',
+      text: $t('Scene.index.426523-2'),
       icon: 'DisconnectOutlined',
       popConfirm: {
-        title: '确认解绑？',
+        title: $t('Scene.index.426523-3'),
         onConfirm: async () => {
           // const res = await unbindScene(id, [data.id], data.branchIndex);
           const res = await unbindScene(id, [data.id]);
           if (res.status === 200) {
-            onlyMessage('操作成功');
+            onlyMessage($t('Scene.index.426523-4'));
             actionRef.value.reload();
           }
           return

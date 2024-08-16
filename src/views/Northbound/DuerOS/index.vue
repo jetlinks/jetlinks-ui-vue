@@ -23,13 +23,16 @@ import Tree from './Tree/index.vue';
 import Detail from './Detail/index.vue';
 import { queryTypes } from '@/api/northbound/dueros';
 import { queryNoPagingPost } from '@/api/device/product';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const params = ref({});
 const current = ref();
 const TreeRef = ref();
 
 const columns = [
     {
-        title: '名称',
+        title: $t('DuerOS.index.613220-0'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -38,7 +41,7 @@ const columns = [
         },
     },
     {
-        title: '产品名称',
+        title: $t('DuerOS.index.613220-1'),
         dataIndex: 'productName',
         key: 'productName',
         search: {
@@ -58,7 +61,7 @@ const columns = [
         },
     },
     {
-        title: '设备类型',
+        title: $t('DuerOS.index.613220-2'),
         dataIndex: 'applianceType',
         key: 'applianceType',
         scopedSlots: true,
@@ -78,26 +81,26 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('DuerOS.index.613220-3'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
     },
     {
-        title: '状态',
+        title: $t('DuerOS.index.613220-4'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '正常', value: 'enabled' },
-                { label: '禁用', value: 'disabled' },
+                { label: $t('DuerOS.index.613220-5'), value: 'enabled' },
+                { label: $t('DuerOS.index.613220-6'), value: 'disabled' },
             ],
         },
     },
     {
-        title: '操作',
+        title: $t('DuerOS.index.613220-7'),
         key: 'action',
         fixed: 'right',
         width: 180,

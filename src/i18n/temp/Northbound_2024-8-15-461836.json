@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"DuerOS.index.613220-0": "名称",
+		"DuerOS.index.613220-1": "产品名称",
+		"DuerOS.index.613220-2": "设备类型",
+		"DuerOS.index.613220-3": "说明",
+		"DuerOS.index.613220-4": "状态",
+		"DuerOS.index.613220-5": "正常",
+		"DuerOS.index.613220-6": "禁用",
+		"DuerOS.index.613220-7": "操作"
+	},
+	"en": {
+		"DuerOS.index.613220-0": "Name",
+		"DuerOS.index.613220-1": "Product Name",
+		"DuerOS.index.613220-2": "Device type",
+		"DuerOS.index.613220-3": "Explain",
+		"DuerOS.index.613220-4": "State",
+		"DuerOS.index.613220-5": "enabled",
+		"DuerOS.index.613220-6": "disabled",
+		"DuerOS.index.613220-7": "Operation"
+	}
+}

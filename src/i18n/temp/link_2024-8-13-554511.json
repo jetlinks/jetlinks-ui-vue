@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.Jvm.542309-0": "JVM内存使用率趋势",
+		"components.Jvm.542309-1": "最近1小时",
+		"components.Jvm.542309-2": "最近24小时",
+		"components.Jvm.542309-3": "近一周"
+	},
+	"en": {
+		"components.Jvm.542309-0": "JVM memory usage trend",
+		"components.Jvm.542309-1": "Last hour",
+		"components.Jvm.542309-2": "Last 24 hours",
+		"components.Jvm.542309-3": "Last week"
+	}
+}

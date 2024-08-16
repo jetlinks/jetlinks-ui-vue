@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"TriggerAlarm.index.5425857-0": "关联告警",
+		"TriggerAlarm.index.5425857-1": "关联告警数量：",
+		"TriggerAlarm.index.5425857-2": "注意：关联的告警配置处于“禁用”状态时会导致场景联动无法完成执行动作",
+		"TriggerAlarm.index.5425857-3": "确认取消关联",
+		"TriggerAlarm.index.5425857-4": "取消关联",
+		"TriggerAlarm.index.5425857-5": "产品",
+		"TriggerAlarm.index.5425857-6": "设备",
+		"TriggerAlarm.index.5425857-7": "组织",
+		"TriggerAlarm.index.5425857-8": "其他",
+		"TriggerAlarm.index.5425857-9": "名称",
+		"TriggerAlarm.index.5425857-10": "类型",
+		"TriggerAlarm.index.5425857-11": "告警级别",
+		"TriggerAlarm.index.5425857-12": "状态",
+		"TriggerAlarm.index.5425857-13": "说明",
+		"TriggerAlarm.index.5425857-14": "操作",
+		"TriggerAlarm.index.5425857-15": "操作成功！"
+	},
+	"en": {
+		"TriggerAlarm.index.5425857-0": "Related Alarm ",
+		"TriggerAlarm.index.5425857-1": "Number of associated alarms:",
+		"TriggerAlarm.index.5425857-2": "Attention: When the associated alarm configuration is in the \"disabled\" state, it will cause the scene linkage to fail to complete the execution action",
+		"TriggerAlarm.index.5425857-3": "Confirm to cancel association",
+		"TriggerAlarm.index.5425857-4": "Cancel association",
+		"TriggerAlarm.index.5425857-5": "Product",
+		"TriggerAlarm.index.5425857-6": "Equipment",
+		"TriggerAlarm.index.5425857-7": "Organization",
+		"TriggerAlarm.index.5425857-8": "Other",
+		"TriggerAlarm.index.5425857-9": "Name",
+		"TriggerAlarm.index.5425857-10": "Type",
+		"TriggerAlarm.index.5425857-11": "Alarm level",
+		"TriggerAlarm.index.5425857-12": "State",
+		"TriggerAlarm.index.5425857-13": "Explain",
+		"TriggerAlarm.index.5425857-14": "Operation",
+		"TriggerAlarm.index.5425857-15": "Operation successful!"
+	}
+}

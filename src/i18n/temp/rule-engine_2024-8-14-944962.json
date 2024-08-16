@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Save.CardBox.4265310-0": "关联条件",
+		"Save.CardBox.4265310-1": "说明：",
+		"Save.CardBox.4265310-2": "系统时间到达",
+		"Save.CardBox.4265310-3": "系统在接收到手动触发指令时，触发场景",
+		"Save.CardBox.4265310-4": "当前告警已关联：",
+		"Save.CardBox.4265310-5": "无效数据，请重新保存场景",
+		"Save.CardBox.4265310-6": "正常"
+	},
+	"en": {
+		"Save.CardBox.4265310-0": "Related conditions",
+		"Save.CardBox.4265310-1": "Explain:",
+		"Save.CardBox.4265310-2": "The system time triggers the scheduled task.",
+		"Save.CardBox.4265310-3": "When the system receives a manual trigger command, it triggers the scene",
+		"Save.CardBox.4265310-4": "The current alarm has been associated with:",
+		"Save.CardBox.4265310-5": "Invalid data, please save the scene again",
+		"Save.CardBox.4265310-6": "normal"
+	}
+}

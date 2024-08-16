@@ -25,7 +25,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请输入',
+                                message: $t('Scan.Table.3217212-0'),
                             },
                             {
                                 validator: checkLength,
@@ -35,7 +35,7 @@
                     >
                         <j-input
                             v-model:value="record[dataIndex]"
-                            placeholder="请输入"
+                            :placeholder="$t('Scan.Table.3217212-0')"
                             allowClear
                         ></j-input>
                     </j-form-item>
@@ -72,21 +72,21 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请选择',
+                                message: $t('Scan.Table.3217212-1'),
                             },
                         ]"
                     >
                         <j-select
                             style="width: 75%"
                             v-model:value="record[dataIndex].value"
-                            placeholder="请选择"
+                            :placeholder="$t('Scan.Table.3217212-1')"
                             allowClear
                             mode="multiple"
                             :filter-option="filterOption"
                             :options="[
-                                { label: '读', value: 'read' },
-                                { label: '写', value: 'write' },
-                                { label: '订阅', value: 'subscribe' },
+                                { label: $t('Scan.Table.3217212-2'), value: 'read' },
+                                { label: $t('Scan.Table.3217212-3'), value: 'write' },
+                                { label: $t('Scan.Table.3217212-4'), value: 'subscribe' },
                             ]"
                             :disabled="index !== 0 && record[dataIndex].check"
                             @change="changeValue(index, dataIndex)"
@@ -97,7 +97,7 @@
                             v-if="index !== 0"
                             v-model:checked="record[dataIndex].check"
                             @click="changeCheckbox(index, dataIndex)"
-                            >同上</j-checkbox
+                            >{{ $t('Scan.Table.3217212-5') }}</j-checkbox
                         >
                     </j-form-item>
                 </template>
@@ -114,11 +114,11 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请输入',
+                                message: $t('Scan.Table.3217212-0'),
                             },
                             {
                                 pattern: regOnlyNumber,
-                                message: '请输入0或者正整数',
+                                message: $t('Scan.Table.3217212-6'),
                             },
                         ]"
                     >
@@ -127,7 +127,7 @@
                             v-model:value="
                                 record.configuration[dataIndex].value
                             "
-                            placeholder="请输入"
+                            :placeholder="$t('Scan.Table.3217212-0')"
                             allowClear
                             addon-after="ms"
                             :max="2147483647"
@@ -145,7 +145,7 @@
                                 record.configuration[dataIndex].check
                             "
                             @click="changeCheckbox(index, dataIndex)"
-                            >同上</j-checkbox
+                            >{{ $t('Scan.Table.3217212-5') }}</j-checkbox
                         >
                     </j-form-item>
                 </template>
@@ -156,23 +156,23 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请选择',
+                                message: $t('Scan.Table.3217212-1'),
                             },
                         ]"
                     >
                         <j-select
                             style="width: 40%"
                             v-model:value="record[dataIndex].value"
-                            placeholder="请选择"
+                            :placeholder="$t('Scan.Table.3217212-1')"
                             allowClear
                             :filter-option="filterOption"
                             :options="[
                                 {
-                                    label: '是',
+                                    label: $t('Scan.Table.3217212-7'),
                                     value: true,
                                 },
                                 {
-                                    label: '否',
+                                    label: $t('Scan.Table.3217212-8'),
                                     value: false,
                                 },
                             ]"
@@ -186,7 +186,7 @@
                             v-show="index !== 0"
                             v-model:checked="record[dataIndex].check"
                             @click="changeCheckbox(index, dataIndex)"
-                            >同上</j-checkbox
+                            >{{ $t('Scan.Table.3217212-5') }}</j-checkbox
                         >
                     </j-form-item>
                 </template>
@@ -194,10 +194,10 @@
                 <template v-if="dataIndex === 'action'">
                     <PermissionButton
                         :tooltip="{
-                            title: '删除',
+                            title: $t('Scan.Table.3217212-9'),
                         }"
                         :popConfirm="{
-                            title: '确认删除？',
+                            title: $t('Scan.Table.3217212-10'),
                             onConfirm: () => clickDelete(record.id),
                         }"
                     >
@@ -213,6 +213,9 @@
 <script lang="ts" setup>
 import { FormTableColumns, regOnlyNumber } from '../../data';
 import { Rule } from 'ant-design-vue/lib/form';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -232,7 +235,7 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if (value) {
             return String(value).length > 64
-                ? reject('最多可输入64个字符')
+                ? reject($t('Scan.Table.3217212-11'))
                 : resolve('');
         } else {
             resolve('');

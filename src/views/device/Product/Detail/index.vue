@@ -31,8 +31,8 @@
                             :popConfirm="{
                                 title:
                                     productStore.current.state === 1
-                                        ? '确认禁用'
-                                        : '确认启用',
+                                        ? $t('Detail.index.064554-0')
+                                        : $t('Detail.index.064554-1'),
                                 onConfirm:
                                     productStore.current.state === 1
                                         ? handleUndeploy
@@ -41,8 +41,8 @@
                         >
                             <j-switch
                                 :checked="productStore.current.state === 1"
-                                checked-children="正常"
-                                un-checked-children="禁用"
+                                :checked-children="$t('Detail.index.064554-2')"
+                                :un-checked-children="$t('Detail.index.064554-3')"
                                 :disabled="
                                     !permissionStore.hasPermission(
                                         'device/Product:action',
@@ -53,12 +53,12 @@
                     </div>
                     <div style="margin: -5px 0 0 20px" v-else>
                         <j-tooltip>
-                            <template #title>暂无权限，请联系管理员</template>
+                            <template #title>{{ $t('Detail.index.064554-4') }}</template>
                             <j-switch
                                 v-if="productStore.current.state === 1"
                                 :checked="productStore.current.state === 1"
-                                checked-children="正常"
-                                un-checked-children="禁用"
+                                :checked-children="$t('Detail.index.064554-2')"
+                                :un-checked-children="$t('Detail.index.064554-3')"
                                 :disabled="
                                     !permissionStore.hasPermission(
                                         'device/Product:action',
@@ -70,8 +70,8 @@
                                 :unCheckedValue="
                                     productStore.current.state === 0
                                 "
-                                checked-children="正常"
-                                un-checked-children="禁用"
+                                :checked-children="$t('Detail.index.064554-2')"
+                                :un-checked-children="$t('Detail.index.064554-3')"
                                 :disabled="
                                     !permissionStore.hasPermission(
                                         'device/Product:action',
@@ -87,7 +87,7 @@
             <div style="padding-top: 10px">
                 <j-descriptions size="small" :column="4">
                     <j-descriptions-item
-                        label="设备数量"
+                        :label="$t('Detail.index.064554-5')"
                         :labelStyle="{
                             fontSize: '14px',
                             opacity: 0.55,
@@ -110,18 +110,18 @@
             <PermissionButton
                 type="primary"
                 :popConfirm="{
-                    title: `确认应用配置?`,
+                    title: $t('Detail.index.064554-6'),
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
                 :tooltip="
                     productStore.current?.state === 0
-                        ? { title: '请先启用产品' }
+                        ? { title: $t('Detail.index.064554-7') }
                         : undefined
                 "
                 hasPermission="device/Product:update"
                 placement="topRight"
-                >应用配置</PermissionButton
+                >{{ $t('Detail.index.064554-8') }}</PermissionButton
             >
         </template>
         <FullPage>
@@ -160,6 +160,9 @@ import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
@@ -182,20 +185,20 @@ const searchParams = ref({
 const list = ref([
     {
         key: 'Info',
-        tab: '配置信息',
+        tab: $t('Detail.index.064554-9'),
     },
     {
         key: 'Metadata',
-        tab: '物模型',
+        tab: $t('Detail.index.064554-10'),
         class: 'objectModel',
     },
     {
         key: 'Device',
-        tab: '设备接入',
+        tab: $t('Detail.index.064554-11'),
     },
     {
         key: 'Firmware',
-        tab: '远程升级',
+        tab: $t('Detail.index.064554-12'),
     },
 ]);
 
@@ -231,7 +234,7 @@ const handleDeploy = () => {
         const resp = _deploy(productStore.current.id);
         resp.then((res) => {
             if (res.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Detail.index.064554-13'));
                 productStore.refresh(productStore.current.id);
             }
         });
@@ -247,7 +250,7 @@ const handleUndeploy = () => {
         const resp = _undeploy(productStore.current.id);
         resp.then((res) => {
             if (res.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Detail.index.064554-13'));
                 productStore.refresh(productStore.current.id);
             }
         });
@@ -285,44 +288,44 @@ const getProtocol = async () => {
                 list.value = [
                     {
                         key: 'Info',
-                        tab: '配置信息',
+                        tab: $t('Detail.index.064554-9'),
                     },
                     {
                         key: 'Metadata',
-                        tab: '物模型',
+                        tab: $t('Detail.index.064554-10'),
                         class: 'objectModel',
                     },
                     {
                         key: 'Device',
-                        tab: '设备接入',
+                        tab: $t('Detail.index.064554-11'),
                     },
                     {
                         key: 'DataAnalysis',
-                        tab: '数据解析',
+                        tab: $t('Detail.index.064554-14'),
                     },
                     {
                         key: 'Firmware',
-                        tab: '远程升级',
+                        tab: $t('Detail.index.064554-12'),
                     },
                 ];
             } else {
                 list.value = [
                     {
                         key: 'Info',
-                        tab: '配置信息',
+                        tab: $t('Detail.index.064554-9'),
                     },
                     {
                         key: 'Metadata',
-                        tab: '物模型',
+                        tab: $t('Detail.index.064554-10'),
                         class: 'objectModel',
                     },
                     {
                         key: 'Device',
-                        tab: '设备接入',
+                        tab: $t('Detail.index.064554-11'),
                     },
                     {
                         key: 'Firmware',
-                        tab: '远程升级',
+                        tab: $t('Detail.index.064554-12'),
                     },
                 ];
             }
@@ -336,7 +339,7 @@ const getProtocol = async () => {
                 (item) => item.id === 'diffMetadataSameProduct',
             )
         ) {
-            list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
+            list.value.push({ key: 'MetadataMap', tab: $t('Detail.index.064554-15') });
         }
         if (
             permissionStore.hasPermission(
@@ -345,7 +348,7 @@ const getProtocol = async () => {
         ) {
             list.value.push({
                 key: 'AlarmRecord',
-                tab: '预处理数据',
+                tab: $t('Detail.index.064554-16'),
             });
         }
     }

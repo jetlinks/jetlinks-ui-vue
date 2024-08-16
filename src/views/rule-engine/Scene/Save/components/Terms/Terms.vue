@@ -1,12 +1,12 @@
 <template>
   <div class='actions-terms'>
-    <TitleComponent data='执行动作' style='font-size: 14px;' >
+    <TitleComponent :data="$t('Terms.Terms.5425726-0')" style='font-size: 14px;' >
       <template #extra>
         <j-switch
           v-model:checked='open'
           @change='change'
-          checkedChildren='开'
-          unCheckedChildren='关'
+          :checkedChildren="$t('Terms.Terms.5425726-1')"
+          :unCheckedChildren="$t('Terms.Terms.5425726-2')"
           style='margin-left: 4px;'
         />
       </template>
@@ -22,7 +22,7 @@
           >
             <template #tab>
               <TermsTabPane :showClose="group.length > 1" @close="() => addGroup(b.id, 'close')">
-                {{ b.branchName || `条件${i+1}` }}
+                {{ b.branchName || $t('Terms.Terms.5425726-3', [i+1]) }}
               </TermsTabPane>
             </template>
             <template v-for='(item, index) in data.branches'>
@@ -43,7 +43,7 @@
                 />
                 <div v-else class='actions-terms-warp' :style='{ marginTop: data.branches.length === 2 ? 0 : 24 }'>
                   <div class='actions-terms-title' style='padding: 0;margin-bottom: 24px;'>
-                    否则
+                    {{ $t('Terms.Terms.5425726-4') }}
                   </div>
                   <div class='actions-terms-options no-when'>
                     <AIcon type='PlusOutlined' class='when-add-button' @click='() => addBranches(b.start + b.len)' />
@@ -91,6 +91,9 @@ import TermsTabPane from './TermsTabPane.vue'
 import BranchesNameEdit from "./BranchesNameEdit.vue";
 import {Modal} from "ant-design-vue";
 import {queryBindScene, unBindAlarmMultiple} from "@/api/rule-engine/configuration";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -260,7 +263,7 @@ const groupDelete = async (g: any, index: number) => {
       })
 
       Modal.confirm({
-        title: `已关联 ${resp.result.total} 条告警，删除该条件会同步解除对应的关联告警，确认删除？`,
+        title: $t('Terms.Terms.5425726-5', [resp.result.total]),
         onOk() {
           const _data = resp.result.data.map(item => {
             return {
@@ -275,7 +278,7 @@ const groupDelete = async (g: any, index: number) => {
       })
     } else {
       Modal.confirm({
-        title: '该条件下有执行动作，确认删除？',
+        title: $t('Terms.Terms.5425726-6'),
         onOk() {
           removeBranchesData(g, index)
         }
@@ -406,7 +409,7 @@ watchEffect(() => {
           branchKey: item.key,
           branchId: item.branchId,
           // branchName: item.branchName || whenItem?.branchName || `条件 ${_branchesIndex + 1}`,
-          branchName: item.branchName || whenItem?.branchName || `条件`,
+          branchName: item.branchName || whenItem?.branchName || $t('Terms.Terms.5425726-7'),
           groupIndex: _branchesIndex
         }
       } else {

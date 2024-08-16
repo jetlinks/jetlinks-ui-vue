@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Invalid.index.584341-0": "设备ID：",
+		"Invalid.index.584341-1": "上报时间",
+		"Invalid.index.584341-2": "阈值限制",
+		"Invalid.index.584341-3": "原始值",
+		"Invalid.index.584341-4": "告警源"
+	},
+	"en": {
+		"Invalid.index.584341-0": "Device ID:",
+		"Invalid.index.584341-1": "Report time",
+		"Invalid.index.584341-2": "Threshold limit",
+		"Invalid.index.584341-3": "Original value",
+		"Invalid.index.584341-4": "Alarm source"
+	}
+}

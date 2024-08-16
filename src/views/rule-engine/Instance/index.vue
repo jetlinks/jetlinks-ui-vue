@@ -26,7 +26,7 @@
                                 <template #icon
                                     ><AIcon type="PlusOutlined"
                                 /></template>
-                                新增
+                                {{ $t('Instance.index.052151-0') }}
                             </PermissionButton>
                         </j-space>
                     </template>
@@ -36,7 +36,7 @@
                             :actions="getActions(slotProps, 'card')"
                             v-bind="slotProps"
                             :status="slotProps.state?.value"
-                            :statusText="slotProps.state?.text"
+                            :statusText="slotProps.state.value==='started'?$t('Instance.index.052151-1'):$t('Instance.index.052151-2')"
                             @click="openRuleEditor"
                             :statusNames="{
                                 started: 'processing',
@@ -99,8 +99,8 @@
                         <BadgeStatus
                             :text="
                                 slotProps.state?.value === 'started'
-                                    ? '正常'
-                                    : '禁用'
+                                    ? $t('Instance.index.052151-1')
+                                    : $t('Instance.index.052151-2')
                             "
                             :status="slotProps.state?.value"
                             :statusNames="{
@@ -138,7 +138,7 @@
                     </template>
                 </JProTable>
             </FullPage>
-            <!-- 新增、编辑 -->
+            <!-- {{ $t('Instance.index.052151-0') }}、{{ $t('Instance.index.052151-7') }} -->
             <Save
                 :data="current"
                 @success="refresh"
@@ -161,6 +161,9 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import Save from './Save/index.vue';
 import { SystemConst } from '@/utils/consts';
 import { useRouterParams } from '@/utils/hooks/useParams';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const params = ref<Record<string, any>>({});
 let visiable = ref(false);
 const tableRef = ref<Record<string, any>>({});
@@ -168,7 +171,7 @@ const { params: routeParams } = useRouterParams();
 const query = {
     columns: [
         {
-            title: '名称',
+            title: $t('Instance.index.052151-3'),
             dataIndex: 'name',
             key: 'name',
             search: {
@@ -176,25 +179,25 @@ const query = {
             },
         },
         {
-            title: '状态',
+            title: $t('Instance.index.052151-4'),
             dataIndex: 'state',
             key: 'state',
             search: {
                 type: 'select',
                 options: [
                     {
-                        label: '正常',
+                        label: $t('Instance.index.052151-1'),
                         value: 'started',
                     },
                     {
-                        label: '禁用',
+                        label: $t('Instance.index.052151-2'),
                         value: 'disable',
                     },
                 ],
             },
         },
         {
-            title: '说明',
+            title: $t('Instance.index.052151-5'),
             key: 'description',
             dataIndex: 'description',
             search: {
@@ -205,25 +208,25 @@ const query = {
 };
 const columns = [
     {
-        title: '名称',
+        title: $t('Instance.index.052151-3'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
     },
     {
-        title: '状态',
+        title: $t('Instance.index.052151-4'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('Instance.index.052151-5'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
     },
     {
-        title: '操作',
+        title: $t('Instance.index.052151-6'),
         key: 'action',
         fixed: 'right',
         width: 150,
@@ -241,9 +244,9 @@ const getActions = (
     const actions = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Instance.index.052151-7'),
             tooltip: {
-                title: '编辑',
+                title: $t('Instance.index.052151-7'),
             },
 
             icon: 'EditOutlined',
@@ -254,9 +257,9 @@ const getActions = (
         },
         {
             key: 'view',
-            text: '查看',
+            text: $t('Instance.index.052151-8'),
             tooltip: {
-                title: '查看',
+                title: $t('Instance.index.052151-8'),
             },
             icon: 'EyeOutlined',
             onClick: () => {
@@ -265,16 +268,16 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'disable' ? '禁用' : '启用',
+            text: data.state?.value !== 'disable' ? $t('Instance.index.052151-16') : $t('Instance.index.052151-9'),
             tooltip: {
-                title: data.state?.value !== 'disable' ? '禁用' : '启用',
+                title: data.state?.value !== 'disable' ? $t('Instance.index.052151-16') : $t('Instance.index.052151-9'),
             },
             icon:
                 data.state?.value !== 'disable'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.state.value !== 'disable' ? '禁用' : '启用'}?`,
+                title: `${data.state.value !== 'disable' ? $t('Instance.index.052151-17') : $t('Instance.index.052151-10')}?`,
                 onConfirm: async () => {
                     let response = undefined;
                     if (data.state?.value !== 'started') {
@@ -283,33 +286,33 @@ const getActions = (
                         response = await stopRule(data.id);
                     }
                     if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Instance.index.052151-11'));
                         tableRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Instance.index.052151-12'), 'error');
                     }
                 },
             },
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Instance.index.052151-13'),
             disabled: data?.state?.value !== 'disable',
             tooltip: {
                 title:
                     data?.state?.value !== 'disable'
-                        ? '请先禁用再删除'
-                        : '删除',
+                        ? $t('Instance.index.052151-14')
+                        : $t('Instance.index.052151-13'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Instance.index.052151-15'),
                 onConfirm: async () => {
                     const resp = await deleteRule(data.id);
                     if (resp.status === 200) {
-                        onlyMessage('操作成功！');
+                        onlyMessage($t('Instance.index.052151-11'));
                         tableRef.value?.reload();
                     } else {
-                        onlyMessage('操作失败！', 'error');
+                        onlyMessage($t('Instance.index.052151-12'), 'error');
                     }
                 },
             },

@@ -101,7 +101,7 @@
             </j-button>
         </template>
     </template>
-    <j-tooltip v-else title="暂无权限，请联系管理员" :placement="placement">
+    <j-tooltip v-else :title="$t('PermissionButton.index.583718-0')" :placement="placement">
         <slot v-if="noButton"></slot>
         <j-button
             v-else
@@ -123,6 +123,9 @@ import { buttonProps } from 'ant-design-vue/es/button/button';
 import { usePermissionStore } from '@/store/permission';
 import { omit } from 'lodash-es';
 import { Modal } from 'ant-design-vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     noButton: {

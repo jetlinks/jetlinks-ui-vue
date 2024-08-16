@@ -1,0 +1,19 @@
+{
+	"zh": {
+		"Detail.index.2866712-0": "详情",
+		"Detail.index.2866712-1": "列表",
+		"Detail.index.2866712-2": "图表",
+		"Detail.index.2866712-3": "轨迹",
+		"Detail.index.2866712-4": "确定",
+		"Detail.index.2866712-5": "取消"
+		
+	},
+	"en": {
+		"Detail.index.2866712-0": "Detail",
+		"Detail.index.2866712-1": "List",
+		"Detail.index.2866712-2": "Chart",
+		"Detail.index.2866712-3": "Trajectory",
+		"Detail.index.2866712-4": "Confirm",
+		"Detail.index.2866712-5": "Cancle"
+	}
+}

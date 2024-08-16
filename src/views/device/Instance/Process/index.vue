@@ -3,21 +3,21 @@
         :maskClosable="false"
         width="800px"
         :visible="true"
-        :title="type === 'active' ? '启用' : '同步'"
+        :title="type === 'active' ? $t('Process.index.170026-0') : $t('Process.index.170026-1')"
         :closable="false"
     >
         <div style="margin: 10px 0px 20px 0px; padding-right: 10px;">
             <div v-if="flag">
-                <div>{{ type === 'active' ? '正在启用全部设备' : '正在同步设备状态' }}</div>
+                <div>{{ type === 'active' ? $t('Process.index.170026-2') : $t('Process.index.170026-3') }}</div>
                 <j-progress :percent="_percent" />
             </div>
             <div v-else>
-                <p>{{ type === 'active' ? '启用' : '同步' }}成功：{{ count }}条</p>
-                <p v-if="type === 'active'">启用失败：{{ errCount }}条<j-tooltip title="实例信息页面中的配置项未完善"><AIcon style="margin-left: 5px" type="QuestionCircleOutlined" /></j-tooltip></p>
+                <p>{{ type === 'active' ? $t('Process.index.170026-4') : $t('Process.index.170026-9') }}{{ count }}{{ $t('Process.index.170026-5') }}</p>
+                <p v-if="type === 'active'">{{ $t('Process.index.170026-6') }}{{ errCount }}{{ $t('Process.index.170026-5') }}<j-tooltip :title="$t('Process.index.170026-7')"><AIcon style="margin-left: 5px" type="QuestionCircleOutlined" /></j-tooltip></p>
             </div>
         </div>
         <template #footer>
-            <j-button v-if="!flag" type="primary" @click="handleCancel">完成</j-button>
+            <j-button v-if="!flag" type="primary" @click="handleCancel">{{ $t('Process.index.170026-8') }}</j-button>
         </template>
     </j-modal>
 </template>
@@ -25,6 +25,9 @@
 <script lang="ts" setup>
 import { getDeviceNumber } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({

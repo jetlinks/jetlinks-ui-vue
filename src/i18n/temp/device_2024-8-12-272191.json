@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Import.valideta.6916025-0": "方法定义inputs第{0}个数组ValueType中缺失elementType属性",
+		"Import.valideta.6916025-1": "方法定义inputs第{0}个数组ValueType中缺失fileType属性",
+		"Import.valideta.6916025-2": "方法定义inputs第{0}个数组ValueType中缺失properties属性",
+		"Import.valideta.6916025-3": "方法定义inputs第{0}个数组中缺失id属性",
+		"Import.valideta.6916025-4": "方法定义inputs第{0}个数组中缺失name属性",
+		"Import.valideta.6916025-5": "方法定义inputs第{0}个数组中缺失valueType.type属性",
+		"Import.valideta.6916025-6": "方法定义inputs第{0}个数组dataType中缺失必填属性",
+		"Import.valideta.6916025-7": "方法定义inputs第{0}个数组dataType中elements缺失必填属性",
+		"Import.valideta.6916025-8": "方法定义inputs第{0}个数组dataType中缺失elements属性",
+		"Import.valideta.6916025-9": "方法定义inputs第{0}个数组dataType中缺失elementType属性",
+		"Import.valideta.6916025-10": "方法定义inputs第{0}个数组dataType中缺失fileType属性",
+		"Import.valideta.6916025-11": "方法定义inputs第{0}个数组dataType中缺失properties属性",
+		"Import.valideta.6916025-12": "方法定义inputs第{0}个数组中缺失dataType.type属性"
+	},
+	"en": {
+		"Import.valideta.6916025-0": "Method definition: The elementType property is missing from the valueType of the {0} th array of inputs",
+		"Import.valideta.6916025-1": "Method definition: The fileType attribute is missing from the ValueType of the {0} th array of inputs",
+		"Import.valideta.6916025-2": "Method definition: The properties property is missing from the ValueType of the {0} th array of inputs",
+		"Import.valideta.6916025-3": "Method definition: The 'id' attribute is missing from the {0} th array of inputs",
+		"Import.valideta.6916025-4": "Method definition: The name attribute is missing in the {0th} array of inputs",
+		"Import.valideta.6916025-5": "Method definition: The valueType.type attribute is missing in the {0} th array of inputs",
+		"Import.valideta.6916025-6": "Method definition: The required attribute is missing in the dataType of the {0} th array of inputs",
+		"Import.valideta.6916025-7": "Method definition: The elements in the dataType of the {0} th array of inputs are missing required attributes",
+		"Import.valideta.6916025-8": "Method definition: The missing elements attribute is in the dataType of the {0} th array of inputs",
+		"Import.valideta.6916025-9": "Method definition: The elementType attribute is missing in the dataType of the {0} th array of inputs",
+		"Import.valideta.6916025-10": "Method definition: The fileType attribute is missing in the dataType of the {0} th array of inputs",
+		"Import.valideta.6916025-11": "Method definition: The properties property is missing in the dataType of the {0} th array of inputs",
+		"Import.valideta.6916025-12": "Method definition: The dataType.type attribute is missing in the {0} th array of inputs"
+	}
+}

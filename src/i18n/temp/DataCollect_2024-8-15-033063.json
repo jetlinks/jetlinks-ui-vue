@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Import.index.3217218-0": "导入",
+		"Import.index.3217218-1": "上传文件",
+		"Import.index.3217218-2": "点击或拖拽上传文件",
+		"Import.index.3217218-3": "格式：.xlsx, .csv",
+		"Import.index.3217218-4": "正在导入",
+		"Import.index.3217218-5": "导入成功 总数量{0}",
+		"Import.index.3217218-6": "导入失败 总数量{0}",
+		"Import.index.3217218-7": "Excel导入模板",
+		"Import.index.3217218-8": "下载模板",
+		"Import.index.3217218-9": "请上传.csv或.xlsx格式文件",
+		"Import.index.3217218-10": "{0}导入模版",
+		"Import.index.3217218-11": "第{0}行"
+	},
+	"en": {
+		"Import.index.3217218-0": "Import",
+		"Import.index.3217218-1": "Upload files",
+		"Import.index.3217218-2": "Click or drag to upload files",
+		"Import.index.3217218-3": "Format: .xlsx, .csv",
+		"Import.index.3217218-4": "Importing in progress",
+		"Import.index.3217218-5": "The total number of successful imports is {0}",
+		"Import.index.3217218-6": "Total number of failed imports {0}",
+		"Import.index.3217218-7": "Excel Import Template",
+		"Import.index.3217218-8": "Download Template",
+		"Import.index.3217218-9": "Please upload a .csv or .xlsx format file",
+		"Import.index.3217218-10": "{0} Import Template",
+		"Import.index.3217218-11": "Line {0}"
+	}
+}

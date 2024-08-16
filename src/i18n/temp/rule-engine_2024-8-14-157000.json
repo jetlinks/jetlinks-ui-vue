@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Notify.VariableDefinitions.5425859-0": "暂无模板变量",
+		"Notify.VariableDefinitions.5425859-1": "请输入",
+		"Notify.VariableDefinitions.5425859-2": "最多64个字符",
+		"Notify.VariableDefinitions.5425859-3": "请选择",
+		"Notify.VariableDefinitions.5425859-4": "请输入收件人",
+		"Notify.VariableDefinitions.5425859-5": "请输入正确的邮箱地址",
+		"Notify.VariableDefinitions.5425859-6": "请输入正确的手机号码",
+		"Notify.VariableDefinitions.5425859-7": "收信人，收信人部门，收信人标签至少填写一个"
+	},
+	"en": {
+		"Notify.VariableDefinitions.5425859-0": "There are currently no template variables available",
+		"Notify.VariableDefinitions.5425859-1": "Please enter",
+		"Notify.VariableDefinitions.5425859-2": "Up to 64 characters",
+		"Notify.VariableDefinitions.5425859-3": "Please choose",
+		"Notify.VariableDefinitions.5425859-4": "Please enter recipient",
+		"Notify.VariableDefinitions.5425859-5": "Please enter the correct email address",
+		"Notify.VariableDefinitions.5425859-6": "Please enter the correct phone number",
+		"Notify.VariableDefinitions.5425859-7": "At least one recipient, recipient department, and recipient label should be filled in"
+	}
+}

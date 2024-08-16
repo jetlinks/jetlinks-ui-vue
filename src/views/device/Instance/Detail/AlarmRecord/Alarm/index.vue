@@ -28,7 +28,7 @@
         </template>
         <template #sourceId="slotProps">
             <Ellipsis>
-                设备ID：
+                {{ $t('Alarm.index.584342-0') }}
                 <span class="deviceId"  @click="() => gotoDevice(slotProps.sourceId)">{{ slotProps.sourceId }}</span></Ellipsis
             >
         </template>
@@ -36,7 +36,7 @@
             {{ slotProps?.handleType?.text || '--' }}
         </template>
         <template #state="slotProps">
-            {{ slotProps?.state?.value === 'normal' ? '已处理' : '告警中' }}
+            {{ slotProps?.state?.value === 'normal' ? $t('Alarm.index.584342-1') : $t('Alarm.index.584342-2') }}
         </template>
         <template #actions="slotProps">
             <j-space>
@@ -89,6 +89,9 @@ import Duration from '@/views/rule-engine/Alarm/Log/components/Duration.vue';
 import Solve from '@/views/rule-engine/Alarm/Log/SolveComponent/index.vue';
 import AlarmLog from './components/AlarmLog.vue';
 import { useMenuStore } from 'store/menu';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     goal: {
         type: String,
@@ -102,7 +105,7 @@ const columns =
     props.goal === 'device'
         ? [
               {
-                  title: '告警时间',
+                  title: $t('Alarm.index.584342-3'),
                   dataIndex: 'alarmTime',
                   key: 'alarmTime',
                   search: {
@@ -111,23 +114,23 @@ const columns =
                   scopedSlots: true,
               },
               {
-                  title: '告警持续时长',
+                  title: $t('Alarm.index.584342-4'),
                   dataIndex: 'duration',
                   key: 'duration',
                   scopedSlots: true,
               },
               {
-                  title: '触发条件',
+                  title: $t('Alarm.index.584342-5'),
                   dataIndex: 'triggerDesc',
                   key: 'triggerDesc',
               },
               {
-                  title: '告警原因',
+                  title: $t('Alarm.index.584342-6'),
                   dataIndex: 'actualDesc',
                   key: 'actualDesc',
               },
               {
-                  title: '处理时间',
+                  title: $t('Alarm.index.584342-7'),
                   dataIndex: 'handleTime',
                   key: 'handleTime',
                   search: {
@@ -137,18 +140,18 @@ const columns =
               },
 
               {
-                  title: '处理类型',
+                  title: $t('Alarm.index.584342-8'),
                   dataIndex: 'handleType',
                   key: 'handleType',
                   search: {
                       type: 'select',
                       options: [
                           {
-                              label: '人工',
+                              label: $t('Alarm.index.584342-9'),
                               value: 'user',
                           },
                           {
-                              label: '系统',
+                              label: $t('Alarm.index.584342-10'),
                               value: 'system',
                           },
                       ],
@@ -156,18 +159,18 @@ const columns =
                   scopedSlots: true,
               },
               {
-                  title: '状态',
+                  title: $t('Alarm.index.584342-11'),
                   dataIndex: 'state',
                   key: 'state',
                   search: {
                       type: 'select',
                       options: [
                           {
-                              label: '已处理',
+                              label: $t('Alarm.index.584342-1'),
                               value: 'normal',
                           },
                           {
-                              label: '告警中',
+                              label: $t('Alarm.index.584342-2'),
                               value: 'warning',
                           },
                       ],
@@ -175,7 +178,7 @@ const columns =
                   scopedSlots: true,
               },
               {
-                  title: '操作',
+                  title: $t('Alarm.index.584342-12'),
                   dataIndex: 'actions',
                   key: 'actions',
                   scopedSlots: true,
@@ -183,7 +186,7 @@ const columns =
           ]
         : [
               {
-                  title: '告警时间',
+                  title: $t('Alarm.index.584342-3'),
                   dataIndex: 'alarmTime',
                   key: 'alarmTime',
                   search: {
@@ -192,18 +195,18 @@ const columns =
                   scopedSlots: true,
               },
               {
-                  title: '告警持续时长',
+                  title: $t('Alarm.index.584342-4'),
                   dataIndex: 'duration',
                   key: 'duration',
                   scopedSlots: true,
               },
               {
-                  title: '触发条件',
+                  title: $t('Alarm.index.584342-5'),
                   dataIndex: 'triggerDesc',
                   key: 'triggerDesc',
               },
               {
-                  title: '告警源',
+                  title: $t('Alarm.index.584342-13'),
                   dataIndex: 'sourceId',
                   key: 'sourceId',
                   scopedSlots: true,
@@ -212,12 +215,12 @@ const columns =
                   },
               },
               {
-                  title: '告警原因',
+                  title: $t('Alarm.index.584342-6'),
                   dataIndex: 'actualDesc',
                   key: 'actualDesc',
               },
               {
-                  title: '处理时间',
+                  title: $t('Alarm.index.584342-7'),
                   dataIndex: 'handleTime',
                   key: 'handleTime',
                   search: {
@@ -227,18 +230,18 @@ const columns =
               },
 
               {
-                  title: '处理类型',
+                  title: $t('Alarm.index.584342-8'),
                   dataIndex: 'handleType',
                   key: 'handleType',
                   search: {
                       type: 'select',
                       options: [
                           {
-                              label: '人工',
+                              label: $t('Alarm.index.584342-9'),
                               value: 'user',
                           },
                           {
-                              label: '系统',
+                              label: $t('Alarm.index.584342-10'),
                               value: 'system',
                           },
                       ],
@@ -246,18 +249,18 @@ const columns =
                   scopedSlots: true,
               },
               {
-                  title: '状态',
+                  title: $t('Alarm.index.584342-11'),
                   dataIndex: 'state',
                   key: 'state',
                   search: {
                       type: 'select',
                       options: [
                           {
-                              label: '已处理',
+                              label: $t('Alarm.index.584342-1'),
                               value: 'normal',
                           },
                           {
-                              label: '告警中',
+                              label: $t('Alarm.index.584342-2'),
                               value: 'warning',
                           },
                       ],
@@ -265,7 +268,7 @@ const columns =
                   scopedSlots: true,
               },
               {
-                  title: '操作',
+                  title: $t('Alarm.index.584342-12'),
                   dataIndex: 'actions',
                   key: 'actions',
                   scopedSlots: true,
@@ -351,9 +354,9 @@ const getActions = (data) => {
             ? [
                   {
                       key: 'view',
-                      text: '查看详情',
+                      text: $t('Alarm.index.584342-14'),
                       tooltip: {
-                          title: '查看详情',
+                          title: $t('Alarm.index.584342-14'),
                       },
                       onClick: async () => {
                           solveType.value = 'view';
@@ -363,9 +366,9 @@ const getActions = (data) => {
                   },
                   {
                       key: 'log',
-                      text: '查看日志',
+                      text: $t('Alarm.index.584342-15'),
                       tooltip: {
-                          title: '查看日志',
+                          title: $t('Alarm.index.584342-15'),
                       },
                       onClick: () => {
                           visibleDrawer.value = true;
@@ -376,9 +379,9 @@ const getActions = (data) => {
             : [
                   {
                       key: 'solve',
-                      text: '处理',
+                      text: $t('Alarm.index.584342-16'),
                       tooltip: {
-                          title: '处理',
+                          title: $t('Alarm.index.584342-16'),
                       },
                       onClick: () => {
                           solveVisible.value = true;
@@ -388,9 +391,9 @@ const getActions = (data) => {
                   },
                   {
                       key: 'log',
-                      text: '查看日志',
+                      text: $t('Alarm.index.584342-15'),
                       tooltip: {
-                          title: '查看日志',
+                          title: $t('Alarm.index.584342-15'),
                       },
                       onClick: () => {
                           visibleDrawer.value = true;

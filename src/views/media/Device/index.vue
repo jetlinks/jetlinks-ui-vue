@@ -33,7 +33,7 @@
                         v-bind="slotProps"
                         :showStatus="true"
                         :status="slotProps.state.value"
-                        :statusText="slotProps.state.text"
+                        :statusText="slotProps.state.value==='offline'?$t('Device.index.117441-9'):slotProps.state.value==='online'?$t('Device.index.117441-10'):$t('Device.index.117441-8')"
                         :statusNames="{
                             online: 'processing',
                             offline: 'error',

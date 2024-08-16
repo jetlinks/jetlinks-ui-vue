@@ -2,13 +2,13 @@
     <div style="margin-top: 20px">
         <j-descriptions bordered>
             <template #title>
-                标签
+                {{ $t('Tags.index.735522-0') }}
                 <PermissionButton
                     type="link"
                     @click="visible = true"
                     hasPermission="device/Instance:update"
                 >
-                    <AIcon type="EditOutlined" />编辑
+                    <AIcon type="EditOutlined" />{{ $t('Tags.index.735522-1') }}
                 </PermissionButton>
             </template>
             <j-descriptions-item
@@ -29,6 +29,9 @@
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
 import Save from './Save.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const instanceStore = useInstanceStore();
 

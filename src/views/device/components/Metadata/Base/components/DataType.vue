@@ -70,6 +70,10 @@ import { cloneDeep } from 'lodash-es';
 import {handleTypeValue, typeSelectChange, TypeStringMap, useUnit, validatorConfig} from '../columns'
 import ConfigModal from './ConfigModal.vue'
 import { Form } from 'jetlinks-ui-components'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
     value: {
@@ -81,7 +85,7 @@ const props = defineProps({
 const formItemContext = Form.useInjectFormItemContext();
 
 const columns = [{
-  title: '参数标识',
+  title: $t('components.DataType.6916446-0'),
   dataIndex: 'id',
   type: 'text',
   width: 100,
@@ -95,23 +99,23 @@ const columns = [{
           const fieldIndex = Number(field[1])
           const hasId = dataSource.some((item, index) => item.id === value && fieldIndex !== index)
           if (hasId) {
-            return Promise.reject('该标识已存在')
+            return Promise.reject($t('components.DataType.6916446-1'))
           }
           return Promise.resolve()
         }
-        return Promise.reject('请输入标识')
+        return Promise.reject($t('components.DataType.6916446-2'))
       },
     },
-      { max: 64, message: '最多可输入64个字符' },
+      { max: 64, message: $t('components.DataType.6916446-3') },
       {
         pattern: /^[a-zA-Z0-9_\-]+$/,
-        message: '标识只能由数字、字母、下划线、中划线组成',
+        message: $t('components.DataType.6916446-4'),
       },
     ]
   }
 },
   {
-    title: '参数名称',
+    title: $t('components.DataType.6916446-5'),
     dataIndex: 'name',
     type: 'text',
     width: 100,
@@ -119,14 +123,14 @@ const columns = [{
       required: true,
       rules: [{
         required: true,
-        message: '请输入参数名称'
+        message: $t('components.DataType.6916446-6')
       },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('components.DataType.6916446-3') },
       ]
     }
   },
   {
-    title: '数据类型',
+    title: $t('components.DataType.6916446-7'),
     type: 'components',
     dataIndex: 'valueType',
     components: {
@@ -137,7 +141,7 @@ const columns = [{
       rules: [{
         validator(_: any, value: any) {
           if (!value?.type) {
-            return Promise.reject('请选择数据类型')
+            return Promise.reject($t('components.DataType.6916446-8'))
           }
           return Promise.resolve()
         }
@@ -146,7 +150,7 @@ const columns = [{
     width: 100
   },
   {
-    title: '其他配置',
+    title: $t('components.DataType.6916446-9'),
     dataIndex: 'config',
     width: 100,
     // components: {
@@ -167,7 +171,7 @@ const columns = [{
     },
   },
   {
-    title: '操作',
+    title: $t('components.DataType.6916446-10'),
     dataIndex: 'action',
     width: 60
   }]

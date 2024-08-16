@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"HandTrigger.index.426511-0": "选择触发场景",
+		"HandTrigger.index.426511-1": "确定",
+		"HandTrigger.index.426511-2": "取消",
+		"HandTrigger.index.426511-3": "场景名称",
+		"HandTrigger.index.426511-4": "触发方式",
+		"HandTrigger.index.426511-5": "状态",
+		"HandTrigger.index.426511-6": "正常",
+		"HandTrigger.index.426511-7": "禁用",
+		"HandTrigger.index.426511-8": "手动触发",
+		"HandTrigger.index.426511-9": "适用于第三方平台向物联网平台下发指令控制设备",
+		"HandTrigger.index.426511-10": "该场景为禁用状态，无法触发告警",
+		"HandTrigger.index.426511-11": "操作成功",
+		"HandTrigger.index.426511-12": "操作失败",
+		"HandTrigger.index.426511-13": "请选择至少一条数据"
+	},
+	"en": {
+		"HandTrigger.index.426511-0": "Select trigger scenario",
+		"HandTrigger.index.426511-1": "Confirm",
+		"HandTrigger.index.426511-2": "Cancel",
+		"HandTrigger.index.426511-3": "Scene name",
+		"HandTrigger.index.426511-4": "Trigger method",
+		"HandTrigger.index.426511-5": "State",
+		"HandTrigger.index.426511-6": "enabled",
+		"HandTrigger.index.426511-7": "disabled",
+		"HandTrigger.index.426511-8": "Manually trigger",
+		"HandTrigger.index.426511-9": "Applicable to third-party platforms issuing instructions to IoT platforms to control devices",
+		"HandTrigger.index.426511-10": "This scenario is disabled and cannot trigger an alarm",
+		"HandTrigger.index.426511-11": "Operation successful",
+		"HandTrigger.index.426511-12": "Operation failed",
+		"HandTrigger.index.426511-13": "Please select at least one piece of data"
+	}
+}

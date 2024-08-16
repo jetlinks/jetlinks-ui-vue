@@ -24,7 +24,8 @@
 		"Cascade.index.755836-21": "操作失败！",
 		"Cascade.index.755836-22": "删除",
 		"Cascade.index.755836-23": "请先禁用, 再删除",
-		"Cascade.index.755836-24": "确认删除?"
+		"Cascade.index.755836-24": "确认删除?",
+		"Cascade.index.755836-25": "禁用"
 	},
 	"en": {
 		"Cascade.index.755836-0": "Add",
@@ -34,8 +35,8 @@
 		"Cascade.index.755836-4": "Superior SIP address",
 		"Cascade.index.755836-5": "Number of channels",
 		"Cascade.index.755836-6": "State",
-		"Cascade.index.755836-7": "Normal",
-		"Cascade.index.755836-8": "Disable",
+		"Cascade.index.755836-7": "enabled",
+		"Cascade.index.755836-8": "disabled",
 		"Cascade.index.755836-9": "Cascade state",
 		"Cascade.index.755836-10": "on-line",
 		"Cascade.index.755836-11": "off-line",
@@ -51,6 +52,7 @@
 		"Cascade.index.755836-21": "Operation failed!",
 		"Cascade.index.755836-22": "Delete",
 		"Cascade.index.755836-23": "Please disable first, then delete",
-		"Cascade.index.755836-24": "Are you sure to delete?"
+		"Cascade.index.755836-24": "Are you sure to delete?",
+		"Cascade.index.755836-25": "Disable"
 	}
 }

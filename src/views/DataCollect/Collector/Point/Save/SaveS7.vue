@@ -1,84 +1,84 @@
-<template >
-    <j-modal :title="data.id ? '编辑' : '新增'" :visible="true" width="700px" @cancel="handleCancel">
+<template>
+    <j-modal :title="data.id ? $t('Save.SaveS7.3217213-0') : $t('Save.SaveS7.3217213-1')" :visible="true" width="700px" @cancel="handleCancel">
         <j-form :model="form" layout="vertical" ref="formRef">
-            <j-form-item label="点位名称" name="name">
-                <j-input placeholder="请输入点位名称" v-model:value="form.name" />
+            <j-form-item :label="$t('Save.SaveS7.3217213-2')" name="name">
+                <j-input :placeholder="$t('Save.SaveS7.3217213-3')" v-model:value="form.name" />
             </j-form-item>
-            <j-form-item label="地址区域" :name="['configuration', 'daveArea']" :rules="{
+            <j-form-item :label="$t('Save.SaveS7.3217213-4')" :name="['configuration', 'daveArea']" :rules="{
                 required: true,
-                message: '请选择地址区域',
+                message: $t('Save.SaveS7.3217213-5'),
                 trigger: 'change',
             }">
-                <j-select v-model:value="form.configuration.daveArea" show-search placeholder="请选择地址区域"
+                <j-select v-model:value="form.configuration.daveArea" show-search :placeholder="$t('Save.SaveS7.3217213-5')"
                     @change="daveAreaChange">
                     <j-select-option v-for="item in dataAreaFilterList" :key="item.id" :value="item.id">{{
                         item.name }}</j-select-option>
                 </j-select>
             </j-form-item>
-            <j-form-item label="地址编号" :name="['configuration', 'areaNumber']" v-show="form.configuration.daveArea == 'DB'"
+            <j-form-item :label="$t('Save.SaveS7.3217213-6')" :name="['configuration', 'areaNumber']" v-show="form.configuration.daveArea == 'DB'"
                 :rules="{
                     required: true,
-                    message: '请输入地址编号',
+                    message: $t('Save.SaveS7.3217213-7'),
                     trigger: 'blur',
                 }">
                 <j-input-number v-model:value="form.configuration.areaNumber" :maxlength="64" style="width: 100%"
                     :max="65535" autocomplete="off" :disabled="form.configuration.daveArea == 'DB' && deviceType == 'S200'"
-                    placeholder="请输入地址编号" />
+                    :placeholder="$t('Save.SaveS7.3217213-7')" />
             </j-form-item>
-            <j-form-item label="数据类型" :name="['configuration', 'type']" :rules="{
+            <j-form-item :label="$t('Save.SaveS7.3217213-8')" :name="['configuration', 'type']" :rules="{
                 required: true,
-                message: '请选择数据类型',
+                message: $t('Save.SaveS7.3217213-9'),
                 trigger: 'change',
             }">
-                <j-select v-model:value="form.configuration.type" show-search placeholder="请选择数据类型"
+                <j-select v-model:value="form.configuration.type" show-search :placeholder="$t('Save.SaveS7.3217213-9')"
                     @change="chooseS7DataType">
                     <j-select-option v-for="item in dataTypesList" :key="item.id" :value="item.id">{{
                         item.name }}</j-select-option>
                 </j-select>
             </j-form-item>
 
-            <j-form-item v-if="!disabled" label="字符串长度（byte）" :name="['configuration', 'bytes']" :rules="{
+            <j-form-item v-if="!disabled" :label="$t('Save.SaveS7.3217213-10')" :name="['configuration', 'bytes']" :rules="{
                 required: true,
-                message: '请输入0~65535之间的正整数',
+                message: $t('Save.SaveS7.3217213-11'),
                 trigger: 'blur',
             }">
-                <j-input-number type="number" style="width: 100%" addon-after="字节" v-model:value="form.configuration.bytes"
-                    placeholder="请输入字符串长度" :precision="0" :controls="false" :disabled="disabled" :max="65535" :min="0" />
+                <j-input-number type="number" style="width: 100%" :addon-after="$t('Save.SaveS7.3217213-12')" v-model:value="form.configuration.bytes"
+                    :placeholder="$t('Save.SaveS7.3217213-13')" :precision="0" :controls="false" :disabled="disabled" :max="65535" :min="0" />
             </j-form-item>
 
-            <j-form-item v-if="form.configuration.type == 'Bool'" label="位偏移量（bit）" :name="['configuration', 'bits']"
+            <j-form-item v-if="form.configuration.type == 'Bool'" :label="$t('Save.SaveS7.3217213-14')" :name="['configuration', 'bits']"
                 :rules="{
                     required: true,
-                    message: '请输入0~7之间的正整数',
+                    message: $t('Save.SaveS7.3217213-15'),
                     trigger: 'blur',
                 }">
-                <j-input-number type="number" style="width: 100%" addon-after="位" v-model:value="form.configuration.bits"
-                    placeholder="请输入位偏移量" :precision="0" :min="0" :max="7" :controls="false" :maxlength="2" />
+                <j-input-number type="number" style="width: 100%" :addon-after="$t('Save.SaveS7.3217213-16')" v-model:value="form.configuration.bits"
+                    :placeholder="$t('Save.SaveS7.3217213-17')" :precision="0" :min="0" :max="7" :controls="false" :maxlength="2" />
             </j-form-item>
 
-            <j-form-item label="偏移量" :name="['configuration', 'offset']" :rules="{
+            <j-form-item :label="$t('Save.SaveS7.3217213-18')" :name="['configuration', 'offset']" :rules="{
                 required: true,
-                message: '请输入0~65535之间的正整数',
+                message: $t('Save.SaveS7.3217213-11'),
                 trigger: 'blur',
             }">
                 <j-input-number type="number" style="width: 100%" v-model:value="form.configuration.offset"
-                    placeholder="请输入偏移量" :precision="0" :min="0" :max="65535" :controls="false" :maxlength="64" />
+                    :placeholder="$t('Save.SaveS7.3217213-19')" :precision="0" :min="0" :max="65535" :controls="false" :maxlength="64" />
             </j-form-item>
-            <j-form-item label="缩放因子" :name="['configuration', 'scaleFactor']">
+            <j-form-item :label="$t('Save.SaveS7.3217213-20')" :name="['configuration', 'scaleFactor']">
                 <j-input-number type="number" style="width: 100%" v-model:value="form.configuration.scaleFactor"
-                    placeholder="缩放因子" :min="0" :max="65535" :controls="false" :maxlength="64" />
+                    :placeholder="$t('Save.SaveS7.3217213-20')" :min="0" :max="65535" :controls="false" :maxlength="64" />
             </j-form-item>
-            <j-form-item label="小数保留位数" :name="['configuration', 'scale']">
+            <j-form-item :label="$t('Save.SaveS7.3217213-21')" :name="['configuration', 'scale']">
                 <j-input-number type="number" style="width: 100%" v-model:value="form.configuration.scale"
-                    placeholder="缩放因子" :precision="0" :min="1" :max="65535" :controls="false" :maxlength="64" />
+                    :placeholder="$t('Save.SaveS7.3217213-20')" :precision="0" :min="1" :max="65535" :controls="false" :maxlength="64" />
             </j-form-item>
-            <j-form-item label="访问类型" name="accessModes" :rules="{
+            <j-form-item :label="$t('Save.SaveS7.3217213-22')" name="accessModes" :rules="{
                 required: true,
-                message: '请选择访问类型',
+                message: $t('Save.SaveS7.3217213-23'),
             }">
                 <j-card-select multiple :showImage="false" v-model:value="form.accessModes" :options="[
-                    { label: '读', value: 'read' },
-                    { label: '写', value: 'write' },
+                    { label: $t('Save.SaveS7.3217213-24'), value: 'read' },
+                    { label: $t('Save.SaveS7.3217213-25'), value: 'write' },
                 ]
                     " :column="2" />
             </j-form-item>
@@ -88,18 +88,18 @@
             }]">
                 <template #label>
                     <j-space>
-                        <span>点位死区</span><span class="explain">点位死区范围内的异常数据将被过滤（请勿配置非数值类型）</span>
+                        <span>{{ $t('Save.SaveS7.3217213-26') }}</span><span class="explain">{{ $t('Save.SaveS7.3217213-27') }}</span>
                     </j-space>
                 </template>
                 <DeathArea v-model:value="form.configuration.terms" />
             </j-form-item>
-            <j-form-item label="轮询任务" :name="['configuration', 'interval']">
+            <j-form-item :label="$t('Save.SaveS7.3217213-28')" :name="['configuration', 'interval']">
                 <p>
-                    采集频率<span style="margin-left: 5px; color: #9d9ea1; font-size: 12px">采集频率为0时不执行轮询任务</span>
+                    {{ $t('Save.SaveS7.3217213-29') }}<span style="margin-left: 5px; color: #9d9ea1; font-size: 12px">{{ $t('Save.SaveS7.3217213-30') }}</span>
                 </p>
                 <j-input-number
                     style="width: 100%"
-                    placeholder="请输入采集频率"
+                    :placeholder="$t('Save.SaveS7.3217213-31')"
                     v-model:value="form.configuration.interval"
                     addon-after="ms"
                     :max="2147483648"
@@ -108,18 +108,18 @@
             </j-form-item>
             <j-form-item name="features">
                 <j-checkbox-group v-model:value="form.features">
-                    <j-checkbox value="changedOnly">只推送变化的数据</j-checkbox>
+                    <j-checkbox value="changedOnly">{{ $t('Save.SaveS7.3217213-32') }}</j-checkbox>
                 </j-checkbox-group>
             </j-form-item>
-            <j-form-item label="说明" name="description">
-                <j-textarea placeholder="请输入说明" v-model:value="form.description" :maxlength="200" :rows="3" showCount />
+            <j-form-item :label="$t('Save.SaveS7.3217213-33')" name="description">
+                <j-textarea :placeholder="$t('Save.SaveS7.3217213-34')" v-model:value="form.description" :maxlength="200" :rows="3" showCount />
             </j-form-item>
         </j-form>
         <template #footer>
-            <j-button key="back" @click="handleCancel">取消</j-button>
+            <j-button key="back" @click="handleCancel">{{ $t('Save.SaveS7.3217213-35') }}</j-button>
             <PermissionButton key="submit" type="primary" :loading="loading" @click="handleOk" style="margin-left: 8px"
                 :hasPermission="`DataCollect/Collector:${data.id ? 'update' : 'add'}`">
-                确认
+                {{ $t('Save.SaveS7.3217213-36') }}
             </PermissionButton>
         </template>
     </j-modal>
@@ -135,6 +135,9 @@ import {
 import type { FormInstance } from 'ant-design-vue';
 import DeathArea from './DeathArea.vue';
 import { randomString } from '@/utils/utils';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -230,7 +233,7 @@ const dataAreaFilterList = computed(() => {
     if (deviceType.value == 'S200') {
         result.push({
             id: 'DB',
-            name: '变量存储区（V）',
+            name: $t('Save.SaveS7.3217213-37'),
             address: '',
         });
     }
@@ -272,22 +275,22 @@ const Area = (_: any, value: any): Promise<any> =>
         if (value?.length === 0) {
             return resolve('')
         } else if (value?.length === 1) {
-            return value[0].value && value[0].termType ? resolve('') : reject('请配置点位死区');
+            return value[0].value && value[0].termType ? resolve('') : reject($t('Save.SaveS7.3217213-38'));
         } else {
             if (value?.[0].column === 'currentValue') {
                 // value.forEach((item:any) => {
                 //     if(item.termType && item.value){
                 //        return resolve('')
                 //     }else{
-                //         return reject('请配置点位死区')
+                //         return reject($t('Save.SaveS7.3217213-38'))
                 //     }
                 // });
                 const pass = value.every((item: any) => item.termType && item.value)
-                return pass ? resolve('') : reject('请配置点位死区')
+                return pass ? resolve('') : reject($t('Save.SaveS7.3217213-38'))
             } else {
                 value.forEach((item: any) => {
                     if (item.column === `this['currentValue'] - this['lastValue']*init/100`) {
-                        return reject('请配置点位死区')
+                        return reject($t('Save.SaveS7.3217213-38'))
                     } else {
                         return resolve('')
                     }

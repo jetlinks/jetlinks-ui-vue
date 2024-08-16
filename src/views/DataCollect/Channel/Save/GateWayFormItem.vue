@@ -4,7 +4,7 @@
       style="width: 100%"
       @click="showModal"
   >
-    选择网关设备
+    {{ $t('Save.GateWayFormItem.098162-0') }}
   </j-button>
   <div v-else class="gateway-form-item">
     <span>
@@ -13,7 +13,7 @@
       </j-ellipsis>
     </span>
     <j-button type="link" @click="showModal">
-      重新选择
+      {{ $t('Save.GateWayFormItem.098162-1') }}
     </j-button>
   </div>
   <DeviceModal
@@ -27,6 +27,9 @@
 
 <script name="GateWayFormItem" setup>
 import DeviceModal from './GateWayDeviceModal.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {

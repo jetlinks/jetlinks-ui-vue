@@ -18,12 +18,11 @@
                         </div>
                         <div class="item-options-content">
                             <template v-if="item.executor === 'alarm'">
-                                <span>
-                                    满足条件后将{{
+                                <span>{{
                                         item.alarm.mode === 'trigger'
-                                            ? '触发'
-                                            : '解除'
-                                    }}当前告警
+                                            ? $t('components.Actions.426537-0')
+                                            : $t('components.Actions.426537-1')
+                                    }}
                                 </span>
                             </template>
                         </div>
@@ -39,6 +38,9 @@ import {
     iconMap,
 } from '@/views/rule-engine/Scene/Save/action/ListItem/util';
 import { isBoolean } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     actions: {

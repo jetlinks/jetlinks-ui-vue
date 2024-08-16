@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"EditTable.PatchMapping.920631-0": "批量映射",
+		"EditTable.PatchMapping.920631-1": "采集器的点位名称与属性名称一致时将自动映射绑定；有多个采集器点位名称与属性名称一致时以第1个采集器的点位数据进行绑定",
+		"EditTable.PatchMapping.920631-2": "源数据",
+		"EditTable.PatchMapping.920631-3": "加入右侧",
+		"EditTable.PatchMapping.920631-4": "采集器",
+		"EditTable.PatchMapping.920631-5": "确认删除？",
+		"EditTable.PatchMapping.920631-6": "请选择采集器",
+		"EditTable.PatchMapping.920631-7": "操作成功",
+		"EditTable.PatchMapping.920631-8": "暂无对应属性的映射"
+	},
+	"en": {
+		"EditTable.PatchMapping.920631-0": "Batch Mapping",
+		"EditTable.PatchMapping.920631-1": "When the point name of the collector matches the attribute name, it will be automatically mapped and bound; When there are multiple collector point names that match the attribute names, bind them with the point data of the first collector",
+		"EditTable.PatchMapping.920631-2": "Source data",
+		"EditTable.PatchMapping.920631-3": "Join on the right side",
+		"EditTable.PatchMapping.920631-4": "Collector",
+		"EditTable.PatchMapping.920631-5": "Are you sure to delete?",
+		"EditTable.PatchMapping.920631-6": "Please select the collector",
+		"EditTable.PatchMapping.920631-7": "Operation successful",
+		"EditTable.PatchMapping.920631-8": "There is currently no mapping for the corresponding attribute"
+	}
+}

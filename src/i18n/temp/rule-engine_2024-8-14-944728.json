@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Scene.index.426523-0": "新增",
+		"Scene.index.426523-1": "查看详情",
+		"Scene.index.426523-2": "解绑",
+		"Scene.index.426523-3": "确认解绑？",
+		"Scene.index.426523-4": "操作成功"
+	},
+	"en": {
+		"Scene.index.426523-0": "Add",
+		"Scene.index.426523-1": "View details",
+		"Scene.index.426523-2": "Unbind",
+		"Scene.index.426523-3": "Confirm unbinding?",
+		"Scene.index.426523-4": "Operation successful"
+	}
+}

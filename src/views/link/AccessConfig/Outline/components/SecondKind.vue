@@ -1,11 +1,11 @@
 <template>
     <div>
-        <TitleComponent data="插件" v-if="plugin"> </TitleComponent>
+        <TitleComponent :data="$t('components.SecondKind.428293-0')" v-if="plugin"> </TitleComponent>
         <AccessCard v-if="plugin" :data="{ ...plugin, type: 'plugin' }">
             <template #other>
                 <div class="plugin-other">
                     <div class="plugin-id">
-                        <div class="plugin-text">插件ID：</div>
+                        <div class="plugin-text">{{ $t('components.SecondKind.428293-0') }}ID：</div>
                         <div class="other-content">
                             <j-ellipsis>
                                 {{ plugin.id }}
@@ -13,7 +13,7 @@
                         </div>
                     </div>
                     <div class="plugin-version">
-                        <div class="plugin-text">版本号：</div>
+                        <div class="plugin-text">{{ $t('components.SecondKind.428293-2') }}</div>
                         <div class="other-content">
                             <j-ellipsis>
                                 {{ plugin.version }}
@@ -23,7 +23,7 @@
                 </div>
             </template>
         </AccessCard>
-        <TitleComponent data="通用配置" style="margin-top: 20px" v-if="configuration.length">
+        <TitleComponent :data="$t('components.SecondKind.428293-3')" style="margin-top: 20px" v-if="configuration.length">
         </TitleComponent>
         <a-descriptions bordered :column="1" v-if="configuration.length">
           <a-descriptions-item v-for="i in configuration" :label="i.name">{{ i.value }}</a-descriptions-item>
@@ -38,6 +38,9 @@ import {
     detail,
 } from '@/api/link/accessConfig';
 import AccessCard from '../../components/AccessCard/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,

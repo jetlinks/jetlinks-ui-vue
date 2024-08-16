@@ -3,21 +3,25 @@
       v-model:value="myValue"
       mode="multiple"
       :options="[
-        { label: '读', value: 'read'},
-        { label: '写', value: 'write'},
-        { label: '上报', value: 'report'},
+        { label: $t('Tags.Type.6916229-0'), value: 'read'},
+        { label: $t('Tags.Type.6916229-1'), value: 'write'},
+        { label: $t('Tags.Type.6916229-2'), value: 'report'},
       ]"
       :dropdownStyle="{
         zIndex: 1071
       }"
       :get-popup-container="(node) => fullRef || node"
-      placeholder="请选择读写类型"
+      :placeholder="$t('Tags.Type.6916229-3')"
       @change="onChange"
   />
 </template>
 
 <script setup lang="ts">
 import { FULL_CODE } from 'jetlinks-ui-components/es/DataTable'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 type Emit = {
 (e: 'update:value', data: any): void

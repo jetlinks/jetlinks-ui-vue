@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Edit.validator.6916020-0": "请配置枚举项",
+		"Edit.validator.6916020-1": "请输入元素配置",
+		"Edit.validator.6916020-2": "配置参数",
+		"Edit.validator.6916020-3": "请输入{0}",
+		"Edit.validator.6916020-4": "请输入标识",
+		"Edit.validator.6916020-5": "请输入名称",
+		"Edit.validator.6916020-6": "数据类型",
+		"Edit.validator.6916020-7": "请选择{0}",
+		"Edit.validator.6916020-8": "请选择文件类型"
+	},
+	"en": {
+		"Edit.validator.6916020-0": "Please configure enumeration items",
+		"Edit.validator.6916020-1": "Please enter element configuration",
+		"Edit.validator.6916020-2": "Configure parameter",
+		"Edit.validator.6916020-3": "Please enter {0}",
+		"Edit.validator.6916020-4": "Please enter the identifier",
+		"Edit.validator.6916020-5": "Please enter a name",
+		"Edit.validator.6916020-6": "Data type",
+		"Edit.validator.6916020-7": "Please select {0}",
+		"Edit.validator.6916020-8": "Please select file type"
+	}
+}

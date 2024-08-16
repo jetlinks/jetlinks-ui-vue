@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Export.index.778931-0": "导出",
+		"Export.index.778931-1": "选择单个产品时可导出其下属设备的详细数据,不选择产品时导出所有设备的基础数据。",
+		"Export.index.778931-2": "产品",
+		"Export.index.778931-3": "请选择产品",
+		"Export.index.778931-4": "文件格式",
+		"Export.index.778931-5": "请选择文件格式"
+	},
+	"en": {
+		"Export.index.778931-0": "Export",
+		"Export.index.778931-1": "When selecting a single product, detailed data of its subordinate devices can be exported. When not selecting a product, basic data of all devices can be exported.",
+		"Export.index.778931-2": "Product",
+		"Export.index.778931-3": "Please select a product",
+		"Export.index.778931-4": "File format",
+		"Export.index.778931-5": "Please choose a file format"
+	}
+}

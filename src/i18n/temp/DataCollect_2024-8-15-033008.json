@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"ScanBacnet.Table.321717-0": "请输入",
+		"ScanBacnet.Table.321717-1": "请选择",
+		"ScanBacnet.Table.321717-2": "读",
+		"ScanBacnet.Table.321717-3": "写",
+		"ScanBacnet.Table.321717-4": "订阅",
+		"ScanBacnet.Table.321717-5": "同上",
+		"ScanBacnet.Table.321717-6": "请输入0或者正整数",
+		"ScanBacnet.Table.321717-7": "是",
+		"ScanBacnet.Table.321717-8": "否",
+		"ScanBacnet.Table.321717-9": "删除",
+		"ScanBacnet.Table.321717-10": "确认删除？",
+		"ScanBacnet.Table.321717-11": "最多可输入64个字符"
+	},
+	"en": {
+		"ScanBacnet.Table.321717-0": "Please enter",
+		"ScanBacnet.Table.321717-1": "Please choose",
+		"ScanBacnet.Table.321717-2": "read",
+		"ScanBacnet.Table.321717-3": "write",
+		"ScanBacnet.Table.321717-4": "subscribe",
+		"ScanBacnet.Table.321717-5": "ditto",
+		"ScanBacnet.Table.321717-6": "Please enter 0 or a positive integer",
+		"ScanBacnet.Table.321717-7": "yes",
+		"ScanBacnet.Table.321717-8": "no",
+		"ScanBacnet.Table.321717-9": "Delete",
+		"ScanBacnet.Table.321717-10": "Are you sure to delete?",
+		"ScanBacnet.Table.321717-11": "Up to 64 characters can be entered"
+	}
+}

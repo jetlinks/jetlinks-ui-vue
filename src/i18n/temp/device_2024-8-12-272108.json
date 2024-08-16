@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"components.ConfigModal.6916448-0": "无",
+		"components.ConfigModal.6916448-1": "参数标识",
+		"components.ConfigModal.6916448-2": "该标识已存在",
+		"components.ConfigModal.6916448-3": "请输入标识",
+		"components.ConfigModal.6916448-4": "最多可输入64个字符",
+		"components.ConfigModal.6916448-5": "标识只能由数字、字母、下划线、中划线组成",
+		"components.ConfigModal.6916448-6": "参数名称",
+		"components.ConfigModal.6916448-7": "请输入参数名称",
+		"components.ConfigModal.6916448-8": "数据类型",
+		"components.ConfigModal.6916448-9": "请选择数据类型",
+		"components.ConfigModal.6916448-10": "其他配置",
+		"components.ConfigModal.6916448-11": "操作"
+	},
+	"en": {
+		"components.ConfigModal.6916448-0": "none",
+		"components.ConfigModal.6916448-1": "Parameter ID",
+		"components.ConfigModal.6916448-2": "This ID already exists",
+		"components.ConfigModal.6916448-3": "Please enter the ID",
+		"components.ConfigModal.6916448-4": "Up to 64 characters can be entered",
+		"components.ConfigModal.6916448-5": "ID can only be composed of numbers, letters, underscores, and dashes",
+		"components.ConfigModal.6916448-6": "Parameter Name",
+		"components.ConfigModal.6916448-7": "Please enter the parameter name",
+		"components.ConfigModal.6916448-8": "Data type",
+		"components.ConfigModal.6916448-9": "Please select data type",
+		"components.ConfigModal.6916448-10": "Other configurations",
+		"components.ConfigModal.6916448-11": "Operation"
+	}
+}

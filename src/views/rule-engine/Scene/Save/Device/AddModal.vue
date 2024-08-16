@@ -1,6 +1,6 @@
 <template>
   <j-modal
-    title='触发规则'
+    :title="$t('Device.AddModal.5425849-0')"
     visible
     :width='950'
     @ok='save'
@@ -9,13 +9,13 @@
   >
     <j-steps :current='addModel.stepNumber' @change='stepChange'>
       <j-step>
-        <template #title>选择产品</template>
+        <template #title>{{ $t('Device.AddModal.5425849-1') }}</template>
       </j-step>
       <j-step>
-        <template #title>选择设备</template>
+        <template #title>{{ $t('Device.AddModal.5425849-2') }}</template>
       </j-step>
       <j-step>
-        <template #title>触发类型</template>
+        <template #title>{{ $t('Device.AddModal.5425849-3') }}</template>
       </j-step>
     </j-steps>
     <j-divider style='margin-bottom: 0px' />
@@ -43,10 +43,10 @@
     </div>
     <template #footer>
       <div class='steps-action'>
-        <j-button v-if='addModel.stepNumber === 0' @click='cancel'>取消</j-button>
-        <j-button v-else @click='prev'>上一步</j-button>
-        <j-button type='primary' v-if='addModel.stepNumber < 2' @click='saveClick'>下一步</j-button>
-        <j-button type='primary' v-else @click='saveClick'>确定</j-button>
+        <j-button v-if='addModel.stepNumber === 0' @click='cancel'>{{ $t('Device.AddModal.5425849-4') }}</j-button>
+        <j-button v-else @click='prev'>{{ $t('Device.AddModal.5425849-5') }}</j-button>
+        <j-button type='primary' v-if='addModel.stepNumber < 2' @click='saveClick'>{{ $t('Device.AddModal.5425849-6') }}</j-button>
+        <j-button type='primary' v-else @click='saveClick'>{{ $t('Device.AddModal.5425849-7') }}</j-button>
       </div>
     </template>
   </j-modal>
@@ -62,6 +62,9 @@ import DeviceSelect from './DeviceSelect.vue'
 import Type from './Type.vue'
 import { handleTimerOptions } from '@/views/rule-engine/Scene/Save/components/Timer/util'
 import { Form } from 'jetlinks-ui-components'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'cancel'): void
@@ -152,15 +155,15 @@ const handleOptions = (data: TriggerDeviceOptions) => {
     // _options.name = TriggerDeviceModel.selectorValues?.map((item) => item.name).join('、');
     _options.name = nameStr;
     if (isLimit && addModel.selectorValues!.length > indexOf) {
-      _options.extraName = `等${addModel.selectorValues!.length}台设备`;
+      _options.extraName = $t('Device.AddModal.5425849-8', [addModel.selectorValues!.length]);
     }
     _options.selectorIcon = 'icon-shebei1';
   } else if (addModel.selector === 'org') {
-    _options.name = addModel.selectorValues?.[0].name + '的';
+    _options.name = addModel.selectorValues?.[0].name + $t('Device.AddModal.5425849-9');
     _options.productName = addModel.productDetail.name; // 产品名称
     _options.selectorIcon = 'icon-zuzhi';
   } else {
-    _options.name = '所有的' + addModel.productDetail.name;
+    _options.name = $t('Device.AddModal.5425849-10') + addModel.productDetail.name;
   }
 
   if (data.timer) {
@@ -172,19 +175,19 @@ const handleOptions = (data: TriggerDeviceOptions) => {
   }
 
   if (data.operator === 'online') {
-    _options.type = '上线';
+    _options.type = $t('Device.AddModal.5425849-11');
     _options.action = '';
     _options.typeIcon = 'icon-a-Group4713';
   }
 
   if (data.operator === 'offline') {
-    _options.type = '离线';
+    _options.type = $t('Device.AddModal.5425849-12');
     _options.action = '';
     _options.typeIcon = 'icon-a-Group4892';
   }
 
   if (data.operator === 'reportProperty') {
-    _options.type = '属性上报';
+    _options.type = $t('Device.AddModal.5425849-13');
     _options.action = '';
     _options.typeIcon = 'icon-file-upload-outline';
   }
@@ -225,11 +228,11 @@ const getDeviceDetailByMetadata = async (deviceId: string) => {
 const save = async (step?: number) => {
   let _step = step !== undefined ? step : addModel.stepNumber
   if (_step === 0) {
-    addModel.productId ? addModel.stepNumber = 1 : onlyMessage('请选择产品', 'error')
+    addModel.productId ? addModel.stepNumber = 1 : onlyMessage($t('Device.AddModal.5425849-14'), 'error')
   } else if (_step === 1) {
     const isFixed = addModel.selector === 'fixed' // 是否选择方式为设备
     if ((['fixed', 'org'].includes(addModel.selector) ) && !addModel.selectorValues?.length) {
-      return onlyMessage(isFixed ? '请选择设备' : '请选择部门', 'error')
+      return onlyMessage(isFixed ? $t('Device.AddModal.5425849-15') : $t('Device.AddModal.5425849-16'), 'error')
     }
     // 选择方式为设备且仅选中一个设备时，物模型取该设备
     const onlyOneDevice = isFixed && addModel.selectorValues?.length === 1

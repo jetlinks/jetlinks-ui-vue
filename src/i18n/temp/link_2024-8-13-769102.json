@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"plugin.UploadFile.688241-0": "上传文件",
+		"plugin.UploadFile.688241-1": "格式要求：.jar .zip",
+		"plugin.UploadFile.688241-2": "上传中",
+		"plugin.UploadFile.688241-3": "请上传.jar,.zip格式的文件",
+		"plugin.UploadFile.688241-4": "上传成功！",
+		"plugin.UploadFile.688241-5": "系统提示"
+	},
+	"en": {
+		"plugin.UploadFile.688241-0": "Upload files",
+		"plugin.UploadFile.688241-1": "Format requirement:. jar. zip",
+		"plugin.UploadFile.688241-2": "Uploading in progress",
+		"plugin.UploadFile.688241-3": "Please upload files in. jar and. zip formats",
+		"plugin.UploadFile.688241-4": "Upload successful!",
+		"plugin.UploadFile.688241-5": "System prompt"
+	}
+}

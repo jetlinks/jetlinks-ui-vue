@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Save.index.697801-0": "编辑",
+		"Save.index.697801-1": "新增",
+		"Save.index.697801-2": "请输入英文或者数字或者-或者_",
+		"Save.index.697801-3": "最多输入64个字符",
+		"Save.index.697801-4": "若不填写，系统将自动生成唯一ID",
+		"Save.index.697801-5": "请输入ID",
+		"Save.index.697801-6": "名称",
+		"Save.index.697801-7": "请输入名称",
+		"Save.index.697801-8": "请选择所属产品",
+		"Save.index.697801-9": "所属产品",
+		"Save.index.697801-10": "只能选择“正常”状态的产品",
+		"Save.index.697801-11": "说明",
+		"Save.index.697801-12": "最多输入200个字符",
+		"Save.index.697801-13": "请输入说明",
+		"Save.index.697801-14": "该ID已存在",
+		"Save.index.697801-15": "操作成功！"
+	},
+	"en": {
+		"Save.index.697801-0": "Edit",
+		"Save.index.697801-1": "Add",
+		"Save.index.697801-2": "Please enter English or numbers or - or_",
+		"Save.index.697801-3": "Enter a maximum of 64 characters",
+		"Save.index.697801-4": "If not filled in, the system will automatically generate a unique ID",
+		"Save.index.697801-5": "Please enter your ID",
+		"Save.index.697801-6": "Name",
+		"Save.index.697801-7": "Please enter a name",
+		"Save.index.697801-8": "Please select the corresponding product",
+		"Save.index.697801-9": "Belonging products",
+		"Save.index.697801-10": "Only products in the 'normal' state can be selected",
+		"Save.index.697801-11": "Explain",
+		"Save.index.697801-12": "Enter a maximum of 200 characters",
+		"Save.index.697801-13": "Please enter instructions",
+		"Save.index.697801-14": "This ID already exists",
+		"Save.index.697801-15": "Operation successful!"
+	}
+}

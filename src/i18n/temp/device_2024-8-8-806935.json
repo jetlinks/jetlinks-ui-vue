@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"DeviceAccess.accessModal.064557-0": "设备接入配置",
+		"DeviceAccess.accessModal.064557-1": "确定",
+		"DeviceAccess.accessModal.064557-2": "取消",
+		"DeviceAccess.accessModal.064557-3": "新增",
+		"DeviceAccess.accessModal.064557-4": "协议",
+		"DeviceAccess.accessModal.064557-5": "名称",
+		"DeviceAccess.accessModal.064557-6": "网关类型",
+		"DeviceAccess.accessModal.064557-7": "状态",
+		"DeviceAccess.accessModal.064557-8": "正常",
+		"DeviceAccess.accessModal.064557-9": "禁用",
+		"DeviceAccess.accessModal.064557-10": "说明",
+		"DeviceAccess.accessModal.064557-11": "请选择接入方式"
+	},
+	"en": {
+		"DeviceAccess.accessModal.064557-0": "Device access configuration",
+		"DeviceAccess.accessModal.064557-1": "Confirm",
+		"DeviceAccess.accessModal.064557-2": "Cancel",
+		"DeviceAccess.accessModal.064557-3": "Add",
+		"DeviceAccess.accessModal.064557-4": "Agreement",
+		"DeviceAccess.accessModal.064557-5": "Name",
+		"DeviceAccess.accessModal.064557-6": "Gateway Type ",
+		"DeviceAccess.accessModal.064557-7": "State",
+		"DeviceAccess.accessModal.064557-8": "enabled",
+		"DeviceAccess.accessModal.064557-9": "disabled",
+		"DeviceAccess.accessModal.064557-10": "explain",
+		"DeviceAccess.accessModal.064557-11": "Please select the access method"
+	}
+}

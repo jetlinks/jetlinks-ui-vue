@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"components.LogDetail.891306-0": "确定",
+		"components.LogDetail.891306-1": "取消",
+		"components.LogDetail.891306-2": "告警日志",
+		"components.LogDetail.891306-3": "触发条件",
+		"components.LogDetail.891306-4": "告警原因",
+		"components.LogDetail.891306-5": "告警源",
+		"components.LogDetail.891306-6": "设备ID：",
+		"components.LogDetail.891306-7": "告警流水"
+	},
+	"en": {
+		"components.LogDetail.891306-0": "Confirm",
+		"components.LogDetail.891306-1": "Cancel",
+		"components.LogDetail.891306-2": "Alarm Log ",
+		"components.LogDetail.891306-3": "Trigger condition",
+		"components.LogDetail.891306-4": "Reason for alarm",
+		"components.LogDetail.891306-5": "Alarm source",
+		"components.LogDetail.891306-6": "Device ID:",
+		"components.LogDetail.891306-7": "Alarm flow"
+	}
+}

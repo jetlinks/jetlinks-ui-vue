@@ -1,3 +1,6 @@
+
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import { getImage } from '@/utils/comm';
 
 export const headerImgMap = new Map();
@@ -15,14 +18,14 @@ headerColorMap.set('success', 'linear-gradient(89.95deg, #E8F8F7 0.03%, #EBEFFA 
 
 
 export const headerTitleMap = new Map();
-headerTitleMap.set('loading', '正在诊断中');
-headerTitleMap.set('error', '发现连接问题');
-headerTitleMap.set('success', '连接状态正常');
+headerTitleMap.set('loading', $t('Diagnose.util.585601-0'));
+headerTitleMap.set('error', $t('Diagnose.util.585601-1'));
+headerTitleMap.set('success', $t('Diagnose.util.585601-2'));
 
 export const headerDescMap = new Map();
-headerDescMap.set('loading', '已诊断XX个');
-headerDescMap.set('error', '请处理连接异常');
-headerDescMap.set('success', '现在可调试消息通信');
+headerDescMap.set('loading', $t('Diagnose.util.585601-3'));
+headerDescMap.set('error', $t('Diagnose.util.585601-4'));
+headerDescMap.set('success', $t('Diagnose.util.585601-5'));
 
 export const progressMap = new Map();
 progressMap.set('loading', '#597EF7');

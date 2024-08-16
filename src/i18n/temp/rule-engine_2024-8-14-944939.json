@@ -1,0 +1,36 @@
+{
+	"zh": {
+		"Base.index.4265418-0": "名称",
+		"Base.index.4265418-1": "请输入名称",
+		"Base.index.4265418-2": "类型",
+		"Base.index.4265418-3": "产品：以产品维度告警，某产品下的多个设备异常仅发送一条告警。",
+		"Base.index.4265418-4": "设备：以设备维度告警，任何设备异常即发送一条告警。",
+		"Base.index.4265418-5": "组织：以组织维度告警，某组织下的多个设备异常仅发送一条告警。",
+		"Base.index.4265418-6": "其他：以场景联动维度告警，某场景下的多个设备异常仅发送一条告警。",
+		"Base.index.4265418-7": "级别",
+		"Base.index.4265418-8": "说明",
+		"Base.index.4265418-9": "保存",
+		"Base.index.4265418-10": "最多输入64个字符",
+		"Base.index.4265418-11": "请选择类型",
+		"Base.index.4265418-12": "请选择级别",
+		"Base.index.4265418-13": "最多可输入200个字符",
+		"Base.index.4265418-14": "操作成功,请配置关联的场景联动"
+	},
+	"en": {
+		"Base.index.4265418-0": "Name",
+		"Base.index.4265418-1": "Please enter a name",
+		"Base.index.4265418-2": "Type",
+		"Base.index.4265418-3": "Product: Alarm based on product dimension, with only one alarm sent for multiple abnormal devices under a certain product.",
+		"Base.index.4265418-4": "Equipment: Alarm based on device dimension, and send an alarm for any abnormal device.",
+		"Base.index.4265418-5": "Organization: Alarm based on organizational dimensions, with multiple devices under a certain organization sending only one alarm for abnormalities.",
+		"Base.index.4265418-6": "Other: Alarm based on scene linkage dimension, where multiple devices in a certain scene are abnormal and only one alarm is sent.",
+		"Base.index.4265418-7": "Level",
+		"Base.index.4265418-8": "Explain",
+		"Base.index.4265418-9": "Save",
+		"Base.index.4265418-10": "Enter a maximum of 64 characters",
+		"Base.index.4265418-11": "Please select type",
+		"Base.index.4265418-12": "Please select a level",
+		"Base.index.4265418-13": "Up to 200 characters can be entered",
+		"Base.index.4265418-14": "Operation successful, please configure the associated scene linkage"
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Diagnose.util.585601-0": "正在诊断中",
+		"Diagnose.util.585601-1": "发现连接问题",
+		"Diagnose.util.585601-2": "连接状态正常",
+		"Diagnose.util.585601-3": "已诊断XX个",
+		"Diagnose.util.585601-4": "请处理连接异常",
+		"Diagnose.util.585601-5": "现在可调试消息通信"
+	},
+	"en": {
+		"Diagnose.util.585601-0": "Under diagnosis",
+		"Diagnose.util.585601-1": "Discovered connection issues",
+		"Diagnose.util.585601-2": "The connection status is normal",
+		"Diagnose.util.585601-3": "Diagnosed XX cases",
+		"Diagnose.util.585601-4": "Please handle the connection exception",
+		"Diagnose.util.585601-5": "Now message communication can be debugged"
+	}
+}

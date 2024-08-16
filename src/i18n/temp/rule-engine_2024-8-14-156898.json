@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"ShakeLimit.index.5425832-0": "开启防抖",
+		"ShakeLimit.index.5425832-1": "关闭防抖",
+		"ShakeLimit.index.5425832-2": "秒内发送",
+		"ShakeLimit.index.5425832-3": "次及以上时，处理",
+		"ShakeLimit.index.5425832-4": "第一次",
+		"ShakeLimit.index.5425832-5": "最后一次",
+		"ShakeLimit.index.5425832-6": "",
+		"ShakeLimit.index.5425832-7": ""
+	},
+	"en": {
+		"ShakeLimit.index.5425832-0": "Enable anti shake function",
+		"ShakeLimit.index.5425832-1": "Turn off anti shake function",
+		"ShakeLimit.index.5425832-2": " seconds",
+		"ShakeLimit.index.5425832-3": " or more times, handle them",
+		"ShakeLimit.index.5425832-4": "the first time",
+		"ShakeLimit.index.5425832-5": "the last time",
+		"ShakeLimit.index.5425832-6": "Send within ",
+		"ShakeLimit.index.5425832-7": "When it occurs "
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Save.index.052152-0": "编辑",
+		"Save.index.052152-1": "新增",
+		"Save.index.052152-2": "确定",
+		"Save.index.052152-3": "取消",
+		"Save.index.052152-4": "名称",
+		"Save.index.052152-5": "请输入名称",
+		"Save.index.052152-6": "说明",
+		"Save.index.052152-7": "请输入说明",
+		"Save.index.052152-8": "最多输入64个字符",
+		"Save.index.052152-9": "操作成功！",
+		"Save.index.052152-10": "操作失败",
+		"Save.index.052152-11": "操作失败！"
+	},
+	"en": {
+		"Save.index.052152-0": "Edit",
+		"Save.index.052152-1": "Add",
+		"Save.index.052152-2": "Confirm",
+		"Save.index.052152-3": "Cancel",
+		"Save.index.052152-4": "Name",
+		"Save.index.052152-5": "Please enter a name",
+		"Save.index.052152-6": "Explain",
+		"Save.index.052152-7": "Please enter instructions",
+		"Save.index.052152-8": "Enter a maximum of 64 characters",
+		"Save.index.052152-9": "Operation successful!",
+		"Save.index.052152-10": "Operation failed",
+		"Save.index.052152-11": "Operation failed!"
+	}
+}

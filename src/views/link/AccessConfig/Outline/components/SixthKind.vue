@@ -2,7 +2,7 @@
     <div>
         <a-descriptions bordered :column="1">
             <a-descriptions-item :label="i.label" v-for="i in configuration">
-                {{ i.label==='集群'? i.value ?  '共享配置' : '独立配置' : i.value }}
+                {{ i.label===$t('components.SixthKind.428295-0')? i.value ?  $t('components.SixthKind.428295-1') : $t('components.SixthKind.428295-2') : i.value }}
             </a-descriptions-item>
         </a-descriptions>
     </div>
@@ -10,6 +10,9 @@
 
 <script setup>
 import { detail } from '@/api/link/accessConfig';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
@@ -17,11 +20,11 @@ const props = defineProps({
 });
 const configuration = ref([]);
 const configurationMap = new Map();
-configurationMap.set('domain', 'SIP 域');
+configurationMap.set('domain', $t('components.SixthKind.428295-3'));
 configurationMap.set('sipId', 'SIP ID');
-configurationMap.set('shareCluster', '集群');
-configurationMap.set('host', 'SIP 地址');
-configurationMap.set('publicHost', '公网 Host');
+configurationMap.set('shareCluster', $t('components.SixthKind.428295-0'));
+configurationMap.set('host', $t('components.SixthKind.428295-4'));
+configurationMap.set('publicHost', $t('components.SixthKind.428295-5'));
 const queryDetail = async () => {
     const res = await detail(props.data.id);
     if (res.success) {

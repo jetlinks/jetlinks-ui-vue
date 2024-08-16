@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Save.SaveOPCUA.117885-0": "编辑",
+		"Save.SaveOPCUA.117885-1": "点位名称",
+		"Save.SaveOPCUA.117885-2": "请输入点位名称",
+		"Save.SaveOPCUA.117885-3": "数据类型",
+		"Save.SaveOPCUA.117885-4": "请选择数据类型",
+		"Save.SaveOPCUA.117885-5": "访问类型",
+		"Save.SaveOPCUA.117885-6": "读",
+		"Save.SaveOPCUA.117885-7": "写",
+		"Save.SaveOPCUA.117885-8": "订阅",
+		"Save.SaveOPCUA.117885-9": "采集频率",
+		"Save.SaveOPCUA.117885-10": "请输入采集频率",
+		"Save.SaveOPCUA.117885-11": "只推送变化的数据",
+		"Save.SaveOPCUA.117885-12": "说明",
+		"Save.SaveOPCUA.117885-13": "请输入说明",
+		"Save.SaveOPCUA.117885-14": "取消",
+		"Save.SaveOPCUA.117885-15": "确认"
+	},
+	"en": {
+		"Save.SaveOPCUA.117885-0": "Edit",
+		"Save.SaveOPCUA.117885-1": "Point name",
+		"Save.SaveOPCUA.117885-2": "Please enter the location name",
+		"Save.SaveOPCUA.117885-3": "Data type",
+		"Save.SaveOPCUA.117885-4": "Please select data type",
+		"Save.SaveOPCUA.117885-5": "Access type",
+		"Save.SaveOPCUA.117885-6": "read",
+		"Save.SaveOPCUA.117885-7": "write",
+		"Save.SaveOPCUA.117885-8": "subscribe",
+		"Save.SaveOPCUA.117885-9": "Collection frequency",
+		"Save.SaveOPCUA.117885-10": "Please enter the collection frequency",
+		"Save.SaveOPCUA.117885-11": "Only push data that changes",
+		"Save.SaveOPCUA.117885-12": "Explain",
+		"Save.SaveOPCUA.117885-13": "Please enter instructions",
+		"Save.SaveOPCUA.117885-14": "Cancel",
+		"Save.SaveOPCUA.117885-15": "Confirm"
+	}
+}

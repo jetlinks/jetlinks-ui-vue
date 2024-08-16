@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Save.DeathArea.321714-0": "固定值",
+		"Save.DeathArea.321714-1": "百分比",
+		"Save.DeathArea.321714-2": "最近一次采集到的值与上一次采集值比对，数值浮动在百分比以内时将被过滤",
+		"Save.DeathArea.321714-3": "请输入值",
+		"Save.DeathArea.321714-4": "符号",
+		"Save.DeathArea.321714-5": "点位值"
+	},
+	"en": {
+		"Save.DeathArea.321714-0": "fixed value",
+		"Save.DeathArea.321714-1": "percentage",
+		"Save.DeathArea.321714-2": "The latest collected value will be compared with the previous collected value. If the value fluctuates within a percentage, it will be filtered",
+		"Save.DeathArea.321714-3": "Please enter a value",
+		"Save.DeathArea.321714-4": "symbol",
+		"Save.DeathArea.321714-5": "point value"
+	}
+}

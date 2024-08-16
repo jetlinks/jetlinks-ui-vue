@@ -13,45 +13,45 @@
           <div class="item-options-content">
             <template v-if="item.executor === 'alarm'">
               <span>
-                满足条件后将{{ item.alarm.mode === 'trigger' ? '触发' : '解除' }}当前告警
+               {{ item.alarm.mode === 'trigger' ? $t('Save.Actions.4265312-1') : $t('Save.Actions.4265312-2') }}
               </span>
 
               <a-button v-if="!showUnbindBtn" type="link" @click.stop="onBind(item)" :disabled="activeKeys.some(active => active === item.actionId)">
                 <template #icon>
                   <AIcon type="icon-bangding"/>
                 </template>
-                {{ selectedKeys.some(selectKey => selectKey === item.actionId) ? '已关联' : '关联' }}
+                {{ selectedKeys.some(selectKey => selectKey === item.actionId) ? $t('Save.Actions.4265312-4') : $t('Save.Actions.4265312-5') }}
               </a-button>
               <a-button v-else-if="activeKeys.some(active => active === item.actionId)" type="link" @click.stop="onSelect(item)">
                 <template #icon>
                   <AIcon type="icon-jiebang"/>
                 </template>
-                取消关联
+                {{ $t('Save.Actions.4265312-6') }}
               </a-button>
             </template>
             <template v-if="item.executor === 'notify' && show">
               <template v-if="item.notify?.notifyType === 'dingTalk'">
                 <div v-if="item.options.provider === 'dingTalkRobotWebHook'">
-                  通过
-                  <span class="notify-text-highlight">群机器人消息</span>
-                  发送
+                  {{ $t('Save.Actions.4265312-7') }}
+                  <span class="notify-text-highlight">{{ $t('Save.Actions.4265312-8') }}</span>
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">
                     {{ item.notify?.templateId }}
                   </span>
                 </div>
                 <div v-else>
-                  通过
+                  {{ $t('Save.Actions.4265312-7') }}
                   <span class="notify-text-highlight">
                     <img
                       style="width: 18px"
                       :src="itemNotifyIconMap.get(item.notify?.notifyType)"
                     >
-                    钉钉
+                    {{ $t('Save.Actions.4265312-10') }}
                   </span>
-                  {{ (item.options?.sendTo || item.options?.orgName) ? '向' : "" }}
+                  {{ (item.options?.sendTo || item.options?.orgName) ? $t('Save.Actions.4265312-11') : "" }}
                   <span class="notify-text-highlight">{{ item.options?.sendTo || '' }}</span>
                   <span class="notify-text-highlight">{{ item.options?.orgName || '' }}</span>
-                  发送
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">
                     {{ item.options?.templateName || item?.notify?.templateId }}
                   </span>
@@ -59,39 +59,39 @@
               </template>
               <template v-else-if="item.notify?.notifyType === 'weixin'">
                 <div>
-                  通过
+                  {{ $t('Save.Actions.4265312-7') }}
                   <span class="notify-text-highlight">
                     <img
                       style="width: 18px"
                       :src="itemNotifyIconMap.get(item.notify?.notifyType)"
                     />
-                    微信
+                    {{ $t('Save.Actions.4265312-12') }}
                   </span>
-                  {{ (item.options.sendTo || item.options.orgName || item.options.tagName) ? '向' : '' }}
+                  {{ (item.options.sendTo || item.options.orgName || item.options.tagName) ? $t('Save.Actions.4265312-11') : '' }}
                   <span class="notify-text-highlight">{{ item.options.sendTo || '' }}</span>
                   <span class="notify-text-highlight">{{ item.options?.orgName || '' }}</span>
                   <span class="notify-text-highlight">{{ item.options?.tagName || '' }}</span>
-                  发送
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">{{ item.options?.templateName || item?.notify?.templateId }}</span>
                 </div>
               </template>
               <template v-else-if="item.notify?.notifyType === 'email'">
                 <div style="display: flex;">
-                  通过
+                  {{ $t('Save.Actions.4265312-7') }}
                   <span class="notify-text-highlight">
                     <img
                       style="width: 18px"
                       :src="itemNotifyIconMap.get(item.notify?.notifyType)"
                     />
-                    邮件
+                    {{ $t('Save.Actions.4265312-13') }}
                   </span>
-                  {{ item.options?.sendTo ? '向' : '' }}
+                  {{ item.options?.sendTo ? $t('Save.Actions.4265312-11') : '' }}
                   <span class="notify-text-highlight">
                     <Ellipsis style='max-width: 400px;'>
                       {{ item.options?.sendTo || '' }}
                     </Ellipsis>
                   </span>
-                  发送
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">
                     {{ item.options?.templateName || item.notify?.templateId }}
                   </span>
@@ -99,17 +99,17 @@
               </template>
               <template v-else-if="item.notify?.notifyType === 'voice'">
                 <div>
-                  通过
+                  {{ $t('Save.Actions.4265312-7') }}
                   <span class="notify-text-highlight">
                     <img
                       style="width: 18px"
                       :src="itemNotifyIconMap.get(item.notify?.notifyType)"
                     />
-                    语音
+                    {{ $t('Save.Actions.4265312-14') }}
                   </span>
-                  {{ item.options?.sendTo ? '向' : '' }}
+                  {{ item.options?.sendTo ? $t('Save.Actions.4265312-11') : '' }}
                   <span class="notify-text-highlight">{{ item.options?.sendTo || '' }}</span>
-                  发送
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">
                     {{ item.options?.templateName || item.notify?.templateId }}
                   </span>
@@ -117,17 +117,17 @@
               </template>
               <template v-else-if="item.notify?.notifyType === 'sms'">
                 <div>
-                  通过
+                  {{ $t('Save.Actions.4265312-7') }}
                   <span class="notify-text-highlight">
                     <img
                       style="width: 18px"
                       :src="itemNotifyIconMap.get(item.notify?.notifyType)"
                     />
-                    短信
+                    {{ $t('Save.Actions.4265312-15') }}
                   </span>
-                  {{ item.options?.sendTo ? '向' : '' }}
+                  {{ item.options?.sendTo ? $t('Save.Actions.4265312-11') : '' }}
                   <span class="notify-text-highlight">{{ item.options?.sendTo || '' }}</span>
-                  发送
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">
                     {{ item.options?.templateName || item.notify?.templateId }}
                   </span>
@@ -135,7 +135,7 @@
               </template>
               <template v-else-if="item.notify?.notifyType === 'webhooks'">
                 <div>
-                  通过
+                  {{ $t('Save.Actions.4265312-7') }}
                   <span class="notify-text-highlight">
                     <img
                       style="width: 18px"
@@ -143,7 +143,7 @@
                     />
                     WebHook
                   </span>
-                  发送
+                  {{ $t('Save.Actions.4265312-9') }}
                   <span class="notify-text-highlight">
                     {{ item.options?.templateName || item.notify?.templateId }}
                   </span>
@@ -165,7 +165,7 @@
                 <Ellipsis style='max-width: 120px;'>
                   {{ item.options?.propertiesName }}
                 </Ellipsis>
-                <span v-if='!isBoolean(item.options?.propertiesValue) && item.options?.propertiesValue'>为 </span>
+                <span v-if='!isBoolean(item.options?.propertiesValue) && item.options?.propertiesValue'>{{ $t('Save.Actions.4265312-16') }} </span>
                 <Ellipsis style='max-width: 120px;'>
                   {{
                     `${
@@ -186,17 +186,12 @@
                 <AIcon :type="typeIconMap[item.device?.message?.messageType ||'INVOKE_FUNCTION']"/>
                 {{ item.options?.type }}
                 <span>{{ item.options?.tagName }}</span>
-                的{{ item.options?.productName }}
+                {{ $t('Save.Actions.4265312-17') }}{{ item.options?.productName }}
                 {{ item.options?.propertiesName }}
               </div>
               <div v-else-if="item.device?.selector === 'relation'">
                 <AIcon :type="typeIconMap[item.device?.message?.messageType ||'INVOKE_FUNCTION']"/>
-                {{ item.options?.type }}
-                与
-                <span>{{ item.options?.triggerName }}</span>
-                具有相同 {{ item.options?.relationName }}
-                的{{ item.options?.productName }}
-                设备的 {{ item.options?.propertiesName }}
+                {{ $t('Save.Actions.4265312-18',[item.options?.type,item.options?.triggerName,item.options?.relationName,item.options?.productName,item.options?.propertiesName]) }}
               </div>
             </template>
           </div>
@@ -204,7 +199,7 @@
       </div>
       <div v-if="serial && item.options?.terms?.length && show" class="actions-item-filter-warp">
         <div class="actions-item-filter-warp-tip">
-          满足此条件后执行后续动作
+          {{ $t('Save.Actions.4265312-21') }}
         </div>
         <div class="actions-item-filter-overflow">
           <Terms :when="item.options" :border="false" :data="item.terms"/>
@@ -218,6 +213,9 @@
 import {iconMap, itemNotifyIconMap, typeIconMap} from '@/views/rule-engine/Scene/Save/action/ListItem/util'
 import {isBoolean} from 'lodash-es'
 import Terms from './Terms/Terms.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   actions: {

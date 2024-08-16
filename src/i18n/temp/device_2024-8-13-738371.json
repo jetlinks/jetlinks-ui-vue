@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Save.SelectDevices.378843-0": "请选择设备",
+		"Save.SelectDevices.378843-1": "选择设备",
+		"Save.SelectDevices.378843-2": "确认",
+		"Save.SelectDevices.378843-3": "取消",
+		"Save.SelectDevices.378843-4": "全选",
+		"Save.SelectDevices.378843-5": "设备名称",
+		"Save.SelectDevices.378843-6": "固件版本",
+		"Save.SelectDevices.378843-7": "注册时间",
+		"Save.SelectDevices.378843-8": "状态",
+		"Save.SelectDevices.378843-9": "在线",
+		"Save.SelectDevices.378843-10": "离线",
+		"Save.SelectDevices.378843-11": "禁用"
+	},
+	"en": {
+		"Save.SelectDevices.378843-0": "Please select a device",
+		"Save.SelectDevices.378843-1": "Select device",
+		"Save.SelectDevices.378843-2": "Confirm",
+		"Save.SelectDevices.378843-3": "Cancel",
+		"Save.SelectDevices.378843-4": "Select All",
+		"Save.SelectDevices.378843-5": "Equipment name",
+		"Save.SelectDevices.378843-6": "Firmware version",
+		"Save.SelectDevices.378843-7": "Registration time",
+		"Save.SelectDevices.378843-8": "State",
+		"Save.SelectDevices.378843-9": "on-line",
+		"Save.SelectDevices.378843-10": "off-line",
+		"Save.SelectDevices.378843-11": "disabled"
+	}
+}

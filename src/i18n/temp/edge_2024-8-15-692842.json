@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Issue.Result.925641-0": "下发结果",
+		"Issue.Result.925641-1": "成功：",
+		"Issue.Result.925641-2": "失败：",
+		"Issue.Result.925641-3": "下发失败原因",
+		"Issue.Result.925641-4": "下载",
+		"Issue.Result.925641-5": "下发设备数量：",
+		"Issue.Result.925641-6": "已下发数量："
+	},
+	"en": {
+		"Issue.Result.925641-0": "Distribute results",
+		"Issue.Result.925641-1": "Success:",
+		"Issue.Result.925641-2": "Failed:",
+		"Issue.Result.925641-3": "Reason for failure to distribute",
+		"Issue.Result.925641-4": "Download",
+		"Issue.Result.925641-5": "Number of devices distributed:",
+		"Issue.Result.925641-6": "Distributed quantity:"
+	}
+}

@@ -26,7 +26,7 @@
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
-                            新增
+                            {{ $t('Certificate.index.786731-0') }}
                         </PermissionButton>
                     </template>
                     <template #type="slotProps">
@@ -67,6 +67,9 @@ import type { ActionsType } from '@/components/Table/index';
 import { query, remove } from '@/api/link/certificate';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -74,7 +77,7 @@ const params = ref<Record<string, any>>({});
 
 const columns = [
     {
-        title: '证书标准',
+        title: $t('Certificate.index.786731-1'),
         dataIndex: 'type',
         key: 'type',
         fixed: 'left',
@@ -84,7 +87,7 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '国际标准',
+                    label: $t('Certificate.index.786731-2'),
                     value: 'common',
                 },
             ],
@@ -92,7 +95,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '证书名称',
+        title: $t('Certificate.index.786731-3'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -102,7 +105,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Certificate.index.786731-4'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -111,7 +114,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('Certificate.index.786731-5'),
         key: 'action',
         fixed: 'right',
         width: 80,
@@ -137,9 +140,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         // },
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Certificate.index.786731-6'),
             tooltip: {
-                title: '编辑',
+                title: $t('Certificate.index.786731-6'),
             },
             icon: 'EditOutlined',
             onClick: async () => {
@@ -148,14 +151,14 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Certificate.index.786731-7'),
             tooltip: {
-                title: '删除',
+                title: $t('Certificate.index.786731-7'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Certificate.index.786731-8'),
                 okText: ' 确定',
-                cancelText: '取消',
+                cancelText: $t('Certificate.index.786731-10'),
                 onConfirm: async () => {
                     return handleDelete(data.id);
                 },
@@ -185,7 +188,7 @@ const handleDelete = (id: string) => {
     const response = remove(id);
     response.then((res) => {
         if (res.success) {
-            onlyMessage('操作成功', 'success');
+            onlyMessage($t('Certificate.index.786731-11'), 'success');
             tableRef.value.reload();
         }
     });

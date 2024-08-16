@@ -19,7 +19,7 @@
                         @click="handleView(slotProps)"
                         :actions="getActions(slotProps, 'card')"
                         :status="slotProps.state?.value"
-                        :statusText="slotProps.state?.text"
+                        :statusText="slotProps.state?.value==='disabled'?$t('Resource.index.925643-6'):$t('Resource.index.925643-7')"
                         :statusNames="{
                             enabled: 'processing',
                             disabled: 'error',
@@ -41,7 +41,7 @@
                             <j-row style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        通讯协议
+                                        {{ $t('Resource.index.925643-0') }}
                                     </div>
                                     <Ellipsis>{{
                                         slotProps.category
@@ -49,7 +49,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        所属边缘网关
+                                        {{ $t('Resource.index.925643-1') }}
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ slotProps.sourceName }}
@@ -158,6 +158,9 @@ import { query, _delete, _start, _stop } from '@/api/edge/resource';
 import Save from './Save/index.vue';
 import Issue from './Issue/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 
@@ -180,7 +183,7 @@ const columns = [
         key: 'id',
     },
     {
-        title: '名称',
+        title: $t('Resource.index.925643-2'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -190,7 +193,7 @@ const columns = [
     },
     {
         dataIndex: 'category',
-        title: '通信协议',
+        title: $t('Resource.index.925643-3'),
         valueType: 'select',
         scopedSlots: true,
         key: 'category',
@@ -215,7 +218,7 @@ const columns = [
         },
     },
     {
-        title: '所属边缘网关',
+        title: $t('Resource.index.925643-1'),
         dataIndex: 'sourceId',
         key: 'sourceId',
         scopedSlots: true,
@@ -245,7 +248,7 @@ const columns = [
         },
     },
     {
-        title: '创建时间',
+        title: $t('Resource.index.925643-4'),
         dataIndex: 'createTime',
         key: 'createTime',
         scopedSlots: true,
@@ -254,20 +257,20 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Resource.index.925643-5'),
         dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'disabled' },
-                { label: '正常', value: 'enabled' },
+                { label: $t('Resource.index.925643-6'), value: 'disabled' },
+                { label: $t('Resource.index.925643-7'), value: 'enabled' },
             ],
         },
     },
     {
-        title: '操作',
+        title: $t('Resource.index.925643-8'),
         key: 'action',
         fixed: 'right',
         width: 200,
@@ -283,9 +286,9 @@ const getActions = (
     const actions = [
         {
             key: 'view',
-            text: '查看',
+            text: $t('Resource.index.925643-9'),
             tooltip: {
-                title: '查看',
+                title: $t('Resource.index.925643-9'),
             },
             icon: 'EyeOutlined',
             onClick: () => {
@@ -294,9 +297,9 @@ const getActions = (
         },
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Resource.index.925643-10'),
             tooltip: {
-                title: '编辑',
+                title: $t('Resource.index.925643-10'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -306,13 +309,13 @@ const getActions = (
         },
         {
             key: 'setting',
-            text: '下发',
+            text: $t('Resource.index.925643-11'),
             disabled: data.state?.value === 'disabled',
             tooltip: {
                 title:
                     data.state.value === 'disabled'
-                        ? '请先启用，再下发'
-                        : '下发',
+                        ? $t('Resource.index.925643-12')
+                        : $t('Resource.index.925643-11'),
             },
             icon: 'DownSquareOutlined',
             onClick: () => {
@@ -322,17 +325,17 @@ const getActions = (
         },
         {
             key: 'action',
-            text: data.state?.value !== 'disabled' ? '禁用' : '启用',
+            text: data.state?.value !== 'disabled' ? $t('Resource.index.925643-21') : $t('Resource.index.925643-13'),
             tooltip: {
-                title: data.state?.value !== 'disabled' ? '禁用' : '启用',
+                title: data.state?.value !== 'disabled' ? $t('Resource.index.925643-21') : $t('Resource.index.925643-13'),
             },
             icon:
                 data.state.value !== 'disabled'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${
-                    data.state.value !== 'disabled' ? '禁用' : '启用'
+                title: `${
+                    data.state.value !== 'disabled' ? $t('Resource.index.925643-14') : $t('Resource.index.925643-20')
                 }?`,
                 onConfirm: () => {
                     let response = undefined;
@@ -343,10 +346,10 @@ const getActions = (
                     }
                     response.then((res) => {
                         if (res && res.status === 200) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('Resource.index.925643-15'));
                             edgeResourceRef.value?.reload();
                         } else {
-                            onlyMessage('操作失败！', 'error');
+                            onlyMessage($t('Resource.index.925643-16'), 'error');
                         }
                     });
                     return response;
@@ -355,24 +358,24 @@ const getActions = (
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Resource.index.925643-17'),
             disabled: data.state?.value !== 'disabled',
             tooltip: {
                 title:
                     data.state.value !== 'disabled'
-                        ? '请先禁用，再删除。'
-                        : '删除',
+                        ? $t('Resource.index.925643-18')
+                        : $t('Resource.index.925643-17'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Resource.index.925643-19'),
                 onConfirm: () => {
                     const response = _delete(data.id);
                     response.then((res) => {
                         if (res.status === 200) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('Resource.index.925643-15'));
                             edgeResourceRef.value?.reload();
                         } else {
-                            onlyMessage('操作失败！', 'error');
+                            onlyMessage($t('Resource.index.925643-16'), 'error');
                         }
                     });
                     return response

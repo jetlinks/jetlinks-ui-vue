@@ -28,7 +28,7 @@
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
-                            新增
+                            {{ $t('AccessConfig.index.428280-0') }}
                         </PermissionButton>
                     </template>
                     <template #card="slotProps">
@@ -38,7 +38,7 @@
                             :actions="getActions(slotProps)"
                             v-bind="slotProps"
                             :status="slotProps.state.value"
-                            :statusText="slotProps.state.text"
+                            :statusText="slotProps.state.value==='enabled'?$t('AccessConfig.index.428280-6'):$t('AccessConfig.index.428280-5')"
                             :statusNames="{
                                 enabled: 'processing',
                                 disabled: 'error',
@@ -112,7 +112,7 @@
                                             <div
                                                 class="card-item-content-text-title"
                                             >
-                                                协议
+                                                {{ $t('AccessConfig.index.428280-1') }}
                                             </div>
                                             <Ellipsis
                                                 style="width: calc(100% - 10px)"
@@ -198,7 +198,9 @@ import { useMenuStore } from 'store/menu';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { cloneDeep } from 'lodash-es';
 import Outline from './Outline/index.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -212,7 +214,7 @@ statusMap.set('disabled', 'error');
 
 const columns = [
     {
-        title: '名称',
+        title: $t('AccessConfig.index.428280-2'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -221,7 +223,7 @@ const columns = [
         // scopedSlots: true,
     },
     {
-        title: '网关类型',
+        title: $t('AccessConfig.index.428280-3'),
         dataIndex: 'provider',
         key: 'provider',
         search: {
@@ -238,18 +240,18 @@ const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('AccessConfig.index.428280-4'),
         dataIndex: 'state',
         key: 'state',
         search: {
             type: 'select',
             options: [
                 {
-                    label: '禁用',
+                    label: $t('AccessConfig.index.428280-5'),
                     value: 'disabled',
                 },
                 {
-                    label: '正常',
+                    label: $t('AccessConfig.index.428280-6'),
                     value: 'enabled',
                 },
             ],
@@ -257,7 +259,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '说明',
+        title: $t('AccessConfig.index.428280-7'),
         dataIndex: 'description',
         key: 'description',
         search: {
@@ -265,7 +267,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('AccessConfig.index.428280-8'),
         key: 'action',
         fixed: 'right',
         width: 200,
@@ -276,13 +278,13 @@ const columns = [
 const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) return [];
     const state = data.state.value;
-    const stateText = state === 'enabled' ? '禁用' : '启用';
+    const stateText = state === 'enabled' ? $t('AccessConfig.index.428280-16') : $t('AccessConfig.index.428280-9');
     return [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('AccessConfig.index.428280-10'),
             tooltip: {
-                title: '编辑',
+                title: $t('AccessConfig.index.428280-10'),
             },
             icon: 'EditOutlined',
             onClick: async () => {
@@ -297,7 +299,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${stateText}?`,
+                title: $t('AccessConfig.index.428280-11', [stateText]),
                 onConfirm: () => {
                     let response =
                         state === 'enabled'
@@ -305,7 +307,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                             : deploy(data.id);
                     response.then((res) => {
                         if (res.success) {
-                            onlyMessage('操作成功', 'success');
+                            onlyMessage($t('AccessConfig.index.428280-12'), 'success');
                             tableRef.value?.reload();
                         }
                     });
@@ -315,18 +317,18 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('AccessConfig.index.428280-13'),
             disabled: state === 'enabled',
             tooltip: {
-                title: state === 'enabled' ? '请先禁用，再删除' : '删除',
+                title: state === 'enabled' ? $t('AccessConfig.index.428280-14') : $t('AccessConfig.index.428280-13'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('AccessConfig.index.428280-15'),
                 onConfirm: () => {
                     const response: any = remove(data.id);
                     response.then((res: any) => {
                         if (res.status === 200) {
-                            onlyMessage('操作成功', 'success');
+                            onlyMessage($t('AccessConfig.index.428280-12'), 'success');
                             tableRef.value.reload();
                         } else {
                             onlyMessage(res?.message, 'error');

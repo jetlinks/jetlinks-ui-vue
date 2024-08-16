@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"EditTable.index.920632-0": "批量映射",
+		"EditTable.index.920632-1": "保存",
+		"EditTable.index.920632-2": "采集器",
+		"EditTable.index.920632-3": "数据采集中配置的真实物理设备",
+		"EditTable.index.920632-4": "请选择",
+		"EditTable.index.920632-5": "请选择采集器",
+		"EditTable.index.920632-6": "请选择点位",
+		"EditTable.index.920632-7": "已绑定",
+		"EditTable.index.920632-8": "未绑定",
+		"EditTable.index.920632-9": "解绑",
+		"EditTable.index.920632-10": "确认解绑",
+		"EditTable.index.920632-11": "暂无数据，请配置物模型",
+		"EditTable.index.920632-12": "名称",
+		"EditTable.index.920632-13": "通道",
+		"EditTable.index.920632-14": "点位",
+		"EditTable.index.920632-15": "状态",
+		"EditTable.index.920632-16": "操作",
+		"EditTable.index.920632-17": "操作成功！"
+	},
+	"en": {
+		"EditTable.index.920632-0": "Batch Mapping",
+		"EditTable.index.920632-1": "Save",
+		"EditTable.index.920632-2": "collector",
+		"EditTable.index.920632-3": "Real physical devices configured in data collection",
+		"EditTable.index.920632-4": "Please choose",
+		"EditTable.index.920632-5": "Please select the collector",
+		"EditTable.index.920632-6": "Please select a location",
+		"EditTable.index.920632-7": "Already bound",
+		"EditTable.index.920632-8": "Unbound",
+		"EditTable.index.920632-9": "Unbind",
+		"EditTable.index.920632-10": "Confirm unbinding",
+		"EditTable.index.920632-11": "No data available, please configure the object model",
+		"EditTable.index.920632-12": "Name",
+		"EditTable.index.920632-13": "Passageway",
+		"EditTable.index.920632-14": "Point position",
+		"EditTable.index.920632-15": "State",
+		"EditTable.index.920632-16": "Operation",
+		"EditTable.index.920632-17": "Operation successful!"
+	}
+}

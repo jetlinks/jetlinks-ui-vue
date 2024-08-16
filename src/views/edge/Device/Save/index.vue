@@ -3,7 +3,7 @@
         :maskClosable="false"
         width="650px"
         :visible="true"
-        :title="!!data?.id ? '编辑' : '新增'"
+        :title="!!data?.id ? $t('Save.index.697801-0') : $t('Save.index.697801-1')"
         @ok="handleSave"
         @cancel="handleCancel"
         :confirmLoading="loading"
@@ -22,11 +22,11 @@
                             :rules="[
                                 {
                                     pattern: /^[a-zA-Z0-9_\-]+$/,
-                                    message: '请输入英文或者数字或者-或者_',
+                                    message: $t('Save.index.697801-2'),
                                 },
                                 {
                                     max: 64,
-                                    message: '最多输入64个字符',
+                                    message: $t('Save.index.697801-3'),
                                 },
                                 {
                                     validator: vailId,
@@ -38,7 +38,7 @@
                                 <span>
                                     ID
                                     <j-tooltip
-                                        title="若不填写，系统将自动生成唯一ID"
+                                        :title="$t('Save.index.697801-4')"
                                     >
                                         <AIcon
                                             type="QuestionCircleOutlined"
@@ -49,27 +49,27 @@
                             </template>
                             <j-input
                                 v-model:value="modelRef.id"
-                                placeholder="请输入ID"
+                                :placeholder="$t('Save.index.697801-5')"
                                 :disabled="!!data?.id"
                             />
                         </j-form-item>
                         <j-form-item
-                            label="名称"
+                            :label="$t('Save.index.697801-6')"
                             name="name"
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请输入名称',
+                                    message: $t('Save.index.697801-7'),
                                 },
                                 {
                                     max: 64,
-                                    message: '最多输入64个字符',
+                                    message: $t('Save.index.697801-3'),
                                 },
                             ]"
                         >
                             <j-input
                                 v-model:value="modelRef.name"
-                                placeholder="请输入名称"
+                                :placeholder="$t('Save.index.697801-7')"
                             />
                         </j-form-item>
                     </j-col>
@@ -81,14 +81,14 @@
                             :rules="[
                                 {
                                     required: true,
-                                    message: '请选择所属产品',
+                                    message: $t('Save.index.697801-8'),
                                 },
                             ]"
                         >
                             <template #label>
                                 <span
-                                    >所属产品
-                                    <j-tooltip title="只能选择“正常”状态的产品">
+                                    >{{ $t('Save.index.697801-9') }}
+                                    <j-tooltip :title="$t('Save.index.697801-10')">
                                         <AIcon
                                             type="QuestionCircleOutlined"
                                             style="margin-left: 2px"
@@ -100,7 +100,7 @@
                                 showSearch
                                 v-model:value="modelRef.productId"
                                 :disabled="!!data?.id"
-                                placeholder="请选择所属产品"
+                                :placeholder="$t('Save.index.697801-8')"
                             >
                                 <j-select-option
                                     :value="item.id"
@@ -124,18 +124,18 @@
                     </j-col>
                 </j-row>
                 <j-form-item
-                    label="说明"
+                    :label="$t('Save.index.697801-11')"
                     name="describe"
                     :rules="[
                         {
                             max: 200,
-                            message: '最多输入200个字符',
+                            message: $t('Save.index.697801-12'),
                         },
                     ]"
                 >
                     <j-textarea
                         v-model:value="modelRef.describe"
-                        placeholder="请输入说明"
+                        :placeholder="$t('Save.index.697801-13')"
                         showCount
                         :maxlength="200"
                     />
@@ -158,6 +158,9 @@ import { queryNoPagingPost } from '@/api/device/product';
 import { isExists, update } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import SaveProduct from '@/views/media/Device/Save/SaveProduct.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -184,7 +187,7 @@ const vailId = async (_: Record<string, any>, value: string) => {
     if (!props?.data?.id && value) {
         const resp = await isExists(value);
         if (resp.status === 200 && resp.result) {
-            return Promise.reject('该ID已存在');
+            return Promise.reject($t('Save.index.697801-14'));
         } else {
             return Promise.resolve();
         }
@@ -252,7 +255,7 @@ const handleSave = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Save.index.697801-15'));
                 emit('save');
                 formRef.value.resetFields();
             }

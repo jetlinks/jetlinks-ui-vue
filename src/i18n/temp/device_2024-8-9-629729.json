@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Property.Indicators.286676-0": "编辑指标",
+		"Property.Indicators.286676-1": "场景联动页面可引用指标配置触发条件",
+		"Property.Indicators.286676-2": "请选择指标值",
+		"Property.Indicators.286676-3": "请输入指标值",
+		"Property.Indicators.286676-4": "指标值",
+		"Property.Indicators.286676-5": "操作成功！"
+	},
+	"en": {
+		"Property.Indicators.286676-0": "Edit indicators",
+		"Property.Indicators.286676-1": "The scene linkage page can reference indicator configuration trigger conditions",
+		"Property.Indicators.286676-2": "Please select the indicator value",
+		"Property.Indicators.286676-3": "Please enter the indicator value",
+		"Property.Indicators.286676-4": "Indicator value",
+		"Property.Indicators.286676-5": "Operation successful!"
+	}
+}

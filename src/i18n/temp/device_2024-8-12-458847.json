@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Alarm.index.584342-0": "设备ID：",
+		"Alarm.index.584342-1": "已处理",
+		"Alarm.index.584342-2": "告警中",
+		"Alarm.index.584342-3": "告警时间",
+		"Alarm.index.584342-4": "告警持续时长",
+		"Alarm.index.584342-5": "触发条件",
+		"Alarm.index.584342-6": "告警原因",
+		"Alarm.index.584342-7": "处理时间",
+		"Alarm.index.584342-8": "处理类型",
+		"Alarm.index.584342-9": "人工",
+		"Alarm.index.584342-10": "系统",
+		"Alarm.index.584342-11": "状态",
+		"Alarm.index.584342-12": "操作",
+		"Alarm.index.584342-13": "告警源",
+		"Alarm.index.584342-14": "查看详情",
+		"Alarm.index.584342-15": "查看日志",
+		"Alarm.index.584342-16": "处理"
+	},
+	"en": {
+		"Alarm.index.584342-0": "Device ID:",
+		"Alarm.index.584342-1": "processed",
+		"Alarm.index.584342-2": "alarming",
+		"Alarm.index.584342-3": "Alarm time",
+		"Alarm.index.584342-4": "Alarm duration",
+		"Alarm.index.584342-5": "Trigger condition",
+		"Alarm.index.584342-6": "Reason for alarm",
+		"Alarm.index.584342-7": "processing time ",
+		"Alarm.index.584342-8": "Processing type",
+		"Alarm.index.584342-9": "manual",
+		"Alarm.index.584342-10": "systematic",
+		"Alarm.index.584342-11": "State",
+		"Alarm.index.584342-12": "Operation",
+		"Alarm.index.584342-13": "Alarm source",
+		"Alarm.index.584342-14": "View details",
+		"Alarm.index.584342-15": "view log",
+		"Alarm.index.584342-16": "Handle"
+	}
+}

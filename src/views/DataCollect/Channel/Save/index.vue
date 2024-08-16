@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        :title="data.id ? '编辑' : '新增'"
+        :title="data.id ? $t('Save.index.098161-0') : $t('Save.index.098161-1')"
         :visible="true"
         width="700px"
         @cancel="handleCancel"
@@ -14,18 +14,18 @@
             :rules="FormValidate"
             ref="formRef"
         >
-            <j-form-item label="通道名称" name="name">
+            <j-form-item :label="$t('Save.index.098161-2')" name="name">
                 <j-input
-                    placeholder="请输入通道名称"
+                    :placeholder="$t('Save.index.098161-3')"
                     v-model:value="formData.name"
                 />
             </j-form-item>
-            <j-form-item label="通讯协议" name="provider">
+            <j-form-item :label="$t('Save.index.098161-4')" name="provider">
                 <j-select
                     style="width: 100%"
                     v-model:value="formData.provider"
                     :options="providersList"
-                    placeholder="请选择通讯协议"
+                    :placeholder="$t('Save.index.098161-5')"
                     allowClear
                     show-search
                     :filter-option="filterOption"
@@ -38,8 +38,8 @@
                 :rules="FormValidate.host"
             >
                 <template #label>
-                    Modbus主机IP
-                    <j-tooltip title="支持ipv4、ipv6、域名">
+                    {{ $t('Save.index.098161-6') }}
+                    <j-tooltip :title="$t('Save.index.098161-7')">
                         <AIcon
                             type="QuestionCircleOutlined"
                             style="margin-left: 2px"
@@ -47,19 +47,19 @@
                     </j-tooltip>
                 </template>
                 <j-input
-                    placeholder="请输入Modbus主机IP"
+                    :placeholder="$t('Save.index.098161-8')"
                     v-model:value="formData.configuration.host"
                 />
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'MODBUS_TCP'"
-                label="端口"
+                :label="$t('Save.index.098161-9')"
                 :name="['configuration', 'port']"
                 :rules="FormValidate.port"
             >
                 <j-input-number
                     style="width: 100%"
-                    placeholder="请输入端口"
+                    :placeholder="$t('Save.index.098161-10')"
                     v-model:value="formData.configuration.port"
                     :min="0"
                     :max="65535"
@@ -67,18 +67,18 @@
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
-                label="端点url"
+                :label="$t('Save.index.098161-11')"
                 :name="['configuration', 'endpoint']"
                 :rules="FormValidate.endpoint"
             >
                 <j-input
-                    placeholder="请输入端点url"
+                    :placeholder="$t('Save.index.098161-12')"
                     v-model:value="formData.configuration.endpoint"
                 />
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
-                label="安全策略"
+                :label="$t('Save.index.098161-13')"
                 :name="['configuration', 'securityPolicy']"
                 :rules="FormValidate.securityPolicy"
             >
@@ -86,7 +86,7 @@
                     style="width: 100%"
                     v-model:value="formData.configuration.securityPolicy"
                     :options="Options['security-policies']"
-                    placeholder="请选择安全策略"
+                    :placeholder="$t('Save.index.098161-14')"
                     allowClear
                     show-search
                     :filter-option="filterOption"
@@ -95,8 +95,8 @@
             <j-form-item
                 v-if="formData.provider === 'COLLECTOR_GATEWAY'"
                 :name="['configuration', 'deviceId']"
-                :rules="[{ required: true, message: '请选择网关设备' }]"
-                label="选择网关设备"
+                :rules="[{ required: true, message: $t('Save.index.098161-15') }]"
+                :label="$t('Save.index.098161-16')"
             >
                 <GateWayFormItem
                     v-model:name="formData.configuration.deviceName"
@@ -105,7 +105,7 @@
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
-                label="安全模式"
+                :label="$t('Save.index.098161-17')"
                 :name="['configuration', 'securityMode']"
                 :rules="FormValidate.securityMode"
             >
@@ -113,7 +113,7 @@
                     style="width: 100%"
                     v-model:value="formData.configuration.securityMode"
                     :options="Options['security-modes']"
-                    placeholder="请选择安全模式"
+                    :placeholder="$t('Save.index.098161-18')"
                     allowClear
                     show-search
                     :filter-option="filterOption"
@@ -121,7 +121,7 @@
             </j-form-item>
             <j-form-item
                 v-if="isSecurityMode"
-                label="证书"
+                :label="$t('Save.index.098161-19')"
                 :name="['configuration', 'certId']"
                 :rules="FormValidate.certId"
             >
@@ -129,7 +129,7 @@
                     style="width: 100%"
                     v-model:value="formData.configuration.certId"
                     :options="certificateList"
-                    placeholder="请选择证书"
+                    :placeholder="$t('Save.index.098161-20')"
                     allowClear
                     show-search
                     :filter-option="filterOption"
@@ -137,7 +137,7 @@
             </j-form-item>
             <j-form-item
                 v-if="formData.provider === 'OPC_UA'"
-                label="权限认证"
+                :label="$t('Save.index.098161-21')"
                 :name="['configuration', 'authType']"
                 :rules="FormValidate.authType"
             >
@@ -151,28 +151,28 @@
             </j-form-item>
             <j-form-item
                 v-if="isAuthType"
-                label="用户名"
+                :label="$t('Save.index.098161-22')"
                 :name="['configuration', 'username']"
                 :rules="FormValidate.username"
             >
                 <j-input
-                    placeholder="请输入用户名"
+                    :placeholder="$t('Save.index.098161-23')"
                     v-model:value="formData.configuration.username"
                 />
             </j-form-item>
             <j-form-item
                 v-if="isAuthType"
-                label="密码"
+                :label="$t('Save.index.098161-24')"
                 :name="['configuration', 'password']"
                 :rules="FormValidate.password"
             >
                 <j-input-password
-                    placeholder="请输入密码"
+                    :placeholder="$t('Save.index.098161-25')"
                     v-model:value="formData.configuration.password"
                 />
             </j-form-item>
             <template v-if="formData.provider === 'BACNetIp'">
-                <j-form-item label="BACNet实例号" :name="['configuration', 'instanceNumber']" :rules="{
+                <j-form-item :label="$t('Save.index.098161-26')" :name="['configuration', 'instanceNumber']" :rules="{
                     required: true,
                     trigger:'blur',
                     validator: validate,
@@ -183,16 +183,16 @@
                         :min="0"
                         :precision="0"
                         :max="999999999999"
-                        placeholder="请输入BACNet实例号"
+                        :placeholder="$t('Save.index.098161-27')"
                     ></j-input-number>
                 </j-form-item>
                 <j-form-item
-                    label="网卡"
+                    :label="$t('Save.index.098161-28')"
                     :name="['configuration', 'overIp', 'localBindAddress']"
                     :rules="{
                         required: true,
                         trigger:'blur',
-                        message: '请选择网卡'
+                        message: $t('Save.index.098161-29')
                     }"
                 >
                     <j-input
@@ -200,10 +200,10 @@
                     >
                     </j-input>
                 </j-form-item>
-                <j-form-item label="广播端口" :name="['configuration', 'overIp', 'port']" :rules="{
+                <j-form-item :label="$t('Save.index.098161-30')" :name="['configuration', 'overIp', 'port']" :rules="{
                     required: true,
                     trigger: 'blur',
-                    message: '请输入广播端口'
+                    message: $t('Save.index.098161-31')
                 }">
                     <j-input-number
                         v-model:value="formData.configuration.overIp.port"
@@ -211,7 +211,7 @@
                         :min="1"
                         :max="65535"
                         :precision="0"
-                        placeholder="请输入广播端口"
+                        :placeholder="$t('Save.index.098161-31')"
                     ></j-input-number>
                 </j-form-item>
             </template>
@@ -221,9 +221,9 @@
             >
                 <j-input v-model:value="formData.configuration.connect"/>
             </j-form-item> -->
-            <j-form-item label="说明" name="description">
+            <j-form-item :label="$t('Save.index.098161-32')" name="description">
                 <j-textarea
-                    placeholder="请输入说明"
+                    :placeholder="$t('Save.index.098161-33')"
                     v-model:value="formData.description"
                     :maxlength="200"
                     :rows="3"
@@ -232,7 +232,7 @@
             </j-form-item>
         </j-form>
         <template #footer>
-            <j-button key="back" @click="handleCancel">取消</j-button>
+            <j-button key="back" @click="handleCancel">{{ $t('Save.index.098161-34') }}</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -241,7 +241,7 @@
                 style="margin-left: 8px"
                 :hasPermission="`DataCollect/Channel:${id ? 'update' : 'add'}`"
             >
-                确认
+                {{ $t('Save.index.098161-35') }}
             </PermissionButton>
         </template>
     </j-modal>
@@ -260,6 +260,9 @@ import type { FormDataType } from '../type.d';
 import { cloneDeep, isArray } from 'lodash-es';
 import { protocolList } from '@/utils/consts';
 import GateWayFormItem from '@/views/DataCollect/Channel/Save/GateWayFormItem.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -312,11 +315,11 @@ const handleOk = async () => {
 
 const validate = async (_rule: any, value: string) => {
   if (!value) {
-    return Promise.reject('请输入BACnet实例号');
+    return Promise.reject($t('Save.index.098161-36'));
   } else {
     const reg = new RegExp(/^[0-9]*$/)
     if(!reg.test(value) || parseInt(value) < 0) {
-      return Promise.reject('请输入正确的BACnet实例号');
+      return Promise.reject($t('Save.index.098161-37'));
     }
     return Promise.resolve()
   }

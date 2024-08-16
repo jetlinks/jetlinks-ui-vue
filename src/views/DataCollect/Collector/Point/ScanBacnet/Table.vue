@@ -28,7 +28,7 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请输入',
+                                message: $t('ScanBacnet.Table.321717-0'),
                             },
                             {
                                 validator: checkLength,
@@ -38,7 +38,7 @@
                     >
                         <j-input
                             v-model:value="record.name"
-                            placeholder="请输入"
+                            :placeholder="$t('ScanBacnet.Table.321717-0')"
                             style="width: 80%"
                             allowClear
                         ></j-input>
@@ -59,7 +59,7 @@
                         :name="['dataSource', index, 'propertyId']"
                         :rules="{
                             required: true,
-                            message: '请选择',
+                            message: $t('ScanBacnet.Table.321717-1'),
                         }"
                     >
                         <PropertyId
@@ -77,13 +77,13 @@
                         :name="['dataSource', index, 'valueType']"
                         :rules="{
                             required: true,
-                            message: '请选择',
+                            message: $t('ScanBacnet.Table.321717-1'),
                         }"
                     >
                         <j-select
                             v-model:value="record.valueType"
                             style="width: 80%"
-                            placeholder="请选择"
+                            :placeholder="$t('ScanBacnet.Table.321717-1')"
                         >
                             <j-select-option
                                 v-for="item in valueTypeList"
@@ -101,21 +101,21 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请选择',
+                                message: $t('ScanBacnet.Table.321717-1'),
                             },
                         ]"
                     >
                         <j-select
                             style="width: 72%"
                             v-model:value="record.accessModes.value"
-                            placeholder="请选择"
+                            :placeholder="$t('ScanBacnet.Table.321717-1')"
                             allowClear
                             mode="multiple"
                             :filter-option="filterOption"
                             :options="[
-                                { label: '读', value: 'read' },
-                                { label: '写', value: 'write' },
-                                { label: '订阅', value: 'subscribe' },
+                                { label: $t('ScanBacnet.Table.321717-2'), value: 'read' },
+                                { label: $t('ScanBacnet.Table.321717-3'), value: 'write' },
+                                { label: $t('ScanBacnet.Table.321717-4'), value: 'subscribe' },
                             ]"
                             :disabled="index !== 0 && record.accessModes.check"
                             @change="changeValue(index, 'accessModes')"
@@ -126,7 +126,7 @@
                             v-if="index !== 0"
                             v-model:checked="record.accessModes.check"
                             @click="changeCheckbox(index, 'accessModes')"
-                            >同上</j-checkbox
+                            >{{ $t('ScanBacnet.Table.321717-5') }}</j-checkbox
                         >
                     </j-form-item>
                 </template>
@@ -143,11 +143,11 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请输入',
+                                message: $t('ScanBacnet.Table.321717-0'),
                             },
                             {
                                 pattern: regOnlyNumber,
-                                message: '请输入0或者正整数',
+                                message: $t('ScanBacnet.Table.321717-6')
                             },
                         ]"
                     >
@@ -156,7 +156,7 @@
                             v-model:value="
                                 record.configuration.interval.value
                             "
-                            placeholder="请输入"
+                            :placeholder="$t('ScanBacnet.Table.321717-0')"
                             allowClear
                             addon-after="ms"
                             :max="2147483647"
@@ -174,7 +174,7 @@
                                 record.configuration.interval.check
                             "
                             @click="changeCheckbox(index, 'interval')"
-                            >同上</j-checkbox
+                            >{{ $t('ScanBacnet.Table.321717-5') }}</j-checkbox
                         >
                     </j-form-item>
                 </template>
@@ -185,23 +185,23 @@
                         :rules="[
                             {
                                 required: true,
-                                message: '请选择',
+                                message: $t('ScanBacnet.Table.321717-1'),
                             },
                         ]"
                     >
                         <j-select
                             style="width: 45%"
                             v-model:value="record.features.value"
-                            placeholder="请选择"
+                            :placeholder="$t('ScanBacnet.Table.321717-1')"
                             allowClear
                             :filter-option="filterOption"
                             :options="[
                                 {
-                                    label: '是',
+                                    label: $t('ScanBacnet.Table.321717-7'),
                                     value: true,
                                 },
                                 {
-                                    label: '否',
+                                    label: $t('ScanBacnet.Table.321717-8'),
                                     value: false,
                                 },
                             ]"
@@ -214,7 +214,7 @@
                             v-show="index !== 0"
                             v-model:checked="record.features.check"
                             @click="changeCheckbox(index, 'features')"
-                            >同上</j-checkbox
+                            >{{ $t('ScanBacnet.Table.321717-5') }}</j-checkbox
                         >
                     </j-form-item>
                 </template>
@@ -223,10 +223,10 @@
                     <PermissionButton
                         type="text"
                         :tooltip="{
-                            title: '删除',
+                            title: $t('ScanBacnet.Table.321717-9'),
                         }"
                         :popConfirm="{
-                            title: '确认删除？',
+                            title: $t('ScanBacnet.Table.321717-10'),
                             onConfirm: () => clickDelete(record.nodeId, index),
                         }"
                         ><a style="color: red"
@@ -247,6 +247,9 @@ import PropertyId from './PropertyId.vue';
 import {
   EditTable
 } from '@/components/Metadata/Table'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {
@@ -270,7 +273,7 @@ const checkLength = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if (value) {
             return String(value).length > 64
-                ? reject('最多可输入64个字符')
+                ? reject($t('ScanBacnet.Table.321717-11'))
                 : resolve('');
         } else {
             resolve('');

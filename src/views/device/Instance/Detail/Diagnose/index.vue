@@ -34,7 +34,7 @@
                         <template v-if="topState !== 'loading'">{{
                             headerDescMap.get(topState)
                         }}</template>
-                        <template v-else>已诊断{{ count }}个</template>
+                        <template v-else>{{ $t('Diagnose.index.585600-0') }}{{ count }}{{ $t('Diagnose.index.585600-1') }}</template>
                     </div>
                 </div>
             </div>
@@ -93,14 +93,17 @@ import { getImage } from '@/utils/comm';
 import Status from './Status/index';
 import Message from './Message/index.vue';
 import { useInstanceStore } from '@/store/instance';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type TypeProps = 'network' | 'child-device' | 'media' | 'cloud' | 'channel';
 
 const instanceStore = useInstanceStore();
 
 const tabList = [
-    { key: 'status', text: '连接状态' },
-    { key: 'message', text: '消息通信' },
+    { key: 'status', text: $t('Diagnose.index.585600-2') },
+    { key: 'message', text: $t('Diagnose.index.585600-3') },
 ];
 
 const activeStyle = {

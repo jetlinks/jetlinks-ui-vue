@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"DetailModal.EventModal.6915917-0": "事件详情",
+		"DetailModal.EventModal.6915917-1": "事件标识",
+		"DetailModal.EventModal.6915917-2": "事件名称",
+		"DetailModal.EventModal.6915917-3": "事件级别",
+		"DetailModal.EventModal.6915917-4": "输出参数",
+		"DetailModal.EventModal.6915917-5": "存储方式",
+		"DetailModal.EventModal.6915917-6": "确认",
+		"DetailModal.EventModal.6915917-7": "普通",
+		"DetailModal.EventModal.6915917-8": "警告",
+		"DetailModal.EventModal.6915917-9": "紧急"
+	},
+	"en": {
+		"DetailModal.EventModal.6915917-0": "Event details",
+		"DetailModal.EventModal.6915917-1": "Event identification",
+		"DetailModal.EventModal.6915917-2": "Event Name",
+		"DetailModal.EventModal.6915917-3": "Event level",
+		"DetailModal.EventModal.6915917-4": "Output parameters",
+		"DetailModal.EventModal.6915917-5": "Storage method",
+		"DetailModal.EventModal.6915917-6": "Confirm",
+		"DetailModal.EventModal.6915917-7": "ordinary",
+		"DetailModal.EventModal.6915917-8": "warning",
+		"DetailModal.EventModal.6915917-9": "urgent"
+	}
+}

@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.Advance.155742-0": "执行",
+		"components.Advance.155742-1": "清空",
+		"components.Advance.155742-2": "执行结果：",
+		"components.Advance.155742-3": "操作成功"
+	},
+	"en": {
+		"components.Advance.155742-0": "Execute",
+		"components.Advance.155742-1": "Clear",
+		"components.Advance.155742-2": "Execution result:",
+		"components.Advance.155742-3": "Operation successful"
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"AccessConfig.data.428291-0": "UDP可以让设备无需建立连接就可以与平台传输数据。在允许一定程度丢包的情况下，提供轻量化且简单的连接。",
+		"AccessConfig.data.428291-1": "TCP服务是一种面向连接的、可靠的、基于字节流的传输层通信协议。设备可通过TCP服务与平台进行长链接，实时更新状态并发送消息。可自定义多种粘拆包规则，处理传输过程中可能发生的粘拆包问题。",
+		"AccessConfig.data.428291-2": "WebSocket是一种在单个TCP连接上进行全双工通信的协议，允许服务端主动向客户端推送数据。设备通过WebSocket服务与平台进行长链接，实时更新状态并发送消息，且可以发布订阅消息",
+		"AccessConfig.data.428291-3": "MQTT是ISO 标准下基于发布/订阅范式的消息协议，具有轻量、简单、开放和易于实现的特点。平台使用指定的ID接入其他远程平台，订阅消息。也可添加用户名和密码校验。可设置最大消息长度。可统一设置共享的订阅前缀。",
+		"AccessConfig.data.428291-4": "HTTP服务是一个简单的请求-响应的基于TCP的无状态协议。设备通过HTTP服务与平台进行灵活的短链接通信，仅支持设备和平台之间单对单的请求-响应模式",
+		"AccessConfig.data.428291-5": "MQTT是ISO 标准下基于发布/订阅范式的消息协议，具有轻量、简单、开放和易于实现的特点。提供MQTT的服务端，以供设备以长链接的方式接入平台。设备使用唯一的ID，也可添加用户名和密码校验。可设置最大消息长度。",
+		"AccessConfig.data.428291-6": "CoAP是针对只有少量的内存空间和有限的计算能力提供的一种基于UDP的协议。便于低功耗或网络受限的设备与平台通信，仅支持设备和平台之间单对单的请求-响应模式。",
+		"AccessConfig.data.428291-7": "上下行",
+		"AccessConfig.data.428291-8": "说明",
+		"AccessConfig.data.428291-9": "地址",
+		"AccessConfig.data.428291-10": "示例"
+	},
+	"en": {
+		"AccessConfig.data.428291-0": "UDP allows devices to transmit data to the platform without establishing a connection. Provide lightweight and simple connections while allowing for a certain degree of packet loss.",
+		"AccessConfig.data.428291-1": "TCP service is a connection oriented, reliable, byte stream based transport layer communication protocol. The device can establish a long-term connection with the platform through TCP services, update its status in real-time, and send messages. You can customize multiple rules for sticking and unpacking packages to handle possible sticking and unpacking issues during transmission.",
+		"AccessConfig.data.428291-2": "WebSocket is a protocol for full duplex communication over a single TCP connection, allowing the server to actively push data to the client. The device establishes a long connection with the platform through WebSocket service, updates its status in real-time and sends messages, and can also publish and subscribe to messages",
+		"AccessConfig.data.428291-3": "MQTT is a messaging protocol based on the publish/subscribe paradigm under the ISO standard, characterized by its lightweight, simplicity, openness, and ease of implementation. The platform uses a specified ID to access other remote platforms and subscribe to messages. User name and password verification can also be added. The maximum message length can be set. Shared subscription prefixes can be uniformly set.",
+		"AccessConfig.data.428291-4": "HTTP service is a simple request response TCP based stateless protocol. The device communicates flexibly with the platform through HTTP services and only supports a one-to-one request response mode between the device and the platform",
+		"AccessConfig.data.428291-5": "MQTT is a messaging protocol based on the publish/subscribe paradigm under the ISO standard, characterized by its lightweight, simplicity, openness, and ease of implementation. Provide MQTT server for devices to access the platform through long links. The device uses a unique ID and can also add username and password verification. The maximum message length can be set.",
+		"AccessConfig.data.428291-6": "CoAP is a UDP based protocol designed for those with limited memory space and computing power. Facilitate communication between low-power or network limited devices and platforms, and only support one-to-one request response mode between devices and platforms.",
+		"AccessConfig.data.428291-7": "Upstream and downstream",
+		"AccessConfig.data.428291-8": "Explain",
+		"AccessConfig.data.428291-9": "Address",
+		"AccessConfig.data.428291-10": "Example"
+	}
+}

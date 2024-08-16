@@ -28,7 +28,7 @@
                             <template #icon
                                 ><AIcon type="PlusOutlined"
                             /></template>
-                            新增
+                            {{ $t('Stream.index.217871-0') }}
                         </PermissionButton>
                     </template>
                     <template #card="slotProps">
@@ -38,7 +38,7 @@
                             :actions="getActions(slotProps)"
                             v-bind="slotProps"
                             :status="slotProps.state.value"
-                            :statusText="slotProps.state.text"
+                            :statusText="slotProps.state.value==='enabled'?$t('Stream.index.217871-5'):$t('Stream.index.217871-4')"
                             :statusNames="{
                                 enabled: 'processing',
                                 disabled: 'error',
@@ -74,7 +74,7 @@
                                             class="card-item-content-text"
                                         >
                                             <div class="card-item-content-text">
-                                                服务商
+                                                {{ $t('Stream.index.217871-1') }}
                                             </div>
                                             <div class="card-item-content-text">
                                                 <j-tooltip>
@@ -155,6 +155,9 @@ import { getImage } from '@/utils/comm';
 import { query, remove, disable, enalbe } from '@/api/media/stream';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
@@ -162,7 +165,7 @@ const params = ref<Record<string, any>>({});
 
 const columns = [
     {
-        title: '名称',
+        title: $t('Stream.index.217871-2'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -171,18 +174,18 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '状态',
+        title: $t('Stream.index.217871-3'),
         dataIndex: 'state',
         key: 'state',
         search: {
             type: 'select',
             options: [
                 {
-                    label: '禁用',
+                    label: $t('Stream.index.217871-4'),
                     value: 'disabled',
                 },
                 {
-                    label: '正常',
+                    label: $t('Stream.index.217871-5'),
                     value: 'enabled',
                 },
             ],
@@ -194,13 +197,13 @@ const columns = [
 const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     if (!data) return [];
     const state = data.state.value;
-    const stateText = state === 'enabled' ? '禁用' : '启用';
+    const stateText = state === 'enabled' ? $t('Stream.index.217871-13') : $t('Stream.index.217871-6');
     const actions = [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('Stream.index.217871-7'),
             tooltip: {
-                title: '编辑',
+                title: $t('Stream.index.217871-7'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -215,7 +218,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${stateText}?`,
+                title: $t('Stream.index.217871-8', [stateText]),
                 onConfirm: () => {
                     let response =
                         state === 'enabled'
@@ -223,7 +226,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                             : enalbe(data.id);
                     response.then((res) => {
                         if (res.success) {
-                            onlyMessage('操作成功', 'success');
+                            onlyMessage($t('Stream.index.217871-9'), 'success');
                             tableRef.value?.reload();
                         }
                     });
@@ -233,18 +236,18 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('Stream.index.217871-10'),
             disabled: state === 'enabled',
             tooltip: {
-                title: state === 'enabled' ? '正常的流媒体不能删除' : '删除',
+                title: state === 'enabled' ? $t('Stream.index.217871-11') : $t('Stream.index.217871-10'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('Stream.index.217871-12'),
                 onConfirm: () => {
                     const response = remove(data.id);
                     response.then((res) => {
                         if (res.success) {
-                            onlyMessage('操作成功', 'success');
+                            onlyMessage($t('Stream.index.217871-9'), 'success');
                             tableRef.value.reload();
                         }
                     });

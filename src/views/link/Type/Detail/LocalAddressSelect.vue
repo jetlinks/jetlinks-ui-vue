@@ -2,7 +2,7 @@
     <j-select
         :value="host"
         :options="options"
-        placeholder="请选择本地地址"
+        :placeholder="$t('Detail.LocalAddressSelect.962513-0')"
         allowClear
         show-search
         :disabled="shareCluster"
@@ -16,6 +16,9 @@ import { resourceClustersById } from "@/api/link/type"
 import { useTypeStore } from "@/store/type"
 import { cloneDeep } from "lodash-es"
 import { storeToRefs } from "pinia"
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const _typeStore = useTypeStore()
 const { resourcesClusters } = storeToRefs(_typeStore)

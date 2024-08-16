@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Detail.doc.613239-0": "阿里云物联网平台：",
+		"Detail.doc.613239-1": "1. 概述",
+		"Detail.doc.613239-2": "在特定场景下，设备无法直接接入阿里云物联网平台时，您可先将设备接入物联网平台，再使用阿里云“云云对接SDK”，快速构建桥接服务，搭建物联网平台与阿里云物联网平台的双向数据通道。",
+		"Detail.doc.613239-3": "2.配置说明",
+		"Detail.doc.613239-4": "1、服务地址",
+		"Detail.doc.613239-5": "阿里云内部给每台机器设置的唯一编号。请根据购买的阿里云服务器地址进行选择。",
+		"Detail.doc.613239-6": "获取路径：“阿里云物联网平台”--“服务地址”",
+		"Detail.doc.613239-7": "用于程序通知方式调用云服务费API的用户标识和秘钥获取路径：“阿里云管理控制台”--“用户头像”--“”--“AccessKey管理”--“查看”",
+		"Detail.doc.613239-8": "3. 网桥产品",
+		"Detail.doc.613239-9": "物联网平台对于阿里云物联网平台，是一个网关设备，需要映射到阿里云物联网平台的具体产品",
+		"Detail.doc.613239-10": "4. 产品映射",
+		"Detail.doc.613239-11": "将阿里云物联网平台中的产品实例与物联网平台的产品实例进行关联。关联后需要进入该产品下的每一个设备的实例信息页，填入对应的阿里云物联网平台设备的DeviceName、DeviceSecret进行一对一绑定。"
+	},
+	"en": {
+		"Detail.doc.613239-0": "Alibaba Cloud IoT Platform:",
+		"Detail.doc.613239-1": "1. Overview",
+		"Detail.doc.613239-2": "In specific scenarios where the device cannot directly connect to the Alibaba Cloud IoT platform, you can first connect the device to the IoT platform and then use Alibaba Cloud's \"Cloud to Cloud Integration SDK\" to quickly build a bridging service and establish a two-way data channel between the IoT platform and Alibaba Cloud IoT platform.",
+		"Detail.doc.613239-3": "2. Configuration Description",
+		"Detail.doc.613239-4": "1. Service Address",
+		"Detail.doc.613239-5": "The unique number assigned to each machine within Alibaba Cloud. Please select based on the address of the purchased Alibaba Cloud server.",
+		"Detail.doc.613239-6": "Get path: \"Alibaba Cloud IoT Platform\" - \"Service Address\"",
+		"Detail.doc.613239-7": "The user identifier and key acquisition path for calling the cloud service fee API through program notification: \"Alibaba Cloud Management Console\" - \"User Profile\" - \"\" - \"AccessKey Management\" - \"View\"",
+		"Detail.doc.613239-8": "3. Bridge products",
+		"Detail.doc.613239-9": "The IoT platform is a gateway device for the Alibaba Cloud IoT platform, which needs to be mapped to the specific products of the Alibaba Cloud IoT platform",
+		"Detail.doc.613239-10": "4. Product Mapping",
+		"Detail.doc.613239-11": "Associate product instances in the Alibaba Cloud IoT platform with those in the IoT platform. After association, you need to enter the instance information page of each device under the product, fill in the corresponding DeviceName and DeviceSecret of the Alibaba Cloud IoT platform device for one-to-one binding."
+	}
+}

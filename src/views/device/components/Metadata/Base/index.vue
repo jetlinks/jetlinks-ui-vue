@@ -1,17 +1,17 @@
 <template>
   <div class="table-header">
     <div>
-      <j-input-search v-model:value="searchValue" placeholder="请输入名称" @search="handleSearch" allowClear></j-input-search>
+      <j-input-search v-model:value="searchValue" :placeholder="$t('Base.index.691584-0')" @search="handleSearch" allowClear></j-input-search>
     </div>
     <div>
       <PermissionButton type="primary" :hasPermission="`${permission}:update`" key="add" @click="handleAddClick"
         :disabled="operateLimits('add', type)" :tooltip="{
-          title: operateLimits('add', type) ? '当前的存储方式不支持新增' : '新增',
+          title: operateLimits('add', type) ? $t('Base.index.691584-1') : $t('Base.index.691584-2'),
         }">
         <template #icon>
           <AIcon type="PlusOutlined" />
         </template>
-        新增
+        {{ $t('Base.index.691584-2') }}
       </PermissionButton>
       <Edit v-if="metadataStore.model.edit" :type="target" :tabs="type" @refresh="refreshMetadata"></Edit>
     </div>
@@ -32,7 +32,7 @@
         {{ levelMap[record.expands?.level] || '-' }}
       </template>
       <template v-if="column.dataIndex === 'async'">
-        {{ record.async ? '是' : '否' }}
+        {{ record.async ? $t('Base.index.691584-3') : $t('Base.index.691584-4') }}
       </template>
       <template v-if="column.dataIndex === 'valueType'">
         {{ record.valueType?.type }}
@@ -49,17 +49,17 @@
         <j-space>
           <PermissionButton :has-permission="`${permission}:update`" type="link" key="edit" style="padding: 0"
             :disabled="operateLimits('updata', type)" @click="handleEditClick(record)" :tooltip="{
-              title: operateLimits('updata', type) ? '当前的存储方式不支持编辑' : '编辑',
+              title: operateLimits('updata', type) ? $t('Base.index.691584-5') : $t('Base.index.691584-6'),
             }">
             <AIcon type="EditOutlined" />
           </PermissionButton>
           <PermissionButton :has-permission="`${permission}:delete`" type="link" key="delete" style="padding: 0" danger
             :pop-confirm="{
-              title: '确认删除？', onConfirm: async () => {
+              title: $t('Base.index.691584-7'), onConfirm: async () => {
                 await removeItem(record);
               },
             }" :tooltip="{
-  title: '删除',
+  title: $t('Base.index.691584-8'),
 }">
             <AIcon type="DeleteOutlined" />
           </PermissionButton>
@@ -80,6 +80,10 @@ import { asyncUpdateMetadata, removeMetadata } from '../metadata'
 import Edit from './Edit/index.vue'
 import { ColumnProps } from 'ant-design-vue/es/table'
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 interface Props {
   type: MetadataType;
   target: 'product' | 'device';
@@ -94,23 +98,23 @@ const loading = ref(false)
 const data = ref<MetadataItem[]>([])
 const { type, target = 'product' } = props
 const levelMap = ref({
-  ordinary: '普通',
-  warn: '警告',
-  urgent: '紧急',
+  ordinary: $t('Base.index.691584-9'),
+  warn: $t('Base.index.691584-10'),
+  urgent: $t('Base.index.691584-11'),
 })
 const sourceMap = ref({
-  device: '设备',
-  manual: '手动',
-  rule: '规则',
+  device: $t('Base.index.691584-12'),
+  manual: $t('Base.index.691584-13'),
+  rule: $t('Base.index.691584-14'),
 });
 const expandsType = ref({
-  read: '读',
-  write: '写',
-  report: '上报',
+  read: $t('Base.index.691584-15'),
+  write: $t('Base.index.691584-16'),
+  report: $t('Base.index.691584-17'),
 });
 const actions: ColumnProps[] = [
   {
-    title: '操作',
+    title: $t('Base.index.691584-18'),
     align: 'left',
     width: 80,
     dataIndex: 'action',
@@ -118,7 +122,7 @@ const actions: ColumnProps[] = [
 ];
 const pagination = {
   showTotal: (num: number, range: number[]) => {
-    return `第 ${range[0]} - ${range[1]} 条/总共 ${num} 条`;
+    return $t('Base.index.691584-19', [range[0],range[1],num]);
   },
   showSizeChanger: true,
   showQuickJumper: false,
@@ -165,7 +169,7 @@ const handleAddClick = () => {
   metadataStore.set('type', type)
   metadataStore.set('action', 'add')
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    onlyMessage('修改物模型后会脱离产品物模型', 'warning')
+    onlyMessage($t('Base.index.691584-20'), 'warning')
   }
 }
 
@@ -187,7 +191,7 @@ const handleEditClick = (record: MetadataItem) => {
   metadataStore.model.type = type;
   metadataStore.model.action = 'edit';
   if (props.target === 'device' && !instanceStore.detail?.independentMetadata) {
-    onlyMessage('修改物模型后会脱离产品物模型', 'warning');
+    onlyMessage($t('Base.index.691584-20'), 'warning');
   }
 }
 
@@ -214,13 +218,13 @@ const removeItem = async (record: MetadataItem) => {
   const _currentData = removeMetadata(type, [record], target === 'device' ? instanceStore.current : productStore.detail);
   const result = await asyncUpdateMetadata(target, _currentData);
   if (result.status === 200) {
-    onlyMessage('操作成功！');
+    onlyMessage($t('Base.index.691584-21'));
     // Store.set(SystemConst.REFRESH_METADATA_TABLE, true);
     metadataStore.model.edit = false;
     metadataStore.model.item = {};
     resetMetadata();
   } else {
-    onlyMessage('操作失败！', 'error');
+    onlyMessage($t('Base.index.691584-22'), 'error');
   }
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <j-spin :spinning="loading">
         <j-input
-            placeholder="请上传文件"
+            :placeholder="$t('Save.FileUpload.871193-0')"
             v-model:value="value"
             style="width: calc(100% - 100px)"
             :disabled="true"
@@ -19,7 +19,7 @@
             class="upload-box"
             :beforeUpload="beforeUpload"
         >
-            <j-button type="primary">上传jar包</j-button>
+            <j-button type="primary">{{ $t('Save.FileUpload.871193-1') }}</j-button>
         </j-upload>
     </j-spin>
 </template>
@@ -32,6 +32,9 @@ import { onlyMessage } from '@/utils/comm';
 import type { UploadChangeParam, UploadProps } from 'ant-design-vue';
 import { notification as Notification } from 'jetlinks-ui-components';
 import { useSystem } from '@/store/system';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:modelValue', 'change']);
 
@@ -54,7 +57,7 @@ const beforeUpload: UploadProps['beforeUpload'] = (file) => {
     const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
     if (!isFile) {
         loading.value = false;
-        onlyMessage('请上传.zip.jar格式的文件', 'error');
+        onlyMessage($t('Save.FileUpload.871193-2'), 'error');
     }
     return isFile;
 };
@@ -67,7 +70,7 @@ const handleChange = async (info: UploadChangeParam) => {
         const f = `${paths || ''}/file/${result.id}?accessKey=${
             result.others.accessKey
         }`;
-        onlyMessage('上传成功！', 'success');
+        onlyMessage($t('Save.FileUpload.871193-3'), 'success');
         value.value = f;
         emit('update:modelValue', f);
         emit('change', f);
@@ -75,8 +78,8 @@ const handleChange = async (info: UploadChangeParam) => {
         if (info.file.error) {
             Notification.error({
                 // key: '403',
-                message: '系统提示',
-                description: '系统未知错误，请反馈给管理员',
+                message: $t('Save.FileUpload.871193-4'),
+                description: $t('Save.FileUpload.871193-5'),
             });
             loading.value = false;
         } else if (info.file.response) {

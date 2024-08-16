@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Scan.Tree.3217110-0": "数据源",
+		"Scan.Tree.3217110-1": "全部撤销",
+		"Scan.Tree.3217110-2": "全部添加",
+		"Scan.Tree.3217110-3": "全部"
+	},
+	"en": {
+		"Scan.Tree.3217110-0": "Data source",
+		"Scan.Tree.3217110-1": "All revoked",
+		"Scan.Tree.3217110-2": "Add all",
+		"Scan.Tree.3217110-3": "all"
+	}
+}

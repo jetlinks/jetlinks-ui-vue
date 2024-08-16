@@ -7,7 +7,7 @@
         hasPermission="Northbound/DuerOS:add"
     >
         <template #icon><AIcon type="PlusOutlined" /></template>
-        新增
+        {{ $t('Tree.index.613234-0') }}
     </PermissionButton>
     <div class="listContainer">
         <template v-if="treeData?.length">
@@ -29,7 +29,7 @@
                             i.state?.value === 'disabled' ? 'red' : '#70b603',
                     }"
                 >
-                    {{ i.state?.value === 'disabled' ? '禁用' : '启用' }}
+                    {{ i.state?.value === 'disabled' ? $t('Tree.index.613234-1') : $t('Tree.index.613234-2') }}
                 </div>
             </div>
         </template>
@@ -40,6 +40,9 @@
 <script setup>
 import { queryPaginateNot } from '@/api/northbound/dueros';
 import { defineExpose } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     params: {
         type: Object,

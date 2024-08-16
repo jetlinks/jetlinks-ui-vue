@@ -2,13 +2,13 @@
     <j-modal
         :maskClosable="false"
         :visible="true"
-        title="编辑"
+        :title="$t('Property.Save.286674-0')"
         @ok="handleSave"
         @cancel="handleCancel"
         :confirmLoading="loading"
     >
         <j-alert
-            message="当数据来源为设备时，填写的值将下发到设备"
+            :message="$t('Property.Save.286674-1')"
             type="warning"
             showIcon
         />
@@ -21,7 +21,7 @@
         >
             <j-form-item
                 name="propertyValue"
-                :label="data?.name || '自定义属性'"
+                :label="data?.name || $t('Property.Save.286674-2')"
             >
                 <ValueItem
                     v-model:modelValue="modelRef.propertyValue"
@@ -37,6 +37,9 @@
 import { setProperty } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const props = defineProps({
     data: {
@@ -89,7 +92,7 @@ const rules = {
     propertyValue: [
         {
             required: true,
-            message: '该字段是必填字段',
+            message: $t('Property.Save.286674-3'),
         },
     ],
 };
@@ -105,7 +108,7 @@ const handleSave = () => {
                 loading.value = false;
             });
             if (resp.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('Property.Save.286674-4'));
                 emit('close');
                 formRef.value.resetFields();
             }

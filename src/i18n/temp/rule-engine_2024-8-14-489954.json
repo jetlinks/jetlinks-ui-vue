@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Record.index.8913310-0": "记录列表",
+		"Record.index.8913310-1": "处理时间",
+		"Record.index.8913310-2": "处理类型",
+		"Record.index.8913310-3": "系统",
+		"Record.index.8913310-4": "人工",
+		"Record.index.8913310-5": "告警时间",
+		"Record.index.8913310-6": "告警持续时长",
+		"Record.index.8913310-7": "处理结果"
+	},
+	"en": {
+		"Record.index.8913310-0": "Record List",
+		"Record.index.8913310-1": "Processing time ",
+		"Record.index.8913310-2": "Processing type",
+		"Record.index.8913310-3": "systematic",
+		"Record.index.8913310-4": "artificial",
+		"Record.index.8913310-5": "Alarm time",
+		"Record.index.8913310-6": "Alarm duration",
+		"Record.index.8913310-7": "Processing results"
+	}
+}

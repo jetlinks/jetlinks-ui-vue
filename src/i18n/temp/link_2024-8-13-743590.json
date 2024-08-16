@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.SecondKind.428293-0": "插件",
+		"components.SecondKind.428293-1": "插件ID：",
+		"components.SecondKind.428293-2": "版本号：",
+		"components.SecondKind.428293-3": "通用配置"
+	},
+	"en": {
+		"components.SecondKind.428293-0": "Plug-in unit",
+		"components.SecondKind.428293-1": "Plugin ID:",
+		"components.SecondKind.428293-2": "Version number:",
+		"components.SecondKind.428293-3": "General configuration"
+	}
+}

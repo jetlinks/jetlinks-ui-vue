@@ -1,6 +1,6 @@
 <template>
     <div v-if="data.provider === 'official-edge-gateway'">
-        <TitleComponent data="网络组件" v-if="network"></TitleComponent>
+        <TitleComponent :data="$t('components.FifthKind.428298-0')" v-if="network"></TitleComponent>
         <AccessCard
             v-if="network"
             :data="{
@@ -23,7 +23,7 @@
                         >
                             <j-badge :status="getColor(i)" :text="i.address" />
                             <span v-if="(network.addresses || []).length > 1"
-                                >等{{ item.addresses.length }}条</span
+                                >{{ $t('components.FifthKind.428298-1') }}{{ item.addresses.length }}{{ $t('components.FifthKind.428298-2') }}</span
                             >
                         </div>
                     </j-tooltip>
@@ -32,7 +32,7 @@
         >
     </div>
     <div v-else>
-        <TitleComponent data="消息协议" v-if="protocol"></TitleComponent>
+        <TitleComponent :data="$t('components.FifthKind.428298-3')" v-if="protocol"></TitleComponent>
         <AccessCard
             v-if="protocol"
             :data="{ ...protocol, type: 'protocol' }"
@@ -48,6 +48,9 @@ import {
     ProtocolMapping,
 } from '../../data';
 import { getNetworkList, getProtocolList } from '@/api/link/accessConfig';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,

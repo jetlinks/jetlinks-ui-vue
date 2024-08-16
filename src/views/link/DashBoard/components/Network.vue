@@ -3,17 +3,17 @@
         <div class="dash-board">
             <div class="header">
                 <div class="left">
-                    <h3 style="width: 80px">网络流量</h3>
+                    <h3 style="width: 80px">{{ $t('components.Network.542308-0') }}</h3>
                     <j-radio-group
                         button-style="solid"
                         v-model:value="data.type"
                         @change="changeType"
                     >
                         <j-radio-button value="bytesRead">
-                            上行
+                            {{ $t('components.Network.542308-1') }}
                         </j-radio-button>
                         <j-radio-button value="bytesSent">
-                            下行
+                            {{ $t('components.Network.542308-2') }}
                         </j-radio-button>
                     </j-radio-group>
                 </div>
@@ -25,12 +25,12 @@
                         v-model:value="data.time.type"
                     >
                         <j-radio-button value="hour">
-                            最近1小时
+                            {{ $t('components.Network.542308-3') }}
                         </j-radio-button>
                         <j-radio-button value="day">
-                            最近24小时
+                            {{ $t('components.Network.542308-4') }}
                         </j-radio-button>
-                        <j-radio-button value="week"> 近一周 </j-radio-button>
+                        <j-radio-button value="week"> {{ $t('components.Network.542308-5') }} </j-radio-button>
                     </j-radio-group>
                     <j-range-picker
                         :allowClear="false"
@@ -81,6 +81,9 @@ import dayjs from 'dayjs';
 import { DataType } from '../typings.d';
 import ServerList from './ServerList.vue';
 import Echarts from './echarts.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     serviceId: {

@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Import.index.920531-0": "导入",
+		"Import.index.920531-1": "产品",
+		"Import.index.920531-2": "请选择产品",
+		"Import.index.920531-3": "文件格式",
+		"Import.index.920531-4": "文件上传",
+		"Import.index.920531-5": "关闭"
+	},
+	"en": {
+		"Import.index.920531-0": "Import",
+		"Import.index.920531-1": "Product",
+		"Import.index.920531-2": "Please select a product",
+		"Import.index.920531-3": "File format",
+		"Import.index.920531-4": "File upload",
+		"Import.index.920531-5": "Close"
+	}
+}

@@ -25,7 +25,7 @@
         :value='slotProps'
         :active="rowKey === slotProps.id"
         :status="slotProps.state"
-        :statusText="slotProps.state === 1 ? '正常' : '禁用'"
+        :statusText="slotProps.state === 1 ? $t('Device.Product.5425842-0') : $t('Device.Product.5425842-1')"
         :statusNames="{ 1: 'processing', 0: 'error',  }"
         @click="handleClick"
       >
@@ -45,7 +45,7 @@
           <j-row>
             <j-col :span="12">
               <div class="card-item-content-text">
-                设备类型
+                {{ $t('Device.Product.5425842-2') }}
               </div>
               <div>{{ slotProps.deviceType.text}}</div>
             </j-col>
@@ -63,6 +63,9 @@ import { getTreeData_api } from '@/api/system/department'
 import { isNoCommunity } from '@/utils/utils'
 import { getImage } from '@/utils/comm'
 import { accessConfigTypeFilter } from '@/utils/setting'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'update:rowKey', data: string): void
@@ -98,7 +101,7 @@ const columns = [
     },
   },
   {
-    title: '名称',
+    title: $t('Device.Product.5425842-3'),
     dataIndex: 'name',
     width: 200,
     ellipsis: true,
@@ -108,7 +111,7 @@ const columns = [
     }
   },
   {
-    title: '网关类型',
+    title: $t('Device.Product.5425842-4'),
     dataIndex: 'accessProvider',
     width: 150,
     ellipsis: true,
@@ -121,7 +124,7 @@ const columns = [
     }
   },
   {
-    title: '接入方式',
+    title: $t('Device.Product.5425842-5'),
     dataIndex: 'accessId',
     width: 150,
     ellipsis: true,
@@ -135,39 +138,39 @@ const columns = [
     }
   },
   {
-    title: '设备类型',
+    title: $t('Device.Product.5425842-2'),
     dataIndex: 'deviceType',
     width: 150,
     search: {
       type: 'select',
       options: [
-        { label: '直连设备', value: 'device' },
-        { label: '网关子设备', value: 'childrenDevice' },
-        { label: '网关设备', value: 'gateway' },
+        { label: $t('Device.Product.5425842-6'), value: 'device' },
+        { label: $t('Device.Product.5425842-7'), value: 'childrenDevice' },
+        { label: $t('Device.Product.5425842-8'), value: 'gateway' },
       ]
     }
   },
   {
-    title: '状态',
+    title: $t('Device.Product.5425842-9'),
     dataIndex: 'state',
     width: '90px',
     search: {
       type: 'select',
       options: [
-        { label: '禁用', value: 0 },
-        { label: '正常', value: 1 },
+        { label: $t('Device.Product.5425842-1'), value: 0 },
+        { label: $t('Device.Product.5425842-0'), value: 1 },
       ]
     }
   },
   {
-    title: '说明',
+    title: $t('Device.Product.5425842-10'),
     dataIndex: 'describe',
     ellipsis: true,
     width: 300,
   },
   {
     dataIndex: 'classifiedId',
-    title: '分类',
+    title: $t('Device.Product.5425842-11'),
     hideInTable: true,
     search: {
       type: 'treeSelect',
@@ -188,7 +191,7 @@ const columns = [
   },
   {
     dataIndex: 'id$dim-assets',
-    title: '所属组织',
+    title: $t('Device.Product.5425842-12'),
     hideInTable: true,
     search: {
       type: 'treeSelect',

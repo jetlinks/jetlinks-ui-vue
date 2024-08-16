@@ -5,12 +5,12 @@
                 <j-col :span="4">
                     <span
                       v-if="index === 0" class="tagName">
-                      标签选择
+                      {{ $t('device.Tag.5425997-0') }}
                     </span>
                     <j-select
                         :options="[
-                            { label: '并且', value: 'and' },
-                            { label: '或者', value: 'or' },
+                            { label: $t('device.Tag.5425997-1'), value: 'and' },
+                            { label: $t('device.Tag.5425997-2'), value: 'or' },
                         ]"
                         v-else
                         :value="item?.type"
@@ -24,7 +24,7 @@
                             <j-select
                                 style="width: 120px"
                                 :value="item.id"
-                                placeholder="请选择标签"
+                                :placeholder="$t('device.Tag.5425997-3')"
                                 :options="options"
                                 @select="
                                     (_, _data) => onTagSelect(_data, index)
@@ -48,8 +48,8 @@
                                           )
                                         : item.valueType === 'boolean'
                                         ? [
-                                              { label: '是', value: true },
-                                              { label: '否', value: false },
+                                              { label: $t('device.Tag.5425997-4'), value: true },
+                                              { label: $t('device.Tag.5425997-5'), value: false },
                                           ]
                                         : undefined
                                 "
@@ -79,6 +79,9 @@
 
 <script lang="ts" setup name="DeviceTag">
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     value: {
@@ -138,8 +141,8 @@ const onValueChange = () => {
             value: item?.value,
         };
     });
-    emits('update:value', [{ value: newValue, name: '标签' }]);
-    emits('change', [{ value: newValue, name: '标签' }], tagList.value);
+    emits('update:value', [{ value: newValue, name: $t('device.Tag.5425997-6') }]);
+    emits('change', [{ value: newValue, name: $t('device.Tag.5425997-6') }], tagList.value);
 };
 
 watch(

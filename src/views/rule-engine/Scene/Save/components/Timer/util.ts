@@ -1,19 +1,22 @@
+import i18n from '@/i18n'
+
+const $t = i18n.global.t
 import { isArray } from 'lodash-es'
 import type { OperationTimer } from "@/views/rule-engine/Scene/typings";
 export const numberToString = {
-  1: '星期一',
-  2: '星期二',
-  3: '星期三',
-  4: '星期四',
-  5: '星期五',
-  6: '星期六',
-  7: '星期日',
+  1: $t('Timer.util.5425718-0'),
+  2: $t('Timer.util.5425718-1'),
+  3: $t('Timer.util.5425718-2'),
+  4: $t('Timer.util.5425718-3'),
+  5: $t('Timer.util.5425718-4'),
+  6: $t('Timer.util.5425718-5'),
+  7: $t('Timer.util.5425718-6'),
 };
 
 export const timeUnitEnum = {
-  seconds: '秒',
-  minutes: '分',
-  hours: '小时',
+  seconds: $t('Timer.util.5425718-7'),
+  minutes: $t('Timer.util.5425718-8'),
+  hours: $t('Timer.util.5425718-9'),
 };
 
 type continuousValueFn = (data: (string | number)[], type: string) => (number | string)[];
@@ -38,14 +41,14 @@ export const continuousValue: continuousValueFn = (data, type) => {
           newArray.push(
             isWeek
               ? `${numberToString[start]} - ${numberToString[_item]}`
-              : `${start} - ${_item}号`,
+              : $t('Timer.util.5425718-10', [start,_item]),
           );
         } else {
-          newArray.push(isWeek ? numberToString[start] : `${start}号`);
-          newArray.push(isWeek ? numberToString[_item] : `${_item}号`);
+          newArray.push(isWeek ? numberToString[start] : $t('Timer.util.5425718-11', [start]));
+          newArray.push(isWeek ? numberToString[_item] : $t('Timer.util.5425718-12', [_item]));
         }
       } else if (previousItemValue !== previousValue && nextItemValue !== nextValue) {
-        newArray.push(isWeek ? numberToString[_item] : `${_item}号`);
+        newArray.push(isWeek ? numberToString[_item] : $t('Timer.util.5425718-12', [_item]));
       }
     });
   }
@@ -59,7 +62,7 @@ type TimerOption = {
 }
 
 export const handleTimerOptions = (timer: OperationTimer):TimerOption => {
-  let when = '每天'
+  let when = $t('Timer.util.5425718-13')
   let time = undefined
   let extraTime = undefined
 
@@ -69,24 +72,24 @@ export const handleTimerOptions = (timer: OperationTimer):TimerOption => {
   }
 
   if (timer.when?.length) {
-    when = timer!.trigger === 'week' ? '每周' : '每月';
+    when = timer!.trigger === 'week' ? $t('Timer.util.5425718-14') : $t('Timer.util.5425718-15');
     const whenStrArr = continuousValue(timer.when! || [], timer!.trigger);
     const whenStrArr3 = whenStrArr.splice(0, 3);
     when += whenStrArr3.join('、');
-    when += `...等${timer.when!.length}天`;
+    when += $t('Timer.util.5425718-16', [timer.when!.length]);
   }
 
   if (timer.once) {
     time = timer.once.time + ' 执行1次';
   } else if (timer.period) {
     time = timer.period.from + '-' + timer.period.to;
-    extraTime = `每${timer.period.every}${timeUnitEnum[timer.period.unit]}执行1次`;
+    extraTime = $t('Timer.util.5425718-18', [timer.period.every,timeUnitEnum[timer.period.unit]]);
   }
 
   if (timer.trigger === 'multi') {
     const len = timer.multi!.spec.length
     when = ''
-    extraTime = `自定义日历 共${len}个规则`
+    extraTime = $t('Timer.util.5425718-19', [len])
   }
 
   return {

@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"Detail.index.378845-0": "任务详情",
+		"Detail.index.378845-1": "全部暂停",
+		"Detail.index.378845-2": "全部开始",
+		"Detail.index.378845-3": "批量重试",
+		"Detail.index.378845-4": "刷新状态",
+		"Detail.index.378845-5": "当前进度",
+		"Detail.index.378845-6": "共",
+		"Detail.index.378845-7": "个任务",
+		"Detail.index.378845-8": "关闭弹窗不会影响任务执行状态",
+		"Detail.index.378845-9": "关闭",
+		"Detail.index.378845-10": "设备名称",
+		"Detail.index.378845-11": "所属产品",
+		"Detail.index.378845-12": "创建时间",
+		"Detail.index.378845-13": "完成时间",
+		"Detail.index.378845-14": "设备版本",
+		"Detail.index.378845-15": "状态",
+		"Detail.index.378845-16": "操作成功"
+	},
+	"en": {
+		"Detail.index.378845-0": "Task Details",
+		"Detail.index.378845-1": "Pause All",
+		"Detail.index.378845-2": "Start All",
+		"Detail.index.378845-3": "Batch retry",
+		"Detail.index.378845-4": "Refresh Status ",
+		"Detail.index.378845-5": "Current progress",
+		"Detail.index.378845-6": "A total of ",
+		"Detail.index.378845-7": " tasks",
+		"Detail.index.378845-8": "Closing the pop-up window will not affect the task execution status",
+		"Detail.index.378845-9": "Close",
+		"Detail.index.378845-10": "Equipment name",
+		"Detail.index.378845-11": "Belonging products",
+		"Detail.index.378845-12": "Creation time",
+		"Detail.index.378845-13": "Completion time",
+		"Detail.index.378845-14": "Device version",
+		"Detail.index.378845-15": "State",
+		"Detail.index.378845-16": "Operation successful"
+	}
+}

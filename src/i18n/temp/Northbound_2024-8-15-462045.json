@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"command.index.613235-0": "指令类型",
+		"command.index.613235-1": "请选择指令类型",
+		"command.index.613235-2": "属性",
+		"command.index.613235-3": "请选择属性",
+		"command.index.613235-4": "值",
+		"command.index.613235-5": "请输入值",
+		"command.index.613235-6": "多个数据用英文,分割",
+		"command.index.613235-7": "功能",
+		"command.index.613235-8": "请选择功能",
+		"command.index.613235-9": "参数列表",
+		"command.index.613235-10": "请输入参数列表",
+		"command.index.613235-11": "读取属性",
+		"command.index.613235-12": "修改属性",
+		"command.index.613235-13": "调用功能"
+	},
+	"en": {
+		"command.index.613235-0": "Instruction type",
+		"command.index.613235-1": "Please select the instruction type",
+		"command.index.613235-2": "Attribute",
+		"command.index.613235-3": "Please select attributes",
+		"command.index.613235-4": "Value",
+		"command.index.613235-5": "Please enter a value",
+		"command.index.613235-6": "Multiple data in English, segmented",
+		"command.index.613235-7": "Function",
+		"command.index.613235-8": "Please select the function",
+		"command.index.613235-9": "Parameter list",
+		"command.index.613235-10": "Please enter the parameter list",
+		"command.index.613235-11": "Read attribute",
+		"command.index.613235-12": "Modify attribute",
+		"command.index.613235-13": "Call function"
+	}
+}

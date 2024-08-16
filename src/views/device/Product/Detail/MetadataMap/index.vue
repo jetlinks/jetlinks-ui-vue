@@ -2,7 +2,7 @@
     <div class="metadata-map">
         <div class="left">
           <j-space style="margin-bottom: 24px">
-                <j-select @change="onSearchChange" show-search allow-clear placeholder="请选择属性名称" style="width: 250px;">
+                <j-select @change="onSearchChange" show-search allow-clear :placeholder="$t('MetadataMap.index.064551-0')" style="width: 250px;">
                     <j-select-option :label="item.name" v-for="item in dataSourceCache" :value="item?.id" :key="item?.id">{{item?.name}}</j-select-option>
                 </j-select>
                 <j-button type="primary" @click="onSearch"><AIcon type="SearchOutlined" /></j-button>
@@ -32,8 +32,8 @@
                                     "
                                 >
                                     <span>
-                                        目标属性<j-tooltip
-                                            title="插件中物模型下的属性"
+                                        {{ $t('MetadataMap.index.064551-1') }}<j-tooltip
+                                            :title="$t('MetadataMap.index.064551-2')"
                                         >
                                             <AIcon
                                                 style="margin-left: 10px"
@@ -49,7 +49,7 @@
                                         ><AIcon
                                             type="ArrowUpOutlined"
                                         /><span>{{
-                                            filterValue ? '已映射' : '未映射'
+                                            filterValue ? $t('MetadataMap.index.064551-3') : $t('MetadataMap.index.064551-4')
                                         }}</span></j-tag
                                     >
                                     <j-dropdown v-else>
@@ -57,10 +57,10 @@
                                         <template #overlay>
                                             <j-menu @click="onFilter">
                                                 <j-menu-item :key="true"
-                                                    >置顶已映射数据</j-menu-item
+                                                    >{{ $t('MetadataMap.index.064551-5') }}</j-menu-item
                                                 >
                                                 <j-menu-item :key="false"
-                                                    >置顶未映射数据</j-menu-item
+                                                    >{{ $t('MetadataMap.index.064551-6') }}</j-menu-item
                                                 >
                                             </j-menu>
                                         </template>
@@ -95,7 +95,7 @@
                                                 selectedPluginKeys.includes(
                                                     item.id,
                                                 )
-                                                    ? '该属性已绑定平台属性'
+                                                    ? $t('MetadataMap.index.064551-7')
                                                     : ''
                                             "
                                         >
@@ -111,21 +111,32 @@
         </div>
         <div class="right">
             <j-scrollbar>
-                <div class="title">功能说明</div>
+                <div class="title">{{ $t('MetadataMap.index.064551-8') }}</div>
                 <p>
-                    该功能用于将插件/协议包中的
-                    <b>物模型属性标识</b>与
-                    <b>平台物模型属性标识</b
-                    >进行映射,当两方属性标识不一致时，可在当前页面直接修改映射管理，系统将以
-                    <b>映射后</b>的<b>物模型属性</b>进行数据处理。
+<!--                  This function is used to map-->
+<!--                  <b>object model attribute identifiers</b>-->
+<!--                  in the plugin/protocol package to-->
+<!--                  <b>platform object model attribute identifiers</b>.-->
+<!--                  When the attribute identifiers of the two parties are inconsistent, the mapping management can be directly modified on the current page, and the system will process the data based on the-->
+<!--                  <b>mapped object model attributes</b>.-->
+                    {{ $t('MetadataMap.index.064551-9') }}
+                    <b>{{ $t('MetadataMap.index.064551-10') }}</b>
+                  {{ $t('MetadataMap.index.064551-11') }}
+                    <b>{{ $t('MetadataMap.index.064551-12') }}</b
+                    >{{ $t('MetadataMap.index.064551-13') }}
+                    <b>{{ $t('MetadataMap.index.064551-14') }}</b>{{ $t('MetadataMap.index.064551-15') }}<b>{{ $t('MetadataMap.index.064551-16') }}</b>{{ $t('MetadataMap.index.064551-17') }}
                 </p>
                 <p>
-                    未完成映射的属性标识“目标属性”列数据为空，代表该属性值来源以在平台配置的来源为准。
+                    {{ $t('MetadataMap.index.064551-18') }}
                 </p>
                 <p>
-                    数据条背景亮起代表<b>标识一致</b>或<b>已完成映射</b>的属性。
+<!--                  The background lighting of a data entry indicates an attribute whose-->
+<!--                  identifier is consistent-->
+<!--                  or-->
+<!--                  has already been mapped.-->
+                    {{ $t('MetadataMap.index.064551-19') }}<b>{{ $t('MetadataMap.index.064551-20') }}</b>{{ $t('MetadataMap.index.064551-21') }}<b>{{ $t('MetadataMap.index.064551-22') }}</b>{{ $t('MetadataMap.index.064551-23') }}
                 </p>
-                <div class="title">功能图示</div>
+                <div class="title">{{ $t('MetadataMap.index.064551-24') }}</div>
                 <div>
                     <img :src="getImage('/device/matadataMap.png')" />
                 </div>
@@ -142,6 +153,9 @@ import { getPluginData, getProductByPluginId } from '@/api/link/plugin';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getMetadataMapById, metadataMapById, getProtocolMetadata } from '@/api/device/instance';
 import { cloneDeep } from 'lodash-es';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const productStore = useProductStore();
 const { current: productDetail } = storeToRefs(productStore);
@@ -160,16 +174,16 @@ const _delTag = ref<boolean>(false);
 
 const columns = [
     {
-        title: '序号',
+        title: $t('MetadataMap.index.064551-25'),
         dataIndex: 'index',
         width: 100,
     },
     {
-        title: '平台属性',
+        title: $t('MetadataMap.index.064551-26'),
         dataIndex: 'name',
     },
     {
-        title: '目标属性',
+        title: $t('MetadataMap.index.064551-1'),
         dataIndex: 'plugin',
         width: 250,
         // sorter: tableFilter
@@ -326,7 +340,7 @@ const getMetadata = (): Promise<{ properties: any[] }> => {
 const onMapData = async (arr: any[], flag?: boolean) => {
     const res = await metadataMapById('product', productDetail.value?.id, arr);
     if (res.success && flag) {
-        onlyMessage('操作成功');
+        onlyMessage($t('MetadataMap.index.064551-27'));
     }
 };
 

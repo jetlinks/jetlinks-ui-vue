@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Save.save.542578-0": "名称",
+		"Save.save.542578-1": "请输入名称",
+		"Save.save.542578-2": "最多输入64个字符",
+		"Save.save.542578-3": "触发方式",
+		"Save.save.542578-4": "请选择触发方式",
+		"Save.save.542578-5": "编辑",
+		"Save.save.542578-6": "新增"
+	},
+	"en": {
+		"Save.save.542578-0": "Name",
+		"Save.save.542578-1": "Please enter a name",
+		"Save.save.542578-2": "Enter a maximum of 64 characters",
+		"Save.save.542578-3": "Trigger method",
+		"Save.save.542578-4": "Please select the triggering method",
+		"Save.save.542578-5": "Edit",
+		"Save.save.542578-6": "Add"
+	}
+}

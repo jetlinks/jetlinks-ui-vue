@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Edit.ExpandsForm.6916021-0": "来源",
+		"Edit.ExpandsForm.6916021-1": "请选择来源",
+		"Edit.ExpandsForm.6916021-2": "读写类型",
+		"Edit.ExpandsForm.6916021-3": "请选择读写类型",
+		"Edit.ExpandsForm.6916021-4": "其它配置",
+		"Edit.ExpandsForm.6916021-5": "请输入指标配置",
+		"Edit.ExpandsForm.6916021-6": "指标配置",
+		"Edit.ExpandsForm.6916021-7": "场景联动页面可引用指标配置作为触发条件"
+	},
+	"en": {
+		"Edit.ExpandsForm.6916021-0": "Source",
+		"Edit.ExpandsForm.6916021-1": "Please select the source",
+		"Edit.ExpandsForm.6916021-2": "Read and write type",
+		"Edit.ExpandsForm.6916021-3": "Please select read-write type",
+		"Edit.ExpandsForm.6916021-4": "Other configurations",
+		"Edit.ExpandsForm.6916021-5": "Please enter the indicator configuration",
+		"Edit.ExpandsForm.6916021-6": "Indicator configuration",
+		"Edit.ExpandsForm.6916021-7": "The scene linkage page can reference indicator configuration as a triggering condition"
+	}
+}

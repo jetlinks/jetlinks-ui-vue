@@ -1,14 +1,16 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 export const objectColumns = [
     {
-        title: '参数标识',
+        title: $t('DetailModal.utils.691599-0'),
         dataIndex: 'id',
     },
     {
-        title: '参数名称',
+        title: $t('DetailModal.utils.691599-1'),
         dataIndex: 'name',
     },
     {
-        title: '参数类型',
+        title: $t('DetailModal.utils.691599-2'),
         dataIndex: 'valueType',
     },
 ]

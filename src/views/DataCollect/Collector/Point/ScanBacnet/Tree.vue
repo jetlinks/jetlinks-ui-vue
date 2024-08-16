@@ -1,12 +1,12 @@
 <template>
     <div class="tree-content">
         <div class="tree-header">
-            <div>数据源</div>
+            <div>{{ $t('ScanBacnet.Tree.321715-0') }}</div>
             <!-- <j-checkbox v-model:checked="isSelected">隐藏已有节点</j-checkbox> -->
         </div>
         {{ unSelectKeys }}
         <a-button block @click="allControl"
-            >{{ props.tableData.length ? '全部撤销' : '全部添加' }}
+            >{{ props.tableData.length ? $t('ScanBacnet.Tree.321715-1') : $t('ScanBacnet.Tree.321715-2') }}
         </a-button>
         <j-spin :spinning="spinning">
             <j-tree
@@ -49,6 +49,9 @@ import {
     getBacnetObjectList,
 } from '@/api/data-collect/collector';
 import { cloneDeep } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     data: {

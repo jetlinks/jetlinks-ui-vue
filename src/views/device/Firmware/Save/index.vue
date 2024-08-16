@@ -1,8 +1,8 @@
 <template>
     <j-modal
-        :title="data.id ? '编辑' : '新增'"
-        ok-text="确认"
-        cancel-text="取消"
+        :title="data.id ? $t('Save.index.378842-0') : $t('Save.index.378842-1')"
+        :ok-text="$t('Save.index.378842-2')"
+        :cancel-text="$t('Save.index.378842-3')"
         :visible="true"
         width="700px"
         :confirm-loading="loading"
@@ -20,21 +20,21 @@
             >
                 <j-row :gutter="[24, 0]">
                     <j-col :span="24">
-                        <j-form-item label="名称" v-bind="validateInfos.name">
+                        <j-form-item :label="$t('Save.index.378842-4')" v-bind="validateInfos.name">
                             <j-input
-                                placeholder="请输入名称"
+                                :placeholder="$t('Save.index.378842-5')"
                                 v-model:value="formData.name"
                         /></j-form-item>
                     </j-col>
                     <j-col :span="24"
                         ><j-form-item
-                            label="所属产品"
+                            :label="$t('Save.index.378842-6')"
                             v-bind="validateInfos.productId"
                         >
                             <j-select
                                 v-model:value="formData.productId"
                                 :options="productOptions"
-                                placeholder="请选择所属产品"
+                                :placeholder="$t('Save.index.378842-7')"
                                 allowClear
                                 show-search
                                 :filter-option="filterOption"
@@ -42,20 +42,20 @@
                     ></j-col>
                     <j-col :span="12"
                         ><j-form-item
-                            label="版本号"
+                            :label="$t('Save.index.378842-8')"
                             v-bind="validateInfos.version"
                         >
                             <j-input
-                                placeholder="请输入版本号"
+                                :placeholder="$t('Save.index.378842-9')"
                                 v-model:value="formData.version" /></j-form-item
                     ></j-col>
                     <j-col :span="12"
                         ><j-form-item
-                            label="版本序号"
+                            :label="$t('Save.index.378842-10')"
                             v-bind="validateInfos.versionOrder"
                         >
                             <j-input-number
-                                placeholder="请输入版本序号"
+                                :placeholder="$t('Save.index.378842-11')"
                                 style="width: 100%"
                                 :min="1"
                                 :max="99999"
@@ -65,7 +65,7 @@
                     ></j-col>
                     <j-col :span="12"
                         ><j-form-item
-                            label="签名方式"
+                            :label="$t('Save.index.378842-12')"
                             v-bind="validateInfos.signMethod"
                         >
                             <j-select
@@ -74,7 +74,7 @@
                                     { label: 'MD5', value: 'md5' },
                                     { label: 'SHA256', value: 'sha256' },
                                 ]"
-                                placeholder="请选择签名方式"
+                                :placeholder="$t('Save.index.378842-13')"
                                 allowClear
                                 show-search
                                 :filter-option="filterOption"
@@ -85,9 +85,9 @@
                     <j-col :span="12"
                         ><j-form-item v-bind="validateInfos.sign">
                             <template #label>
-                                签名
+                                {{ $t('Save.index.378842-14') }}
                                 <j-tooltip
-                                    title="请输入本地文件进行签名加密后的值"
+                                    :title="$t('Save.index.378842-15')"
                                 >
                                     <AIcon
                                         type="QuestionCircleOutlined"
@@ -96,12 +96,12 @@
                                 </j-tooltip>
                             </template>
                             <j-input
-                                placeholder="请输入签名"
+                                :placeholder="$t('Save.index.378842-16')"
                                 v-model:value="formData.sign" /></j-form-item
                     ></j-col>
                     <j-col :span="24">
                         <j-form-item
-                            label="固件上传"
+                            :label="$t('Save.index.378842-17')"
                             v-bind="validateInfos.url"
                         >
                             <FileUpload
@@ -111,7 +111,7 @@
                     ></j-col>
                     <j-col :span="24">
                         <j-form-item
-                            label="其他配置"
+                            :label="$t('Save.index.378842-18')"
                             v-bind="validateInfos.properties"
                         >
                             <j-form
@@ -136,12 +136,12 @@
                                         :name="['properties', index, 'id']"
                                         :rules="{
                                             required: true,
-                                            message: '请输入KEY',
+                                            message: $t('Save.index.378842-19'),
                                         }"
                                     >
                                         <j-input
                                             v-model:value="propertie.id"
-                                            placeholder="请输入KEY"
+                                            :placeholder="$t('Save.index.378842-19')"
                                         />
                                     </j-form-item>
                                     <j-form-item
@@ -150,23 +150,23 @@
                                         :name="['properties', index, 'value']"
                                         :rules="{
                                             required: true,
-                                            message: '请输入VALUE',
+                                            message: $t('Save.index.378842-20'),
                                         }"
                                     >
                                         <j-input
                                             v-model:value="propertie.value"
-                                            placeholder="请输入VALUE"
+                                            :placeholder="$t('Save.index.378842-20')"
                                         />
                                     </j-form-item>
                                     <j-form-item
-                                        :label="index === 0 && '操作'"
+                                        :label="index === 0 && $t('Save.index.378842-21')"
                                         class="formRef-form-item"
                                         style="width: 10%"
                                     >
                                         <PermissionButton
                                             type="text"
                                             :popConfirm="{
-                                                title: '确认删除吗？',
+                                                title: $t('Save.index.378842-22'),
                                                 onConfirm: () =>
                                                     removeList(propertie),
                                             }"
@@ -182,7 +182,7 @@
                                         @click="addList"
                                     >
                                         <AIcon type="PlusOutlined" />
-                                        添加
+                                        {{ $t('Save.index.378842-23') }}
                                     </j-button>
                                 </j-form-item>
                             </j-form>
@@ -190,11 +190,11 @@
                     >
                     <j-col :span="24">
                         <j-form-item
-                            label="说明"
+                            :label="$t('Save.index.378842-24')"
                             v-bind="validateInfos.description"
                         >
                             <j-textarea
-                                placeholder="请输入说明"
+                                :placeholder="$t('Save.index.378842-25')"
                                 v-model:value="formData.description"
                                 :maxlength="200"
                                 :rows="3"
@@ -218,6 +218,9 @@ import {
 import type { FormInstance } from 'ant-design-vue';
 import type { Properties } from '../type';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const formRef = ref<FormInstance>();
 const dynamicValidateForm = reactive<{ properties: Properties[] }>({
@@ -281,7 +284,7 @@ const validatorSign = async (_: Record<string, any>, value: string) => {
     } else {
         if (value && !!signMethod && !!url && !!extraValue.value) {
             return extraValue.value[signMethod] !== value
-                ? Promise.reject('签名不一致，请检查文件是否上传正确')
+                ? Promise.reject($t('Save.index.378842-26'))
                 : Promise.resolve();
         }
     }
@@ -295,7 +298,7 @@ const validatorVersionOrder = async (_: Record<string, any>, value: string) => {
             const res = await validateVersion(productId, value);
             if (res.status === 200) {
                 return res.result
-                    ? Promise.reject('版本序号已存在')
+                    ? Promise.reject($t('Save.index.378842-27'))
                     : Promise.resolve();
             }
         }
@@ -310,7 +313,7 @@ const validatorProductExist = async (_: Record<string, any>, value: string) => {
         if (dt) {
             return Promise.resolve();
         } else {
-            return Promise.reject('当前产品不存在，请选择产品');
+            return Promise.reject($t('Save.index.378842-28'));
         }
     }
 };
@@ -321,7 +324,7 @@ const validatorVersionValue = async (_rule: any, value: any) => {
         if (posReg.test(value.toString())) {
             return resolve('');
         } else {
-            return reject('请输入1~99999之间的正整数');
+            return reject($t('Save.index.378842-29'));
         }
     });
 };
@@ -329,29 +332,29 @@ const { resetFields, validate, validateInfos } = useForm(
     formData,
     reactive({
         name: [
-            { required: true, message: '请输入名称' },
-            { max: 64, message: '最多可输入64个字符' },
+            { required: true, message: $t('Save.index.378842-5') },
+            { max: 64, message: $t('Save.index.378842-30') },
         ],
         productId: [
-            { required: true, message: '请选择所属产品' },
+            { required: true, message: $t('Save.index.378842-7') },
             { validator: validatorProductExist, trigger: 'blur' },
         ],
         version: [
-            { required: true, message: '请输入版本号' },
-            { max: 64, message: '最多可输入64个字符', trigger: 'change' },
+            { required: true, message: $t('Save.index.378842-9') },
+            { max: 64, message: $t('Save.index.378842-30'), trigger: 'change' },
         ],
         versionOrder: [
-            { required: true, message: '请输入版本序号' },
+            { required: true, message: $t('Save.index.378842-11') },
             { validator: validatorVersionOrder, trigger: 'blur' },
             { validator: validatorVersionValue, trigger: 'change' },
         ],
-        signMethod: [{ required: true, message: '请选择签名方式' }],
+        signMethod: [{ required: true, message: $t('Save.index.378842-13') }],
         sign: [
-            { required: true, message: '请输入签名' },
+            { required: true, message: $t('Save.index.378842-16') },
             { validator: validatorSign },
         ],
-        url: [{ required: true, message: '请上传文件' }],
-        description: [{ max: 200, message: '最多可输入200个字符' }],
+        url: [{ required: true, message: $t('Save.index.378842-31') }],
+        description: [{ max: 200, message: $t('Save.index.378842-32') }],
     }),
 );
 
@@ -381,7 +384,7 @@ const handleOk = async () => {
                 ? await save(params).catch(() => {})
                 : await update({ ...props.data, ...params }).catch(() => {});
             if (response?.status === 200) {
-                onlyMessage('操作成功', 'success');
+                onlyMessage($t('Save.index.378842-33'), 'success');
 
                 emit('change', true);
             }

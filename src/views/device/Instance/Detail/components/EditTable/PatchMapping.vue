@@ -1,18 +1,18 @@
 <template>
     <j-modal
         width="900px"
-        title="批量映射"
+        :title="$t('EditTable.PatchMapping.920631-0')"
         visible
         @ok="handleClick"
         @cancel="handleClose"
     >
         <div class="map-tree">
             <div class="map-tree-top">
-                采集器的点位名称与属性名称一致时将自动映射绑定；有多个采集器点位名称与属性名称一致时以第1个采集器的点位数据进行绑定
+                {{ $t('EditTable.PatchMapping.920631-1') }}
             </div>
             <j-spin :spinning="loading">
                 <div class="map-tree-content">
-                    <j-card class="map-tree-content-card" title="源数据">
+                    <j-card class="map-tree-content-card" :title="$t('EditTable.PatchMapping.920631-2')">
                         <j-tree
                             checkable
                             :height="300"
@@ -25,10 +25,10 @@
                         <j-button
                             :disabled="rightList.length >= leftList.length"
                             @click="onRight"
-                            >加入右侧</j-button
+                            >{{ $t('EditTable.PatchMapping.920631-3') }}</j-button
                         >
                     </div>
-                    <j-card class="map-tree-content-card" title="采集器">
+                    <j-card class="map-tree-content-card" :title="$t('EditTable.PatchMapping.920631-4')">
                         <j-list
                             size="small"
                             :data-source="rightList"
@@ -39,7 +39,7 @@
                                     {{ item.title }}
                                     <template #actions>
                                         <ConfirmModal
-                                            title="确认删除？"
+                                            :title="$t('EditTable.PatchMapping.920631-5')"
                                             :onConfirm="() => _delete(item.key)"
                                             ><AIcon type="DeleteOutlined"
                                         /></ConfirmModal>
@@ -57,6 +57,9 @@
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const _props = defineProps({
     type: {
         type: String,
@@ -139,7 +142,7 @@ const _delete = (_key: string) => {
 
 const handleClick = async () => {
     if (!rightList.value.length) {
-        onlyMessage('请选择采集器', 'warning');
+        onlyMessage($t('EditTable.PatchMapping.920631-6'), 'warning');
     } else {
         const params: any[] = [];
         rightList.value.map((item: any) => {
@@ -164,11 +167,11 @@ const handleClick = async () => {
                 filterParms,
             );
             if (res.status === 200) {
-                onlyMessage('操作成功');
+                onlyMessage($t('EditTable.PatchMapping.920631-7'));
                 _emits('save');
             }
         } else {
-            onlyMessage('暂无对应属性的映射', 'error');
+            onlyMessage($t('EditTable.PatchMapping.920631-8'), 'error');
         }
     }
 };

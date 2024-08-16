@@ -18,7 +18,7 @@
         >
             <j-button style="margin-top: 10px">
                 <AIcon type="UploadOutlined" />
-                上传文件</j-button
+                {{ $t('Detail.CertificateFile.786733-0') }}</j-button
             >
         </j-upload>
     </j-spin>
@@ -30,6 +30,9 @@ import type { UploadChangeParam } from 'ant-design-vue';
 import { LocalStore } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { NETWORK_CERTIFICATE_UPLOAD } from '@/api/link/certificate';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:modelValue', 'change']);
 
@@ -60,9 +63,9 @@ const handleChange = (info: UploadChangeParam) => {
             keystoreBase64.value = result;
             emit('change', result);
             emit('update:modelValue', result);
-            onlyMessage('上传成功！', 'success');
+            onlyMessage($t('Detail.CertificateFile.786733-1'), 'success');
         } else {
-            onlyMessage('请上传.pem格式的文件', 'error');
+            onlyMessage($t('Detail.CertificateFile.786733-2'), 'error');
         }
         loading.value = false;
     }

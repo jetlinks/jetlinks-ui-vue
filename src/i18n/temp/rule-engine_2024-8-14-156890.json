@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Terms.BranchesNameEdit.5425830-0": "编辑",
+		"Terms.BranchesNameEdit.5425830-1": "条件名称",
+		"Terms.BranchesNameEdit.5425830-2": "最多输入64个字符"
+	},
+	"en": {
+		"Terms.BranchesNameEdit.5425830-0": "Edit",
+		"Terms.BranchesNameEdit.5425830-1": "Condition Name",
+		"Terms.BranchesNameEdit.5425830-2": "Enter a maximum of 64 characters"
+	}
+}

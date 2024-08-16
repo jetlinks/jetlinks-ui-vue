@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Save.GateWayDeviceModal.098163-0": "选择网关设备",
+		"Save.GateWayDeviceModal.098163-1": "设备类型",
+		"Save.GateWayDeviceModal.098163-2": "产品名称",
+		"Save.GateWayDeviceModal.098163-3": "设备名称",
+		"Save.GateWayDeviceModal.098163-4": "创建时间",
+		"Save.GateWayDeviceModal.098163-5": "状态",
+		"Save.GateWayDeviceModal.098163-6": "禁用",
+		"Save.GateWayDeviceModal.098163-7": "离线",
+		"Save.GateWayDeviceModal.098163-8": "在线"
+	},
+	"en": {
+		"Save.GateWayDeviceModal.098163-0": "Select gateway device",
+		"Save.GateWayDeviceModal.098163-1": "Equipment type",
+		"Save.GateWayDeviceModal.098163-2": "Product Name",
+		"Save.GateWayDeviceModal.098163-3": "Equipment name",
+		"Save.GateWayDeviceModal.098163-4": "Creation time",
+		"Save.GateWayDeviceModal.098163-5": "State",
+		"Save.GateWayDeviceModal.098163-6": "disabled",
+		"Save.GateWayDeviceModal.098163-7": "off-line",
+		"Save.GateWayDeviceModal.098163-8": "on-line"
+	}
+}

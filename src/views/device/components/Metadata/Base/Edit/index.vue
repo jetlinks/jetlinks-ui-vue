@@ -2,7 +2,7 @@
   <j-drawer :mask-closable="false" width="25vw" visible :title="`${title}-${typeMapping[metadataStore.model.type]}`"
     @close="close" destroy-on-close :z-index="1000" placement="right">
     <template #extra>
-      <j-button :loading="save.loading" type="primary" @click="() => save.saveMetadata()">保存</j-button>
+      <j-button :loading="save.loading" type="primary" @click="() => save.saveMetadata()">{{ $t('Edit.index.6916019-0') }}</j-button>
     </template>
     <j-form ref="formRef" :model="form.model" layout="vertical">
       <BaseForm :model-type="metadataStore.model.type" :type="type" v-model:value="form.model"></BaseForm>
@@ -23,6 +23,10 @@ import { PropType } from 'vue';
 import { _deploy } from '@/api/device/product';
 import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   type: {
@@ -45,17 +49,17 @@ const instanceStore = useInstanceStore()
 const productStore = useProductStore()
 const metadataStore = useMetadataStore()
 const typeMapping: Record<string, string> = {
-  properties: '属性',
-  events: '事件',
-  functions: '功能',
-  tags: '标签',
+  properties: $t('Edit.index.6916019-1'),
+  events: $t('Edit.index.6916019-2'),
+  functions: $t('Edit.index.6916019-3'),
+  tags: $t('Edit.index.6916019-4'),
 };
 const close = () => {
   metadataStore.set('edit', false)
   metadataStore.set('item', {})
 }
 
-const title = computed(() => metadataStore.model.action === 'add' ? '新增' : '编辑')
+const title = computed(() => metadataStore.model.action === 'add' ? $t('Edit.index.6916019-5') : $t('Edit.index.6916019-6'))
 
 const form = reactive({
   model: {} as any,
@@ -79,7 +83,7 @@ const save = reactive({
       const list = (_metadata[type] as any[]) || []
       if (formValue.id) {
         if (metadataStore.model.action === 'add' && list.some(item => item.id === formValue.id)) {
-          onlyMessage('标识已存在', 'error')
+          onlyMessage($t('Edit.index.6916019-7'), 'error')
           save.loading = false
           return
         }
@@ -116,14 +120,14 @@ const save = reactive({
             const res = await _deploy(id as string)
             if (res.success) {
               save.resetMetadata();
-              onlyMessage('操作成功！');
+              onlyMessage($t('Edit.index.6916019-8'));
             } else {
-              onlyMessage('操作失败！', 'error');
+              onlyMessage($t('Edit.index.6916019-9'), 'error');
             }
             // Store.set('product-deploy', deploy);
           } else {
             // save.resetMetadata();
-            onlyMessage('操作成功！');
+            onlyMessage($t('Edit.index.6916019-8'));
           }
           metadataStore.set('edit', false)
           metadataStore.set('item', {})
@@ -132,7 +136,7 @@ const save = reactive({
           // }
         }
       } else {
-        onlyMessage('操作失败！', 'error');
+        onlyMessage($t('Edit.index.6916019-9'), 'error');
       }
       save.loading = false
     })

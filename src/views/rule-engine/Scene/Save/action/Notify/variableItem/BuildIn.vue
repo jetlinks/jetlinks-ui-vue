@@ -2,8 +2,8 @@
     <j-input-group compact>
         <j-select
             :options="[
-                { label: '手动输入', value: 'fixed' },
-                { label: '内置参数', value: 'upper' },
+                { label: $t('variableItem.BuildIn.5425868-0'), value: 'fixed' },
+                { label: $t('variableItem.BuildIn.5425868-1'), value: 'upper' },
             ]"
             style="width: 120px"
             :value="value?.source"
@@ -13,7 +13,7 @@
             <j-tree-select
                 v-model:value="upperKey"
                 :treeData="builtInList"
-                placeholder="请选择参数"
+                :placeholder="$t('variableItem.BuildIn.5425868-2')"
                 style="width: calc(100% - 120px)"
                 :fieldNames="{ label: 'name', value: 'id' }"
                 @change="(val, label, extra) => itemOnChange(undefined, val, label, extra)"
@@ -43,7 +43,7 @@
                 allowClear
                 style="width: calc(100% - 120px)"
                 v-else-if="item.type === 'number'"
-                :placeholder="`请输入${item.name}`"
+                :placeholder="$t('variableItem.BuildIn.5425868-3', [item.name])"
                 @change="itemOnChange"
             />
             <j-input
@@ -51,7 +51,7 @@
                 allowClear
                 style="width: calc(100% - 120px)"
                 v-else
-                :placeholder="`请输入${item.name}`"
+                :placeholder="$t('variableItem.BuildIn.5425868-3', [item.name])"
                 @change="(e) => itemOnChange(e.target.value)"
             />
         </template>
@@ -62,6 +62,9 @@
 import { queryBuiltInParams } from '@/api/rule-engine/scene';
 import { useSceneStore } from '@/store/scene';
 import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const sceneStore = useSceneStore();
 const { data } = storeToRefs(sceneStore);

@@ -2,14 +2,14 @@
     <div style="margin-top: 20px">
         <j-descriptions bordered>
             <template #title>
-                关系信息
+                {{ $t('Relation.index.735523-0') }}
                 <PermissionButton
                     type="link"
                     @click="visible = true"
                     hasPermission="device/Instance:update"
                 >
-                    <AIcon type="EditOutlined" />编辑<j-tooltip
-                        title="管理设备与其他业务的关联关系，关系来源于关系配置"
+                    <AIcon type="EditOutlined" />{{ $t('Relation.index.735523-1') }}<j-tooltip
+                        :title="$t('Relation.index.735523-2')"
                         ><AIcon type="QuestionCircleOutlined"
                     /></j-tooltip>
                 </PermissionButton>
@@ -38,6 +38,9 @@
 <script lang="ts" setup>
 import { useInstanceStore } from '@/store/instance';
 import Save from './Save.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 const instanceStore = useInstanceStore();
 
 const dataSource = ref<Record<any, any>[]>([]);

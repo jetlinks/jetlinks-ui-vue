@@ -3,9 +3,9 @@
         <div style="position: relative">
             <div style="position: absolute; right: 0; top: 5px; z-index: 999">
                 <j-space>
-                    <j-button type="primary" @click="onStart">开始动画</j-button>
-                    <j-button type="primary" v-if="!stop" @click="onStop">暂停动画</j-button>
-                    <j-button type="primary" v-else @click="onResume">继续动画</j-button>
+                    <j-button type="primary" @click="onStart">{{ $t('Detail.PropertyAMap.2866711-0') }}</j-button>
+                    <j-button type="primary" v-if="!stop" @click="onStop">{{ $t('Detail.PropertyAMap.2866711-1') }}</j-button>
+                    <j-button type="primary" v-else @click="onResume">{{ $t('Detail.PropertyAMap.2866711-2') }}</j-button>
                 </j-space>
             </div>
         </div>
@@ -19,6 +19,9 @@
 import { getPropertyData } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import encodeQuery from '@/utils/encodeQuery';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const instanceStore = useInstanceStore();
 

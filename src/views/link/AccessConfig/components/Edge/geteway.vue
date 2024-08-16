@@ -2,7 +2,7 @@
   <div class="card-last">
     <j-row :gutter="[24, 24]">
       <j-col :span="12">
-        <title-component data="基本信息" />
+        <title-component :data="$t('Edge.geteway.4282914-0')" />
         <div>
           <j-form
               :model="formState"
@@ -15,29 +15,29 @@
                 :rules="[
                                 {
                                     required: true,
-                                    message: '请输入名称',
+                                    message: $t('Edge.geteway.4282914-1'),
                                     trigger: 'blur',
                                 },
                                 {
                                     max: 64,
-                                    message: '最多可输入64个字符',
+                                    message: $t('Edge.geteway.4282914-2'),
                                     trigger: 'blur',
                                 },
                             ]"
-                label="名称"
+                :label="$t('Edge.geteway.4282914-3')"
                 name="name"
             >
               <j-input
                   v-model:value="formState.name"
-                  placeholder="请输入名称"
+                  :placeholder="$t('Edge.geteway.4282914-1')"
               />
             </j-form-item>
-            <j-form-item label="说明" name="description">
+            <j-form-item :label="$t('Edge.geteway.4282914-4')" name="description">
               <j-textarea
                   v-model:value="formState.description"
                   :maxlength="200"
                   :rows="4"
-                  placeholder="请输入说明"
+                  :placeholder="$t('Edge.geteway.4282914-5')"
                   show-count
               />
             </j-form-item>
@@ -51,7 +51,7 @@
                   type="primary"
                   :loading="loading"
               >
-                保存
+                {{ $t('Edge.geteway.4282914-6') }}
               </PermissionButton>
             </j-form-item>
           </j-form>
@@ -59,17 +59,17 @@
       </j-col>
       <j-col :span="12">
         <div class="doc" style="height: 600px">
-          <TitleComponent data="配置概览" />
-          <p>接入方式：{{ provider.name }}</p>
+          <TitleComponent :data="$t('Edge.geteway.4282914-7')" />
+          <p>{{ $t('Edge.geteway.4282914-8') }}{{ provider.name }}</p>
           <p>
             {{ provider.description }}
           </p>
-          <p>设备接入指引</p>
-          <TitleComponent data="设备接入指引" />
-          <p>1、数据采集菜单中配置数采通道、点位</p>
-          <p>2、创建数采设备接入网关</p>
-          <p>3、创建产品，并选中接入方式为数采设备接入</p>
-          <p>4、添加设备，单独为每一个设备进行数据点绑定</p>
+          <p>{{ $t('Edge.geteway.4282914-9') }}</p>
+          <TitleComponent :data="$t('Edge.geteway.4282914-9')" />
+          <p>{{ $t('Edge.geteway.4282914-10') }}</p>
+          <p>{{ $t('Edge.geteway.4282914-11') }}</p>
+          <p>{{ $t('Edge.geteway.4282914-12') }}</p>
+          <p>{{ $t('Edge.geteway.4282914-13') }}</p>
         </div>
       </j-col>
     </j-row>
@@ -80,6 +80,9 @@
 import { onlyMessage } from '@/utils/comm';
 import { update, save } from '@/api/link/accessConfig';
 import { ProtocolMapping } from '../../data';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 interface FormState {
   name: string;
@@ -120,7 +123,7 @@ const onFinish = async (values: any) => {
   const resp =
       id === ':id' ? await save(params) : await update({ ...params, id });
   if (resp.status === 200) {
-    onlyMessage('操作成功', 'success');
+    onlyMessage($t('Edge.geteway.4282914-14'), 'success');
     history.back();
     if ((window as any).onTabSaveSuccess) {
       (window as any).onTabSaveSuccess(resp);

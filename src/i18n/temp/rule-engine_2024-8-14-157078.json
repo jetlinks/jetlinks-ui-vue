@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"actions.WriteProperty.5425991-0": "设置属性",
+		"actions.WriteProperty.5425991-1": "请选择设置属性",
+		"actions.WriteProperty.5425991-2": "请选择属性",
+		"actions.WriteProperty.5425991-3": "属性值",
+		"actions.WriteProperty.5425991-4": "请选择",
+		"actions.WriteProperty.5425991-5": "手动输入",
+		"actions.WriteProperty.5425991-6": "内置参数"
+	},
+	"en": {
+		"actions.WriteProperty.5425991-0": "Set attributes",
+		"actions.WriteProperty.5425991-1": "Please choose to set attributes",
+		"actions.WriteProperty.5425991-2": "Please select attributes",
+		"actions.WriteProperty.5425991-3": "Attribute value",
+		"actions.WriteProperty.5425991-4": "Please choose",
+		"actions.WriteProperty.5425991-5": "Manual input",
+		"actions.WriteProperty.5425991-6": "Built in parameters"
+	}
+}

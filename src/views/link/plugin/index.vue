@@ -22,7 +22,7 @@
                         hasPermission="link/plugin:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
-                        新增
+                        {{ $t('plugin.index.688244-0') }}
                     </PermissionButton>
                 </template>
 
@@ -69,7 +69,7 @@
                             <j-row>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        插件ID
+                                        {{ $t('plugin.index.688244-1') }}
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ slotProps.id }}
@@ -77,7 +77,7 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        插件类型
+                                        {{ $t('plugin.index.688244-2') }}
                                     </div>
                                     <Ellipsis style="width: 100%">
                                         {{ TypeMap[slotProps.type] }}
@@ -147,6 +147,9 @@ import SaveModal from './Save.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { queryPage, removeFn, getTypes } from '@/api/link/plugin';
 import { TypeMap } from './util';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute();
 const visible = ref(false);
@@ -156,7 +159,7 @@ const instanceRef = ref();
 
 const columns = [
     {
-        title: '插件ID',
+        title: $t('plugin.index.688244-1'),
         dataIndex: 'id',
         key: 'type',
         fixed: 'left',
@@ -167,7 +170,7 @@ const columns = [
         },
     },
     {
-        title: '插件名称',
+        title: $t('plugin.index.688244-3'),
         dataIndex: 'name',
         key: 'type',
         fixed: 'left',
@@ -178,13 +181,13 @@ const columns = [
         },
     },
     {
-        title: '版本',
+        title: $t('plugin.index.688244-4'),
         dataIndex: 'version',
         key: 'version',
         ellipsis: true,
     },
     {
-        title: '插件类型',
+        title: $t('plugin.index.688244-2'),
         dataIndex: 'type',
         key: 'type',
         ellipsis: true,
@@ -206,13 +209,13 @@ const columns = [
         },
     },
     {
-        title: '文件',
+        title: $t('plugin.index.688244-5'),
         dataIndex: 'filename',
         key: 'filename',
         ellipsis: true,
     },
     {
-        title: '描述',
+        title: $t('plugin.index.688244-6'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
@@ -221,7 +224,7 @@ const columns = [
         },
     },
     {
-        title: '操作',
+        title: $t('plugin.index.688244-7'),
         key: 'action',
         fixed: 'right',
         width: 120,
@@ -254,9 +257,9 @@ const getActions = (data: any) => {
     return [
         {
             key: 'update',
-            text: '编辑',
+            text: $t('plugin.index.688244-8'),
             tooltip: {
-                title: '编辑',
+                title: $t('plugin.index.688244-8'),
             },
             icon: 'EditOutlined',
             onClick: () => {
@@ -266,20 +269,20 @@ const getActions = (data: any) => {
         },
         {
             key: 'delete',
-            text: '删除',
+            text: $t('plugin.index.688244-9'),
             tooltip: {
-                title: '删除',
+                title: $t('plugin.index.688244-9'),
             },
             popConfirm: {
-                title: '确认删除?',
+                title: $t('plugin.index.688244-10'),
                 onConfirm: () => {
                     const response = removeFn(data.id);
                     response.then((resp) => {
                         if (resp.status === 200) {
-                            onlyMessage('操作成功！');
+                            onlyMessage($t('plugin.index.688244-11'));
                             instanceRef.value?.reload();
                         } else {
-                            onlyMessage(resp?.message || '操作失败！', 'error');
+                            onlyMessage(resp?.message || $t('plugin.index.688244-12'), 'error');
                         }
                     });
                     return response;

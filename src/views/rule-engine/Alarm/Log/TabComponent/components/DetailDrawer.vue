@@ -20,7 +20,7 @@
                         <LevelIcon :level="AlarmData.level"></LevelIcon>
                     </div>
                     <div style="font-size: 12px; margin-left: 10px; margin-top:5px">
-                        {{ AlarmData?.description || '暂无说明' }}
+                        {{ AlarmData?.description || $t('components.DetailDrawer.891328-0') }}
                     </div>
                 </div>
                 <div class="alarmInfoRight">
@@ -40,7 +40,7 @@
                             v-if="AlarmData?.state.value === 'warning'"
                             type="link"
                             @click="dealAlarm"
-                            >处理</a-button
+                            >{{ $t('components.DetailDrawer.891328-1') }}</a-button
                         >
                     </div>
                 </div>
@@ -52,8 +52,8 @@
             button-style="solid"
             style="margin: 20px 0"
         >
-            <a-radio-button value="record">处理记录</a-radio-button>
-            <a-radio-button value="logs">告警日志</a-radio-button>
+            <a-radio-button value="record">{{ $t('components.DetailDrawer.891328-2') }}</a-radio-button>
+            <a-radio-button value="logs">{{ $t('components.DetailDrawer.891328-3') }}</a-radio-button>
         </a-radio-group>
         <Record
             :currentId="AlarmData.id"
@@ -79,6 +79,9 @@ import { query } from '@/api/rule-engine/log';
 import Record from './Record.vue';
 import Log from './Log.vue';
 import SolveComponent from '../../SolveComponent/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     logData: {
         type: Object,

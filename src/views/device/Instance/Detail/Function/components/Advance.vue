@@ -37,16 +37,16 @@
                                 :loading="loading"
                                 @click="handleExecute(current)"
                             >
-                                执行
+                                {{ $t('components.Advance.155742-0') }}
                             </j-button>
                             <j-button type="default" @click="handleClear()">
-                                清空
+                                {{ $t('components.Advance.155742-1') }}
                             </j-button>
                         </j-space>
                     </div>
                 </j-col>
                 <j-col :span="9">
-                    <h4>执行结果：</h4>
+                    <h4>{{ $t('components.Advance.155742-2') }}</h4>
                     <span class="execute-result">
                         {{ executeResult }}
                     </span>
@@ -60,6 +60,9 @@
 import { useInstanceStore } from '@/store/instance';
 import { execute } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const instanceStore = useInstanceStore();
 const route = useRoute();
@@ -152,7 +155,7 @@ const handleExecute = async (func: any) => {
     if (resp.success) {
         executeResult.value =
             resp?.result instanceof Array ? resp?.result?.[0] : resp.result;
-        onlyMessage('操作成功');
+        onlyMessage($t('components.Advance.155742-3'));
     }
 };
 /**

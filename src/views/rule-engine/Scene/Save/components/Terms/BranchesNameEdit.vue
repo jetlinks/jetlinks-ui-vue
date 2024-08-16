@@ -1,14 +1,14 @@
 <template>
   <j-modal
     visible
-    title="编辑"
+    :title="$t('Terms.BranchesNameEdit.5425830-0')"
     :keyboard="false"
     :maskClosable="false"
     @cancel="onCancel"
     @ok="onOk"
   >
     <j-form ref='formRef' layout='vertical' :model="formData">
-      <j-form-item label="条件名称" required name="name" :rules="[{ max: 64, message: '最多输入64个字符'}]">
+      <j-form-item :label="$t('Terms.BranchesNameEdit.5425830-1')" required name="name" :rules="[{ max: 64, message: $t('Terms.BranchesNameEdit.5425830-2')}]">
         <j-input v-model:value="formData.name"></j-input>
       </j-form-item>
     </j-form>
@@ -16,6 +16,9 @@
 </template>
 
 <script setup name="BranchesNameEdit">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
   name: {
     type: String,

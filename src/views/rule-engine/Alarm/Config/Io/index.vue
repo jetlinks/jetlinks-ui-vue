@@ -9,9 +9,9 @@
                     >
                         <template #title>
                             <div class="alarmTitle">
-                                <span>告警数据输出</span>
+                                <span>{{ $t('Io.index.233004-0') }}</span>
                                 <j-tooltip
-                                    title="将告警数据输出到其他第三方系统"
+                                    :title="$t('Io.index.233004-1')"
                                 >
                                     <AIcon
                                         type="QuestionCircleOutlined"
@@ -40,7 +40,7 @@
                             :column="2"
                         >
                             <j-descriptions-item
-                                label="kafka地址"
+                                :label="$t('Io.index.233004-2')"
                                 :content-style="{ minWidth: '200px' }"
                                 ><j-badge
                                     :status="
@@ -55,7 +55,7 @@
                             <j-descriptions-item label="topic">{{
                                 output?.data?.config?.config?.topic || ''
                             }}</j-descriptions-item>
-                            <j-descriptions-item label="状态" :span="2"
+                            <j-descriptions-item :label="$t('Io.index.233004-3')" :span="2"
                                 ><j-badge
                                     :status="
                                         output?.data?.state?.value === 'enabled'
@@ -73,8 +73,8 @@
                     >
                         <template #title>
                             <div class="alarmTitle">
-                                <span>告警处理结果输入</span>
-                                <j-tooltip title="接收第三方系统处理的告警结果">
+                                <span>{{ $t('Io.index.233004-4') }}</span>
+                                <j-tooltip :title="$t('Io.index.233004-5')">
                                     <AIcon
                                         type="QuestionCircleOutlined"
                                         style="
@@ -99,7 +99,7 @@
                             :contentStyle="{ minWidth: 150 + 'px' }"
                             :column="2"
                         >
-                            <j-descriptions-item label="kafka地址"
+                            <j-descriptions-item :label="$t('Io.index.233004-2')"
                                 ><j-badge
                                     :status="
                                         input?.running ? 'success' : 'error'
@@ -113,7 +113,7 @@
                             <j-descriptions-item label="topic">{{
                                 input?.data?.config?.config?.topic || ''
                             }}</j-descriptions-item>
-                            <j-descriptions-item label="状态" :span="2"
+                            <j-descriptions-item :label="$t('Io.index.233004-3')" :span="2"
                                 ><j-badge
                                     :status="
                                         input?.data?.state?.value === 'enabled'
@@ -130,18 +130,18 @@
             <j-col :span="10">
                 <div class="alarmFlow-right">
                     <div class="doc">
-                        <h1>功能图示</h1>
+                        <h1>{{ $t('Io.index.233004-6') }}</h1>
                         <div class="image">
                             <j-image
                                 width="100%"
                                 :src="getImage('/alarm/io.png')"
                             ></j-image>
                         </div>
-                        <h1>功能说明</h1>
+                        <h1>{{ $t('Io.index.233004-7') }}</h1>
                         <div>
-                            1、平台支持将告警数据输出到kafka，第三方系统可订阅kafka中的告警数据，进行业务处理。
+                            {{ $t('Io.index.233004-8') }}
                         </div>
-                        <h2>推送参数</h2>
+                        <h2>{{ $t('Io.index.233004-9') }}</h2>
                         <div>
                             <j-table
                                 :dataSource="outputData"
@@ -149,12 +149,12 @@
                                 :columns="outputColumns"
                             ></j-table>
                         </div>
-                        <h2>示例</h2>
+                        <h2>{{ $t('Io.index.233004-10') }}</h2>
                         <div v-html="markdownOutputText" class="code"></div>
                         <div>
-                            2、平台支持订阅kafka中告警处理数据，并更新告警记录状态。
+                            {{ $t('Io.index.233004-11') }}
                         </div>
-                        <h2>订阅参数</h2>
+                        <h2>{{ $t('Io.index.233004-12') }}</h2>
                         <div>
                             <j-table
                                 :dataSource="subData"
@@ -162,7 +162,7 @@
                                 :columns="subColumns"
                             ></j-table>
                         </div>
-                        <h2>示例</h2>
+                        <h2>{{ $t('Io.index.233004-10') }}</h2>
                         <div class="code" v-html="markdownSubText"></div>
                     </div>
                 </div>
@@ -189,187 +189,190 @@ import OutputSave from './Save/output.vue';
 import { getDataExchange } from '@/api/rule-engine/config';
 import { getImage } from '@/utils/comm';
 import { marked } from 'marked';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 let input = ref<any>();
 let output = ref<any>();
 const outputData = [
     {
         key: 'alarmConfigName',
-        name: '告警配置名称',
+        name: $t('Io.index.233004-13'),
         type: 'string',
-        desc: '推送的告警配置名称',
-        example: '烟感告警',
+        desc: $t('Io.index.233004-14'),
+        example: $t('Io.index.233004-15'),
     },
     {
         key: 'alarmConfigId',
-        name: '告警配置ID',
+        name: $t('Io.index.233004-16'),
         type: 'string',
-        desc: '推送的告警配置ID',
+        desc: $t('Io.index.233004-17'),
         example: '1605111722418597888',
     },
     {
         key: 'Id',
-        name: '告警数据ID',
+        name: $t('Io.index.233004-18'),
         type: 'string',
-        desc: '告警唯一性标识',
+        desc: $t('Io.index.233004-19'),
         example: '1515992841393119232',
     },
     {
         key: 'alarmRecordId',
-        name: '告警记录ID',
+        name: $t('Io.index.233004-20'),
         type: 'string',
-        desc: '告警记录的唯一标识，可根据此ID处理告警',
+        desc: $t('Io.index.233004-21'),
         example: 'ba33a59ca5ebe3dccfcd75fd0575be4e',
     },
     {
         key: 'targetType',
-        name: '告警目标类型',
+        name: $t('Io.index.233004-22'),
         type: 'string',
-        desc: '告警所属的业务类型，具体有产品、设备、部门、其他',
-        example: '产品',
+        desc: $t('Io.index.233004-23'),
+        example: $t('Io.index.233004-24'),
     },
     {
         key: 'targetId',
-        name: '告警目标ID',
+        name: $t('Io.index.233004-25'),
         type: 'string',
-        desc: '告警目标唯一性标识',
+        desc: $t('Io.index.233004-26'),
         example: '1583300346713661440',
     },
     {
         key: 'targetName',
-        name: '告警目标名称',
+        name: $t('Io.index.233004-27'),
         type: 'string',
-        desc: '告警目标实例名称',
-        example: '海康烟感',
+        desc: $t('Io.index.233004-28'),
+        example: $t('Io.index.233004-29'),
     },
     {
         key: 'alarmTime',
-        name: '告警时间',
+        name: $t('Io.index.233004-30'),
         type: 'long',
-        desc: '告警触发时间',
+        desc: $t('Io.index.233004-31'),
         example: '1651233650840',
     },
     {
         key: 'sourceType',
-        name: '告警源类型',
+        name: $t('Io.index.233004-32'),
         type: 'string',
-        desc: '触发告警的源类型。当前只有device',
+        desc: $t('Io.index.233004-33'),
         example: 'device',
     },
     {
         key: 'sourceId',
-        name: '告警源ID',
+        name: $t('Io.index.233004-34'),
         type: 'string',
-        desc: '触发告警的源Id。如设备Id',
+        desc: $t('Io.index.233004-35'),
         example: '1605138218826821632',
     },
     {
         key: 'sourceName',
-        name: '告警源名称',
+        name: $t('Io.index.233004-36'),
         type: 'string',
-        desc: '触发告警的源名称。如设备名称',
-        example: '1楼烟感S01',
+        desc: $t('Io.index.233004-37'),
+        example: $t('Io.index.233004-38'),
     },
     {
         key: 'level',
-        name: '告警级别',
+        name: $t('Io.index.233004-39'),
         type: 'int',
-        desc: '告警严重程度指标',
+        desc: $t('Io.index.233004-40'),
         example: 1,
     },
     {
         key: 'description',
-        name: '告警说明',
+        name: $t('Io.index.233004-41'),
         type: 'string',
-        desc: '告警规则说明',
-        example: '1楼烟感统一告警规则设置',
+        desc: $t('Io.index.233004-42'),
+        example: $t('Io.index.233004-43'),
     },
 ];
 const subData = [
     {
         key: 'alarmRecordId',
-        name: '告警记录ID',
+        name: $t('Io.index.233004-20'),
         type: 'string',
-        require: '是',
-        desc: '告警记录的唯一标识，可根据此ID处理告警',
+        require: $t('Io.index.233004-44'),
+        desc: $t('Io.index.233004-21'),
         example: 'ba33a59ca5ebe3dccfcd75fd0575be4e',
     },
     {
         key: 'alarmConfigId',
-        name: '告警配置ID',
+        name: $t('Io.index.233004-16'),
         type: 'string',
-        require: '是',
-        desc: '推送的告警配置ID',
+        require: $t('Io.index.233004-44'),
+        desc: $t('Io.index.233004-17'),
         example: '1605111722418597888',
     },
     {
         key: 'alarmTime',
-        name: '告警时间',
+        name: $t('Io.index.233004-30'),
         type: 'long',
-        require: '是',
-        desc: '告警触发时间',
+        require: $t('Io.index.233004-44'),
+        desc: $t('Io.index.233004-31'),
         example: '1651233650840',
     },
     {
         key: 'handleTime',
-        name: '处理时间',
+        name: $t('Io.index.233004-45'),
         type: 'long',
-        require: '是',
-        desc: '告警处理时间，不填是默认为消息处理时间',
+        require: $t('Io.index.233004-44'),
+        desc: $t('Io.index.233004-46'),
         example: '1651233650840',
     },
     {
         key: 'describe',
-        name: '处理说明',
+        name: $t('Io.index.233004-47'),
         type: 'string',
-        require: '是',
-        desc: '告警处理内容详细描述说明',
-        example: '已联系第三方人员进行告警处理，现告警已恢复',
+        require: $t('Io.index.233004-44'),
+        desc: $t('Io.index.233004-48'),
+        example: $t('Io.index.233004-49'),
     },
     {
         key: 'type',
-        name: '处理类型',
+        name: $t('Io.index.233004-50'),
         type: 'enum',
-        require: '是',
-        desc: '支持system、user',
+        require: $t('Io.index.233004-44'),
+        desc: $t('Io.index.233004-51'),
         example: 'user',
     },
     {
         key: 'state',
-        name: '处理后的状态',
+        name: $t('Io.index.233004-52'),
         type: 'enum',
-        require: '是',
+        require: $t('Io.index.233004-44'),
         desc: 'warning、normal',
         example: 'normal',
     },
 ];
 const outputColumns = [
     {
-        title: '名称',
+        title: $t('Io.index.233004-53'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
     },
     {
-        title: '标识',
+        title: $t('Io.index.233004-54'),
         dataIndex: 'key',
         key: 'key',
         ellipsis: true,
     },
     {
-        title: '类型',
+        title: $t('Io.index.233004-55'),
         dataIndex: 'type',
         key: 'type',
         ellipsis: true,
     },
     {
-        title: '说明',
+        title: $t('Io.index.233004-56'),
         dataIndex: 'desc',
         key: 'desc',
         width: 100,
         ellipsis: true,
     },
     {
-        title: '示例值',
+        title: $t('Io.index.233004-57'),
         dataIndex: 'example',
         key: 'example',
         width: 100,
@@ -378,7 +381,7 @@ const outputColumns = [
 ];
 const subColumns = [...outputColumns];
 subColumns.splice(3, 0, {
-    title: '必填',
+    title: $t('Io.index.233004-58'),
     dataIndex: 'require',
     key: 'require',
     ellipsis: true,
@@ -390,7 +393,7 @@ const subText = `
     "alarmConfigId": "1605111722418597888",
     "alarmTime": "1651233650840",
     "handleTime": "1651233650841",
-    "describe": "已联系第三方人员进行告警处理，现告警已恢复",
+    "describe": $t('Io.index.233004-49'),
     "type": "user",
     "state": "normal"
   }
@@ -402,16 +405,16 @@ const outputText = `
     "alarmConfigId": "1605111722418597888",
     "id": "1515992841393119232",
     "alarmConfigId": "1586989804257853441",
-    "alarmConfigName": "烟感告警",
+    "alarmConfigName": $t('Io.index.233004-15'),
     "alarmRecordId": "ba33a59ca5ebe3dccfcd75fd0575be4e",
     "level": "3",
-    "description": "设备温度过高",
+    "description": $t('Io.index.233004-59'),
     "alarmTime": "1667202964007",
     "sourceType": "device",
     "sourceId": "1605138218826821632",
-    "sourceName": "1楼烟感S01",
+    "sourceName": $t('Io.index.233004-38'),
     "targetType": "device",
-    "targetName": "温度探测设备",
+    "targetName": $t('Io.index.233004-60'),
     "targetId": "1583300346713661440"
   }
   ~~~

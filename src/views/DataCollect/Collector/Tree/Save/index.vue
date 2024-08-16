@@ -1,6 +1,6 @@
 <template>
     <j-modal
-        :title="data.id ? '编辑' : '新增'"
+        :title="data.id ? $t('Save.index.321713-0') : $t('Save.index.321713-1')"
         :visible="true"
         width="700px"
         @cancel="handleCancel"
@@ -14,7 +14,7 @@
             ref="formRef"
         >
             <j-form-item
-                label="所属通道"
+                :label="$t('Save.index.321713-2')"
                 name="channelId"
                 :rules="LeftTreeRules.channelId"
             >
@@ -22,7 +22,7 @@
                     style="width: 100%"
                     v-model:value="formData.channelId"
                     :options="channelList"
-                    placeholder="请选择所属通道"
+                    :placeholder="$t('Save.index.321713-3')"
                     allowClear
                     show-search
                     :filter-option="filterOption"
@@ -31,67 +31,67 @@
                 />
             </j-form-item>
             <j-form-item
-                label="采集器名称"
+                :label="$t('Save.index.321713-4')"
                 name="name"
                 :rules="LeftTreeRules.name"
             >
                 <j-input
-                    placeholder="请输入采集器名称"
+                    :placeholder="$t('Save.index.321713-5')"
                     v-model:value="formData.name"
                 />
 
             </j-form-item>
             <j-form-item  v-if="provider === 'snap7'" label="IP" :name="['configuration', 'host']" :rules="LeftTreeRules.host" >
-              <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入通道IP" :disabled="false"/>
+              <j-input v-model:value="formData.configuration.host" autocomplete="off" :placeholder="$t('Save.index.321713-6')" :disabled="false"/>
             </j-form-item>
-            <j-form-item v-if="provider === 'snap7'" label="端口" :name="['configuration', 'port']" :rules="LeftTreeRules.port">
-              <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" placeholder="请输入通道端口"/>
+            <j-form-item v-if="provider === 'snap7'" :label="$t('Save.index.321713-7')" :name="['configuration', 'port']" :rules="LeftTreeRules.port">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :precision="0" autocomplete="off" :placeholder="$t('Save.index.321713-8')"/>
             </j-form-item>
-            <j-form-item v-if="provider === 'snap7'" label="机架号" :name="['configuration', 'rack']" :rules="LeftTreeRules.rack">
-              <j-input-number style="width: 100%" v-model:value="formData.configuration.rack" autocomplete="off" placeholder="请输入机架号" :maxlength="64" />
+            <j-form-item v-if="provider === 'snap7'" :label="$t('Save.index.321713-9')" :name="['configuration', 'rack']" :rules="LeftTreeRules.rack">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.rack" autocomplete="off" :placeholder="$t('Save.index.321713-10')" :maxlength="64" />
             </j-form-item>
-            <j-form-item v-if="provider === 'snap7'" label="型号" :name="['configuration', 'type']" :rules="LeftTreeRules.type">
-              <j-select v-model:value="formData.configuration.type" placeholder="请选择型号" @change="typeChange">
+            <j-form-item v-if="provider === 'snap7'" :label="$t('Save.index.321713-11')" :name="['configuration', 'type']" :rules="LeftTreeRules.type">
+              <j-select v-model:value="formData.configuration.type" :placeholder="$t('Save.index.321713-12')" @change="typeChange">
                 <j-select-option v-for="item in typeOptions" :key="item.value" :value="item.value">{{ item.label }}</j-select-option>
               </j-select>
             </j-form-item>
-            <j-form-item v-if="provider === 'snap7'" label="槽位" :name="['configuration', 'slot']" :rules="LeftTreeRules.slot">
-              <j-input-number style="width: 100%" v-model:value="formData.configuration.slot" autocomplete="off" placeholder="请输入槽位" :maxlength="64" :disabled="formData.configuration.type == 'S200' || formData.configuration.type == 'S1200'"/>
+            <j-form-item v-if="provider === 'snap7'" :label="$t('Save.index.321713-13')" :name="['configuration', 'slot']" :rules="LeftTreeRules.slot">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.slot" autocomplete="off" :placeholder="$t('Save.index.321713-14')" :maxlength="64" :disabled="formData.configuration.type == 'S200' || formData.configuration.type == 'S1200'"/>
             </j-form-item>
-            <j-form-item v-if="provider === 'snap7'" label="超时时间（毫秒）" :name="['configuration', 'timeout']" :rules="LeftTreeRules.timeout">
-              <j-input-number style="width: 100%" v-model:value="formData.configuration.timeout" autocomplete="off" placeholder="请输入超时时间" :maxlength="64" />
+            <j-form-item v-if="provider === 'snap7'" :label="$t('Save.index.321713-15')" :name="['configuration', 'timeout']" :rules="LeftTreeRules.timeout">
+              <j-input-number style="width: 100%" v-model:value="formData.configuration.timeout" autocomplete="off" :placeholder="$t('Save.index.321713-16')" :maxlength="64" />
             </j-form-item>
-            <j-form-item v-if="provider === 'snap7'" label="数据读取方式" :name="['configuration', 'serializable']">
+            <j-form-item v-if="provider === 'snap7'" :label="$t('Save.index.321713-17')" :name="['configuration', 'serializable']">
               <j-radio-group v-model:value="formData.configuration.serializable">
-                <j-radio-button :value="false">并行</j-radio-button>
-                <j-radio-button :value="true">串行</j-radio-button>
+                <j-radio-button :value="false">{{ $t('Save.index.321713-18') }}</j-radio-button>
+                <j-radio-button :value="true">{{ $t('Save.index.321713-19') }}</j-radio-button>
               </j-radio-group>
             </j-form-item>
             <template v-if="provider === 'iec104'">
-              <j-form-item label="从机地址" :name="['configuration', 'host']" :rules="LeftTreeRules.host">
-                <j-input v-model:value="formData.configuration.host" autocomplete="off" placeholder="请输入" :disabled="false"/>
+              <j-form-item :label="$t('Save.index.321713-20')" :name="['configuration', 'host']" :rules="LeftTreeRules.host">
+                <j-input v-model:value="formData.configuration.host" autocomplete="off" :placeholder="$t('Save.index.321713-21')" :disabled="false"/>
               </j-form-item>
-              <j-form-item label="从机端口" :name="['configuration', 'port']" :rules="LeftTreeRules.port" >
-                <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :min="1" :max="65535" :precision="0" autocomplete="off" placeholder="请输入从机端口"/>
+              <j-form-item :label="$t('Save.index.321713-22')" :name="['configuration', 'port']" :rules="LeftTreeRules.port" >
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.port" :min="1" :max="65535" :precision="0" autocomplete="off" :placeholder="$t('Save.index.321713-23')"/>
               </j-form-item>
-              <j-form-item label="分组地址" :name="['configuration', 'terminnalAddress']" :rules="LeftTreeRules.terminnalAddress">
-                <j-input-number style="width: 100%" :min="0" :max="65535" :precision="0" v-model:value="formData.configuration.terminnalAddress" autocomplete="off" placeholder="请输入分组地址"></j-input-number>
+              <j-form-item :label="$t('Save.index.321713-24')" :name="['configuration', 'terminnalAddress']" :rules="LeftTreeRules.terminnalAddress">
+                <j-input-number style="width: 100%" :min="0" :max="65535" :precision="0" v-model:value="formData.configuration.terminnalAddress" autocomplete="off" :placeholder="$t('Save.index.321713-25')"></j-input-number>
               </j-form-item>
-              <j-form-item label="确认帧数量" :name="['configuration', 'frameAmountMax']" :rules="LeftTreeRules.frameAmountMax">
-                <j-input-number style="width: 100%" v-model:value="formData.configuration.frameAmountMax" placeholder="请输入确认帧数量" :min="1" :maxlength="16" :precision="0"></j-input-number>
+              <j-form-item :label="$t('Save.index.321713-26')" :name="['configuration', 'frameAmountMax']" :rules="LeftTreeRules.frameAmountMax">
+                <j-input-number style="width: 100%" v-model:value="formData.configuration.frameAmountMax" :placeholder="$t('Save.index.321713-27')" :min="1" :maxlength="16" :precision="0"></j-input-number>
               </j-form-item>
             </template>
             <j-form-item
                 v-if="provider === 'COLLECTOR_GATEWAY'"
-                label="通讯协议"
+                :label="$t('Save.index.321713-28')"
                 :name="['collectorProvider']"
-                :rules="[{ required: true, message: '请选择通讯协议' }]"
+                :rules="[{ required: true, message: $t('Save.index.321713-29') }]"
             >
               <j-select
                   style="width: 100%"
                   v-model:value="formData.collectorProvider"
                   :options="providerListItems"
-                  placeholder="请选择通讯协议"
+                  :placeholder="$t('Save.index.321713-29')"
                   allowClear
                   show-search
                   :filter-option="filterOption"
@@ -102,11 +102,11 @@
                 v-if="visibleUnitId"
                 :name="['configuration', 'unitId']"
                 :rules="LeftTreeRules.unitId"
-                label="从机地址"
+                :label="$t('Save.index.321713-20')"
             >
               <j-input-number
                   style="width: 100%"
-                  placeholder="请输入从机地址"
+                  :placeholder="$t('Save.index.321713-30')"
                   v-model:value="formData.configuration.unitId"
                   :min="0"
                   :max="255"
@@ -114,25 +114,25 @@
             </j-form-item>
             <template v-if="provider === 'BACNetIp'">
               <j-form-item
-                label="设备实例号"
+                :label="$t('Save.index.321713-31')"
                 :name="['configuration', 'instanceNumber']"
                 :rules="[{ required: true, trigger: 'change' }]"
               >
                 <j-input-number
                   style="width: 100%"
                   v-model:value="formData.configuration.instanceNumber"
-                  placeholder="请输入设备实例号"
+                  :placeholder="$t('Save.index.321713-32')"
                   :min="0"
                   :precision="0"
                   :disabled="route.query.id ? true : false"
                 />
               </j-form-item>
-              <j-form-item label="地址" :name="['configuration', 'address']"  :rules="LeftTreeRules.address">
+              <j-form-item :label="$t('Save.index.321713-33')" :name="['configuration', 'address']"  :rules="LeftTreeRules.address">
                 <j-input
                   style="width: 100%"
                   v-model:value="formData.configuration.address"
                   :maxlength="64"
-                  placeholder="请输入地址"
+                  :placeholder="$t('Save.index.321713-34')"
                 >
                 </j-input>
               </j-form-item>
@@ -141,15 +141,15 @@
                 v-if="provider !== 'COLLECTOR_GATEWAY'"
                 :name="['configuration', 'inheritBreakerSpec', 'type']"
                 :rules="LeftTreeRules.type"
-                label="点位熔断处理"
+                :label="$t('Save.index.321713-35')"
             >
               <j-card-select
                   :showImage="false"
                   v-model:value="formData.configuration.inheritBreakerSpec.type"
                   :options="[
-                                      { label: '降频', value: 'LowerFrequency' },
-                                      { label: '断开', value: 'Break' },
-                                      { label: '忽略', value: 'Ignore' },
+                                      { label: $t('Save.index.321713-36'), value: 'LowerFrequency' },
+                                      { label: $t('Save.index.321713-37'), value: 'Break' },
+                                      { label: $t('Save.index.321713-38'), value: 'Ignore' },
                                   ]"
                   @change="changeCardSelectType"
               />
@@ -161,7 +161,7 @@
                 v-if="visibleEndian"
                 :name="['configuration', 'endian']"
                 :rules="LeftTreeRules.endian"
-                label="双字高低位切换"
+                :label="$t('Save.index.321713-39')"
             >
             <j-card-select
                 :showImage="false"
@@ -178,7 +178,7 @@
                 v-if="visibleEndian"
                 :name="['configuration', 'endianIn']"
                 :rules="LeftTreeRules.endianIn"
-                label="单字高低位切换"
+                :label="$t('Save.index.321713-40')"
             >
             <j-card-select
                 :showImage="false"
@@ -192,30 +192,29 @@
             />
             </j-form-item>
             <div v-if="visibleEndian" style="color: #616161">
-            <p>当前内存布局: {{ endianData }}</p>
+            <p>{{ $t('Save.index.321713-41') }} {{ endianData }}</p>
             <p>
-              只有4字节数据类型(int32、ieee754 float)
-              具有4种内存布局，其它只有ABCD、DCBA两种内存布局(以双字配置为准)
+              {{ $t('Save.index.321713-42') }}
             </p>
             </div>
             <j-form-item
                 v-if="provider !== 'snap7'"
                 :name="['configuration', 'requestTimeout']"
                 :rules="LeftTreeRules.requestTimeout"
-                label='请求超时时间'
+                :label="$t('Save.index.321713-45')"
             >
                 <j-input-number
                     style="width: 100%"
-                    placeholder="请输入请求超时时间配置"
+                    :placeholder="$t('Save.index.321713-46')"
                     v-model:value="formData.configuration.requestTimeout"
                     addon-after="ms"
                     :max="60000"
                     :min="2000"
                 />
             </j-form-item>
-            <j-form-item label="说明" name="description">
+            <j-form-item :label="$t('Save.index.321713-47')" name="description">
                 <j-textarea
-                    placeholder="请输入说明"
+                    :placeholder="$t('Save.index.321713-48')"
                     v-model:value="formData.description"
                     :maxlength="200"
                     :rows="3"
@@ -224,7 +223,7 @@
             </j-form-item>
         </j-form>
         <template #footer>
-            <j-button key="back" @click="handleCancel">取消</j-button>
+            <j-button key="back" @click="handleCancel">{{ $t('Save.index.321713-49') }}</j-button>
             <PermissionButton
                 key="submit"
                 type="primary"
@@ -235,7 +234,7 @@
                     id ? 'update' : 'add'
                 }`"
             >
-                确认
+                {{ $t('Save.index.321713-50') }}
             </PermissionButton>
         </template>
     </j-modal>
@@ -246,6 +245,9 @@ import { LeftTreeRules } from '../../data';
 import type { FormInstance } from 'ant-design-vue';
 import {cloneDeep, omit} from "lodash-es";
 import {protocolList} from "@/utils/consts";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const route = useRoute()
 
@@ -400,10 +402,10 @@ const handleOk = async () => {
 
 const getTypeTooltip = (value: string) => {
   switch (value) {
-    case 'LowerFrequency': return '连续20次采集异常后，降低采集频率至设定频率的1/10，故障处理后，采集频率将恢复至设定频率。';
+    case 'LowerFrequency': return $t('Save.index.321713-51');
     // case 'Break': return '连续10分钟异常，停止采集数据进入断开状态，设备重新启用后恢复采集状态。'
-    case 'Break': return '连续20次采集异常后，降低采集频率至设定频率的1/10，10分钟内未排除故障，将停止采集。'
-    case 'Ignore': return '忽略异常，保持设定采集频率。';
+    case 'Break': return $t('Save.index.321713-52')
+    case 'Ignore': return $t('Save.index.321713-53');
     default: return '';
   }
 }

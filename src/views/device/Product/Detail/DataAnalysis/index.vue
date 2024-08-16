@@ -3,7 +3,7 @@
     <div>
         <div class="top">
             <div>
-                脚本语言:
+                {{ $t('DataAnalysis.index.064558-0') }}
                 <j-select
                     :defaultValue="'JavaScript'"
                     style="width: 200; margin-left: 5px"
@@ -32,7 +32,7 @@
         <div class="bottom">
             <div style="width: 49.5%">
                 <div class="bottom-title">
-                    <div class="bottom-title-text">模拟输入</div>
+                    <div class="bottom-title-text">{{ $t('DataAnalysis.index.064558-1') }}</div>
                     <div class="bottom-title-topic">
                         <template
                             v-if="
@@ -42,7 +42,7 @@
                         >
                             <div style="margin-right: 5px">Topic:</div>
                             <j-auto-complete
-                                placeholder="请输入Topic"
+                                :placeholder="$t('DataAnalysis.index.064558-2')"
                                 style="width: 300px"
                                 :options="topicList"
                                 :allowClear="true"
@@ -54,7 +54,7 @@
                         <template v-else>
                             <div style="margin-right: 5px">URL:</div>
                             <j-input
-                                placeholder="请输入URL"
+                                :placeholder="$t('DataAnalysis.index.064558-3')"
                                 v-model:value="url"
                                 style="width: 300px"
                             ></j-input>
@@ -70,7 +70,7 @@
             </div>
             <div style="width: 49.5%">
                 <div class="bottom-title">
-                    <div class="bottom-title-text">运行结果</div>
+                    <div class="bottom-title-text">{{ $t('DataAnalysis.index.064558-4') }}</div>
                 </div>
                 <j-textarea
                     :autoSize="{ minRows: 5 }"
@@ -88,10 +88,10 @@
             :disabled="isDisabled"
             @click="debug()"
             :tooltip="{
-                title: '需输入脚本和模拟数据后再点击',
+                title: $t('DataAnalysis.index.064558-5'),
             }"
         >
-            调试
+            {{ $t('DataAnalysis.index.064558-6') }}
         </PermissionButton>
         <PermissionButton
             hasPermission="device/Instance:update"
@@ -100,10 +100,10 @@
             @click="save()"
             :style="{ marginLeft: '10px' }"
             :tooltip="{
-                title: isTest ? '' : '请先调试',
+                title: isTest ? '' : $t('DataAnalysis.index.064558-7'),
             }"
         >
-            保存
+            {{ $t('DataAnalysis.index.064558-8') }}
         </PermissionButton>
     </div>
 </template>
@@ -121,6 +121,9 @@ import {
 } from '@/api/device/instance';
 import { isBoolean } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const defaultValue =
     `//注册设备下行数据监听器,当平台下发指令给设备时,回调将被调用,用于构造下发给设备的报文
@@ -250,7 +253,7 @@ const save = async () => {
     };
     const res = await saveProductCode(productStore.current.id, item);
     if (res.status === 200) {
-        onlyMessage('保存成功');
+        onlyMessage($t('DataAnalysis.index.064558-9'));
         getProductCode();
     }
 };
@@ -271,7 +274,7 @@ const debug = () => {
             });
             isTest.value = true;
         } else {
-            onlyMessage('请输入topic', 'error');
+            onlyMessage($t('DataAnalysis.index.064558-10'), 'error');
         }
     } else {
         if (url.value !== '') {
@@ -288,7 +291,7 @@ const debug = () => {
             });
             isTest.value = true;
         } else {
-            onlyMessage('请输入url', 'error');
+            onlyMessage($t('DataAnalysis.index.064558-11'), 'error');
         }
     }
 };

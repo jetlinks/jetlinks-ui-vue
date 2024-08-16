@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"AliCloud.index.613237-0": "名称",
+		"AliCloud.index.613237-1": "网桥产品",
+		"AliCloud.index.613237-2": "说明",
+		"AliCloud.index.613237-3": "状态",
+		"AliCloud.index.613237-4": "正常",
+		"AliCloud.index.613237-5": "禁用"
+	},
+	"en": {
+		"AliCloud.index.613237-0": "Name",
+		"AliCloud.index.613237-1": "Bridge products",
+		"AliCloud.index.613237-2": "Explain",
+		"AliCloud.index.613237-3": "State",
+		"AliCloud.index.613237-4": "enabled",
+		"AliCloud.index.613237-5": "disabled"
+	}
+}

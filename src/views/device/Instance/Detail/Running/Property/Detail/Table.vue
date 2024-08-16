@@ -47,12 +47,12 @@
         </j-table>
     </div>
     <j-modal
-        title="详情"
+        :title="$t('Detail.Table.2866710-0')"
         :visible="visible"
         @ok="visible = false"
         @cancel="visible = false"
     >
-        <div>自定义属性</div>
+        <div>{{ $t('Detail.Table.2866710-1') }}</div>
         <JsonViewer
             v-if="
                 data?.valueType?.type === 'object' ||
@@ -78,6 +78,9 @@ import moment from 'moment';
 import { getType } from '../index';
 import ValueRender from '../ValueRender.vue';
 import JsonViewer from 'vue-json-viewer';
+import { useI18n } from 'vue-i18n';
+
+const { t: $t } = useI18n();
 
 const _props = defineProps({
     data: {
@@ -103,7 +106,7 @@ console.log(_props.data);
 const columns = computed(() => {
     const arr: any[] = [
         {
-            title: '时间',
+            title: $t('Detail.Table.2866710-2'),
             dataIndex: 'timestamp',
             key: 'timestamp',
             ellipsis: true,
@@ -117,7 +120,7 @@ const columns = computed(() => {
     ];
     if (_props.data?.valueType?.type != 'geoPoint') {
         arr.push({
-            title: '操作',
+            title: $t('Detail.Table.2866710-3'),
             dataIndex: 'action',
             key: 'action',
         });
@@ -129,7 +132,7 @@ const columns = computed(() => {
 const showLoad = computed(() => {
     return (
         _props.data.valueType?.type === 'file' &&
-        _props.data?.valueType?.bodyType === 'Binary(二进制)'
+        _props.data?.valueType?.bodyType === "Binary(二进制)"
     );
 });
 

@@ -1,3 +1,5 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import { validateField } from '@/api/data-collect/channel';
 import { FormDataType } from './type.d';
 import type { Rule } from 'ant-design-vue/lib/form';
@@ -67,42 +69,42 @@ export const checkHost = (_rule: Rule, value: string): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if(!value) return resolve('');
         if(!(regIP.test(value) || regIPv6.test(value) || regDomain.test(value))) {
-            return reject('请输入正确格式的Modbus主机IP地址')
+            return reject($t('Channel.data.098165-0'))
         }
         return resolve('')
     });
 export const FormValidate = {
     name: [
-        { required: true, message: '请输入名称', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: $t('Channel.data.098165-1'), trigger: 'blur' },
+        { max: 64, message: $t('Channel.data.098165-2') },
     ],
-    provider: [{ required: true, message: '请选择通讯协议' }],
+    provider: [{ required: true, message: $t('Channel.data.098165-3') }],
     host: [
         {
             required: true,
-            message: '请输入Modbus主机IP',
+            message: $t('Channel.data.098165-4'),
         },
         {
             validator: checkHost,
             trigger: 'blur',
-            // message: '请输入正确格式的Modbus主机IP地址',
+            // message: $t('Channel.data.098165-0'),
         },
     ],
     port: [
         {
             required: true,
-            message: '请输入端口',
+            message: $t('Channel.data.098165-5'),
         },
         {
             pattern: regOnlyNumber,
-            message: '请输入0-65535之间的正整数',
+            message: $t('Channel.data.098165-6'),
         },
     ],
 
     endpoint: [
         {
             required: true,
-            message: '请输入端点url',
+            message: $t('Channel.data.098165-7'),
         },
         {
             validator: checkEndpoint,
@@ -113,41 +115,41 @@ export const FormValidate = {
     securityPolicy: [
         {
             required: true,
-            message: '请选择安全策略',
+            message: $t('Channel.data.098165-8'),
         },
     ],
     securityMode: [
         {
             required: true,
-            message: '请选择安全模式',
+            message: $t('Channel.data.098165-9'),
         },
     ],
     certId: [
         {
             required: true,
-            message: '请选择证书',
+            message: $t('Channel.data.098165-10'),
         },
     ],
     authType: [
         {
             required: true,
-            message: '请选择权限认证',
+            message: $t('Channel.data.098165-11'),
         },
     ],
     username: [
-        { required: true, message: '请输入用户名', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: $t('Channel.data.098165-12'), trigger: 'blur' },
+        { max: 64, message: $t('Channel.data.098165-2') },
     ],
     password: [
-        { required: true, message: '请输入密码', trigger: 'blur' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: $t('Channel.data.098165-13'), trigger: 'blur' },
+        { max: 64, message: $t('Channel.data.098165-2') },
     ],
 
-    description: [{ max: 200, message: '最多可输入200个字符' }],
+    description: [{ max: 200, message: $t('Channel.data.098165-14') }],
 };
 export const columns = [
     {
-        title: '通道名称',
+        title: $t('Channel.data.098165-15'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -157,7 +159,7 @@ export const columns = [
         },
     },
     {
-        title: '通讯协议',
+        title: $t('Channel.data.098165-16'),
         dataIndex: 'provider',
         key: 'provider',
         ellipsis: true,
@@ -170,7 +172,7 @@ export const columns = [
         },
     },
     {
-        title: '状态',
+        title: $t('Channel.data.098165-17'),
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
@@ -178,13 +180,13 @@ export const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '正常', value: 'enabled' },
-                { label: '禁用', value: 'disabled' },
+                { label: $t('Channel.data.098165-18'), value: 'enabled' },
+                { label: $t('Channel.data.098165-19'), value: 'disabled' },
             ],
         },
     },
     {
-        title: '运行状态',
+        title: $t('Channel.data.098165-20'),
         dataIndex: 'runningState',
         key: 'runningState',
         ellipsis: true,
@@ -192,20 +194,20 @@ export const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '运行中', value: 'running' },
-                { label: '部分错误', value: 'partialError' },
-                { label: '错误', value: 'failed' },
+                { label: $t('Channel.data.098165-21'), value: 'running' },
+                { label: $t('Channel.data.098165-22'), value: 'partialError' },
+                { label: $t('Channel.data.098165-23'), value: 'failed' },
             ],
         },
     },
     {
-        title: '说明',
+        title: $t('Channel.data.098165-24'),
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,
     },
     {
-        title: '操作',
+        title: $t('Channel.data.098165-25'),
         key: 'action',
         fixed: 'right',
         width: 200,

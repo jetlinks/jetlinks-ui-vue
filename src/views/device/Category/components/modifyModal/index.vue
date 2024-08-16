@@ -9,8 +9,8 @@
         @ok="submitData"
         @cancel="close"
         :confirmLoading="loading"
-        okText="确定"
-        cancelText="取消"
+        :okText="$t('modifyModal.index.882522-0')"
+        :cancelText="$t('modifyModal.index.882522-1')"
         v-bind="layout"
     >
         <j-form
@@ -19,28 +19,28 @@
             :rules="rules"
             :model="formModel"
         >
-            <j-form-item label="名称" name="name">
+            <j-form-item :label="$t('modifyModal.index.882522-2')" name="name">
                 <j-input
                     v-model:value="formModel.name"
-                    placeholder="请输入名称"
+                    :placeholder="$t('modifyModal.index.882522-3')"
                 />
             </j-form-item>
-            <j-form-item label="排序" name="sortIndex">
+            <j-form-item :label="$t('modifyModal.index.882522-4')" name="sortIndex">
                 <j-input-number
                     style="width: 100%"
                     id="inputNumber"
                     v-model:value="formModel.sortIndex"
                     :min="1"
                     :max="9999"
-                    placeholder="请输入排序"
+                    :placeholder="$t('modifyModal.index.882522-5')"
                 />
             </j-form-item>
-            <j-form-item label="说明">
+            <j-form-item :label="$t('modifyModal.index.882522-6')">
                 <j-textarea
                     v-model:value="formModel.description"
                     show-count
                     :maxlength="200"
-                    placeholder="请输入说明"
+                    :placeholder="$t('modifyModal.index.882522-7')"
                 />
             </j-form-item>
         </j-form>
@@ -54,6 +54,9 @@ import { ValidateErrorEntity } from 'ant-design-vue/es/form/interface';
 import { list } from '@/api/iot-card/home';
 import { number } from 'echarts';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emits = defineEmits(['refresh']);
 const formRef = ref();
@@ -98,15 +101,15 @@ const formModel = ref<formState>({
 });
 const rules = ref({
     name: [
-        { required: true, message: '请输入名称', trigger: 'blur' },
+        { required: true, message: $t('modifyModal.index.882522-3'), trigger: 'blur' },
         {
             max: 64,
-            message: '最多可输入64个字符',
+            message: $t('modifyModal.index.882522-8'),
         },
     ],
-    sortIndex: [{ required: true, message: '请输入排序', trigger: 'blur' },{
+    sortIndex: [{ required: true, message: $t('modifyModal.index.882522-5'), trigger: 'blur' },{
         pattern:/^\d+$/,
-        message:'请输入正整数',
+        message:$t('modifyModal.index.882522-9'),
         trigger:'change'
     }],
 });
@@ -146,11 +149,11 @@ const submitData = async () => {
                 loading.value = false
             })
             if (res.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('modifyModal.index.882522-10'));
                 visible.value = false;
                 emits('refresh');
             } else {
-                onlyMessage('操作失败！', 'error');
+                onlyMessage($t('modifyModal.index.882522-11'), 'error');
             }
         } else if (props.isAdd === 2) {
             const id = updateObj.value.id;
@@ -164,11 +167,11 @@ const submitData = async () => {
                 loading.value = false
             })
             if (res.status === 200) {
-                onlyMessage('操作成功！');
+                onlyMessage($t('modifyModal.index.882522-10'));
                 visible.value = false;
                 emits('refresh');
             } else {
-                onlyMessage('操作失败！', 'error');
+                onlyMessage($t('modifyModal.index.882522-11'), 'error');
             }
         }
     });
@@ -204,7 +207,7 @@ const show = async (row: any) => {
             visible.value = true;
         } else if (props.isChild === 2) {
             if (row.level === 5) {
-                onlyMessage('树形结构最多添加5层', 'warning');
+                onlyMessage($t('modifyModal.index.882522-12'), 'warning');
                 visible.value = false;
             } else {
                 addObj.value = row;

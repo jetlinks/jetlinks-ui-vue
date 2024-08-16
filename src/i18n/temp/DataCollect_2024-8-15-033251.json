@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"BatchUpdate.index.3217220-0": "批量编辑",
+		"BatchUpdate.index.3217220-1": "将批量修改{0}条数据的【{1}】",
+		"BatchUpdate.index.3217220-2": "",
+		"BatchUpdate.index.3217220-3": "值类型",
+		"BatchUpdate.index.3217220-4": "请选择值类型",
+		"BatchUpdate.index.3217220-5": "访问类型",
+		"BatchUpdate.index.3217220-6": "读",
+		"BatchUpdate.index.3217220-7": "写",
+		"BatchUpdate.index.3217220-8": "订阅",
+		"BatchUpdate.index.3217220-9": "请输入0或者正整数",
+		"BatchUpdate.index.3217220-10": "采集频率",
+		"BatchUpdate.index.3217220-11": "采集频率为0时不执行轮询任务",
+		"BatchUpdate.index.3217220-12": "请输入采集频率",
+		"BatchUpdate.index.3217220-13": "推送控制",
+		"BatchUpdate.index.3217220-14": "只推送变化的数据",
+		"BatchUpdate.index.3217220-15": "取消",
+		"BatchUpdate.index.3217220-16": "确认",
+		"BatchUpdate.index.3217220-17": "数据类型"
+	},
+	"en": {
+		"BatchUpdate.index.3217220-0": "Batch editing",
+		"BatchUpdate.index.3217220-1": "Batch modify {1} of {0} pieces of data",
+		"BatchUpdate.index.3217220-2": "",
+		"BatchUpdate.index.3217220-3": "Value type",
+		"BatchUpdate.index.3217220-4": "Please select value type",
+		"BatchUpdate.index.3217220-5": "Access type",
+		"BatchUpdate.index.3217220-6": "read",
+		"BatchUpdate.index.3217220-7": "write",
+		"BatchUpdate.index.3217220-8": "subscribe",
+		"BatchUpdate.index.3217220-9": "Please enter 0 or a positive integer",
+		"BatchUpdate.index.3217220-10": "Collection frequency",
+		"BatchUpdate.index.3217220-11": "Do not perform polling tasks when the collection frequency is 0",
+		"BatchUpdate.index.3217220-12": "Please enter the collection frequency",
+		"BatchUpdate.index.3217220-13": "Push control",
+		"BatchUpdate.index.3217220-14": "Only push data that changes",
+		"BatchUpdate.index.3217220-15": "Cancel",
+		"BatchUpdate.index.3217220-16": "Confirm",
+		"BatchUpdate.index.3217220-17": "Data type"
+	}
+}

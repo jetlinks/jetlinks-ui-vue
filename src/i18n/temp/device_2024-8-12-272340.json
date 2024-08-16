@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Events.ConfigParams.6916456-0": "配置",
+		"Events.ConfigParams.6916456-1": "参数标识",
+		"Events.ConfigParams.6916456-2": "该标识已存在",
+		"Events.ConfigParams.6916456-3": "请输入标识",
+		"Events.ConfigParams.6916456-4": "最多可输入64个字符",
+		"Events.ConfigParams.6916456-5": "标识只能由数字、字母、下划线、中划线组成",
+		"Events.ConfigParams.6916456-6": "参数名称",
+		"Events.ConfigParams.6916456-7": "请输入参数名称",
+		"Events.ConfigParams.6916456-8": "数据类型",
+		"Events.ConfigParams.6916456-9": "请选择数据类型",
+		"Events.ConfigParams.6916456-10": "其他配置",
+		"Events.ConfigParams.6916456-11": "操作",
+		"Events.ConfigParams.6916456-12": "请选择"
+	},
+	"en": {
+		"Events.ConfigParams.6916456-0": "Configuration",
+		"Events.ConfigParams.6916456-1": "Parameter ID",
+		"Events.ConfigParams.6916456-2": "This identifier already exists",
+		"Events.ConfigParams.6916456-3": "Please enter the identifier",
+		"Events.ConfigParams.6916456-4": "Up to 64 characters can be entered",
+		"Events.ConfigParams.6916456-5": "ID can only be composed of numbers, letters, underscores, and dashes",
+		"Events.ConfigParams.6916456-6": "Parameter Name",
+		"Events.ConfigParams.6916456-7": "Please enter the parameter name",
+		"Events.ConfigParams.6916456-8": "Data type",
+		"Events.ConfigParams.6916456-9": "Please select data type",
+		"Events.ConfigParams.6916456-10": "Other configurations",
+		"Events.ConfigParams.6916456-11": "Operation",
+		"Events.ConfigParams.6916456-12": "Please choose"
+	}
+}

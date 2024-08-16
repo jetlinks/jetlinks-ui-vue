@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Status.ManualInspection.585605-0": "请检查配置项是否填写正确，若您确定该项无需诊断可",
+		"Status.ManualInspection.585605-1": "忽略",
+		"Status.ManualInspection.585605-2": "诊断项说明",
+		"Status.ManualInspection.585605-3": "接口地址",
+		"Status.ManualInspection.585605-4": "通知Token",
+		"Status.ManualInspection.585605-5": "SIP 域",
+		"Status.ManualInspection.585605-6": "集群",
+		"Status.ManualInspection.585605-7": "共享配置",
+		"Status.ManualInspection.585605-8": "独立配置",
+		"Status.ManualInspection.585605-9": "SIP 地址",
+		"Status.ManualInspection.585605-10": "公网 Host",
+		"Status.ManualInspection.585605-11": "节点",
+		"Status.ManualInspection.585605-12": "节点名称",
+		"Status.ManualInspection.585605-13": "人工检查",
+		"Status.ManualInspection.585605-14": "去修改",
+		"Status.ManualInspection.585605-15": "确认无误"
+	},
+	"en": {
+		"Status.ManualInspection.585605-0": "Please check if the configuration item is filled in correctly. If you are sure that this item does not require diagnosis, please ",
+		"Status.ManualInspection.585605-1": "ignore",
+		"Status.ManualInspection.585605-2": "Diagnostic item description",
+		"Status.ManualInspection.585605-3": "Interface address",
+		"Status.ManualInspection.585605-4": "Notify Token",
+		"Status.ManualInspection.585605-5": "SIP Domain",
+		"Status.ManualInspection.585605-6": "Colony",
+		"Status.ManualInspection.585605-7": "Shared configuration",
+		"Status.ManualInspection.585605-8": "Independent configuration",
+		"Status.ManualInspection.585605-9": "SIP address",
+		"Status.ManualInspection.585605-10": "Public Host",
+		"Status.ManualInspection.585605-11": "Node",
+		"Status.ManualInspection.585605-12": "Node Name",
+		"Status.ManualInspection.585605-13": "Manual inspection",
+		"Status.ManualInspection.585605-14": "Go modify it",
+		"Status.ManualInspection.585605-15": "Confirmed without error"
+	}
+}

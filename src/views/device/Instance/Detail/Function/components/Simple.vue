@@ -3,7 +3,7 @@
         <div class="tips">
             <j-space>
                 <AIcon type="QuestionCircleOutlined" />
-                <span>精简模式下参数只支持输入框的方式录入</span>
+                <span>{{ $t('components.Simple.155741-0') }}</span>
             </j-space>
         </div>
         <j-tabs
@@ -41,7 +41,7 @@
                                             v-if="record.type === 'object'"
                                         >
                                             <template slot="title">
-                                                请按照json格式输入
+                                                {{ $t('components.Simple.155741-1') }}
                                             </template>
 
                                             <AIcon
@@ -60,7 +60,7 @@
                                             :name="['table', index, 'value']"
                                             :rules="{
                                                 required: record.required,
-                                                message: '该字段为必填字段',
+                                                message: $t('components.Simple.155741-2'),
                                             }"
                                             has-feedback
                                         >
@@ -94,19 +94,19 @@
                                     :loading="loading"
                                     @click="handleExecute(func)"
                                 >
-                                    执行
+                                    {{ $t('components.Simple.155741-3') }}
                                 </j-button>
                                 <j-button
                                     type="default"
                                     @click="handleClear(func)"
                                 >
-                                    清空
+                                    {{ $t('components.Simple.155741-4') }}
                                 </j-button>
                             </j-space>
                         </div>
                     </j-col>
                     <j-col :span="9">
-                        <h4>执行结果：</h4>
+                        <h4>{{ $t('components.Simple.155741-5') }}</h4>
                         <span
                             :ref="`result${func.id}Ref`"
                             class="execute-result"
@@ -125,6 +125,9 @@ import { ComponentInternalInstance } from 'vue';
 import { useInstanceStore } from '@/store/instance';
 import { execute } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const instanceStore = useInstanceStore();
 const route = useRoute();
@@ -136,18 +139,18 @@ const loading = ref<boolean>(false);
 const metadata = computed(() => JSON.parse(instanceStore.detail.metadata));
 const columns = ref([
     {
-        title: '参数名称',
+        title: $t('components.Simple.155741-6'),
         dataIndex: 'name',
         width: 150,
         ellipsis: true,
     },
     {
-        title: '输入类型',
+        title: $t('components.Simple.155741-7'),
         dataIndex: 'type',
         width: 150,
     },
     {
-        title: '值',
+        title: $t('components.Simple.155741-8'),
         dataIndex: 'value',
     },
 ]);
@@ -231,7 +234,7 @@ const handleExecute = async (func: any) => {
                     loading.value = false;
                 });
             if (!success) return;
-            onlyMessage('操作成功');
+            onlyMessage($t('components.Simple.155741-9'));
             executeResult.value = result instanceof Array ? result[0] : result;
             proxy?.$forceUpdate();
         })

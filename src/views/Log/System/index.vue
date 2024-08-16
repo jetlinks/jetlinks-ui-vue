@@ -56,7 +56,7 @@
             </template>
         </j-pro-table>
     </div>
-    <j-modal :width="1100" v-model:visible="visible" title="详情">
+    <j-modal :width="1100" v-model:visible="visible" :title="$t('System.index.384923-0')">
         <div>
             <span class="mr-10">[{{ descriptionsData?.threadName }}]</span>
             <span class="mr-10">{{
@@ -91,7 +91,7 @@
 <!--            :auto-size="{ minRows: 24, maxRows: 28 }"-->
 <!--        />-->
         <template #footer>
-            <j-button type="primary" @click="handleOk">关闭</j-button>
+            <j-button type="primary" @click="handleOk">{{ $t('System.index.384923-1') }}</j-button>
         </template>
     </j-modal>
 </template>
@@ -102,13 +102,16 @@ import { querySystem } from '@/api/link/log';
 import moment from 'moment';
 
 import { modifySearchColumnValue } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 
 const columns = [
     {
-        title: '名称',
+        title: $t('System.index.384923-2'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -120,7 +123,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '日志级别',
+        title: $t('System.index.384923-3'),
         dataIndex: 'level',
         key: 'level',
         search: {
@@ -148,7 +151,7 @@ const columns = [
         width: 100,
     },
     {
-        title: '日志内容',
+        title: $t('System.index.384923-4'),
         dataIndex: 'message',
         key: 'message',
         search: {
@@ -158,7 +161,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '服务名',
+        title: $t('System.index.384923-5'),
         dataIndex: 'server',
         key: 'server',
         scopedSlots: true,
@@ -169,7 +172,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '创建时间',
+        title: $t('System.index.384923-6'),
         dataIndex: 'createTime',
         key: 'createTime',
         search: {
@@ -179,7 +182,7 @@ const columns = [
         width: 200,
     },
     {
-        title: '操作',
+        title: $t('System.index.384923-7'),
         key: 'action',
         fixed: 'right',
         width: 60,
@@ -214,9 +217,9 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
     return [
         {
             key: 'eye',
-            text: '查看',
+            text: $t('System.index.384923-8'),
             tooltip: {
-                title: '查看',
+                title: $t('System.index.384923-8'),
             },
             icon: 'EyeOutlined',
             onClick: () => {

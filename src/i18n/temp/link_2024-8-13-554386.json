@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"components.Cpu.542302-0": "CPU使用率趋势",
+		"components.Cpu.542302-1": "最近1小时",
+		"components.Cpu.542302-2": "最近24小时",
+		"components.Cpu.542302-3": "近一周"
+	},
+	"en": {
+		"components.Cpu.542302-0": "CPU usage trend",
+		"components.Cpu.542302-1": "Last hour",
+		"components.Cpu.542302-2": "Last 24 hours",
+		"components.Cpu.542302-3": "Last week"
+	}
+}

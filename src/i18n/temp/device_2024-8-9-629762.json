@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Event.index.286661-0": "详情",
+		"Event.index.286661-1": "关闭",
+		"Event.index.286661-2": "时间",
+		"Event.index.286661-3": "操作",
+		"Event.index.286661-4": "数据"
+	},
+	"en": {
+		"Event.index.286661-0": "Detail",
+		"Event.index.286661-1": "Close",
+		"Event.index.286661-2": "Time",
+		"Event.index.286661-3": "Operation",
+		"Event.index.286661-4": "Value"
+	}
+}

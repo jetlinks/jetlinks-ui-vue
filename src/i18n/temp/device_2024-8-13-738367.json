@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"Save.FileUpload.378846-0": "请上传文件",
+		"Save.FileUpload.378846-1": "上传文件",
+		"Save.FileUpload.378846-2": "上传成功！",
+		"Save.FileUpload.378846-3": "系统提示",
+		"Save.FileUpload.378846-4": "系统未知错误，请反馈给管理员"
+	},
+	"en": {
+		"Save.FileUpload.378846-0": "Please upload the file",
+		"Save.FileUpload.378846-1": "Upload files",
+		"Save.FileUpload.378846-2": "Upload successful!",
+		"Save.FileUpload.378846-3": "System prompt",
+		"Save.FileUpload.378846-4": "Unknown system error, please provide feedback to the administrator"
+	}
+}

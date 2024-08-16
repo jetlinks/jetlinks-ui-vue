@@ -1,21 +1,21 @@
 <template>
   <a-drawer
     visible
-    title="关联场景联动详情"
+    :title="$t('Scene.SceneDrawer.426522-0')"
     :width="600"
     :closable="false"
     :keyboard="false"
     @close="onCancel"
   >
     <div class="scene-warp">
-      <TitleComponent data="基本信息" />
+      <TitleComponent :data="$t('Scene.SceneDrawer.426522-1')" />
       <j-descriptions size="small" :column="2" bordered>
-        <j-descriptions-item label="场景名称">
+        <j-descriptions-item :label="$t('Scene.SceneDrawer.426522-2')">
           <j-ellipsis>{{ detail.name }}</j-ellipsis>
         </j-descriptions-item>
-        <j-descriptions-item label="场景类型">{{ itemType.text }}</j-descriptions-item>
+        <j-descriptions-item :label="$t('Scene.SceneDrawer.426522-3')">{{ itemType.text }}</j-descriptions-item>
       </j-descriptions>
-      <TitleComponent data="关联详情" style="margin: 12px 0;" />
+      <TitleComponent :data="$t('Scene.SceneDrawer.426522-4')" style="margin: 12px 0;" />
       <div class="branches-warp">
         <BranchesTabs
           :branchesGroup="branchesGroup"
@@ -42,6 +42,9 @@ import {queryBindScene} from "@/api/rule-engine/configuration";
 import {handleGroupAndFilter, typeMap} from "./Save/utils";
 import BranchesTabs from './Save/BranchesTabs.vue'
 import { unBindAlarm, bindScene } from "@/api/rule-engine/configuration";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   id: {

@@ -13,6 +13,9 @@
 <script lang='ts' setup name='DropdownMenus'>
 import { isArray, isBoolean, isString, isUndefined } from 'lodash-es'
 import { getOption } from '../DropdownButton/util'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type ValueType = string| number | boolean
 type Emits = {
@@ -42,7 +45,7 @@ const myOptions = computed(() => {
     let _label = item.label || item.name
     let _value = isUndefined(item.value) ? item.id : item.value
     if (isBoolean(_value)) {
-      _label = _value === true ? '是' : '否'
+      _label = _value === true ? $t('DropdownButton.Menus.5425986-0') : $t('DropdownButton.Menus.5425986-1')
       _value = String(_value)
     }
     if (isArray(_value)) {

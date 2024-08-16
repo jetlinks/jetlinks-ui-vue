@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Detail.index.428299-0": "返回",
+		"Detail.index.428299-1": "视频类设备接入",
+		"Detail.index.428299-2": "云平台接入",
+		"Detail.index.428299-3": "通道类设备接入",
+		"Detail.index.428299-4": "官方接入",
+		"Detail.index.428299-5": "自定义设备接入"
+	},
+	"en": {
+		"Detail.index.428299-0": "Return",
+		"Detail.index.428299-1": "Video device access",
+		"Detail.index.428299-2": "Cloud platform access",
+		"Detail.index.428299-3": "Channel equipment access",
+		"Detail.index.428299-4": "Official access",
+		"Detail.index.428299-5": "Customize device access"
+	}
+}

@@ -4,11 +4,11 @@
         width="650px"
         destroyOnClose
         visible
-        :title="props.data?.id ? '编辑' : '新增'"
+        :title="props.data?.id ? $t('Save.index.052152-0') : $t('Save.index.052152-1')"
         @ok="handleSave"
         @cancel="handleCancel"
-        okText="确定"
-        cancelText="取消"
+        :okText="$t('Save.index.052152-2')"
+        :cancelText="$t('Save.index.052152-3')"
         :confirmLoading="loading"
     >
         <div style="margin-top: 10px">
@@ -18,16 +18,16 @@
                 :rules="rules"
                 :model="modelRef"
             >
-                <j-form-item label="名称" name="name">
+                <j-form-item :label="$t('Save.index.052152-4')" name="name">
                     <j-input
                         v-model:value="modelRef.name"
-                        placeholder="请输入名称"
+                        :placeholder="$t('Save.index.052152-5')"
                     />
                 </j-form-item>
-                <j-form-item label="说明" name="describe">
+                <j-form-item :label="$t('Save.index.052152-6')" name="describe">
                     <j-textarea
                         v-model:value="modelRef.description"
-                        placeholder="请输入说明"
+                        :placeholder="$t('Save.index.052152-7')"
                         showCount
                         :maxlength="200"
                         :rows="4"
@@ -41,7 +41,9 @@
 <script lang="ts" setup>
 import { saveRule, modify } from '@/api/rule-engine/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const emit = defineEmits(['success', 'closeSave']);
 const props = defineProps({
     data: {
@@ -58,11 +60,11 @@ const rules = {
     name: [
         {
             required: true,
-            message: '请输入名称',
+            message: $t('Save.index.052152-5'),
         },
         {
             max: 64,
-            message: '最多输入64个字符',
+            message: $t('Save.index.052152-8'),
         },
     ],
 };
@@ -79,21 +81,21 @@ const handleSave = () => {
                 let resp = await saveRule(modelRef.value);
                 loading.value = false;
                 if (resp.status === 200) {
-                    onlyMessage('操作成功！');
+                    onlyMessage($t('Save.index.052152-9'));
                     emit('closeSave');
                     emit('success');
                 } else {
-                    onlyMessage('操作失败', 'error');
+                    onlyMessage($t('Save.index.052152-10'), 'error');
                 }
             } else {
                 let resp = await modify(modelRef.value?.id, modelRef.value);
                 loading.value = false;
                 if (resp.status === 200) {
-                    onlyMessage('操作成功！');
+                    onlyMessage($t('Save.index.052152-9'));
                     emit('closeSave');
                     emit('success');
                 } else {
-                    onlyMessage('操作失败！', 'error');
+                    onlyMessage($t('Save.index.052152-11'), 'error');
                 }
             }
         })

@@ -1,0 +1,36 @@
+{
+	"zh": {
+		"Save.BranchesTabs.4265311-0": "收起",
+		"Save.BranchesTabs.4265311-1": "点击查看详情",
+		"Save.BranchesTabs.4265311-2": "当",
+		"Save.BranchesTabs.4265311-3": "否则",
+		"Save.BranchesTabs.4265311-4": "执行",
+		"Save.BranchesTabs.4265311-5": "开启防抖",
+		"Save.BranchesTabs.4265311-6": "秒内发送",
+		"Save.BranchesTabs.4265311-7": "次及以上时，处理",
+		"Save.BranchesTabs.4265311-8": "第一次",
+		"Save.BranchesTabs.4265311-9": "最后一次",
+		"Save.BranchesTabs.4265311-10": "关闭防抖",
+		"Save.BranchesTabs.4265311-11": "串行",
+		"Save.BranchesTabs.4265311-12": "并行",
+		"Save.BranchesTabs.4265311-13": "",
+		"Save.BranchesTabs.4265311-14": ""
+	},
+	"en": {
+		"Save.BranchesTabs.4265311-0": "Collapse",
+		"Save.BranchesTabs.4265311-1": "Click to view details",
+		"Save.BranchesTabs.4265311-2": "When",
+		"Save.BranchesTabs.4265311-3": "Otherwise",
+		"Save.BranchesTabs.4265311-4": "Execute",
+		"Save.BranchesTabs.4265311-5": "Enable anti shake function",
+		"Save.BranchesTabs.4265311-6": " seconds",
+		"Save.BranchesTabs.4265311-7": " or more times, handle them",
+		"Save.BranchesTabs.4265311-8": "the first time",
+		"Save.BranchesTabs.4265311-9": "the last time",
+		"Save.BranchesTabs.4265311-10": "Turn off anti shake function",
+		"Save.BranchesTabs.4265311-11": "Serial ",
+		"Save.BranchesTabs.4265311-12": "Parallel",
+		"Save.BranchesTabs.4265311-13": "Send within ",
+		"Save.BranchesTabs.4265311-14": "When it occurs "
+	}
+}

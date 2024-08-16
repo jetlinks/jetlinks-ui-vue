@@ -43,7 +43,7 @@
                                 <template #icon
                                     ><AIcon type="PlusOutlined"
                                 /></template>
-                                新增点位
+                                {{ $t('Point.index.321712-0') }}
                             </PermissionButton>
                             <PermissionButton
                                 v-if="
@@ -57,7 +57,7 @@
                                 <template #icon
                                     ><AIcon type="PlusOutlined"
                                 /></template>
-                                扫描
+                                {{ $t('Point.index.321712-1') }}
                             </PermissionButton>
                             <PermissionButton
                                 v-if="data?.id && data.id !== '*'"
@@ -65,7 +65,7 @@
                                 @click="handleImport"
                                 hasPermission="DataCollect/Collector:add"
                             >
-                                批量导入
+                                {{ $t('Point.index.321712-2') }}
                             </PermissionButton>
                             <PermissionButton
                                 v-if="data?.id && data.id !== '*'"
@@ -73,7 +73,7 @@
                                 @click="handleExport"
                                 hasPermission="DataCollect/Collector:add"
                             >
-                                数据导出
+                                {{ $t('Point.index.321712-3') }}
                             </PermissionButton>
                             <BatchDropdown
                                 v-if="data?.id && data.id !== '*'"
@@ -87,7 +87,7 @@
                             <j-checkbox
                                 v-model:checked="checkAll"
                                 @change="onCheckAllChange"
-                                >全选</j-checkbox
+                                >{{ $t('Point.index.321712-4') }}</j-checkbox
                             >
                         </div>
                     </template>
@@ -118,11 +118,11 @@
                                     <PermissionButton
                                         type="text"
                                         :tooltip="{
-                                            title: '删除',
+                                            title: $t('Point.index.321712-5'),
                                         }"
                                         hasPermission="DataCollect/Collector:delete"
                                         :popConfirm="{
-                                            title: `确认删除？`,
+                                            title: $t('Point.index.321712-6'),
                                             onConfirm: () =>
                                                 handleDelete(slotProps.id),
                                         }"
@@ -366,6 +366,9 @@ import SaveIEC104 from './Save/SaveIEC104.vue';
 import Import from './components/Import/index.vue';
 import { downloadFileByUrl } from '@/utils/utils';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const props = defineProps({
     data: {
         type: Object,
@@ -428,18 +431,18 @@ const defaultParams = ref({
 
 const accessModesMODBUS_TCP = [
     {
-        label: '读',
+        label: $t('Point.index.321712-7'),
         value: 'read',
     },
     {
-        label: '写',
+        label: $t('Point.index.321712-8'),
         value: 'write',
     },
 ];
 
 const columns = [
     {
-        title: '点位名称',
+        title: $t('Point.index.321712-9'),
         dataIndex: 'name',
         key: 'name',
         search: {
@@ -447,7 +450,7 @@ const columns = [
         },
     },
     {
-        title: '通讯协议',
+        title: $t('Point.index.321712-10'),
         dataIndex: 'provider',
         key: 'provider',
         search: {
@@ -466,7 +469,7 @@ const columns = [
         },
     },
     {
-        title: '访问类型',
+        title: $t('Point.index.321712-11'),
         dataIndex: 'accessModes$in$any',
         key: 'accessModes$in$any',
         search: {
@@ -475,7 +478,7 @@ const columns = [
         },
     },
     {
-        title: '运行状态',
+        title: $t('Point.index.321712-12'),
         dataIndex: 'runningState',
         key: 'runningState',
         search: {
@@ -494,7 +497,7 @@ const columns = [
         },
     },
     {
-        title: '说明',
+        title: $t('Point.index.321712-13'),
         dataIndex: 'description',
         key: 'description',
         search: {
@@ -557,7 +560,7 @@ const handleDelete = (id: string | undefined = undefined) => {
         if (res?.status === 200) {
             cancelSelect();
             tableRef.value?.reload();
-            onlyMessage('操作成功', 'success');
+            onlyMessage($t('Point.index.321712-14'), 'success');
         }
         spinning.value = false;
     });
@@ -604,7 +607,7 @@ const handleExport = async () => {
     if (res) {
         const blob = new Blob([res], { type: 'xlsx' });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `${props?.data?.channelName}点位数据`, 'xlsx');
+        downloadFileByUrl(url, $t('Point.index.321712-15', [props?.data?.channelName]), 'xlsx');
     }
 };
 const clickEdit = async (data: object) => {
@@ -622,21 +625,21 @@ const clickRead = async (data: any) => {
         console.log('====', ReadIdMap.get(data.id));
         cancelSelect();
         tableRef.value?.reload();
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Point.index.321712-14'), 'success');
     }
 };
 
 const getQuantity = (item: Partial<Record<string, any>>) => {
     const { quantity } = item.configuration?.parameter || '';
-    return !!quantity ? quantity + '(寄存器数量)' : '';
+    return !!quantity ? quantity + $t('Point.index.321712-16') : '';
 };
 const getAddress = (item: Partial<Record<string, any>>) => {
     const { address } = item.configuration?.parameter || '';
-    return !!address || address === 0 ? address + '(地址)' : '';
+    return !!address || address === 0 ? address + $t('Point.index.321712-17') : '';
 };
 const getScaleFactor = (item: Partial<Record<string, any>>) => {
     const { scaleFactor } = item.configuration?.codec?.configuration || '';
-    return !!scaleFactor ? scaleFactor + '(缩放因子)' : '';
+    return !!scaleFactor ? scaleFactor + $t('Point.index.321712-18') : '';
 };
 const getRight1 = (item: Partial<Record<string, any>>) => {
     return !!getQuantity(item) || getAddress(item) || getScaleFactor(item);
@@ -646,7 +649,7 @@ const getText = (item: Partial<Record<string, any>>) => {
 };
 const getInterval = (item: Partial<Record<string, any>>) => {
     const { interval } = item.configuration || '';
-    return !!interval ? '采集频率' + interval + 'ms' : '';
+    return !!interval ? $t('Point.index.321712-19') + interval + 'ms' : '';
 };
 
 const getAccessModes = (item: Partial<Record<string, any>>) => {
@@ -679,7 +682,7 @@ const saveChange = (value: object) => {
     current.value = {};
     if (value) {
         tableRef.value?.reload();
-        onlyMessage('操作成功', 'success');
+        onlyMessage($t('Point.index.321712-14'), 'success');
     }
 };
 
@@ -784,7 +787,7 @@ watch(
                 value?.provider === 'MODBUS_TCP'
                     ? accessModesMODBUS_TCP
                     : accessModesMODBUS_TCP.concat({
-                          label: '订阅',
+                          label: $t('Point.index.321712-20'),
                           value: 'subscribe',
                       });
             defaultParams.value.terms[0].terms[0].value = !value.id
@@ -802,7 +805,7 @@ watch(
                     ? [
                           {
                               key: 'update',
-                              text: '批量编辑',
+                              text: $t('Point.index.321712-21'),
                               permission: 'DataCollect/Collector:update',
                               icon: 'FormOutlined',
                               selected: {
@@ -811,13 +814,13 @@ watch(
                           },
                           {
                               key: 'delete',
-                              text: '批量删除',
+                              text: $t('Point.index.321712-22'),
                               danger: true,
                               permission: 'DataCollect/Collector:delete',
                               icon: 'DeleteOutlined',
                               selected: {
                                   popConfirm: {
-                                      title: '确认删除？',
+                                      title: $t('Point.index.321712-6'),
                                       onConfirm: handleBatchDelete,
                                   },
                               },
@@ -826,13 +829,13 @@ watch(
                     : [
                           {
                               key: 'delete',
-                              text: '批量删除',
+                              text: $t('Point.index.321712-22'),
                               danger: true,
                               permission: 'DataCollect/Collector:delete',
                               icon: 'DeleteOutlined',
                               selected: {
                                   popConfirm: {
-                                      title: '确认删除？',
+                                      title: $t('Point.index.321712-6'),
                                       onConfirm: handleBatchDelete,
                                   },
                               },

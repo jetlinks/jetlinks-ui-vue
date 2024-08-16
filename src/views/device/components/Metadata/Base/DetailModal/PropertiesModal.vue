@@ -2,7 +2,7 @@
   <a-modal
       visible
       :maskClosable="false"
-      title="属性详情"
+      :title="$t('DetailModal.PropertiesModal.6915913-0')"
       :getContainer="getPopupContainer"
       @cancel="cancel"
       @ok="ok"
@@ -15,14 +15,14 @@
           justifyContent: 'end'
         }"
     >
-      <a-descriptions-item label="属性标识">{{ data.id }}</a-descriptions-item>
-      <a-descriptions-item label="属性名称">{{ data.name }}</a-descriptions-item>
-      <a-descriptions-item label="属性类型">{{ TypeStringMap[data.valueType.type] }}</a-descriptions-item>
-      <a-descriptions-item v-if="['int', 'long', 'float', 'double'].includes(data.valueType.type)" label="单位">{{ unitLabel }}</a-descriptions-item>
-      <a-descriptions-item v-if="['float', 'double'].includes(data.valueType.type)" label="精度">{{ data.valueType?.scal || 0 }}</a-descriptions-item>
-      <a-descriptions-item v-if="['string', 'password'].includes(data.valueType.type)" label="最大长度">{{ data.valueType?.maxLength }}</a-descriptions-item>
-      <a-descriptions-item v-if="data.valueType.type === 'file'" label="文件类型">{{ data.valueType?.bodyType }}</a-descriptions-item>
-      <a-descriptions-item v-if="data.valueType.type === 'date'" label="格式">{{ data.valueType?.format }}</a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.PropertiesModal.6915913-1')">{{ data.id }}</a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.PropertiesModal.6915913-2')">{{ data.name }}</a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.PropertiesModal.6915913-3')">{{ TypeStringMap[data.valueType.type] }}</a-descriptions-item>
+      <a-descriptions-item v-if="['int', 'long', 'float', 'double'].includes(data.valueType.type)" :label="$t('DetailModal.PropertiesModal.6915913-4')">{{ unitLabel }}</a-descriptions-item>
+      <a-descriptions-item v-if="['float', 'double'].includes(data.valueType.type)" :label="$t('DetailModal.PropertiesModal.6915913-5')">{{ data.valueType?.scal || 0 }}</a-descriptions-item>
+      <a-descriptions-item v-if="['string', 'password'].includes(data.valueType.type)" :label="$t('DetailModal.PropertiesModal.6915913-6')">{{ data.valueType?.maxLength }}</a-descriptions-item>
+      <a-descriptions-item v-if="data.valueType.type === 'file'" :label="$t('DetailModal.PropertiesModal.6915913-7')">{{ data.valueType?.bodyType }}</a-descriptions-item>
+      <a-descriptions-item v-if="data.valueType.type === 'date'" :label="$t('DetailModal.PropertiesModal.6915913-8')">{{ data.valueType?.format }}</a-descriptions-item>
       <a-descriptions-item
           v-if="
           ['boolean', 'array'].includes(data.valueType.type)"
@@ -61,13 +61,13 @@
           </template>
         </j-table>
       </a-descriptions-item>
-      <a-descriptions-item label="属性来源">
+      <a-descriptions-item :label="$t('DetailModal.PropertiesModal.6915913-9')">
         {{ sourceMap[data.expands.source] }}
-        <a v-if="data.expands.source === 'rule'" type="link" style="padding: 0 12px" @click="showRuleDetail">查看</a>
+        <a v-if="data.expands.source === 'rule'" type="link" style="padding: 0 12px" @click="showRuleDetail">{{ $t('DetailModal.PropertiesModal.6915913-10') }}</a>
       </a-descriptions-item>
-      <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
-      <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
-      <a-descriptions-item v-if="showMetrics" label="指标配置"></a-descriptions-item>
+      <a-descriptions-item :label="$t('DetailModal.PropertiesModal.6915913-11')">{{ readTypeText }}</a-descriptions-item>
+      <a-descriptions-item v-if="showSetting && data.expands?.storageType" :label="$t('DetailModal.PropertiesModal.6915913-12')">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
+      <a-descriptions-item v-if="showMetrics" :label="$t('DetailModal.PropertiesModal.6915913-13')"></a-descriptions-item>
       <a-descriptions-item v-if="showMetrics">
         <j-table
             :columns="metrics.columns"
@@ -87,7 +87,7 @@
       </a-descriptions-item>
     </j-descriptions>
     <template #footer>
-      <j-button type="primary" @click="ok">确认</j-button>
+      <j-button type="primary" @click="ok">{{ $t('DetailModal.PropertiesModal.6915913-14') }}</j-button>
     </template>
   </a-modal>
   <RuleDetailModal
@@ -111,6 +111,10 @@ import { queryDeviceVirtualProperty } from '@/api/device/instance';
 import { queryProductVirtualProperty } from '@/api/device/product';
 import {useInstanceStore} from "store/instance";
 import {useProductStore} from "store/product";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
+
 
 const props = defineProps({
   data: {
@@ -139,16 +143,16 @@ const productStore = useProductStore();
 const { settingData } = useStoreType(props.type)
 
 const sourceMap = {
-    'device': '设备',
-    'manual': '手动',
-    'rule': '规则',
+    'device': $t('DetailModal.PropertiesModal.6915913-15'),
+    'manual': $t('DetailModal.PropertiesModal.6915913-16'),
+    'rule': $t('DetailModal.PropertiesModal.6915913-17'),
 }
 
 const readTypeText = computed(() => {
   const type = {
-    "read": "读",
-    "write": "写",
-    "report": "上报",
+    "read": $t('DetailModal.PropertiesModal.6915913-18'),
+    "write": $t('DetailModal.PropertiesModal.6915913-19'),
+    "report": $t('DetailModal.PropertiesModal.6915913-20'),
   }
 
   return props.data?.expands?.type?.map?.((key: string) => type[key]).join('、')
@@ -176,10 +180,10 @@ const dataTypeTable = reactive<{ columns: any[], dataSource: any }>({
 
 const metrics = reactive<{ columns: any[], dataSource: any }>({
   columns: [
-    { title: '序号', dataIndex: 'serial', width: 60 },
-    { title: '指标标识', dataIndex: 'id' },
-    { title: '指标名称', dataIndex: 'name' },
-    { title: '指标值', dataIndex: 'value' },
+    { title: $t('DetailModal.PropertiesModal.6915913-21'), dataIndex: 'serial', width: 60 },
+    { title: $t('DetailModal.PropertiesModal.6915913-22'), dataIndex: 'id' },
+    { title: $t('DetailModal.PropertiesModal.6915913-23'), dataIndex: 'name' },
+    { title: $t('DetailModal.PropertiesModal.6915913-24'), dataIndex: 'value' },
   ],
   dataSource: []
 })
@@ -208,9 +212,9 @@ const handleDataTable = (type: string) => {
       break;
     case 'object':
       dataTypeTable.columns = [
-        { title: '标识', dataIndex: 'id', width: 50},
-        { title: '名称', dataIndex: 'name'},
-        { title: '名称', dataIndex: 'name'},
+        { title: $t('DetailModal.PropertiesModal.6915913-25'), dataIndex: 'id', width: 50},
+        { title: $t('DetailModal.PropertiesModal.6915913-26'), dataIndex: 'name'},
+        { title: $t('DetailModal.PropertiesModal.6915913-26'), dataIndex: 'name'},
       ]
       dataTypeTable.dataSource = props.data.valueType?.properties
           break;

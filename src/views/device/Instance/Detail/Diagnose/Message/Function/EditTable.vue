@@ -21,7 +21,7 @@
                             :rules="[
                                 {
                                     required: !!record.required,
-                                    message: '该字段为必填字段',
+                                    message: $t('Function.EditTable.5856011-0'),
                                 },
                             ]"
                         >
@@ -41,8 +41,8 @@
                                           })
                                         : record.valueType.type  === 'boolean'
                                         ? [
-                                              { label: '是', value: true },
-                                              { label: '否', value: false },
+                                              { label: $t('Function.EditTable.5856011-1'), value: true },
+                                              { label: $t('Function.EditTable.5856011-2'), value: false },
                                           ]
                                         : undefined
                                 "
@@ -57,6 +57,9 @@
 
 <script lang="ts" setup>
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:modelValue', data: Record<string, any>[]): void;
@@ -71,17 +74,17 @@ const _props = defineProps({
 });
 const columns = [
     {
-        title: '参数名称',
+        title: $t('Function.EditTable.5856011-3'),
         dataIndex: 'name',
         with: '33%',
     },
     {
-        title: '类型',
+        title: $t('Function.EditTable.5856011-4'),
         dataIndex: 'valueType',
         with: '33%',
     },
     {
-        title: '值',
+        title: $t('Function.EditTable.5856011-5'),
         dataIndex: 'value',
         with: '34%',
     },

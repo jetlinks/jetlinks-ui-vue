@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"Edit.index.6916019-0": "保存",
+		"Edit.index.6916019-1": "属性",
+		"Edit.index.6916019-2": "事件",
+		"Edit.index.6916019-3": "功能",
+		"Edit.index.6916019-4": "标签",
+		"Edit.index.6916019-5": "新增",
+		"Edit.index.6916019-6": "编辑",
+		"Edit.index.6916019-7": "标识已存在",
+		"Edit.index.6916019-8": "操作成功！",
+		"Edit.index.6916019-9": "操作失败！"
+	},
+	"en": {
+		"Edit.index.6916019-0": "Save",
+		"Edit.index.6916019-1": "attribute",
+		"Edit.index.6916019-2": "event",
+		"Edit.index.6916019-3": "function",
+		"Edit.index.6916019-4": "label",
+		"Edit.index.6916019-5": "Add",
+		"Edit.index.6916019-6": "Edit",
+		"Edit.index.6916019-7": "The identifier already exists",
+		"Edit.index.6916019-8": "Operation successful!",
+		"Edit.index.6916019-9": "Operation failed!"
+	}
+}
