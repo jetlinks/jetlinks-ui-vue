@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"Operator.index.43487113-0": "搜索关键字",
+		"Operator.index.43487113-1": "请选择使用值",
+		"Operator.index.43487113-2": "实时值为空时获取上一有效值补齐，实时值不为空则使用实时值",
+		"Operator.index.43487113-3": "$recent实时值",
+		"Operator.index.43487113-4": "实时值的上一有效值",
+		"Operator.index.43487113-5": "上一值",
+		"Operator.index.43487113-6": "添加",
+		"Operator.index.43487113-7": "tag实时值",
+		"Operator.index.43487113-8": "属性",
+		"Operator.index.43487113-9": "是",
+		"Operator.index.43487113-10": "否",
+		"Operator.index.43487113-11": "标识:",
+		"Operator.index.43487113-12": "数据类型:",
+		"Operator.index.43487113-13": "是否只读:",
+		"Operator.index.43487113-14": "可写数值范围:",
+		"Operator.index.43487113-15": "标签"
+	},
+	"en": {
+		"Operator.index.43487113-0": "Search keywords",
+		"Operator.index.43487113-1": "Please select the usage value",
+		"Operator.index.43487113-2": "When the real-time value is empty, obtain the previous valid value and fill it in. If the real-time value is not empty, use the real-time value",
+		"Operator.index.43487113-3": "$recent real-time value",
+		"Operator.index.43487113-4": "Last significant value of real-time value",
+		"Operator.index.43487113-5": "Previous value",
+		"Operator.index.43487113-6": "Add",
+		"Operator.index.43487113-7": "Tag real-time value",
+		"Operator.index.43487113-8": "Attribute",
+		"Operator.index.43487113-9": "yes",
+		"Operator.index.43487113-10": "no",
+		"Operator.index.43487113-11": "ID:",
+		"Operator.index.43487113-12": "Data type:",
+		"Operator.index.43487113-13": "Read only:",
+		"Operator.index.43487113-14": "Can write numerical range:",
+		"Operator.index.43487113-15": "Label"
+	}
+}

@@ -1,6 +1,6 @@
 <template>
   <ConfigProvider
-    :locale='zhCN'
+    :locale='enGB'
     :IconConfig="{
       scriptUrl: '//at.alicdn.com/t/c/font_4035907_i1jazcune3.js'
     }"
@@ -12,6 +12,9 @@
 <script setup lang="ts">
 import { ConfigProvider } from 'jetlinks-ui-components'
 import zhCN from 'jetlinks-ui-components/es/locale/zh_CN';
+import enGB from 'ant-design-vue/es/locale/en_GB';  import dayjs from 'dayjs';
+import 'dayjs/locale/en-gb';
+dayjs.locale('en-gb');
 import { storeToRefs } from 'pinia';
 import { useSystem } from './store/system';
 import {LocalStore} from "@/utils/comm";

@@ -13,7 +13,7 @@
                         <div>
                             {{ props.data?.topicName }}
                         </div>
-                        <span :style="{color: state === 'unread' ? 'red' : '#AAAAAA'}">{{ state === 'unread' ? '未读' : '已读' }}</span>
+                        <span :style="{color: state === 'unread' ? 'red' : '#AAAAAA'}">{{ state === 'unread' ? $t('components.NoticeItem.4348555-0') : $t('components.NoticeItem.4348555-1') }}</span>
                     </div>
                     <div class="time">
                         {{
@@ -28,9 +28,9 @@
                 </j-ellipsis>
             </div>
             <div class="list-item-right">
-                <j-button style="margin-bottom: 5px;" class="btn" @click.stop="detail">查看详情</j-button>
-                <j-button class="btn" v-if="state === 'unread'" @click.stop="read('_read')">标为已读</j-button>
-                <j-button class="btn" v-else @click.stop="read('_unread')">标为未读</j-button>
+                <j-button style="margin-bottom: 5px;" class="btn" @click.stop="detail">{{ $t('components.NoticeItem.4348555-2') }}</j-button>
+                <j-button class="btn" v-if="state === 'unread'" @click.stop="read('_read')">{{ $t('components.NoticeItem.4348555-3') }}</j-button>
+                <j-button class="btn" v-else @click.stop="read('_unread')">{{ $t('components.NoticeItem.4348555-4') }}</j-button>
             </div>
         </div>
     </div>
@@ -42,6 +42,9 @@ import { changeStatus_api } from '@/api/account/notificationRecord';
 import { useMenuStore } from '@/store/menu';
 import { useUserInfo } from '@/store/userInfo';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -101,7 +104,7 @@ const read = (type: '_read' | '_unread') => {
             }
             num.value = 0;
             state.value = type === '_read' ? 'read' : 'unread'
-            onlyMessage('操作成功！');
+            onlyMessage($t('components.NoticeItem.4348555-5'));
             emits('refresh')
         }
     });

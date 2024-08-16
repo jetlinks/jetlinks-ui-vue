@@ -11,7 +11,7 @@
             </template>
             <template v-else><slot></slot></template>
         </el-amap>
-        <JEmpty v-else description="请配置高德地图key" style="padding: 20%" />
+        <JEmpty v-else :description="$t('AMapComponent.AMap.512470-0')" style="padding: 20%" />
     </div>
 </template>
 
@@ -21,6 +21,9 @@ import AMap, { initAMapApiLoader } from '@vuemap/vue-amap';
 import '@vuemap/vue-amap/dist/style.css';
 import { getAMapUiPromise } from './utils';
 import { useSystem } from '@/store/system';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['init']);
 

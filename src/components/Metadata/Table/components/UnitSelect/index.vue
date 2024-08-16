@@ -1,6 +1,6 @@
 <template>
   <Select
-    placeholder="请选择单位"
+    :placeholder="$t('UnitSelect.index.4348670-0')"
     style="width: 100%"
     mode="tags"
     v-model:value="myValue"
@@ -18,6 +18,9 @@
 import { Form, Select } from 'ant-design-vue'
 import {useTableWrapper} from "@/components/Metadata/Table/context";
 import {useGetUnit} from "@/views/device/components/Metadata/Base/columns";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {

@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"JsonParam.index.4348661-0": "配置参数",
+		"JsonParam.index.4348661-1": "标识",
+		"JsonParam.index.4348661-2": "请输入标识",
+		"JsonParam.index.4348661-3": "最多可输入64个字符",
+		"JsonParam.index.4348661-4": "标识只能由数字、字母、下划线、中划线组成",
+		"JsonParam.index.4348661-5": "名称",
+		"JsonParam.index.4348661-6": "请输入名称",
+		"JsonParam.index.4348661-7": "添加参数"
+	},
+	"en": {
+		"JsonParam.index.4348661-0": "Configuration parameter",
+		"JsonParam.index.4348661-1": "ID",
+		"JsonParam.index.4348661-2": "Please enter the ID",
+		"JsonParam.index.4348661-3": "Up to 64 characters can be entered",
+		"JsonParam.index.4348661-4": "Identification can only be composed of numbers, letters, underscores, and dashes",
+		"JsonParam.index.4348661-5": "Name",
+		"JsonParam.index.4348661-6": "Please enter a name",
+		"JsonParam.index.4348661-7": "Add parameters"
+	}
+}

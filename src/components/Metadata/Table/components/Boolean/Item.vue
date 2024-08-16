@@ -1,6 +1,6 @@
 <template>
   <a-form-item
-    label="布尔值"
+    :label="$t('Boolean.Item.43486108-0')"
     required
     :name="name"
     :rules="rules"
@@ -15,6 +15,9 @@
 
 <script setup name="MetadataBooleanItem">
 import Content from './ItemContext.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emits = defineEmits([
   'update:value',
@@ -41,11 +44,11 @@ const rules = [{
     );
     const isNull = Object.values(v).some((item) => !item);
     if (isMax) {
-      return Promise.reject('最多可输入64个字符');
+      return Promise.reject($t('Boolean.Item.43486108-1'));
     }
 
     if (isNull) {
-      return Promise.reject('请输入布尔值');
+      return Promise.reject($t('Boolean.Item.43486108-2'));
     }
 
     return Promise.resolve();

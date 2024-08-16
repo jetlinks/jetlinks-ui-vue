@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Search.search.4348671-0": "查找",
+		"Search.search.4348671-1": "请输入查找内容",
+		"Search.search.4348671-2": "查找全部",
+		"Search.search.4348671-3": "上一个",
+		"Search.search.4348671-4": "下一个",
+		"Search.search.4348671-5": "关闭",
+		"Search.search.4348671-6": "行数",
+		"Search.search.4348671-7": "第",
+		"Search.search.4348671-8": "行",
+		"Search.search.4348671-9": "查找到",
+		"Search.search.4348671-10": "条相关属性",
+		"Search.search.4348671-11": "标识",
+		"Search.search.4348671-12": "名称"
+	},
+	"en": {
+		"Search.search.4348671-0": "Search",
+		"Search.search.4348671-1": "Please enter the search content",
+		"Search.search.4348671-2": "Search All",
+		"Search.search.4348671-3": "Previous",
+		"Search.search.4348671-4": "Next",
+		"Search.search.4348671-5": "Close",
+		"Search.search.4348671-6": "Number of rows",
+		"Search.search.4348671-7": "Line",
+		"Search.search.4348671-8": "",
+		"Search.search.4348671-9": "Found",
+		"Search.search.4348671-10": "related attributes",
+		"Search.search.4348671-11": "ID",
+		"Search.search.4348671-12": "Name"
+	}
+}

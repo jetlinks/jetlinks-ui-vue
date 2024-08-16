@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"NormalUpload.index.4348423-0": "文件上传",
+		"NormalUpload.index.4348423-1": "下载模板",
+		"NormalUpload.index.4348423-2": "进行中",
+		"NormalUpload.index.4348423-3": "已完成",
+		"NormalUpload.index.4348423-4": "总数量：",
+		"NormalUpload.index.4348423-5": "失败 ",
+		"NormalUpload.index.4348423-6": "下载",
+		"NormalUpload.index.4348423-7": "设备导入模板",
+		"NormalUpload.index.4348423-8": "请上传.csv格式文件",
+		"NormalUpload.index.4348423-9": "请上传.xlsx格式文件",
+		"NormalUpload.index.4348423-10": "失败",
+		"NormalUpload.index.4348423-11": "暂无权限，请联系管理员",
+		"NormalUpload.index.4348423-12": "请先上传文件"
+	},
+	"en": {
+		"NormalUpload.index.4348423-0": "File upload",
+		"NormalUpload.index.4348423-1": "Download Template",
+		"NormalUpload.index.4348423-2": "runing",
+		"NormalUpload.index.4348423-3": "completed",
+		"NormalUpload.index.4348423-4": "Total quantity:",
+		"NormalUpload.index.4348423-5": "Failed",
+		"NormalUpload.index.4348423-6": "Download",
+		"NormalUpload.index.4348423-7": "Equipment Import Template",
+		"NormalUpload.index.4348423-8": "Please upload a. csv format file",
+		"NormalUpload.index.4348423-9": "Please upload. xlsx format file",
+		"NormalUpload.index.4348423-10": "Error",
+		"NormalUpload.index.4348423-11": "No permission at the moment, please contact the administrator",
+		"NormalUpload.index.4348423-12": "Please upload the file first"
+	}
+}

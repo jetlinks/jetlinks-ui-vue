@@ -22,6 +22,9 @@
 </template>
 
 <script setup name="BooleanItemContext">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emits = defineEmits([
   'update:value',
@@ -36,9 +39,9 @@ const props = defineProps({
 })
 
 const formData = reactive({
-  trueText: props.value?.trueText || '是',
+  trueText: props.value?.trueText || $t('Boolean.ItemContext.43486106-0'),
   trueValue: props.value?.trueValue || 'true',
-  falseText: props.value?.falseText || '否',
+  falseText: props.value?.falseText || $t('Boolean.ItemContext.43486106-1'),
   falseValue: props.value?.falseValue || 'false',
 });
 

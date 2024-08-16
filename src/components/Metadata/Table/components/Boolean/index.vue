@@ -26,6 +26,9 @@
 import { PopoverModal } from '../index'
 import Item from './Item.vue'
 import {Form} from "ant-design-vue";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits([
   'update:trueText',
@@ -69,9 +72,9 @@ const formRef = ref()
 const visible = ref(false)
 const formData = reactive({
   value: {
-    trueText: props.trueText || '是',
+    trueText: props.trueText || $t('Boolean.index.43487109-0'),
     trueValue: props.trueValue || 'true',
-    falseText: props.falseText || '否',
+    falseText: props.falseText || $t('Boolean.index.43487109-1'),
     falseValue: props.falseValue || 'false',
   }
 })
@@ -91,9 +94,9 @@ const onOk = async () => {
 
 const onCancel = () => {
   formRef.value?.resetFields();
-  formData.value.trueText = props.trueText || '是'
+  formData.value.trueText = props.trueText || $t('Boolean.index.43487109-0')
   formData.value.trueValue = props.trueValue || 'true'
-  formData.value.falseText = props.falseText || '否'
+  formData.value.falseText = props.falseText || $t('Boolean.index.43487109-1')
   formData.value.falseValue = props.falseValue || 'false'
   emit('cancel');
 }
@@ -104,9 +107,9 @@ watch(() => [
   props.falseText,
   props.falseValue,
 ], () => {
-  formData.value.trueText = props.trueText || '是'
+  formData.value.trueText = props.trueText || $t('Boolean.index.43487109-0')
   formData.value.trueValue = props.trueValue || 'true'
-  formData.value.falseText = props.falseText || '否'
+  formData.value.falseText = props.falseText || $t('Boolean.index.43487109-1')
   formData.value.falseValue = props.falseValue || 'false'
 })
 

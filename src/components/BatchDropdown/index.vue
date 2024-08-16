@@ -11,11 +11,11 @@
                 {{ _item.text }}
             </PermissionButton>
             <j-button type="link" @click="reload"
-                ><AIcon type="RedoOutlined" />重选</j-button
+                ><AIcon type="RedoOutlined" />{{ $t('BatchDropdown.index.298336-0') }}</j-button
             >
         </j-space>
         <j-dropdown :overlayStyle="{ zIndex: 1000 }" v-else>
-            <j-button>批量操作 <AIcon type="DownOutlined" /></j-button>
+            <j-button>{{ $t('BatchDropdown.index.298336-1') }} <AIcon type="DownOutlined" /></j-button>
             <template #overlay>
                 <j-menu @click="handleMenuClick">
                     <j-menu-item v-for="item in actions" :key="item.key">
@@ -54,6 +54,9 @@
 import { PropType } from 'vue';
 import { BatchActionsType } from './types';
 import { defineExpose } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     actions: {

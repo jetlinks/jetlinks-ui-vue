@@ -8,7 +8,7 @@
     <template #content>
       <div style="width: 200px">
         <a-form ref="formRef" layout="vertical" :model="formData">
-          <a-form-item label="单位" name="unit" :rules="[{ max: 64, message: '最多可输入64个字符' }]">
+          <a-form-item :label="$t('Integer.index.4348678-0')" name="unit" :rules="[{ max: 64, message: $t('Integer.index.4348678-1') }]">
             <UnitSelect v-model:value="formData.unit" />
           </a-form-item>
         </a-form>
@@ -26,6 +26,9 @@
 
 <script setup name="MetadataInteger">
 import { UnitSelect, PopoverModal } from '../index'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 

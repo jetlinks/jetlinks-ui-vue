@@ -17,31 +17,31 @@
         >
             <j-button>
                 <template #icon><AIcon type="UploadOutlined" /></template>
-                文件上传
+                {{ $t('NormalUpload.index.4348423-0') }}
             </j-button>
         </j-upload>
         <div style="margin-left: 20px">
             <j-space>
-                下载模板
+                {{ $t('NormalUpload.index.4348423-1') }}
                 <a @click="downFile('xlsx')">.xlsx</a>
                 <a @click="downFile('csv')">.csv</a>
             </j-space>
         </div>
     </j-space>
     <div style="margin-top: 20px" v-if="importLoading">
-        <j-badge v-if="flag" status="processing" text="进行中" />
+        <j-badge v-if="flag" status="processing" :text="$t('NormalUpload.index.4348423-2')" />
         <div v-else>
             <div>
                 <j-space size="large">
-                    <j-badge status="success" text="已完成" />
-                    <span>总数量：{{ count }}</span>
+                    <j-badge status="success" :text="$t('NormalUpload.index.4348423-3')" />
+                    <span>{{ $t('NormalUpload.index.4348423-4') }}{{ count }}</span>
                 </j-space>
             </div>
             <div>
                 <j-space size="large">
-                    <j-badge status="error" text="失败&emsp;" />
-                    <span>总数量：{{ failCount }}</span>
-                    <a :href="detailFile" v-if="failCount">下载</a>
+                    <j-badge status="error" :text="$t('NormalUpload.index.4348423-5')" />
+                    <span>{{ $t('NormalUpload.index.4348423-4') }}{{ failCount }}</span>
+                    <a :href="detailFile" v-if="failCount">{{ $t('NormalUpload.index.4348423-6') }}</a>
                 </j-space>
             </div>
         </div>
@@ -58,6 +58,9 @@ import {
     templateDownload,
 } from '@/api/device/instance';
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:modelValue', data: string[]): void;
@@ -106,7 +109,7 @@ const downFile = async (type: string) => {
     if (res) {
         const blob = new Blob([res], { type: type });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `设备导入模板`, type);
+        downloadFileByUrl(url, $t('NormalUpload.index.4348423-7'), type);
     }
 };
 
@@ -115,10 +118,10 @@ const beforeUpload = (_file: any) => {
     const isCsv = _file.type === 'text/csv';
     const isXlsx = _file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     if (!isCsv && fileType !== 'xlsx') {
-        onlyMessage('请上传.csv格式文件', 'warning');
+        onlyMessage($t('NormalUpload.index.4348423-8'), 'warning');
     }
     if (!isXlsx && fileType !== 'csv') {
-        onlyMessage('请上传.xlsx格式文件', 'warning');
+        onlyMessage($t('NormalUpload.index.4348423-9'), 'warning');
     }
     return (isCsv && fileType !== 'xlsx') || (isXlsx && fileType !== 'csv');
 };
@@ -143,19 +146,19 @@ const submitData = async (fileUrl: string) => {
                 count.value = dt;
             } else if(!res.success && !res.detailFile) {
                 failCount.value++;
-                errMessage.value = res.message || '失败';
+                errMessage.value = res.message || $t('NormalUpload.index.4348423-10');
             } else if(res.detailFile) {
                 detailFile.value = res.detailFile;
             }
         };
         source.onerror = (e: { status: number }) => {
-            if (e.status === 403) errMessage.value = '暂无权限，请联系管理员';
+            if (e.status === 403) errMessage.value = $t('NormalUpload.index.4348423-11');
             flag.value = false;
             source.close();
         };
         source.onopen = () => {};
     } else {
-        onlyMessage('请先上传文件', 'error');
+        onlyMessage($t('NormalUpload.index.4348423-12'), 'error');
     }
 };
 

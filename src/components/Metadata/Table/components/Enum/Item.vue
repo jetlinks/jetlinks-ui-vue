@@ -2,7 +2,7 @@
   <a-form-item :name="name" :rules="rules" :validate-first="true">
     <template #label>
       <span style="color: #ff4d4f; padding-right: 4px; padding-top: 2px">*</span>
-      枚举项
+      {{ $t('Enum.Item.4348659-0') }}
     </template>
     <Content ref="tableRef" v-model:value="dataSource" @change="change" />
   </a-form-item>
@@ -10,6 +10,9 @@
 
 <script setup name="MetadataEnumItem">
 import Content from './ItemContent.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:value'])
 const props = defineProps({
@@ -36,7 +39,7 @@ const rules = [
     validator: async (_, value) =>{
       console.log(value, dataSource.value)
       if (!dataSource.value?.length) {
-        return Promise.reject('请添加枚举项');
+        return Promise.reject($t('Enum.Item.4348659-1'));
       }
       // console.log(tableRef, tableRef.value)
       // const data = await tableRef.value?.validate?.()

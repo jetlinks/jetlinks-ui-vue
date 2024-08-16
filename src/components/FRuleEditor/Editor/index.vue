@@ -22,7 +22,7 @@
       </div>
       <div class="right">
         <span v-if="mode !== 'advance'">
-          <j-tooltip :title="!id ? '请先输入标识' : '设置属性规则'">
+          <j-tooltip :title="!id ? $t('Editor.index.43487111-0') : $t('Editor.index.43487111-1')">
             <AIcon type="FullscreenOutlined" :class="!id ? 'disabled' : ''" @click="fullscreenClick" />
           </j-tooltip>
         </span>
@@ -43,6 +43,9 @@ import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import { cloneDeep } from 'lodash-es';
 import { inject } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 interface Props {
   mode?: 'advance' | 'simple';
   id?: string;

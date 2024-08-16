@@ -5,6 +5,9 @@
 <script setup>
 import { useMap } from './useMap'
 import {pick} from "lodash-es";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 defineOptions({
   name: 'DistrictSearch'
@@ -93,7 +96,7 @@ const queryDistrict = (code) => {
   if (!code) return
   district.search(code, (status, result) => {
     if (!result || !result.districtList || !result.districtList[0]) {
-      console.warn('请正确填写名称或更新其他名称');
+      console.warn($t('AMapComponent.DistrictSearch.512485-0'));
       return
     }
     const bounds = result.districtList[0].boundaries;

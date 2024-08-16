@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"Boolean.Item.43486108-0": "布尔值",
+		"Boolean.Item.43486108-1": "最多可输入64个字符",
+		"Boolean.Item.43486108-2": "请输入布尔值"
+	},
+	"en": {
+		"Boolean.Item.43486108-0": "Boolean value",
+		"Boolean.Item.43486108-1": "Up to 64 characters can be entered",
+		"Boolean.Item.43486108-2": "Please enter a Boolean value"
+	}
+}

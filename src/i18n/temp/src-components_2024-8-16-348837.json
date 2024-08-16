@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"FRuleEditor.index.43486101-0": "编辑规则",
+		"FRuleEditor.index.43486101-1": "时间窗口",
+		"FRuleEditor.index.43486101-2": "频次窗口",
+		"FRuleEditor.index.43486101-3": "聚合函数:",
+		"FRuleEditor.index.43486101-4": "窗口长度（次）",
+		"FRuleEditor.index.43486101-6": "步长（次）",
+		"FRuleEditor.index.43486101-7": "取消",
+		"FRuleEditor.index.43486101-8": "确定",
+		"FRuleEditor.index.43486101-9": "{0}$recent实时值",
+		"FRuleEditor.index.43486101-10": "{0}上一值"
+	},
+	"en": {
+		"FRuleEditor.index.43486101-0": "Edit Rules",
+		"FRuleEditor.index.43486101-1": "Time window",
+		"FRuleEditor.index.43486101-2": "Frequency Window",
+		"FRuleEditor.index.43486101-3": "Aggregate function:",
+		"FRuleEditor.index.43486101-4": "Window length (times)",
+		"FRuleEditor.index.43486101-6": "Step size (times)",
+		"FRuleEditor.index.43486101-7": "Cancel",
+		"FRuleEditor.index.43486101-8": "Confirm",
+		"FRuleEditor.index.43486101-9": "{0} $recent real-time value",
+		"FRuleEditor.index.43486101-10": "{0} previous value"
+	}
+}

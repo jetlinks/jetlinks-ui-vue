@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Upload.index.434845-0": "点击修改",
+		"Upload.index.434845-1": "上传失败",
+		"Upload.index.434845-2": "请上传正确格式的图片",
+		"Upload.index.434845-3": "图片大小必须小于{0}M"
+	},
+	"en": {
+		"Upload.index.434845-0": "Click to modify",
+		"Upload.index.434845-1": "Upload failed",
+		"Upload.index.434845-2": "Please upload images in the correct format",
+		"Upload.index.434845-3": "The image size must be smaller than {0}M"
+	}
+}

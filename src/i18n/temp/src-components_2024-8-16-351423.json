@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"AMapComponent.PathSimplifier.512471-0": "路线",
+		"AMapComponent.PathSimplifier.512471-1": "当前环境不支持 Canvas！"
+	},
+	"en": {
+		"AMapComponent.PathSimplifier.512471-0": "Route",
+		"AMapComponent.PathSimplifier.512471-1": "The current environment does not support Canvas!"
+	}
+}

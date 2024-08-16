@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Enum.ItemContent.4348658-0": "新增枚举项",
+		"Enum.ItemContent.4348658-1": "最多可输入64个字符",
+		"Enum.ItemContent.4348658-2": "请输入Value值",
+		"Enum.ItemContent.4348658-3": "该Value值已存在",
+		"Enum.ItemContent.4348658-4": "请输入Text",
+		"Enum.ItemContent.4348658-5": "操作"
+	},
+	"en": {
+		"Enum.ItemContent.4348658-0": "Add enumeration items",
+		"Enum.ItemContent.4348658-1": "Up to 64 characters can be entered",
+		"Enum.ItemContent.4348658-2": "Please enter a Value value",
+		"Enum.ItemContent.4348658-3": "The Value value already exists",
+		"Enum.ItemContent.4348658-4": "Please enter Text",
+		"Enum.ItemContent.4348658-5": "Operation"
+	}
+}

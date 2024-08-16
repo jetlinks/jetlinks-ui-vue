@@ -37,8 +37,8 @@
       <ArrayParams v-model:value="record.array"/>
     </template>
   </Table>
-  <a-button @click="addItem">新增</a-button>
-  <a-button @click="validate">校验</a-button>
+  <a-button @click="addItem">{{ $t('Table.demo.4348551-0') }}</a-button>
+  <a-button @click="validate">{{ $t('Table.demo.4348551-1') }}</a-button>
 </template>
 
 <script setup name="demo">
@@ -55,6 +55,9 @@ import {
   DoubleParams,
   StringParams
 } from './components'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const tableRef = ref()
 const dataSource = ref(new Array(10).fill(0).map((_, index) => {
@@ -79,7 +82,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入列名')
+            return Promise.reject($t('Table.demo.4348551-2'))
           }
           return Promise.resolve()
         }
@@ -93,7 +96,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入age')
+            return Promise.reject($t('Table.demo.4348551-3'))
           }
           return Promise.resolve()
         }
@@ -107,7 +110,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入类型')
+            return Promise.reject($t('Table.demo.4348551-4'))
           }
           return Promise.resolve()
         }
@@ -121,7 +124,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入类型')
+            return Promise.reject($t('Table.demo.4348551-4'))
           }
           return Promise.resolve()
         }
@@ -135,7 +138,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入类型')
+            return Promise.reject($t('Table.demo.4348551-4'))
           }
           return Promise.resolve()
         }
@@ -149,7 +152,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入类型')
+            return Promise.reject($t('Table.demo.4348551-4'))
           }
           return Promise.resolve()
         }
@@ -163,7 +166,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入类型')
+            return Promise.reject($t('Table.demo.4348551-4'))
           }
           return Promise.resolve()
         }
@@ -177,7 +180,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入属性')
+            return Promise.reject($t('Table.demo.4348551-5'))
           }
           return Promise.resolve()
         }
@@ -191,7 +194,7 @@ const columns = [
       rules: {
         asyncValidator: (rule, value, cb) => {
           if (!value) {
-            return Promise.reject('请输入其它')
+            return Promise.reject($t('Table.demo.4348551-6'))
           }
           return Promise.resolve()
         }
