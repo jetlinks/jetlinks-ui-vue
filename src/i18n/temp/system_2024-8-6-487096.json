@@ -31,12 +31,12 @@
 		"NoticeRule.index.866440-8": "System runtime error",
 		"NoticeRule.index.866440-9": "Business monitor",
 		"NoticeRule.index.866440-10": "Transparent message parsing error",
-		"NoticeRule.index.866440-11": "Workflow notice",
-		"NoticeRule.index.866440-12": "Todo notice",
-		"NoticeRule.index.866440-13": "Reject notice",
-		"NoticeRule.index.866440-14": "CC notice",
-		"NoticeRule.index.866440-15": "Completed notice",
-		"NoticeRule.index.866440-16": "Close notice",
-		"NoticeRule.index.866440-17": "Transfer notice"
+		"NoticeRule.index.866440-11": "Workflow notification",
+		"NoticeRule.index.866440-12": "Pending Task notification",
+		"NoticeRule.index.866440-13": "Rejection notification",
+		"NoticeRule.index.866440-14": "CC notification",
+		"NoticeRule.index.866440-15": "Completion notification",
+		"NoticeRule.index.866440-16": "Closure notification",
+		"NoticeRule.index.866440-17": "Transfer notification"
 	}
 }

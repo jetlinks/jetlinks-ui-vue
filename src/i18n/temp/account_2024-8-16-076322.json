@@ -1,0 +1,40 @@
+{
+	"zh": {
+		"bind.index.7526219-0": "第三方账户绑定",
+		"bind.index.7526219-1": "账号：",
+		"bind.index.7526219-2": "用户名：",
+		"bind.index.7526219-3": "立即绑定",
+		"bind.index.7526219-4": "你已通过",
+		"bind.index.7526219-5": "授权,完善以下登录信息即可以完成绑定",
+		"bind.index.7526219-6": "账户",
+		"bind.index.7526219-7": "请输入账户",
+		"bind.index.7526219-8": "密码",
+		"bind.index.7526219-9": "请输入密码",
+		"bind.index.7526219-10": "验证码",
+		"bind.index.7526219-11": "请输入验证码",
+		"bind.index.7526219-12": "登录并绑定账户",
+		"bind.index.7526219-13": "钉钉",
+		"bind.index.7526219-14": "微信",
+		"bind.index.7526219-15": "绑定成功",
+		"bind.index.7526219-16": "登录成功"
+	},
+	"en": {
+		"bind.index.7526219-0": "Third party account binding",
+		"bind.index.7526219-1": "Account number:",
+		"bind.index.7526219-2": "User name:",
+		"bind.index.7526219-3": "Bind Now",
+		"bind.index.7526219-4": "You have passed",
+		"bind.index.7526219-5": "Authorization, complete the following login information to complete the binding",
+		"bind.index.7526219-6": "Account",
+		"bind.index.7526219-7": "Please enter your account",
+		"bind.index.7526219-8": "Password",
+		"bind.index.7526219-9": "Please input a password",
+		"bind.index.7526219-10": "Verification Code",
+		"bind.index.7526219-11": "Please enter the verification code",
+		"bind.index.7526219-12": "Login and bind account",
+		"bind.index.7526219-13": "DingTalk DingTalk",
+		"bind.index.7526219-14": "WeChat",
+		"bind.index.7526219-15": "Binding successful",
+		"bind.index.7526219-16": "Login successful"
+	}
+}

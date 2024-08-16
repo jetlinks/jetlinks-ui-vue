@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Detail.index.7526210-0": "用户名:",
+		"Detail.index.7526210-1": "角色",
+		"Detail.index.7526210-2": "组织",
+		"Detail.index.7526210-3": "手机号",
+		"Detail.index.7526210-4": "邮箱",
+		"Detail.index.7526210-5": "关闭",
+		"Detail.index.7526210-6": "暂无角色",
+		"Detail.index.7526210-7": "暂无组织"
+	},
+	"en": {
+		"Detail.index.7526210-0": "User name:",
+		"Detail.index.7526210-1": "Role",
+		"Detail.index.7526210-2": "Organization",
+		"Detail.index.7526210-3": "Cell-phone number",
+		"Detail.index.7526210-4": "Mailbox",
+		"Detail.index.7526210-5": "Close",
+		"Detail.index.7526210-6": "No roles available at the moment",
+		"Detail.index.7526210-7": "No organization currently available"
+	}
+}

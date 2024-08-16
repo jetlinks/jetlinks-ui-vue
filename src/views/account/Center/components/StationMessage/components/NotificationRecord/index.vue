@@ -37,18 +37,18 @@
                     <PermissionButton
                         type="link"
                         :popConfirm="{
-                            title: `确认标为${
+                            title: `${
                                 slotProps.state.value === 'read'
-                                    ? '未读'
-                                    : '已读'
+                                    ? $t('NotificationRecord.index.7526217-0')
+                                    : $t('NotificationRecord.index.7526217-12')
                             }`,
                             onConfirm: () => changeStatus(slotProps),
                         }"
                         :tooltip="{
                             title:
                                 slotProps.state.value === 'read'
-                                    ? '标为未读'
-                                    : '标为已读',
+                                    ? $t('NotificationRecord.index.7526217-1')
+                                    : $t('NotificationRecord.index.7526217-2'),
                         }"
                     >
                         <AIcon type="icon-a-PIZHU1" />
@@ -56,7 +56,7 @@
                     <PermissionButton
                         type="link"
                         :tooltip="{
-                            title: '查看',
+                            title: $t('NotificationRecord.index.7526217-3'),
                         }"
                         @click="view(slotProps)"
                     >
@@ -87,6 +87,9 @@ import { useUserInfo } from '@/store/userInfo';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { getTypeList_api } from '@/api/account/notificationSubscription';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const user = useUserInfo();
 
@@ -118,7 +121,7 @@ const getType = computed(() => {
 
 const columns = [
     {
-        title: '类型',
+        title: $t('NotificationRecord.index.7526217-4'),
         dataIndex: 'topicProvider',
         key: 'topicProvider',
         search: {
@@ -142,7 +145,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '消息',
+        title: $t('NotificationRecord.index.7526217-5'),
         dataIndex: 'message',
         key: 'message',
         search: {
@@ -152,7 +155,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '通知时间',
+        title: $t('NotificationRecord.index.7526217-6'),
         dataIndex: 'notifyTime',
         key: 'notifyTime',
         search: {
@@ -162,7 +165,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '状态',
+        title: $t('NotificationRecord.index.7526217-7'),
         dataIndex: 'state',
         key: 'state',
         search: {
@@ -170,11 +173,11 @@ const columns = [
             termFilter: ['in', 'nin'],
             options: [
                 {
-                    label: '未读',
+                    label: $t('NotificationRecord.index.7526217-8'),
                     value: 'unread',
                 },
                 {
-                    label: '已读',
+                    label: $t('NotificationRecord.index.7526217-9'),
                     value: 'read',
                 },
             ],
@@ -183,7 +186,7 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '操作',
+        title: $t('NotificationRecord.index.7526217-10'),
         dataIndex: 'action',
         key: 'action',
         ellipsis: true,
@@ -229,7 +232,7 @@ const changeStatus = (row: any) => {
     const response =  changeStatus_api(type, [row.id])
     response.then((resp: any) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功！');
+            onlyMessage($t('NotificationRecord.index.7526217-11'));
             refresh();
             user.updateAlarm();
         }
@@ -246,7 +249,7 @@ watchEffect(() => {
 // const onAllRead = async () => {
 //     const resp = await changeAllStatus('_read', getType.value);
 //     if (resp.status === 200) {
-//         onlyMessage('操作成功！');
+//         onlyMessage($t('NotificationRecord.index.7526217-11'));
 //         refresh();
 //         user.updateAlarm();
 //     }

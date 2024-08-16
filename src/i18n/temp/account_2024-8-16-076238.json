@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"components.Unsubscribe.7526215-0": "请先绑定钉钉账号",
+		"components.Unsubscribe.7526215-1": "请先绑定企业微信账号",
+		"components.Unsubscribe.7526215-2": "请先绑定邮箱",
+		"components.Unsubscribe.7526215-3": "请先绑定手机号",
+		"components.Unsubscribe.7526215-4": "取消",
+		"components.Unsubscribe.7526215-5": "立即绑定"
+	},
+	"en": {
+		"components.Unsubscribe.7526215-0": "Please bind your DingTalk account first",
+		"components.Unsubscribe.7526215-1": "Please bind your enterprise WeChat account first",
+		"components.Unsubscribe.7526215-2": "Please bind your email first",
+		"components.Unsubscribe.7526215-3": "Please bind your phone number first",
+		"components.Unsubscribe.7526215-4": "Cancel",
+		"components.Unsubscribe.7526215-5": "Bind Now"
+	}
+}

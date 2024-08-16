@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"UploadAvatar.index.752627-0": "更换",
+		"UploadAvatar.index.752627-1": "更换头像",
+		"UploadAvatar.index.752627-2": "上传失败",
+		"UploadAvatar.index.752627-3": "请上传正确格式的图片",
+		"UploadAvatar.index.752627-4": "图片大小必须小于{0}M"
+	},
+	"en": {
+		"UploadAvatar.index.752627-0": "Replace",
+		"UploadAvatar.index.752627-1": "Change the avatar",
+		"UploadAvatar.index.752627-2": "Upload failed",
+		"UploadAvatar.index.752627-3": "Please upload images in the correct format",
+		"UploadAvatar.index.752627-4": "The image size must be smaller than {0}M"
+	}
+}

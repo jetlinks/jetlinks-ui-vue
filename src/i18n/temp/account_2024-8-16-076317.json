@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"NotificationRecord.index.7526217-0": "确认标为未读",
+		"NotificationRecord.index.7526217-1": "标为未读",
+		"NotificationRecord.index.7526217-2": "标为已读",
+		"NotificationRecord.index.7526217-3": "查看",
+		"NotificationRecord.index.7526217-4": "类型",
+		"NotificationRecord.index.7526217-5": "消息",
+		"NotificationRecord.index.7526217-6": "通知时间",
+		"NotificationRecord.index.7526217-7": "状态",
+		"NotificationRecord.index.7526217-8": "未读",
+		"NotificationRecord.index.7526217-9": "已读",
+		"NotificationRecord.index.7526217-10": "操作",
+		"NotificationRecord.index.7526217-11": "操作成功！",
+		"NotificationRecord.index.7526217-12": "确认标为已读"
+	},
+	"en": {
+		"NotificationRecord.index.7526217-0": "Confirm marked as unread",
+		"NotificationRecord.index.7526217-1": "Mark as unread",
+		"NotificationRecord.index.7526217-2": "Mark as read",
+		"NotificationRecord.index.7526217-3": "Show",
+		"NotificationRecord.index.7526217-4": "Type",
+		"NotificationRecord.index.7526217-5": "Message",
+		"NotificationRecord.index.7526217-6": "Notification time",
+		"NotificationRecord.index.7526217-7": "State",
+		"NotificationRecord.index.7526217-8": "unread",
+		"NotificationRecord.index.7526217-9": "read already",
+		"NotificationRecord.index.7526217-10": "Operation",
+		"NotificationRecord.index.7526217-11": "Operation successful!",
+		"NotificationRecord.index.7526217-12": "Confirm marked as read"
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"components.Detail.7526212-0": "绑定账号：",
+		"components.Detail.7526212-1": "取消订阅",
+		"components.Detail.7526212-2": "更换绑定账号"
+	},
+	"en": {
+		"components.Detail.7526212-0": "Bind account:",
+		"components.Detail.7526212-1": "Unsubscribe",
+		"components.Detail.7526212-2": "Change bound account"
+	}
+}

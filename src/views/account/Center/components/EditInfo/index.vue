@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="编辑"
+        :title="$t('EditInfo.index.752628-0')"
         @ok="handleOk"
         width="770px"
         @cancel="emits('close')"
@@ -13,24 +13,24 @@
             <j-row :gutter="24">
                 <j-col :span="12">
                     <j-form-item
-                        label="姓名"
+                        :label="$t('EditInfo.index.752628-1')"
                         name="name"
                         :rules="[
-                            { required: true, message: '姓名必填' },
-                            { max: 64, message: '最多可输入64个字符' },
+                            { required: true, message: $t('EditInfo.index.752628-2') },
+                            { max: 64, message: $t('EditInfo.index.752628-3') },
                         ]"
                     >
                         <j-input
                             v-model:value="form.name"
-                            placeholder="请输入姓名"
+                            :placeholder="$t('EditInfo.index.752628-4')"
                         />
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
-                    <j-form-item label="用户名">
+                    <j-form-item :label="$t('EditInfo.index.752628-5')">
                         <j-input
                             v-model:value="form.username"
-                            placeholder="请输入用户名"
+                            :placeholder="$t('EditInfo.index.752628-6')"
                             disabled
                         />
                     </j-form-item>
@@ -38,23 +38,23 @@
             </j-row>
             <j-row :gutter="24">
                 <j-col :span="12">
-                    <j-form-item label="角色">
+                    <j-form-item :label="$t('EditInfo.index.752628-7')">
                         <j-input
                             :value="
                                 form.roleList.map((item) => item.name).join(',')
                             "
-                            placeholder="请选择角色"
+                            :placeholder="$t('EditInfo.index.752628-8')"
                             disabled
                         />
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
-                    <j-form-item label="组织">
+                    <j-form-item :label="$t('EditInfo.index.752628-9')">
                         <j-input
                             :value="
                                 form.orgList.map((item) => item.name).join(',')
                             "
-                            placeholder="请选择组织"
+                            :placeholder="$t('EditInfo.index.752628-10')"
                             disabled
                         />
                     </j-form-item>
@@ -63,35 +63,35 @@
             <j-row :gutter="24">
                 <j-col :span="12">
                     <j-form-item
-                        label="手机号"
+                        :label="$t('EditInfo.index.752628-11')"
                         name="telephone"
                         :rules="[
                             {
                                 pattern: /^1[3456789]\d{9}$/,
-                                message: '请输入正确的手机号',
+                                message: $t('EditInfo.index.752628-12'),
                             },
                         ]"
                     >
                         <j-input
                             v-model:value="form.telephone"
-                            placeholder="请输入手机号"
+                            :placeholder="$t('EditInfo.index.752628-13')"
                         />
                     </j-form-item>
                 </j-col>
                 <j-col :span="12">
                     <j-form-item
-                        label="邮箱"
+                        :label="$t('EditInfo.index.752628-14')"
                         name="email"
                         :rules="[
                             {
                                 type: 'email',
-                                message: '邮箱不是一个有效的email',
+                                message: $t('EditInfo.index.752628-15'),
                             },
                         ]"
                     >
                         <j-input
                             v-model:value="form.email"
-                            placeholder="请输入邮箱"
+                            :placeholder="$t('EditInfo.index.752628-16')"
                         />
                     </j-form-item>
                 </j-col>
@@ -104,6 +104,9 @@
 import { updateMeInfo_api } from '@/api/account/center';
 import { onlyMessage } from '@/utils/comm';
 import { cloneDeep } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emits = defineEmits(['save', 'close']);
 const props = defineProps({
@@ -123,7 +126,7 @@ const handleOk = () => {
         updateMeInfo_api(form.value)
             .then((resp) => {
                 if (resp.status === 200) {
-                    onlyMessage('保存成功', 'success');
+                    onlyMessage($t('EditInfo.index.752628-17'), 'success');
                     emits('save', form.value);
                 }
             })

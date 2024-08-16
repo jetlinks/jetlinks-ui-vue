@@ -21,24 +21,24 @@
                             item?.name
                         }}</Ellipsis>
                         <div>
-                            <span v-if="item.bound" style="color: #2BA245">已绑定</span>
-                            <span v-else style="color: #999">未绑定</span>
+                            <span v-if="item.bound" style="color: #2BA245">{{ $t('BindThirdAccount.index.752629-0') }}</span>
+                            <span v-else style="color: #999">{{ $t('BindThirdAccount.index.752629-1') }}</span>
                         </div>
                         <div v-if="item.others?.name" style="color: #666666">
-                            {{ item.others?.name }}（已绑定的用户名）
+                            {{ item.others?.name }}{{ $t('BindThirdAccount.index.752629-2') }}
                         </div>
                     </div>
                     <div class="content-item-right">
                         <PermissionButton  v-if="item.bound" :popConfirm="{
-                            title:'确认解除绑定嘛?',
+                            title:$t('BindThirdAccount.index.752629-3'),
                             onConfirm:() => unBind(item.id)
-                        }">解除绑定</PermissionButton>
+                        }">{{ $t('BindThirdAccount.index.752629-4') }}</PermissionButton>
                         <j-button
                             v-else
                             ghost
                             type="primary"
                             @click="clickBind(item.id)"
-                            >立即绑定</j-button
+                            >{{ $t('BindThirdAccount.index.752629-5') }}</j-button
                         >
                     </div>
                 </div>
@@ -54,6 +54,9 @@ import { BASE_API_PATH } from '@/utils/variable';
 import { getSsoBinds_api } from '@/api/account/center';
 import { unBind_api } from '@/api/account/center';
 import { onlyMessage, getImage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const bindList = ref<any[]>([]);
 const bindIcon = {
@@ -66,7 +69,7 @@ const unBind = (id: string) => {
     const response =  unBind_api(id)
     response.then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('解绑成功', 'success');
+            onlyMessage($t('BindThirdAccount.index.752629-6'), 'success');
             getSsoBinds();
         }
     });

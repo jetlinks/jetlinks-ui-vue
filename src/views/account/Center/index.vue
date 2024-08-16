@@ -28,16 +28,16 @@
                 <div class="person-header-item-action">
                     <j-space :size="24">
                         <j-button class="btn" @click="visible = true"
-                            >查看详情</j-button
+                            >{{ $t('Center.index.752620-0') }}</j-button
                         >
                         <j-button @click="editInfoVisible = true"
-                            >编辑资料</j-button
+                            >{{ $t('Center.index.752620-1') }}</j-button
                         >
                         <j-button
                             v-if="permission"
                             @click="editPasswordVisible = true"
                         >
-                            修改密码
+                            {{ $t('Center.index.752620-2') }}
                         </j-button>
                     </j-space>
                 </div>
@@ -91,6 +91,9 @@ import {
 import { usePermissionStore } from '@/store/permission';
 import RoleShow from './components/RoleShow/index.vue';
 import {isNoCommunity} from "@/utils/utils";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const imageTypes = reactive([
     'image/jpeg',
@@ -108,32 +111,32 @@ console.log(isNoCommunity)
 const list: { key: KeyType; title: string }[] = isNoCommunity ? [
     {
         key: 'HomeView',
-        title: '首页视图',
+        title: $t('Center.index.752620-3'),
     },
     {
         key: 'BindThirdAccount',
-        title: '绑定第三方账号',
+        title: $t('Center.index.752620-4'),
     },
     {
         key: 'Subscribe',
-        title: '我的订阅',
+        title: $t('Center.index.752620-5'),
     },
     {
         key: 'StationMessage',
-        title: '站内信',
+        title: $t('Center.index.752620-6'),
     },
 ] : [
   {
     key: 'HomeView',
-    title: '首页视图',
+    title: $t('Center.index.752620-3'),
   },
   {
     key: 'Subscribe',
-    title: '我的订阅',
+    title: $t('Center.index.752620-5'),
   },
   {
     key: 'StationMessage',
-    title: '站内信',
+    title: $t('Center.index.752620-6'),
   },
 ];
 
@@ -170,7 +173,7 @@ const onAvatarChange = (url: string) => {
         avatar: url,
     }).then((resp) => {
         if (resp.status === 200) {
-            onlyMessage('操作成功', 'success');
+            onlyMessage($t('Center.index.752620-7'), 'success');
             user.getUserInfo();
         }
     });

@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="详情"
+        :title="$t('components.ViewDialog.7526218-0')"
         width="754px"
         @cancel="emits('update:visible', false)"
         class="view-dialog-container"
@@ -14,7 +14,7 @@
             "
         >
             <div>
-                <div class="label">通知流水:</div>
+                <div class="label">{{ $t('components.ViewDialog.7526218-1') }}</div>
                 <div
                     style="
                         padding: 10px;
@@ -49,10 +49,10 @@
                     width: '72px',
                 }"
             >
-                <j-descriptions-item label="发起人">
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-2')">
                     <j-ellipsis>{{ workFlowData?.creatorName }}</j-ellipsis>
                 </j-descriptions-item>
-                <j-descriptions-item label="发起时间">
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-3')">
                     <j-ellipsis>
                         {{
                             dayjs(workFlowData?.createTime).format(
@@ -61,22 +61,22 @@
                         }}
                     </j-ellipsis>
                 </j-descriptions-item>
-                <j-descriptions-item label="流程分类">
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-4')">
                     <j-ellipsis>
                         {{ workFlowData?.classifiedName }}
                     </j-ellipsis>
                 </j-descriptions-item>
-                <j-descriptions-item label="流程名称"
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-5')"
                     ><j-ellipsis>
                         {{ workFlowData?.modelName }}
                     </j-ellipsis></j-descriptions-item
                 >
-                <j-descriptions-item label="标题"
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-6')"
                     ><j-ellipsis>
                         {{ workFlowData?.name }}
                     </j-ellipsis></j-descriptions-item
                 >
-                <j-descriptions-item label="摘要">
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-7')">
                     <j-ellipsis>
                         {{ workFlowData?.summary }}
                     </j-ellipsis>
@@ -95,34 +95,34 @@
                 }"
             >
                 <template v-if="data?.topicProvider === 'alarm-device'">
-                    <j-descriptions-item label="告警设备">
+                    <j-descriptions-item :label="$t('components.ViewDialog.7526218-8')">
                         <j-ellipsis>{{ _data?.targetName || '' }}</j-ellipsis>
                     </j-descriptions-item>
-                    <j-descriptions-item label="设备ID">
+                    <j-descriptions-item :label="$t('components.ViewDialog.7526218-9')">
                         <j-ellipsis>
                             {{ _data?.targetId || '' }}
                         </j-ellipsis>
                     </j-descriptions-item>
                 </template>
-                <j-descriptions-item label="告警名称">
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-10')">
                     <j-ellipsis>
                         {{ _data?.alarmName || _data?.alarmConfigName || '' }}
                     </j-ellipsis>
                 </j-descriptions-item>
-                <j-descriptions-item label="告警时间">{{
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-11')">{{
                     dayjs(_data?.alarmTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</j-descriptions-item>
-                <j-descriptions-item label="告警级别">{{
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-12')">{{
                     (levelList.length > 0 && getLevelLabel(_data.level)) || ''
                 }}</j-descriptions-item>
-                <j-descriptions-item label="告警说明">
+                <j-descriptions-item :label="$t('components.ViewDialog.7526218-13')">
                     <j-ellipsis>
                         {{ _data?.description || '' }}
                     </j-ellipsis>
                 </j-descriptions-item>
             </j-descriptions>
             <div>
-                <div class="label">告警流水:</div>
+                <div class="label">{{ $t('components.ViewDialog.7526218-14') }}</div>
                 <div
                     style="
                         padding: 10px;
@@ -140,7 +140,7 @@
         </template>
         <template #footer>
             <j-button type="primary" @click="emits('update:visible', false)"
-                >确定</j-button
+                >{{ $t('components.ViewDialog.7526218-15') }}</j-button
             >
         </template>
     </j-modal>
@@ -152,6 +152,9 @@ import 'vue3-json-viewer/dist/index.css';
 import { queryLevel as queryLevel_api } from '@/api/rule-engine/config';
 import dayjs from 'dayjs';
 import { getWorkflowNotice } from '@/api/account/notificationRecord';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emits = defineEmits(['update:visible']);
 const props = defineProps<{

@@ -1,23 +1,23 @@
 <template>
     <div style="width: 300px">
         <template v-if="getType === 'notifier-dingTalk'">
-            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ info }}</j-ellipsis></div>
+            <div class="tip"><j-ellipsis :lineClamp="2">{{ $t('components.Detail.7526212-0') }}{{ info }}</j-ellipsis></div>
         </template>
         <template v-else-if="getType === 'notifier-weixin'">
-            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ info }}</j-ellipsis></div>
+            <div class="tip"><j-ellipsis :lineClamp="2">{{ $t('components.Detail.7526212-0') }}{{ info }}</j-ellipsis></div>
         </template>
         <template v-else-if="getType === 'notifier-email'">
-            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ user.userInfos?.email }}</j-ellipsis></div>
+            <div class="tip"><j-ellipsis :lineClamp="2">{{ $t('components.Detail.7526212-0') }}{{ user.userInfos?.email }}</j-ellipsis></div>
         </template>
         <template v-else>
-            <div class="tip"><j-ellipsis :lineClamp="2">绑定账号：{{ user.userInfos?.telephone }}</j-ellipsis></div>
+            <div class="tip"><j-ellipsis :lineClamp="2">{{ $t('components.Detail.7526212-0') }}{{ user.userInfos?.telephone }}</j-ellipsis></div>
         </template>
         <div class="btn">
-            <j-button @click="emit('unsubscribe', current)">取消订阅</j-button>
+            <j-button @click="emit('unsubscribe', current)">{{ $t('components.Detail.7526212-1') }}</j-button>
             <j-button
                 @click="onBind"
                 type="primary"
-                >更换绑定账号</j-button
+                >{{ $t('components.Detail.7526212-2') }}</j-button
             >
         </div>
     </div>
@@ -26,6 +26,9 @@
 <script lang="ts" setup>
 import { getIsBindThird } from '@/api/account/notificationSubscription';
 import { useUserInfo } from '@/store/userInfo';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const user = useUserInfo();
 const emit = defineEmits(['infoChange', 'unsubscribe', 'bindChange']);

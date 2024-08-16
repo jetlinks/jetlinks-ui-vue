@@ -1,0 +1,22 @@
+{
+	"zh": {
+		"Center.index.752620-0": "查看详情",
+		"Center.index.752620-1": "编辑资料",
+		"Center.index.752620-2": "修改密码",
+		"Center.index.752620-3": "首页视图",
+		"Center.index.752620-4": "绑定第三方账号",
+		"Center.index.752620-5": "我的订阅",
+		"Center.index.752620-6": "站内信",
+		"Center.index.752620-7": "操作成功"
+	},
+	"en": {
+		"Center.index.752620-0": "View details",
+		"Center.index.752620-1": "Edit data",
+		"Center.index.752620-2": "Change Password",
+		"Center.index.752620-3": "Home View",
+		"Center.index.752620-4": "Bind third-party account",
+		"Center.index.752620-5": "My Subscriptions ",
+		"Center.index.752620-6": "Mail ",
+		"Center.index.752620-7": "Operation successful"
+	}
+}

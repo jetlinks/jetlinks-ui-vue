@@ -1,53 +1,55 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import { useMenuStore } from '@/store/menu';
 const menuStore = useMenuStore();
 const systemNotice = [
     {
         provider: 'alarm',
-        name: '告警',
+        name: $t('components.data.752621-0'),
         children: [
             {
                 provider: 'alarm-product',
-                name: '产品告警',
+                name: $t('components.data.752621-1'),
                 description:
-                    '当产品类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    $t('components.data.752621-2'),
             },
             {
                 provider: 'alarm-device',
-                name: '设备告警',
+                name: $t('components.data.752621-3'),
                 description:
-                    '当设备类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    $t('components.data.752621-4'),
             },
             {
                 provider: 'alarm-org',
-                name: '部门告警',
+                name: $t('components.data.752621-5'),
                 description:
-                    '当部门类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    $t('components.data.752621-6'),
             },
             {
                 provider: 'alarm-other',
-                name: '其他告警',
+                name: $t('components.data.752621-7'),
                 description:
-                    '当其他类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    $t('components.data.752621-8'),
             },
         ],
     },
     {
         provider: 'system-monitor',
-        name: '系统监控',
+        name: $t('components.data.752621-9'),
         children: [
             {
                 provider: 'system-event',
-                name: '系统运行异常',
+                name: $t('components.data.752621-10'),
             },
         ],
     },
     {
         provider: 'system-business',
-        name: '业务监控',
+        name: $t('components.data.752621-11'),
         children: [
             {
                 provider: 'device-transparent-codec',
-                name: '透传消息解析异常',
+                name: $t('components.data.752621-12'),
             },
         ],
     },
@@ -55,31 +57,31 @@ const systemNotice = [
 const workflowNotice = [
     {
         provider: 'workflow-notification',
-        name: '工作流通知',
+        name: $t('components.data.752621-13'),
         children: [
             {
                 provider: 'workflow-task-todo',
-                name: '待办通知',
+                name: $t('components.data.752621-14'),
             },
             {
                 provider: 'workflow-task-reject',
-                name: '驳回通知',
+                name: $t('components.data.752621-15'),
             },
             {
                 provider: 'workflow-task-cc',
-                name: '抄送通知',
+                name: $t('components.data.752621-16'),
             },
             {
                 provider: 'workflow-process-finish',
-                name: '办结通知',
+                name: $t('components.data.752621-17'),
             },
             {
                 provider: 'workflow-process-repealed',
-                name: '关闭通知',
+                name: $t('components.data.752621-18'),
             },
             {
                 provider: 'workflow-task-transfer-todo',
-                name: '转办通知'
+                name: $t('components.data.752621-19')
             }
         ],
     },

@@ -4,7 +4,7 @@
         <div style="padding: 0 10px">
             <div class="alert">
                 <AIcon type="InfoCircleOutlined" />
-                你可以在该页面选择需要订阅的主题及接收通知的方式。
+                {{ $t('Subscribe.index.752626-0') }}
             </div>
             <div class="content-collapse">
                 <template v-if="dataSource.length">
@@ -58,6 +58,9 @@ import { getNoticeList_api } from '@/api/account/notificationSubscription';
 import { getInitData } from '../data';
 import Item from './components/Item.vue';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const menuStore = useMenuStore();
 const subscribe = ref<any[]>([]);
 const dataSource = ref<any[]>([]);

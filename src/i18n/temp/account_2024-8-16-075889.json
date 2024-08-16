@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"BindThirdAccount.index.752629-0": "已绑定",
+		"BindThirdAccount.index.752629-1": "未绑定",
+		"BindThirdAccount.index.752629-2": "（已绑定的用户名）",
+		"BindThirdAccount.index.752629-3": "确认解除绑定嘛?",
+		"BindThirdAccount.index.752629-4": "解除绑定",
+		"BindThirdAccount.index.752629-5": "立即绑定",
+		"BindThirdAccount.index.752629-6": "解绑成功"
+	},
+	"en": {
+		"BindThirdAccount.index.752629-0": "Already bound",
+		"BindThirdAccount.index.752629-1": "Unbound",
+		"BindThirdAccount.index.752629-2": "(bound username)",
+		"BindThirdAccount.index.752629-3": "Are you sure to unbind?",
+		"BindThirdAccount.index.752629-4": "Unbind",
+		"BindThirdAccount.index.752629-5": "Bind Now",
+		"BindThirdAccount.index.752629-6": "Unbind successfully"
+	}
+}

@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"components.ViewDialog.7526218-0": "详情",
+		"components.ViewDialog.7526218-1": "通知流水:",
+		"components.ViewDialog.7526218-2": "发起人",
+		"components.ViewDialog.7526218-3": "发起时间",
+		"components.ViewDialog.7526218-4": "流程分类",
+		"components.ViewDialog.7526218-5": "流程名称",
+		"components.ViewDialog.7526218-6": "标题",
+		"components.ViewDialog.7526218-7": "摘要",
+		"components.ViewDialog.7526218-8": "告警设备",
+		"components.ViewDialog.7526218-9": "设备ID",
+		"components.ViewDialog.7526218-10": "告警名称",
+		"components.ViewDialog.7526218-11": "告警时间",
+		"components.ViewDialog.7526218-12": "告警级别",
+		"components.ViewDialog.7526218-13": "告警说明",
+		"components.ViewDialog.7526218-14": "告警流水:",
+		"components.ViewDialog.7526218-15": "确定"
+	},
+	"en": {
+		"components.ViewDialog.7526218-0": "Detail",
+		"components.ViewDialog.7526218-1": "Notification flow:",
+		"components.ViewDialog.7526218-2": "Initiator",
+		"components.ViewDialog.7526218-3": "Initiation time",
+		"components.ViewDialog.7526218-4": "Process classification",
+		"components.ViewDialog.7526218-5": "Process Name",
+		"components.ViewDialog.7526218-6": "Title",
+		"components.ViewDialog.7526218-7": "Abstract",
+		"components.ViewDialog.7526218-8": "Alarm device",
+		"components.ViewDialog.7526218-9": "Device ID",
+		"components.ViewDialog.7526218-10": "Alarm name ",
+		"components.ViewDialog.7526218-11": "Alarm time",
+		"components.ViewDialog.7526218-12": "Alarm level",
+		"components.ViewDialog.7526218-13": "Alarm Description",
+		"components.ViewDialog.7526218-14": "Alarm flow:",
+		"components.ViewDialog.7526218-15": "Confirm"
+	}
+}

@@ -2,7 +2,7 @@
     <div class="choose-view">
         <HomeView v-model:value="currentView" />
         <div class="btn">
-            <j-button type="primary" @click="confirm">保存修改</j-button>
+            <j-button type="primary" @click="confirm">{{ $t('HomeView.index.752624-0') }}</j-button>
         </div>
     </div>
 </template>
@@ -11,6 +11,9 @@
 import { getMe_api, getView_api, setView_api } from '@/api/home';
 import { onlyMessage } from '@/utils/comm';
 import HomeView from '@/components/HomeView/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const currentView = ref<string>('');
 const isApiUser = ref<boolean>();
@@ -45,7 +48,7 @@ const confirm = () => {
     setView_api({
         name: 'view',
         content: currentView.value,
-    }).then(() => onlyMessage('保存成功', 'success'));
+    }).then(() => onlyMessage($t('HomeView.index.752624-1'), 'success'));
 };
 
 onMounted(() => {

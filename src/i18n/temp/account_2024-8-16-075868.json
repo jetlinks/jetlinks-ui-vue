@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"EditInfo.index.752628-0": "编辑",
+		"EditInfo.index.752628-1": "姓名",
+		"EditInfo.index.752628-2": "姓名必填",
+		"EditInfo.index.752628-3": "最多可输入64个字符",
+		"EditInfo.index.752628-4": "请输入姓名",
+		"EditInfo.index.752628-5": "用户名",
+		"EditInfo.index.752628-6": "请输入用户名",
+		"EditInfo.index.752628-7": "角色",
+		"EditInfo.index.752628-8": "请选择角色",
+		"EditInfo.index.752628-9": "组织",
+		"EditInfo.index.752628-10": "请选择组织",
+		"EditInfo.index.752628-11": "手机号",
+		"EditInfo.index.752628-12": "请输入正确的手机号",
+		"EditInfo.index.752628-13": "请输入手机号",
+		"EditInfo.index.752628-14": "邮箱",
+		"EditInfo.index.752628-15": "邮箱不是一个有效的email",
+		"EditInfo.index.752628-16": "请输入邮箱",
+		"EditInfo.index.752628-17": "保存成功"
+	},
+	"en": {
+		"EditInfo.index.752628-0": "Edit",
+		"EditInfo.index.752628-1": "Name",
+		"EditInfo.index.752628-2": "Name is required",
+		"EditInfo.index.752628-3": "Up to 64 characters can be entered",
+		"EditInfo.index.752628-4": "Please enter your name",
+		"EditInfo.index.752628-5": "User name",
+		"EditInfo.index.752628-6": "enter one user name",
+		"EditInfo.index.752628-7": "Role",
+		"EditInfo.index.752628-8": "Please select a role",
+		"EditInfo.index.752628-9": "Organization",
+		"EditInfo.index.752628-10": "Please select an organization",
+		"EditInfo.index.752628-11": "Cell-phone number",
+		"EditInfo.index.752628-12": "Please enter the correct phone number",
+		"EditInfo.index.752628-13": "Please enter your phone number",
+		"EditInfo.index.752628-14": "Mailbox",
+		"EditInfo.index.752628-15": "Email is not a valid email address",
+		"EditInfo.index.752628-16": "Please enter your email address",
+		"EditInfo.index.752628-17": "Saved successfully"
+	}
+}

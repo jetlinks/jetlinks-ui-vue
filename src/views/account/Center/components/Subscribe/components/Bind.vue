@@ -31,7 +31,7 @@
         </template>
 
         <template #footer>
-            <j-button @click="emit('close')">关闭</j-button>
+            <j-button @click="emit('close')">{{ $t('components.Bind.7526213-0') }}</j-button>
             <!-- <j-button type="primary" @click="emit('close')">确定</j-button> -->
         </template>
     </j-modal>
@@ -46,6 +46,9 @@ import {
 } from '@/api/account/notificationSubscription';
 import { LocalStore } from '@/utils/comm';
 import Wechat from './Wechat.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({

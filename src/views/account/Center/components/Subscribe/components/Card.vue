@@ -23,7 +23,7 @@
                         :hasPermission="true"
                         @click="onCheckChange(current)"
                     >
-                        订阅
+                        {{ $t('components.Card.7526211-0') }}
                     </PermissionButton>
                     <template v-else>
                         <Detail
@@ -43,7 +43,7 @@
                             :hasPermission="true"
                             @click="onUnSubscribe(current)"
                         >
-                            取消订阅
+                            {{ $t('components.Card.7526211-1') }}
                         </PermissionButton>
                     </template>
                 </template>
@@ -76,6 +76,9 @@ import Detail from './Detail.vue';
 import { useUserInfo } from '@/store/userInfo';
 import EditInfo from '../../EditInfo/index.vue';
 import Bind from './Bind.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const iconMap = new Map();
 iconMap.set('notifier-dingTalk', getImage('/notice-rule/dingtalk.png'));
