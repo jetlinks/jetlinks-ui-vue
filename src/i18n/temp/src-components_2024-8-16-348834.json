@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"ContextMenu.menu.4348699-0": "新增行",
+		"ContextMenu.menu.4348699-1": "复制行",
+		"ContextMenu.menu.4348699-2": "粘贴行",
+		"ContextMenu.menu.4348699-3": "查看详情",
+		"ContextMenu.menu.4348699-4": "删除"
+	},
+	"en": {
+		"ContextMenu.menu.4348699-0": "Add line",
+		"ContextMenu.menu.4348699-1": "Copy line",
+		"ContextMenu.menu.4348699-2": "paste line",
+		"ContextMenu.menu.4348699-3": "View details",
+		"ContextMenu.menu.4348699-4": "Delete"
+	}
+}

@@ -33,7 +33,7 @@
                                     padding: 8px;
                                 "
                             >
-                                这是最后一条数据了
+                                {{ $t('components.NoticeInfo.4348687-0') }}
                             </div>
                         </j-scrollbar>
                         <div class="no-data" v-else>
@@ -41,7 +41,7 @@
                         </div>
                         <div class="btns">
                             <j-button type="link" @click="onMore(item.key)"
-                                >查看更多</j-button
+                                >{{ $t('components.NoticeInfo.4348687-1') }}</j-button
                             >
                         </div>
                     </div>
@@ -61,6 +61,9 @@ import { useUserInfo } from '@/store/userInfo';
 import { cloneDeep } from 'lodash-es';
 import NoticeItem from './NoticeItem.vue';
 import NoticeTab from './NoticeTab.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emits = defineEmits(['action']);
 

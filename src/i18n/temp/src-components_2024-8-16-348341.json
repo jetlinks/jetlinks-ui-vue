@@ -1,0 +1,36 @@
+{
+	"zh": {
+		"VirtualRuleParam.index.4348430-0": "规则配置",
+		"VirtualRuleParam.index.4348430-1": "窗口",
+		"VirtualRuleParam.index.4348430-2": "请选择窗口",
+		"VirtualRuleParam.index.4348430-3": "聚合函数",
+		"VirtualRuleParam.index.4348430-4": "请选择聚合函数",
+		"VirtualRuleParam.index.4348430-5": "请输入窗口长度",
+		"VirtualRuleParam.index.4348430-6": "请输入步长",
+		"VirtualRuleParam.index.4348430-7": "时间窗口",
+		"VirtualRuleParam.index.4348430-8": "次数窗口",
+		"VirtualRuleParam.index.4348430-9": "窗口长度（秒）",
+		"VirtualRuleParam.index.4348430-10": "窗口长度（次）",
+		"VirtualRuleParam.index.4348430-11": "窗口长度",
+		"VirtualRuleParam.index.4348430-12": "步长（秒）",
+		"VirtualRuleParam.index.4348430-13": "步长（次）",
+		"VirtualRuleParam.index.4348430-14": "步长"
+	},
+	"en": {
+		"VirtualRuleParam.index.4348430-0": "Rule configuration",
+		"VirtualRuleParam.index.4348430-1": "Window",
+		"VirtualRuleParam.index.4348430-2": "Please select a window",
+		"VirtualRuleParam.index.4348430-3": "Aggregate function",
+		"VirtualRuleParam.index.4348430-4": "Please select an aggregation function",
+		"VirtualRuleParam.index.4348430-5": "Please enter the window length",
+		"VirtualRuleParam.index.4348430-6": "Please enter the step size",
+		"VirtualRuleParam.index.4348430-7": "Time window",
+		"VirtualRuleParam.index.4348430-8": "Frequency window",
+		"VirtualRuleParam.index.4348430-9": "Window length (seconds)",
+		"VirtualRuleParam.index.4348430-10": "Window length (times)",
+		"VirtualRuleParam.index.4348430-11": "Window length",
+		"VirtualRuleParam.index.4348430-12": "Step size (seconds)",
+		"VirtualRuleParam.index.4348430-13": "Step size (times)",
+		"VirtualRuleParam.index.4348430-14": "Step"
+	}
+}

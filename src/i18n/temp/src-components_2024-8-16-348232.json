@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"Table.index.434847-0": "已选择",
+		"Table.index.434847-1": "项",
+		"Table.index.434847-2": "取消选择",
+		"Table.index.434847-3": "第 {0} - {1} 条/总共 {2} 条"
+	},
+	"en": {
+		"Table.index.434847-0": "",
+		"Table.index.434847-1": "options have been selected",
+		"Table.index.434847-2": "Cancel selection",
+		"Table.index.434847-3": "Articles {0} - {1}/Total of {2}"
+	}
+}

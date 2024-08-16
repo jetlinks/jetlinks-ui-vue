@@ -8,7 +8,7 @@
     <template #content>
       <div style="width: 200px">
         <a-form ref="formRef" layout="vertical" :model="formData">
-          <a-form-item label="单位" name="unit" :rules="[{ max: 64, message: '最多可输入64个字符' }]">
+          <a-form-item :label="$t('Double.index.4348686-0')" name="unit" :rules="[{ max: 64, message: $t('Double.index.4348686-1') }]">
             <UnitSelect v-model:value="formData.unit"/>
           </a-form-item>
           <ScaleItem v-model:value="formData.scale" />
@@ -29,6 +29,9 @@
 import { UnitSelect, PopoverModal } from '../index'
 import ScaleItem from './ScaleItem.vue'
 import {Form} from "ant-design-vue";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 

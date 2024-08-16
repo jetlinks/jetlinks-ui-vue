@@ -5,7 +5,7 @@
       allow-clear
       :value="myValue"
       style="width: 100%"
-      placeholder="请选择数据类型"
+      :placeholder="$t('Type.index.4348668-0')"
       :dropdownStyle="{
         zIndex: 1071
       }"
@@ -20,6 +20,9 @@
 import { selectProps } from 'ant-design-vue/lib/select';
 import defaultOptions from './data';
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   ...selectProps(),

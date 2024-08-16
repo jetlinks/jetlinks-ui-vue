@@ -2,7 +2,7 @@
   <a-auto-complete
     v-model:value="myValue"
     :options="options"
-    placeholder="请选择分组"
+    :placeholder="$t('Group.index.4348679-0')"
     style="width: 100%;"
     :getPopupContainer="(node) => tableWrapperRef || node"
     @search="onSearch"
@@ -14,6 +14,9 @@
 
 import {METADATA_GROUP_OPTIONS} from "../../consts";
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {

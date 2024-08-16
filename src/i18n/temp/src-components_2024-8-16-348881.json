@@ -1,0 +1,30 @@
+{
+	"zh": {
+		"Object.index.4348676-0": "请输入标识",
+		"Object.index.4348676-1": "请输入名称",
+		"Object.index.4348676-2": "新增",
+		"Object.index.4348676-3": "参数标识",
+		"Object.index.4348676-4": "该标识已存在",
+		"Object.index.4348676-5": "最多可输入64个字符",
+		"Object.index.4348676-6": "标识只能由数字、字母、下划线组成",
+		"Object.index.4348676-7": "参数名称",
+		"Object.index.4348676-8": "填写约束",
+		"Object.index.4348676-9": "数据类型",
+		"Object.index.4348676-10": "请选择数据类型",
+		"Object.index.4348676-11": "操作"
+	},
+	"en": {
+		"Object.index.4348676-0": "Please enter the identifier",
+		"Object.index.4348676-1": "Please enter a name",
+		"Object.index.4348676-2": "Add",
+		"Object.index.4348676-3": "Parameter ID",
+		"Object.index.4348676-4": "This ID already exists",
+		"Object.index.4348676-5": "Up to 64 characters can be entered",
+		"Object.index.4348676-6": "ID can only be composed of numbers, letters, and underscores",
+		"Object.index.4348676-7": "Parameter Name",
+		"Object.index.4348676-8": "Fill in constraints",
+		"Object.index.4348676-9": "Data type",
+		"Object.index.4348676-10": "Please select data type",
+		"Object.index.4348676-11": "Operation"
+	}
+}

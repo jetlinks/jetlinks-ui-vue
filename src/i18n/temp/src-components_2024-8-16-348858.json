@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"Double.ScaleItem.4348691-0": "精度",
+		"Double.ScaleItem.4348691-1": "请输入0-99以内的整数"
+	},
+	"en": {
+		"Double.ScaleItem.4348691-0": "Accuracy",
+		"Double.ScaleItem.4348691-1": "Please enter an integer within 0-99"
+	}
+}

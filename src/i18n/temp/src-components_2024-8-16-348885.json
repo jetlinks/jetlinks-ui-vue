@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Search.Sort.4348672-0": "排序",
+		"Search.Sort.4348672-1": "清空条件",
+		"Search.Sort.4348672-2": "升序",
+		"Search.Sort.4348672-3": "降序",
+		"Search.Sort.4348672-4": "名称",
+		"Search.Sort.4348672-5": "计数"
+	},
+	"en": {
+		"Search.Sort.4348672-0": "Sort",
+		"Search.Sort.4348672-1": "Clear conditions",
+		"Search.Sort.4348672-2": "Ascending order",
+		"Search.Sort.4348672-3": "Descending order",
+		"Search.Sort.4348672-4": "Name",
+		"Search.Sort.4348672-5": "Count"
+	}
+}

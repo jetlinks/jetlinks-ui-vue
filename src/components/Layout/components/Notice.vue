@@ -29,6 +29,9 @@ import { useUserInfo } from '@/store/userInfo';
 import { useMenuStore } from '@/store/menu';
 import { getAllNotice } from '@/api/account/center';
 import { flatten } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const updateCount = computed(() => useUserInfo().alarmUpdateCount);
 const menuStory = useMenuStore();
@@ -77,7 +80,7 @@ const subscribeNotice = () => {
                       }
                     },
                     {
-                      default: () => "标记已读"
+                      default: () => $t('components.Notice.4348689-0')
                     }
                   ),
             });
@@ -101,7 +104,7 @@ const read = (type: string, data: any) => {
 const tab = [
     {
         key: 'alarm',
-        tab: '告警',
+        tab: $t('components.Notice.4348689-1'),
         type: [
             'alarm-product',
             'alarm-device',
@@ -112,12 +115,12 @@ const tab = [
     },
     {
         key: 'system-monitor',
-        tab: '系统监控',
+        tab: $t('components.Notice.4348689-2'),
         type: ['system-event'],
     },
     {
         key: 'system-business',
-        tab: '业务监控',
+        tab: $t('components.Notice.4348689-3'),
         type: ['device-transparent-codec'],
     },
 ];
@@ -194,7 +197,7 @@ onMounted(() => {
     if(menuStory.hasMenu('process')){
         _list.push({
             key: 'workflow-notification',
-            tab: '工作流通知',
+            tab: $t('components.Notice.4348689-4'),
             type: ['workflow-task-todo', 'workflow-task-reject', 'workflow-task-cc', 'workflow-process-finish', 'workflow-process-repealed'],
         })
     }

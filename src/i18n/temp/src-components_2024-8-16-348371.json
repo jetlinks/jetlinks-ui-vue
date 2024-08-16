@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Search.util.4348411-0": "或者",
+		"Search.util.4348411-1": "并且",
+		"Search.util.4348411-2": "包含",
+		"Search.util.4348411-3": "不包含",
+		"Search.util.4348411-4": "属于",
+		"Search.util.4348411-5": "不属于"
+	},
+	"en": {
+		"Search.util.4348411-0": "or",
+		"Search.util.4348411-1": "and",
+		"Search.util.4348411-2": "contain",
+		"Search.util.4348411-3": "not included",
+		"Search.util.4348411-4": "belong to",
+		"Search.util.4348411-5": "Not belonging to"
+	}
+}

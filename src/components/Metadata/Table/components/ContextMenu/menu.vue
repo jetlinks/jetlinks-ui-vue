@@ -10,31 +10,31 @@
         <template #icon>
           <AIcon type="PlusSquareOutlined" />
         </template>
-        新增行
+        {{ $t('ContextMenu.menu.4348699-0') }}
       </a-menu-item>
       <a-menu-item key="copy">
         <template #icon>
           <AIcon type="icon-copy" />
         </template>
-         复制行
+         {{ $t('ContextMenu.menu.4348699-1') }}
       </a-menu-item>
       <a-menu-item key="paste" :disabled="showPaste">
         <template #icon>
           <AIcon type="icon-paste" />
         </template>
-        粘贴行
+        {{ $t('ContextMenu.menu.4348699-2') }}
       </a-menu-item>
       <a-menu-item key="detail" :disabled="showDetail">
         <template #icon>
           <AIcon type="icon-chakan" />
         </template>
-        查看详情
+        {{ $t('ContextMenu.menu.4348699-3') }}
       </a-menu-item>
       <a-menu-item key="delete" class="danger" :disabled="showDelete">
         <template #icon>
           <AIcon type="DeleteOutlined" />
         </template>
-        删除
+        {{ $t('ContextMenu.menu.4348699-4') }}
       </a-menu-item>
     </a-menu>
   </div>
@@ -43,6 +43,9 @@
 <script setup name="MetadataContextMenu">
 import { onMounted, ref, nextTick } from "vue";
 import { AIcon } from 'jetlinks-ui-components'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   data: {type: Object, default: () => ({})},

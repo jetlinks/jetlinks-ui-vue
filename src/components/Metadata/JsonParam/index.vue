@@ -8,34 +8,34 @@
         <j-popover :visible="editIndex === index" placement="left">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="width: 150px;">配置参数</div>
+              <div style="width: 150px;">{{ $t('JsonParam.index.4348661-0') }}</div>
               <div @click="handleClose"><AIcon type="CloseOutlined" /></div>
             </div>
           </template>
           <template #content>
             <div style="max-width: 400px;" class="ant-form-vertical">
-              <j-form-item label="标识" :name="name.concat([index, 'id'])" :rules="[
-                { required: true, message: '请输入标识' },
-                { max: 64, message: '最多可输入64个字符' },
+              <j-form-item :label="$t('JsonParam.index.4348661-1')" :name="name.concat([index, 'id'])" :rules="[
+                { required: true, message: $t('JsonParam.index.4348661-2') },
+                { max: 64, message: $t('JsonParam.index.4348661-3') },
                 {
                   pattern: /^[a-zA-Z0-9_\-]+$/,
-                  message: '标识只能由数字、字母、下划线、中划线组成',
+                  message: $t('JsonParam.index.4348661-4'),
                 },
               ]">
-                <j-input v-model:value="_value[index].id" size="small" placeholder="请输入标识"></j-input>
+                <j-input v-model:value="_value[index].id" size="small" :placeholder="$t('JsonParam.index.4348661-2')"></j-input>
               </j-form-item>
-              <j-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
-                { required: true, message: '请输入名称' },
-                { max: 64, message: '最多可输入64个字符' },
+              <j-form-item :label="$t('JsonParam.index.4348661-5')" :name="name.concat([index, 'name'])" :rules="[
+                { required: true, message: $t('JsonParam.index.4348661-6') },
+                { max: 64, message: $t('JsonParam.index.4348661-3') },
               ]">
-                <j-input v-model:value="_value[index].name" size="small" placeholder="请输入名称"></j-input>
+                <j-input v-model:value="_value[index].name" size="small" :placeholder="$t('JsonParam.index.4348661-6')"></j-input>
               </j-form-item>
               <value-type-form v-model:value="_value[index].valueType" :name="name.concat([index, 'valueType'])" :isSub="isSub"
                 key="json_sub"></value-type-form>
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
-            <Ellipsis>{{ item.name || '配置参数' }}</Ellipsis>
+            <Ellipsis>{{ item.name || $t('JsonParam.index.4348661-0') }}</Ellipsis>
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </j-popover>
@@ -48,13 +48,16 @@
       <template #icon>
         <AIcon type="PlusOutlined" class="item-icon" />
       </template>
-      添加参数
+      {{ $t('JsonParam.index.4348661-7') }}
     </j-button>
   </div>
 </template>
 <script setup lang="ts" name="JsonParam">
 import { PropType } from 'vue'
 import ValueTypeForm from '@/views/device/components/Metadata/Base/Edit/ValueTypeForm.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type JsonType = Record<any, any>;
 

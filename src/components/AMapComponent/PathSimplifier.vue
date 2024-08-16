@@ -5,8 +5,13 @@
 import { registerMixin } from '@vuemap/vue-amap';
 import { defineComponent, PropType } from 'vue';
 import type { PathSimplifier, PathDataItemType, PathNavigator } from './types';
+import { useI18n } from 'vue-i18n'
+
 
 export default defineComponent({
+  setup() {
+    const { t: $t } = useI18n()
+  },
     name: 'PathSimplifier',
     mixins: [registerMixin],
     props: {
@@ -41,7 +46,7 @@ export default defineComponent({
             if (this.pathData) {
                 this.pathSimplifierRef?.setData(
                     this.pathData.map((item) => ({
-                        name: item.name || '路线',
+                        name: item.name || $t('AMapComponent.PathSimplifier.512471-0'),
                         path: item.path,
                     })),
                 );
@@ -64,7 +69,7 @@ export default defineComponent({
                     ['ui/misc/PathSimplifier', 'lib/$'],
                     (path: PathSimplifier) => {
                         if (!path.supportCanvas) {
-                            console.warn('当前环境不支持 Canvas！');
+                            console.warn($t('AMapComponent.PathSimplifier.512471-1'));
                             return;
                         }
                         this.pathSimplifier(path);
