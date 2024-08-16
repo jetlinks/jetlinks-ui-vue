@@ -41,7 +41,7 @@
                             :statusNames="StatusColorEnum"
                             @click="handlEye(slotProps.id)"
                         >
-                            <template #img>{{getState(slotProps).value}}
+                            <template #img>
                                 <slot name="img">
                                     <img
                                         :src="ImageMap.get(slotProps.provider)"
