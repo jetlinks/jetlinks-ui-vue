@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"Menu.index.633483-0": "系统初始化{0}个菜单",
+		"Menu.index.633483-1": "初始化后的菜单可在“菜单管理”页面进行维护管理"
+	},
+	"en": {
+		"Menu.index.633483-0": "System initialization with {0} menus",
+		"Menu.index.633483-1": "The initialized menu can be maintained and managed on the \"Menu Management\" page"
+	}
+}

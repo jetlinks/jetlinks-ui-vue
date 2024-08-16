@@ -1,7 +1,7 @@
 <template>
     <div class="init-home-role">
         <div class="built_in_group">
-            <div>平台角色内置分组</div>
+            <div>{{ $t('Role.index.633482-0') }}</div>
             <div class="group">
                 <div v-for="(item, index) in group" class="group_item" @mouseover="() => showButton(item)"
                     @mouseleave="() => hiddenButton(item)">
@@ -13,11 +13,11 @@
                         </j-ellipsis>
                     </div>
                     <div v-if="item.show">
-                        <j-button block @click="() => selectGroup(item)">{{ item.selected ? '取消选中' : '选中' }}</j-button>
-                        <j-button block @click="() => showEditGroup(item, index)">编辑</j-button>
+                        <j-button block @click="() => selectGroup(item)">{{ item.selected ? $t('Role.index.633482-1') : $t('Role.index.633482-2') }}</j-button>
+                        <j-button block @click="() => showEditGroup(item, index)">{{ $t('Role.index.633482-3') }}</j-button>
                     </div>
                 </div>
-                <j-button type="text" @click="showAddGroup" :disabled="group.length >= 10">+ 自定义分组</j-button>
+                <j-button type="text" @click="showAddGroup" :disabled="group.length >= 10">{{ $t('Role.index.633482-4') }}</j-button>
             </div>
         </div>
         <j-checkbox-group @change="getCheckValue">
@@ -28,11 +28,11 @@
                     ">
                     <div class="role-item-title">
                         <j-checkbox :value="ROLEKEYS.device"></j-checkbox>
-                        <div class="role-title">设备接入岗</div>
+                        <div class="role-title">{{ $t('Role.index.633482-5') }}</div>
                     </div>
                     <div class="role-item-content"></div>
                     <div class="role-item-footer">
-                        该角色负责设备接入模块的维护管理
+                        {{ $t('Role.index.633482-6') }}
                     </div>
                 </div>
                 <div class="role-item role-item-2" :style="keys.includes('link')
@@ -41,11 +41,11 @@
                     ">
                     <div class="role-item-title">
                         <j-checkbox :value="ROLEKEYS.link"></j-checkbox>
-                        <div class="role-title">运维管理岗</div>
+                        <div class="role-title">{{ $t('Role.index.633482-7') }}</div>
                     </div>
                     <div class="role-item-content"></div>
                     <div class="role-item-footer">
-                        该角色负责系统运维模块的维护管理
+                        {{ $t('Role.index.633482-8') }}
                     </div>
                 </div>
                 <div class="role-item role-item-3" :style="keys.includes('complex')
@@ -54,26 +54,26 @@
                     ">
                     <div class="role-item-title">
                         <j-checkbox :value="ROLEKEYS.complex"></j-checkbox>
-                        <div class="role-title">综合管理岗</div>
+                        <div class="role-title">{{ $t('Role.index.633482-9') }}</div>
                     </div>
                     <div class="role-item-content"></div>
                     <div class="role-item-footer">
-                        该角色负责系统运维和设备接入模块的维护管理
+                        {{ $t('Role.index.633482-10') }}
                     </div>
                 </div>
             </div>
         </j-checkbox-group>
     </div>
-    <j-modal :visible="showAdd" title="自定义分组" @cancel="showAdd = false" @ok="addGroup">
+    <j-modal :visible="showAdd" :title="$t('Role.index.633482-11')" @cancel="showAdd = false" @ok="addGroup">
         <j-form layout="vertical" ref="formRef" :model="formData">
-            <j-form-item name="name" label="名称" :rules="[
+            <j-form-item name="name" :label="$t('Role.index.633482-12')" :rules="[
                 {
                     required: true,
-                    message: '请输入名称',
+                    message: $t('Role.index.633482-13'),
                 },
                 {
                     max: 64,
-                    message: '最多可输入64个字符',
+                    message: $t('Role.index.633482-14'),
                 },
             ]">
                 <j-input v-model:value="formData.name"></j-input>
@@ -86,6 +86,9 @@
 import RoleMenuData, { ROLEKEYS, RoleData } from '../data/RoleData';
 import { updateRoleMenu, addRole, getRoleMenu, addRoleGroup } from '@/api/initHome';
 import { randomString } from '@/utils/utils';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 /**
  * 角色勾选数据
  */
@@ -100,17 +103,17 @@ const getCheckValue = (val: any) => {
  * 获取分组数据
  */
 const group = ref<any[]>([{
-    name: '默认',
+    name: $t('Role.index.633482-15'),
     show: false,
     selected: true,
     id: 'default_group'
 }, {
-    name: '岗位',
+    name: $t('Role.index.633482-16'),
     show: false,
     selected: false,
     id: randomString()
 }, {
-    name: '职位',
+    name: $t('Role.index.633482-17'),
     show: false,
     selected: false,
     id: randomString()
@@ -210,7 +213,7 @@ const addRoleData = async () => {
 };
 
 const showButton = (item: any) => {
-    if (item.name != '默认') {
+    if (item.name != $t('Role.index.633482-15')) {
         item.show = true
     }
 }

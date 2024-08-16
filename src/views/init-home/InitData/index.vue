@@ -13,21 +13,20 @@
     <!-- 初始数据提交表单 -->
     <j-modal
         v-model:visible="visible"
-        title="初始数据"
+        :title="$t('InitData.index.633471-0')"
         width="52vw"
         :maskClosable="false"
         @cancel="cancel"
         @ok="handelSave"
-        okText="确定"
-        cancelText="取消"
+        :okText="$t('InitData.index.633471-1')"
+        :cancelText="$t('InitData.index.633471-2')"
         class="modal-style"
         v-bind="layout"
     >
         <div class="data-content">
             <p class="data-p-style">
                 <ExclamationCircleOutlined style="margin: 0 0 0 5px" />
-                初始化数据包括MQTT产品、MQTT设备、MQTT类型设备接入网关、MQTT网络组件、Jetlinks
-                官方协议
+                {{ $t('InitData.index.633471-3') }}
             </p>
         </div>
         <div style="margin-top: 20px">
@@ -41,9 +40,9 @@
                     <j-col :span="12">
                         <j-form-item name="host">
                             <template #label>
-                                <span>本地地址 </span>
+                                <span>{{ $t('InitData.index.633471-5') }} </span>
                                 <j-tooltip
-                                    title="绑定到服务器上的网卡地址,绑定到所有网卡:0.0.0.0"
+                                    :title="$t('InitData.index.633471-6')"
                                 >
                                     <img
                                         class="img-style"
@@ -58,9 +57,9 @@
                         </j-form-item>
                         <j-form-item name="publicHost">
                             <template #label>
-                                <span>公网地址 </span>
+                                <span>{{ $t('InitData.index.633471-7') }} </span>
                                 <j-tooltip
-                                    title="对外提供访问的地址内网环境时填写服务器的内网IP地址"
+                                    :title="$t('InitData.index.633471-8')"
                                 >
                                     <img
                                         class="img-style"
@@ -68,22 +67,22 @@
                                     />
                                 </j-tooltip>
                             </template>
-                            <j-input v-model:value="modalForm.publicHost" placeholder="请输入公网地址">
+                            <j-input v-model:value="modalForm.publicHost" :placeholder="$t('InitData.index.633471-9')">
                             </j-input>
                         </j-form-item>
                     </j-col>
                     <j-col :span="12">
                         <j-form-item name="port">
                             <template #label>
-                                <span>本地端口 </span>
-                                <j-tooltip title="监听指定端口的请求">
+                                <span>{{ $t('InitData.index.633471-10') }} </span>
+                                <j-tooltip :title="$t('InitData.index.633471-11')">
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
                                     />
                                 </j-tooltip>
                             </template>
-                            <j-select v-model:value="modalForm.port" placeholder="请选择本地端口" show-search>
+                            <j-select v-model:value="modalForm.port" :placeholder="$t('InitData.index.633471-12')" show-search>
                                 <j-select-option
                                     v-for="item in optionPorts"
                                     :key="item"
@@ -95,8 +94,8 @@
                         </j-form-item>
                         <j-form-item name="publicPort">
                             <template #label>
-                                <span>公网端口 </span>
-                                <j-tooltip title="对外提供访问的端口">
+                                <span>{{ $t('InitData.index.633471-13') }} </span>
+                                <j-tooltip :title="$t('InitData.index.633471-14')">
                                     <img
                                         class="img-style"
                                         :src="getImage('/init-home/mark.png')"
@@ -105,7 +104,7 @@
                             </template>
                             <j-input-number
                                 v-model:value="modalForm.publicPort"
-                                placeholder="请输入公网端口"
+                                :placeholder="$t('InitData.index.633471-15')"
                                 style="width: 100%"
                                 :precision="0"
                             />
@@ -133,6 +132,9 @@ import {
 import { modalState } from '../data/interface';
 import type { Rule } from 'ant-design-vue/es/form';
 import { testIpv4_6 } from '@/utils/validate';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const formRef = ref();
 /**
  * 初始化数据状态
@@ -154,10 +156,10 @@ const regDomain = new RegExp(
  */
 const validateUrl = async (_rule: Rule, value: string) => {
     if (!value) {
-        return Promise.reject('请输入公网地址');
+        return Promise.reject($t('InitData.index.633471-9'));
     } else {
         if (!testIpv4_6(value) && !regDomain.test(value)) {
-            return Promise.reject('请输入正确的公网地址');
+            return Promise.reject($t('InitData.index.633471-16'));
         }
         return Promise.resolve();
     }
@@ -167,10 +169,10 @@ const validateUrl = async (_rule: Rule, value: string) => {
  */
 const validateNumber = async (_rule: Rule, value: string) => {
     if (!value) {
-        return Promise.reject('请输入公网端口');
+        return Promise.reject($t('InitData.index.633471-15'));
     } else {
         if (Number(value) < 1 || Number(value) > 65535) {
-            return Promise.reject('请输入1~65535的正整数');
+            return Promise.reject($t('InitData.index.633471-17'));
         }
         return Promise.resolve();
     }
@@ -179,13 +181,13 @@ const rulesModle = ref({
     host: [
         {
             required: true,
-            message: '请选择本地地址',
+            message: $t('InitData.index.633471-18'),
         },
     ],
     port: [
         {
             required: true,
-            message: '请选择本地端口',
+            message: $t('InitData.index.633471-12'),
         },
     ],
     publicHost: [
@@ -259,7 +261,7 @@ const saveCurrentData = () => {
                     const network = await saveNetwork({
                         type: 'MQTT_SERVER',
                         shareCluster: true,
-                        name: 'MQTT网络组件',
+                        name: $t('InitData.index.633471-19'),
                         configuration: {
                             host: '0.0.0.0',
                             secure: false,
@@ -276,13 +278,13 @@ const saveCurrentData = () => {
                         const proid = await getProtocol();
                         if (proid.status === 200) {
                             protocolItem = (proid?.result || []).find(
-                                (it: any) => it.name === 'JetLinks官方协议',
+                                (it: any) => it.name === $t('InitData.index.633471-20'),
                             );
                         }
                     }
                     // 新增设备接入网关
                     const accessConfig = await saveAccessConfig({
-                        name: 'MQTT类型设备接入网关',
+                        name: $t('InitData.index.633471-21'),
                         provider: 'mqtt-server-gateway',
                         protocol: protocolItem?.id,
                         transport: 'MQTT',
@@ -291,7 +293,7 @@ const saveCurrentData = () => {
                     });
                     // 新增产品
                     const product = await saveProduct({
-                        name: 'MQTT产品',
+                        name: $t('InitData.index.633471-22'),
                         messageProtocol: protocolItem?.id,
                         protocolName: protocolItem?.name,
                         transportProtocol: 'MQTT',
@@ -302,7 +304,7 @@ const saveCurrentData = () => {
                     });
                     // 新增设备
                     const device = await saveDevice({
-                        name: 'MQTT设备',
+                        name: $t('InitData.index.633471-23'),
                         productId: product?.result?.id,
                         productName: product?.result?.name,
                     });
@@ -323,7 +325,7 @@ const saveCurrentData = () => {
 const { optionPorts, isSucessInit } = toRefs(initialization);
 const handelSave = () => {
     formRef.value.validate().then(() => {
-        onlyMessage('保存成功');
+        onlyMessage($t('InitData.index.633471-24'));
         flag.value = true;
         visible.value = false;
     });

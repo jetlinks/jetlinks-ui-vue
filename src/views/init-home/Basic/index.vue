@@ -4,30 +4,30 @@
         <j-row :span="24" :gutter="24">
             <j-col :span="12">
                 <j-form-item
-                    label="系统名称"
+                    :label="$t('Basic.index.633487-0')"
                     name="title"
                     v-bind="validateInfos.title"
                 >
                     <j-input
                         v-model:value="form.title"
-                        placeholder="请输入系统名称"
+                        :placeholder="$t('Basic.index.633487-1')"
                     />
                 </j-form-item>
                 <j-form-item
-                    label="主题色"
+                    :label="$t('Basic.index.633487-2')"
                     name="headerTheme"
                     v-bind="validateInfos.headerTheme"
                 >
                     <j-select v-model:value="form.headerTheme">
-                        <j-select-option value="light">白色</j-select-option>
-                        <j-select-option value="dark">黑色</j-select-option>
+                        <j-select-option value="light">{{ $t('Basic.index.633487-3') }}</j-select-option>
+                        <j-select-option value="dark">{{ $t('Basic.index.633487-4') }}</j-select-option>
                     </j-select>
                 </j-form-item>
                 <j-form-item>
                     <template #label>
-                        <span>高德地图 web服务api</span>
+                        <span>{{ $t('Basic.index.633487-5') }}</span>
                         <j-tooltip
-                            title="开发者可通过接口使用各类型的地理数据服务,返回结果支持JSON和XML格式"
+                            :title="$t('Basic.index.633487-6')"
                         >
                             <img
                                 class="img-style"
@@ -37,13 +37,13 @@
                     </template>
                     <j-input
                         v-model:value="form.webKey"
-                        placeholder="请输入高德WebApi Key"
+                        :placeholder="$t('Basic.index.633487-7')"
                     />
                 </j-form-item>
                 <j-form-item>
                     <template #label>
-                        <span>高德地图 JSapi</span>
-                        <j-tooltip title="提供浏览器精准定位">
+                        <span>{{ $t('Basic.index.633487-8') }}</span>
+                        <j-tooltip :title="$t('Basic.index.633487-9')">
                             <img
                                 class="img-style"
                                 :src="'/images/init-home/mark.png'"
@@ -52,13 +52,13 @@
                     </template>
                     <j-input
                         v-model:value="form.apiKey"
-                        placeholder="请输入高德API Key"
+                        :placeholder="$t('Basic.index.633487-10')"
                     />
                 </j-form-item>
                 <j-form-item>
                     <template #label>
-                        <span>高德地图 密钥</span>
-                        <j-tooltip title="降低明文传输被窃取的风险">
+                        <span>{{ $t('Basic.index.633487-11') }}</span>
+                        <j-tooltip :title="$t('Basic.index.633487-12')">
                             <img
                                 class="img-style"
                                 :src="'/images/init-home/mark.png'"
@@ -67,7 +67,7 @@
                     </template>
                     <j-input
                         v-model:value="form.secretKey"
-                        placeholder="请输入高德API 密钥"
+                        :placeholder="$t('Basic.index.633487-13')"
                     />
                 </j-form-item>
                 <j-form-item name="basePath" v-bind="validateInfos.basePath">
@@ -76,10 +76,9 @@
                         <j-tooltip>
                             <template #title>
                                 <div style="word-break: break-all">
-                                    <div>系统后台访问的url。</div>
+                                    <div>{{ $t('Basic.index.633487-14') }}</div>
                                     <div>
-                                        格式：{http/https}:
-                                        //{前端所在服务器IP地址}:{前端暴露的服务端口}/api
+                                        {{ $t('Basic.index.633487-15') }}
                                     </div>
                                 </div>
                             </template>
@@ -91,12 +90,12 @@
                     </template>
                     <j-input
                         v-model:value="form.basePath"
-                        placeholder="格式：{http/https}: //{前端所在服务器IP地址}:{前端暴露的服务端口}/api"
+                        :placeholder="$t('Basic.index.633487-15')"
                     />
                 </j-form-item>
                 <j-form-item
                     name="showRecordNumber"
-                    label="展示备案号"
+                    :label="$t('Basic.index.633487-16')"
                     :required="true"
                 >
                     <a-switch
@@ -106,14 +105,14 @@
                 <j-form-item
                     v-if="form.showRecordNumber"
                     name="recordNumber"
-                    label="备案号内容"
+                    :label="$t('Basic.index.633487-17')"
                     :required="true"
                 >
                     <a-input v-model:value="form.recordNumber"></a-input>
                 </j-form-item>
                 <j-row :gutter="24" :span="24">
                     <j-col>
-                        <j-form-item label="系统logo">
+                        <j-form-item :label="$t('Basic.index.633487-18')">
                             <div class="upload-image-warp-logo">
                                 <div class="upload-image-border-logo">
                                     <j-upload
@@ -151,7 +150,7 @@
                                                 v-if="form.logo"
                                                 class="upload-image-mask"
                                             >
-                                                点击修改
+                                                {{ $t('Basic.index.633487-19') }}
                                             </div>
                                             <div v-else>
                                                 <div v-if="logoLoading">
@@ -178,15 +177,15 @@
                                 </div>
                             </div>
 
-                            <div class="upload-tips">推荐尺寸200*200</div>
-                            <div class="upload-tips">支持jpg,png</div>
+                            <div class="upload-tips">{{ $t('Basic.index.633487-20') }}</div>
+                            <div class="upload-tips">{{ $t('Basic.index.633487-21') }}</div>
                         </j-form-item>
                     </j-col>
                     <j-col>
                         <j-form-item>
                             <template #label>
-                                <span>浏览器页签</span>
-                                <j-tooltip title="浏览器tab页中显示的图片元素">
+                                <span>{{ $t('Basic.index.633487-22') }}</span>
+                                <j-tooltip :title="$t('Basic.index.633487-23')">
                                     <img
                                         class="img-style"
                                         :src="'/images/init-home/mark.png'"
@@ -230,7 +229,7 @@
                                                 v-if="form.ico"
                                                 class="upload-image-mask"
                                             >
-                                                点击修改
+                                                {{ $t('Basic.index.633487-19') }}
                                             </div>
                                             <div v-else>
                                                 <div>
@@ -244,14 +243,14 @@
                                 </div>
                             </div>
 
-                            <div class="upload-tips">推荐尺寸64*64</div>
-                            <div class="upload-tips">支持ico格式</div>
+                            <div class="upload-tips">{{ $t('Basic.index.633487-24') }}</div>
+                            <div class="upload-tips">{{ $t('Basic.index.633487-25') }}</div>
                         </j-form-item>
                     </j-col>
                 </j-row>
             </j-col>
             <j-col :span="12">
-                <j-form-item label="登录背景图">
+                <j-form-item :label="$t('Basic.index.633487-26')">
                     <div class="upload-image-warp-back">
                         <div class="upload-image-border-back">
                             <j-upload
@@ -289,7 +288,7 @@
                                         v-if="form.background"
                                         class="upload-image-mask"
                                     >
-                                        点击修改
+                                        {{ $t('Basic.index.633487-19') }}
                                     </div>
                                     <div v-else>
                                         <div>
@@ -302,8 +301,8 @@
                             </j-upload>
                         </div>
                     </div>
-                    <div class="upload-tips">支持4M以内的图片:支持jpg、png</div>
-                    <div class="upload-tips">建议尺寸1400x1080</div>
+                    <div class="upload-tips">{{ $t('Basic.index.633487-27') }}</div>
+                    <div class="upload-tips">{{ $t('Basic.index.633487-28') }}</div>
                 </j-form-item>
             </j-col>
         </j-row>
@@ -318,6 +317,9 @@ import { LocalStore, getImage, onlyMessage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
 import { omit } from 'lodash-es';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const formRef = ref();
 const menuRef = ref();
 const formBasicRef = ref();
@@ -328,6 +330,7 @@ const iconLoading = ref(false);
 const imageTypes = ref(['image/jpeg', 'image/png']);
 const iconTypes = ref(['image/x-icon']);
 const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
+const size = ref(4)
 /**
  * 表单数据
  */
@@ -348,21 +351,21 @@ const rulesFrom = ref({
     title: [
         {
             max: 64,
-            message: '最多可输入64位',
+            message: $t('Basic.index.633487-29'),
             trigger: 'change',
         },
     ],
     headerTheme: [
         {
             required: true,
-            message: '请选择主题色',
+            message: $t('Basic.index.633487-30'),
             trigger: 'blur',
         },
     ],
     basePath: [
         {
             required: true,
-            message: '请输入base-path',
+            message: $t('Basic.index.633487-31'),
             trigger: 'blur',
         },
     ],
@@ -431,12 +434,12 @@ const saveBasicInfo = () => {
 const beforeLogoUpload = (file: any) => {
     const isType: any = imageTypes.value.includes(file.type);
     if (!isType) {
-        onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
+        onlyMessage($t('Basic.index.633487-32'), 'error');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 4;
     if (!isSize) {
-        onlyMessage(`图片大小必须小于${4}M`, 'error');
+        onlyMessage($t('Basic.index.633487-33', [size.value]), 'error');
     }
     return isType && isSize;
 };
@@ -460,12 +463,12 @@ const handleChangeLogo = (info: any) => {
 const beforeIconUpload = (file: any) => {
     const isType = iconTypes.value.includes(file.type);
     if (!isType) {
-        onlyMessage('请上传ico格式的图片', 'error');
+        onlyMessage($t('Basic.index.633487-34'), 'error');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 1;
     if (!isSize) {
-        onlyMessage('支持1M以内的图片', 'error');
+        onlyMessage($t('Basic.index.633487-35'), 'error');
     }
     return isType && isSize;
 };
@@ -488,12 +491,12 @@ const changeIconUpload = (info: any) => {
 const beforeBackUpload = (file: any) => {
     const isType = imageTypes.value.includes(file.type);
     if (!isType) {
-        onlyMessage(`请上传.jpg.png.jfif.pjp.pjpeg.jpeg格式的图片`, 'error');
+        onlyMessage($t('Basic.index.633487-32'), 'error');
         return false;
     }
     const isSize = file.size / 1024 / 1024 < 4;
     if (!isSize) {
-        onlyMessage(`图片大小必须小于${4}M`, 'error');
+        onlyMessage($t('Basic.index.633487-33', [size.value]), 'error');
     }
     return isType && isSize;
 };

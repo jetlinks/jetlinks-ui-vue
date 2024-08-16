@@ -1,3 +1,5 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 import {
   USER_CENTER_MENU_BUTTON_CODE,
   USER_CENTER_MENU_CODE
@@ -5,10 +7,10 @@ import {
 
 export const USER_CENTER_MENU_DATA = {
   id: '19a1f2c763e1231f1e1',
-  accessSupport: { value: 'unsupported', label: '不支持'},
+  accessSupport: { value: 'unsupported', label: $t('data.baseMenu.633486-0')},
   supportDataAccess: false,
   code: USER_CENTER_MENU_CODE,
-  name: '个人中心',
+  name: $t('data.baseMenu.633486-1'),
   url: '/account/center',
   sortIndex: 9999,
   granted: true,
@@ -25,14 +27,14 @@ export const USER_CENTER_MENU_DATA = {
   buttons: [
     {
       id: 'view',
-      name: '查看',
+      name: $t('data.baseMenu.633486-2'),
       permissions: [
 
       ]
     },
     {
       id: USER_CENTER_MENU_BUTTON_CODE,
-      name: '修改密码',
+      name: $t('data.baseMenu.633486-3'),
       permissions: [
         {
           permission: 'user',
@@ -51,7 +53,7 @@ export default [
   // 物联网
   {
     code: 'iot',
-    name: '物联网',
+    name: $t('data.baseMenu.633486-4'),
     owner: 'iot',
     id: '9c21f88182e7cc75cbdfa8e4b7844272',
     url: '/iot',
@@ -61,7 +63,7 @@ export default [
     children: [
       {
         code: 'home',
-        name: '首页',
+        name: $t('data.baseMenu.633486-5'),
         owner: 'iot',
         //parentId: '1',
         id: 'd56cfb0076ecc4ff2d8503b39b3dbf1c',
@@ -91,12 +93,12 @@ export default [
             actions: ['query'],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'notice',
-        name: '通知管理',
+        name: $t('data.baseMenu.633486-6'),
         owner: 'iot',
         //parentId: '1',
         id: 'b27e972543cdc5da5730b6d4b9b537b1',
@@ -108,7 +110,7 @@ export default [
         children: [
           {
             code: 'notice/Config',
-            name: '通知配置',
+            name: $t('data.baseMenu.633486-7'),
             owner: 'iot',
             //parentId: '1',
             id: '09bcab0a6a1f0796075254a453139287',
@@ -120,7 +122,7 @@ export default [
             buttons: [
               {
                 id: 'bind',
-                name: '同步用户',
+                name: $t('data.baseMenu.633486-8'),
                 permissions: [
                   {
                     permission: 'add',
@@ -142,7 +144,7 @@ export default [
               },
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -152,7 +154,7 @@ export default [
               },
               {
                 id: 'log',
-                name: '通知记录',
+                name: $t('data.baseMenu.633486-9'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -166,7 +168,7 @@ export default [
               },
               {
                 id: 'debug',
-                name: '调试',
+                name: $t('data.baseMenu.633486-10'),
                 permissions: [
                   {
                     permission: 'add',
@@ -184,7 +186,7 @@ export default [
               },
               {
                 id: 'export',
-                name: '导出',
+                name: $t('data.baseMenu.633486-11'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -194,7 +196,7 @@ export default [
               },
               {
                 id: 'import',
-                name: '导入',
+                name: $t('data.baseMenu.633486-12'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -204,7 +206,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -214,7 +216,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -224,7 +226,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -233,13 +235,13 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'notifyConfig'
           },
           {
             code: 'notice/Template',
-            name: '通知模板',
+            name: $t('data.baseMenu.633486-17'),
             owner: 'iot',
             //parentId: '1',
             id: '705b82c807fa18360bf62a2b35f454e9',
@@ -260,7 +262,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'template',
@@ -270,7 +272,7 @@ export default [
               },
               {
                 id: 'log',
-                name: '通知记录',
+                name: $t('data.baseMenu.633486-9'),
                 permissions: [
                   {
                     permission: 'template',
@@ -280,7 +282,7 @@ export default [
               },
               {
                 id: 'debug',
-                name: '调试',
+                name: $t('data.baseMenu.633486-10'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -298,7 +300,7 @@ export default [
               },
               {
                 id: 'export',
-                name: '导出',
+                name: $t('data.baseMenu.633486-11'),
                 permissions: [
                   {
                     permission: 'template',
@@ -308,7 +310,7 @@ export default [
               },
               {
                 id: 'import',
-                name: '导入',
+                name: $t('data.baseMenu.633486-12'),
                 permissions: [
                   {
                     permission: 'template',
@@ -318,7 +320,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'template',
@@ -328,7 +330,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -342,7 +344,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'notifier',
@@ -355,7 +357,7 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             assetType: 'notifyTemplate',
             supportDataAccess: true
           },
@@ -363,7 +365,7 @@ export default [
       },
       {
         code: 'device',
-        name: '设备管理',
+        name: $t('data.baseMenu.633486-18'),
         owner: 'iot',
         //parentId: '1',
         id: 'b6327c3ff01b49c9a7a96101606dc27a',
@@ -375,7 +377,7 @@ export default [
         children: [
           {
             code: 'device/DashBoard',
-            name: '仪表盘',
+            name: $t('data.baseMenu.633486-19'),
             owner: 'iot',
             //parentId: '1-3',
             id: '68a02c9efa9fb4885c89b007f97d074d',
@@ -405,12 +407,12 @@ export default [
                 actions: ['query'],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'device/Product',
-            name: '产品',
+            name: $t('data.baseMenu.633486-20'),
             owner: 'iot',
             //parentId: '1-3',
             id: '8ddbb67de5f65514105d47b448bfd70e',
@@ -452,7 +454,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -470,7 +472,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -500,7 +502,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -518,7 +520,7 @@ export default [
               },
               {
                 id: 'export',
-                name: '导出',
+                name: $t('data.baseMenu.633486-11'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -536,7 +538,7 @@ export default [
               },
               {
                 id: 'import',
-                name: '导入',
+                name: $t('data.baseMenu.633486-12'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -558,7 +560,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -576,7 +578,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -597,19 +599,19 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true
           },
           {
             code: 'device/Instance',
-            name: '设备',
+            name: $t('data.baseMenu.633486-22'),
             owner: 'iot',
             //parentId: '1-3',
             id: '1b136e7e4e4e74bb24b91802e4cfcd2d',
             url: '/iot/device/Instance',
             icon: 'icon-shebei',
             sortIndex: 3,
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'device',
             showPage: ['device-instance'],
@@ -646,7 +648,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -660,7 +662,7 @@ export default [
               },
               {
                 id: 'export',
-                name: '导出',
+                name: $t('data.baseMenu.633486-11'),
                 permissions: [
                   {
                     permission: 'device-gateway',
@@ -678,7 +680,7 @@ export default [
               },
               {
                 id: 'import',
-                name: '导入',
+                name: $t('data.baseMenu.633486-12'),
                 permissions: [
                   {
                     permission: 'device-gateway',
@@ -700,7 +702,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'file',
@@ -754,7 +756,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'device-gateway',
@@ -772,7 +774,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -790,7 +792,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'file',
@@ -814,14 +816,14 @@ export default [
           },
           {
             code: 'device/Category',
-            name: '产品分类',
+            name: $t('data.baseMenu.633486-23'),
             owner: 'iot',
             //parentId: '1-3',
             id: 'bc83f18659982abb9ac1a96362fc3372',
             sortIndex: 4,
             url: '/iot/device/Category',
             icon: 'icon-chanpinfenlei',
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'deviceCategory',
             showPage: ['device-category'],
@@ -829,7 +831,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'device-category',
@@ -839,7 +841,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'device-category',
@@ -849,7 +851,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'device-category',
@@ -859,7 +861,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'device-category',
@@ -873,7 +875,7 @@ export default [
       },
       {
         code: 'link',
-        name: '运维管理',
+        name: $t('data.baseMenu.633486-24'),
         owner: 'iot',
         //parentId: '1',
         id: 'bd55cdc9d0c1700afe628f572f91c22e',
@@ -884,7 +886,7 @@ export default [
         children: [
           {
             code: 'link/DashBoard',
-            name: '仪表盘',
+            name: $t('data.baseMenu.633486-19'),
             owner: 'iot',
             //parentId: '1-4',
             id: '47bedff9df89ecc0f0ce896e53805f02',
@@ -902,12 +904,12 @@ export default [
                 actions: ['query'],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'link/AccessConfig',
-            name: '设备接入网关',
+            name: $t('data.baseMenu.633486-25'),
             owner: 'iot',
             //parentId: '1-4',
             id: '10e67b761ec1f4206fabf36fcf9d9b0b',
@@ -919,7 +921,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'device-gateway',
@@ -933,7 +935,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'device-gateway',
@@ -943,7 +945,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'device-gateway',
@@ -953,7 +955,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -987,7 +989,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -1028,12 +1030,12 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'link/Protocol',
-            name: '协议管理',
+            name: $t('data.baseMenu.633486-26'),
             owner: 'iot',
             //parentId: '1-4',
             id: 'cdd73c8cb02d1ae9af61ded7fc31e9c5',
@@ -1045,7 +1047,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -1055,7 +1057,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -1065,7 +1067,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -1083,7 +1085,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'protocol-supports',
@@ -1100,12 +1102,12 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'Log',
-            name: '日志管理',
+            name: $t('data.baseMenu.633486-27'),
             owner: 'iot',
             //parentId: '1-4',
             id: 'c340f8977e0d221da893715cab58ae8c',
@@ -1124,12 +1126,12 @@ export default [
               },
             ],
             buttons: [],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'link/Type',
-            name: '网络组件',
+            name: $t('data.baseMenu.633486-28'),
             owner: 'iot',
             //parentId: '1-4',
             id: 'f99acd0b64f96209eb276236cfb427cb',
@@ -1141,7 +1143,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'network-config',
@@ -1155,7 +1157,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'network-config',
@@ -1165,7 +1167,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'network-config',
@@ -1175,7 +1177,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'network-config',
@@ -1189,7 +1191,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'network-config',
@@ -1202,12 +1204,12 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'link/Certificate',
-            name: '证书管理',
+            name: $t('data.baseMenu.633486-29'),
             owner: 'iot',
             //parentId: '1-4',
             id: 'e395655a273a1b765236342738289587',
@@ -1219,7 +1221,7 @@ export default [
             buttons: [
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'certificate',
@@ -1229,7 +1231,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'certificate',
@@ -1239,7 +1241,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'certificate',
@@ -1249,7 +1251,7 @@ export default [
               },
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'certificate',
@@ -1258,12 +1260,12 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'media/Stream',
-            name: '流媒体服务',
+            name: $t('data.baseMenu.633486-30'),
             owner: 'iot',
             //parentId: '1-4',
             id: '82fd382e97bc132aa1a6cc926d804d48',
@@ -1275,7 +1277,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'media-server',
@@ -1285,7 +1287,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'media-server',
@@ -1295,7 +1297,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'media-server',
@@ -1305,7 +1307,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'media-server',
@@ -1315,7 +1317,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'media-server',
@@ -1324,12 +1326,12 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'device/Firmware',
-            name: '远程升级',
+            name: $t('data.baseMenu.633486-31'),
             owner: 'iot',
             //parentId: '1-4',
             id: 'e0943d4c2fa539e89df1ff92e3379477',
@@ -1341,7 +1343,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'firmware-upgrade-task-manager',
@@ -1359,7 +1361,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -1385,7 +1387,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'firmware-manager',
@@ -1399,7 +1401,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'firmware-manager',
@@ -1425,13 +1427,13 @@ export default [
               },
 
             ],
-            accessSupport: { text: "间接支持", value: "indirect" },
+            accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
             supportDataAccess: false,
             indirectMenus: ['8ddbb67de5f65514105d47b448bfd70e']
           },
           {
             code: 'link/plugin',
-            name: '插件管理',
+            name: $t('data.baseMenu.633486-33'),
             owner: 'iot',
             //parentId: '1-4',
             id: 'a20354876e9519e48f5ed6710ba6efb3',
@@ -1448,7 +1450,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'plugin-driver',
@@ -1458,7 +1460,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'plugin-driver',
@@ -1468,7 +1470,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'plugin-driver',
@@ -1478,7 +1480,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'plugin-driver',
@@ -1488,14 +1490,14 @@ export default [
               },
 
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false,
           },
         ],
       },
       {
         code: 'link/DataCollect',
-        name: '数据采集',
+        name: $t('data.baseMenu.633486-34'),
         id: '3e5a9473e284803134b3f63c086d7385',
         owner: 'iot',
         sortIndex: 10,
@@ -1506,7 +1508,7 @@ export default [
         children: [
           {
             code: 'DataCollect/Dashboard',
-            name: '仪表盘',
+            name: $t('data.baseMenu.633486-19'),
             owner: 'iot',
             sortIndex: 1,
             id: '802c1d835cd9f687ffb2092b593fb1b8',
@@ -1526,12 +1528,12 @@ export default [
               { permission: 'things-collector', actions: ['query'] },
             ],
             buttons: [],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'DataCollect/Channel',
-            name: '通道管理',
+            name: $t('data.baseMenu.633486-35'),
             owner: 'iot',
             id: 'e867ee3d31a7b963d38f40a3b51d0191',
             sortIndex: 2,
@@ -1547,7 +1549,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'data-collect-channel',
@@ -1569,7 +1571,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'data-collect-channel',
@@ -1591,7 +1593,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'data-collect-channel',
@@ -1617,7 +1619,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '禁用/启用',
+                name: $t('data.baseMenu.633486-36'),
                 permissions: [
                   {
                     permission: 'data-collect-channel',
@@ -1639,7 +1641,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'data-collect-channel',
@@ -1660,13 +1662,13 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'dataCollectChannel'
           },
           {
             code: 'DataCollect/Collector',
-            name: '采集器',
+            name: $t('data.baseMenu.633486-37'),
             owner: 'iot',
             id: 'f97141d2737ebc3e3ab2cda4a38e8c79',
             sortIndex: 3,
@@ -1682,7 +1684,7 @@ export default [
             buttons: [
               {
                 "id": "view",
-                "name": "查看",
+                "name": $t('data.baseMenu.633486-2'),
                 "permissions": [
                   {
                     "permission": "data-collect-channel",
@@ -1718,7 +1720,7 @@ export default [
               },
               {
                 "id": "add",
-                "name": "新增",
+                "name": $t('data.baseMenu.633486-15'),
                 "permissions": [
                   {
                     "permission": "data-collect-channel",
@@ -1758,7 +1760,7 @@ export default [
               },
               {
                 "id": "update",
-                "name": "编辑",
+                "name": $t('data.baseMenu.633486-14'),
                 "permissions": [
                   {
                     "permission": "data-collect-channel",
@@ -1804,7 +1806,7 @@ export default [
               },
               {
                 "id": "action",
-                "name": "禁用/启用",
+                "name": $t('data.baseMenu.633486-36'),
                 "permissions": [
                   {
                     "permission": "data-collect-channel",
@@ -1842,7 +1844,7 @@ export default [
               },
               {
                 "id": "delete",
-                "name": "删除",
+                "name": $t('data.baseMenu.633486-13'),
                 "permissions": [
                   {
                     "permission": "data-collect-channel",
@@ -1875,7 +1877,7 @@ export default [
                 ]
               }
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'dataCollectCollector'
           },
@@ -1883,7 +1885,7 @@ export default [
       },
       {
         code: 'rule-engine/Alarm',
-        name: '告警中心',
+        name: $t('data.baseMenu.633486-38'),
         owner: 'iot',
         //parentId: '1',
         id: '3c7dca6ea8b5828bbcc023ce905244f7',
@@ -1896,7 +1898,7 @@ export default [
         children: [
           {
             code: 'rule-engine/DashBoard',
-            name: '仪表盘',
+            name: $t('data.baseMenu.633486-19'),
             owner: 'iot',
             //parentId: '1-5',
             id: 'f4d6880e3d8b3e3234c547fa84856b32',
@@ -1910,12 +1912,12 @@ export default [
               { permission: 'alarm-record', actions: ['query'] },
             ],
             buttons: [],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'rule-engine/Alarm/Config',
-            name: '基础配置',
+            name: $t('data.baseMenu.633486-39'),
             owner: 'iot',
             //parentId: '1-5',
             id: 'af160284d1934bf052a2eeb9b9a9cb8f',
@@ -1927,19 +1929,19 @@ export default [
             buttons: [
               {
                 id: 'update',
-                name: '保存',
+                name: $t('data.baseMenu.633486-40'),
                 permissions: [
                   // { permission: 'alarm-record', actions: ['query', 'save'] },
                   { permission: 'alarm-config', actions: ['query', 'save'] },
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
           {
             code: 'rule-engine/Alarm/Configuration',
-            name: '告警配置',
+            name: $t('data.baseMenu.633486-41'),
             owner: 'iot',
             //parentId: '1-5',
             id: 'c5d3b1261f2f414dd04b0bf9194aa29e',
@@ -1956,7 +1958,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'alarm-config',
@@ -1970,7 +1972,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'rule-scene',
@@ -1988,7 +1990,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'alarm-config',
@@ -2002,7 +2004,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'alarm-config',
@@ -2016,7 +2018,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'rule-scene',
@@ -2034,7 +2036,7 @@ export default [
               },
               {
                 id: 'tigger',
-                name: '手动触发',
+                name: $t('data.baseMenu.633486-42'),
                 permissions: [
                   {
                     permission: 'alarm-config',
@@ -2047,13 +2049,13 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'alarmConfig'
           },
           {
             code: 'rule-engine/Alarm/Log',
-            name: '告警记录',
+            name: $t('data.baseMenu.633486-43'),
             owner: 'iot',
             //parentId: '1-5',
             id: 'fca24d8d3276a410f7031a9b721017fd',
@@ -2065,7 +2067,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'alarm-record',
@@ -2083,7 +2085,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '告警处理',
+                name: $t('data.baseMenu.633486-44'),
                 permissions: [
                   {
                     permission: 'alarm-record',
@@ -2100,14 +2102,14 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "间接支持", value: "indirect" },
+            accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
             supportDataAccess: false
           },
         ],
       },
       {
         code: 'Northbound',
-        name: '北向输出',
+        name: $t('data.baseMenu.633486-45'),
         owner: 'iot',
         //parentId: '1',
         id: 'ea3d760edbd908eb0bc901db2801e8b5',
@@ -2132,7 +2134,7 @@ export default [
             buttons: [
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'dueros-product',
@@ -2142,7 +2144,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'dueros-product',
@@ -2156,7 +2158,7 @@ export default [
               },
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'dueros-product',
@@ -2170,7 +2172,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'dueros-product',
@@ -2180,7 +2182,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'dueros-product',
@@ -2193,13 +2195,13 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'dueros'
           },
           {
             code: 'Northbound/AliCloud',
-            name: '阿里云',
+            name: $t('data.baseMenu.633486-46'),
             owner: 'iot',
             //parentId: '1-6',
             id: '2b808202bfc9159838d3be675e63719f',
@@ -2211,7 +2213,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'device-product',
@@ -2225,7 +2227,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启用/禁用',
+                name: $t('data.baseMenu.633486-47'),
                 permissions: [
                   {
                     permission: 'aliyun-bridge',
@@ -2235,7 +2237,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'aliyun-bridge',
@@ -2249,7 +2251,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'aliyun-bridge',
@@ -2259,7 +2261,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'aliyun-bridge',
@@ -2272,7 +2274,7 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'aliyunNorthOutput'
           },
@@ -2280,7 +2282,7 @@ export default [
       },
       {
         code: 'rule-engine',
-        name: '规则引擎',
+        name: $t('data.baseMenu.633486-48'),
         owner: 'iot',
         //parentId: '1',
         id: '91aa7c753b1c030dfad612aa0a45d453',
@@ -2292,7 +2294,7 @@ export default [
         children: [
           {
             code: 'rule-engine/Instance',
-            name: '规则编排',
+            name: $t('data.baseMenu.633486-49'),
             owner: 'iot',
             //parentId: '1-7',
             id: '898001f2efa11f93253d67a254904ead',
@@ -2304,7 +2306,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'template',
@@ -2330,7 +2332,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'template',
@@ -2356,7 +2358,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'template',
@@ -2382,7 +2384,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'template',
@@ -2408,7 +2410,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'template',
@@ -2433,13 +2435,13 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'ruleInstance'
           },
           {
             code: 'rule-engine/Scene',
-            name: '场景联动',
+            name: $t('data.baseMenu.633486-50'),
             owner: 'iot',
             //parentId: '1-7',
             id: 'b68867fdc24cfc3df7c52e842136f439',
@@ -2451,7 +2453,7 @@ export default [
             buttons: [
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'rule-scene',
@@ -2465,7 +2467,7 @@ export default [
               },
               {
                 id: 'tigger',
-                name: '手动触发',
+                name: $t('data.baseMenu.633486-42'),
                 permissions: [
                   {
                     permission: 'rule-scene',
@@ -2475,7 +2477,7 @@ export default [
               },
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'user',
@@ -2509,7 +2511,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启用/禁用',
+                name: $t('data.baseMenu.633486-47'),
                 permissions: [
                   {
                     permission: 'rule-scene',
@@ -2519,7 +2521,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'user',
@@ -2553,7 +2555,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'user',
@@ -2586,7 +2588,7 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "支持", value: "support" },
+            accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
             supportDataAccess: true,
             assetType: 'scene'
           },
@@ -2594,7 +2596,7 @@ export default [
       },
       {
         code: 'edge',
-        name: '边缘网关',
+        name: $t('data.baseMenu.633486-51'),
         owner: 'iot',
         id: 'cc29671ed5ef8d6df951b2fc523f36ca',
         sortIndex: 8,
@@ -2605,7 +2607,7 @@ export default [
         children: [
           {
             code: 'edge/Device',
-            name: '网关设备',
+            name: $t('data.baseMenu.633486-52'),
             owner: 'iot',
             id: 'c9f2530273ec057e3a5674faf3c6c073',
             sortIndex: 1,
@@ -2625,7 +2627,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2639,7 +2641,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2649,7 +2651,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2659,7 +2661,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2669,7 +2671,7 @@ export default [
               },
               {
                 id: 'add',
-                name: '新增',
+                name: $t('data.baseMenu.633486-15'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2679,7 +2681,7 @@ export default [
               },
               {
                 id: 'import',
-                name: '导入',
+                name: $t('data.baseMenu.633486-12'),
                 permissions: [
                   {
                     permission: 'rule-instance',
@@ -2689,7 +2691,7 @@ export default [
               },
               {
                 id: 'setting',
-                name: '远程控制',
+                name: $t('data.baseMenu.633486-53'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2703,7 +2705,7 @@ export default [
               },
               {
                 id: 'password',
-                name: '重置密码',
+                name: $t('data.baseMenu.633486-54'),
                 permissions: [
                   {
                     permission: 'edge-operations',
@@ -2712,13 +2714,13 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "间接支持", value: "indirect" },
+            accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
             supportDataAccess: false,
             indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d']
           },
           {
             code: 'edge/Resource',
-            name: '资源库',
+            name: $t('data.baseMenu.633486-55'),
             owner: 'iot',
             id: '7f49fcece2b291aa595a0ace3ea43ca1',
             sortIndex: 2,
@@ -2734,7 +2736,7 @@ export default [
             buttons: [
               {
                 id: 'view',
-                name: '查看',
+                name: $t('data.baseMenu.633486-2'),
                 permissions: [
                   {
                     permission: 'entity-template',
@@ -2744,7 +2746,7 @@ export default [
               },
               {
                 id: 'action',
-                name: '启/禁用',
+                name: $t('data.baseMenu.633486-21'),
                 permissions: [
                   {
                     permission: 'entity-template',
@@ -2754,7 +2756,7 @@ export default [
               },
               {
                 id: 'delete',
-                name: '删除',
+                name: $t('data.baseMenu.633486-13'),
                 permissions: [
                   {
                     permission: 'entity-template',
@@ -2764,7 +2766,7 @@ export default [
               },
               {
                 id: 'update',
-                name: '编辑',
+                name: $t('data.baseMenu.633486-14'),
                 permissions: [
                   {
                     permission: 'entity-template',
@@ -2774,7 +2776,7 @@ export default [
               },
               {
                 id: 'setting',
-                name: '下发',
+                name: $t('data.baseMenu.633486-56'),
                 permissions: [
                   {
                     permission: 'device-instance',
@@ -2791,7 +2793,7 @@ export default [
                 ],
               },
             ],
-            accessSupport: { text: "不支持", value: "unsupported" },
+            accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
             supportDataAccess: false
           },
         ],
@@ -2802,7 +2804,7 @@ export default [
   // 视频中心
   {
     code: 'media',
-    name: '视频中心',
+    name: $t('data.baseMenu.633486-57'),
     owner: 'iot',
     id: 'a0ca3cb1035b1484e04344f85a688d71',
     url: '/media',
@@ -2813,7 +2815,7 @@ export default [
     children: [
       {
         code: 'media/Home',
-        name: '首页',
+        name: $t('data.baseMenu.633486-5'),
         owner: 'iot',
         //parentId: '2',
         id: 'a7693e3ccb4144fc66c4b6b7a716576b',
@@ -2823,12 +2825,12 @@ export default [
         permissions: [],
         buttons: [],
         showPage: ['media-device'],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'media/DashBoard',
-        name: '仪表盘',
+        name: $t('data.baseMenu.633486-19'),
         owner: 'iot',
         //parentId: '2',
         id: 'cc989fbfa0cd7f70f6a1154c89f2b9a4',
@@ -2843,12 +2845,12 @@ export default [
         ],
         buttons: [],
         showPage: ['media-device'],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'media/Device',
-        name: '视频设备',
+        name: $t('data.baseMenu.633486-58'),
         owner: 'iot',
         //parentId: '2',
         id: 'c4d640af0a00ce619a429e7d1c2d2bb8',
@@ -2893,7 +2895,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'media-device',
@@ -2903,7 +2905,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'media-device',
@@ -2913,7 +2915,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'file',
@@ -2943,7 +2945,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             description: '',
             permissions: [
               {
@@ -2965,13 +2967,13 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
         supportDataAccess: false,
         indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d']
       },
       {
         code: 'media/SplitScreen',
-        name: '分屏展示',
+        name: $t('data.baseMenu.633486-59'),
         owner: 'iot',
         //parentId: '2',
         id: '33ad7bae1dcb991bfe434d62fb2c72ba',
@@ -2992,7 +2994,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             description: '',
             permissions: [
               {
@@ -3002,13 +3004,13 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
         supportDataAccess: false,
         indirectMenus: ['c4d640af0a00ce619a429e7d1c2d2bb8']
       },
       {
         code: 'media/Cascade',
-        name: '国标级联',
+        name: $t('data.baseMenu.633486-60'),
         owner: 'iot',
         //parentId: '2',
         id: '1e00baa93418f820671f24ed45db59ae',
@@ -3025,7 +3027,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'gb28181-cascade',
@@ -3035,7 +3037,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'gb28181-cascade',
@@ -3045,7 +3047,7 @@ export default [
           },
           {
             id: 'push',
-            name: '推送',
+            name: $t('data.baseMenu.633486-61'),
             permissions: [
               {
                 permission: 'media-channel',
@@ -3059,7 +3061,7 @@ export default [
           },
           {
             id: 'channel',
-            name: '选择通道',
+            name: $t('data.baseMenu.633486-62'),
             permissions: [
               {
                 permission: 'media-device',
@@ -3077,7 +3079,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'gb28181-cascade',
@@ -3091,7 +3093,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'gb28181-cascade',
@@ -3105,7 +3107,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'gb28181-cascade',
@@ -3114,7 +3116,7 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'gbCascade'
       },
@@ -3126,7 +3128,7 @@ export default [
     sortIndex: 3,
     level: 1,
     owner: 'iot',
-    name: '物联卡',
+    name: $t('data.baseMenu.633486-63'),
     code: 'iot-card',
     url: '/iot-card',
     icon: 'icon-wulianka',
@@ -3138,7 +3140,7 @@ export default [
         level: 1,
         id: '899d4880929c3a8fc02068351f55316b',
         owner: 'iot',
-        name: '首页',
+        name: $t('data.baseMenu.633486-5'),
         code: 'iot-card/Home',
         url: '/iot-card/Home',
         icon: 'icon-zhihuishequ',
@@ -3154,7 +3156,7 @@ export default [
             actions: ['query'],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
         supportDataAccess: false,
         indirectMenus: ['1deaa9efc0fc37a8e8e81fa9d6540bc3']
       },
@@ -3164,13 +3166,13 @@ export default [
         level: 1,
         id: 'f2ea1793896fa5ecc816e975e07d4edb',
         owner: 'iot',
-        name: '仪表盘',
+        name: $t('data.baseMenu.633486-19'),
         code: 'iot-card/Dashboard',
         url: '/iot-card/Dashboard',
         icon: 'icon-keshihua',
         showPage: ['network-flow'],
         permissions: [{ permission: 'network-flow', actions: ['query'] }],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
         supportDataAccess: false,
         indirectMenus: ['1deaa9efc0fc37a8e8e81fa9d6540bc3']
       },
@@ -3180,7 +3182,7 @@ export default [
         level: 2,
         id: '1deaa9efc0fc37a8e8e81fa9d6540bc3',
         owner: 'iot',
-        name: '物联卡管理',
+        name: $t('data.baseMenu.633486-64'),
         code: 'iot-card/CardManagement',
         url: '/iot-card/CardManagement',
         icon: 'icon-wuliankaguanli',
@@ -3203,7 +3205,7 @@ export default [
         buttons: [
           {
             id: 'sync',
-            name: '同步',
+            name: $t('data.baseMenu.633486-65'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3217,7 +3219,7 @@ export default [
           },
           {
             id: 'import',
-            name: '导入',
+            name: $t('data.baseMenu.633486-12'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3231,7 +3233,7 @@ export default [
           },
           {
             id: 'export',
-            name: '导出',
+            name: $t('data.baseMenu.633486-11'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3241,7 +3243,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3255,7 +3257,7 @@ export default [
           },
           {
             id: 'active',
-            name: '激活',
+            name: $t('data.baseMenu.633486-66'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3269,7 +3271,7 @@ export default [
           },
           {
             id: 'bind',
-            name: '绑定',
+            name: $t('data.baseMenu.633486-67'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3287,7 +3289,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3301,7 +3303,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3315,7 +3317,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3329,7 +3331,7 @@ export default [
           },
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'IotCard-management',
@@ -3338,7 +3340,7 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'networkCard'
       },
@@ -3348,7 +3350,7 @@ export default [
         level: 2,
         id: 'e332ab7c3837fe08b86a6e4f16dd1dcc',
         owner: 'iot',
-        name: '充值管理',
+        name: $t('data.baseMenu.633486-68'),
         showPage: ['network-card'],
         code: 'iot-card/Recharge',
         url: '/iot-card/Recharge',
@@ -3363,7 +3365,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'network-card',
@@ -3373,7 +3375,7 @@ export default [
           },
           {
             id: 'pay',
-            name: '充值',
+            name: $t('data.baseMenu.633486-69'),
             permissions: [
               {
                 permission: 'network-card',
@@ -3386,7 +3388,7 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "间接支持", value: "indirect" },
+        accessSupport: { text: $t('data.baseMenu.633486-32'), value: "indirect" },
         supportDataAccess: false,
         indirectMenus: ['febd4c4b452ece6bb1d760c25b37b75f']
       },
@@ -3396,7 +3398,7 @@ export default [
         level: 2,
         id: 'febd4c4b452ece6bb1d760c25b37b75f',
         owner: 'iot',
-        name: '平台接入',
+        name: $t('data.baseMenu.633486-70'),
         code: 'iot-card/Platform',
         url: '/iot-card/Platform',
         icon: 'icon-pingtaiduijie',
@@ -3411,7 +3413,7 @@ export default [
         buttons: [
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'platform',
@@ -3421,7 +3423,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'platform',
@@ -3431,7 +3433,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'platform',
@@ -3441,7 +3443,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'platform',
@@ -3451,7 +3453,7 @@ export default [
           },
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'platform',
@@ -3460,7 +3462,7 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'networkCardPlatform'
       },
@@ -3470,7 +3472,7 @@ export default [
         level: 1,
         id: 'c4dfe00c4d7ecfd327eaeb278546502e',
         owner: 'iot',
-        name: '操作记录',
+        name: $t('data.baseMenu.633486-71'),
         code: 'iot-card/Record',
         url: '/iot-card/Record',
         icon: 'icon-tongzhijilu',
@@ -3482,7 +3484,7 @@ export default [
             actions: ['query'],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
     ],
@@ -3490,7 +3492,7 @@ export default [
   // 系统管理
   {
     code: 'system',
-    name: '系统管理',
+    name: $t('data.baseMenu.633486-72'),
     owner: 'iot',
     id: 'fd1670b860ae58cc58bcd01d027ccd35',
     url: '/system',
@@ -3501,7 +3503,7 @@ export default [
     children: [
       {
         code: 'system/Basis',
-        name: '基础配置',
+        name: $t('data.baseMenu.633486-39'),
         owner: 'iot',
         //parentId: '3',
         id: '96e4bd287adbe0486e2168c59450841f',
@@ -3513,7 +3515,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'system_config',
@@ -3523,7 +3525,7 @@ export default [
           },
           {
             id: 'update',
-            name: '保存',
+            name: $t('data.baseMenu.633486-40'),
             permissions: [
               {
                 permission: 'system_config',
@@ -3536,12 +3538,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/User',
-        name: '用户管理',
+        name: $t('data.baseMenu.633486-73'),
         owner: 'iot',
         //parentId: '3',
         id: 'fe2e557bcf09a5503cbb5bebeb0b7f1c',
@@ -3553,7 +3555,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'user',
@@ -3563,7 +3565,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'user',
@@ -3573,7 +3575,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'user',
@@ -3583,7 +3585,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'user',
@@ -3605,7 +3607,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'user',
@@ -3626,13 +3628,13 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'user'
       },
       {
         code: 'system/Department',
-        name: '组织管理',
+        name: $t('data.baseMenu.633486-74'),
         owner: 'iot',
         //parentId: '3',
         id: '3962ec0835f3b4a68c1f63b955625046',
@@ -3644,7 +3646,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'organization',
@@ -3670,7 +3672,7 @@ export default [
           },
           {
             id: 'bind',
-            name: '资产解绑',
+            name: $t('data.baseMenu.633486-75'),
             permissions: [
               {
                 permission: 'assets-bind',
@@ -3696,7 +3698,7 @@ export default [
           },
           {
             id: 'bind-user',
-            name: '绑定用户',
+            name: $t('data.baseMenu.633486-76'),
             permissions: [
               {
                 permission: 'organization',
@@ -3722,7 +3724,7 @@ export default [
           },
           {
             id: 'assert',
-            name: '资产分配',
+            name: $t('data.baseMenu.633486-77'),
             permissions: [
               {
                 permission: 'user',
@@ -3748,7 +3750,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'organization',
@@ -3774,7 +3776,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'organization',
@@ -3800,7 +3802,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'organization',
@@ -3825,13 +3827,13 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'organization'
       },
       {
         code: 'system/Role',
-        name: '角色管理',
+        name: $t('data.baseMenu.633486-78'),
         owner: 'iot',
         //parentId: '3',
         id: '9d1e96f17649ef5e7b8e7c6bb8e7b775',
@@ -3848,7 +3850,7 @@ export default [
         buttons: [
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'role',
@@ -3858,7 +3860,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'user',
@@ -3876,7 +3878,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'user',
@@ -3894,7 +3896,7 @@ export default [
           },
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'role',
@@ -3908,7 +3910,7 @@ export default [
           },
           {
             id: 'groupUpdate',
-            name: '角色组编辑',
+            name: $t('data.baseMenu.633486-79'),
             permissions: [
               {
                 permission: 'role-group',
@@ -3918,7 +3920,7 @@ export default [
           },
           {
             id: 'groupDelete',
-            name: '角色组删除',
+            name: $t('data.baseMenu.633486-80'),
             permissions: [
               {
                 permission: 'role-group',
@@ -3927,13 +3929,13 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'role'
       },
       {
         code: 'system/Menu',
-        name: '菜单管理',
+        name: $t('data.baseMenu.633486-81'),
         owner: 'iot',
         //parentId: '3',
         id: 'dcb6fa15da2eae8a4fdb71755edbc2bb',
@@ -3945,7 +3947,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'menu',
@@ -3959,7 +3961,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'assets-bind',
@@ -3981,7 +3983,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'menu',
@@ -3991,7 +3993,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'assets-bind',
@@ -4012,12 +4014,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/Permission',
-        name: '权限管理',
+        name: $t('data.baseMenu.633486-82'),
         owner: 'iot',
         //parentId: '3',
         id: 'da14fad88888dc13024e8261ff8fc2b5',
@@ -4029,7 +4031,7 @@ export default [
         buttons: [
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'permission',
@@ -4039,7 +4041,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'permission',
@@ -4049,7 +4051,7 @@ export default [
           },
           {
             id: 'export',
-            name: '导出',
+            name: $t('data.baseMenu.633486-11'),
             permissions: [
               {
                 permission: 'permission',
@@ -4059,7 +4061,7 @@ export default [
           },
           {
             id: 'import',
-            name: '导入',
+            name: $t('data.baseMenu.633486-12'),
             permissions: [
               {
                 permission: 'file',
@@ -4073,7 +4075,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'permission',
@@ -4083,7 +4085,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'permission',
@@ -4093,7 +4095,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'permission',
@@ -4102,12 +4104,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/Relationship',
-        name: '关系配置',
+        name: $t('data.baseMenu.633486-83'),
         owner: 'iot',
         //parentId: '3',
         id: '2fa02b8758fe82a6b9666f4ebb1bbd03',
@@ -4119,7 +4121,7 @@ export default [
         buttons: [
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'relation',
@@ -4129,7 +4131,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'relation',
@@ -4139,7 +4141,7 @@ export default [
           },
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'relation',
@@ -4149,7 +4151,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'relation',
@@ -4158,12 +4160,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/DataSource',
-        name: '数据源管理',
+        name: $t('data.baseMenu.633486-84'),
         owner: 'iot',
         //parentId: '3',
         id: 'c62a6bd5018763dae9fc0d869b6df3a2',
@@ -4175,7 +4177,7 @@ export default [
         buttons: [
           {
             id: 'manage',
-            name: '管理',
+            name: $t('data.baseMenu.633486-85'),
             permissions: [
               {
                 permission: 'datasource-config',
@@ -4191,7 +4193,7 @@ export default [
           },
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'datasource-config',
@@ -4201,7 +4203,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启用/禁用',
+            name: $t('data.baseMenu.633486-47'),
             permissions: [
               {
                 permission: 'datasource-config',
@@ -4211,7 +4213,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'datasource-config',
@@ -4227,7 +4229,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'datasource-config',
@@ -4242,13 +4244,13 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "支持", value: "support" },
+        accessSupport: { text: $t('data.baseMenu.633486-16'), value: "support" },
         supportDataAccess: true,
         assetType: 'datasource'
       },
       {
         code: 'system/Platforms/Setting',
-        name: 'API配置',
+        name: $t('data.baseMenu.633486-86'),
         owner: 'iot',
         //parentId: '3',
         id: '8750142230773cde42a4e28efa7f84d5',
@@ -4269,7 +4271,7 @@ export default [
         buttons: [
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'open-api',
@@ -4283,7 +4285,7 @@ export default [
           },
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'open-api',
@@ -4292,12 +4294,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/Apply',
-        name: '应用管理',
+        name: $t('data.baseMenu.633486-87'),
         owner: 'iot',
         //parentId: '3',
         id: 'e0640f9621c21078cad62d5646a5579d',
@@ -4309,7 +4311,7 @@ export default [
         buttons: [
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'application',
@@ -4319,7 +4321,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'role',
@@ -4341,7 +4343,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'role',
@@ -4363,7 +4365,7 @@ export default [
           },
           {
             id: 'view',
-            name: '查看',
+            name: $t('data.baseMenu.633486-2'),
             permissions: [
               {
                 permission: 'application',
@@ -4377,7 +4379,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'application',
@@ -4386,12 +4388,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/NoticeRule',
-        name: '订阅管理',
+        name: $t('data.baseMenu.633486-88'),
         owner: 'iot',
         id: '522f790d4422a608d491bc9e2fa12b4e',
         sortIndex: 11,
@@ -4402,7 +4404,7 @@ export default [
         buttons: [
           {
             id: 'delete',
-            name: '删除',
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: 'role',
@@ -4424,7 +4426,7 @@ export default [
           },
           {
             id: 'add',
-            name: '新增',
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: 'role',
@@ -4446,7 +4448,7 @@ export default [
           },
           {
             id: 'update',
-            name: '编辑',
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: 'role',
@@ -4468,7 +4470,7 @@ export default [
           },
           {
             id: 'action',
-            name: '启/禁用',
+            name: $t('data.baseMenu.633486-21'),
             permissions: [
               {
                 permission: 'role',
@@ -4489,12 +4491,12 @@ export default [
             ],
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/Dictionary',
-        name: '数据字典',
+        name: $t('data.baseMenu.633486-89'),
         owner: 'iot',
         id: 'b69782873cc24be8165c6ad292359092',
         sortIndex: 12,
@@ -4505,7 +4507,7 @@ export default [
         buttons: [
           {
             id: "add",
-            name: "新增",
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: "dictionary",
@@ -4517,7 +4519,7 @@ export default [
           },
           {
             id: "delete",
-            name: "删除",
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: "dictionary",
@@ -4529,7 +4531,7 @@ export default [
           },
           {
             id: "update",
-            name: "编辑",
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: "dictionary",
@@ -4541,7 +4543,7 @@ export default [
           },
           {
             id: "import",
-            name: "导入",
+            name: $t('data.baseMenu.633486-12'),
             permissions: [
               {
                 permission: "dictionary",
@@ -4553,7 +4555,7 @@ export default [
           },
           {
             id: "down",
-            name: "下载",
+            name: $t('data.baseMenu.633486-90'),
             permissions: [
               {
                 permission: "dictionary",
@@ -4565,7 +4567,7 @@ export default [
           },
           {
             id: "action",
-            name: "启用/禁用",
+            name: $t('data.baseMenu.633486-47'),
             permissions: [
               {
                 permission: "dictionary",
@@ -4576,12 +4578,12 @@ export default [
             ]
           }
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/Region',
-        name: '地区管理',
+        name: $t('data.baseMenu.633486-91'),
         owner: 'iot',
         id: 'b69782873cc24be8165c6ad29233333',
         sortIndex: 13,
@@ -4592,7 +4594,7 @@ export default [
         buttons: [
           {
             id: "add",
-            name: "新增",
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: "area",
@@ -4604,7 +4606,7 @@ export default [
           },
           {
             id: "delete",
-            name: "删除",
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: "area",
@@ -4616,7 +4618,7 @@ export default [
           },
           {
             id: "update",
-            name: "编辑",
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: "area",
@@ -4627,12 +4629,12 @@ export default [
             ]
           },
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
       {
         code: 'system/Calendar',
-        name: '日历维护',
+        name: $t('data.baseMenu.633486-92'),
         owner: 'iot',
         id: '9d03fb403f3edb4ceb796dd81167562f',
         showPage: ["calendar-manager"],
@@ -4650,7 +4652,7 @@ export default [
         buttons: [
           {
             id: "add",
-            name: "新增",
+            name: $t('data.baseMenu.633486-15'),
             permissions: [
               {
                 permission: "calendar-manager",
@@ -4662,7 +4664,7 @@ export default [
           },
           {
             id: "update",
-            name: "编辑",
+            name: $t('data.baseMenu.633486-14'),
             permissions: [
               {
                 permission: "calendar-manager",
@@ -4674,7 +4676,7 @@ export default [
           },
           {
             id: "delete",
-            name: "删除",
+            name: $t('data.baseMenu.633486-13'),
             permissions: [
               {
                 permission: "calendar-manager",
@@ -4685,7 +4687,7 @@ export default [
             ]
           }
         ],
-        accessSupport: { text: "不支持", value: "unsupported" },
+        accessSupport: { text: $t('data.baseMenu.633486-0'), value: "unsupported" },
         supportDataAccess: false
       },
     ],
@@ -4706,7 +4708,7 @@ export default [
       isShow: false,
     },
     "accessSupport": {
-      "text": "不支持",
+      "text": $t('data.baseMenu.633486-0'),
       "value": "unsupported"
     },
     "indirectMenus": [],
@@ -4733,7 +4735,7 @@ export default [
     "sortIndex": 6,
     "level": 1,
     "owner": "iot",
-    "name": "流程引擎",
+    "name": $t('data.baseMenu.633486-93'),
     "code": "process",
     "url": "/workflow",
     "icon": "MenuUnfoldOutlined",
@@ -4767,7 +4769,7 @@ export default [
       }
     ],
     "accessSupport": {
-      "text": "不支持",
+      "text": $t('data.baseMenu.633486-0'),
       "value": "unsupported"
     },
     "indirectMenus": [],
@@ -4797,7 +4799,7 @@ export default [
       //     },
       //   ],
       //   "accessSupport": {
-      //     "text": "不支持",
+      //     "text": $t('data.baseMenu.633486-0'),
       //     "value": "unsupported"
       //   },
       //   "indirectMenus": [],
@@ -4813,7 +4815,7 @@ export default [
         "path": "3nkE-n7lJ",
         "sortIndex": 2,
         "level": 2,
-        "name": "表单",
+        "name": $t('data.baseMenu.633486-94'),
         "code": "process/form",
         "describe": "",
         "owner": "iot",
@@ -4919,14 +4921,14 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
         "buttons": [
           {
             "id": "add",
-            "name": "新增",
+            "name": $t('data.baseMenu.633486-15'),
             "permissions": [
               {
                 "permission": "process-form",
@@ -4938,7 +4940,7 @@ export default [
           },
           {
             "id": "save",
-            "name": "保存",
+            "name": $t('data.baseMenu.633486-40'),
             "permissions": [
               {
                 "permission": "process-form",
@@ -4950,7 +4952,7 @@ export default [
           },
           {
             "id": "update",
-            "name": "编辑",
+            "name": $t('data.baseMenu.633486-14'),
             "permissions": [
               {
                 "permission": "process-form",
@@ -4962,7 +4964,7 @@ export default [
           },
           {
             "id": "delete",
-            "name": "删除",
+            "name": $t('data.baseMenu.633486-13'),
             "permissions": [
               {
                 "permission": "process-form",
@@ -4984,7 +4986,7 @@ export default [
         "path": "3nkE-ysKb",
         "sortIndex": 3,
         "level": 2,
-        "name": "流程模型",
+        "name": $t('data.baseMenu.633486-95'),
         "code": "process/model",
         "describe": "",
         "owner": "iot",
@@ -5090,14 +5092,14 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
         "buttons": [
           {
             "id": "add",
-            "name": "新增",
+            "name": $t('data.baseMenu.633486-15'),
             "permissions": [
               {
                 "permission": "process-definition",
@@ -5109,7 +5111,7 @@ export default [
           },
           {
             "id": "delete",
-            "name": "删除",
+            "name": $t('data.baseMenu.633486-13'),
             "permissions": [
               {
                 "permission": "process-definition",
@@ -5121,7 +5123,7 @@ export default [
           },
           {
             "id": "update",
-            "name": "编辑",
+            "name": $t('data.baseMenu.633486-14'),
             "permissions": [
               {
                 "permission": "process-definition",
@@ -5133,7 +5135,7 @@ export default [
           },
           {
             "id": "save",
-            "name": "保存",
+            "name": $t('data.baseMenu.633486-40'),
             "permissions": [
               {
                 "permission": "process-definition",
@@ -5145,7 +5147,7 @@ export default [
           },
           {
             "id": "deploy",
-            "name": "部署",
+            "name": $t('data.baseMenu.633486-96'),
             "permissions": [
               {
                 "permission": "process-definition",
@@ -5167,7 +5169,7 @@ export default [
         "path": "3nkE-fJkR",
         "sortIndex": 4,
         "level": 2,
-        "name": "流程实例",
+        "name": $t('data.baseMenu.633486-97'),
         "code": "process/instance",
         "describe": "",
         "owner": "iot",
@@ -5274,14 +5276,14 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
         "buttons": [
           {
             "id": "action",
-            "name": "启/禁用",
+            "name": $t('data.baseMenu.633486-21'),
             "permissions": [
               {
                 "permission": "process-deployment",
@@ -5293,7 +5295,7 @@ export default [
           },
           {
             "id": "auth",
-            "name": "权限控制",
+            "name": $t('data.baseMenu.633486-98'),
             "permissions": [
               {
                 "permission": "process-deployment",
@@ -5305,7 +5307,7 @@ export default [
           },
           {
             "id": "delete",
-            "name": "删除",
+            "name": $t('data.baseMenu.633486-13'),
             "permissions": [
               {
                 "permission": "process-deployment",
@@ -5327,7 +5329,7 @@ export default [
         "path": "3nkE-i2nG",
         "sortIndex": 5,
         "level": 2,
-        "name": "发起流程",
+        "name": $t('data.baseMenu.633486-99'),
         "code": "process/initiate",
         "describe": "",
         "owner": "iot",
@@ -5461,7 +5463,7 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
@@ -5476,7 +5478,7 @@ export default [
         "path": "3nkE-4T1D",
         "sortIndex": 6,
         "level": 2,
-        "name": "待办事项",
+        "name": $t('data.baseMenu.633486-100'),
         "code": "process/me/todo",
         "describe": "",
         "owner": "iot",
@@ -5610,7 +5612,7 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
@@ -5625,7 +5627,7 @@ export default [
         "path": "3nkE-RXP3",
         "sortIndex": 7,
         "level": 2,
-        "name": "已办事项",
+        "name": $t('data.baseMenu.633486-101'),
         "code": "process/me/finished",
         "describe": "",
         "owner": "iot",
@@ -5759,7 +5761,7 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
@@ -5774,7 +5776,7 @@ export default [
         "path": "3nkE-ibau",
         "sortIndex": 8,
         "level": 2,
-        "name": "我发起的",
+        "name": $t('data.baseMenu.633486-102'),
         "code": "process/me/initiate",
         "describe": "",
         "owner": "iot",
@@ -5908,7 +5910,7 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],
@@ -5923,7 +5925,7 @@ export default [
         "path": "3nkE-vCQb",
         "sortIndex": 9,
         "level": 2,
-        "name": "抄送给我",
+        "name": $t('data.baseMenu.633486-103'),
         "code": "process/me/cc",
         "describe": "",
         "owner": "iot",
@@ -6058,7 +6060,7 @@ export default [
           }
         ],
         "accessSupport": {
-          "text": "不支持",
+          "text": $t('data.baseMenu.633486-0'),
           "value": "unsupported"
         },
         "indirectMenus": [],

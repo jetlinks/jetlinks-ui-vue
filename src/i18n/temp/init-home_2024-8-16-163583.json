@@ -1,0 +1,28 @@
+{
+	"zh": {
+		"init-home.index.633470-0": "系统初始化",
+		"init-home.index.633470-1": "基本信息",
+		"init-home.index.633470-2": "配置平台名称、登录背景图、主题色等基本信息",
+		"init-home.index.633470-3": "菜单初始化",
+		"init-home.index.633470-4": "初始化菜单数据",
+		"init-home.index.633470-5": "角色初始化",
+		"init-home.index.633470-6": "初始化内置角色与权限数据",
+		"init-home.index.633470-7": "初始化数据",
+		"init-home.index.633470-8": "初始化设备接入示例数据",
+		"init-home.index.633470-9": "确定",
+		"init-home.index.633470-10": "保存成功"
+	},
+	"en": {
+		"init-home.index.633470-0": "System initialization",
+		"init-home.index.633470-1": "Basic information",
+		"init-home.index.633470-2": "Configure basic information such as platform name, login background image, theme color, etc",
+		"init-home.index.633470-3": "Menu initialization",
+		"init-home.index.633470-4": "Initialize menu data",
+		"init-home.index.633470-5": "Role initialization",
+		"init-home.index.633470-6": "Initialize built-in roles and permission data",
+		"init-home.index.633470-7": "Initialize data",
+		"init-home.index.633470-8": "Initialize device access example data",
+		"init-home.index.633470-9": "Confirm",
+		"init-home.index.633470-10": "Saved successfully"
+	}
+}

@@ -2,7 +2,7 @@
 <template>
     <div class="page-container">
         <div class="container-text">
-            <div class="container-title">系统初始化</div>
+            <div class="container-title">{{ $t('init-home.index.633470-0') }}</div>
         </div>
         <div class="container-box">
             <div class="container-main">
@@ -11,36 +11,36 @@
                         <j-collapse v-model:activeKey="activeKey" accordion>
                             <j-collapse-panel key="1">
                                 <template #header>
-                                    <span class="title">基本信息</span>
+                                    <span class="title">{{ $t('init-home.index.633470-1') }}</span>
                                     <span class="sub-title"
-                                        >配置平台名称、登录背景图、主题色等基本信息</span
+                                        >{{ $t('init-home.index.633470-2') }}</span
                                     >
                                 </template>
                                 <Basic ref="basicRef" />
                             </j-collapse-panel>
                             <j-collapse-panel key="2" forceRender>
                                 <template #header>
-                                    <span class="title">菜单初始化</span>
+                                    <span class="title">{{ $t('init-home.index.633470-3') }}</span>
                                     <span class="sub-title"
-                                        >初始化菜单数据</span
+                                        >{{ $t('init-home.index.633470-4') }}</span
                                     >
                                 </template>
                                 <Menu ref="menuRef"></Menu>
                             </j-collapse-panel>
                             <j-collapse-panel key="3" forceRender>
                                 <template #header>
-                                    <span class="title">角色初始化</span>
+                                    <span class="title">{{ $t('init-home.index.633470-5') }}</span>
                                     <span class="sub-title"
-                                        >初始化内置角色与权限数据</span
+                                        >{{ $t('init-home.index.633470-6') }}</span
                                     >
                                 </template>
                                 <Role ref="roleRef"></Role>
                             </j-collapse-panel>
                             <j-collapse-panel key="4" forceRender>
                                 <template #header>
-                                    <span class="title">初始化数据</span>
+                                    <span class="title">{{ $t('init-home.index.633470-7') }}</span>
                                     <span class="sub-title"
-                                        >初始化设备接入示例数据</span
+                                        >{{ $t('init-home.index.633470-8') }}</span
                                     >
                                 </template>
                                 <InitData ref="initDataRef"></InitData>
@@ -52,7 +52,7 @@
                         class="btn-style"
                         @click="submitData"
                         :loading="loading"
-                        >确定</j-button
+                        >{{ $t('init-home.index.633470-9') }}</j-button
                     >
                 </div>
             </div>
@@ -69,6 +69,9 @@ import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
 import { FILE_UPLOAD } from '@/api/comm';
 import { onlyMessage } from '@/utils/comm';
 import { useUserInfo } from '@/store/userInfo';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const basicRef = ref();
 const roleRef = ref();
 const initDataRef = ref();
@@ -125,7 +128,7 @@ const submitData = async () => {
     loading.value = false;
     // 当前数据是否成功提交
     if (basicRes && menuRes && roleRes && roleGroupRes && initDataRes) {
-        onlyMessage('保存成功');
+        onlyMessage($t('init-home.index.633470-10'));
         //     // 记录初始化数据，跳转首页
         const res = await saveInit();
         if (res.status === 200) {

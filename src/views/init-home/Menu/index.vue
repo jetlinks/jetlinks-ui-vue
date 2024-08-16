@@ -4,8 +4,8 @@
             <img :src="getImage('/init-home/menu.png')" />
         </div>
         <div class="menu-info">
-            <b>系统初始化{{ count }}个菜单</b>
-            <div>初始化后的菜单可在“菜单管理”页面进行维护管理</div>
+            <b>{{ $t('Menu.index.633483-0',[count]) }}</b>
+            <div>{{ $t('Menu.index.633483-1') }}</div>
         </div>
     </div>
 </template>
@@ -19,6 +19,9 @@ import { getProviders } from '@/api/data-collect/channel';
 import {
   systemVersion,
 } from '@/api/login'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 /**
  * 获取菜单数据

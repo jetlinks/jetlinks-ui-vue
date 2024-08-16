@@ -1,0 +1,42 @@
+{
+	"zh": {
+		"Role.index.633482-0": "平台角色内置分组",
+		"Role.index.633482-1": "取消选中",
+		"Role.index.633482-2": "选中",
+		"Role.index.633482-3": "编辑",
+		"Role.index.633482-4": "+ 自定义分组",
+		"Role.index.633482-5": "设备接入岗",
+		"Role.index.633482-6": "该角色负责设备接入模块的维护管理",
+		"Role.index.633482-7": "运维管理岗",
+		"Role.index.633482-8": "该角色负责系统运维模块的维护管理",
+		"Role.index.633482-9": "综合管理岗",
+		"Role.index.633482-10": "该角色负责系统运维和设备接入模块的维护管理",
+		"Role.index.633482-11": "自定义分组",
+		"Role.index.633482-12": "名称",
+		"Role.index.633482-13": "请输入名称",
+		"Role.index.633482-14": "最多可输入64个字符",
+		"Role.index.633482-15": "默认",
+		"Role.index.633482-16": "岗位",
+		"Role.index.633482-17": "职位"
+	},
+	"en": {
+		"Role.index.633482-0": "Platform role built-in grouping",
+		"Role.index.633482-1": "Uncheck",
+		"Role.index.633482-2": "Select",
+		"Role.index.633482-3": "Edit",
+		"Role.index.633482-4": "+Custom grouping",
+		"Role.index.633482-5": "Equipment access post",
+		"Role.index.633482-6": "This role is responsible for the maintenance and management of the device access module",
+		"Role.index.633482-7": "Operation and Maintenance Management Post",
+		"Role.index.633482-8": "This role is responsible for the maintenance and management of the system operation and maintenance module",
+		"Role.index.633482-9": "Comprehensive management position",
+		"Role.index.633482-10": "This role is responsible for system operation and maintenance, as well as maintenance and management of equipment access modules",
+		"Role.index.633482-11": "Custom grouping",
+		"Role.index.633482-12": "Name",
+		"Role.index.633482-13": "Please enter a name",
+		"Role.index.633482-14": "Up to 64 characters can be entered",
+		"Role.index.633482-15": "Default",
+		"Role.index.633482-16": "Post",
+		"Role.index.633482-17": "Position"
+	}
+}
