@@ -83,7 +83,7 @@ const props = defineProps({
     type: [Object, Boolean],
     default: () => ({
       width: 66,
-      title: $t('Table.Table.4348545-0')
+      title: '序号'
     })
   },
   validateRowKey: {
