@@ -20,6 +20,10 @@
         </template>
         <template #rightContentRender>
             <div class="right-content">
+                <a-select  v-model:value="locale" style="width: 100px;margin-right: 12px" @change="changeLocale">
+                  <a-select-option value="zh-CN">简体中文</a-select-option>
+                  <a-select-option value="en-US">English</a-select-option>
+                </a-select>
                 <AIcon type="QuestionCircleOutlined" @click="toDoc" />
                 <Notice style="margin: 0 24px" />
                 <UserInfo />
@@ -43,6 +47,7 @@ import { AccountMenu } from '@/router/menu'
 import { useSystem } from '@/store/system';
 import { storeToRefs } from 'pinia';
 import { useSlots } from 'vue'
+import {useI18n} from 'vue-i18n'
 
 type StateType = {
     collapsed: boolean;
@@ -55,7 +60,7 @@ const router = useRouter();
 const route = useRoute();
 
 const menu = useMenuStore();
-
+const {locale} = useI18n()
 const system = useSystem();
 const {configInfo,layout, basicLayout} = storeToRefs(system);
 const slots = useSlots()
@@ -122,6 +127,11 @@ watchEffect(() => {
     basicLayout.value.pure = true
   }
 })
+
+const changeLocale = ()=>{
+  localStorage.setItem('locale',locale.value)
+  location.reload()
+}
 
 const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');
 </script>
