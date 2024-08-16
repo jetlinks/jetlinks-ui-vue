@@ -1,9 +1,9 @@
 <template>
   <a-form-item
-    label="文件类型"
+    :label="$t('File.Type.4348680-0')"
     required
     :name="name"
-    :rules="[{ required: true, message: '请选择文件类型' }]"
+    :rules="[{ required: true, message: $t('File.Type.4348680-1') }]"
   >
     <j-check-button
       v-model:value="myValue"
@@ -20,6 +20,9 @@
 
 <script setup name="MetadataFileType">
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 
 const props = defineProps({

@@ -9,31 +9,31 @@
         <j-popover :visible="editIndex === index" placement="left" @visible-change="change" trigger="click">
           <template #title>
             <div class="edit-title" style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="width: 150px;">配置参数</div>
+              <div style="width: 150px;">{{ $t('MetricsParam.index.4348662-0') }}</div>
               <AIcon type="CloseOutlined" @click="handleClose" />
             </div>
           </template>
           <template #content>
             <div>
               <div class="ant-form-vertical">
-                <j-form-item label="标识" :name="name.concat([index, 'id'])" :rules="[
-                  { required: true, message: '请输入标识' },
-                  { max: 64, message: '最多可输入64个字符' },
+                <j-form-item :label="$t('MetricsParam.index.4348662-1')" :name="name.concat([index, 'id'])" :rules="[
+                  { required: true, message: $t('MetricsParam.index.4348662-2') },
+                  { max: 64, message: $t('MetricsParam.index.4348662-3') },
                   {
                     pattern: /^[a-zA-Z0-9_\-]+$/,
-                    message: '标识只能由数字、字母、下划线、中划线组成',
+                    message: $t('MetricsParam.index.4348662-4'),
                   },
                 ]">
-                  <j-input v-model:value="_value[index].id" size="small" placeholder="请输入标识"></j-input>
+                  <j-input v-model:value="_value[index].id" size="small" :placeholder="$t('MetricsParam.index.4348662-2')"></j-input>
                 </j-form-item>
-                <j-form-item label="名称" :name="name.concat([index, 'name'])" :rules="[
-                  { required: true, message: '请输入名称' },
-                  { max: 64, message: '最多可输入64个字符' },
+                <j-form-item :label="$t('MetricsParam.index.4348662-5')" :name="name.concat([index, 'name'])" :rules="[
+                  { required: true, message: $t('MetricsParam.index.4348662-6') },
+                  { max: 64, message: $t('MetricsParam.index.4348662-3') },
                 ]">
-                  <j-input v-model:value="_value[index].name" size="small" placeholder="请输入名称"></j-input>
+                  <j-input v-model:value="_value[index].name" size="small" :placeholder="$t('MetricsParam.index.4348662-6')"></j-input>
                 </j-form-item>
-                <j-form-item label="指标值" :name="name.concat([index, 'value'])" :rules="[
-                  { required: true, validator: () => validateIndicator(_value[index]), message: '请输入指标值' }
+                <j-form-item :label="$t('MetricsParam.index.4348662-7')" :name="name.concat([index, 'value'])" :rules="[
+                  { required: true, validator: () => validateIndicator(_value[index]), message: $t('MetricsParam.index.4348662-8') }
                 ]">
                   <JIndicators v-model:value="_value[index]" :type="type" size="small" :enum="enum" />
                 </j-form-item>
@@ -41,7 +41,7 @@
             </div>
           </template>
           <div class="item-edit" @click="handleEdit(index)">
-            <Ellipsis>{{ item.name || '配置参数' }}</Ellipsis>
+            <Ellipsis>{{ item.name || $t('MetricsParam.index.4348662-0') }}</Ellipsis>
             <AIcon type="EditOutlined" class="item-icon" />
           </div>
         </j-popover>
@@ -54,13 +54,16 @@
       <template #icon>
         <AIcon type="PlusOutlined" class="item-icon" />
       </template>
-      添加指标
+      {{ $t('MetricsParam.index.4348662-9') }}
     </j-button>
   </div>
 </template>
 <script setup lang="ts" name="MetricsParam">
 import { PropType } from 'vue'
 import JIndicators from '@/components/JIndicators/index.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 interface Emits {
   (e: 'update:value', data: Record<any, any>[]): void;
@@ -115,11 +118,11 @@ const handleAdd = () => {
 const validateIndicator = (value: any) => {
   if (value?.range) {
     if (!value?.value || (!value?.value[0] && value?.value[0] !== 0) || (!value?.value[1] && value?.value[1] !== 0)) {
-      return Promise.reject(new Error('请输入指标值'));
+      return Promise.reject(new Error($t('MetricsParam.index.4348662-8')));
     }
   } else {
     if (!value?.value && value?.value !== 0) {
-      return Promise.reject(new Error('请输入指标值'));
+      return Promise.reject(new Error($t('MetricsParam.index.4348662-8')));
     }
   }
   return Promise.resolve();

@@ -34,7 +34,7 @@
     </EditTable>
     <a-button class="enum-table-add" @click="addItem">
       <template #icon><AIcon type="PlusOutlined" /></template>
-      新增枚举项
+      {{ $t('Enum.ItemContent.4348658-0') }}
     </a-button>
   </div>
 </template>
@@ -43,6 +43,9 @@
 import EditTable from '../../Table.vue'
 import EditTableFormItem from '../../TableFormItem.vue'
 import { Form } from "ant-design-vue";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:value', 'change'])
 const props = defineProps({
@@ -62,13 +65,13 @@ const columns = [{
   dataIndex: 'value',
   form: {
     rules: [
-      { max: 64, message: '最多可输入64个字符' },
+      { max: 64, message: $t('Enum.ItemContent.4348658-1') },
       {
         asyncValidator: (rule, value, ...setting) => {
           const option = setting[2]
 
           if (!value) {
-            return Promise.reject('请输入Value值')
+            return Promise.reject($t('Enum.ItemContent.4348658-2'))
           }
 
           const isSome = dataSource.value.some((item) => {
@@ -76,7 +79,7 @@ const columns = [{
           })
 
           if (isSome) {
-            return Promise.reject('该Value值已存在')
+            return Promise.reject($t('Enum.ItemContent.4348658-3'))
           }
           return Promise.resolve();
         }
@@ -90,13 +93,13 @@ const columns = [{
     width: 150,
     form: {
       rules: [
-        { required: true, message: '请输入Text' },
-        { max: 64, message: '最多可输入64个字符' },
+        { required: true, message: $t('Enum.ItemContent.4348658-4') },
+        { max: 64, message: $t('Enum.ItemContent.4348658-1') },
       ]
     }
   },
   {
-    title: '操作',
+    title: $t('Enum.ItemContent.4348658-5'),
     dataIndex: 'action',
     width: 60,
   },

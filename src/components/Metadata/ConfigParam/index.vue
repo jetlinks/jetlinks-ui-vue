@@ -33,13 +33,16 @@
           </j-form-item>
         </div>
       </template>
-      {{ config.name || '存储配置' }}
+      {{ config.name || $t('ConfigParam.index.4348663-0') }}
       <AIcon type="EditOutlined" class="item-icon" />
     </j-popover>
   </j-button>
 </template>
 <script setup lang="ts" name="ConfigParam">
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type ValueType = Record<any, any>;
 const props = defineProps({

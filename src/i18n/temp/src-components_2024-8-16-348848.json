@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Form.rules.4348696-0": "最多输入{0}个字符",
+		"Form.rules.4348696-1": "输入",
+		"Form.rules.4348696-2": "选择",
+		"Form.rules.4348696-3": "请{0}{1}",
+		"Form.rules.4348696-4": "请输入英文或者数字或者-或者_",
+		"Form.rules.4348696-5": "最小仅输入-{0}",
+		"Form.rules.4348696-6": "最大可输入{0}"
+	},
+	"en": {
+		"Form.rules.4348696-0": "Maximum input of {0} characters",
+		"Form.rules.4348696-1": "input",
+		"Form.rules.4348696-2": "choice",
+		"Form.rules.4348696-3": "Please {0} {1}",
+		"Form.rules.4348696-4": "Please enter English or numbers or - or_",
+		"Form.rules.4348696-5": "Minimum input only - {0}",
+		"Form.rules.4348696-6": "Maximum allowable input {0}"
+	}
+}

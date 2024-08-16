@@ -19,12 +19,12 @@
 <!--          </template>-->
           <template #id="{ record, index }">
             <EditTableFormItem :name="[index, 'id']">
-              <a-input v-model:value="record.id" placeholder="请输入标识"/>
+              <a-input v-model:value="record.id" :placeholder="$t('Object.index.4348676-0')"/>
             </EditTableFormItem>
           </template>
           <template #name="{ record, index }">
             <EditTableFormItem :name="[index, 'name']">
-              <a-input v-model:value="record.name" placeholder="请输入名称"/>
+              <a-input v-model:value="record.name" :placeholder="$t('Object.index.4348676-1')"/>
             </EditTableFormItem>
           </template>
           <template #expands="{ record }">
@@ -61,7 +61,7 @@
         </EditTable>
         <a-button style="width: 100%;margin-top: 4px" @click="addItem">
           <template #icon><AIcon type="PlusOutlined" /></template>
-          新增
+          {{ $t('Object.index.4348676-2') }}
         </a-button>
       </div>
     </template>
@@ -80,6 +80,9 @@ import { PopoverModal } from '../index'
 import BooleanSelect from "../BooleanSelect/index.vue";
 import { EditTable, TypeSelect, EditTableFormItem, StringParams, DateParams, FileParams, EnumParams, BooleanParams, ObjectParams, ArrayParams, DoubleParams } from '@/components/Metadata/Table'
 import {Form} from "ant-design-vue";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {
@@ -111,7 +114,7 @@ const visible = ref(false)
 
 const defaultColumns = [
   {
-    title: '参数标识',
+    title: $t('Object.index.4348676-3'),
     dataIndex: 'id',
     form: {
       rules: [
@@ -125,41 +128,41 @@ const defaultColumns = [
               })
 
               if (isSome) {
-                return Promise.reject('该标识已存在')
+                return Promise.reject($t('Object.index.4348676-4'))
               }
               return Promise.resolve()
             }
-            return Promise.reject('请输入标识')
+            return Promise.reject($t('Object.index.4348676-0'))
           }
         },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Object.index.4348676-5') },
         {
           pattern: /^[a-zA-Z0-9_]+$/,
-          message: '标识只能由数字、字母、下划线组成',
+          message: $t('Object.index.4348676-6'),
         },
       ]
     }
   },
   {
-    title: '参数名称',
+    title: $t('Object.index.4348676-7'),
     dataIndex: 'name',
     form: {
       rules: [
         {
           required: true,
-          message: '请输入名称'
+          message: $t('Object.index.4348676-1')
         },
-        { max: 64, message: '最多可输入64个字符' },
+        { max: 64, message: $t('Object.index.4348676-5') },
       ]
     }
   },
   props.type === 'functions' ? {
-    title: '填写约束',
+    title: $t('Object.index.4348676-8'),
     dataIndex: 'expands',
     width: 120,
   } : null,
   {
-    title: '数据类型',
+    title: $t('Object.index.4348676-9'),
     dataIndex: 'valueType',
     width: 240,
     form: {
@@ -167,7 +170,7 @@ const defaultColumns = [
       rules: [{
         validator(_, value) {
           if (!value?.type) {
-            return Promise.reject('请选择数据类型')
+            return Promise.reject($t('Object.index.4348676-10'))
           }
           return Promise.resolve()
         }
@@ -182,7 +185,7 @@ const myColumns = computed(() => {
     ...defaultColumns.filter(item => !!item),
     {
       dataIndex: 'action',
-      title: '操作',
+      title: $t('Object.index.4348676-11'),
       width: 60,
     }
   ]

@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"components.ReadType.4348665-0": "读写类型",
+		"components.ReadType.4348665-1": "请选择读写类型"
+	},
+	"en": {
+		"components.ReadType.4348665-0": "Read and write type",
+		"components.ReadType.4348665-1": "Please select read-write type"
+	}
+}

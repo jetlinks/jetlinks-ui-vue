@@ -4,7 +4,7 @@
             <j-input-search
                 @search="search"
                 allow-clear
-                placeholder="搜索关键字"
+                :placeholder="$t('Operator.index.43487113-0')"
             />
             <div class="tree">
                 <j-scrollbar>
@@ -34,14 +34,14 @@
                                             zIndex: 1200,
                                         }"
                                         placement="right"
-                                        title="请选择使用值"
+                                        :title="$t('Operator.index.43487113-1')"
                                         :getPopupContainer="getPopupContainer"
                                     >
                                         <template #content>
                                             <j-space direction="vertical">
                                                 <j-tooltip
                                                     placement="right"
-                                                    title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值"
+                                                    :title="$t('Operator.index.43487113-2')"
                                                 >
                                                     <j-button
                                                         type="text"
@@ -49,23 +49,23 @@
                                                             recentClick(node)
                                                         "
                                                     >
-                                                        $recent实时值
+                                                        {{ $t('Operator.index.43487113-3') }}
                                                     </j-button>
                                                 </j-tooltip>
                                                 <j-tooltip
                                                     placement="right"
-                                                    title="实时值的上一有效值"
+                                                    :title="$t('Operator.index.43487113-4')"
                                                 >
                                                     <j-button
                                                         @click="lastClick(node)"
                                                         type="text"
                                                     >
-                                                        上一值
+                                                        {{ $t('Operator.index.43487113-5') }}
                                                     </j-button>
                                                 </j-tooltip>
                                             </j-space>
                                         </template>
-                                        <a class="has-property">添加</a>
+                                        <a class="has-property">{{ $t('Operator.index.43487113-6') }}</a>
                                     </j-popover>
                                     <j-popover
                                         v-else-if="node.type === 'tags'"
@@ -73,14 +73,14 @@
                                             zIndex: 1200,
                                         }"
                                         placement="right"
-                                        title="请选择使用值"
+                                        :title="$t('Operator.index.43487113-1')"
                                         :getPopupContainer="getPopupContainer"
                                     >
                                         <template #content>
                                             <j-space direction="vertical">
                                                 <j-tooltip
                                                     placement="right"
-                                                    title="实时值为空时获取上一有效值补齐，实时值不为空则使用实时值"
+                                                    :title="$t('Operator.index.43487113-2')"
                                                 >
                                                     <j-button
                                                         type="text"
@@ -88,19 +88,19 @@
                                                             recentTagsClick(node)
                                                         "
                                                     >
-                                                        tag实时值
+                                                        {{ $t('Operator.index.43487113-7') }}
                                                     </j-button>
                                                 </j-tooltip>
                                             </j-space>
                                         </template>
-                                        <a class="has-property">添加</a>
+                                        <a class="has-property">{{ $t('Operator.index.43487113-6') }}</a>
                                     </j-popover>
                                     <a
                                         class="no-property"
                                         v-else
                                         @click.stop="addClick(node)"
                                     >
-                                        添加
+                                        {{ $t('Operator.index.43487113-6') }}
                                     </a>
                                 </div>
                             </div>
@@ -123,6 +123,9 @@ import { getOperator } from '@/api/device/product';
 import { inject } from 'vue';
 import {useTableWrapper, useTableFullScreen} from "@/components/Metadata/Table/context";
 import Markdown from '@/components/Markdown'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
     id: String,
@@ -177,31 +180,31 @@ const getData = async (id?: string) => {
     const _properties = props.propertiesOptions as PropertyMetadata[];
     const properties = {
         id: 'property',
-        name: '属性',
+        name: $t('Operator.index.43487113-8'),
         description: '',
         code: '',
         isLeaf: false,
         children: _properties
             .filter((p: PropertyMetadata) => p.id !== id)
             .map((p: PropertyMetadata) => {
-              const readOnly = p.expands.type.length === 1 && p.expands.type[0] === 'read' ? '是' : '否'
+              const readOnly = p.expands.type.length === 1 && p.expands.type[0] === 'read' ? $t('Operator.index.43487113-9') : $t('Operator.index.43487113-10')
 
               return {
                 id: p.id,
                 name: p.name,
                 isLeaf: true,
                 description: `### ${p.name}
-                \n 标识: ${p.id}
-                \n 数据类型: ${p.valueType?.type}
-                \n 是否只读: ${readOnly}
-                \n 可写数值范围: `,
+                \n ${$t('Operator.index.43487113-11')} ${p.id}
+                \n ${$t('Operator.index.43487113-12')} ${p.valueType?.type}
+                \n ${$t('Operator.index.43487113-13')} ${readOnly}
+                \n ${$t('Operator.index.43487113-14')} `,
                 type: 'property',
               }
             }),
     };
     const tags = {
         id: 'tags',
-        name: '标签',
+        name: $t('Operator.index.43487113-15'),
         Description: '',
         code: '',
         isLeaf: false,
@@ -210,9 +213,9 @@ const getData = async (id?: string) => {
             name: i.name,
           isLeaf: true,
             description: `### ${i.name}
-            \n 标识: ${i.id}
-            \n 数据类型: ${i.valueType?.type}
-            \n 可写数值范围: `,
+            \n ${$t('Operator.index.43487113-11')} ${i.id}
+            \n ${$t('Operator.index.43487113-12')} ${i.valueType?.type}
+            \n ${$t('Operator.index.43487113-14')} `,
             type: 'tags',
         })),
     };

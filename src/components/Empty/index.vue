@@ -12,13 +12,15 @@ import { useSlots } from 'vue';
 import NoData from './assets/nodata.svg';
 import { omit } from 'lodash-es';
 import type { PropType, CSSProperties } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const slots = useSlots();
 const renderArr = Object.keys(slots);
 
 const props = defineProps({
     description: {
         type: String,
-        default: '暂无数据',
     },
     image: {
         type: String,

@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"Array.index.43486107-0": "元素类型",
+		"Array.index.43486107-1": "子元素类型",
+		"Array.index.43486107-2": "请选择子元素类型",
+		"Array.index.43486107-3": "是",
+		"Array.index.43486107-4": "否",
+		"Array.index.43486107-5": "请选择元素类型"
+	},
+	"en": {
+		"Array.index.43486107-0": "Element type",
+		"Array.index.43486107-1": "Sub element type",
+		"Array.index.43486107-2": "Please select sub element type",
+		"Array.index.43486107-3": "yes",
+		"Array.index.43486107-4": "no",
+		"Array.index.43486107-5": "Please select element type"
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"zh": {
+		"MetricsParam.index.4348662-0": "配置参数",
+		"MetricsParam.index.4348662-1": "标识",
+		"MetricsParam.index.4348662-2": "请输入标识",
+		"MetricsParam.index.4348662-3": "最多可输入64个字符",
+		"MetricsParam.index.4348662-4": "标识只能由数字、字母、下划线、中划线组成",
+		"MetricsParam.index.4348662-5": "名称",
+		"MetricsParam.index.4348662-6": "请输入名称",
+		"MetricsParam.index.4348662-7": "指标值",
+		"MetricsParam.index.4348662-8": "请输入指标值",
+		"MetricsParam.index.4348662-9": "添加指标"
+	},
+	"en": {
+		"MetricsParam.index.4348662-0": "Configuration parameter",
+		"MetricsParam.index.4348662-1": "ID",
+		"MetricsParam.index.4348662-2": "Please enter the ID",
+		"MetricsParam.index.4348662-3": "Up to 64 characters can be entered",
+		"MetricsParam.index.4348662-4": "ID can only be composed of numbers, letters, underscores, and dashes",
+		"MetricsParam.index.4348662-5": "name",
+		"MetricsParam.index.4348662-6": "Please enter a name",
+		"MetricsParam.index.4348662-7": "Indicator value",
+		"MetricsParam.index.4348662-8": "Please enter the indicator value",
+		"MetricsParam.index.4348662-9": "Add indicators"
+	}
+}

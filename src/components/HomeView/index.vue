@@ -16,19 +16,22 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const list = [
     {
         id: 'device',
-        name: '设备接入视图',
+        name: $t('HomeView.index.4348439-0'),
     },
     {
         id: 'ops',
-        name: '运营管理视图',
+        name: $t('HomeView.index.4348439-1'),
     },
     {
         id: 'comprehensive',
-        name: '综合管理视图',
+        name: $t('HomeView.index.4348439-2'),
     },
 ];
 

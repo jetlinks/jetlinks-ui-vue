@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"BooleanSelect.index.43486105-0": "必填",
+		"BooleanSelect.index.43486105-1": "不必填"
+	},
+	"en": {
+		"BooleanSelect.index.43486105-0": "Required",
+		"BooleanSelect.index.43486105-1": "Not required"
+	}
+}

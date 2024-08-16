@@ -6,28 +6,28 @@
     <f-rule-editor v-model:value="value.script" :id="id" :virtualRule="value"></f-rule-editor>
   </j-form-item>
   <template v-if="showWindow">
-    <j-form-item label="规则配置" :name="name.concat(['isVirtualRule'])">
+    <j-form-item :label="$t('VirtualRuleParam.index.4348430-0')" :name="name.concat(['isVirtualRule'])">
       <j-switch v-model:checked="value.isVirtualRule" :checked-value="true" :un-checked-value="false"
         @change="changeWindow"></j-switch>
     </j-form-item>
     <template v-if="value.isVirtualRule">
-      <j-form-item label="窗口" :name="name.concat(['windowType'])" :rules="[
-        { required: true, message: '请选择窗口' },
+      <j-form-item :label="$t('VirtualRuleParam.index.4348430-1')" :name="name.concat(['windowType'])" :rules="[
+        { required: true, message: $t('VirtualRuleParam.index.4348430-2') },
       ]">
         <j-select v-model:value="value.windowType" :options="windowTypeEnum" size="small" allow-clear></j-select>
       </j-form-item>
-      <j-form-item label="聚合函数" :name="name.concat(['aggType'])" :rules="[
-        { required: true, message: '请选择聚合函数' },
+      <j-form-item :label="$t('VirtualRuleParam.index.4348430-3')" :name="name.concat(['aggType'])" :rules="[
+        { required: true, message: $t('VirtualRuleParam.index.4348430-4') },
       ]">
         <j-select v-model:value="value.aggType" :options="aggTypeOptions" size="small" allow-clear></j-select>
       </j-form-item>
       <j-form-item :label="spanLabel" :name="name.concat(['window', 'span'])" :rules="[
-        { required: true, message: '请输入窗口长度' },
+        { required: true, message: $t('VirtualRuleParam.index.4348430-5') },
       ]">
         <j-input-number stringMode v-model:value="value.window.span" size="small" style="width: 100%;"></j-input-number>
       </j-form-item>
       <j-form-item :label="everyLabel" :name="name.concat(['window', 'every'])" :rules="[
-        { required: true, message: '请输入步长' },
+        { required: true, message: $t('VirtualRuleParam.index.4348430-6') },
       ]">
         <j-input-number stringMode :maxlength="10" v-model:value="value.window.every" size="small" style="width: 100%;"></j-input-number>
       </j-form-item>
@@ -38,6 +38,9 @@
 import { PropType } from 'vue';
 import FRuleEditor from '@/components/FRuleEditor/index.vue'
 import { getStreamingAggType } from '@/api/device/product'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {
@@ -92,29 +95,29 @@ const changeWindow = (val: boolean | string | number) => {
 }
 
 const windowTypeEnum = [
-  { label: '时间窗口', value: 'time' },
-  { label: '次数窗口', value: 'num' },
+  { label: $t('VirtualRuleParam.index.4348430-7'), value: 'time' },
+  { label: $t('VirtualRuleParam.index.4348430-8'), value: 'num' },
 ]
 
 const spanLabel = computed(() => {
   switch(props.value.windowType) {
     case 'time':
-      return '窗口长度（秒）';
+      return $t('VirtualRuleParam.index.4348430-9');
     case 'num':
-      return '窗口长度（次）';
+      return $t('VirtualRuleParam.index.4348430-10');
     default:
-      return '窗口长度'
+      return $t('VirtualRuleParam.index.4348430-11')
   }
 })
 
 const everyLabel = computed(() => {
   switch(props.value.windowType) {
     case 'time':
-      return '步长（秒）';
+      return $t('VirtualRuleParam.index.4348430-12');
     case 'num':
-      return '步长（次）';
+      return $t('VirtualRuleParam.index.4348430-13');
     default:
-      return '步长'
+      return $t('VirtualRuleParam.index.4348430-14')
   }
 })
 </script>

@@ -1,0 +1,10 @@
+{
+	"zh": {
+		"String.Item.4348674-0": "最大长度",
+		"String.Item.4348674-1": "请输入0-9999以内的整数"
+	},
+	"en": {
+		"String.Item.4348674-0": "Maximum length",
+		"String.Item.4348674-1": "Please enter an integer within 0-9999"
+	}
+}

@@ -14,11 +14,11 @@
                 <j-menu>
                     <j-menu-item @click="push('/account/center')" style="width: 160px;">
                         <AIcon type="UserOutlined" style="margin-right: 8px;" />
-                        <span>个人中心</span>
+                        <span>{{ $t('components.UserInfo.4348549-0') }}</span>
                     </j-menu-item>
                     <j-menu-item @click="logOut">
                         <AIcon type="LogoutOutlined" style="margin-right: 8px;" />
-                        <span>退出登录</span>
+                        <span>{{ $t('components.UserInfo.4348549-1') }}</span>
                     </j-menu-item>
                 </j-menu>
             </template>
@@ -30,6 +30,9 @@
 import { loginout_api } from '@/api/login';
 import { useUserInfo } from '@/store/userInfo';
 import { LoginPath } from '@/router/menu'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const {push} = useRouter();
 

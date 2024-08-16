@@ -1,17 +1,20 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
+
 export const typeOptions = [
-  { label: '或者', value: 'or' },
-  { label: '并且', value: 'and' },
+  { label: $t('Search.util.4348411-0'), value: 'or' },
+  { label: $t('Search.util.4348411-1'), value: 'and' },
 ]
 
 export const termType = [
   { label: '=', value: 'eq' },
   { label: '!=', value: 'not' },
-  { label: '包含', value: 'like' },
-  { label: '不包含', value: 'nlike' },
+  { label: $t('Search.util.4348411-2'), value: 'like' },
+  { label: $t('Search.util.4348411-3'), value: 'nlike' },
   { label: '>', value: 'gt' },
   { label: '>=', value: 'gte' },
   { label: '<', value: 'lt' },
   { label: '<=', value: 'lte' },
-  { label: '属于', value: 'in' },
-  { label: '不属于', value: 'nin' },
+  { label: $t('Search.util.4348411-4'), value: 'in' },
+  { label: $t('Search.util.4348411-5'), value: 'nin' },
 ];

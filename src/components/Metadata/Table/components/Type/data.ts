@@ -1,55 +1,57 @@
+import i18n from '@/i18n'
+const $t = i18n.global.t
 const type = [
     {
         value: 'int',
-        label: 'int(整数型)',
+        label: $t('Type.data.930240-0'),
     },
     {
         value: 'long',
-        label: 'long(长整数型)',
+        label: $t('Type.data.930240-1'),
     },
     {
         value: 'float',
-        label: 'float(单精度浮点型)',
+        label: $t('Type.data.930240-2'),
     },
     {
         value: 'double',
-        label: 'double(双精度浮点数)',
+        label: $t('Type.data.930240-3'),
     },
     {
         value: 'string',
-        label: 'text(字符串)',
+        label: $t('Type.data.930240-4'),
     },
     {
         value: 'boolean',
-        label: 'boolean(布尔型)',
+        label: $t('Type.data.930240-5'),
     },
     {
         value: 'date',
-        label: 'date(时间型)',
+        label: $t('Type.data.930240-6'),
     },
     {
         value: 'enum',
-        label: 'enum(枚举)',
+        label: $t('Type.data.930240-7'),
     },
     {
         value: 'array',
-        label: 'array(数组)',
+        label: $t('Type.data.930240-8'),
     },
     {
         value: 'object',
-        label: 'object(结构体)',
+        label: $t('Type.data.930240-9'),
     },
     {
         value: 'file',
-        label: 'file(文件)',
+        label: $t('Type.data.930240-10'),
     },
     {
         value: 'password',
-        label: 'password(密码)',
+        label: $t('Type.data.930240-11'),
     },
     {
         value: 'geoPoint',
-        label: 'geoPoint(地理位置)',
+        label: $t('Type.data.930240-12'),
     },
 ];
 

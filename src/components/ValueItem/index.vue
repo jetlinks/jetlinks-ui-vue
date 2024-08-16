@@ -62,7 +62,7 @@
             v-else-if="typeMap.get(itemType) === 'file'"
             v-model:value="myValue"
             v-bind="extra"
-            placeholder="请输入链接"
+            :placeholder="$t('ValueItem.index.434843-0')"
             allowClear
             @change='inputChange'
         >
@@ -100,9 +100,9 @@
 
         <!-- 代码编辑器弹窗 -->
         <j-modal
-            title="编辑"
-            ok-text="确认"
-            cancel-text="取消"
+            :title="$t('ValueItem.index.434843-1')"
+            :ok-text="$t('ValueItem.index.434843-2')"
+            :cancel-text="$t('ValueItem.index.434843-3')"
             v-model:visible="modalVis"
             width="700px"
             :getPopupContainer="getPopupContainer"
@@ -126,6 +126,9 @@ import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { ItemData, ITypes } from './types';
 import { FILE_UPLOAD } from '@/api/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;

@@ -1,6 +1,6 @@
 <template>
     <j-input
-        :placeholder="$t('LeftTree.index.148101-0')"
+        :placeholder="$t('LeftTree.index.779412-0')"
         class="search-input"
         v-model:value="searchValue"
         @change="(e) => onSearch(e.target.value)"
@@ -11,7 +11,7 @@
     </j-input>
     <div style="display: flex; gap: 8px; margin: 18px 0">
         <j-button type="primary" class="btn" @click="() => onAdd()"
-            >{{ $t('LeftTree.index.148101-1') }}</j-button
+            >{{ $t('LeftTree.index.779412-1') }}</j-button
         >
     </div>
     <div class="tree-content">
@@ -43,7 +43,7 @@
                             </div>
                             <div class="actions">
                                 <j-space :size="8">
-                                    <j-tooltip :title="$t('LeftTree.index.148101-2')">
+                                    <j-tooltip :title="$t('LeftTree.index.779412-2')">
                                         <j-button
                                             @click.stop="onEdit(_data?.data)"
                                             class="actions-btn"
@@ -52,7 +52,7 @@
                                             <AIcon type="EditOutlined" />
                                         </j-button>
                                     </j-tooltip>
-                                    <j-tooltip :title="$t('LeftTree.index.148101-3')">
+                                    <j-tooltip :title="$t('LeftTree.index.779412-3')">
                                         <j-button
                                             @click.stop="onAdd(_data?.data)"
                                             class="actions-btn"
@@ -61,13 +61,13 @@
                                             <AIcon type="PlusCircleOutlined" />
                                         </j-button>
                                     </j-tooltip>
-                                    <j-tooltip :title="$t('LeftTree.index.148101-4')">
+                                    <j-tooltip :title="$t('LeftTree.index.779412-4')">
                                         <PermissionButton
                                             type="link"
                                             style="margin: 0; padding: 0"
                                             danger
                                             :popConfirm="{
-                                                title: $t('LeftTree.index.148101-5'),
+                                                title: $t('LeftTree.index.779412-5'),
                                                 onConfirm: () =>
                                                     onRemove(_data?.id),
                                             }"
@@ -197,7 +197,7 @@ const onRemove = (id: string) => {
     const response = delRegion(id);
     response.then((resp) => {
         if (resp.success) {
-            onlyMessage($t('LeftTree.index.148101-6'));
+            onlyMessage($t('LeftTree.index.779412-6'));
             handleSearch();
         }
     });
