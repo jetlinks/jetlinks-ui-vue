@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"EdgeMap.PatchMapping.072081-0": "批量映射",
+		"EdgeMap.PatchMapping.072081-1": "采集器的点位名称与属性名称一致时将自动映射绑定；有多个采集器点位名称与属性名称一致时以第1个采集器的点位数据进行绑定",
+		"EdgeMap.PatchMapping.072081-2": "源数据",
+		"EdgeMap.PatchMapping.072081-3": "加入右侧",
+		"EdgeMap.PatchMapping.072081-4": "采集器",
+		"EdgeMap.PatchMapping.072081-5": "确认删除？",
+		"EdgeMap.PatchMapping.072081-6": "请选择采集器",
+		"EdgeMap.PatchMapping.072081-7": "操作成功",
+		"EdgeMap.PatchMapping.072081-8": "暂无对应属性的映射"
+	},
+	"en": {
+		"EdgeMap.PatchMapping.072081-0": "Batch mapping",
+		"EdgeMap.PatchMapping.072081-1": "If the point name of the collector is the same as the attribute name, the system automatically maps and binds the collector. If multiple collector point names are the same as the attribute names, bind the point data of the first collector",
+		"EdgeMap.PatchMapping.072081-2": "Source data",
+		"EdgeMap.PatchMapping.072081-3": "Join right",
+		"EdgeMap.PatchMapping.072081-4": "collector",
+		"EdgeMap.PatchMapping.072081-5": "Confirm deletion?",
+		"EdgeMap.PatchMapping.072081-6": "Please select a collector",
+		"EdgeMap.PatchMapping.072081-7": "Successful operation",
+		"EdgeMap.PatchMapping.072081-8": "There is no mapping for the corresponding attribute"
+	}
+}

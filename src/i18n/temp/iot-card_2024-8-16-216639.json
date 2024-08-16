@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"iot-card.data.165902-0": "移动OneLink",
+		"iot-card.data.165902-1": "电信Ctwing",
+		"iot-card.data.165902-2": "联通Unicom",
+		"iot-card.data.165902-3": "移动",
+		"iot-card.data.165902-4": "电信",
+		"iot-card.data.165902-5": "联通",
+		"iot-card.data.165902-6": "年卡",
+		"iot-card.data.165902-7": "季卡",
+		"iot-card.data.165902-8": "月卡",
+		"iot-card.data.165902-9": "其他",
+		"iot-card.data.165902-10": "支付宝手机网站支付",
+		"iot-card.data.165902-11": "支付宝网页及时到账支付",
+		"iot-card.data.165902-12": "微信公众号支付",
+		"iot-card.data.165902-13": "微信扫码支付"
+	},
+	"en": {
+		"iot-card.data.165902-0": "Mobile OneLink",
+		"iot-card.data.165902-1": "Telecom Ctwing",
+		"iot-card.data.165902-2": "China Unicom",
+		"iot-card.data.165902-3": "move",
+		"iot-card.data.165902-4": "telecom",
+		"iot-card.data.165902-5": "Unicom",
+		"iot-card.data.165902-6": "Annual card",
+		"iot-card.data.165902-7": "Seasonal card",
+		"iot-card.data.165902-8": "Monthly card",
+		"iot-card.data.165902-9": "other",
+		"iot-card.data.165902-10": "Alipay mobile website payment",
+		"iot-card.data.165902-11": "Alipay web page paid in time",
+		"iot-card.data.165902-12": "WeChat official account payment",
+		"iot-card.data.165902-13": "WeChat QR code payment"
+	}
+}

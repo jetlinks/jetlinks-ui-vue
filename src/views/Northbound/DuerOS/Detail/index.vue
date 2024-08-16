@@ -152,7 +152,7 @@
                                                       (i) =>
                                                           i.id === item.action,
                                                   )?.name
-                                                : `{{ $t('Detail.index.613231-12') }}${index + 1}`
+                                                : `${ $t('Detail.index.613231-12') } ${index + 1}`
                                         "
                                     >
                                         <template #extra>
@@ -331,7 +331,7 @@
                                                       (i) =>
                                                           i.id === item.source,
                                                   )?.name
-                                                : `{{ $t('Detail.index.613231-24') }}${index + 1}`
+                                                : `${ $t('Detail.index.613231-24') } ${index + 1}`
                                         "
                                     >
                                         <template #extra>

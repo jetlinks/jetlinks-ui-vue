@@ -6,32 +6,32 @@
                 <div>
                     <AIcon type="ExclamationCircleOutlined" />
                     <template v-if="topTitle === 'rest'">
-                        当前数据解析内容已脱离产品影响，
+                        {{ $t('Parsing.index.998960-0') }}
                         <PermissionButton
                             type="link"
                             hasPermission="device/Instance:update"
                             @click="rest()"
                         >
-                            重置
+                            {{ $t('Parsing.index.998960-1') }}
                         </PermissionButton>
-                        后将继承产品数据解析内容
+                        {{ $t('Parsing.index.998960-2') }}
                     </template>
                     <template v-else>
-                        当前数据解析内容继承自产品,
+                        {{ $t('Parsing.index.998960-3') }}
                         <PermissionButton
                             type="link"
                             hasPermission="device/Instance:update"
                             @click="readOnly = false"
                             :style="color"
                         >
-                            修改
+                            {{ $t('Parsing.index.998960-4') }}
                         </PermissionButton>
-                        后将脱离产品影响。
+                        {{ $t('Parsing.index.998960-5') }}
                     </template>
                 </div>
             </div>
             <div>
-                脚本语言:
+                {{ $t('Parsing.index.998960-6') }}
                 <j-select
                     :defaultValue="'JavaScript'"
                     style="width: 200px; margin-left: 5px"
@@ -55,7 +55,7 @@
                     () => {
                         message.warning({
                             key: 1,
-                            content: () => '请点击上方修改字样,用以编辑脚本',
+                            content: () => $t('Parsing.index.998960-7'),
                             style: {
                                 marginTop: '260px',
                             },
@@ -75,14 +75,14 @@
         <div class="bottom">
             <div style="width: 49.5%">
                 <div class="bottom-title">
-                    <div class="bottom-title-text">模拟输入</div>
+                    <div class="bottom-title-text">{{ $t('Parsing.index.998960-8') }}</div>
                     <div class="bottom-title-topic">
                         <template
                             v-if="instanceStore.current.transport === 'MQTT'"
                         >
                             <div style="margin-right: 5px">Topic:</div>
                             <j-auto-complete
-                                placeholder="请输入Topic"
+                                :placeholder="$t('Parsing.index.998960-9')"
                                 style="width: 300px"
                                 :options="topicList"
                                 :allowClear="true"
@@ -93,7 +93,7 @@
                         <template v-else>
                             <div style="margin-right: 5px">URL:</div>
                             <j-input
-                                placeholder="请输入URL"
+                                :placeholder="$t('Parsing.index.998960-10')"
                                 v-model:value="url"
                                 style="width: 300px"
                             ></j-input>
@@ -109,7 +109,7 @@
             </div>
             <div style="width: 49.5%">
                 <div class="bottom-title">
-                    <div class="bottom-title-text">运行结果</div>
+                    <div class="bottom-title-text">{{ $t('Parsing.index.998960-11') }}</div>
                 </div>
                 <j-textarea
                     :autoSize="{ minRows: 5 }"
@@ -127,10 +127,10 @@
             :disabled="isDisabled"
             @click="debug()"
             :tooltip="{
-                title: '需输入脚本和模拟数据后再点击',
+                title: $t('Parsing.index.998960-12'),
             }"
         >
-            调试
+            {{ $t('Parsing.index.998960-13') }}
         </PermissionButton>
         <PermissionButton
             hasPermission="device/Instance:update"
@@ -139,10 +139,10 @@
             @click="save()"
             :style="{ marginLeft: '10px' }"
             :tooltip="{
-                title: isTest ? '' : '请先调试',
+                title: isTest ? '' : $t('Parsing.index.998960-14'),
             }"
         >
-            保存
+            {{ $t('Parsing.index.998960-15') }}
         </PermissionButton>
     </div>
 </template>
@@ -162,6 +162,9 @@ import {
 import { message } from 'jetlinks-ui-components';
 import { isBoolean } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const defaultValue =
     `//注册设备下行数据监听器,当平台下发指令给设备时,回调将被调用,用于构造下发给设备的报文
@@ -251,7 +254,7 @@ const rest = async () => {
     );
     if (res.status === 200) {
         getDeviceCode();
-        onlyMessage('操作成功');
+        onlyMessage($t('Parsing.index.998960-16'));
     }
 };
 //获取topic
@@ -329,7 +332,7 @@ const save = async () => {
         item,
     );
     if (res.status === 200) {
-        onlyMessage('保存成功');
+        onlyMessage($t('Parsing.index.998960-17'));
         getDeviceCode();
     }
 };
@@ -350,7 +353,7 @@ const debug = () => {
             });
             isTest.value = true;
         } else {
-            onlyMessage('请输入topic', 'error');
+            onlyMessage($t('Parsing.index.998960-18'), 'error');
         }
     } else {
         if (url.value !== '') {
@@ -367,7 +370,7 @@ const debug = () => {
             });
             isTest.value = true;
         } else {
-            onlyMessage('请输入url', 'error');
+            onlyMessage($t('Parsing.index.998960-19'), 'error');
         }
     }
 };
