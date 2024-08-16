@@ -4,6 +4,8 @@
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
+import i18n from '@/i18n'
+const $t = i18n.global.t
 
 const { proxy } = <any>getCurrentInstance();
 
@@ -75,7 +77,7 @@ const createChart = () => {
             ],
             series: [
                 {
-                    name: '流量消耗',
+                    name: $t('components.LineChart.558153-0'),
                     type: 'line',
                     symbol: 'circle',
                     showSymbol: false,
