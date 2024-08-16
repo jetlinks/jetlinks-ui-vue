@@ -246,7 +246,7 @@ const getActions = (
                 title: `${
                     data.state.value === 'enabled' ? $t('Platform.index.387410-13') : $t('Platform.index.387410-14')
                 }？`,
-                okText: ' 确定',
+                okText: $t('Platform.index.707265-0'),
                 cancelText: $t('Platform.index.387410-16'),
                 onConfirm: () => {
                     if (data.state.value === 'enabled') {
@@ -277,7 +277,7 @@ const getActions = (
             disabled: data.state.value === 'enabled',
             popConfirm: {
                 title: $t('Platform.index.387410-19'),
-                okText: ' 确定',
+                okText: $t('Platform.index.903191-0'),
                 cancelText: $t('Platform.index.387410-16'),
                 onConfirm: () => {
                     const response: any = del(data.id);

@@ -169,7 +169,7 @@ const handleOk = () => {
             const resp: any = await recharge(toRaw(modelRef));
             btnLoading.value = false;
             if (resp.status === 200) {
-                if (resp.result === '失败') {
+                if (resp.result === $t('Recharge.Save.344053-0')) {
                     onlyMessage($t('Recharge.Save.797370-15'), 'error')
                 } else if(!resp.result) {
                   onlyMessage($t('Recharge.Save.797370-16'), 'warning')

@@ -1,21 +1,23 @@
+import i18n from '@/i18n'
 import { getImage } from '@/utils/comm';
+const $t = i18n.global.t
 
 // 平台类型
 export const platformTypeList = [
   {
-    label: '移动OneLink',
+    label: $t('iot-card.data.165902-0'),
     value: 'onelink',
     imgUrl: getImage('/iot-card/onelink.png'),
     imgSize: ['78px', '20px'],
   },
   {
-    label: '电信Ctwing',
+    label: $t('iot-card.data.165902-1'),
     value: 'ctwing',
     imgUrl: getImage('/iot-card/ctwingcmp.png'),
     imgSize: ['52px', '25px'],
   },
   {
-    label: '联通Unicom',
+    label: $t('iot-card.data.165902-2'),
     value: 'unicom',
     imgUrl: getImage('/iot-card/unicom.png'),
     imgSize: ['56px', '41px'],
@@ -23,23 +25,23 @@ export const platformTypeList = [
 ];
 
 export const OperatorMap = {
-  onelink: '移动',
-  ctwing: '电信',
-  unicom: '联通',
+  onelink: $t('iot-card.data.165902-3'),
+  ctwing: $t('iot-card.data.165902-4'),
+  unicom: $t('iot-card.data.165902-5'),
 }
 
 //运营商
 export const OperatorList = [
   {
-    label: '移动',
+    label: $t('iot-card.data.165902-3'),
     value: 'onelink',
   },
   {
-    label: '电信',
+    label: $t('iot-card.data.165902-4'),
     value: 'ctwing',
   },
   {
-    label: '联通',
+    label: $t('iot-card.data.165902-5'),
     value: 'unicom',
   },
 ];
@@ -47,19 +49,19 @@ export const OperatorList = [
 // 类型
 export const TypeList = [
   {
-    label: '年卡',
+    label: $t('iot-card.data.165902-6'),
     value: 'year',
   },
   {
-    label: '季卡',
+    label: $t('iot-card.data.165902-7'),
     value: 'season',
   },
   {
-    label: '月卡',
+    label: $t('iot-card.data.165902-8'),
     value: 'month',
   },
   {
-    label: '其他',
+    label: $t('iot-card.data.165902-9'),
     value: 'other',
   },
 ];
@@ -67,19 +69,19 @@ export const TypeList = [
 // 支付方式
 export const PaymentMethod = [
   {
-    label: '支付宝手机网站支付',
+    label: $t('iot-card.data.165902-10'),
     value: 'ALIPAY_WAP',
   },
   {
-    label: '支付宝网页及时到账支付',
+    label: $t('iot-card.data.165902-11'),
     value: 'ALIPAY_WEB',
   },
   {
-    label: '微信公众号支付',
+    label: $t('iot-card.data.165902-12'),
     value: 'WEIXIN_JSAPI',
   },
   {
-    label: '微信扫码支付',
+    label: $t('iot-card.data.165902-13'),
     value: 'WEIXIN_NATIVE',
   },
 ];
