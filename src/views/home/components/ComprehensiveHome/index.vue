@@ -74,7 +74,7 @@ const rulePermission = (action: string) =>
     hasPermission(`rule-engine/Instance:${action}`);
 
 // 物联网引导-数据
-const deviceBootConfig: bootConfig[] = [
+const deviceBootConfig = computed(()=>[
     {
         english: 'STEP1',
         label: $t('ComprehensiveHome.index.926510-6'),
@@ -105,10 +105,10 @@ const deviceBootConfig: bootConfig[] = [
             save: true,
         },
     },
-];
+]);
 
 // 设备接入推荐步骤-数据
-const deviceStepDetails: recommendList[] = [
+const deviceStepDetails = computed(()=>[
     {
         title: $t('ComprehensiveHome.index.926510-6'),
         details:
@@ -162,10 +162,10 @@ const deviceStepDetails: recommendList[] = [
             type: 'import',
         },
     },
-];
+]);
 
 // 运维管理引导-数据
-const opsBootConfig: bootConfig[] = [
+const opsBootConfig = computed(()=>[
     {
         english: 'STEP1',
         label: $t('ComprehensiveHome.index.926510-18'),
@@ -187,10 +187,10 @@ const opsBootConfig: bootConfig[] = [
         link: 'link/DashBoard',
         image: '/images/home/guide-home6.png',
     },
-];
+]);
 
 // 运维管理推荐步骤-数据
-const opsStepDetails: recommendList[] = [
+const opsStepDetails = computed(()=>[
     {
         title: $t('ComprehensiveHome.index.926510-21'),
         details:
@@ -225,7 +225,7 @@ const opsStepDetails: recommendList[] = [
             tab: 'system',
         },
     },
-];
+]);
 
 const productDialogVisible = ref(false);
 const deviceDialogVisible = ref(false);

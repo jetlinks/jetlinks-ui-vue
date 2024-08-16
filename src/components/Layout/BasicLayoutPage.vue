@@ -130,7 +130,7 @@ watchEffect(() => {
 
 const changeLocale = ()=>{
   localStorage.setItem('locale',locale.value)
-  location.reload()
+  // location.reload()
 }
 
 const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');

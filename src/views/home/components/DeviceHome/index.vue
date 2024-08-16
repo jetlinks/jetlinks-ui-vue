@@ -62,7 +62,7 @@ const { jumpPage } = useMenuStore();
 const productDialogVisible = ref(false);
 const deviceDialogVisible = ref(false);
 
-const deviceBootConfig: bootConfig[] = [
+const deviceBootConfig =computed(()=> [
     {
         english: 'STEP1',
         label: $t('DeviceHome.index.926510-3'),
@@ -90,8 +90,8 @@ const deviceBootConfig: bootConfig[] = [
             save: true,
         },
     },
-];
-const deviceStepDetails: recommendList[] = [
+]);
+const deviceStepDetails = computed(()=>[
     {
         title: $t('DeviceHome.index.926510-3'),
         details:
@@ -144,7 +144,7 @@ const deviceStepDetails: recommendList[] = [
             type: 'import',
         },
     },
-];
+]);
 </script>
 
 <style lang="less" scoped>

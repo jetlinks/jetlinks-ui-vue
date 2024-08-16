@@ -31,7 +31,7 @@ import type { bootConfig, recommendList } from '../../typing';
 import { useI18n } from 'vue-i18n'
 
 const { t: $t } = useI18n()
-const opsBootConfig: bootConfig[] = [
+const opsBootConfig = computed(()=>[
     {
         english: 'STEP1',
         label: $t('DevOpsHome.index.926510-3'),
@@ -50,8 +50,8 @@ const opsBootConfig: bootConfig[] = [
         label: $t('DevOpsHome.index.926510-5'),
         link: 'link/DashBoard',
     },
-];
-const opsStepDetails: recommendList[] = [
+]);
+const opsStepDetails = computed(()=>[
     {
         title: $t('DevOpsHome.index.926510-6'),
         details:
@@ -86,7 +86,7 @@ const opsStepDetails: recommendList[] = [
             tab: 'system',
         },
     },
-];
+]);
 </script>
 
 <style lang="less" scoped>
