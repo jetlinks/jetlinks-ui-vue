@@ -54,13 +54,13 @@
                         <BadgeStatus
                             v-if="!customBadge"
                             :status="status"
-                            :text="statusText"
+                            :text="statusText||$t('CardBox.index.301280-0')"
                             :statusNames="statusNames"
                         ></BadgeStatus>
                         <CustomBadgeStatus
                             v-else
                             :status="status"
-                            :text="statusText"
+                            :text="statusText||$t('CardBox.index.301280-0')"
                             :statusNames="statusNames">
                         </CustomBadgeStatus>
                     </div>
@@ -100,6 +100,9 @@ import CustomBadgeStatus from '@/components/BadgeStatus/CustomBadgeStatus.vue'
 import color, { getHexColor } from '../BadgeStatus/color';
 import type { ActionsType } from '@/components/Table';
 import { PropType } from 'vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type EmitProps = {
     // (e: 'update:modelValue', data: Record<string, any>): void;
@@ -126,7 +129,6 @@ const props = defineProps({
     },
     statusText: {
         type: String,
-        default: '正常',
     },
     status: {
         type: [String, Number] as PropType<string | number>,

@@ -19,8 +19,8 @@
         </div>
         <div class="footer">
           <a-space>
-            <a-button v-if="showCancel" size="small" @click="cancel">取消</a-button>
-            <a-button v-if="showOk" type="primary" size="small" @click="submit" :loading="confirmLoading">确认</a-button>
+            <a-button v-if="showCancel" size="small" @click="cancel">{{ $t('Popover.index.4348677-0') }}</a-button>
+            <a-button v-if="showOk" type="primary" size="small" @click="submit" :loading="confirmLoading">{{ $t('Popover.index.4348677-1') }}</a-button>
           </a-space>
         </div>
       </div>
@@ -34,6 +34,9 @@
 <script setup name="MetadataPopover">
 import { useMask } from '../utils'
 import {useTableWrapper, useTableFullScreen} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   placement: {

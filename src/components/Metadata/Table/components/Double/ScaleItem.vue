@@ -1,6 +1,6 @@
 <template>
   <a-form-item
-    label="精度"
+    :label="$t('Double.ScaleItem.4348691-0')"
     :name="name"
   >
     <a-input-number
@@ -9,13 +9,16 @@
       :precision="0"
       :min="0"
       :max="99"
-      placeholder="请输入0-99以内的整数"
+      :placeholder="$t('Double.ScaleItem.4348691-1')"
       @change="change"
     />
   </a-form-item>
 </template>
 
 <script setup name="MetadataScaleItem">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const emit = defineEmits(['update:value']);
 
 const props = defineProps({

@@ -6,52 +6,52 @@
           <ReadType v-model:value="formData.type" :disabled="true" />
           <j-form-item name="promi">
             <template #label>
-              触发属性
+              {{ $t('Rule.Rule.4348440-0') }}
               <j-popover>
                 <template #title>
-                  <div>选择当前产品物模型下的属性作为触发属性</div>
-                  <div>任意属性值更新时将触发下方计算规则</div>
+                  <div>{{ $t('Rule.Rule.4348440-1') }}</div>
+                  <div>{{ $t('Rule.Rule.4348440-2') }}</div>
                 </template>
                 <AIcon style="padding-left: 4px" type="icon-bangzhu" />
               </j-popover>
             </template>
             <j-select />
           </j-form-item>
-          <j-form-item label="计算规则">
+          <j-form-item :label="$t('Rule.Rule.4348440-3')">
             <div class="rule-add" @click="showRuleWindow">
-              编辑规则
+              {{ $t('Rule.Rule.4348440-4') }}
             </div>
           </j-form-item>
-          <j-form-item label="窗口" :name="['virtualRule', 'windowType']" required>
+          <j-form-item :label="$t('Rule.Rule.4348440-5')" :name="['virtualRule', 'windowType']" required>
             <j-select
                 v-model:value="formData.virtualRule.windowType"
                 :options="[
-                  { label: '无', value: 'undefined' },
-                  { label: '时间窗口', value: 'time' },
-                  { label: '频次窗口', value: 'num' },
+                  { label: $t('Rule.Rule.4348440-6'), value: 'undefined' },
+                  { label: $t('Rule.Rule.4348440-7'), value: 'time' },
+                  { label: $t('Rule.Rule.4348440-8'), value: 'num' },
               ]"
             />
           </j-form-item>
           <template v-if="showWindow">
-            <j-form-item label="聚合函数" :name="['virtualRule', 'aggType']">
+            <j-form-item :label="$t('Rule.Rule.4348440-9')" :name="['virtualRule', 'aggType']">
               <j-select
                   v-model:value="formData.virtualRule.aggType"
                   :options="[
-                  { label: '时间窗口', value: 'time' },
-                  { label: '频次窗口', value: 'num' },
+                  { label: $t('Rule.Rule.4348440-7'), value: 'time' },
+                  { label: $t('Rule.Rule.4348440-8'), value: 'num' },
                 ]"
-                  placeholder="请选择聚合函数"
+                  :placeholder="$t('Rule.Rule.4348440-10')"
               />
             </j-form-item>
             <j-form-item :name="['virtualRule', 'window', 'span']">
               <template #label>
-                窗口长度({{ formData.virtualRule.aggType === 'num' ? '次' : 's' }})
+                {{ $t('Rule.Rule.4348440-11') }}{{ formData.virtualRule.aggType === 'num' ? $t('Rule.Rule.4348440-12') : '(s)' }}
               </template>
               <j-input-number v-model:value="formData.virtualRule.window.span" style="width: 100%" />
             </j-form-item>
             <j-form-item :name="['virtualRule', 'window', 'every']">
               <template #label>
-                步长({{ formData.virtualRule.aggType === 'num' ? '次' : 's'  }})
+                {{ $t('Rule.Rule.4348440-13') }}{{ formData.virtualRule.aggType === 'num' ? $t('Rule.Rule.4348440-12') : '(s)'  }}
               </template>
               <j-input-number v-model:value="formData.virtualRule.window.every" style="width: 100%" />
             </j-form-item>
@@ -73,6 +73,9 @@
 <script setup lang="ts" name="Rule">
 import { ReadType } from '../components'
 import Modal from './Modal.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'update:value', data: Record<string, any>): void

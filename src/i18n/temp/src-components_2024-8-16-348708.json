@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"EnumParam.index.4348660-0": "枚举项配置",
+		"EnumParam.index.4348660-1": "请输入Value",
+		"EnumParam.index.4348660-2": "最多可输入64个字符",
+		"EnumParam.index.4348660-3": "请输入Text",
+		"EnumParam.index.4348660-4": "新增枚举型"
+	},
+	"en": {
+		"EnumParam.index.4348660-0": "Enumeration item configuration",
+		"EnumParam.index.4348660-1": "Please enter Value",
+		"EnumParam.index.4348660-2": "Up to 64 characters can be entered",
+		"EnumParam.index.4348660-3": "Please enter Text",
+		"EnumParam.index.4348660-4": "Add enum type"
+	}
+}

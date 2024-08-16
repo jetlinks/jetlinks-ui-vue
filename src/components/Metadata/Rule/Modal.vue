@@ -2,7 +2,7 @@
   <j-modal
       :mask-closable="false"
       visible width="70vw"
-      title="设置属性规则"
+      :title="$t('Rule.Modal.4348541-0')"
       @cancel="handleCancel"
       @ok="handleOk"
   >
@@ -11,6 +11,9 @@
 </template>
 
 <script setup lang="ts" name="RuleModal">
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 const handleCancel = () => {
 
 }

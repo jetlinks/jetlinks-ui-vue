@@ -1,0 +1,14 @@
+{
+	"zh": {
+		"ArrayParam.index.4348692-0": "配置元素",
+		"ArrayParam.index.4348692-1": "说明",
+		"ArrayParam.index.4348692-2": "最多可输入200个字符",
+		"ArrayParam.index.4348692-3": "请输入说明"
+	},
+	"en": {
+		"ArrayParam.index.4348692-0": "Configure elements",
+		"ArrayParam.index.4348692-1": "Explain",
+		"ArrayParam.index.4348692-2": "Up to 200 characters can be entered",
+		"ArrayParam.index.4348692-3": "Please enter instructions"
+	}
+}

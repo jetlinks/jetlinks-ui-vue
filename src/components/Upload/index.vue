@@ -17,7 +17,7 @@
                 <div class="upload-image-content" :style="props.style">
                     <template v-if="imageUrl">
                         <img :src="imageUrl" width="100%" class="upload-image" />
-                        <div class="upload-image-mask">点击修改</div>
+                        <div class="upload-image-mask">{{ $t('Upload.index.434845-0') }}</div>
                     </template>
                     <template v-else>
                         <AIcon
@@ -30,7 +30,7 @@
                                 class="upload-image"
                                 :style="`background-image: url(${bgImage});`"
                             ></div>
-                            <div class="upload-image-mask">点击修改</div>
+                            <div class="upload-image-mask">{{ $t('Upload.index.434845-0') }}</div>
                         </template>
                         <AIcon
                             v-else
@@ -61,6 +61,9 @@ import { TOKEN_KEY } from '@/utils/variable';
 import {getBase64, LocalStore, onlyMessage} from '@/utils/comm';
 import { CSSProperties } from 'vue';
 import ImageCropper from './Cropper.vue';
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emits = {
     (e: 'update:modelValue', data: string): void;
@@ -135,7 +138,7 @@ const handleChange = (info: UploadChangeParam) => {
     }
     if (info.file.status === 'error') {
         loading.value = false;
-        onlyMessage('上传失败', 'error');
+        onlyMessage($t('Upload.index.434845-1'), 'error');
     }
 };
 
@@ -146,13 +149,13 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
         if (props.errorMessage) {
             onlyMessage(props.errorMessage, 'error');
         } else {
-            onlyMessage(`请上传正确格式的图片`, 'error');
+            onlyMessage($t('Upload.index.434845-2'), 'error');
         }
         return false;
     }
     const isSize = file.size / 1024 / 1024 < maxSize;
     if (!isSize) {
-        onlyMessage(`图片大小必须小于${maxSize}M`, 'error');
+        onlyMessage($t('Upload.index.434845-3', [maxSize]), 'error');
         return false
     }
 

@@ -11,10 +11,10 @@
             <template #overlay>
               <a-menu @click="(e) => { menuClick(e, item)}">
                 <a-menu-item key="edit">
-                  编辑
+                  {{ $t('Table.group.4348550-0') }}
                 </a-menu-item>
                 <a-menu-item key="delete">
-                  删除
+                  {{ $t('Table.group.4348550-1') }}
                 </a-menu-item>
               </a-menu>
             </template>
@@ -27,7 +27,7 @@
                 :get-popup-container="popContainer"
               >
                 <template #title>
-                  <span style="color: #1d2129">校验不合规</span>
+                  <span style="color: #1d2129">{{ $t('Table.group.4348550-2') }}</span>
                 </template>
                 <div class="table-group-error-target"></div>
               </a-tooltip>
@@ -42,7 +42,7 @@
               :getContainer="popContainer"
             >
               <template #title>
-                <span style="color: #1d2129">校验不合规</span>
+                <span style="color: #1d2129">{{ $t('Table.group.4348550-2') }}</span>
               </template>
               <div class="table-group-error-target"></div>
             </a-tooltip>
@@ -52,15 +52,15 @@
     </a-tabs>
     <a-modal
       :visible="visible"
-      title="编辑分组"
+      :title="$t('Table.group.4348550-3')"
       :maskClosable="false"
       :getContainer="modalContainer"
       @cancel="onCancel"
       @ok="onOk"
     >
       <a-form ref="formRef" :model="formData" @finish="onOk">
-        <a-form-item name="label" :rules="[{ required: true, message: '请输入分组名称'}, { max: 16, message: '最多可输入16个字符'}]">
-          <a-input v-model:value="formData.label" placeholder="请输入分组名称"/>
+        <a-form-item name="label" :rules="[{ required: true, message: $t('Table.group.4348550-4')}, { max: 16, message: $t('Table.group.4348550-5')}]">
+          <a-input v-model:value="formData.label" :placeholder="$t('Table.group.4348550-4')"/>
         </a-form-item>
         <a-form-item v-show="false">
           <a-button html-type="submit"></a-button>
@@ -75,6 +75,9 @@ import {Modal} from "ant-design-vue";
 import {randomNumber} from "@/utils/utils";
 import {isFullScreen} from "@/utils/comm";
 import {useTableGroupError, useTableWrapper} from './context'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   options: {
@@ -91,7 +94,7 @@ const emit = defineEmits(['delete', 'edit', 'add', 'change', 'update:activeKey']
 
 const myActiveKey = ref(props.activeKey)
 const visible = ref(false)
-const type = ref('新增分组')
+const type = ref($t('Table.group.4348550-6'))
 const errorMap = useTableGroupError()
 const tableWrapperRef = useTableWrapper()
 const addIndex = ref(0)
@@ -105,7 +108,7 @@ const onAdd = (targetKey, action) => {
   if (action === 'add') {
     type.value = 'add'
     // 获取上一个包含 “分组_” 的信息
-    const groupName = props.options.filter(item => item.label.includes('分组_'))
+    const groupName = props.options.filter(item => item.label.includes($t('Table.group.4348550-7')))
     let index = addIndex.value + 1
     let findStatus = false
     while (!findStatus) {
@@ -122,7 +125,7 @@ const onAdd = (targetKey, action) => {
     }
 
     addIndex.value = index
-    formData.label = '分组_' + index
+    formData.label = $t('Table.group.4348550-7') + index
     onOk()
   }
 }
@@ -169,7 +172,7 @@ const menuClick = (e, record) => {
     onEdit(record)
   } else {
     Modal.confirm({
-      title: '将会同步删除分组内的数据，确认删除？',
+      title: $t('Table.group.4348550-8'),
       onOk: () => {
         // activeKey 根据数据长度进行左右移动
         const index = props.options.findIndex(item => item.value === record.value)

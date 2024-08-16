@@ -1,0 +1,16 @@
+{
+	"zh": {
+		"components.Notice.4348689-0": "标记已读",
+		"components.Notice.4348689-1": "告警",
+		"components.Notice.4348689-2": "系统监控",
+		"components.Notice.4348689-3": "业务监控",
+		"components.Notice.4348689-4": "工作流通知"
+	},
+	"en": {
+		"components.Notice.4348689-0": "Mark as read",
+		"components.Notice.4348689-1": "Alarm",
+		"components.Notice.4348689-2": "System monitoring",
+		"components.Notice.4348689-3": "Business monitoring",
+		"components.Notice.4348689-4": "Workflow notification"
+	}
+}

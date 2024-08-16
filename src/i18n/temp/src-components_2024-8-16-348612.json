@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"BooleanParam.index.4348664-0": "请输入trueText",
+		"BooleanParam.index.4348664-1": "最多可输入64个字符",
+		"BooleanParam.index.4348664-2": "请输入trueValue",
+		"BooleanParam.index.4348664-3": "请输入falseText",
+		"BooleanParam.index.4348664-4": "请输入falseValue",
+		"BooleanParam.index.4348664-5": "是",
+		"BooleanParam.index.4348664-6": "否"
+	},
+	"en": {
+		"BooleanParam.index.4348664-0": "Please enter trueText",
+		"BooleanParam.index.4348664-1": "Up to 64 characters can be entered",
+		"BooleanParam.index.4348664-2": "Please enter trueValue",
+		"BooleanParam.index.4348664-3": "Please enter fallseText",
+		"BooleanParam.index.4348664-4": "Please enter fallseValue",
+		"BooleanParam.index.4348664-5": "yes",
+		"BooleanParam.index.4348664-6": "no"
+	}
+}

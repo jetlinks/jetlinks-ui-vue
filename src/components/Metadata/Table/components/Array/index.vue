@@ -8,7 +8,7 @@
     <template #content>
       <div style="width: 450px">
         <a-form ref="formRef" layout="vertical" :model="formData">
-          <a-form-item label="元素类型" required name="type" :rules="rules" :validate-first="true">
+          <a-form-item :label="$t('Array.index.43486107-0')" required name="type" :rules="rules" :validate-first="true">
             <TypeSelect v-model:value="formData.type"/>
           </a-form-item>
           <ScaleItem v-if="showDouble" v-model:value="formData.scale" />
@@ -16,7 +16,7 @@
           <BooleanItem v-else-if="showBoolean" v-model:value="formData.boolean" name="boolean"/>
           <DateItem v-else-if="showDate" v-model:value="formData.format"/>
           <EnumItem ref="enumTableRef" v-else-if="showEnum" v-model:value="formData.enum.elements"/>
-          <a-form-item v-else-if="showArray" label="子元素类型" required :name="['elementType','type']" :rules="[{ required: true, message: '请选择子元素类型'}]">
+          <a-form-item v-else-if="showArray" :label="$t('Array.index.43486107-1')" required :name="['elementType','type']" :rules="[{ required: true, message: $t('Array.index.43486107-2')}]">
             <TypeSelect  v-model:value="formData.elementType.type" :filter="['array', 'object']" />
           </a-form-item>
         </a-form>
@@ -41,6 +41,9 @@ import DateItem from '../Date/Item.vue'
 import EnumItem from '../Enum/Item.vue'
 import {cloneDeep, pick} from 'lodash-es'
 import {Form} from "ant-design-vue";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 
@@ -75,9 +78,9 @@ const formData = reactive({
     maxLength: props.value?.maxLength || props.value?.expands?.maxLength,
   },
   boolean: {
-    trueText: props.value?.trueText || '是',
+    trueText: props.value?.trueText || $t('Array.index.43486107-3'),
     trueValue: props.value?.trueValue || 'true',
-    falseText: props.value?.falseText || '否',
+    falseText: props.value?.falseText || $t('Array.index.43486107-4'),
     falseValue: props.value?.falseValue || 'false',
   },
   format: props.value?.format,
@@ -118,7 +121,7 @@ const rules = [
   {
     validator(_, value) {
       if (!value) {
-        return Promise.reject('请选择元素类型');
+        return Promise.reject($t('Array.index.43486107-5'));
       }
       return Promise.resolve();
     },
@@ -137,9 +140,9 @@ const initValue = () => {
   formData.scale = props.value?.scale;
   formData.expands.maxLength = props.value?.maxLength || props.value?.expands?.maxLength;
   formData.boolean = {
-    trueText: props.value?.trueText || '是',
+    trueText: props.value?.trueText || $t('Array.index.43486107-3'),
     trueValue: props.value?.trueValue || 'true',
-    falseText: props.value?.falseText || '否',
+    falseText: props.value?.falseText || $t('Array.index.43486107-4'),
     falseValue: props.value?.falseValue || 'false',
   };
   formData.format = props.value?.format;

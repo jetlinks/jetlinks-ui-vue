@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"Table.group.4348550-0": "编辑",
+		"Table.group.4348550-1": "删除",
+		"Table.group.4348550-2": "校验不合规",
+		"Table.group.4348550-3": "编辑分组",
+		"Table.group.4348550-4": "请输入分组名称",
+		"Table.group.4348550-5": "最多可输入16个字符",
+		"Table.group.4348550-6": "新增分组",
+		"Table.group.4348550-7": "分组_",
+		"Table.group.4348550-8": "将会同步删除分组内的数据，确认删除？"
+	},
+	"en": {
+		"Table.group.4348550-0": "Edit",
+		"Table.group.4348550-1": "Delete",
+		"Table.group.4348550-2": "Verify non-compliance",
+		"Table.group.4348550-3": "Edit Group",
+		"Table.group.4348550-4": "Please enter the group name",
+		"Table.group.4348550-5": "Up to 16 characters can be entered",
+		"Table.group.4348550-6": "Add Group",
+		"Table.group.4348550-7": "Group_",
+		"Table.group.4348550-8": "Will the data within the group be synchronously deleted? Are you sure about deletion?"
+	}
+}

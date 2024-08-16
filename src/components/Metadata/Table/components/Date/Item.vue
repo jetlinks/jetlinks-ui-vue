@@ -1,12 +1,12 @@
 <template>
   <a-form-item
-    label="时间格式"
+    :label="$t('Date.Item.43486102-0')"
     required
     :name="name"
     :rules="[
             {
                 required: true,
-                message: '请选择时间格式',
+                message: $t('Date.Item.43486102-1'),
             },
       ]"
   >
@@ -14,7 +14,7 @@
       v-model:value="date"
       :options="options"
       mode="tags"
-      placeholder="请选择时间格式"
+      :placeholder="$t('Date.Item.43486102-1')"
       :dropdownStyle="{ zIndex: 1072}"
       :getPopupContainer="(node) => tableWrapperRef || node"
       @change="change"
@@ -25,6 +25,9 @@
 <script setup name="MetadataDateItem">
 import { AutoComplete } from 'jetlinks-ui-components'
 import {useTableWrapper} from "components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   value: {

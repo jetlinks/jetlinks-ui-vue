@@ -1,0 +1,20 @@
+{
+	"zh": {
+		"Table.demo.4348551-0": "新增",
+		"Table.demo.4348551-1": "校验",
+		"Table.demo.4348551-2": "请输入列名",
+		"Table.demo.4348551-3": "请输入age",
+		"Table.demo.4348551-4": "请输入类型",
+		"Table.demo.4348551-5": "请输入属性",
+		"Table.demo.4348551-6": "请输入其它"
+	},
+	"en": {
+		"Table.demo.4348551-0": "Add",
+		"Table.demo.4348551-1": "Check",
+		"Table.demo.4348551-2": "Please enter the column name",
+		"Table.demo.4348551-3": "Please enter age",
+		"Table.demo.4348551-4": "Please enter the type",
+		"Table.demo.4348551-5": "Please enter attributes",
+		"Table.demo.4348551-6": "Please enter other"
+	}
+}

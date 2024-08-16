@@ -1,0 +1,32 @@
+{
+	"zh": {
+		"Type.data.930240-0": "int（整数型）",
+		"Type.data.930240-1": "long（长整数型）",
+		"Type.data.930240-2": "float（单精度浮点型）",
+		"Type.data.930240-3": "double（双精度浮点数）",
+		"Type.data.930240-4": "text（字符串）",
+		"Type.data.930240-5": "boolean（布尔型）",
+		"Type.data.930240-6": "date（时间型）",
+		"Type.data.930240-7": "enum（枚举）",
+		"Type.data.930240-8": "array（数组）",
+		"Type.data.930240-9": "object（结构体）",
+		"Type.data.930240-10": "file（文件）",
+		"Type.data.930240-11": "password（密码）",
+		"Type.data.930240-12": "geoPoint（地理位置）"
+	},
+	"en": {
+		"Type.data.930240-0": "Int (integer type)",
+		"Type.data.930240-1": "Long (long integer type)",
+		"Type.data.930240-2": "Float (single precision floating-point type)",
+		"Type.data.930240-3": "Double (double precision floating-point number)",
+		"Type.data.930240-4": "Text (string)",
+		"Type.data.930240-5": "Boolean (boolean type)",
+		"Type.data.930240-6": "Date (time type)",
+		"Type.data.930240-7": "Enum (enumeration)",
+		"Type.data.930240-8": "Array (array)",
+		"Type.data.930240-9": "Object (structure)",
+		"Type.data.930240-10": "File (file)",
+		"Type.data.930240-11": "Password (password)",
+		"Type.data.930240-12": "GeoPoint (geographical location)"
+	}
+}

@@ -1,11 +1,11 @@
 <template>
 <j-form-item
   name="type"
-  label="读写类型"
+  :label="$t('components.ReadType.4348665-0')"
   :rules="[
     {
       required: true,
-      message: '请选择读写类型'
+      message: $t('components.ReadType.4348665-1')
     }
   ]"
   style="margin-bottom: 0"
@@ -19,7 +19,7 @@
 <!--        zIndex: 1071-->
 <!--      }"-->
 <!--      :getPopupContainer="(node) => tableWrapperRef || node"-->
-<!--      placeholder="请选择读写类型"-->
+<!--      :placeholder="$t('components.ReadType.4348665-1')"-->
 <!--      @change="onChange"-->
 <!--  />-->
   <CheckButton
@@ -36,6 +36,9 @@
 
 import type {PropType} from "vue";
 import {useTableWrapper} from "@/components/Metadata/Table/context";
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 type Emit = {
   (e: 'update:value', data: Array<string>): void

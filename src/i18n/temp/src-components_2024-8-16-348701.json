@@ -1,0 +1,18 @@
+{
+	"zh": {
+		"components.NoticeItem.4348555-0": "未读",
+		"components.NoticeItem.4348555-1": "已读",
+		"components.NoticeItem.4348555-2": "查看详情",
+		"components.NoticeItem.4348555-3": "标为已读",
+		"components.NoticeItem.4348555-4": "标为未读",
+		"components.NoticeItem.4348555-5": "操作成功！"
+	},
+	"en": {
+		"components.NoticeItem.4348555-0": "Unread",
+		"components.NoticeItem.4348555-1": "Read already",
+		"components.NoticeItem.4348555-2": "View details",
+		"components.NoticeItem.4348555-3": "Mark as read",
+		"components.NoticeItem.4348555-4": "Mark as unread",
+		"components.NoticeItem.4348555-5": "Operation successful!"
+	}
+}

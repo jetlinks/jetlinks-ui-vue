@@ -1,0 +1,34 @@
+{
+	"zh": {
+		"Rule.Rule.4348440-0": "触发属性",
+		"Rule.Rule.4348440-1": "选择当前产品物模型下的属性作为触发属性",
+		"Rule.Rule.4348440-2": "任意属性值更新时将触发下方计算规则",
+		"Rule.Rule.4348440-3": "计算规则",
+		"Rule.Rule.4348440-4": "编辑规则",
+		"Rule.Rule.4348440-5": "窗口",
+		"Rule.Rule.4348440-6": "无",
+		"Rule.Rule.4348440-7": "时间窗口",
+		"Rule.Rule.4348440-8": "频次窗口",
+		"Rule.Rule.4348440-9": "聚合函数",
+		"Rule.Rule.4348440-10": "请选择聚合函数",
+		"Rule.Rule.4348440-11": "窗口长度",
+		"Rule.Rule.4348440-12": "(次)",
+		"Rule.Rule.4348440-13": "步长"
+	},
+	"en": {
+		"Rule.Rule.4348440-0": "Trigger attribute",
+		"Rule.Rule.4348440-1": "Select the attribute under the current product model as the trigger attribute",
+		"Rule.Rule.4348440-2": "When any attribute value is updated, the calculation rule below will be triggered",
+		"Rule.Rule.4348440-3": "Calculation rules",
+		"Rule.Rule.4348440-4": "Edit Rules",
+		"Rule.Rule.4348440-5": "Window",
+		"Rule.Rule.4348440-6": "none",
+		"Rule.Rule.4348440-7": "time window",
+		"Rule.Rule.4348440-8": "frequency Window",
+		"Rule.Rule.4348440-9": "Aggregate function",
+		"Rule.Rule.4348440-10": "Please select an aggregation function",
+		"Rule.Rule.4348440-11": "Window length",
+		"Rule.Rule.4348440-12": "(times)",
+		"Rule.Rule.4348440-13": "Step"
+	}
+}
