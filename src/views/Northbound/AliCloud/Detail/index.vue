@@ -264,8 +264,8 @@
                                                           i.productKey ===
                                                           item.productKey,
                                                   )?.productName ||
-                                                  `{{ $t('Detail.index.613238-19') }}${index + 1}`
-                                                : `{{ $t('Detail.index.613238-19') }}${index + 1}`
+                                                  `${ $t('Detail.index.613238-19') } ${index + 1}`
+                                                : `${ $t('Detail.index.613238-19') } ${index + 1}`
                                         "
                                     >
                                         <template #extra
