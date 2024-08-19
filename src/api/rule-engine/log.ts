@@ -38,6 +38,12 @@ export const queryByDevice = (data:any) => server.post(`/alarm/record/device/_qu
 export const handleLog = (data:any) => server.post('/alarm/record/_handle',data);
 
 /**
+ * 
+ * 预处理告警处理
+ */
+export const handlePreconditioning = (data:any) => server.post(`/alarm/record/device/_handle`,data)
+
+/**
  * 告警记录
  */
 export const detail = (id:string) => server.get(`/alarm/record/${id}`);
@@ -59,9 +65,19 @@ export const queryHistoryList = (data:any) => server.post('/alarm/history/_query
 export const queryHandleHistory = (data:any) => server.post('/alarm/record/handle-history/_query',data);
 
 /**
+ * 获取预处理数据告警处理结果
+ */
+export const queryPreHandleHistory = (recordId:any,data:any) => server.post(`/alarm/record/handle-history/device/${recordId}/_query`,data)
+
+/**
  * 获取告警日志（新）
  */
 export const queryLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/${alarmConfigId}/_query`,data)
+
+/**
+ * 获取预处理数据告警日志
+ */
+export const queryPreconditioningLogList = (alarmConfigId:any,data:any) => server.post(`/alarm/history/device/${alarmConfigId}/_query`,data)
 
 /**
  * 查询无效数据

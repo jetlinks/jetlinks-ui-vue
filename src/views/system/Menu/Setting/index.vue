@@ -215,11 +215,13 @@ const handleOk = async () => {
     _dataSorts.push(USER_CENTER_MENU_DATA);
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
+        loading.value = false;
+        visible.value = false;
         onlyMessage('操作成功', 'success');
-        location.reload();
+        setTimeout(() => {
+            location.reload();
+        }, 100);
     }
-    loading.value = false;
-    visible.value = false;
 };
 const handleCancel = () => {
     visible.value = false;

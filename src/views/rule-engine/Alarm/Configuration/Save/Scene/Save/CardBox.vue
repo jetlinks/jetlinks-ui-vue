@@ -188,6 +188,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  showHistory: {
+    type: Boolean,
+    default: true
+  },
   maskStyle: {
     type: Object,
     default: undefined
@@ -221,7 +225,7 @@ const branchesGroup = computed(() => {
 const activeBranches = computed(() => {
   const { data, invalid } = handleActiveBranches(branchesGroup.value, props.activeKeys)
 
-  isInvalid.value = invalid
+  isInvalid.value = invalid && props.showHistory
   return data
 })
 

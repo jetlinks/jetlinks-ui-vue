@@ -58,7 +58,7 @@
                         </j-tooltip>
                         <RadioCard
                             layout="horizontal"
-                            :options="[
+                            :options="deviceType !== 'onvif' ?[
                                 {
                                     label: '云端',
                                     value: 'cloud',
@@ -70,7 +70,12 @@
                                     logo: getImage('/local.png'),
                                     disabled: deviceType === 'fixed-media',
                                 },
-                            ]"
+                            ]:
+                            [{
+                                label: '云端',
+                                value: 'cloud',
+                                logo: getImage('/media/cloud.png'),
+                            }]"
                             :checkStyle="true"
                             v-model="type"
                         />
@@ -319,7 +324,7 @@ onMounted(() => {
         deviceType.value = _type;
         const _timeStr = dayjs(new Date());
         time.value = _timeStr;
-        if (_type === 'fixed-media') {
+        if (_type === 'fixed-media' || _type === 'onvif') {
             type.value = 'cloud';
             queryServiceRecords(_timeStr);
         } else {

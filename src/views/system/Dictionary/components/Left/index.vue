@@ -201,9 +201,10 @@ const queryData = (first?: Boolean, searchName?: any) => {
             listData.value = res.result;
             if (first && res.result.length) {
                 selectDic(res.result[0]);
-            }else if(selectedKeys.value){
+            }else if(selectedKeys.value){    
+                   console.log(selectedKeys.value)
                 selectDic(res.result.find(i=>{
-                    return i.id = selectedKeys.value[0]
+                    return i.id === selectedKeys.value[0]
                 }))
             }
         }
@@ -228,10 +229,10 @@ const showEdit = (data: any) => {
 const reload = () => {
     queryData();
 };
-const saveSuccess = () => {
+const saveSuccess = (id?: string) => {
     saveShow.value = false;
+    selectedKeys.value = [id] ;
     reload();
-    
 };
 /**
  *
@@ -270,7 +271,7 @@ const updateDic = (data: any) => {
  * 切换选中字典
  */
 const selectDic = (selectKeys: any) => {
-    selectedKeys.value = [selectKeys.id];
+    selectedKeys.value = [selectKeys.id]
     emit('selectData', selectKeys);
 };
 /**

@@ -105,7 +105,7 @@
                                 </j-form-item>
                                 <j-row :gutter="10">
                                     <j-col :span="12">
-                                        <j-form-item label="收信部门">
+                                        <j-form-item label="收信人部门">
                                             <ToOrg
                                                 v-model:toParty="
                                                     formData.template
@@ -137,6 +137,7 @@
                                                 v-model:toUser="
                                                     formData.template.userIdList
                                                 "
+                                                v-model:canSave="canSave"
                                                 :type="formData.type"
                                                 :config-id="formData.configId"
                                             />
@@ -294,7 +295,7 @@
                                     </j-form-item>
                                 </j-col>
                                 <j-col :span="12">
-                                    <j-form-item label="收信部门">
+                                    <j-form-item label="收信人部门">
                                         <ToOrg
                                             v-model:toParty="
                                                 formData.template.toParty
@@ -308,7 +309,7 @@
                             <j-form-item>
                                 <template #label>
                                     <span>
-                                        标签推送
+                                        收信人标签
                                         <j-tooltip
                                             title="本企业微信的标签ID列表,最多支持100个,如果不填写该字段,将在使用此模板发送通知时进行指定"
                                         >
@@ -722,6 +723,7 @@
                         </j-form-item>
                         <j-form-item>
                             <j-button
+                                :disabled="!canSave"
                                 type="primary"
                                 @click="handleSubmit"
                                 :loading="btnLoading"
@@ -771,7 +773,7 @@ const router = useRouter();
 const route = useRoute();
 const useForm = Form.useForm;
 const formRef = ref()
-
+const canSave = ref(true)
 const flag = ref<boolean>(false)
 // 消息类型
 const msgType = ref([
@@ -1184,8 +1186,13 @@ const templateList = ref();
 const getTemplateList = async () => {
     if (!formData.value.configId) return
     const id = formData.value.configId || undefined;
-    const { result } = await templateApi.getAliTemplate(id);
-    templateList.value = result;
+    const res:any = await templateApi.getAliTemplate(id).catch(()=>{
+        canSave.value = false
+    })
+    if(res.status === 200){
+        canSave.value = true
+        templateList.value = res.result;
+    }
 };
 
 /**

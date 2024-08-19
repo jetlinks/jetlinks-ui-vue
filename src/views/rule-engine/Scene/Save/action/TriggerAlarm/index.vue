@@ -100,10 +100,10 @@
 <script setup lang="ts">
 import { queryAlarmPage } from '@/api/rule-engine/scene';
 import AlarmModal from "./AlarmModal.vue";
-import {unBindAlarm} from "@/api/rule-engine/configuration";
+import {queryBindScene, unBindAlarm, unbindScene} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
 import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
-import {useAlarmLevel} from "@/hook";
+import {useAlarmLevel, useRequest} from "@/hook";
 
 const props = defineProps({
     id: {
@@ -130,6 +130,18 @@ const count = ref<number>(0);
 const visible = ref(false)
 const tableRef = ref()
 const { levelMap } = useAlarmLevel();
+
+const { data: activeKeys } = useRequest<any, Record<string, any>>(queryBindScene, {
+  defaultParams: { terms: [{ column: 'ruleId', value: props.id}]},
+  onSuccess(res) {
+    const _result = res.result.data || []
+    return _result.reduce((prev: Record<string, any>, next: { branchIndex: string, ruleId: string }) => {
+      prev[next.ruleId] = next.branchIndex
+      return prev
+    }, {})
+  },
+  defaultValue: []
+})
 
 const map = {
     product: '产品',
@@ -193,7 +205,8 @@ const showAlarm = () => {
 }
 
 const unBind = async (record: any) => {
-  const res = await unBindAlarm(props.id, record.id, [props.actionId])
+  const branchId = activeKeys.value![props.id]
+  const res = branchId === -1 ? await unbindScene(record.id, [props.id]) : await unBindAlarm(props.id, record.id, [props.actionId || props.branchId])
   if (res.success) {
     tableRef.value.reload()
     onlyMessage('操作成功！')
