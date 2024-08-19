@@ -12,9 +12,9 @@
                     >{{ dayjs(text).format('YYYY-MM-DD HH:mm:ss')
                     }}</span
             ></template>
-            <template v-if="column.dataIndex === 'sourceId'">
+            <template v-if="column.dataIndex === 'sourceName'">
                 <Ellipsis>
-                    设备ID：
+                    设备名称：
                     <span class="deviceId" @click="() => gotoDevice(text)">{{
                         text
                     }}</span></Ellipsis
@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import { queryLogList } from '@/api/rule-engine/log';
+import { queryLogList ,queryPreconditioningLogList } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import LogDetail from './LogDetail.vue';
@@ -62,6 +62,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    goal:{
+        type:String,
+        default: ''
+    }
 });
 const menuStory = useMenuStore();
 const exceed = ref();
@@ -81,8 +85,8 @@ const columns = [
     },
     {
         title: '告警源',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
+        dataIndex: 'sourceName',
+        key: 'sourceName',
     },
     {
         title: '告警原因',
@@ -97,7 +101,7 @@ const columns = [
     }
 ];
 const queryData = async () => {
-    const res = await queryLogList(props.configId, {
+    const params = {
         pageIndex: 0,
         pageSize: 51,
         terms: [
@@ -114,7 +118,8 @@ const queryData = async () => {
                 order: 'desc',
             },
         ],
-    });
+    }
+    const res = props.goal ? await queryPreconditioningLogList(props.configId,params) : await queryLogList(props.configId, params);
     if (res.success) {
         if (res.result.data?.length > 50) {
             exceed.value = true;

@@ -44,6 +44,7 @@
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 :value="relationData"
                 showSearch
+                allowClear
                 treeNodeFilterProp="title"
             >
                 <template #title="{ key, username, title }">
@@ -72,6 +73,7 @@
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
                 :value="relationData"
                 showSearch
+                allowClear
                 treeNodeFilterProp="title"
             >
                 <template #title="{ key, username, title }">
@@ -97,6 +99,7 @@
                 placeholder="请选择收信人"
                 :value="value?.value"
                 showSearch
+                allowClear
                 @change="
                     (val, option) =>
                         onChange(
@@ -219,6 +222,7 @@ const treeData = ref<any[]>([
 const mySource = ref<string>('relation');
 const treeDataMap = new Map()
 
+
 const getRelationUsers = async (notifyType: string, notifierId: string) => {
     let resp = undefined;
     if (notifyType === 'dingTalk') {
@@ -294,6 +298,7 @@ const sourceChange = (v: any) => {
     emit('update:value', {
         source: v,
     });
+    emit('change',undefined)
 };
 
 const getObj = (
@@ -375,7 +380,6 @@ const onChange = (
       const _isRelation = item?.isRelation
         _values = getObj(_source, _value, _isRelation);
     }
-
     emit('update:value', _values);
     emit('change', _names.filter((item) => !!item).join(','));
 };

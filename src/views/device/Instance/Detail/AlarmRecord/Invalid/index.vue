@@ -31,12 +31,13 @@
         ><template #createTime="slotProps">
             {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
         </template>
-        <template #thingId="slotProps">
+        <template #thingName="slotProps">
             <Ellipsis>
-                设备ID：
+                设备名称：
                 <span
                     class="deviceId"
-                    >{{ slotProps.thingId }}</span
+                     @click="() => gotoDevice(slotProps.thingId)"
+                    >{{ slotProps.thingName }}</span
                 ></Ellipsis
             >
         </template>
@@ -48,12 +49,14 @@ import { queryInvalidData } from '@/api/rule-engine/log';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import dayjs from 'dayjs';
+import { useMenuStore } from 'store/menu';
 const props = defineProps({
     goal: {
         type: String,
         default: 'device',
     },
 });
+const menuStory = useMenuStore();
 const { current } =
     props.goal === 'device' ? useInstanceStore() : useProductStore();
 const columns = props.goal === 'device' ? [
@@ -92,9 +95,9 @@ const columns = props.goal === 'device' ? [
         scopedSlots: true,
     },
     {
-        title: '告警源',
-        dataIndex: 'thingId',
-        key: 'thingId',
+        title: '数据源',
+        dataIndex: 'thingName',
+        key: 'thingName',
         scopedSlots: true,
         search: {
             type: 'string',
@@ -114,6 +117,10 @@ const columns = props.goal === 'device' ? [
         },
     },
 ]
+
+const gotoDevice = (id) => {
+    menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
+};
 const handleSearch = (e) => {
     params.value = e;
 };

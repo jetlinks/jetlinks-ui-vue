@@ -194,7 +194,7 @@
 
         <Debug v-model:visible="debugVis" :data="currentConfig" />
         <Log v-if="logVis" :data="currentConfig" @cancel="logVis = false" />
-        <SyncUser v-model:visible="syncVis" :data="currentConfig" />
+        <SyncUser v-if="syncVis" :data="currentConfig" @cancel="syncVis = false"/>
     </page-container>
 </template>
 

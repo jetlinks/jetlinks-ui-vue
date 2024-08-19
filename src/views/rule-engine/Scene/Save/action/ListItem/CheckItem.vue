@@ -14,7 +14,7 @@ import { EventEmitter, EventSubscribeKeys, getParams } from '@/views/rule-engine
 import { getOption } from '@/views/rule-engine/Scene/Save/components/DropdownButton/util'
 import { getBuildInData, getNotifyVariablesUser } from './util'
 import { defineExpose } from 'vue'
-import {queryDetailListNoPaging} from "@/api/device/firmware";
+import {detail as getDeviceDetail, queryNoPagingPost} from "@/api/device/instance";
 
 
 const sceneStore = useSceneStore();
@@ -62,22 +62,17 @@ const checkDeviceDelete = async () => {
     let hasDevice = false
     if (item!.selectorValues) {
       const deviceList = item!.selectorValues?.map(item => item.value) || []
-      const deviceResp = await queryDetailListNoPaging(
+      const deviceResp = await queryNoPagingPost(
         {
           terms: [{ terms: [{ column: 'id', termType: 'in', value: deviceList.toString() }]}],
-          context: {
-            "includeTags": false,
-            "includeBind": false,
-            "includeRelations": false,
-            "includeFirmwareInfos": false
-          }
         })
 
       hasDevice = deviceResp.success && deviceResp.result.length === (item!.selectorValues?.length || 0)
 
       if (item!.selectorValues!.length === 1 && hasDevice) {
-        const deviceDetail = deviceResp.result?.[0]
-        // const deviceDetailResp = await getDeviceDetail(deviceList[0])
+        const deviceDetailResp = await getDeviceDetail(deviceList[0])
+        // const deviceDetail = deviceResp.result?.[0]
+        const deviceDetail = deviceDetailResp.result
         metadata = JSON.parse(deviceDetail?.metadata || productDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
       }
     }

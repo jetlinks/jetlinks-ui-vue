@@ -26,10 +26,10 @@
                     : '--'
             }}
         </template>
-        <template #sourceId="slotProps">
+        <template #sourceName="slotProps">
             <Ellipsis>
-                设备ID：
-                <span class="deviceId"  @click="() => gotoDevice(slotProps.sourceId)">{{ slotProps.sourceId }}</span></Ellipsis
+                设备名称：
+                <span class="deviceId"  @click="() => gotoDevice(slotProps.sourceId)">{{ slotProps.sourceName }}</span></Ellipsis
             >
         </template>
         <template #handleType="slotProps">
@@ -65,6 +65,7 @@
         v-if="solveVisible"
         :data="currentAlarm"
         :solveType="solveType"
+        :goal="goal"
         :handleDes="handleDescription"
         @closeSolve="closeSolve"
         @refresh="solveRefresh"
@@ -72,6 +73,7 @@
     <AlarmLog
         v-if="visibleDrawer"
         :data="currentAlarm"
+        :goal="goal"
         @closeDrawer="visibleDrawer = false"
         @refreshTable="refresh"
     />
@@ -80,7 +82,7 @@
 <script setup>
 import {
     queryByDevice as queryAlarmRecord,
-    queryHandleHistory,
+    queryPreHandleHistory,
 } from '@/api/rule-engine/log';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
@@ -204,8 +206,8 @@ const columns =
               },
               {
                   title: '告警源',
-                  dataIndex: 'sourceId',
-                  key: 'sourceId',
+                  dataIndex: 'sourceName',
+                  key: 'sourceName',
                   scopedSlots: true,
                   search: {
                       type: 'string',
@@ -329,16 +331,8 @@ const handleSearch = (e) => {
     params.value = e;
 };
 const queryHandle = async (id) => {
-    const res = await queryHandleHistory({
-        sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [
-            {
-                column: 'alarmRecordId',
-                termType: 'eq',
-                value: id,
-                type: 'and',
-            },
-        ],
+    const res = await queryPreHandleHistory(id,{
+        sorts: [{ name: 'handleTime', order: 'desc' }],
     });
     if (res.status === 200 && res.result?.data.length) {
         handleDescription.value = res.result.data?.[0]?.description;

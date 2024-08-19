@@ -17,6 +17,9 @@
         <template #type="slotProps">
             {{ slotProps?.type?.text }}
         </template>
+        <template #content="slotProps">
+           <Ellipsis style="width:calc(100% - 20px)">{{ slotProps?.content }}</Ellipsis>
+        </template>
         <template #timestamp="slotProps">
             {{
                 slotProps.timestamp
@@ -87,7 +90,6 @@ const columns = [
     },
     {
         title: '内容',
-        ellipsis: true,
         dataIndex: 'content',
         key: 'content',
         scopedSlots: true,

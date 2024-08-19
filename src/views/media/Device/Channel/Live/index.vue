@@ -50,7 +50,7 @@
                                 <div>开始录像</div>
                                 <template #overlay>
                                     <j-menu @click="recordStart">
-                                        <j-menu-item key="true" v-if="_type">
+                                        <j-menu-item key="true" v-if="_type && route.query.type !== 'onvif'">
                                             <span style="padding-right: 12px"
                                                 >本地存储</span
                                             >
@@ -129,7 +129,7 @@
                     </MediaTool>
                 </div>
                 <Preset
-                    v-if="data.ptzType.value === 0 || data.ptzType.value === 1"
+                    v-if="(data.ptzType.value === 0 || data.ptzType.value === 1) && route.query.type !== 'onvif'"
                     :data="data"
                     @refresh="onRefresh"
                 />

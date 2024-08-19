@@ -105,7 +105,10 @@ const validateRules = () => {
   }
 
   const promise = context.validateItem({ [filedName.value]: get(context.dataSource.value, props.name) }, index)
-  promise.catch(res => {
+  promise.then(() => {
+    hideErrorTip()
+    context.removeFieldError(eventKey.value)
+  }).catch(res => {
     const error = res?.filter(item => item.field === filedName.value) || []
     if (error.length === 0) {
       hideErrorTip()

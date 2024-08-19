@@ -95,8 +95,8 @@ function openEdit() {
 }
 
 function layerSetData(geoJson: Record<string, any>, edit = true) {
-  regionState.type = geoJson.features[0].properties.type
-  mapRef.value?.showGeoJson(geoJson.features[0].geometry.coordinates)
+  regionState.type = geoJson?.features?.[0]?.properties?.type
+  mapRef.value?.showGeoJson(geoJson?.features?.[0]?.geometry?.coordinates)
   if (edit) {
     mapRef.value?.openEdit()
   }

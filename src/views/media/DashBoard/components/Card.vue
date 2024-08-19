@@ -17,6 +17,7 @@
                         format="YYYY-MM-DD HH:mm:ss"
                         valueFormat="x"
                         v-model:value="dateRange"
+                        @change="onChange"
                     />
                 </j-space>
             </div>
@@ -143,6 +144,10 @@ const createChart = () => {
     });
     
 };
+
+const onChange = ()=>{
+    dimension.value = 'other'
+}
 
 watch(
     () => props.chartData,

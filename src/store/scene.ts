@@ -45,7 +45,7 @@ export const defaultBranches = [
         key: 'terms_1',
       },
     ],
-    key: 'branches_1',
+    key: defaultBranchId,
     shakeLimit: {
       enabled: false,
       time: 1,
@@ -69,7 +69,7 @@ const defaultOptions = {
         },
       ],
       branchName:'条件',
-      key:  'branches_1',
+      key:defaultBranchId,
       executeAnyway: true,
       groupIndex: 1
     },

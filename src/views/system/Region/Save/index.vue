@@ -66,10 +66,10 @@
                             max: 64,
                             message: '最多输入64个字符',
                         },
-                        {
-                            validator: vailName,
-                            trigger: 'blur',
-                        },
+                        // {
+                        //     validator: vailName,
+                        //     trigger: 'blur',
+                        // },
                     ]"
           >
             <j-input
@@ -86,10 +86,10 @@
                             required: true,
                             message: '请输入区划代码',
                         },
-                        {
-                            validator: vailCode,
-                            trigger: 'blur',
-                        },
+                        // {
+                        //     validator: vailCode,
+                        //     trigger: 'blur',
+                        // },
                     ]"
           >
             <j-input-number
@@ -156,7 +156,7 @@ import type {PropType} from 'vue';
 import {reactive, ref, watch} from 'vue';
 import BuildIn from './BuildIn.vue';
 import {updateRegion, validateName, validateCode} from '@/api/system/region';
-import {omit} from "lodash-es";
+import {cloneDeep, omit} from "lodash-es";
 import {onlyMessage} from "@/utils/comm";
 import RadioButton from '@/components/CardSelect/RadioButton.vue'
 import GeoJsonModal from './GeoJsonModal.vue'
@@ -293,8 +293,8 @@ const handleSave = () => {
       newData.parentId = newData.parentId || ''
 
       if (newData.properties.sync) {
-        const _syncChildren = syncChildren(newData.code, props.areaTree)
-
+        const arr = cloneDeep(props.areaTree)
+        const _syncChildren = syncChildren(newData.code, arr)
         const different = _syncChildren.filter(item => {
           if (newData.children && newData.children.some(oldItem => oldItem.code === item.code)) {
             return false
@@ -310,7 +310,10 @@ const handleSave = () => {
         newData.children = [
           ...(newData.children || []),
           ...different
-        ]
+        ].map(item=>{
+          const {id,...extra} =item
+          return extra
+        })
       }
 
       loading.value = true;

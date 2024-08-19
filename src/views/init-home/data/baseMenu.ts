@@ -3844,6 +3844,10 @@ export default [
             permission: 'role',
             actions: ['query'],
           },
+          {
+            permission: "role-group",
+            actions: ["query"]
+          }
         ],
         buttons: [
           {
@@ -3912,7 +3916,7 @@ export default [
             permissions: [
               {
                 permission: 'role-group',
-                actions: ['query','save']
+                actions: ['save']
               }
             ],
           },
@@ -3922,7 +3926,7 @@ export default [
             permissions: [
               {
                 permission: 'role-group',
-                actions: ['query','delete']
+                actions: ['delete']
               }
             ],
           },
