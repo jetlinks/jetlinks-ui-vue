@@ -22,7 +22,7 @@
             <h5>接口描述</h5>
             <div>{{ props.selectApi.description }}</div>
         </div>
-        <div class="api-card" v-if="requestCard.codeText">
+        <div class="api-card" v-if="requestCard.codeText !== undefined">
             <h5>请求示例</h5>
             <JsonViewer :value="requestCard.codeText" copyable />
         </div>
@@ -154,7 +154,9 @@ const requestCard = reactive<cardType>({
         // schema不是Java中的类的话则不进行解析，直接结束
         if (!_ref) {
             const type = schema.type || '';
+            console.log(type,'type')
             requestCard.codeText = dealNoRef(type, schema);
+            console.log(requestCard.codeText)
         } else {
             const schemaName = _ref?.split('/').pop();
             const type = schema.type || '';
