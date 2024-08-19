@@ -268,7 +268,7 @@ const getActions = (
 };
 
 const handleAdd = () => {
-    menuStory.jumpPage('media/Device/Save', {
+    menuStory.jumpPage('media/AutoVideo/Plan/Detail', {
         id: ':id',
     });
 };
