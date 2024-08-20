@@ -15,7 +15,7 @@
     </div>
     <div v-if="_value" class="dropdown-button value">
       <AIcon type='icon-canshu' />
-      {{ Array.isArray(_value) ? _value[0] : _value}}
+      {{ typeof(_value) === 'object' ? _value[0] : _value}}
     </div>
     <div v-if="value[2][1]" class="dropdown-button value">
       <AIcon type='icon-canshu' />
