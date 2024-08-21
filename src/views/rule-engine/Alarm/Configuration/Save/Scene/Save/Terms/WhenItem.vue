@@ -61,9 +61,6 @@ const props = defineProps({
   }
 })
 
-onMounted(()=>{
-  console.log(props,'props')
-})
 const showAlarm = computed(() => {
   return props.data.terms?.length
 })
