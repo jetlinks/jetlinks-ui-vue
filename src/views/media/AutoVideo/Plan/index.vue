@@ -52,32 +52,32 @@
                                 </span>
                             </Ellipsis>
                             <j-row>
-                                <j-col :span="12">
+                                <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        厂商
+                                        计划ID
                                     </div>
                                     <Ellipsis style="width: calc(100% - 20px)">
                                         <div>{{ slotProps.manufacturer }}</div>
                                     </Ellipsis>
                                 </j-col>
-                                <j-col :span="12">
+                                <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        通道数量
+                                        创建时间
                                     </div>
                                     <div>{{ slotProps.channelNumber }}</div>
                                 </j-col>
-                                <j-col :span="12">
+                                <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        型号
+                                        录像保存周期（天）
                                     </div>
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
                                         >{{ slotProps.model }}</Ellipsis
                                     >
                                 </j-col>
-                                <j-col :span="12">
+                                <j-col :span="6">
                                     <div class="card-item-content-text">
-                                        接入方式
+                                        录制时间段类型
                                     </div>
                                     <div>
                                         <!-- {{ providerType[slotProps.provider] }} -->
@@ -115,17 +115,15 @@
             </JProTable>
         </FullPage>
     </page-container>
+    <AddPlan v-if="addVisible" @closeModal="addVisible = false"></AddPlan>
 </template>
 
-<script setup lang="ts">
-import DeviceApi from '@/api/media/device';
-import type { ActionsType } from '@/views/device/Instance/typings';
+<script setup>
 import { getImage, onlyMessage } from '@/utils/comm';
-import { PROVIDER_OPTIONS } from '@/views/media/Device/const';
-import encodeQuery from '@/utils/encodeQuery';
 import { useMenuStore } from 'store/menu';
-import Summary from './Summary/index.vue';
+import AddPlan from './Add/index.vue';
 
+const addVisible = ref(true);
 const params = ref();
 const menuStory = useMenuStore();
 const tableRef = ref();
@@ -164,17 +162,11 @@ const columns = [
                 { label: '离线', value: 'offline' },
                 { label: '在线', value: 'online' },
             ],
-            handleValue: (v: any) => {
-                return v;
-            },
         },
     },
 ];
 
-const getActions = (
-    data: Partial<Record<string, any>>,
-    type: 'card' | 'table',
-): ActionsType[] => {
+const getActions = (data, type) => {
     if (!data) return [];
     const actions = [
         {
@@ -185,31 +177,9 @@ const getActions = (
             },
             icon: 'EditOutlined',
             onClick: () => {
-                menuStory.jumpPage(
-                    'media/Device/Save',
-                    {},
-                    {
-                        id: data.id,
-                    },
-                );
-            },
-        },
-        {
-            key: 'view',
-            text: '查看通道',
-            tooltip: {
-                title: '查看通道',
-            },
-            icon: 'PartitionOutlined',
-            onClick: () => {
-                menuStory.jumpPage(
-                    'media/Device/Channel',
-                    {},
-                    {
-                        id: data.id,
-                        type: data.provider,
-                    },
-                );
+                menuStory.jumpPage('media/AutoVideo/Plan/Detail', {
+                    id: data.id,
+                });
             },
         },
         {
@@ -249,34 +219,23 @@ const getActions = (
             icon: 'DeleteOutlined',
         },
     ];
-
-    let acts: any = [];
-    if (type === 'card') {
-        // 卡片不展示查看按钮
-        const tempActs = actions.filter((f: any) => f.key !== 'viewDevice');
-        acts =
-            data.provider === 'fixed-media'
-                ? tempActs.filter((f: any) => f.key !== 'updateChannel')
-                : tempActs;
-    } else {
-        acts =
-            data.provider === 'fixed-media'
-                ? actions.filter((f: any) => f.key !== 'updateChannel')
-                : actions;
-    }
-    return acts;
+    return actions;
 };
 
 const handleAdd = () => {
-    menuStory.jumpPage('media/AutoVideo/Plan/Detail', {
-        id: ':id',
-    });
+    menuStory.jumpPage(
+        'media/AutoVideo/Plan/Detail',
+        {
+            id: ':id',
+        },
+        { type: 'edit' },
+    );
 };
-const handleSearch = (e: any) => {
+const handleSearch = (e) => {
     params.value = e;
 };
 
-const handleClick = (data: any) => {};
+const handleClick = (data) => {};
 </script>
 
 <style lang="less" scoped></style>
