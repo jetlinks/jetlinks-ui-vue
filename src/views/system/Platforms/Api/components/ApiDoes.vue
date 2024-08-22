@@ -154,9 +154,7 @@ const requestCard = reactive<cardType>({
         // schema不是Java中的类的话则不进行解析，直接结束
         if (!_ref) {
             const type = schema.type || '';
-            console.log(type,'type')
             requestCard.codeText = dealNoRef(type, schema);
-            console.log(requestCard.codeText)
         } else {
             const schemaName = _ref?.split('/').pop();
             const type = schema.type || '';
@@ -180,6 +178,7 @@ const requestCard = reactive<cardType>({
                     })),
                 },
             ];
+            // console.log(requestCard,'requestCard')
         }
     },
 });
