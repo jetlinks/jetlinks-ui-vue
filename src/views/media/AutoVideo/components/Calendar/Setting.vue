@@ -1,7 +1,7 @@
 <template>
     <a-modal
         :maskClosable="false"
-        width="700px"
+        width="750px"
         :visible="true"
         title="设置"
         @ok="handleSave"
@@ -23,17 +23,16 @@
                 />
             </div>
 
-            <div >
-                <Time  />
+            <div style="margin-top: 12px">
+                <Time :type="type" :value="data.times"  @change="onTime" />
             </div>
-            
         </div>
     </a-modal>
 </template>
 
 <script setup lang="ts" name="Setting">
 import { onMounted, reactive, ref, watch } from 'vue';
-import Time from './Time.vue'
+import Time from './Time.vue';
 
 const props = defineProps({
     data: {
@@ -48,6 +47,10 @@ const props = defineProps({
         type: String,
         default: 'auto',
     },
+    trigger: {
+        type: String,
+        default: 'week',
+    },
 });
 const emit = defineEmits(['save', 'close']);
 
@@ -57,7 +60,7 @@ const checkRef = reactive({
     checkAll: false,
     checkedList: [],
 });
-
+const times = ref(props.data.times);
 
 const onCheckAllChange = (e) => {
     const arr = _options.value?.map((item: any) => item.value);
@@ -67,7 +70,47 @@ const onCheckAllChange = (e) => {
     });
 };
 
-const handleSave = () => {};
+const onTime = (timeData) => {
+    // times.value = data;
+    if (props.type === 'auto') {
+        const arr = timeData.map((item,index) => {
+            if (item.from) {
+                return {
+                    tirger: props.trigger,
+                    when: [props.data?.value],
+                    from: item.from,
+                    to: item.to,
+                    index:index
+
+                };
+            }
+        });
+        times.value = arr;
+    }else{
+        console.log('data====',timeData);
+        const arr = timeData.map((item,index) => {
+            const obj = {
+                    tirger: props.trigger,
+                    when: [props.data?.value],
+                    index:index,
+                    mod:item.mod,
+                }
+            if (item.mod === 'period') {
+                obj['period'] = item.period
+            }
+            if(item.mod === 'once'){
+                obj['once'] = item.once
+            }
+            return obj
+        });
+        times.value = arr;
+    }
+};
+
+const handleSave = () => {
+    const when = checkRef.checkedList.filter((item)=>item!=='all')
+    emit('save',times.value,when)
+};
 
 const handleCancel = () => {
     emit('close');
