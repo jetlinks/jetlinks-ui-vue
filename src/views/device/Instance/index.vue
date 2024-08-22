@@ -661,7 +661,6 @@ const getActions = (
 
 const onSelectChange = (item: any, state: boolean) => {
     const arr = new Set(_selectedRowKeys.value);
-    // console.log(item, state);
     if (state) {
         arr.add(item.id);
     } else {
