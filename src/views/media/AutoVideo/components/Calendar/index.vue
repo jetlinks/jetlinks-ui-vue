@@ -4,6 +4,7 @@
             <a-radio-group
                 v-model:value="trigger"
                 button-style="solid"
+                :disabled="disabled"
                 @change="onChangeTirger"
             >
                 <a-radio-button value="week">按周</a-radio-button>
@@ -56,7 +57,7 @@
                         ></div>
                     </div>
                 </div>
-                <div class="item-setting">
+                <div class="item-setting" v-if="!disabled">
                     <a-button @click="handleSetting(item)">设置</a-button>
                 </div>
             </div>
@@ -94,6 +95,10 @@ const props = defineProps({
         type: String,
         default: 'week',
     },
+    disabled:{
+        type:Boolean,
+        default:false
+    }
 });
 
 const emits = defineEmits(['update:value','update:trigger' ,'change']);
