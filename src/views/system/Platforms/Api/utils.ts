@@ -6,9 +6,9 @@ import { schemaObjType } from "./typing";
  * @param schemas 实体类map
  * @param schemaName 实体类名称
  */
-export function findData(schemas: object, schemaName: string) {
+export function findData(schemas: object, schemaName: string , paths:string[]=[]) {
     const basicType = ['string', 'integer', 'boolean','number'];
-
+   
     if (!schemaName || !schemas[schemaName]) {
         return [];
     }
@@ -16,17 +16,21 @@ export function findData(schemas: object, schemaName: string) {
     const schema = schemas[schemaName];
     Object.entries(schema.properties).forEach((item: [string, any]) => {
         const paramsType =
-            item[1].type ||
             (item[1].$ref && item[1].$ref.split('/').pop()) ||
-            (item[1].items && item[1].items.$ref.split('/').pop()) ||
+            (item[1].items?.$ref && item[1].items.$ref.split('/').pop()) ||
+            item[1].item?.type ||
+            item[1].type ||
             '';
         const schemaObj: schemaObjType = {
             paramsName: item[0],
             paramsType,
             desc: item[1].description || '',
         };
-        if (!basicType.includes(paramsType))
-            schemaObj.children = findData(schemas, paramsType);
+      
+        if (!basicType.includes(paramsType) && paths.filter(path=>path === schemaName).length >=2 ){
+            paths.push(schemaName)
+            schemaObj.children =  findData(schemas, paramsType);
+        }
         result.push(schemaObj);
     });
 
@@ -68,16 +72,18 @@ export function getCodeText(
             default: {
                 const properties = schemas[item.paramsType]?.properties as object || {};
                 const newArr = Object.entries(properties).map(
-                    (item: [string, any]) => ({
+                    (item: [string, any]) => {
+                        return{
                         paramsName: item[0],
                         paramsType: level
-                            ? (item[1].$ref && item[1].$ref.split('/').pop()) ||
-                            (item[1].items &&
+                            ?   (item[1].$ref && item[1].$ref.split('/').pop()) ||
+                            (item[1].items?.$ref &&
                                 item[1].items.$ref.split('/').pop()) ||
-                            item[1].type ||
+                                item[1].item?.type ||
+                                item[1].type ||
                             ''
                             : item[1].type,
-                    }),
+                    }},
                 );
                 result[item.paramsName] = getCodeText(
                     schemas,

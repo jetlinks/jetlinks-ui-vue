@@ -13,10 +13,9 @@
           :key="group.key"
         >
           <div v-for="(branch, index) in group.children">
-            <div style="display: flex;align-items: center" v-if="show">
-              <span v-if="branch.when" style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
+            <div style="display: flex;align-items: center" v-if="show && branch.when.length">
+              <span  style="padding-right: 12px;font-weight: bold;font-size: 16px;width: 46px; display: inline-block;">{{ index === 0 ? '当' : '否则' }}</span>
               <Terms :when="branch.whenOptions" :data="branch.when" />
-
             </div>
             <div class="branches-shakeLimit" v-if="show">
               <span class="branches-shakeLimit-action">执行</span>
