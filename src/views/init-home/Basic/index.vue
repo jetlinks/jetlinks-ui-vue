@@ -90,7 +90,7 @@
                 </j-form-item>
                 <j-form-item
                     name="factoryId"
-                    v-show="isChild"
+                    v-if="isChild"
                     :rules="facIdRules"
                 >
                     <template #label>
@@ -100,7 +100,7 @@
                 </j-form-item>
                 <j-form-item
                     name="factoryKey"
-                    v-show="isChild"
+                    v-if="isChild"
                     :rules="isFactoryKeyRules"
                 >
                     <template #label>
@@ -434,7 +434,7 @@ watch(
 watch(
     () => form.value.isIOT,
     (newValue: any) => {
-        console.log('newValue', newValue);
+        // console.log('newValue', newValue);
         if (newValue === 'true') {
             isTypeChild.value = true;
             facTypeRules.value = [
@@ -462,7 +462,7 @@ watch(
                 ];
             } else {
                 isChild.value = false;
-                facIdRules.value = []
+                facIdRules.value = [];
                 isFactoryKeyRules.value = [];
             }
         } else {
@@ -490,7 +490,9 @@ const factoryTypeList = [
  */
 const saveBasicInfo = () => {
     return new Promise(async (resolve, reject) => {
-        formBasicRef.value.validate()
+        console.log('isChild', isChild.value);
+        formBasicRef.value
+            .validate()
             .then(async () => {
                 let formValues = {};
                 if (form.value.factoryType !== 'sub') {

@@ -45,9 +45,11 @@
                     <div>{{ slotProps.deviceType.text }}</div>
                 </template>
                 <template #factoryLogsEntities="slotProps">
-                    <div>
-                        {{ funGetFactory(slotProps.factoryLogsEntities) }}
-                    </div>
+                    <Ellipsis>
+                        <div>
+                            {{ funGetFactory(slotProps.factoryLogsEntities) }}
+                        </div>
+                    </Ellipsis>
                 </template>
                 <template #card="slotProps">
                     <CardBox
@@ -769,9 +771,12 @@ const handleSearch = (e: any) => {
 const funGetFactory = (data: any) => {
     console.log(data);
     if (data?.length > 0) {
-        return data.map((item: any) => {
+        let facNames = data.map((item: any) => {
             return item.factoryName;
         });
+        return facNames.toString();
+        // const s = new Set(facNames);
+        // return Array.from(s);
     }
     return null;
 };
@@ -808,6 +813,7 @@ onMounted(() => {
             title: '已下发工厂',
             dataIndex: 'factoryLogsEntities',
             key: 'factoryLogsEntities',
+            width: 200,
             scopedSlots: true,
             ellipsis: true,
         };
