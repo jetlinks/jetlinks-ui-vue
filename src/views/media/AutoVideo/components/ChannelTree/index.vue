@@ -1,6 +1,6 @@
 <template>
     <j-tree
-        :height="500"
+        :height="height"
         :show-line="{ showLeafIcon: false }"
         :show-icon="true"
         :tree-data="treeData"
@@ -14,6 +14,13 @@
 
 <script setup name="ChannelTree">
 import cascadeApi from '@/api/media/cascade';
+const props = defineProps({
+    height: {
+        type: Number,
+        default: 500,
+    },
+});
+
 /**
  * 默认展开第一个
  */

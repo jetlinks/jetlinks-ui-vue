@@ -123,7 +123,7 @@ import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import AddPlan from './Add/index.vue';
 
-const addVisible = ref(true);
+const addVisible = ref(false);
 const params = ref();
 const menuStory = useMenuStore();
 const tableRef = ref();
@@ -183,7 +183,7 @@ const getActions = (data, type) => {
             },
         },
         {
-            key: 'viewDevice',
+            key: 'view',
             text: '查看',
             tooltip: {
                 title: '查看',

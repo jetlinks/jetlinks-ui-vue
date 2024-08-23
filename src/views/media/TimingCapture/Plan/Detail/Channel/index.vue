@@ -19,7 +19,7 @@
         <div class="bound">
             <div class="bound_device">
                 <div>选择设备及目录查看已绑定的通道：</div>
-                <ChannelTree :height="700"/>
+                <ChannelTree :bind="700"/>
             </div>
             <div class="bound_channel">
                 <pro-search
@@ -59,7 +59,7 @@
             </div>
         </div>
         <Bind v-if="bindVisible" @closeBind="bindVisible = false"></Bind>
-        <PlayBack v-if="playbackVisible" @close="playbackVisible = false" />
+        <RecordPicture v-if="pictureVisible" @close="pictureVisible = false" />
         <Live
             v-model:visible="playerVis"
             :data="playData"
@@ -72,15 +72,15 @@
 <script setup name="Channel">
 import Bind from './Bind.vue';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
-import PlayBack from '@/views/media/AutoVideo/components/Playback/index.vue';
+import RecordPicture from '@/views/media/TimingCapture/components/RecordPicture/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
 import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 const bindCount = ref(0);
 const tableRef = ref();
 const bindVisible = ref(false);
-const playbackVisible = ref(false);
+const pictureVisible = ref(false);
 const logsVisible = ref(false);
-const playbackData = ref();
+const pictureData = ref();
 const route = useRoute();
 const params = ref();
 const editType = ref(route.query?.type !== 'edit');
@@ -176,15 +176,15 @@ const actions = computed(() => {
           ]
         : [
               {
-                  key: 'backPlay',
-                  text: '回放',
+                  key: 'picture',
+                  text: '抓拍',
                   tooltip: {
-                      title: '回放',
+                      title: '抓拍',
                   },
-                  icon: 'PlayCircleOutlined',
+                  icon: 'PictureOutlined',
                   onClick: () => {
-                      playbackData.value = cloneDeep(data);
-                      playbackVisible.value = true;
+                      pictureData.value = cloneDeep(data);
+                      pictureVisible.value = true;
                   },
               },
               {
@@ -195,8 +195,6 @@ const actions = computed(() => {
                   },
                   icon: 'ExceptionOutlined',
                   onClick: () => {
-                      // playData.value = cloneDeep(data);
-                      // playerVis.value = true;
                       logsVisible.value = true;
                   },
               },
