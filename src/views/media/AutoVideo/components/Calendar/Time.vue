@@ -8,8 +8,8 @@
                     valueFormat="HH:mm:ss"
                     @change="
                         (v) => {
-                            item.from = v[0];
-                            item.to = v[1];
+                            item.from = v?.[0] || '';
+                            item.to = v?.[1] || '';
                             onChange();
                         }
                     "
@@ -37,8 +37,8 @@
                         valueFormat="HH:mm:ss"
                         @change="
                             (v) => {
-                                item.period.from = v[0];
-                                item.period.to = v[1];
+                                item.period.from = v?.[0] || '';
+                                item.period.to = v?.[1] || '';
                                 onChange();
                             }
                         "

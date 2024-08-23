@@ -1,6 +1,5 @@
 <template>
   <div>
-    录像记录
   </div>
 </template>
 

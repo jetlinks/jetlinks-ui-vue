@@ -12,10 +12,7 @@
             </a-radio-group>
         </div>
         <div class="content">
-            <div
-                class="top"
-                :style="{ height: (list?.length + 1) * 40 + 'px' }"
-            >
+            <div class="top">
                 <div v-for="item in Array.from(Array(25), (v, k) => k)" >
                     {{ item }}
                 </div>
@@ -23,9 +20,6 @@
             <div
                 class="item"
                 v-for="item in list"
-                :style="{
-                    bottom: list?.length * 40 + 'px',
-                }"
                 @click="onClick(item)"
             >
                 <div class="item-label">{{ item.label }}</div>
@@ -89,7 +83,7 @@ const props = defineProps({
     },
     type: {
         type: String,
-        default: 'auto',
+        default: 'timing',
     },
     trigger: {
         type: String,
@@ -179,7 +173,7 @@ const onChangeTirger = (e) => {
     emits('update:trigger', e.target.value);
 };
 
-const initList = async (trigger,isFrist:boolean = true) => {
+const initList = async (trigger) => {
     const res = await queryTags();
     if (res.status === 200) {
         tags.value = res.result.map((item) => ({
@@ -250,7 +244,6 @@ watch(
     () => props.trigger,
     () => {
         trigger.value = props.trigger;
-        // initList(props.trigger)
     },
     { immediate: true },
 );
@@ -263,9 +256,15 @@ watch(
         margin-bottom: 12px;
     }
     .content {
+        position: relative;
+        padding-top: 40px;
         .top {
             display: flex;
-            margin-left: 70px;
+            // margin-left: 70px;
+            position: absolute;
+            top:0;
+            bottom: 0;
+            left: 70px;
 
             > div {
                 color: #666;

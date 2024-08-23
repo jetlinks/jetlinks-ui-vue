@@ -102,7 +102,9 @@
                                     <PermissionButton
                                         v-if="
                                             i.key !== 'play' &&
-                                            i.key !== 'backPlay'
+                                            i.key !== 'backPlay' &&
+                                            i.key !== 'share' && 
+                                            i.key !=='plan'
                                         "
                                         :danger="i.key === 'delete'"
                                         :disabled="i.disabled"
@@ -161,6 +163,8 @@
             :data="playData"
             @refresh="listRef.reload()"
         />
+        <VideoShare v-if="visible" @close="visible = false"/>
+        <Plan v-if="planVis" :data="playData" @close="planVis = false"/>
     </page-container>
 </template>
 
@@ -174,6 +178,8 @@ import Tree from './Tree/index.vue';
 import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import DeviceApi from '@/api/media/device';
+import VideoShare from './VideoShare/index.vue';
+import Plan  from './Plan/index.vue'
 
 const menuStory = useMenuStore();
 const route: any = useRoute();
@@ -248,6 +254,8 @@ const newColumns = computed(()=>{
 
 const params = ref<Record<string, any>>({});
 const deviceData = ref<any>();
+const visible = ref(false);
+const planVis = ref(false);
 
 /**
  * 搜索
@@ -320,6 +328,30 @@ const getActions = (
                         channelId: data.channelId,
                     },
                 );
+            },
+        },
+        {
+            key: 'share',
+            text: '分享地址',
+            tooltip: {
+                title: '分享地址',
+            },
+            icon: 'ShareAltOutlined',
+            onClick: () => {
+                visible.value = true;
+                channelData.value = cloneDeep(data);
+            },
+        },
+        {
+            key: 'plan',
+            text: '计划管理',
+            tooltip: {
+                title: '计划管理',
+            },
+            icon: 'ProfileOutlined',
+            onClick: () => {
+                planVis.value = true;
+                // channelData.value = cloneDeep(data);
             },
         },
         {
