@@ -13,7 +13,15 @@
                 model="CARD"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
+                    terms: [
+                        {
+                            column: 'type',
+                            value: 'video',
+                        },
+                    ],
                 }"
+                :gridColumn="2"
+                :request="queryList"
                 :params="params"
             >
                 <template #headerTitle>
@@ -36,8 +44,8 @@
                         :status="slotProps.state.value"
                         :statusText="slotProps.state.text"
                         :statusNames="{
-                            online: 'processing',
-                            offline: 'error',
+                            enabled: 'processing',
+                            disabled: 'error',
                         }"
                     >
                         <template #img>
@@ -51,39 +59,47 @@
                                     {{ slotProps.name }}
                                 </span>
                             </Ellipsis>
-                            <j-row>
-                                <j-col :span="6">
+                            <a-row>
+                                <a-col :span="6">
                                     <div class="card-item-content-text">
                                         计划ID
                                     </div>
                                     <Ellipsis style="width: calc(100% - 20px)">
-                                        <div>{{ slotProps.manufacturer }}</div>
+                                        <div>{{ slotProps.id }}</div>
                                     </Ellipsis>
-                                </j-col>
-                                <j-col :span="6">
+                                </a-col>
+                                <a-col :span="6">
                                     <div class="card-item-content-text">
                                         创建时间
                                     </div>
-                                    <div>{{ slotProps.channelNumber }}</div>
-                                </j-col>
-                                <j-col :span="6">
+                                    <div>
+                                        {{
+                                            dayjs(slotProps.createTime).format(
+                                                'YYYY-MM-DD HH:mm:ss',
+                                            )
+                                        }}
+                                    </div>
+                                </a-col>
+                                <a-col :span="6">
                                     <div class="card-item-content-text">
                                         录像保存周期（天）
                                     </div>
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
-                                        >{{ slotProps.model }}</Ellipsis
+                                        >{{
+                                            slotProps.others?.retention
+                                        }}</Ellipsis
                                     >
-                                </j-col>
-                                <j-col :span="6">
+                                </a-col>
+                                <a-col :span="6">
                                     <div class="card-item-content-text">
                                         录制时间段类型
                                     </div>
                                     <div>
-                                        <!-- {{ providerType[slotProps.provider] }} -->
+                                        {{ slotProps.others?.trigger === 'week' ? '按周' : '按日历' }}
                                     </div>
-                                </j-col>
-                            </j-row>
+                                </a-col>
+                            </a-row>
                         </template>
                         <template #actions="item">
                             <PermissionButton
@@ -93,12 +109,7 @@
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
-                                :hasPermission="
-                                    'media/Device:' +
-                                    (item.key !== 'updateChannel'
-                                        ? item.key
-                                        : 'update')
-                                "
+                                :hasPermission="true"
                             >
                                 <AIcon
                                     type="DeleteOutlined"
@@ -122,6 +133,8 @@
 import { getImage, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import AddPlan from './Add/index.vue';
+import dayjs from 'dayjs';
+import { queryList, controlPlan, deletePlan } from '@/api/media/auto';
 
 const addVisible = ref(false);
 const params = ref();
@@ -158,9 +171,8 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
+                { label: '启用', value: 'enabled' },
+                { label: '禁用', value: 'disabled' },
             ],
         },
     },
@@ -177,20 +189,37 @@ const getActions = (data, type) => {
             },
             icon: 'EditOutlined',
             onClick: () => {
-                menuStory.jumpPage('media/AutoVideo/Plan/Detail', {
-                    id: data.id,
-                });
+                menuStory.jumpPage(
+                    'media/AutoVideo/Plan/Detail',
+                    {
+                        id: data.id,
+                    },
+                    {
+                        type: 'edit',
+                    },
+                );
             },
         },
         {
-            key: 'view',
-            text: '查看',
+            key: 'action',
+            text: data.state.value === 'enabled' ? '禁用' : '启用',
             tooltip: {
-                title: '查看',
+                title: data.state.value === 'enabled' ? '禁用' : '启用',
             },
-            icon: 'EyeOutlined',
-            onClick: () => {
-                menuStory.jumpPage('device/Instance/Detail', { id: data.id });
+            icon:
+                data.state.value === 'enabled'
+                    ? 'StopOutlined'
+                    : 'CheckCircleOutlined',
+            onClick: async () => {
+                const params = {
+                    state:
+                        data.state.value === 'enabled' ? 'disabled' : 'enabled',
+                };
+                const res = await controlPlan(data.id, params);
+                if (res.success) {
+                    onlyMessage('操作成功');
+                    tableRef.value?.reload();
+                }
             },
         },
         {
@@ -204,7 +233,7 @@ const getActions = (data, type) => {
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: () => {
-                    const response = DeviceApi.del(data.id);
+                    const response = deletePlan(data.id);
                     response.then((resp) => {
                         if (resp.status === 200) {
                             onlyMessage('操作成功！');
@@ -223,19 +252,21 @@ const getActions = (data, type) => {
 };
 
 const handleAdd = () => {
-    menuStory.jumpPage(
-        'media/AutoVideo/Plan/Detail',
-        {
-            id: ':id',
-        },
-        { type: 'edit' },
-    );
+    addVisible.value = true;
 };
 const handleSearch = (e) => {
     params.value = e;
 };
 
-const handleClick = (data) => {};
+const handleClick = (data) => {
+    menuStory.jumpPage(
+        'device/Instance/Detail',
+        { id: data.id },
+        {
+            type: 'view',
+        },
+    );
+};
 </script>
 
 <style lang="less" scoped></style>
