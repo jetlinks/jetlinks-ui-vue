@@ -19,7 +19,7 @@
         <div class="bound">
             <div class="bound_device">
                 <div>选择设备及目录查看已绑定的通道：</div>
-                <ChannelTree />
+                <ChannelTree :height="700"/>
             </div>
             <div class="bound_channel">
                 <pro-search

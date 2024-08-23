@@ -52,7 +52,7 @@
                               </span>
                           </Ellipsis>
                           <j-row>
-                              <j-col :span="6">
+                              <j-col :span="8">
                                   <div class="card-item-content-text">
                                       计划ID
                                   </div>
@@ -60,13 +60,13 @@
                                       <div>{{ slotProps.manufacturer }}</div>
                                   </Ellipsis>
                               </j-col>
-                              <j-col :span="6">
+                              <j-col :span="8">
                                   <div class="card-item-content-text">
                                       创建时间
                                   </div>
                                   <div>{{ slotProps.channelNumber }}</div>
                               </j-col>
-                              <j-col :span="6">
+                              <j-col :span="8">
                                   <div class="card-item-content-text">
                                       录像保存周期（天）
                                   </div>
@@ -74,14 +74,6 @@
                                       style="width: calc(100% - 20px)"
                                       >{{ slotProps.model }}</Ellipsis
                                   >
-                              </j-col>
-                              <j-col :span="6">
-                                  <div class="card-item-content-text">
-                                      录制时间段类型
-                                  </div>
-                                  <div>
-                                      <!-- {{ providerType[slotProps.provider] }} -->
-                                  </div>
                               </j-col>
                           </j-row>
                       </template>
