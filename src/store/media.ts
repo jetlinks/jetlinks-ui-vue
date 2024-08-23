@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
-import { detail } from '@/api/device/instance'
 import { onlyMessage } from "@/utils/comm"
+import { queryList } from '@/api/media/auto';
 
 export const useMediaStore = defineStore({
   id: 'media',
@@ -12,10 +12,18 @@ export const useMediaStore = defineStore({
     setCurrent(current:any) {
       this.detail = current
     },
-    async refresh(id: string,key:string) {
-      const resp: any = key ==='auto' ? await detail(id) : await detail(id)
+    async refresh(id: string) {
+      const resp:any = await queryList({
+        terms: [
+            {
+                column: 'id',
+                termType: 'eq',
+                value: id,
+            },
+        ],
+    });
       if(resp.status === 200){
-        this.detail = resp.result
+        this.detail = resp.result.data?.[0]
       }
     },
     setTabActiveKey(key: string) {

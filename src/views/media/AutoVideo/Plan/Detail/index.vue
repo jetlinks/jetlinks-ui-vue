@@ -7,31 +7,37 @@
     >
         <template #title>
             <div style="display: flex; align-items: center">
-              
-                <div v-if="!isEdit">{{  mediaStore.detail?.name || '----' }}</div>
+                <div v-if="!isEdit">
+                    {{ mediaStore.detail?.name || '----' }}
+                </div>
                 <a-input v-else :value="mediaStore.detail?.name" />
 
-                <PermissionButton 
+                <PermissionButton
                     type="link"
                     hasPermission="device/Instance:action"
                     @click="onSave(true)"
                 >
-                    <AIcon type="EditOutlined"  />
+                    <AIcon type="EditOutlined" />
                 </PermissionButton>
             </div>
-            
         </template>
         <template #content>
             <a-descriptions size="small" :column="4">
-                <a-descriptions-item label="计划ID">{{111}}</a-descriptions-item>
-                <a-descriptions-item label="创建人">{{ '创建人' }}</a-descriptions-item>
-                <a-descriptions-item label="创建时间"> {{
+                <a-descriptions-item label="计划ID">{{
+                    mediaStore.detail?.id
+                }}</a-descriptions-item>
+                <a-descriptions-item label="创建人">{{
+                    '创建人'
+                }}</a-descriptions-item>
+                <a-descriptions-item label="创建时间">
+                    {{
                         mediaStore.detail?.createTime
                             ? dayjs(mediaStore.detail.createTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : ''
-                    }}</a-descriptions-item>
+                    }}</a-descriptions-item
+                >
             </a-descriptions>
         </template>
         <FullPage>
@@ -46,15 +52,17 @@
 </template>
 
 <script setup lang="ts" name="Detail">
-import {useMediaStore} from '@/store/media';
+import { useMediaStore } from '@/store/media';
 import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
 
+
 const mediaStore = useMediaStore();
-const isEdit = ref(false)
+const isEdit = ref(false);
+const route = useRoute();
 
 const list = [
     {
@@ -81,10 +89,13 @@ const onTabChange = (e: string) => {
     mediaStore.tabActiveKey = e;
 };
 
-const onSave = (val:boolean)=>{
-    isEdit.value = val
-}
+const onSave = (val: boolean) => {
+    isEdit.value = val;
+};
 
+onMounted(() => {
+    mediaStore.refresh(route.params.id as string)
+});
 </script>
 
 <style lang="less" scoped></style>
