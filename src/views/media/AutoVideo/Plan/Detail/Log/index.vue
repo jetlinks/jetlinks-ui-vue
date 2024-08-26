@@ -30,12 +30,12 @@
                         </PermissionButton> </template
                 ></j-space> </template
         ></j-pro-table>
-        <Logs v-if="logsVisible" @close="logsVisible  = false"/>
+        <!-- <Logs v-if="logsVisible" @close="logsVisible  = false"/> -->
     </div>
 </template>
 
 <script setup name="Log">
-import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
+// import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);

@@ -14,7 +14,7 @@
 
                 <PermissionButton
                     type="link"
-                    hasPermission="device/Instance:action"
+                    :hasPermission="true"
                     @click="onSave(true)"
                 >
                     <AIcon type="EditOutlined" />
@@ -58,6 +58,7 @@ import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 
 const mediaStore = useMediaStore();
