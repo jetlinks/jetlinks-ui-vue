@@ -13,15 +13,11 @@
         </div>
         <div class="content">
             <div class="top">
-                <div v-for="item in Array.from(Array(25), (v, k) => k)" >
+                <div v-for="item in Array.from(Array(25), (v, k) => k)">
                     {{ item }}
                 </div>
             </div>
-            <div
-                class="item"
-                v-for="item in list"
-                @click="onClick(item)"
-            >
+            <div class="item" v-for="item in list" @click="onClick(item)">
                 <div class="item-label">{{ item.label }}</div>
                 <div class="item-content">
                     <div v-for="i in item?.times">
@@ -89,13 +85,13 @@ const props = defineProps({
         type: String,
         default: 'week',
     },
-    disabled:{
-        type:Boolean,
-        default:false
-    }
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
-const emits = defineEmits(['update:value','update:trigger' ,'change']);
+const emits = defineEmits(['update:value', 'update:trigger', 'change']);
 
 const trigger = ref('week');
 const visible = ref(false);
@@ -186,7 +182,6 @@ const initList = async (trigger) => {
     } else {
         list.value = tags.value;
     }
-   
 };
 
 const changList = (arr: any[], when: any[], points: any[]) => {
@@ -262,7 +257,7 @@ watch(
             display: flex;
             // margin-left: 70px;
             position: absolute;
-            top:0;
+            top: 0;
             bottom: 0;
             left: 70px;
 

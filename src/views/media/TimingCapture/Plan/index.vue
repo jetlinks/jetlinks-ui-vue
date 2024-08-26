@@ -30,9 +30,9 @@
                 </template>
                 <template #card="slotProps">
                     <CardBox
-                        @click="() => handleClick(slotProps)"
                         :value="slotProps"
                         :actions="getActions(slotProps, 'card')"
+                          @click="() => handleClick(slotProps)"
                         v-bind="slotProps"
                         :showStatus="true"
                         :status="slotProps.state.value"
@@ -45,6 +45,7 @@
                             enabled: 'processing',
                             disabled: 'error',
                         }"
+                        
                     >
                         <template #img>
                             <slot name="img">
@@ -177,9 +178,9 @@ const getActions = (data, type) => {
             },
             icon: 'EditOutlined',
             onClick: () => {
-                menuStory.jumpPage('media/AutoVideo/Plan/Detail', {
+                menuStory.jumpPage('media/TimingCapture/Plan/Detail', {
                     id: data.id,
-                });
+                },{type:'edit'});
             },
         },
         {
@@ -245,19 +246,22 @@ const getActions = (data, type) => {
 
 const handleAdd = () => {
     addVisible.value = true;
-    // menuStory.jumpPage(
-    //     'media/TimingCapture/Plan/Detail',
-    //     {
-    //         id: ':id',
-    //     },
-    //     { type: 'edit' },
-    // );
 };
 const handleSearch = (e) => {
     params.value = e;
 };
 
-const handleClick = (data) => {};
+const handleClick = (data) => {
+    menuStory.jumpPage(
+        'media/TimingCapture/Plan/Detail',
+        {
+            id: data.id,
+        },
+        {
+            type: 'view',
+        },
+    );
+};
 </script>
 
 <style lang="less" scoped></style>

@@ -2,37 +2,46 @@
     <page-container
         :tabList="list"
         :showBack="true"
-        :tabActiveKey="mediaStore.tabActiveKey"
+        :tabActiveKey="tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title>
-            <div style="display: flex; align-items: center">
+            <div class="title">
                 <div v-if="!isEdit">
-                    {{ mediaStore.detail?.name || '----' }}
+                    {{ detail?.name || '-' }}
+                    <PermissionButton
+                        type="link"
+                        :hasPermission="true"
+                        :loading="loading"
+                        @click="onSave(true)"
+                    >
+                        <AIcon type="EditOutlined" />
+                    </PermissionButton>
                 </div>
-                <a-input v-else :value="mediaStore.detail?.name" />
-
-                <PermissionButton
-                    type="link"
-                    hasPermission="device/Instance:action"
-                    @click="onSave(true)"
-                >
-                    <AIcon type="EditOutlined" />
-                </PermissionButton>
+                <div v-else style="display: flex">
+                    <a-input v-model:value="_value" />
+                    <PermissionButton
+                        type="link"
+                        :hasPermission="true"
+                        @click="onSave(false)"
+                    >
+                        <AIcon type="CheckOutlined" />
+                    </PermissionButton>
+                </div>
             </div>
         </template>
         <template #content>
             <a-descriptions size="small" :column="4">
                 <a-descriptions-item label="计划ID">{{
-                    111
+                    detail?.id
                 }}</a-descriptions-item>
                 <a-descriptions-item label="创建人">{{
-                    '创建人'
+                    detail.creatorName
                 }}</a-descriptions-item>
                 <a-descriptions-item label="创建时间">
                     {{
-                        mediaStore.detail?.createTime
-                            ? dayjs(mediaStore.detail.createTime).format(
+                        detail?.createTime
+                            ? dayjs(detail.createTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : ''
@@ -42,25 +51,29 @@
         </template>
         <FullPage>
             <div style="padding: 24px; height: 100%">
-                <component
-                    :is="tabs[mediaStore.tabActiveKey]"
-                    @onJump="onTabChange"
-                />
+                <component :is="tabs[tabActiveKey]" @onJump="onTabChange" />
             </div>
         </FullPage>
     </page-container>
 </template>
 
-<script setup lang="ts" name="Detail">
+<script setup name="Detail">
 import { useMediaStore } from '@/store/media';
 import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
 import { ref } from 'vue';
+import { updatePlan, queryList } from '@/api/media/auto';
+import { useRoute } from 'vue-router';
 
 const mediaStore = useMediaStore();
 const isEdit = ref(false);
+const tabActiveKey = ref('Rule');
+const detail = ref({});
+const route = useRoute();
+const loading = ref(false);
+const _value = ref();
 
 const list = [
     {
@@ -83,13 +96,57 @@ const tabs = {
     Log,
 };
 
-const onTabChange = (e: string) => {
-    mediaStore.tabActiveKey = e;
+const onTabChange = (e) => {
+    tabActiveKey.value = e;
 };
 
-const onSave = (val: boolean) => {
-    isEdit.value = val;
+const onSave = async (val) => {
+    if (!val) {
+        loading.value = true;
+        const res = await updatePlan({
+            id: route.params.id,
+            name: _value.value,
+            type: 'photo',
+        }).finally(() => {
+            loading.value = false;
+            isEdit.value = val;
+        });
+        if (res.status === 200) {
+            refresh();
+        }
+    } else {
+        isEdit.value = val;
+    }
 };
+
+const refresh = async () => {
+    const res = await queryList({
+        terms: [
+            {
+                column: 'id',
+                termType: 'eq',
+                value: route.params.id,
+            },
+        ],
+    });
+    if (res.status === 200) {
+        detail.value = res.result.data?.[0];
+        _value.value = detail.value?.name;
+    }
+};
+
+onMounted(() => {
+    refresh();
+});
+
+provide('detail',detail)
+provide('refresh',refresh())
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
