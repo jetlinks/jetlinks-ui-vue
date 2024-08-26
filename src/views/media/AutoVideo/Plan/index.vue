@@ -96,7 +96,11 @@
                                         录制时间段类型
                                     </div>
                                     <div>
-                                        {{ slotProps.others?.trigger === 'week' ? '按周' : '按日历' }}
+                                        {{
+                                            slotProps.others?.trigger === 'week'
+                                                ? '按周'
+                                                : '按日历'
+                                        }}
                                     </div>
                                 </a-col>
                             </a-row>
@@ -260,8 +264,10 @@ const handleSearch = (e) => {
 
 const handleClick = (data) => {
     menuStory.jumpPage(
-        'device/Instance/Detail',
-        { id: data.id },
+        'media/AutoVideo/Plan/Detail',
+        {
+            id: data.id,
+        },
         {
             type: 'view',
         },
