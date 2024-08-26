@@ -27,7 +27,7 @@
                 </j-tag>
             </template>
             <template #createTime="slotProps">
-                {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+                {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #server="slotProps">
                 {{ slotProps.context.server }}
@@ -60,7 +60,7 @@
         <div>
             <span class="mr-10">[{{ descriptionsData?.threadName }}]</span>
             <span class="mr-10">{{
-                moment(descriptionsData?.createTime).format(
+                dayjs(descriptionsData?.createTime).format(
                     'YYYY-MM-DD HH:mm:ss',
                 )
             }}</span>
@@ -99,7 +99,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import type { SystemLogItem } from '../typings';
 import { querySystem } from '@/api/link/log';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { modifySearchColumnValue } from '@/utils/comm';
 

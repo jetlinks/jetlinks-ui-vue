@@ -31,7 +31,7 @@
                         </div>
                         <div class="dialog-time">
                             {{
-                                moment(item.endTime).format(
+                            dayjs(item.endTime).format(
                                     'YYYY-MM-DD HH:mm:ss',
                                 )
                             }}
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const operationMap = new Map();
 operationMap.set('connection', '连接');

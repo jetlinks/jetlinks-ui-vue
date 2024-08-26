@@ -13,7 +13,7 @@
         >
             <template #requestTime="slotProps">
                 {{
-                    moment(slotProps.requestTime).format('YYYY-MM-DD HH:mm:ss')
+                dayjs(slotProps.requestTime).format('YYYY-MM-DD HH:mm:ss')
                 }}
             </template>
             <template #description="slotProps">
@@ -82,7 +82,7 @@
             </j-descriptions-item>
             <j-descriptions-item label="请求时间">
                 {{
-                    moment(descriptionsData?.requestTime).format(
+                dayjs(descriptionsData?.requestTime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                 }}
@@ -111,9 +111,8 @@
 </template>
 <script lang="ts" setup name="AccessLog">
 import type { ActionsType } from '@/components/Table/index';
-import type { AccessLogItem } from '../typings';
 import { queryAccess } from '@/api/link/log';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { modifySearchColumnValue } from '@/utils/comm';
 
 const tableRef = ref<Record<string, any>>({});

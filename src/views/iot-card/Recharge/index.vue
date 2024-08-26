@@ -29,7 +29,7 @@
             <template #createTime="slotProps">
                 {{
                     slotProps.createTime
-                    ? moment(slotProps.createTime).format(
+                    ? dayjs(slotProps.createTime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                     : ''
@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import { queryRechargeList } from '@/api/iot-card/cardManagement';
 import Save from './Save.vue';
