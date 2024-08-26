@@ -7,33 +7,22 @@
     >
         <template #title>
             <div
-                style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                "
+               class="video-detail-title"
             >
-                <div v-if="!isEdit">
-                    {{ detail?.name || '----' }}
-                    <PermissionButton
-                        type="link"
-                        :hasPermission="true"
-                        :loading="loading"
-                        @click="onSave(true)"
-                    >
-                        <AIcon type="EditOutlined" />
-                    </PermissionButton>
-                </div>
-                <div v-else style="display: flex;">
-                    <a-input v-model:value="_value" />
-                    <PermissionButton
-                        type="link"
-                        :hasPermission="true"
-                        @click="onSave(false)"
-                    >
-                        <AIcon type="CheckOutlined" />
-                    </PermissionButton>
-                </div>
+              <div class="title-body">
+                <span v-if="!isEdit">
+                  {{ detail?.name || '----' }}
+                </span>
+                <a-input v-else v-model:value="_value" />
+                <PermissionButton
+                  type="link"
+                  :hasPermission="true"
+                  :loading="loading"
+                  @click="onSave(isEdit)"
+                >
+                  <AIcon :type="isEdit ? 'EditOutlined' : 'CheckOutlined'" />
+                </PermissionButton>
+              </div>
             </div>
         </template>
         <template #content>
@@ -65,7 +54,6 @@
 </template>
 
 <script setup  name="Detail">
-import { useMediaStore } from '@/store/media';
 import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
@@ -73,14 +61,23 @@ import dayjs from 'dayjs';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { updatePlan,queryList } from '@/api/media/auto';
+import {usePlanDetailContent} from "./utils";
 
-const mediaStore = useMediaStore();
 const isEdit = ref(false);
 const route = useRoute();
 const _value = ref();
 const loading = ref(false);
 const tabActiveKey = ref('Rule');
-const detail = ref({})
+const detail = ref({
+  schedules: [],
+  others: {
+    retention: 1,
+    times: [],
+    trigger: 'week'
+  }
+})
+
+usePlanDetailContent(detail)
 
 const list = [
     {
@@ -117,12 +114,19 @@ const refresh = async()=>{
             },
         ],
     });
-      if(res.status === 200){
-        detail.value = res.result.data?.[0]
+      if(res.success){
+        detail.value = Object.assign({
+          schedules: [],
+          others: {
+            retention: 1,
+            times: [],
+            trigger: 'week'
+          }
+        }, res.result.data?.[0])
       }
 }
 
-const onSave =async (val) => {
+const onSave = async (val) => {
     if(!val){
         loading.value = true;
         const res = await updatePlan({
@@ -133,7 +137,7 @@ const onSave =async (val) => {
             loading.value = false
             isEdit.value = val;
         })
-        if(res.status === 200){
+        if(res.success){
             refresh()
         }
     }else{
@@ -157,4 +161,15 @@ onMounted(() => {
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.video-detail-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .title-body {
+    display: flex;
+  }
+}
+
+</style>
