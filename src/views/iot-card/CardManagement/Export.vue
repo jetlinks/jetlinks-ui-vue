@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { _export } from '@/api/iot-card/cardManagement';
 import { downloadFileByUrl } from '@/utils/utils';
 
@@ -48,7 +48,7 @@ const handleOk = () => {
             const url = URL.createObjectURL(blob);
             downloadFileByUrl(
                 url,
-                `物联卡管理-${moment(new Date()).format(
+                `物联卡管理-${dayjs(new Date()).format(
                     'YYYY/MM/DD HH:mm:ss',
                 )}`,
                 type.value,

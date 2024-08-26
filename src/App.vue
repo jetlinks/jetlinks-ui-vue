@@ -16,6 +16,15 @@ import { storeToRefs } from 'pinia';
 import { useSystem } from './store/system';
 import {LocalStore} from "@/utils/comm";
 import {TOKEN_KEY} from "@/utils/variable";
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import weekdays from 'dayjs/plugin/weekday'
+import localeData from 'dayjs/plugin/localeData'
+
+dayjs.extend(weekdays)
+dayjs.extend(localeData)
+dayjs.locale('zh-cn');
+
 
 const system = useSystem();
 const {configInfo} = storeToRefs(system);

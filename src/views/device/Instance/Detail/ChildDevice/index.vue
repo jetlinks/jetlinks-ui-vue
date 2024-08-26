@@ -70,7 +70,7 @@
             <template #registryTime="slotProps">
                 {{
                     slotProps.registryTime
-                        ? moment(slotProps.registryTime).format(
+                        ? dayjs(slotProps.registryTime).format(
                               'YYYY-MM-DD HH:mm:ss',
                           )
                         : ''
@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import {
     query,
@@ -136,7 +136,6 @@ import BindChildDevice from './BindChildDevice/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import SaveChild from './SaveChild/index.vue';
 import { onlyMessage } from '@/utils/comm';
-import { cloneDeep } from 'lodash-es';
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
