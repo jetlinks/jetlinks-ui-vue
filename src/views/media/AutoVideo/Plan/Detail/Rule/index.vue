@@ -4,12 +4,24 @@
             <span>计划状态：</span>
             <a-switch v-if="editType"></a-switch>
             <div v-else>
-                <PermissionButton 
+                <!-- <a-badge
+                    :status="
+                        mediaStore.detail.state?.value === 'enabled'
+                            ? 'success'
+                            : 'error'
+                    "
+                    :text="
+                        mediaStore.detail.state?.value === 'enabled'
+                            ? '正常'
+                            : '禁用'
+                    "
+                /> -->
+                <PermissionButton
                     type="link"
                     hasPermission="device/Instance:action"
                     @click="editType = true"
                 >
-                    <AIcon type="EditOutlined"  />
+                    <AIcon type="EditOutlined" />
                 </PermissionButton>
             </div>
         </div>
@@ -22,7 +34,7 @@
                         type="QuestionCircleOutlined"
                         style="margin-left: 5px"
                     ></AIcon></a-tooltip
-                >：
+                >:
             </div>
             <a-input-number
                 v-if="editType"
@@ -45,13 +57,16 @@
 <script setup lang="ts" name="Rule">
 import Calendar from '../../../components/Calendar/index.vue';
 const route = useRoute();
-const editType = ref(route.query?.type === 'edit')
+const editType = ref(route.query?.type === 'edit');
+
+
 </script>
 
 <style lang="less">
 .rule-item {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     display: flex;
+    align-items: center;
     .retentionCycleTip {
         font-size: 12px;
         margin-top: 5px;

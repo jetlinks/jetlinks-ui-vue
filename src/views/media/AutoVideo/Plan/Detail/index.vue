@@ -2,37 +2,50 @@
     <page-container
         :tabList="list"
         :showBack="true"
-        :tabActiveKey="mediaStore.tabActiveKey"
+        :tabActiveKey="tabActiveKey"
         @tabChange="onTabChange"
     >
         <template #title>
-            <div style="display: flex; align-items: center;justify-content: center">
+            <div
+                style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                "
+            >
                 <div v-if="!isEdit">
-                    {{ mediaStore.detail?.name || '----' }}
+                    {{ detail?.name || '----' }}
+                    <PermissionButton
+                        type="link"
+                        :hasPermission="true"
+                        :loading="loading"
+                        @click="onSave(true)"
+                    >
+                        <AIcon type="EditOutlined" />
+                    </PermissionButton>
                 </div>
-                <a-input v-else :value="_value" />
-
-                <PermissionButton
-                    type="link"
-                    :hasPermission="true"
-                    @click="onSave(true)"
-                >
-                    <AIcon type="EditOutlined" />
-                </PermissionButton>
+                <div v-else style="display: flex;">
+                    <a-input v-model:value="_value" />
+                    <PermissionButton
+                        type="link"
+                        :hasPermission="true"
+                        @click="onSave(false)"
+                    >
+                        <AIcon type="CheckOutlined" />
+                    </PermissionButton>
+                </div>
             </div>
         </template>
         <template #content>
             <a-descriptions size="small" :column="4">
                 <a-descriptions-item label="计划ID">{{
-                    mediaStore.detail?.id
+                    detail?.id
                 }}</a-descriptions-item>
-                <a-descriptions-item label="创建人">{{
-                    '创建人'
-                }}</a-descriptions-item>
+                <a-descriptions-item label="创建人">{{detail.creatorName}}</a-descriptions-item>
                 <a-descriptions-item label="创建时间">
                     {{
-                        mediaStore.detail?.createTime
-                            ? dayjs(mediaStore.detail.createTime).format(
+                        detail?.createTime
+                            ? dayjs(detail.createTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : ''
@@ -43,7 +56,7 @@
         <FullPage>
             <div style="padding: 24px; height: 100%">
                 <component
-                    :is="tabs[mediaStore.tabActiveKey]"
+                    :is="tabs[tabActiveKey]"
                     @onJump="onTabChange"
                 />
             </div>
@@ -51,20 +64,23 @@
     </page-container>
 </template>
 
-<script setup lang="ts" name="Detail">
+<script setup  name="Detail">
 import { useMediaStore } from '@/store/media';
 import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-
+import { updatePlan,queryList } from '@/api/media/auto';
 
 const mediaStore = useMediaStore();
 const isEdit = ref(false);
 const route = useRoute();
-const _value = ref()
+const _value = ref();
+const loading = ref(false);
+const tabActiveKey = ref('Rule');
+const detail = ref({})
 
 const list = [
     {
@@ -87,25 +103,57 @@ const tabs = {
     Log,
 };
 
-const onTabChange = (e: string) => {
-    mediaStore.tabActiveKey = e;
+const onTabChange = (e) => {
+    tabActiveKey.value = e;
 };
 
-const onSave = (val: boolean) => {
-    isEdit.value = val;
-};
-// watch(
-//     ()=>mediaStore.detail?.name,
-//     ()=>{
-//         _value.value = mediaStore.detail?.name
-//     },
-//     { immediate: true }
-// )
+const refresh = async()=>{
+    const res =  await queryList({
+        terms: [
+            {
+                column: 'id',
+                termType: 'eq',
+                value: route.params.id,
+            },
+        ],
+    });
+      if(res.status === 200){
+        detail.value = res.result.data?.[0]
+      }
+}
 
+const onSave =async (val) => {
+    if(!val){
+        loading.value = true;
+        const res = await updatePlan({
+            id: route.params.id,
+            name: _value.value,
+            type:'video'
+        }).finally(()=>{
+            loading.value = false
+            isEdit.value = val;
+        })
+        if(res.status === 200){
+            refresh()
+        }
+    }else{
+        isEdit.value = val
+    }
+};
+
+
+watch(
+    () => detail.value?.name,
+    (val) => {
+        if (val) {
+            _value.value = val;
+        }
+    },
+    { immediate: true },
+);
 
 onMounted(() => {
-    mediaStore.refresh(route.params.id as string)
-    _value.value = mediaStore.detail?.name
+    refresh()
 });
 </script>
 
