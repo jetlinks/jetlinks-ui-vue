@@ -6,19 +6,33 @@
         :tree-data="treeData"
         :loadData="onLoadData"
         :fieldNames="{ title: 'name', key: 'id' }"
-        @select="onSelect"
         v-model:expandedKeys="expandedKeys"
+        @select="onSelect"
     >
     </j-tree>
 </template>
 
 <script setup name="ChannelTree">
 import cascadeApi from '@/api/media/cascade';
+
+const emit = defineEmits([
+  'update:channelId',
+  'update:deviceId',
+  'onSelect'
+])
 const props = defineProps({
-    height: {
-        type: Number,
-        default: 500,
-    },
+  height: {
+    type: Number,
+    default: 500,
+  },
+  deviceId: {
+      type: String,
+      default: undefined
+  },
+  channelId: {
+    type: String,
+    default: undefined
+  }
 });
 
 /**
@@ -30,6 +44,43 @@ const expandedKeys = ref([]); // 展开的key
  * 获取设备列表
  */
 const treeData = ref([]);
+
+/**
+ * 获取子节点
+ * @param key
+ * @param params 请求参数
+ * @param first 是否第一次
+ */
+const getChildren = (key, params, first = false) => {
+  return new Promise(async (resolve) => {
+    const res = await cascadeApi.queryChannelList(params);
+    if (res.status === 200) {
+      const { total, pageIndex, pageSize } = res.result;
+      treeData.value = updateTreeData(
+        treeData.value,
+        key,
+        res.result.data.map((item) => ({
+          ...item,
+          class: item.status.value,
+          isLeaf: isLeaf(item),
+        })),
+      );
+
+      if (total > (pageIndex + 1) * pageSize) {
+        setTimeout(() => {
+          getChildren(key, {
+            ...params,
+            pageIndex: params.pageIndex + 1,
+          });
+        }, 50);
+      }
+      if (first) {
+        expandedKeys.value.push(treeData.value[0].id);
+      }
+      resolve(res.result);
+    }
+  });
+};
 const getDeviceList = async () => {
     const res = await cascadeApi.getMediaTree({ paging: false });
     if (res.success) {
@@ -44,7 +95,7 @@ const getDeviceList = async () => {
                 };
             });
         if (treeData.value.length > 0 && treeData.value[0]) {
-            getChildren(
+            await getChildren(
                 treeData.value[0].id,
                 {
                     pageIndex: 0,
@@ -68,7 +119,10 @@ const getDeviceList = async () => {
  * @param param1
  */
 const onSelect = (_, { node }) => {
+    console.log(node)
     emit('onSelect', { dId: node.deviceId, cId: node.channelId });
+    emit('update:deviceId', node.deviceId);
+    emit('update:channelId', node.channelId);
 };
 
 /**
@@ -76,46 +130,7 @@ const onSelect = (_, { node }) => {
  * @param node
  */
 const isLeaf = (node) => {
-    if (node.channelNumber) {
-        return false;
-    }
-    return true;
-};
-
-/**
- * 获取子节点
- * @param key
- * @param params
- */
-const getChildren = (key, params, first = false) => {
-    return new Promise(async (resolve) => {
-        const res = await cascadeApi.queryChannelList(params);
-        if (res.status === 200) {
-            const { total, pageIndex, pageSize } = res.result;
-            treeData.value = updateTreeData(
-                treeData.value,
-                key,
-                res.result.data.map((item) => ({
-                    ...item,
-                    class: item.status.value,
-                    isLeaf: isLeaf(item),
-                })),
-            );
-
-            if (total > (pageIndex + 1) * pageSize) {
-                setTimeout(() => {
-                    getChildren(key, {
-                        ...params,
-                        pageIndex: params.pageIndex + 1,
-                    });
-                }, 50);
-            }
-            if (first) {
-                expandedKeys.value.push(treeData.value[0].id);
-            }
-            resolve(res.result);
-        }
-    });
+    return !node.channelNumber;
 };
 
 /**

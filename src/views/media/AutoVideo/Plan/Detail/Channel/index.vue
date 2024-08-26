@@ -19,27 +19,24 @@
         <div class="bound">
             <div class="bound_device">
                 <div>选择设备及目录查看已绑定的通道：</div>
-                <ChannelTree :height="700"/>
+                <ChannelTree :height="700" v-model:deviceId="deviceId" />
             </div>
             <div class="bound_channel">
                 <pro-search
                     :columns="columns"
-                    @search="handleSearch"
                     :params="params"
                     style="padding-bottom: 0; margin-bottom: 0"
+                    @search="handleSearch"
                 ></pro-search>
                 <j-pro-table
                     style="min-height: calc(100% - 60px)"
                     ref="tableRef"
-                    :columns="columns"
-                    :dataSource="[
-                        {
-                            channelId: '123',
-                        },
-                    ]"
                     model="table"
+                    :columns="columns"
+                    :request="queryBoundChannel"
+                    :params="params"
                 >
-                    <template #action="slotProps">
+                    <template #action="{ record }">
                         <j-space :size="16">
                             <template v-for="i in actions" :key="i.key">
                                 <PermissionButton
@@ -50,7 +47,7 @@
                                     :tooltip="{
                                         ...i.tooltip,
                                     }"
-                                    @click="i.onClick"
+                                    @click="() => { i.onClick(record)}"
                                 >
                                     <AIcon :type="i.icon" />
                                 </PermissionButton> </template
@@ -74,7 +71,10 @@ import Bind from './Bind.vue';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import PlayBack from '@/views/media/AutoVideo/components/Playback/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
+import {queryBoundChannel} from "@/api/media/auto";
+import { cloneDeep } from 'lodash-es'
 // import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
+
 const bindCount = ref(0);
 const tableRef = ref();
 const bindVisible = ref(false);
@@ -82,10 +82,40 @@ const playbackVisible = ref(false);
 const logsVisible = ref(false);
 const playbackData = ref();
 const route = useRoute();
-const params = ref();
+
 const editType = ref(route.query?.type !== 'edit');
 const playData = ref();
 const playerVis = ref(false);
+
+const deviceId = ref()
+
+const params = ref({terms: [
+    {
+      terms: [
+        {
+          column: "channelId$media-record-schedule-bind-channel",
+          value: [{
+            column: "scheduleId",
+            termType: "eq",
+            value: route.params.id
+          }]
+        },
+        {
+          column: "deviceId$media-record-schedule-bind-device",
+          value: [{
+            column: "scheduleId",
+            termType: "eq",
+            value: route.params.id
+          }]
+        },
+      ]
+    },
+    {
+      column: 'deviceId',
+      value: deviceId.value
+    }
+  ]
+});
 
 const columns = [
     {
@@ -154,7 +184,7 @@ const actions = computed(() => {
                       title: '播放',
                   },
                   icon: 'PlayCircleOutlined',
-                  onClick: () => {
+                  onClick: (data) => {
                       playData.value = cloneDeep(data);
                       playerVis.value = true;
                   },
@@ -182,7 +212,7 @@ const actions = computed(() => {
                       title: '回放',
                   },
                   icon: 'PlayCircleOutlined',
-                  onClick: () => {
+                  onClick: (data) => {
                       playbackData.value = cloneDeep(data);
                       playbackVisible.value = true;
                   },
@@ -210,9 +240,58 @@ const showBind = () => {
  * @param params
  */
 const handleSearch = (e) => {
-    params.value = e;
+  console.log('handleSearch', e)
+  const defaultParams = {
+    terms: [
+      {
+        terms: [
+          {
+            column: "channelId$media-record-schedule-bind-channel",
+            value: [{
+              column: "scheduleId",
+              termType: "eq",
+              value: route.params.id
+            }]
+          },
+          {
+            column: "deviceId$media-record-schedule-bind-device",
+            value: [{
+              column: "scheduleId",
+              termType: "eq",
+              value: route.params.id
+            }]
+          },
+        ]
+      },
+    ]
+  }
+
+  if (deviceId.value) {
+    defaultParams.terms.push({
+      column: 'deviceId',
+      value: deviceId.value,
+      type: 'and'
+    })
+  }
+
+  if (e.length) {
+    defaultParams.terms.push({
+    ...e,
+      type: 'and'
+    })
+  }
+
+  params.value = defaultParams
+
 };
+
 const clearBind = () => {};
+
+
+watch(() => deviceId.value, () => {
+  handleSearch([])
+})
+
 </script>
 
 <style lang="less">
