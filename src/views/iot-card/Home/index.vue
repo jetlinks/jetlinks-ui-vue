@@ -90,7 +90,7 @@
 <script setup lang="ts" name='IotCardHome'>
 import { getImage, onlyMessage } from '@/utils/comm';
 import Guide from '../components/Guide.vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { queryFlow, list } from '@/api/iot-card/home';
 import * as echarts from 'echarts';
 import { useMenuStore } from '@/store/menu';
@@ -201,8 +201,8 @@ const jumpDashboard = () => {
  * 获取昨日流量消耗
  */
 const getTodayFlow = async () => {
-    const beginTime = moment().subtract(1, 'days').startOf('day').valueOf();
-    const endTime = moment().subtract(1, 'days').endOf('day').valueOf();
+    const beginTime = dayjs().subtract(1, 'days').startOf('day').valueOf();
+    const endTime = dayjs().subtract(1, 'days').endOf('day').valueOf();
     const resp: any = await queryFlow(beginTime, endTime, { orderBy: 'date' });
     resp.result.map((item: any) => {
         currentSource.value += parseFloat(item.value.toFixed(2));
@@ -213,8 +213,8 @@ const getTodayFlow = async () => {
  * 获取最近15天流量消耗统计图数据
  */
 const get15DaysTrafficConsumption = async () => {
-    const beginTime = moment().subtract(15, 'days').startOf('day').valueOf();
-    const endTime = moment().subtract(1, 'days').endOf('day').valueOf();
+    const beginTime = dayjs().subtract(15, 'days').startOf('day').valueOf();
+    const endTime = dayjs().subtract(1, 'days').endOf('day').valueOf();
     const resp: any = await queryFlow(beginTime, endTime, { orderBy: 'date' });
     barChartData.value = resp.result
         .map((item: any) => ({

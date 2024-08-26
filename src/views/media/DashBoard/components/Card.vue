@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import * as echarts from 'echarts';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 // const { proxy } = <any>getCurrentInstance();
 type Emits = {
@@ -41,14 +41,14 @@ const props = defineProps({
     title: { type: String, default: '' },
     // 图表数据
     chartData: { type: Array, default: () => [] },
-    
+
 });
 
 // 统计时间维度
 const dimension = ref('week');
 const dateRange = ref<any>([
-    moment().subtract(1, 'week').format('x'),
-    moment().format('x'),
+  dayjs().subtract(1, 'week').format('x'),
+  dayjs().format('x'),
 ]);
 
 /**
@@ -64,7 +64,7 @@ const createChart = () => {
         const sData: number[] = props.chartData.map(
             (m: any) => m.value && m.value.toFixed(0),
         );
-        
+
         const maxY = Math.max.apply(null, sData.length ? sData : [0]);
         const options = {
             grid: {
@@ -136,13 +136,13 @@ const createChart = () => {
                 },
             ],
         };
-        
+
         myChart.setOption(options);
         window.addEventListener('resize', function () {
             myChart.resize();
         });
     });
-    
+
 };
 
 const onChange = ()=>{
@@ -173,18 +173,18 @@ watch(
     () => dimension.value,
     (val) => {
         if (val === 'today') {
-            dateRange.value[0] = moment().startOf('day').format('x');
+            dateRange.value[0] = dayjs().startOf('day').format('x');
         }
         if (val === 'week') {
-            dateRange.value[0] = moment().subtract(1, 'week').format('x');
+            dateRange.value[0] = dayjs().subtract(1, 'week').format('x');
         }
         if (val === 'month') {
-            dateRange.value[0] = moment().subtract(1, 'month').format('x');
+            dateRange.value[0] = dayjs().subtract(1, 'month').format('x');
         }
         if (val === 'year') {
-            dateRange.value[0] = moment().subtract(1, 'year').format('x');
+            dateRange.value[0] = dayjs().subtract(1, 'year').format('x');
         }
-        dateRange.value[1] = moment().format('x');
+        dateRange.value[1] = dayjs().format('x');
         emits('change', {
             time: {
                 start: dateRange.value[0],
