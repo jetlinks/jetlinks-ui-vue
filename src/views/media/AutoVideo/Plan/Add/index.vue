@@ -2,6 +2,7 @@
     <a-modal
         visible
         title="新增-录像计划"
+        :confirmLoading="loading"
         @ok="submitData"
         @cancel="$emit('closeModal')"
     >
@@ -30,6 +31,8 @@
 import { savePlan } from '@/api/media/auto';
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
+import { useRequest } from '@/hook'
+
 const emit = defineEmits(['closeModal']);
 const formRef = ref();
 const formData = ref({
@@ -37,21 +40,25 @@ const formData = ref({
     type: 'video',
 });
 const menuStory = useMenuStore();
+
+const { loading, run } = useRequest(savePlan, {
+  immediate:false,
+  onSuccess(res) {
+    onlyMessage('操作成功');
+    menuStory.jumpPage(
+      'media/AutoVideo/Plan/Detail',
+      {
+        id: res.result.id,
+      },
+      {
+        type: 'edit',
+      },
+    );
+  }
+})
 const submitData = () => {
-    formRef.value.validate().then(async () => {
-        const res = await savePlan(formData.value);
-        if (res.success) {
-            onlyMessage('操作成功');
-            menuStory.jumpPage(
-                'media/AutoVideo/Plan/Detail',
-                {
-                    id: res.result.id,
-                },
-                {
-                    type: 'edit',
-                },
-            );
-        }
+    formRef.value.validate().then(() => {
+        run(formData.value);
     });
 };
 </script>
