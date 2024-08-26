@@ -67,7 +67,7 @@
             </template>
             <template #registerTime="slotProps">
                 <span>{{
-                    moment(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss')
+                    dayjs(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
         </j-pro-table>
@@ -78,7 +78,7 @@ import {
     queryDetailListNoPaging,
     queryDetailList,
 } from '@/api/device/firmware';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 type T = any;
 const emit = defineEmits(['update:modelValue', 'change']);

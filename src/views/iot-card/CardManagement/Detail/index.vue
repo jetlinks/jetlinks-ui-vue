@@ -64,14 +64,14 @@
                             }}</j-descriptions-item>
                             <j-descriptions-item label="激活日期">{{
                                 detail.activationDate
-                                    ? moment(detail.activationDate).format(
+                                    ? dayjs(detail.activationDate).format(
                                           'YYYY-MM-DD HH:mm:ss',
                                       )
                                     : ''
                             }}</j-descriptions-item>
                             <j-descriptions-item label="更新时间">{{
                                 detail.updateTime
-                                    ? moment(detail.updateTime).format(
+                                    ? dayjs(detail.updateTime).format(
                                           'YYYY-MM-DD HH:mm:ss',
                                       )
                                     : ''
@@ -291,14 +291,14 @@
                             }}</j-descriptions-item>
                             <j-descriptions-item label="激活日期">{{
                                 detail.activationDate
-                                    ? moment(detail.activationDate).format(
+                                    ? dayjs(detail.activationDate).format(
                                           'YYYY-MM-DD HH:mm:ss',
                                       )
                                     : ''
                             }}</j-descriptions-item>
                             <j-descriptions-item label="更新时间">{{
                                 detail.updateTime
-                                    ? moment(detail.updateTime).format(
+                                    ? dayjs(detail.updateTime).format(
                                           'YYYY-MM-DD HH:mm:ss',
                                       )
                                     : ''
@@ -459,7 +459,7 @@
 </template>
 
 <script setup lang="ts" name="CardDetail">
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { CardManagement } from '../typing';
 import {
     queryDeactivate,
@@ -568,16 +568,16 @@ const getData = (start: number, end: number): Promise<{ sortArray: any[] }> => {
  */
 const getDataTotal = () => {
     const dTime = [
-        moment(new Date()).subtract(1, 'day').startOf('day').valueOf(),
-        moment(new Date()).subtract(1, 'day').endOf('day').valueOf(),
+      dayjs(new Date()).subtract(1, 'day').startOf('day').valueOf(),
+      dayjs(new Date()).subtract(1, 'day').endOf('day').valueOf(),
     ];
     const mTime = [
-        moment().startOf('month').valueOf(),
-        moment().endOf('month').valueOf(),
+      dayjs().startOf('month').valueOf(),
+      dayjs().endOf('month').valueOf(),
     ];
     const yTime = [
-        moment().startOf('year').valueOf(),
-        moment().endOf('year').valueOf(),
+      dayjs().startOf('year').valueOf(),
+      dayjs().endOf('year').valueOf(),
     ];
     getData(dTime[0], dTime[1]).then((resp) => {
         dayTotal.value = resp.sortArray
@@ -607,8 +607,8 @@ const getEcharts = (data: any) => {
     let startTime = data.start;
     let endTime = data.end;
     if (data.type === 'week' || data.type === 'month') {
-        startTime = moment(data.start).startOf('days').valueOf();
-        endTime = moment(data.end).startOf('days').valueOf();
+        startTime = dayjs(data.start).startOf('days').valueOf();
+        endTime = dayjs(data.end).startOf('days').valueOf();
     }
     getData(startTime, endTime).then((resp) => {
         flowData.value = resp.sortArray;

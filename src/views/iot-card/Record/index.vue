@@ -20,7 +20,7 @@
               <template #time="slotProps">
                   {{
                       slotProps.time
-                          ? moment(slotProps.time).format('YYYY-MM-DD HH:mm:ss')
+                          ? dayjs(slotProps.time).format('YYYY-MM-DD HH:mm:ss')
                           : ''
                   }}
               </template>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { queryList } from '@/api/iot-card/record';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const params = ref<Record<string, any>>({});
 

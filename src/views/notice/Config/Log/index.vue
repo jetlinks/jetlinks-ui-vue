@@ -19,7 +19,7 @@
             }"
         >
             <template #notifyTime="slotProps">
-                {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
+                {{ dayjs(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #state="slotProps">
                 <j-space>
@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Modal } from 'ant-design-vue';
 import Record from '../../Template/Log/components/Record.vue'
 

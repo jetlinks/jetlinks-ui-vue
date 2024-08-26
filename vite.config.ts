@@ -15,6 +15,7 @@ import { JetlinksVueResolver } from './plugin/jetlinks'
 import { optimizeDeps } from './plugin/optimize'
 import copy from 'rollup-plugin-copy';
 import progress from 'vite-plugin-progress'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode}) => {
@@ -85,7 +86,8 @@ export default defineConfig(({ mode}) => {
               {src: 'node_modules/@liveqing/liveplayer-v3/dist/component/liveplayer-lib.min.js', dest: 'public/js'},
             ]
           }),
-          progress()
+          progress(),
+          visualizer()
       ],
       server: {
           host:'0.0.0.0',

@@ -56,7 +56,7 @@ import dashboardApi from '@/api/media/dashboard';
 import type { Footer } from '@/views/media/DashBoard/typings';
 import encodeQuery from '@/utils/encodeQuery';
 import { timestampFormat } from '@/utils/utils';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 // 设备
 const deviceFooter = ref<Footer[]>([]);
@@ -185,10 +185,10 @@ const getPlayCount = async (params: any) => {
                 params: {
                     format: format,
                     time: _time,
-                    from: moment(Number(params.time.start)).format(
+                    from: dayjs(Number(params.time.start)).format(
                         'YYYY-MM-DD HH:mm:ss',
                     ),
-                    to: moment(Number(params.time.end)).format(
+                    to: dayjs(Number(params.time.end)).format(
                         'YYYY-MM-DD HH:mm:ss',
                     ),
                     limit: _limit,

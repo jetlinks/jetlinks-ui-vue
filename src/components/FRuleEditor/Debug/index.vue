@@ -179,11 +179,11 @@
                                 {{ runningState(index + 1, item._time) }}
                             </template>
                             <template v-else>{{
-                                moment(item.time).format('HH:mm:ss')
+                                dayjs(item.time).format('HH:mm:ss')
                             }}</template>
                         </template>
                         <div v-if="!!runningState(index + 1, item._time)">
-                            {{ moment(item.time).format('HH:mm:ss') }}
+                            {{ dayjs(item.time).format('HH:mm:ss') }}
                         </div>
                         <j-tooltip placement="top" :title="item.content">
                             {{ item.content }}
@@ -197,7 +197,7 @@
 <script setup lang="ts" name="Debug">
 import { PropType, Ref } from 'vue';
 import { useRuleEditorStore } from '@/store/ruleEditor';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { getWebSocket } from '@/utils/websocket';
 import {useTableWrapper} from "@/components/Metadata/Table/context";
 import { onlyMessage } from '@/utils/comm';
