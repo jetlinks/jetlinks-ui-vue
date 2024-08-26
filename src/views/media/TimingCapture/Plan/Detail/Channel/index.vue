@@ -65,7 +65,7 @@
             :data="playData"
             @refresh="tableRef.reload()"
         />
-        <Logs v-if="logsVisible" @close="logsVisible = false" />
+        <!-- <Logs v-if="logsVisible" @close="logsVisible = false" /> -->
     </div>
 </template>
 
@@ -74,7 +74,7 @@ import Bind from './Bind.vue';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import RecordPicture from '@/views/media/TimingCapture/components/RecordPicture/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
-import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
+// import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 const bindCount = ref(0);
 const tableRef = ref();
 const bindVisible = ref(false);

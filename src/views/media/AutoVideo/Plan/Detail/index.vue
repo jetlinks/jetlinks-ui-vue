@@ -6,11 +6,11 @@
         @tabChange="onTabChange"
     >
         <template #title>
-            <div style="display: flex; align-items: center">
+            <div style="display: flex; align-items: center;justify-content: center">
                 <div v-if="!isEdit">
                     {{ mediaStore.detail?.name || '----' }}
                 </div>
-                <a-input v-else :value="mediaStore.detail?.name" />
+                <a-input v-else :value="_value" />
 
                 <PermissionButton
                     type="link"
@@ -64,6 +64,7 @@ import { useRoute } from 'vue-router';
 const mediaStore = useMediaStore();
 const isEdit = ref(false);
 const route = useRoute();
+const _value = ref()
 
 const list = [
     {
@@ -93,9 +94,18 @@ const onTabChange = (e: string) => {
 const onSave = (val: boolean) => {
     isEdit.value = val;
 };
+// watch(
+//     ()=>mediaStore.detail?.name,
+//     ()=>{
+//         _value.value = mediaStore.detail?.name
+//     },
+//     { immediate: true }
+// )
+
 
 onMounted(() => {
     mediaStore.refresh(route.params.id as string)
+    _value.value = mediaStore.detail?.name
 });
 </script>
 
