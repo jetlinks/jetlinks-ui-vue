@@ -26,7 +26,7 @@
         >
             <template #modifyTime="slotProps">
                 <span>{{
-                    moment(slotProps.modifyTime).format('HHHH-MM-DD HH:mm:ss')
+                    dayjs(slotProps.modifyTime).format('HHHH-MM-DD HH:mm:ss')
                 }}</span>
             </template>
             <template #state="slotProps">
@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import StatusLabel from '../StatusLabel.vue';
 import { getDeviceList_api } from '@/api/home';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import { useI18n } from 'vue-i18n'
 

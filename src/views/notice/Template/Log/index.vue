@@ -15,7 +15,7 @@
             :params="params"
         >
             <template #notifyTime="slotProps">
-                {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
+                {{ dayjs(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #state="slotProps">
                 <j-space>
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import templateApi from '@/api/notice/template';
 import { PropType } from 'vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Modal } from 'jetlinks-ui-components';
 import Record from './components/Record.vue'
 type Emits = {

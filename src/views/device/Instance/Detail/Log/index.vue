@@ -23,7 +23,7 @@
         <template #timestamp="slotProps">
             {{
                 slotProps.timestamp
-                    ? moment(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss')
+                    ? dayjs(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss')
                     : ''
             }}
         </template>
@@ -50,7 +50,7 @@
 import type { ActionsType } from '@/components/Table';
 import { queryLog, queryLogsType } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Modal, Textarea } from 'jetlinks-ui-components';
 
 const params = ref<Record<string, any>>({});

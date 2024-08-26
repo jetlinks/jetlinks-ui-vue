@@ -17,7 +17,7 @@
         >
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'timestamp'">
-                    {{ moment(record.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{ dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <template v-if="column.key === 'value'">
                     <ValueRender
@@ -74,7 +74,7 @@
 import { getPropertyData } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import encodeQuery from '@/utils/encodeQuery';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { getType } from '../index';
 import ValueRender from '../ValueRender.vue';
 import JsonViewer from 'vue-json-viewer';
@@ -181,7 +181,7 @@ const _download = (record: any) => {
     const downNode = document.createElement('a');
     downNode.download = `${instanceStore.current.name}-${
         _props.data.name
-    }${moment(new Date().getTime()).format('YYYY-MM-DD-HH-mm-ss')}.txt`;
+    }${dayjs(new Date().getTime()).format('YYYY-MM-DD-HH-mm-ss')}.txt`;
     downNode.style.display = 'none';
     //字符串内容转成Blob地址
     const blob = new Blob([record.value]);
