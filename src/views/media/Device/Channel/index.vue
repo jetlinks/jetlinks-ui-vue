@@ -163,7 +163,7 @@
             :data="playData"
             @refresh="listRef.reload()"
         />
-        <VideoShare v-if="visible" @close="visible = false"/>
+        <VideoShare v-if="visible" @close="visible = false" :data="channelData"/>
         <Plan v-if="planVis" :data="playData" @close="planVis = false"/>
     </page-container>
 </template>

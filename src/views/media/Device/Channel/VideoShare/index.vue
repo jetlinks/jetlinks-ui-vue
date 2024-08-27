@@ -9,6 +9,7 @@
         <div class="top">
             <span>有效期：</span>
             <a-input-number
+                v-if="isEdit"
                 style="width: 200px"
                 :precision="0"
                 :min="1"
@@ -25,9 +26,20 @@
                     />
                 </template>
             </a-input-number>
-            
+            <div v-else>{{ expires }}{{ unitMap.get(unit) }}</div>
+            <PermissionButton
+                type="link"
+                :hasPermission="true"
+                @click="onClick"
+            >
+                <AIcon :type="isEdit ? 'CheckOutlined' : 'EditOutlined'" />
+            </PermissionButton>
         </div>
-        <a-table :columns="columns" :dataSource="dataSource" :pagination="false">
+        <a-table
+            :columns="columns"
+            :dataSource="dataSource"
+            :pagination="false"
+        >
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'actions'">
                     <a-button type="link" @click="onCopy(record)"
@@ -43,8 +55,7 @@
 </template>
 
 <script setup lang="ts" name="Address">
-// import DeviceApi from '@/api/media/device';
-import { pick, toUpper } from 'lodash-es';
+import DeviceApi from '@/api/media/device';
 import { onMounted, ref } from 'vue';
 import { onlyMessage } from '@/utils/comm';
 
@@ -56,20 +67,15 @@ const props = defineProps({
 });
 const emit = defineEmits(['close']);
 const types = ['flv', 'hls', 'mp4', 'rtmp', 'rtsp', 'rtc'];
+const unitMap = new Map();
+unitMap.set('seconds', '秒');
+unitMap.set('minutes', '分');
+unitMap.set('hours', '小时');
+
 const unit = ref('hours');
 const expires = ref(1);
 const dataSource = ref<any[]>([]);
-
-const result = {
-    rtsp: 'rtsp://192.168.35.210:554/device/34020000001320000155/34020000001320000001?token=AQAAAZErsgTXABQzNDAyMDAwMDAwMTMyMDAwMDE1NaM4hacTu98d7mya1getDQ0',
-    rtmp: 'rtmp://192.168.35.210:1935/device/34020000001320000155/34020000001320000001?token=AQAAAZErsgTXABQzNDAyMDAwMDAwMTMyMDAwMDE1NaM4hacTu98d7mya1getDQ0',
-    flv: 'http://192.168.35.210:8188/device/34020000001320000155/34020000001320000001.live.flv?token=AQAAAZErsgTXABQzNDAyMDAwMDAwMTMyMDAwMDE1NaM4hacTu98d7mya1getDQ0',
-    mp4: 'http://192.168.35.210:8188/device/34020000001320000155/34020000001320000001.live.mp4?token=AQAAAZErsgTXABQzNDAyMDAwMDAwMTMyMDAwMDE1NaM4hacTu98d7mya1getDQ0',
-    hls: 'http://192.168.35.210:8188/device/34020000001320000155/34020000001320000001/hls.m3u8?token=AQAAAZErsgTXABQzNDAyMDAwMDAwMTMyMDAwMDE1NaM4hacTu98d7mya1getDQ0',
-    rtc: 'http://192.168.35.210:8188/index/api/webrtc?app=device&stream=34020000001320000155/34020000001320000001&type=play&token=AQAAAZErsgTXABQzNDAyMDAwMDAwMTMyMDAwMDE1NaM4hacTu98d7mya1getDQ0',
-    streamId: '34020000001320000155/34020000001320000001',
-    forRecord: false,
-};
+const isEdit = ref(false);
 
 const columns = [
     {
@@ -77,7 +83,7 @@ const columns = [
         dataIndex: 'type',
         key: 'type',
         ellipsis: true,
-        width:70
+        width: 70,
     },
     {
         title: '链接',
@@ -92,37 +98,30 @@ const columns = [
     },
 ];
 
-const handleResult =  (params?: any) => {
-    // let arr:any
-    // const res = await DeviceApi.queryShareUrl(
-    //     props.data.deviceId,
-    //     props.data.channelId,
-    //     params ? params : {},
-    // );
-    // if (res.status === 200) {
-    //    arr = res.result
-    //     console.log('url.value====', url.value);
-    // }
-    return result
+const handleResult = async (params?: any) => {
+    const res = await DeviceApi.getShare(
+        props.data.deviceId,
+        props.data.channelId,
+        params
+            ? params
+            : {
+                  expires: 3600,
+              },
+    );
+    if (res.success) {
+        dataSource.value = types.map((item) => ({
+            id: item,
+            type: item,
+            url: res.result[item],
+        }));
+    }
 };
 
-const _query = ()=>{
-    const res = handleResult();
-    dataSource.value = types.map(item=>({
-        id:item,
-        type:item,
-        url:res[item],
-    }))
-
-    console.log('dataSource.value====', dataSource.value,res);
-}
-
-
 const onCopy = (record) => {
-    if(navigator.clipboard){
-        navigator.clipboard.writeText(record.url)
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(record.url);
         onlyMessage('复制成功！');
-    }else{
+    } else {
         const input = document.createElement('input');
         input.value = JSON.stringify(record.url);
         document.body.appendChild(input);
@@ -133,8 +132,22 @@ const onCopy = (record) => {
     }
 };
 
+const onClick = () => {
+    isEdit.value = !isEdit.value;
+    if (!isEdit.value) {
+        handleResult({
+            expires:
+                unit.value === 'hours'
+                    ? expires.value * 3600
+                    : unit.value === 'minutes'
+                    ? expires.value * 60
+                    : expires.value,
+        });
+    }
+};
+
 onMounted(() => {
-    _query()
+    handleResult();
 });
 </script>
 
