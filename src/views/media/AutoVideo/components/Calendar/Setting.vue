@@ -83,9 +83,9 @@ const onTime = (timeData) => {
                 };
             }
         });
+        console.log('onTime====',arr);
         times.value = arr;
     }else{
-        console.log('data====',timeData);
         const arr = timeData.map((item) => {
             const obj = {
                     tirger: props.trigger,

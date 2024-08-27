@@ -8,7 +8,7 @@
                 @change="onChangeTirgger"
             >
                 <a-radio-button value="week">按周</a-radio-button>
-                <a-radio-button value="calendar">自定义</a-radio-button>
+                <a-radio-button value="calender">自定义</a-radio-button>
             </a-radio-group>
         </div>
         <div class="content">
@@ -79,7 +79,7 @@ const props = defineProps({
     },
     type: {
         type: String,
-        default: 'timing',
+        default: 'auto',
     },
     trigger: {
         type: String,
@@ -203,7 +203,7 @@ const changList = (arr: any[], when: any[], points: any[]) => {
         if (when.includes(item.value)) {
             item.times = arr.map(i=>({
                 ...i,
-                when:item.when
+                when:item.when || [item.value]
             }))
             item.points = points;
         } else {
@@ -257,7 +257,7 @@ watch(
     () => props.trigger,
     () => {
         trigger.value = props.trigger;
-        console.log('props.trigger====',props.trigger);
+        // console.log('props.trigger====',props.trigger);
     },
     { immediate: true },
 );
