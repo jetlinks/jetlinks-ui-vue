@@ -10,7 +10,14 @@
             :columns="columns"
             :params="params"
             model="table"
+            :request="queryLogs"
         >
+            <template #createTime="slotProps">
+                {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+            </template>
+            <template #state="slotProps">
+                {{ slotProps.state?.text }}
+            </template>
             <template #action="slotProps">
                 <j-space :size="16">
                     <template
@@ -30,20 +37,24 @@
                         </PermissionButton> </template
                 ></j-space> </template
         ></j-pro-table>
-        <!-- <Logs v-if="logsVisible" @close="logsVisible  = false"/> -->
+        <logView v-if="logsVisible" :data="logData" @close="logsVisible  = false"/>
     </div>
 </template>
 
 <script setup name="Log">
-// import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
+import { queryLogs } from '@/api/media/auto';
+import dayjs from 'dayjs';
+import logView from './logView.vue';
+
 const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);
+const logData = ref({})
 const columns = [
     {
         title: '时间',
-        dataIndex: '',
-        key: '',
+        dataIndex: 'createTime',
+        key: 'createTime',
         scopedSlots: true,
         search: {
             type: 'date',
@@ -89,10 +100,10 @@ const columns = [
     },
     {
         title: '执行状态',
-        dataIndex: 'status',
-        key: 'status',
+        dataIndex: 'state',
+        key: 'state',
         scopedSlots: true,
-        width: 150,
+        width: 100,
         search: {
             type: 'select',
             options: [],
@@ -113,7 +124,7 @@ const handleSearch = (e) => {
     params.value = e;
 };
 
-const getActions = (data, type) => {
+const getActions = (data) => {
     if (!data) return [];
     const actions = [
         {
@@ -125,6 +136,7 @@ const getActions = (data, type) => {
             icon: 'EyeOutlined',
             onClick: () => {
                 logsVisible.value = true;
+                logData.value = data;
             },
         },
     ];

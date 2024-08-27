@@ -73,26 +73,23 @@ const onCheckAllChange = (e) => {
 const onTime = (timeData) => {
     // times.value = data;
     if (props.type === 'auto') {
-        const arr = timeData.map((item,index) => {
+        const arr = timeData.map((item) => {
             if (item.from) {
                 return {
                     tirger: props.trigger,
                     when: [props.data?.value],
                     from: item.from,
                     to: item.to,
-                    index:index
-
                 };
             }
         });
         times.value = arr;
     }else{
         console.log('data====',timeData);
-        const arr = timeData.map((item,index) => {
+        const arr = timeData.map((item) => {
             const obj = {
                     tirger: props.trigger,
                     when: [props.data?.value],
-                    index:index,
                     mod:item.mod,
                 }
             if (item.mod === 'period') {
