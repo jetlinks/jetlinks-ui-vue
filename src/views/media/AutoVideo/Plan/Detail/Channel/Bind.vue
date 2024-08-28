@@ -13,7 +13,7 @@
                   type="unBind"
                   v-model:deviceId="deviceId"
                   v-model:channelId="channelId"
-                  @onSelect="selectDevice"
+                  @select="selectDevice"
                 />
             </div>
             <div class="bind_right">
@@ -22,14 +22,19 @@
                     style="padding-bottom: 0; margin-bottom: 0"
                     @search="handleSearch"
                 ></pro-search>
+                <div style="padding: 12px 24px 0">
+                  <a-breadcrumb>
+                    <a-breadcrumb-item v-for="name in pathsName">{{name}}</a-breadcrumb-item>
+                  </a-breadcrumb>
+                </div>
                 <j-pro-table
                     v-if="deviceId"
-                    style="min-height: calc(100% - 60px)"
+                    style="min-height: calc(100% - 60px); padding-top: 0"
                     ref="tableRef"
                     model="table"
                     rowKey="channelId"
                     :columns="columns"
-                    :request="queryBoundChannel"
+                    :request="query"
                     :params="params"
                     :rowSelection="{
                         selectedRowKeys: _selectedRowKeys,
@@ -81,7 +86,7 @@
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
 import {queryBoundChannel} from "@/api/media/auto";
-import {omit} from "lodash-es";
+import {cloneDeep, omit} from "lodash-es";
 import BadgeStatus from '@/components/BadgeStatus/index.vue'
 
 const emit = defineEmits(['closeBind', 'submit']);
@@ -105,6 +110,13 @@ const channelId = ref()
 const params = ref()
 
 const cacheSelected = ref({})
+
+const pathsName = computed(() => {
+  if (cacheSelected.value[deviceId.value]) {
+    return cacheSelected.value[deviceId.value].channelCatalog
+  }
+  return []
+})
 
 const columns = [
     {
@@ -187,7 +199,8 @@ const onSelectChange = (item, state) => {
         arr.delete(item.channelId);
     }
     _selectedRowKeys.value = [...arr.values()];
-    cacheSelected.value[deviceId.value].channelIds = [...arr.values()]
+    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
+    cacheSelected.value[deviceId.value].channelIds = [...oldChannelIds, ...arr.values()]
 };
 const selectAll = (selected, selectedRows, changeRows) => {
   const selectedKeys = new Set(_selectedRowKeys.value)
@@ -200,7 +213,8 @@ const selectAll = (selected, selectedRows, changeRows) => {
         selectedKeys.delete(i.channelId)
       });
     }
-  cacheSelected.value[deviceId.value].channelIds = [...selectedKeys.values()]
+    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
+  cacheSelected.value[deviceId.value].channelIds = [...oldChannelIds, ...selectedKeys.values()]
   _selectedRowKeys.value = [...selectedKeys.values()]
 };
 
@@ -217,26 +231,20 @@ const selectDevice = ({ dId, node }) => {
     cacheSelected.value = _selectMap
   }
 
+  handleSearch([])
 };
 
-const handleSearch = (e) => {
+const query = (queryParams) =>{
+  const _params = queryParams
   const defaultParams = {
     terms: [
       {
         terms: [
           {
-            column: "channelId$media-record-schedule-bind-channel",
+            column: "channelId$media-record-schedule-bind-channel$not",
             value: [{
               column: "scheduleId",
-              termType: "not",
-              value: route.params.id
-            }]
-          },
-          {
-            column: "deviceId$media-record-schedule-bind-device",
-            value: [{
-              column: "scheduleId",
-              termType: "not",
+              termType: "eq",
               value: route.params.id
             }]
           }
@@ -252,15 +260,12 @@ const handleSearch = (e) => {
   }
 
   // 获取缓存中的绑定通道
-  const cacheDeviceValues = Object.values(props.cacheDeviceIds)
-  if (cacheDeviceValues.length) {
-    const channelIds = cacheDeviceValues.reduce((prev, next) => {
-      return [...prev, ...next.channelIds]
-    })
-    defaultParams.terms({
+  if (props.cacheDeviceIds[deviceId.value]) {
+    const {channelIds} = props.cacheDeviceIds[deviceId.value]
+    defaultParams.terms.push({
       column: 'channelId',
       termType: 'nin',
-      value: channelIds,
+      value: channelIds.toString(),
       type: 'and'
     })
   }
@@ -273,13 +278,17 @@ const handleSearch = (e) => {
     })
   }
 
-  if (e.length) {
-    defaultParams.terms.push({
-      ...e,
-      type: 'and'
-    })
-  }
-  params.value = defaultParams
+  _params.terms = [
+    ...defaultParams.terms,
+    ..._params.terms
+  ]
+
+  return queryBoundChannel(_params)
+}
+
+const handleSearch = (e) => {
+
+  params.value = e
 }
 
 const submit = () => {
@@ -292,9 +301,11 @@ const submit = () => {
   emit('submit', omit(cacheSelected.value, paths))
 }
 
-watch(() => deviceId.value, () => {
-  handleSearch([])
-},{ immediate: true })
+onMounted(() => {
+  if (Object.keys(props.cacheDeviceIds)) {
+    cacheSelected.value = cloneDeep(props.cacheDeviceIds)
+  }
+})
 
 </script>
 <style lang="less" scoped>

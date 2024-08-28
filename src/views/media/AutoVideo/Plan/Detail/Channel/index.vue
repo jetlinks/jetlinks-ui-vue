@@ -25,6 +25,7 @@
                   :id="route.params.id"
                   v-model:deviceId="deviceId"
                   v-model:channelId="channelId"
+                  @select="treeSelect"
                 />
             </div>
             <div class="bound_channel">
@@ -62,7 +63,7 @@
                               :tooltip="{title: '播放'}"
                               @click="() => { onPlay(slotProps)}"
                             >
-                              <AIcon type="play" />
+                              <AIcon type="VideoCameraOutlined" />
                             </PermissionButton>
 
                             <PermissionButton
@@ -88,7 +89,7 @@
                               :tooltip="{title: '回放'}"
                               @click="() => { onPlayBack(slotProps)}"
                             >
-                              <AIcon type="PlayCircleOutlined" />
+                              <AIcon type="HistoryOutlined" />
                             </PermissionButton>
                             <PermissionButton
                               type="link"
@@ -109,7 +110,7 @@
         </div>
         <Bind
           v-if="bindVisible"
-          :cacheDeviceId="cacheDeviceIds"
+          :cacheDeviceIds="cacheDeviceIds"
           @closeBind="bindVisible = false"
           @submit="submit"/>
         <PlayBack v-if="playbackVisible" @close="playbackVisible = false" />
@@ -130,6 +131,7 @@ import Live from '@/views/media/Device/Channel/Live/index.vue';
 import {bindChannel, queryBoundChannel, unbindChannel} from "@/api/media/auto";
 import { cloneDeep } from 'lodash-es'
 import BadgeStatus from '@/components/BadgeStatus/index.vue'
+import {onlyMessage} from "@/utils/comm";
 // import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 
 const bindCount = ref(0);
@@ -141,14 +143,15 @@ const logsVisible = ref(false);
 const playbackData = ref();
 const route = useRoute();
 
-const editType = ref(route.query?.type !== 'edit');
+const editType = ref(false);
 const playData = ref();
 const playerVis = ref(false);
 
 const deviceId = ref()
 const channelId = ref()
 const cacheDeviceIds = ref({})
-const unBindChannelIds = ref([])
+const unBindChannelIds = ref({})
+const currentDeviceId = ref()
 
 const params = ref({terms: [
     {
@@ -241,12 +244,13 @@ const onPlay = (record) =>{
 }
 
 const unBind = (record) => {
+  const cacheDevice = cacheDeviceIds.value[deviceId.value]
 
-  const cacheChannelIds = cacheDeviceIds.value[deviceId.value].channelIds
-  if (cacheDeviceIds.value[deviceId.value] && cacheChannelIds.includes(record.channelId)) { // 清除缓存中的通道id
+  const cacheChannelIds = cacheDevice?.channelIds // 获取当前树节点下缓存
+  if (cacheDevice && cacheChannelIds.includes(record.channelId)) { // 清除缓存中的通道id
     cacheDeviceIds.value[deviceId.value].channelIds = cacheChannelIds.filter(id => id !== record.channelId)
   } else { // 记录后端已绑定的id，保存时统一处理解除
-    unBindChannelIds.value.push(record.channelId)
+    unBindChannelIds.value[record.channelId] = currentDeviceId.value
   }
   tableRef.value.reload()
 }
@@ -278,6 +282,7 @@ const submit = (data) => {
   cacheDeviceIds.value = {...data}
   treeRef.value.getDeviceList({...data})
   bindVisible.value = false
+  tableRef.value.reload()
 }
 
 const query = (params) => {
@@ -324,11 +329,12 @@ const query = (params) => {
     })
   }
 
-  if (unBindChannelIds.value.length) {
+  const keys = Object.keys(unBindChannelIds.value)
+  if (keys.length) {
     defaultParams.terms.push({
       column: 'channelId',
       termType: 'nin',
-      value: unBindChannelIds.toString(),
+      value: keys.toString(),
       type: 'and'
     })
   }
@@ -359,24 +365,70 @@ const saveChannel = () => {
     if (resp.success) {
       cacheDeviceIds.value = {}
       treeRef.value.getDeviceList()
+      onlyMessage('操作成功')
+      getBindTotal()
     }
   })
 
-  if (unBindChannelIds.length) {
-    const unBindTerms = []
+  const keys = Object.keys(unBindChannelIds.value)
+
+  if (keys.length) {
+    const unBindTerms = keys.map(channelId => ({
+      deviceId: unBindChannelIds.value[channelId],
+      channelId
+    }))
     unbindChannel(route.params.id, unBindTerms)
   }
 }
 
-watch(() => [deviceId.value, channelId.value], () => {
+const treeSelect = ({node}) => {
+  const { paths } = node
+
+  currentDeviceId.value = paths[0]
+
   tableRef.value.reload()
-}, { deep: true })
+}
+
+const getBindTotal = () => {
+  const defaultParams = {
+    terms: [
+      {
+        terms: [
+          {
+            column: "channelId$media-record-schedule-bind-channel",
+            value: [{
+              column: "scheduleId",
+              termType: "eq",
+              value: route.params.id
+            }]
+          },
+          {
+            column: "deviceId$media-record-schedule-bind-device",
+            value: [{
+              column: "scheduleId",
+              termType: "eq",
+              value: route.params.id
+            }]
+          },
+        ]
+      },
+    ]
+  }
+  queryBoundChannel(defaultParams).then(resp => {
+    if (resp.success) {
+      bindCount.value = resp.result.total
+    }
+  })
+}
+
+getBindTotal()
 
 </script>
 
 <style lang="less">
 .channelControl {
     display: flex;
+    align-items: center;
     .bind {
         margin-right: 20px;
     }
