@@ -19,7 +19,13 @@
         <div class="bound">
             <div class="bound_device">
                 <div>选择设备及目录查看已绑定的通道：</div>
-                <ChannelTree :height="700" v-model:deviceId="deviceId" />
+                <ChannelTree
+                  ref="treeRef"
+                  :height="700"
+                  :id="route.params.id"
+                  v-model:deviceId="deviceId"
+                  v-model:channelId="channelId"
+                />
             </div>
             <div class="bound_channel">
                 <pro-search
@@ -32,30 +38,80 @@
                     style="min-height: calc(100% - 60px)"
                     ref="tableRef"
                     model="table"
+                    rowKey="channelId"
                     :columns="columns"
-                    :request="queryBoundChannel"
+                    :request="query"
                     :params="params"
                 >
-                    <template #action="{ record }">
+                  <template #status="slotProps">
+                    <BadgeStatus
+                      :text="slotProps.status.text"
+                      :status="slotProps.status.value"
+                      :statusNames="{
+                        'online': 'success',
+                        'offline': 'error',
+                      }"
+                    />
+                  </template>
+                    <template #action="slotProps">
                         <j-space :size="16">
-                            <template v-for="i in actions" :key="i.key">
-                                <PermissionButton
-                                    :disabled="i.disabled"
-                                    :popConfirm="i.popConfirm"
-                                    type="link"
-                                    style="padding: 0px"
-                                    :tooltip="{
-                                        ...i.tooltip,
-                                    }"
-                                    @click="() => { i.onClick(record)}"
-                                >
-                                    <AIcon :type="i.icon" />
-                                </PermissionButton> </template
-                        ></j-space> </template
-                ></j-pro-table>
+                          <template v-if="editType">
+                            <PermissionButton
+                              type="link"
+                              style="padding: 0px"
+                              :tooltip="{title: '播放'}"
+                              @click="() => { onPlay(slotProps)}"
+                            >
+                              <AIcon type="play" />
+                            </PermissionButton>
+
+                            <PermissionButton
+                              type="link"
+                              style="padding: 0px"
+                              :tooltip="{title: '解绑'}"
+                              :popConfirm="{
+                                title: '确认解绑吗？',
+                                okText: '确定',
+                                cancelText: '取消',
+                                onConfirm: () => {
+                                  unBind(slotProps)
+                                },
+                              }"
+                            >
+                              <AIcon type="DisconnectOutlined" />
+                            </PermissionButton>
+                          </template>
+                          <template v-else>
+                            <PermissionButton
+                              type="link"
+                              style="padding: 0px"
+                              :tooltip="{title: '回放'}"
+                              @click="() => { onPlayBack(slotProps)}"
+                            >
+                              <AIcon type="PlayCircleOutlined" />
+                            </PermissionButton>
+                            <PermissionButton
+                              type="link"
+                              style="padding: 0px"
+                              :tooltip="{title: '日志'}"
+                              @click="() => { onLogs(slotProps)}"
+                            >
+                              <AIcon type="ExceptionOutlined" />
+                            </PermissionButton>
+                          </template>
+                        </j-space>
+                    </template>
+                </j-pro-table>
             </div>
         </div>
-        <Bind v-if="bindVisible" @closeBind="bindVisible = false"></Bind>
+        <div>
+          <a-button type="primary" @click="saveChannel">保存</a-button>
+        </div>
+        <Bind
+          v-if="bindVisible"
+          :cacheDeviceId="cacheDeviceIds"
+          @closeBind="bindVisible = false"
+          @submit="submit"/>
         <PlayBack v-if="playbackVisible" @close="playbackVisible = false" />
         <Live
             v-model:visible="playerVis"
@@ -71,12 +127,14 @@ import Bind from './Bind.vue';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import PlayBack from '@/views/media/AutoVideo/components/Playback/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
-import {queryBoundChannel} from "@/api/media/auto";
+import {bindChannel, queryBoundChannel, unbindChannel} from "@/api/media/auto";
 import { cloneDeep } from 'lodash-es'
+import BadgeStatus from '@/components/BadgeStatus/index.vue'
 // import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 
 const bindCount = ref(0);
 const tableRef = ref();
+const treeRef = ref()
 const bindVisible = ref(false);
 const playbackVisible = ref(false);
 const logsVisible = ref(false);
@@ -88,6 +146,9 @@ const playData = ref();
 const playerVis = ref(false);
 
 const deviceId = ref()
+const channelId = ref()
+const cacheDeviceIds = ref({})
+const unBindChannelIds = ref([])
 
 const params = ref({terms: [
     {
@@ -174,64 +235,30 @@ const columns = [
     },
 ];
 
-const actions = computed(() => {
-    return editType.value
-        ? [
-              {
-                  key: 'play',
-                  text: '播放',
-                  tooltip: {
-                      title: '播放',
-                  },
-                  icon: 'PlayCircleOutlined',
-                  onClick: (data) => {
-                      playData.value = cloneDeep(data);
-                      playerVis.value = true;
-                  },
-              },
-              {
-                  key: 'unbind',
-                  text: '解绑',
-                  tooltip: {
-                      title: '解绑',
-                  },
-                  icon: 'DisconnectOutlined',
-                  popConfirm: {
-                      title: '确认解绑吗？',
-                      okText: '确定',
-                      cancelText: '取消',
-                      onConfirm: async () => {},
-                  },
-              },
-          ]
-        : [
-              {
-                  key: 'backPlay',
-                  text: '回放',
-                  tooltip: {
-                      title: '回放',
-                  },
-                  icon: 'PlayCircleOutlined',
-                  onClick: (data) => {
-                      playbackData.value = cloneDeep(data);
-                      playbackVisible.value = true;
-                  },
-              },
-              {
-                  key: 'logs',
-                  text: '日志',
-                  tooltip: {
-                      title: '日志',
-                  },
-                  icon: 'ExceptionOutlined',
-                  onClick: () => {
-                      // playData.value = cloneDeep(data);
-                      // playerVis.value = true;
-                      logsVisible.value = true;
-                  },
-              },
-          ];
-});
+const onPlay = (record) =>{
+  playData.value = cloneDeep(record);
+  playerVis.value = true;
+}
+
+const unBind = (record) => {
+
+  const cacheChannelIds = cacheDeviceIds.value[deviceId.value].channelIds
+  if (cacheDeviceIds.value[deviceId.value] && cacheChannelIds.includes(record.channelId)) { // 清除缓存中的通道id
+    cacheDeviceIds.value[deviceId.value].channelIds = cacheChannelIds.filter(id => id !== record.channelId)
+  } else { // 记录后端已绑定的id，保存时统一处理解除
+    unBindChannelIds.value.push(record.channelId)
+  }
+  tableRef.value.reload()
+}
+
+const onPlayBack = (record) => {
+  playbackData.value = cloneDeep(record);
+  playbackVisible.value = true;
+}
+
+const onLogs = (record) => {
+  logsVisible.value = true;
+}
 const showBind = () => {
     bindVisible.value = true;
 };
@@ -240,7 +267,21 @@ const showBind = () => {
  * @param params
  */
 const handleSearch = (e) => {
-  console.log('handleSearch', e)
+
+  params.value = e
+
+};
+
+const clearBind = () => {};
+
+const submit = (data) => {
+  cacheDeviceIds.value = {...data}
+  treeRef.value.getDeviceList({...data})
+  bindVisible.value = false
+}
+
+const query = (params) => {
+  const _params = params
   const defaultParams = {
     terms: [
       {
@@ -274,23 +315,62 @@ const handleSearch = (e) => {
     })
   }
 
-  if (e.length) {
+  if (cacheDeviceIds.value[deviceId.value]) {
     defaultParams.terms.push({
-    ...e,
+      column: 'channelId',
+      termType: 'in',
+      value: cacheDeviceIds.value[deviceId.value].channelIds.toString(),
+      type: 'or'
+    })
+  }
+
+  if (unBindChannelIds.value.length) {
+    defaultParams.terms.push({
+      column: 'channelId',
+      termType: 'nin',
+      value: unBindChannelIds.toString(),
       type: 'and'
     })
   }
 
-  params.value = defaultParams
+  _params.terms = [
+    ...defaultParams.terms,
+    ..._params.terms
+  ]
 
-};
+  return queryBoundChannel(_params)
+}
 
-const clearBind = () => {};
+const saveChannel = () => {
+  const terms = []
 
+  Object.values(cacheDeviceIds.value).forEach(({ channelIds, channelCatalog, paths }) => {
+    const [ deviceId ] = paths
+    terms.push(...channelIds.map(id => ({
+      deviceId: deviceId,
+      channelId: id,
+      others: {
+        channelCatalog: channelCatalog.join('\/')
+      }
+    })))
+  })
 
-watch(() => deviceId.value, () => {
-  handleSearch([])
-})
+  bindChannel(route.params.id,terms).then(resp => {
+    if (resp.success) {
+      cacheDeviceIds.value = {}
+      treeRef.value.getDeviceList()
+    }
+  })
+
+  if (unBindChannelIds.length) {
+    const unBindTerms = []
+    unbindChannel(route.params.id, unBindTerms)
+  }
+}
+
+watch(() => [deviceId.value, channelId.value], () => {
+  tableRef.value.reload()
+}, { deep: true })
 
 </script>
 
@@ -305,10 +385,10 @@ watch(() => deviceId.value, () => {
     margin-top: 20px;
     display: flex;
     .bound_device {
-        flex: 1;
+        width: 230px;
     }
     .bound_channel {
-        flex: 3;
+        flex: 1 1 0;
     }
 }
 </style>

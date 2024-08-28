@@ -7,6 +7,7 @@
         :loadData="onLoadData"
         :fieldNames="{ title: 'name', key: 'id' }"
         v-model:expandedKeys="expandedKeys"
+        v-model:selectedKeys="selectedKeys"
         @select="onSelect"
     >
     </j-tree>
@@ -20,10 +21,15 @@ const emit = defineEmits([
   'update:deviceId',
   'onSelect'
 ])
+
 const props = defineProps({
   height: {
     type: Number,
     default: 500,
+  },
+  id: {
+    type: String,
+    default: undefined
   },
   deviceId: {
       type: String,
@@ -32,6 +38,10 @@ const props = defineProps({
   channelId: {
     type: String,
     default: undefined
+  },
+  type: {
+    type: String,
+    default: 'bind'
   }
 });
 
@@ -39,31 +49,69 @@ const props = defineProps({
  * 默认展开第一个
  */
 const expandedKeys = ref([]); // 展开的key
+const selectedKeys = ref([])
 
 /**
  * 获取设备列表
  */
 const treeData = ref([]);
+const cacheTreeNodeIds = ref([])
+const cacheDeviceIds = ref({})
+const filterNodeIds = ref([])
+
+const isBind = computed(() => {
+  return props.type === 'bind'
+})
+
+const filterTreeNode = (data) => {
+  return data.filter(item => {
+    return item.catalogType.value !== 'device'
+  })
+}
 
 /**
  * 获取子节点
  * @param key
  * @param params 请求参数
  * @param first 是否第一次
+ * @param parentPaths 目录路径
+ * @param channelCatalog 目录名称路径
  */
-const getChildren = (key, params, first = false) => {
+const getChildren = (key, params, first = false, parentPaths = [], channelCatalog = []) => {
   return new Promise(async (resolve) => {
+
+    if (isBind.value && filterNodeIds.value.length) {
+      params.terms.push({
+        column: "id$media-record-schedule-bind-channel",
+        value: [
+          {
+            column: "scheduleId",
+            termType: "eq",
+            value: props.id
+          }
+        ]
+      },{
+        column: 'id',
+        termType: 'in',
+        value: filterNodeIds.value.toString()
+      })
+    }
+
     const res = await cascadeApi.queryChannelList(params);
-    if (res.status === 200) {
+    if (res.success) {
       const { total, pageIndex, pageSize } = res.result;
+      const nodes = filterTreeNode(res.result.data).map((item) => ({
+        ...item,
+        class: item.status.value,
+        isLeaf: isLeaf(item),
+        paths: [...parentPaths, item.id],
+        channelCatalog: [...channelCatalog, item.name],
+      }))
+
       treeData.value = updateTreeData(
         treeData.value,
         key,
-        res.result.data.map((item) => ({
-          ...item,
-          class: item.status.value,
-          isLeaf: isLeaf(item),
-        })),
+        nodes,
       );
 
       if (total > (pageIndex + 1) * pageSize) {
@@ -71,27 +119,79 @@ const getChildren = (key, params, first = false) => {
           getChildren(key, {
             ...params,
             pageIndex: params.pageIndex + 1,
-          });
+          }, parentPaths, channelCatalog);
         }, 50);
       }
       if (first) {
         expandedKeys.value.push(treeData.value[0].id);
+        selectedKeys.value = [!nodes.length ? key : nodes[0].id]
+        emit('update:deviceId', selectedKeys.value[0])
       }
       resolve(res.result);
     }
   });
 };
-const getDeviceList = async () => {
-    const res = await cascadeApi.getMediaTree({ paging: false });
+
+const handleCacheDeviceTerms = (idsMap) => {
+  cacheDeviceIds.value = idsMap
+  if (Object.keys(idsMap || {}).length) {
+    const idsSet = new Set(
+      Object.values(idsMap).reduce((prev,next) => {
+        prev.push(...next.paths)
+        return prev
+      }, [])
+    )
+    filterNodeIds.value = [...idsSet.values()]
+    return {
+      column: 'id',
+      termType: 'in',
+      value: Object.keys(idsMap).toString(),
+      type: 'or'
+    }
+  }
+
+  return null
+}
+const getDeviceList = async (params) => {
+    const terms = [
+      {
+        column: "id$media-record-schedule-bind-device",
+        value: [
+          {
+            column: "scheduleId",
+            termType: "eq",
+            value: props.id
+          }
+        ]
+      }
+    ]
+
+  const deviceIdTerms = handleCacheDeviceTerms(params)
+
+  if (deviceIdTerms) {
+    terms.push(deviceIdTerms)
+  }
+
+    const res = await cascadeApi.getMediaTree({
+      paging: false,
+      sorts: [
+        {
+          name: "createTime",
+          order: "desc"
+        }
+      ],
+      terms: isBind.value ? terms : []
+    });
     if (res.success) {
         treeData.value = res.result
-            .sort((a, b) => b.createTime - a.createTime)
             .map((m) => {
                 const extra = {};
                 extra.isLeaf = isLeaf(m);
                 return {
                     ...m,
                     ...extra,
+                  paths: [m.id],
+                  channelCatalog: [m.name]
                 };
             });
         if (treeData.value.length > 0 && treeData.value[0]) {
@@ -108,6 +208,8 @@ const getDeviceList = async () => {
                     ],
                 },
                 true,
+                [treeData.value[0].id],
+                treeData.value[0].channelCatalog
             );
         }
     }
@@ -119,10 +221,10 @@ const getDeviceList = async () => {
  * @param param1
  */
 const onSelect = (_, { node }) => {
-    console.log(node)
-    emit('onSelect', { dId: node.deviceId, cId: node.channelId });
-    emit('update:deviceId', node.deviceId);
+    selectedKeys.value = [node.id]
+    emit('update:deviceId', node.id);
     emit('update:channelId', node.channelId);
+    emit('onSelect', { dId: node.deviceId, cId: node.channelId, node });
 };
 
 /**
@@ -164,7 +266,7 @@ const updateTreeData = (list, key, children) => {
  * 异步加载子节点数据
  * @param param0
  */
-const onLoadData = ({ key, children }) => {
+const onLoadData = ({ key, children, path }) => {
     return new Promise(async (resolve) => {
         if (children) {
             resolve();
@@ -179,13 +281,18 @@ const onLoadData = ({ key, children }) => {
                     value: key,
                 },
             ],
-        });
+        }, path);
         resolve();
     });
 };
 
+
 onMounted(() => {
     getDeviceList();
 });
+
+defineExpose({
+  getDeviceList
+})
 </script>
 <style lang="less" scoped></style>
