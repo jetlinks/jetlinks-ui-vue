@@ -19,7 +19,8 @@ import cascadeApi from '@/api/media/cascade';
 const emit = defineEmits([
   'update:channelId',
   'update:deviceId',
-  'select'
+  'select',
+  'load'
 ])
 
 const props = defineProps({
@@ -126,8 +127,9 @@ const getChildren = (key, params, first = false, parentPaths = [], channelCatalo
           }, parentPaths, channelCatalog);
         }, 50);
       }
+
       if (first) {
-        const node = nodes[0]
+        let node = nodes.length ? nodes[0] : treeData.value[0]
         expandedKeys.value.push(treeData.value[0].id);
         selectedKeys.value = [!nodes.length ? key : nodes[0].id]
         emit('update:deviceId', selectedKeys.value[0])
@@ -189,6 +191,7 @@ const getDeviceList = async (params) => {
       terms: isBind.value ? terms : []
     });
     if (res.success) {
+      emit('load', res.result)
         treeData.value = res.result
             .map((m) => {
                 const extra = {};

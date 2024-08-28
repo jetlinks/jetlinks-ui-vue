@@ -2,8 +2,9 @@
     <div>
         <pro-search
             :columns="columns"
-            @search="handleSearch"
             style="margin-bottom: 0"
+            target="TimingCapturePlanLog"
+            @search="handleSearch"
         ></pro-search>
         <j-pro-table
             ref="tableRef"
@@ -45,11 +46,17 @@
 import { queryLogs } from '@/api/media/auto';
 import dayjs from 'dayjs';
 import logView from './logView.vue';
+import {onBeforeUnmount} from "vue";
+import { useRouteQuery } from '@vueuse/router';
 
 const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);
 const logData = ref({})
+
+const q = useRouteQuery('q')
+const searchTarget = useRouteQuery('target')
+
 const columns = [
     {
         title: '时间',
@@ -116,6 +123,8 @@ const columns = [
         scopedSlots: true,
     },
 ];
+
+const videoTags = inject('video-tags')
 /**
  * 搜索
  * @param params
@@ -142,6 +151,15 @@ const getActions = (data) => {
     ];
     return actions;
 };
+
+onMounted(() => {
+  searchTarget.value = 'TimingCapturePlanLog'
+  q.value = encodeURI(JSON.stringify({terms: videoTags.terms }));
+})
+
+onBeforeUnmount(() => {
+  videoTags.terms = []
+})
 </script>
 
 <style lang="less"></style>

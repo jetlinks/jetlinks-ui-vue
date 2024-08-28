@@ -5,7 +5,7 @@
             <div
                 v-for="item in Array.from(Array(25), (v, k) => k)"
                 :key="item"
-                style="width: 12px"
+                style="width: 14px"
             >
                 {{ item }}
             </div>
