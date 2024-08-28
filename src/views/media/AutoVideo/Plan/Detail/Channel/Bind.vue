@@ -100,7 +100,7 @@ const props = defineProps({
 
 const tableRef = ref()
 
-const _selectedRowKeys = ref();
+const _selectedRowKeys = ref([]);
 const playData = ref();
 const playerVis = ref(false);
 const route = useRoute()
@@ -192,18 +192,20 @@ const getActions = (data, type) => {
     ]
 };
 const onSelectChange = (item, state) => {
-    const arr = new Set(_selectedRowKeys.value);
+  const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
+    const arr = new Set([..._selectedRowKeys.value, ...oldChannelIds]);
     if (state) {
         arr.add(item.channelId);
     } else {
         arr.delete(item.channelId);
     }
     _selectedRowKeys.value = [...arr.values()];
-    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
-    cacheSelected.value[deviceId.value].channelIds = [...oldChannelIds, ...arr.values()]
+
+    cacheSelected.value[deviceId.value].channelIds = [...arr.values()]
 };
 const selectAll = (selected, selectedRows, changeRows) => {
-  const selectedKeys = new Set(_selectedRowKeys.value)
+  const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
+  const selectedKeys = new Set([...oldChannelIds, ..._selectedRowKeys.value])
     if (selected) {
         changeRows.map((i) => {
           selectedKeys.add(i.channelId)
@@ -213,8 +215,8 @@ const selectAll = (selected, selectedRows, changeRows) => {
         selectedKeys.delete(i.channelId)
       });
     }
-    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
-  cacheSelected.value[deviceId.value].channelIds = [...oldChannelIds, ...selectedKeys.values()]
+
+  cacheSelected.value[deviceId.value].channelIds = [...selectedKeys.values()]
   _selectedRowKeys.value = [...selectedKeys.values()]
 };
 

@@ -58,7 +58,7 @@ import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, provide } from 'vue';
 import { useRoute } from 'vue-router';
 import { updatePlan,queryList } from '@/api/media/auto';
 import {usePlanDetailContent} from "./utils";
@@ -78,6 +78,11 @@ const detail = ref({
 })
 
 usePlanDetailContent(detail)
+
+provide('video-tags', {
+  tag: tabActiveKey,
+  terms: []
+})
 
 const list = [
     {
