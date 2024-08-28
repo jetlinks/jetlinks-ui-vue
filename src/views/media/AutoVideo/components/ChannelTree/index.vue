@@ -19,7 +19,7 @@ import cascadeApi from '@/api/media/cascade';
 const emit = defineEmits([
   'update:channelId',
   'update:deviceId',
-  'onSelect'
+  'select'
 ])
 
 const props = defineProps({
@@ -80,7 +80,7 @@ const filterTreeNode = (data) => {
 const getChildren = (key, params, first = false, parentPaths = [], channelCatalog = []) => {
   return new Promise(async (resolve) => {
 
-    if (isBind.value && filterNodeIds.value.length) {
+    if (isBind.value ) {
       params.terms.push({
         column: "id$media-record-schedule-bind-channel",
         value: [
@@ -90,11 +90,15 @@ const getChildren = (key, params, first = false, parentPaths = [], channelCatalo
             value: props.id
           }
         ]
-      },{
-        column: 'id',
-        termType: 'in',
-        value: filterNodeIds.value.toString()
       })
+
+      if (filterNodeIds.value.length) {
+        params.terms.push({
+          column: 'id',
+          termType: 'in',
+          value: filterNodeIds.value.toString()
+        })
+      }
     }
 
     const res = await cascadeApi.queryChannelList(params);
@@ -123,9 +127,11 @@ const getChildren = (key, params, first = false, parentPaths = [], channelCatalo
         }, 50);
       }
       if (first) {
+        const node = nodes[0]
         expandedKeys.value.push(treeData.value[0].id);
         selectedKeys.value = [!nodes.length ? key : nodes[0].id]
         emit('update:deviceId', selectedKeys.value[0])
+        emit('select', { dId: node.deviceId, cId: node.channelId, node })
       }
       resolve(res.result);
     }
@@ -224,7 +230,7 @@ const onSelect = (_, { node }) => {
     selectedKeys.value = [node.id]
     emit('update:deviceId', node.id);
     emit('update:channelId', node.channelId);
-    emit('onSelect', { dId: node.deviceId, cId: node.channelId, node });
+    emit('select', { dId: node.deviceId, cId: node.channelId, node });
 };
 
 /**
