@@ -1,6 +1,6 @@
 <template>
     <a-modal
-        :title="type === 'vidoe' ? '录像计划' : '抓拍计划'"
+        :title="type === 'video' ? '录像计划' : '抓拍计划'"
         visible
         @cancel="emit('close')"
         :maskClosable="false"
@@ -12,20 +12,11 @@
                     <div class="header">
                         <div>
                             <span>计划{{ index + 1 }}: </span>
-                            <!-- <a-select
-                                v-model:value="item.id"
-                                style="width: 200px"
-                                :options="options"
-                                :field-names="{ label: 'name', value: 'id' }"
-                                @change="
-                                    (_, option) => onChange(option, item)
-                                "
-                                placeholder="请选择计划"
-                            /> -->
                             <planSelect
                                 v-model:value="item.id"
                                 :options="options"
                                 :selectKeys="list"
+                                :disabled="!editState"
                                 @change="(option) => onChange(option, item)"
                             />
                         </div>
@@ -47,7 +38,7 @@
                         />
                     </div>
                 </div>
-                <a-button @click="onAdd(list.length)" class="add-btn"
+                <a-button v-if="editState" @click="onAdd(list.length)" class="add-btn"
                     >+ 添加计划</a-button
                 >
             </div>
@@ -62,16 +53,19 @@
             </div>
         </div>
         <template #footer>
-            <a-button v-if="!editState" type="primary" @click="onSave">保存</a-button>
+            <a-button v-if="editState" type="primary" @click="onSave"
+                >保存</a-button
+            >
         </template>
     </a-modal>
 </template>
 
 <script setup lang="ts" name="Plan">
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import Calendar from '@/views/media/AutoVideo/components/Calendar/index.vue';
-import { queryListNoPaging } from '@/api/media/auto';
+import { queryListNoPaging, bindChannelAll } from '@/api/media/auto';
 import planSelect from './planSelect.vue';
+import { onlyMessage } from '@/utils/comm';
 
 const emit = defineEmits(['close']);
 
@@ -88,9 +82,8 @@ const props = defineProps({
     },
 });
 
-const editState = ref(false);
+const editState = ref(true);
 const options = ref([]);
-const initOptions = ref([]);
 const list = ref([]);
 
 const onAdd = (index) => {
@@ -103,14 +96,32 @@ const onDel = (item) => {
     list.value = list.value.filter((i) => i.index !== item.index);
 };
 
-const onSave = () => {
-    console.log('list.value====', list.value);
+const onSave = async () => {
+    // console.log('list.value====', list.value);
+    // console.log('props.data====', props.data);
+    const items = list.value?.map((item) => ({
+        name: item.name,
+        scheduleId: item.id,
+        deviceId: props.data.deviceId,
+        channelId: props.data.channelId,
+        others: {
+            channelCatalog: `${props.data.deviceName}/${props.data.name}`,
+            times: item.times,
+            trigger: item.trigger,
+        },
+    }));
+    // console.log('items====', items);
+    const res = await bindChannelAll(props.data.channelId, true, items);
+    if (res.success) {
+        onlyMessage('操作成功');
+        emit('close')
+    }
 };
 
 const onChange = (option: any, item: any) => {
-    item.times = option.others?.times
-    item.trigger = option.others?.trigger
-    console.log('options====', option, item);
+    item.times = option.others?.times;
+    item.trigger = option.others?.trigger;
+    item.name = option.name;
 };
 
 const getPlanList = async () => {
@@ -121,12 +132,48 @@ const getPlanList = async () => {
     });
     if (res.success) {
         options.value = res.result;
-        initOptions.value = res.result;
+    }
+};
+
+const getBinds = async () => {
+    const item = {
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+        terms: [
+            { column: 'type', value: props.type, termType: 'eq', type: 'and' },
+            {
+                column: 'id$media-record-channel-bind-schedule',
+                value: [
+                    {
+                        column: 'channelId',
+                        termType: 'eq',
+                        value: props.data.channelId,
+                    },
+                    {
+                        column: 'deviceId',
+                        termType: 'eq',
+                        value: props.data.deviceId,
+                    },
+                ],
+            },
+        ],
+    };
+    const res = await queryListNoPaging(item)
+    if(res.success){
+        // console.log('res,result====',res.result);
+        list.value = res.result.map((item,index)=>({
+            index:index,
+            id:item.id,
+            times:item.others?.times,
+            trigger:item.others?.trigger
+        }))
+        // editState.value = !!res.result.length
     }
 };
 
 onMounted(() => {
     getPlanList();
+    getBinds()
 });
 </script>
 

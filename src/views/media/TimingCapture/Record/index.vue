@@ -24,8 +24,12 @@
                             ref="tableRef"
                             :columns="columns"
                             model="table"
+                            :params="params"
                             :request="query"
                         >
+                        <template #fileSize="slotProps">
+                            {{slotProps.fileSize ? (slotProps.fileSize / 1024 / 1024).toFixed(2):0 }}M
+                        </template>
                             <template #action="slotProps">
                                 <j-space :size="16">
                                     <template
@@ -111,18 +115,12 @@ const columns = [
     {
         title: '已拍数量',
         dataIndex:'fileCount',
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '存储空间',
         scopedSlots: true,
         key:'fileSize',
         dataIndex:'fileSize',
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '操作',

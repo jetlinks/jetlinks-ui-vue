@@ -4,7 +4,12 @@
             <div class="bound">
                 <div class="bound_device">
                     <div>选择设备及目录查看通道：</div>
-                    <ChannelTree :height="700"/>
+                    <ChannelTree
+                        :height="700"
+                        type="unbind"
+                        v-model:deviceId="deviceId"
+                        v-model:channelId="channelId"
+                    />
                 </div>
                 <div class="bound_channel">
                     <pro-search
@@ -18,7 +23,15 @@
                         ref="tableRef"
                         :columns="columns"
                         model="table"
+                        :params="params"
+                        :request="query"
                     >
+                        <template #fileSize="slotProps">
+                            {{slotProps.fileSize ? (slotProps.fileSize / 1024 / 1024).toFixed(2):0 }}M
+                        </template>
+                        <template #duration="slotProps">
+                            {{ slotProps.duration ?formatTime(slotProps.duration) :0 }}
+                        </template>
                         <template #action="slotProps">
                             <j-space :size="16">
                                 <template
@@ -50,9 +63,16 @@
 import { cloneDeep } from 'lodash-es';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import PlayBack from '@/views/media/AutoVideo/components/Playback/index.vue';
+import { queryRecord } from '@/api/media/auto';
+import { formatTime } from '@/utils/utils';
+
 const playbackData = ref();
 const playbackVisible = ref(false);
 const params = ref();
+const deviceId = ref();
+const channelId = ref();
+const tableRef = ref();
+
 const columns = [
     {
         title: 'ID',
@@ -90,15 +110,15 @@ const columns = [
     },
     {
         title: '已录时长',
-        search: {
-            type: 'string',
-        },
+        scopedSlots: true,
+        key:'duration',
+        dataIndex:'duration',
     },
     {
         title: '存储空间',
-        search: {
-            type: 'string',
-        },
+        scopedSlots: true,
+        key:'fileSize',
+        dataIndex:'fileSize',
     },
     {
         title: '操作',
@@ -134,6 +154,39 @@ const getActions = (data, type) => {
     ];
     return actions;
 };
+
+const query = (params) => {
+    const _params = params;
+    const defaultParams = {
+        terms:[]
+    };
+
+    if (deviceId.value) {
+        defaultParams.terms?.push({
+            column: 'deviceId',
+            value: deviceId.value,
+            type: 'and',
+        });
+    }
+
+    if (channelId.value) {
+        defaultParams.terms?.push({
+            column: 'channelId',
+            //   termType: 'in',
+            value: channelId.value,
+            type: 'or',
+        });
+    }
+
+    _params.terms = [...defaultParams.terms, ..._params.terms];
+
+    return queryRecord('video',_params);
+};
+
+watch(() => [deviceId.value, channelId.value], () => {
+  tableRef.value.reload()
+}, { deep: true })
+
 </script>
 
 <style lang="less" scoped>

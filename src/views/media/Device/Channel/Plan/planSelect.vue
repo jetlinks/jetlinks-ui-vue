@@ -3,6 +3,7 @@
         v-model:value="_value"
         style="width: 200px"
         :options="_options"
+        :disabled="disabled"
         :field-names="{ label: 'name', value: 'id' }"
         @change="(value, option) => onChange(value, option)"
         placeholder="请选择计划"
@@ -25,6 +26,10 @@ const props = defineProps({
         type: String,
         default: undefined,
     },
+    disabled:{
+        type:Boolean,
+        default:false
+    }
 });
 
 const _options = computed(() => {

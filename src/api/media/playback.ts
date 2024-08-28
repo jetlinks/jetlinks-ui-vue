@@ -41,6 +41,9 @@ export default {
     // 查询云端回放文件信息
     recordsInServerFiles: (deviceId: string, channelId: string, data: any) =>
         server.post<recordsItemType[]>(`/media/device/${deviceId}/${channelId}/records/in-server/files`, data),
+    //获取自动录像的文件信息
+    recordsInServerFilesByVideo: (scheduleId:string, deviceId: string, channelId: string, data: any) =>
+        server.post<recordsItemType[]>(`/media/record/schedule/${scheduleId}/${deviceId}/${channelId}/records/files`, data),
 
     // 播放云端回放
     playbackStart: (recordId: string) => `${BASE_API_PATH}/media/record/${recordId}.mp4?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
