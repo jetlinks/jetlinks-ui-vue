@@ -2,7 +2,7 @@
     <div>
         <div class="rule-item">
             <span>计划状态：</span>
-            <a-switch v-if="editType" v-model:checked="detail.state.value" checkedValue="enabled" un-checked-value="disabled" ></a-switch>
+            <a-switch v-if="editType" v-model:checked="_state" checkedValue="enabled" un-checked-value="disabled" ></a-switch>
             <div v-else>
                 <a-badge
                     :status="
@@ -63,6 +63,7 @@ const route = useRoute();
 const editType = ref(route.query?.type === 'edit');
 
 const detail = usePlanDetail()
+const _state = ref();
 
 const { run, loading } = useRequest(updatePlan, {
   immediate: false,
@@ -71,10 +72,51 @@ const { run, loading } = useRequest(updatePlan, {
   }
 })
 
+const handleArr = (arr) => {
+    const _newArr = [];
+    arr.forEach((item) => {
+        if (item.times.length !== 0) {
+            item.times.forEach((i) => {
+                if (i?.from) {
+                    _newArr.push(i);
+                }
+            });
+        }
+    });
+    return _newArr;
+};
+
 const save = () => {
-  detail.value.schedules = detail.value.others.times?.map(item => {}) || []
-  run(detail.value)
+    const durations = handleArr(detail.value?.others.times);
+    const range = durations.map(item=>item.when[0])
+    const obj = {
+        trigger:detail.value.others.trigger,
+        mod:'once',
+    }
+    if( detail.value.others.trigger === 'week'){
+        obj['when'] = range
+    }else{
+        obj['scheduleTags'] = range
+        detail.value.others.durations = durations.map(item=>{
+            const {when, ...others} = item
+            return {
+                ...others,
+                scheduleTags:when
+            }
+        })
+    }
+    detail.value.state = _state.value;
+    detail.value.schedules = [obj]
+    run(detail.value)
 }
+
+watch(
+    () => detail.value?.state?.value,
+    ()=>{
+        _state.value = detail.value?.state?.value
+    },
+    {immediate:true}
+)
 
 </script>
 

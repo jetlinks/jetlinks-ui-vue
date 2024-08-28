@@ -5,10 +5,10 @@
                 v-model:value="trigger"
                 button-style="solid"
                 :disabled="disabled"
-                @change="onChangeTirger"
+                @change="onChangeTirgger"
             >
                 <a-radio-button value="week">按周</a-radio-button>
-                <a-radio-button value="calendar">自定义</a-radio-button>
+                <a-radio-button value="calender">自定义</a-radio-button>
             </a-radio-group>
         </div>
         <div class="content">
@@ -79,7 +79,7 @@ const props = defineProps({
     },
     type: {
         type: String,
-        default: 'timing',
+        default: 'auto',
     },
     trigger: {
         type: String,
@@ -164,30 +164,47 @@ const handleSetting = (data) => {
     visible.value = true;
 };
 
-const onChangeTirger = (e) => {
+const onChangeTirgger = (e) => {
     initList(e.target.value);
+    console.log('onChangeTirgger====',e.target.value);
     emits('update:trigger', e.target.value);
 };
 
+//合并数组
+const mergeArray = (arr) => {
+    return arr.map((item) => {
+        const obj = list.value.find((i) => i.value === item.value);
+        return {
+            ...item,
+            ...obj,
+        };
+    });
+};
+
 const initList = async (trigger) => {
-    const res = await queryTags();
-    if (res.status === 200) {
-        tags.value = res.result.map((item) => ({
-            label: item.name,
-            value: item.id,
-        }));
-    }
     if (trigger === 'week') {
-        list.value = cloneDeep(weeks);
+        list.value = mergeArray(cloneDeep(weeks));
     } else {
-        list.value = tags.value;
+        const res = await queryTags();
+        if (res.success) {
+            tags.value = res.result.map((item) => ({
+                label: item.name,
+                value: item.id,
+            }));
+        }
+        list.value = mergeArray(tags.value);
     }
 };
 
 const changList = (arr: any[], when: any[], points: any[]) => {
+    // console.log('when====',when);
+    // console.log('arr====',arr);
     list.value = list.value?.map((item: any) => {
         if (when.includes(item.value)) {
-            item.times = arr;
+            item.times = arr.map(i=>({
+                ...i,
+                when:item.when || [item.value]
+            }))
             item.points = points;
         } else {
             item.times = item.times?.length ? item.times : [];
@@ -223,14 +240,15 @@ const onSave = (records, when) => {
         onlyMessage('请检查配置项', 'warning');
     }
 };
-onMounted(() => {
-    initList(props.trigger);
-});
 
 watch(
     () => props.value,
-    () => {
-        list.value = props.value;
+    (val) => {
+        if (val?.length) {
+            list.value = props.value;
+        } else {
+            initList(props.trigger);
+        }
     },
     { deep: true, immediate: true },
 );
@@ -239,6 +257,7 @@ watch(
     () => props.trigger,
     () => {
         trigger.value = props.trigger;
+        // console.log('props.trigger====',props.trigger);
     },
     { immediate: true },
 );

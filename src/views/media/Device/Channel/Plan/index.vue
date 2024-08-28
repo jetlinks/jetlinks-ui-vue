@@ -1,123 +1,167 @@
 <template>
     <a-modal
-        title="计划管理"
+        :title="type === 'vidoe' ? '录像计划' : '抓拍计划'"
         visible
         @cancel="emit('close')"
         :maskClosable="false"
         width="1000px"
     >
         <div class="content">
-            <div class="items">
-                
-                <div style="display: flex;">
-                    <TitleComponent data="录制计划" />
-                    <a-button v-if="_ref.recordStatus === 'edit'" type="link" @click="onAdd('record')"><AIcon type="EditOutlined" /></a-button>
-                </div>
-                <div class="item" v-if="_ref.recordStatus === 'add'">
-                    <a-button shape="round" @click="onAdd('record')">
-                        点击关联录制计划
-                    </a-button>
-                </div>
-                <div v-if="_ref.recordStatus === 'select'">
-                    <span>关联计划：</span>
-                    <a-select
-                        v-model:value="_ref.recordId"
-                        style="width: 200px"
-                        :options="_ref.recordOptions"
-                        placeholder="请选择计划"
-                    />
-                    <a-button style="margin: 0 12px;">取消</a-button>
-                    <a-button type="primary" @click="onSave('photograph')">保存</a-button>
-                </div>
-                <div v-if="_ref.recordStatus === 'edit'">
-                    <span>关联计划：</span>
-                    <span>保存周期：</span>
-                    <div style="height: 400px;">
-                        计划详情：
-                        <Calendar />
+            <div v-if="list.length" class="items">
+                <div v-for="(item, index) in list" class="item">
+                    <div class="header">
+                        <div>
+                            <span>计划{{ index + 1 }}: </span>
+                            <!-- <a-select
+                                v-model:value="item.id"
+                                style="width: 200px"
+                                :options="options"
+                                :field-names="{ label: 'name', value: 'id' }"
+                                @change="
+                                    (_, option) => onChange(option, item)
+                                "
+                                placeholder="请选择计划"
+                            /> -->
+                            <planSelect
+                                v-model:value="item.id"
+                                :options="options"
+                                :selectKeys="list"
+                                @change="(option) => onChange(option, item)"
+                            />
+                        </div>
+                        <PermissionButton
+                            type="link"
+                            :tooltip="{
+                                title: '删除',
+                            }"
+                            @click="onDel(item)"
+                        >
+                            <AIcon type="DeleteOutlined" />
+                        </PermissionButton>
+                    </div>
+                    <div v-if="item?.times" class="calendar">
+                        <Calendar
+                            v-model:value="item.times"
+                            v-model:trigger="item.trigger"
+                            :disabled="true"
+                        />
                     </div>
                 </div>
+                <a-button @click="onAdd(list.length)" class="add-btn"
+                    >+ 添加计划</a-button
+                >
             </div>
-
-            <div class="items">
-                <div><TitleComponent data="抓拍计划" /></div>
-                <div class="item" v-if="_ref.photographStatus === 'add'">
-                    <a-button shape="round" @click="onAdd('photograph')">
-                        点击关联抓拍计划
-                    </a-button>
-                </div>
-                <div v-if="_ref.photographStatus === 'select'">
-                    <span>关联计划：</span>
-                    <a-select
-                        v-model:value="_ref.photographId"
-                        style="width: 200px"
-                        :options="_ref.photographOptions"
-                        placeholder="请选择计划"
-                    />
-                    <a-button style="margin: 0 12px;">取消</a-button>
-                    <a-button type="primary" @click="onSave('photograph')">保存</a-button>
-                </div>
-                <div v-if="_ref.photographStatus === 'edit'">
-                    <span>关联计划：</span>
-                    <span>保存周期：</span>
-                    <div >
-                        计划详情：
-                        <Calendar/>
-                    </div>
-                </div>
+            <div v-else class="empty">
+                <a-button shape="round" @click="onAdd(0)">
+                    {{
+                        type === 'video'
+                            ? '点击关联录像计划'
+                            : '点击关联抓拍计划'
+                    }}
+                </a-button>
             </div>
         </div>
+        <template #footer>
+            <a-button v-if="!editState" type="primary" @click="onSave">保存</a-button>
+        </template>
     </a-modal>
 </template>
 
 <script setup lang="ts" name="Plan">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import Calendar from '@/views/media/AutoVideo/components/Calendar/index.vue';
+import { queryListNoPaging } from '@/api/media/auto';
+import planSelect from './planSelect.vue';
 
 const emit = defineEmits(['close']);
 
-const _ref = reactive({
-    recordStatus: 'add',
-    recordOptions: [],
-    recordData: {},
-    recordId: undefined,
-    photographStatus: 'add',
-    photographOptions: [],
-    photographData: {},
-    photographId: undefined,
+const props = defineProps({
+    type: {
+        type: String,
+        default: 'video',
+    },
+    data: {
+        type: Object,
+        default: () => {
+            return {};
+        },
+    },
 });
 
-const onAdd = (type: string) => {
-    if (type === 'record') {
-        _ref.recordStatus = 'select';
-    } else {
-        _ref.photographStatus = 'select';
+const editState = ref(false);
+const options = ref([]);
+const initOptions = ref([]);
+const list = ref([]);
+
+const onAdd = (index) => {
+    list.value.push({
+        index: index,
+    });
+};
+
+const onDel = (item) => {
+    list.value = list.value.filter((i) => i.index !== item.index);
+};
+
+const onSave = () => {
+    console.log('list.value====', list.value);
+};
+
+const onChange = (option: any, item: any) => {
+    item.times = option.others?.times
+    item.trigger = option.others?.trigger
+    console.log('options====', option, item);
+};
+
+const getPlanList = async () => {
+    const res = await queryListNoPaging({
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+        terms: [{ column: 'type', value: props.type, termType: 'eq' }],
+    });
+    if (res.success) {
+        options.value = res.result;
+        initOptions.value = res.result;
     }
 };
 
-const onSave = (type:string)=>{
-    if (type === 'record') {
-        _ref.recordStatus = 'edit';
-    } else {
-        _ref.photographStatus = 'edit';
-    }
-}
-
+onMounted(() => {
+    getPlanList();
+});
 </script>
 
 <style lang="less" scoped>
 .content {
     .items {
         margin-bottom: 12px;
+        width: 100%;
         .item {
             width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 60px;
-            background-color: #eee;
-            margin: 6px 0;
+            padding: 12px;
+            margin-top: 12px;
+            // background-color: #eee;
+            border: 1px dashed #8b8b8ba9;
+            border-radius: 4px;
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .calendar {
+                padding-top: 12px;
+                padding-left: 40px;
+            }
         }
+        .add-btn {
+            width: 100%;
+            margin-top: 12px;
+        }
+    }
+    .empty {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 </style>

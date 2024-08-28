@@ -6,6 +6,9 @@ export const queryTags = () => server.get('/calendar/tags')
 //查询计划
 export const queryList = (data:any) => server.post('/media/record/schedule/_query',data)
 
+//查询计划不分页
+export const queryListNoPaging = (data:any) => server.post('/media/record/schedule/_query/no-paging',data)
+
 //保存计划
 export const savePlan = (data:any) => server.post('/media/record/schedule',data)
 

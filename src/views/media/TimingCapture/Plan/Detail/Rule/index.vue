@@ -4,7 +4,7 @@
             <span>计划状态：</span>
             <a-switch
                 v-if="editType"
-                v-model:checked="_ref.state"
+                v-model:checked="_state"
                 checkedValue="enabled"
                 unCheckedValue="disabled"
             ></a-switch>
@@ -40,22 +40,26 @@
                 :precision="0"
                 :min="1"
                 placeholder="请输入录像文件保存天数"
-                v-model:value="_ref.retention"
+                v-model:value="detail.saveDays"
                 style="width: 200px"
             ></a-input-number>
-            <div v-else style="margin-left: 10px">{{ _ref.retention }}</div>
+            <div v-else style="margin-left: 10px">{{ detail.saveDays }}</div>
         </div>
 
         <div>
             <span>录制时段：</span>
             <Calendar
-                v-model:value="_ref.times"
-                v-model:trigger="_ref.trigger"
+                v-model:value="detail.others.times"
+                v-model:trigger="detail.others.trigger"
                 type="timing"
                 :disabled="!editType"
             />
         </div>
-        <a-button v-if="editType" style="margin-top: 20px" type="primary" @click="handleSave"
+        <a-button
+            v-if="editType"
+            style="margin-top: 20px"
+            type="primary"
+            @click="handleSave"
             >保存</a-button
         >
     </div>
@@ -63,7 +67,7 @@
 
 <script setup lang="ts" name="Rule">
 import Calendar from '@/views/media/AutoVideo/components/Calendar/index.vue';
-import { inject, reactive, ref, watch } from 'vue';
+import { inject, onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { updatePlan } from '@/api/media/auto';
 import { onlyMessage } from '@/utils/comm';
@@ -71,12 +75,7 @@ import { onlyMessage } from '@/utils/comm';
 const route = useRoute();
 const editType = ref(route.query?.type === 'edit');
 const detail = inject<any>('detail');
-const _ref = reactive({
-    state: 'enabled',
-    retention: 1,
-    times: [],
-    trigger: 'week',
-});
+const _state = ref();
 
 const handleArr = (arr) => {
     const schedules = [];
@@ -93,22 +92,12 @@ const handleArr = (arr) => {
 };
 
 const handleSave = async () => {
-    const schedules = handleArr(_ref.times);
-    console.log('schedules====', schedules);
-    const _data: any = {
-        state: _ref.state,
-        id: detail.value?.id,
-        type: 'photo',
-        others: {
-            retention: _ref.retention,
-            times: _ref.times,
-            trigger: _ref.trigger,
-        },
-    };
-    if (_data.others.trigger === 'week') {
-        _data.schedules = schedules;
+    const schedules = handleArr(detail.value?.others.times);
+    detail.value.state = _state.value ;
+    if (detail.value.others.trigger === 'week') {
+        detail.value.schedules = schedules;
     } else {
-        _data.schedules = [
+        detail.value.schedules = [
             {
                 trigger: 'multi',
                 multi: {
@@ -117,31 +106,29 @@ const handleSave = async () => {
                         const { when, ...other } = item;
                         return {
                             ...other,
-                            scheduleTags: item.when,
+                            scheduleTags: when,
                         };
                     }),
                 },
             },
         ];
     }
-    const res = await updatePlan(_data);
+    const res = await updatePlan(detail.value);
     if (res.success) {
-        onlyMessage('操作成功')
+        onlyMessage('操作成功');
     }
-    console.log('_data====', _data);
 };
 
+// onMounted(() => {
+//     _state.value = detail.value?.state?.value;
+// });
 watch(
-    () => detail.value,
-    (val) => {
-        if (val) {
-            _ref.state = detail.value?.state?.value;
-            _ref.retention = detail.value?.others?.retention;
-            _ref.times = detail.value?.others?.times;
-            _ref.trigger = detail.value?.others?.trigger;
-        }
+    () => detail.value?.state?.value,
+    (val)=>{
+        _state.value = detail.value?.state?.value
     },
-);
+    {immediate:true}
+)
 
 </script>
 

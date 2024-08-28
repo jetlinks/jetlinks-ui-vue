@@ -14,7 +14,7 @@
                 :gridColumn="2"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
-                    terms: [{ column: 'type', value: 'photo',termType:'eq' }],
+                    terms: [{ column: 'type', value: 'screenshot',termType:'eq' }],
                 }"
                 :params="params"
             >
@@ -84,7 +84,7 @@
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
                                         >{{
-                                            slotProps?.others?.retention
+                                            slotProps?.saveDays
                                         }}</Ellipsis
                                     >
                                 </a-col>
@@ -115,7 +115,7 @@
             </JProTable>
         </FullPage>
     </page-container>
-    <AddPlan v-if="addVisible" @closeModal="addVisible = false"></AddPlan>
+    <AddPlan v-if="addVisible" @closeModal="onClose"></AddPlan>
 </template>
 
 <script setup lang="ts">
@@ -262,6 +262,21 @@ const handleClick = (data) => {
         },
     );
 };
+
+const onClose = (id?: string) => {
+    addVisible.value = false;
+    if(id){
+        menuStory.jumpPage(
+        'media/TimingCapture/Plan/Detail',
+        {
+            id: id,
+        },
+        {
+            type: 'edit',
+        },
+    ); 
+    }
+}
 </script>
 
 <style lang="less" scoped></style>

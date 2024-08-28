@@ -58,7 +58,6 @@
 </template>
 
 <script setup name="Detail">
-import { useMediaStore } from '@/store/media';
 import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
@@ -67,10 +66,16 @@ import { ref } from 'vue';
 import { updatePlan, queryList } from '@/api/media/auto';
 import { useRoute } from 'vue-router';
 
-const mediaStore = useMediaStore();
 const isEdit = ref(false);
 const tabActiveKey = ref('Rule');
-const detail = ref({});
+const detail = ref({
+    schedules: [],
+    saveDays:'',
+    others: {
+        times: [],
+        trigger: 'week',
+    },
+});
 const route = useRoute();
 const loading = ref(false);
 const _value = ref();
@@ -106,7 +111,7 @@ const onSave = async (val) => {
         const res = await updatePlan({
             id: route.params.id,
             name: _value.value,
-            type: 'photo',
+            type: 'screenshot',
         }).finally(() => {
             loading.value = false;
             isEdit.value = val;
@@ -129,8 +134,16 @@ const refresh = async () => {
             },
         ],
     });
-    if (res.status === 200) {
-        detail.value = res.result.data?.[0];
+    if (res.success) {
+        // detail.value = res.result.data?.[0];
+        detail.value = Object.assign({
+          schedules: [],
+          saveDays:1,
+          others: {
+            times: [],
+            trigger: 'week'
+          }
+        }, res.result.data?.[0])
         _value.value = detail.value?.name;
     }
 };
@@ -139,8 +152,7 @@ onMounted(() => {
     refresh();
 });
 
-provide('detail',detail)
-provide('refresh',refresh())
+provide('detail', detail);
 </script>
 
 <style lang="less" scoped>

@@ -163,8 +163,8 @@
             :data="playData"
             @refresh="listRef.reload()"
         />
-        <VideoShare v-if="visible" @close="visible = false"/>
-        <Plan v-if="planVis" :data="playData" @close="planVis = false"/>
+        <VideoShare v-if="visible" @close="visible = false" :data="channelData"/>
+        <Plan v-if="planVis" :data="channelData" @close="planVis = false" :type="planType"/>
     </page-container>
 </template>
 
@@ -239,7 +239,7 @@ const columns = [
     {
         title: '操作',
         key: 'action',
-        width: 200,
+        width: 220,
         scopedSlots: true,
     },
 ];
@@ -256,6 +256,7 @@ const params = ref<Record<string, any>>({});
 const deviceData = ref<any>();
 const visible = ref(false);
 const planVis = ref(false);
+const planType = ref('');
 
 /**
  * 搜索
@@ -344,14 +345,28 @@ const getActions = (
         },
         {
             key: 'plan',
-            text: '计划管理',
+            text: '抓拍计划',
             tooltip: {
-                title: '计划管理',
+                title: '抓拍计划',
             },
             icon: 'ProfileOutlined',
             onClick: () => {
                 planVis.value = true;
-                // channelData.value = cloneDeep(data);
+                planType.value = 'screenshot';
+                channelData.value = cloneDeep(data);
+            },
+        },
+        {
+            key: 'plan',
+            text: '录像计划',
+            tooltip: {
+                title: '录像计划',
+            },
+            icon: 'ProfileOutlined',
+            onClick: () => {
+                planType.value = 'video';
+                planVis.value = true;
+                channelData.value = cloneDeep(data);
             },
         },
         {

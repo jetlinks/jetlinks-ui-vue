@@ -9,7 +9,7 @@ export interface Schedule {
     id: string
     name: string
     type: 'video' | 'photo'
-
+    state:  Record<string, any>
     schedules: Array<any>
 
     others: ScheduleOthers
