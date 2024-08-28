@@ -127,9 +127,11 @@ const getChildren = (key, params, first = false, parentPaths = [], channelCatalo
         }, 50);
       }
       if (first) {
+        const node = nodes[0]
         expandedKeys.value.push(treeData.value[0].id);
         selectedKeys.value = [!nodes.length ? key : nodes[0].id]
         emit('update:deviceId', selectedKeys.value[0])
+        emit('select', { dId: node.deviceId, cId: node.channelId, node })
       }
       resolve(res.result);
     }
@@ -225,7 +227,6 @@ const getDeviceList = async (params) => {
  * @param param1
  */
 const onSelect = (_, { node }) => {
-  console.log('onSelect',node, _)
     selectedKeys.value = [node.id]
     emit('update:deviceId', node.id);
     emit('update:channelId', node.channelId);

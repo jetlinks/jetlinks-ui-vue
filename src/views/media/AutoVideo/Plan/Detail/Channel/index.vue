@@ -63,7 +63,7 @@
                               :tooltip="{title: '播放'}"
                               @click="() => { onPlay(slotProps)}"
                             >
-                              <AIcon type="play" />
+                              <AIcon type="VideoCameraOutlined" />
                             </PermissionButton>
 
                             <PermissionButton
@@ -89,7 +89,7 @@
                               :tooltip="{title: '回放'}"
                               @click="() => { onPlayBack(slotProps)}"
                             >
-                              <AIcon type="PlayCircleOutlined" />
+                              <AIcon type="HistoryOutlined" />
                             </PermissionButton>
                             <PermissionButton
                               type="link"
@@ -143,7 +143,7 @@ const logsVisible = ref(false);
 const playbackData = ref();
 const route = useRoute();
 
-const editType = ref(route.query?.type !== 'edit');
+const editType = ref(false);
 const playData = ref();
 const playerVis = ref(false);
 
@@ -366,6 +366,7 @@ const saveChannel = () => {
       cacheDeviceIds.value = {}
       treeRef.value.getDeviceList()
       onlyMessage('操作成功')
+      getBindTotal()
     }
   })
 
@@ -381,21 +382,53 @@ const saveChannel = () => {
 }
 
 const treeSelect = ({node}) => {
-  console.log('treeSelect', node)
   const { paths } = node
 
   currentDeviceId.value = paths[0]
+
+  tableRef.value.reload()
 }
 
-watch(() => [deviceId.value, channelId.value], () => {
-  tableRef.value.reload()
-}, { deep: true })
+const getBindTotal = () => {
+  const defaultParams = {
+    terms: [
+      {
+        terms: [
+          {
+            column: "channelId$media-record-schedule-bind-channel",
+            value: [{
+              column: "scheduleId",
+              termType: "eq",
+              value: route.params.id
+            }]
+          },
+          {
+            column: "deviceId$media-record-schedule-bind-device",
+            value: [{
+              column: "scheduleId",
+              termType: "eq",
+              value: route.params.id
+            }]
+          },
+        ]
+      },
+    ]
+  }
+  queryBoundChannel(defaultParams).then(resp => {
+    if (resp.success) {
+      bindCount.value = resp.result.total
+    }
+  })
+}
+
+getBindTotal()
 
 </script>
 
 <style lang="less">
 .channelControl {
     display: flex;
+    align-items: center;
     .bind {
         margin-right: 20px;
     }
