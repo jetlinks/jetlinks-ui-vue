@@ -272,6 +272,7 @@ const unBind = (record) => {
 }
 
 const onPlayBack = (record) => {
+  console.log('onPlayBack', record)
   playbackData.value = cloneDeep(record);
   playbackVisible.value = true;
 }

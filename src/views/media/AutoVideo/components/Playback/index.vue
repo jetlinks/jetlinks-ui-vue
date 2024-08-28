@@ -206,7 +206,7 @@ const playTime = ref(0);
 const playNowTime = ref(0); // 当前播放视频标识
 const playTimeNode = ref<any>(null);
 const isEnded = ref(false); // 是否结束播放
-const deviceId = computed(() => props.data.id as string);
+const deviceId = computed(() => props.data.deviceId as string);
 const channelId = computed(() => props.data.channelId as string);
 
 const deviceType = ref('');
@@ -388,16 +388,15 @@ watch(
 );
 
 onMounted(() => {
-    const _type = props.data.type as string;
+    const _type = props.data.provider as string;
     if (_type) {
         deviceType.value = _type;
-        const _timeStr = dayjs(new Date());
-        time.value = _timeStr;
+        time.value = dayjs(new Date());
         if (_type === 'fixed-media' || _type === 'onvif') {
             type.value = 'cloud';
-            queryServiceRecords(_timeStr);
+            // queryServiceRecords(_timeStr);
         } else {
-            queryLocalRecords(_timeStr);
+            // queryLocalRecords(_timeStr);
             type.value = 'local';
         }
     }
