@@ -4,7 +4,12 @@
             <div class="bound">
                 <div class="bound_device">
                     <div>选择设备及目录查看通道：</div>
-                    <ChannelTree :height="700"/>
+                    <ChannelTree
+                        :height="700"
+                        type="unbind"
+                        v-model:deviceId="deviceId"
+                        v-model:channelId="channelId"
+                    />
                 </div>
                 <div class="bound_channel">
                     <pro-search
@@ -19,6 +24,7 @@
                             ref="tableRef"
                             :columns="columns"
                             model="table"
+                            :request="query"
                         >
                             <template #action="slotProps">
                                 <j-space :size="16">
@@ -48,6 +54,7 @@
             </div>
             <RecordPicture
                 v-if="pictureVisible"
+                :data="pictureData"
                 @close="pictureVisible = false"
             />
         </FullPage>
@@ -58,9 +65,14 @@
 import { cloneDeep } from 'lodash-es';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import RecordPicture from '@/views/media/TimingCapture/components/RecordPicture/index.vue';
+import { queryRecord } from '@/api/media/auto';
+
 const pictureData = ref();
 const pictureVisible = ref(false);
 const params = ref();
+const deviceId = ref();
+const channelId = ref();
+const tableRef = ref();
 const columns = [
     {
         title: 'ID',
@@ -98,12 +110,16 @@ const columns = [
     },
     {
         title: '已拍数量',
+        dataIndex:'fileCount',
         search: {
             type: 'string',
         },
     },
     {
         title: '存储空间',
+        scopedSlots: true,
+        key:'fileSize',
+        dataIndex:'fileSize',
         search: {
             type: 'string',
         },
@@ -142,6 +158,39 @@ const getActions = (data, type) => {
     ];
     return actions;
 };
+
+const query = (params) => {
+    const _params = params;
+    const defaultParams = {
+        terms:[]
+    };
+
+    if (deviceId.value) {
+        defaultParams.terms?.push({
+            column: 'deviceId',
+            value: deviceId.value,
+            type: 'and',
+        });
+    }
+
+    if (channelId.value) {
+        defaultParams.terms?.push({
+            column: 'channelId',
+            //   termType: 'in',
+            value: channelId.value,
+            type: 'or',
+        });
+    }
+
+    _params.terms = [...defaultParams.terms, ..._params.terms];
+
+    return queryRecord( 'screenshot',_params);
+};
+
+watch(() => [deviceId.value, channelId.value], () => {
+  tableRef.value.reload()
+}, { deep: true })
+
 </script>
 
 <style lang="less" scoped>

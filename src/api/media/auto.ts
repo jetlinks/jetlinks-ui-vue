@@ -9,6 +9,12 @@ export const queryList = (data:any) => server.post('/media/record/schedule/_quer
 //查询计划不分页
 export const queryListNoPaging = (data:any) => server.post('/media/record/schedule/_query/no-paging',data)
 
+//查询录像记录
+export const queryRecord = (type:string,data:any) => server.post(`/media/channel/${type}/record/agg`,data)
+
+//查询录像文件
+export const queryFiles = (data:any) => server.post('/media/record/schedule/files/_query',data)
+
 //保存计划
 export const savePlan = (data:any) => server.post('/media/record/schedule',data)
 
