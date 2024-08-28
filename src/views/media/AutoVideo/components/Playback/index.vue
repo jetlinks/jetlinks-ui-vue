@@ -184,6 +184,8 @@ import LivePlayer from '@/components/Player/index.vue';
 import { getImage } from '@/utils/comm';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
+import { ref, computed, watch } from 'vue'
+
 const props = defineProps({
     data:{
         type:Object,

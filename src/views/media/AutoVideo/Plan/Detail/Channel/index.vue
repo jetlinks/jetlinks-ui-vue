@@ -1,76 +1,78 @@
 <template>
     <div>
+      <a-spin :spinning="spinning">
         <div class="channelControl">
-            <div class="bind">已绑定通道数：{{ bindCount }}</div>
-            <a-space v-if="editType">
-                <a-button @click="clearBind">清空通道</a-button>
-                <a-button @click="showBind">绑定通道</a-button>
-            </a-space>
-            <div v-else>
-                <PermissionButton
-                    type="link"
-                    hasPermission="device/Instance:action"
-                    @click="editType = true"
-                >
-                    <AIcon type="EditOutlined" />
-                </PermissionButton>
-            </div>
+          <div class="bind">已绑定通道数：{{ bindCount }}</div>
+          <a-space v-if="editType">
+            <a-button @click="clearBind">清空通道</a-button>
+            <a-button @click="showBind">绑定通道</a-button>
+          </a-space>
+          <div v-else>
+            <PermissionButton
+              type="link"
+              hasPermission="device/Instance:action"
+              @click="editType = true"
+            >
+              <AIcon type="EditOutlined" />
+            </PermissionButton>
+          </div>
         </div>
         <div class="bound">
-            <div class="bound_device">
-                <div>选择设备及目录查看已绑定的通道：</div>
-                <ChannelTree
-                  ref="treeRef"
-                  :height="700"
-                  :id="route.params.id"
-                  v-model:deviceId="deviceId"
-                  v-model:channelId="channelId"
-                  @select="treeSelect"
-                />
-            </div>
-            <div class="bound_channel">
-                <pro-search
-                    :columns="columns"
-                    :params="params"
-                    style="padding-bottom: 0; margin-bottom: 0"
-                    @search="handleSearch"
-                ></pro-search>
-                <j-pro-table
-                    style="min-height: calc(100% - 60px)"
-                    ref="tableRef"
-                    model="table"
-                    rowKey="channelId"
-                    :columns="columns"
-                    :request="query"
-                    :params="params"
-                >
-                  <template #status="slotProps">
-                    <BadgeStatus
-                      :text="slotProps.status.text"
-                      :status="slotProps.status.value"
-                      :statusNames="{
+          <div class="bound_device">
+            <div v-if="showBody">选择设备及目录查看已绑定的通道：</div>
+            <ChannelTree
+              ref="treeRef"
+              :height="700"
+              :id="route.params.id"
+              v-model:deviceId="deviceId"
+              v-model:channelId="channelId"
+              @select="treeSelect"
+              @load="onLoad"
+            />
+          </div>
+          <div v-if="showBody" class="bound_channel">
+            <pro-search
+              :columns="columns"
+              :params="params"
+              style="padding-bottom: 0; margin-bottom: 0"
+              @search="handleSearch"
+            ></pro-search>
+            <j-pro-table
+              style="min-height: calc(100% - 60px)"
+              ref="tableRef"
+              model="table"
+              rowKey="channelId"
+              :columns="columns"
+              :request="query"
+              :params="params"
+            >
+              <template #status="slotProps">
+                <BadgeStatus
+                  :text="slotProps.status.text"
+                  :status="slotProps.status.value"
+                  :statusNames="{
                         'online': 'success',
                         'offline': 'error',
                       }"
-                    />
-                  </template>
-                    <template #action="slotProps">
-                        <j-space :size="16">
-                          <template v-if="editType">
-                            <PermissionButton
-                              type="link"
-                              style="padding: 0px"
-                              :tooltip="{title: '播放'}"
-                              @click="() => { onPlay(slotProps)}"
-                            >
-                              <AIcon type="VideoCameraOutlined" />
-                            </PermissionButton>
+                />
+              </template>
+              <template #action="slotProps">
+                <j-space :size="16">
+                  <template v-if="editType">
+                    <PermissionButton
+                      type="link"
+                      style="padding: 0px"
+                      :tooltip="{title: '播放'}"
+                      @click="() => { onPlay(slotProps)}"
+                    >
+                      <AIcon type="VideoCameraOutlined" />
+                    </PermissionButton>
 
-                            <PermissionButton
-                              type="link"
-                              style="padding: 0px"
-                              :tooltip="{title: '解绑'}"
-                              :popConfirm="{
+                    <PermissionButton
+                      type="link"
+                      style="padding: 0px"
+                      :tooltip="{title: '解绑'}"
+                      :popConfirm="{
                                 title: '确认解绑吗？',
                                 okText: '确定',
                                 cancelText: '取消',
@@ -78,47 +80,52 @@
                                   unBind(slotProps)
                                 },
                               }"
-                            >
-                              <AIcon type="DisconnectOutlined" />
-                            </PermissionButton>
-                          </template>
-                          <template v-else>
-                            <PermissionButton
-                              type="link"
-                              style="padding: 0px"
-                              :tooltip="{title: '回放'}"
-                              @click="() => { onPlayBack(slotProps)}"
-                            >
-                              <AIcon type="HistoryOutlined" />
-                            </PermissionButton>
-                            <PermissionButton
-                              type="link"
-                              style="padding: 0px"
-                              :tooltip="{title: '日志'}"
-                              @click="() => { onLogs(slotProps)}"
-                            >
-                              <AIcon type="ExceptionOutlined" />
-                            </PermissionButton>
-                          </template>
-                        </j-space>
-                    </template>
-                </j-pro-table>
-            </div>
+                    >
+                      <AIcon type="DisconnectOutlined" />
+                    </PermissionButton>
+                  </template>
+                  <template v-else>
+                    <PermissionButton
+                      type="link"
+                      style="padding: 0px"
+                      :tooltip="{title: '回放'}"
+                      @click="() => { onPlayBack(slotProps)}"
+                    >
+                      <AIcon type="HistoryOutlined" />
+                    </PermissionButton>
+                    <PermissionButton
+                      type="link"
+                      style="padding: 0px"
+                      :tooltip="{title: '日志'}"
+                      @click="() => { onLogs(slotProps)}"
+                    >
+                      <AIcon type="ExceptionOutlined" />
+                    </PermissionButton>
+                  </template>
+                </j-space>
+              </template>
+            </j-pro-table>
+          </div>
         </div>
-        <div>
-          <a-button type="primary" @click="saveChannel">保存</a-button>
+        <div v-if="showBody">
+          <a-button type="primary" :loading="saveLoading" @click="saveChannel">保存</a-button>
+        </div>
+        <div v-if="!showBody" class="video-unbind-tip">
+          请先绑定通道
         </div>
         <Bind
           v-if="bindVisible"
           :cacheDeviceIds="cacheDeviceIds"
           @closeBind="bindVisible = false"
           @submit="submit"/>
-        <PlayBack v-if="playbackVisible" @close="playbackVisible = false" />
+        <PlayBack v-if="playbackVisible" :data="playbackData" @close="playbackVisible = false" />
         <Live
-            v-model:visible="playerVis"
-            :data="playData"
-            @refresh="tableRef.reload()"
+          v-model:visible="playerVis"
+          :data="playData"
+          @refresh="tableRef.reload()"
         />
+      </a-spin>
+
         <!-- <Logs v-if="logsVisible" @close="logsVisible = false" /> -->
     </div>
 </template>
@@ -128,10 +135,12 @@ import Bind from './Bind.vue';
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import PlayBack from '@/views/media/AutoVideo/components/Playback/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
-import {bindChannel, queryBoundChannel, unbindChannel} from "@/api/media/auto";
+import {bindChannel, queryBoundChannel, unbindChannel, unbindChannelAll} from "@/api/media/auto";
 import { cloneDeep } from 'lodash-es'
 import BadgeStatus from '@/components/BadgeStatus/index.vue'
 import {onlyMessage} from "@/utils/comm";
+import { useRequest } from '@/hook'
+import { Modal } from 'ant-design-vue'
 // import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 
 const bindCount = ref(0);
@@ -152,6 +161,13 @@ const channelId = ref()
 const cacheDeviceIds = ref({})
 const unBindChannelIds = ref({})
 const currentDeviceId = ref()
+
+const showBody = ref(false)
+const saveLoading = ref(false)
+
+const videoTags = inject('video-tags')
+
+const { loading: spinning, run } = useRequest(unbindChannelAll, { immediate: false })
 
 const params = ref({terms: [
     {
@@ -261,7 +277,12 @@ const onPlayBack = (record) => {
 }
 
 const onLogs = (record) => {
-  logsVisible.value = true;
+  videoTags.terms = [{
+    column: 'channelId',
+    termType: 'eq',
+    value: record.channelId
+  }]
+  videoTags.tag.value = 'Log'
 }
 const showBind = () => {
     bindVisible.value = true;
@@ -276,7 +297,15 @@ const handleSearch = (e) => {
 
 };
 
-const clearBind = () => {};
+const clearBind = () => {
+  Modal.confirm({
+    title: '清空操作不可撤销，确认清空所有通道？',
+    onOk() {
+      run(route.params.id)
+    }
+  })
+
+};
 
 const submit = (data) => {
   cacheDeviceIds.value = {...data}
@@ -349,7 +378,6 @@ const query = (params) => {
 
 const saveChannel = () => {
   const terms = []
-
   Object.values(cacheDeviceIds.value).forEach(({ channelIds, channelCatalog, paths }) => {
     const [ deviceId ] = paths
     terms.push(...channelIds.map(id => ({
@@ -361,6 +389,7 @@ const saveChannel = () => {
     })))
   })
 
+  saveLoading.value = true
   bindChannel(route.params.id,terms).then(resp => {
     if (resp.success) {
       cacheDeviceIds.value = {}
@@ -368,6 +397,8 @@ const saveChannel = () => {
       onlyMessage('操作成功')
       getBindTotal()
     }
+  }).finally(() => {
+    saveLoading.value = false
   })
 
   const keys = Object.keys(unBindChannelIds.value)
@@ -421,6 +452,10 @@ const getBindTotal = () => {
   })
 }
 
+const onLoad = (data) => {
+  showBody.value = data.length
+}
+
 getBindTotal()
 
 </script>
@@ -442,5 +477,12 @@ getBindTotal()
     .bound_channel {
         flex: 1 1 0;
     }
+}
+
+.video-unbind-tip {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding-top: 100px;
 }
 </style>
