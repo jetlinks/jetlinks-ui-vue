@@ -152,7 +152,7 @@ const logsVisible = ref(false);
 const pictureData = ref();
 const route = useRoute();
 const params = ref();
-const editType = ref(route.query?.type !== 'edit');
+const editType = ref(false);
 const playData = ref();
 const playerVis = ref(false);
 

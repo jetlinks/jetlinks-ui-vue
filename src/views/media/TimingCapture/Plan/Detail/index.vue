@@ -62,7 +62,7 @@ import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
-import { ref } from 'vue';
+import {provide, ref} from 'vue';
 import { updatePlan, queryList } from '@/api/media/auto';
 import { useRoute } from 'vue-router';
 
@@ -79,6 +79,12 @@ const detail = ref({
 const route = useRoute();
 const loading = ref(false);
 const _value = ref();
+
+provide('video-tags', {
+  tag: tabActiveKey,
+  terms: []
+})
+
 
 const list = [
     {
