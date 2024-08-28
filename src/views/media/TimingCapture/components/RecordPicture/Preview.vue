@@ -2,47 +2,60 @@
     <div class="closeIcon" @click="emit('closePreview')"><AIcon type="CloseOutlined" style="font-size: 20px;"></AIcon></div>
     <div class="preview">
         <div class="preview-img">
-            <img :src="getImage('/bind/jetlinksLogo.png')" alt=""/>
+            <img :src="record.filePath"/>
         </div>
         <div class="imgInfo">
             <div class="info-item">
                 <div>抓拍时间:</div>
-                <div></div>
+                <div> {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
             </div>
             <div class="info-item">
                 <div>通道ID:</div>
-                <div></div>
+                <div>{{ channel.channelId }}</div>
             </div>
             <div class="info-item">
                 <div>通道名称:</div>
-                <div></div>
+                <div>{{ channel.name || '-'}}</div>
             </div>
             <div class="info-item">
                 <div>通道目录:</div>
-                <div></div>
+                <div>{{ channel.channelCatalog  || '-'}}</div>
             </div>
             <div class="info-item">
                 <div>安装地址:</div>
-                <div></div>
+                <div>{{ channel.address }}</div>
             </div>
             <div class="info-item">
                 <div>厂家:</div>
-                <div></div>
+                <div>{{ channel.manufacturer }}</div>
             </div>
             <div class="info-item">
                 <div>设备ID:</div>
-                <div></div>
+                <div>{{ channel.deviceId }}</div>
             </div>
             <div class="info-item">
                 <div>设备名称:</div>
-                <div></div>
+                <div>{{ channel.deviceName }}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { getImage } from '@/utils/comm';
+import dayjs from 'dayjs';
+
+const props = defineProps({
+    record: {
+        type: Object,
+        default: () => ({}),
+    },
+    channel:{
+        type: Object,
+        default: () => ({}),
+    }
+})
+
+
 const emit = defineEmits(['closePreview'])
 </script>
 <style lang="less" scoped>
@@ -64,10 +77,11 @@ const emit = defineEmits(['closePreview'])
     z-index: 2000;
     .imgInfo{
         width: 20%;
-        margin: 10px 20px;
+        padding: 12px;
+        // margin: 10px 20px;
     }
     .info-item {
-        margin-top: 20px;
+        margin-top: 12px;
     }
     .preview-img{
         width: 80%;
