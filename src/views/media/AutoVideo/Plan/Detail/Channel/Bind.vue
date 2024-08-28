@@ -13,7 +13,7 @@
                   type="unBind"
                   v-model:deviceId="deviceId"
                   v-model:channelId="channelId"
-                  @onSelect="selectDevice"
+                  @select="selectDevice"
                 />
             </div>
             <div class="bind_right">
@@ -81,7 +81,7 @@
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
 import {queryBoundChannel} from "@/api/media/auto";
-import {omit} from "lodash-es";
+import {cloneDeep, omit} from "lodash-es";
 import BadgeStatus from '@/components/BadgeStatus/index.vue'
 
 const emit = defineEmits(['closeBind', 'submit']);
@@ -187,7 +187,8 @@ const onSelectChange = (item, state) => {
         arr.delete(item.channelId);
     }
     _selectedRowKeys.value = [...arr.values()];
-    cacheSelected.value[deviceId.value].channelIds = [...arr.values()]
+    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
+    cacheSelected.value[deviceId.value].channelIds = [...oldChannelIds, ...arr.values()]
 };
 const selectAll = (selected, selectedRows, changeRows) => {
   const selectedKeys = new Set(_selectedRowKeys.value)
@@ -200,7 +201,8 @@ const selectAll = (selected, selectedRows, changeRows) => {
         selectedKeys.delete(i.channelId)
       });
     }
-  cacheSelected.value[deviceId.value].channelIds = [...selectedKeys.values()]
+    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
+  cacheSelected.value[deviceId.value].channelIds = [...oldChannelIds, ...selectedKeys.values()]
   _selectedRowKeys.value = [...selectedKeys.values()]
 };
 
@@ -225,18 +227,18 @@ const handleSearch = (e) => {
       {
         terms: [
           {
-            column: "channelId$media-record-schedule-bind-channel",
+            column: "channelId$media-record-schedule-bind-channel$not",
             value: [{
               column: "scheduleId",
-              termType: "not",
+              termType: "eq",
               value: route.params.id
             }]
           },
           {
-            column: "deviceId$media-record-schedule-bind-device",
+            column: "deviceId$media-record-schedule-bind-device$not",
             value: [{
               column: "scheduleId",
-              termType: "not",
+              termType: "eq",
               value: route.params.id
             }]
           }
@@ -252,15 +254,12 @@ const handleSearch = (e) => {
   }
 
   // 获取缓存中的绑定通道
-  const cacheDeviceValues = Object.values(props.cacheDeviceIds)
-  if (cacheDeviceValues.length) {
-    const channelIds = cacheDeviceValues.reduce((prev, next) => {
-      return [...prev, ...next.channelIds]
-    })
-    defaultParams.terms({
+  if (props.cacheDeviceIds[deviceId.value]) {
+    const {channelIds} = props.cacheDeviceIds[deviceId.value]
+    defaultParams.terms.push({
       column: 'channelId',
       termType: 'nin',
-      value: channelIds,
+      value: channelIds.toString(),
       type: 'and'
     })
   }
@@ -291,6 +290,12 @@ const submit = () => {
   })
   emit('submit', omit(cacheSelected.value, paths))
 }
+
+onMounted(() => {
+  if (Object.keys(props.cacheDeviceIds)) {
+    cacheSelected.value = cloneDeep(props.cacheDeviceIds)
+  }
+})
 
 watch(() => deviceId.value, () => {
   handleSearch([])
