@@ -11,7 +11,7 @@
             :columns="columns"
             :params="params"
             model="table"
-            :request="queryLogs"
+            :request="e=>queryLogs(route.params.id,e)"
         >
             <template #createTime="slotProps">
                 {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -48,7 +48,9 @@ import dayjs from 'dayjs';
 import logView from './logView.vue';
 import { useRouteQuery } from '@vueuse/router';
 import { onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);

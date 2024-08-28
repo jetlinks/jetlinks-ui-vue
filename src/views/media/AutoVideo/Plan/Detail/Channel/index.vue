@@ -120,7 +120,7 @@
         :cacheDeviceIds="cacheDeviceIds"
         @closeBind="bindVisible = false"
         @submit="submit"/>
-      <PlayBack v-if="playbackVisible" :data="playbackData" @close="playbackVisible = false" />
+      <PlayBack v-if="playbackVisible" :data="playbackData" :scheduleId="route.params.id" @close="playbackVisible = false" />
       <Live
         v-model:visible="playerVis"
         :data="playData"

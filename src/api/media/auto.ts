@@ -40,6 +40,6 @@ export const queryBoundChannel =(data:any) => server.post('/media/channel/_query
 export const unbindChannel = (scheduleId:string,data:any) => server.post(`/media/record/schedule/${scheduleId}/_unbind`,data)
 
 //查询执行日志
-export const queryLogs = (data:any) => server.post('/media/record/schedule/history/_query',data)
+export const queryLogs = (scheduleId:string,data:any) => server.post(`/media/record/schedule/${scheduleId}/history/_query`,data)
 
 export const unbindChannelAll = (scheduleId:string) => server.post(`/media/record/schedule/${scheduleId}/_bind_clear`)

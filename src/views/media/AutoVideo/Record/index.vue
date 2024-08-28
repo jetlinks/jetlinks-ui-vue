@@ -54,7 +54,7 @@
                     ></j-pro-table>
                 </div>
             </div>
-            <PlayBack v-if="playbackVisible" @close="playbackVisible = false"/>
+            <PlayBack :data="playbackData" v-if="playbackVisible" @close="playbackVisible = false"/>
         </FullPage>
     </page-container>
 </template>

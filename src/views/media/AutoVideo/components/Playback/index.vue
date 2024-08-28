@@ -190,6 +190,10 @@ const props = defineProps({
     data:{
         type:Object,
         default:{}
+    },
+    scheduleId:{
+        type:String,
+        default:''
     }
 })
 const emits = defineEmits(['close'])
@@ -282,12 +286,10 @@ const queryServiceRecords = async (date: Dayjs) => {
             endTime: date.format('YYYY-MM-DD 23:59:59'),
             includeFiles: true,
         };
-
-        const resp = await playBackApi.recordsInServerFiles(
-            deviceId.value,
-            channelId.value,
-            params,
-        );
+       
+        const resp = props.scheduleId === '' ? 
+            await playBackApi.recordsInServerFiles(deviceId.value,channelId.value,params) :
+            await playBackApi.recordsInServerFilesByVideo(props.scheduleId,deviceId.value,channelId.value,params);
         loading.value = false;
         if (resp.status === 200) {
             historyList.value = resp.result;
