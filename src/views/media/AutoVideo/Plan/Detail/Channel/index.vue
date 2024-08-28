@@ -113,19 +113,19 @@
         <div v-if="!showBody" class="video-unbind-tip">
           请先绑定通道
         </div>
-        <Bind
-          v-if="bindVisible"
-          :cacheDeviceIds="cacheDeviceIds"
-          @closeBind="bindVisible = false"
-          @submit="submit"/>
-        <PlayBack v-if="playbackVisible" :data="playbackData" @close="playbackVisible = false" />
-        <Live
-          v-model:visible="playerVis"
-          :data="playData"
-          @refresh="tableRef.reload()"
-        />
       </a-spin>
 
+      <Bind
+        v-if="bindVisible"
+        :cacheDeviceIds="cacheDeviceIds"
+        @closeBind="bindVisible = false"
+        @submit="submit"/>
+      <PlayBack v-if="playbackVisible" :data="playbackData" @close="playbackVisible = false" />
+      <Live
+        v-model:visible="playerVis"
+        :data="playData"
+        @refresh="tableRef.reload()"
+      />
         <!-- <Logs v-if="logsVisible" @close="logsVisible = false" /> -->
     </div>
 </template>
