@@ -89,6 +89,7 @@ const handleArr = (arr) => {
 };
 
 const handleSave = async () => {
+
     const schedules = handleArr(detail.value?.others.times);
     detail.value.state.value = _state.value ;
     if (detail.value.others.trigger === 'week') {
@@ -109,6 +110,10 @@ const handleSave = async () => {
                 },
             },
         ];
+    }
+    if(!detail.value.saveDays){
+        onlyMessage('请输入保存周期', 'error');
+        return;
     }
     const res = await updatePlan(detail.value);
     if (res.success) {

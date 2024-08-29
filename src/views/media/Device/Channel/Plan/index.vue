@@ -34,6 +34,8 @@
                         <Calendar
                             v-model:value="item.times"
                             v-model:trigger="item.trigger"
+                            type="timing"
+                            :view="false"
                             :disabled="true"
                         />
                     </div>
@@ -134,7 +136,7 @@ const onSave = async () => {
 };
 
 const onChange = (option: any, item: any) => {
-    item.times = option.others?.times;
+    item.times = option.others?.times || [];
     item.trigger = option.others?.trigger;
     item.name = option.name;
 };

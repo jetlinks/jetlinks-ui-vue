@@ -1,7 +1,7 @@
 <template>
     <div class="calendar">
-        <div class="header">
-            <span>录制时段：</span>
+        <div class="header" v-if="!view">
+            <span>{{ type==='auto' ?'录制时段':'抓拍时间' }}:</span>
             <a-radio-group
                 v-model:value="trigger"
                 :disabled="disabled"
@@ -105,6 +105,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    view:{
+        type: Boolean,
+        default: false,
+    }
 });
 
 const emits = defineEmits(['update:value', 'update:trigger', 'change']);
