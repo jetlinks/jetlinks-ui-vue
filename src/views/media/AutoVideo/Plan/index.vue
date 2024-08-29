@@ -20,7 +20,7 @@
                         },
                     ],
                 }"
-                :gridColumn="2"
+                 :gridColumn="2"
                 :request="queryList"
                 :params="params"
             >
@@ -87,7 +87,7 @@
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
                                         >{{
-                                            slotProps.others?.retention
+                                            slotProps.others?.retention ||   slotProps.saveDays
                                         }}</Ellipsis
                                     >
                                 </a-col>

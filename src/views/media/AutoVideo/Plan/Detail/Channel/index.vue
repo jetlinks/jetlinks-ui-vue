@@ -31,6 +31,13 @@
             />
           </div>
           <div v-if="showBody" class="bound_channel">
+            <div style="padding: 12px 24px 0">
+                    <a-breadcrumb>
+                        <a-breadcrumb-item v-for="name in pathsName">{{
+                            name
+                        }}</a-breadcrumb-item>
+                    </a-breadcrumb>
+                </div>
             <pro-search
               :columns="columns"
               :params="params"
@@ -155,6 +162,7 @@ const route = useRoute();
 const editType = ref(false);
 const playData = ref();
 const playerVis = ref(false);
+const pathsName = ref()
 
 const deviceId = ref()
 const channelId = ref()
@@ -312,7 +320,7 @@ const submit = (data) => {
   cacheDeviceIds.value = {...data}
   treeRef.value.getDeviceList({...data})
   bindVisible.value = false
-  tableRef.value.reload()
+  tableRef.value?.reload()
 }
 
 const query = (params) => {
@@ -414,11 +422,11 @@ const saveChannel = () => {
 }
 
 const treeSelect = ({node}) => {
-  const { paths } = node
+  const { paths,channelCatalog } = node
 
   currentDeviceId.value = paths[0]
-
-  tableRef.value.reload()
+  pathsName.value = channelCatalog
+  tableRef.value?.reload()
 }
 
 const getBindTotal = () => {

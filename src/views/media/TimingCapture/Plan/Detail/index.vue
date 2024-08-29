@@ -18,15 +18,16 @@
                         <AIcon type="EditOutlined" />
                     </PermissionButton>
                 </div>
-                <div v-else style="display: flex">
-                    <a-input v-model:value="_value" />
-                    <PermissionButton
-                        type="link"
-                        :hasPermission="true"
-                        @click="onSave(false)"
-                    >
-                        <AIcon type="CheckOutlined" />
-                    </PermissionButton>
+                <div v-else>
+                    <a-space>
+                        <a-input v-model:value="_value" />
+                        <a-button @click="isEdit = false">取消</a-button>
+                        <PermissionButton
+                            type="primary"
+                            @click="onSave(true)"
+                            >确认</PermissionButton
+                        >
+                    </a-space>
                 </div>
             </div>
         </template>
@@ -62,7 +63,7 @@ import Rule from './Rule/index.vue';
 import Channel from './Channel/index.vue';
 import Log from './Log/index.vue';
 import dayjs from 'dayjs';
-import {provide, ref} from 'vue';
+import { provide, ref } from 'vue';
 import { updatePlan, queryList } from '@/api/media/auto';
 import { useRoute } from 'vue-router';
 
@@ -70,7 +71,7 @@ const isEdit = ref(false);
 const tabActiveKey = ref('Rule');
 const detail = ref({
     schedules: [],
-    saveDays:'',
+    saveDays: '',
     others: {
         times: [],
         trigger: 'week',
@@ -81,10 +82,9 @@ const loading = ref(false);
 const _value = ref();
 
 provide('video-tags', {
-  tag: tabActiveKey,
-  terms: []
-})
-
+    tag: tabActiveKey,
+    terms: [],
+});
 
 const list = [
     {
@@ -142,14 +142,17 @@ const refresh = async () => {
     });
     if (res.success) {
         // detail.value = res.result.data?.[0];
-        detail.value = Object.assign({
-          schedules: [],
-          saveDays:1,
-          others: {
-            times: [],
-            trigger: 'week'
-          }
-        }, res.result.data?.[0])
+        detail.value = Object.assign(
+            {
+                schedules: [],
+                saveDays: 1,
+                others: {
+                    times: [],
+                    trigger: 'week',
+                },
+            },
+            res.result.data?.[0],
+        );
         _value.value = detail.value?.name;
     }
 };
