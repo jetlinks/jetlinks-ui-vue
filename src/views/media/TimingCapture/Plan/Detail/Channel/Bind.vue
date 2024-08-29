@@ -27,6 +27,7 @@
                 <pro-search
                     :columns="columns"
                     style="padding-bottom: 0; margin-bottom: 0"
+                    target="capture-plan-channel-bind"
                     @search="handleSearch"
                 ></pro-search>
                 <j-pro-table

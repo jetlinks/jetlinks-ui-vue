@@ -42,6 +42,7 @@
                         :columns="columns"
                         @search="handleSearch"
                         :params="params"
+                        target="capture-plan-channel"
                         style="padding-bottom: 0; margin-bottom: 0"
                     ></pro-search>
                     <j-pro-table
@@ -62,6 +63,9 @@
                                     offline: 'error',
                                 }"
                             />
+                        </template>
+                        <template #channelId="slotProps">
+                            <Ellipsis>{{ slotProps.channelId }}</Ellipsis>
                         </template>
                         <template #action="slotProps">
                             <j-space :size="16">
