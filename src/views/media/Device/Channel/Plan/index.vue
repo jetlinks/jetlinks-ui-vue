@@ -1,9 +1,9 @@
 <template>
-    <a-modal
+    <a-drawer
         :title="type === 'video' ? '录像计划' : '抓拍计划'"
         visible
-        @cancel="emit('close')"
-        :maskClosable="false"
+        @close="emit('close')"
+        :closable="false"
         width="1000px"
     >
         <div class="content">
@@ -38,18 +38,32 @@
                         />
                     </div>
                 </div>
-                <a-button v-if="editState" @click="onAdd(list.length)" class="add-btn"
+                <a-button
+                    v-if="editState"
+                    @click="onAdd(list.length)"
+                    class="add-btn"
                     >+ 添加计划</a-button
                 >
             </div>
             <div v-else class="empty">
-                <a-button shape="round" @click="onAdd(0)">
-                    {{
-                        type === 'video'
-                            ? '点击关联录像计划'
-                            : '点击关联抓拍计划'
-                    }}
-                </a-button>
+                <img :src="type === 'video' ? getImage('/media/videoPlan.png') : getImage('/media/capturePlan.png')" />
+                <div class="noPlanTip">
+                    还没有关联的{{ type === 'video' ? '录像' : '抓拍' }}计划
+                </div>
+                <div>
+                    你可以点击关联{{
+                        type === 'video' ? '录像' : '抓拍'
+                    }}计划按钮来关联计划
+                </div>
+                <div class="addPlan">
+                    <a-button shape="round" @click="onAdd(0)">
+                        {{
+                            type === 'video'
+                                ? '点击关联录像计划'
+                                : '点击关联抓拍计划'
+                        }}
+                    </a-button>
+                </div>
             </div>
         </div>
         <template #footer>
@@ -57,7 +71,7 @@
                 >保存</a-button
             >
         </template>
-    </a-modal>
+    </a-drawer>
 </template>
 
 <script setup lang="ts" name="Plan">
@@ -66,6 +80,7 @@ import Calendar from '@/views/media/AutoVideo/components/Calendar/index.vue';
 import { queryListNoPaging, bindChannelAll } from '@/api/media/auto';
 import planSelect from './planSelect.vue';
 import { onlyMessage } from '@/utils/comm';
+import { getImage } from '@/utils/comm';
 
 const emit = defineEmits(['close']);
 
@@ -84,15 +99,15 @@ const props = defineProps({
 
 const editState = ref(true);
 const options = ref([]);
-const list = ref([]);
+const list = ref<any[]>([]);
 
-const onAdd = (index) => {
+const onAdd = (index: any) => {
     list.value.push({
         index: index,
     });
 };
 
-const onDel = (item) => {
+const onDel = (item: any) => {
     list.value = list.value.filter((i) => i.index !== item.index);
 };
 
@@ -114,7 +129,7 @@ const onSave = async () => {
     const res = await bindChannelAll(props.data.channelId, true, items);
     if (res.success) {
         onlyMessage('操作成功');
-        emit('close')
+        emit('close');
     }
 };
 
@@ -158,22 +173,22 @@ const getBinds = async () => {
             },
         ],
     };
-    const res = await queryListNoPaging(item)
-    if(res.success){
+    const res = await queryListNoPaging(item);
+    if (res.success) {
         // console.log('res,result====',res.result);
-        list.value = res.result.map((item,index)=>({
-            index:index,
-            id:item.id,
-            times:item.others?.times,
-            trigger:item.others?.trigger
-        }))
+        list.value = res.result.map((item, index) => ({
+            index: index,
+            id: item.id,
+            times: item.others?.times,
+            trigger: item.others?.trigger,
+        }));
         // editState.value = !!res.result.length
     }
 };
 
 onMounted(() => {
     getPlanList();
-    getBinds()
+    getBinds();
 });
 </script>
 
@@ -206,9 +221,17 @@ onMounted(() => {
     }
     .empty {
         height: 200px;
-        display: flex;
         align-items: center;
-        justify-content: center;
+        text-align: center;
+        margin-top: 30%;
+        div {
+            margin-top: 10px;
+        }
+        .noPlanTip {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1a1a1a;
+        }
     }
 }
 </style>

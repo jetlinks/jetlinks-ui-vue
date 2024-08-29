@@ -103,8 +103,8 @@
                                         v-if="
                                             i.key !== 'play' &&
                                             i.key !== 'backPlay' &&
-                                            i.key !== 'share' && 
-                                            i.key !=='plan'
+                                            i.key !== 'share' &&
+                                            i.key !== 'plan'
                                         "
                                         :danger="i.key === 'delete'"
                                         :disabled="i.disabled"
@@ -163,8 +163,17 @@
             :data="playData"
             @refresh="listRef.reload()"
         />
-        <VideoShare v-if="visible" @close="visible = false" :data="channelData"/>
-        <Plan v-if="planVis" :data="channelData" @close="planVis = false" :type="planType"/>
+        <VideoShare
+            v-if="visible"
+            @close="visible = false"
+            :data="channelData"
+        />
+        <Plan
+            v-if="planVis"
+            :data="channelData"
+            @close="planVis = false"
+            :type="planType"
+        />
     </page-container>
 </template>
 
@@ -179,7 +188,7 @@ import { cloneDeep } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
 import DeviceApi from '@/api/media/device';
 import VideoShare from './VideoShare/index.vue';
-import Plan  from './Plan/index.vue'
+import Plan from './Plan/index.vue';
 
 const menuStory = useMenuStore();
 const route: any = useRoute();
@@ -239,16 +248,16 @@ const columns = [
     {
         title: '操作',
         key: 'action',
-        width: 220,
+        width: 240,
         scopedSlots: true,
     },
 ];
 
-const newColumns = computed(()=>{
-    if(route.query.type=== 'fixed-media'){
-        return columns.filter(item=>item.key!=='manufacturer')
-    }else{
-        return columns
+const newColumns = computed(() => {
+    if (route.query.type === 'fixed-media') {
+        return columns.filter((item) => item.key !== 'manufacturer');
+    } else {
+        return columns;
     }
 });
 
@@ -306,7 +315,7 @@ const getActions = (
             tooltip: {
                 title: '播放',
             },
-            icon: 'VideoCameraOutlined',
+            icon: 'PlayCircleOutlined',
             onClick: () => {
                 playData.value = cloneDeep(data);
                 playerVis.value = true;
@@ -332,24 +341,12 @@ const getActions = (
             },
         },
         {
-            key: 'share',
-            text: '分享地址',
-            tooltip: {
-                title: '分享地址',
-            },
-            icon: 'ShareAltOutlined',
-            onClick: () => {
-                visible.value = true;
-                channelData.value = cloneDeep(data);
-            },
-        },
-        {
             key: 'plan',
             text: '抓拍计划',
             tooltip: {
                 title: '抓拍计划',
             },
-            icon: 'ProfileOutlined',
+            icon: 'CameraOutlined',
             onClick: () => {
                 planVis.value = true;
                 planType.value = 'screenshot';
@@ -362,10 +359,22 @@ const getActions = (
             tooltip: {
                 title: '录像计划',
             },
-            icon: 'ProfileOutlined',
+            icon: 'VideoCameraOutlined',
             onClick: () => {
                 planType.value = 'video';
                 planVis.value = true;
+                channelData.value = cloneDeep(data);
+            },
+        },
+        {
+            key: 'share',
+            text: '分享地址',
+            tooltip: {
+                title: '分享地址',
+            },
+            icon: 'ShareAltOutlined',
+            onClick: () => {
+                visible.value = true;
                 channelData.value = cloneDeep(data);
             },
         },
