@@ -22,7 +22,7 @@
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
-                        hasPermission="media/Device:add"
+                        hasPermission="media/TimingCapture/Plan:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增计划
@@ -79,7 +79,7 @@
                                 </a-col>
                                 <a-col :span="8">
                                     <div class="card-item-content-text">
-                                        录像保存周期（天）
+                                        抓拍保存周期（天）
                                     </div>
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
@@ -98,7 +98,7 @@
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
-                                :hasPermission="true"
+                                 :hasPermission="'media/TimingCapture/Plan:' + item.key"
                             >
                                 <AIcon
                                     type="DeleteOutlined"
