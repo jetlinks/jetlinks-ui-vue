@@ -23,8 +23,16 @@
                     </div>
                     <div v-else>
                         <a-space>
-                            <a-input v-model:value="_value" />
-                            <a-button @click="isEdit = false">取消</a-button>
+                            <div>
+                                <a-input
+                                    v-model:value="_value"
+                                    @change="validateName"
+                                />
+                                <div v-if="nameTips" class="tips">
+                                    {{ nameTips }}
+                                </div>
+                            </div>
+                            <a-button @click="cancel">取消</a-button>
                             <PermissionButton
                                 type="primary"
                                 @click="onSave(!isEdit)"
@@ -75,6 +83,7 @@ import { usePlanDetailContent } from './utils';
 const isEdit = ref(false);
 const route = useRoute();
 const _value = ref();
+const nameTips = ref();
 const loading = ref(false);
 const tabActiveKey = ref('Rule');
 const detail = ref({
@@ -144,6 +153,9 @@ const refresh = async () => {
 };
 
 const onSave = async (val) => {
+    if(nameTips.value){
+        return 
+    }
     if (!val) {
         loading.value = true;
         const res = await updatePlan({
@@ -161,6 +173,21 @@ const onSave = async (val) => {
         isEdit.value = val;
     }
 };
+
+const validateName = () =>{
+    if(!_value.value){
+        nameTips.value = '计划名称不能为空'
+    }else if(_value.value.length > 64){
+        nameTips.value = '最多可输入64位字符'
+    }else{
+        nameTips.value = ''
+    }
+}
+
+const cancel = () =>{
+    isEdit.value = false;
+    nameTips.value = ''
+}
 
 watch(
     () => detail.value?.name,

@@ -20,8 +20,11 @@
                 </div>
                 <div v-else>
                     <a-space>
-                        <a-input v-model:value="_value" />
-                        <a-button @click="isEdit = false">取消</a-button>
+                        <div>
+                            <a-input v-model:value="_value" @change="validateName" />
+                            <div v-if="nameTips" class="tips">{{ nameTips }}</div>
+                        </div>
+                        <a-button @click="cancel">取消</a-button>
                         <PermissionButton
                             type="primary"
                             @click="onSave(true)"
@@ -80,6 +83,7 @@ const detail = ref({
 const route = useRoute();
 const loading = ref(false);
 const _value = ref();
+const nameTips = ref()
 
 provide('video-tags', {
     tag: tabActiveKey,
@@ -112,6 +116,9 @@ const onTabChange = (e) => {
 };
 
 const onSave = async (val) => {
+    if(nameTips.value){
+        return 
+    }
     if (!val) {
         loading.value = true;
         const res = await updatePlan({
@@ -157,6 +164,21 @@ const refresh = async () => {
     }
 };
 
+const validateName = () =>{
+    if(!_value.value){
+        nameTips.value = '计划名称不能为空'
+    }else if(_value.value.length > 64){
+        nameTips.value = '最多可输入64位字符'
+    }else{
+        nameTips.value = ''
+    }
+}
+
+const cancel = () =>{
+    isEdit.value = false;
+    nameTips.value = ''
+}
+
 onMounted(() => {
     refresh();
 });
@@ -169,5 +191,10 @@ provide('detail', detail);
     display: flex;
     align-items: center;
     justify-content: center;
+    .tips{
+        font-size: 14px;
+        color: red;
+        font-weight: 400;
+    }
 }
 </style>
