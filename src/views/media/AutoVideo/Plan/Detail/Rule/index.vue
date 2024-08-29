@@ -45,7 +45,7 @@
         </div>
 
         <div style="margin-bottom: 24px">
-            <span>录制时段：</span>
+            <!-- <span>录制时段：</span> -->
             <Calendar v-model:value="detail.others.times"  v-model:trigger="detail.others.trigger" />
         </div>
         <a-button v-if="editType" type="primary" :loading="loading" @click="save" >保存</a-button>

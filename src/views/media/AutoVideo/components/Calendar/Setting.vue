@@ -60,7 +60,7 @@ const checkRef = reactive({
     checkAll: false,
     checkedList: [],
 });
-const times = ref(props.data.times);
+const times = ref(props.data.times || []);
 
 const onCheckAllChange = (e) => {
     const arr = _options.value?.map((item: any) => item.value);
@@ -83,7 +83,6 @@ const onTime = (timeData) => {
                 };
             }
         });
-        console.log('onTime====',arr);
         times.value = arr;
     }else{
         const arr = timeData.map((item) => {
