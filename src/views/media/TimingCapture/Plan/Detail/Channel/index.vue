@@ -31,6 +31,13 @@
             />
           </div>
           <div v-if="showBody" class="bound_channel">
+            <div style="padding: 12px 24px 0">
+                    <a-breadcrumb>
+                        <a-breadcrumb-item v-for="name in pathsName">{{
+                            name
+                        }}</a-breadcrumb-item>
+                    </a-breadcrumb>
+                </div>
             <pro-search
               :columns="columns"
               @search="handleSearch"
@@ -155,7 +162,7 @@ const params = ref();
 const editType = ref(false);
 const playData = ref();
 const playerVis = ref(false);
-
+const pathsName = ref()
 const deviceId = ref()
 const channelId = ref()
 const cacheDeviceIds = ref({})
@@ -364,6 +371,7 @@ const saveChannel = () => {
       cacheDeviceIds.value = {}
       treeRef.value.getDeviceList()
       onlyMessage('操作成功')
+      editType.value = false
       getBindTotal()
     }
   }).finally(() => {
@@ -383,9 +391,10 @@ const saveChannel = () => {
 
 
 const treeSelect = ({node}) => {
-  const { paths } = node
+  const { paths , channelCatalog } = node
 
   currentDeviceId.value = paths[0]
+  pathsName.value = channelCatalog
 
   tableRef.value.reload()
 }
