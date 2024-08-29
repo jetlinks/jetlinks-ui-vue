@@ -32,13 +32,13 @@
                 v-if="editType"
                 :precision="0"
                 :min="1"
-                placeholder="请输入录像文件保存天数"
+                placeholder="请输入抓拍文件保存天数"
                 v-model:value="detail.saveDays"
                 style="width: 200px"
             ></a-input-number>
             <div v-else style="margin-left: 10px">{{ detail.saveDays }}</div>
             <div class="retentionCycleTip">
-                超出保存周期的录像文件将被自动删除
+                超出保存周期的抓拍文件将被自动删除
             </div>
         </div>
 

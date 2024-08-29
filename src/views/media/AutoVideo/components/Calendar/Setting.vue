@@ -76,7 +76,7 @@ const onTime = (timeData) => {
         const arr = timeData.map((item) => {
             if (item.from) {
                 return {
-                    tirger: props.trigger,
+                    trigger: props.trigger,
                     when: [props.data?.value],
                     from: item.from,
                     to: item.to,
@@ -87,7 +87,7 @@ const onTime = (timeData) => {
     }else{
         const arr = timeData.map((item) => {
             const obj = {
-                    tirger: props.trigger,
+                    trigger: props.trigger,
                     when: [props.data?.value],
                     mod:item.mod,
                 }

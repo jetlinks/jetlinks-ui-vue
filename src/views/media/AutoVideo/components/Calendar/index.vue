@@ -51,7 +51,14 @@
                             v-else
                             class="item-content-box"
                             :style="handleRange(i)"
-                        ></div>
+                        >
+                            <a-tooltip>
+                                <template #title>
+                                    {{ i.from }} - {{ i.to }}
+                                </template>
+                                <div style="width: 100%; height: 100%"></div>
+                            </a-tooltip>
+                        </div>
                     </div>
                 </div>
                 <div class="item-setting" v-if="!disabled">
@@ -188,6 +195,27 @@ const mergeArray = (arr) => {
     });
 };
 
+//合并数组段
+const mergeArrays = (arr) => {
+    const _arr = cloneDeep(arr)
+    return _arr.reduce((prev, next) => {
+        const item = prev?.find(
+            (item) =>
+                Math.max(next.start, item.start) <=
+                Math.min(next.end, item.end),
+        );
+
+        if (item) {
+            item.start = Math.min(item.start, next.start);
+            item.end = Math.max(item.end, next.end);
+        } else {
+            prev.push(next);
+        }
+
+        return prev;
+    }, []);
+};
+
 const initList = async (trigger) => {
     if (trigger === 'week') {
         list.value = mergeArray(cloneDeep(weeks));
@@ -263,7 +291,6 @@ watch(
     () => props.trigger,
     () => {
         trigger.value = props.trigger;
- 
     },
     { immediate: true },
 );
