@@ -13,8 +13,8 @@
                     :status="
                         detail?.state?.value === 'enabled' ? 'success' : 'error'
                     "
-                    :text="detail?.state?.value === 'enabled' ? '正常' : '禁用'"
                 />
+                {{ detail?.state?.value === 'enabled' ? '正常' : '禁用' }}
                 <PermissionButton
                     type="link"
                     :hasPermission="true"
@@ -26,14 +26,7 @@
         </div>
         <div class="rule-item">
             <div>
-                保存周期（天）*<a-tooltip
-                    ><template #title
-                        >超出保存周期的录像文件将被自动删除</template
-                    ><AIcon
-                        type="QuestionCircleOutlined"
-                        style="margin-left: 5px"
-                    ></AIcon></a-tooltip
-                >:
+                保存周期（天）<span style="color:red;">*</span>
             </div>
             <a-input-number
                 v-if="editType"
@@ -44,6 +37,9 @@
                 style="width: 200px"
             ></a-input-number>
             <div v-else style="margin-left: 10px">{{ detail.saveDays }}</div>
+            <div class="retentionCycleTip">
+                超出保存周期的录像文件将被自动删除
+            </div>
         </div>
 
         <div>
@@ -143,6 +139,8 @@ watch(
     .retentionCycleTip {
         font-size: 12px;
         margin-top: 5px;
+        margin-left: 10px;
+        color: #a3a3a3;
     }
 }
 </style>
