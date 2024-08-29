@@ -72,6 +72,7 @@ import { useRoute } from 'vue-router';
 import { updatePlan } from '@/api/media/auto';
 import { onlyMessage } from '@/utils/comm';
 
+
 const route = useRoute();
 const editType = ref(route.query?.type === 'edit');
 const detail = inject<any>('detail');
@@ -93,7 +94,7 @@ const handleArr = (arr) => {
 
 const handleSave = async () => {
     const schedules = handleArr(detail.value?.others.times);
-    detail.value.state = _state.value ;
+    detail.value.state.value = _state.value ;
     if (detail.value.others.trigger === 'week') {
         detail.value.schedules = schedules;
     } else {
@@ -116,6 +117,7 @@ const handleSave = async () => {
     const res = await updatePlan(detail.value);
     if (res.success) {
         onlyMessage('操作成功');
+        editType.value = false
     }
 };
 

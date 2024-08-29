@@ -280,7 +280,7 @@ const submit = (data) => {
   cacheDeviceIds.value = {...data}
   treeRef.value.getDeviceList({...data})
   bindVisible.value = false
-  tableRef.value.reload()
+  tableRef.value?.reload()
 }
 
 const query = (params) => {

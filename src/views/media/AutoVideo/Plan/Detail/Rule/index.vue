@@ -105,7 +105,7 @@ const save = () => {
             }
         })
     }
-    detail.value.state = _state.value;
+    detail.value.state.value = _state.value;
     detail.value.schedules = [obj]
     run(detail.value)
 }
