@@ -89,7 +89,7 @@ provide('video-tags', {
 const list = [
     {
         key: 'Rule',
-        tab: '录制规则',
+        tab: '抓拍规则',
     },
     {
         key: 'Channel',

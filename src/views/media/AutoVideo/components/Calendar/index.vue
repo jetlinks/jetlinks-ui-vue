@@ -52,12 +52,12 @@
                             class="item-content-box"
                             :style="handleRange(i)"
                         >
-                            <!-- <a-tooltip>
+                            <a-tooltip>
                                 <template #title>
-                                    {{ i }}
+                                    {{ i.from }} - {{ i.to }}
                                 </template>
-                               <div style="width: 100%;height: 100%;">{{ i.to }}</div>
-                            </a-tooltip> -->
+                                <div style="width: 100%; height: 100%"></div>
+                            </a-tooltip>
                         </div>
                     </div>
                 </div>
@@ -149,7 +149,7 @@ const handleRange = (obj) => {
     const secondsIn24Hours = 24 * 60 * 60;
     const width = (durationInSeconds / secondsIn24Hours) * 720;
     const left = (startTime / secondsIn24Hours) * 720 + 70;
-    return { width: width + 'px', left: left + 'px', height: '20px' ,};
+    return { width: width + 'px', left: left + 'px', height: '20px' };
 };
 
 const handlePoint = (obj) => {
@@ -193,6 +193,27 @@ const mergeArray = (arr) => {
             ...obj,
         };
     });
+};
+
+//合并数组段
+const mergeArrays = (arr) => {
+    const _arr = cloneDeep(arr)
+    return _arr.reduce((prev, next) => {
+        const item = prev?.find(
+            (item) =>
+                Math.max(next.start, item.start) <=
+                Math.min(next.end, item.end),
+        );
+
+        if (item) {
+            item.start = Math.min(item.start, next.start);
+            item.end = Math.max(item.end, next.end);
+        } else {
+            prev.push(next);
+        }
+
+        return prev;
+    }, []);
 };
 
 const initList = async (trigger) => {
@@ -270,7 +291,6 @@ watch(
     () => props.trigger,
     () => {
         trigger.value = props.trigger;
- 
     },
     { immediate: true },
 );
