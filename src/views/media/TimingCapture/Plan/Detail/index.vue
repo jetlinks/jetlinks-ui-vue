@@ -27,7 +27,7 @@
                         <a-button @click="cancel">取消</a-button>
                         <PermissionButton
                             type="primary"
-                            @click="onSave(true)"
+                            @click="onSave(false)"
                             >确认</PermissionButton
                         >
                     </a-space>
