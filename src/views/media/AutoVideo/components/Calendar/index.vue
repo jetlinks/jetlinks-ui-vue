@@ -51,7 +51,14 @@
                             v-else
                             class="item-content-box"
                             :style="handleRange(i)"
-                        ></div>
+                        >
+                            <!-- <a-tooltip>
+                                <template #title>
+                                    {{ i }}
+                                </template>
+                               <div style="width: 100%;height: 100%;">{{ i.to }}</div>
+                            </a-tooltip> -->
+                        </div>
                     </div>
                 </div>
                 <div class="item-setting" v-if="!disabled">
@@ -142,7 +149,7 @@ const handleRange = (obj) => {
     const secondsIn24Hours = 24 * 60 * 60;
     const width = (durationInSeconds / secondsIn24Hours) * 720;
     const left = (startTime / secondsIn24Hours) * 720 + 70;
-    return { width: width + 'px', left: left + 'px', height: '20px' };
+    return { width: width + 'px', left: left + 'px', height: '20px' ,};
 };
 
 const handlePoint = (obj) => {
