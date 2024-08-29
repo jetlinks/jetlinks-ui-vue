@@ -203,9 +203,14 @@ const videoTags = inject('video-tags');
 
 const { loading: spinning, run } = useRequest(unbindChannelAll, {
     immediate: false,
-    onSuccess: async() => {
+    onSuccess: async () => {
         await treeRef.value.getDeviceList();
         showBody.value = false;
+        queryBoundChannel(defaultParams).then((resp) => {
+            if (resp.success) {
+                bindCount.value = resp.result.total;
+            }
+        });
     },
 });
 
