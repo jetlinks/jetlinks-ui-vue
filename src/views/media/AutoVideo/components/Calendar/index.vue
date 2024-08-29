@@ -1,28 +1,35 @@
 <template>
     <div class="calendar">
         <div class="header">
+            <span>录制时段：</span>
             <a-radio-group
                 v-model:value="trigger"
-                button-style="solid"
                 :disabled="disabled"
                 @change="onChangeTirgger"
             >
-                <a-radio-button value="week">按周</a-radio-button>
-                <a-radio-button value="calender">自定义</a-radio-button>
+                <a-radio value="week">按周</a-radio>
+                <a-radio value="calender">自定义</a-radio>
             </a-radio-group>
         </div>
         <div class="content">
             <div class="top">
-                <div v-for="item in Array.from(Array(25), (v, k) => k)">
-                    {{ item }}
+                <div
+                    v-for="item in Array.from(Array(25), (v, k) => k)"
+                    class="top-items"
+                >
+                    <div class="top-item">{{ item }}</div>
                 </div>
             </div>
             <div class="item" v-for="item in list" @click="onClick(item)">
-                <div class="item-label">{{ item.label }}</div>
+                <div class="item-label">
+                    <j-ellipsis>
+                        {{ item.label }}
+                    </j-ellipsis>
+                </div>
                 <div class="item-content">
                     <div v-for="i in item?.times">
                         <div
-                            v-if="i?.mod === 'once'"
+                            v-if="i?.mod === 'once' && i.once.time"
                             class="item-content-point"
                             :style="handlePoint(i)"
                         >
@@ -48,7 +55,9 @@
                     </div>
                 </div>
                 <div class="item-setting" v-if="!disabled">
-                    <a-button @click="handleSetting(item)">设置</a-button>
+                    <a-button @click="handleSetting(item)" size="small"
+                        >设置</a-button
+                    >
                 </div>
             </div>
         </div>
@@ -133,7 +142,7 @@ const handleRange = (obj) => {
     const secondsIn24Hours = 24 * 60 * 60;
     const width = (durationInSeconds / secondsIn24Hours) * 720;
     const left = (startTime / secondsIn24Hours) * 720 + 70;
-    return { width: width + 'px', left: left + 'px', height: '38px' };
+    return { width: width + 'px', left: left + 'px', height: '20px' };
 };
 
 const handlePoint = (obj) => {
@@ -155,7 +164,6 @@ const handleTooltip = (arr, one) => {
         }
         return false;
     });
-    console.log('list====', list);
     return list;
 };
 
@@ -166,7 +174,6 @@ const handleSetting = (data) => {
 
 const onChangeTirgger = (e) => {
     initList(e.target.value);
-    console.log('onChangeTirgger====',e.target.value);
     emits('update:trigger', e.target.value);
 };
 
@@ -201,10 +208,10 @@ const changList = (arr: any[], when: any[], points: any[]) => {
     // console.log('arr====',arr);
     list.value = list.value?.map((item: any) => {
         if (when.includes(item.value)) {
-            item.times = arr.map(i=>({
+            item.times = arr.map((i) => ({
                 ...i,
-                when:item.when || [item.value]
-            }))
+                when: item.when || [item.value],
+            }));
             item.points = points;
         } else {
             item.times = item.times?.length ? item.times : [];
@@ -217,7 +224,7 @@ const changList = (arr: any[], when: any[], points: any[]) => {
 };
 
 const onSave = (records, when) => {
-    const isFull = records.every((item) => {
+    const isFull = records?.every((item) => {
         if (item?.mod === 'period' && !item.period.from && item.period.every) {
             return false;
         }
@@ -226,7 +233,6 @@ const onSave = (records, when) => {
         }
         return true;
     });
-
     if (isFull) {
         const points = [];
         records.forEach((item) => {
@@ -257,7 +263,7 @@ watch(
     () => props.trigger,
     () => {
         trigger.value = props.trigger;
-        // console.log('props.trigger====',props.trigger);
+ 
     },
     { immediate: true },
 );
@@ -271,7 +277,8 @@ watch(
     }
     .content {
         position: relative;
-        padding-top: 40px;
+        padding-top: 35px;
+
         .top {
             display: flex;
             // margin-left: 70px;
@@ -279,15 +286,28 @@ watch(
             top: 0;
             bottom: 0;
             left: 70px;
+            // border: 1px solid #eee;
+            border-left: 1px solid #0000000f;
+            border-bottom: 1px solid #0000000f;
+            border-top: 1px solid #0000000f;
+            border-radius: 6px;
 
-            > div {
-                color: #666;
+            .top-items {
+                color: #1a1a1a;
                 font-size: 12px;
                 width: 30px;
                 display: flex;
                 justify-content: center;
-                border: 1px solid #eee;
-                padding-top: 10px;
+                border-right: 1px solid #0000000f;
+                border-radius: 6px;
+                .top-item {
+                    background-color: #fafafa;
+                    width: 100%;
+                    height: 35px;
+                    line-height: 35px;
+                    text-align: center;
+                    border-bottom: 1px solid #0000000f;
+                }
             }
         }
         .item {
@@ -296,17 +316,19 @@ watch(
             z-index: 10;
             .item-label {
                 width: 70px;
-                height: 40px;
-                line-height: 40px;
+                height: 35px;
+                line-height: 35px;
+                color: #000;
             }
             .item-content {
                 width: 750px;
-                border-bottom: 1px solid #eee;
-                border-top: 1px solid #eee;
+                border-radius: 6px;
+                border-bottom: 1px solid #0000000f;
                 .item-content-box {
-                    background-color: rgb(0, 185, 108);
+                    background-color: #95de64;
                     height: 100%;
                     position: absolute;
+                    top: 8px;
                 }
                 .item-content-point {
                     position: absolute;
@@ -316,8 +338,8 @@ watch(
             }
             .item-setting {
                 margin-left: 12px;
-                height: 40px;
-                line-height: 40px;
+                height: 35px;
+                line-height: 35px;
             }
         }
     }

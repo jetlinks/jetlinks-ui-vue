@@ -43,7 +43,7 @@
         </div>
 
         <div>
-            <span>录制时段：</span>
+            <!-- <span>录制时段：</span> -->
             <Calendar
                 v-model:value="detail.others.times"
                 v-model:trigger="detail.others.trigger"
