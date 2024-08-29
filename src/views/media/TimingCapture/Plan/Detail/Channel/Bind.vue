@@ -1,58 +1,60 @@
 <template>
     <a-modal
-      visible
-      title="绑定通道"
-      :width="1200"
-      @cancel="emit('closeBind')"
-      @ok="submit"
+        visible
+        title="绑定通道"
+        :width="1200"
+        @cancel="emit('closeBind')"
+        @ok="submit"
     >
         <div class="bindControl">
             <div class="bind_left">
                 <div>选择设备及目录查看已绑定的通道：</div>
-              <ChannelTree
-                type="unBind"
-                v-model:deviceId="deviceId"
-                v-model:channelId="channelId"
-                @select="selectDevice"
-              />
+                <ChannelTree
+                    type="unBind"
+                    v-model:deviceId="deviceId"
+                    v-model:channelId="channelId"
+                    @select="selectDevice"
+                />
             </div>
             <div class="bind_right">
+                <div style="padding: 12px 24px 0">
+                    <a-breadcrumb>
+                        <a-breadcrumb-item v-for="name in pathsName">{{
+                            name
+                        }}</a-breadcrumb-item>
+                    </a-breadcrumb>
+                </div>
                 <pro-search
-                  :columns="columns"
-                  style="padding-bottom: 0; margin-bottom: 0"
-                  @search="handleSearch"
+                    :columns="columns"
+                    style="padding-bottom: 0; margin-bottom: 0"
+                    @search="handleSearch"
                 ></pro-search>
-              <div style="padding: 12px 24px 0">
-                <a-breadcrumb>
-                  <a-breadcrumb-item v-for="name in pathsName">{{name}}</a-breadcrumb-item>
-                </a-breadcrumb>
-              </div>
                 <j-pro-table
-                  v-if="deviceId"
-                  style="min-height: calc(100% - 60px); padding-top: 0"
-                  ref="tableRef"
-                  model="table"
-                  rowKey="channelId"
-                  :columns="columns"
-                  :request="query"
-                  :params="params"
-                  :rowSelection="{
+                    v-if="deviceId"
+                    style="min-height: calc(100% - 60px); padding-top: 0"
+                    ref="tableRef"
+                    model="table"
+                    rowKey="channelId"
+                    :columns="columns"
+                    :request="query"
+                    :params="params"
+                    :rowSelection="{
                         selectedRowKeys: _selectedRowKeys,
                         onSelect: onSelectChange,
                         onSelectAll: selectAll,
                         onSelectNone: () => (_selectedRowKeys = []),
                     }"
                 >
-                  <template #status="slotProps">
-                    <BadgeStatus
-                      :text="slotProps.status.text"
-                      :status="slotProps.status.value"
-                      :statusNames="{
-                        'online': 'success',
-                        'offline': 'error',
-                      }"
-                    />
-                  </template>
+                    <template #status="slotProps">
+                        <BadgeStatus
+                            :text="slotProps.status.text"
+                            :status="slotProps.status.value"
+                            :statusNames="{
+                                online: 'success',
+                                offline: 'error',
+                            }"
+                        />
+                    </template>
                     <template #action="slotProps">
                         <j-space :size="16">
                             <template
@@ -85,40 +87,39 @@
 <script setup>
 import ChannelTree from '@/views/media/AutoVideo/components/ChannelTree/index.vue';
 import Live from '@/views/media/Device/Channel/Live/index.vue';
-import {queryBoundChannel} from "@/api/media/auto";
-import {cloneDeep, omit} from "lodash-es";
-import BadgeStatus from '@/components/BadgeStatus/index.vue'
+import { queryBoundChannel } from '@/api/media/auto';
+import { cloneDeep, omit } from 'lodash-es';
+import BadgeStatus from '@/components/BadgeStatus/index.vue';
 
 const emit = defineEmits(['closeBind', 'submit']);
 
 const props = defineProps({
-  cacheDeviceIds: {
-    type: Object,
-    default: () => ({})
-  }
-})
+    cacheDeviceIds: {
+        type: Object,
+        default: () => ({}),
+    },
+});
 
-const tableRef = ref()
+const tableRef = ref();
 
 const _selectedRowKeys = ref([]);
 const playData = ref();
 const playerVis = ref(false);
 
-const route = useRoute()
+const route = useRoute();
 
-const deviceId = ref()
-const channelId = ref()
-const params = ref()
+const deviceId = ref();
+const channelId = ref();
+const params = ref();
 
-const cacheSelected = ref({})
+const cacheSelected = ref({});
 
 const pathsName = computed(() => {
-  if (cacheSelected.value[deviceId.value]) {
-    return cacheSelected.value[deviceId.value].channelCatalog
-  }
-  return []
-})
-
+    if (cacheSelected.value[deviceId.value]) {
+        return cacheSelected.value[deviceId.value].channelCatalog;
+    }
+    return [];
+});
 
 const columns = [
     {
@@ -178,139 +179,137 @@ const columns = [
 ];
 
 const getActions = (data, type) => {
-  if (!data) return [];
-  return [
-    {
-      key: 'view',
-      text: '播放',
-      tooltip: {
-        title: '播放',
-      },
-      icon: 'PlayCircleOutlined',
-      onClick: () => {
-        playData.value = cloneDeep(data);
-        playerVis.value = true;
-      },
-    },
-  ]
+    if (!data) return [];
+    return [
+        {
+            key: 'view',
+            text: '播放',
+            tooltip: {
+                title: '播放',
+            },
+            icon: 'PlayCircleOutlined',
+            onClick: () => {
+                playData.value = cloneDeep(data);
+                playerVis.value = true;
+            },
+        },
+    ];
 };
 const onSelectChange = (item, state) => {
-  const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
-  const arr = new Set([..._selectedRowKeys.value, ...oldChannelIds]);
-  if (state) {
-    arr.add(item.channelId);
-  } else {
-    arr.delete(item.channelId);
-  }
-  _selectedRowKeys.value = [...arr.values()];
+    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds;
+    const arr = new Set([..._selectedRowKeys.value, ...oldChannelIds]);
+    if (state) {
+        arr.add(item.channelId);
+    } else {
+        arr.delete(item.channelId);
+    }
+    _selectedRowKeys.value = [...arr.values()];
 
-  cacheSelected.value[deviceId.value].channelIds = [...arr.values()]
+    cacheSelected.value[deviceId.value].channelIds = [...arr.values()];
 };
 const selectAll = (selected, selectedRows, changeRows) => {
-  const oldChannelIds = cacheSelected.value[deviceId.value].channelIds
-  const selectedKeys = new Set([...oldChannelIds, ..._selectedRowKeys.value])
-  if (selected) {
-    changeRows.map((i) => {
-      selectedKeys.add(i.channelId)
-    });
-  } else {
-    changeRows.map((i) => {
-      selectedKeys.delete(i.channelId)
-    });
-  }
+    const oldChannelIds = cacheSelected.value[deviceId.value].channelIds;
+    const selectedKeys = new Set([...oldChannelIds, ..._selectedRowKeys.value]);
+    if (selected) {
+        changeRows.map((i) => {
+            selectedKeys.add(i.channelId);
+        });
+    } else {
+        changeRows.map((i) => {
+            selectedKeys.delete(i.channelId);
+        });
+    }
 
-  cacheSelected.value[deviceId.value].channelIds = [...selectedKeys.values()]
-  _selectedRowKeys.value = [...selectedKeys.values()]
+    cacheSelected.value[deviceId.value].channelIds = [...selectedKeys.values()];
+    _selectedRowKeys.value = [...selectedKeys.values()];
 };
 
 const selectDevice = ({ dId, node }) => {
-  const _selectMap = {...cacheSelected.value}
+    const _selectMap = { ...cacheSelected.value };
 
-  if (!_selectMap[node.id]) {
-    _selectMap[node.id] = {
-      paths: node.paths,
-      channelCatalog: node.channelCatalog,
-      channelIds: []
+    if (!_selectMap[node.id]) {
+        _selectMap[node.id] = {
+            paths: node.paths,
+            channelCatalog: node.channelCatalog,
+            channelIds: [],
+        };
+
+        cacheSelected.value = _selectMap;
     }
 
-    cacheSelected.value = _selectMap
-  }
-
-  handleSearch([])
+    handleSearch([]);
 };
 
-const query = (queryParams) =>{
-  const _params = queryParams
-  const defaultParams = {
-    terms: [
-      {
+const query = (queryParams) => {
+    const _params = queryParams;
+    const defaultParams = {
         terms: [
-          {
-            column: "channelId$media-record-schedule-bind-channel$not",
-            value: [{
-              column: "scheduleId",
-              termType: "eq",
-              value: route.params.id
-            }]
-          }
-        ]
-      },
-      {
-        column: 'catalogType',
-        termType: 'eq',
-        value: 'device',
-        type: 'and'
-      }
-    ]
-  }
+            {
+                terms: [
+                    {
+                        column: 'channelId$media-record-schedule-bind-channel$not',
+                        value: [
+                            {
+                                column: 'scheduleId',
+                                termType: 'eq',
+                                value: route.params.id,
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                column: 'catalogType',
+                termType: 'eq',
+                value: 'device',
+                type: 'and',
+            },
+        ],
+    };
 
-  // 获取缓存中的绑定通道
-  if (props.cacheDeviceIds[deviceId.value]) {
-    const {channelIds} = props.cacheDeviceIds[deviceId.value]
-    defaultParams.terms.push({
-      column: 'channelId',
-      termType: 'nin',
-      value: channelIds.toString(),
-      type: 'and'
-    })
-  }
+    // 获取缓存中的绑定通道
+    if (props.cacheDeviceIds[deviceId.value]) {
+        const { channelIds } = props.cacheDeviceIds[deviceId.value];
+        defaultParams.terms.push({
+            column: 'channelId',
+            termType: 'nin',
+            value: channelIds.toString(),
+            type: 'and',
+        });
+    }
 
-  if (deviceId.value) {
-    defaultParams.terms.push({
-      column: 'deviceId',
-      value: deviceId.value,
-      type: 'and'
-    })
-  }
+    if (deviceId.value) {
+        defaultParams.terms.push({
+            column: 'deviceId',
+            value: deviceId.value,
+            type: 'and',
+        });
+    }
 
-  _params.terms = [
-    ...defaultParams.terms,
-    ..._params.terms
-  ]
+    _params.terms = [...defaultParams.terms, ..._params.terms];
 
-  return queryBoundChannel(_params)
-}
+    return queryBoundChannel(_params);
+};
 
 const handleSearch = (e) => {
-
-  params.value = e
-}
+    params.value = e;
+};
 
 const submit = () => {
-  const paths = []
-  Object.keys(cacheSelected.value).forEach(key => {
-    if (!cacheSelected.value[key].channelIds.length) {
-      paths.push(key)
-    }
-  })
-  emit('submit', omit(cacheSelected.value, paths))
-}
+    const paths = [];
+    Object.keys(cacheSelected.value).forEach((key) => {
+        if (!cacheSelected.value[key].channelIds.length) {
+            paths.push(key);
+        }
+    });
+    emit('submit', omit(cacheSelected.value, paths));
+};
 
 onMounted(() => {
-  if (Object.keys(props.cacheDeviceIds)) {
-    cacheSelected.value = cloneDeep(props.cacheDeviceIds)
-  }
-})
+    if (Object.keys(props.cacheDeviceIds)) {
+        cacheSelected.value = cloneDeep(props.cacheDeviceIds);
+    }
+});
 </script>
 <style lang="less" scoped>
 .bindControl {
