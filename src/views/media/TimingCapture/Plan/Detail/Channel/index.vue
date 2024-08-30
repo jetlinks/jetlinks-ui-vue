@@ -74,6 +74,7 @@
                                     <PermissionButton
                                         type="link"
                                         style="padding: 0px"
+                                        key="play"
                                         :tooltip="{ title: '播放' }"
                                         @click="
                                             () => {
@@ -83,9 +84,9 @@
                                     >
                                         <AIcon type="VideoCameraOutlined" />
                                     </PermissionButton>
-
                                     <PermissionButton
                                         type="link"
+                                        key="unbind"
                                         style="padding: 0px"
                                         :tooltip="{ title: '解绑' }"
                                         :popConfirm="{
@@ -103,6 +104,7 @@
                                 <template v-else>
                                     <PermissionButton
                                         type="link"
+                                        key="picture"
                                         style="padding: 0px"
                                         :tooltip="{ title: '抓拍' }"
                                         @click="
@@ -116,6 +118,7 @@
                                     <PermissionButton
                                         type="link"
                                         style="padding: 0px"
+                                        key="logs"
                                         :tooltip="{ title: '日志' }"
                                         @click="
                                             () => {
@@ -148,7 +151,7 @@
             @closeBind="bindVisible = false"
             @submit="submit"
         />
-        <RecordPicture v-if="pictureVisible" @close="pictureVisible = false" />
+        <RecordPicture v-if="pictureVisible" @close="pictureVisible = false" :data="pictureData" />
         <Live
             v-model:visible="playerVis"
             :data="playData"

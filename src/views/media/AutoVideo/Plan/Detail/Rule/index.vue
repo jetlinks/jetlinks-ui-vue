@@ -14,7 +14,7 @@
                         detail.state?.value === 'enabled' ? 'success' : 'error'
                     "
                 />
-                {{ detail.state?.text }}
+                {{ detail.state?.value === 'enabled' ? '正常' : '禁用' }}
                 <PermissionButton
                     type="link"
                     hasPermission="device/Instance:action"

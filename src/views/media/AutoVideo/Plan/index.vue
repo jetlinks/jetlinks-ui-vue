@@ -42,7 +42,7 @@
                         v-bind="slotProps"
                         :showStatus="true"
                         :status="slotProps.state.value"
-                        :statusText="slotProps.state.text"
+                        :statusText="slotProps.state?.value === 'enabled' ? '正常' : '禁用'"
                         :statusNames="{
                             enabled: 'processing',
                             disabled: 'error',
