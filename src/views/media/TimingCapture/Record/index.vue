@@ -160,6 +160,7 @@ const getActions = (data, type) => {
             icon: 'PictureOutlined',
             onClick: () => {
                 pictureData.value = cloneDeep(data);
+                pictureData.value.pathsName = pathsName.value
                 pictureVisible.value = true;
             },
         },
