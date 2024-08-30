@@ -17,7 +17,8 @@
                 />
             </div>
             <div class="bind_right">
-                <div style="padding: 12px 24px 0">
+                <div style="padding: 12px 24px 0;display: flex;">
+                    <div class="catalogue">当前目录：</div>
                     <a-breadcrumb>
                         <a-breadcrumb-item v-for="name in pathsName">{{
                             name
@@ -320,6 +321,12 @@ onMounted(() => {
     }
     .bind_right {
         flex: 3;
+        .catalogue{
+            color:#1A1A1A
+        }
+        :deep(.ant-breadcrumb-link){
+            color:#777777
+        }
     }
 }
 </style>

@@ -31,7 +31,8 @@
                     />
                 </div>
                 <div v-if="showBody" class="bound_channel">
-                    <div style="padding: 12px 24px 0">
+                    <div style="padding: 12px 24px 0;display: flex">
+                        <div class="catalogue">当前目录：</div>
                         <a-breadcrumb>
                             <a-breadcrumb-item v-for="name in pathsName">{{
                                 name
@@ -523,7 +524,7 @@ const onLoad = (data) => {
 getBindTotal();
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .channelControl {
     display: flex;
     align-items: center;
@@ -539,6 +540,12 @@ getBindTotal();
     }
     .bound_channel {
         flex: 1 1 0;
+        .catalogue{
+            color:#1A1A1A
+        }
+        :deep(.ant-breadcrumb-link){
+            color:#777777
+        }
     }
 }
 
