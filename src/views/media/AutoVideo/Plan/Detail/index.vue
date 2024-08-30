@@ -153,8 +153,8 @@ const refresh = async () => {
 };
 
 const onSave = async (val) => {
-    if(nameTips.value){
-        return 
+    if (nameTips.value) {
+        return;
     }
     if (!val) {
         loading.value = true;
@@ -174,20 +174,21 @@ const onSave = async (val) => {
     }
 };
 
-const validateName = () =>{
-    if(!_value.value){
-        nameTips.value = '计划名称不能为空'
-    }else if(_value.value.length > 64){
-        nameTips.value = '最多可输入64位字符'
-    }else{
-        nameTips.value = ''
+const validateName = () => {
+    if (!_value.value) {
+        nameTips.value = '计划名称不能为空';
+    } else if (_value.value.length > 64) {
+        nameTips.value = '最多可输入64位字符';
+    } else {
+        nameTips.value = '';
     }
-}
+};
 
-const cancel = () =>{
+const cancel = () => {
     isEdit.value = false;
-    nameTips.value = ''
-}
+    nameTips.value = '';
+    _value.value = detail.value?.name;
+};
 
 watch(
     () => detail.value?.name,
@@ -212,6 +213,11 @@ onMounted(() => {
 
     .title-body {
         display: flex;
+    }
+    .tips {
+        font-size: 14px;
+        color: red;
+        font-weight: 400;
     }
 }
 </style>

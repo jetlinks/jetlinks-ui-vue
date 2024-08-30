@@ -324,6 +324,7 @@ const clearBind = () => {
         title: '清空操作不可撤销，确认清空所有通道？',
         onOk() {
             run(route.params.id);
+            cacheDeviceIds.value = {}
         },
     });
 };
