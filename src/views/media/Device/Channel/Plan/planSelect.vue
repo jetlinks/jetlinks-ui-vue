@@ -5,6 +5,9 @@
         :options="_options"
         :disabled="disabled"
         :field-names="{ label: 'name', value: 'id' }"
+        allowClear
+        show-search
+        :filter-option="filterOption"
         @change="(value, option) => onChange(value, option)"
         placeholder="请选择计划"
     />
@@ -26,18 +29,18 @@ const props = defineProps({
         type: String,
         default: undefined,
     },
-    disabled:{
-        type:Boolean,
-        default:false
-    }
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const _options = computed(() => {
-    const keys = props.selectKeys.map((i:any)=>{
-        if(i.id!==_value.value) return i.id
-    })
-    return props.options.filter((item:any)=>{
-        return !keys.includes(item.id)
+    const keys = props.selectKeys.map((i: any) => {
+        if (i.id !== _value.value) return i.id;
+    });
+    return props.options.filter((item: any) => {
+        return !keys.includes(item.id);
     });
 });
 
@@ -48,6 +51,10 @@ const emits = defineEmits(['change', 'update:value']);
 const onChange = (value: string, option: any) => {
     emits('change', option);
     emits('update:value', value);
+};
+
+const filterOption = (input: string, option: any) => {
+    return option.name?.toLowerCase().indexOf(input?.toLowerCase()) >= 0;
 };
 
 watch(

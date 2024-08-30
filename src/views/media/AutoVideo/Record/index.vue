@@ -25,6 +25,7 @@
                         :columns="columns"
                         @search="handleSearch"
                         :params="params"
+                          target="auto-video-record"
                         style="padding-bottom: 0; margin-bottom: 0"
                     ></pro-search>
                     <j-pro-table

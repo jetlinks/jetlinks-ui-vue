@@ -1,7 +1,7 @@
 <template>
     <div class="calendar">
         <div class="header" v-if="!view">
-            <span>{{ type==='auto' ?'录像时段':'抓拍时间' }}:</span>
+            <span>{{ type === 'auto' ? '录像时段' : '抓拍时间' }}: </span>
             <a-radio-group
                 v-model:value="trigger"
                 :disabled="disabled"
@@ -20,11 +20,10 @@
                     <div class="top-item">{{ item }}</div>
                 </div>
             </div>
-            <div class="item" v-for="item in list" @click="onClick(item)">
+            <div class="item" v-for="item in list">
                 <div class="item-label">
                     <j-ellipsis>
                         {{ item.label }}
-                        
                     </j-ellipsis>
                 </div>
                 <div class="item-content">
@@ -42,7 +41,7 @@
                                             i.once.time,
                                         )"
                                     >
-                                        {{ p }}
+                                        {{ p }}执行一次
                                     </div>
                                 </template>
                                 <a-badge status="processing" />
@@ -55,7 +54,12 @@
                         >
                             <a-tooltip>
                                 <template #title>
-                                    {{ i.from }} - {{ i.to }}
+                                    {{
+                                        handleRangeTooltip(item?.times, {
+                                            from: i.from || i?.period?.from,
+                                            to: i.to || i?.period?.to,
+                                        })
+                                    }}
                                 </template>
                                 <div style="width: 100%; height: 100%"></div>
                             </a-tooltip>
@@ -88,6 +92,7 @@ import Setting from './Setting.vue';
 import { onlyMessage } from '@/utils/comm';
 import { queryTags } from '@/api/media/auto';
 import { cloneDeep } from 'lodash-es';
+import { formatTime } from '@/utils/utils';
 
 const props = defineProps({
     value: {
@@ -106,10 +111,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    view:{
+    view: {
         type: Boolean,
         default: false,
-    }
+    },
 });
 
 const emits = defineEmits(['update:value', 'update:trigger', 'change']);
@@ -119,10 +124,6 @@ const visible = ref(false);
 const record = ref<Record<string, any>>({});
 const list = ref<any>([]);
 const tags = ref([]);
-
-const onClick = (item: any) => {
-    console.log(item);
-};
 
 const handleTime = (time: string) => {
     return time
@@ -148,12 +149,15 @@ const handleRange = (obj) => {
         item['from'] = obj.period?.from;
         item['to'] = obj.period.to;
     }
+
     const startTime = handleTime(item.from);
     const endTime = handleTime(item.to);
+
     const durationInSeconds = endTime - startTime;
     const secondsIn24Hours = 24 * 60 * 60;
     const width = (durationInSeconds / secondsIn24Hours) * 720;
     const left = (startTime / secondsIn24Hours) * 720 + 70;
+
     return { width: width + 'px', left: left + 'px', height: '20px' };
 };
 
@@ -202,7 +206,7 @@ const mergeArray = (arr) => {
 
 //合并数组段
 const mergeArrays = (arr) => {
-    const _arr = cloneDeep(arr)
+    const _arr = cloneDeep(arr);
     return _arr.reduce((prev, next) => {
         const item = prev?.find(
             (item) =>
@@ -219,6 +223,35 @@ const mergeArrays = (arr) => {
 
         return prev;
     }, []);
+};
+
+const handleRangeTooltip = (arr, obj) => {
+    console.log('arr====',arr,obj);
+    const _arr = arr
+            ?.map((i) => {
+                if (i.from) {
+                    return {
+                        start: handleTime(i.from),
+                        end: handleTime(i.to),
+                    };
+                }else{
+                    return {
+                        start: handleTime(i?.period?.from || '00:00:00'),
+                        end: handleTime(i?.period?.to || "00:00:00"),
+                    }
+                }
+            })
+            .filter((i) => i);
+        const item = mergeArrays(_arr)?.find((item) => {
+            return (
+                Math.max(handleTime(obj.from), item.start) <=
+                Math.min(handleTime(obj.to), item.end)
+            );
+        });
+        console.log('_obj====', item, _arr);
+        return `${formatTime(item.start * 1000)} - ${formatTime(
+            item.end * 1000,
+        )}周期执行`;
 };
 
 const initList = async (trigger) => {
