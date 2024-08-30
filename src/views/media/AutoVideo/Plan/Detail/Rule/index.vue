@@ -102,6 +102,7 @@ const save = () => {
     };
     if (detail.value.others.trigger === 'week') {
         obj['when'] = range;
+        detail.value.others.durations = durations
     } else {
         obj['scheduleTags'] = range;
         detail.value.others.durations = durations.map((item) => {

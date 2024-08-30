@@ -2,7 +2,7 @@
     <div>
         <div v-if="type === 'auto'">
             <div v-for="(item, index) in dataSource" class="auto-items">
-                <div class="label">录像时间段{{ index }}</div>
+                <div class="label">录像时间段{{ index + 1}}</div>
                 <a-time-range-picker
                     :value="[item.from, item.to]"
                     valueFormat="HH:mm:ss"
@@ -18,7 +18,7 @@
         </div>
         <div v-else>
             <div v-for="(item, index) in dataSource" class="timing-items">
-                <div>抓拍时间段{{ index }}</div>
+                <div>抓拍时间段{{ index + 1 }}</div>
                 <a-radio-group
                     v-model:value="item.mod"
                     option-type="button"

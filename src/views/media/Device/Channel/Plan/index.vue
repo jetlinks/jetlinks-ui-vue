@@ -21,21 +21,39 @@
                             />
                         </div>
                         <PermissionButton
-                            type="link"
+                            shape="circle"
                             :tooltip="{
                                 title: '删除',
                             }"
+                            danger
                             @click="onDel(item)"
                         >
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
+                    </div>
+                    <div v-if="item?.times" class="header-detail" >
+                        <span>计划详情:  
+                            {{ item.trigger === 'week' ? '按周' : '自定义日历' }}
+                        </span>
+                        <span
+                            >计划状态： 
+                            <a-badge
+                                :status="
+                                    item?.state?.value === 'enabled'
+                                        ? 'success'
+                                        : 'error'
+                                "
+                                :text="item?.state?.text"
+                            />
+                        </span>
+                        <span>保存周期：{{ item.saveDays }}天</span>
                     </div>
                     <div v-if="item?.times" class="calendar">
                         <Calendar
                             v-model:value="item.times"
                             v-model:trigger="item.trigger"
                             type="timing"
-                            :view="false"
+                            :view="true"
                             :disabled="true"
                         />
                     </div>
@@ -48,7 +66,13 @@
                 >
             </div>
             <div v-else class="empty">
-                <img :src="type === 'video' ? getImage('/media/videoPlan.png') : getImage('/media/capturePlan.png')" />
+                <img
+                    :src="
+                        type === 'video'
+                            ? getImage('/media/videoPlan.png')
+                            : getImage('/media/capturePlan.png')
+                    "
+                />
                 <div class="noPlanTip">
                     还没有关联的{{ type === 'video' ? '录像' : '抓拍' }}计划
                 </div>
@@ -136,9 +160,12 @@ const onSave = async () => {
 };
 
 const onChange = (option: any, item: any) => {
+    console.log('option====',option,item);
     item.times = option.others?.times || [];
     item.trigger = option.others?.trigger;
     item.name = option.name;
+    item.state = option.state;
+    item.saveDays = option.saveDays
 };
 
 const getPlanList = async () => {
@@ -179,6 +206,7 @@ const getBinds = async () => {
     if (res.success) {
         // console.log('res,result====',res.result);
         list.value = res.result.map((item, index) => ({
+            ...item,
             index: index,
             id: item.id,
             times: item.others?.times,
@@ -203,13 +231,25 @@ onMounted(() => {
             width: 100%;
             padding: 12px;
             margin-top: 12px;
-            // background-color: #eee;
-            border: 1px dashed #8b8b8ba9;
+            background-color: #fafafa;
+
+            // border: 1px dashed #8b8b8ba9;
             border-radius: 4px;
             .header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                :deep(.ant-btn-dangerous) {
+                    background: rgba(255, 77, 79, 0.1);
+                    border: none;
+                }
+            }
+            .header-detail{
+                margin-top: 10px;
+                >span{
+                    margin-right: 40px;
+                    color: #1A1A1A;
+                }
             }
             .calendar {
                 padding-top: 12px;
