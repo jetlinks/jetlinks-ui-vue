@@ -63,6 +63,7 @@ const getImg =async (terms)=>{
     const item = {
         pageIndex:pageIndex.value,
         pageSize:pageSize.value,
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms:[
             {column:'channelId',value:props.data.channelId,termType:'eq',type:'and'},
             {column:'fileType',value:'screenshot',termType:'eq',type:'and'}
