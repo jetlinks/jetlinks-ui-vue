@@ -215,9 +215,11 @@ onMounted(() => {
         display: flex;
     }
     .tips {
-        font-size: 14px;
+        font-size: 12px;
         color: red;
         font-weight: 400;
+        position: absolute;
+        top: 82px;
     }
 }
 </style>

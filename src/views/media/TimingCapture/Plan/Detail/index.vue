@@ -193,9 +193,11 @@ provide('detail', detail);
     align-items: center;
     justify-content: center;
     .tips{
-        font-size: 14px;
+        font-size: 12px;
         color: red;
         font-weight: 400;
+        position: absolute;
+        top: 82px;
     }
 }
 </style>
