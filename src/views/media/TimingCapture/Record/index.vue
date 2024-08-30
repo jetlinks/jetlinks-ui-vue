@@ -16,6 +16,7 @@
                         :columns="columns"
                         @search="handleSearch"
                         :params="params"
+                        target="timing-capture-record"
                         style="padding-bottom: 0; margin-bottom: 0"
                     ></pro-search>
                     <FullPage>
@@ -147,7 +148,7 @@ const getActions = (data, type) => {
             tooltip: {
                 title: '抓拍',
             },
-            icon: 'PictureOutlined',
+            icon: 'EyeOutlined',
             onClick: () => {
                 pictureData.value = cloneDeep(data);
                 pictureVisible.value = true;

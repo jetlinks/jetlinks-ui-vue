@@ -2,7 +2,7 @@
     <page-container>
         <pro-search
             :columns="columns"
-            target="auto-video-plan"
+            target="timing-capture-plan"
             @search="handleSearch"
         />
         <FullPage>
