@@ -42,6 +42,7 @@
                     <pro-search
                         :columns="columns"
                         :params="params"
+                        type="simple"
                         style="padding-bottom: 0; margin-bottom: 0"
                         @search="handleSearch"
                     ></pro-search>

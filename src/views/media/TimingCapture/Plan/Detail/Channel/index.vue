@@ -43,6 +43,7 @@
                         :columns="columns"
                         @search="handleSearch"
                         :params="params"
+                        type="simple"
                         target="capture-plan-channel"
                         style="padding-bottom: 0; margin-bottom: 0"
                     ></pro-search>
