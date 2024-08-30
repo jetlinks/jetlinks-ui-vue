@@ -197,14 +197,18 @@ const getActions = (data, type) => {
 const onSelectChange = (item, state) => {
     const oldChannelIds = cacheSelected.value[deviceId.value].channelIds;
     const arr = new Set([..._selectedRowKeys.value, ...oldChannelIds]);
+
+    const currentDeviceChannel  = new Set([...oldChannelIds])
     if (state) {
         arr.add(item.channelId);
+        currentDeviceChannel.add(item.channelId)
     } else {
         arr.delete(item.channelId);
+        currentDeviceChannel.delete(item.channelId)
     }
     _selectedRowKeys.value = [...arr.values()];
 
-    cacheSelected.value[deviceId.value].channelIds = [...arr.values()];
+    cacheSelected.value[deviceId.value].channelIds = [...currentDeviceChannel.values()];
 };
 const selectAll = (selected, selectedRows, changeRows) => {
     const oldChannelIds = cacheSelected.value[deviceId.value].channelIds;
