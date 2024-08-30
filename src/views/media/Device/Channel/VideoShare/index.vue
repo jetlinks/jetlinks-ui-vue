@@ -118,12 +118,13 @@ const handleResult = async (params?: any) => {
 };
 
 const onCopy = (record) => {
+    console.log('navigator.clipboard====',navigator.clipboard);
     if (navigator.clipboard) {
         navigator.clipboard.writeText(record.url);
         onlyMessage('复制成功！');
     } else {
         const input = document.createElement('input');
-        input.value = JSON.stringify(record.url);
+        input.value = record.url;
         document.body.appendChild(input);
         input.select();
         document.execCommand('copy');

@@ -29,7 +29,7 @@
     "axios": "^1.2.1",
     "colorpicker-v3": "^2.10.2",
     "cronstrue": "^2.50.0",
-    "dayjs": "1.11.12",
+    "dayjs": "1.11.11",
     "driver.js": "^0.9.8",
     "echarts": "^5.4.1",
     "event-source-polyfill": "^1.0.31",

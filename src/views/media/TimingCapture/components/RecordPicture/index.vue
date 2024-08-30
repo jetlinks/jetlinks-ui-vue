@@ -1,8 +1,8 @@
 <template>
-    <a-modal visible  :footer="null" :width="800"  @cancel="emit('close')" :maskClosable="false">
+    <a-modal visible  :footer="null" :width="800"  @cancel="emit('close')" :maskClosable="false" title="抓拍文件">
         <div class="datePicker">
             <span>选择日期：</span>
-            <a-range-picker v-model:value="rangeDate" valueFormat="YYYY-MM-DD HH:mm:ss"/>
+            <a-range-picker v-model:value="rangeDate" valueFormat="YYYY-MM-DD HH:mm:ss" show-time />
         </div>
         <div v-if="pictures.length">
             <div class="thumbnailContainer">

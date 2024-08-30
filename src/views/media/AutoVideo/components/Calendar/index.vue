@@ -24,6 +24,7 @@
                 <div class="item-label">
                     <j-ellipsis>
                         {{ item.label }}
+                        
                     </j-ellipsis>
                 </div>
                 <div class="item-content">
