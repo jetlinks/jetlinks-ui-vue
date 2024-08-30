@@ -1,14 +1,14 @@
 <template>
     <div class="calendar">
         <div class="header" v-if="!view">
-            <span>{{ type==='auto' ?'录制时段':'抓拍时间' }}:</span>
+            <span>{{ type==='auto' ?'录像时段':'抓拍时间' }}:</span>
             <a-radio-group
                 v-model:value="trigger"
                 :disabled="disabled"
                 @change="onChangeTirgger"
             >
                 <a-radio value="week">按周</a-radio>
-                <a-radio value="calender">自定义</a-radio>
+                <a-radio value="calender">自定义日历</a-radio>
             </a-radio-group>
         </div>
         <div class="content">
