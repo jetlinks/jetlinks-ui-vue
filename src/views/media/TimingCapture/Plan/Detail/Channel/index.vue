@@ -156,6 +156,7 @@
             v-if="pictureVisible"
             @close="pictureVisible = false"
             :data="pictureData"
+            viewType="plan"
         />
         <Live
             v-model:visible="playerVis"
