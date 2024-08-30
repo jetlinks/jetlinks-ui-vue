@@ -20,7 +20,7 @@
                         },
                     ],
                 }"
-                 :gridColumn="2"
+                :gridColumn="2"
                 :request="queryList"
                 :params="params"
             >
@@ -42,7 +42,11 @@
                         v-bind="slotProps"
                         :showStatus="true"
                         :status="slotProps.state.value"
-                        :statusText="slotProps.state?.value === 'enabled' ? '正常' : '禁用'"
+                        :statusText="
+                            slotProps.state?.value === 'enabled'
+                                ? '正常'
+                                : '禁用'
+                        "
                         :statusNames="{
                             enabled: 'processing',
                             disabled: 'error',
@@ -87,7 +91,8 @@
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
                                         >{{
-                                            slotProps.others?.retention ||   slotProps.saveDays
+                                            slotProps.others?.retention ||
+                                            slotProps.saveDays
                                         }}</Ellipsis
                                     >
                                 </a-col>
@@ -175,7 +180,7 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '启用', value: 'enabled' },
+                { label: '正常', value: 'enabled' },
                 { label: '禁用', value: 'disabled' },
             ],
         },
@@ -214,16 +219,21 @@ const getActions = (data, type) => {
                 data.state.value === 'enabled'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
-            onClick: async () => {
-                const params = {
-                    state:
-                        data.state.value === 'enabled' ? 'disabled' : 'enabled',
-                };
-                const res = await controlPlan(data.id, params);
-                if (res.success) {
-                    onlyMessage('操作成功');
-                    tableRef.value?.reload();
-                }
+            popConfirm: {
+                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'}?`,
+                onConfirm: async () => {
+                    const params = {
+                        state:
+                            data.state.value === 'enabled'
+                                ? 'disabled'
+                                : 'enabled',
+                    };
+                    const res = await controlPlan(data.id, params);
+                    if (res.success) {
+                        onlyMessage('操作成功');
+                        tableRef.value?.reload();
+                    }
+                },
             },
         },
         {
@@ -231,9 +241,9 @@ const getActions = (data, type) => {
             text: '删除',
             tooltip: {
                 title:
-                    data.state.value === 'online' ? '在线设备无法删除' : '删除',
+                    data.state.value === 'enabled' ? '在线设备无法删除' : '删除',
             },
-            disabled: data.state.value === 'online',
+            disabled: data.state.value === 'enabled',
             popConfirm: {
                 title: '确认删除?',
                 onConfirm: () => {

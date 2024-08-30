@@ -31,7 +31,7 @@
                     />
                 </div>
                 <div v-if="showBody" class="bound_channel">
-                    <div style="padding: 12px 24px 0;display: flex">
+                    <div style="padding: 12px 24px 0; display: flex">
                         <div class="catalogue">当前目录：</div>
                         <a-breadcrumb>
                             <a-breadcrumb-item v-for="name in pathsName">{{
@@ -42,6 +42,7 @@
                     <pro-search
                         :columns="columns"
                         :params="params"
+                        type="simple"
                         style="padding-bottom: 0; margin-bottom: 0"
                         @search="handleSearch"
                     ></pro-search>
@@ -131,7 +132,7 @@
                     </j-pro-table>
                 </div>
             </div>
-            <div v-if="showBody">
+            <div v-if="showBody && editType">
                 <a-button
                     type="primary"
                     :loading="saveLoading"
@@ -211,11 +212,7 @@ const { loading: spinning, run } = useRequest(unbindChannelAll, {
     onSuccess: async () => {
         await treeRef.value.getDeviceList();
         showBody.value = false;
-        queryBoundChannel(defaultParams).then((resp) => {
-            if (resp.success) {
-                bindCount.value = resp.result.total;
-            }
-        });
+        bindCount.value = 0;
     },
 });
 
@@ -361,7 +358,7 @@ const clearBind = () => {
         title: '清空操作不可撤销，确认清空所有通道？',
         onOk() {
             run(route.params.id);
-            cacheDeviceIds.value = {}
+            cacheDeviceIds.value = {};
         },
     });
 };
@@ -436,7 +433,7 @@ const query = (params) => {
     return queryBoundChannel(_params);
 };
 
-const saveChannel = () => {
+const saveChannel = async () => {
     const terms = [];
     Object.values(cacheDeviceIds.value).forEach(
         ({ channelIds, channelCatalog, paths }) => {
@@ -454,28 +451,25 @@ const saveChannel = () => {
     );
 
     saveLoading.value = true;
-    bindChannel(route.params.id, terms)
-        .then((resp) => {
-            if (resp.success) {
-                cacheDeviceIds.value = {};
-                treeRef.value.getDeviceList();
-                onlyMessage('操作成功');
-                getBindTotal();
-            }
-        })
-        .finally(() => {
-            saveLoading.value = false;
-        });
-
+    const resp = await bindChannel(route.params.id, terms).finally(() => {
+        saveLoading.value = false;
+    });
+    if (resp.success) {
+        cacheDeviceIds.value = {};
+        
+    }
     const keys = Object.keys(unBindChannelIds.value);
-
     if (keys.length) {
         const unBindTerms = keys.map((channelId) => ({
             deviceId: unBindChannelIds.value[channelId],
             channelId,
         }));
-        unbindChannel(route.params.id, unBindTerms);
+        await unbindChannel(route.params.id, unBindTerms);
     }
+    treeRef.value.getDeviceList();
+    await getBindTotal();
+    onlyMessage('操作成功');
+    editType.value = false;
 };
 
 const treeSelect = ({ node }) => {
@@ -545,11 +539,11 @@ getBindTotal();
     }
     .bound_channel {
         flex: 1 1 0;
-        .catalogue{
-            color:#1A1A1A
+        .catalogue {
+            color: #1a1a1a;
         }
-        :deep(.ant-breadcrumb-link){
-            color:#777777
+        :deep(.ant-breadcrumb-link) {
+            color: #777777;
         }
     }
 }

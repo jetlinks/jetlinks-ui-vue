@@ -9,9 +9,18 @@
                         type="unbind"
                         v-model:deviceId="deviceId"
                         v-model:channelId="channelId"
+                        @select="treeSelect"
                     />
                 </div>
                 <div class="bound_channel">
+                    <div style="padding: 12px 24px 0;display: flex">
+                        <div class="catalogue">当前目录：</div>
+                        <a-breadcrumb>
+                            <a-breadcrumb-item v-for="name in pathsName">{{
+                                name
+                            }}</a-breadcrumb-item>
+                        </a-breadcrumb>
+                    </div>
                     <pro-search
                         :columns="columns"
                         @search="handleSearch"
@@ -73,6 +82,7 @@ const params = ref();
 const deviceId = ref();
 const channelId = ref();
 const tableRef = ref();
+const pathsName = ref();
 
 const columns = [
     {
@@ -184,6 +194,11 @@ const query = (params) => {
     return queryRecord('video',_params);
 };
 
+const treeSelect = ({ node }) => {
+    const {  channelCatalog } = node;
+    pathsName.value = channelCatalog;
+};
+
 watch(() => [deviceId.value, channelId.value], () => {
   tableRef.value.reload()
 }, { deep: true })
@@ -200,6 +215,12 @@ watch(() => [deviceId.value, channelId.value], () => {
     }
     .bound_channel {
         flex: 4;
+        .catalogue{
+            color:#1A1A1A
+        }
+        :deep(.ant-breadcrumb-link){
+            color:#777777
+        }
     }
 }
 </style>

@@ -28,6 +28,7 @@
                 <pro-search
                     :columns="columns"
                     style="padding-bottom: 0; margin-bottom: 0"
+                    type="simple"
                     @search="handleSearch"
                 ></pro-search>
                 <j-pro-table

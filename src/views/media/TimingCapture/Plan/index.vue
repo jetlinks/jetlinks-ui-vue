@@ -160,7 +160,7 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '启用', value: 'enabled' },
+                { label: '正常', value: 'enabled' },
                 { label: '禁用', value: 'disabled' },
             ],
         },
@@ -191,7 +191,7 @@ const getActions = (data, type) => {
             },
             icon: data.state.value === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
-                title: `确认${data.state.value === 0 ? '禁用' : '启用'}?`,
+                title: `确认${data.state.value === 'enabled' ? '禁用' : '启用'}?`,
                 onConfirm: () => {
                     let response = undefined;
                     if (data.state.value === 'enabled') {

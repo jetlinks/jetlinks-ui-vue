@@ -1,13 +1,17 @@
 <template>
-    <div class="closeIcon" @click="emit('closePreview')"><AIcon type="CloseOutlined" style="font-size: 20px;"></AIcon></div>
+    <div class="closeIcon" @click="emit('closePreview')">
+        <AIcon type="CloseOutlined" style="font-size: 20px"></AIcon>
+    </div>
     <div class="preview">
         <div class="preview-img">
-            <img :src="record.filePath"/>
+            <img :src="record.filePath" />
         </div>
         <div class="imgInfo">
             <div class="info-item">
                 <div>抓拍时间:</div>
-                <div> {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+                <div>
+                    {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+                </div>
             </div>
             <div class="info-item">
                 <div>通道ID:</div>
@@ -15,11 +19,15 @@
             </div>
             <div class="info-item">
                 <div>通道名称:</div>
-                <div>{{ channel.name || '-'}}</div>
+                <div>{{ channel.name || '-' }}</div>
             </div>
             <div class="info-item">
                 <div>通道目录:</div>
-                <div>{{ channel.channelCatalog  || '-'}}</div>
+                <a-breadcrumb>
+                    <a-breadcrumb-item v-for="name in channel?.pathsName">{{
+                        name
+                    }}</a-breadcrumb-item>
+                </a-breadcrumb>
             </div>
             <div class="info-item">
                 <div>安装地址:</div>
@@ -49,17 +57,16 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
-    channel:{
+    channel: {
         type: Object,
         default: () => ({}),
-    }
-})
+    },
+});
 
-
-const emit = defineEmits(['closePreview'])
+const emit = defineEmits(['closePreview']);
 </script>
 <style lang="less" scoped>
-.closeIcon{
+.closeIcon {
     position: fixed;
     top: 7%;
     right: 15%;
@@ -75,7 +82,7 @@ const emit = defineEmits(['closePreview'])
     display: flex;
     justify-content: space-around;
     z-index: 2000;
-    .imgInfo{
+    .imgInfo {
         width: 20%;
         padding: 12px;
         // margin: 10px 20px;
@@ -83,10 +90,10 @@ const emit = defineEmits(['closePreview'])
     .info-item {
         margin-top: 12px;
     }
-    .preview-img{
+    .preview-img {
         width: 80%;
         background-color: rgba(204, 204, 204);
-        img{
+        img {
             height: 90%;
             width: 90%;
             margin: 5%;
