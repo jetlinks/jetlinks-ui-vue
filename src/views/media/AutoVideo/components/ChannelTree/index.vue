@@ -108,7 +108,7 @@ const getChildren = (key, params, first = false, parentPaths = [], channelCatalo
       const nodes = filterTreeNode(res.result.data).map((item) => ({
         ...item,
         class: item.status.value,
-        isLeaf: isLeaf(item),
+        isLeaf: false,
         paths: [...parentPaths, item.id],
         channelCatalog: [...channelCatalog, item.name],
       }))
@@ -195,7 +195,7 @@ const getDeviceList = async (params) => {
         treeData.value = res.result
             .map((m) => {
                 const extra = {};
-                extra.isLeaf = isLeaf(m);
+                extra.isLeaf = false;
                 return {
                     ...m,
                     ...extra,

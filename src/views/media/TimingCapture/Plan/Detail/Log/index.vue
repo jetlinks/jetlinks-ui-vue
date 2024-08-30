@@ -11,7 +11,7 @@
             :columns="columns"
             :params="params"
             model="table"
-            :request="e=>queryLogs(route.params.id,e)"
+            :request="(e) => queryLogs(route.params.id, e)"
         >
             <template #createTime="slotProps">
                 {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -38,7 +38,11 @@
                         </PermissionButton> </template
                 ></j-space> </template
         ></j-pro-table>
-        <logView v-if="logsVisible" :data="logData" @close="logsVisible  = false"/>
+        <logView
+            v-if="logsVisible"
+            :data="logData"
+            @close="logsVisible = false"
+        />
     </div>
 </template>
 
@@ -46,7 +50,7 @@
 import { queryLogs } from '@/api/media/auto';
 import dayjs from 'dayjs';
 import logView from './logView.vue';
-import {onBeforeUnmount} from "vue";
+import { onBeforeUnmount } from 'vue';
 import { useRouteQuery } from '@vueuse/router';
 import { useRoute } from 'vue-router';
 
@@ -55,10 +59,10 @@ const route = useRoute();
 const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);
-const logData = ref({})
+const logData = ref({});
 
-const q = useRouteQuery('q')
-const searchTarget = useRouteQuery('target')
+const q = useRouteQuery('q');
+const searchTarget = useRouteQuery('target');
 
 const columns = [
     {
@@ -130,7 +134,7 @@ const columns = [
     },
 ];
 
-const videoTags = inject('video-tags')
+const videoTags = inject('video-tags');
 /**
  * 搜索
  * @param params
@@ -159,13 +163,15 @@ const getActions = (data) => {
 };
 
 onMounted(() => {
-  searchTarget.value = 'TimingCapturePlanLog'
-  q.value = encodeURI(JSON.stringify({terms: videoTags.terms }));
-})
+    if (videoTags.terms.length) {
+        searchTarget.value = 'TimingCapturePlanLog';
+        q.value = encodeURI(JSON.stringify({ terms: videoTags.terms }));
+    }
+});
 
 onBeforeUnmount(() => {
-  videoTags.terms = []
-})
+    videoTags.terms = [];
+});
 </script>
 
 <style lang="less"></style>
