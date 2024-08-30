@@ -132,7 +132,7 @@
                     </j-pro-table>
                 </div>
             </div>
-            <div v-if="showBody">
+            <div v-if="showBody && editType">
                 <a-button
                     type="primary"
                     :loading="saveLoading"
@@ -456,8 +456,7 @@ const saveChannel = async () => {
     });
     if (resp.success) {
         cacheDeviceIds.value = {};
-        treeRef.value.getDeviceList();
-        onlyMessage('操作成功');
+        
     }
     const keys = Object.keys(unBindChannelIds.value);
     if (keys.length) {
@@ -467,7 +466,10 @@ const saveChannel = async () => {
         }));
         await unbindChannel(route.params.id, unBindTerms);
     }
-    getBindTotal();
+    treeRef.value.getDeviceList();
+    await getBindTotal();
+    onlyMessage('操作成功');
+    editType.value = false;
 };
 
 const treeSelect = ({ node }) => {
