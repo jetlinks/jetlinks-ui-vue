@@ -116,7 +116,10 @@ const columns = [
         width: 100,
         search: {
             type: 'select',
-            options: [],
+            options: [
+                { label: '正常', value: 'success' },
+                { label: '失败', value: 'fail' },
+            ],
         },
     },
     {

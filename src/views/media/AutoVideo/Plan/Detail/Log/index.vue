@@ -11,7 +11,7 @@
             :columns="columns"
             :params="params"
             model="table"
-            :request="e=>queryLogs(route.params.id,e)"
+            :request="(e) => queryLogs(route.params.id, e)"
         >
             <template #createTime="slotProps">
                 {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
@@ -38,7 +38,11 @@
                         </PermissionButton> </template
                 ></j-space> </template
         ></j-pro-table>
-        <logView v-if="logsVisible" :data="logData" @close="logsVisible  = false"/>
+        <logView
+            v-if="logsVisible"
+            :data="logData"
+            @close="logsVisible = false"
+        />
     </div>
 </template>
 
@@ -47,17 +51,17 @@ import { queryLogs } from '@/api/media/auto';
 import dayjs from 'dayjs';
 import logView from './logView.vue';
 import { useRouteQuery } from '@vueuse/router';
-import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);
-const logData = ref({})
+const logData = ref({});
 
-const q = useRouteQuery('q')
-const searchTarget = useRouteQuery('target')
+const q = useRouteQuery('q');
+const searchTarget = useRouteQuery('target');
 
 const columns = [
     {
@@ -115,7 +119,10 @@ const columns = [
         width: 100,
         search: {
             type: 'select',
-            options: [],
+            options: [
+                { label: '正常', value: 'success' },
+                { label: '失败', value: 'fail' },
+            ],
         },
     },
     {
@@ -126,7 +133,7 @@ const columns = [
     },
 ];
 
-const videoTags = inject('video-tags')
+const videoTags = inject('video-tags');
 
 /**
  * 搜索
@@ -156,14 +163,13 @@ const getActions = (data) => {
 };
 
 onMounted(() => {
-  searchTarget.value = 'AutoVideoPlanLog'
-  q.value = encodeURI(JSON.stringify({terms: videoTags.terms }));
-})
+    searchTarget.value = 'AutoVideoPlanLog';
+    q.value = encodeURI(JSON.stringify({ terms: videoTags.terms }));
+});
 
 onBeforeUnmount(() => {
-  videoTags.terms = []
-})
-
+    videoTags.terms = [];
+});
 </script>
 
 <style lang="less"></style>

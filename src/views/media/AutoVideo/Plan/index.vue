@@ -175,7 +175,7 @@ const columns = [
         search: {
             type: 'select',
             options: [
-                { label: '启用', value: 'enabled' },
+                { label: '正常', value: 'enabled' },
                 { label: '禁用', value: 'disabled' },
             ],
         },
