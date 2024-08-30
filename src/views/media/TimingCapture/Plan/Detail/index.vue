@@ -177,7 +177,7 @@ const validateName = () =>{
 const cancel = () =>{
     isEdit.value = false;
     nameTips.value = '';
-    _value.value = detail?.name;
+    _value.value = detail.value?.name;
 }
 
 onMounted(() => {
