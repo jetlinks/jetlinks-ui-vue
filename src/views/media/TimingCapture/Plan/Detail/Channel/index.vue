@@ -209,11 +209,7 @@ const { loading: spinning, run } = useRequest(unbindChannelAll, {
     onSuccess: async () => {
         await treeRef.value.getDeviceList();
         showBody.value = false;
-        queryBoundChannel(defaultParams).then((resp) => {
-            if (resp.success) {
-                bindCount.value = resp.result.total;
-            }
-        });
+        bindCount.value = 0
     },
 });
 
