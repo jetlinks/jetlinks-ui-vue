@@ -202,6 +202,7 @@ const onSelectChange = (item, state) => {
     const arr = new Set([..._selectedRowKeys.value, ...oldChannelIds]);
 
     const currentDeviceChannel  = new Set([...oldChannelIds])
+   
     if (state) {
         arr.add(item.channelId);
         currentDeviceChannel.add(item.channelId)
@@ -211,23 +212,30 @@ const onSelectChange = (item, state) => {
     }
 
     _selectedRowKeys.value = [...arr.values()];
-
+    console.log(currentDeviceChannel)
     cacheSelected.value[deviceId.value].channelIds = [...currentDeviceChannel.values()];
 };
 const selectAll = (selected, selectedRows, changeRows) => {
     const oldChannelIds = cacheSelected.value[deviceId.value].channelIds;
     const selectedKeys = new Set([...oldChannelIds, ..._selectedRowKeys.value]);
+    const currentDeviceChannel  = new Set([...oldChannelIds])
     if (selected) {
         changeRows.map((i) => {
             selectedKeys.add(i.channelId);
+        });
+        changeRows.map((i) => {
+            currentDeviceChannel.add(i.channelId);
         });
     } else {
         changeRows.map((i) => {
             selectedKeys.delete(i.channelId);
         });
+        changeRows.map((i) => {
+            currentDeviceChannel.delete(i.channelId);
+        });
     }
 
-    cacheSelected.value[deviceId.value].channelIds = [...selectedKeys.values()];
+    cacheSelected.value[deviceId.value].channelIds = [...currentDeviceChannel.values()];
     _selectedRowKeys.value = [...selectedKeys.values()];
 };
 

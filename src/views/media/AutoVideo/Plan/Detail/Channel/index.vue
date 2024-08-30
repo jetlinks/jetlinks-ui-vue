@@ -70,6 +70,7 @@
                                     <PermissionButton
                                         type="link"
                                         style="padding: 0px"
+                                        key="play"
                                         :tooltip="{ title: '播放' }"
                                         @click="
                                             () => {
@@ -83,6 +84,7 @@
                                     <PermissionButton
                                         type="link"
                                         style="padding: 0px"
+                                        key="unbind"
                                         :tooltip="{ title: '解绑' }"
                                         :popConfirm="{
                                             title: '确认解绑吗？',
@@ -100,6 +102,7 @@
                                     <PermissionButton
                                         type="link"
                                         style="padding: 0px"
+                                        key="playback"
                                         :tooltip="{ title: '回放' }"
                                         @click="
                                             () => {
@@ -112,6 +115,7 @@
                                     <PermissionButton
                                         type="link"
                                         style="padding: 0px"
+                                        key="logs"
                                         :tooltip="{ title: '日志' }"
                                         @click="
                                             () => {
@@ -357,6 +361,7 @@ const clearBind = () => {
         title: '清空操作不可撤销，确认清空所有通道？',
         onOk() {
             run(route.params.id);
+            cacheDeviceIds.value = {}
         },
     });
 };
