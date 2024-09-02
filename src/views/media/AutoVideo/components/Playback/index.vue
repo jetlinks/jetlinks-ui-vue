@@ -184,7 +184,7 @@ import LivePlayer from '@/components/Player/index.vue';
 import { getImage } from '@/utils/comm';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 
 const props = defineProps({
     data:{
@@ -390,7 +390,7 @@ watch(
 );
 
 onMounted(() => {
-    const _type = props.data.provider as string;
+    const _type = props.data.provider as string || 'fixed-media';
     if (_type) {
         deviceType.value = _type;
         time.value = dayjs(new Date());

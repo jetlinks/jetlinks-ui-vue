@@ -44,12 +44,28 @@
                                         {{ p }}执行一次
                                     </div>
                                 </template>
-                                <a-badge status="processing" />
+                                <!-- <a-badge status="processing" /> -->
+                                <div style="width: 16px; height: 16px">
+                                    <img
+                                        :src="
+                                            handleTooltip(
+                                                item?.points,
+                                                i.once.time,
+                                            )?.length > 1
+                                                ? getImage('/media/points.png')
+                                                : getImage('/media/point.png')
+                                        "
+                                    />
+                                </div>
                             </a-tooltip>
                         </div>
                         <div
                             v-else
-                            class="item-content-box"
+                            :class="{
+                                'item-content-box': true,
+                                'item-content-box-bg':
+                                    type === 'auto' ? false : true,
+                            }"
                             :style="handleRange(i)"
                         >
                             <a-tooltip>
@@ -89,7 +105,7 @@
 import { weeks } from '../utils';
 import { computed, onMounted, ref, watch } from 'vue';
 import Setting from './Setting.vue';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage, getImage } from '@/utils/comm';
 import { queryTags } from '@/api/media/auto';
 import { cloneDeep } from 'lodash-es';
 import { formatTime } from '@/utils/utils';
@@ -164,7 +180,7 @@ const handleRange = (obj) => {
 const handlePoint = (obj) => {
     if (obj?.mod === 'once' && obj?.once?.time) {
         const point = handleTime(obj.once.time);
-        const res = Math.floor(point / 3600) * 30 + 83;
+        const res = Math.floor(point / 3600) * 30 + 78;
         return {
             left: `${res}px`,
         };
@@ -226,32 +242,32 @@ const mergeArrays = (arr) => {
 };
 
 const handleRangeTooltip = (arr, obj) => {
-    console.log('arr====',arr,obj);
+    // console.log('arr====', arr, obj);
     const _arr = arr
-            ?.map((i) => {
-                if (i.from) {
-                    return {
-                        start: handleTime(i.from),
-                        end: handleTime(i.to),
-                    };
-                }else{
-                    return {
-                        start: handleTime(i?.period?.from || '00:00:00'),
-                        end: handleTime(i?.period?.to || "00:00:00"),
-                    }
-                }
-            })
-            .filter((i) => i);
-        const item = mergeArrays(_arr)?.find((item) => {
-            return (
-                Math.max(handleTime(obj.from), item.start) <=
-                Math.min(handleTime(obj.to), item.end)
-            );
-        });
-        console.log('_obj====', item, _arr);
-        return `${formatTime(item.start * 1000)} - ${formatTime(
-            item.end * 1000,
-        )}周期执行`;
+        ?.map((i) => {
+            if (i.from) {
+                return {
+                    start: handleTime(i.from),
+                    end: handleTime(i.to),
+                };
+            } else {
+                return {
+                    start: handleTime(i?.period?.from || '00:00:00'),
+                    end: handleTime(i?.period?.to || '00:00:00'),
+                };
+            }
+        })
+        .filter((i) => i);
+    const item = mergeArrays(_arr)?.find((item) => {
+        return (
+            Math.max(handleTime(obj.from), item.start) <=
+            Math.min(handleTime(obj.to), item.end)
+        );
+    });
+    // console.log('_obj====', item, _arr);
+    return `${formatTime(item.start * 1000)} - ${formatTime(
+        item.end * 1000,
+    )}周期执行`;
 };
 
 const initList = async (trigger) => {
@@ -395,10 +411,17 @@ watch(
                     position: absolute;
                     top: 8px;
                 }
+                .item-content-box-bg {
+                    background-color: rgba(22, 119, 255, 0.1);
+                }
                 .item-content-point {
                     position: absolute;
                     z-index: 10;
-                    top: 10px;
+                    top: 6px;
+                    img{
+                        width: 100%;
+                        // height: 100%;
+                    }
                 }
             }
             .item-setting {

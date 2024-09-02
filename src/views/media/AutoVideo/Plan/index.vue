@@ -28,7 +28,7 @@
                     <PermissionButton
                         type="primary"
                         @click="handleAdd"
-                        hasPermission="media/Device:add"
+                        hasPermission="media/AutoVideo/Plan:add"
                     >
                         <template #icon><AIcon type="PlusOutlined" /></template>
                         新增计划
@@ -118,7 +118,7 @@
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
-                                :hasPermission="true"
+                                :hasPermission="'media/AutoVideo/Plan:' + item.key"
                             >
                                 <AIcon
                                     type="DeleteOutlined"
