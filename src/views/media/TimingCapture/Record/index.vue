@@ -12,7 +12,7 @@
                         @select="treeSelect"
                     />
                 </div>
-                <div class="bound_channel">
+                <div v-if="deviceId" class="bound_channel">
                     <div style="padding: 12px 24px 0;display: flex">
                         <div class="catalogue">当前目录：</div>
                         <a-breadcrumb>
@@ -64,6 +64,9 @@
                                 ></j-space> </template
                         ></j-pro-table>
                     </FullPage>
+                </div>
+                <div v-else  class="bound_channel_empty">
+                    <j-empty></j-empty>
                 </div>
             </div>
             <RecordPicture
@@ -154,9 +157,9 @@ const getActions = (data, type) => {
     const actions = [
         {
             key: 'picture',
-            text: '抓拍',
+            text: '查看',
             tooltip: {
-                title: '抓拍',
+                title: '查看',
             },
             icon: 'EyeOutlined',
             onClick: () => {
@@ -203,7 +206,7 @@ const treeSelect = ({ node }) => {
 };
 
 watch(() => [deviceId.value, channelId.value], () => {
-  tableRef.value.reload()
+  tableRef.value?.reload()
 }, { deep: true })
 
 </script>
@@ -224,6 +227,10 @@ watch(() => [deviceId.value, channelId.value], () => {
         :deep(.ant-breadcrumb-link){
             color:#777777
         }
+    }
+    .bound_channel_empty{
+        flex: 4;
+        margin-top: 15%
     }
 }
 </style>

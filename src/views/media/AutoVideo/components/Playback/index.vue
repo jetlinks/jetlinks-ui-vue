@@ -396,9 +396,9 @@ onMounted(() => {
         time.value = dayjs(new Date());
         if (_type === 'fixed-media' || _type === 'onvif') {
             type.value = 'cloud';
-            // queryServiceRecords(_timeStr);
+            queryServiceRecords( time.value);
         } else {
-            // queryLocalRecords(_timeStr);
+            queryLocalRecords(time.value);
             type.value = 'local';
         }
     }

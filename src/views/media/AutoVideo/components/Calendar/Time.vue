@@ -2,7 +2,7 @@
     <div>
         <div v-if="type === 'auto'">
             <div v-for="(item, index) in dataSource" class="auto-items">
-                <div class="label">录像时间段{{ index + 1}}</div>
+                <div class="label">录像时间段{{ index + 1 }}</div>
                 <a-time-range-picker
                     :value="[item.from, item.to]"
                     valueFormat="HH:mm:ss"
@@ -109,7 +109,7 @@ const init = {
         to: '',
     },
     once: {
-        time:''
+        time: '',
     },
 };
 
@@ -117,18 +117,31 @@ const onChange = () => {
     emits('change', dataSource.value);
 };
 
-
 onMounted(() => {
     if (props.value.length) {
-        const _data = cloneDeep(props.value)
-        dataSource.value = _data.map((item:any) => {
+        const _data = cloneDeep(props.value);
+        dataSource.value = _data.map((item: any) => {
             if (item) {
                 return {
-                    ...init,
-                    ...item
+                    from: item.from || '',
+                    to: item.to || '',
+                    mod: item.mod || 'period',
+                    period: {
+                        unit: item.period?.unit || 'seconds',
+                        every: item.period?.every || '',
+                        from: item.period?.from || '',
+                        to: item.period?.to || '',
+                    },
+                    once: {
+                        time: item.once?.time || '',
+                    },
                 };
             } else {
-                return { ...init };
+                return {
+                    ...init,
+                    period: { ...init.period },
+                    once: { ...init.once },
+                };
             }
         });
     } else {
