@@ -15,7 +15,7 @@
             </div>
             <div class="info-item">
                 <div>通道ID:</div>
-                <div>{{ channel.channelId }}</div>
+                <Ellipsis :getPopupContainer="getPopupContainer">{{ channel.channelId }}</Ellipsis>
             </div>
             <div class="info-item">
                 <div>通道名称:</div>
@@ -62,6 +62,9 @@ const props = defineProps({
         default: () => ({}),
     },
 });
+const getPopupContainer = (node)=>{
+    return node
+}
 
 const emit = defineEmits(['closePreview']);
 </script>
@@ -81,7 +84,7 @@ const emit = defineEmits(['closePreview']);
     background-color: white;
     display: flex;
     justify-content: space-around;
-    z-index: 2000;
+    z-index: 1200;
     .imgInfo {
         width: 20%;
         padding: 12px;

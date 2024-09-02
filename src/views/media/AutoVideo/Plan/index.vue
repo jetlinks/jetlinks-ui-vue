@@ -241,7 +241,7 @@ const getActions = (data, type) => {
             text: '删除',
             tooltip: {
                 title:
-                    data.state.value === 'enabled' ? '已启用的计划无法删除' : '删除',
+                    data.state.value === 'enabled' ? '正常计划无法删除' : '删除',
             },
             disabled: data.state.value === 'enabled',
             popConfirm: {
