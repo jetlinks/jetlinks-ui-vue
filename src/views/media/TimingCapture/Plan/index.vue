@@ -220,7 +220,7 @@ const getActions = (data, type) => {
             text: '删除',
             tooltip: {
                 title:
-                    data.state.value === 'enabled' ? '请先禁用计划' : '删除',
+                    data.state.value === 'enabled' ? '正常计划无法删除' : '删除',
             },
             disabled: data.state.value === 'enabled',
             popConfirm: {
