@@ -165,6 +165,7 @@ const getActions = (data) => {
 onMounted(() => {
     searchTarget.value = 'AutoVideoPlanLog';
     q.value = encodeURI(JSON.stringify({ terms: videoTags.terms }));
+    console.log('q.value====',q.value);
 });
 
 onBeforeUnmount(() => {

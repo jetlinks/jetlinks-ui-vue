@@ -180,7 +180,6 @@ import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import { onlyMessage } from '@/utils/comm';
 import { useRequest } from '@/hook';
 import { Modal } from 'ant-design-vue';
-// import Logs from '@/views/media/AutoVideo/components/Logs/index.vue';
 
 const bindCount = ref(0);
 const tableRef = ref();

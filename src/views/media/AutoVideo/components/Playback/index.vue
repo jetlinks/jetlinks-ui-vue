@@ -390,7 +390,7 @@ watch(
 );
 
 onMounted(() => {
-    const _type = props.data.provider as string || 'fixed-media';
+    const _type = props.data.provider as string || 'fixed-media'
     if (_type) {
         deviceType.value = _type;
         time.value = dayjs(new Date());

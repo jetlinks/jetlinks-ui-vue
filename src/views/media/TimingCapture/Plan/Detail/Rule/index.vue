@@ -25,9 +25,7 @@
             </div>
         </div>
         <div class="rule-item">
-            <div>
-                保存周期（天）<span style="color:red;">*</span>
-            </div>
+            <div>保存周期（天）<span style="color: red">*</span></div>
             <a-input-number
                 v-if="editType"
                 :precision="0"
@@ -68,7 +66,6 @@ import { useRoute } from 'vue-router';
 import { updatePlan } from '@/api/media/auto';
 import { onlyMessage } from '@/utils/comm';
 
-
 const route = useRoute();
 const editType = ref(route.query?.type === 'edit');
 const detail = inject<any>('detail');
@@ -89,36 +86,42 @@ const handleArr = (arr) => {
 };
 
 const handleSave = async () => {
-
     const schedules = handleArr(detail.value?.others.times);
-    detail.value.state.value = _state.value ;
+    detail.value.state.value = _state.value;
     if (detail.value.others.trigger === 'week') {
         detail.value.schedules = schedules;
     } else {
-        detail.value.schedules = [
-            {
-                trigger: 'multi',
-                multi: {
-                    type: 'or',
-                    spec: schedules.map((item) => {
-                        const { when, ...other } = item;
-                        return {
-                            ...other,
-                            scheduleTags: when,
-                        };
-                    }),
-                },
-            },
-        ];
+        detail.value.schedules = schedules.map((item) => {
+            const { when, ...other } = item;
+            return {
+                ...other,
+                scheduleTags: when,
+            };
+        });
+        // detail.value.schedules = [
+        //     {
+        //         trigger: 'multi',
+        //         multi: {
+        //             type: 'or',
+        //             spec: schedules.map((item) => {
+        //                 const { when, ...other } = item;
+        //                 return {
+        //                     ...other,
+        //                     scheduleTags: when,
+        //                 };
+        //             }),
+        //         },
+        //     },
+        // ];
     }
-    if(!detail.value.saveDays){
+    if (!detail.value.saveDays) {
         onlyMessage('请输入保存周期', 'error');
         return;
     }
     const res = await updatePlan(detail.value);
     if (res.success) {
         onlyMessage('操作成功');
-        editType.value = false
+        editType.value = false;
     }
 };
 
@@ -127,12 +130,11 @@ const handleSave = async () => {
 // });
 watch(
     () => detail.value?.state?.value,
-    (val)=>{
-        _state.value = detail.value?.state?.value
+    (val) => {
+        _state.value = detail.value?.state?.value;
     },
-    {immediate:true}
-)
-
+    { immediate: true },
+);
 </script>
 
 <style lang="less">
