@@ -64,7 +64,7 @@
         </template>
         <FullPage>
             <div style="padding: 24px; height: 100%">
-                <component :is="tabs[tabActiveKey]" @onJump="onTabChange" />
+                <component :is="tabs[tabActiveKey]" @onJump="onTabChange" :key="tabActiveKey"/>
             </div>
         </FullPage>
     </page-container>

@@ -1,6 +1,9 @@
 <!-- 回放 -->
 <template>
     <a-modal title="录像回放" visible   style="top: 40px" :width="1400" @cancel="emits('close')" >
+        <template #footer>
+            <a-button type="primary" @click="emits('close')">取消</a-button>
+        </template>
         <div class="playback-warp">
             <!-- 播放器/进度条 -->
             <div class="playback-left">

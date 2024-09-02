@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="loading">
         <pro-search
             :columns="columns"
             style="margin-bottom: 0"
@@ -60,6 +60,7 @@ const params = ref();
 const tableRef = ref();
 const logsVisible = ref(false);
 const logData = ref({});
+const loading = ref(false);
 
 const q = useRouteQuery('q');
 const searchTarget = useRouteQuery('target');
@@ -162,15 +163,24 @@ const getActions = (data) => {
     return actions;
 };
 
-onMounted(() => {
-    if (videoTags.terms.length) {
+watch(
+    () => q.value,
+    () => {
         searchTarget.value = 'TimingCapturePlanLog';
-        q.value = encodeURI(JSON.stringify({ terms: videoTags.terms }));
-    }
-});
+        q.value = encodeURI(
+            JSON.stringify({ terms: [{ terms: videoTags.terms }] }),
+        );
+        setTimeout(() => {
+            loading.value = true;
+        }, 0);
+    },
+    { immediate: true, deep: true },
+);
 
 onBeforeUnmount(() => {
     videoTags.terms = [];
+    q.value = null;
+    searchTarget.value = null;
 });
 </script>
 
