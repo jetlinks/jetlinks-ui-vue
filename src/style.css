@@ -1,0 +1,8 @@
+@font-face {
+  font-family: AliRegular;
+  src: url("/fonts/AlibabaPuHuiTi-2-55-Regular.ttf");
+}
+
+body {
+  font-family: 'AliRegular' !important;
+}

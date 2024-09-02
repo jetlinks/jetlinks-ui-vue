@@ -1,0 +1,11 @@
+@import "ant-design-vue/es/style/themes/index.less";
+
+.ellipsisFn(@num: 1, @width: 100%) {
+  display: -webkit-box;
+  max-width: @width;
+  overflow: hidden;
+  /*! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /*! autoprefixer: on */
+  -webkit-line-clamp: @num;
+}

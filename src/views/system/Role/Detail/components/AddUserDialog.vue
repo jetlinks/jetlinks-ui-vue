@@ -1,0 +1,118 @@
+<template>
+    <a-modal visible title="新增" width="1000px" @ok="confirm" @cancel="emits('update:visible', false)">
+        <pro-search :columns="columns" target="simple" @search="(params) => queryParams = { ...params }" />
+
+        <j-pro-table ref="tableRef" :columns="columns" :request="getUserList" mode="TABLE" :params="queryParams"
+            :rowSelection="{
+                selectedRowKeys: selectedRowKeys,
+                onSelect: changeSelect,
+                onSelectAll: selectAll,
+                onSelectNone: ()=>selectedRowKeys = []
+            }">
+        </j-pro-table>
+    </a-modal>
+</template>
+
+<script setup lang="ts" name="RoleAddUser">
+import { getUserByRole_api, bindUser_api } from '@/api/system/role';
+import { onlyMessage } from '@jetlinks-web/utils';
+
+const emits = defineEmits(['refresh', 'update:visible']);
+const props = defineProps<{
+    visible: boolean;
+    roleId: string;
+}>();
+
+const columns = [
+    {
+        title: '姓名',
+        dataIndex: 'name',
+        key: 'name',
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '用户名',
+        dataIndex: 'username',
+        key: 'username',
+        search: {
+            type: 'string',
+        },
+    },
+];
+const queryParams = ref({});
+
+const selectedRowKeys = ref<any>([]);
+const getUserList = (oParams: any) => {
+    const params = {
+        ...oParams,
+        sorts: [{ name: 'createTime', order: 'desc' }],
+        terms: [
+            {
+                terms: [
+                    {
+                        column: 'id$in-dimension$role$not',
+                        value: props.roleId,
+                    },
+                    {
+                        column: 'username',
+                        value: 'admin',
+                        termType: 'not',
+                        type: 'and'
+                    }
+                ],
+            },
+        ],
+    };
+    if (oParams.terms[0])
+        params.terms.unshift({
+            terms: oParams.terms[0].terms,
+        });
+    return getUserByRole_api(params);
+};
+
+const confirm = () => {
+    if (selectedRowKeys.value.length < 1) {
+        onlyMessage('请至少选择一项', 'error');
+    } else {
+        bindUser_api(props.roleId, selectedRowKeys.value).then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功');
+                emits('refresh');
+                emits('update:visible', false);
+            }
+        });
+    }
+};
+const changeSelect = (item: any, state: boolean) => {
+    const arr = new Set(selectedRowKeys.value);
+    console.log(item, state);
+    if (state) {
+        arr.add(item.id);
+    } else {
+        arr.delete(item.id);
+    }
+    selectedRowKeys.value = [...arr.values()];
+};
+
+const selectAll = (selected: Boolean, selectedRows: any,changeRows:any) => {
+    if (selected) {
+            changeRows.map((i: any) => {
+                if (!selectedRowKeys.value.includes(i.id)) {
+                    selectedRowKeys.value.push(i.id)
+                }
+            })
+        } else {
+            const arr = changeRows.map((item: any) => item.id)
+            const _ids: string[] = [];
+            selectedRowKeys.value.map((i: any) => {
+                if (!arr.includes(i)) {
+                    _ids.push(i)
+                }
+            })
+            selectedRowKeys.value = _ids
+
+        }
+}
+</script>
