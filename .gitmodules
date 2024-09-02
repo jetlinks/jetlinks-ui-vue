@@ -1,0 +1,3 @@
+[submodule "src/modules/jetlinks-aliyun-bridge-gateway-ui"]
+	path = src/modules/jetlinks-aliyun-bridge-gateway-ui
+	url = https://github.com/jetlinks-v2/jetlinks-aliyun-bridge-gateway-ui

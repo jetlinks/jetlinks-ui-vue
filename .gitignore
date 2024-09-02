@@ -13,7 +13,6 @@ dist-ssr
 *.local
 components.d.ts
 apps
-modules
 
 # Editor directories and files
 .vscode
