@@ -19,3 +19,6 @@
 [submodule "src/modules/data-collector-ui"]
 	path = src/modules/data-collector-ui
 	url = https://github.com/jetlinks-v2/data-collector-ui
+[submodule "src/modules/notify-manager-ui"]
+	path = src/modules/notify-manager-ui
+	url = https://github.com/jetlinks-v2/notify-manager-ui
