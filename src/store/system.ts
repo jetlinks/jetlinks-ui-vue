@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
-import { getDetails_api, settingDetail } from "@/api/system/basis";
+import {getDetails_api, settingDetail, systemVersion} from "@/api/system/basis";
 import {
   getTagsColor,
 } from '@/api/system/calendar'
+import {LocalStore} from "@jetlinks-web/utils";
 
 interface LayoutType {
   siderWidth: number
@@ -19,6 +20,7 @@ export const useSystemStore = defineStore('system', () => {
   const systemInfo = ref<Record<string, any>>({})
   const microApp = ref<Record<string, any>>({})
   const calendarTagColor = new Map()
+  const isCommunity = ref(false)
 
   const layout = reactive<LayoutType>({
     siderWidth: 208,
@@ -119,6 +121,14 @@ export const useSystemStore = defineStore('system', () => {
     }
   }
 
+  const queryVersion = async () => {
+    const resp = await systemVersion()
+    if (resp.success && resp.result) {
+      const isCommunity = resp.result.edition === 'community'
+      LocalStore.set('version_code', isCommunity)
+    }
+  }
+
   return {
     systemInfo,
     theme,
@@ -132,6 +142,7 @@ export const useSystemStore = defineStore('system', () => {
     queryInfo,
     querySingleInfo,
     setMircoData,
-    queryTagsColor
+    queryTagsColor,
+    queryVersion
   }
 })

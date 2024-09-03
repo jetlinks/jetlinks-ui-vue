@@ -41,6 +41,7 @@ const getRoutesByServer = async (to: any, next: any) => {
     // 是否有用户信息
     await UserInfoStore.getUserInfo()
     //
+    await SystemStore.queryVersion()
     await SystemStore.queryInfo()
     await SystemStore.setMircoData()
   }

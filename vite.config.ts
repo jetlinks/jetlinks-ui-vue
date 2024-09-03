@@ -14,16 +14,22 @@ import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import { optimizeDeps } from './configs/plugin/optimize'
 import progress from 'vite-plugin-progress'
+import { getAliasNameMap } from './configs/getModulesAlias'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
     const env: Partial<ImportMetaEnv> = loadEnv(mode, process.cwd())
-
+    const moduleAliasNames = getAliasNameMap()
+    console.log({
+        '@': path.resolve(__dirname, 'src'),
+        ...moduleAliasNames
+    })
     return {
         base: './',
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, 'src'),
+                ...moduleAliasNames
             },
         },
         build: {

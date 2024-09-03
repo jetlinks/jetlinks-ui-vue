@@ -26,6 +26,7 @@
     "colorpicker-v3": "^2.10.2",
     "dayjs": "^1.11.8",
     "echarts": "^5.4.3",
+    "event-source-polyfill": "^1.0.31",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.3",
     "rxjs": "^7.8.1",
@@ -33,7 +34,8 @@
     "vue-cropper": "^1.0.9",
     "vue-i18n": "^9.10.1",
     "vue-router": "^4.2.2",
-    "vue3-json-viewer": "^2.2.2"
+    "vue3-json-viewer": "^2.2.2",
+    "xgplayer": "^3.0.20"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.11",
