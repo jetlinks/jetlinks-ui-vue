@@ -3,6 +3,7 @@ import {getToken} from "@jetlinks-web/utils";
 import { BASE_API } from '@jetlinks-web/constants';
 
 export const FileStatic = '/file/upload'
+export const FileStaticPath = `${BASE_API}/${FileStatic}`
 export const getFileUrlById = (id: string) => `${BASE_API}/file/${id}?:X_Access_Token=${getToken()}`
 export const fileUpload = (data: any) => request.post(FileStatic, data)
 
