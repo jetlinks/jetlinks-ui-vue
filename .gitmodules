@@ -10,3 +10,6 @@
 [submodule "src/modules/rule-engine-manager-ui"]
 	path = src/modules/rule-engine-manager-ui
 	url = https://github.com/jetlinks-v2/rule-engine-manager-ui
+[submodule "src/modules/network-card-manager-ui"]
+	path = src/modules/network-card-manager-ui
+	url = https://github.com/jetlinks-v2/network-card-manager-ui
