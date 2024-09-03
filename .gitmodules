@@ -7,3 +7,6 @@
 [submodule "src/modules/jetlinks-media-ui"]
 	path = src/modules/jetlinks-media-ui
 	url = https://github.com/jetlinks-v2/jetlinks-media-ui
+[submodule "src/modules/rule-engine-manager-ui"]
+	path = src/modules/rule-engine-manager-ui
+	url = https://github.com/jetlinks-v2/rule-engine-manager-ui
