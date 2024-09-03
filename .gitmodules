@@ -16,3 +16,6 @@
 [submodule "src/modules/datasource-manager-ui"]
 	path = src/modules/datasource-manager-ui
 	url = https://github.com/jetlinks-v2/datasource-manager-ui
+[submodule "src/modules/data-collector-ui"]
+	path = src/modules/data-collector-ui
+	url = https://github.com/jetlinks-v2/data-collector-ui
