@@ -13,3 +13,6 @@
 [submodule "src/modules/network-card-manager-ui"]
 	path = src/modules/network-card-manager-ui
 	url = https://github.com/jetlinks-v2/network-card-manager-ui
+[submodule "src/modules/datasource-manager-ui"]
+	path = src/modules/datasource-manager-ui
+	url = https://github.com/jetlinks-v2/datasource-manager-ui
