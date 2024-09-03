@@ -226,8 +226,8 @@ const getBinds = async () => {
             ...item,
             index: index,
             id: item.id,
-            times: item.others?.times,
-            trigger: item.others?.trigger,
+            times: item.others?.times || [],
+            trigger: item.others?.trigger || 'week',
         }));
         // editState.value = !!res.result.length
     }
