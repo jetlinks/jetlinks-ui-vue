@@ -1,6 +1,6 @@
 [submodule "src/modules/jetlinks-aliyun-bridge-gateway-ui"]
 	path = src/modules/jetlinks-aliyun-bridge-gateway-ui
-	url = https://github.com/jetlinks-v2/jetlinks-aliyun-bridge-gateway-ui
+	url = git@github.com:jetlinks-v2/jetlinks-aliyun-bridge-gateway-ui.git
 [submodule "src/modules/jetlinks-dueros-ui"]
 	path = src/modules/jetlinks-dueros-ui
 	url = https://github.com/jetlinks-v2/jetlinks-dueros-ui
@@ -22,3 +22,6 @@
 [submodule "src/modules/notify-manager-ui"]
 	path = src/modules/notify-manager-ui
 	url = https://github.com/jetlinks-v2/notify-manager-ui
+[submodule "src/modules/device-manager-ui"]
+	path = src/modules/device-manager-ui
+	url = https://github.com/jetlinks-v2/device-manager-ui
