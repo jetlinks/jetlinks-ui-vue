@@ -17,7 +17,7 @@
           sorts: [{ name: 'id', order: 'asc' }],
         }"
       >
-        <template #headerTitle>
+        <template #headerLeftRender>
           <a-space>
             <j-permission-button
               type="primary"

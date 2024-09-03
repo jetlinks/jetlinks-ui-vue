@@ -10,7 +10,7 @@
             <JProTable :bodyStyle="{
                 padding: 0,
             }" :scroll="{ y: 'calc(100vh - 500px)' }" :columns="columns" mode="TABLE" :request="queryItem" :params="params" ref="tableRef">
-                <template #headerTitle>
+                <template #headerLeftRender>
                     <j-permission-button type="primary" @click="add" hasPermission="system/Dictionary:add">
                         新增
                     </j-permission-button>

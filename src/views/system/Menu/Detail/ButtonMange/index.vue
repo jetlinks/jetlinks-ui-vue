@@ -7,7 +7,7 @@
       :columns="columns"
       :dataSource="tableData"
     >
-      <template #headerTitle>
+      <template #headerLeftRender>
         <j-permission-button
           type="primary"
           :hasPermission="`${permission}:update`"

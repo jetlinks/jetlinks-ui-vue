@@ -19,7 +19,7 @@
           v-model:expandedRowKeys="expandedRowKeys"
           :scroll="{ y: 'calc(100% - 60px)' }"
         >
-          <template #headerTitle>
+          <template #headerLeftRender>
             <j-permission-button
               type="primary"
               :hasPermission="`${permission}:add`"

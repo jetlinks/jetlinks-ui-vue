@@ -21,7 +21,7 @@
                     }"
                     :scroll="{ y: 'calc(100% - 60px)' }"
                 >
-                    <template #headerTitle>
+                    <template #headerLeftRender>
                         <j-permission-button
                             :hasPermission="`${permission}:add`"
                             type="primary"

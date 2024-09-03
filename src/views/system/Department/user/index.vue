@@ -21,7 +21,7 @@
         mode="TABLE"
         :scroll="{y: 'calc(100vh - 450px)'}"
     >
-      <template #headerTitle>
+      <template #headerLeftRender>
         <a-space>
           <j-permission-button
               type="primary"

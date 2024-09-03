@@ -18,7 +18,7 @@
             }"
       size="small"
     >
-      <template #headerTitle>
+      <template #headerLeftRender>
         <a-space>
           <a-button type="primary" @click="dialogVisible = true">
             <AIcon type="PlusOutlined" />新增

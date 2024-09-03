@@ -1,9 +1,9 @@
 import { request } from '@jetlinks-web/core'
 import {getToken} from "@jetlinks-web/utils";
+import { BASE_API } from '@jetlinks-web/constants';
 
-const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
 export const FileStatic = '/file/upload'
-export const getFileUrlById = (id: string) => `${BASE_API_PATH}/file/${id}?:X_Access_Token=${getToken()}`
+export const getFileUrlById = (id: string) => `${BASE_API}/file/${id}?:X_Access_Token=${getToken()}`
 export const fileUpload = (data: any) => request.post(FileStatic, data)
 
 /**

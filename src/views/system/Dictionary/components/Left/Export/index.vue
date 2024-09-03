@@ -8,7 +8,7 @@
             :gridColumn="2"
             :defaultParams="{sorts: [{ name: 'createTime', order: 'desc' }]}"
         >
-            <template #headerTitle>
+            <template #headerLeftRender>
                 请选择需要下载的字典
             </template>
             <template #card="slotProps">
