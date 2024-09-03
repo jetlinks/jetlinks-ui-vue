@@ -54,9 +54,9 @@ const getRoutesByServer = async (to: any, next: any) => {
       next()
     } else {
       MenuStore.menu.forEach((r) => {
-        router.addRoute('base', r)
+        router.addRoute(r)
       })
-      router.addRoute('base', NOT_FIND_ROUTE)
+      router.addRoute( NOT_FIND_ROUTE)
       await next({...to, replace: true})
     }
   } else {
