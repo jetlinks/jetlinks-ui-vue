@@ -3,10 +3,11 @@
         :title="type === 'video' ? '录像计划' : '抓拍计划'"
         visible
         @close="emit('close')"
-        :closable="false"
+        :maskClosable="false"
         width="1000px"
-    >
-        <div class="content">
+    >   
+        <a-spin v-if="loading"/>
+        <div v-else class="content">
             <div v-if="list.length" class="items">
                 <div v-for="(item, index) in list" class="item">
                     <div class="header">
@@ -31,12 +32,15 @@
                             <AIcon type="DeleteOutlined" />
                         </PermissionButton>
                     </div>
-                    <div v-if="item?.times" class="header-detail" >
-                        <span>计划详情:  
-                            {{ item.trigger === 'week' ? '按周' : '自定义日历' }}
+                    <div v-if="item?.times" class="header-detail">
+                        <span
+                            >计划详情:
+                            {{
+                                item.trigger === 'week' ? '按周' : '自定义日历'
+                            }}
                         </span>
                         <span
-                            >计划状态： 
+                            >计划状态：
                             <a-badge
                                 :status="
                                     item?.state?.value === 'enabled'
@@ -91,7 +95,7 @@
                     </a-button>
                 </div>
             </div>
-        </div>
+        </div >
         <template #footer>
             <a-button v-if="editState" type="primary" @click="onSave"
                 >保存</a-button
@@ -126,6 +130,7 @@ const props = defineProps({
 const editState = ref(true);
 const options = ref([]);
 const list = ref<any[]>([]);
+const loading = ref(false);
 
 const onAdd = (index: any) => {
     list.value.push({
@@ -140,19 +145,28 @@ const onDel = (item: any) => {
 const onSave = async () => {
     // console.log('list.value====', list.value);
     // console.log('props.data====', props.data);
-    const items = list.value?.map((item) => ({
-        name: item.name,
-        scheduleId: item.id,
-        deviceId: props.data.deviceId,
-        channelId: props.data.channelId,
-        others: {
-            channelCatalog: `${props.data.deviceName}/${props.data.name}`,
-            times: item.times,
-            trigger: item.trigger,
-        },
-    }));
+    const items = list.value?.map((item) => {
+        if (item.id) {
+            return {
+                name: item.name,
+                scheduleId: item.id,
+                deviceId: props.data.deviceId,
+                channelId: props.data.channelId,
+                others: {
+                    channelCatalog: `${props.data.deviceName}/${props.data.name}`,
+                    times: item.times,
+                    trigger: item.trigger,
+                },
+            };
+        }
+    }).filter(i=>i);
     // console.log('items====', items);
-    const res = await bindChannelAll(props.data.channelId, true, items);
+    const res = await bindChannelAll(
+        props.data.channelId,
+        props.type,
+        true,
+        items,
+    );
     if (res.success) {
         onlyMessage('操作成功');
         emit('close');
@@ -160,12 +174,12 @@ const onSave = async () => {
 };
 
 const onChange = (option: any, item: any) => {
-    console.log('option====',option,item);
+    console.log('option====', option, item);
     item.times = option.others?.times || [];
     item.trigger = option.others?.trigger;
     item.name = option.name;
     item.state = option.state;
-    item.saveDays = option.saveDays
+    item.saveDays = option.saveDays;
 };
 
 const getPlanList = async () => {
@@ -180,6 +194,7 @@ const getPlanList = async () => {
 };
 
 const getBinds = async () => {
+    loading.value = true;
     const item = {
         paging: false,
         sorts: [{ name: 'createTime', order: 'desc' }],
@@ -202,7 +217,9 @@ const getBinds = async () => {
             },
         ],
     };
-    const res = await queryListNoPaging(item);
+    const res = await queryListNoPaging(item).finally(() => {
+        loading.value = false;
+    });
     if (res.success) {
         // console.log('res,result====',res.result);
         list.value = res.result.map((item, index) => ({
@@ -244,11 +261,11 @@ onMounted(() => {
                     border: none;
                 }
             }
-            .header-detail{
+            .header-detail {
                 margin-top: 10px;
-                >span{
+                > span {
                     margin-right: 40px;
-                    color: #1A1A1A;
+                    color: #1a1a1a;
                 }
             }
             .calendar {
@@ -265,7 +282,7 @@ onMounted(() => {
         height: 200px;
         align-items: center;
         text-align: center;
-        margin-top: 30%;
+        margin-top: 20%;
         div {
             margin-top: 10px;
         }

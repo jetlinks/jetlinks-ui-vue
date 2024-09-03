@@ -34,11 +34,12 @@
                 v-if="editType"
                 :precision="0"
                 :min="1"
+                :max="99999"
                 placeholder="请输入录像文件保存天数"
                 style="width: 200px"
-                v-model:value="detail.others.retention"
+                v-model:value="detail.saveDays"
             ></a-input-number>
-            <div v-else>{{ detail.others.retention }}</div>
+            <div v-else>{{ detail.saveDays }}</div>
             <div class="retentionCycleTip">
                 超出保存周期的录像文件将被自动删除
             </div>
@@ -115,6 +116,10 @@ const save = () => {
     }
     detail.value.state.value = _state.value;
     detail.value.schedules = [obj]
+    if (!detail.value.saveDays) {
+        onlyMessage('请输入保存周期', 'error');
+        return;
+    }
     run(detail.value)
 }
 

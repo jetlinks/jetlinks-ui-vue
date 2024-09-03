@@ -30,6 +30,7 @@
                 v-if="editType"
                 :precision="0"
                 :min="1"
+                :max="99999"
                 placeholder="请输入抓拍文件保存天数"
                 v-model:value="detail.saveDays"
                 style="width: 200px"

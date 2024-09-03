@@ -3,6 +3,7 @@
         visible
         title="新增计划"
         @ok="submitData"
+         :maskClosable="false"
         @cancel="emit('closeModal')"
     >
         <a-form ref="formRef" layout="vertical" :model="formData">

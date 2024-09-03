@@ -412,7 +412,7 @@ watch(
                     top: 8px;
                 }
                 .item-content-box-bg {
-                    background-color: rgba(22, 119, 255, 0.1);
+                    background-color: rgba(22, 119, 255, 0.25);
                 }
                 .item-content-point {
                     position: absolute;

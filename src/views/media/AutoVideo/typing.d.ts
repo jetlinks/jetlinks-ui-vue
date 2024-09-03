@@ -11,6 +11,6 @@ export interface Schedule {
     type: 'video' | 'photo'
     state:  Record<string, any>
     schedules: Array<any>
-
+    saveDays: number,
     others: ScheduleOthers
 }

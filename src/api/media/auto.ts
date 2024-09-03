@@ -31,7 +31,7 @@ export const deletePlan = (id:string) => server.remove(`/media/record/schedule/$
 export const bindChannel = (scheduleId:string,data:any) => server.post(`/media/record/schedule/${scheduleId}/_bind`,data)
 
 //绑定通道(按通道)
-export const bindChannelAll = (channelId:string,isAll:boolean,data:any) => server.post(`/media/record/schedule/channel/${channelId}/_bind?all=${isAll}`,data)
+export const bindChannelAll = (channelId:string,type:string,isAll:boolean,data:any) => server.post(`/media/record/schedule/channel/${channelId}/${type}/_bind?all=${isAll}`,data)
 
 //查询已绑定的通道
 export const queryBoundChannel =(data:any) => server.post('/media/channel/_query',data)

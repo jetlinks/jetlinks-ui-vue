@@ -88,6 +88,7 @@ const loading = ref(false);
 const tabActiveKey = ref('Rule');
 const detail = ref({
     schedules: [],
+    saveDays:1,
     others: {
         retention: 1,
         times: [],
@@ -141,6 +142,7 @@ const refresh = async () => {
         detail.value = Object.assign(
             {
                 schedules: [],
+                saveDays: 1,
                 others: {
                     retention: 1,
                     times: [],

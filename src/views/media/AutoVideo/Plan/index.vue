@@ -90,21 +90,18 @@
                                     </div>
                                     <Ellipsis
                                         style="width: calc(100% - 20px)"
-                                        >{{
-                                            slotProps.others?.retention ||
-                                            slotProps.saveDays
-                                        }}</Ellipsis
+                                        >{{ slotProps.saveDays}}</Ellipsis
                                     >
                                 </a-col>
                                 <a-col :span="6">
                                     <div class="card-item-content-text">
-                                        录制时间段类型
+                                        录制时段类型
                                     </div>
                                     <div>
                                         {{
                                             slotProps.others?.trigger === 'week'
                                                 ? '按周'
-                                                : '按日历'
+                                                : '自定义日历'
                                         }}
                                     </div>
                                 </a-col>

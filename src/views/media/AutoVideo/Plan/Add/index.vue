@@ -3,6 +3,7 @@
         visible
         title="新增-录像计划"
         :confirmLoading="loading"
+         :maskClosable="false"
         @ok="submitData"
         @cancel="$emit('closeModal')"
     >
