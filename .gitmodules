@@ -4,3 +4,6 @@
 [submodule "src/modules/jetlinks-dueros-ui"]
 	path = src/modules/jetlinks-dueros-ui
 	url = https://github.com/jetlinks-v2/jetlinks-dueros-ui
+[submodule "src/modules/jetlinks-media-ui"]
+	path = src/modules/jetlinks-media-ui
+	url = https://github.com/jetlinks-v2/jetlinks-media-ui
