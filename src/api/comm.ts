@@ -26,3 +26,4 @@ export const getSearchHistory = (target:string) => request.get(`/user/settings/$
  * @param target
  */
 export const deleteSearchHistory = (target:string, id:string) => request.remove(`/user/settings/${target}/${id}`)
+

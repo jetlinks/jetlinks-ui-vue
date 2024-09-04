@@ -35,6 +35,8 @@ const MinHeight = ref(`0`)
 const styles = computed(() => {
   let _style = { height: '100%'}
 
+  console.log('props.fixed', props.fixed)
+
   if (props.fixed !== false) {
     _style = {
       height: MinHeight.value

@@ -14,6 +14,13 @@ type ParamsType = {
     current?: any
 }
 
+export interface SearchItemData {
+    column: any;
+    value: any;
+    termType: string;
+    type?: string;
+}
+
 const handleTermsArr = (queryTerms: any, data: any[], parentKey?: string) => {
     data.forEach((item, index) => {
         const key = `${parentKey}[${index}]`
@@ -82,7 +89,7 @@ export const paramsEncodeQuery = (params?: ParamsType) => {
     return queryParams
 }
 
-export default function encodeQuery(params: any) {
+export const encodeQuery = (params: any) => {
     if (!params) return {};
     const queryParam = {
         // pageIndex: 0,
@@ -145,4 +152,22 @@ export default function encodeQuery(params: any) {
     // queryParam.pageIndex = current - 1;
 
     return queryParam;
+}
+
+export const handleParamsToString = (terms:SearchItemData[] = []) => {
+    const _terms: any[] = [
+        { terms: [null,null,null]},
+        { terms: [null,null,null], type: 'and'}
+    ]
+    let termsIndex = 0
+    let termsStar = 0
+    terms.forEach((item, index) => {
+        if (index > 2) {
+            termsIndex = 1
+            termsStar = 4
+        }
+        _terms[termsIndex].terms[index - termsStar ] = item
+    })
+
+    return JSON.stringify({ terms: _terms})
 }
