@@ -75,7 +75,7 @@ import FullCalendar from '@fullcalendar/vue3';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import locale from '@fullcalendar/core/locales/zh-cn';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage } from '@jetlinks-web/utils';
 import dayjs from 'dayjs';
 import { queryEvents, saveEvents } from '@/api/system/calendar';
 import { cloneDeep, flatten } from 'lodash-es';

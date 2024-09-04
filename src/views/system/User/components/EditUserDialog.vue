@@ -98,13 +98,13 @@
                             </div>
                         </template>
                     </a-tree-select>
-                        <PermissionButton
+                        <j-permission-button
                             :hasPermission="`${rolePermission}:add`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
                             v-if="form.data.username !== 'admin'"
                         >
                             <AIcon type="PlusOutlined" />
-                        </PermissionButton>
+                        </j-permission-button>
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">
@@ -125,14 +125,14 @@
                                 {{ name }}
                             </template>
                         </a-tree-select>
-                        <PermissionButton
+                        <j-permission-button
                             :hasPermission="`${deptPermission}:add`"
                             @click="
                                 form.clickAddItem('orgIdList', 'Department')
                             "
                         >
                             <AIcon type="PlusOutlined" />
-                        </PermissionButton>
+                        </j-permission-button>
                     </a-form-item>
                 </a-col>
             </a-row>

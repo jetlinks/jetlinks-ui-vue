@@ -432,7 +432,7 @@ JConfigProvider组件新增 IconConfig和MapConfig，作为全局的配置
             pageSizeOptions: ['10', '20'],
         }"
   >
-    <template #headerTitle
+    <template #headerLeftRender
     >
       <a-button type="primary" @click="refresh"
       >刷新页面

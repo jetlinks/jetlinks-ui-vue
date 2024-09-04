@@ -54,7 +54,7 @@
 import Basic from './Basic/index.vue';
 import Menu from './Menu/index.vue';
 import { getInit, saveInit } from '@/api/initHome';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage } from '@jetlinks-web/utils';
 const basicRef = ref();
 // const roleRef = ref();
 const menuRef = ref();

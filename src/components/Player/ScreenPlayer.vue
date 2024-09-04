@@ -75,7 +75,7 @@
                                         >
                                             <j-space>
                                                 <span>{{ item.name }}</span>
-                                                <PermissionButton
+                                                <j-permission-button
                                                     type="text"
                                                     :popConfirm="{
                                                     title: '确认删除？',
@@ -88,7 +88,7 @@
                                                     <AIcon
                                                         type="DeleteOutlined"
                                                     />
-                                                </PermissionButton>
+                                                </j-permission-button>
                                             </j-space>
                                         </j-menu-item>
                                     </j-menu>

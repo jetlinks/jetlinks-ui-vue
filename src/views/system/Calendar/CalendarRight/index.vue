@@ -70,7 +70,7 @@
 import FullCalendar from '../FullCalendar/index.vue';
 import { inject } from 'vue';
 import { clearAll } from '@/api/system/calendar';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage } from '@jetlinks-web/utils';
 
 const Calendar = ref();
 const rapidChecked = ref(false);

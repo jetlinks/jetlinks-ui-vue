@@ -64,7 +64,7 @@
 import { queryTags, deleteTags, saveTagsColor } from '@/api/system/calendar';
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage } from '@jetlinks-web/utils';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
 import { useSystemStore } from '@/store/system';
