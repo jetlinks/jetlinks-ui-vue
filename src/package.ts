@@ -50,14 +50,16 @@ export const initAxios = () => {
                 }
             },
             handleError: (description, key, err) => {
-                notification.error({
-                    style: {
-                        zIndex: 1040
-                    },
-                    key: key as string,
-                    message: '',
-                    description
-                })
+                if (!err.config.hiddenError) {
+                    notification.error({
+                        style: {
+                            zIndex: 1040
+                        },
+                        key: key as string,
+                        message: '',
+                        description
+                    })
+                }
             }
         },
     )
