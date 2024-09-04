@@ -237,7 +237,7 @@ const value = ref();
 |--------|---------|-----------------------|-------------------------|----|-----|
 | change | 变化时回调函数 | Function(keys: string | string[], nodes: any[]) | -  |     |
 
-#### Ellipsis(填充页面)
+#### j-ellipsis(填充页面)
 
 内容超长显示省略号
 

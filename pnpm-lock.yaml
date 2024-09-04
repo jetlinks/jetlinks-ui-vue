@@ -21,8 +21,8 @@ importers:
         specifier: ^6.1.15
         version: 6.1.15(@fullcalendar/core@6.1.15)(vue@3.3.4)
       '@jetlinks-web/components':
-        specifier: 2.2.0
-        version: 2.2.0(vue-router@4.2.2)(vue@3.3.4)
+        specifier: 2.3.0
+        version: 2.3.0(@types/markdown-it@14.1.2)(vue-router@4.2.2)(vue@3.3.4)
       '@jetlinks-web/constants':
         specifier: ^1.0.2
         version: 1.0.2
@@ -30,14 +30,14 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1(@types/lodash-es@4.17.11)(lodash@4.17.21)
       '@jetlinks-web/hooks':
-        specifier: ^1.0.15
-        version: 1.0.15(@types/lodash-es@4.17.11)(lodash@4.17.21)
+        specifier: ^1.0.16
+        version: 1.0.16(@types/lodash-es@4.17.11)(lodash@4.17.21)
       '@jetlinks-web/types':
         specifier: ^1.0.2
         version: 1.0.2
       '@jetlinks-web/utils':
-        specifier: ^1.1.0
-        version: 1.1.0(@types/lodash-es@4.17.11)(lodash@4.17.21)
+        specifier: ^1.2.1
+        version: 1.2.1(@types/lodash-es@4.17.11)(lodash@4.17.21)
       '@micro-zoe/micro-app':
         specifier: 1.0.0-rc.5
         version: 1.0.0-rc.5
@@ -788,8 +788,8 @@ packages:
     engines: {node: '>= 16'}
     dev: false
 
-  /@jetlinks-web/components@2.2.0(vue-router@4.2.2)(vue@3.3.4):
-    resolution: {integrity: sha512-5TTCUFOPPVpVg7O7lI+rSpaSouazCjFBGifMFwTjigap2D8XRkpJ7VRXZmIinegCWHcczvh7VpUsfS/qocRg8Q==}
+  /@jetlinks-web/components@2.3.0(@types/markdown-it@14.1.2)(vue-router@4.2.2)(vue@3.3.4):
+    resolution: {integrity: sha512-QDVI5ege178UbhWR1fxwu1S0RTuJHLFHZrwGaBnf3EVftYyROC7Ye/6fua0gfulDr/HAyI2CYLTwYWSWF+fgvA==}
     dependencies:
       '@ant-design/icons-vue': 7.0.1(vue@3.3.4)
       '@vuemap/vue-amap': 2.1.5(vue@3.3.4)
@@ -797,10 +797,24 @@ packages:
       '@vueuse/router': 10.11.1(vue-router@4.2.2)(vue@3.3.4)
       async-validator: 4.2.5
       echarts: 5.4.3
+      markdown-it: 14.1.0
+      markdown-it-abbr: 2.0.0
+      markdown-it-anchor: 9.1.0(@types/markdown-it@14.1.2)(markdown-it@14.1.0)
+      markdown-it-deflist: 3.0.0
+      markdown-it-emoji: 3.0.0
+      markdown-it-footnote: 4.0.0
+      markdown-it-highlightjs: 4.1.0
+      markdown-it-ins: 4.0.0
+      markdown-it-mark: 4.0.0
+      markdown-it-sub: 2.0.0
+      markdown-it-sup: 2.0.0
+      markdown-it-task-lists: 2.1.1
+      markdown-it-toc-done-right: 4.2.0
       monaco-editor: 0.40.0
       resize-observer-polyfill: 1.5.1
-      sortablejs: 1.15.2
+      sortablejs: 1.15.3
     transitivePeerDependencies:
+      - '@types/markdown-it'
       - '@vue/composition-api'
       - vue
       - vue-router
@@ -815,7 +829,7 @@ packages:
     dependencies:
       '@jetlinks-web/constants': 1.0.2
       '@jetlinks-web/types': 1.0.2
-      '@jetlinks-web/utils': 1.1.0(@types/lodash-es@4.17.11)(lodash@4.17.21)
+      '@jetlinks-web/utils': 1.2.1(@types/lodash-es@4.17.11)(lodash@4.17.21)
       axios: 1.7.5
     transitivePeerDependencies:
       - '@types/lodash-es'
@@ -823,12 +837,12 @@ packages:
       - lodash
     dev: false
 
-  /@jetlinks-web/hooks@1.0.15(@types/lodash-es@4.17.11)(lodash@4.17.21):
-    resolution: {integrity: sha512-xvkUvDufFOdyUXSwGQZkktg8+8Cuszn7I+tUmARGzL9rLYfnquqaGS/a1zd4STcOa8ONQug+EsnKKQRDVhGFCQ==}
+  /@jetlinks-web/hooks@1.0.16(@types/lodash-es@4.17.11)(lodash@4.17.21):
+    resolution: {integrity: sha512-7ZLVXN+y2GL3864f/Y5u0iB4SMnDhG7C3gBoKiuZ8/hNvcpP0RGzeC0ZwqNmaPhPv+C53db2EgRXqxOet2px+g==}
     dependencies:
       '@jetlinks-web/constants': 1.0.2
       '@jetlinks-web/types': 1.0.2
-      '@jetlinks-web/utils': 1.1.0(@types/lodash-es@4.17.11)(lodash@4.17.21)
+      '@jetlinks-web/utils': 1.2.1(@types/lodash-es@4.17.11)(lodash@4.17.21)
       echarts: 5.4.3
       lodash-es: 4.17.21
     transitivePeerDependencies:
@@ -846,8 +860,8 @@ packages:
       - debug
     dev: false
 
-  /@jetlinks-web/utils@1.1.0(@types/lodash-es@4.17.11)(lodash@4.17.21):
-    resolution: {integrity: sha512-zy3fDNPBuSnrzKK27GgB6H8NRk3Sj0eQUSIxJR58tz3Ograa1WxEoTw630YzK+4o5iPFq6hTXW7lBmmIH/s05g==}
+  /@jetlinks-web/utils@1.2.1(@types/lodash-es@4.17.11)(lodash@4.17.21):
+    resolution: {integrity: sha512-xojNZjTvlet4kwBTPnluZ7Yf8STx5linAF5baBuVjbjDhibCLhXmoPivtWc17LDCa1Sn26CDl6OqW3zyxLuM5Q==}
     dependencies:
       jsencrypt: 3.3.2
       lodash-es: 4.17.21
@@ -980,6 +994,10 @@ packages:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
 
+  /@types/linkify-it@5.0.0:
+    resolution: {integrity: sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q==}
+    dev: false
+
   /@types/lodash-es@4.17.11:
     resolution: {integrity: sha512-eCw8FYAWHt2DDl77s+AMLLzPn310LKohruumpucZI4oOFJkIgnlaJcy23OKMJxx4r9PeTF13Gv6w+jqjWQaYUg==}
     dependencies:
@@ -987,6 +1005,17 @@ packages:
 
   /@types/lodash@4.17.0:
     resolution: {integrity: sha512-t7dhREVv6dbNj0q17X12j7yDG4bD/DHYX7o5/DbDxobP0HnGPgpRz2Ej77aL7TZT3DSw13fqUTj8J4mMnqa7WA==}
+
+  /@types/markdown-it@14.1.2:
+    resolution: {integrity: sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog==}
+    dependencies:
+      '@types/linkify-it': 5.0.0
+      '@types/mdurl': 2.0.0
+    dev: false
+
+  /@types/mdurl@2.0.0:
+    resolution: {integrity: sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg==}
+    dev: false
 
   /@types/node@10.17.60:
     resolution: {integrity: sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==}
@@ -1645,6 +1674,10 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /argparse@2.0.1:
+    resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+    dev: false
+
   /array-tree-filter@2.1.0:
     resolution: {integrity: sha512-4ROwICNlNw/Hqa9v+rk5h22KjmzB1JGTMVKP2AKJBOCgb0yL0ASf0+YvCcLNNwquOHNX48jkeZIJ3a+oOQqKcw==}
     dev: true
@@ -2022,7 +2055,6 @@ packages:
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
-    dev: true
 
   /errno@0.1.8:
     resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
@@ -2308,6 +2340,11 @@ packages:
       tslib: 2.6.2
     dev: true
 
+  /highlight.js@11.10.0:
+    resolution: {integrity: sha512-SYVnVFswQER+zu1laSya563s+F8VDGt7o35d4utbamowvUNLLMovFqwCLSocpZTz3MgaSRA1IbqRWZv97dtErQ==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
   /html-tags@3.3.1:
     resolution: {integrity: sha512-ztqyC3kLto0e9WbNp0aeP+M3kTt+nbaIveGmUxAtZa+8iFgKLUOD4YKM5j+f3QD89bra7UeumolZHKuOXnTmeQ==}
     engines: {node: '>=8'}
@@ -2459,6 +2496,12 @@ packages:
       source-map: 0.6.1
     dev: true
 
+  /linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
+    dependencies:
+      uc.micro: 2.1.0
+    dev: false
+
   /local-pkg@0.4.3:
     resolution: {integrity: sha512-SFppqq5p42fe2qcZQqqEOiVRXl+WCP1MdT6k7BDEW1j++sp5fIY+/fdRQitvKgB5BrBcmrs5m/L0v2FrU5MY1g==}
     engines: {node: '>=14'}
@@ -2545,9 +2588,81 @@ packages:
     dev: true
     optional: true
 
+  /markdown-it-abbr@2.0.0:
+    resolution: {integrity: sha512-of7C8pXSjXjDojW4neNP+jD7inUYH/DO0Ca+K/4FUEccg0oHAEX/nfscw0jfz66PJbYWOAT9U8mjO21X5p6aAw==}
+    dev: false
+
+  /markdown-it-anchor@9.1.0(@types/markdown-it@14.1.2)(markdown-it@14.1.0):
+    resolution: {integrity: sha512-a5WqArGkkLQZUEdC9cpkWvrdLJyS45r+28nE4jxiQynFLZ6VXdX4+hulCRzxmS+hi9+Dwfi5zTFIz3dY1YA6xQ==}
+    peerDependencies:
+      '@types/markdown-it': '*'
+      markdown-it: '*'
+    dependencies:
+      '@types/markdown-it': 14.1.2
+      markdown-it: 14.1.0
+    dev: false
+
+  /markdown-it-deflist@3.0.0:
+    resolution: {integrity: sha512-OxPmQ/keJZwbubjiQWOvKLHwpV2wZ5I3Smc81OjhwbfJsjdRrvD5aLTQxmZzzePeO0kbGzAo3Krk4QLgA8PWLg==}
+    dev: false
+
+  /markdown-it-emoji@3.0.0:
+    resolution: {integrity: sha512-+rUD93bXHubA4arpEZO3q80so0qgoFJEKRkRbjKX8RTdca89v2kfyF+xR3i2sQTwql9tpPZPOQN5B+PunspXRg==}
+    dev: false
+
+  /markdown-it-footnote@4.0.0:
+    resolution: {integrity: sha512-WYJ7urf+khJYl3DqofQpYfEYkZKbmXmwxQV8c8mO/hGIhgZ1wOe7R4HLFNwqx7TjILbnC98fuyeSsin19JdFcQ==}
+    dev: false
+
+  /markdown-it-highlightjs@4.1.0:
+    resolution: {integrity: sha512-aYcgme5aYn10BHEvLZaCNgwxU2oaAX9inK9dwCv38wJdq7tal5FzZrLdQQY8MR3I1H07S3BKgYGRX2kKuPT+sA==}
+    dependencies:
+      highlight.js: 11.10.0
+    dev: false
+
+  /markdown-it-ins@4.0.0:
+    resolution: {integrity: sha512-sWbjK2DprrkINE4oYDhHdCijGT+MIDhEupjSHLXe5UXeVr5qmVxs/nTUVtgi0Oh/qtF+QKV0tNWDhQBEPxiMew==}
+    dev: false
+
+  /markdown-it-mark@4.0.0:
+    resolution: {integrity: sha512-YLhzaOsU9THO/cal0lUjfMjrqSMPjjyjChYM7oyj4DnyaXEzA8gnW6cVJeyCrCVeyesrY2PlEdUYJSPFYL4Nkg==}
+    dev: false
+
+  /markdown-it-sub@2.0.0:
+    resolution: {integrity: sha512-iCBKgwCkfQBRg2vApy9vx1C1Tu6D8XYo8NvevI3OlwzBRmiMtsJ2sXupBgEA7PPxiDwNni3qIUkhZ6j5wofDUA==}
+    dev: false
+
+  /markdown-it-sup@2.0.0:
+    resolution: {integrity: sha512-5VgmdKlkBd8sgXuoDoxMpiU+BiEt3I49GItBzzw7Mxq9CxvnhE/k09HFli09zgfFDRixDQDfDxi0mgBCXtaTvA==}
+    dev: false
+
+  /markdown-it-task-lists@2.1.1:
+    resolution: {integrity: sha512-TxFAc76Jnhb2OUu+n3yz9RMu4CwGfaT788br6HhEDlvWfdeJcLUsxk1Hgw2yJio0OXsxv7pyIPmvECY7bMbluA==}
+    dev: false
+
+  /markdown-it-toc-done-right@4.2.0:
+    resolution: {integrity: sha512-UB/IbzjWazwTlNAX0pvWNlJS8NKsOQ4syrXZQ/C72j+jirrsjVRT627lCaylrKJFBQWfRsPmIVQie8x38DEhAQ==}
+    dev: false
+
+  /markdown-it@14.1.0:
+    resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
+    hasBin: true
+    dependencies:
+      argparse: 2.0.1
+      entities: 4.5.0
+      linkify-it: 5.0.0
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.1.0
+    dev: false
+
   /mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
     dev: true
+
+  /mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
+    dev: false
 
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -2866,6 +2981,11 @@ packages:
     resolution: {integrity: sha512-hJYpaDvPH4w8ZX/0Fdf9ma1AwRgU353GfbaVfPjfJQf1KxZ2iHaHl3fAUw1qlJIR5dr4F3RzjGaWohYUEyoh7A==}
     dev: false
 
+  /punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
+    dev: false
+
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
@@ -3044,8 +3164,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /sortablejs@1.15.2:
-    resolution: {integrity: sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==}
+  /sortablejs@1.15.3:
+    resolution: {integrity: sha512-zdK3/kwwAK1cJgy1rwl1YtNTbRmc8qW/+vgXf75A7NHag5of4pyI6uK86ktmQETyWRH7IGaE73uZOOBcGxgqZg==}
     dev: false
 
   /source-map-js@1.2.0:
@@ -3158,6 +3278,10 @@ packages:
     resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  /uc.micro@2.1.0:
+    resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
+    dev: false
 
   /ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}

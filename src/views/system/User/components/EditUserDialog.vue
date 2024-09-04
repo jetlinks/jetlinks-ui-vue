@@ -94,7 +94,7 @@
                         >
                         <template #title="{ name }">
                             <div style="width: calc(100% - 10px) ">
-                                <Ellipsis>{{ name }}</Ellipsis>
+                                <j-ellipsis>{{ name }}</j-ellipsis>
                             </div>
                         </template>
                     </a-tree-select>

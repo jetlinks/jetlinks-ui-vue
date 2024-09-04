@@ -63,7 +63,7 @@ const hasExtraChildren = (item: MenuItem, extraMenus: any ) => {
     if (extraItem && extraRoutes) {
         return extraRoutes.map(e => ({
           ...e,
-            code: `${item.code}/Detail`,
+            code: `${item.code}/${e.code}`,
           url: `${item.url}${e.url}`,
           isShow: false
         }))

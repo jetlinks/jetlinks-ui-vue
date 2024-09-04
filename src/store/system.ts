@@ -20,7 +20,7 @@ export const useSystemStore = defineStore('system', () => {
   const systemInfo = ref<Record<string, any>>({})
   const microApp = ref<Record<string, any>>({})
   const calendarTagColor = new Map()
-  const isCommunity = ref(false)
+  const showThreshold = ref(true)
 
   const layout = reactive<LayoutType>({
     siderWidth: 208,
@@ -135,6 +135,7 @@ export const useSystemStore = defineStore('system', () => {
     ico,
     layout,
     calendarTagColor,
+    showThreshold,
     changeTheme,
     changeLayout,
     changeIco,
