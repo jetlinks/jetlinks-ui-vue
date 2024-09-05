@@ -66,8 +66,15 @@ import { updatePlan } from '@/api/media/auto';
 import { usePlanDetail } from '../utils';
 import { onlyMessage } from '@/utils/comm';
 
+const props = defineProps({
+    first: {
+        type: Boolean,
+        default: true,
+    }
+})
+
 const route = useRoute();
-const editType = ref(route.query?.type === 'edit');
+const editType = ref();
 
 const detail = usePlanDetail();
 const _state = ref();
@@ -130,6 +137,15 @@ watch(
     },
     { immediate: true },
 );
+
+onMounted(()=>{
+    if(props.first){
+        editType.value = route.query?.type === 'edit'
+    }else{
+        editType.value = false
+    }
+})
+
 </script>
 
 <style lang="less">

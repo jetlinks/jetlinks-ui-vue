@@ -64,7 +64,7 @@
         </template>
         <FullPage>
             <div style="padding: 24px; height: 100%">
-                <component :is="tabs[tabActiveKey]" @onJump="onTabChange" :key="tabActiveKey"/>
+                <component :is="tabs[tabActiveKey]" @onJump="onTabChange" :key="tabActiveKey" :first="first"/>
             </div>
         </FullPage>
     </page-container>
@@ -86,6 +86,7 @@ const _value = ref();
 const nameTips = ref();
 const loading = ref(false);
 const tabActiveKey = ref('Rule');
+const first = ref(true)
 const detail = ref({
     schedules: [],
     saveDays:1,
@@ -126,6 +127,7 @@ const tabs = {
 
 const onTabChange = (e) => {
     tabActiveKey.value = e;
+    first.value = false
 };
 
 const refresh = async () => {

@@ -67,8 +67,16 @@ import { useRoute } from 'vue-router';
 import { updatePlan } from '@/api/media/auto';
 import { onlyMessage } from '@/utils/comm';
 
+
+const props = defineProps({
+    first: {
+        type: Boolean,
+        default: true,
+    }
+})
+
 const route = useRoute();
-const editType = ref(route.query?.type === 'edit');
+const editType = ref();
 const detail = inject<any>('detail');
 const _state = ref();
 
@@ -99,21 +107,6 @@ const handleSave = async () => {
                 scheduleTags: when,
             };
         });
-        // detail.value.schedules = [
-        //     {
-        //         trigger: 'multi',
-        //         multi: {
-        //             type: 'or',
-        //             spec: schedules.map((item) => {
-        //                 const { when, ...other } = item;
-        //                 return {
-        //                     ...other,
-        //                     scheduleTags: when,
-        //                 };
-        //             }),
-        //         },
-        //     },
-        // ];
     }
     if (!detail.value.saveDays) {
         onlyMessage('请输入保存周期', 'error');
@@ -126,9 +119,7 @@ const handleSave = async () => {
     }
 };
 
-// onMounted(() => {
-//     _state.value = detail.value?.state?.value;
-// });
+
 watch(
     () => detail.value?.state?.value,
     (val) => {
@@ -136,6 +127,14 @@ watch(
     },
     { immediate: true },
 );
+
+onMounted(()=>{
+    if(props.first){
+        editType.value = route.query?.type === 'edit'
+    }else{
+        editType.value = false
+    }
+})
 </script>
 
 <style lang="less">
