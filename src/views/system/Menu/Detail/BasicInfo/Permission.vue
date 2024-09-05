@@ -2,7 +2,7 @@
   <div>
     <a-form
       ref="formRef"
-      :model="formModel"
+      :mode="formModel"
       layout="vertical"
       class="basic-form permission-form"
     >

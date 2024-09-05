@@ -8,7 +8,7 @@
         :show-upload-list="false"
         :before-upload="beforeUpload"
         @change="handleChange"
-        :action="`${BASE_API}/${FileStatic}`"
+        :action="FileStaticPath"
         :headers="{
           'X-Access-Token': LocalStore.get(TOKEN_KEY),
         }"
@@ -41,8 +41,7 @@
 
 <script lang="ts" setup name="JProUpload">
 import { UploadChangeParam, UploadProps } from 'ant-design-vue'
-import { BASE_API } from '@jetlinks-web/constants'
-import { FileStatic } from '@/api/comm'
+import { FileStaticPath} from '@/api/comm'
 import { TOKEN_KEY } from '@jetlinks-web/constants'
 import { getBase64ByImg, LocalStore, onlyMessage } from '@jetlinks-web/utils'
 import { CSSProperties } from 'vue'

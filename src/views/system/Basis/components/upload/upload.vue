@@ -24,11 +24,11 @@
 
 <script setup lang="ts">
 import { UploadInfoType } from '@/views/system/Basis/components/upload/typing'
-import { TOKEN_KEY, BASE_API } from '@jetlinks-web/constants'
+import { TOKEN_KEY } from '@jetlinks-web/constants'
 import { getToken } from '@jetlinks-web/utils'
 import { onlyMessage } from '@jetlinks-web/utils'
 import { defineProps, ref } from 'vue'
-import { FileStatic } from '@/api/comm'
+import {FileStaticPath} from '@/api/comm'
 
 
 const emit = defineEmits(['update:imgSrc'])
@@ -118,7 +118,7 @@ const uploadInfo: UploadInfoType = {
   icoTip: ['推荐尺寸64*64', '支持ico格式'],
   backgroundTip: ['支持4M以内的图片: 支持jpg,png,jfif,pjp,pjpeg,jpeg', '建议尺寸1400x1080'],
   // 上传的地址
-  action: `${BASE_API}${FileStatic}`,
+  action: FileStaticPath,
   headers: { [TOKEN_KEY]: getToken() },
   // 是否展示uplaodList
   showUploadList: false,

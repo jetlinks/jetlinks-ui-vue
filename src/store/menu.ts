@@ -63,7 +63,6 @@ export const useMenuStore = defineStore('menu', () => {
             query?: Record<string, any>
         },
     ) => {
-        console.log(1111, name)
         if (hasMenu(name)) {
             router.push({name, params, query})
             setParamsValue(name, params)

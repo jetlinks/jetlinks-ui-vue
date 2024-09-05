@@ -27,7 +27,7 @@
                             <template #content>
                                 <j-form
                                     ref="formRef"
-                                    :model="formData"
+                                    :mode="formData"
                                     layout="vertical"
                                 >
                                     <j-form-item
