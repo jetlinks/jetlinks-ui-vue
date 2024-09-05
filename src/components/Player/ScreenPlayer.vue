@@ -145,8 +145,8 @@ import {
     getSearchHistory,
     saveSearchHistory,
 } from '@/api/comm';
-import LivePlayer from './Player/index.vue';
-import MediaTool from './Player/mediaTool.vue';
+import LivePlayer from './index.vue';
+import MediaTool from './mediaTool.vue';
 import { onlyMessage } from '@/utils/comm';
 
 type Player = {
