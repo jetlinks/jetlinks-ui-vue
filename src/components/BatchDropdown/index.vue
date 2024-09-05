@@ -14,7 +14,7 @@
                 ><AIcon type="RedoOutlined" />重选</a-button
             >
         </a-space>
-        <a-dropdown :overlayStyle="{ zIndex: 1000 }" v-else>
+        <a-dropdown visible :overlayStyle="{ zIndex: 1000 }" v-else>
             <a-button>批量操作 <AIcon type="DownOutlined" /></a-button>
             <template #overlay>
                 <a-menu @click="handleMenuClick">
@@ -23,7 +23,7 @@
                             :hasPermission="
                                 item.permission ? item.permission : true
                             "
-                            v-bind="item"
+                            v-bind="omit(item, 'icon')"
                             :popConfirm="
                                 item.popConfirm
                                     ? {
@@ -54,6 +54,8 @@
 import { PropType } from 'vue';
 import { BatchActionsType } from './types';
 import { defineExpose } from 'vue';
+import { AIcon } from '@jetlinks-web/components'
+import {omit} from "lodash-es";
 
 const props = defineProps({
     actions: {
