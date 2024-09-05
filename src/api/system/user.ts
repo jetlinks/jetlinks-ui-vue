@@ -22,6 +22,15 @@ export const validateField_api = (type: 'username' | 'password', name: string) =
 // 获取角色列表
 export const getRoleList_api = () => request.get(`/role/_query/no-paging?paging=false`);
 
+/**
+ * 查询用户列表
+ * @returns
+ */
+export const queryUserListNoPaging = () => request.post(`/user/_query/no-paging`, {
+    paging: false,
+    sorts: [{ name: 'name', order: "asc" }]
+})
+
 //获取角色列表
 export const getRoleList = (data:any) => request.post('/role/group/detail/_query/tree',data)
 // 获取组织列表

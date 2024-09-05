@@ -77,3 +77,11 @@ export const accessConfigTypeFilter = (data: any[]): any[] => {
     if (!data) return []
     return data.map( item => ({ ...item, label: item.name, value: item.id}))
 }
+
+export const isFullScreen = () => {
+    return !!(document.fullscreen ||
+        document.mozFullScreen ||
+        document.webkitIsFullScreen ||
+        document.webkitFullScreen ||
+        document.msFullScreen)
+}

@@ -15,3 +15,4 @@ export const getInit = () => request.get(`/user/settings/init`)
 
 // 查询保存后的数据
 export const detail = (data?: any) => request.post(`/system/config/scopes`, data)
+

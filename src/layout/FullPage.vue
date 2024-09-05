@@ -37,7 +37,7 @@ const styles = computed(() => {
 
   if (props.fixed !== false) {
     _style = {
-      height: MinHeight.value
+      height: MinHeight.value || '100%'
     }
   } else {
     _style = {
