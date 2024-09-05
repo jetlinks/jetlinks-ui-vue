@@ -1,5 +1,10 @@
 <template>
-  <ConfigProvider :locale="zhCN">
+  <ConfigProvider
+    :locale="zhCN"
+    :IconConfig="{
+      scriptUrl: '//at.alicdn.com/t/c/font_4035907_xgj5dtl8xl.js'
+    }"
+  >
     <router-view/>
   </ConfigProvider>
 </template>
@@ -7,7 +12,7 @@
 import { ConfigProvider } from '@jetlinks-web/components'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import theme from '../configs/theme'
-import store, { useAuthStore } from '@/store';
+import { useAuthStore } from '@/store';
 import { ComponentsEnum } from '@jetlinks-web/constants'
 import {initPackages} from "@/package";
 import {setToken} from "@jetlinks-web/utils";
@@ -23,8 +28,6 @@ const { hasPermission } = useAuthStore();
 provide(ComponentsEnum.Permission, { hasPermission })
 
 initPackages()
-
-console.log(store)
 
 watch(() => JSON.stringify(route.query || {}), () => {
   if (route.query.token) {
