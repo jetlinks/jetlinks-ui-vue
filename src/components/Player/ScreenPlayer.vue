@@ -145,8 +145,8 @@ import {
     getSearchHistory,
     saveSearchHistory,
 } from '@/api/comm';
-import LivePlayer from '@/components/Player/index.vue';
-import MediaTool from '@/components/Player/mediaTool.vue';
+import LivePlayer from './Player/index.vue';
+import MediaTool from './Player/mediaTool.vue';
 import { onlyMessage } from '@/utils/comm';
 
 type Player = {
@@ -456,7 +456,6 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-@import './index.less';
 :deep(.live-player-stretch-btn) {
     display: none;
 }
