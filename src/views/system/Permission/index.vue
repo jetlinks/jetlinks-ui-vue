@@ -26,7 +26,7 @@
             >
               <AIcon type="PlusOutlined" />新增
             </j-permission-button>
-            <j-dropdown trigger="hover">
+            <a-dropdown trigger="hover">
               <a-button>批量操作</a-button>
               <template #overlay>
                 <a-menu>
@@ -57,7 +57,7 @@
                   </a-menu-item>
                 </a-menu>
               </template>
-            </j-dropdown>
+            </a-dropdown>
           </a-space>
         </template>
         <template #status="slotProps">

@@ -3,7 +3,7 @@
     <div>
       {{ route.name }}
     </div>
-    <permission-button
+    <j-permission-button
       type="primary"
       hasPermission="DataCollect/Channel:add1"
       @click="() => {console.log('caozuo')}"
@@ -12,7 +12,7 @@
         123
       </template>
       测试
-    </permission-button>
+    </j-permission-button>
 
     <permission-button
       type="primary"

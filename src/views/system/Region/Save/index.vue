@@ -157,7 +157,7 @@ import {reactive, ref, watch} from 'vue';
 import BuildIn from './BuildIn.vue';
 import {updateRegion, validateName, validateCode} from '@/api/system/region';
 import {cloneDeep, omit} from "lodash-es";
-import {onlyMessage} from "@/utils/comm";
+import { onlyMessage } from "@jetlinks-web/utils";
 import GeoJsonModal from './GeoJsonModal.vue'
 import {useRegion} from "@/views/system/Region/hooks";
 import {syncChildren} from "@/views/system/Region/util";

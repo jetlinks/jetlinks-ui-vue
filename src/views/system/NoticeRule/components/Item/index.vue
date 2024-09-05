@@ -49,7 +49,7 @@
                 <MCarousel :data="data?.channels">
                     <template #card="slotProps">
                         <div class="box-item">
-                            <j-dropdown>
+                            <a-dropdown>
                                 <div class="box-item-img">
                                     <img
                                         style="width: 100%"
@@ -102,7 +102,7 @@
                                         </a-menu-item>
                                     </a-menu>
                                 </template>
-                            </j-dropdown>
+                            </a-dropdown>
                             <div class="box-item-text">
                                 <j-ellipsis>{{ slotProps?.name }}</j-ellipsis>
                             </div>

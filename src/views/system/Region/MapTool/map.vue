@@ -97,8 +97,7 @@
 import {useHistory, useRegion} from "../hooks";
 import { MAP_TOOL } from '../util'
 import { DistrictSearch, GeoJson } from '@/components/AMapComponent'
-import { randomNumber } from '@jetlinks-web/utils'
-import {onlyMessage} from "@/utils/comm";
+import { randomNumber,onlyMessage } from '@jetlinks-web/utils'
 
 const regionState = useRegion()
 const { revoke, addRecord, reset, hasHistory } = useHistory()
