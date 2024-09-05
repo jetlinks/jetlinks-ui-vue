@@ -14,7 +14,7 @@
                 ><AIcon type="RedoOutlined" />重选</a-button
             >
         </a-space>
-        <a-dropdown visible :overlayStyle="{ zIndex: 1000 }" v-else>
+        <a-dropdown :overlayStyle="{ zIndex: 1000 }" v-else>
             <a-button>批量操作 <AIcon type="DownOutlined" /></a-button>
             <template #overlay>
                 <a-menu @click="handleMenuClick">
@@ -50,7 +50,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="BatchDropdown">
 import { PropType } from 'vue';
 import { BatchActionsType } from './types';
 import { defineExpose } from 'vue';
