@@ -456,6 +456,7 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
+@import './index.less';
 :deep(.live-player-stretch-btn) {
     display: none;
 }

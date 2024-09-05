@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts" name="LivePlayer">
-import Player, { Events, Sniffer } from 'xgplayer'
+import Player, { Events } from 'xgplayer'
 import { settingEnum } from './utils'
 
 type PlayerProps = {
@@ -158,7 +158,6 @@ defineExpose({
 });
 </script>
 <style lang="less" scoped>
-@import './index.less';
 :deep(.live-player-stretch-btn){
   display: none;
 }
