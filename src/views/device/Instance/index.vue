@@ -817,7 +817,6 @@ const saveBtn = () => {
 const dealSearchValue = (item: any) => {
     let value: any = '';
     item.value.forEach((i: any, index: number) => {
-        console.log(i);
         if (index > 0) {
             value += ',' + i.slice((item.column + ' is ').length);
         } else {
@@ -846,7 +845,8 @@ const handleSearch = (_params: any) => {
                     item2.column,
                 )
             ) {
-                const oldTermType = item2.termType;
+                const oldTermType = item2.termType === 'nin' ?  'not' : item2.termType;
+                console.log(item2.termType,'termType')
                 delete item2.termType;
                 return {
                     ...item2,
@@ -899,17 +899,6 @@ onMounted(() => {
             search: {
                 type: 'treeSelect',
                 termOptions: ['eq'],
-                // handleValue(v) {
-                //   return {
-                //     assetType: 'device',
-                //     targets: [
-                //       {
-                //         type: 'org',
-                //         id: v,
-                //       },
-                //     ],
-                //   }
-                // },
                 options: () =>
                     new Promise((resolve) => {
                         queryOrgThree({}).then((resp: any) => {
