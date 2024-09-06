@@ -402,7 +402,7 @@ watch(
                 color: #000;
             }
             .item-content {
-                width: 750px;
+                width: 720px;
                 border-radius: 6px;
                 border-bottom: 1px solid #0000000f;
                 .item-content-box {
