@@ -31,6 +31,7 @@
                             accept=".json"
                             :showUploadList="false"
                             :before-upload="beforeUpload"
+                            :disabled="!permission"
                         >
                             <PermissionButton
                                 hasPermission="notice/Config:import"
@@ -209,6 +210,7 @@ import Log from './Log/index.vue';
 import { downloadObject } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { usePermissionStore } from '@/store/permission';
 
 const menuStory = useMenuStore();
 
@@ -219,6 +221,8 @@ Object.keys(MSG_TYPE).forEach((key) => {
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
+
+const permission = usePermissionStore().hasPermission(`notice/Config:import`);
 
 const columns = [
     {
