@@ -3,22 +3,22 @@ import server from '@/utils/request';
 /**
  * 获取产品列表
  */
-export const getProductList  = (parmas?:any)  => server.get('/device/product/_query/no-paging?paging=false',parmas);
+export const getProductList  = (params?:any)  => server.get('/device/product/_query/no-paging?paging=false',params);
 
 /**
  * 获取设备列表
  */
-export const getDeviceList = (parmas?:any) => server.get('/device-instance/_query/no-paging?paging=false',parmas);
+export const getDeviceList = (params?:any) => server.get('/device-instance/_query/no-paging?paging=false',params);
 
 /**
  * 获取有设备的告警的产品名称
  */ 
-export const getAlarmProduct = (parmas:any) => server.post('/device-instance/_query',parmas) 
+export const getAlarmProduct = (params:any) => server.post('/device-instance/_query/no-paging',params) 
 
 /**
  * 获取组织列表
  */
-export const getOrgList = (parmas?:any) => server.get('/organization/_query/no-paging?paging=false',parmas);
+export const getOrgList = (params?:any) => server.get('/organization/_query/no-paging?paging=false',params);
 
 /**
  * 搜索
