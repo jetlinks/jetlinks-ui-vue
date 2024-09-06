@@ -229,8 +229,10 @@ const table = reactive({
             paging: false,
         };
         const resp: any = await getMenuTree_api(params);
-        const lastItem = resp.result[resp.result.length - 1];
-        table.total = lastItem ? lastItem.sortIndex + 1 : 1;
+        const menuArr = resp.result.filter((i:any)=>i.code!=='account-center')
+        const lastItem = menuArr[menuArr.length - 1];
+        //个人中心排序为9999需要做过滤特殊处理
+        table.total = lastItem ? lastItem.sortIndex + 1 === 9999 ? 10000 : lastItem.sortIndex + 1 : 1;
 
         return {
             code: resp.message,
