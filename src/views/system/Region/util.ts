@@ -16,12 +16,12 @@ export const syncChildren = (code: string, area: any[]) => {
                 return true
             } else if (item.children) {
                 _children = findItem(code, item.children)
-                return _children.length
+                return _children?.length
             }
             return false
         })
 
-        return _children.map(item => {
+        return _children?.map(item => {
             item.children = []
             return item
         })

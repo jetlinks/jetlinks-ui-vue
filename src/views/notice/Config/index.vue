@@ -206,7 +206,7 @@ import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import SyncUser from './SyncUser/index.vue';
 import Debug from './Debug/index.vue';
 import Log from './Log/index.vue';
-import { downloadObject } from '@/utils/utils';
+import { downloadObject,isNoCommunity } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
 
@@ -421,18 +421,18 @@ const getActions = (
                     downloadObject(data, `${data.name}`);
                 },
             },
-            {
-                key: 'bind',
-                text: '同步用户',
-                tooltip: {
-                    title: '同步用户',
-                },
-                icon: 'TeamOutlined',
-                onClick: () => {
-                    syncVis.value = true;
-                    currentConfig.value = data;
-                },
-            },
+            // {
+            //     key: 'bind',
+            //     text: '同步用户',
+            //     tooltip: {
+            //         title: '同步用户',
+            //     },
+            //     icon: 'TeamOutlined',
+            //     onClick: () => {
+            //         syncVis.value = true;
+            //         currentConfig.value = data;
+            //     },
+            // },
             {
                 key: 'log',
                 text: '通知记录',
@@ -447,7 +447,20 @@ const getActions = (
             },
         ],
     };
-
+    if(isNoCommunity){
+        others.children?.push({
+                key: 'bind',
+                text: '同步用户',
+                tooltip: {
+                    title: '同步用户',
+                },
+                icon: 'TeamOutlined',
+                onClick: () => {
+                    syncVis.value = true;
+                    currentConfig.value = data;
+                },
+            })
+    }
     if (type === 'card') {
         if (
             data.provider !== 'dingTalkMessage' &&

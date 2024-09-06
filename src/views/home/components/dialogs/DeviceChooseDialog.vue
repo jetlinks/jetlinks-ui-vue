@@ -24,9 +24,9 @@
                 type: 'radio',
             }"
         >
-            <template #modifyTime="slotProps">
+            <template #registryTime="slotProps">
                 <span>{{
-                    dayjs(slotProps.modifyTime).format('HHHH-MM-DD HH:mm:ss')
+                    dayjs(slotProps.registryTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
             <template #state="slotProps">
@@ -91,8 +91,8 @@ const columns = [
     },
     {
         title: $t('dialogs.DeviceChooseDialog.926510-5'),
-        dataIndex: 'modifyTime',
-        key: 'modifyTime',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
         ellipsis: true,
         search: {
             type: 'date',
@@ -116,6 +116,10 @@ const columns = [
                     label: $t('dialogs.DeviceChooseDialog.926510-8'),
                     value: 'offline',
                 },
+                {
+                    value: 'notActive',
+                    label: '禁用',
+                }
             ],
         },
         scopedSlots: true,

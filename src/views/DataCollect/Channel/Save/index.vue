@@ -4,6 +4,7 @@
         :visible="true"
         width="700px"
         @cancel="handleCancel"
+        :maskClosable="false"
     >
         <j-form
             class="form"

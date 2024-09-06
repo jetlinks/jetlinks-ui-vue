@@ -3,6 +3,7 @@
         :title="data.id ? '编辑' : '新增'"
         :visible="true"
         width="700px"
+        :maskClosable="false"
         @cancel="handleCancel"
     >
         <j-form
