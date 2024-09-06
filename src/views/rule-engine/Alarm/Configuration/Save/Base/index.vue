@@ -19,7 +19,7 @@
                                         <template #title>
                                             <div>产品：以产品维度告警，某产品下的多个设备异常仅发送一条告警。</div>
                                             <div>设备：以设备维度告警，任何设备异常即发送一条告警。</div>
-                                            <div>组织：以组织维度告警，某组织下的多个设备异常仅发送一条告警。</div>
+                                            <div v-if="isNoCommunity">组织：以组织维度告警，某组织下的多个设备异常仅发送一条告警。</div>
                                             <div>其他：以场景联动维度告警，某场景下的多个设备异常仅发送一条告警。</div>
                                         </template>
                                         <AIcon
@@ -105,7 +105,7 @@ import { useMenuStore } from '@/store/menu';
 import { useRoute } from 'vue-router';
 import { useAlarmConfigurationStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
-import { usePermissionStore } from '@/store/permission';
+import { isNoCommunity } from '@/utils/utils';
 const route = useRoute();
 let selectDisable = ref(false);
 const alarmConfigurationStore = useAlarmConfigurationStore();
