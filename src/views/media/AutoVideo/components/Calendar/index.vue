@@ -14,7 +14,7 @@
         <div class="content">
             <div class="top">
                 <div
-                    v-for="item in Array.from(Array(25), (v, k) => k)"
+                    v-for="item in Array.from(Array(24), (v, k) => k)"
                     class="top-items"
                 >
                     <div class="top-item">{{ item }}</div>
