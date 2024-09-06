@@ -411,17 +411,17 @@ const columns = ref([
         },
     },
 
-    {
-        key: 'id$dev-tag',
-        dataIndex: 'id$dev-tag',
-        title: '设备标签',
-        hideInTable: true,
-        search: {
-            type: 'component',
-            components: TagSearch,
-            termOptions: ['eq'],
-        },
-    },
+    // {
+    //     key: 'id$dev-tag',
+    //     dataIndex: 'id$dev-tag',
+    //     title: '设备标签',
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'component',
+    //         components: TagSearch,
+    //         termOptions: ['eq'],
+    //     },
+    // },
     {
         title: '说明',
         dataIndex: 'describe',
