@@ -1,6 +1,6 @@
 <!-- 通知记录 -->
 <template>
-    <j-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
+    <j-modal visible title="通知记录" :footer="null" width="70%" @cancel="emit('cancel')">
         <pro-search type="simple" :columns="columns" @search="handleSearch" />
 
         <JProTable
@@ -19,7 +19,7 @@
             }"
         >
             <template #notifyTime="slotProps">
-                {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
+                {{ dayjs(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #state="slotProps">
                 <j-space>
@@ -49,12 +49,13 @@
 <script setup lang="ts">
 import configApi from '@/api/notice/config';
 import { PropType } from 'vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Modal } from 'ant-design-vue';
 import Record from '../../Template/Log/components/Record.vue'
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
+    (e: 'cancel'): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -160,7 +161,7 @@ const handleDetail = (data: any) => {
         content: h(
             "p",
             {
-               
+
                 style: {
                     maxHeight: '300px',
                     overflowY: 'auto',
@@ -183,7 +184,7 @@ const handleDetail = (data: any) => {
             },
         ),
     });
-    }  
+    }
 };
 </script>
 <style lang="less" scoped>

@@ -98,7 +98,10 @@
                                 {
                                     required: true,
                                     message: '请输入接入地址',
-                                },
+                                },{
+                                    validator:validateBaseUrl,
+                                    trigger: 'change'
+                                }
                             ]"
                         >
                             <template #label>
@@ -284,7 +287,7 @@
                                             .clientId
                                     "
                                     placeholder="请输入appId"
-                                    :disabled="!!form.data.id"
+                                    :disabled="!!form.data.id && !!form.data.apiClient.authConfig.oauth2.clientId"
                                 />
                             </j-form-item>
                             <j-form-item
@@ -663,7 +666,7 @@
                                     tooltip="第三方应用唯一标识匹配的秘钥"
                                 />
                             </template>
-                            <j-input
+                            <j-input-password   
                                 v-model:value="form.data.apiServer.secureKey"
                                 placeholder="请输入secureKey"
                             />
@@ -1912,6 +1915,20 @@ const validateIP = (_rule: Rule, value: string) => {
         return Promise.resolve();
     }
 };
+
+/**
+ * 校验接入地址
+ */
+const validateBaseUrl = (_rule:Rule , value: string) =>{
+    if(value){
+        if(value === 'http://' || value === 'https://'){
+            return Promise.reject('请输入接入地址')
+        }
+        return Promise.resolve()
+    }else{
+        return Promise.reject('请输入接入地址')
+    }
+}
 </script>
 
 <style lang="less" scoped>

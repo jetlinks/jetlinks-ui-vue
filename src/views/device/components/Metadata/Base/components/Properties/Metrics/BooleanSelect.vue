@@ -14,7 +14,7 @@
 </template>
 
 <script name="BooleanSelect" setup>
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
   value: {

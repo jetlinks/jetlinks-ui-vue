@@ -10,30 +10,30 @@
             <div class="content">
                 <j-card title="菜单配置" style="width: 80%">
                     <div class="tree">
-                      <j-scrollbar>
-                        <j-tree
-                          v-if="treeData.length !== 0"
-                          defaultExpandAll
-                          multiple
-                          draggable
-                          :tree-data="treeData"
-                          @select="onSelect"
-                          :selectedKeys="selectedKeys"
-                          @drop="onDrop"
-                          @dragend="onDragend"
-                        >
-                          <template #title="row">
-                            <div class="tree-content">
-                              <div class="tree-content-title">
-                                <AIcon type="HolderOutlined" />
-                                <div style="margin-left: 8px">
-                                  {{ row.name }}
-                                </div>
-                              </div>
-                            </div>
-                          </template>
-                        </j-tree>
-                      </j-scrollbar>
+                        <j-scrollbar>
+                            <j-tree
+                                v-if="treeData.length !== 0"
+                                defaultExpandAll
+                                multiple
+                                draggable
+                                :tree-data="treeData"
+                                @select="onSelect"
+                                :selectedKeys="selectedKeys"
+                                @drop="onDrop"
+                                @dragend="onDragend"
+                            >
+                                <template #title="row">
+                                    <div class="tree-content">
+                                        <div class="tree-content-title">
+                                            <AIcon type="HolderOutlined" />
+                                            <div style="margin-left: 8px">
+                                                {{ row.name }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </j-tree>
+                        </j-scrollbar>
                     </div>
                 </j-card>
             </div>
@@ -43,13 +43,24 @@
                 style="margin-left: 10%"
                 >保存</j-button
             >
+            <PermissionButton
+                type="primary"
+                :popConfirm="{
+                    title: '确认同步系统菜单权限？',
+                    okText: ' 确定',
+                    cancelText: '取消',
+                    onConfirm: synchronization,
+                }"
+                style="margin-left: 20px"
+            >同步系统菜单权限
+            </PermissionButton>
         </j-card>
         <j-modal
+            modalType="message"
             :visible="visible"
+            :confirmLoading="loading"
             @ok="handleOk"
             @cancel="handleCancel"
-            modalType="message"
-            :confirmLoading="loading"
         >
             保存后当前系统菜单数据将被覆盖，确认操作？
         </j-modal>
@@ -72,19 +83,18 @@ import {
     mergeArr,
     findAllParentsAndChildren,
     handleSorts,
-    handleSortsArr
+    handleSortsArr,
 } from './utils';
 import BaseMenu from '@/views/init-home/data/baseMenu';
 import type { AntTreeNodeDropEvent } from 'ant-design-vue/es/tree';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, unionBy } from 'lodash-es';
 import { onlyMessage } from '@/utils/comm';
-import {
-    USER_CENTER_MENU_CODE,
-    messageSubscribe
-} from '@/utils/consts';
+import { USER_CENTER_MENU_CODE, messageSubscribe } from '@/utils/consts';
 import { protocolList } from '@/utils/consts';
 import { getProviders } from '@/api/data-collect/channel';
 import { isNoCommunity } from '@/utils/utils';
+import { USER_CENTER_MENU_DATA } from '@/views/init-home/data/baseMenu';
+
 const selectedKeys: any = ref([]);
 const treeData = ref<any>([]);
 const systemMenu: any = ref([]);
@@ -119,15 +129,15 @@ const params = {
  */
 let filterProtocolList: any[] = [];
 const getProvidersFn = async () => {
-    if(!isNoCommunity){
-        return 
-    }else{
+    if (!isNoCommunity) {
+        return;
+    } else {
         const res: any = await getProviders();
         filterProtocolList = protocolList.filter((item) => {
-        return res.result?.find((val: any) => item.alias == val.id);
-    })
+            return res.result?.find((val: any) => item.alias == val.id);
+        });
     }
-}
+};
 getProvidersFn();
 /**
  * 作用：过滤掉非选中菜单重新组成新的数组
@@ -155,52 +165,62 @@ getProvidersFn();
 //     return filtered;
 // }
 /**
- * 
+ *
  * @param nodes 菜单数据
  * @param selectedKeys 选中的菜单
  * 选中和非选中改变show的值
  */
-const dealTree = (nodes: Array<any>, selectedKeys: Array<any>,parentId?:string) =>{
+const dealTree = (
+    nodes: Array<any>,
+    selectedKeys: Array<any>,
+    parentId?: string,
+) => {
     const filtered = [];
     for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (!node.code) {
             continue;
         }
-        node.parentId = parentId ?  undefined : parentId
-        node?.options ? node.options.show = false :  node.options = { show : false }
+        node.parentId = parentId ? undefined : parentId;
+        node?.options
+            ? (node.options.show = false)
+            : (node.options = { show: false });
 
         if (selectedKeys.indexOf(node.code) !== -1) {
-            node.options.show =  true
+            node.options.show = true;
             if (node.children) {
-                node.children = dealTree(node.children, selectedKeys,node.id);
+                node.children = dealTree(node.children, selectedKeys, node.id);
             }
         } else if (node.children) {
-            node.children = dealTree(node.children, selectedKeys,node.id);
-            const children  =node.children.filter((item:any)=>{
-                item.options.show === true
-            })
+            node.children = dealTree(node.children, selectedKeys, node.id);
+            const children = node.children.filter((item: any) => {
+                item.options.show === true;
+            });
             if (children.length > 0) {
-                node.options.show =  true
+                node.options.show = true;
             }
-        }else{
-            node.options.show = false
+        } else {
+            node.options.show = false;
         }
-        filtered.push(node)
+        filtered.push(node);
     }
     return filtered;
-}
+};
 const handleOk = async () => {
     // const _dataArr = filterTree(cloneDeep(treeData.value), selectedKeys.value);
-    const _dataArr = dealTree(cloneDeep(treeData.value),selectedKeys.value)
-    const _dataSorts = handleSorts(_dataArr)
+    const _dataArr = dealTree(cloneDeep(treeData.value), selectedKeys.value);
+    const _dataSorts = handleSorts(_dataArr);
     loading.value = true;
+    _dataSorts.push(USER_CENTER_MENU_DATA);
     const res = await updateMenus(_dataSorts).catch(() => {});
     if (res?.status === 200) {
+        loading.value = false;
+        visible.value = false;
         onlyMessage('操作成功', 'success');
+        setTimeout(() => {
+            location.reload();
+        }, 100);
     }
-    loading.value = false;
-    visible.value = false;
 };
 const handleCancel = () => {
     visible.value = false;
@@ -241,6 +261,36 @@ const onDragend = (info: AntTreeNodeDropEvent) => {
     }
 };
 
+const synchronization = async () => {
+    const menu = synchronizationMenu(cloneDeep(systemMenu.value), BaseMenu);
+    menu.push(USER_CENTER_MENU_DATA);
+    const res = await updateMenus(menu).catch(() => {});
+    if (res?.status === 200) {
+        onlyMessage('操作成功', 'success');
+        location.reload();
+    }
+};
+
+//双重遍历系统菜单和初始化菜单做菜单和按钮权限和接口权限的合并处理
+const synchronizationMenu = (menu: any, baseMenu: any) => {
+    const newMenu = menu.map((i: any) => {
+        baseMenu.find((item: any) => {
+            if (i.id === item.id) {
+                i.buttons = unionBy(i.buttons, item.buttons, 'id');
+                i.permissions = unionBy(
+                    i.permissions,
+                    item.permissions,
+                    'permission',
+                );
+                if (item.children && i.children) {
+                    i.children = synchronizationMenu(i.children, item.children);
+                }
+            }
+        });
+        return i;
+    });
+    return unionBy(newMenu, baseMenu, 'code');
+};
 onMounted(() => {
     getSystemPermission_api().then((resp: any) => {
         // const filterBaseMenu = BaseMenu.filter(item => ![
@@ -254,9 +304,9 @@ onMounted(() => {
             if (resp.status == 200) {
                 systemMenu.value = resp.result?.filter(
                     (item: { code: string }) =>
-                        ![
-                            USER_CENTER_MENU_CODE,messageSubscribe
-                        ].includes(item.code),
+                        ![USER_CENTER_MENU_CODE, messageSubscribe].includes(
+                            item.code,
+                        ),
                 );
                 //初始化菜单
                 // initData(baseMenu.value); // 不要克隆，通过引用 处理key和name
@@ -281,7 +331,7 @@ const filterMenus = (menus: any[]) => {
         if (!filterProtocolList.length && item.code == 'link/DataCollect') {
             return false;
         }
-        return item
+        return item;
     });
 };
 </script>

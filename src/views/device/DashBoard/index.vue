@@ -563,7 +563,7 @@ const getEcharts = (data: any) => {
     } else if (dt > days && dt < year) {
         limit = Math.abs(Math.ceil(dt / days)) + 1;
         _time = '1d';
-        format = 'M月dd日 HH:mm:ss';
+        format = 'M月dd日';
     } else if (dt >= year) {
         limit = Math.abs(Math.floor(dt / months));
         _time = '1M';

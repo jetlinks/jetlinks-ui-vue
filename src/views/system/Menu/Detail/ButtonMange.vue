@@ -137,10 +137,12 @@ const table = reactive({
             ...menuInfo.value,
             buttons,
         };
-        saveMenuInfo_api(params).then(() => {
+        const response = saveMenuInfo_api(params)
+        response.then(() => {
             onlyMessage('操作成功');
             table.getList();
         });
+        return response
     },
 });
 table.getList();

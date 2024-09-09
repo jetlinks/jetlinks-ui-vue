@@ -24,7 +24,9 @@
 import { bootConfig } from '../typing';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const { jumpPage: _jumpPage } = useMenuStore();
 
 const props = defineProps({
@@ -37,7 +39,7 @@ const jumpPage = (item: bootConfig) => {
     if (item.auth === undefined || item.auth) {
         _jumpPage(item.link, item.params);
     } else {
-        onlyMessage('暂无权限，请联系管理员', 'warning');
+        onlyMessage($t('components.BootCard.926510-0'), 'warning');
     }
 };
 </script>

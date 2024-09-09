@@ -67,7 +67,7 @@
             </template>
             <template #registerTime="slotProps">
                 <span>{{
-                    moment(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss')
+                    dayjs(slotProps.registerTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
         </j-pro-table>
@@ -78,7 +78,7 @@ import {
     queryDetailListNoPaging,
     queryDetailList,
 } from '@/api/device/firmware';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 type T = any;
 const emit = defineEmits(['update:modelValue', 'change']);
@@ -87,6 +87,10 @@ const props = defineProps({
     data: {
         type: Object,
         default: () => {},
+    },
+    productId: {
+        type: String,
+        default: '',
     },
 });
 
@@ -115,7 +119,7 @@ const defaultParams = {
             terms: [
                 {
                     column: 'productId',
-                    value: route.query.productId,
+                    value: props.productId,
                 },
             ],
             type: 'and',
@@ -166,7 +170,7 @@ const columns = [
         dataIndex: 'registerTime',
         search: {
             type: 'date',
-            rename: 'registryTime'
+            rename: 'registryTime',
         },
         width: 200,
         scopedSlots: true,
@@ -291,19 +295,19 @@ watch(
  * @param params
  */
 const handleSearch = (e: any) => {
-  const newParams = (e?.terms as any[])?.map(item1 => {
-    item1.terms = item1.terms.map((item2: any) => {
-      if (item2.column === 'version') {
-        return {
-          column: 'id$dev-firmware',
-          value: [item2]
-        }
-      }
-      return item2
-    })
-    return item1
-  })
-    params.value = { terms: newParams || []}
+    const newParams = (e?.terms as any[])?.map((item1) => {
+        item1.terms = item1.terms.map((item2: any) => {
+            if (item2.column === 'version') {
+                return {
+                    column: 'id$dev-firmware',
+                    value: [item2],
+                };
+            }
+            return item2;
+        });
+        return item1;
+    });
+    params.value = { terms: newParams || [] };
 };
 </script>
 

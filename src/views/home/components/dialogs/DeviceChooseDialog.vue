@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="选择设备"
+        :title="$t('dialogs.DeviceChooseDialog.926510-0')"
         style="width: 1000px"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
@@ -24,9 +24,9 @@
                 type: 'radio',
             }"
         >
-            <template #modifyTime="slotProps">
+            <template #registryTime="slotProps">
                 <span>{{
-                    moment(slotProps.modifyTime).format('HHHH-MM-DD HH:mm:ss')
+                    dayjs(slotProps.registryTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</span>
             </template>
             <template #state="slotProps">
@@ -42,9 +42,11 @@
 <script setup lang="ts">
 import StatusLabel from '../StatusLabel.vue';
 import { getDeviceList_api } from '@/api/home';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
     visible: boolean;
@@ -53,7 +55,7 @@ const props = defineProps<{
 // 弹窗控制
 const confirm = () => {
     if (selectedKeys.value.length < 1) {
-        return onlyMessage('请选择设备', 'warning');
+        return onlyMessage($t('dialogs.DeviceChooseDialog.926510-1'), 'warning');
     }
     emits('confirm', selectedKeys.value[0]);
     emits('update:visible', false);
@@ -61,7 +63,7 @@ const confirm = () => {
 
 const columns = [
     {
-        title: '设备ID',
+        title: $t('dialogs.DeviceChooseDialog.926510-2'),
         dataIndex: 'id',
         key: 'id',
         ellipsis: true,
@@ -70,7 +72,7 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
+        title: $t('dialogs.DeviceChooseDialog.926510-3'),
         dataIndex: 'name',
         key: 'name',
         ellipsis: true,
@@ -79,7 +81,7 @@ const columns = [
         },
     },
     {
-        title: '产品名称',
+        title: $t('dialogs.DeviceChooseDialog.926510-4'),
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,
@@ -88,9 +90,9 @@ const columns = [
         },
     },
     {
-        title: '注册时间',
-        dataIndex: 'modifyTime',
-        key: 'modifyTime',
+        title: $t('dialogs.DeviceChooseDialog.926510-5'),
+        dataIndex: 'registryTime',
+        key: 'registryTime',
         ellipsis: true,
         search: {
             type: 'date',
@@ -98,7 +100,7 @@ const columns = [
         scopedSlots: true,
     },
     {
-        title: '状态',
+        title: $t('dialogs.DeviceChooseDialog.926510-6'),
         dataIndex: 'state',
         key: 'state',
         ellipsis: true,
@@ -107,13 +109,17 @@ const columns = [
             type: 'select',
             options: [
                 {
-                    label: '在线',
+                    label: $t('dialogs.DeviceChooseDialog.926510-7'),
                     value: 'online',
                 },
                 {
-                    label: '离线',
+                    label: $t('dialogs.DeviceChooseDialog.926510-8'),
                     value: 'offline',
                 },
+                {
+                    value: 'notActive',
+                    label: '禁用',
+                }
             ],
         },
         scopedSlots: true,

@@ -10,6 +10,7 @@ ProtocolMapping.set('mqtt-server-gateway', 'MQTT');
 ProtocolMapping.set('tcp-server-gateway', 'TCP');
 ProtocolMapping.set('child-device', '');
 ProtocolMapping.set('OneNet', 'HTTP');
+ProtocolMapping.set('OneNet-platform', 'HTTP');
 ProtocolMapping.set('Ctwing', 'HTTP');
 ProtocolMapping.set('modbus-tcp', 'MODBUS_TCP');
 ProtocolMapping.set('opc-ua', 'OPC_UA');
@@ -41,11 +42,14 @@ BackMap.set('http-server-gateway', getImage('/access/http.png'));
 BackMap.set('fixed-media', getImage('/access/video-device.png'));
 BackMap.set('udp-device-gateway', getImage('/access/udp.png'));
 BackMap.set('OneNet', getImage('/access/onenet.png'));
+BackMap.set('OneNet-platform', getImage('/access/onenet.png'));
 BackMap.set('gb28181-2016', getImage('/access/gb28181.png'));
 BackMap.set('mqtt-client-gateway', getImage('/access/mqtt-broke.png'));
 BackMap.set('edge-child-device', getImage('/access/child-device.png'));
 BackMap.set('official-edge-gateway', getImage('/access/edge.png'));
 BackMap.set('collector-gateway', getImage('/access/collector-gateway.png'));
+BackMap.set('onvif',getImage('/access/onvif.png'));
+BackMap.set('media-plugin',getImage('/access/media-plugin.png'))
 
 const descriptionList = {
     'udp-device-gateway':

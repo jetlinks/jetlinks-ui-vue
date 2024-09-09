@@ -3,6 +3,11 @@
         <div class="top">
             <div class="header">
                 <j-tabs v-model:activeKey="headerType">
+                  <template #rightExtra>
+                    <a v-if="virtualRule?.script && isBeginning" @click="beginAction">
+                      开始运行
+                    </a>
+                  </template>
                     <j-tab-pane key="property">
                         <template #tab>
                             <span class="title">
@@ -18,44 +23,6 @@
                         </template>
                     </j-tab-pane>
                 </j-tabs>
-                <!-- <div>
-                    <j-dropdown>
-                        <div class="title" @click.prevent>
-                            {{
-                                headerType === 'property'
-                                    ? '属性赋值'
-                                    : '标签赋值'
-                            }}
-                            <div class="description">
-                                {{
-                                    `请对上方规则使用的${
-                                        headerType === 'property'
-                                            ? '属性'
-                                            : '标签'
-                                    }进行赋值`
-                                }}
-                            </div>
-                        </div>
-                        <template #overlay>
-                            <j-menu>
-                                <j-menu-item>
-                                    <a
-                                        href="javascript:;"
-                                        @click="headerType = 'property'"
-                                        >属性赋值</a
-                                    >
-                                </j-menu-item>
-                                <j-menu-item>
-                                    <a
-                                        href="javascript:;"
-                                        @click="headerType = 'tag'"
-                                        >标签赋值</a
-                                    >
-                                </j-menu-item>
-                            </j-menu>
-                        </template>
-                    </j-dropdown>
-                </div> -->
             </div>
             <div class="description">
                 {{
@@ -71,7 +38,7 @@
                     :pagination="false"
                     bordered
                     size="small"
-                    :scroll="{ y: 200 }"
+                    :scroll="{ y: 180 }"
                 >
                     <template #bodyCell="{ column, record, index }">
                         <template v-if="column.key === 'id'">
@@ -79,7 +46,7 @@
                                 showSearch
                                 :options="options"
                                 v-model:value="record.id"
-                                :getPopupContainer="(node) => tableWrapperRef || node"
+                                :getPopupContainer="getPopupContainer"
                                 size="small"
                                 style="width: 100%;"
                                 :virtual="true"
@@ -138,7 +105,7 @@
                                 size="small"
                                 style="width: 100%;"
                                 :virtual="true"
-                                :getPopupContainer="(node) => tableWrapperRef || node"
+                                :getPopupContainer="getPopupContainer"
                                 :dropdownStyle="{
                                   zIndex: 1072
                                 }"
@@ -185,13 +152,13 @@
                         class="action"
                         @click="runScriptAgain"
                     >
-                        <a style="margin-left: 75px">发送数据</a>
+                        <a>发送数据</a>
                     </div>
-                    <div v-if="virtualRule?.script">
-                        <a v-if="isBeginning" @click="beginAction">
-                            开始运行
-                        </a>
-                        <a v-else @click="stopAction"> 停止运行 </a>
+                    <div v-if="virtualRule?.script && !isBeginning">
+<!--                        <a v-if="isBeginning" @click="beginAction">-->
+<!--                            开始运行-->
+<!--                        </a>-->
+                        <a v-if="!isBeginning" @click="stopAction"> 停止运行 </a>
                     </div>
                     <div>
                         <a @click="clearAction"> 清空 </a>
@@ -212,11 +179,11 @@
                                 {{ runningState(index + 1, item._time) }}
                             </template>
                             <template v-else>{{
-                                moment(item.time).format('HH:mm:ss')
+                                dayjs(item.time).format('HH:mm:ss')
                             }}</template>
                         </template>
                         <div v-if="!!runningState(index + 1, item._time)">
-                            {{ moment(item.time).format('HH:mm:ss') }}
+                            {{ dayjs(item.time).format('HH:mm:ss') }}
                         </div>
                         <j-tooltip placement="top" :title="item.content">
                             {{ item.content }}
@@ -229,12 +196,13 @@
 </template>
 <script setup lang="ts" name="Debug">
 import { PropType, Ref } from 'vue';
-import { useProductStore } from '@/store/product';
 import { useRuleEditorStore } from '@/store/ruleEditor';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { getWebSocket } from '@/utils/websocket';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import { onlyMessage } from '@/utils/comm';
+import {message} from "ant-design-vue";
+import { useTableFullScreen} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
     virtualRule: Object as PropType<Record<any, any>>,
@@ -249,23 +217,13 @@ type propertyType = {
     id?: string;
     current?: string;
     last?: string;
+
+    type?: string
 };
 const property = ref<propertyType[]>([]);
 const tag = ref<Array<any>>([]);
 const tableWrapperRef = useTableWrapper()
-
-const headerOptions = [
-    {
-        key: 'property',
-        label: '属性赋值',
-        title: '属性赋值',
-    },
-    {
-        key: 'tag',
-        label: '标签赋值',
-        title: '标签赋值',
-    },
-];
+const fullScreen = useTableFullScreen()
 const columns = [
     {
         title: '属性名称',
@@ -325,19 +283,26 @@ const ws = ref();
 const virtualIdRef = ref(new Date().getTime());
 const medataSource = inject<Ref<any[]>>('metadataSource');
 const tagsSource = inject<Ref<any[]>>('_tagsDataSource');
-const productStore = useProductStore();
 const ruleEditorStore = useRuleEditorStore();
 
 const time = ref<number>(0);
 const timer = ref<any>(null);
 
+//是否全屏监听
+const getPopupContainer = (node: any) => {
+  if (fullScreen.value) {
+    return tableWrapperRef.value || node
+  }
+
+  return document.body
+}
 const runScript = () => {
-    const metadata = productStore.current.metadata || '{}';
-    const propertiesList = JSON.parse(metadata).properties || [];
+    const propertiesList = medataSource?.value || []
     const _properties = property.value.map((item: any) => {
         const _item = propertiesList.find((i: any) => i.id === item.id);
         return { ...item, type: _item?.valueType?.type };
     });
+    console.log('runScript', _properties, propertiesList)
     let _tags = {};
     tag.value.forEach((item) => {
         _tags[item.id] = item.current;
@@ -347,6 +312,11 @@ const runScript = () => {
     }
     if (!props.virtualRule?.script) {
         isBeginning.value = true;
+      message.config({
+        getContainer() {
+          return tableWrapperRef.value || document.body
+        }
+      })
         onlyMessage('请编辑规则', 'warning');
         return;
     }
@@ -398,12 +368,12 @@ const runScriptAgain = async () => {
     if (wsAgain.value) {
         wsAgain.value.unsubscribe?.();
     }
-    const metadata = productStore.current.metadata || '{}';
-    const propertiesList = JSON.parse(metadata).properties || [];
+    const propertiesList = medataSource?.value || []
     const _properties = property.value.map((item: any) => {
         const _item = propertiesList.find((i: any) => i.id === item.id);
         return { ...item, type: _item?.valueType?.type };
     });
+    console.log('runScriptAgain', _properties, propertiesList)
 
     wsAgain.value = getWebSocket(
         `virtual-property-debug-${props.id}-${new Date().getTime()}`,
@@ -427,6 +397,14 @@ const getTime = () => {
 };
 
 const beginAction = () => {
+  if (!property.value.length || property.value.some(item => !item.id || !(item.current || item.last) )) {
+    message.config({
+      getContainer() {
+        return tableWrapperRef.value || document.body
+      },
+    })
+    return onlyMessage('请填写属性值', 'warning')
+  }
     isBeginning.value = false;
     runScript();
     getTime();
@@ -448,13 +426,18 @@ onUnmounted(() => {
         ws.value.unsubscribe?.();
     }
     clearAction();
+
+    message.config({
+      getContainer() {
+        return document.body
+      },
+    })
     window.clearInterval(timer.value);
     timer.value = null;
 });
 
 const options = computed(() => {
-    return (medataSource.value || [])
-        .filter((p) => p.id && p.id !== props.id)
+    return (props.propertiesOptions || [])
         .map((item) => ({
             label: item.name,
             value: item.id,
@@ -468,6 +451,9 @@ const tagOptions = computed(() => {
     }));
 });
 
+defineExpose({
+  beginAction
+})
 // const getProperty = () => {
 //     // const metadata = productStore.current.metadata || '{}';
 //     // const _p: PropertyMetadata[] = JSON.parse(metadata).properties || [];
@@ -482,6 +468,7 @@ const tagOptions = computed(() => {
     // width: 100%;
     // height: 340px;
     // margin-top: 20px;
+  gap: 12px;
 
     .top {
         // min-width: 0;
@@ -492,38 +479,44 @@ const tagOptions = computed(() => {
         //margin-bottom: 10px;
 
         .header {
-            display: flex;
-            align-items: center;
+            //display: flex;
+            //align-items: center;
             width: 100%;
-            height: 40px;
+            height: 46px;
             border-bottom: 1px solid lightgray;
+            padding: 0 12px;
             //justify-content: space-around;
 
-            div {
-                display: flex;
-                //width: 100%;
-                align-items: center;
-                justify-content: flex-start;
-                height: 100%;
-
-                .title {
-                    margin: 0 10px;
-                    font-weight: 600;
-                    font-size: 16px;
-                }
-
-                .description {
-                    margin-left: 10px;
-                    color: lightgray;
-                    font-size: 12px;
-                }
-            }
+            //div {
+            //    display: flex;
+            //    //width: 100%;
+            //    align-items: center;
+            //    justify-content: flex-start;
+            //    height: 100%;
+            //
+            //    .title {
+            //        margin: 0 10px;
+            //        font-weight: 600;
+            //        font-size: 16px;
+            //    }
+            //
+            //    .description {
+            //        margin-left: 10px;
+            //        color: lightgray;
+            //        font-size: 12px;
+            //    }
+            //}
 
             .action {
                 width: 150px;
                 font-size: 14px;
             }
         }
+
+          .description {
+              margin-left: 10px;
+              font-size: 12px;
+          }
 
         .top-bottom {
             padding: 10px;

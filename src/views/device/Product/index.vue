@@ -177,7 +177,6 @@
 </template>
 
 <script setup lang="ts">
-import server from '@/utils/request';
 import type { ActionsType } from '@/components/Table/index.vue';
 import { getImage, onlyMessage } from '@/utils/comm';
 import {
@@ -189,17 +188,12 @@ import {
     _deploy,
     _undeploy,
     deleteProduct,
-    addProduct,
-    editProduct,
-    queryProductId,
     updateDevice,
 } from '@/api/device/product';
-import { isNoCommunity, downloadObject } from '@/utils/utils';
+import { downloadObject, isNoCommunity } from '@/utils/utils';
 import { omit, cloneDeep } from 'lodash-es';
-import { typeOptions } from '@/components/Search/util';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
-import { useRoute } from 'vue-router';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';
@@ -332,19 +326,22 @@ const getActions = (
             icon: data.state !== 0 ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
                 title: `确认${data.state !== 0 ? '禁用' : '启用'}?`,
-                onConfirm: async () => {
+                onConfirm: () => {
                     let response = undefined;
                     if (data.state !== 0) {
-                        response = await _undeploy(data.id);
+                        response = _undeploy(data.id);
                     } else {
-                        response = await _deploy(data.id);
+                        response = _deploy(data.id);
                     }
-                    if (response && response.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                    response.then((res) => {
+                        if (res && res.status === 200) {
+                            onlyMessage('操作成功！');
+                            tableRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -357,14 +354,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await deleteProduct(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        tableRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = deleteProduct(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            tableRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
             icon: 'DeleteOutlined',
@@ -461,6 +461,7 @@ const query = reactive({
             key: 'id',
             search: {
                 type: 'string',
+                defaultTermType: 'eq',
             },
         },
         {
@@ -473,13 +474,16 @@ const query = reactive({
                     return new Promise((resolve) => {
                         getProviders().then((resp: any) => {
                             const data = resp.result || [];
-                            resolve(accessConfigTypeFilter(data).filter((i: any) => {
-                                    return (
-                                        i.id !== 'modbus-tcp' &&
-                                        i.id !== 'opc-ua'
-                                    );
-                                }));
-                            
+                            resolve(
+                                accessConfigTypeFilter(data).filter(
+                                    (i: any) => {
+                                        return (
+                                            i.id !== 'modbus-tcp' &&
+                                            i.id !== 'opc-ua'
+                                        );
+                                    },
+                                ),
+                            );
                         });
                     });
                 },
@@ -548,14 +552,6 @@ const query = reactive({
             },
         },
         {
-            title: '说明',
-            key: 'describe',
-            dataIndex: 'describe',
-            search: {
-                type: 'string',
-            },
-        },
-        {
             title: '产品分类',
             key: 'classified',
             dataIndex: 'classifiedId',
@@ -573,13 +569,69 @@ const query = reactive({
             },
         },
         {
+            title: '说明',
+            key: 'describe',
+            dataIndex: 'describe',
+            search: {
+                type: 'string',
+            },
+        },
+    ],
+});
+const saveRef = ref();
+const handleSearch = (e: any) => {
+    const newTerms = cloneDeep(e);
+    if (newTerms.terms?.length) {
+        newTerms.terms.forEach((a: any) => {
+            a.terms = a.terms.map((b: any) => {
+                if (b.column === 'id$dim-assets') {
+                    const value = b.value;
+                    b = {
+                        column: 'id',
+                        termType: 'dim-assets',
+                        value: {
+                            assetType: 'product',
+                            targets: [
+                                {
+                                    type: 'org',
+                                    id: value,
+                                },
+                            ],
+                        },
+                    };
+                }
+                if (b.column === 'accessProvider') {
+                    if (b.value === 'collector-gateway') {
+                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
+                        b.value = ['opc-ua', 'modbus-tcp', 'collector-gateway'];
+                    } else if (
+                        Array.isArray(b.value) &&
+                        b.value.includes('collector-gateway')
+                    ) {
+                        b.value = ['opc-ua', 'modbus-tcp', ...b.value];
+                    }
+                }
+                return b;
+            });
+        });
+    }
+
+    params.value = newTerms;
+};
+const routerParams = useRouterParams();
+onMounted(() => {
+    if (routerParams.params?.value.save) {
+        add();
+    }
+    if (isNoCommunity) {
+        query.columns.splice(query.columns.length - 2, 0, {
             title: '所属组织',
             key: 'id$dim-assets',
             dataIndex: 'id$dim-assets',
             search: {
                 first: true,
                 type: 'treeSelect',
-                termOptions:['eq'],
+                termOptions: ['eq'],
                 options: async () => {
                     return new Promise((res) => {
                         queryOrgThree({ paging: false }).then((resp: any) => {
@@ -611,57 +663,7 @@ const query = reactive({
                     });
                 },
             },
-        },
-        {
-            title: '操作',
-            key: 'action',
-            fixed: 'right',
-            width: 250,
-            scopedSlots: true,
-        },
-    ],
-});
-const saveRef = ref();
-const handleSearch = (e: any) => {
-    const newTerms = cloneDeep(e);
-    if (newTerms.terms?.length) {
-        newTerms.terms.forEach((a: any) => {
-            a.terms = a.terms.map((b: any) => {
-                if (b.column === 'id$dim-assets') {
-                    const value = b.value;
-                    b = {
-                        column: 'id',
-                        termType: 'dim-assets',
-                        value: {
-                            assetType: 'product',
-                            targets: [
-                                {
-                                    type: 'org',
-                                    id: value,
-                                },
-                            ],
-                        },
-                    };
-                }
-                if(b.column === 'accessProvider'){
-                    if(b.value === 'collector-gateway'){
-                        b.termType = b.termType === 'eq' ? 'in' : 'nin';
-                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
-                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
-                        b.value = ['opc-ua','modbus-tcp',...b.value];
-                    }
-                }
-                return b;
-            });
         });
-    }
-
-    params.value = newTerms;
-};
-const routerParams = useRouterParams();
-onMounted(() => {
-    if (routerParams.params?.value.save) {
-        add();
     }
 });
 </script>

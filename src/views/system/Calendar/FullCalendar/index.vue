@@ -1,25 +1,14 @@
 <template>
-    <div class="calendarContainer">
-        <FullCalendar
-            ref="calendarEl"
-            class="calendar"
-            :options="calendarOptions"
-        >
-            <template v-slot:eventContent="arg">
-                <div class="event">
-                    <i>{{ arg.event.title }}</i>
-                    <a-button
-                        v-if="!selectable"
-                        type="text"
-                        class="closeBtn"
-                        @click="() => deleteEvent(arg)"
-                        >x</a-button
-                    >
-                </div>
-            </template>
-        </FullCalendar>
+    <div class="calendarContainer" v-if="showCalendar">
         <div class="calenderButton">
-            <a-date-picker v-model:value="current"  format='YYYY-MM' picker="month" @change="changeDate" valueFormat="YYYY-MM"/>
+            <a-date-picker
+                v-model:value="current"
+                :disabled="selectable"
+                format="YYYY-MM"
+                picker="month"
+                @change="changeDate"
+                valueFormat="YYYY-MM"
+            />
             <a-button @click="handleCustomPrev" :disabled="selectable"
                 >上月</a-button
             >
@@ -30,17 +19,45 @@
                 >下月</a-button
             >
         </div>
+        <a-button v-if="preview" class="skip" type="link" @click="gotoCalendar"
+            >日历维护</a-button
+        >
         <div class="compareTip" v-if="eventChange">
             点击确认完成本次日历维护
         </div>
         <div class="compareSave" v-if="eventChange">
             <PermissionButton
-                type="link"
+                type="primary"
                 @click="saveCalendar"
                 :disabled="selectable"
                 >确认</PermissionButton
             >
         </div>
+        <FullCalendar
+            ref="calendarEl"
+            class="calendar"
+            :options="calendarOptions"
+        >
+            <template v-slot:eventContent="arg">
+                <div class="event">
+                    <div
+                        class="decoration"
+                        :style="{ backgroundColor: arg.backgroundColor }"
+                    ></div>
+                    <a-tooltip>
+                        <template #title>{{ arg.event.title }}</template>
+                        <div class="event-title">{{ arg.event.title }}</div>
+                    </a-tooltip>
+                    <a-button
+                        v-if="!selectable && !preview"
+                        type="text"
+                        class="closeBtn"
+                        @click="() => deleteEvent(arg)"
+                        >x</a-button
+                    >
+                </div>
+            </template>
+        </FullCalendar>
         <div
             v-if="selectable && !choiceEnd && showTips"
             class="tips"
@@ -58,17 +75,27 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import locale from '@fullcalendar/core/locales/zh-cn';
 import { onlyMessage } from '@/utils/comm';
 import dayjs from 'dayjs';
-import { queryEvents, getTagsColor, saveEvents } from '@/api/system/calendar';
+import { queryEvents, saveEvents } from '@/api/system/calendar';
 import { cloneDeep, flatten } from 'lodash-es';
 import { defineExpose } from 'vue';
 import { inject } from 'vue';
+import { useMenuStore } from 'store/menu';
+import { useSystem } from '@/store/system';
 const props = defineProps({
     selectable: {
         type: String,
         default: false,
     },
+    preview: {
+        type: Boolean,
+        default: false,
+    },
 });
 const emit = defineEmits(['selectDate', 'resetRapid']);
+const menuStory = useMenuStore();
+const system = useSystem();
+const showCalendar = ref(false);
+const calendarTagColor = system.$state.calendarTagColor;
 const tagsList = inject('tagsMap');
 //请求接口的结束时间（请求过的日期就不再请求接口了）
 const queryEndDate = ref([]);
@@ -88,7 +115,6 @@ const initialData = ref([]);
 const initialEventData = ref([]);
 //接口获取到的数据
 const interfaceData = ref([]);
-const colorMap = new Map();
 //多选开始日期
 const choiceStart = ref();
 //多选结束日期
@@ -117,6 +143,7 @@ const queryEventsData = async (startDate, endDate, updateView) => {
                     });
                 });
             }
+            return nonentity;
         });
         interfaceData.value = [...interfaceData.value, ...data];
         if (updateView) {
@@ -125,7 +152,7 @@ const queryEventsData = async (startDate, endDate, updateView) => {
                     id: i.id,
                     title: i.name,
                     start: i.date,
-                    backgroundColor: colorMap.get(i.id) || '#000000',
+                    backgroundColor: calendarTagColor.get(i.id) || '#000000',
                 };
             });
             calendarApi.value.removeAllEvents();
@@ -186,11 +213,8 @@ const handleViewDidMount = async (arg) => {
         return;
     }
     queryEndDate.value.push(endDate);
-    const answer = await getTagsColor();
-    if (answer.success) {
-        Object.keys(answer.result).forEach((i) => {
-            colorMap.set(i, answer.result[i]);
-        });
+    if (calendarTagColor.size === 0) {
+        await system.getTagsColor();
     }
     queryEventsData(startDate, endDate, true);
 };
@@ -203,14 +227,14 @@ const eventChange = computed(() => {
 // 自定义切换月份逻辑
 const handleCustomPrev = () => {
     calendarApi.value.prev();
-    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM')
+    current.value = dayjs(current.value).subtract(1, 'month').format('YYYY-MM');
 };
 const handleCustomNext = () => {
-    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM')
+    current.value = dayjs(current.value).add(1, 'month').format('YYYY-MM');
     calendarApi.value.next();
 };
 const handleCustomToday = () => {
-    current.value = dayjs().format('YYYY-MM')
+    current.value = dayjs().format('YYYY-MM');
     calendarApi.value.today();
 };
 //保存编辑后的日历
@@ -254,7 +278,8 @@ const saveCalendar = async () => {
     const res = await saveEvents(submitData);
     if (res.success) {
         onlyMessage('操作成功');
-        initialData.value = cloneDeep(eventsData.value);
+        // initialData.value = cloneDeep(eventsData.value);
+        refresh();
     }
 };
 //获取两个时间段之间的所有日期
@@ -348,19 +373,29 @@ const calendarOptions = {
     unselectAuto: false,
     locale: locale,
     droppable: true,
-    height: '720px',
+    height: props.preview ? '600px' : '620px',
     // select: handleSelect, //原生拖拽多选日期逻辑
     eventReceive: handleEventAdd,
     datesSet: handleViewDidMount,
     dateClick: handleDateClick,
     dayCellDidMount: handleCellDidMount,
+    //星期只显示数字
+    dayHeaderContent: function (arg) {
+        return arg.date.toLocaleDateString('default', { weekday: 'narrow' });
+    },
+    dayCellContent: function (e) {
+        return {
+            html: '<div class="custom-day-cell">' + e.date.getDate() + '</div>',
+        };
+    },
 };
 // //编辑标签后刷新日历数据
 // const refreshCalendar = () => {
 //     handleViewDidMount(calendarApi.value);
 // };
 //对比函数(判断出日期相等但是标签id不同的事件和日期事件数量少于5的)
-const compare = (effectData, eventsData) => {
+const compare = (effectData, eventsData, effectDates) => {
+    //获取新增的事件
     const addEvents = effectData.filter((i) => {
         const equality = eventsData.find((item) => {
             return i.date === item.date && i.id === item.id;
@@ -371,11 +406,32 @@ const compare = (effectData, eventsData) => {
             }).length >= 5;
         return !equality && !exceed;
     });
-    return addEvents;
+    const filterDate = [];
+    //比对新增事件 + 原本事件 > 5 的日期
+    effectDates.forEach((i) => {
+        const addEventNumber = addEvents.filter((item) => {
+            return i === item.date;
+        }).length;
+        const eventNumber = eventsData.filter((item) => {
+            return i === item.date;
+        }).length;
+        if (addEventNumber + eventNumber > 5) {
+            filterDate.push(i);
+        }
+    });
+    // 过滤掉日期影响后 >5 的新增事件
+    const filteredEvents = addEvents.filter((i) => {
+        return !filterDate.includes(i.date);
+    });
+    return filteredEvents;
 };
 //快速作用
 const rapidAction = async (effectDays) => {
     const dates = getDatesBetween(choiceStart.value, choiceEnd.value);
+    const effectDates = getDatesBetween(
+        choiceEnd.value,
+        choiceEnd.value.add(effectDays, 'day'),
+    );
     //获取所选日期中所有的标签事件组成二维数组
     const selectData = dates.map((i) => {
         return eventsData.value.filter((item) => {
@@ -387,14 +443,22 @@ const rapidAction = async (effectDays) => {
     //循环数组添加日期和标签时间等数据
     for (let i = 0; i < effectData.length; i++) {
         effectData[i] = cloneDeep(selectData[i % selectData.length]);
-        effectData[i]?.forEach((item) => {
-            item.date = dayjs(item.date)
-                .add(
-                    selectData.length * Math.ceil((i + 1) / selectData.length),
-                    'day',
-                )
-                .format('YYYY-MM-DD');
-        });
+        if (effectData[i].length) {
+            effectData[i].forEach((item) => {
+                item.date = dayjs(item.date)
+                    .add(
+                        selectData.length *
+                            Math.ceil((i + 1) / selectData.length),
+                        'day',
+                    )
+                    .format('YYYY-MM-DD');
+            });
+        } else {
+            eventsData.value = eventsData.value.filter((item) => {
+                console.log(effectData[i]);
+                return item.date !== effectDates[i];
+            });
+        }
     }
     //二维数组扁平成一维数组
     const effectDataArr = flatten(effectData);
@@ -406,18 +470,19 @@ const rapidAction = async (effectDays) => {
             .format('YYYY-MM-DD'),
         false,
     );
-    const imparity = compare(effectDataArr, eventsData.value);
+    const imparity = compare(effectDataArr, eventsData.value, effectDates);
     eventsData.value = [...eventsData.value, ...imparity];
-    const addEvents = imparity.map((i) => {
+    initialEventData.value = eventsData.value.map((i) => {
         return {
             id: i.id,
             title: i.name,
             start: i.date,
-            backgroundColor: colorMap.get(i.id) || '#000000',
+            backgroundColor: calendarTagColor.get(i.id) || '#000000',
         };
     });
-    //在已有事件基础上添加事件展示
-    calendarApi.value.addEventSource(addEvents);
+    calendarApi.value.removeAllEvents();
+    calendarApi.value.addEventSource(initialEventData.value);
+    onlyMessage('操作成功');
     emit('resetRapid');
 };
 //取消多选(原生)
@@ -449,9 +514,13 @@ const refresh = () => {
     handleViewDidMount(calendarApi.value);
 };
 //日期切换
-const changeDate = (date) =>{
-    calendarApi.value.gotoDate(date)
-}
+const changeDate = (date) => {
+    calendarApi.value.gotoDate(date);
+};
+
+const gotoCalendar = () => {
+    menuStory.jumpPage('system/Calendar');
+};
 defineExpose({
     reselection,
     rapidAction,
@@ -467,7 +536,7 @@ watch(
     },
 );
 watch(
-    () => tagsList.value,
+    () => tagsList?.value,
     (val, oldVal) => {
         if (val?.length <= oldVal?.length) {
             const tagsMap = new Map();
@@ -496,22 +565,25 @@ watch(
         deep: true,
     },
 );
-onMounted(() => {
-    calendarApi.value = calendarEl.value.getApi();
-    const calendarBody = document.querySelector(`.fc-view-harness`);
-    calendarBody?.addEventListener('mousemove', (event) => {
-        if (props.selectable) {
-            showTips.value = true;
-            mouseX.value = event.clientX;
-            mouseY.value = event.clientY;
-        }
+setTimeout(() => {
+    showCalendar.value = true;
+    nextTick(() => {
+        calendarApi.value = calendarEl.value?.getApi();
+        const calendarBody = document.querySelector(`.fc-view-harness`);
+        calendarBody?.addEventListener('mousemove', (event) => {
+            if (props.selectable) {
+                showTips.value = true;
+                mouseX.value = event.clientX;
+                mouseY.value = event.clientY;
+            }
+        });
+        calendarBody?.addEventListener('mouseout', () => {
+            if (props.selectable) {
+                showTips.value = false;
+            }
+        });
     });
-    calendarBody?.addEventListener('mouseout', () => {
-        if (props.selectable) {
-            showTips.value = false;
-        }
-    });
-});
+}, 300);
 </script>
 <style lang="less" scoped>
 :deep(.fc-header-toolbar) {
@@ -519,39 +591,65 @@ onMounted(() => {
 }
 .calendarContainer {
     position: relative;
-    padding-top: 20px;
+    padding: 0 24px;
+    padding-bottom: 0;
+    padding-top: 44px;
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
     .compareTip {
         position: absolute;
         right: 20%;
-        top: 7px;
+        top: 27px;
         transform: translateX(50%);
+    }
+    .skip {
+        position: absolute;
+        right: 0;
+        top: 27px;
     }
     .compareSave {
         position: absolute;
-        right: 0;
-        top: 2px;
+        right: 10px;
+        top: 22px;
     }
     .calenderButton {
         position: absolute;
-        top: 2px;
+        top: 22px;
     }
     .event {
         position: relative;
-        height: 30px;
-        line-height: 30px;
+        height: 32px;
+        padding: 6px;
+        color: #1a1a1a;
+        display: flex;
 
         .closeBtn {
             position: absolute;
             right: 0;
-            top: -5;
-            color: #fff;
+            top: 0;
+            color: #777777;
             display: none;
+            font-size: 16px;
         }
     }
     .event:hover {
         .closeBtn {
             display: inline-block;
         }
+    }
+    .decoration {
+        width: 4px;
+        height: 16px;
+        border-radius: 2px;
+        margin: 2px 4px;
+        display: inline-block;
+    }
+    .event-title {
+        white-space: nowrap; /* 不换行 */
+        overflow: hidden; /* 超出部分隐藏 */
+        text-overflow: ellipsis; /* 显示省略号 */
+        width: calc(100% - 30px);
+        font-size: 14px;
     }
 }
 :deep(.fc-highlight) {
@@ -565,9 +663,99 @@ onMounted(() => {
     border-radius: 5px;
     color: white;
 }
+:deep(.fc-theme-standard th) {
+    border: none;
+}
+:deep(.fc-theme-standard td) {
+    border: none;
+    border-top: 1px solid #cccccc;
+}
+:deep(.fc-theme-standard .fc-scrollgrid) {
+    border: none;
+}
+:deep(.fc) {
+    .fc-col-header-cell-cushion {
+        color: #777777;
+    }
+    th {
+        text-align: right;
+        color: #777777;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 5px 0;
+    }
+    .fc-daygrid-day.fc-day-today {
+        background-color: transparent;
+        .fc-daygrid-day-number {
+            background-color: #1677ff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            text-align: center;
+        }
+    }
+    .fc-event {
+        border: none !important;
+    }
+    .fc-daygrid-event-harness {
+        margin: 0 4px;
+        margin-top: 4px !important;
+        border-radius: 6px;
+    }
+    .fc-daygrid-day-frame {
+        height: 155px;
+        .fc-daygrid-day-events {
+            max-height: 120px;
+            overflow-y: auto;
+            &::-webkit-scrollbar-thumb {
+                background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+                border-radius: 4px; /* 滚动条拖动部分圆角 */
+            }
+        }
+    }
+    .fc-scroller {
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #fff; /* 滚动条背景色 */
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: #d0d0d0; /* 滚动条拖动部分颜色 */
+            border-radius: 4px; /* 滚动条拖动部分圆角 */
+        }
+    }
+}
+:deep(.fc-scrollgrid-section-body > td) {
+    border: none !important;
+}
+:deep(.fc-daygrid-day-number) {
+    color: #1a1a1a;
+    font-weight: 600;
+}
 </style>
 <style>
+.calendarContainer {
+    .fc-event {
+        background: #edf5ff !important;
+    }
+    .fc-daygrid-day-events {
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #fff; /* 滚动条背景色 */
+        }
+    }
+}
+
 .selectedDate {
-    background-color: rgb(234, 234, 255) !important;
+    background-color: #edf5ff !important;
+    .fc-event {
+        background: #fff !important;
+    }
+    .fc-daygrid-day-events {
+        &::-webkit-scrollbar {
+            width: 5px; /* 滚动条宽度 */
+            background-color: #edf5ff; /* 滚动条背景色 */
+        }
+    }
 }
 </style>

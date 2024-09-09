@@ -1,17 +1,21 @@
 <template>
     <a-modal
         visible
-        title="新增标签"
+        :title="editType === 'add' ? '新增标签' : '编辑标签'"
         @cancel="emit('closeEditTag')"
         @ok="submit"
+        :confirmLoading="loading"
     >
         <a-form :model="tagInfo" ref="form">
             <a-row :gutter="16">
                 <a-col>
                     <a-form-item name="color">
-                        <input
+                        <ColorPicker
                             type="color"
-                            :value="tagInfo.color"
+                            :hex="tagInfo.color"
+                            :rgba="tagInfo.color"
+                            :themeColor="themeColor"
+                            :show-opacity="false"
                             @change="changeColor"
                         />
                     </a-form-item>
@@ -22,6 +26,7 @@
                         :rules="[
                             {
                                 required: true,
+                                message:'请为标签命名'
                             },
                             {
                                 max: 16,
@@ -44,6 +49,8 @@
 import { saveTag, saveTagsColor, getTagsColor } from '@/api/system/calendar';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
+import ColorPicker from 'colorpicker-v3';
+import 'colorpicker-v3/style.css';
 const props = defineProps({
     editType: {
         type: String,
@@ -61,11 +68,25 @@ const tagInfo = reactive({
 });
 const form = ref();
 const colorData = ref();
-const changeColor = (event) => {
-    tagInfo.color = event.target.value;
+const changeColor = ({rgba}) => {
+    tagInfo.color = rgba;
 };
+const loading = ref(false)
+const themeColor =  [
+    '#69B1FF',
+    '#5CDBD3',
+    '#FFAF6E',
+    '#85A5FF',
+    '#F4D160',
+    '#95DE64',
+    '#B37FEB',
+    '#FFEC3D',
+    '#FF7875',
+    '#FF85C0'
+]
 const submit = () => {
     form.value.validate().then(async () => {
+        loading.value = true
         let id;
         if (props.editType === 'add') {
             id = randomString();
@@ -76,10 +97,14 @@ const submit = () => {
             id,
             name: tagInfo.name,
         };
-        const res = await saveTag(submitData);
+        const res = await saveTag(submitData).finally(()=>{
+            loading.value = false
+        });
         if (res.success) {
             colorData.value[id] = tagInfo.color;
-            const saveRes = await saveTagsColor(colorData.value);
+            const saveRes = await saveTagsColor(colorData.value).catch(()=>{
+                loading.value = false
+            });
             if (saveRes.success) {
                 onlyMessage('操作成功');
                 emit('refresh');

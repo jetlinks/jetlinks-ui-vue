@@ -125,15 +125,21 @@ import Parsing from './Parsing/index.vue';
 import GateWay from './GateWay/index.vue';
 import Log from './Log/index.vue';
 import AlarmRecord from './AlarmRecord/index.vue';
+import Firmware from './Firmware/index.vue';
+import Shadow from './Shadow/index.vue';
+import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import { _deploy, _disconnect } from '@/api/device/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
 import { getWebSocket } from '@/utils/websocket';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
+import { usePermissionStore } from '@/store/permission';
+import { isNoCommunity } from '@/utils/utils';
+import { useSystem } from '@/store/system';
 
 const menuStory = useMenuStore();
-
+const { showThreshold } = useSystem();
 const route = useRoute();
 const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
@@ -168,9 +174,9 @@ const initList = [
         tab: '日志管理',
     },
     {
-        key: 'AlarmRecord',
-        tab: '告警记录',
-    },
+        key:'Shadow',
+        tab:'设备影子'
+    }
 ];
 
 const list = ref([...initList]);
@@ -190,8 +196,12 @@ const tabs = {
     MetadataMap,
     GateWay,
     AlarmRecord,
+    CardManagement,
+    Firmware,
+    Shadow
 };
 
+const permissionStore = usePermissionStore();
 const getStatus = (id: string) => {
     statusRef.value = getWebSocket(
         `instance-editor-info-status-${id}`,
@@ -210,6 +220,29 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
+    if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity && showThreshold) {
+        list.value.push({
+            key: 'AlarmRecord',
+            tab: '预处理数据',
+        });
+    }
+    if (permissionStore.hasPermission('iot-card/CardManagement:view') && isNoCommunity) {
+        list.value.push({
+            key: 'CardManagement',
+            tab: '物联网卡',
+        });
+    }
+    if (
+        permissionStore.hasPermission('device/Firmware:view') &&
+        instanceStore.current?.features?.find(
+            (item: any) => item?.id === 'supportFirmware',
+        ) && isNoCommunity
+    ) {
+        list.value.push({
+            key: 'Firmware',
+            tab: '远程升级',
+        });
+    }
     if (
         instanceStore.current?.protocol &&
         !['modbus-tcp', 'opc-ua'].includes(instanceStore.current?.protocol) &&
@@ -313,13 +346,11 @@ const getDetailFn = async () => {
         getStatus(String(_id));
         list.value = [...initList];
         getDetail();
+        instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
+    } else {
+        instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
     }
-    instanceStore.tabActiveKey = routerParams.params.value.tab || 'Info';
 };
-
-onMounted(() => {
-    getDetailFn();
-});
 
 const onTabChange = (e: string) => {
     if (instanceStore.tabActiveKey === 'Metadata') {
@@ -331,23 +362,29 @@ const onTabChange = (e: string) => {
     }
 };
 
-const handleAction = async () => {
+const handleAction = () => {
     if (instanceStore.current?.id) {
-        const resp = await _deploy(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _deploy(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response;
     }
 };
 
-const handleDisconnect = async () => {
+const handleDisconnect = () => {
     if (instanceStore.current?.id) {
-        const resp = await _disconnect(instanceStore.current?.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            instanceStore.refresh(instanceStore.current?.id);
-        }
+        const response = _disconnect(instanceStore.current?.id);
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                instanceStore.refresh(instanceStore.current?.id);
+            }
+        });
+        return response;
     }
 };
 
@@ -363,6 +400,10 @@ const jumpProduct = () => {
         id: instanceStore.current?.productId,
     });
 };
+
+onMounted(() => {
+    getDetailFn();
+});
 
 onUnmounted(() => {
     instanceStore.current = {} as any;

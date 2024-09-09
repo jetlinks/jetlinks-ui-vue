@@ -29,7 +29,9 @@ import { PropType } from 'vue';
 import { recommendList } from '../typing';
 import { useMenuStore } from '@/store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const { jumpPage: _jumpPage } = useMenuStore();
 
 const props = defineProps({
@@ -41,7 +43,7 @@ const props = defineProps({
 // 跳转页面
 const jumpPage = (row: recommendList) => {
     if (row.auth === false) {
-        return onlyMessage('暂无权限，请联系管理员', 'warning');
+        return onlyMessage($t('components.StepCard.926510-0'), 'warning');
     }
     row.onClick ? row.onClick(row) : _jumpPage(row.linkUrl, row.params);
 };

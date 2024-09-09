@@ -1,5 +1,6 @@
 .live-player-warp {
     display: flex;
+    height: 100%;
 
     .live-player-content {
         display: flex;
@@ -25,6 +26,7 @@
                 position: relative;
                 display: grid;
                 box-sizing: border-box;
+                height: 100%;
 
                 &.screen-1 {
                     grid-template-columns: 1fr;
@@ -46,7 +48,18 @@
                 }
 
                 .active {
-                    border: 2px solid red;
+                    position: relative;
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        width: 100%;
+                        height: 100%;
+                        top: 0;
+                        left: 0;
+                        z-index: 99;
+                        border: 2px solid red;
+                        pointer-events: none;
+                    }
                 }
 
                 .full-screen {

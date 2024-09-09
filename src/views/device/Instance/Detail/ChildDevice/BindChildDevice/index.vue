@@ -70,7 +70,7 @@
                 <template #registryTime="slotProps">
                     {{
                         slotProps.registryTime
-                            ? moment(slotProps.registryTime).format(
+                            ? dayjs(slotProps.registryTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
                             : ''
@@ -95,7 +95,7 @@ import {
     queryDeviceMapping,
     saveDeviceMapping,
 } from '@/api/device/instance';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useInstanceStore } from '@/store/instance';
 import { storeToRefs } from 'pinia';
 import { onlyMessage } from '@/utils/comm';

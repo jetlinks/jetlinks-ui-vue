@@ -1,27 +1,30 @@
 <template>
+  <div class="metadata-base">
   <EditTable
       v-if="!heavyLoad"
       ref="tableRef"
       :data-source="dataSource"
       :columns="columns"
       :height="560"
-      :selectedRowKeys="selectedRowKeys"
       :disableMenu="!hasOperate('add', type)"
+      :openGroup="type === 'properties'"
+      :rowSelection="{
+        selectedRowKeys: selectedRowKeys
+      }"
       @scrollDown="scrollDown"
       @rightMenuClick="rightMenuClick"
+      @groupEdit="groupEdit"
+      @groupDelete="groupDelete"
   >
     <template #extra="{ isFullscreen, fullScreenToggle }">
       <div class="extra-header">
         <div class="extra-left">
           <a-space>
-            <a-input-search
-              allowClear
-              placeholder="请输入搜索名称"
-              @search="handleSearch"
-            />
-            <AIcon
-                :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
-                @click="fullScreenToggle"
+            <Import
+              v-if="type === 'properties'"
+              :target="target"
+              :metadata="dataSource"
+              @ok="importMetadata"
             />
             <span v-if="searchData.show">
               已查询到
@@ -30,7 +33,39 @@
             </span>
           </a-space>
         </div>
+        <div class="extra-center">
+          <div v-if="copyDetail.index" class="extra-copy-tip">
+            <div class="extra-copy-tip-context">
+              <span> 已复制 </span>
+              <template v-if="type === 'properties'">
+                <Ellipsis style="max-width: 120px">
+                  {{ copyDetail.groupName }}
+                </Ellipsis>
+                <span >,</span>
+              </template>
+              <span>
+                第
+                {{ copyDetail.index }}
+                行
+              </span>
+            </div>
+            <div></div>
+              <div class="extra-copy-tip-icon" @click="copyDetail.index = 0">
+                <AIcon type="CloseOutlined" />
+              </div>
+          </div>
+        </div>
         <div class="extra-right">
+          <a-button
+            @click="() => fullToggle(isFullscreen, fullScreenToggle)"
+          >
+            <template #icon>
+              <AIcon
+                :type="isFullscreen ? 'FullscreenExitOutlined' : 'FullscreenOutlined' "
+              />
+            </template>
+          </a-button>
+
           <PermissionButton
               type="primary"
               key="update"
@@ -78,7 +113,7 @@
           <TypeSelect v-model:value="record.valueType.type" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
           <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
-          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType.maxLength" :disabled="record.expands?.isProduct"/>
+          <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
           <DateParams v-else-if="record.valueType.type === 'date'" v-model:value="record.valueType.format" :disabled="record.expands?.isProduct"/>
           <FileParams v-else-if="record.valueType.type === 'file'" v-model:value="record.valueType.bodyType" :disabled="record.expands?.isProduct"/>
           <EnumParams v-else-if="record.valueType.type === 'enum'" v-model:value="record.valueType.elements" :disabled="record.expands?.isProduct"/>
@@ -95,9 +130,9 @@
         </div>
         <div v-else-if="type === 'events'">
           <ObjectParams v-model:value="record.valueType.properties">
-            <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+            <a-button type="primary" :disabled="record.expands?.isProduct" :danger="!record.valueType.properties?.length && record.id">
               <template #icon>
-                <AIcon type="SettingOutlined"/>
+                <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.valueType.properties?.length}"/>
               </template>
               配置
             </a-button>
@@ -110,6 +145,7 @@
         <Source
             v-if="props.type === 'properties'"
             v-model:value="record.expands"
+            :isProduct="record.expands?.isProduct"
             :target="target"
             :record="record"
             :disabled="record.expands?.isProduct"
@@ -122,25 +158,10 @@
             :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
             :disabled="record.expands?.isProduct"
         />
-        <a-select
-            v-else-if="props.type === 'tags'"
-            v-model:value="record.expands.type"
-            mode="multiple"
-            style="width: 100%;"
-            :options="[
-              { label: '读', value: 'read'},
-              { label: '写', value: 'write'},
-              { label: '上报', value: 'report'},
-            ]"
-            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
-            :disabled="record.expands?.isProduct"
-            placeholder="请选择读写类型"
-        />
       </EditTableFormItem>
     </template>
     <template #other="{ record }">
       <div>
-        <a-tag v-if="showTag(record)">已配置</a-tag>
         <OtherSetting
             v-model:value="record.expands"
             :type="['functions', 'events'].includes(props.type) ? 'object' : record.valueType?.type"
@@ -150,29 +171,29 @@
             :isProduct="record.expands?.isProduct"
             :target="props.target"
             :record="record"
+            :disabled="record.expands?.isProduct && !['int','long','float','double',].includes(record.valueType?.type)"
             @change="metadataChange"
         />
       </div>
     </template>
     <template #async="{ record }">
-      <a-select
+      <BooleanSelect
           v-model:value="record.async"
           style="width: 100%"
-          :options="[
-            { label: '是', value: true },
-            { label: '否', value: false }
-          ]"
+          trueLabel="是"
+          falseLabel="否"
+          :true-value="true"
+          :false-value="false"
           :disabled="record.expands?.isProduct"
-          :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
           @change="metadataChange"
       />
     </template>
     <template #inputs="{ record, index }">
       <EditTableFormItem :name="[index, 'inputs']" @change="metadataChange">
         <ObjectParams v-model:value="record.inputs" :type="type">
-          <a-button type="link" style="padding: 0" :disabled="record.expands?.isProduct">
+          <a-button type="primary" :disabled="record.expands?.isProduct">
             <template #icon>
-              <AIcon type="SettingOutlined"/>
+              <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !record.inputs.length}"/>
             </template>
             配置
           </a-button>
@@ -218,9 +239,13 @@
       <GroupSelect v-model:value="record.expands.group" :disabled="record.expands?.isProduct" @change="metadataChange"/>
     </template>
   </EditTable>
+    <div>
+      可编辑数据列表共 <span class="metadata-result-total">{{ effectiveDataLength }}</span> 条数据
+    </div>
   <PropertiesModal
       v-if="type === 'properties' && detailData.visible"
       :data="detailData.data"
+      :type="target"
       :getPopupContainer="getPopupContainer"
       :unitOptions="unitOptions"
       @cancel="cancelDetailModal"
@@ -244,6 +269,7 @@
       :unitOptions="unitOptions"
       @cancel="cancelDetailModal"
   />
+  </div>
 </template>
 
 <script setup lang="ts" name="MetadataBase">
@@ -288,9 +314,12 @@ import {
   ArrayParams,
   DoubleParams,
   GroupSelect,
-  EditTableFormItem
+  EditTableFormItem,
+  BooleanSelect
 } from '@/components/Metadata/Table'
 import {EventLevel} from "@/views/device/data";
+import {message } from "ant-design-vue";
+import { Import } from './components/Import'
 
 const props = defineProps({
   target: {
@@ -329,6 +358,14 @@ const loading = ref(false)
 const editStatus = ref(false) // 编辑表格的编辑状态
 const selectedRowKeys = ref<string[]>([])
 
+const _isFullscreen = ref(false)
+
+const copyDetail = reactive({
+  key: undefined,
+  index: 0,
+  groupName: undefined
+})
+
 const searchData = reactive({
   len: 0,
   show: false
@@ -345,8 +382,15 @@ const detailData = reactive({
 
 const heavyLoad = ref<Boolean>(false)
 
-const getPopupContainer = (node: any) => {
-  return node || document.body
+const effectiveDataLength = computed(() => {
+  return dataSource.value.filter(item => item.id).length
+})
+
+const getPopupContainer = () => {
+  if (_isFullscreen.value) {
+    return tableRef.value.getTableWrapperRef() || document.body
+  }
+  return document.body
 }
 
 provide('_tagsDataSource', tagsMetadata)
@@ -367,24 +411,24 @@ const operateLimits = (action: 'add' | 'updata', types: MetadataType) => {
   );
 };
 
-const handleSearch = (searchValue: string) => {
-  const keys: string[] = []
-  if (searchValue) {
-    dataSource.value.forEach(item => {
-      if (item.name && item.name.includes(searchValue)) {
-        keys.push(item.id)
-      }
-    })
-  }
-
-  if (keys.length) {
-    tableRef.value.scrollToById(keys[0])
-  }
-  selectedRowKeys.value = keys
-
-  searchData.len = keys.length
-  searchData.show = true
-};
+// const handleSearch = (searchValue: string) => {
+//   const keys: string[] = []
+//   if (searchValue) {
+//     dataSource.value.forEach(item => {
+//       if (item.name && item.name.includes(searchValue)) {
+//         keys.push(item.id)
+//       }
+//     })
+//   }
+//
+//   if (keys.length) {
+//     tableRef.value.scrollToById(keys[0])
+//   }
+//   selectedRowKeys.value = keys
+//
+//   searchData.len = keys.length
+//   searchData.show = true
+// };
 
 const scrollDown = (len: number = 5) => {
   if (!hasOperate('add', props.type)) {
@@ -393,45 +437,82 @@ const scrollDown = (len: number = 5) => {
 }
 
 const rightMenuClick = (type: string, record: Record<string, any>, copyRecord:  Record<string, any>) => {
-  const _index = record.__index
+  const _index = record.__dataIndex
   switch (type) {
     case 'add':
       dataSource.value.splice(_index + 1, 0, getMetadataItemByType(props.type!))
+      editStatus.value = true
+      nextTick(() => {
+        if (copyDetail.key) {
+          const copyItem = dataSource.value.find(item => item.__key === copyDetail.key)
+          copyDetail.index = copyItem!.__serial
+          copyDetail.groupName = copyItem!.expands.groupName
+        }
+      })
       break;
     case 'paste':
       const cloneRecord = JSON.parse(JSON.stringify(copyRecord))
       cloneRecord.id = `copy_${cloneRecord.id}`
+      if (props.type === 'properties') {
+        // 获取当前分组id和name
+        const expandsItem = dataSource.value[_index + 1].expands
+        cloneRecord.expands.groupName = expandsItem.groupName
+        cloneRecord.expands.groupId = expandsItem.groupId
+      }
+
       if (record.id) {
-        Modal.confirm({
-          title: '当前行存在数据',
-          onOk() {
-            dataSource.value.splice(_index, 1, cloneRecord)
-          },
-          onCancel() {
-            console.log('Cancel');
-          },
-        })
+        dataSource.value.splice(_index + 1, 0, cloneRecord)
+        // Modal.confirm({
+        //   title: '当前行存在数据',
+        //   onOk() {
+        //     dataSource.value.splice(_index, 1, cloneRecord)
+        //   },
+        //   onCancel() {
+        //     console.log('Cancel');
+        //   },
+        // })
       } else {
         dataSource.value.splice(_index, 1, cloneRecord)
       }
+
+      editStatus.value = true
+      break;
+    case 'copy':
+      copyDetail.index = record.__serial
+      copyDetail.key = record.__key
+      copyDetail.groupName = dataSource.value[record.__dataIndex].expands.groupName
+      selectedRowKeys.value = [record.id]
       break;
     case 'detail':
       detailData.data = record
       detailData.visible = true
       break;
     case 'delete':
+      // Modal.confirm({
+      //   title: `确认删除【${record.id}】？`,
+      //   onOk() {
+      //     dataSource.value.splice(_index, 1)
+      //   },
+      //   onCancel() {
+      //     console.log('Cancel');
+      //   },
+      // })
+      if (copyDetail.key === record.__key) {
+        copyDetail.key = undefined
+        copyDetail.groupName = undefined
+        copyDetail.index = 0
+      }
       dataSource.value.splice(_index, 1)
+      editStatus.value = true
       break;
   }
+
 }
 
 const handleSaveClick = async (next?: Function) => {
-  let resp = await tableRef.value.validate().catch(err => {
-    console.log('handleSaveClick--err', err)
-  });
+  let resp = await tableRef.value.validate()
 
   if (resp) {
-
     const virtual: any[] = [];
     const arr = resp.map((item: any) => {
       if (item.expands?.virtualRule) {
@@ -473,6 +554,7 @@ const handleSaveClick = async (next?: Function) => {
         productStore.setCurrent(detail)
       }
     }
+
     const _detail: ProductItem | DeviceInstance = _target === 'device' ? instanceStore.detail : productStore.current
     let _data = updateMetadata(props.type!, arr, _detail, updateStore)
     loading.value = true
@@ -484,6 +566,11 @@ const handleSaveClick = async (next?: Function) => {
       // dataSource.value = resp
       // tableRef.value.cleanEditStatus()
       editStatus.value = false
+      message.config({
+        getContainer() {
+          return getPopupContainer()
+        }
+      })
       onlyMessage('操作成功！')
       next?.()
     }
@@ -527,13 +614,35 @@ const parentTabsChange = (next?: Function) => {
   }
 }
 
-const showTag = (record: Record<string, any>) => {
-  return record.expands?.otherEdit || Object.keys(omit(record.expands, ['source', 'type', 'isProduct', 'group', 'otherEdit'])).length
+const fullToggle = (type: boolean, cb: Function) => {
+  cb()
+  _isFullscreen.value = !type
+}
+
+const groupEdit = (record: { value: string, label: string}) => {
+  dataSource.value.forEach(item => {
+    if (item.expands?.groupId === record.value) {
+      item.expands.groupName = record.label
+    }
+  })
+}
+
+const groupDelete = (id: string) => {
+  dataSource.value = dataSource.value.filter(item => item.expands?.groupId !== id || item.expands?.isProduct)
+}
+
+const importMetadata = (_metadata: any[]) => {
+  dataSource.value = _metadata
 }
 
 EventEmitter.subscribe(['MetadataTabs'], parentTabsChange)
 
 onUnmounted(() => {
+  message.config({
+    getContainer() {
+      return document.body
+    },
+  })
   EventEmitter.unSubscribe(['MetadataTabs'], parentTabsChange)
 })
 
@@ -542,6 +651,11 @@ watch(() => metadata.value, () => {
     if (!item.expands) {
       item['expands'] = {
         group: undefined
+      }
+    }
+    if(props.type === 'functions' && !item.output){
+      item['output'] = {
+        
       }
     }
     return item
@@ -564,12 +678,36 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   display: flex;
   justify-content: space-between;
   padding-bottom: 16px;
+  position: relative;
 }
 
 .extra-right {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.extra-copy-tip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: 300px;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background-color: #fff;
+  box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.08),0px 3px 6px -4px rgba(0, 0, 0, 0.12),0px 9px 28px 8px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  transform: translateX(-150px);
+
+  .extra-copy-tip-icon {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+
+  .extra-copy-tip-context {
+    display: flex;
+    gap: 4px;
+  }
 }
 
 .noEdit-tip {
@@ -584,5 +722,15 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   color: #6f6f6f;
   justify-content: center;
   align-items: center
+}
+
+.metadata-base {
+  :deep(.ant-message) {
+    z-index: 1073;
+  }
+}
+
+.metadata-result-total {
+  color: @primary-color;
 }
 </style>

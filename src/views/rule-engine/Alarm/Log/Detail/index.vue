@@ -20,15 +20,15 @@
                 <template #alarmTime="slotProps">{{
                     dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss')
                 }}</template>
-                <template #sourceId="slotProps"
-                    >设备ID：<a-button
+                <template #sourceName="slotProps"
+                    >设备名称：<a-button
                         type="link"
                         @click="() => gotoDevice(slotProps.sourceId)"
-                        >{{ slotProps.sourceId }}</a-button
+                        >{{ slotProps.sourceName }}</a-button
                     ></template
                 >
                 <template #action="slotProps">
-                    <j-space
+                    <j-space :size="16"
                         ><template
                             v-for="i in getActions(slotProps, 'table')"
                             :key="i.key"
@@ -128,7 +128,7 @@ const getActions = (
             tooltip: {
                 title: '查看',
             },
-            icon: 'SearchOutlined',
+            icon: 'EyeOutlined',
             onClick: () => {
                 current.value = data;
                 visible.value = true;
@@ -213,14 +213,21 @@ watch(
                     },
                     {
                         title: '告警源',
-                        dataIndex: 'sourceId',
-                        key: 'sourceId',
+                        dataIndex: 'sourceName',
+                        key: 'sourceName',
                         scopedSlots: true,
+                        search: {
+                            type: 'string',
+                        },
                     },
                     {
                         title: '告警原因',
                         dataIndex: 'actualDesc',
                         key: 'actualDesc',
+                        scopedSlots: true,
+                        search: {
+                            type: 'string',
+                        },
                     },
                     {
                         title: '操作',

@@ -35,7 +35,7 @@
                                         </span>
                                         <AIcon
                                             type="PlusOutlined"
-                                            style="color: #1d39c4"
+                                            style="color: #1677ff"
                                             @click="addTable"
                                         />
                                     </div>
@@ -49,7 +49,9 @@
                 </div>
                 <div class="right">
                     <div class="btns">
-                        <j-button type="primary" @click="clickSave">保存</j-button>
+                        <j-button type="primary" @click="clickSave"
+                            >保存</j-button
+                        >
                     </div>
                     <j-form ref="formRef" :model="table">
                         <j-table
@@ -102,7 +104,9 @@
                                     </j-form-item>
                                 </template>
                                 <template v-else-if="column.key === 'length'">
-                                    <j-form-item :name="['data', index, 'length']">
+                                    <j-form-item
+                                        :name="['data', index, 'length']"
+                                    >
                                         <j-input-number
                                             v-model:value="record.length"
                                             :min="0"
@@ -112,7 +116,9 @@
                                     </j-form-item>
                                 </template>
                                 <template v-else-if="column.key === 'scale'">
-                                    <j-form-item :name="['data', index, 'scale']">
+                                    <j-form-item
+                                        :name="['data', index, 'scale']"
+                                    >
                                         <j-input-number
                                             v-model:value="record.scale"
                                             :min="0"
@@ -145,7 +151,9 @@
                                     </j-form-item>
                                 </template>
                                 <template v-else-if="column.key === 'comment'">
-                                    <j-form-item :name="['data', index, 'comment']">
+                                    <j-form-item
+                                        :name="['data', index, 'comment']"
+                                    >
                                         <j-input
                                             v-model:value="record.comment"
                                             placeholder="请输入说明"
@@ -234,8 +242,7 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { FormInstance } from 'ant-design-vue';
-import { DataNode } from 'ant-design-vue/lib/tree';
-import _ , { cloneDeep } from 'lodash-es';
+import _, { cloneDeep } from 'lodash-es';
 import type { dbColumnType, dictItemType, sourceItemType } from '../typing';
 
 const id = useRoute().query.id as string;
@@ -265,7 +272,7 @@ const columns = [
         title: '不能为空',
         dataIndex: 'notnull',
         key: 'notnull',
-        width: 130
+        width: 130,
     },
     {
         title: '说明',
@@ -377,13 +384,15 @@ const addRow = () => {
 
 const clickDel = (row: any, index: number) => {
     if (row.scale !== undefined) {
-        delSaveRow_api(id, leftData.selectedKeys[0], [row.name]).then(
-            (resp: any) => {
-                if (resp.status === 200) {
-                    table.data.splice(index, 1);
-                }
-            },
-        );
+        const response = delSaveRow_api(id, leftData.selectedKeys[0], [
+            row.name,
+        ]);
+        response.then((resp: any) => {
+            if (resp.status === 200) {
+                table.data.splice(index, 1);
+            }
+        });
+        return response;
     } else {
         table.data.splice(index, 1);
     }
@@ -393,8 +402,8 @@ const clickSave = () => {
     formRef.value.validate().then((_data: any) => {
         const columns = cloneDeep(table.data);
         columns.forEach((item: any) => {
-            delete item?.old_id
-            delete item?.index
+            delete item?.old_id;
+            delete item?.index;
         });
         if (!columns.length) {
             onlyMessage('请配置数据源字段', 'error');
@@ -435,6 +444,14 @@ const handleOk = () => {
             dialog.visible = false;
             addFormRef.value?.resetFields();
         });
+    saveTable_api(id, {
+        name: dialog.form.name,
+        columns: [],
+    }).then((resp) => {
+        if (resp.status === 200) {
+            onlyMessage('操作成功');
+        }
+    });
 };
 
 const handleCancel = () => {
@@ -507,9 +524,9 @@ const checkName = (_: any, value: any) =>
         flex-basis: 280px;
         padding: 0 24px;
         box-sizing: border-box;
-        width:300px;
-        height:100%;
-        .tree{
+        width: 300px;
+        height: 100%;
+        .tree {
             height: 680px;
             overflow-y: auto;
         }

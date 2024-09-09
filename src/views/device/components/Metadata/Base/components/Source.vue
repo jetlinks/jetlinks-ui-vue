@@ -18,7 +18,7 @@
       v-model:visible="modalVisible"
       :bodyStyle="{
                 width: '450px',
-                height: myValue === 'rule' ? '300px' : '90px',
+                height: myValue === 'rule' ? '300px' : '92px',
             }"
       placement="bottomRight"
       @ok="confirm"
@@ -30,6 +30,7 @@
               v-if="modalVisible"
               :source="myValue"
               :value="record"
+              :isProduct="isProduct"
               :dataSource="dataSource"
               ref="virtualRuleRef"
             />
@@ -38,7 +39,7 @@
       </template>
       <a-button style="padding: 0" type="link" :disabled="disabled" @click="handleSearch">
         <template #icon>
-          <AIcon type="EditOutlined"/>
+          <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !value.type?.length}"/>
         </template>
       </a-button>
     </PopoverModal>
@@ -50,7 +51,7 @@
     >
       <a-button style="padding: 0" type="link" @click="handleSearch">
         <template #icon>
-          <AIcon type="MoreOutlined"/>
+          <AIcon type="MoreOutlined" />
         </template>
       </a-button>
       <template #overlay>
@@ -71,6 +72,7 @@
                     <VirtualRule
                       :source="myValue"
                       :value="record"
+                      :isProduct="isProduct"
                       :dataSource="dataSource"
                       ref="virtualRuleRef"
                     />
@@ -111,37 +113,14 @@ import {provide, Ref} from 'vue';
 import {queryProductVirtualProperty} from '@/api/device/product';
 import {useProductStore} from '@/store/product';
 import {PopoverModal} from '@/components/Metadata/Table'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
+import {sourceType} from "@/views/device/components/Metadata/Base/utils";
 
 const instanceStore = useInstanceStore();
 const productStore = useProductStore();
 const tableWrapperRef = useTableWrapper()
 
-const PropertySource: { label: string; value: string }[] = isNoCommunity
-  ? [
-    {
-      value: 'device',
-      label: '设备',
-    },
-    {
-      value: 'manual',
-      label: '手动',
-    },
-    {
-      value: 'rule',
-      label: '规则',
-    },
-  ]
-  : [
-    {
-      value: 'device',
-      label: '设备',
-    },
-    {
-      value: 'manual',
-      label: '手动',
-    },
-  ];
+const PropertySource = ref<Array<{ label: string; value: string }>>(sourceType.filter(item => isNoCommunity || (!isNoCommunity && item.value !== 'rule')))
 
 type SourceType = 'device' | 'manual' | 'rule' | '';
 
@@ -150,7 +129,10 @@ type Emit = {
 };
 
 
-const showReset = ref(false);
+const showReset = computed(() => {
+  return myValue.value === 'rule' && props.target === 'device' && props.isProduct
+})
+
 const props = defineProps({
   value: {
     type: Object,
@@ -174,6 +156,10 @@ const props = defineProps({
     default: () => ({})
   },
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  isProduct: {
     type: Boolean,
     default: false
   }
@@ -298,14 +284,6 @@ watch(
   {immediate: true},
 );
 
-onMounted(() => {
-  if (props.disabled) {
-    showReset.value = true
-  }
-  // if(isNoCommunity && myValue.value === 'rule'){
-  //     handleSearch()
-  // }
-})
 </script>
 
 <style scoped>

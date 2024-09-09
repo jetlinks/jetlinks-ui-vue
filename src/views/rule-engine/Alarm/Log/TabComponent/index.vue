@@ -38,13 +38,18 @@
                         <template #content>
                             <div class="alarmTitle">
                                 <div class="alarmName">
-                                    <Ellipsis style="width: calc(100% - 100px)">
-                                        <span style="font-weight: 500">
+                                    <Ellipsis style="width: 100%">
+                                        <span
+                                            style="
+                                                font-weight: 500;
+                                                font-size: 16px;
+                                            "
+                                        >
                                             {{ slotProps.alarmName }}
                                         </span>
                                     </Ellipsis>
                                 </div>
-                                <div
+                                <!-- <div
                                     class="alarmLevel"
                                     :style="{
                                         backgroundColor: levelColorMap.get(
@@ -60,7 +65,13 @@
                                             }}
                                         </span>
                                     </Ellipsis>
-                                </div>
+                                </div> -->
+                              <div style="display: flex;max-width: 50%;">
+                                <LevelIcon :level="slotProps.level" ></LevelIcon>
+                                <Ellipsis>
+                                  {{ levelMap[slotProps.level] }}
+                                </Ellipsis>
+                              </div>
                             </div>
                             <j-row :gutter="24">
                                 <j-col
@@ -72,12 +83,12 @@
                                     "
                                     class="content-left"
                                 >
+                                    <div class="content-title">告警维度</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.targetName }}
                                         </div></Ellipsis
                                     >
-                                    <div class="content-title">告警维度</div>
                                 </j-col>
                                 <j-col
                                     :span="
@@ -87,6 +98,9 @@
                                             : 8
                                     "
                                 >
+                                    <div class="content-title">
+                                        最近告警时间
+                                    </div>
                                     <Ellipsis>
                                         <div>
                                             {{
@@ -107,9 +121,6 @@
                                             }}
                                         </div>
                                     </Ellipsis>
-                                    <div class="content-title">
-                                        最近告警时间
-                                    </div>
                                 </j-col>
                                 <j-col
                                     :span="
@@ -119,12 +130,12 @@
                                             : 8
                                     "
                                 >
-                                    <Ellipsis
-                                        ><Duration :data="slotProps"></Duration
-                                    ></Ellipsis>
                                     <div class="content-title">
                                         告警持续时长
                                     </div>
+                                    <Ellipsis
+                                        ><Duration :data="slotProps"></Duration
+                                    ></Ellipsis>
                                 </j-col>
                                 <j-col
                                     :span="6"
@@ -133,15 +144,13 @@
                                         slotProps.targetType === 'device'
                                     "
                                 >
+                                    <div class="content-title">告警原因</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.actualDesc || '--' }}
                                         </div></Ellipsis
                                     >
-                                    <div class="content-title">
-                                        告警原因
-                                    </div></j-col
-                                >
+                                </j-col>
                             </j-row>
                         </template>
                         <template #actions="item">
@@ -188,7 +197,6 @@
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
 import { getOrgList, query, getAlarmProduct } from '@/api/rule-engine/log';
-import { queryLevel } from '@/api/rule-engine/config';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
@@ -221,13 +229,6 @@ titleMap.set('product', '产品');
 titleMap.set('device', '设备');
 titleMap.set('other', '其他');
 titleMap.set('org', '组织');
-
-const levelColorMap = new Map();
-levelColorMap.set('level1', 'rgba(229, 0,  18 )');
-levelColorMap.set('level2', 'rgba(255, 148,  87)');
-levelColorMap.set('level3', 'rgba(250, 189,  71)');
-levelColorMap.set('level4', 'rgba(153, 153, 153)');
-levelColorMap.set('level5', 'rgba(196, 196,  196)');
 
 const columns = [
     {
@@ -338,13 +339,14 @@ const newColumns = computed(() => {
                         },
                     ];
                     const resp: any = await getAlarmProduct({
+                        paging:false,
                         sorts: [{ name: 'alarmTime', order: 'desc' }],
                         terms: termType,
                     });
                     const listMap: Map<string, any> = new Map();
 
                     if (resp.status === 200) {
-                        resp.result.data.forEach((item) => {
+                        resp.result.forEach((item) => {
                             if (item.productId) {
                                 listMap.set(item.productId, {
                                     label: item.productName,
@@ -402,16 +404,17 @@ const search = (data: any) => {
             type: 'and',
         });
     }
-    if (
-        props.type === 'device' &&
-        data?.terms[0]?.terms[0]?.column === 'product_id'
-    ) {
-        params.value.terms = [
-            {
-                column: 'targetId$dev-instance',
-                value: [data?.terms[0]?.terms[0]],
-            },
-        ];
+    if (props.type === 'device') {
+        data?.terms.forEach((i: any, _index: number) => {
+            i.terms.forEach((item: any, index: number) => {
+                if (item.column === 'product_id') {
+                    params.value.terms[_index].terms[index] = {
+                        column: 'targetId$dev-instance',
+                        value: [data?.terms[0]?.terms[0]],
+                    };
+                }
+            });
+        });
     }
     if (props.id) {
         params.value.terms.push({
@@ -528,7 +531,7 @@ onMounted(() => {
 }
 .alarmTitle {
     display: flex;
-    width: 30%;
+    width: 60%;
 
     .alarmLevel {
         width: 30%;
@@ -536,7 +539,9 @@ onMounted(() => {
         padding: 5px;
     }
     .alarmName {
-        width: 50%;
+        max-width: 30%;
+        color: #1a1a1a;
+        margin-right: 10px;
     }
 }
 </style>

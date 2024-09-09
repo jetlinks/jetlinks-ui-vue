@@ -24,12 +24,12 @@ import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import { PropType } from 'vue';
 
-type Props = [Dayjs, Dayjs] | undefined
+type Props = [Dayjs, Dayjs] | undefined;
 
 const props = defineProps({
     modelValue: {
         type: Object as PropType<Props>,
-        default: undefined
+        default: undefined,
     },
 });
 
@@ -38,14 +38,12 @@ type Emits = {
 };
 
 const emit = defineEmits<Emits>();
-
 const radioValue = ref<string>('today');
 const dateValue = ref<Props>();
-
 const onRangeChange = (value: Props) => {
     emit('update:modelValue', value);
     radioValue.value = '';
-}
+};
 
 const getTime = (type: string): Props => {
     let st: number = 0;
@@ -55,10 +53,10 @@ const getTime = (type: string): Props => {
     } else if (type === 'week') {
         st = dayjs().subtract(6, 'days').valueOf();
     } else if (type === 'month') {
-        st = dayjs().subtract(29, 'days').valueOf();
+        st = dayjs().subtract(30, 'days').valueOf();
     }
-    return [dayjs(st), dayjs(et)]
-}
+    return [dayjs(st), dayjs(et)];
+};
 
 const onRadioChange = (e: any) => {
     const value: string = e.target.value;
@@ -67,14 +65,14 @@ const onRadioChange = (e: any) => {
 };
 
 onMounted(() => {
-    radioValue.value = 'today'
+    radioValue.value = 'today';
     emit('update:modelValue', getTime('today'));
-})
+});
 
 watch(
     () => props.modelValue,
     (newVal: Props) => {
-        dateValue.value = newVal
+        dateValue.value = newVal;
     },
     { immediate: true, deep: true },
 );

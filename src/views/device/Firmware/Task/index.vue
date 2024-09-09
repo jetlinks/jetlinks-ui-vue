@@ -1,242 +1,207 @@
 <template>
-    <page-container>
-        <pro-search :columns="columns" target="search-firmware-task" @search="handleSearch" />
-        <j-pro-table
-            ref="tableRef"
-            model="TABLE"
-            :columns="columns"
-            :request="task"
-            :defaultParams="{
-                sorts: [{ name: 'createTime', order: 'desc' }],
-            }"
-            :params="params"
-        >
-            <template #headerTitle>
-                <PermissionButton
-                    type="primary"
-                    @click="handleAdd"
-                    hasPermission="device/Firmware:add"
-                >
-                    <template #icon><AIcon type="PlusOutlined" /></template>
-                    新增
-                </PermissionButton>
-            </template>
-            <template #mode="slotProps">
-                <span>{{ slotProps.mode.text }}</span>
-            </template>
-            <template #progress="slotProps">
-                <span>{{ slotProps.progress }}%</span>
-            </template>
-            <template #action="slotProps">
-                <j-space>
-                    <template v-for="i in getActions(slotProps)" :key="i.key">
-                        <PermissionButton
-                            :disabled="i.disabled"
-                            :popConfirm="i.popConfirm"
-                            :tooltip="{
-                                ...i.tooltip,
+    <a-drawer
+        visible
+        title="升级任务"
+        placement="right"
+        :width="700"
+        :closable="false"
+        @close="$emit('closeDrawer')"
+    >
+        <template #extra>
+            <PermissionButton
+                v-if=!props?.showPosition
+                type="primary"
+                hasPermission="device/Firmware:add"
+                @click="handleAdd"
+            >
+                + 新增任务
+            </PermissionButton>
+        </template>
+        <div v-for="item in taskList" class="task">
+            <div class="taskTitle">
+                <div class="taskTitleLeft">
+                    <div class="upgradeMode">{{ item?.mode?.text }}</div>
+                    <div class="title">
+                        <Ellipsis>{{ item?.name }}</Ellipsis>
+                    </div>
+                </div>
+                <div class="taskTitleRight">
+                    <div>
+                        完成比例<span
+                            class="progress"
+                            :style="{
+                                color:
+                                    item?.progress === 100
+                                        ? '#52C41A'
+                                        : '#FF4D4F',
                             }"
-                            style="padding: 0px"
-                            @click="i.onClick"
-                            type="link"
-                            :hasPermission="'device/Firmware:' + i.key"
                         >
-                            <template #icon><AIcon :type="i.icon" /></template>
-                        </PermissionButton>
-                    </template>
-                </j-space>
-            </template>
-        </j-pro-table>
-        <Save v-if="visible" :data="current" @change="saveChange" />
-    </page-container>
+                            {{ (item?.progress || 0) + '%' }}
+                        </span>
+                    </div>
+                    <PermissionButton
+                        type="link"
+                        hasPermission="device/Firmware:view"
+                        @click="() => taskDetail(item)"
+                        >任务详情</PermissionButton
+                    >
+                </div>
+            </div>
+            <a-descriptions bordered :column="2">
+                <a-descriptions-item
+                    v-if="item?.mode?.value === 'push'"
+                    label="响应超时时间"
+                    >{{
+                        item?.responseTimeoutSeconds + 's'
+                    }}</a-descriptions-item
+                >
+                <a-descriptions-item label="升级超时时间">{{
+                    item?.timeoutSeconds + 's'
+                }}</a-descriptions-item>
+                <a-descriptions-item label="升级设备">{{
+                    item?.deviceId?.length ? '选择设备' : '所有设备'
+                }}</a-descriptions-item>
+                <a-descriptions-item label="说明"
+                    ><Ellipsis style="max-width: 200px;">
+                        {{ item?.description || '--' }}
+                    </Ellipsis></a-descriptions-item
+                >
+            </a-descriptions>
+        </div>
+        <JEmpty v-if="taskList.length === 0"></JEmpty>
+    </a-drawer>
+    <Save
+        v-if="visible"
+        :data="current"
+        :productId="productId"
+        :firmwareId="firmwareId"
+        @change="saveChange"
+    ></Save>
+    <TaskDetail
+        v-if="detailVisible"
+        @close-detail="closeDetail"
+        @refresh="queryTaskList"
+        :deviceId="props.deviceId"
+        :data="currentTask"
+    />
 </template>
-<script lang="ts" setup name="TaskPage">
-import type { ActionsType } from '@/components/Table/index';
-import { task, startTask, stopTask } from '@/api/device/firmware';
-import { onlyMessage } from '@/utils/comm';
+
+<script setup name="TaskDrawer">
+import { queryTaskPaginateNot } from '@/api/device/firmware';
 import Save from './Save/index.vue';
-import { useMenuStore } from 'store/menu';
-
-const menuStory = useMenuStore();
-const tableRef = ref<Record<string, any>>({});
-const route = useRoute();
-const params = ref<Record<string, any>>({});
-
+import TaskDetail from './Detail/index.vue';
+import { onlyMessage } from '@/utils/comm';
+const emit = defineEmits(['closeDrawer']);
+const props = defineProps({
+    firmwareId: {
+        type: String,
+        default: '',
+    },
+    productId: {
+        type: String,
+        default: '',
+    },
+    showPosition:{
+        type:String
+    },
+    deviceId:{
+        type:String
+    }
+});
+const taskList = ref([]);
 const visible = ref(false);
-const current = ref({});
-
-const columns = [
-    {
-        title: '任务名称',
-        dataIndex: 'name',
-        key: 'name',
-        fixed: 'left',
-        width: 200,
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '推送方式',
-        dataIndex: 'mode',
-        key: 'mode',
-        ellipsis: true,
-        search: {
-            type: 'select',
-            options: [
-                {
-                    label: '设备拉取',
-                    value: 'pull',
-                },
-                {
-                    label: '平台推送',
-                    value: 'push',
-                },
-            ],
-        },
-        scopedSlots: true,
-        width: 200,
-    },
-
-    {
-        title: '说明',
-        dataIndex: 'description',
-        key: 'description',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
-        title: '完成比例',
-        dataIndex: 'progress',
-        key: 'progress',
-        ellipsis: true,
-        scopedSlots: true,
-    },
-    {
-        title: '操作',
-        key: 'action',
-        fixed: 'right',
-        width: 200,
-        scopedSlots: true,
-    },
-];
-
-const defaultParams =
-    {
+const detailVisible = ref(false);
+const current = ref();
+//任务详情传参
+const currentTask = ref();
+const queryTaskList = async () => {
+    const param = {
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [
             {
-                column: 'firmwareId',
-                value: route.query.id,
+                terms: [
+                    {
+                        column: 'firmwareId',
+                        value: props.firmwareId,
+                    },
+                ],
             },
         ],
-}
-
-
-const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
-    if (!data) {
-        return [];
+    };
+    const res = await queryTaskPaginateNot(param);
+    if (res.status === 200) {
+        if(props?.deviceId){
+            console.log(props.deviceId)
+            taskList.value = res.result.filter((i)=>{
+                return !i?.deviceId ||  i.deviceId.includes(props.deviceId)
+            })
+        }else{
+            taskList.value = res.result;
+        }
+        if (currentTask.value?.id) {
+            currentTask.value = taskList.value.find(
+                (i) => i.id === currentTask.value.id,
+            );
+        }
     }
-
-    const stop = data.waiting > 0 && data?.state?.value === 'processing';
-    const pause = data?.state?.value === 'canceled';
-
-    const Actions = [
-        {
-            key: 'view',
-            text: '详情',
-            tooltip: {
-                title: '详情',
-            },
-            icon: 'icon-details',
-            onClick: async () => {
-                handleDetails(data.id);
-            },
-        },
-        {
-            key: 'view',
-            text: '查看',
-            tooltip: {
-                title: '查看',
-            },
-            icon: 'EyeOutlined',
-            onClick: async () => {
-                handleEye(data);
-            },
-        },
-    ];
-
-    if (stop) {
-        Actions.push({
-            key: 'update',
-            text: '停止',
-            tooltip: {
-                title: '停止',
-            },
-            onClick: async () => {
-                const res = await stopTask(data.id);
-                if (res.success) {
-                    onlyMessage('操作成功', 'success');
-                    tableRef.value.reload();
-                }
-            },
-            icon: 'StopOutlined',
-        });
-    } else if (pause) {
-        Actions.push({
-            key: 'update',
-            text: '继续升级',
-            tooltip: {
-                title: '继续升级',
-            },
-            onClick: async () => {
-                const res = await startTask(data.id, ['canceled']);
-                if (res.success) {
-                    onlyMessage('操作成功', 'success');
-                    tableRef.value.reload();
-                }
-            },
-            icon: 'ControlOutlined',
-        });
-    }
-
-    return Actions;
 };
-
 const handleAdd = () => {
+    visible.value = true;
     current.value = {};
-    visible.value = true;
 };
-
-const handleEye = (data: object) => {
-    current.value = toRaw({ ...data, view: true });
-    visible.value = true;
-};
-
-const handleDetails = (id: string) => {
-    menuStory.jumpPage('device/Firmware/Task/Detail', { id });
-};
-const saveChange = (value: boolean) => {
+const saveChange = (value) => {
     visible.value = false;
     current.value = {};
     if (value) {
         onlyMessage('操作成功', 'success');
-        tableRef.value.reload();
+        queryTaskList();
     }
 };
-
-/**
- * 搜索
- * @param params
- */
-const handleSearch = (e: any) => {
-      const query = {"terms":[
-        e,defaultParams
-      ]}
-      params.value = query
+const taskDetail = (data) => {
+    detailVisible.value = true;
+    currentTask.value = data;
 };
+const closeDetail = () => {
+    detailVisible.value = false;
+    queryTaskList();
+};
+onMounted(() => {
+    queryTaskList();
+});
 </script>
-
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.task {
+    margin-bottom: 20px;
+}
+.taskTitle {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    .taskTitleLeft,
+    .taskTitleRight {
+        display: flex;
+        line-height: 32px;
+    }
+    .progress {
+        margin-left: 10px;
+    }
+    .upgradeMode {
+        background: #e6f4ff;
+        border-radius: 4px;
+        border: 1px solid #91caff;
+        height: 22px;
+        padding: 0 8px;
+        color: #1677ff;
+        margin-top: 4px;
+        line-height: 22px;
+    }
+    .title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-left: 12px;
+        color: #1a1a1a;
+        max-width: 300px;
+    }
+}
+</style>

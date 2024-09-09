@@ -24,7 +24,7 @@ const assignmentKey = (data: any[]): any[] => {
     return item;
   });
 };
-
+const defaultBranchId = randomNumber()
 export const defaultBranches = [
   {
     when: [
@@ -45,7 +45,7 @@ export const defaultBranches = [
         key: 'terms_1',
       },
     ],
-    key: 'branches_1',
+    key: defaultBranchId,
     shakeLimit: {
       enabled: false,
       time: 1,
@@ -54,8 +54,8 @@ export const defaultBranches = [
     },
     then: [],
     executeAnyway: true,
-    branchId: Math.floor(Math.random() * 100000000),
-    branchName:''
+    branchId: defaultBranchId,
+    branchName:'条件'
   },
 ];
 
@@ -68,6 +68,10 @@ const defaultOptions = {
           terms: [['','eq','','and']],
         },
       ],
+      branchName:'条件',
+      key:defaultBranchId,
+      executeAnyway: true,
+      groupIndex: 1
     },
   ],
 };
@@ -170,6 +174,7 @@ export const useSceneStore = defineStore('scene', () => {
         }
         return item
       })
+
       data.value = {
         ...result,
         trigger: result.trigger || {},

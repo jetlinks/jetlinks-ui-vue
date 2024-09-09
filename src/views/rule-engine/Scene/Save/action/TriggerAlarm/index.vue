@@ -5,6 +5,7 @@
         :width="1000"
         :keyboard="false"
         :maskClosable="false"
+        :footer="null"
         @cancel="emit('close')"
         @ok="emit('close')"
     >
@@ -23,7 +24,7 @@
             ref="tableRef"
             model="TABLE"
             :columns="columns"
-            :request="queryAlarmList"
+            :request="queryData"
             :bodyStyle="{ padding: 0 }"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
@@ -35,7 +36,7 @@
                                 value: `${id}:${actionId || branchId}`,
                             },
                             {
-                              column: 'branchIndex$rule-bind-alarm',
+                              column: 'id$rule-bind-alarm',
                               value: `${id}:${-1}`,
                               type: 'or'
                             },
@@ -45,9 +46,12 @@
             }"
         >
             <template #level="slotProps">
-              <j-ellipsis>
-                {{ levelList.find(i => slotProps.level === i.level)?.title || '' }}
-              </j-ellipsis>
+              <div style="display: flex;">
+                <LevelIcon :level="slotProps.level" ></LevelIcon>
+                <Ellipsis>
+                  {{ levelMap[slotProps.level] }}
+                </Ellipsis>
+              </div>
             </template>
             <template #targetType="slotProps">
                 {{ map[slotProps.targetType] }}
@@ -94,14 +98,12 @@
 </template>
 
 <script setup lang="ts">
-import { queryAlarmList } from '@/api/rule-engine/scene';
-import {
-    getAlarmLevel,
-    getAlarmConfigCount,
-} from '@/api/rule-engine/dashboard';
+import { queryAlarmPage } from '@/api/rule-engine/scene';
 import AlarmModal from "./AlarmModal.vue";
-import {unBindAlarm} from "@/api/rule-engine/configuration";
+import {queryBindScene, unBindAlarm, unbindScene} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
+import { EventEmitter } from '@/views/rule-engine/Scene/Save/util'
+import {useAlarmLevel, useRequest} from "@/hook";
 
 const props = defineProps({
     id: {
@@ -124,10 +126,22 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const count = ref<number>(0);
-const levelList = ref<any[]>([]);
 
 const visible = ref(false)
 const tableRef = ref()
+const { levelMap } = useAlarmLevel();
+
+const { data: activeKeys } = useRequest<any, Record<string, any>>(queryBindScene, {
+  defaultParams: { terms: [{ column: 'ruleId', value: props.id}]},
+  onSuccess(res) {
+    const _result = res.result.data || []
+    return _result.reduce((prev: Record<string, any>, next: { branchIndex: string, ruleId: string }) => {
+      prev[next.ruleId] = next.branchIndex
+      return prev
+    }, {})
+  },
+  defaultValue: []
+})
 
 const map = {
     product: '产品',
@@ -171,9 +185,19 @@ const columns = [
     }
 ];
 
+/**
+ * 发布订阅
+ */
+const eventEmit = () => {
+  const _key = props.actionId || props.branchId
+  EventEmitter.emit(`${_key}_alarm`, { updateTime: new Date().getTime()})
+}
+
 const onOk = () => {
   visible.value = false
   tableRef.value.reload()
+
+  eventEmit()
 }
 
 const showAlarm = () => {
@@ -181,42 +205,50 @@ const showAlarm = () => {
 }
 
 const unBind = async (record: any) => {
-  const res = await unBindAlarm(props.id, record.id, [props.actionId])
+  const branchId = activeKeys.value![props.id]
+  const res = branchId === -1 ? await unbindScene(record.id, [props.id]) : await unBindAlarm(props.id, record.id, [props.actionId || props.branchId])
   if (res.success) {
     tableRef.value.reload()
     onlyMessage('操作成功！')
+    eventEmit()
   }
 }
 
-watch(
-    () => props.id,
-    (newId) => {
-        if (newId) {
-            getAlarmConfigCount({
-                terms: [
-                    {
-                        column: 'id$rule-bind-alarm',
-                        // value: newId,
-                        value: props.branchId ? `${newId}:${props.branchId}` : newId,
-                    },
-                ],
-            }).then((resp) => {
-                if (resp.status === 200) {
-                    count.value = (resp.result || 0) as number;
-                }
-            });
-        }
-    },
-    { immediate: true },
-);
+const queryData = async (terms: any) => {
 
-onMounted(() => {
-    getAlarmLevel().then((resp) => {
-        if (resp.status === 200) {
-            levelList.value = resp.result?.levels || []
-        }
-    });
-});
+  const resp = await queryAlarmPage(terms)
+
+  count.value = resp.result.total
+
+  return {
+    code: resp.status,
+    result: resp.result,
+    status: resp.status,
+  };
+}
+
+// watch(
+//     () => props.id,
+//     (newId) => {
+//         if (newId) {
+//             getAlarmConfigCount({
+//                 terms: [
+//                     {
+//                         column: 'id$rule-bind-alarm',
+//                         // value: newId,
+//                         value: props.branchId ? `${newId}:${props.branchId}` : newId,
+//                     },
+//                 ],
+//             }).then((resp) => {
+//                 if (resp.status === 200) {
+//                     count.value = (resp.result || 0) as number;
+//                 }
+//             });
+//         }
+//     },
+//     { immediate: true },
+// );
+
 </script>
 <style scoped lang="less">
 .related-alarms-content {

@@ -17,9 +17,6 @@
                 }"
                 :params="queryParams"
                 :rowSelection="{
-                    // selectedRowKeys: table._selectedRowKeys.value,
-                    // onChange:(keys:string[])=>table._selectedRowKeys.value = [...keys],
-                    // onSelectNone: table.cancelSelect
                     selectedRowKeys: table._selectedRowKeys.value,
                     onSelect: table.onSelect,
                     onSelectAll: table.onSelectAll,
@@ -44,7 +41,7 @@
                                         <PermissionButton
                                             :hasPermission="`${permission}:bind`"
                                             :popConfirm="{
-                                                title: `是否批量解除绑定`,
+                                                title: `确认批量解除绑定？`,
                                                 onConfirm: () =>
                                                     table.clickUnBind(),
                                             }"
@@ -97,7 +94,7 @@
                         </template>
                         <template #content>
                             <h3 class="card-item-content-title" style='margin-bottom: 18px;'>
-                                {{ slotProps.name }}  
+                                {{ slotProps.name }}
                             </h3>
                             <j-row>
                                 <j-col :span="12">
@@ -142,7 +139,7 @@
                             <PermissionButton
                                 :hasPermission="`${permission}:bind`"
                                 :popConfirm="{
-                                    title: `是否解除绑定`,
+                                    title: `确认解除绑定？`,
                                     onConfirm: () =>
                                         table.clickUnBind(slotProps),
                                 }"
@@ -173,12 +170,12 @@
                 <template #registryTime="slotProps">
                     <span>{{
                         slotProps.registryTime ? dayjs(slotProps.registryTime).format(
-                            'YYYY-MM-DD YY:mm:ss',
+                            'YYYY-MM-DD HH:mm:ss',
                         ) : '-'
                     }}</span>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <PermissionButton
                             v-for="i in table.getActions(slotProps, 'table')"
                             :hasPermission="i.permission"
@@ -307,6 +304,7 @@ const columns = [
         dataIndex: 'permission',
         key: 'permission',
         ellipsis: true,
+        width: 300,
         scopedSlots: true,
     },
     {
@@ -383,7 +381,7 @@ const table = {
                     key: 'unbind',
                     tooltip: { title: '解除绑定' },
                     popConfirm: {
-                        title: `是否解除绑定`,
+                        title: `确认解除绑定？`,
                         onConfirm: () => table.clickUnBind(data),
                     },
                     icon: 'DisconnectOutlined',
@@ -580,10 +578,12 @@ const table = {
                 assetIdList: ids,
             },
         ];
-        unBindDeviceOrProduct_api('device', params).then(() => {
+        const response = unBindDeviceOrProduct_api('device', params)
+        response.then(() => {
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response
     },
     refresh: () => {
         nextTick(() => {

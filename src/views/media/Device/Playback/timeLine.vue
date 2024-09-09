@@ -24,8 +24,8 @@
                     "
                 ></div>
             </div>
-            <div id="btn" v-show="timePosition" class="time-line-btn" :style="{left: timePosition + 'px' }"></div>
-            <div id="time" v-show="timePosition" class="time-line" :style="{left: (timePosition - 15) + 'px' }">
+            <div id="btn" v-show="playTime " class="time-line-btn" :style="{left: timePosition + 'px' }"></div>
+            <div id="time" v-show="playTime " class="time-line" :style="{left: (timePosition - 15) + 'px' }">
                 {{ dayjs(playTime || 0).format('HH:mm:ss') }}
             </div>
         </div>
@@ -216,7 +216,6 @@ const getLineItemStyle = (
     const start = startTime - startT.value > 0 ? startTime - startT.value : 0;
     const _width = LineContentSize.width.value!;
     const itemWidth = ((endTime - startTime) / (24 * 3600000)) * _width;
-  console.log()
     return {
         left: `${(start / (24 * 3600000)) * _width}px`,
         width: `${itemWidth < 1 ? 1 : itemWidth}px`,
@@ -224,9 +223,8 @@ const getLineItemStyle = (
 };
 
 const timePosition = computed(() => {
-  console.log(props.playTime, startT.value, LineContentSize.width.value)
-  console.log(((props.playTime - startT.value) / 3600000 / 24) * LineContentSize.width.value)
-  return ((props.playTime - startT.value) / 3600000 / 24) * LineContentSize.width.value
+  const time = ((props.playTime - startT.value) / 3600000 / 24) * LineContentSize.width.value
+  return props.playTime > startT.value ? time : 0
 })
 
 // const playTimeChange = () => {

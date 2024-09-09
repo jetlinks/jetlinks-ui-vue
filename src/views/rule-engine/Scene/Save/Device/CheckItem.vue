@@ -7,8 +7,9 @@ import { storeToRefs } from 'pinia';
 import { useSceneStore } from '@/store/scene'
 import { Form } from 'jetlinks-ui-components'
 import { queryProductList } from '@/api/device/product'
-import {query as deviceQuery, detail as deviceDetailQuery} from '@/api/device/instance'
+import {query as deviceQuery, detail as deviceDetailQuery, queryNoPagingPost} from '@/api/device/instance'
 import { getTreeData_api } from '@/api/system/department'
+import {queryDetailListNoPaging} from "@/api/device/firmware";
 
 const sceneStore = useSceneStore()
 const { data } = storeToRefs(sceneStore)
@@ -35,8 +36,21 @@ const check = async (): Promise<boolean> => {
 
   // 判断设备是否删除
   if (deviceTrigger.selector === 'fixed') { // 设备
-    const deviceResp = await deviceQuery({ terms: [{ column: 'id', termType: 'in', value: selectorValues?.toString() }]})
-    if (deviceResp.success && (deviceResp.result as any)?.total !== (selectorValues!.length)) {
+    // const deviceResp = await queryDetailListNoPaging({
+    //   terms: [{ column: 'id', termType: 'in', value: selectorValues?.toString() }],
+    //   context: {
+    //     "includeTags": false,
+    //     "includeBind": false,
+    //     "includeRelations": false,
+    //     "includeFirmwareInfos": false
+    //   }
+    // })
+    const deviceResp = await queryNoPagingPost(
+      {
+        terms: [{ terms: [{ column: 'id', termType: 'in', value: selectorValues?.toString() }]}],
+      })
+
+    if (deviceResp.success && deviceResp.result.length !== (selectorValues!.length)) {
       data.value.trigger!.device!.selectorValues = undefined
       return false
     }
@@ -44,6 +58,7 @@ const check = async (): Promise<boolean> => {
     if (selectorValues!.length === 1) {
       const deviceDetailResp = await deviceDetailQuery(selectorValues![0])
       const deviceDetail = deviceDetailResp?.result
+      // const deviceDetail = deviceResp.result[0]
       metadata = JSON.parse(deviceDetail?.metadata || '{}') // 只选中一个设备，以设备物模型为准
     }
   } else if (deviceTrigger.selector === 'org') { // 组织

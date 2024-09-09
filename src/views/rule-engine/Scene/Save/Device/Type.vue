@@ -127,6 +127,8 @@ const topOptions = computed(() => {
     cloneTypeEnum.invokeFunction
   ]
 
+  if (!props.metadata) return baseOptions;
+
   if (props.metadata.events?.length) {
     // baseOptions.push(TypeEnum.reportEvent)
     cloneTypeEnum.reportEvent.disabled = false
@@ -135,17 +137,18 @@ const topOptions = computed(() => {
 
   if (props.metadata.properties?.length) {
     const _properties = props.metadata.properties
-    readProperties.value = _properties.filter((item: any) => item.expands.type?.includes('read')).map(item => ({
+    readProperties.value = _properties.filter((item: any) => item.expands?.type?.includes('read')).map(item => ({
       ...item,
       label: item.name,
       value: item.id
     }))
-    writeProperties.value = _properties.filter((item: any) => item.expands.type?.includes('write')).map(item => ({
+    writeProperties.value = _properties.filter((item: any) => item.expands?.type?.includes('write')).map(item => ({
       ...item,
       label: item.name,
       value: item.id
     }))
-    const reportProperties = _properties.filter((item: any) => item.expands.type?.includes('report')).map(item => ({
+    // 兼容上传的设备物模型没有type时，type值默认为上报
+    const reportProperties = _properties.filter((item: any) => item.expands?.type?.includes('report') || !item.expands?.type).map(item => ({
       ...item,
       label: item.name,
       value: item.id

@@ -62,7 +62,7 @@
                                     <PermissionButton
                                         type="text"
                                         :popConfirm="{
-                                            title: `确定删除`,
+                                            title: `确认删除`,
                                             onConfirm: () =>
                                                 requestBody.clickDel(index),
                                         }"
@@ -108,7 +108,7 @@
                     </j-button>
                 </div>
                 <j-monaco-editor
-                    v-if=" method !=='get' && method !=='patch'"
+                    v-if="showRequestBody"
                     ref="editorRef"
                     language="json"
                     style="height: 100% ; min-height: 200px;"
@@ -144,6 +144,7 @@ const responsesContent = ref({});
 const editorRef = ref();
 const formRef = ref<FormInstance>();
 const method = ref()
+const showRequestBody = ref(!!props.selectApi?.requestBody)
 const requestBody = reactive({
     tableColumns: [
         {
@@ -316,7 +317,7 @@ const pageArr = computed(() => {
                 left: 0;
                 width: 4px;
                 height: 100%;
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 0 3px 3px 0;
                 content: ' ';
             }

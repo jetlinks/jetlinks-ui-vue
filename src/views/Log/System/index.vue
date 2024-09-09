@@ -27,7 +27,7 @@
                 </j-tag>
             </template>
             <template #createTime="slotProps">
-                {{ moment(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
+                {{ dayjs(slotProps.createTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #server="slotProps">
                 {{ slotProps.context.server }}
@@ -35,33 +35,23 @@
 
             <template #action="slotProps">
                 <j-space :size="16">
-                    <j-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <j-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <j-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></j-button>
-                        </j-popconfirm>
-                        <j-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                    <template
+                            v-for="i in getActions(slotProps)"
+                            :key="i.key"
                         >
-                            <j-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
+                            <PermissionButton
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
                                 type="link"
-                                ><AIcon :type="i.icon"
-                            /></j-button>
-                        </j-button>
-                    </j-tooltip>
+                                style="padding: 0 5px"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
                 </j-space>
             </template>
         </j-pro-table>
@@ -70,7 +60,7 @@
         <div>
             <span class="mr-10">[{{ descriptionsData?.threadName }}]</span>
             <span class="mr-10">{{
-                moment(descriptionsData?.createTime).format(
+                dayjs(descriptionsData?.createTime).format(
                     'YYYY-MM-DD HH:mm:ss',
                 )
             }}</span>
@@ -109,7 +99,7 @@
 import type { ActionsType } from '@/components/Table/index';
 import type { SystemLogItem } from '../typings';
 import { querySystem } from '@/api/link/log';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import { modifySearchColumnValue } from '@/utils/comm';
 
@@ -229,7 +219,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 title: '查看',
             },
             icon: 'EyeOutlined',
-            onClick: (data: SystemLogItem) => {
+            onClick: () => {
                 descriptionsData.value = data;
                 visible.value = true;
             },

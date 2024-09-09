@@ -24,17 +24,20 @@
                             )
                         "
                     >
-                        <j-popconfirm
-                            title="确认禁用"
-                            @confirm="handleUndeploy"
-                            v-if="productStore.current.state === 1"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="
-                                !permissionStore.hasPermission(
-                                    'device/Product:action',
-                                )
-                            "
+                        <PermissionButton
+                            style="padding: 0"
+                            type="text"
+                            hasPermission="device/Product:action"
+                            :popConfirm="{
+                                title:
+                                    productStore.current.state === 1
+                                        ? '确认禁用'
+                                        : '确认启用',
+                                onConfirm:
+                                    productStore.current.state === 1
+                                        ? handleUndeploy
+                                        : handleDeploy,
+                            }"
                         >
                             <j-switch
                                 :checked="productStore.current.state === 1"
@@ -46,32 +49,7 @@
                                     )
                                 "
                             />
-                        </j-popconfirm>
-                        <j-popconfirm
-                            title="确认启用"
-                            @confirm="handleDeploy"
-                            v-if="productStore.current.state === 0"
-                            okText="确定"
-                            cancelText="取消"
-                            :disabled="
-                                !permissionStore.hasPermission(
-                                    'device/Product:action',
-                                )
-                            "
-                        >
-                            <j-switch
-                                :unCheckedValue="
-                                    productStore.current.state === 0
-                                "
-                                checked-children="正常"
-                                un-checked-children="禁用"
-                                :disabled="
-                                    !permissionStore.hasPermission(
-                                        'device/Product:action',
-                                    )
-                                "
-                            />
-                        </j-popconfirm>
+                        </PermissionButton>
                     </div>
                     <div style="margin: -5px 0 0 20px" v-else>
                         <j-tooltip>
@@ -132,8 +110,7 @@
             <PermissionButton
                 type="primary"
                 :popConfirm="{
-                    title: `确定应用配置?`,
-                    placement: 'bottomRight',
+                    title: `确认应用配置?`,
                     onConfirm: handleDeploy,
                 }"
                 :disabled="productStore.current?.state === 0"
@@ -171,19 +148,22 @@ import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
 import MetadataMap from './MetadataMap';
 import AlarmRecord from '@/views/device/Instance/Detail/AlarmRecord/index.vue';
-// import Metadata from '../../../components/Metadata/index.vue';
+import Firmware from '@/views/device/Instance/Detail/Firmware/index.vue';
 import {
     _deploy,
     _undeploy,
     getDeviceNumber,
     getProtocolDetail,
 } from '@/api/device/product';
-import { getImage, handleParamsToString, onlyMessage } from '@/utils/comm';
+import { handleParamsToString, onlyMessage } from '@/utils/comm';
 import { useMenuStore } from '@/store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { EventEmitter } from '@/utils/utils';
 import { usePermissionStore } from '@/store/permission';
+import { isNoCommunity } from '@/utils/utils';
+import { useSystem } from '@/store/system';
 
+const { showThreshold } = useSystem();
 const permissionStore = usePermissionStore();
 const menuStory = useMenuStore();
 const route = useRoute();
@@ -216,10 +196,6 @@ const list = ref([
         key: 'Device',
         tab: '设备接入',
     },
-    {
-        key: 'AlarmRecord',
-        tab: '告警记录',
-    },
 ]);
 
 const tabs = {
@@ -229,29 +205,9 @@ const tabs = {
     DataAnalysis,
     MetadataMap,
     AlarmRecord,
+    Firmware,
 };
 
-// watch(
-//     () => route.params.id,
-//     (newId) => {
-//         if (newId && route.name === 'device/Product/Detail') {
-//             productStore.reSet();
-//             productStore.tabActiveKey = 'Info';
-//             productStore.refresh(newId as string);
-//         }
-//     },
-//     { immediate: true, deep: true },
-// );
-onMounted(() => {
-    productStore.refresh(route.params.id as string);
-});
-
-watch(
-    () => productStore.current,
-    () => {
-        getProtocol();
-    },
-);
 const onBack = () => {
     history.back();
 };
@@ -269,26 +225,32 @@ const onTabChange = (e: string) => {
 /**
  * 启用产品
  */
-const handleDeploy = async () => {
+const handleDeploy = () => {
     if (productStore.current.id) {
-        const resp = await _deploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _deploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
 /**
  * 禁用产品
  */
-const handleUndeploy = async () => {
+const handleUndeploy = () => {
     if (productStore.current.id) {
-        const resp = await _undeploy(productStore.current.id);
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            productStore.refresh(productStore.current.id);
-        }
+        const resp = _undeploy(productStore.current.id);
+        resp.then((res) => {
+            if (res.status === 200) {
+                onlyMessage('操作成功！');
+                productStore.refresh(productStore.current.id);
+            }
+        });
+        return resp;
     }
 };
 
@@ -310,58 +272,50 @@ const handleUndeploy = async () => {
  * 是否显示数据解析模块
  */
 const getProtocol = async () => {
+    list.value = [
+        {
+            key: 'Info',
+            tab: '配置信息',
+        },
+        {
+            key: 'Metadata',
+            tab: '物模型',
+            class: 'objectModel',
+        },
+        {
+            key: 'Device',
+            tab: '设备接入',
+        },
+    ];
     if (productStore.current?.messageProtocol) {
         const res: any = await getProtocolDetail(
             productStore.current?.messageProtocol,
         );
         if (res.status === 200) {
-            const paring = res.result?.transports[0]?.features?.find(
+            const transport = res.result?.transports?.find((item: any) => {
+                return item.id === productStore.current?.transportProtocol;
+            });
+            const paring = transport?.features?.find(
                 (item: any) => item.id === 'transparentCodec',
             );
+            const supportFirmware = transport?.features?.find(
+                (item: any) => item.id === 'supportFirmware',
+            );
             if (paring) {
-                list.value = [
-                    {
-                        key: 'Info',
-                        tab: '配置信息',
-                    },
-                    {
-                        key: 'Metadata',
-                        tab: '物模型',
-                        class: 'objectModel',
-                    },
-                    {
-                        key: 'Device',
-                        tab: '设备接入',
-                    },
-                    {
-                        key: 'DataAnalysis',
-                        tab: '数据解析',
-                    },
-                    {
-                        key: 'AlarmRecord',
-                        tab: '告警记录',
-                    },
-                ];
-            } else {
-                list.value = [
-                    {
-                        key: 'Info',
-                        tab: '配置信息',
-                    },
-                    {
-                        key: 'Metadata',
-                        tab: '物模型',
-                        class: 'objectModel',
-                    },
-                    {
-                        key: 'Device',
-                        tab: '设备接入',
-                    },
-                    {
-                        key: 'AlarmRecord',
-                        tab: '告警记录',
-                    },
-                ];
+                list.value.push({
+                    key: 'DataAnalysis',
+                    tab: '数据解析',
+                });
+            }
+            if (
+                supportFirmware &&
+                permissionStore.hasPermission('device/Firmware:view') &&
+                isNoCommunity
+            ) {
+                list.value.push({
+                    key: 'Firmware',
+                    tab: '远程升级',
+                });
             }
         }
         //当前设备接入选择的协议
@@ -374,6 +328,18 @@ const getProtocol = async () => {
             )
         ) {
             list.value.push({ key: 'MetadataMap', tab: '物模型映射' });
+        }
+        if (
+            permissionStore.hasPermission(
+                'rule-engine/Alarm/Configuration:view',
+            ) &&
+            isNoCommunity &&
+            showThreshold
+        ) {
+            list.value.push({
+                key: 'AlarmRecord',
+                tab: '预处理数据',
+            });
         }
     }
 };
@@ -396,10 +362,30 @@ const jumpDevice = () => {
         },
     );
 };
+
+watch(
+    () => productStore.current,
+    () => {
+        getProtocol();
+    },
+);
+
+// watch(
+//   () => route.params.id,
+//   (newId) => {
+//     if (newId && route.name === 'device/Product/Detail') {
+//       productStore.reSet();
+//       productStore.tabActiveKey = 'Info';
+//       productStore.refresh(newId as string);
+//     }
+//   },
+//   { immediate: true, deep: true },
+// );
+
 onMounted(() => {
-    if (routerParams.params?.value.tab) {
-        productStore.tabActiveKey = routerParams.params?.value.tab;
-    }
+    productStore.reSet();
+    productStore.refresh(route.params.id as string);
+    productStore.tabActiveKey = routerParams.params?.value.tab || 'Info';
 });
 </script>
 <style scoped lang="less">
@@ -411,7 +397,6 @@ onMounted(() => {
     max-width: 300px;
     overflow: hidden;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 </style>

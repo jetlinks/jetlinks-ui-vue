@@ -6,13 +6,21 @@ export const doubleParamsKey= ['nbtw','btw']
 export const timeTypeKeys = ['time_gt_now', 'time_lt_now']
 
 
-export const handleParamsData = (data: any[], key: string = 'column'): any[] => {
-  return data?.map(item => {
+export const handleParamsData = (data: any[], key: string = 'column', parentId?: string): any[] => {
+  return data?.map((item, index) => {
+    const hasChildren = !!item.children?.length
+
+    let keyValue = item[key]
+
+    if (hasChildren && key === 'column') {
+      keyValue = item[key] + index
+    }
+
     return {
       ...item,
-      key: item[key],
-      disabled: !!item.children,
-      children: handleParamsData(item.children, key)
+      key: keyValue,
+      disabled: hasChildren,
+      children: handleParamsData(item.children, key, item[key])
     }
   }) || []
 }

@@ -574,7 +574,7 @@ const handleSubmit = () => {
         })
         .finally(() => {
             btnLoading.value = false;
-        }); 
+        });
     }else{
         validate()
         .then(async () => {
@@ -604,7 +604,7 @@ const handleSubmit = () => {
         .finally(() => {
             btnLoading.value = false;
         });
-    }  
+    }
 };
 
 watchEffect(() => {

@@ -19,9 +19,9 @@ const systemNotice = [
             },
             {
                 provider: 'alarm-org',
-                name: '部门告警',
+                name: '组织告警',
                 description:
-                    '当部门类型的告警被触发时，你将在已订阅的方式中收到通知',
+                    '当组织类型的告警被触发时，你将在已订阅的方式中收到通知',
             },
             {
                 provider: 'alarm-other',

@@ -241,11 +241,13 @@
                 </j-form-item>
                 <j-form-item label="权限">
                     <PermissChoose
+                        v-if="showPermissionChoose"
                         :first-width="3"
                         max-height="350px"
                         v-model:value="form.data.permissions"
                         :key="form.data.id || ''"
                     />
+                    <a-spin v-else/>
                 </j-form-item>
             </j-form>
         </div>
@@ -291,6 +293,7 @@ const permission = 'system/Menu';
 // 路由
 const route = useRoute();
 const router = useRouter();
+const showPermissionChoose = ref(false)
 const routeParams = {
     id: route.params.id === ':id' ? undefined : (route.params.id as string),
     ...route.query,
@@ -302,7 +305,6 @@ const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
 const uploadIcon = ref<FormInstance>();
 //菜单应用选项
-const appOptions = ref<any>([]);
 const form = reactive({
     data: {
         name: '',
@@ -323,7 +325,7 @@ const form = reactive({
 
     init: () => {
         // 获取菜单详情
-        routeParams.id &&
+        routeParams.id ?
             getMenuInfo_api(routeParams.id).then((resp: any) => {
                 form.data = {
                     ...(resp.result as formType),
@@ -334,7 +336,8 @@ const form = reactive({
                         resp.result?.accessSupport?.value || 'unsupported',
                 };
                 form.sourceCode = resp.result.code;
-            });
+                showPermissionChoose.value = true
+            }) : showPermissionChoose.value = true
 
         if (isNoCommunity) {
             // 获取关联菜单
@@ -346,8 +349,8 @@ const form = reactive({
                             {
                                 terms: [
                                     {
-                                        value: '%show":true%',
-                                        termType: 'like',
+                                        value: '%show":false%',
+                                        termType: 'nlike',
                                         column: 'options',
                                     },
                                 ],
@@ -484,7 +487,7 @@ type assetType = {
                 left: 0;
                 width: 4px;
                 height: calc(100% - 10px);
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 2px;
                 content: ' ';
             }

@@ -46,15 +46,16 @@
                                 }}</Ellipsis>
                             </div>
                             <div
+                                
                                 @click="(e) => e.stopPropagation()"
-                                v-if="item.id !== 'default_group'"
+                                v-if="item.id !== 'default_group' && admin"
                             >
                                 <PermissionButton
                                     type="text"
                                     style="padding: 0"
                                     hasPermission="system/Role:groupDelete"
                                     :popConfirm="{
-                                        title: `确定要删除？`,
+                                        title: `确认删除？`,
                                         onConfirm: () => deleteGroup(item.id),
                                     }"
                                     :disabled="item.id === 'default_group'"
@@ -94,6 +95,7 @@ import {
 import { randomString } from '@/utils/utils';
 import { useUserInfo } from '@/store/userInfo';
 import { storeToRefs } from 'pinia';
+
 const emit = defineEmits(['selectData']);
 const userInfoStore = useUserInfo();
 const { userInfos } = storeToRefs(userInfoStore);

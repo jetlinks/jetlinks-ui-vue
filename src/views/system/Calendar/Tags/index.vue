@@ -1,7 +1,7 @@
 <template>
     <div class="tagsContainer" ref="tags">
-        <PermissionButton type="text" @click="addTag" :disabled="rapidOn">
-            +新增标签
+        <PermissionButton type="primary"  hasPermission="system/Calendar:add" ghost block @click="addTag" :disabled="rapidOn" style="margin-bottom: 10px;">
+            + 新增标签
         </PermissionButton>
         <div v-for="i in tagsList" class="tag">
             <div class="tagLeft">
@@ -9,23 +9,39 @@
                     :style="{ background: i.color }"
                     class="colorExtractor"
                 ></div>
-                <Ellipsis class="tagName" style="max-width: 90px;" :id="i.id">{{ i.name }}</Ellipsis>
+                <Ellipsis
+                    class="tagName"
+                    style="
+                        width: 120px;
+                        cursor: url('/images/calendar/hover.png'), pointer;
+                    "
+                    :id="i.id"
+                    >{{ i.name }}</Ellipsis
+                >
             </div>
-            <div>
+            <div class="controls">
                 <PermissionButton
                     type="text"
+                     hasPermission="system/Calendar:update"
                     :disabled="i.disabled || rapidOn"
+                    :tooltip="{
+                        title: '编辑'
+                    }"
                     @click="() => editData(i)"
                 >
                     <template #icon>
-                        <AIcon type="FormOutlined" />
+                        <AIcon type="EditOutlined" />
                     </template>
                 </PermissionButton>
                 <PermissionButton
                     type="text"
+                     hasPermission="system/Calendar:delete"
                     :disabled="i.disabled || rapidOn"
+                    :tooltip="{
+                        title: '删除'
+                    }"
                     :popConfirm="{
-                        title: `确定要删除？`,
+                        title: `确认删除？`,
                         onConfirm: () => deleteData(i.id),
                     }"
                 >
@@ -46,30 +62,32 @@
 </template>
 
 <script setup name="CalendarTags">
-import {
-    queryTags,
-    deleteTags,
-    getTagsColor,
-    saveTagsColor,
-} from '@/api/system/calendar';
+import { queryTags, deleteTags, saveTagsColor } from '@/api/system/calendar';
 import { Draggable } from '@fullcalendar/interaction';
 import EditTag from './components/editTag.vue';
 import { onlyMessage } from '@/utils/comm';
 import { inject } from 'vue';
 import { omit } from 'lodash-es';
-const tagsMap = inject('tagsMap')
-const rapidOn = inject('rapidOn')
+import { useSystem } from '@/store/system';
+const system = useSystem();
+const calendarTagColor = system.$state.calendarTagColor;
+const tagsMap = inject('tagsMap');
+const rapidOn = inject('rapidOn');
 const editVisible = ref(false);
 const tags = ref();
 const tagsList = ref();
 const editType = ref();
 const currentTag = ref();
-const colorMap = new Map();
 const addTag = () => {
     editVisible.value = true;
     editType.value = 'add';
 };
 const buildInTag = ['weekend', 'holiday', 'workday'];
+const defaultColor = new Map()
+defaultColor.set('weekend', 'rgb(149, 222, 100)')
+defaultColor.set('holiday', 'rgb(161, 180, 204)')
+defaultColor.set('workday', 'rgba(105,177,255,1')
+
 const createDrag = () => {
     new Draggable(tags.value, {
         itemSelector: '.tagName',
@@ -77,7 +95,7 @@ const createDrag = () => {
             return {
                 id: eventEl.id,
                 title: eventEl.innerText,
-                backgroundColor: colorMap.get(eventEl.id) || '#000000',
+                backgroundColor: calendarTagColor.get(eventEl.id) || '#000000',
                 color: '#000',
                 editable: false,
             };
@@ -89,30 +107,26 @@ const queryTagsData = async () => {
     const res = await queryTags();
     if (res.success) {
         //获取用户添加的标签颜色及权限
-        const answer = await getTagsColor();
-        if (answer.success) {
-            Object.keys(answer.result).forEach((i) => {
-                colorMap.set(i, answer.result[i]);
-            });
-            tagsList.value = res.result.map((i) => {
-                let color = '#000000';
-                let disabled = false;
-                if (colorMap.has(i.id)) {
-                    color = colorMap.get(i.id);
-                }
-                if (buildInTag.includes(i.id)) {
-                    disabled = true;
-                }
-                return {
-                    ...i,
-                    color,
-                    disabled,
-                };
-            });
-            tagsMap.value =  tagsList.value.map((i)=>{
-                return omit(i,['disabled'])
-            })
-        }
+        await system.getTagsColor();
+        tagsList.value = res.result.map((i) => {
+            let color = '#000000';
+            let disabled = false;
+            if (calendarTagColor.has(i.id)) {
+                color = calendarTagColor.get(i.id);
+            }
+            if (buildInTag.includes(i.id)) {
+                disabled = true;
+                color = defaultColor.get(i.id);
+            }
+            return {
+                ...i,
+                color,
+                disabled,
+            };
+        });
+        tagsMap.value = tagsList.value.map((i) => {
+            return omit(i, ['disabled']);
+        });
     }
 };
 
@@ -124,10 +138,10 @@ const refreshTags = () => {
 const deleteData = async (id) => {
     const res = await deleteTags([id]);
     if (res.success) {
-        if (colorMap.has(id)) {
-            colorMap.delete(id);
+        if (calendarTagColor.has(id)) {
+            calendarTagColor.delete(id);
             let color = new Object();
-            colorMap.forEach((item, key) => {
+            calendarTagColor.forEach((item, key) => {
                 color[key] = item;
             });
             const deleteColor = await saveTagsColor(color);
@@ -152,21 +166,41 @@ onMounted(() => {
     width: 15%;
     background-color: #fff;
     padding: 10px;
+    border-right: 1px solid #CCCCCC;
     .tag {
         display: flex;
         justify-content: space-between;
-        background-color: rgb(242, 242, 242);
         margin-bottom: 10px;
         padding: 0 10px;
+        height: 32px;
         .tagLeft {
             display: flex;
             padding-top: 6px;
             .colorExtractor {
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
+                margin-top: 3px;
+                width: 16px;
+                height: 16px;
+                border-radius: 2px;
+                margin-right: 8px;
             }
         }
+        .controls{
+            display: none;
+            font-size: 14px;
+           
+            :deep(.ant-btn-text){
+                padding: 4px 8px;
+            }
+        }
+        &:hover{
+            .controls{
+                display: block;
+            }
+        }
+    }
+    .tag:hover{
+        background-color: rgb(242, 242, 242);
+        border-radius: 4px;
     }
 }
 </style>

@@ -121,7 +121,7 @@ const initMenu = async () => {
     return new Promise(async (resolve) => {
       //  用户中心
         dealMenu(menuDatas.current)
-        console.log([...menuDatas.current!, USER_CENTER_MENU_DATA]);
+        // console.log([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         const res = await updateMenus([...menuDatas.current!, USER_CENTER_MENU_DATA]);
         if (res.status === 200) {
             resolve(true);

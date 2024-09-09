@@ -1,18 +1,26 @@
-export const levelMap = ref({
-    ordinary: '普通',
-    warn: '警告',
-    urgent: '紧急',
-})
-export const sourceMap = ref({
-    device: '设备',
-    manual: '手动',
-    rule: '规则',
-});
-export const expandsType = ref({
-    read: '读',
-    write: '写',
-    report: '上报',
-});
+import {getMetadataConfig, getMetadataDeviceConfig} from "@/api/device/product";
+
+export const sourceType = [
+    {
+        value: 'device',
+        label: '设备',
+    },
+    {
+        value: 'manual',
+        label: '手动',
+    },
+    {
+        value: 'rule',
+        label: '规则',
+    },
+]
+
+export const getSourceMap = () => {
+    return sourceType.reduce((prev, next) => {
+        prev[next.value] = next.label
+        return prev
+    }, {})
+}
 
 export const limitsMap = new Map<string, any>();
 limitsMap.set('events-add', 'eventNotInsertable');
@@ -24,9 +32,7 @@ export const getMetadataItemByType = (type: string) => {
     let item = {
         id: undefined,
         name: undefined,
-        expands: {
-            group: undefined
-        }
+        expands: {}
     }
     if (type === 'properties') {
         item = Object.assign(item, {
@@ -35,7 +41,8 @@ export const getMetadataItemByType = (type: string) => {
                 group: undefined
             },
             valueType: {
-                type: undefined
+                type: undefined,
+                expands: {}
             }
         })
     } else if (type === 'functions') {
@@ -71,4 +78,52 @@ export const getMetadataItemByType = (type: string) => {
     }
 
     return item
+}
+
+export const useStoreType = (type: string) => {
+    const route = useRoute()
+    const settingData = ref({})
+
+    const getData = async () => {
+        const id = route.params.id;
+
+        if (!id || !type) return;
+
+        const params: any = {
+            deviceId: id,
+            metadata: {
+                id: id,
+                type: 'property',
+                dataType: type,
+            },
+        };
+
+        const resp =
+            type === 'product'
+                ? await getMetadataConfig(params)
+                : await getMetadataDeviceConfig(params);
+        if (resp.success) {
+
+            if (resp.result.length) {
+                resp.result.forEach((a) => {
+                    if (a.properties) {
+                        a.properties.some(item => {
+                            if (item.property === 'storageType') {
+                                settingData.value = item.type.elements.reduce((prev, next) => {
+                                    prev[next.value] = next.text
+                                    return prev
+                                }, {})
+                            }
+                        })
+                    }
+                });
+            }
+        }
+    }
+
+    getData()
+
+    return {
+        settingData
+    }
 }

@@ -142,21 +142,14 @@ const click = (value: string, record: any) => {
 
     .way-item-image {
       margin: 0 !important;
-      opacity: 0.6;
     }
 
     &:hover {
-      //color: @primary-color-hover;
-      .way-item-image {
-        opacity: 0.8;
-      }
+      border-color: @primary-color-hover;
     }
 
     &.active {
       border-color: @primary-color-active;
-      .way-item-image {
-        opacity: 1;
-      }
     }
 
     &.label-bottom {
@@ -178,7 +171,6 @@ const click = (value: string, record: any) => {
 
       &:hover {
         color: initial;
-        opacity: 0.6;
       }
 
       &.active {

@@ -114,15 +114,18 @@ const handleRadio = (item: any) => {
         border-radius: 2px;
         display: flex;
         align-items: center;
-        
+
         cursor: pointer;
         .img {
             width: 32px;
             height: 32px;
         }
         &.active {
-            color: #1d39c4;
-            border-color: #1d39c4;
+            color: @primary-color;
+            border-color: @primary-color;
+        }
+        &.disabled {
+            cursor: not-allowed !important;
         }
     }
 }
@@ -166,6 +169,7 @@ const handleRadio = (item: any) => {
     border-color: #e6e6e6 !important;
     border-left-color: transparent !important;
     border-top-color: transparent !important;
+    cursor: not-allowed;
 }
 
 .m-radio {
@@ -175,7 +179,7 @@ const handleRadio = (item: any) => {
     &.disabled {
       >div {
         opacity: 0.7;
-        cursor: not-allowed;
+        cursor: not-allowed !important;
       }
     }
 
@@ -195,8 +199,12 @@ const handleRadio = (item: any) => {
             height: 100px;
         }
         &.active {
-            color: #1d39c4;
-            border-color: #1d39c4;
+            color: @primary-color;
+            border-color: @primary-color;
+        }
+
+        &.disabled {
+            cursor: not-allowed !important;
         }
 
     }

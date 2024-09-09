@@ -3,8 +3,11 @@ import { DataType } from './components'
 import {MetadataItem, MetadataType} from "@/views/device/Product/typings";
 import { getUnit } from '@/api/device/instance';
 import {Ref} from "vue";
-import {omit, isObject } from "lodash-es";
+import {omit, isObject, groupBy} from "lodash-es";
 import { onlyMessage } from "@/utils/comm";
+import {getSourceMap} from "@/views/device/components/Metadata/Base/utils";
+import {getTypeMap} from "components/Metadata/Table/components/Type/data";
+import {getEventLevelMap} from "@/views/device/data";
 interface DataTableColumnProps extends ColumnProps {
   type?: string,
   components?: {
@@ -17,7 +20,10 @@ interface DataTableColumnProps extends ColumnProps {
   },
   options?: any[]
   doubleClick?: (record: any, index: number, dataIndex: string) => boolean
-  control?: (newValue: any, oldValue: any) => Boolean
+  control?: (newValue: any, oldValue: any) => boolean
+
+  filter?: boolean
+  sort?: Record<string, any>
 }
 
 const SourceMap = {
@@ -49,6 +55,10 @@ export const validatorConfig = (value: any, _isObject: boolean = false) => {
 
   if (_isObject && value.type === 'object' && !value.properties?.length) {
     return Promise.reject('请添加参数')
+  }
+
+  if (value.type === 'date' && !value.format) {
+    return Promise.reject('请选择时间格式')
   }
 
   if (value.type === 'file' && (!value.bodyType || (isObject(value.bodyType) && !Object.keys(value.bodyType).length))) {
@@ -91,9 +101,8 @@ export const handleTypeValue = (type:string, value: any = {}) => {
       obj.format = value
       break;
     case 'string':
-      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
     case 'password':
-      obj.maxLength = JSON.stringify(value) === '{}' ? undefined : value
+      obj.expands.maxLength = JSON.stringify(value) === '{}' ? undefined : value
       break;
     default:
       obj = value
@@ -131,7 +140,7 @@ export const typeSelectChange = (type: string) => {
       break;
     case 'string':
     case 'password':
-      obj.maxLength = undefined
+      obj.expands.maxLength = undefined
       break;
     case 'boolean':
       obj.trueText = '是'
@@ -166,7 +175,10 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
             if (value) {
               const option = setting[2]
 
-              if (dataSource.value.filter((item, index) => index !== option.index && item.id).some(item => item.id === value)) {
+              const isSome = dataSource.value.some((item) => {
+                return item.__dataIndex !== option.index && item.id && item.id === value
+              })
+              if (isSome) {
                 return Promise.reject('该标识已存在')
               }
             }
@@ -181,6 +193,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           },
         ]
       },
+      filter: true
     },
     {
       title: '名称',
@@ -202,6 +215,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         ]
       },
+      filter: true
     },
   ];
 
@@ -209,11 +223,8 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '数据类型',
       dataIndex: 'valueType',
-      type: 'components',
-      components: {
-        name: DataType
-      },
       form: {
+        required: true,
         rules: [{
           asyncValidator(_: any, value: any) {
 
@@ -224,18 +235,32 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
+      // sort: {
+      //   sortKey: ['valueType', 'type'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
+      //     const typeMap = getTypeMap()
+      //     return Object.keys(group).map((key, index) => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // },
       width: 260,
     },
     {
       title: '属性来源',
       dataIndex: 'expands',
       form: {
+        required: true,
         rules: [
           {
             asyncValidator: async (rule: any, value: any) => {
 
-              const source = value.source
-              console.log(value)
+              const source = value?.source
               if (source) {
                 if (source === 'device' && !value.type?.length) {
                   return Promise.reject('请选择读写类型');
@@ -249,6 +274,21 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           },
         ]
       },
+      // sort: {
+      //   sortKey: ['expands', 'source'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.source)
+      //     const sourceMap = getSourceMap()
+      //
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: sourceMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // },
       width: 220
     },
     // {
@@ -259,7 +299,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 160,
+      width: 110,
     },
   ]);
 
@@ -268,11 +308,25 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       title: '是否异步',
       dataIndex: 'async',
       width: 120,
+      // sort: {
+      //   sortKey: ['async'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.async)
+      //
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: key ? '是' : '否',
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // },
     },
     {
       title: '输入参数',
       dataIndex: 'inputs',
-      width: 100,
+      width: 110,
     },
     {
       title: '输出参数',
@@ -285,6 +339,20 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
+      // sort: {
+      //   sortKey: ['output', 'type'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id && item.output.type), (e) => e.output.type)
+      //     const typeMap = getTypeMap()
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // }
     },
     // {
     //   title: '属性分组',
@@ -294,7 +362,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 160,
+      width: 120,
     },
     {
       title: '说明',
@@ -312,12 +380,27 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
       title: '事件级别',
       dataIndex: 'expands',
       width: 150,
+      // sort: {
+      //   sortKey: ['expands', 'level'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id), (e) => e.expands.level)
+      //     const typeMap = getEventLevelMap()
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // }
     },
     {
       title: '输出参数',
       dataIndex: 'valueType',
-      width: 100,
+      width: 110,
       form: {
+        required: true,
         rules: [{
           asyncValidator: async (rule: any, value: any) => {
 
@@ -338,7 +421,7 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 160,
+      width: 120,
     },
     {
       title: '说明',
@@ -368,23 +451,37 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
           }
         }]
       },
+      // sort: {
+      //   sortKey: ['valueType', 'type'],
+      //   dataSource: () => {
+      //     const group = groupBy(dataSource.value.filter(item => item.id && item.valueType.type), (e) => e.valueType.type)
+      //     const typeMap = getTypeMap()
+      //     return Object.keys(group).map(key => {
+      //       return {
+      //         name: typeMap[key],
+      //         key: key,
+      //         total: group[key].length
+      //       }
+      //     })
+      //   }
+      // }
     },
-    {
-      title: '读写类型',
-      dataIndex: 'expands',
-      width: 190,
-      form: {
-        rules: [
-          {
-            asyncValidator: async (rule: any, value: any) => {
-              if (!value?.type?.length) {
-                return Promise.reject('请选择读写类型')
-              }
-              return Promise.resolve()
-          }
-        }]
-      },
-    },
+    // {
+    //   title: '读写类型',
+    //   dataIndex: 'expands',
+    //   width: 190,
+    //   form: {
+    //     rules: [
+    //       {
+    //         asyncValidator: async (rule: any, value: any) => {
+    //           if (!value?.type?.length) {
+    //             return Promise.reject('请选择读写类型')
+    //           }
+    //           return Promise.resolve()
+    //       }
+    //     }]
+    //   },
+    // },
     // {
     //   title: '属性分组',
     //   dataIndex: 'group',
@@ -393,12 +490,12 @@ export const useColumns = (dataSource: Ref<MetadataItem[]>, type?: MetadataType,
     {
       title: '其它配置',
       dataIndex: 'other',
-      width: 160,
+      width: 110,
     },
     {
       title: '说明',
       dataIndex: 'description',
-      width: 200,
+      width: 250,
       form: {
         rules: [
           { max: 20, message: '最多可输入20个字符' },

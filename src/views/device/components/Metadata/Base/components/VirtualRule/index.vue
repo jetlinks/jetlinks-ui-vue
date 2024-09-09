@@ -1,6 +1,7 @@
 <template>
     <j-form ref="formRef" layout="vertical" :model="formData">
         <ReadType
+            v-if="source !== 'rule'"
             v-model:value="formData.type"
             :disabled="source !== 'device'"
             :options="typeOptions"
@@ -38,7 +39,7 @@
                     <j-select-option
                         :disabled="
                             formData.virtualRule?.triggerProperties?.length &&
-                            !formData.virtualRule?.triggerProperties?.includes(
+                            !formData.virtualRule.triggerProperties?.includes(
                                 '*',
                             )
                         "
@@ -185,7 +186,7 @@ import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import {PropType, Ref} from 'vue';
 import { ReadType } from '@/components/Metadata/components';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 
 type SourceType = 'device' | 'manual' | 'rule';
 

@@ -6,7 +6,13 @@
                 <j-form-item
                     label="系统名称"
                     name="title"
-                    v-bind="validateInfos.title"
+                    :rules="[
+                        {
+                            max: 64,
+                            message: '最多可输入64位',
+                            trigger: 'change',
+                        },
+                    ]"
                 >
                     <j-input
                         v-model:value="form.title"
@@ -16,7 +22,13 @@
                 <j-form-item
                     label="主题色"
                     name="headerTheme"
-                    v-bind="validateInfos.headerTheme"
+                    :rules="[
+                        {
+                            required: true,
+                            message: '请选择主题色',
+                            trigger: 'blur',
+                        },
+                    ]"
                 >
                     <j-select v-model:value="form.headerTheme">
                         <j-select-option value="light">白色</j-select-option>
@@ -70,7 +82,16 @@
                         placeholder="请输入高德API 密钥"
                     />
                 </j-form-item>
-                <j-form-item name="basePath" v-bind="validateInfos.basePath">
+                <j-form-item
+                    name="basePath"
+                    :rules="[
+                        {
+                            required: true,
+                            message: '请输入base-path',
+                            trigger: 'blur',
+                        },
+                    ]"
+                >
                     <template #label>
                         <span>base-path</span>
                         <j-tooltip>
@@ -107,7 +128,13 @@
                     v-if="form.showRecordNumber"
                     name="recordNumber"
                     label="备案号内容"
-                    :required="true"
+                    :rules="[
+                        {
+                            required: true,
+                            message: '请输入备案号',
+                            trigger: 'blur',
+                        },
+                    ]"
                 >
                     <a-input v-model:value="form.recordNumber"></a-input>
                 </j-form-item>
@@ -318,8 +345,6 @@ import { LocalStore, getImage, onlyMessage } from '@/utils/comm';
 import { TOKEN_KEY } from '@/utils/variable';
 import { SystemConst } from '@/utils/consts';
 import { omit } from 'lodash-es';
-const formRef = ref();
-const menuRef = ref();
 const formBasicRef = ref();
 const useForm = Form.useForm;
 const logoLoading = ref(false);
@@ -334,7 +359,7 @@ const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
 const form = ref<formState>({
     title: '',
     headerTheme: 'light',
-    showRecordNumber: true,
+    showRecordNumber: false,
     recordNumber: '',
     apiKey: '',
     webKey: '',
@@ -344,39 +369,14 @@ const form = ref<formState>({
     ico: '/favicon.ico',
     background: '/images/login.png',
 });
-const rulesFrom = ref({
-    title: [
-        {
-            max: 64,
-            message: '最多可输入64位',
-            trigger: 'change',
-        },
-    ],
-    headerTheme: [
-        {
-            required: true,
-            message: '请选择主题色',
-            trigger: 'blur',
-        },
-    ],
-    basePath: [
-        {
-            required: true,
-            message: '请输入base-path',
-            trigger: 'blur',
-        },
-    ],
-});
-const { resetFields, validate, validateInfos } = useForm(
-    form.value,
-    rulesFrom.value,
-);
+
 /**
  * 提交数据
  */
 const saveBasicInfo = () => {
     return new Promise(async (resolve, reject) => {
-        validate()
+        formBasicRef.value
+            ?.validate()
             .then(async () => {
                 const item = [
                     {
@@ -538,7 +538,7 @@ defineExpose({
                 left: 0;
                 width: 4px;
                 height: 100%;
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 0 3px 3px 0;
                 content: '';
             }
@@ -767,8 +767,8 @@ defineExpose({
                 .btn-style {
                     margin-top: 20px;
                     color: #fff;
-                    border-color: #1d39c4;
-                    background: #1d39c4;
+                    border-color: @primary-color;
+                    background: @primary-color;
                 }
             }
         }

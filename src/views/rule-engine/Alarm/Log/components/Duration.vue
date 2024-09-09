@@ -24,14 +24,20 @@ const calculateDuration = (startTime, endTime) => {
     }
     return result;
 };
-onMounted(() => {
-    duration.value =
-        props.data?.state?.value === 'normal'
-            ? calculateDuration(
-                  dayjs(props.data.alarmTime),
-                  dayjs(props.data?.handleTime),
-              )
-            : calculateDuration(dayjs(props.data.alarmTime), dayjs());
-});
+watch(
+    () => props.data,
+    () => {
+        duration.value = calculateDuration(
+            dayjs(props.data.alarmTime),
+            props.data?.state?.value === 'warning'
+                ? dayjs()
+                : dayjs(props.data?.handleTime),
+        );
+    },
+    {
+        deep: true,
+        immediate: true,
+    },
+);
 </script>
 <style lang="less" scoped></style>

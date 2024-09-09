@@ -7,19 +7,34 @@
   >
     <a-menu @click="clickFunc">
       <a-menu-item key="add">
-        <AIcon type="PlusSquareOutlined" /> 新增行
+        <template #icon>
+          <AIcon type="PlusSquareOutlined" />
+        </template>
+        新增行
       </a-menu-item>
       <a-menu-item key="copy">
-        <AIcon type="CopyOutlined" /> 复制行
+        <template #icon>
+          <AIcon type="icon-copy" />
+        </template>
+         复制行
       </a-menu-item>
       <a-menu-item key="paste" :disabled="showPaste">
+        <template #icon>
+          <AIcon type="icon-paste" />
+        </template>
         粘贴行
       </a-menu-item>
       <a-menu-item key="detail" :disabled="showDetail">
-        <AIcon type="FileSearchOutlined" /> 查看详情
+        <template #icon>
+          <AIcon type="icon-chakan" />
+        </template>
+        查看详情
       </a-menu-item>
-      <a-menu-item key="delete" :disabled="showDelete">
-        <AIcon type="DeleteOutlined" />删除
+      <a-menu-item key="delete" class="danger" :disabled="showDelete">
+        <template #icon>
+          <AIcon type="DeleteOutlined" />
+        </template>
+        删除
       </a-menu-item>
     </a-menu>
   </div>
@@ -27,6 +42,7 @@
 
 <script setup name="MetadataContextMenu">
 import { onMounted, ref, nextTick } from "vue";
+import { AIcon } from 'jetlinks-ui-components'
 
 const props = defineProps({
   data: {type: Object, default: () => ({})},
@@ -78,6 +94,21 @@ onMounted(async () => {
   box-shadow: 0 0 12px rgba(0, 0, 0 ,.2);
   border-radius: 4px;
   overflow: hidden;
+  width: 192px;
+  padding: 4px;
+  background-color: #fff;
+  :deep(.ant-menu) {
+    border-right: none;
+
+    .ant-menu-item {
+      margin: 0;
+      height: 32px;
+
+      &.danger {
+        color: @error-color;
+      }
+    }
+  }
 
   :deep(.ant-menu-item-active) {
     background-color: var(--ant-primary-1);;

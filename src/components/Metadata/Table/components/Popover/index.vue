@@ -2,8 +2,10 @@
   <a-popover
     trigger="click"
     :visible="visible"
-    :overlay-class-name="warpClassNames"
-    :placement="placement"
+    :overlay-class-name="{
+      [warpClassNames]: true,
+      'metadata-table-popover-warp': true
+    }"
     :overlayStyle="{
       'zIndex': 1070
     }"
@@ -31,7 +33,7 @@
 
 <script setup name="MetadataPopover">
 import { useMask } from '../utils'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper, useTableFullScreen} from "@/components/Metadata/Table/context";
 
 const props = defineProps({
   placement: {
@@ -63,6 +65,7 @@ const props = defineProps({
 const emit = defineEmits(['ok', 'cancel', 'update:visible'])
 
 const tableWrapperRef = useTableWrapper()
+const fullScreen = useTableFullScreen()
 
 const { warpClassNames, visibleChange, visible } = useMask(props.visible, {
   visibleChange(v) {
@@ -83,12 +86,26 @@ watch(() => props.visible, (newValue) => {
   visibleChange(newValue)
 })
 
+watch(() => fullScreen.value, (val) => {
+  if (!val) {
+    cancel()
+  }
+})
+
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .footer {
   display: flex;
   flex-direction: row-reverse;
   margin-top: 8px;
+}
+</style>
+
+<style lang="less">
+.metadata-table-popover-warp {
+  .ant-popover-arrow {
+    display: none;
+  }
 }
 </style>

@@ -1,0 +1,12 @@
+{
+	"zh": {
+		"dialogs.ProductChooseDialog.926510-0": "选择产品",
+		"dialogs.ProductChooseDialog.926510-1": "产品",
+		"dialogs.ProductChooseDialog.926510-2": "请选择产品"
+	},
+	"en": {
+		"dialogs.ProductChooseDialog.926510-0": "Select product",
+		"dialogs.ProductChooseDialog.926510-1": "product",
+		"dialogs.ProductChooseDialog.926510-2": "Please select a product"
+	}
+}

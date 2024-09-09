@@ -15,7 +15,7 @@
     <slot>
       <a-button type="link" :disabled="disabled" style="padding: 0">
         <template #icon>
-          <AIcon type="EditOutlined"/>
+          <AIcon type="EditOutlined" />
         </template>
       </a-button>
     </slot>
@@ -25,6 +25,7 @@
 <script setup name="MetadataBoolean">
 import { PopoverModal } from '../index'
 import Item from './Item.vue'
+import {Form} from "ant-design-vue";
 
 const emit = defineEmits([
   'update:trueText',
@@ -62,6 +63,8 @@ const props = defineProps({
   }
 });
 
+const formItemContext = Form.useInjectFormItemContext();
+
 const formRef = ref()
 const visible = ref(false)
 const formData = reactive({
@@ -82,6 +85,7 @@ const onOk = async () => {
     emit('update:falseText', formData.value.falseText);
     emit('update:falseValue', formData.value.falseValue);
     emit('confirm', formData.value);
+    formItemContext.onFieldChange()
   }
 }
 

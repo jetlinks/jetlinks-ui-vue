@@ -1,8 +1,9 @@
 <template>
     <j-modal
+        title="编辑标签"
         :width="1000"
         :visible="true"
-        title="编辑标签"
+        :confirmLoading="loading"
         @ok="handleOk"
         @cancel="handleCancel"
     >
@@ -75,6 +76,7 @@ const columns = [
 const instanceStore = useInstanceStore();
 
 const dataSource = ref<Record<any, any>[]>([]);
+const loading = ref(false)
 
 watchEffect(() => {
     const arr = instanceStore.current?.tags || [];
@@ -83,6 +85,7 @@ watchEffect(() => {
 
 const handleOk = async () => {
     if (dataSource.value.length) {
+        loading.value = true
         const list = (dataSource.value || [])
             .filter((item: any) => item?.key && item?.value)
             .map((i: any) => {
@@ -91,7 +94,9 @@ const handleOk = async () => {
             });
         if (list.length) {
             // 填值
-            const resp = await saveTags(instanceStore.current?.id || '', list);
+            const resp = await saveTags(instanceStore.current?.id || '', list).catch(()=>{
+                loading.value = false
+            });
             if (resp.status === 200) {
                 onlyMessage('操作成功！');
             }
@@ -101,11 +106,16 @@ const handleOk = async () => {
             // 删除值
             _list.map(async (item: any) => {
               if (item.id) {
-                await delTags(instanceStore.current?.id || '', item.id);
+                await delTags(instanceStore.current?.id || '', item.id).catch(()=>{
+                    loading.value = false
+                });
               }
             });
           }
-          emit('save');
+          setTimeout(() => {
+            loading.value = false
+            emit('save');
+          }, 1000)
     } else {
         emit('close');
     }

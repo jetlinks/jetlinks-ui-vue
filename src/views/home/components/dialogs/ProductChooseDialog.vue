@@ -1,7 +1,7 @@
 <template>
     <j-modal
         visible
-        title="选择产品"
+        :title="$t('dialogs.ProductChooseDialog.926510-0')"
         width="700px"
         @ok="confirm"
         @cancel="emits('update:visible', false)"
@@ -10,16 +10,16 @@
     >
         <j-form :model="form" ref="formRef" layout="vertical">
             <j-form-item
-                label="产品"
+                :label="$t('dialogs.ProductChooseDialog.926510-1')"
                 name="productId"
-                :rules="[{ required: true, message: '请选择产品' }]"
+                :rules="[{ required: true, message: $t('dialogs.ProductChooseDialog.926510-2') }]"
             >
                 <j-select
                     v-model:value="form.productId"
                     style="width: 100%"
                     show-search
                     :options="productList"
-                    placeholder="请选择产品"
+                    :placeholder="$t('dialogs.ProductChooseDialog.926510-2')"
                 >
                 </j-select>
             </j-form-item>
@@ -30,7 +30,9 @@
 <script setup lang="ts">
 import { getProductList_api } from '@/api/home';
 import { productItem } from '../../typing';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const emits = defineEmits(['confirm', 'update:visible']);
 const props = defineProps<{
     visible: boolean;

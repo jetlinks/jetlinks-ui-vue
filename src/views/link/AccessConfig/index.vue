@@ -13,7 +13,7 @@
                     :columns="columns"
                     :request="list"
                     :defaultParams="{
-                        sorts: [{ name: 'createTime', order: 'desc' }]
+                        sorts: [{ name: 'createTime', order: 'desc' }],
                     }"
                     gridColumn="2"
                     :gridColumns="[1, 2]"
@@ -22,7 +22,7 @@
                     <template #headerTitle>
                         <PermissionButton
                             type="primary"
-                            @click="handlAdd"
+                            @click="handleAdd"
                             hasPermission="link/AccessConfig:add"
                         >
                             <template #icon
@@ -43,7 +43,7 @@
                                 enabled: 'processing',
                                 disabled: 'error',
                             }"
-                            @click="handlEye(slotProps.id)"
+                            @click="handleEye(slotProps)"
                         >
                             <template #img>
                                 <slot name="img">
@@ -54,11 +54,7 @@
                             </template>
                             <template #content>
                                 <div class="card-item-content">
-                                    <Ellipsis
-                                        style="
-                                            width: calc(100% - 100px);
-                                        "
-                                    >
+                                    <Ellipsis style="width: calc(100% - 100px)">
                                         <span class="card-title">
                                             {{ slotProps.name }}
                                         </span>
@@ -69,16 +65,19 @@
                                             v-if="slotProps.channelInfo"
                                             class="card-item-content-text"
                                         >
-                                        <Ellipsis
-                                        style="
-                                            width: calc(100% - 100px);
-                                        "
-                                    >
-                                            <div
-                                                class="card-item-content-text-title"
+                                            <Ellipsis
+                                                style="
+                                                    width: calc(100% - 100px);
+                                                "
                                             >
-                                                {{ slotProps.channelInfo.name }}
-                                            </div>
+                                                <div
+                                                    class="card-item-content-text-title"
+                                                >
+                                                    {{
+                                                        slotProps.channelInfo
+                                                            .name
+                                                    }}
+                                                </div>
                                             </Ellipsis>
                                             <Ellipsis
                                                 style="
@@ -116,9 +115,7 @@
                                                 协议
                                             </div>
                                             <Ellipsis
-                                                style="
-                                                    width: calc(100% - 10px);
-                                                "
+                                                style="width: calc(100% - 10px)"
                                                 :lineClamp="2"
                                             >
                                                 <div>
@@ -183,6 +180,7 @@
                 </j-pro-table>
             </FullPage>
         </div>
+        <Outline v-if="visibleOutline" :data="current" @closeDrawer="visibleOutline = false"></Outline>
     </page-container>
 </template>
 <script lang="ts" setup name="AccessConfigPage">
@@ -198,12 +196,14 @@ import {
 import { onlyMessage } from '@/utils/comm';
 import { useMenuStore } from 'store/menu';
 import { accessConfigTypeFilter } from '@/utils/setting';
-import {  cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
+import Outline from './Outline/index.vue'
 
 const menuStory = useMenuStore();
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
-
+const visibleOutline = ref(false);
+const current = ref()
 let providersList = ref<Record<string, any>>([]);
 
 const statusMap = new Map();
@@ -226,12 +226,14 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            options: async() =>{
+            options: async () => {
                 const res: any = await getProviders();
-               const providersOptions = accessConfigTypeFilter(res.result || []);
-                return providersOptions.filter((i:any)=>{
-                    return i.id !== 'modbus-tcp' && i.id !== 'opc-ua'
-                })
+                const providersOptions = accessConfigTypeFilter(
+                    res.result || [],
+                );
+                return providersOptions.filter((i: any) => {
+                    return i.id !== 'modbus-tcp' && i.id !== 'opc-ua';
+                });
             },
         },
     },
@@ -284,7 +286,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             icon: 'EditOutlined',
             onClick: async () => {
-                handlEdit(data.id);
+                handleEdit(data.id);
             },
         },
         {
@@ -296,16 +298,18 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             icon: state === 'enabled' ? 'StopOutlined' : 'CheckCircleOutlined',
             popConfirm: {
                 title: `确认${stateText}?`,
-                onConfirm: async () => {
-                    let res =
+                onConfirm: () => {
+                    let response =
                         state === 'enabled'
-                            ? await undeploy(data.id)
-                            : await deploy(data.id);
-
-                    if (res.success) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value?.reload();
-                    }
+                            ? undeploy(data.id)
+                            : deploy(data.id);
+                    response.then((res) => {
+                        if (res.success) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value?.reload();
+                        }
+                    });
+                    return response;
                 },
             },
         },
@@ -318,14 +322,17 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const res: any = await remove(data.id);
-                    if (res.status === 200) {
-                        onlyMessage('操作成功', 'success');
-                        tableRef.value.reload();
-                    } else {
-                        onlyMessage(res?.message, 'error');
-                    }
+                onConfirm: () => {
+                    const response: any = remove(data.id);
+                    response.then((res: any) => {
+                        if (res.status === 200) {
+                            onlyMessage('操作成功', 'success');
+                            tableRef.value.reload();
+                        } else {
+                            onlyMessage(res?.message, 'error');
+                        }
+                    });
+                    return response
                 },
             },
             icon: 'DeleteOutlined',
@@ -339,18 +346,20 @@ const getProvidersList = async () => {
 };
 getProvidersList();
 
-const handlAdd = () => {
+const handleAdd = () => {
     menuStory.jumpPage(
         `link/AccessConfig/Detail`,
         { id: ':id' },
         { view: false },
     );
 };
-const handlEdit = (id: string) => {
+const handleEdit = (id: string) => {
     menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: false });
 };
-const handlEye = (id: string) => {
-    menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: true });
+const handleEye = (data: any) => {
+    visibleOutline.value = true;
+    current.value = data;
+    // menuStory.jumpPage(`link/AccessConfig/Detail`, { id }, { view: true });
 };
 
 const getDescription = (slotProps: Record<string, any>) =>
@@ -372,12 +381,15 @@ const handleSearch = (e: any) => {
     if (newTerms.terms?.length) {
         newTerms.terms.forEach((a: any) => {
             a.terms = a.terms.map((b: any) => {
-                if(b.column === 'provider'){
-                    if(b.value === 'collector-gateway'){
+                if (b.column === 'provider') {
+                    if (b.value === 'collector-gateway') {
                         b.termType = b.termType === 'eq' ? 'in' : 'nin';
-                        b.value = ['opc-ua','modbus-tcp','collector-gateway'];
-                    }else if(Array.isArray(b.value) && b.value.includes('collector-gateway')){
-                        b.value = ['opc-ua','modbus-tcp',...b.value];
+                        b.value = ['opc-ua', 'modbus-tcp', 'collector-gateway'];
+                    } else if (
+                        Array.isArray(b.value) &&
+                        b.value.includes('collector-gateway')
+                    ) {
+                        b.value = ['opc-ua', 'modbus-tcp', ...b.value];
                     }
                 }
                 return b;

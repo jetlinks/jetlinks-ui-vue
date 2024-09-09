@@ -30,7 +30,7 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="ParamsDropdownArrayItem">
 import ValueItem from '@/components/ValueItem/index.vue';
 import type { ValueType } from './typings';
 import { DropdownMenus, DropdownTimePicker } from '../DropdownButton';

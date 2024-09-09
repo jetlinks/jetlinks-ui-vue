@@ -23,7 +23,7 @@
         <template #registryTime='slotProps'>
           {{
             slotProps.registryTime
-              ? moment(slotProps.registryTime).format(
+              ? dayjs(slotProps.registryTime).format(
                 'YYYY-MM-DD HH:mm:ss'
               )
               : ''
@@ -39,7 +39,7 @@
 
 <script setup lang='ts'>
 import { queryUnbounded, bind } from '@/api/iot-card/cardManagement'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import { onlyMessage } from '@/utils/comm'
 
 const emit = defineEmits(['change'])

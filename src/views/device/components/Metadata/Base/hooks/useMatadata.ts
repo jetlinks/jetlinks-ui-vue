@@ -17,9 +17,17 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     const productNoEdit = ref<any>({})
     const data = ref<MetadataItem[]>([])
     const { current: instanceCurrent } = storeToRefs(instanceStore)
-    const { current: productCurrent } = storeToRefs(productStore)
+    const { detail: productCurrent } = storeToRefs(productStore)
+
+    const init = () => {
+        data.value = []
+        metadata.value = []
+        noEdit.value = {}
+        productNoEdit.value = {}
+    }
 
     const handleMetadata = (_metadataStr: string) => {
+
 
         if(!_metadataStr) return
 
@@ -85,6 +93,7 @@ const useMetadata = (type: 'device' | 'product', key?: MetadataType, ): {
     }
 
     watch(() => [instanceCurrent.value.metadata, productCurrent.value.metadata], () => {
+        init()
         if (type === 'device') {
             handleMetadata(instanceCurrent.value.metadata)
         } else {

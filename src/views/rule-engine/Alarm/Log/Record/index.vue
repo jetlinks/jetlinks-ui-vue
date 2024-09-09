@@ -29,7 +29,7 @@
                     </span>
                 </template>
                 <template #handleType="slotProps">
-                    <span>{{ slotProps.handleType.text }}</span>
+                    <span>{{ slotProps.handleType?.text }}</span>
                 </template>
                 <template #alarmDuration="slotProps">
                     <Ellipsis><Duration :data="slotProps" /></Ellipsis>
@@ -112,7 +112,7 @@ const columns = [
         width: 180,
     },
     {
-        title: '告警处理',
+        title: '处理结果',
         dataIndex: 'description',
         key: 'description',
         ellipsis: true,

@@ -1,0 +1,38 @@
+{
+	"zh": {
+		"DevOpsHome.index.926510-0": "运维引导",
+		"DevOpsHome.index.926510-1": "运维管理推荐步骤",
+		"DevOpsHome.index.926510-2": "请根据业务需要对下述步骤进行选择性操作。",
+		"DevOpsHome.index.926510-3": "设备接入配置",
+		"DevOpsHome.index.926510-4": "日志排查",
+		"DevOpsHome.index.926510-5": "实时监控",
+		"DevOpsHome.index.926510-6": "协议管理",
+		"DevOpsHome.index.926510-7": "根据业务需求自定义开发对应的产品（设备模型）接入协议，并上传到平台。",
+		"DevOpsHome.index.926510-8": "证书管理",
+		"DevOpsHome.index.926510-9": "统一维护平台内的证书，用于数据通信加密。",
+		"DevOpsHome.index.926510-10": "网络组件",
+		"DevOpsHome.index.926510-11": "根据不同的传输类型配置平台底层网络组件相关参数。",
+		"DevOpsHome.index.926510-12": "设备接入网关",
+		"DevOpsHome.index.926510-13": "根据不同的传输类型，关联消息协议，配置设备接入网关相关参数。",
+		"DevOpsHome.index.926510-14": "日志管理",
+		"DevOpsHome.index.926510-15": "监控系统日志，及时处理系统异常。"
+	},
+	"en": {
+		"DevOpsHome.index.926510-0": "Operations guidance",
+		"DevOpsHome.index.926510-1": "Recommended steps for operation and maintenance management",
+		"DevOpsHome.index.926510-2": "Please perform selective operations on the following steps according to business needs.",
+		"DevOpsHome.index.926510-3": "Device access configuration",
+		"DevOpsHome.index.926510-4": "Log troubleshooting",
+		"DevOpsHome.index.926510-5": "Real time monitoring",
+		"DevOpsHome.index.926510-6": "Protocol management",
+		"DevOpsHome.index.926510-7": "Customize and develop corresponding product (device model) access protocols according to business needs, and upload them to the platform.",
+		"DevOpsHome.index.926510-8": "Certificate Management",
+		"DevOpsHome.index.926510-9": "Unified maintenance of certificates within the platform for data communication encryption.",
+		"DevOpsHome.index.926510-10": "Network components",
+		"DevOpsHome.index.926510-11": "Configure platform underlying network component related parameters based on different transmission types.",
+		"DevOpsHome.index.926510-12": "Device access gateway",
+		"DevOpsHome.index.926510-13": "According to different transmission types, associate message protocols, and configure device access gateway related parameters.",
+		"DevOpsHome.index.926510-14": "Log management",
+		"DevOpsHome.index.926510-15": "Monitor system logs and promptly handle system exceptions."
+	}
+}

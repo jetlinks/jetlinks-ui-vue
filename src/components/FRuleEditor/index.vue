@@ -3,7 +3,7 @@
         :zIndex="1072"
         :mask-closable="false"
         visible
-        width="70vw"
+        width="1300px"
         title="编辑规则"
         :destroyOnClose="true"
         :dialogStyle="{
@@ -41,6 +41,7 @@
                         ...virtualRule,
                         script: _value,
                     }"
+                    :propertiesOptions="propertiesOptions"
                     :id="id"
                   />
                 </div>
@@ -62,7 +63,7 @@ import Editor from './Editor/index.vue';
 import Debug from './Debug/index.vue';
 import Operator from './Operator/index.vue';
 import { cloneDeep } from 'lodash-es';
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 interface Emits {
     (e: 'save', data: string | undefined): void;
     (e: 'close'): void;
@@ -151,11 +152,11 @@ getAllCrud()
     width: 100%;
 
     .left {
-        width: 60%;
+        width: 75%;
     }
 
     .right {
-        width: 40%;
+        flex: 1 1 0;
         margin-left: 10px;
         padding-left: 10px;
         border-left: 1px solid lightgray;

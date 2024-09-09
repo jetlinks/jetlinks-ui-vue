@@ -1,7 +1,9 @@
-import { BlankLayoutPage, BasicLayoutPage, SinglePage } from 'components/Layout'
-import { isNoCommunity } from '@/utils/utils'
+import { BlankLayoutPage, BasicLayoutPage, SinglePage } from '@/components/Layout'
 import Iframe from '../views/iframe/index.vue'
-import { shallowRef, defineAsyncComponent, h } from 'vue'
+import { defineAsyncComponent, h } from 'vue'
+import {
+  USER_CENTER_MENU_CODE
+} from '@/utils/consts'
 
 const pagesComponent = import.meta.glob('../views/**/*.vue');
 
@@ -158,6 +160,7 @@ const extraRouteObj = {
 
 type Buttons = Array<{ id: string }>
 
+const hideInMenuCode = [USER_CENTER_MENU_CODE]
 const hasAppID = (item: any): { isApp: boolean, appUrl: string } => {
   const isApp = !!item.appId || item.options?.owner
   const isLowCode = !!item.options?.LowCode
@@ -173,10 +176,11 @@ const handleButtons = (buttons?: Buttons) => {
 
 const handleMeta = (item: MenuItem, isApp: boolean) => {
   const meta = item.meta
+
   return {
     icon: item.icon,
     title: meta?.title || item.name,
-    hideInMenu: meta?.hideInMenu ?? item.isShow === false,
+    hideInMenu: hideInMenuCode.includes(item.code) || (meta?.hideInMenu ?? item.isShow === false),
     buttons: handleButtons(item.buttons),
     isApp
   }
@@ -322,10 +326,6 @@ export const handleMenusMap = (menuData: any[], cb: (data: any) => void) => {
   }
 }
 
-const hideInMenu = (code: string) => {
-  return ['account-center', 'account-center', 'message-subscribe'].includes(code)
-}
-
 export const handleSiderMenu = (menuData: any[]) => {
   if (menuData && menuData.length) {
     return menuData.filter(item => {
@@ -351,8 +351,6 @@ export const handleSiderMenu = (menuData: any[]) => {
       if (route.children && route.children.length) {
         route.children = handleSiderMenu(route.children)
       }
-
-      // route.meta.hideInMenu = hideInMenu(item.code)
 
       return route
     })

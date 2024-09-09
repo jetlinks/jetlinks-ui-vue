@@ -38,7 +38,7 @@
                 </j-descriptions-item>
                 <j-descriptions-item label="订单时间">{{
                     data.createTime
-                        ? moment(data.createTime).format('YYYY-MM-DD HH:mm:ss')
+                        ? dayjs(data.createTime).format('YYYY-MM-DD HH:mm:ss')
                         : '-'
                 }}</j-descriptions-item>
             </j-descriptions>
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import moment from 'moment';
+import dayjs from 'dayjs';
 const emit = defineEmits(['close']);
 
 const props = defineProps({

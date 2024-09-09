@@ -15,7 +15,7 @@
       <JProTable
         model="CARD"
         :columns="columns"
-        :request="queryAlarmList"
+        :request="queryAlarmPage"
         :bodyStyle="{ padding: 0 }"
         :gridColumn="3"
         :defaultParams="{
@@ -33,8 +33,8 @@
                                 type: 'and'
                               },
                               {
-                                column: 'targetType$in',
-                                value: targetType === 'device' ? [] : ['other'],
+                                column: targetType === 'device' ? 'targetType$in' : 'targetType',
+                                value: targetType === 'device' ? [] : 'other',
                                 type: 'and'
                               }
                           ],
@@ -45,6 +45,7 @@
           selectedRowKeys: selectKeys,
           onSelectNone: cancelSelect
         }"
+        :params="params"
       >
         <template #card="slotProps">
           <CardBox
@@ -67,16 +68,11 @@
               </slot>
             </template>
             <template #content>
-              <div style="width: calc(100% - 100px)">
-                <Ellipsis>
-                  {{ slotProps.name }}
-                </Ellipsis>
-              </div>
-              <div>
-                <div class="content-des-title">
-                  告警级别
+              <div style="margin-top: 36px; display: flex;gap: 6px;line-height: 1">
+                <LevelIcon :level="slotProps.level" />
+                <div style="flex: 1 1 0;min-width: 0">
                   <Ellipsis>
-                    {{ levelMap[slotProps.level] || slotProps.level }}
+                    {{ slotProps.name }}
                   </Ellipsis>
                 </div>
               </div>
@@ -89,9 +85,9 @@
 </template>
 
 <script setup name="AlarmModal">
-import {queryAlarmList} from '@/api/rule-engine/scene';
+import {queryAlarmPage} from '@/api/rule-engine/scene';
 import { useAlarmLevel, useRequest } from '@/hook'
-import {bindScene} from "@/api/rule-engine/configuration";
+import {bindScene, getTargetTypes} from "@/api/rule-engine/configuration";
 import {onlyMessage} from "@/utils/comm";
 
 const props = defineProps({
@@ -129,6 +125,23 @@ const { levelMap, levelList } = useAlarmLevel()
 
 const columns = [
   {
+    title: '类型',
+    dataIndex: 'targetType',
+    search: {
+      type: 'select',
+      options: async () => {
+        const resp = await getTargetTypes()
+        if (resp.success) {
+          return resp.result.filter(item => {
+            return props.targetType === 'device' || item.id === 'other'
+          }).map(item => ({ label: item.name, value: item.id }))
+        } else {
+          return []
+        }
+      },
+    }
+  },
+  {
     title: '配置名称',
     dataIndex: 'name',
     key: 'name',
@@ -137,19 +150,6 @@ const columns = [
     },
     width: 220,
     ellipsis: true,
-  },
-  {
-    title: '告警级别',
-    dataIndex: 'level',
-    key: 'level',
-    scopedSlots: true,
-    search: {
-      type: 'select',
-      options: async () => {
-        return levelList.value
-      },
-    },
-    width: 200,
   },
   {
     title: '状态',
@@ -171,6 +171,20 @@ const columns = [
     },
     width: 90,
   },
+  {
+    title: '等级',
+    dataIndex: 'level',
+    key: 'level',
+    scopedSlots: true,
+    search: {
+      type: 'select',
+      options: async () => {
+        return levelList.value
+      },
+    },
+    width: 200,
+  },
+
 ]
 
 const handleSearch = (e) => {

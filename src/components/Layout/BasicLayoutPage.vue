@@ -2,7 +2,7 @@
     <j-pro-layout
         v-bind="layoutConf"
         v-model:collapsed="basicLayout.collapsed"
-        v-model:openKeys="basicLayout.openKeys"
+        :openKeys="basicLayout.collapsed  ? [] : basicLayout.openKeys"
         :selectedKeys="basicLayout.selectedKeys"
         :breadcrumb="basicLayout.pure ? undefined : { routes: breadcrumbs }"
         :headerHeight='basicLayout.pure ? 1 : layout.headerHeight'
@@ -123,7 +123,7 @@ watchEffect(() => {
   }
 })
 
-const toDoc = () => window.open('http://doc.v2.jetlinks.cn/');
+const toDoc = () => window.open('https://hanta.yuque.com/px7kg1/yfac2l');
 </script>
 
 <style scoped>

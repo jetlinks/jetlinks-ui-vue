@@ -31,7 +31,7 @@ export const saveMetadata = (id: string, data: DeviceMetadata) => server.put(`/d
  * @param id 设备ID
  * @returns 设备详情
  */
-export const detail = (id: string) => server.get<DeviceInstance>(`/device-instance/${id}/detail`)
+export const detail = (id: string, _hideError?: any) => server.get<DeviceInstance>(`/device-instance/${id}/detail`, {}, {} , _hideError)
 
 /**
  * 查询数据
@@ -513,7 +513,7 @@ export const saveEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/
  * @param params
  * @returns
  */
-export const getPropertyData = (deviceId: string, params: Record<string, unknown>) => server.get(`/device-instance/${deviceId}/properties/_query`, params)
+export const getPropertyData = (deviceId: string,property:string, params: Record<string, unknown>) => server.post(`/device/instance/${deviceId}/property/${property}/_query`, params)
 
 /**
  * 聚合查询设备属性
@@ -638,10 +638,16 @@ export const queryTypescript = (deviceId:string) => server.get(`/device/${device
 export const queryProductTs = (productId:string) => server.get(`/product/${productId}/virtual-property.d.ts`)
 
 /**
- * 阈值限制-新增/修改
+ * 阈值限制-新增/修改-产品
  * @param data
  */
-export const updateThreshold = (data: any) => server.patch('/threshold/property', data)
+export const updateProductThreshold = (productId:string,propertyId:string,data: any) => server.put(`/message/preprocessor/product/${productId}/property/${propertyId}`, data)
+
+/**
+ * 阈值限制-新增/修改-设备
+ * @param data
+ */
+export const updateDeviceThreshold = (productId:string,deviceId:string,propertyId:string,data: any) => server.put(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`, data)
 
 /**
  * 阈值限制-设备物模型阈值限制
@@ -649,19 +655,37 @@ export const updateThreshold = (data: any) => server.patch('/threshold/property'
  * @param deviceId
  * @param propertyId
  */
-export const queryDeviceThreshold = (productId: string, deviceId: string,  propertyId: string) => server.get(`/threshold/property/device/${productId}/${deviceId}/${propertyId}`)
+export const queryDeviceThreshold = (productId: string, deviceId: string,  propertyId: string) => server.get(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`)
 
 /**
  * 阈值限制-产品物模型阈值限制
  * @param productId
  * @param propertyId
  */
-export const queryProductThreshold = (productId: string, propertyId: string) => server.get(`/threshold/property/product/${productId}/${propertyId}`)
+export const queryProductThreshold = (productId: string, propertyId: string,hiddenError:boolean) => server.get(`/message/preprocessor/product/${productId}/property/${propertyId}`,{},{},hiddenError)
 
 /**
- * 阈值限制-重置设备物继承产品的模型阈值
+ * 阈值限制-删除产品物模型的阈值
  * @param productId
- * @param deviceId
  * @param propertyId
+ * @returns
  */
-export const resetDeviceThreshold = (deviceId: string,  data: string) => server.remove(`/threshold/property/device/${deviceId}/_batch`, {}, { data })
+export const deleteProductThreshold = (productId:string,propertyId:string,data:any) => server.remove(`/message/preprocessor/product/${productId}/property/${propertyId}`,data)
+
+/**
+ * 阈值限制-删除产品物模型的阈值
+ * @param productId
+ * @param propertyId
+ * @returns
+ */
+export const deleteDeviceThreshold = (productId:string,deviceId:string,propertyId:string,data:any) => server.remove(`/message/preprocessor/device/${productId}/${deviceId}/property/${propertyId}`,data)
+
+export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/instance/${id}/property-metadata/template.${format}`
+
+export const uploadAnalyzeMetadata = (productId:string,data: any) => server.post(`/device/instance/${productId}/property-metadata/file/analyze`, data)
+
+/**
+ * 设备影子-获取数据
+ * @param id 设备ID
+ */
+export const getDeviceShadow = (id: string) => server.get(`/device/shadow/${id}`)

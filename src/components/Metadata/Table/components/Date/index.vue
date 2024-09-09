@@ -15,7 +15,7 @@
     <slot>
       <a-button type="link" :disabled="disabled" style="padding: 0">
         <template #icon>
-          <AIcon type="EditOutlined"/>
+          <AIcon type="EditOutlined" :class="{'table-form-required-aicon': !value}"/>
         </template>
       </a-button>
     </slot>
@@ -25,6 +25,7 @@
 <script setup name="MetadataDate">
 import { PopoverModal } from '../index'
 import Item from './Item.vue'
+import { Form } from 'ant-design-vue'
 
 const emit = defineEmits(['update:value', 'confirm', 'cancel']);
 
@@ -43,6 +44,7 @@ const props = defineProps({
   }
 });
 
+const formItemContext = Form.useInjectFormItemContext();
 const formRef = ref()
 const visible = ref(false)
 const formData = reactive({
@@ -55,6 +57,7 @@ const onOk = async () => {
     visible.value = false
     emit('update:value', formData.format);
     emit('confirm', formData.format);
+    formItemContext.onFieldChange()
   }
 }
 

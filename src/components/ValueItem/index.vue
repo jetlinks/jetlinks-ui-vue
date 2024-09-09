@@ -15,30 +15,30 @@
         <j-time-picker
           v-else-if="typeMap.get(itemType) === 'time'"
           v-model:value="myValue"
-          v-bind="extra"
           allowClear
           valueFormat="HH:mm:ss"
           style="width: 100%"
+          v-bind="extra"
           :getPopupContainer="getPopupContainer"
           @change='timeChange'
         />
         <j-date-picker
             v-else-if="typeMap.get(itemType) === 'date'"
             v-model:value="myValue"
-            v-bind="extra"
             allowClear
             showTime
             valueFormat="YYYY-MM-DD HH:mm:ss"
-            style="width: 100%;z-index: 1071"
+            style="width: 100%;"
+            v-bind="extra"
             :getPopupContainer="getPopupContainer"
             @change='dateChange'
         />
         <j-input-number
             v-else-if="typeMap.get(itemType) === 'inputNumber'"
             v-model:value="myValue"
-            v-bind="extra"
             allowClear
             style="width: 100%"
+            v-bind="extra"
             @change='inputChange'
         />
         <j-input
@@ -122,11 +122,10 @@ import { PropType } from 'vue';
 import { UploadChangeParam, UploadFile } from 'ant-design-vue';
 import { DefaultOptionType } from 'ant-design-vue/lib/select';
 import GeoComponent from '@/components/GeoComponent/index.vue';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
+import { TOKEN_KEY } from '@/utils/variable';
 import { LocalStore } from '@/utils/comm';
 import { ItemData, ITypes } from './types';
 import { FILE_UPLOAD } from '@/api/comm';
-import { Upload } from 'jetlinks-ui-components'
 
 type Emits = {
     (e: 'update:modelValue', data: string | number | boolean): void;
@@ -195,6 +194,7 @@ const componentsType = ref<ITypes>({
     object: 'object',
     geoPoint: 'geoPoint',
     file: 'file',
+    time: 'time',
 });
 const typeMap = new Map(Object.entries(componentsType.value));
 

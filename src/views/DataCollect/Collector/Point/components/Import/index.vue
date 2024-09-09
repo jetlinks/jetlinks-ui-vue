@@ -66,7 +66,10 @@ const successNumber = ref(0); //导入成功数量
 const failNumber = ref(0); //导入失败数量
 const errorMessage = ref();
 const detailFile = ref('')
+const params = props?.data?.provider === 'COLLECTOR_GATEWAY' ? props?.data?.configuration?.collectorProvider : props?.data?.provider
 const uploadChange = async (info: Record<string, any>) => {
+    successNumber.value = 0;
+    failNumber.value = 0;
     if (info.file.status === 'done') {
         const resp: any = info.file.response || { result: '' };
         handleImport(resp)
@@ -84,11 +87,11 @@ const beforeUpload = (_file: any) => {
     return isCsv || isXlsx;
 };
 const downTemplate = async (type: string) => {
-    const res: any = await exportTemplate(<string>props.data?.provider, type);
+    const res: any = await exportTemplate(<string>params, type);
     if (res) {
         const blob = new Blob([res], { type: type });
         const url = URL.createObjectURL(blob);
-        downloadFileByUrl(url, `${props.data?.provider}导入模版`, type);
+        downloadFileByUrl(url, `${params}导入模版`, type);
     }
 };
 const handleImport = async (file: any) => {
@@ -97,7 +100,7 @@ const handleImport = async (file: any) => {
     let event: EventSource
     event = new EventSource(
         `${BASE_API_PATH}/data-collect/point/${props.data?.collectorId
-        }/${props.data?.provider}/import?:X_Access_Token=${getToken()
+        }/${params}/import?:X_Access_Token=${getToken()
         }&fileUrl=${file.result}`,
         { withCredentials: true },
     );

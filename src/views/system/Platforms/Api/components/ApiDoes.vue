@@ -22,11 +22,11 @@
             <h5>接口描述</h5>
             <div>{{ props.selectApi.description }}</div>
         </div>
-        <div class="api-card" v-if="requestCard.codeText">
+        <div class="api-card" v-if="requestCard.codeText !== undefined">
             <h5>请求示例</h5>
             <JsonViewer :value="requestCard.codeText" copyable />
         </div>
-        <div class="api-card">
+        <div class="api-card" v-if="requestCard.tableData.length">
             <h5>请求参数</h5>
             <div class="content">
                 <j-pro-table
@@ -91,7 +91,7 @@ import 'vue3-json-viewer/dist/index.css';
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
 import { PropType } from 'vue';
-import { findData, getCodeText } from '../utils';
+import { findData, getCodeText, dealNoRef } from '../utils';
 
 type cardType = {
     columns: object[];
@@ -100,7 +100,6 @@ type cardType = {
     activeKey?: string;
     getData: Function;
 };
-
 
 const props = defineProps({
     selectApi: {
@@ -113,7 +112,6 @@ const props = defineProps({
     },
 });
 const { selectApi } = toRefs(props);
-
 
 const requestCard = reactive<cardType>({
     columns: [
@@ -153,31 +151,35 @@ const requestCard = reactive<cardType>({
         const schema =
             props.selectApi.requestBody.content['application/json'].schema;
         const _ref = schema.$ref || schema?.items?.$ref;
-        if (!_ref) return; // schema不是Java中的类的话则不进行解析，直接结束
-
-        const schemaName = _ref?.split('/').pop();
-        const type = schema.type || '';
-        const tableData = findData(props.schemas, schemaName);
-
-        requestCard.codeText =
-            type === 'array'
-                ? [getCodeText(props.schemas, tableData, 3)]
-                : getCodeText(props.schemas, tableData, 3);
-        requestCard.tableData = [
-            {
-                name: schemaName[0].toLowerCase() + schemaName.substring(1),
-                description: schemaName,
-                in: 'body',
-                required: true,
-                schema: { type: type || schemaName },
-                children: tableData.map((item) => ({
-                    name: item.paramsName,
-                    description: item.desc,
-                    required: false,
-                    schema: { type: item.paramsType },
-                })),
-            },
-        ];
+        // schema不是Java中的类的话则不进行解析，直接结束
+        if (!_ref) {
+            const type = schema.type || '';
+            requestCard.codeText = dealNoRef(type, schema);
+        } else {
+            const schemaName = _ref?.split('/').pop();
+            const type = schema.type || '';
+            const tableData = findData(props.schemas, schemaName);
+            requestCard.codeText =
+                type === 'array'
+                    ? [getCodeText(props.schemas, tableData, 3)]
+                    : getCodeText(props.schemas, tableData, 3);
+            requestCard.tableData = [
+                {
+                    name: schemaName[0].toLowerCase() + schemaName.substring(1),
+                    description: schemaName,
+                    in: 'body',
+                    required: true,
+                    schema: { type: type || schemaName },
+                    children: tableData.map((item) => ({
+                        name: item.paramsName,
+                        description: item.desc,
+                        required: false,
+                        schema: { type: item.paramsType },
+                    })),
+                },
+            ];
+            // console.log(requestCard,'requestCard')
+        }
     },
 });
 const responseStatusCard = reactive<cardType>({
@@ -313,7 +315,7 @@ onMounted(() => {
                 left: 0;
                 width: 4px;
                 height: 100%;
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 0 3px 3px 0;
                 content: ' ';
             }

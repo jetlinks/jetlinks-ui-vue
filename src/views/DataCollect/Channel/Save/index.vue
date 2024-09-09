@@ -4,6 +4,7 @@
         :visible="true"
         width="700px"
         @cancel="handleCancel"
+        :maskClosable="false"
     >
         <j-form
             class="form"
@@ -208,7 +209,7 @@
                     <j-input-number
                         v-model:value="formData.configuration.overIp.port"
                         style="width: 100%"
-                        :min="0"
+                        :min="1"
                         :max="65535"
                         :precision="0"
                         placeholder="请输入广播端口"

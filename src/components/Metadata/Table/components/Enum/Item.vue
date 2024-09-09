@@ -1,8 +1,8 @@
 <template>
   <a-form-item :name="name" :rules="rules" :validate-first="true">
     <template #label>
-      <span style="color: #ff4d4f; padding-right: 4px; padding-top: 2px">*</span>
       枚举项
+      <span style="color: #ff4d4f; padding-right: 4px; padding-top: 2px">*</span>
     </template>
     <Content ref="tableRef" v-model:value="dataSource" @change="change" />
   </a-form-item>
@@ -34,6 +34,7 @@ const tableRef = ref()
 const rules = [
   {
     validator: async (_, value) =>{
+      console.log(value, dataSource.value)
       if (!dataSource.value?.length) {
         return Promise.reject('请添加枚举项');
       }

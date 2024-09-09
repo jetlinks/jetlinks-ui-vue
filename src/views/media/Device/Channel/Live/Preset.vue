@@ -11,7 +11,7 @@
                 <j-button
                     type="link"
                     style="padding: 0"
-                    v-if="!record.flag"
+                    v-if="!record.flag || props.share"
                     :disabled="loading"
                     @click="onSetting(record)"
                     >设置</j-button
@@ -38,7 +38,7 @@
             </template>
             <template v-else-if="column.dataIndex === 'name'">
                 <j-input
-                    :disabled="record.flag"
+                    :disabled="record.flag || props.share"
                     v-model:value="record[column.dataIndex]"
                 />
             </template>
@@ -98,7 +98,7 @@ const dataSource = ref<Item[]>(init);
 const loading = ref(false);
 const route = useRoute()
 
-const handleSearch = async (id: string, arr: Item[]) => {
+const handleSearch = async (id: string, arr: Item[] = []) => {
   const params: Record<string, string> = {}
   if (route.query.type === 'gb28181-2016') {
     params.channel = props.data.channelId

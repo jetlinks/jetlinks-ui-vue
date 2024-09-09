@@ -10,5 +10,6 @@ export { default as StringParams } from './String/index.vue'
 
 export { default as PopoverModal } from './Popover/index.vue'
 export { default as UnitSelect } from './UnitSelect/index.vue'
-export { default as TypeSelect } from './type/index.vue'
-export { default as GroupSelect } from './group/index.vue'
+export { default as TypeSelect } from './Type/index.vue'
+export { default as GroupSelect } from './Group/index.vue'
+export { default as BooleanSelect } from './BooleanSelect/index.vue'

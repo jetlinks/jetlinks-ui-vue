@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="dataSource.length"
-    class="metadata-edit-table-body-viewport" :style="{ ...style, height: height + 'px'}" ref="viewScrollRef">
+    class="metadata-edit-table-body-viewport" :style="{ ...style, height: height + 'px'}" ref="viewScrollRef" @scroll="onScroll">
     <div :style="{position: 'relative'}">
       <div class="metadata-edit-scrollbar" :style="containerStyle"> </div>
       <div class="metadata-edit-table-center" ref="tableCenterRef" >
@@ -10,12 +10,13 @@
             v-for="(item, index) in virtualData"
             :class="{
               'metadata-edit-table-row': true,
-              'metadata-edit-table-row-selected': selectedRowKeys.includes(item[rowKey] || virtualRang.start + index + 1)
+              'metadata-edit-table-row-selected': selectedRowKeys?.includes(item[rowKey] || virtualRang.start + index + 1)
             }"
-            :key="`record_${virtualRang.start + index + 1}`"
+            :key="`record_${item.__key}`"
             :style="{height: `${cellHeight}px`,}"
             :data-row-key="item[rowKey] || virtualRang.start + index + 1"
             @click.right.native="(e) => showContextMenu(e,item, virtualRang.start + index)"
+            @click.stop="() => rowClick(item)"
         >
           <div
               v-for="column in columns"
@@ -26,10 +27,12 @@
               }"
           >
             <div v-if="column.dataIndex === '__serial'" class="body-cell-box">
-              {{ virtualRang.start + index + 1 }}
+              <slot name="serial" :record="item" :index="item.__dataIndex" :column="column" >
+                {{ virtualRang.start + index + 1 }}
+              </slot>
             </div>
             <div v-else class="body-cell-box">
-              <slot :name="column.dataIndex" :record="item" :index="virtualRang.start + index" :column="column" >
+              <slot :name="column.dataIndex" :record="item" :index="item.__dataIndex" :column="column" >
                 {{ item[column.dataIndex] }}
               </slot>
             </div>
@@ -49,40 +52,15 @@
 
 <script setup name="MetadataBaseTableBody">
 import ContextMenu from './components/ContextMenu'
-import {useRightMenuContext} from "@/components/Metadata/Table/utils";
+import {useRightMenuContext} from "@/components/Metadata/Table/context";
+import {randomString} from "@/utils/utils";
+import {bodyProps} from "./props";
 
 const props = defineProps({
-  dataSource: {
-    type: Array,
-    default: () => ([])
-  },
-  columns: {
-    type: Array,
-    default: () => ([])
-  },
-  cellHeight: {
-    type: Number,
-    default: 50
-  },
-  height: {
-    type: Number,
-    default: 300
-  },
-  style: {
-    type: Object,
-    default: () => ({})
-  },
-  disableMenu: {
-    type: Boolean,
-    default: true
-  },
-  rowKey: {
-    type: String,
-    default: 'id'
-  },
-  selectedRowKeys: {
-    type: [Array],
-    default: () => []
+  ...bodyProps(),
+  groupKey: {
+    type: [String, Number],
+    default: undefined
   }
 })
 
@@ -90,9 +68,10 @@ const emit = defineEmits(['update:dataSource', 'scrollDown'])
 
 const viewScrollRef = ref()
 const tableCenterRef = ref()
-const virtualData = ref([])
+// const virtualData = ref([])
 const virtualRang = reactive({
   start: 0,
+  end: 15
 })
 const containerStyle = ref(0)
 const context = useRightMenuContext()
@@ -104,31 +83,43 @@ const maxLen = computed(() => {
   return Math.trunc(props.height / props.cellHeight)
 })
 
-const updateVirtualData = (start, end) => {
-  virtualData.value = props.dataSource.slice(start, end)
+const selectedRowKeys = ref([])
+
+const virtualData = computed(()=> {
+
+  const array = props.dataSource.slice(virtualRang.start, virtualRang.end)
   if (tableCenterRef.value) {
-    tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${start * props.cellHeight}px, 0)`
+    tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${virtualRang.start * props.cellHeight}px, 0)`
   }
-}
+  return array
+})
+// const updateVirtualData = (start, end) => {
+//   debugger
+//   virtualData.value = props.dataSource.slice(start, end)
+//   if (tableCenterRef.value) {
+//     tableCenterRef.value.style.webkitTransform  =  `translate3d(0, ${start * props.cellHeight}px, 0)`
+//   }
+// }
 
 const onScroll = () => {
   const height = viewScrollRef.value.scrollTop
   const clientHeight = viewScrollRef.value.clientHeight
   const scrollHeight = viewScrollRef.value.scrollHeight
 
-  const _index = Math.round(height / props.cellHeight)
+  const _index = Math.round(height / props.cellHeight) - 1
 
 
   const start = _index < 0 ? 0 : _index
   const end = start + maxLen.value + 4
 
-  virtualRang.start = start
-
   if (height + clientHeight >= props.dataSource.length * props.cellHeight && !scrollLock.value) { // 滚动到底
     emit('scrollDown')
     scrollLock.value = true
   }
-  updateVirtualData(start, end)
+
+  virtualRang.start = start
+  virtualRang.end = end
+  // updateVirtualData(start, end)
 }
 
 const scrollTo = (index) => {
@@ -149,23 +140,57 @@ const showContextMenu = (e, record, _index) => {
   }
 }
 
-const updateView = () => {
-  updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
+// const updateView = () => {
+//   updateVirtualData(virtualRang.start, virtualRang.start + maxLen.value)
+// }
+
+const rowClick = (record) => {
+  if (props.rowSelection?.selectedRowKeys) {
+    const rowSet = new Set(selectedRowKeys.value)
+    const key = record[props.rowKey]
+    const selected = !rowSet.has(key)
+
+    if (selected) {
+      rowSet.delete(key)
+    } else {
+      rowSet.add(key)
+    }
+
+    props.rowSelection.onSelect?.(record, selected )
+
+    selectedRowKeys.value = [...rowSet.values()]
+  }
+}
+
+const updateSelectedKeys = (keys) => {
+  selectedRowKeys.value = keys
 }
 
 onMounted(() => {
   nextTick(() => {
-    viewScrollRef.value?.addEventListener('scroll', onScroll)
+    onScroll()
   })
 })
 
 onBeforeUnmount(() => {
-  viewScrollRef.value?.removeEventListener('scroll', onScroll)
   menuInstance?.destroy()
+  menuInstance?.cleanCopy()
 })
 
-watch(() => props.dataSource, () => {
-  updateView()
+watch(() => JSON.stringify(props.rowSelection?.selectedRowKeys), (val) => {
+  selectedRowKeys.value = JSON.parse(val || '[]')
+}, { immediate: true })
+
+watch(() => props.dataSource, (val, oldVal) => {
+
+  props.dataSource.forEach((item, index) => {
+    if (!item.__key) {
+      item.__key = randomString()
+    }
+  })
+
+  // updateView()
+
 }, {
   immediate: true,
   deep: true
@@ -182,8 +207,19 @@ watch(() => props.dataSource.length, () => {
   }
 }, { immediate: true})
 
+// watch(() => props.height, () => {
+//   updateView()
+// })
+
+watch(() => props.groupKey, () => {
+  if (props.openGroup) {
+    scrollTo(0)
+  }
+})
+
 defineExpose({
-  scrollTo
+  scrollTo,
+  updateSelectedKeys
 })
 
 </script>
@@ -213,7 +249,7 @@ defineExpose({
     flex: 1 1 auto;
     min-width: 0;
     height: 100%;
-
+    
     .metadata-edit-table-row {
       width: 100%;
       display: flex;
@@ -221,7 +257,10 @@ defineExpose({
       //position: absolute;
       transition: top .2s, height .2s, background-color .1s;
       border-bottom: 1px solid #ebebeb;
-
+      .metadata-edit-table-cell{
+        position:absolute;
+        min-width: 0;;
+      }
       &:hover {
         background-color: rgb(248, 248, 248);
       }
@@ -232,6 +271,7 @@ defineExpose({
 
       .body-cell-box {
         padding: 0 12px;
+        position: relative;
       }
     }
   }

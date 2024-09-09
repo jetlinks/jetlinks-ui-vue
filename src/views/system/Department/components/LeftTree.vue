@@ -14,7 +14,6 @@
         <div class="add-btn">
             <PermissionButton
                 type="primary"
-                class="add-btn"
                 :hasPermission="`${permission}:add`"
                 @click="openDialog()"
             >
@@ -23,67 +22,70 @@
         </div>
 
         <div class="tree">
-          <j-spin :spinning='loading'>
-              <jTree
-                  v-if="treeData.length > 0"
-                  :tree-data="treeData"
-                  v-model:selected-keys="selectedKeys"
-                  v-model:expandedKeys="expandedKeys"
-                  :fieldNames="{ key: 'id' }"
-                  :showLine="{ showLeafIcon: false }"
-                  :show-icon="true"
-              >
-                  <template #title="{ name, data }">
-                    <div class='department-tree-item-content'>
-                      <span class='title'>
-                        <j-ellipsis>
-                          {{ name }}
-                        </j-ellipsis>
-                      </span>
-                      <span class="func-btns" @click="(e) => e.stopPropagation()">
-                          <PermissionButton
-                              :hasPermission="`${permission}:update`"
-                              type="link"
-                              :tooltip="{
-                                  title: '编辑',
-                              }"
-                              @click="openDialog(data)"
-                          >
-                              <AIcon type="EditOutlined" />
-                          </PermissionButton>
-                          <PermissionButton
-                              :hasPermission="`${permission}:add`"
-                              type="link"
-                              :tooltip="{
-                                  title: '新增子组织',
-                              }"
-                              @click="
-                                  openDialog({
-                                      ...data,
-                                      id: '',
-                                      parentId: data.id,
-                                  })
-                              "
-                          >
-                              <AIcon type="PlusCircleOutlined" />
-                          </PermissionButton>
-                          <PermissionButton
-                              type="link"
-                              :hasPermission="`${permission}:delete`"
-                              :tooltip="{ title: '删除' }"
-                              :popConfirm="{
-                                  title: `确定要删除吗`,
-                                  onConfirm: () => delDepartment(data.id),
-                              }"
-                          >
-                              <AIcon type="DeleteOutlined" />
-                          </PermissionButton>
-                      </span>
-                    </div>
-                  </template>
-              </jTree>
-              <j-empty v-else description="暂无数据" />
-          </j-spin>
+            <j-spin :spinning="loading">
+                <jTree
+                    v-if="treeData.length > 0"
+                    :tree-data="treeData"
+                    v-model:selected-keys="selectedKeys"
+                    v-model:expandedKeys="expandedKeys"
+                    :fieldNames="{ key: 'id' }"
+                    :showLine="{ showLeafIcon: false }"
+                    :show-icon="true"
+                >
+                    <template #title="{ name, data }">
+                        <div class="department-tree-item-content">
+                            <span class="title">
+                                <j-ellipsis>
+                                    {{ name }}
+                                </j-ellipsis>
+                            </span>
+                            <span
+                                class="func-btns"
+                                @click="(e) => e.stopPropagation()"
+                            >
+                                <PermissionButton
+                                    :hasPermission="`${permission}:update`"
+                                    type="link"
+                                    :tooltip="{
+                                        title: '编辑',
+                                    }"
+                                    @click="openDialog(data)"
+                                >
+                                    <AIcon type="EditOutlined" />
+                                </PermissionButton>
+                                <PermissionButton
+                                    :hasPermission="`${permission}:add`"
+                                    type="link"
+                                    :tooltip="{
+                                        title: '新增子组织',
+                                    }"
+                                    @click="
+                                        openDialog({
+                                            ...data,
+                                            id: '',
+                                            parentId: data.id,
+                                        })
+                                    "
+                                >
+                                    <AIcon type="PlusCircleOutlined" />
+                                </PermissionButton>
+                                <PermissionButton
+                                    type="link"
+                                    :hasPermission="`${permission}:delete`"
+                                    :tooltip="{ title: '删除' }"
+                                    :popConfirm="{
+                                        title: `确认删除？`,
+                                        onConfirm: () => delDepartment(data.id),
+                                    }"
+                                >
+                                    <AIcon type="DeleteOutlined" />
+                                </PermissionButton>
+                            </span>
+                        </div>
+                    </template>
+                </jTree>
+                <j-empty v-else description="暂无数据" />
+            </j-spin>
         </div>
         <!-- 编辑弹窗 -->
         <EditDepartmentDialog
@@ -103,7 +105,7 @@ import { debounce, cloneDeep, omit } from 'lodash-es';
 import { ArrayToTree } from '@/utils/utils';
 import EditDepartmentDialog from './EditDepartmentDialog.vue';
 import { onlyMessage } from '@/utils/comm';
-
+const route = useRoute();
 const permission = 'system/Department';
 
 const save = useRoute().query.save;
@@ -115,6 +117,36 @@ const treeMap = new Map(); // 数据的map版本
 const treeData = ref<any[]>([]); // 展示的数据
 const selectedKeys = ref<string[]>([]); // 当前选中的项
 const expandedKeys = ref<string[] | number[]>([]);
+function findParents(tree:any, targetId:any) {
+    let parents:any = [];
+    function findAndCollectParents(node:any) {
+        if (node.id === targetId) {
+            return true;
+        }
+        // Recursively check children
+        if (node.children) {
+            for (let child of node.children) {
+                if (findAndCollectParents(child)) {
+                    // If child node found the target, add current node to parents list
+                    parents.push(node.id);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    // Traverse the tree and find the target node
+    for (let node of tree) {
+        if (findAndCollectParents(node)) {
+            break; // Stop once we found the target node and collected all parents
+        }
+    }
+    // Reverse the array to have parents from root to immediate parent
+    parents.reverse();
+
+    return parents;
+}
 
 function getTree(cb?: Function) {
     loading.value = true;
@@ -127,7 +159,7 @@ function getTree(cb?: Function) {
             { column: 'name$LIKE', value: `%${searchValue.value}%` },
         ];
     }
-    treeMap.clear()
+    treeMap.clear();
     getTreeData_api(params)
         .then((resp: any) => {
             sourceTree.value = resp.result.sort((a: any, b: any) =>
@@ -135,7 +167,12 @@ function getTree(cb?: Function) {
                     ? b.createTime - a.createTime
                     : a.sortIndex - b.sortIndex,
             ); // 报存源数据
-            selectedKeys.value = [resp.result[0]?.id];
+            if (route.query?.id) {
+                expandedKeys.value = findParents(sourceTree.value, route.query.id);
+                selectedKeys.value = [route.query.id];
+            } else {
+                selectedKeys.value = [resp.result[0]?.id];
+            }
             handleTreeMap(resp.result); // 将树形结构转换为map结构
             treeData.value = resp.result; // 第一次不用进行过滤
             cb && cb();
@@ -155,10 +192,11 @@ const search = debounce(() => {
                 treeArray.set(item.id, item);
             }
         });
-        expandedKeys.value = []
+        expandedKeys.value = [];
         dig(searchTree);
         treeData.value = ArrayToTree(cloneDeep([...treeArray.values()]));
     } else {
+        getTree()
         treeData.value = ArrayToTree(cloneDeep([...treeMap.values()]));
         expandedKeys.value = [];
     }
@@ -171,9 +209,9 @@ const search = debounce(() => {
                 const _item = treeMap.get(item);
                 pIds.push(_item.parentId);
                 treeArray.set(item, _item);
-                expandedKeys.value.push(_item.id)
-                if(pIds.length > 0){
-                    dig(pIds)
+                expandedKeys.value.push(_item.id);
+                if (pIds.length > 0) {
+                    dig(pIds);
                 }
             }
         });
@@ -192,14 +230,16 @@ function handleTreeMap(_data: any[]) {
 }
 // 删除部门
 function delDepartment(id: string) {
-    delDepartment_api(id).then(() => {
+    const response = delDepartment_api(id);
+    response.then(() => {
         onlyMessage('操作成功');
         getTree();
     });
+    return response;
 }
 function refresh(id: string) {
     // @ts-ignore
-    if(window?.onTabSaveSuccess){
+    if (window?.onTabSaveSuccess) {
         window.onTabSaveSuccess(id);
         setTimeout(() => window.close(), 300);
     }
@@ -220,7 +260,7 @@ const openDialog = (row: any = {}) => {
             children = row.children;
         } else children = treeData.value;
         const index =
-        children?.length > 0
+            children?.length > 0
                 ? children?.map((item) => item.sortIndex)
                 : [0];
         sortIndex = Math.max(...index) + 1;
@@ -235,7 +275,7 @@ const init = () => {
     watch(selectedKeys, (n) => {
         emits('change', n[0]);
     });
-}
+};
 
 init();
 </script>
@@ -270,38 +310,37 @@ init();
         }
     }
 
-
     .tree {
-      overflow-y: auto;
-      overflow-x: auto;
-      flex: 1 1 auto;
-      .department-tree-item-content {
-        display: flex;
-        align-items: stretch;
+        overflow-y: auto;
+        overflow-x: auto;
+        flex: 1 1 auto;
+        .department-tree-item-content {
+            display: flex;
+            align-items: stretch;
 
-        .title {
+            .title {
                 flex: 1;
                 min-width: 80px;
                 margin-right: 80px;
             }
-        .func-btns {
-          display: none;
-          font-size: 14px;
-          width: 80px;
-          margin-left: -80px;
-          :deep(.ant-btn-link) {
-            padding: 0 4px;
-            height: 24px;
-          }
+            .func-btns {
+                display: none;
+                font-size: 14px;
+                width: 80px;
+                margin-left: -80px;
+                :deep(.ant-btn-link) {
+                    padding: 0 4px;
+                    height: 24px;
+                }
+            }
         }
-      }
 
-      .loading {
-        display: flex;
-        width: 100%;
-        justify-content: center;
-        margin-top: 20px;
-      }
+        .loading {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            margin-top: 20px;
+        }
     }
 }
 </style>

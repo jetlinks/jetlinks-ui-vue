@@ -1,0 +1,24 @@
+{
+	"zh": {
+		"dialogs.DeviceChooseDialog.926510-0": "选择设备",
+		"dialogs.DeviceChooseDialog.926510-1": "请选择设备",
+		"dialogs.DeviceChooseDialog.926510-2": "设备ID",
+		"dialogs.DeviceChooseDialog.926510-3": "设备名称",
+		"dialogs.DeviceChooseDialog.926510-4": "产品名称",
+		"dialogs.DeviceChooseDialog.926510-5": "注册时间",
+		"dialogs.DeviceChooseDialog.926510-6": "状态",
+		"dialogs.DeviceChooseDialog.926510-7": "在线",
+		"dialogs.DeviceChooseDialog.926510-8": "离线"
+	},
+	"en": {
+		"dialogs.DeviceChooseDialog.926510-0": "Select device",
+		"dialogs.DeviceChooseDialog.926510-1": "Please select a device",
+		"dialogs.DeviceChooseDialog.926510-2": "Device ID",
+		"dialogs.DeviceChooseDialog.926510-3": "Device Name",
+		"dialogs.DeviceChooseDialog.926510-4": "Product Name",
+		"dialogs.DeviceChooseDialog.926510-5": "Registration time",
+		"dialogs.DeviceChooseDialog.926510-6": "state",
+		"dialogs.DeviceChooseDialog.926510-7": "on-line",
+		"dialogs.DeviceChooseDialog.926510-8": "off-line"
+	}
+}

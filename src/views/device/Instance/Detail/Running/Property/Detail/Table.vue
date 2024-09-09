@@ -10,14 +10,14 @@
                 current: (dataSource?.pageIndex || 0) + 1,
                 pageSize: dataSource?.pageSize || 12,
                 showSizeChanger: true,
-                showLessItems:true,
+                showLessItems: true,
                 total: dataSource?.total || 0,
-                pageSizeOptions: ['12', '24', '48', '96']
+                pageSizeOptions: ['12', '24', '48', '96'],
             }"
         >
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'timestamp'">
-                    {{ moment(record.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+                    {{ dayjs(record.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
                 </template>
                 <template v-if="column.key === 'value'">
                     <ValueRender
@@ -73,8 +73,7 @@
 <script lang="ts" setup>
 import { getPropertyData } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import encodeQuery from '@/utils/encodeQuery';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { getType } from '../index';
 import ValueRender from '../ValueRender.vue';
 import JsonViewer from 'vue-json-viewer';
@@ -95,11 +94,10 @@ const dataSource = ref({
     pageIndex: 0,
     pageSize: 12,
     data: [],
-    total: 0
+    total: 0,
 });
 const current = ref<any>({});
 const visible = ref<boolean>(false);
-
 const columns = computed(() => {
     const arr: any[] = [
         {
@@ -122,6 +120,7 @@ const columns = computed(() => {
             key: 'action',
         });
     }
+
     return arr;
 });
 
@@ -140,20 +139,30 @@ const showDetail = (item: any) => {
 const queryPropertyData = async (params: any) => {
     const resp = await getPropertyData(
         instanceStore.current.id,
-        encodeQuery({
+        _props.data.id,
+        {
             ...params,
-            terms: {
-                property: _props.data.id,
-                timestamp$BTW: _props.time,
-            },
-            sorts: { timestamp: 'desc' },
-        }),
+            sorts: [{
+                name: 'timestamp',
+                value: 'desc',
+            }],
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'timestamp',
+                            termType: 'btw',
+                            value: _props.time,
+                        },
+                    ],
+                },
+            ],
+        },
     );
     if (resp.status === 200) {
         dataSource.value = resp.result as any;
     }
 };
-
 watch(
     () => [_props.data.id, _props.time],
     ([newVal]) => {
@@ -165,8 +174,9 @@ watch(
         }
     },
     {
-        deep: true, immediate: true
-    }
+        deep: true,
+        immediate: true,
+    },
 );
 
 const onChange = (page: any) => {
@@ -180,7 +190,7 @@ const _download = (record: any) => {
     const downNode = document.createElement('a');
     downNode.download = `${instanceStore.current.name}-${
         _props.data.name
-    }${moment(new Date().getTime()).format('YYYY-MM-DD-HH-mm-ss')}.txt`;
+    }${dayjs(new Date().getTime()).format('YYYY-MM-DD-HH-mm-ss')}.txt`;
     downNode.style.display = 'none';
     //字符串内容转成Blob地址
     const blob = new Blob([record.value]);
@@ -197,10 +207,10 @@ const _download = (record: any) => {
 :deep(.ant-pagination-item) {
     display: none !important;
 }
-:deep(.ant-pagination-jump-next){
+:deep(.ant-pagination-jump-next) {
     display: none !important;
 }
-:deep(.ant-pagination-jump-prev){
+:deep(.ant-pagination-jump-prev) {
     display: none !important;
 }
 </style>

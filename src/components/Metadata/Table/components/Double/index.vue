@@ -28,6 +28,7 @@
 <script setup name="MetadataDouble">
 import { UnitSelect, PopoverModal } from '../index'
 import ScaleItem from './ScaleItem.vue'
+import {Form} from "ant-design-vue";
 
 const emit = defineEmits(['update:value', 'cancel', 'confirm']);
 
@@ -45,6 +46,8 @@ const props = defineProps({
     default:false
   }
 });
+
+const formItemContext = Form.useInjectFormItemContext();
 
 const formRef = ref()
 const visible = ref(false)
@@ -65,6 +68,7 @@ const onOk = async () => {
       ...props.value,
       ...formData
     });
+    formItemContext.onFieldChange()
   }
 }
 

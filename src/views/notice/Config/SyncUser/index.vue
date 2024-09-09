@@ -2,10 +2,10 @@
 <template>
     <div>
         <j-modal
-            v-model:visible="_vis"
+            visible
             title="同步用户"
             :footer="null"
-            @cancel="_vis = false"
+            @cancel="$emit('cancel')"
             width="80%"
         >
             <j-row :gutter="10" class="model-body">
@@ -66,40 +66,27 @@
                                 </j-space>
                             </template>
                             <template v-if="column.dataIndex === 'action'">
-                                <j-space :size="16">
-                                    <j-tooltip
+                                <j-space>
+                                    <template
                                         v-for="i in getActions(record, 'table')"
                                         :key="i.key"
-                                        v-bind="i.tooltip"
                                     >
-                                        <j-popconfirm
-                                            v-if="i.popConfirm"
-                                            v-bind="i.popConfirm"
+                                        <PermissionButton
                                             :disabled="i.disabled"
-                                        >
-                                            <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
-                                                type="link"
-                                                ><AIcon :type="i.icon"
-                                            /></j-button>
-                                        </j-popconfirm>
-                                        <j-button
-                                            style="padding: 0"
+                                            :popConfirm="i.popConfirm"
+                                            :tooltip="{
+                                                ...i.tooltip,
+                                            }"
+                                            @click="i.onClick"
                                             type="link"
-                                            v-else
-                                            @click="
-                                                i.onClick && i.onClick(record)
-                                            "
+                                            style="padding: 0 5px"
+                                            :danger="i.key === 'delete'"
                                         >
-                                            <j-button
-                                                :disabled="i.disabled"
-                                                style="padding: 0"
-                                                type="link"
+                                            <template #icon
                                                 ><AIcon :type="i.icon"
-                                            /></j-button>
-                                        </j-button>
-                                    </j-tooltip>
+                                            /></template>
+                                        </PermissionButton>
+                                    </template>
                                 </j-space>
                             </template>
                         </template>
@@ -144,33 +131,16 @@ import { onlyMessage } from '@/utils/comm';
 const useForm = Form.useForm;
 
 type Emits = {
-    (e: 'update:visible', data: boolean): void;
+    (e: 'cancel'): void;
 };
 const emit = defineEmits<Emits>();
 
 const props = defineProps({
-    visible: { type: Boolean, default: false },
     data: {
         type: Object as PropType<Partial<Record<string, any>>>,
         default: () => ({}),
     },
 });
-
-const _vis = computed({
-    get: () => props.visible,
-    set: (val) => emit('update:visible', val),
-});
-
-watch(
-    () => _vis.value,
-    (val) => {
-        if (val) {
-            getDepartment();
-        } else {
-            dataSource.value = [];
-        }
-    },
-);
 
 // 左侧部门
 const deptTreeData = ref([]);
@@ -195,32 +165,27 @@ const getDepartment = async () => {
     }
 
     deptTreeData.value = _result;
-    deptId.value = _result[0]?.id;
+    if(_result.length){
+        deptId.value = _result[0]?.id;
+    }
 };
-
-watch(
-    () => deptName.value,
-    (val: any) => {
-        if (!val) getDepartment();
-    },
-);
 
 /**
  * 部门点击
  */
 const onTreeSelect = (keys: any) => {
-  if (keys.length) {
-    deptId.value = keys[0];
-    pageSize.value = 12;
-    current.value = 1;
-  }
+    if (keys.length) {
+        deptId.value = keys[0];
+        pageSize.value = 12;
+        current.value = 1;
+    }
 };
 
 // 右侧表格
 
 const columns = [
     {
-        title: '钉钉用户名',
+        title: props.data.type === 'weixin' ? '企业微信用户名' : '钉钉用户名',
         dataIndex: 'thirdPartyUserName',
         key: 'thirdPartyUserName',
     },
@@ -266,13 +231,16 @@ const getActions = (
             icon: 'DisconnectOutlined',
             popConfirm: {
                 title: '确认解绑?',
-                onConfirm: async () => {
-                    configApi
-                        .unBindUser({ bindingId: data.bindId }, data.bindId)
-                        .then(() => {
-                            onlyMessage('操作成功');
-                            getTableData();
-                        });
+                onConfirm: () => {
+                    const response = configApi.unBindUser(
+                        { bindingId: data.bindId },
+                        data.bindId,
+                    );
+                    response.then(() => {
+                        onlyMessage('操作成功');
+                        getTableData();
+                    });
+                    return response;
                 },
             },
         },
@@ -346,7 +314,7 @@ const getAllUsers = async (terms?: any) => {
     };
     const { result } = await configApi.getPlatformUsers(params);
     allUserList.value = result.map((m: any) => ({
-        label: m.name,
+        label: m.name + ` (${m.username})`,
         value: m.id,
         ...m,
     }));
@@ -367,7 +335,7 @@ const getTableData = (terms?: any) => {
             (deptUsers || []).forEach((deptUser: any) => {
                 // 未绑定的用户
                 let unBindUser = unBindUsers.find(
-                    (f: any) => f.name === deptUser?.name,
+                    (f: any) => f.id === deptUser?.id,
                 );
                 // 绑定的用户
                 const bindUser = bindUsers.find(
@@ -409,14 +377,6 @@ const handleTableChange = (pagination: any) => {
     pageSize.value = pagination.pageSize;
 };
 
-watch(
-    () => deptId.value,
-    () => {
-        getTableData();
-    },
-    { immediate: true },
-);
-
 /**
  * 绑定用户
  */
@@ -452,12 +412,8 @@ const handleBind = (row: any) => {
  * 绑定用户, 用户下拉筛选
  */
 const filterOption = (input: string, option: any) => {
-    const text = option?.componentOptions?.children?.[0]?.text ||  option.label
-    return (
-        text
-            .toLowerCase()
-            .indexOf(input.toLowerCase()) >= 0
-    );
+    const text = option?.componentOptions?.children?.[0]?.text || option.label;
+    return text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 
 /**
@@ -501,6 +457,23 @@ const handleCancel = () => {
     bindVis.value = false;
     resetFields();
 };
+
+watch(
+    () => deptId.value,
+    () => {
+        getTableData();
+    },
+    // { immediate: true },
+);
+watch(
+    () => deptName.value,
+    (val: any) => {
+        if (!val) getDepartment();
+    },
+);
+onMounted(() => {
+    getDepartment();
+});
 </script>
 
 <style lang="less" scoped>

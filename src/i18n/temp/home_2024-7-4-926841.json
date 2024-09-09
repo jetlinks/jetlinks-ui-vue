@@ -1,0 +1,36 @@
+{
+	"zh": {
+		"DeviceHome.index.926510-0": "物联网引导",
+		"DeviceHome.index.926510-1": "设备接入推荐步骤",
+		"DeviceHome.index.926510-2": "不同的设备因为通信协议的不同，存在接入步骤的差异",
+		"DeviceHome.index.926510-3": "创建产品",
+		"DeviceHome.index.926510-4": "创建设备",
+		"DeviceHome.index.926510-5": "规则引擎",
+		"DeviceHome.index.926510-6": "产品是设备的集合，通常指一组具有相同功能的设备。物联设备必须通过产品进行接入方式配置。",
+		"DeviceHome.index.926510-7": "配置产品接入方式",
+		"DeviceHome.index.926510-8": "通过产品对同一类型的设备进行统一的接入方式配置。请参照设备铭牌说明选择匹配的接入方式。",
+		"DeviceHome.index.926510-9": "添加测试设备",
+		"DeviceHome.index.926510-10": "添加单个设备，用于验证产品模型是否配置正确。",
+		"DeviceHome.index.926510-11": "功能调试",
+		"DeviceHome.index.926510-12": "对添加的测试设备进行功能调试，验证能否连接到平台，设备功能是否配置正确。",
+		"DeviceHome.index.926510-13": "批量添加设备",
+		"DeviceHome.index.926510-14": "批量添加同一产品下的设备"
+	},
+	"en": {
+		"DeviceHome.index.926510-0": "IoT guidance",
+		"DeviceHome.index.926510-1": "Recommended steps for device access",
+		"DeviceHome.index.926510-2": "Different devices may have different access steps due to differences in communication protocols",
+		"DeviceHome.index.926510-3": "Create product",
+		"DeviceHome.index.926510-4": "Create device",
+		"DeviceHome.index.926510-5": "Rule engine",
+		"DeviceHome.index.926510-6": "A product is a collection of devices, usually referring to a group of devices with the same functionality. IoT devices must be configured through product access methods.",
+		"DeviceHome.index.926510-7": "Configure product access methods",
+		"DeviceHome.index.926510-8": "Configure unified access methods for devices of the same type through products. Please refer to the instructions on the device nameplate to select the matching access method.",
+		"DeviceHome.index.926510-9": "Add testing equipment",
+		"DeviceHome.index.926510-10": "Add a single device to verify if the product model is configured correctly.",
+		"DeviceHome.index.926510-11": "Functional debugging",
+		"DeviceHome.index.926510-12": "Perform functional debugging on the added testing equipment to verify if it can connect to the platform and if the device's functions are configured correctly.",
+		"DeviceHome.index.926510-13": "Batch Add Devices",
+		"DeviceHome.index.926510-14": "Batch adding devices under the same product"
+	}
+}

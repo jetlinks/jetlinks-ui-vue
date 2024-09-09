@@ -56,7 +56,7 @@ import dashboardApi from '@/api/media/dashboard';
 import type { Footer } from '@/views/media/DashBoard/typings';
 import encodeQuery from '@/utils/encodeQuery';
 import { timestampFormat } from '@/utils/utils';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 // 设备
 const deviceFooter = ref<Footer[]>([]);
@@ -161,14 +161,18 @@ const getPlayCount = async (params: any) => {
     const day = hour * 24;
     const month = day * 30;
     const year = 365 * day;
+    let format = ''
+
     if (dt <= day) {
         _limit = Math.abs(Math.ceil(dt / hour));
     } else if (dt > day && dt < year) {
         _limit = Math.abs(Math.ceil(dt / day));
         _time = '1d';
+        format = 'M月dd日'
     } else if (dt >= year) {
         _limit = Math.abs(Math.floor(dt / month));
         _time = '1M';
+      format = 'YYYY年-MM月'
     }
     dashboardApi
         .getPlayCount([
@@ -179,11 +183,12 @@ const getPlayCount = async (params: any) => {
                 dimension: 'agg',
                 group: 'playCount',
                 params: {
+                    format: format,
                     time: _time,
-                    from: moment(Number(params.time.start)).format(
+                    from: dayjs(Number(params.time.start)).format(
                         'YYYY-MM-DD HH:mm:ss',
                     ),
-                    to: moment(Number(params.time.end)).format(
+                    to: dayjs(Number(params.time.end)).format(
                         'YYYY-MM-DD HH:mm:ss',
                     ),
                     limit: _limit,

@@ -15,11 +15,13 @@ import MarkDown from './Markdown'
 import CardSelect from './CardSelect'
 // import Ellipsis from './Ellipsis/index.vue'
 import JEmpty from './Empty/index.vue'
-import AMapComponent from './AMapComponent/index.vue'
+import AMapComponent from './AMapComponent/AMap.vue'
 import PathSimplifier from './AMapComponent/PathSimplifier.vue'
 import ValueItem from './ValueItem/index.vue'
 import RowPagination from './RowPagination/index.vue'
-import Calendar from './Calendar/index.vue'
+import LevelIcon from './AlarmLeveIcon/index.vue'
+import CheckButton from "./CheckButton";
+import ConfirmModal from './ConfirmModal/index.vue'
 
 export default  {
     install(app: App) {
@@ -46,5 +48,8 @@ export default  {
             .component('RadioCard', RadioCard)
             .component('MarkDown', MarkDown)
             .component('CardSelect', CardSelect)
+            .component('CheckButton', CheckButton)
+            .component('ConfirmModal',ConfirmModal)
+            .component('LevelIcon',LevelIcon)
     }
 }

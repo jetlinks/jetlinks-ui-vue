@@ -1,10 +1,13 @@
 <template>
-    <j-modal title="扫描" :visible="true" width="95%" @cancel="handleCancel">
+    <j-modal title="扫描" :visible="true" width="95%" :maskClosable="false" @cancel="handleCancel">
         <div class="content">
             <Tree
                 :data="treeData"
+                :tableData="tableData"
                 class="tree"
                 @change="changeTree"
+                @addAll="addAll"
+                @cancel-all="cancelAll"
                 :unSelectKeys="unSelectKeys"
             ></Tree>
             <Table
@@ -86,6 +89,15 @@ const handleCancel = () => {
 const changeTree = (row: any) => {
     tableData.value.push(row)
 };
+
+const addAll = (data:any)=>{
+    tableData.value = data
+}
+
+const cancelAll = () =>{
+    console.log('cancelALl')
+    tableData.value = []
+}
 const changeTable = (value: string, index: number) => {
     tableData.value.splice(index, 1)
 };

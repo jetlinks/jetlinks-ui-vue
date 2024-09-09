@@ -41,7 +41,7 @@
                                         <PermissionButton
                                             :hasPermission="`${permission}:bind`"
                                             :popConfirm="{
-                                                title: `是否批量解除绑定`,
+                                                title: `确认批量解除绑定？`,
                                                 onConfirm: () =>
                                                     table.clickUnBind(),
                                             }"
@@ -369,7 +369,7 @@ const table = {
                     key: 'unbind',
                     tooltip: { title: '解除绑定' },
                     popConfirm: {
-                        title: `是否解除绑定`,
+                        title: `确认解除绑定？`,
                         onConfirm: () => table.clickUnBind(data),
                     },
                     icon: 'DisconnectOutlined',
@@ -573,11 +573,13 @@ const table = {
                 assetIdList: ids,
             },
         ];
-        unBindDeviceOrProduct_api('product', params).then(() => {
+        const response = unBindDeviceOrProduct_api('product', params)
+        response.then(() => {
             tableData._selectedRowKeys = [];
             onlyMessage('操作成功');
             table.refresh();
         });
+        return response
     },
     refresh: () => {
         nextTick(() => {

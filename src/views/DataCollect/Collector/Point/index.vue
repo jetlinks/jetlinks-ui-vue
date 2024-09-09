@@ -1,6 +1,10 @@
 <template>
     <j-spin :spinning="spinning">
-        <pro-search :columns="columns" target="search-point" @search="handleSearch" />
+        <pro-search
+            :columns="columns"
+            target="search-point"
+            @search="handleSearch"
+        />
         <FullPage>
             <j-scrollbar height="680">
                 <j-pro-table
@@ -11,18 +15,29 @@
                     :gridColumns="[1, 2]"
                     :request="queryPoint"
                     :defaultParams="defaultParams"
+                    :rowSelection="
+                        isCheck
+                            ? {
+                                  selectedRowKeys: _selectedRowKeys,
+                                  onSelectNone: () => (_selectedRowKeys = []),
+                              }
+                            : false
+                    "
                     :params="params"
-                    :rowSelection="{
-                        selectedRowKeys: _selectedRowKeys,
-                        onChange: onSelectChange,
-                    }"
                 >
                     <template #headerTitle>
                         <j-space>
                             <PermissionButton
-                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7', 'iec104'].includes(data?.provider)"
+                                v-if="
+                                    [
+                                        'MODBUS_TCP',
+                                        'COLLECTOR_GATEWAY',
+                                        'snap7',
+                                        'iec104',
+                                    ].includes(data?.provider)
+                                "
                                 type="primary"
-                                @click="handlAdd"
+                                @click="handleAdd"
                                 hasPermission="DataCollect/Collector:add"
                             >
                                 <template #icon
@@ -31,20 +46,12 @@
                                 新增点位
                             </PermissionButton>
                             <PermissionButton
-                                v-if="['MODBUS_TCP', 'COLLECTOR_GATEWAY','snap7', 'iec104'].includes(data?.provider)"
+                                v-if="
+                                    data?.provider === 'OPC_UA' ||
+                                    data?.provider === 'BACNetIp'
+                                "
                                 type="primary"
-                                @click="handleImport"
-                                hasPermission="DataCollect/Collector:add"
-                            >
-                                <!-- <template #icon
-                                    ><AIcon type="PlusOutlined"
-                                /></template> -->
-                                批量导入
-                            </PermissionButton>
-                            <PermissionButton
-                                v-if="data?.provider === 'OPC_UA' || data?.provider === 'BACNetIp'"
-                                type="primary"
-                                @click="handlScan"
+                                @click="handleScan"
                                 hasPermission="DataCollect/Collector:add"
                             >
                                 <template #icon
@@ -52,48 +59,31 @@
                                 /></template>
                                 扫描
                             </PermissionButton>
-                            <j-dropdown
-                                v-if="data?.provider === 'OPC_UA' || data?.provider === 'BACNetIp'"
+                            <PermissionButton
+                                v-if="data?.id && data.id !== '*'"
+                                type="primary"
+                                @click="handleImport"
+                                hasPermission="DataCollect/Collector:add"
                             >
-                                <j-button @click.prevent="clickBatch"
-                                    >批量操作 <AIcon type="DownOutlined"
-                                /></j-button>
-                                <template #overlay>
-                                    <j-menu v-if="showBatch">
-                                        <j-menu-item>
-                                            <PermissionButton
-                                                hasPermission="DataCollect/Collector:update"
-                                                @click="handlBatchUpdate()"
-                                            >
-                                                <template #icon
-                                                    ><AIcon type="FormOutlined"
-                                                /></template>
-                                                编辑
-                                            </PermissionButton>
-                                        </j-menu-item>
-                                        <j-menu-item>
-                                            <PermissionButton
-                                                hasPermission="DataCollect/Collector:delete"
-                                                :popConfirm="{
-                                                    title: `确定删除？`,
-                                                    onConfirm: () =>
-                                                        handlBatchDelete(),
-                                                }"
-                                            >
-                                                <template #icon
-                                                    ><AIcon type="EditOutlined"
-                                                /></template>
-                                                删除
-                                            </PermissionButton>
-                                        </j-menu-item>
-                                    </j-menu>
-                                </template>
-                            </j-dropdown>
+                                批量导入
+                            </PermissionButton>
+                            <PermissionButton
+                                v-if="data?.id && data.id !== '*'"
+                                type="primary"
+                                @click="handleExport"
+                                hasPermission="DataCollect/Collector:add"
+                            >
+                                数据导出
+                            </PermissionButton>
+                            <BatchDropdown
+                                v-if="data?.id && data.id !== '*'"
+                                ref="batchRef"
+                                v-model:isCheck="isCheck"
+                                :actions="batchActions"
+                                @change="onCheckChange"
+                            />
                         </j-space>
-                        <div
-                            v-if="data?.provider === 'OPC_UA' || data?.provider === 'BACNetIp'"
-                            style="margin-top: 15px"
-                        >
+                        <div v-if="isCheck" style="margin-top: 15px">
                             <j-checkbox
                                 v-model:checked="checkAll"
                                 @change="onCheckAllChange"
@@ -132,9 +122,9 @@
                                         }"
                                         hasPermission="DataCollect/Collector:delete"
                                         :popConfirm="{
-                                            title: `确定删除？`,
+                                            title: `确认删除？`,
                                             onConfirm: () =>
-                                                handlDelete(slotProps.id),
+                                                handleDelete(slotProps.id),
                                         }"
                                     >
                                         <a
@@ -147,9 +137,8 @@
                                     </PermissionButton>
 
                                     <PermissionButton
-                                        class="add-btn"
                                         type="text"
-                                        @click="handlEdit(slotProps)"
+                                        @click="handleEdit(slotProps)"
                                         hasPermission="DataCollect/Collector:update"
                                     >
                                         <a style="font-size: 20px"
@@ -159,7 +148,7 @@
                                 </div>
                             </template>
                             <template #img>
-                                <img :src="ImageMap.get(slotProps.provider)"/>
+                                <img :src="ImageMap.get(slotProps.provider)" />
                             </template>
                             <template #content>
                                 <div class="card-box-content">
@@ -224,13 +213,13 @@
                                             "
                                             class="card-box-content-right-2"
                                         >
-                                            <p>
+                                            <Ellipsis>
                                                 {{
                                                     propertyValue.get(
                                                         slotProps.id,
                                                     )?.hex || ''
                                                 }}
-                                            </p>
+                                            </Ellipsis>
                                             <p>
                                                 {{
                                                     dayjs(
@@ -323,12 +312,28 @@
             :provider="data.provider"
             @change="saveChange"
         />
-        <SaveS7 v-if="visible.saveS7"  :data="current" @change="saveChange"/>
-        <SaveIEC104 v-if="visible.saveIEC104" :data="current" @change="saveChange"/>
-        <SaveBACNet v-if="visible.saveBACNet" :data="current" @change="saveChange"/>
+        <SaveS7 v-if="visible.saveS7" :data="current" @change="saveChange" />
+        <SaveIEC104
+            v-if="visible.saveIEC104"
+            :data="current"
+            @change="saveChange"
+        />
+        <SaveBACNet
+            v-if="visible.saveBACNet"
+            :data="current"
+            @change="saveChange"
+        />
         <Scan v-if="visible.scan" :data="current" @change="saveChange" />
-        <ScanBacnet v-if="visible.scanBacnet" :data="current" @change="saveChange" />
-        <Import v-if="visible.import" :data="current" @close-import="closeImport"/>
+        <ScanBacnet
+            v-if="visible.scanBacnet"
+            :data="current"
+            @change="saveChange"
+        />
+        <Import
+            v-if="visible.import"
+            :data="current"
+            @close-import="closeImport"
+        />
     </j-spin>
 </template>
 <script lang="ts" setup name="PointPage">
@@ -339,7 +344,8 @@ import {
     removePoint,
     readPoint,
     getProviders,
-    getStates
+    getStates,
+    exportPoint,
 } from '@/api/data-collect/collector';
 import { onlyMessage } from '@/utils/comm';
 import PointCardBox from './components/PointCardBox/index.vue';
@@ -355,10 +361,11 @@ import { cloneDeep, isBoolean, isNumber, throttle } from 'lodash-es';
 import { getWebSocket } from '@/utils/websocket';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs';
-import { responsiveArray } from 'ant-design-vue/lib/_util/responsiveObserve';
 import SaveS7 from './Save/SaveS7.vue';
 import SaveIEC104 from './Save/SaveIEC104.vue';
-import Import from './components/Import/index.vue'
+import Import from './components/Import/index.vue';
+import { downloadFileByUrl } from '@/utils/utils';
+import BatchDropdown from '@/components/BatchDropdown/index.vue';
 const props = defineProps({
     data: {
         type: Object,
@@ -370,16 +377,15 @@ const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const opcImage = getImage('/DataCollect/device-opcua.png');
 const modbusImage = getImage('/DataCollect/device-modbus.png');
-const s7Image = getImage('/DataCollect/s7.png')
-const gatewayImage = getImage('/DataCollect/gateway.png')
-const iecImage = getImage('/DataCollect/IEC104.png')
-const ImageMap = new Map()
-ImageMap.set('OPC_UA',opcImage)
-ImageMap.set('MODBUS_TCP',modbusImage)
-ImageMap.set('snap7',s7Image)
-ImageMap.set('iec104',iecImage)
-ImageMap.set('COLLECTOR_GATEWAY',gatewayImage)
-
+const s7Image = getImage('/DataCollect/s7.png');
+const gatewayImage = getImage('/DataCollect/gateway.png');
+const iecImage = getImage('/DataCollect/IEC104.png');
+const ImageMap = new Map();
+ImageMap.set('OPC_UA', opcImage);
+ImageMap.set('MODBUS_TCP', modbusImage);
+ImageMap.set('snap7', s7Image);
+ImageMap.set('iec104', iecImage);
+ImageMap.set('COLLECTOR_GATEWAY', gatewayImage);
 
 const visible = reactive({
     saveModBus: false,
@@ -387,8 +393,8 @@ const visible = reactive({
     writePoint: false,
     batchUpdate: false,
     scan: false,
-    saveS7:false,
-    import:false,
+    saveS7: false,
+    import: false,
     saveIEC104: false,
     scanBacnet: false,
     saveBACNet: false,
@@ -399,7 +405,8 @@ const _selectedRowKeys = ref<string[]>([]);
 const checkAll = ref(false);
 const spinning = ref(false);
 const ReadIdMap = new Map();
-
+const isCheck = ref(false);
+const batchRef = ref();
 const defaultParams = ref({
     sorts: [{ name: 'id', order: 'desc' }],
     terms: [
@@ -408,7 +415,11 @@ const defaultParams = ref({
                 {
                     column: 'collectorId',
                     termType: 'eq',
-                    value: !props.data?.id ? 'undefined' : (props.data.id === '*' ? undefined : props.data.id),
+                    value: !props.data?.id
+                        ? 'undefined'
+                        : props.data.id === '*'
+                        ? undefined
+                        : props.data.id,
                 },
             ],
         },
@@ -441,14 +452,17 @@ const columns = [
         key: 'provider',
         search: {
             type: 'select',
-            options: async () =>{
-              const resp:any = await getProviders();
-              if(resp.success){
-                return resp.result.map((item: any) => ({ label: item.name, value: item.id }))
-              }else{
-                return []
-              }
-            }
+            options: async () => {
+                const resp: any = await getProviders();
+                if (resp.success) {
+                    return resp.result.map((item: any) => ({
+                        label: item.name,
+                        value: item.id,
+                    }));
+                } else {
+                    return [];
+                }
+            },
         },
     },
     {
@@ -466,16 +480,17 @@ const columns = [
         key: 'runningState',
         search: {
             type: 'select',
-            options: async() =>{
-                const resq:any = await getStates();
-                if(resq.status === 200){
-                    return resq.result.map((item:any)=>(
-                        {label:item.text,value:item.value}
-                    ))
-                }else{
-                    return []
+            options: async () => {
+                const resq: any = await getStates();
+                if (resq.status === 200) {
+                    return resq.result.map((item: any) => ({
+                        label: item.text,
+                        value: item.value,
+                    }));
+                } else {
+                    return [];
                 }
-            }
+            },
         },
     },
     {
@@ -490,33 +505,21 @@ const columns = [
 
 const subRef = ref();
 const propertyValue = ref(new Map());
-const cacheIds = ref<string>()
-const showBatch = ref(false);
-
-const clickBatch = () => {
-    if (_selectedRowKeys.value.length === 0) {
-        onlyMessage('请先选择', 'warning');
-        showBatch.value = false;
-    } else {
-        showBatch.value = true;
-    }
-};
-
-const handlAdd = () => {
-    if( props.data?.provider === 'snap7'){
-        console.log(props.data)
-        visible.saveS7 = true
+const batchActions = ref<any>([]);
+const handleAdd = () => {
+    if (props.data?.provider === 'snap7') {
+        visible.saveS7 = true;
         current.value = {
             collectorId: props.data?.id,
             provider: props.data?.provider,
-            deviceType:props.data?.configuration.type,
-        }
-    }else if (props.data?.provider === 'iec104'){
+            deviceType: props.data?.configuration.type,
+        };
+    } else if (props.data?.provider === 'iec104') {
         visible.saveIEC104 = true;
         current.value = {
             collectorId: props.data?.id,
             provider: props.data?.provider,
-        }
+        };
     } else {
         visible.saveModBus = true;
         current.value = {
@@ -524,44 +527,61 @@ const handlAdd = () => {
             provider: props.data?.provider || 'MODBUS_TCP',
         };
     }
-   
 };
-const handlEdit = (data: any) => {
+const handleEdit = (data: any) => {
     if (data?.provider === 'OPC_UA') {
         visible.saveOPCUA = true;
-    } else if(data?.provider === 'snap7'){
-        visible.saveS7 = true
-    } else if(data?.provider === 'iec104') {
-        visible.saveIEC104 = true
+    } else if (data?.provider === 'snap7') {
+        visible.saveS7 = true;
+    } else if (data?.provider === 'iec104') {
+        visible.saveIEC104 = true;
     } else if (data?.provider === 'BACNetIp') {
-        visible.saveBACNet = true
+        visible.saveBACNet = true;
     } else {
         visible.saveModBus = true;
     }
     current.value = cloneDeep({
         ...data,
-        deviceType:props.data?.configuration?.type || props.data?.configuration?.valueType,
+        deviceType:
+            props.data?.configuration?.type ||
+            props.data?.configuration?.valueType,
     });
 };
 
-const handlDelete = async (id: string | undefined = undefined) => {
+const handleDelete = (id: string | undefined = undefined) => {
     spinning.value = true;
-    const res = !id
-        ? await batchDeletePoint(_selectedRowKeys.value).catch(() => {})
-        : await removePoint(id as string).catch(() => {});
-    if (res?.status === 200) {
-        cancelSelect();
-        tableRef.value?.reload();
-        onlyMessage('操作成功', 'success');
+    const response = !id
+        ? batchDeletePoint(_selectedRowKeys.value).catch(() => {})
+        : removePoint(id as string).catch(() => {});
+    response.then((res) => {
+        if (res?.status === 200) {
+            cancelSelect();
+            tableRef.value?.reload();
+            onlyMessage('操作成功', 'success');
+        }
+        spinning.value = false;
+    });
+    return response;
+};
+
+const onCheckChange = () => {
+    _selectedRowKeys.value = [];
+    checkAll.value = false;
+};
+
+const handleBatchDelete = () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('至少选择一条数据', 'error');
+        return
     }
-    spinning.value = false;
+    handleDelete();
 };
 
-const handlBatchDelete = () => {
-    handlDelete();
-};
-
-const handlBatchUpdate = () => {
+const handleBatchUpdate = () => {
+    if (!_selectedRowKeys.value.length) {
+        onlyMessage('至少选择一条数据', 'error');
+        return
+    }
     const dataSet = new Set(_selectedRowKeys.value);
     const dataMap = new Map();
     tableRef?.value?._dataSource.forEach((i: any) => {
@@ -570,18 +590,31 @@ const handlBatchUpdate = () => {
     current.value = [...dataMap.values()];
     visible.batchUpdate = true;
 };
-const handlScan = () => {
-    if(props.data?.provider === 'OPC_UA'){
+
+const handleScan = () => {
+    if (props.data?.provider === 'OPC_UA') {
         visible.scan = true;
-    } else if(props.data?.provider === 'BACNetIp'){
-        visible.scanBacnet = true
+    } else if (props.data?.provider === 'BACNetIp') {
+        visible.scanBacnet = true;
     }
     current.value = cloneDeep(props.data);
 };
-const handleImport = () =>{
-    visible.import = true
-    current.value = cloneDeep(props.data)
-}
+const handleImport = () => {
+    visible.import = true;
+    current.value = cloneDeep(props.data);
+};
+const handleExport = async () => {
+    const params =
+        props?.data?.provider === 'COLLECTOR_GATEWAY'
+            ? props?.data?.configuration?.collectorProvider
+            : props?.data?.provider;
+    const res: any = await exportPoint(props.data.collectorId, params);
+    if (res) {
+        const blob = new Blob([res], { type: 'xlsx' });
+        const url = URL.createObjectURL(blob);
+        downloadFileByUrl(url, `${props?.data?.channelName}点位数据`, 'xlsx');
+    }
+};
 const clickEdit = async (data: object) => {
     visible.writePoint = true;
     current.value = cloneDeep(data);
@@ -589,13 +622,12 @@ const clickEdit = async (data: object) => {
 
 // ReadIdMap
 const clickRead = async (data: any) => {
-    console.log('------')
     const res: any = await readPoint(data?.collectorId, [data?.id]);
     if (res.status === 200) {
         const readData: any = res.result[0];
         const _data = ReadIdMap.get(data?.id);
         ReadIdMap.set(data?.id, { ..._data, ...readData });
-        console.log('====',ReadIdMap.get(data.id))
+        console.log('====', ReadIdMap.get(data.id));
         cancelSelect();
         tableRef.value?.reload();
         onlyMessage('操作成功', 'success');
@@ -608,7 +640,7 @@ const getQuantity = (item: Partial<Record<string, any>>) => {
 };
 const getAddress = (item: Partial<Record<string, any>>) => {
     const { address } = item.configuration?.parameter || '';
-    return (!!address || address === 0) ? address + '(地址)' : '';
+    return !!address || address === 0 ? address + '(地址)' : '';
 };
 const getScaleFactor = (item: Partial<Record<string, any>>) => {
     const { scaleFactor } = item.configuration?.codec?.configuration || '';
@@ -639,12 +671,11 @@ const getReadParseData = (item: any) => {
     let _data = '--';
     if (ReadIdMap.has(item.id)) {
         const { parseData, dataType } = ReadIdMap.get(item.id);
-        if(isBoolean(parseData)){
-            _data =  `${parseData}(${dataType || '-'}) `;
-        }else{
+        if (isBoolean(parseData)) {
+            _data = `${parseData}(${dataType || '-'}) `;
+        } else {
             _data = !!parseData ? `${parseData}(${dataType || '-'}) ` : '--';
         }
-        
     }
     return _data;
 };
@@ -660,16 +691,14 @@ const saveChange = (value: object) => {
     }
 };
 
-const onSelectChange = (keys: string[]) => {
-    _selectedRowKeys.value = [...keys];
-};
-
 const cancelSelect = () => {
     _selectedRowKeys.value = [];
 };
 
 const handleClick = (dt: any) => {
-    if (props.data?.provider !== 'OPC_UA' && props.data?.provider !== 'BACNetIp') return;
+    if (!isCheck.value) {
+        return;
+    }
     if (_selectedRowKeys.value.includes(dt.id)) {
         const _index = _selectedRowKeys.value.findIndex((i) => i === dt.id);
         _selectedRowKeys.value.splice(_index, 1);
@@ -685,16 +714,20 @@ const handleClick = (dt: any) => {
 };
 
 const handleSubscribeValue = throttle((payload: any) => {
-  propertyValue.value.set(payload.pointId, payload);
-})
+    propertyValue.value.set(payload.pointId, payload);
+});
 
 const subscribeProperty = (value: any) => {
     const list = value.map((item: any) => item.id);
     const id = `collector-${props.data?.channelId || 'channel'}-${
-        (props.data?.id || (props.data && props.data.id === '*')) ? 'point' : props.data?.id
+        props.data?.id || (props.data && props.data.id === '*')
+            ? 'point'
+            : props.data?.id
     }-data-${list.join('-')}`;
     const topic = `/collector/${props.data?.channelId || '*'}/${
-      (props.data?.id || (props.data && props.data.id === '*')) ? '*' : props.data?.id
+        props.data?.id || (props.data && props.data.id === '*')
+            ? '*'
+            : props.data?.id
     }/data`;
     subRef.value = getWebSocket(id, topic, {
         pointId: list.join(','),
@@ -702,7 +735,7 @@ const subscribeProperty = (value: any) => {
         ?.pipe(map((res: any) => res.payload))
         .subscribe((payload: any) => {
             //防止刷新过快
-          handleSubscribeValue(payload)
+            handleSubscribeValue(payload);
         });
 };
 
@@ -717,10 +750,10 @@ const onCheckAllChange = (e: any) => {
     }
 };
 
-const closeImport = () =>{
-    visible.import = false
-    tableRef.value.reload()
-}
+const closeImport = () => {
+    visible.import = false;
+    tableRef.value.reload();
+};
 
 watch(
     () => tableRef?.value?._dataSource,
@@ -728,15 +761,15 @@ watch(
         subRef.value?.unsubscribe();
         if (value.length !== 0) {
             setTimeout(() => {
-              subscribeProperty(value);
-              value.forEach((item: any) => {
-                  item?.accessModes?.forEach((i: any) => {
-                      if (i?.value === 'read') {
-                          ReadIdMap.set(item.id, item);
-                      }
-                  });
-              });
-            }, 100)
+                subscribeProperty(value);
+                value.forEach((item: any) => {
+                    item?.accessModes?.forEach((i: any) => {
+                        if (i?.value === 'read') {
+                            ReadIdMap.set(item.id, item);
+                        }
+                    });
+                });
+            }, 100);
         }
         cancelSelect();
         checkAll.value = false;
@@ -762,17 +795,64 @@ watch(
                           label: '订阅',
                           value: 'subscribe',
                       });
-            defaultParams.value.terms[0].terms[0].value = !value.id ? 'undefined' : (value.id === '*' ? undefined : value.id);
+            defaultParams.value.terms[0].terms[0].value = !value.id
+                ? 'undefined'
+                : value.id === '*'
+                ? undefined
+                : value.id;
             tableRef?.value?.reload && tableRef?.value?.reload();
-            cancelSelect();
+            // cancelSelect();
             checkAll.value = false;
+            batchRef.value?.reload();
+            batchActions.value =
+                props?.data?.provider === 'OPC_UA' ||
+                props?.data?.provider === 'BACNetIp'
+                    ? [
+                          {
+                              key: 'update',
+                              text: '批量编辑',
+                              permission: 'DataCollect/Collector:update',
+                              icon: 'FormOutlined',
+                              selected: {
+                                  onClick: handleBatchUpdate,
+                              },
+                          },
+                          {
+                              key: 'delete',
+                              text: '批量删除',
+                              danger: true,
+                              permission: 'DataCollect/Collector:delete',
+                              icon: 'DeleteOutlined',
+                              selected: {
+                                  popConfirm: {
+                                      title: '确认删除？',
+                                      onConfirm: handleBatchDelete,
+                                  },
+                              },
+                          },
+                      ]
+                    : [
+                          {
+                              key: 'delete',
+                              text: '批量删除',
+                              danger: true,
+                              permission: 'DataCollect/Collector:delete',
+                              icon: 'DeleteOutlined',
+                              selected: {
+                                  popConfirm: {
+                                      title: '确认删除？',
+                                      onConfirm: handleBatchDelete,
+                                  },
+                              },
+                          },
+                      ];
         }
     },
     { immediate: true, deep: true },
 );
 
 onUnmounted(() => {
-  subRef.value?.unsubscribe();
+    subRef.value?.unsubscribe();
 });
 
 /**

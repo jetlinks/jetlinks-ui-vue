@@ -35,13 +35,13 @@
               v-model:expandedKeys="treeOpenKeys"
               :selectedKeys='selectValue ? [selectValue] : []'
               :treeData='options'
-              :height='450'
+              :height='350'
               :virtual='true'
               @select='treeSelect'
             >
-              <template #title="{ name, description }">
+              <template #title="{ name, fullName, description }">
                 <j-space>
-                  {{ name }}
+                  {{ name || fullName }}
                   <span v-if='description' class='tree-title-description'>{{ description }}</span>
                 </j-space>
               </template>
@@ -118,10 +118,7 @@ const visibleChange = (v: boolean) => {
 
 const dropdownButtonClass = computed(() => ({
   'dropdown-button': true,
-  'column': props.type === 'column',
-  'termType': props.type === 'termType',
-  'value': props.type === 'value',
-  'type': props.type === 'type',
+  [props.type]: true
 }))
 
 const treeSelect = (v: any, option: any) => {

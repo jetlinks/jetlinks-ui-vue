@@ -1,21 +1,22 @@
 <template>
   <Select
-    mode="tags"
     placeholder="请选择单位"
     style="width: 100%"
+    mode="tags"
     v-model:value="myValue"
     :dropdownStyle="{
       zIndex: 1071
     }"
     :getPopupContainer="(node) => tableWrapperRef || node"
     :options="options"
+    optionFilterProp="label"
     @change="change"
   />
 </template>
 
 <script setup name="MetadataUnitSelect">
 import { Form, Select } from 'ant-design-vue'
-import {useTableWrapper} from "@/components/Metadata/Table/utils";
+import {useTableWrapper} from "@/components/Metadata/Table/context";
 import {useGetUnit} from "@/views/device/components/Metadata/Base/columns";
 
 const props = defineProps({
@@ -53,6 +54,10 @@ const change = (v) => {
   emit('change', newValue);
   formItemContext.onFieldChange();
 };
+
+const filterOption = (v, option) => {
+  return option.label.includes(v)
+}
 
 watch(
   () => props.value,

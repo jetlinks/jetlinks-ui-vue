@@ -3,24 +3,23 @@
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
-        :scroll="{ y: 'calc(100vh - 260px)' }"
+        bordered
+        :scroll="{ y: 'calc(100vh - 300px)' }"
     >
         <template #bodyCell="{ column, text, record }">
             <template v-if="column.dataIndex === 'alarmTime'"
                 ><span
                     >{{ dayjs(text).format('YYYY-MM-DD HH:mm:ss')
-                    }}<a-button type="text" @click="() => showDetail(record)">
-                        <template #icon>
-                            <AIcon type="FileSearchOutlined"></AIcon>
-                        </template> </a-button></span
+                    }}</span
             ></template>
-            <template v-if="column.dataIndex === 'sourceId'"
-                >设备ID：<a-button
-                    type="link"
-                    @click="() => gotoDevice(text)"
-                    >{{ text }}</a-button
-                ></template
-            >
+            <template v-if="column.dataIndex === 'sourceName'">
+                <Ellipsis>
+                    设备名称：
+                    <span class="deviceId" @click="() => gotoDevice(text)">{{
+                        text
+                    }}</span></Ellipsis
+                >
+            </template>
             <template
                 v-if="
                     column.dataIndex === 'triggerDesc' ||
@@ -28,22 +27,29 @@
                 "
                 ><Ellipsis>{{ text }}</Ellipsis></template
             >
+            <template v-if="column.dataIndex === 'action'">
+                <a-button type="link" @click="() => showDetail(record)">
+                        <template #icon>
+                            <AIcon type="EyeOutlined"></AIcon>
+                        </template> </a-button>
+            </template>
         </template></a-table
     >
     <div class="tableBottom">
         <a-button
             v-if="exceed"
             class="moreBtn"
-            type="text"
+            type="link"
             @click="gotoAlarmLog"
             >查看更多 ></a-button
         >
+        <span v-else-if="dataSource.length">已展示全部数据</span>
     </div>
     <LogDetail v-if="visibleDetail" :data="current" @close="close" />
 </template>
 
 <script setup>
-import { queryLogList } from '@/api/rule-engine/log';
+import { queryLogList ,queryPreconditioningLogList } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import LogDetail from './LogDetail.vue';
@@ -56,6 +62,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    goal:{
+        type:String,
+        default: ''
+    }
 });
 const menuStory = useMenuStore();
 const exceed = ref();
@@ -75,17 +85,23 @@ const columns = [
     },
     {
         title: '告警源',
-        dataIndex: 'sourceId',
-        key: 'sourceId',
+        dataIndex: 'sourceName',
+        key: 'sourceName',
     },
     {
         title: '告警原因',
         dataIndex: 'actualDesc',
         key: 'actualDesc',
     },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        width:100
+    }
 ];
 const queryData = async () => {
-    const res = await queryLogList(props.configId, {
+    const params = {
         pageIndex: 0,
         pageSize: 51,
         terms: [
@@ -102,7 +118,8 @@ const queryData = async () => {
                 order: 'desc',
             },
         ],
-    });
+    }
+    const res = props.goal ? await queryPreconditioningLogList(props.configId,params) : await queryLogList(props.configId, params);
     if (res.success) {
         if (res.result.data?.length > 50) {
             exceed.value = true;
@@ -138,10 +155,15 @@ onMounted(() => {
     text-align: center;
     position: relative;
     height: 50px;
+    margin-top: 20px;
     .moreBtn {
         position: absolute;
-        right: 0;
+        right: 50%;
         top: 10px;
     }
+}
+.deviceId {
+    cursor: pointer;
+    color:#4096FF;
 }
 </style>

@@ -40,7 +40,7 @@
                         }}</span>
                     </template>
                     <template #action="slotProps">
-                        <j-space>
+                        <j-space :size="16">
                             <template
                                 v-for="i in getActions(slotProps)"
                                 :key="i.key"
@@ -67,7 +67,12 @@
                 </j-pro-table>
             </FullPage>
         </div>
-        <Save v-if="visible" :data="current" @change="saveChange" />
+        <Save
+            v-if="visible"
+            :data="current"
+            :productOptions="productOptions"
+            @change="saveChange"
+        />
         <TaskDrawer
             v-if="showTask"
             :firmwareId="firmwareId"
@@ -79,15 +84,12 @@
 <script lang="ts" setup name="FirmwarePage">
 import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
-import TaskDrawer from './Task2/index.vue';
+import TaskDrawer from './Task/index.vue';
 import dayjs from 'dayjs';
 import _ from 'lodash-es';
 import Save from './Save/index.vue';
-import { useMenuStore } from 'store/menu';
 import type { FormDataType } from './type';
 import { onlyMessage } from '@/utils/comm';
-
-const menuStory = useMenuStore();
 
 const tableRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
@@ -216,11 +218,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
             },
             popConfirm: {
                 title: '确认删除?',
-                okText: ' 确定',
-                placement: 'topLeft',
-                cancelText: '取消',
-                onConfirm: async () => {
-                    handleDelete(data.id);
+                onConfirm: () => {
+                   return handleDelete(data.id);
                 },
             },
             icon: 'DeleteOutlined',
@@ -229,14 +228,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
 };
 
 const handleUpdate = (data: Partial<Record<string, any>>) => {
-    // menuStory.jumpPage(
-    //     'device/Firmware/Task',
-    //     {},
-    //     {
-    //         id: data.id,
-    //         productId: data.productId,
-    //     },
-    // );
+
     showTask.value = true;
     firmwareId.value = data.id;
     productId.value = data.productId;
@@ -261,14 +253,17 @@ const saveChange = (value: FormDataType) => {
     }
 };
 
-const handleDelete = async (id: string) => {
-    const res = await remove(id);
-    if (res.status === 200) {
-        onlyMessage('操作成功', 'success');
-        tableRef.value.reload();
-    } else {
-        onlyMessage(res?.message, 'error');
-    }
+const handleDelete = (id: string) => {
+    const response = remove(id);
+    response.then((res:any) => {
+        if (res.status === 200) {
+            onlyMessage('操作成功', 'success');
+            tableRef.value.reload();
+        } else {
+            onlyMessage(res?.message, 'error');
+        }
+    });
+    return response
 };
 
 onMounted(() => {

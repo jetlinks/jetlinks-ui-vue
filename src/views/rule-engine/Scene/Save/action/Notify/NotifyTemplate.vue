@@ -167,6 +167,18 @@ const queryOrgList = async (id: string) => {
     }
 };
 
+const queryTagList = async (id:string) =>{
+    if (! props.notifierId) return '';
+    const resp = await TemplateApi.getTags(
+        props.notifierId,
+    );
+    if (resp.status === 200) {
+        return resp.result?.find((item: any) => item.id === id)?.name;
+    } else {
+        return '';
+    }
+}
+
 const getOptions = async (dt: any) => {
     const obj = {};
     // 钉钉，微信
@@ -176,6 +188,9 @@ const getOptions = async (dt: any) => {
         }
         if (dt?.template?.toUser) {
             obj['sendTo'] = await queryUserList(dt?.template?.toUser);
+        }
+        if (dt?.template?.toTag) {
+            obj['tagName'] = await queryTagList(dt?.template?.toTag);
         }
     }
     if (props.notifyType === 'dingTalk') {
@@ -190,10 +205,11 @@ const getOptions = async (dt: any) => {
 };
 
 const handleClick = async (dt: any) => {
+    console.log(dt,'dt')
     if (_selectedRowKeys.value.includes(dt.id)) {
         _selectedRowKeys.value = [];
         emit('update:value', undefined);
-        emit('change', { templateName: undefined, orgName: undefined, sendTo: undefined });
+        emit('change', { templateName: undefined, orgName: undefined, sendTo: undefined ,tagName: undefined });
         emit('update:detail', undefined);
     } else {
         const obj = await getOptions(dt)

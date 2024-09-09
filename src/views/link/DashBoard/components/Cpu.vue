@@ -101,7 +101,8 @@ const pickerTimeChange = () => {
 const echartsOptions = computed(() => {
   const series = serverActive.value.length
           ? serverActive.value.map((key) => setOptions(serverData.data, key))
-          : typeDataLine
+          : typeDataLine;
+
   return {
     xAxis: {
       type: 'category',

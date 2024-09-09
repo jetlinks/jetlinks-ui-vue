@@ -83,5 +83,15 @@ export const getBacnetObjectList = (channelId: string, instanceNumber: string) =
  */
 export const getBacnetPropertyIdNotUse = (data: any) => server.post(`/collect/bacnet/${data.collectorId}/unused/ids`, data)
 
+// /**
+//  * 查询所有属性id
+//  */
+// export const getBacnetAllPropertyId = () => server.get('/collect/bacnet/property/ids')
+
 /**查询bacnet值类型*/
 export const getBacnetValueType = () => server.get(`/collect/bacnet/value/types`)
+
+/**
+ * 导出点位数据
+ */
+export const exportPoint = (collectorId:string,provider:string) => server.get(`/data-collect/point/${collectorId}/${provider}/export.xlsx`, {}, {responseType: 'blob'})

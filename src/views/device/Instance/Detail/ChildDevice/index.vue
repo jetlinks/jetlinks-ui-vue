@@ -60,7 +60,7 @@
                         type="primary"
                         hasPermission="device/Instance:update"
                         :popConfirm="{
-                            title: '确定解绑吗？',
+                            title: '确认解绑吗？',
                             onConfirm: handleUnBind,
                         }"
                         >批量解除</PermissionButton
@@ -70,7 +70,7 @@
             <template #registryTime="slotProps">
                 {{
                     slotProps.registryTime
-                        ? moment(slotProps.registryTime).format(
+                        ? dayjs(slotProps.registryTime).format(
                               'YYYY-MM-DD HH:mm:ss',
                           )
                         : ''
@@ -121,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from 'moment';
+import dayjs from 'dayjs';
 import type { ActionsType } from '@/components/Table';
 import {
     query,
@@ -136,7 +136,6 @@ import BindChildDevice from './BindChildDevice/index.vue';
 import { usePermissionStore } from '@/store/permission';
 import SaveChild from './SaveChild/index.vue';
 import { onlyMessage } from '@/utils/comm';
-import { cloneDeep } from 'lodash-es';
 
 const instanceStore = useInstanceStore();
 const { detail } = storeToRefs(instanceStore);
@@ -252,12 +251,8 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 title: '确认解绑吗？',
                 okText: '确定',
                 cancelText: '取消',
-                onConfirm: async () => {
-                    const resp = await unbindDevice(
-                        detail.value.id,
-                        data.id,
-                        {},
-                    );
+                onConfirm: async() => {
+                    const response = unbindDevice(detail.value.id, data.id, {});
                     if (
                         instanceStore.current.accessProvider ===
                         'official-edge-gateway'
@@ -266,16 +261,21 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                             ids: [data.id],
                         });
                     }
-                    if (resp.status === 200) {
-                        _selectedRowKeys.value.find((i:any,index:number)=>{
-                            if(i === data.id){
-                                _selectedRowKeys.value.splice(index,1)
-                            }
-                            return i === data.id 
-                        })
-                        childDeviceRef.value?.reload();
-                        onlyMessage('操作成功！');
-                    }
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            _selectedRowKeys.value.find(
+                                (i: any, index: number) => {
+                                    if (i === data.id) {
+                                        _selectedRowKeys.value.splice(index, 1);
+                                    }
+                                    return i === data.id;
+                                },
+                            );
+                            childDeviceRef.value?.reload();
+                            onlyMessage('操作成功！');
+                        }
+                    });
+                    return response
                 },
             },
         },
@@ -308,7 +308,7 @@ const cancelSelect = () => {
 
 const handleUnBind = async () => {
     if (_selectedRowKeys.value.length) {
-        const resp = await unbindBatchDevice(
+        const response = unbindBatchDevice(
             detail.value.id,
             _selectedRowKeys.value,
         );
@@ -317,11 +317,14 @@ const handleUnBind = async () => {
                 ids: [_selectedRowKeys.value],
             });
         }
-        if (resp.status === 200) {
-            onlyMessage('操作成功！');
-            cancelSelect();
-            childDeviceRef.value?.reload();
-        }
+        response.then((resp) => {
+            if (resp.status === 200) {
+                onlyMessage('操作成功！');
+                cancelSelect();
+                childDeviceRef.value?.reload();
+            }
+        });
+        return response;
     } else {
         onlyMessage('请勾选需要解绑的数据', 'warning');
     }

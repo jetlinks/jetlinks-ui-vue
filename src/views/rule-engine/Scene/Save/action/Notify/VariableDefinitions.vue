@@ -10,7 +10,12 @@
             :label="item?.name"
             v-for="(item, index) in variableDefinitions"
             :key="item.id"
-            :required="!['file', 'user', 'org', 'tag'].includes(getType(item)) ? true : false"
+            :required="
+                !['file', 'user', 'org', 'tag'].includes(getType(item)) ||
+                item.id === 'calledNumber'
+                    ? true
+                    : false
+            "
             :rules="[
                 {
                     validator: (_rule, value) => checkValue(_rule, value, item),
@@ -48,7 +53,10 @@
                 v-else
                 :item="item"
                 v-model:value="modelRef[item.id]"
-                @change="(val, _options) => onChange(val, 'build-in', index, _options)"
+                @change="
+                    (val, _options) =>
+                        onChange(val, 'build-in', index, _options)
+                "
             />
         </j-form-item>
     </j-form>
@@ -82,9 +90,9 @@ const props = defineProps({
         default: () => ({}),
     },
     options: {
-      type: Object,
-      default: () => ({})
-    }
+        type: Object,
+        default: () => ({}),
+    },
 });
 
 const emit = defineEmits(['update:value', 'change']);
@@ -92,15 +100,23 @@ const emit = defineEmits(['update:value', 'change']);
 const formRef = ref();
 
 const modelRef = reactive({});
-const otherColumns = ref<(string | undefined)[]>(props.options?.otherColumns || [])
+const otherColumns = ref<(string | undefined)[]>(
+    props.options?.otherColumns || [],
+);
 
 watchEffect(() => {
     Object.assign(modelRef, props?.value);
 });
 
 watchEffect(() => {
-    if(props?.template?.template?.sendTo && Array.isArray(props?.template?.template?.sendTo) && props?.template?.template?.sendTo?.length) {
-        emit('change', { sendTo: props?.template?.template?.sendTo?.join(' ') });
+    if (
+        props?.template?.template?.sendTo &&
+        Array.isArray(props?.template?.template?.sendTo) &&
+        props?.template?.template?.sendTo?.length
+    ) {
+        emit('change', {
+            sendTo: props?.template?.template?.sendTo?.join(' '),
+        });
     }
 });
 
@@ -109,11 +125,15 @@ const getType = (item: any) => {
 };
 
 const checkValue = (_rule: any, value: any, item: any) => {
-    if(!value){
+    if (!value) {
         return Promise.resolve();
     }
     const type = item.expands?.businessType || item?.type;
-    console.log(type, props.notify)
+    if (
+        ['user', 'org', 'tag', 'userIdList', 'departmentIdList'].includes(type)
+    ) {
+        return Promise.resolve();
+    }
     if (type === 'file') {
         return Promise.resolve();
     } else if (type === 'link') {
@@ -143,10 +163,10 @@ const checkValue = (_rule: any, value: any, item: any) => {
             }
         }
     } else if (value?.source === 'fixed' && !value?.value) {
-      let tip = '请输入' + item.name
-      if (props.notify.notifyType === 'email') {
-        tip = '请输入收件人'
-      }
+        let tip = '请输入' + item.name;
+        if (props.notify.notifyType === 'email') {
+            tip = '请输入收件人';
+        }
         return Promise.reject(new Error(tip));
     } else if (
         value?.source === 'relation' &&
@@ -182,7 +202,8 @@ const checkValue = (_rule: any, value: any, item: any) => {
         if (
             props.notify.notifyType &&
             ['sms', 'voice'].includes(props?.notify?.notifyType) &&
-            value?.source !== 'relation' && value?.value
+            value?.source !== 'relation' &&
+            value?.value
         ) {
             const reg = /^[1][3-9]\d{9}$/;
             if (!reg.test(value?.value)) {
@@ -197,9 +218,9 @@ const checkValue = (_rule: any, value: any, item: any) => {
 
 const onChange = (val: any, type: any, index: number, options?: string) => {
     if (type === 'build-in') {
-      otherColumns.value[index] = options
+        otherColumns.value[index] = options;
     } else {
-      otherColumns.value[index] = undefined
+        otherColumns.value[index] = undefined;
     }
 
     if (type === 'org') {
@@ -209,24 +230,58 @@ const onChange = (val: any, type: any, index: number, options?: string) => {
     } else if (type === 'user') {
         emit('change', { sendTo: val, otherColumns: [] });
     } else {
-      emit('change', { otherColumns: otherColumns.value });
+        emit('change', { otherColumns: otherColumns.value });
     }
 };
 
 const onSave = () =>
     new Promise((resolve, reject) => {
-        const pass = props.variableDefinitions.filter(item => ['user', 'org', 'tag'].includes(getType(item))).some(item => {
-            return modelRef[item.id]
-        })
-        if(!pass && props.notify.notifyType === 'weixin') {
-            onlyMessage('收信人，收信人部门，收信人标签至少填写一个', 'warning')
-            return reject(false)
+        const filterData = props.variableDefinitions.filter((item) =>
+            ['user', 'org', 'tag', 'userIdList', 'departmentIdList'].includes(
+                getType(item),
+            ),
+        );
+        const pass = filterData.length
+            ? filterData.some((item) => {
+                
+                  if (
+                      item.id === 'toUser' &&
+                      modelRef[item.id]?.source === 'relation'
+                  ) {
+                    
+                      return (
+                          modelRef[item.id].relation?.objectId ||
+                          modelRef[item.id].relation?.related
+                      );
+                  } else if (item.id === 'userIdList') {
+                      return (
+                          modelRef[item.id]?.value ||
+                          modelRef[item.id]?.relation?.objectId
+                      );
+                  } else {
+                      return modelRef[item.id]?.value;
+                  }
+              })
+            : true;
+        if (!pass && props.notify.notifyType === 'weixin') {
+            onlyMessage(
+                '收信人，收信人部门，收信人标签至少填写一个',
+                'warning',
+            );
+            return reject(false);
         }
-        formRef.value?.validate().then((_data: any) => {
-            resolve(_data);
-        }).catch(() => {
-            reject(false)
-        })
+        if (!pass && props.notify.notifyType === 'dingTalk') {
+            onlyMessage('收信人，收信人部门至少填写一个', 'warning');
+            return reject(false);
+        }
+        formRef.value
+            ?.validate()
+            .then((_data: any) => {
+                resolve(_data);
+            })
+            .catch(() => {
+                reject(false);
+            });
     });
 
 defineExpose({ onSave });

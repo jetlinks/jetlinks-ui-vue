@@ -4,30 +4,17 @@
       {{ isFirst ? '当' : '否则' }}
     </div>
     <div :class='optionsClass'>
-        <j-popconfirm
-          title='确认删除？'
-          @confirm='onDelete'
-          :overlayStyle='{minWidth: "180px"}'
-        >
-          <div v-if='!isFirst' class='terms-params-delete danger show'>
-            <AIcon type='DeleteOutlined' />
-          </div>
-        </j-popconfirm>
+        <ConfirmModal title="确认删除？" v-if='!isFirst' :onConfirm="onDelete" className="terms-params-delete danger show">
+          <AIcon type='DeleteOutlined' />
+        </ConfirmModal>
       <div
         class='actions-terms-list'
         @mouseover='mouseover'
         @mouseout='mouseout'
       >
-        <j-popconfirm
-          title='该操作将清空过滤条件，确认删除？'
-          placement="topRight"
-          @confirm='onDeleteAll'
-        >
-          <div class='terms-params-delete' v-show='showDelete && whenData.length'>
-            <AIcon type='CloseOutlined' />
-          </div>
-        </j-popconfirm>
-
+        <ConfirmModal title="该操作将清空过滤条件，确认删除？" :show='showDelete && whenData.length' :onConfirm="onDeleteAll" className="terms-params-delete">
+          <AIcon type='CloseOutlined' />
+        </ConfirmModal>
         <div class='actions-terms-list-content'>
           <template v-if='showWhen'>
             <j-scrollbar>
@@ -64,6 +51,7 @@
             :name='name'
             :openShakeLimit="true"
             :thenOptions='FormModel.branches[name]?.then'
+            :groupIndex="groupIndex"
           />
         </j-form-item>
       </div>
@@ -78,7 +66,7 @@ import WhenItem from './WhenItem.vue'
 import { storeToRefs } from 'pinia';
 import { useSceneStore } from 'store/scene'
 import Action from '../../action/index.vue'
-import { randomString } from '@/utils/utils'
+import {randomNumber, randomString} from '@/utils/utils'
 
 const sceneStore = useSceneStore()
 const { data: FormModel } = storeToRefs(sceneStore)
@@ -122,7 +110,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['deleteGroup'])
+const emit = defineEmits(['deleteGroup', 'delete'])
 
 const showDelete = ref(false)
 const error = ref(false)
@@ -144,11 +132,12 @@ const WarpClass = computed(() => {
 })
 
 const onDelete = () => {
-  if (FormModel.value.branches?.length == 2) {
-    FormModel.value.branches?.splice(props.name, 1)
-  } else {
-    FormModel.value.branches?.splice(props.name, 1)
-  }
+  // if (FormModel.value.branches?.length == 2) {
+  //   FormModel.value.branches?.splice(props.name, 1)
+  // } else {
+  //   FormModel.value.branches?.splice(props.name, 1)
+  // }
+  emit('delete')
 }
 
 const onDeleteAll = () => {
@@ -190,7 +179,7 @@ const addWhen = () => {
         type: 'and',
       }
     ],
-    key: `terms_${randomString()}`
+    key: `terms_${randomString()}`,
   }
   FormModel.value.branches?.[props.name].when?.push(terms)
   if(FormModel.value.branches?.length <= props.name + 1){

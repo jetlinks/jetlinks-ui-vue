@@ -1,8 +1,8 @@
-import {send} from "vite";
 import {isArray, isBoolean, isObject} from "lodash-es";
 import {randomString} from "@/utils/utils";
+import {getImage} from "@/utils/comm";
 
-const TypeMap = {
+export const TermTypeMap = {
     'and': '并且',
     'or': '或者'
 }
@@ -238,4 +238,92 @@ export const handleSceneBranches = (data: any): any[] => {
     })
 
     return group
+}
+
+export const typeMap = new Map();
+typeMap.set('manual', {
+    text: '手动触发',
+    img: getImage('/scene/scene-hand.png'),
+    icon: getImage('/scene/trigger-type-icon/manual.png'),
+    tip: '适用于第三方平台向物联网平台下发指令控制设备',
+});
+typeMap.set('timer', {
+    text: '定时触发',
+    img: getImage('/scene/scene-timer.png'),
+    icon: getImage('/scene/trigger-type-icon/timing.png'),
+    tip: '适用于定期执行固定任务',
+});
+typeMap.set('device', {
+    text: '设备触发',
+    img: getImage('/scene/scene-device.png'),
+    icon: getImage('/scene/trigger-type-icon/device.png'),
+    tip: '适用于设备数据或行为满足触发条件时，执行指定的动作',
+});
+
+export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
+    const group: any[] = []
+
+    if (!branches) return []
+
+    branches.forEach((item, index) => {
+        if (when) {
+            // item.whenOptions = when[index]
+            item.whenOptions = when.find((i)=>{
+              return  item?.branchId === i.key
+            })
+        }
+
+        if (index === 0 || item.executeAnyway) {
+            group.push({
+                branchName: item.branchName || item.whenOptions?.branchName || `条件${group.length + 1}`,
+                key: item.key || item.branchId,
+                children: []
+            })
+        }
+
+        const lastItem = group[group.length - 1]
+
+        if (item.then[0]?.actions.length) {
+            item.serial = item.then[0]?.actions
+        }
+
+        if (item.then[1]?.actions.length) {
+            item.parallel = item.then[1]?.actions
+        }
+
+        lastItem.children.push(item)
+    })
+    return group
+}
+
+export const handleActiveBranches = (branches: any[], activeKeys: any[]) => {
+    const branchesNames: string[] = []
+    const activeKeySet = new Set(activeKeys)
+    let invalid = false
+
+    branches.forEach((item) => {
+        let hasAlarmId = false
+
+        item.children.forEach(child => {
+            invalid = child.serial?.some(serial => !serial.actionId)
+            if (hasAlarmId === false) {
+
+                const status = child.serial?.some(serial => activeKeySet.has(serial.actionId)) || child.parallel?.some(parallel => activeKeySet.has(parallel.actionId))
+                if (status) {
+                    hasAlarmId = true
+                }
+            }
+        })
+
+        if (hasAlarmId) {
+            branchesNames.push(item.branchName)
+        }
+
+    })
+
+
+    return {
+        data: branchesNames,
+        invalid
+    }
 }

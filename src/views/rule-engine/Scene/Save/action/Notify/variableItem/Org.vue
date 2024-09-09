@@ -5,6 +5,7 @@
         placeholder="请选择组织"
         :tree-data="departmentTree"
         @change="onChange"
+        allowClear
         :fieldNames="{
             label: 'name',
             value: 'id',

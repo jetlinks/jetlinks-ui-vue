@@ -11,6 +11,11 @@
             style='width: 100%'
             @click='visible = true'
         >
+          <template #extra>
+            <span style="padding-right: 10px;">
+              系统时间到达
+            </span>
+          </template>
           <Title :options='data.options.trigger' />
         </AddButton>
       </j-form-item>
@@ -53,7 +58,6 @@ const visible = ref(false)
 
 const rules = [{
   validator(_: any, v: any) {
-    console.log(v)
     if (!v) {
       return Promise.reject(new Error('请配置定时触发规则'));
     }

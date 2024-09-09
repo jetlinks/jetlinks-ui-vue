@@ -73,11 +73,16 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    columnMap: {
+      type: Object,
+      default: () => ({})
+    }
 });
 
-const emit = defineEmits(['update:value', 'change']);
+const emit = defineEmits(['update:value', 'change', 'update:columnMap']);
 
 const propertyFormRef = ref();
+const columnMap = ref(props.columnMap || {})
 
 const propertyModelRef = reactive({
     properties: undefined,
@@ -164,6 +169,7 @@ const handleOptions = computed(() => {
 const onChange = () => {
     propertyModelRef.propertiesValue = undefined;
     propertyModelRef.source = 'fixed';
+    columnMap.value = {}
     emit('update:value', {
         [`${propertyModelRef.properties}`]: {
             value: propertyModelRef?.propertiesValue,
@@ -188,8 +194,12 @@ const onValueChange = (val: any, label: string) => {
         [`${propertyModelRef.properties}`]: objectValue
     };
 
-    console.log('onValueChange',val , label)
+    columnMap.value = {
+      [propertyModelRef.properties]: propertyModelRef?.source === 'upper' ? val.column : undefined
+    }
+
     emit('update:value', obj);
+    emit('update:columnMap', columnMap.value);
     emit('change', label || val, optionColumn)
 };
 

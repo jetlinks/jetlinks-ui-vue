@@ -1,6 +1,6 @@
 <template>
-  <div style="width: 95%; margin: 0 auto;">
-    <div class="media-live-tool">
+    <div style="width: 95%; margin: 0 auto">
+        <div class="media-live-tool">
             <j-radio-group
                 v-model:value="mediaType"
                 button-style="solid"
@@ -11,9 +11,10 @@
                 <j-radio-button value="m3u8">HLS</j-radio-button>
             </j-radio-group>
             <div class="media-live-share" v-if="type !== 'share'">
-                <j-button type="link" @click="onShare"
-                    ><AIcon type="ShareAltOutlined" />分享视频</j-button
-                >
+                <j-button type="link" @click="onShare">
+                    <AIcon type="ShareAltOutlined" />
+                    分享视频
+                </j-button>
             </div>
         </div>
         <div class="media-live">
@@ -33,10 +34,7 @@
                                 <div>开始录像</div>
                                 <template #overlay>
                                     <j-menu @click="recordStart">
-                                        <j-menu-item
-                                            key="true"
-                                            v-if="_type"
-                                        >
+                                        <j-menu-item key="true" v-if="_type">
                                             <span style="padding-right: 12px"
                                                 >本地存储</span
                                             >
@@ -72,14 +70,12 @@
                     <div class="tool-item" @click.stop="handleRefresh">
                         刷新
                     </div>
-                    <div class="tool-item">
-                        <j-popconfirm
-                            title="重置将断开直播, 可能会影响其他播放者"
-                            @confirm="handleReset"
-                        >
-                            重置
-                        </j-popconfirm>
-                    </div>
+                    <ConfirmModal
+                        title="重置将断开直播, 可能会影响其他播放者"
+                        :onConfirm="handleReset"
+                    >
+                        <div class="tool-item">重置</div></ConfirmModal
+                    >
                 </div>
                 <LivePlayer
                     ref="player"
@@ -117,10 +113,12 @@
                         </template>
                     </MediaTool>
                 </div>
-                <Preset :data="data" @refresh="onRefresh" :share="true"/>
+                <div class="media-preset">
+                    <Preset :data="data" @refresh="onRefresh" :share="true" />
+                </div>
             </div>
         </div>
-  </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -128,8 +126,8 @@ import { PropType } from 'vue';
 import LivePlayer from '@/components/Player/index.vue';
 import MediaTool from '@/components/Player/mediaTool.vue';
 import channelApi from '@/api/media/channel';
-import Share from './Share.vue';
 import Preset from './Preset.vue';
+import { onlyMessage } from '@/utils/comm';
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -146,6 +144,10 @@ const props = defineProps({
     type: {
         type: String as PropType<'share' | 'normal'>,
         default: 'normal',
+    },
+    readOnly: {
+        type: Boolean,
+        default: false,
     },
 });
 
@@ -168,8 +170,8 @@ const showToolLock = ref(false);
 const visible = ref(false);
 
 const _type = computed(() => {
-  return route.query.type !== 'fixed-media'
-})
+    return route.query.type !== 'fixed-media';
+});
 
 const speedList = [
     { label: '高', value: 180 },
@@ -276,8 +278,12 @@ const handleRefresh = () => {
 /**
  * 重置
  */
-const handleReset = async () => {
-    channelApi.mediaStop(props.data.deviceId, props.data.channelId);
+const handleReset =  () => {
+    const response = channelApi.mediaStop(props.data.deviceId, props.data.channelId);
+    response.then((res)=>{
+      onlyMessage('操作成功!')
+    })
+    return response
 };
 
 /**
@@ -285,7 +291,12 @@ const handleReset = async () => {
  * @param type 控制类型
  */
 const handleMouseDown = (type: string) => {
-    channelApi.ptzTool(props.data.deviceId, props.data.channelId, type, speed.value);
+    channelApi.ptzTool(
+        props.data.deviceId,
+        props.data.channelId,
+        type,
+        speed.value,
+    );
 };
 const handleMouseUp = () => {
     channelApi.ptzStop(props.data.deviceId, props.data.channelId);
@@ -299,8 +310,8 @@ const onShare = () => {
 };
 
 const onRefresh = () => {
-    emit('refresh')
-}
+    emit('refresh');
+};
 
 watch(
     () => _vis.value,
@@ -314,15 +325,17 @@ watch(
         }
     },
     {
-      immediate: true
-    }
+        immediate: true,
+    },
 );
 </script>
 <style lang="less" scoped>
 @import './index.less';
+
 :deep(.live-player-stretch-btn) {
     display: none;
 }
+
 :deep(.vjs-icon-spinner) {
     display: none;
 }
@@ -331,5 +344,11 @@ watch(
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.media-preset {
+    :deep(.ant-table-header) {
+        user-select: none;
+    }
 }
 </style>

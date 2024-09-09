@@ -10,7 +10,7 @@
             >
                 <template #url="slotProps">
                     <span
-                        style="color: #1d39c4; cursor: pointer"
+                        style="color: #1677FF; cursor: pointer"
                         @click="emits('update:clickApi', slotProps)"
                         >{{ slotProps.url }}</span
                     >
@@ -153,7 +153,7 @@ const save = async () => {
                 emits('refresh');
             }
         } else {
-            onlyMessage('请选择API接口','error')
+            onlyMessage('与上次勾选数据一致，未执行调用操作','error')
             return
         }
     } else if (props.mode === 'appManger') {

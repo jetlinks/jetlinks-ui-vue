@@ -2,7 +2,7 @@ import { saveProductMetadata } from "@/api/device/product";
 import { saveMetadata } from "@/api/device/instance";
 import type { DeviceInstance } from "../../Instance/typings";
 import type { DeviceMetadata, MetadataItem, MetadataType, ProductItem } from "../../Product/typings";
-import { differenceBy , cloneDeep } from "lodash-es";
+import { omit } from "lodash-es";
 
 const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   const ids = productMetaData.map((item: any) => item.id)
@@ -51,9 +51,10 @@ const filterProductMetadata = (data: any[], productMetaData: any[]) => {
   // }
   // console.log(metadata, type)
   metadata[type] = (item || []).sort((a, b) => b?.sortsIndex - a?.sortsIndex) as any[]
-  console.log('useMetadata', metadata)
+
   data.metadata = JSON.stringify(metadata);
   onEvent?.(data.metadata)
+
   return data;
 };
 
@@ -77,6 +78,7 @@ export const asyncUpdateMetadata = (
       const productMetaDataMap = new Map()
 
       Object.keys(productMetaData).forEach((key:any)=>{
+      console.log('asyncUpdateMetadata',productMetaData, key)
         if(Array.isArray(productMetaData[key])){
            const ids = productMetaData[key].map((item:any)=>{
             return item.id
@@ -94,7 +96,7 @@ export const asyncUpdateMetadata = (
       })
 
       const newMetadata = Object.keys(metadata).reduce((prev, key) => {
-        const productIds = new Set(productMetaData[key].map(item => item.id))
+        const productIds = new Set(productMetaData[key]?.map(item => item.id) || [])
         console.log(metadata[key])
         prev[key] = metadata[key].filter(item => !productIds.has(item.id))
         return prev

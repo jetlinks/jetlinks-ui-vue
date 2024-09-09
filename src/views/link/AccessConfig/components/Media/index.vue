@@ -81,13 +81,21 @@
         <div v-else-if="channel === 'onvif'">
             <Onvif :provider="props.provider" :data="props.data"></Onvif>
         </div>
+        <div v-else-if="channel === 'plugin'">
+            <Plugin
+                :bindProduct="bindProduct"
+                :data="data"
+                :provider="provider"
+            />
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup name="AccessMedia">
 import { onlyMessage } from '@/utils/comm';
 import GB28181 from './GB28181.vue';
-import Onvif from './Onvif.vue'
+import Onvif from './Onvif.vue';
+import Plugin from '../Plugin/index.vue';
 import { update, save } from '@/api/link/accessConfig';
 
 interface FormState {
@@ -107,6 +115,10 @@ const props = defineProps({
         type: Object,
         default: () => {},
     },
+    bindProduct: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const loading = ref(false);
@@ -117,7 +129,7 @@ const formState = ref<FormState>({
     description: '',
 });
 const onFinish = async (values: any) => {
-    loading.value = true
+    loading.value = true;
     const params = {
         ...values,
         provider: 'fixed-media',
@@ -131,7 +143,7 @@ const onFinish = async (values: any) => {
 
         if (route.query.save) {
             // @ts-ignore
-            if((window as any).onTabSaveSuccess){
+            if ((window as any).onTabSaveSuccess) {
                 (window as any).onTabSaveSuccess(resp.result);
                 setTimeout(() => window.close(), 300);
             }
@@ -139,7 +151,7 @@ const onFinish = async (values: any) => {
             history.back();
         }
     }
-    loading.value = false
+    loading.value = false;
 };
 
 onMounted(() => {

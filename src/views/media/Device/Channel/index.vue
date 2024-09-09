@@ -2,25 +2,14 @@
 <template>
     <page-container>
         <div class="device-channel-warp">
-            <div class="left-warp" v-if="route.query.type === 'gb28181-2016'">
-                <div class="left-content" :class="{ active: show }">
-                    <Tree
-                        :deviceId="deviceId"
-                        :on-tree-load="(e) => (show = e)"
-                        :on-select="handleSelect"
-                    />
-                </div>
-                <div
-                    class="left-warp--btn"
-                    :class="{ active: !show }"
-                    @click="show = !show"
-                >
-                    <AIcon type="LeftOutlined" />
-                </div>
-            </div>
+            <Tree
+                :deviceData="deviceData"
+                :on-tree-load="(e) => (show = e)"
+                :on-select="handleSelect"
+            />
             <div class="right">
                 <pro-search
-                    :columns="columns"
+                    :columns="newColumns"
                     target="channel"
                     @search="handleSearch"
                 />
@@ -28,7 +17,7 @@
                     <JProTable
                         ref="listRef"
                         model="table"
-                        :columns="columns"
+                        :columns="newColumns"
                         :request="(e:any) => ChannelApi.list(e, route?.query.id as string)"
                         :defaultParams="{
                             sorts: [{ name: 'modifyTime', order: 'desc' }],
@@ -37,8 +26,16 @@
                     >
                         <template #headerTitle>
                             <j-tooltip
-                                v-if="route?.query.type === 'gb28181-2016'"
-                                title="接入方式为GB/T28281时，不支持新增"
+                                v-if="
+                                    ['gb28181-2016', 'onvif'].includes(
+                                        route.query.type,
+                                    )
+                                "
+                                :title="`接入方式为${
+                                    route.query.type === 'onvif'
+                                        ? 'Onvif'
+                                        : 'GB/T28181'
+                                }时，不支持新增`"
                             >
                                 <j-button type="primary" disabled>
                                     新增
@@ -55,6 +52,35 @@
                                 >
                             </PermissionButton>
                         </template>
+                        <template #rightExtraRender>
+                            <PermissionButton
+                                type="text"
+                                :tooltip="{
+                                    title:
+                                        route?.query?.type === 'fixed-media'
+                                            ? '固定地址无法更新通道'
+                                            : deviceData?.state?.value ===
+                                              'offline'
+                                            ? '设备已离线'
+                                            : deviceData?.state?.value ===
+                                              'notActive'
+                                            ? '设备已禁用'
+                                            : '更新通道',
+                                }"
+                                :disabled="
+                                    deviceData?.state?.value === 'offline' ||
+                                    deviceData?.state?.value === 'notActive' ||
+                                    route?.query?.type === 'fixed-media'
+                                "
+                                @click="refreshChanel"
+                            >
+                                <template #icon
+                                    ><AIcon
+                                        type="SyncOutlined"
+                                    />更新通道</template
+                                ></PermissionButton
+                            >
+                        </template>
                         <template #status="slotProps">
                             <j-space>
                                 <j-badge
@@ -68,7 +94,7 @@
                             </j-space>
                         </template>
                         <template #action="slotProps">
-                            <j-space>
+                            <j-space :size="16">
                                 <template
                                     v-for="i in getActions(slotProps, 'table')"
                                     :key="i.key"
@@ -76,7 +102,9 @@
                                     <PermissionButton
                                         v-if="
                                             i.key !== 'play' &&
-                                            i.key !== 'backPlay'
+                                            i.key !== 'backPlay' &&
+                                            i.key !== 'share' &&
+                                            i.key !== 'plan'
                                         "
                                         :danger="i.key === 'delete'"
                                         :disabled="i.disabled"
@@ -130,7 +158,22 @@
             :channelData="channelData"
             @submit="listRef.reload()"
         />
-        <Live v-model:visible="playerVis" :data="playData" @refresh="listRef.reload()" />
+        <Live
+            v-model:visible="playerVis"
+            :data="playData"
+            @refresh="listRef.reload()"
+        />
+        <VideoShare
+            v-if="visible"
+            @close="visible = false"
+            :data="channelData"
+        />
+        <Plan
+            v-if="planVis"
+            :data="channelData"
+            @close="planVis = false"
+            :type="planType"
+        />
     </page-container>
 </template>
 
@@ -142,11 +185,13 @@ import Save from './Save.vue';
 import Live from './Live/index.vue';
 import Tree from './Tree/index.vue';
 import { cloneDeep } from 'lodash-es';
-import { useElementSize } from '@vueuse/core';
 import { onlyMessage } from '@/utils/comm';
+import DeviceApi from '@/api/media/device';
+import VideoShare from './VideoShare/index.vue';
+import Plan from './Plan/index.vue';
 
 const menuStory = useMenuStore();
-const route = useRoute();
+const route: any = useRoute();
 
 const columns = [
     {
@@ -173,9 +218,6 @@ const columns = [
         dataIndex: 'manufacturer',
         key: 'manufacturer',
         ellipsis: true,
-        search: {
-            type: 'string',
-        },
     },
     {
         title: '安装地址',
@@ -206,12 +248,24 @@ const columns = [
     {
         title: '操作',
         key: 'action',
-        width: 200,
+        width: 240,
         scopedSlots: true,
     },
 ];
 
+const newColumns = computed(() => {
+    if (route.query.type === 'fixed-media') {
+        return columns.filter((item) => item.key !== 'manufacturer');
+    } else {
+        return columns;
+    }
+});
+
 const params = ref<Record<string, any>>({});
+const deviceData = ref<any>();
+const visible = ref(false);
+const planVis = ref(false);
+const planType = ref('');
 
 /**
  * 搜索
@@ -223,7 +277,7 @@ const handleSearch = (e: any) => {
 
 const saveVis = ref(false);
 const handleAdd = () => {
-    channelData.value = undefined
+    channelData.value = undefined;
     saveVis.value = true;
 };
 
@@ -261,7 +315,7 @@ const getActions = (
             tooltip: {
                 title: '播放',
             },
-            icon: 'VideoCameraOutlined',
+            icon: 'PlayCircleOutlined',
             onClick: () => {
                 playData.value = cloneDeep(data);
                 playerVis.value = true;
@@ -287,6 +341,44 @@ const getActions = (
             },
         },
         {
+            key: 'plan',
+            text: '抓拍计划',
+            tooltip: {
+                title: '抓拍计划',
+            },
+            icon: 'CameraOutlined',
+            onClick: () => {
+                planVis.value = true;
+                planType.value = 'screenshot';
+                channelData.value = cloneDeep(data);
+            },
+        },
+        {
+            key: 'plan',
+            text: '录像计划',
+            tooltip: {
+                title: '录像计划',
+            },
+            icon: 'VideoCameraOutlined',
+            onClick: () => {
+                planType.value = 'video';
+                planVis.value = true;
+                channelData.value = cloneDeep(data);
+            },
+        },
+        {
+            key: 'share',
+            text: '分享地址',
+            tooltip: {
+                title: '分享地址',
+            },
+            icon: 'ShareAltOutlined',
+            onClick: () => {
+                visible.value = true;
+                channelData.value = cloneDeep(data);
+            },
+        },
+        {
             key: 'delete',
             text: '删除',
             tooltip: {
@@ -294,14 +386,17 @@ const getActions = (
             },
             popConfirm: {
                 title: '确认删除?',
-                onConfirm: async () => {
-                    const resp = await ChannelApi.del(data.id);
-                    if (resp.status === 200) {
-                        onlyMessage('操作成功！');
-                        listRef.value?.reload();
-                    } else {
-                        onlyMessage('操作失败！', 'error');
-                    }
+                onConfirm: () => {
+                    const response = ChannelApi.del(data.id);
+                    response.then((resp) => {
+                        if (resp.status === 200) {
+                            onlyMessage('操作成功！');
+                            listRef.value?.reload();
+                        } else {
+                            onlyMessage('操作失败！', 'error');
+                        }
+                    });
+                    return response;
                 },
             },
             icon: 'DeleteOutlined',
@@ -313,7 +408,7 @@ const getActions = (
 };
 
 // 左侧树
-const show = ref(false);
+
 const deviceId = computed(() => route.query.id as string);
 const handleSelect = (key: string) => {
     if (key === deviceId.value && listRef.value?.reload) {
@@ -329,6 +424,19 @@ const handleSelect = (key: string) => {
         };
     }
 };
+const refreshChanel = async () => {
+    const res = await DeviceApi.updateChannels(deviceData.value.id);
+    if (res.success) {
+        onlyMessage('通道更新成功');
+        listRef.value?.reload();
+    }
+};
+onMounted(async () => {
+    const deviceResp = await DeviceApi.detail(route.query.id);
+    if (deviceResp.success) {
+        deviceData.value = deviceResp.result;
+    }
+});
 </script>
 <style lang="less" scoped>
 @import './index.less';

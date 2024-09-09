@@ -115,7 +115,7 @@ watch(
 </script>
 <style lang="less" scoped>
 .calendarRight {
-    width: 80%;
+    width: 85%;
     padding: 10px 20px;
     background: #fff;
     .tips {

@@ -3,6 +3,7 @@
         :dataSource="dataSource"
         :columns="columns"
         :pagination="false"
+        bordered
         :scroll="{ y: 'calc(100vh - 260px)' }"
     >
         <template #bodyCell="{ column, text, record }">
@@ -12,10 +13,10 @@
                 {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template v-if="column.dataIndex === 'duration'">
-                <Duration :data="record"/>
+                <Duration :data="record" />
             </template>
             <template v-if="column.dataIndex === 'handleType'">
-                {{ text.text }}
+                {{ text?.text }}
             </template>
             <template v-if="column.dataIndex === 'description'">
                 <Ellipsis>
@@ -28,10 +29,10 @@
         <a-button
             v-if="exceed"
             class="moreBtn"
-            type="text"
+            type="link"
             @click="gotoAlarmRecord"
             >查看更多 ></a-button
-        >
+        ><span v-else-if="dataSource.length">已展示全部数据</span>
     </div>
 </template>
 
@@ -40,7 +41,7 @@ import { queryHandleHistory } from '@/api/rule-engine/log';
 import dayjs from 'dayjs';
 import { useMenuStore } from 'store/menu';
 import { defineExpose } from 'vue';
-import Duration  from '../../components/Duration.vue';
+import Duration from '../../components/Duration.vue';
 const props = defineProps({
     currentId: {
         type: String,
@@ -108,12 +109,12 @@ const gotoAlarmRecord = () => {
         { id: props.currentId },
     );
 };
-const refreshRecord= () =>{
-    queryList()
-}
+const refreshRecord = () => {
+    queryList();
+};
 defineExpose({
-    refreshRecord
-})
+    refreshRecord,
+});
 onMounted(() => {
     queryList();
 });
@@ -123,9 +124,10 @@ onMounted(() => {
     text-align: center;
     position: relative;
     height: 50px;
+    margin-top: 20px;
     .moreBtn {
         position: absolute;
-        right: 0;
+        right: 50%;
         top: 10px;
     }
 }

@@ -101,15 +101,19 @@
       新增规则
     </a-button>
     <j-modal
-      title=""
       v-model:visible="visible"
       :width="1000"
-      :footer="null"
+      okText="关闭"
     >
       <div>
         正在预览日历
       </div>
-      <FullCalendar />
+      <FullCalendar  :preview="true"/>
+      <template #footer>
+        <a-button type="primary" @click="visible = false">
+          关闭
+        </a-button>
+      </template>
     </j-modal>
   </div>
 </template>
@@ -131,7 +135,7 @@ const { data:options } = useRequest(queryTags)
 const visible = ref(false)
 
 const myValue = reactive({
-  type: 'and',
+  type: 'or',
   spec: []
 })
 
@@ -209,8 +213,7 @@ watch(() => props.value, () => {
   .header {
     position: absolute;
     right: 0;
-    top: 0;
-    transform: translateY(-120%);
+    top: -55px;
   }
   .calendar-items {
     max-height: 350px;

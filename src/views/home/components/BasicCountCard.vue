@@ -1,11 +1,11 @@
 <template>
     <div class="device-count-container">
-        <h5 class="title">基础统计</h5>
-        <span class="detail" @click="jumpPage('link/DashBoard')"> 详情 </span>
+        <h5 class="title">{{ $t('components.BasicCountCard.926510-0') }}</h5>
+        <span class="detail" @click="jumpPage('link/DashBoard')"> {{ $t('components.BasicCountCard.926510-1') }} </span>
 
         <div class="box-list">
             <div class="box-item">
-                <div class="label">CPU使用率</div>
+                <div class="label">{{ $t('components.BasicCountCard.926510-2') }}</div>
                 <div class="value">{{ cpu + '%' }}</div>
                 <Pie
                     class="chart"
@@ -16,7 +16,7 @@
                 />
             </div>
             <div class="box-item">
-                <div class="label">JVM内存</div>
+                <div class="label">{{ $t('components.BasicCountCard.926510-3') }}</div>
                 <div class="value">{{ jvm + '%' }}</div>
                 <Pie
                     class="chart"
@@ -35,7 +35,9 @@ import { getWebSocket } from '@/utils/websocket';
 import Pie from './Pie.vue';
 import { map } from 'rxjs/operators';
 import { useMenuStore } from '@/store/menu';
+import { useI18n } from 'vue-i18n'
 
+const { t: $t } = useI18n()
 const cpu = ref(0);
 const jvm = ref(0);
 

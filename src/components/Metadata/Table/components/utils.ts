@@ -29,14 +29,14 @@ const bodyHidden = () => {
 
 const getMaskNode = (id: string, warpClassNames: string) => {
     let maskNode = document.querySelector(`#${id}`) as HTMLElement
-
+   
     if (maskNode) {
         return maskNode
     }
 
     maskNode = document.createElement('div')
     maskNode.id = id
-
+    
     updateStyle(maskNode, {
         position: 'fixed',
         top: 0,
@@ -48,6 +48,8 @@ const getMaskNode = (id: string, warpClassNames: string) => {
     })
 
     const warpNode = document.querySelector(`.${warpClassNames}`) as HTMLDivElement
+    if (!warpNode) return undefined
+
     warpNode.insertAdjacentElement('beforebegin', maskNode)
 
     return maskNode
@@ -61,10 +63,11 @@ export const useMask = (propVisible: boolean, options: { visibleChange: (visible
     showMask: Function,
     visibleChange: (visible: boolean) => void
 } => {
+    const key = randomString(6)
     const visible = ref(propVisible)
-    const maskDomId = `${maskNodeClassName}-${randomString(6)}`
+    const maskDomId = `${maskNodeClassName}-${key}`
 
-    const warpClassNames = `${maskNodeClassName}-warp-${randomString(4)}`
+    const warpClassNames = `${maskNodeClassName}-warp-${key}`
     const createMask = () => {
         if (!maskIds.includes(maskDomId)) {
             maskIds.push(maskDomId)
@@ -75,16 +78,15 @@ export const useMask = (propVisible: boolean, options: { visibleChange: (visible
 
     const getLastMask = (): HTMLElement | undefined => {
         const index = maskIds.findIndex(key => key === maskDomId) // 当前遮罩层下标
-
         let dom = undefined
         let lastIndex = 0
-
+        
         if (maskIds.length > 0) {
 
-            lastIndex = index < 0 ? 0 : index - 1
+            lastIndex = index <= 0 ? 0 : index - 1
 
             const lastMaskId = maskIds[lastIndex]
-
+    
             dom = document.querySelector(`#${lastMaskId}`) as HTMLElement
         }
 
@@ -113,7 +115,7 @@ export const useMask = (propVisible: boolean, options: { visibleChange: (visible
             updateStyle(maskNode, {
                 display: 'block'
             })
-        }, 10)
+        }, 150)
     }
 
     const hideMask = () => {
@@ -121,10 +123,13 @@ export const useMask = (propVisible: boolean, options: { visibleChange: (visible
         showLastMask()
 
         const index = maskIds.findIndex(key => key === maskDomId) // 当前遮罩层下标
+
+        maskIds.splice(index, 1)
         if (index === 0) {
             document.body.style = ''
             maskIds = []
         }
+
         updateStyle(maskNode, {
             display: 'none'
         })

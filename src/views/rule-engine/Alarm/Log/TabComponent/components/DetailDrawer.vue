@@ -2,59 +2,69 @@
     <a-drawer
         :visible="true"
         width="1000"
-        :closable="false"
         :destroyInactiveTabPane="true"
         @close="closeDrawer"
     >
-        <div class="alarmInfo">
-            <div>
+        <template #title>
+            <div class="alarmInfo">
                 <div>
-                    <span>{{ AlarmData?.alarmName }}</span>
-                    <span class="alarmType">{{
-                        typeMap.get(AlarmData?.targetType)
-                    }}</span>
+                    <div class="alarmTitle">
+                        <span class="alarmType">{{
+                            typeMap.get(AlarmData?.targetType)
+                        }}</span>
+                        <div>
+                            <Ellipsis style="max-width: 200px">{{
+                                AlarmData?.alarmName
+                            }}</Ellipsis>
+                        </div>
+                        <LevelIcon :level="AlarmData.level"></LevelIcon>
+                    </div>
+                    <div style="font-size: 12px; margin-left: 10px; margin-top:5px">
+                        {{ AlarmData?.description || '暂无说明' }}
+                    </div>
                 </div>
-                <div>
-                    {{ AlarmData?.description || '暂无说明' }}
+                <div class="alarmInfoRight">
+                    <div>
+                        <BadgeStatus
+                            :status="AlarmData?.state.value"
+                            :statusNames="{
+                                warning: 'error',
+                                normal: 'default',
+                            }"
+                        >
+                        </BadgeStatus
+                        ><span>
+                            {{ AlarmData?.state.text }}
+                        </span>
+                        <a-button
+                            v-if="AlarmData?.state.value === 'warning'"
+                            type="link"
+                            @click="dealAlarm"
+                            >处理</a-button
+                        >
+                    </div>
                 </div>
             </div>
-            <div class="alarmInfoRight">
-                <div>
-                    {{
-                        levelMap?.[AlarmData?.level] || AlarmData?.level
-                    }}
-                </div>
-                <div>
-                    <BadgeStatus
-                        :status="AlarmData?.state.value"
-                        :statusNames="{
-                            warning: 'error',
-                            normal: 'default',
-                        }"
-                    >
-                    </BadgeStatus
-                    ><span>
-                        {{ AlarmData?.state.text }}
-                    </span>
-                    <a-button
-                        v-if="AlarmData?.state.value === 'warning'"
-                        type="link"
-                        @click="dealAlarm"
-                        >处理</a-button
-                    >
-                </div>
-            </div>
-        </div>
-        <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="record" tab="处理记录"
-                ><Record :currentId="AlarmData.id" ref="RecordRef"
-            /></a-tab-pane>
-            <a-tab-pane key="logs" tab="告警日志"
-                ><Log
-                    :currentId="AlarmData.id"
-                    :configId="AlarmData.alarmConfigId"
-            /></a-tab-pane>
-        </a-tabs>
+        </template>
+
+        <a-radio-group
+            v-model:value="activeKey"
+            button-style="solid"
+            style="margin: 20px 0"
+        >
+            <a-radio-button value="record">处理记录</a-radio-button>
+            <a-radio-button value="logs">告警日志</a-radio-button>
+        </a-radio-group>
+        <Record
+            :currentId="AlarmData.id"
+            ref="RecordRef"
+            v-if="activeKey === 'record'"
+        ></Record>
+        <Log
+            :currentId="AlarmData.id"
+            :configId="AlarmData.alarmConfigId"
+            v-else
+        />
     </a-drawer>
     <SolveComponent
         v-if="solveVisible"
@@ -123,9 +133,13 @@ const refresh = async () => {
     display: flex;
     justify-content: space-between;
     .alarmType {
-        background-color: rgb(242, 242, 242);
-        padding: 0 10px;
-        margin-left: 10px;
+        background-color: #e6f4ff;
+        padding: 2px 8px;
+        margin-right: 10px;
+        color: #1677ff;
+    }
+    .alarmTitle {
+        display: flex;
     }
     .alarmInfoRight {
         text-align: right;

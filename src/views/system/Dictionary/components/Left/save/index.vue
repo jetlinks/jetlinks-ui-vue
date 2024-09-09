@@ -109,7 +109,7 @@ const submitData = () =>{
         const res = await addDictionary(form)
             if(res.status === 200){
                 onlyMessage('保存成功!')
-                emit('success')
+                emit('success',form.id)
             }else{
                 onlyMessage('操作失败!','error')
             }

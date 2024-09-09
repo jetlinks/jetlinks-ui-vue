@@ -92,9 +92,9 @@
                                 :hasPermission="`${permission}:action`"
                                 type="link"
                                 :popConfirm="{
-                                    title: `确定要${
+                                    title: `确认${
                                         slotProps.status ? '禁用' : '启用'
-                                    }吗？`,
+                                    }？`,
                                     onConfirm: () =>
                                         table.changeStatus(slotProps),
                                 }"
@@ -243,7 +243,8 @@ const table = {
             paging: false,
             ...queryParams.value,
         };
-        exportPermission_api(params).then((resp) => {
+        const response = exportPermission_api(params)
+        response.then((resp) => {
             if (resp.status === 200) {
                 downloadObject(resp.result as any, '权限数据');
                 onlyMessage('导出成功');
@@ -251,6 +252,7 @@ const table = {
                 onlyMessage('导出错误', 'error');
             }
         });
+        return response
     },
     // 修改状态
     changeStatus: (row: any) => {
@@ -258,19 +260,23 @@ const table = {
             ...row,
             status: row.status ? 0 : 1,
         };
-        editPermission_api(params).then(() => {
+        const response = editPermission_api(params)
+        response.then(() => {
             onlyMessage('操作成功');
             tableRef.value.reload();
         });
+        return response
     },
     // 删除
     clickDel: (row: any) => {
-        delPermission_api(row.id).then((resp: any) => {
+        const response = delPermission_api(row.id)
+        response.then((resp: any) => {
             if (resp.status === 200) {
                 tableRef.value?.reload();
                 onlyMessage('操作成功!');
             }
         });
+        return response
     },
     // 刷新列表
     refresh: () => {

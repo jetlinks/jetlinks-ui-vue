@@ -17,15 +17,18 @@
         <template #type="slotProps">
             {{ slotProps?.type?.text }}
         </template>
+        <template #content="slotProps">
+           <Ellipsis style="width:calc(100% - 20px)">{{ slotProps?.content }}</Ellipsis>
+        </template>
         <template #timestamp="slotProps">
             {{
                 slotProps.timestamp
-                    ? moment(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss')
+                    ? dayjs(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss')
                     : ''
             }}
         </template>
         <template #action="slotProps">
-            <j-space>
+            <j-space :size="16">
                 <template
                     v-for="i in getActions(slotProps, 'table')"
                     :key="i.key"
@@ -47,7 +50,7 @@
 import type { ActionsType } from '@/components/Table';
 import { queryLog, queryLogsType } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Modal, Textarea } from 'jetlinks-ui-components';
 
 const params = ref<Record<string, any>>({});
@@ -87,7 +90,6 @@ const columns = [
     },
     {
         title: '内容',
-        ellipsis: true,
         dataIndex: 'content',
         key: 'content',
         scopedSlots: true,

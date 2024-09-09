@@ -1,13 +1,13 @@
 <!-- 通知记录 -->
 <template>
-    <j-modal v-model:visible="_vis" title="通知记录" :footer="null" width="70%">
+    <j-modal visible title="通知记录" :footer="null" width="70%" @cancel="emit('cancel')">
         <pro-search type="simple" :columns="columns" @search="handleSearch" />
 
         <JProTable
             ref="logRef"
             model="table"
             :columns="columns"
-            :request="(e:any) => templateApi.getHistory(e, data.id)"
+            :request="(e) => templateApi.getHistory(e, data.id)"
             :defaultParams="{
                 sorts: [{ name: 'notifyTime', order: 'desc' }],
                 terms: [{ column: 'notifyType$IN', value: data.type }],
@@ -15,7 +15,7 @@
             :params="params"
         >
             <template #notifyTime="slotProps">
-                {{ moment(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
+                {{ dayjs(slotProps.notifyTime).format('YYYY-MM-DD HH:mm:ss') }}
             </template>
             <template #state="slotProps">
                 <j-space>
@@ -45,11 +45,12 @@
 <script setup lang="ts">
 import templateApi from '@/api/notice/template';
 import { PropType } from 'vue';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Modal } from 'jetlinks-ui-components';
 import Record from './components/Record.vue'
 type Emits = {
     (e: 'update:visible', data: boolean): void;
+    (e: 'cancel'): void;
 };
 const emit = defineEmits<Emits>();
 
@@ -65,13 +66,6 @@ const _vis = computed({
     get: () => props.visible,
     set: (val) => emit('update:visible', val),
 });
-
-watch(
-    () => _vis.value,
-    (val) => {
-        if (val) handleSearch({ terms: [] });
-    },
-);
 
 const columns = [
     {
@@ -155,7 +149,7 @@ const handleError = (e: any) => {
         content: h(
             "p",
             {
-               
+
                 style: {
                     maxHeight: '300px',
                     overflowY: 'auto',
@@ -178,8 +172,20 @@ const handleError = (e: any) => {
             },
         ),
     });
-    }  
+    }
 };
+
+watch(
+  () => _vis.value,
+  (val) => {
+    if (val) {
+      handleSearch({ terms: [] })
+    } else {
+      params.value = {}
+    }
+  },
+);
+
 </script>
 <style lang="less" scoped>
 .disableIcon{

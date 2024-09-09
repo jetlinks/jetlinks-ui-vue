@@ -13,7 +13,7 @@
         >
             <template #requestTime="slotProps">
                 {{
-                    moment(slotProps.requestTime).format('YYYY-MM-DD HH:mm:ss')
+                dayjs(slotProps.requestTime).format('YYYY-MM-DD HH:mm:ss')
                 }}
             </template>
             <template #description="slotProps">
@@ -39,33 +39,23 @@
 
             <template #action="slotProps">
                 <j-space :size="16">
-                    <j-tooltip
-                        v-for="i in getActions(slotProps)"
-                        :key="i.key"
-                        v-bind="i.tooltip"
-                    >
-                        <j-popconfirm v-if="i.popConfirm" v-bind="i.popConfirm">
-                            <j-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
-                                type="link"
-                                ><AIcon :type="i.icon"
-                            /></j-button>
-                        </j-popconfirm>
-                        <j-button
-                            style="padding: 0"
-                            type="link"
-                            v-else
-                            @click="i.onClick && i.onClick(slotProps)"
+                    <template
+                            v-for="i in getActions(slotProps)"
+                            :key="i.key"
                         >
-                            <j-button
-                                :disabled="i.disabled"
-                                style="padding: 0"
+                            <PermissionButton
+                                :tooltip="{
+                                    ...i.tooltip,
+                                }"
+                                @click="i.onClick"
                                 type="link"
-                                ><AIcon :type="i.icon"
-                            /></j-button>
-                        </j-button>
-                    </j-tooltip>
+                                style="padding: 0 5px"
+                            >
+                                <template #icon
+                                    ><AIcon :type="i.icon"
+                                /></template>
+                            </PermissionButton>
+                        </template>
                 </j-space>
             </template>
         </j-pro-table>
@@ -92,7 +82,7 @@
             </j-descriptions-item>
             <j-descriptions-item label="请求时间">
                 {{
-                    moment(descriptionsData?.requestTime).format(
+                dayjs(descriptionsData?.requestTime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     )
                 }}
@@ -121,9 +111,8 @@
 </template>
 <script lang="ts" setup name="AccessLog">
 import type { ActionsType } from '@/components/Table/index';
-import type { AccessLogItem } from '../typings';
 import { queryAccess } from '@/api/link/log';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { modifySearchColumnValue } from '@/utils/comm';
 
 const tableRef = ref<Record<string, any>>({});
@@ -228,7 +217,7 @@ const columns = [
     },
 ];
 
-const descriptionsData = ref({
+const descriptionsData = ref<any>({
     url: '',
     httpMethod: '',
     action: '',
@@ -259,7 +248,7 @@ const getActions = (data: Partial<Record<string, any>>): ActionsType[] => {
                 title: '查看',
             },
             icon: 'EyeOutlined',
-            onClick: (data: AccessLogItem) => {
+            onClick: () => {
                 descriptionsData.value = data;
                 visible.value = true;
             },
@@ -282,7 +271,7 @@ const handleSearch = (e: any) => {
 </script>
 <style scoped lang="less">
 .userName{
-    color: #1d39c4;
+    color: #1677FF;
     background: #f0f5ff;
     border-color: #adc6ff;
     list-style: none;

@@ -132,7 +132,7 @@ export const inItSelected = (Menu:any) =>{
         arr.forEach((item: any) => {
             item.title = item.code;
             item.key = item.code; // treeData需要唯一key
-            item?.options?.show ?  checkedKeys.push(item.code) : '';
+            item?.options?.show === false ?  '' : checkedKeys.push(item.code);
             if (item?.children) {
                 getMap(item?.children);
             }

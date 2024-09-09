@@ -2,7 +2,7 @@
     <div class="des">
         <div class="des_head">
             <div>字典ID：<span>{{ data.id }}</span></div>
-            <div>说明：<span>{{ data.describe }}</span></div>
+            <div style="display: flex;">说明：<Ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></Ellipsis></div>
             <div>创建日期：<span> {{
                 dayjs(
                     data?.createTime,
@@ -20,7 +20,7 @@
                     </PermissionButton>
                 </template>
                 <template #action="slotProps">
-                    <j-space>
+                    <j-space :size="16">
                         <template v-for="i in getActions(slotProps, 'table')" :key="i.key">
                             <PermissionButton :disabled="i.disabled" :popConfirm="i.popConfirm" :tooltip="{
                                 ...i.tooltip,

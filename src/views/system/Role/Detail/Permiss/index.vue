@@ -1,41 +1,8 @@
 <template>
     <div class="role-permiss-container">
-        <!-- <section class="card">
-            <h5>基本信息</h5>
-            <j-form
-                ref="formRef"
-                class="basic-form"
-                :model="form.data"
-                layout="vertical"
-            >
-                <j-form-item
-                    name="name"
-                    label="名称"
-                    :rules="[
-                        { required: true, message: '请输入名称' },
-                        { max: 64, message: '最多可输入64个字符' },
-                    ]"
-                >
-                    <j-input
-                        v-model:value="form.data.name"
-                        placeholder="请输入角色名称"
-                    />
-                </j-form-item>
-                <j-form-item label="说明">
-                    <j-textarea
-                        v-model:value="form.data.description"
-                        placeholder="请输入说明"
-                        :maxlength="200"
-                        show-count
-                    />
-                </j-form-item>
-            </j-form>
-        </section> -->
-
         <section class="card">
             <h5>权限分配</h5>
             <PermissTree v-model:select-items="form.menus" />
-
             <j-button
                 type="primary"
                 :confirm-loading="form.loading"
@@ -63,7 +30,6 @@ import { onlyMessage } from '@/utils/comm';
 
 const { jumpPage } = useMenuStore();
 const route = useRoute();
-const router = useRouter();
 const roleId = route.params.id as string;
 
 // 表单相关
@@ -82,7 +48,7 @@ const form = reactive({
     //         }
     //     });
     // },
-    clickSave: () => {   
+    clickSave: () => {
         // formRef.value?.validate().then(() => {
             // const updateRole = editRole_api(roleId, form.data);
           if(form.menus?.length > 0){
@@ -125,11 +91,11 @@ const form = reactive({
 
             &::before {
                 position: absolute;
-                top: 5px px;
+                top: 5px;
                 left: 0;
                 width: 4px;
                 height: calc(100% - 10px);
-                background-color: #1d39c4;
+                background-color: @primary-color;
                 border-radius: 2px;
                 content: ' ';
             }

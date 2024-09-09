@@ -62,7 +62,10 @@ const direction = [
     'RadiusUpright',
     'Fullscreen',
     'FullscreenExit',
-    'EnvironmentOutlined',
+    'Environment',
+    'VideoCamera',
+    'VideoCameraAdd',
+    'CarryOut'
 ];
 
 const suggestion = [
