@@ -5,9 +5,9 @@ import components from './components'
 import router from './router'
 import './style.less'
 import 'ant-design-vue/dist/antd.variable.min.css'
-import i18n from './i18n'
 import 'xgplayer/dist/index.min.css'
 import '@/style/global.less'
+import i18n from './i18n'
 
 const app = createApp(App)
 

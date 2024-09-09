@@ -513,7 +513,7 @@ export const saveEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/
  * @param params
  * @returns
  */
-export const getPropertyData = (deviceId: string, params: Record<string, unknown>) => server.get(`/device-instance/${deviceId}/properties/_query`, params)
+export const getPropertyData = (deviceId: string,property:string, params: Record<string, unknown>) => server.post(`/device/instance/${deviceId}/property/${property}/_query`, params)
 
 /**
  * 聚合查询设备属性

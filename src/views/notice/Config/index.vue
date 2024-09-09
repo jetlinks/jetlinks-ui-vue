@@ -31,6 +31,7 @@
                             accept=".json"
                             :showUploadList="false"
                             :before-upload="beforeUpload"
+                            :disabled="!permission"
                         >
                             <PermissionButton
                                 hasPermission="notice/Config:import"
@@ -206,9 +207,10 @@ import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import SyncUser from './SyncUser/index.vue';
 import Debug from './Debug/index.vue';
 import Log from './Log/index.vue';
-import { downloadObject } from '@/utils/utils';
+import { downloadObject,isNoCommunity } from '@/utils/utils';
 import { useMenuStore } from 'store/menu';
 import { onlyMessage } from '@/utils/comm';
+import { usePermissionStore } from '@/store/permission';
 
 const menuStory = useMenuStore();
 
@@ -219,6 +221,8 @@ Object.keys(MSG_TYPE).forEach((key) => {
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
+
+const permission = usePermissionStore().hasPermission(`notice/Config:import`);
 
 const columns = [
     {
@@ -421,18 +425,18 @@ const getActions = (
                     downloadObject(data, `${data.name}`);
                 },
             },
-            {
-                key: 'bind',
-                text: '同步用户',
-                tooltip: {
-                    title: '同步用户',
-                },
-                icon: 'TeamOutlined',
-                onClick: () => {
-                    syncVis.value = true;
-                    currentConfig.value = data;
-                },
-            },
+            // {
+            //     key: 'bind',
+            //     text: '同步用户',
+            //     tooltip: {
+            //         title: '同步用户',
+            //     },
+            //     icon: 'TeamOutlined',
+            //     onClick: () => {
+            //         syncVis.value = true;
+            //         currentConfig.value = data;
+            //     },
+            // },
             {
                 key: 'log',
                 text: '通知记录',
@@ -447,7 +451,20 @@ const getActions = (
             },
         ],
     };
-
+    if(isNoCommunity){
+        others.children?.push({
+                key: 'bind',
+                text: '同步用户',
+                tooltip: {
+                    title: '同步用户',
+                },
+                icon: 'TeamOutlined',
+                onClick: () => {
+                    syncVis.value = true;
+                    currentConfig.value = data;
+                },
+            })
+    }
     if (type === 'card') {
         if (
             data.provider !== 'dingTalkMessage' &&

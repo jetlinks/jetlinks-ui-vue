@@ -305,7 +305,6 @@ const basicFormRef = ref<FormInstance>();
 const permissFormRef = ref<FormInstance>();
 const uploadIcon = ref<FormInstance>();
 //菜单应用选项
-const appOptions = ref<any>([]);
 const form = reactive({
     data: {
         name: '',
