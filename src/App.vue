@@ -25,7 +25,6 @@ dayjs.extend(weekdays)
 dayjs.extend(localeData)
 dayjs.locale('zh-cn');
 
-
 const system = useSystem();
 const {configInfo} = storeToRefs(system);
 
