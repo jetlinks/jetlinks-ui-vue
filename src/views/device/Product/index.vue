@@ -190,7 +190,7 @@ import {
     deleteProduct,
     updateDevice,
 } from '@/api/device/product';
-import {  downloadObject } from '@/utils/utils';
+import { downloadObject, isNoCommunity } from '@/utils/utils';
 import { omit, cloneDeep } from 'lodash-es';
 import Save from './Save/index.vue';
 import { useMenuStore } from 'store/menu';
@@ -552,14 +552,6 @@ const query = reactive({
             },
         },
         {
-            title: '说明',
-            key: 'describe',
-            dataIndex: 'describe',
-            search: {
-                type: 'string',
-            },
-        },
-        {
             title: '产品分类',
             key: 'classified',
             dataIndex: 'classifiedId',
@@ -577,51 +569,12 @@ const query = reactive({
             },
         },
         {
-            title: '所属组织',
-            key: 'id$dim-assets',
-            dataIndex: 'id$dim-assets',
+            title: '说明',
+            key: 'describe',
+            dataIndex: 'describe',
             search: {
-                first: true,
-                type: 'treeSelect',
-                termOptions: ['eq'],
-                options: async () => {
-                    return new Promise((res) => {
-                        queryOrgThree({ paging: false }).then((resp: any) => {
-                            const formatValue = (list: any[]) => {
-                                const _list: any[] = [];
-                                list.forEach((item) => {
-                                    if (item.children) {
-                                        item.children = formatValue(
-                                            item.children,
-                                        );
-                                    }
-                                    _list.push({
-                                        ...item,
-                                        value: JSON.stringify({
-                                            assetType: 'product',
-                                            targets: [
-                                                {
-                                                    type: 'org',
-                                                    id: item.id,
-                                                },
-                                            ],
-                                        }),
-                                    });
-                                });
-                                return _list;
-                            };
-                            res(formatValue(resp.result));
-                        });
-                    });
-                },
+                type: 'string',
             },
-        },
-        {
-            title: '操作',
-            key: 'action',
-            fixed: 'right',
-            width: 250,
-            scopedSlots: true,
         },
     ],
 });
@@ -669,6 +622,48 @@ const routerParams = useRouterParams();
 onMounted(() => {
     if (routerParams.params?.value.save) {
         add();
+    }
+    if (isNoCommunity) {
+        query.columns.splice(query.columns.length - 2, 0, {
+            title: '所属组织',
+            key: 'id$dim-assets',
+            dataIndex: 'id$dim-assets',
+            search: {
+                first: true,
+                type: 'treeSelect',
+                termOptions: ['eq'],
+                options: async () => {
+                    return new Promise((res) => {
+                        queryOrgThree({ paging: false }).then((resp: any) => {
+                            const formatValue = (list: any[]) => {
+                                const _list: any[] = [];
+                                list.forEach((item) => {
+                                    if (item.children) {
+                                        item.children = formatValue(
+                                            item.children,
+                                        );
+                                    }
+                                    _list.push({
+                                        ...item,
+                                        value: JSON.stringify({
+                                            assetType: 'product',
+                                            targets: [
+                                                {
+                                                    type: 'org',
+                                                    id: item.id,
+                                                },
+                                            ],
+                                        }),
+                                    });
+                                });
+                                return _list;
+                            };
+                            res(formatValue(resp.result));
+                        });
+                    });
+                },
+            },
+        });
     }
 });
 </script>

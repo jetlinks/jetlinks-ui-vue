@@ -1,48 +1,6 @@
 <template>
     <template v-if="isPermission">
         <template v-if="popConfirm">
-            <!-- <j-popconfirm
-                :disabled="!isPermission || props.disabled"
-                :overlayStyle="{ width: '220px', zIndex: 1075 }"
-                v-bind="popConfirm"
-            >
-                <j-tooltip v-if="tooltip" v-bind="tooltip">
-                    <slot v-if="noButton"></slot>
-                    <j-button
-                        v-else
-                        v-bind="props"
-                        :disabled="_isPermission"
-                        :style="props.style"
-                    >
-                        <slot></slot>
-                        <template #icon>
-                            <slot name="icon"></slot>
-                        </template>
-                    </j-button>
-                </j-tooltip>
-                <j-button v-else v-bind="props" :disabled="_isPermission">
-                    <slot></slot>
-                    <template #icon>
-                        <slot name="icon"></slot>
-                    </template>
-                </j-button>
-            </j-popconfirm> -->
-            <!-- <a-modal
-                v-if="modalVisible"
-                visible
-                :closable="false"
-                @cancel="modalVisible = false"
-                @ok="modalConfirm"
-                :confirmLoading="confirmLoading"
-                :width="300"
-                centered
-                :maskClosable="false"
-                z-index="9999"
-            >
-                <div class="modalContent">
-                    {{ popConfirm.title }}
-                </div>
-            </a-modal> -->
             <j-tooltip v-if="tooltip" v-bind="tooltip">
                 <slot v-if="noButton"></slot>
                 <j-button
@@ -185,6 +143,7 @@ const showConfirm = () => {
     Modal.confirm({
         title: props.popConfirm?.title,
         content: props.popConfirm?.content,
+        zIndex: 2000,
         onOk() {
             return props.popConfirm?.onConfirm();
         },
