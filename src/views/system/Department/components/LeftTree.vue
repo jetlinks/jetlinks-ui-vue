@@ -196,6 +196,7 @@ const search = debounce(() => {
         dig(searchTree);
         treeData.value = ArrayToTree(cloneDeep([...treeArray.values()]));
     } else {
+        getTree()
         treeData.value = ArrayToTree(cloneDeep([...treeMap.values()]));
         expandedKeys.value = [];
     }

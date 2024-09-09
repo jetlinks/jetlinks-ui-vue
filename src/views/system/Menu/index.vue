@@ -40,7 +40,7 @@
                     </template>
                     <template #action="slotProps">
                         <j-space :size="16">
-                            <j-tooltip>
+                            <!-- <j-tooltip>
                                 <template #title>{{
                                     slotProps?.options?.LowCode
                                         ? '低码创建的菜单不支持编辑'
@@ -54,7 +54,21 @@
                                 >
                                     <AIcon type="EditOutlined" />
                                 </j-button>
-                            </j-tooltip>
+                            </j-tooltip> -->
+                            <PermissionButton
+                                type="link"
+                                :hasPermission="`${permission}:update`"
+                                :tooltip="{
+                                    title:
+                                    slotProps?.options?.LowCode
+                                        ? '低码创建的菜单不支持编辑'
+                                        : '编辑'
+                                }"
+                                :disabled="slotProps?.options?.LowCode"
+                                @click="table.addChildren(slotProps)"
+                            >
+                            <AIcon type="EditOutlined" />
+                            </PermissionButton>
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
