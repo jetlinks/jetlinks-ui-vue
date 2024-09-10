@@ -80,11 +80,6 @@ export default defineConfig(({ mode}) => {
           createStyleImportPlugin({
             resolves: [AndDesignVueResolve()]
           }),
-          copy({
-            targets: [
-              {src: 'node_modules/@liveqing/liveplayer-v3/dist/component/liveplayer-lib.min.js', dest: 'public/js'},
-            ]
-          }),
           progress()
       ],
       server: {
