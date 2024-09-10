@@ -74,6 +74,7 @@ export default {
   layout: {
     title: '物联网平台', // 平台title(默认配置不生效，优先使用基础配置的数据)
     logo: '/logo.png', // 平台logo(不要修改，如需修改默认logo请在根目录public\logo.png替换此文件)
+    question: true // 控制显示右上角说明文档按钮显示影藏
     ...
   }
 }
