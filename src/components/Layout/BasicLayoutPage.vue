@@ -20,7 +20,7 @@
         </template>
         <template #rightContentRender>
             <div class="right-content">
-                <AIcon type="QuestionCircleOutlined" @click="toDoc" />
+                <AIcon v-if="DefaultSetting.layout.question" type="QuestionCircleOutlined" @click="toDoc" />
                 <Notice style="margin: 0 24px" />
                 <UserInfo />
             </div>
@@ -38,18 +38,10 @@ import UserInfo from './components/UserInfo.vue';
 import Notice from './components/Notice.vue';
 import DefaultSetting from '../../../config/config';
 import { useMenuStore } from '@/store/menu';
-import { clearMenuItem } from 'jetlinks-ui-components/es/ProLayout/util';
-import { AccountMenu } from '@/router/menu'
 import { useSystem } from '@/store/system';
 import { storeToRefs } from 'pinia';
 import { useSlots } from 'vue'
 
-type StateType = {
-    collapsed: boolean;
-    openKeys: string[];
-    selectedKeys: string[];
-    pure: boolean;
-};
 
 const router = useRouter();
 const route = useRoute();
