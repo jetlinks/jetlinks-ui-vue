@@ -292,6 +292,10 @@ const handleSave = () => {
       newData.fullName = props.data.parentFullName ? props.data.parentFullName + modelRef.name : modelRef.name
       newData.parentId = newData.parentId || ''
 
+      if(props.mode === 'edit'){
+        newData.fullName  = props.data.fullName
+      }
+
       if (newData.properties.sync) {
         const arr = cloneDeep(props.areaTree)
         const _syncChildren = syncChildren(newData.code, arr)
@@ -317,6 +321,8 @@ const handleSave = () => {
       }
 
       loading.value = true;
+      console.log('props====',props.data);
+      console.log('newData====',newData);
 
       const resp = await updateRegion(newData).finally(() => {
         loading.value = false;

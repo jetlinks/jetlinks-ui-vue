@@ -65,10 +65,7 @@ import Role from './Role/index.vue';
 import Menu from './Menu/index.vue';
 import InitData from './InitData/index.vue';
 import { getInit, saveInit } from '@/api/initHome';
-import { BASE_API_PATH, TOKEN_KEY } from '@/utils/variable';
-import { FILE_UPLOAD } from '@/api/comm';
 import { onlyMessage } from '@/utils/comm';
-import { useUserInfo } from '@/store/userInfo';
 const basicRef = ref();
 const roleRef = ref();
 const initDataRef = ref();
@@ -79,9 +76,7 @@ const loading = ref(false);
  */
 const activeKey = ref<string>('1');
 const spinning = ref<boolean>(false);
-const userInfo = useUserInfo();
-// const action = ref<string>(`${BASE_API_PATH}/file/static`);
-// const headers = ref({ [TOKEN_KEY]: LocalStore.get(TOKEN_KEY) });
+
 /**
  * 提交基础表单
  */
@@ -107,7 +102,6 @@ const submitData = async () => {
         return;
     }
     const roleRes = await roleRef.value.submitRole();
-    console.log(roleRes);
     if (!roleRes) {
         loading.value = false;
         return;

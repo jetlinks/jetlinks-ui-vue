@@ -513,7 +513,7 @@ export const saveEdgeMap = (deviceId: string, data?: any) => server.post(`/edge/
  * @param params
  * @returns
  */
-export const getPropertyData = (deviceId: string, params: Record<string, unknown>) => server.get(`/device-instance/${deviceId}/properties/_query`, params)
+export const getPropertyData = (deviceId: string,property:string, params: Record<string, unknown>) => server.post(`/device/instance/${deviceId}/property/${property}/_query`, params)
 
 /**
  * 聚合查询设备属性
@@ -683,3 +683,9 @@ export const deleteDeviceThreshold = (productId:string,deviceId:string,propertyI
 export const getTemplate = (id: string, format: string) => `${BASE_API_PATH}/device/instance/${id}/property-metadata/template.${format}`
 
 export const uploadAnalyzeMetadata = (productId:string,data: any) => server.post(`/device/instance/${productId}/property-metadata/file/analyze`, data)
+
+/**
+ * 设备影子-获取数据
+ * @param id 设备ID
+ */
+export const getDeviceShadow = (id: string) => server.get(`/device/shadow/${id}`)

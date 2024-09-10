@@ -1,5 +1,5 @@
 <template>
-    <j-modal title="扫描" :visible="true" width="95%" @cancel="handleCancel">
+    <j-modal title="扫描" :visible="true" width="95%" :maskClosable="false" @cancel="handleCancel">
         <div class="content">
             <Tree
                 :data="treeData"

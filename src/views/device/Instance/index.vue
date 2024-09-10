@@ -231,6 +231,7 @@ import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import TagSearch from './components/TagSearch.vue';
 import { Modal } from 'ant-design-vue';
+import { isNoCommunity } from '@/utils/utils';
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -262,7 +263,7 @@ const transformData = (arr: any[]): any[] => {
     }
 };
 
-const columns = [
+const columns = ref([
     {
         title: 'ID',
         dataIndex: 'id',
@@ -409,64 +410,18 @@ const columns = [
             ],
         },
     },
-    {
-        dataIndex: 'id$dim-assets',
-        title: '所属组织',
-        hideInTable: true,
-        search: {
-            type: 'treeSelect',
-            termOptions: ['eq'],
-            // handleValue(v) {
-            //   return {
-            //     assetType: 'device',
-            //     targets: [
-            //       {
-            //         type: 'org',
-            //         id: v,
-            //       },
-            //     ],
-            //   }
-            // },
-            options: () =>
-                new Promise((resolve) => {
-                    queryOrgThree({}).then((resp: any) => {
-                        const formatValue = (list: any[]) => {
-                            const _list: any[] = [];
-                            list.forEach((item) => {
-                                if (item.children) {
-                                    item.children = formatValue(item.children);
-                                }
-                                _list.push({
-                                    ...item,
-                                    id: JSON.stringify({
-                                        assetType: 'device',
-                                        targets: [
-                                            {
-                                                type: 'org',
-                                                id: item.id,
-                                            },
-                                        ],
-                                    }),
-                                });
-                            });
-                            return _list;
-                        };
-                        resolve(formatValue(resp.result));
-                    });
-                }),
-        },
-    },
-    {
-        key: 'id$dev-tag',
-        dataIndex: 'id$dev-tag',
-        title: '设备标签',
-        hideInTable: true,
-        search: {
-            type: 'component',
-            components: TagSearch,
-            termOptions: ['eq'],
-        },
-    },
+
+    // {
+    //     key: 'id$dev-tag',
+    //     dataIndex: 'id$dev-tag',
+    //     title: '设备标签',
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'component',
+    //         components: TagSearch,
+    //         termOptions: ['eq'],
+    //     },
+    // },
     {
         title: '说明',
         dataIndex: 'describe',
@@ -483,7 +438,7 @@ const columns = [
         width: 200,
         scopedSlots: true,
     },
-];
+])
 
 const paramsFormat = (
     config: Record<string, any>,
@@ -516,15 +471,6 @@ const paramsFormat = (
         });
     }
 };
-
-onMounted(() => {
-    if (routerParams.params.value.type === 'add') {
-        handleAdd();
-    }
-    if (routerParams.params.value.type === 'import') {
-        importVisible.value = true;
-    }
-});
 
 const handleParams = (config: Record<string, any>) => {
     const _terms: Record<string, any> = {};
@@ -661,7 +607,6 @@ const getActions = (
 
 const onSelectChange = (item: any, state: boolean) => {
     const arr = new Set(_selectedRowKeys.value);
-    // console.log(item, state);
     if (state) {
         arr.add(item.id);
     } else {
@@ -870,9 +815,7 @@ const saveBtn = () => {
 
 const dealSearchValue = (item: any) => {
     let value: any = '';
-    console.log(item);
     item.value.forEach((i: any, index: number) => {
-        console.log(i);
         if (index > 0) {
             value += ',' + i.slice((item.column + ' is ').length);
         } else {
@@ -901,7 +844,8 @@ const handleSearch = (_params: any) => {
                     item2.column,
                 )
             ) {
-                const oldTermType = item2.termType;
+                const oldTermType = item2.termType === 'nin' ?  'not' : item2.termType;
+                console.log(item2.termType,'termType')
                 delete item2.termType;
                 return {
                     ...item2,
@@ -938,4 +882,53 @@ const deleteDevice = async () => {
     }
     deleteState.value = false;
 };
+
+onMounted(() => {
+    if (routerParams.params.value.type === 'add') {
+        handleAdd();
+    }
+    if (routerParams.params.value.type === 'import') {
+        importVisible.value = true;
+    }
+    if (isNoCommunity) {
+        columns.value.splice(columns.value.length - 3,0,{
+            dataIndex: 'id$dim-assets',
+            title: '所属组织',
+            hideInTable: true,
+            search: {
+                type: 'treeSelect',
+                termOptions: ['eq'],
+                options: () =>
+                    new Promise((resolve) => {
+                        queryOrgThree({}).then((resp: any) => {
+                            const formatValue = (list: any[]) => {
+                                const _list: any[] = [];
+                                list.forEach((item) => {
+                                    if (item.children) {
+                                        item.children = formatValue(
+                                            item.children,
+                                        );
+                                    }
+                                    _list.push({
+                                        ...item,
+                                        id: JSON.stringify({
+                                            assetType: 'device',
+                                            targets: [
+                                                {
+                                                    type: 'org',
+                                                    id: item.id,
+                                                },
+                                            ],
+                                        }),
+                                    });
+                                });
+                                return _list;
+                            };
+                            resolve(formatValue(resp.result));
+                        });
+                    }),
+            },
+        });
+    }
+});
 </script>

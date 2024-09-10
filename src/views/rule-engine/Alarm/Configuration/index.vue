@@ -207,6 +207,7 @@ import { useMenuStore } from '@/store/menu';
 import HandTrigger from './HandTrigger/index.vue';
 import { Modal } from 'ant-design-vue';
 import { useAlarmLevel } from '@/hook';
+import { isNoCommunity } from '@/utils/utils';
 
 const params = ref<Record<string, any>>({});
 const tableRef = ref<Record<string, any>>({});
@@ -234,31 +235,46 @@ const columns = [
         scopedSlots: true,
         search: {
             type: 'select',
-            options: [
-                {
-                    label: '产品',
-                    value: 'product',
-                },
-                {
-                    label: '设备',
-                    value: 'device',
-                },
-                {
-                    label: '组织',
-                    value: 'org',
-                },
-                {
-                    label: '其他',
-                    value: 'other',
-                },
-            ],
+            options: isNoCommunity
+                ? [
+                      {
+                          label: '产品',
+                          value: 'product',
+                      },
+                      {
+                          label: '设备',
+                          value: 'device',
+                      },
+                      {
+                          label: '组织',
+                          value: 'org',
+                      },
+                      {
+                          label: '其他',
+                          value: 'other',
+                      },
+                  ]
+                : [
+                      {
+                          label: '产品',
+                          value: 'product',
+                      },
+                      {
+                          label: '设备',
+                          value: 'device',
+                      },
+                      {
+                          label: '其他',
+                          value: 'other',
+                      },
+                  ],
         },
         width: 150,
     },
     {
         title: '关联场景联动',
         dataIndex: 'id',
-        hideInTable:true,
+        hideInTable: true,
         key: 'id',
         search: {
             type: 'select',
@@ -356,14 +372,14 @@ const map = {
     other: '其他',
 };
 const handleSearch = (e: any) => {
-    e.terms.map((i:any)=>{
-        i.terms.forEach((item:any)=>{
-            if(item.column === 'id'){
-                item.termType = 'rule-bind-alarm'
+    e.terms.map((i: any) => {
+        i.terms.forEach((item: any) => {
+            if (item.column === 'id') {
+                item.termType = 'rule-bind-alarm';
             }
-        })
-    })
-    console.log(e,'e')
+        });
+    });
+    console.log(e, 'e');
     params.value = e;
 };
 
