@@ -339,13 +339,14 @@ const newColumns = computed(() => {
                         },
                     ];
                     const resp: any = await getAlarmProduct({
+                        paging:false,
                         sorts: [{ name: 'alarmTime', order: 'desc' }],
                         terms: termType,
                     });
                     const listMap: Map<string, any> = new Map();
 
                     if (resp.status === 200) {
-                        resp.result.data.forEach((item) => {
+                        resp.result.forEach((item) => {
                             if (item.productId) {
                                 listMap.set(item.productId, {
                                     label: item.productName,

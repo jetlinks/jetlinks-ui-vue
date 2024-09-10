@@ -1,5 +1,4 @@
 import server from '@/utils/request'
-import type { CascadeItem } from '@/views/media/Cascade/typings'
 
 export default {
     // 列表
@@ -18,7 +17,7 @@ export default {
     // 启用
     enabled: (id: string) => server.post<any>(`/media/gb28181-cascade/${id}/_enabled`),
 
-    // 新增/编辑 
+    // 新增/编辑
     // 获取集群节点
     clusters: () => server.get<any>(`/network/resources/clusters`),
     // SIP本地地址
@@ -36,6 +35,8 @@ export default {
     updateGbChannelId: (id: string, data: any): any => server.put(`/media/gb28181-cascade/binding/${id}`, data),
     // 查询通道分页列表
     queryChannelList: (data: any): any => server.post(`/media/channel/_query`, data),
+    // 查询通道不分页
+    queryChannelNoPage: (data: any): any => server.post(`/media/channel/_query/no-paging`, data),
     // 推送
     publish: (id: string, params: any) => server.get(`/media/gb28181-cascade/${id}/bindings/publish`, params),
 

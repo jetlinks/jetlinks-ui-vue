@@ -73,7 +73,6 @@
 <script lang="ts" setup>
 import { getPropertyData } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
-import encodeQuery from '@/utils/encodeQuery';
 import dayjs from 'dayjs';
 import { getType } from '../index';
 import ValueRender from '../ValueRender.vue';
@@ -99,7 +98,6 @@ const dataSource = ref({
 });
 const current = ref<any>({});
 const visible = ref<boolean>(false);
-console.log(_props.data);
 const columns = computed(() => {
     const arr: any[] = [
         {
@@ -141,14 +139,25 @@ const showDetail = (item: any) => {
 const queryPropertyData = async (params: any) => {
     const resp = await getPropertyData(
         instanceStore.current.id,
-        encodeQuery({
+        _props.data.id,
+        {
             ...params,
-            terms: {
-                property: _props.data.id,
-                timestamp$BTW: _props.time,
-            },
-            sorts: { timestamp: 'desc' },
-        }),
+            sorts: [{
+                name: 'timestamp',
+                value: 'desc',
+            }],
+            terms: [
+                {
+                    terms: [
+                        {
+                            column: 'timestamp',
+                            termType: 'btw',
+                            value: _props.time,
+                        },
+                    ],
+                },
+            ],
+        },
     );
     if (resp.status === 200) {
         dataSource.value = resp.result as any;

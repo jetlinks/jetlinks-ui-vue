@@ -40,7 +40,7 @@
                     </template>
                     <template #action="slotProps">
                         <j-space :size="16">
-                            <j-tooltip>
+                            <!-- <j-tooltip>
                                 <template #title>{{
                                     slotProps?.options?.LowCode
                                         ? '低码创建的菜单不支持编辑'
@@ -54,7 +54,21 @@
                                 >
                                     <AIcon type="EditOutlined" />
                                 </j-button>
-                            </j-tooltip>
+                            </j-tooltip> -->
+                            <PermissionButton
+                                type="link"
+                                :hasPermission="`${permission}:update`"
+                                :tooltip="{
+                                    title:
+                                    slotProps?.options?.LowCode
+                                        ? '低码创建的菜单不支持编辑'
+                                        : '编辑'
+                                }"
+                                :disabled="slotProps?.options?.LowCode"
+                                @click="table.addChildren(slotProps)"
+                            >
+                            <AIcon type="EditOutlined" />
+                            </PermissionButton>
                             <PermissionButton
                                 type="link"
                                 :hasPermission="`${permission}:add`"
@@ -229,8 +243,10 @@ const table = reactive({
             paging: false,
         };
         const resp: any = await getMenuTree_api(params);
-        const lastItem = resp.result[resp.result.length - 1];
-        table.total = lastItem ? lastItem.sortIndex + 1 : 1;
+        const menuArr = resp.result.filter((i:any)=>i.code!=='account-center')
+        const lastItem = menuArr[menuArr.length - 1];
+        //个人中心排序为9999需要做过滤特殊处理
+        table.total = lastItem ? lastItem.sortIndex + 1 === 9999 ? 10000 : lastItem.sortIndex + 1 : 1;
 
         return {
             code: resp.message,
