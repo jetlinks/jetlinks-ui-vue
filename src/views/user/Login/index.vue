@@ -14,7 +14,7 @@
             rel="noopener noreferrer"
             class="records"
           >
-            {{ $t('Login.index.265048-0') }}{{ basis.recordNumber || $t('Login.index.265048-1') }}
+            {{ $t('Login.index.265048-0') }}{{ basis.recordNumber }}
           </a>
         </div>
         <div class="right">
