@@ -63,14 +63,6 @@ const query = async () => {
     loading.value = true;
     const resp = await getPropertyData(
         instanceStore.current.id,
-        // encodeQuery({
-        //     paging: false,
-        //     terms: {
-        //         property: prop.data.id,
-        //         timestamp$BTW: prop.time[0] && prop.time[1] ? prop.time : [],
-        //     },
-        //     sorts: { timestamp: 'asc' },
-        // }),
         prop.data.id,
         {
             paging: false,
