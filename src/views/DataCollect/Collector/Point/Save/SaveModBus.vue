@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <j-modal
         :title="data.id ? '编辑' : '新增'"
         :visible="true"
