@@ -65,7 +65,7 @@
                                         : '编辑'
                                 }"
                                 :disabled="slotProps?.options?.LowCode"
-                                @click="table.addChildren(slotProps)"
+                                @click="table.toDetails(slotProps)"
                             >
                             <AIcon type="EditOutlined" />
                             </PermissionButton>

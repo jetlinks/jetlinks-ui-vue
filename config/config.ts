@@ -6,5 +6,6 @@ export default {
     logo: '/logo.png', // 平台logo
     mode: 'inline',
     theme: 'light', // 'dark' 'light'
-  }
+    question: true
+  },
 }
