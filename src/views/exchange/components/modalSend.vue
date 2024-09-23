@@ -1,48 +1,94 @@
 <template>
-    <j-modal :visible="props.visible" :title="props.title" :maskClosable="false" destroy-on-close
-        :width="(divWidth - 400) + 'px'" @ok="modalState.confirm" @cancel="modalState.cancel"
-        :confirmLoading="modalState.confirmLoading" cancelText="取消" okText="确定">
+    <j-modal
+        :visible="props.visible"
+        :title="props.title"
+        :maskClosable="false"
+        destroy-on-close
+        :width="divWidth - 400 + 'px'"
+        @ok="modalState.confirm"
+        @cancel="modalState.cancel"
+        :confirmLoading="modalState.confirmLoading"
+        cancelText="取消"
+        okText="确定"
+    >
         <div style="margin-top: 10px">
-            <j-form layout="vertical" :model="myForm" :rules="rules" ref="formRef">
+            <j-form
+                layout="vertical"
+                :model="myForm"
+                :rules="rules"
+                ref="formRef"
+            >
                 <j-row :gutter="16">
                     <j-col class="gutter-row" :span="8">
                         <j-form-item label="名称" name="name">
-                            <j-input v-model:value="myForm.name" placeholder="请输入名称" />
+                            <j-input
+                                v-model:value="myForm.name"
+                                placeholder="请输入名称"
+                            />
                         </j-form-item>
                     </j-col>
                     <j-col class="gutter-row" :span="8">
                         <j-form-item label="Topic" name="topic">
-                            <j-input v-model:value="myForm.topic" :disabled="!!myForm?.id" placeholder="请输入Topic" />
+                            <j-input
+                                v-model:value="myForm.topic"
+                                :disabled="!!myForm?.id"
+                                placeholder="请输入Topic"
+                            />
                         </j-form-item>
                     </j-col>
                 </j-row>
                 <j-form-item label="说明" name="description">
-                    <j-textarea :maxlength="160" showCount :auto-size="{ minRows: 4, maxRows: 5 }"
-                        v-model:value="myForm.description" placeholder="请输入说明" />
+                    <j-textarea
+                        :maxlength="160"
+                        showCount
+                        :auto-size="{ minRows: 4, maxRows: 5 }"
+                        v-model:value="myForm.description"
+                        placeholder="请输入说明"
+                    />
                 </j-form-item>
                 <j-row :gutter="16">
                     <div style="height: 400px" class="modal-all">
                         <div class="modal-left">
                             <span class="modal-span">产品列表</span>
-                            <j-table :row-selection="{
-                                selectedRowKeys: productState.selectedRowKeys, onChange: onProductSelectChange, getCheckboxProps: productState.getCheckboxProps
-                            }" :columns="columnsAss" :data-source="props.productList" :pagination="false"
-                                :rowKey="(record: any) => record.id" :scroll="{ y: 300 }" />
+                            <j-table
+                                :row-selection="{
+                                    selectedRowKeys:
+                                        productState.selectedRowKeys,
+                                    onChange: onProductSelectChange,
+                                    getCheckboxProps:
+                                        productState.getCheckboxProps,
+                                }"
+                                :columns="columnsAss"
+                                :data-source="props.productList"
+                                :pagination="false"
+                                :rowKey="(record: any) => record.id"
+                                :scroll="{ y: 300 }"
+                            />
                         </div>
                         <div class="modal-right">
                             <span class="modal-span">设备列表</span>
                             <j-table
-                                :row-selection="{ selectedRowKeys: myState.selectedRowKeys, onChange: onSelectChange }"
-                                :columns="columnsDevice" :data-source="deviceList" :rowKey="(record: any) => record.id"
-                                :pagination="pagination" :scroll="{ y: 280 }">
+                                :row-selection="{
+                                    selectedRowKeys: myState.selectedRowKeys,
+                                    onChange: onSelectChange,
+                                }"
+                                :columns="columnsDevice"
+                                :data-source="deviceList"
+                                :rowKey="(record: any) => record.id"
+                                :pagination="pagination"
+                                :scroll="{ y: 280 }"
+                            >
                                 <template #bodyCell="{ column, record }">
                                     <template v-if="column.key === 'state'">
-                                        <BadgeStatus :status="record.state?.value" :text="record.state?.text"
-                                        :statusNames="{
-                                            online: 'processing',
-                                            offline: 'error',
-                                            notActive: 'warning',
-                                        }" />
+                                        <BadgeStatus
+                                            :status="record.state?.value"
+                                            :text="record.state?.text"
+                                            :statusNames="{
+                                                online: 'processing',
+                                                offline: 'error',
+                                                notActive: 'warning',
+                                            }"
+                                        />
                                     </template>
                                 </template>
                             </j-table>
@@ -76,56 +122,65 @@ const modalState = reactive({
             let { id, ...addData } = myForm.value;
             if (props.isAdd === 1) {
                 if (myForm.value.productId && myForm.value.deviceIds) {
-                    if (myForm.value.productId.length > 0 && myForm.value.deviceIds.length > 0) {
-                        addDataSand(addData).then((res: any) => {
-                            if (res.status === 200) {
-                                onlyMessage('添加成功！');
+                    if (
+                        myForm.value.productId.length > 0 &&
+                        myForm.value.deviceIds.length > 0
+                    ) {
+                        addDataSand(addData)
+                            .then((res: any) => {
+                                if (res.status === 200) {
+                                    onlyMessage('添加成功！');
+                                    modalState.confirmLoading = false;
+                                    emit('handModal');
+                                    formRef.value?.resetFields();
+                                }
+                            })
+                            .catch((e: any) => {
+                                onlyMessage('添加失败', 'error');
                                 modalState.confirmLoading = false;
-                                emit('handModal')
-                                formRef.value?.resetFields();
-                            }
-                        }).catch((e: any) => {
-                            onlyMessage('添加失败', 'error');
-                            modalState.confirmLoading = false;
-                        });
+                            });
                     } else {
-                        onlyMessage('请必须选择产品或设备', 'error');
+                        onlyMessage('请必须选择产品和设备', 'error');
                         modalState.confirmLoading = false;
                     }
                 } else {
-                    onlyMessage('请必须选择产品或设备', 'error');
+                    onlyMessage('请必须选择产品和设备', 'error');
                     modalState.confirmLoading = false;
                 }
             } else {
                 if (myForm.value.productId && myForm.value.deviceIds) {
-                    if (myForm.value.productId.length > 0 && myForm.value.deviceIds.length > 0) {
-                        editDataSand(myForm.value).then((res: any) => {
-                            if (res.status === 200) {
-                                onlyMessage('修改成功！');
+                    if (
+                        myForm.value.productId.length > 0 &&
+                        myForm.value.deviceIds.length > 0
+                    ) {
+                        editDataSand(myForm.value)
+                            .then((res: any) => {
+                                if (res.status === 200) {
+                                    onlyMessage('修改成功！');
+                                    modalState.confirmLoading = false;
+                                    emit('handModal');
+                                    formRef.value?.resetFields();
+                                }
+                            })
+                            .catch((e: any) => {
+                                onlyMessage('修改失败', 'error');
                                 modalState.confirmLoading = false;
-                                emit('handModal')
-                                formRef.value?.resetFields();
-                            }
-                        }).catch((e: any) => {
-                            onlyMessage('修改失败', 'error');
-                            modalState.confirmLoading = false;
-                        });
-
+                            });
                     } else {
-                        onlyMessage('请必须选择产品或设备', 'error');
+                        onlyMessage('请必须选择产品和设备', 'error');
                         modalState.confirmLoading = false;
                     }
                 } else {
-                    onlyMessage('请必须选择产品或设备', 'error');
+                    onlyMessage('请必须选择产品和设备', 'error');
                     modalState.confirmLoading = false;
                 }
             }
         });
     },
     cancel() {
-        emit('handModal')
-        productState.selectedRowKeys = []
-        myState.selectedRowKeys = []
+        emit('handModal');
+        productState.selectedRowKeys = [];
+        myState.selectedRowKeys = [];
         formRef.value.resetFields();
     },
 });
@@ -169,19 +224,19 @@ const props = defineProps({
             state: 'enabled',
         },
     },
-})
+});
 
-const myForm = ref<any>(props.form)
+const myForm = ref<any>(props.form);
 
 type Key = string | number;
 const productState = reactive<{
     selectedRowKeys: Key[];
     loading: boolean;
-    getCheckboxProps: () => { disabled: boolean; }
+    getCheckboxProps: () => { disabled: boolean };
 }>({
     selectedRowKeys: myForm.value.productId || [], //已选择项赋值
     loading: false,
-    getCheckboxProps: () => ({ disabled: false })
+    getCheckboxProps: () => ({ disabled: false }),
 });
 
 const myState = reactive<{
@@ -195,7 +250,7 @@ const myState = reactive<{
 const onProductSelectChange = (selectedRowKeys: Key[]) => {
     productState.selectedRowKeys = selectedRowKeys;
     myForm.value.productId = productState.selectedRowKeys;
-    myState.selectedRowKeys = []
+    myState.selectedRowKeys = [];
     myForm.value.deviceIds = myState.selectedRowKeys;
 };
 
@@ -254,7 +309,7 @@ const columnsAss = [
         key: 'name',
         ellipsis: true,
     },
-]
+];
 
 const columnsDevice = [
     {
@@ -282,7 +337,7 @@ const columnsDevice = [
         scopedSlots: true,
         ellipsis: true,
     },
-]
+];
 
 const pagination = {
     showTotal: (num: number, range: number[]) => {
@@ -298,21 +353,21 @@ const pagination = {
 
 const handleResize = () => {
     divWidth.value = window.innerWidth;
-}
+};
 
 watch(
     () => props.form,
     (newValue: any) => {
-        myForm.value = newValue
-        productState.selectedRowKeys = newValue.productId
-        myState.selectedRowKeys = newValue.deviceIds
+        myForm.value = newValue;
+        productState.selectedRowKeys = newValue.productId;
+        myState.selectedRowKeys = newValue.deviceIds;
         if (props.isAdd === 2) {
-            productState.getCheckboxProps = () => ({ disabled: true })
+            productState.getCheckboxProps = () => ({ disabled: true });
         } else {
-            productState.getCheckboxProps = () => ({ disabled: false })
+            productState.getCheckboxProps = () => ({ disabled: false });
         }
-    }
-)
+    },
+);
 
 watch(
     () => myForm.value.productId,
@@ -345,7 +400,6 @@ watch(
         }
     },
 );
-
 
 const emit = defineEmits(['handModal']);
 

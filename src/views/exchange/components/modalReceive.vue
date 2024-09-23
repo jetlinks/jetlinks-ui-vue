@@ -102,11 +102,11 @@ const modalState = reactive({
                             modalState.confirmLoading = false;
                         });
                     } else {
-                        onlyMessage('请必须选择产品或设备', 'error');
+                        onlyMessage('请必须选择产品和设备', 'error');
                         modalState.confirmLoading = false;
                     }
                 } else {
-                    onlyMessage('请必须选择产品或设备', 'error');
+                    onlyMessage('请必须选择产品和设备', 'error');
                     modalState.confirmLoading = false;
                 }
             } else {
@@ -125,11 +125,11 @@ const modalState = reactive({
                         });
 
                     } else {
-                        onlyMessage('请必须选择产品或设备', 'error');
+                        onlyMessage('请必须选择产品和设备', 'error');
                         modalState.confirmLoading = false;
                     }
                 } else {
-                    onlyMessage('请必须选择产品或设备', 'error');
+                    onlyMessage('请必须选择产品和设备', 'error');
                     modalState.confirmLoading = false;
                 }
             }
