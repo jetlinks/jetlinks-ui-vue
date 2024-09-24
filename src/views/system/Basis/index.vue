@@ -549,7 +549,7 @@ const uploader: uploaderType = {
     },
     // 浏览器页签格式校验
     beforeIconUpload: (file) => {
-        const typeBool = file.type.includes('x-icon');
+        const typeBool =  uploader.iconTypes.includes(file.type);
         const sizeBool = file.size / 1024 / 1024 < 1;
         if (!typeBool) {
             onlyMessage(`请上传ico格式的图片`, 'error');
