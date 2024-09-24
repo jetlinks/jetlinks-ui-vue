@@ -527,7 +527,7 @@ const uploader: uploaderType = {
     //     'image/pjpeg',
     // ],
     imageTypes: ['.jpg', '.png', '.jfif', '.pjp', '.pjpeg', '.jpeg'],
-    iconTypes: ['image/x-icon'],
+    iconTypes: ['image/x-icon', 'image/vnd.microsoft.icon'],
     // logo格式校验
     // beforeLogoUpload: ({ size, type }: File) => {
     beforeLogoUpload: (file: File) => {
