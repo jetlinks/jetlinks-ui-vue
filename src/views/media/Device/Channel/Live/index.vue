@@ -186,7 +186,7 @@ import Preset from './Preset.vue';
 import { useSystem } from '@/store/system';
 import { mediaConfigMap } from '../data';
 import { onlyMessage } from '@/utils/comm';
-import {closeAudio, openAudio} from "@/views/media/Device/Channel/Live/audio";
+import {closeAudio, openAudio} from "./audio";
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -267,10 +267,7 @@ const openWebrtc = () => {
     )
     showAudio.value = true
   } else {
-    closeAudio(
-      props.data.deviceId,
-      props.data.channelId,
-    )
+    closeAudio()
     volume.value = 0
     showAudio.value = false
   }

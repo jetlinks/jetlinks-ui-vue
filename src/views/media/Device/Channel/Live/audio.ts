@@ -1,65 +1,49 @@
 import mediaApi from '@/api/media/channel'
-import {getToken} from "@/utils/comm";
-import { fetchEventSource } from '@microsoft/fetch-event-source';
-import {TOKEN_KEY} from "@/utils/variable";
-
 
 let localStream: MediaStream | null
 let eventSource: any
 let volumeTimer: any
-
-const sendOffer = async (deviceId: string, channelId: string) => {
-
-    const url = mediaApi.broadcastPushUrl(deviceId, channelId)
-
-    // const eventSource = await fetchEventSource(url, {
-    //     onmessage(ev) {
-    //         console.log(ev.data);
-    //     },
-    //     headers: {
-    //         [TOKEN_KEY]: getToken(),
-    //     },
-    //     method: 'POST'
-    // });
-
-    const localPc = new RTCPeerConnection()
-
-    // const dc = localPc.createDataChannel("channel");
-    //
-    // dc.onmessage = (e) => console.log("Get Message：", e.data);
-
-
-    //
-    // // 添加RTC流
-    localStream?.getTracks().forEach((track) => {
-        localPc.addTrack(track)
-        console.log('addTrack', track)
-    })
-    //
-    // // 给当前RTC流设置监听事件(协议完成回调)
-    localPc.onicegatheringstatechange  = (event) => {
-        console.log('localPc:', eventSource, event, localPc.localDescription)
-        // 回调时，将自己candidate发给对方，对方可以直接addIceCandidate(candidate)添加可以获取流
-        // if (localPc.iceGatheringState === "complete" && eventSource) {
-        //     eventSource.send(localPc.localDescription)
-        //     mediaApi.broadcastStart(deviceId, channelId)
-        // }
-    }
-
-    // // 发起方：创建offer(成功将offer的设置当前流，并发送给接收方)
-    let offer = await localPc.createOffer()
-    // // 建立连接，此时就会触发onicecandidate，然后注册ontrack
-    await localPc.setLocalDescription(offer)
-}
-
+let localPc: RTCPeerConnection | null
 export const openAudio = (deviceId: string, channelId: string, options: { volume: (value: number) => void }) => {
+    localPc = new RTCPeerConnection()
+    localPc.createDataChannel('chat');
+
     navigator.mediaDevices.getUserMedia({
         audio: true
     }).then(async stream => {
         console.log(stream)
+        let audioTransceiver
         localStream = stream
-        //  开始推流
-        await sendOffer(deviceId, channelId)
+        const AudioTransceiverInit: any = {
+            direction: 'sendrecv',
+            sendEncodings:[]
+        };
+
+        if (stream.getAudioTracks().length > 0) {
+            audioTransceiver = localPc.addTransceiver(stream.getAudioTracks()[0],
+                AudioTransceiverInit);
+        } else {
+            AudioTransceiverInit.direction = 'recvonly';
+            audioTransceiver = localPc.addTransceiver('audio', AudioTransceiverInit);
+        }
+
+        //  创建Offer，开始推流
+        localPc.createOffer().then((desc)=>{
+            localPc.setLocalDescription(desc).then(() => {
+                mediaApi.broadcastPush(deviceId, channelId, desc.sdp).then(resp => {
+                    let anwser: any = {};
+                    anwser.sdp = resp.sdp;
+                    anwser.type = 'answer';
+
+                    localPc.setRemoteDescription(anwser).then(()=>{
+                        setTimeout(() => {
+                            mediaApi.broadcastStart(deviceId, channelId)
+                        }, 30)
+                    })
+
+                })
+            });
+        })
 
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const context = new AudioContext();
@@ -81,7 +65,6 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
             analyser.getByteFrequencyData(array);
             // 计算平均音量（可以根据需要调整）
             const volume = Math.sqrt(array.reduce((sum, value) => sum + value * value, 0) / array.length);
-            console.log('updateVolume', volume)
 
             if (options.volume) {
                 options.volume(volume)
@@ -95,9 +78,15 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
         }
         volumeTimer = setInterval(updateVolume, 50);
     })
+
 }
 
 export const closeAudio = () => {
+    if (localPc) {
+        localPc.close()
+        localPc = null
+    }
+
     if (localStream) {
         localStream.getTracks().forEach(function(track) {
             track.stop(); // 停止所有的轨道，从而关闭麦克风
@@ -105,10 +94,9 @@ export const closeAudio = () => {
             if (eventSource) {
                 eventSource.onclose()
             }
-
-            window.clearInterval(volumeTimer)
-            volumeTimer = null
         });
+        window.clearInterval(volumeTimer)
+        volumeTimer = null
         localStream = null; // 重置mediaStream
     }
 }
