@@ -111,8 +111,8 @@ const defaultParams = computed(() => {
         terms: [
           {
             column: 'productId$product-info',
-            value: 'accessProvider is official-edge-gateway',
-          },
+            value: 'deviceType is gateway'
+          }
         ],
         type: 'and',
       },

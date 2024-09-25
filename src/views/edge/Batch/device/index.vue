@@ -18,7 +18,15 @@
         </div>
       </div>
     </template>
-    <DeviceSelect v-if="type === 'device'" @back="onBack"/>
+    <div v-if="type">
+      <div class="header">
+        <a-button @click="onBack">
+          <template #icon><AIcon type="LeftOutlined" /></template>
+          返回
+        </a-button>
+      </div>
+      <DeviceSelect v-if="type === 'device'"/>
+    </div>
   </div>
 </template>
 
@@ -58,6 +66,10 @@ const typeSelect = (e) => {
       cursor: pointer;
       padding: 36px 24px;
     }
+  }
+
+  .header {
+    margin-bottom: 12px;
   }
 }
 </style>

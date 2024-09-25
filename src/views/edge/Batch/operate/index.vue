@@ -1,9 +1,9 @@
 <template>
   <div class="operate-warp">
-    <div class="operate-item" v-for="item in options" @click="showTask(item.value)">
+    <div class="operate-item" v-for="item in BatchOperateOptions" @click="showTask(item.value)">
       <div class="icon"></div>
       <div class="content">
-        <div class="content-title"> {{ item.title}}</div>
+        <div class="content-title"> {{ item.label }}</div>
         <div class="content-tip">
           {{item.tip}}
         </div>
@@ -14,29 +14,9 @@
 </template>
 
 <script setup name="BatchOperate">
+import { BatchOperateOptions } from '../util'
 
 const emit = defineEmits(['selected'])
-
-const options = [
-  {
-    icon: '',
-    title: '安装插件',
-    tip: '批量安装插件至边缘端',
-    value: 'plugin'
-  },
-  {
-    icon: '',
-    title: '远程升级',
-    tip: '批量升级边缘网关固件',
-    value: 'remote'
-  },
-  {
-    icon: '',
-    title: '绑定子设备',
-    tip: '批量绑定云端子设备',
-    value: 'device'
-  },
-]
 
 const showTask = (type) => {
   emit('selected', {type})
