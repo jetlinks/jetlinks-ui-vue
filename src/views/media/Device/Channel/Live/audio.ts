@@ -20,22 +20,22 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
         };
 
         if (stream.getAudioTracks().length > 0) {
-            audioTransceiver = localPc.addTransceiver(stream.getAudioTracks()[0],
+            audioTransceiver = localPc!.addTransceiver(stream.getAudioTracks()[0],
                 AudioTransceiverInit);
         } else {
             AudioTransceiverInit.direction = 'recvonly';
-            audioTransceiver = localPc.addTransceiver('audio', AudioTransceiverInit);
+            audioTransceiver = localPc!.addTransceiver('audio', AudioTransceiverInit);
         }
 
         //  创建Offer，开始推流
-        localPc.createOffer().then((desc)=>{
-            localPc.setLocalDescription(desc).then(() => {
+        localPc!.createOffer().then((desc)=>{
+            localPc!.setLocalDescription(desc).then(() => {
                 mediaApi.broadcastPush(deviceId, channelId, desc.sdp).then(resp => {
                     let anwser: any = {};
                     anwser.sdp = resp.sdp;
                     anwser.type = 'answer';
 
-                    localPc.setRemoteDescription(anwser).then(()=>{
+                    localPc!.setRemoteDescription(anwser).then(()=>{
                         setTimeout(() => {
                             mediaApi.broadcastStart(deviceId, channelId)
                         }, 30)
