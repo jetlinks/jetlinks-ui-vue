@@ -14,7 +14,9 @@ export interface ConfigurationType {
     instanceNumber?:number
     overIp: {
         localBindAddress: string,
-        port: number
+        port: number,
+        subnetAddress: string,
+        networkPrefixLength:number,
     }
 }
 
