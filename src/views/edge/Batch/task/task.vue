@@ -3,6 +3,7 @@
     visible
     title="批量操作"
     width="90%"
+    okText="新增任务"
     @cancel="onCancel"
     @ok="onOk"
   >
@@ -14,10 +15,10 @@
           :model="formModel"
           :rules="rules"
         >
-          <a-form-item label="名称" required name="name">
+          <a-form-item label="名称" name="name">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
-          <a-form-item required>
+          <a-form-item name="gateway">
             <template #label>
               涉及网关
               <div class="form-label-extra gateway-list-label">
@@ -34,11 +35,7 @@
           <a-form-item label="任务类型" name="type" required>
             <CheckButton
               v-model:value="formModel.type"
-              :options="[
-                {label: '插件', value: 'plugin'},
-                {label: '远程升级', value: 'remote'},
-                {label: '绑定子设备', value: 'device'},
-              ]"
+              :options="BatchOperateOptions"
             />
           </a-form-item>
           <a-form-item label="说明" name="description">
@@ -67,17 +64,24 @@ import GatewaySelect from './Gateway.vue'
 import GatewayModal from './GatewayModal.vue'
 import ContentPlugin from './Plugin/index.vue'
 import ContentRemote from './Remote/index.vue'
+import { BatchOperateOptions } from '../util'
 
 const props = defineProps({
   value: {
     type: Object,
     default: () => ({})
+  },
+  list: {
+    type: Array,
+    default: () => []
   }
 })
 
 const emit = defineEmits(['cancel', 'ok'])
 
 const formRef = ref()
+const pluginRef = ref()
+const remoteRef = ref()
 const formModel = reactive({
   name: '',
   gateway: '',
@@ -85,7 +89,7 @@ const formModel = reactive({
   description: undefined
 })
 
-const gatewayList = ref([])
+const gatewayList = ref(props.list || [])
 
 const gatewayData = reactive({
   visible: false,
@@ -94,8 +98,8 @@ const gatewayData = reactive({
 
 const rules = {
   name: [
-    { required: true, message: '请输入名称', trigger: 'blur' },
-    { max: 64, message: '最多可输入64位字符', trigger: 'change' },
+    { required: true, message: '请输入名称' },
+    { max: 64, message: '最多可输入64位字符' },
   ],
   type: [
     {
@@ -109,6 +113,16 @@ const rules = {
       },
     },
   ],
+  gateway: [{
+    required: true,
+    validator: (_rule, value) => {
+      if (!value.length) {
+        return Promise.reject('请选择涉及网关');
+      } else {
+        return Promise.resolve();
+      }
+    },
+  }],
   description: [
     { max: 200, message: '最多可输入200位字符', trigger: 'blur' },
   ],
@@ -139,8 +153,17 @@ const onCancel = () => {
   emit('cancel')
 }
 
-const onOk = () => {
-  emit('ok')
+const onOk = async () => {
+  let validateStatus = false
+  const formResp = await formRef.value.validate()
+
+  if (!formResp) {
+
+  }
+
+  if (validateStatus) {
+    emit('ok')
+  }
 }
 
 const init = () => {

@@ -6,7 +6,7 @@
           <Device
             v-model:value="deviceList"
           />
-          <Operate @selected="openTask" />
+          <Operate @selected="operateSelect" />
         </div>
         <div class="bottom">
           <Log />
@@ -15,6 +15,7 @@
       <Task
         v-if="visible"
         :value="taskData"
+        :list="deviceList"
         @cancel="onCancel"
       />
     </FullPage>
@@ -26,7 +27,7 @@ import Device from './device/index.vue'
 import Operate from './operate/index.vue'
 import Log from './log/index.vue'
 import Task from './task'
-import {ContentName} from "./util";
+import { ContextName} from "./util";
 
 const visible = ref(false)
 const deviceList = ref([])
@@ -45,8 +46,17 @@ const openTask = (data) => {
   visible.value = true
 }
 
-provide(ContentName, {
-  openTask: openTask
+const operateSelect = (data) => {
+  openTask({
+    ...data,
+  })
+}
+
+provide(ContextName, {
+  openTask: openTask,
+  addGateWay: (data) => {
+    deviceList.value = data
+  }
 })
 
 </script>
@@ -58,7 +68,7 @@ provide(ContentName, {
   .top {
     display: flex;
     gap: 24px;
-    height: 400px;
+    height: 460px;
   }
 }
 </style>
