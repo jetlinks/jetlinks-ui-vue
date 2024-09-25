@@ -38,6 +38,9 @@ watch(() => JSON.stringify(route.query || {}), () => {
   }
 }, { immediate: true })
 
+window.addEventListener('vite:preloadError', (event) => {
+  console.error('资源版本不对，请清除浏览器缓存')
+})
 
 ConfigProvider.config({
   theme: {

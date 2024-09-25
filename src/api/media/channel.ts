@@ -69,5 +69,16 @@ export default {
     playbackStart: (recordId: string) => server.get(`/media/record/${recordId}.mp4`),
 
     // 设备预置位相关接口
-    opFunction: (deviceId: string, functionId: string, data?: any) => server.post(`/device/invoked/${deviceId}/function/${functionId}`, data)
+    opFunction: (deviceId: string, functionId: string, data?: any) => server.post(`/device/invoked/${deviceId}/function/${functionId}`, data),
+
+    broadcastPushUrl: (deviceId: string, channelId: string) => `${BASE_API_PATH}/media/device/${deviceId}/${channelId}/broadcast/_push`,
+    broadcastPush: (deviceId: string, channelId: string, data: any) => server.post(`/media/device/${deviceId}/${channelId}/broadcast/_push`, data, {}, {
+        responseType: 'json',
+        headers:{
+            'Content-Type':'text/plain;charset=utf-8'
+        }}),
+
+    broadcastStart: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/broadcast/_start`, {}),
+    broadcastStop: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/broadcast/_stop`, {}),
+
 }
