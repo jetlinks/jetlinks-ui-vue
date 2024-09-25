@@ -173,11 +173,15 @@
                 />
             </j-form-item>
             <template v-if="formData.provider === 'BACNetIp'">
-                <j-form-item label="BACNet实例号" :name="['configuration', 'instanceNumber']" :rules="{
-                    required: true,
-                    trigger:'blur',
-                    validator: validate,
-                }">
+                <j-form-item
+                    label="BACNet实例号"
+                    :name="['configuration', 'instanceNumber']"
+                    :rules="{
+                        required: true,
+                        trigger: 'blur',
+                        validator: validate,
+                    }"
+                >
                     <j-input-number
                         style="width: 100%"
                         v-model:value="formData.configuration.instanceNumber"
@@ -192,20 +196,26 @@
                     :name="['configuration', 'overIp', 'localBindAddress']"
                     :rules="{
                         required: true,
-                        trigger:'blur',
-                        message: '请选择网卡'
+                        trigger: 'blur',
+                        message: '请选择网卡',
                     }"
                 >
                     <j-input
-                        v-model:value="formData.configuration.overIp.localBindAddress"
+                        v-model:value="
+                            formData.configuration.overIp.localBindAddress
+                        "
                     >
                     </j-input>
                 </j-form-item>
-                <j-form-item label="广播端口" :name="['configuration', 'overIp', 'port']" :rules="{
-                    required: true,
-                    trigger: 'blur',
-                    message: '请输入广播端口'
-                }">
+                <j-form-item
+                    label="广播端口"
+                    :name="['configuration', 'overIp', 'port']"
+                    :rules="{
+                        required: true,
+                        trigger: 'blur',
+                        message: '请输入广播端口',
+                    }"
+                >
                     <j-input-number
                         v-model:value="formData.configuration.overIp.port"
                         style="width: 100%"
@@ -213,6 +223,37 @@
                         :max="65535"
                         :precision="0"
                         placeholder="请输入广播端口"
+                    ></j-input-number>
+                </j-form-item>
+                <j-form-item
+                    label="子网地址"
+                    :name="['configuration', 'overIp', 'subnetAddress']"
+                    :rules="{
+                        trigger: 'change',
+                        validator: validateSubnetAddress,
+                    }"
+                >
+                    <j-input
+                        v-model:value="
+                            formData.configuration.overIp.subnetAddress
+                        "
+                        style="width: 100%"
+                        placeholder="请输入子网地址"
+                    ></j-input>
+                </j-form-item>
+                <j-form-item
+                    label="网络前缀长度"
+                    :name="['configuration', 'overIp', 'networkPrefixLength']"
+                >
+                    <j-input-number
+                        v-model:value="
+                            formData.configuration.overIp.networkPrefixLength
+                        "
+                        style="width: 100%"
+                        :min="1"
+                        :max="65535"
+                        :precision="0"
+                        placeholder="请输入网络前缀长度"
                     ></j-input-number>
                 </j-form-item>
             </template>
@@ -261,6 +302,7 @@ import type { FormDataType } from '../type.d';
 import { cloneDeep, isArray } from 'lodash-es';
 import { protocolList } from '@/utils/consts';
 import GateWayFormItem from '@/views/DataCollect/Channel/Save/GateWayFormItem.vue';
+import { testIpv4_6 } from '@/utils/validate';
 
 const props = defineProps({
     data: {
@@ -312,16 +354,23 @@ const handleOk = async () => {
 };
 
 const validate = async (_rule: any, value: string) => {
-  if (!value) {
-    return Promise.reject('请输入BACnet实例号');
-  } else {
-    const reg = new RegExp(/^[0-9]*$/)
-    if(!reg.test(value) || parseInt(value) < 0) {
-      return Promise.reject('请输入正确的BACnet实例号');
+    if (!value) {
+        return Promise.reject('请输入BACnet实例号');
+    } else {
+        const reg = new RegExp(/^[0-9]*$/);
+        if (!reg.test(value) || parseInt(value) < 0) {
+            return Promise.reject('请输入正确的BACnet实例号');
+        }
+        return Promise.resolve();
     }
-    return Promise.resolve()
-  }
-}
+};
+
+const validateSubnetAddress = async (_rule: any, value: string) => {
+    if (!testIpv4_6(value)) {
+        return Promise.reject('请输入正确的子网地址');
+    }
+    return Promise.resolve();
+};
 
 const handleCancel = () => {
     emit('change', false);
