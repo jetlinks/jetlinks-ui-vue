@@ -51,6 +51,7 @@
       <div class="task-content">
         <ContentPlugin v-if="formModel.type === 'plugin'" :options="gatewayList" />
         <ContentRemote v-else-if="formModel.type === 'remote'" :options="gatewayList" />
+        <ContentChildren v-else-if="formModel.type === 'device'"  :options="gatewayList" @change="onChildrenChange"/>
       </div>
       <GatewayModal
         v-if="gatewayData.visible"
@@ -67,6 +68,7 @@ import GatewaySelect from './Gateway.vue'
 import GatewayModal from './GatewayModal.vue'
 import ContentPlugin from './Plugin/index.vue'
 import ContentRemote from './Remote/index.vue'
+import ContentChildren from './Children/index.vue'
 
 const props = defineProps({
   value: {
@@ -155,6 +157,10 @@ const init = () => {
 }
 
 init()
+
+const onChildrenChange = (e)=>{
+  console.log('eeeee====',e);
+}
 
 </script>
 
