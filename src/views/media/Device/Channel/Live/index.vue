@@ -111,6 +111,7 @@
 <!--                </j-radio-group>-->
                 <RadioButton
                   v-model:value="mediaType"
+                  :columns="4"
                   :options="[
                     { label: 'RTC', value: 'rtc'},
                     { label: 'MP4', value: 'mp4'},
