@@ -8,12 +8,9 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
     localPc = new RTCPeerConnection()
     localPc.createDataChannel('chat');
 
-    const getUserMedia = navigator.mediaDevices?.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
-
-    getUserMedia({
+    navigator.mediaDevices.getUserMedia({
         audio: true
     }).then(async stream => {
-        console.log(stream)
         let audioTransceiver
         localStream = stream
         const AudioTransceiverInit: any = {
