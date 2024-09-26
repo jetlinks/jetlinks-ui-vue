@@ -112,6 +112,7 @@
                 <RadioButton
                   v-model:value="mediaType"
                   :options="[
+                    { label: 'RTC', value: 'rtc'},
                     { label: 'MP4', value: 'mp4'},
                     { label: 'FLV', value: 'flv'},
                     { label: 'HLS', value: 'm3u8'},
@@ -219,7 +220,7 @@ const player = ref();
 const url = ref('');
 const showAudio = ref(false);
 // 视频类型
-const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('mp4');
+const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('rtc');
 const showTool = ref(false);
 const showToolLock = ref(false);
 
