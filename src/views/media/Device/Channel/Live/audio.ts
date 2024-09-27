@@ -11,7 +11,6 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
     navigator.mediaDevices.getUserMedia({
         audio: true
     }).then(async stream => {
-        console.log(stream)
         let audioTransceiver
         localStream = stream
         const AudioTransceiverInit: any = {
