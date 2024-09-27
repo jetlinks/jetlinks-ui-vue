@@ -4,9 +4,39 @@ let localStream: MediaStream | null
 let eventSource: any
 let volumeTimer: any
 let localPc: RTCPeerConnection | null
-export const openAudio = (deviceId: string, channelId: string, options: { volume: (value: number) => void }) => {
+let startCount = 0
+let _onTrack = []
+
+const videoStart = (deviceId: string, channelId: string) => {
+    setTimeout(() => {
+        mediaApi.broadcastStart(deviceId, channelId, { hideError: true }).catch((err) => {
+            if (startCount <= 10) {
+                videoStart(deviceId, channelId)
+                startCount += 1
+            }
+        }).then(() => {
+            startCount = 0
+        })
+    }, 300)
+
+}
+
+export const createRec = () => {
     localPc = new RTCPeerConnection()
-    localPc.createDataChannel('chat');
+}
+
+export const rtcStream = (url) => {
+    createRec()
+    _onTrack = []
+
+    localPc!.ontrack = (e) => {
+        _onTrack.push(e.track)
+
+    }
+}
+
+export const openAudio = (deviceId: string, channelId: string, options: { volume: (value: number) => void }) => {
+    createRec()
 
     navigator.mediaDevices.getUserMedia({
         audio: true
@@ -35,9 +65,7 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
                     anwser.type = 'answer';
 
                     localPc!.setRemoteDescription(anwser).then(()=>{
-                        setTimeout(() => {
-                            mediaApi.broadcastStart(deviceId, channelId)
-                        }, 30)
+                        videoStart(deviceId, channelId)
                     })
 
                 })
@@ -77,7 +105,6 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
         }
         volumeTimer = setInterval(updateVolume, 50);
     })
-
 }
 
 export const closeAudio = () => {

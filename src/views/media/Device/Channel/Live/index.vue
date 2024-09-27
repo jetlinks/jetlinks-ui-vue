@@ -188,7 +188,7 @@ import Preset from './Preset.vue';
 import { useSystem } from '@/store/system';
 import { mediaConfigMap } from '../data';
 import { onlyMessage } from '@/utils/comm';
-import {closeAudio, openAudio} from "./audio";
+import {closeAudio, createRec, openAudio, rtcStream} from "./audio";
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -304,11 +304,16 @@ const mediaToolClass = computed(() => {
  * 媒体开始播放
  */
 const mediaStart = () => {
-    url.value = channelApi.ptzStart(
-        props.data.deviceId,
-        props.data.channelId,
-        mediaType.value,
-    );
+  const _url = channelApi.ptzStart(
+    props.data.deviceId,
+    props.data.channelId,
+    mediaType.value,
+  );
+  if (mediaType.value !== 'rtc') {
+    url.value = _url
+  } else {
+    rtcStream(_url)
+  }
 };
 
 // 录像状态

@@ -78,7 +78,7 @@ export default {
             'Content-Type':'text/plain;charset=utf-8'
         }}),
 
-    broadcastStart: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/broadcast/_start`, {}),
+    broadcastStart: (deviceId: string, channelId: string, extra: any) => server.post(`/media/device/${deviceId}/${channelId}/broadcast/_start`, {}, {}, extra),
     broadcastStop: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/broadcast/_stop`, {}),
 
 }
