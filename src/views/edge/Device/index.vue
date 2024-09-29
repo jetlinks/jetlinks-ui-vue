@@ -214,7 +214,7 @@ import { queryGatewayList, queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage, onlyMessage } from '@/utils/comm';
+import {getImage, getToken, onlyMessage} from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
 import { restPassword } from '@/api/edge/device';
@@ -468,9 +468,8 @@ const getActions = (
             },
             icon: 'ControlOutlined',
             onClick: () => {
-                menuStory.jumpPage('edge/Device/Remote', {
-                    id: data.id,
-                });
+              const url = `${window.location.origin + window.location.pathname}edge-gateway/#/?terminal=cloud&thingType=device&thingId=${data.id}`
+              window.open(url)
             },
         },
         {
