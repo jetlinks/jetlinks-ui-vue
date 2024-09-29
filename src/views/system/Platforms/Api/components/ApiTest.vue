@@ -5,7 +5,7 @@
             <div class="input">
                 <InputCard :value="props.selectApi.method" />
                 <j-input :value="props.selectApi?.url" disabled />
-                <span class="send" @click="send">发送</span>
+                <j-button type="primary"  @click="send" :loading="loading">发送</j-button>
             </div>
         </div>
 
@@ -107,14 +107,31 @@
                         <AIcon type="PlusOutlined" />新增
                     </j-button>
                 </div>
-                <j-monaco-editor
+                <a-select v-model:value="bodyType" @change="handleChangeBodyType">
+                    <a-select-option value="json">Json</a-select-option>
+                    <a-select-option value="text">Text</a-select-option>
+                </a-select>
+                <template
                     v-if="showRequestBody"
-                    ref="editorRef"
-                    language="json"
-                    style="height: 100% ; min-height: 200px;"
-                    theme="vs"
-                    v-model:modelValue="requestBody.code"
-                />
+                >
+                    <j-monaco-editor
+                        v-if="bodyType === 'json'"
+                        ref="editorRef"
+                        language="json"
+                        style="height: 100% ; min-height: 200px;"
+                        theme="vs"
+                        v-model:modelValue="requestBody.code"
+                    />
+                    <j-monaco-editor
+                        v-else
+                        ref="editorRef"
+                        language="text"
+                        style="height: 100% ; min-height: 200px;"
+                        theme="vs"
+                        v-model:modelValue="requestBody.code"
+                    />
+                </template>
+
             </div>
         </div>
         <div class="api-card">
@@ -145,6 +162,8 @@ const editorRef = ref();
 const formRef = ref<FormInstance>();
 const method = ref()
 const showRequestBody = ref(!!props.selectApi?.requestBody)
+const bodyType = ref('text');
+const loading = ref(false);
 const requestBody = reactive({
     tableColumns: [
         {
@@ -208,6 +227,11 @@ const init = () => {
 };
 init();
 
+const handleChangeBodyType = () => {
+    console.log(editorRef.value)
+    editorRef.value?.setModelLanguage(editorRef.value.getModel(), bodyType.value);
+}
+
 const send = () => {
     if (paramsTable.value.length)
         formRef.value &&
@@ -240,16 +264,22 @@ const _send = () => {
             ...urlParams,
         };
     }else{
-        params = JSON.parse(requestBody.code || '{}')
+        if(bodyType.value == 'text') {
+            params = requestBody.code
+        } else {
+            params = JSON.parse(requestBody.code || '{}')
+        }
     }
-
-    server[methodObj[methodName]](url, params).then((resp: any) => {
+    loading.value = true;
+    server[methodObj[methodName]](url, params, {}, bodyType.value === 'text' ? {headers: {'Content-Type': 'text/plain'}} : {}).then((resp: any) => {
         // 如果用户没填写参数且有body的情况下，给用户展示请求示例
         if (Object.keys(params).length === 0 && refStr.value) {
             requestBody.code = JSON.stringify(getDefaultParams());
             editorRef.value?.editorFormat();
         }
         responsesContent.value = resp;
+    }).finally(() => {
+        loading.value = false;
     });
 };
 

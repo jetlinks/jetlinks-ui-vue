@@ -509,8 +509,7 @@ const termAdd = () => {
     formModel.value.branches?.[props.branchName]?.when?.[
         props.whenName
     ]?.terms?.push(termsData);
-
-    formModel.value.options!.when[props.branchName].terms[props.whenName].terms.push(['', '', '', '并且']);
+    formModel.value.options!.when[props.branchName / 2].terms[props.whenName].terms.push(['', '', '', '并且']);
 };
 
 const onDelete = () => {

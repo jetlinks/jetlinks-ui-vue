@@ -125,6 +125,7 @@ import { ComponentInternalInstance } from 'vue';
 import { useInstanceStore } from '@/store/instance';
 import { execute } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
+import {isNil} from "lodash-es";
 
 const instanceStore = useInstanceStore();
 const route = useRoute();
@@ -214,7 +215,7 @@ const handleExecute = async (func: any) => {
             func.table.forEach((item: any) => {
                 if (item.type === 'object' && item.value) {
                     obj[item.id] = JSON.parse(item.value);
-                } else {
+                } else if (!isNil(item.value)) {
                     obj[item.id] = item.value;
                 }
             });

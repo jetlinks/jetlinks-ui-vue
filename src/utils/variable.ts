@@ -1,4 +1,5 @@
 export const BASE_API_PATH = import.meta.env.VITE_APP_BASE_API
+// export const BASE_API_PATH = 'https://demo.jetlinks.cn/api'
 
 export const TOKEN_KEY = 'X-Access-Token'
 export const TOKEN_KEY_URL = ':X_Access_Token'
