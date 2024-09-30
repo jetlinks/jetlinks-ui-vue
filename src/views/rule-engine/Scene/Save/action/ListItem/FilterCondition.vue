@@ -494,7 +494,7 @@ const onDelete = () => {
 
 const getAlarmOptions = () => {
   const actionId = formModel.value.branches![props.branchName].then[props.thenName]
-    .actions[props.name].actionId
+    .actions[props.actionName]?.actionId
   const branchId = formModel.value.branches![props.branchName].branchId
   const _id = formModel.value.id
   queryAlarmList({
@@ -528,7 +528,7 @@ const getAlarmOptions = () => {
 }
 const subscribe = () => {
   const actionId = formModel.value.branches![props.branchName].then[props.thenName]
-    .actions[props.name].actionId
+    .actions[props.actionName].actionId
   const _key = actionId || formModel.value.branches![props.branchName].branchId
   EventEmitter.subscribe([`${_key}_alarm`], () => {
     console.log('subscribe')
