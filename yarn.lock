@@ -1334,6 +1334,14 @@
   resolved "https://registry.npmmirror.com/@vueuse/metadata/-/metadata-9.13.0.tgz#bc25a6cdad1b1a93c36ce30191124da6520539ff"
   integrity sha512-gdU7TKNAUVlXXLbaF+ZCfte8BjRJQWPCa2J55+7/h+yDtzw3vOoGQDRXzI6pyKyo6bXFT5/QoPE4hAknExjRLQ==
 
+"@vueuse/router@^11.1.0":
+  version "11.1.0"
+  resolved "https://registry.npmmirror.com/@vueuse/router/-/router-11.1.0.tgz#5be8e547b22691e3b94fc3b57cec13abbf169c0d"
+  integrity sha512-OjTNIOzX5jD1HDzmDApMke2QsCZ+gWKaydfndKJ3j9ttn41Pr11cQbSY6ZBp+bNjctAR+jhQBV/DGtL3iKpuHg==
+  dependencies:
+    "@vueuse/shared" "11.1.0"
+    vue-demi ">=0.14.10"
+
 "@vueuse/router@^9.13.0":
   version "9.13.0"
   resolved "https://registry.npmjs.org/@vueuse/router/-/router-9.13.0.tgz"
@@ -1341,6 +1349,13 @@
   dependencies:
     "@vueuse/shared" "9.13.0"
     vue-demi "*"
+
+"@vueuse/shared@11.1.0":
+  version "11.1.0"
+  resolved "https://registry.npmmirror.com/@vueuse/shared/-/shared-11.1.0.tgz#3bfc3aa555c2a456c21945ec7f127d71938d12e8"
+  integrity sha512-YUtIpY122q7osj+zsNMFAfMTubGz0sn5QzE5gPzAIiCmtt2ha3uQUY1+JPyL4gRCTsLPX82Y9brNbo/aqlA91w==
+  dependencies:
+    vue-demi ">=0.14.10"
 
 "@vueuse/shared@7.7.1":
   version "7.7.1"
@@ -5944,7 +5959,7 @@ vue-cropper@^1.0.9:
   resolved "https://registry.npmmirror.com/vue-cropper/-/vue-cropper-1.1.4.tgz#8c00104f42587514a48f043e5854b43ab99daf18"
   integrity sha512-5m98vBsCEI9rbS4JxELxXidtAui3qNyTHLHg67Qbn7g8cg+E6LcnC+hh3SM/p94x6mFh6KRxT1ttnta+wCYqWA==
 
-vue-demi@*, vue-demi@^0.14.10:
+vue-demi@*, vue-demi@>=0.14.10, vue-demi@^0.14.10:
   version "0.14.10"
   resolved "https://registry.npmmirror.com/vue-demi/-/vue-demi-0.14.10.tgz#afc78de3d6f9e11bf78c55e8510ee12814522f04"
   integrity sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==
