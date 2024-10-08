@@ -51,6 +51,7 @@ import { defineExpose, provide } from 'vue'
 import MetricValueItem from './ValueItem.vue'
 import BooleanSelect from "@/views/device/components/Metadata/Base/components/Properties/Metrics/BooleanSelect.vue";
 import { EditTable, EditTableFormItem } from '@/components/Metadata/Table'
+import {isNil} from "lodash-es";
 
 const props = defineProps({
   value: {
@@ -134,7 +135,7 @@ const columns: any = [
       rules: [
         {
           asyncValidator(rule:any,value: any) {
-            if (!value || (Array.isArray(value) && value.some(item => !item))) {
+            if (isNil(value) || (Array.isArray(value) && value.some(item => !item))) {
               return Promise.reject('请配置指标')
             }
             return Promise.resolve()

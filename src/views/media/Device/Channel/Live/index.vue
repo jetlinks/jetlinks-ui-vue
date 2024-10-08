@@ -14,23 +14,7 @@
                 ><AIcon type="CloseOutlined"
             /></j-button>
         </template>
-        <div class="media-live-tool">
-            <j-radio-group
-                v-model:value="mediaType"
-                button-style="solid"
-                @change="mediaStart"
-            >
-                <j-radio-button value="mp4">MP4</j-radio-button>
-                <j-radio-button value="flv">FLV</j-radio-button>
-                <j-radio-button value="m3u8">HLS</j-radio-button>
-                <!-- <j-radio-button value='rtc'>RTC</j-radio-button> -->
-            </j-radio-group>
-            <!--            <div class="media-live-share" v-if="type !== 'share'">-->
-            <!--                <j-button type="link" @click="onShare"-->
-            <!--                    ><AIcon type="ShareAltOutlined" />分享视频</j-button-->
-            <!--                >-->
-            <!--            </div>-->
-        </div>
+
         <div class="media-live">
             <div
                 class="media-live-video"
@@ -101,38 +85,86 @@
                 />
             </div>
             <div class="media-live-actions" v-if="_type && showActions">
+              <div class="title">
+                预置点位
+              </div>
+              <div class="media-preset">
+                <Preset
+                  v-if="(data.ptzType.value === 0 || data.ptzType.value === 1) && route.query.type !== 'onvif'"
+                  :data="data"
+                  @refresh="onRefresh"
+                />
+              </div>
+              <div class="title">
+                视频格式
+              </div>
+              <div class="media-live-tool">
+<!--                <j-radio-group-->
+<!--                  v-model:value="mediaType"-->
+<!--                  button-style="solid"-->
+<!--                  @change="mediaStart"-->
+<!--                >-->
+<!--                  <j-radio-button value="mp4">MP4</j-radio-button>-->
+<!--                  <j-radio-button value="flv">FLV</j-radio-button>-->
+<!--                  <j-radio-button value="m3u8">HLS</j-radio-button>-->
+<!--                  &lt;!&ndash; <j-radio-button value='rtc'>RTC</j-radio-button> &ndash;&gt;-->
+<!--                </j-radio-group>-->
+                <RadioButton
+                  v-model:value="mediaType"
+                  :columns="4"
+                  :options="[
+                    { label: 'RTC', value: 'rtc'},
+                    { label: 'MP4', value: 'mp4'},
+                    { label: 'FLV', value: 'flv'},
+                    { label: 'HLS', value: 'm3u8'},
+                  ]"
+                  @select="mediaStart"
+                />
+
+              </div>
+              <div class="title">
+                转速控制
+              </div>
+              <div class="media-live-tool">
+                <RadioButton
+                  v-model:value="speed"
+                  :options="speedList"
+                  @select="onMenuChange"
+                />
+              </div>
                 <div class="actions-tool">
                     <MediaTool
                         @onMouseDown="handleMouseDown"
                         @onMouseUp="handleMouseUp"
                     >
                         <template #center>
-                            <div class="center">
-                                <div>转速控制</div>
-                                <j-dropdown>
-                                    <span
-                                        >{{ _speed }}<AIcon type="DownOutlined"
-                                    /></span>
-                                    <template #overlay>
-                                        <j-menu @click="onMenuChange">
-                                            <j-menu-item
-                                                :key="item.value"
-                                                v-for="item in speedList"
-                                            >
-                                                {{ item.label }}
-                                            </j-menu-item>
-                                        </j-menu>
-                                    </template>
-                                </j-dropdown>
+                            <div
+                              :class="{ 'center': true, 'center-active': showAudio}"
+                              @click="openWebrtc"
+                            >
+                              <div class="center-volume" :style="{ height: `${volume}%`}"> </div>
+                              <AIcon :type=" showAudio ? 'AudioOutlined' : 'AudioMutedOutlined' "/>
+<!--                                <div>转速控制</div>-->
+<!--                                <j-dropdown>-->
+<!--                                    <span-->
+<!--                                        >{{ _speed }}<AIcon type="DownOutlined"-->
+<!--                                    /></span>-->
+<!--                                    <template #overlay>-->
+<!--                                        <j-menu @click="onMenuChange">-->
+<!--                                            <j-menu-item-->
+<!--                                                :key="item.value"-->
+<!--                                                v-for="item in speedList"-->
+<!--                                            >-->
+<!--                                                {{ item.label }}-->
+<!--                                            </j-menu-item>-->
+<!--                                        </j-menu>-->
+<!--                                    </template>-->
+<!--                                </j-dropdown>-->
                             </div>
                         </template>
                     </MediaTool>
                 </div>
-                <Preset
-                    v-if="(data.ptzType.value === 0 || data.ptzType.value === 1) && route.query.type !== 'onvif'"
-                    :data="data"
-                    @refresh="onRefresh"
-                />
+
             </div>
         </div>
         <template #footer>
@@ -149,12 +181,14 @@
 import { PropType } from 'vue';
 import LivePlayer from '@/components/Player/index.vue';
 import MediaTool from '@/components/Player/mediaTool.vue';
+import RadioButton from '@/components/CardSelect/RadioButton.vue'
 import channelApi from '@/api/media/channel';
 import Share from './Share.vue';
 import Preset from './Preset.vue';
 import { useSystem } from '@/store/system';
 import { mediaConfigMap } from '../data';
 import { onlyMessage } from '@/utils/comm';
+import {closeAudio, createRec, openAudio, rtcStream} from "./audio";
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -185,12 +219,14 @@ const _vis = computed({
 const player = ref();
 // 视频地址
 const url = ref('');
+const showAudio = ref(false);
 // 视频类型
-const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('mp4');
+const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('rtc');
 const showTool = ref(false);
 const showToolLock = ref(false);
 
 const visible = ref(false);
+const volume = ref(0)
 
 const _type = computed(() => {
     return route.query.type !== 'fixed-media';
@@ -203,7 +239,10 @@ const showRecord = computed(() => {
 
 const showActions = computed(() => {
     const key = mediaConfigMap.get(route.query.type + '-ptz');
-    return system.configInfo?.media?.[key] != 'false';
+
+    const status = system.configInfo?.media?.[key] != 'false';
+
+    return status
 });
 
 const speedList = [
@@ -216,6 +255,25 @@ const local = ref();
 const _speed = computed(() => {
     return speedList.find((item) => item.value === speed.value)?.label;
 });
+
+const openWebrtc = () => {
+  if (showAudio.value === false) {
+    openAudio(
+      props.data.deviceId,
+      props.data.channelId,
+      {
+        volume(v) {
+          volume.value = v
+        }
+      }
+    )
+    showAudio.value = true
+  } else {
+    closeAudio()
+    volume.value = 0
+    showAudio.value = false
+  }
+}
 
 const onMenuChange = (val: any) => {
     speed.value = val.key;
@@ -246,11 +304,16 @@ const mediaToolClass = computed(() => {
  * 媒体开始播放
  */
 const mediaStart = () => {
-    url.value = channelApi.ptzStart(
-        props.data.deviceId,
-        props.data.channelId,
-        mediaType.value,
-    );
+  const _url = channelApi.ptzStart(
+    props.data.deviceId,
+    props.data.channelId,
+    mediaType.value,
+  );
+  if (mediaType.value !== 'rtc') {
+    url.value = _url
+  } else {
+    rtcStream(_url)
+  }
 };
 
 // 录像状态
@@ -351,6 +414,14 @@ const onRefresh = () => {
     emit('refresh');
 };
 
+const voiceMouseDown = () => {
+
+}
+
+const voiceMouseUp = () => {
+
+}
+
 watch(
     () => _vis.value,
     (val: boolean) => {
@@ -378,7 +449,44 @@ watch(
 
 .center {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    transition: background .15s;
+    position: relative;
+    overflow: hidden;
+
+    &.center-active {
+      color: @primary-color;
+    }
+
+  .center-volume {
+    height: 100%;
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+    background-color: rgba(24, 144, 255, 0.2);
+  }
+}
+
+.media-live-actions {
+  .title {
+    margin-bottom: 4px;
+  }
+}
+
+.media-preset {
+  margin-bottom: 12px;
+}
+
+.media-live-tool {
+  justify-content: center;
+
+  :deep(.radio-button) {
+    width: 100%;
+  }
 }
 </style>

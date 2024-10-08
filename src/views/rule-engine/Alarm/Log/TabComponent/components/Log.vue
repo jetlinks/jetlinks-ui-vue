@@ -15,7 +15,7 @@
             <template v-if="column.dataIndex === 'sourceName'">
                 <Ellipsis>
                     设备名称：
-                    <span class="deviceId" @click="() => gotoDevice(text)">{{
+                    <span class="deviceId" @click="() => gotoDevice(record.targetId)">{{
                         text
                     }}</span></Ellipsis
                 >

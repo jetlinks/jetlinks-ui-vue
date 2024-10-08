@@ -162,7 +162,7 @@ const queryInkling = () => {
                     channelId.value = res.result.channelId;
                     const pluginRes = await getPluginData(
                         'device',
-                        instanceStore.current?.accessId,
+                        res.result.channelId,
                         instanceStore.current?.id,
                     );
                     if (pluginRes.success) {

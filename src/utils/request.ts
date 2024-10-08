@@ -158,6 +158,7 @@ export const TokenLose = () => {
  */
 const errorHandler = (error: any) => {
   if (error.response) {
+
     const data = error.response.data
     const status = error.response.status
     if(data instanceof Blob){
