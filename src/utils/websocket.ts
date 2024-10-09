@@ -6,11 +6,11 @@ import { getToken } from '@/utils/comm';
 let ws: any = null
 let count = 0 // 重连计数
 let timer: NodeJS.Timeout = null
-let lockReconnect = false // 避免重复连接
 const total = 100 // 重连总次数
 const subs = {}
-const timeout = 5000
-const tempQueue: any[] = [] // websocket未连接上时，缓存消息列
+const timeout = 2000
+const timeSub = 5 // 每多少次 增加重连时间间隔
+let tempQueue: any[] = [] // websocket未连接上时，缓存消息列
 
 export const initWebSocket = () => {
     const token = getToken()
@@ -28,14 +28,12 @@ export const initWebSocket = () => {
             timer = setInterval(heartCheck, 2000)
             if (tempQueue.length > 0) {
                 for (let i = tempQueue.length - 1; i >= 0; i--) {
-                    ws.send(tempQueue[i])
-                    tempQueue.splice(i, 1)
+                    ws.send(tempQueue[i].msg)
                 }
             }
         }
 
         ws.onclose = () => {
-            console.log('onerror', count)
             ws = null
             reconnect()
         }
@@ -61,7 +59,6 @@ export const initWebSocket = () => {
         }
 
         ws.onerror = () => {
-            console.log('onerror', count)
             ws = null
             reconnect()
         }
@@ -90,13 +87,14 @@ export const getWebSocket = (id: string, topic: string, parameter: Record<string
         if (thisWs.readyState === WebSocket.OPEN) {
             thisWs.send(msg)
         } else {
-            tempQueue.push(msg)
+            tempQueue.push({id, msg})
         }
     }
 
     return () => {
         const unsub = JSON.stringify({ id, type: 'unsub' })
         delete subs[id]
+        tempQueue = tempQueue.filter(item => item.id !== id)
         if (thisWs) {
             thisWs.send(unsub)
         }
@@ -108,28 +106,30 @@ export const closeWs = () => {
         ws.close()
         timer && clearInterval(timer)
     }
-} 
+}
 
 /**
  * 重连
  */
 function reconnect() {
     timer && clearInterval(timer)
-    if (lockReconnect) {
-        return
-    }
-    lockReconnect = true
+    const _time = timeout * (Math.floor(count / timeSub) + 1)
+
     timer = setTimeout(() => {
         initWebSocket()
-        lockReconnect = false
-    }, timeout * count)
+    }, _time)
 }
 
 /**
  * 心跳检测
  */
 function heartCheck() {
+
     if (ws) {
-        ws.send(JSON.stringify({ type: 'ping' }))
+        if (ws.readyState === ws.OPEN) {
+            ws.send(JSON.stringify({ type: 'ping' }))
+        } else {
+            reconnect()
+        }
     }
 }
