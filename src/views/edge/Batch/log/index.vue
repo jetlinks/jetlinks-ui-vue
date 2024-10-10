@@ -9,10 +9,7 @@
       :style="{ padding: 0, marginBottom: 0 }"
       @search="handleSearch"
     />
-    <Card
-
-
-    />
+    <Card />
 <!--    <JProTable-->
 <!--      ref="edgeDeviceRef"-->
 <!--      model="CARD"-->
@@ -22,6 +19,9 @@
 <!--      :params="params"-->
 <!--      :gridColumn="1"-->
 <!--    >-->
+<!--      <template #card="slotProps">-->
+<!--        <Card :detail="slotProps" />-->
+<!--      </template>-->
 <!--    </JProTable>-->
   </div>
 </template>

@@ -1,14 +1,16 @@
 <template>
   <div class="operate-warp">
     <div class="operate-item" v-for="item in BatchOperateOptions" @click="showTask(item.value)">
-      <div class="icon"></div>
+      <div class="img"></div>
       <div class="content">
         <div class="content-title"> {{ item.label }}</div>
         <div class="content-tip">
           {{item.tip}}
         </div>
       </div>
-      <div></div>
+      <div class="icon">
+        <AIcon type="ArrowRightOutlined"/>
+      </div>
     </div>
   </div>
 </template>
@@ -27,17 +29,30 @@ const showTask = (type) => {
 <style scoped lang="less">
 .operate-warp {
   width: 340px;
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  gap: 12px;
-  border: 1px solid #f1f1f1;
-  padding: 16px;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   .operate-item {
     display: flex;
-    border: 1px solid #f1f1f1;
-    padding: 12px;
+    padding: 22px 14px;
+    border-radius: 6px;
+    background-color: @font-gray-50;
+    align-items: center;
+
+    .content-title {
+      color: @font-gray-900;
+    }
+
+    .content-tip {
+      color: @font-gray-500;
+    }
+
+    .icon {
+      color: @font-gray-600;
+      font-size: 22px;
+      margin-left: auto;
+    }
   }
 }
 </style>
