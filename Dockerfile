@@ -4,4 +4,6 @@ ADD docker-entrypoint.sh /docker-entrypoint.sh
 COPY dist /usr/share/nginx/html
 COPY edge-gateway /usr/share/nginx/edge-gateway
 CMD ["sh","/docker-entrypoint.sh"]
+RUN chmod +x docker-entrypoint.sh
+ENTRYPOINT ["./docker-entrypoint.sh"]
 #ADD oauth2 /usr/share/nginx/html/oauth2

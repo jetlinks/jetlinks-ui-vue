@@ -25,6 +25,7 @@
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vuemap/vue-amap": "^2.1.2",
     "@vueuse/core": "^9.10.0",
+    "@vueuse/router": "^11.1.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "ant-design-vue": "^3.2.15",
