@@ -14,7 +14,9 @@
                 }
             "
     >
-      {{ item.label }}
+      <slot name="label">
+        {{ item.label }}
+      </slot>
     </div>
   </div>
 </template>
@@ -87,7 +89,9 @@ const selected = (key: string | number, disabeld: boolean) => {
   const values = new Set(myValue.value);
 
   if (values.has(key)) {
-    values.delete(key);
+    if (props.multiple) {
+      values.delete(key);
+    }
   } else {
     if (!props.multiple) {
       values.clear();

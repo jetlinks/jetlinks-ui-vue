@@ -1,7 +1,8 @@
 {
   "name": "jetlinks-vue",
   "private": true,
-  "version": "2.2.1",
+  "version": "2.2.0",
+  "description": "TEST",
   "scripts": {
     "dev": "vite --mode develop",
     "dev:force": "vite --force --mode develop",
@@ -18,11 +19,13 @@
     "@fullcalendar/daygrid": "^6.1.13",
     "@fullcalendar/interaction": "^6.1.13",
     "@fullcalendar/vue3": "^6.1.13",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@types/axios": "^0.14.0",
     "@types/marked": "^4.0.8",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vuemap/vue-amap": "^2.1.2",
     "@vueuse/core": "^9.10.0",
+    "@vueuse/router": "^11.1.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "ant-design-vue": "^3.2.15",
