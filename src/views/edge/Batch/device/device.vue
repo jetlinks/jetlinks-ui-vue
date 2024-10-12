@@ -92,7 +92,7 @@ const defaultParams = {
   terms: [
     {
       column: 'productId$product-info',
-      value: 'deviceType is gateway'
+      value: 'accessProvider in (agent-device-gateway, agent-media-device-gateway, official-edge-gateway)'
     }
   ],
 }
