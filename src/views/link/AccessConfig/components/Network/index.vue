@@ -640,10 +640,10 @@ watch(
 const addressesTip = (data:any)=>{
     let tip:any = ''
     data.forEach((item:any)=>{
-        tip =  tip + " " +item.address 
+        tip =  tip + " " +item.address
     })
     return tip
-} 
+}
 </script>
 
 <style lang="less" scoped>

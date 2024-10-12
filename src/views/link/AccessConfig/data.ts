@@ -27,6 +27,8 @@ NetworkTypeMapping.set('mqtt-client-gateway', 'MQTT_CLIENT');
 NetworkTypeMapping.set('mqtt-server-gateway', 'MQTT_SERVER');
 NetworkTypeMapping.set('tcp-server-gateway', 'TCP_SERVER');
 NetworkTypeMapping.set('official-edge-gateway', 'MQTT_SERVER');
+NetworkTypeMapping.set('agent-device-gateway', 'MQTT_SERVER');
+NetworkTypeMapping.set('agent-media-device-gateway', 'MQTT_SERVER');
 
 const BackMap = new Map();
 BackMap.set('mqtt-server-gateway', getImage('/access/mqtt.png'));
@@ -50,6 +52,8 @@ BackMap.set('official-edge-gateway', getImage('/access/edge.png'));
 BackMap.set('collector-gateway', getImage('/access/collector-gateway.png'));
 BackMap.set('onvif',getImage('/access/onvif.png'));
 BackMap.set('media-plugin',getImage('/access/media-plugin.png'))
+BackMap.set('agent-device-gateway',getImage('/access/media-plugin.png'))
+BackMap.set('agent-media-device-gateway',getImage('/access/media-plugin.png'))
 
 const descriptionList = {
     'udp-device-gateway':
