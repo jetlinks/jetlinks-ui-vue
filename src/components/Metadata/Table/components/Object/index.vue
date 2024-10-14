@@ -334,13 +334,20 @@ const addItem = () => {
 };
 
 watch(
-    () => [JSON.stringify(props.value), visible.value],
-    (val) => {
-        if (visible.value) {
-            dataSource.value = JSON.parse(val[0] || '[]');
-        }
-    },
-    { immediate: true },
+		() => [JSON.stringify(props.value), visible.value],
+		(val) => {
+			if (visible.value) {
+				dataSource.value = JSON.parse(val[0] || '[]').map(el => {
+					return {
+						...el,
+						expands: el.expands || {
+							required: false,
+						}
+					}
+				});
+			}
+		},
+		{ immediate: true },
 );
 </script>
 
