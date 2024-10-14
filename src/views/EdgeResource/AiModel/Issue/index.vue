@@ -22,7 +22,7 @@
                     <j-button v-if="current !== 1" @click="current = 1">上一步</j-button>
                 </div>
                 <j-space>
-                    <j-button>取消</j-button>
+                    <j-button @click="emit('close')">取消</j-button>
                     <j-button v-if="current === 1" type="primary" @click="handleSubmit">下一步</j-button>
                     <j-button v-else type="primary" @click="handleSubmit">确定</j-button>
                 </j-space>
