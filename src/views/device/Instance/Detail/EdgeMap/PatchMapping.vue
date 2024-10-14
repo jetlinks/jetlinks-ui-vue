@@ -220,6 +220,7 @@ const handleClick = async () => {
                 provider: treeList.value.find(
                     (it: any) => it.id === item.parentId,
                 )?.provider,
+                state: instanceStore.current.state.value === 'notActive' ? 'disabled' : null,
             }));
             params.push(...array);
         });
