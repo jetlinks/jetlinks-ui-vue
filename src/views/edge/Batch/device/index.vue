@@ -1,7 +1,7 @@
 <template>
   <div class="type-select-warp">
     <template v-if="!type">
-      <div> 选择网关设备后，可点击右侧操作快速创建任务</div>
+      <div class="tips"> <AIcon type="icon-bianyuanwangguan"/> 选择网关设备后，可点击右侧操作快速创建任务</div>
       <div class="card-warp">
         <div class="card-item" @click="() => typeSelect('device')">
             <div class="icon"></div>
@@ -10,10 +10,10 @@
               <div class="tip">按设备列表选择对应网关设备</div>
             </div>
         </div>
-        <div class="card-item">
-          <div>
-            <div>更多方式</div>
-            <div>敬请期待！</div>
+        <div class="card-item more">
+          <div class="content">
+            <div class="title">更多方式</div>
+            <div class="tip">敬请期待！</div>
           </div>
         </div>
       </div>
@@ -51,20 +51,51 @@ const typeSelect = (e) => {
   border: 1px solid #f1f1f1;
   display: flex;
   flex-direction: column;
-  padding: 0 12px;
+  padding: 16px;
+
+  .tips {
+    margin-bottom: 16px;
+  }
 
   .card-warp {
     display: grid;
     padding: 12px 0;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
+    gap: 16px;
 
     .card-item {
-      border: 1px solid #f1f1f1;
+      border: 1px solid @border-base-color;
       display: flex;
-      border-radius: 4px;
       cursor: pointer;
       padding: 36px 24px;
+      gap: 16px;
+      align-items: center;
+      border-radius: 6px;
+
+      > .icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        background-color: #E6F4FF;
+      }
+
+      .content {
+        .title {
+          color: @font-gray-900;
+          font-size: 20px;
+        }
+
+        .tip {
+          color: @font-gray-600;
+          font-size: 16px;
+        }
+      }
+
+      &.more {
+        justify-content: center;
+        background-color: #F5F5F5;
+        border-color: #F5F5F5;
+      }
     }
   }
 

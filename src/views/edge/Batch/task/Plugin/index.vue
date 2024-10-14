@@ -4,7 +4,7 @@
       插件
     </div>
     <div class="tip">
-      <AIcon type="ExclamationCircleOutlined" />若插件重复，边端已安装的插件将自动跳过，避免重复安装
+      <AIcon class="icon" type="ExclamationCircleFilled" />若插件重复，边端已安装的插件将自动跳过，避免重复安装
     </div>
     <pro-search
       type="simple"
@@ -15,7 +15,7 @@
     <JProTable
       ref="edgeDeviceRef"
       model="TABLE"
-      style="padding: 12px 0 0"
+      style="padding: 0"
       :columns="columns"
       :request="query"
       :params="params"
@@ -87,10 +87,16 @@ const handleSearch = (e) => {
   }
 
   .tip {
-    padding: 12px 24px;
-    border: 1px solid #f1f1f1;
-    margin-bottom: 24px;
-    border-radius: 6px;
+    padding: 8px 14px;
+    border: 1px solid #91CAFF;
+    background-color: #E6F4FF;
+    margin-bottom: 16px;
+    border-radius: 2px;
+
+    .icon {
+      color: @primary-color;
+      margin-right: 8px;
+    }
   }
 }
 </style>
