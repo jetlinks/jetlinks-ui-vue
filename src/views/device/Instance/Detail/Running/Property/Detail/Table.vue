@@ -145,7 +145,7 @@ const queryPropertyData = async (params: any) => {
             sorts: [
                 {
                     name: 'timestamp',
-                    value: 'desc',
+                    order: 'desc',
                 },
             ],
             terms: [
