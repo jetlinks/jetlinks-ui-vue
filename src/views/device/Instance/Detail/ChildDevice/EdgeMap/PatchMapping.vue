@@ -224,6 +224,7 @@ const handleClick = async () => {
                 provider: treeList.value.find(
                     (it: any) => it.id === item.parentId,
                 ).provider,
+                state: _props.deviceData.state.value === 'notActive' ? 'disabled' : null,
             }));
             params.push(...array);
         });
