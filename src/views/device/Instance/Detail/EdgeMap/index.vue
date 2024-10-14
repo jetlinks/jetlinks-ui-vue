@@ -374,7 +374,12 @@ const onSave = () => {
     formRef.value
         .validate()
         .then(async (_data: any) => {
-            const arr = toRaw(data.value).filter((i: any) => i.channelId);
+            const arr = toRaw(data.value).filter((i: any) => i.channelId).map(item => {
+                if (instanceStore.current.state?.value === 'notActive') {
+                    item.state = 'disabled'
+                }
+                return item
+            });
             if (arr && arr.length !== 0) {
                 const submitData = {
                     deviceId: instanceStore.current.id,
