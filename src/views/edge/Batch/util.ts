@@ -61,13 +61,6 @@ export const useBatchOperateOptions = () => {
         },
         {
             icon: '',
-            label: '远程升级',
-            tip: '批量升级边缘网关固件',
-            value: 'remote',
-            key: 'remoteUpgrade',
-        },
-        {
-            icon: '',
             label: '绑定子设备',
             tip: '批量绑定云端子设备',
             value: 'device',

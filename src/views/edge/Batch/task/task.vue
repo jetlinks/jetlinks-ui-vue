@@ -36,6 +36,7 @@
             <CheckButton
               v-model:value="formModel.type"
               :options="batchOperateOptions"
+              :beforeChange="batchOperateChange"
             />
           </a-form-item>
           <a-form-item label="说明" name="description">
@@ -75,6 +76,7 @@ import ContentAiResource from './AiResource/index.vue'
 import ContentCollectorTemplate from './CollectorTemplate/index.vue'
 
 import {useBatchOperateOptions} from "@/views/edge/Batch/util";
+import {Modal} from "ant-design-vue";
 
 const props = defineProps({
   value: {
@@ -174,6 +176,24 @@ const onOk = async () => {
   if (validateStatus) {
     emit('ok')
   }
+}
+
+const batchOperateChange = (e) => {
+  if (e === formModel.type) {
+    return
+  }
+
+  return new Promise((resolve, reject) => {
+    Modal.confirm({
+      title: '切换任务类型会清空之前的数据',
+      onOk() {
+        resolve(true)
+      },
+      onCancel() {
+        resolve(false)
+      }
+    })
+  })
 }
 
 const init = () => {

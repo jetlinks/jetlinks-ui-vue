@@ -1,9 +1,13 @@
 <template>
   <div class="operate-warp">
-    <div class="operate-item" v-for="item in batchOperateOptions" @click="showTask(item.value)">
+    <div :class="{'operate-item': true, 'disabled': disabled }" v-for="item in batchOperateOptions" @click="showTask(item.value)">
       <div class="img"></div>
       <div class="content">
-        <div class="content-title"> {{ item.label }}</div>
+        <div class="content-title">
+          <span>
+            {{ item.label }}
+          </span>
+        </div>
         <div class="content-tip">
           {{item.tip}}
         </div>
@@ -13,17 +17,41 @@
       </div>
     </div>
   </div>
+  <a-drawer
+    v-model:visible="visible"
+    :width="1000"
+    :footer="null"
+    :closable="false"
+    :keyboard="false"
+    :maskClosable="false"
+  >
+
+  </a-drawer>
 </template>
 
 <script setup name="BatchOperate">
 import { useBatchOperateOptions } from '../util'
 
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: true
+  }
+})
+
 const emit = defineEmits(['selected'])
 
 const { batchOperateOptions } = useBatchOperateOptions()
+const visible = ref(false)
 
 const showTask = (type) => {
-  emit('selected', {type})
+  if (!props.disabled) {
+    visible.value = true
+  }
+}
+
+const closeTask = () => {
+  visible.value = false
 }
 
 </script>
@@ -43,6 +71,7 @@ const showTask = (type) => {
     border-radius: 6px;
     background-color: @font-gray-50;
     align-items: center;
+    cursor: pointer;
 
     .content-title {
       color: @font-gray-900;
@@ -57,6 +86,10 @@ const showTask = (type) => {
       color: @font-gray-600;
       font-size: 22px;
       margin-left: auto;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
     }
   }
 }

@@ -58,6 +58,9 @@ const props = defineProps({
   columns: {
     type: Number,
     default: 3
+  },
+  beforeChange: {
+    type: Function
   }
 });
 const emit = defineEmits(['update:value', 'change', 'select']);
@@ -83,8 +86,14 @@ const _options = computed(() => {
   return props.options;
 });
 
-const selected = (key: string | number, disabeld: boolean) => {
+const selected = async (key: string | number, disabeld: boolean) => {
   if (disabeld || props.disabled) return;
+
+  const pending = await props.beforeChange?.(key)
+
+  if (pending === false) {
+    return
+  }
 
   const values = new Set(myValue.value);
 

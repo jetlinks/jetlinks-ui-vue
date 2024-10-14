@@ -1,13 +1,19 @@
 <template>
   <div class="type-select-warp">
-    <template v-if="!type">
       <div class="tips"> <AIcon type="icon-bianyuanwangguan"/> 选择网关设备后，可点击右侧操作快速创建任务</div>
       <div class="card-warp">
-        <div class="card-item" @click="() => typeSelect('device')">
+        <div
+          v-for="item in options"
+          :class="{
+            'card-item': true,
+            'active': selectKey === item.value
+          }"
+          @click="() => typeSelect(item.value)"
+        >
             <div class="icon"></div>
             <div class="content">
-              <div class="title">按设备选择</div>
-              <div class="tip">按设备列表选择对应网关设备</div>
+              <div class="title">{{ item.label }}</div>
+              <div class="tip">{{ item.tip }}</div>
             </div>
         </div>
         <div class="card-item more">
@@ -17,15 +23,8 @@
           </div>
         </div>
       </div>
-    </template>
-    <div v-if="type">
-      <div class="header">
-        <a-button @click="onBack">
-          <template #icon><AIcon type="LeftOutlined" /></template>
-          返回
-        </a-button>
-      </div>
-      <DeviceSelect v-if="type === 'device'"/>
+    <div>
+      <DeviceSelect v-if="selectKey === 'device'"/>
     </div>
   </div>
 </template>
@@ -33,14 +32,19 @@
 <script setup name="BatchDevice">
 import DeviceSelect from './device.vue'
 
-const type = ref()
+const options = [
+  {
+    label: '按设备选择',
+    tip: '按设备列表选择对应网关设备',
+    icon: '',
+    value: 'device'
+  }
+]
 
-const onBack = () => {
-  type.value = null
-}
+const selectKey = ref(options[0].value)
 
 const typeSelect = (e) => {
-  type.value = e
+  selectKey.value = e
 }
 
 </script>
@@ -95,6 +99,10 @@ const typeSelect = (e) => {
         justify-content: center;
         background-color: #F5F5F5;
         border-color: #F5F5F5;
+      }
+
+      &.active {
+        border-color: @primary-color-active;
       }
     }
   }

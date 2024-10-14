@@ -4,10 +4,7 @@
       <div class="batch-warp">
         <div class="top">
           <Device />
-          <Operate @selected="operateSelect" />
-        </div>
-        <div class="bottom">
-          <Log />
+          <Operate :disabled="!deviceList.length" @selected="operateSelect" />
         </div>
       </div>
       <Task
@@ -62,11 +59,12 @@ provide(ContextName, {
 <style scoped lang="less">
 .batch-warp {
   padding: 24px;
+  height: 100%;
 
   .top {
     display: flex;
     gap: 24px;
-    height: 460px;
+    height: 100%;
   }
 }
 </style>

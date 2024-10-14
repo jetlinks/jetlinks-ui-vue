@@ -1,5 +1,5 @@
 <template>
-  <div class="plugin-warp">
+  <div class="task-warp">
     <div class="header">
       插件
     </div>
@@ -13,19 +13,17 @@
       @search="handleSearch"
     />
     <JProTable
-      ref="edgeDeviceRef"
+      ref="tableRef"
       model="TABLE"
       style="padding: 0"
       :columns="columns"
       :request="query"
       :params="params"
-      :gridColumn="3"
     />
   </div>
 </template>
 
 <script setup name="TaskPlugin">
-
 
 const params = ref()
 const columns = [
@@ -81,22 +79,5 @@ const handleSearch = (e) => {
 </script>
 
 <style scoped lang="less">
-.plugin-warp {
-  .header {
-    font-size: 20px;
-  }
-
-  .tip {
-    padding: 8px 14px;
-    border: 1px solid #91CAFF;
-    background-color: #E6F4FF;
-    margin-bottom: 16px;
-    border-radius: 2px;
-
-    .icon {
-      color: @primary-color;
-      margin-right: 8px;
-    }
-  }
-}
+@import "../task.less";
 </style>
