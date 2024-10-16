@@ -4,7 +4,7 @@
       <div class="batch-warp">
         <div class="top">
           <Device />
-          <Operate :disabled="!deviceList.length" @selected="operateSelect" />
+          <Operate :deviceList="deviceList" @selected="operateSelect" />
         </div>
       </div>
       <Task

@@ -1,12 +1,15 @@
 <template>
   <div class="operate-warp">
-    <div :class="{'operate-item': true, 'disabled': disabled }" v-for="item in batchOperateOptions" @click="showTask(item.value)">
+    <div :class="{'operate-item': true, 'disabled': disabled }" v-for="item in batchOperateOptions" @click="showTask(item)">
       <div class="img"></div>
       <div class="content">
         <div class="content-title">
           <span>
             {{ item.label }}
           </span>
+          <a-button type="text" style="padding: 4px;margin-left: auto;" @click.stop="() => showHistoryTask(item)">
+            <AIcon type="ExceptionOutlined" />
+          </a-button>
         </div>
         <div class="content-tip">
           {{item.tip}}
@@ -24,18 +27,33 @@
     :closable="false"
     :keyboard="false"
     :maskClosable="false"
+    :destroyOnClose="true"
   >
-
+    <template #title>
+      <div class="drawer-header-title">
+        <span>{{operateActive.title}}历史任务</span>
+        <a-button type="text" style="padding: 6px;margin-left: auto" @click="closeHistoryTask">
+          <template #icon>
+            <AIcon type="CloseOutlined" style="font-size: 22px;" />
+          </template>
+        </a-button>
+      </div>
+    </template>
+    <Log
+      :type="operateActive.type"
+      :deviceList="deviceKeys"
+    />
   </a-drawer>
 </template>
 
 <script setup name="BatchOperate">
 import { useBatchOperateOptions } from '../util'
+import Log from '../log/index.vue'
 
 const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: true
+  deviceList: {
+    type: Array,
+    default: () => []
   }
 })
 
@@ -43,14 +61,29 @@ const emit = defineEmits(['selected'])
 
 const { batchOperateOptions } = useBatchOperateOptions()
 const visible = ref(false)
+const disabled = computed(() => !props.deviceList.length)
+const deviceKeys = computed(() => props.deviceList.map(item => item.id))
 
-const showTask = (type) => {
+const operateActive = reactive({
+  title: undefined,
+  icon: undefined,
+  type: undefined
+})
+
+const showTask = (item) => {
   if (!props.disabled) {
-    visible.value = true
+    emit('selected', { type: item.value })
   }
 }
 
-const closeTask = () => {
+const showHistoryTask = (item) => {
+  operateActive.title = item.label
+  operateActive.icon = item.icon
+  operateActive.type = item.value
+  visible.value = true
+}
+
+const closeHistoryTask = () => {
   visible.value = false
 }
 
@@ -76,6 +109,7 @@ const closeTask = () => {
     .content-title {
       color: @font-gray-900;
       font-weight: 500;
+      display: flex;
     }
 
     .content-tip {
@@ -92,5 +126,10 @@ const closeTask = () => {
       cursor: not-allowed;
     }
   }
+}
+
+.drawer-header-title {
+  display: flex;
+  gap: 12px;
 }
 </style>

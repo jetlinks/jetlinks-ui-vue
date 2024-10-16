@@ -1,22 +1,26 @@
 <template>
   <div class="log-warp">
-    <div class="header">
-      操作记录
-    </div>
-    <pro-search
-      :columns="columns"
-      type="simple"
-      :style="{ padding: 0, marginBottom: 0 }"
-      @search="handleSearch"
-    />
     <JProTable
       ref="edgeDeviceRef"
       model="CARD"
       style="padding: 12px 0 0"
       :columns="columns"
-      :request="query"
+      :request="queryTask"
       :params="params"
       :gridColumn="1"
+      :defaultParams="{
+        terms: [
+          {
+            column: 'type',
+            value: type
+          },
+          {
+            column: 'id',
+            termType: 'device-involve-task',
+            value: ''
+          }
+        ]
+      }"
     >
       <template #card="slotProps">
         <Card :detail="slotProps" />
@@ -27,8 +31,19 @@
 
 <script setup name="BatchLog">
 import {BatchOperateOptions} from "../util";
+import { queryTask } from '@/api/edge/batch'
 import Card from './Card.vue'
 
+const props = defineProps({
+  type: {
+    type: String,
+    default: undefined
+  },
+  deviceList: {
+    type: Array,
+    default: undefined
+  }
+})
 const params = ref()
 
 const columns = [
@@ -63,12 +78,6 @@ const handleSearch = (e) => {
   params.value = e
 }
 
-const query = () => {
-  return {
-    status: 200,
-    result: []
-  }
-}
 
 </script>
 

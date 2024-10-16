@@ -50,7 +50,7 @@
       <div class="task-content">
         <ContentPlugin v-if="formModel.type === 'plugin'" :options="gatewayList" />
         <ContentRemote v-else-if="formModel.type === 'remote'" :options="gatewayList" />
-        <ContentChildren v-else-if="formModel.type === 'device'"  :options="gatewayList" @change="onChildrenChange"/>
+        <ContentChildren v-else-if="formModel.type === 'device'"  :options="gatewayList" :updateDevice="updateDevice" @change="onChildrenChange"/>
         <ContentAiModel v-else-if="formModel.type === 'AiModel'"  :options="gatewayList" @change="onChildrenChange"/>
         <ContentAiResource v-else-if="formModel.type === 'AiResource'"  :options="gatewayList" @change="onChildrenChange"/>
         <ContentCollectorTemplate v-else-if="formModel.type === 'CollectorTemplate'"  :options="gatewayList" @change="onChildrenChange"/>
@@ -74,6 +74,7 @@ import ContentChildren from './Children/index.vue'
 import ContentAiModel from './AiModel/index.vue'
 import ContentAiResource from './AiResource/index.vue'
 import ContentCollectorTemplate from './CollectorTemplate/index.vue'
+import { detail } from '@/api/device/instance';
 
 import {useBatchOperateOptions} from "@/views/edge/Batch/util";
 import {Modal} from "ant-design-vue";
@@ -138,6 +139,19 @@ const rules = {
   description: [
     { max: 200, message: '最多可输入200位字符', trigger: 'blur' },
   ],
+}
+
+const updateDevice = (id) => {
+  detail(id).then(resp => {
+    if (resp.success) {
+      gatewayList.value = gatewayList.value.map(item => {
+        if (item.id) {
+          item.state = resp.result.state
+        }
+        return item
+      })
+    }
+  })
 }
 
 const closeGatewayModal = () => {
