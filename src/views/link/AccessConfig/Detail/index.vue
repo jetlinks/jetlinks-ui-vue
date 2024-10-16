@@ -139,8 +139,17 @@ const getTypeList = (result: Record<string, any>) => {
     const cloud: any[] = [];
     const channel: any[] = [];
     const edge: any[] = [];
-    result.map((item: any) => {
-        if (item.id === 'fixed-media' || item.id === 'gb28181-2016' || item.id ==='onvif' || item.id === 'media-plugin') {
+    result
+        .filter((i:any) => {
+            return i.id !== 'OneNet';
+        })
+        .forEach((item: any) => {
+            if (
+                item.id === 'fixed-media' ||
+                item.id === 'gb28181-2016' ||
+                item.id === 'onvif' ||
+                item.id === 'media-plugin'
+            ) {
             item.type = 'media';
             media.push(item);
         } else if (item.id === 'OneNet' || item.id === 'Ctwing' || item.id === 'OneNet-platform') {
