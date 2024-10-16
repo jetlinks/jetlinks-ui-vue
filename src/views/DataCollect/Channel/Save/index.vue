@@ -366,7 +366,7 @@ const validate = async (_rule: any, value: string) => {
 };
 
 const validateSubnetAddress = async (_rule: any, value: string) => {
-    if (!testIpv4_6(value)) {
+    if (value && !testIpv4_6(value)) {
         return Promise.reject('请输入正确的子网地址');
     }
     return Promise.resolve();

@@ -57,6 +57,8 @@
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
+import { useInstanceStore } from "store/instance";
+
 const _props = defineProps({
     type: {
         type: String,
@@ -73,6 +75,7 @@ const _props = defineProps({
 });
 const _emits = defineEmits(['close', 'save']);
 
+const instanceStore = useInstanceStore();
 const checkedKeys = ref<string[]>([]);
 
 const leftList = ref<any[]>([]);
@@ -142,7 +145,7 @@ const handleClick = async () => {
         onlyMessage('请选择采集器', 'warning');
     } else {
         const params: any[] = [];
-        rightList.value.map((item: any) => {
+        rightList.value.forEach((item: any) => {
             const array = (item.children || []).map((element: any) => ({
                 channelId: item.parentId,
                 collectorId: element.collectorId,
@@ -152,10 +155,10 @@ const handleClick = async () => {
                     (i: any) => i.name === element.name,
                 )?.metadataId,
                 provider: item.provider,
+                state: instanceStore.current.state.value == 'notActive' ? 'disabled': null,
             }));
             params.push(...array);
         });
-
         const filterParms = params.filter((item) => !!item.metadataId);
         if (filterParms && filterParms.length !== 0) {
             const res = await saveMapping(

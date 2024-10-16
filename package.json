@@ -25,6 +25,7 @@
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vuemap/vue-amap": "^2.1.2",
     "@vueuse/core": "^9.10.0",
+    "@vueuse/router": "^11.1.0",
     "ant-design-vue": "^3.2.15",
     "async-validator": "^4.2.5",
     "axios": "^1.2.1",
