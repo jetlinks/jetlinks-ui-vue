@@ -47,8 +47,8 @@
                                 platformTypeList.find(
                                     (item) =>
                                         item.value ===
-                                        detail.operatorPlatformType?.text,
-                                )?.label || detail.operatorPlatformType?.text
+                                        detail.operatorName,
+                                )?.label || detail.operatorName 
                             }}</j-descriptions-item>
                             <j-descriptions-item label="平台名称">{{
                                 detail.platformConfigName
@@ -274,8 +274,8 @@
                                 platformTypeList.find(
                                     (item) =>
                                         item.value ===
-                                        detail.operatorPlatformType?.text,
-                                )?.label || detail.operatorPlatformType?.text
+                                        detail.operatorName,
+                                )?.label || detail.operatorName  
                             }}</j-descriptions-item>
                             <j-descriptions-item label="平台名称">{{
                                 detail.platformConfigName
