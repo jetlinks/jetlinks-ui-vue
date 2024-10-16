@@ -513,10 +513,12 @@ const termAdd = () => {
 };
 
 const onDelete = () => {
+    console.log(formModel.value,'formModal')
     formModel.value.branches?.[props.branchName]?.when?.[
         props.whenName
     ]?.terms?.splice(props.termsName, 1);
-    formModel.value.options!.when[props.branchName].terms[
+    console.log(props,'props')
+    formModel.value.options!.when[props.branches_Index].terms[
         props.whenName
     ].terms.splice(props.termsName, 1);
 };
