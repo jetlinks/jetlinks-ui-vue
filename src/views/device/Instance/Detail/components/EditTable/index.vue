@@ -275,7 +275,7 @@ const unbind = (id: string) => {
                 handleSearch();
             }
         });
-        return response
+        return response;
     }
 };
 
@@ -292,9 +292,14 @@ const onSave = () => {
     formRef.value
         .validate()
         .then(async () => {
-            const arr = toRaw(modelRef).dataSource.filter(
-                (i: any) => i.channelId,
-            );
+            const arr = toRaw(modelRef)
+                .dataSource.filter((i: any) => i.channelId)
+                .map((item) => {
+                    if (instanceStore.current.state?.value === 'notActive') {
+                        item.state = 'disabled';
+                    }
+                    return item;
+                });
             if (arr && arr.length !== 0) {
                 console.log(arr);
                 const resp = await saveMapping(
