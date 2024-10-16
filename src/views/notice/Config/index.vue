@@ -31,6 +31,7 @@
                             accept=".json"
                             :showUploadList="false"
                             :before-upload="beforeUpload"
+                            :disabled="!permission"
                         >
                             <PermissionButton
                                 hasPermission="notice/Config:import"
@@ -219,6 +220,8 @@ Object.keys(MSG_TYPE).forEach((key) => {
 
 const configRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
+
+const permission = usePermissionStore().hasPermission(`notice/Config:import`);
 
 const columns = [
     {
