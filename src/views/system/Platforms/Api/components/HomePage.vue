@@ -189,7 +189,8 @@ const javaStr =
 <style lang="less" scoped>
 .home {
     padding: 20px;
-
+  height: 100%;
+  overflow-y: auto;
     h1 {
         font-weight: 600;
         font-size: 20px;
