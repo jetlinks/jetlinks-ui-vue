@@ -17,7 +17,6 @@
                         @search="networkSearch"
                     />
                     <PermissionButton
-
                         type="primary"
                         @click="addNetwork"
                         hasPermission="link/Type:add"
@@ -50,7 +49,12 @@
                             >
                                 <template #other>
                                     <div class="other">
-                                        <j-tooltip placement="top" :title="addressesTip(item.addresses)">
+                                        <j-tooltip
+                                            placement="top"
+                                            :title="
+                                                addressesTip(item.addresses)
+                                            "
+                                        >
                                             <div
                                                 v-for="i in (
                                                     item.addresses || []
@@ -67,7 +71,9 @@
                                                         (item.addresses || [])
                                                             .length > 1
                                                     "
-                                                    >等{{ item.addresses.length }}条</span
+                                                    >等{{
+                                                        item.addresses.length
+                                                    }}条</span
                                                 >
                                             </div>
                                         </j-tooltip>
@@ -96,7 +102,7 @@
                         @search="procotolSearch"
                     />
                     <PermissionButton
-                      v-if='showAddBtn'
+                        v-if="showAddBtn"
                         type="primary"
                         @click="addProcotol"
                         hasPermission="link/Protocol:add"
@@ -120,7 +126,7 @@
                             <AccessCard
                                 @checkedChange="procotolChange"
                                 :checked="procotolCurrent"
-                                :disabled='!showAddBtn'
+                                :disabled="!showAddBtn"
                                 :data="{ ...item, type: 'protocol' }"
                             >
                             </AccessCard>
@@ -265,11 +271,11 @@
         </div>
         <div class="steps-action">
             <j-button
-              v-if="type === 'child-device' ? current > 1 : current > 0"
-              style="margin-right: 8px"
-              @click="prev"
+                v-if="type === 'child-device' ? current > 1 : current > 0"
+                style="margin-right: 8px"
+                @click="prev"
             >
-              上一步
+                上一步
             </j-button>
             <PermissionButton
                 v-if="current === 2 && view === 'false'"
@@ -279,16 +285,16 @@
                 :hasPermission="`link/AccessConfig:${
                     id === ':id' ? 'add' : 'update'
                 }`"
-                :loading='loading'
+                :loading="loading"
             >
                 保存
             </PermissionButton>
             <j-button
-              v-if="[0, 1].includes(current)"
-              type="primary"
-              @click="next"
+                v-if="[0, 1].includes(current)"
+                type="primary"
+                @click="next"
             >
-              下一步
+                下一步
             </j-button>
         </div>
     </div>
@@ -339,9 +345,9 @@ const props = defineProps({
         default: () => {},
     },
     bindProduct: {
-      type: Boolean,
-      default: false
-    }
+        type: Boolean,
+        default: false,
+    },
 });
 
 const clientHeight = document.body.clientHeight;
@@ -369,7 +375,7 @@ const formData = ref({
     name: '',
     description: '',
 });
-const loading = ref(false)
+const loading = ref(false);
 
 const { resetFields, validate, validateInfos } = useForm(
     formData,
@@ -387,8 +393,8 @@ const { resetFields, validate, validateInfos } = useForm(
 );
 
 const showAddBtn = computed(() => {
-  return route.query.view === 'false' && !props.bindProduct
-})
+    return route.query.view === 'false' && !props.bindProduct;
+});
 
 const queryNetworkList = async (id: string, include: string, data = {}) => {
     const resp = await getNetworkList(
@@ -407,6 +413,7 @@ const queryProcotolList = async (id: string, params = {}) => {
         ...params,
         'sorts[0].name': 'createTime',
         'sorts[0].order': 'desc',
+        paging: false,
     });
     if (resp.status === 200) {
         procotolList.value = resp.result;
@@ -511,12 +518,12 @@ const saveData = () => {
                         ? 'Gateway'
                         : ProtocolMapping.get(props.provider.id),
             };
-            loading.value = true
+            loading.value = true;
             const resp =
                 id === ':id'
                     ? await save(params)
                     : await update({ ...params, id });
-            loading.value = false
+            loading.value = false;
             if (resp.status === 200) {
                 onlyMessage('操作成功', 'success');
                 history.back();
@@ -637,13 +644,13 @@ watch(
     },
 );
 
-const addressesTip = (data:any)=>{
-    let tip:any = ''
-    data.forEach((item:any)=>{
-        tip =  tip + " " +item.address 
-    })
-    return tip
-} 
+const addressesTip = (data: any) => {
+    let tip: any = '';
+    data.forEach((item: any) => {
+        tip = tip + ' ' + item.address;
+    });
+    return tip;
+};
 </script>
 
 <style lang="less" scoped>
