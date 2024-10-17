@@ -86,7 +86,7 @@ const buildInTag = ['weekend', 'holiday', 'workday'];
 const defaultColor = new Map()
 defaultColor.set('weekend', 'rgb(149, 222, 100)')
 defaultColor.set('holiday', 'rgb(161, 180, 204)')
-defaultColor.set('workday', 'rgba(105,177,255,1')
+defaultColor.set('workday', 'rgba(105,177,255)')
 
 const createDrag = () => {
     new Draggable(tags.value, {

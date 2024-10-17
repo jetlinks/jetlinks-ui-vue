@@ -69,6 +69,7 @@ const queryProcotol = async () => {
     const res = await getProtocolList(ProtocolMapping.get(props.data.channel), {
         'sorts[0].name': 'createTime',
         'sorts[0].order': 'desc',
+        paging: false,
     });
     if (res.success) {
         protocol.value = res.result.find((i) => {
