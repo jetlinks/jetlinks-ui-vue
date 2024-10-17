@@ -63,11 +63,11 @@
                             <j-row :gutter="16" style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        ID
+                                        插件ID
                                     </div>
                                     <Ellipsis>
                                         <span>
-                                            {{ slotProps.id }}
+                                            {{ slotProps.targetId }}
                                         </span>
                                     </Ellipsis>
                                 </j-col>

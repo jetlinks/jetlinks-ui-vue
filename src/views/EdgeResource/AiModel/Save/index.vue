@@ -12,7 +12,7 @@
             <a-form-item name="id">
                 <template #label>
                     <span>
-                        ID
+                        模型ID
                         <a-tooltip
                             title="若不填写，系统将自动生成唯一ID"
                         >
@@ -23,7 +23,7 @@
                         </a-tooltip>
                     </span>
                 </template>
-                <a-input v-model:value="formData.id" :disabled="data.id" placeholder="请输入ID"></a-input>
+                <a-input v-model:value="formData.targetId" :disabled="data.targetId" placeholder="请输入模型ID"></a-input>
             </a-form-item>
             <a-form-item label="名称" name="name">
                 <a-input v-model:value="formData.name" placeholder="请输入名称"></a-input>
