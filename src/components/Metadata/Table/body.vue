@@ -102,6 +102,9 @@ const virtualData = computed(()=> {
 // }
 
 const onScroll = () => {
+
+  if (!viewScrollRef.value) return
+
   const height = viewScrollRef.value.scrollTop
   const clientHeight = viewScrollRef.value.clientHeight
   const scrollHeight = viewScrollRef.value.scrollHeight
@@ -249,7 +252,7 @@ defineExpose({
     flex: 1 1 auto;
     min-width: 0;
     height: 100%;
-    
+
     .metadata-edit-table-row {
       width: 100%;
       display: flex;

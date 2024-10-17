@@ -47,7 +47,7 @@
               <div class="card-item-content-text">
                 设备类型
               </div>
-              <div>{{ slotProps.deviceType.text}}</div>
+              <div>{{ slotProps.deviceType?.text}}</div>
             </j-col>
           </j-row>
         </template>

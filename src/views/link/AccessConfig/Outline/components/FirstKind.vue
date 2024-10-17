@@ -127,6 +127,7 @@ const queryProcotol = async () => {
         {
             'sorts[0].name': 'createTime',
             'sorts[0].order': 'desc',
+            paging: false,
         },
     );
     if (resp.status === 200) {

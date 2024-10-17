@@ -553,6 +553,7 @@ const queryProcotolList = async (id: string, params = {}) => {
         ...params,
         'sorts[0].name': 'createTime',
         'sorts[0].order': 'desc',
+        paging: false,
     });
     if (resp.status === 200) {
         procotolList.value = resp.result;
