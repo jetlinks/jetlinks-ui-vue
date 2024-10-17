@@ -5,6 +5,7 @@
                 :columns="columns"
                 :dataSource="_tableData"
                 :rowSelection="props.mode !== 'home' ? rowSelection : undefined"
+                :style="{padding: 0}"
                 noPagination
                 model="TABLE"
             >
