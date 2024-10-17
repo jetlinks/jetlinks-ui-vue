@@ -12,7 +12,7 @@ export const _queryByEdge = (thingId: string,internalId:string,data:any) => serv
  * 创建任务
  * @param data
  */
-export const createTask = (data: any) => server.post('/batch/operation/task', data)
+export const createTask = (data: any) => server.post('/edge/agent-job/_create', data)
 
 /**
  * 分页查询任务详情列表
