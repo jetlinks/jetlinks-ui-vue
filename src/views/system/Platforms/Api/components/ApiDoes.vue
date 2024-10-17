@@ -24,7 +24,12 @@
         </div>
         <div class="api-card" v-if="requestCard.codeText !== undefined">
             <h5>请求示例</h5>
-            <JsonViewer :value="requestCard.codeText" copyable />
+          <Monaco
+            :tips="requestCard.tips"
+            :codeText="requestCard.codeText"
+            :loading="loading"
+          />
+
         </div>
         <div class="api-card" v-if="requestCard.tableData.length">
             <h5>请求参数</h5>
@@ -37,10 +42,7 @@
                     size="small"
                 >
                     <template #required="slotProps">
-                        <span>{{ Boolean(slotProps.required) + '' }}</span>
-                    </template>
-                    <template #type="slotProps">
-                        <span>{{ slotProps?.schema.type }}</span>
+                        <span :style="{ color: Boolean(slotProps.required) ? '#f81d22' : ''}">{{ Boolean(slotProps.required) + '' }}</span>
                     </template>
                 </j-pro-table>
             </div>
@@ -80,18 +82,23 @@
                 </j-pro-table>
             </div>
 
-            <JsonViewer :value="respParamsCard.codeText" copyable />
+<!--            <JsonViewer :value="respParamsCard.codeText" copyable />-->
+          <Monaco
+            :tips="respParamsCard.tips"
+            :codeText="respParamsCard.codeText"
+            :loading="loading"
+          />
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
-import { JsonViewer } from 'vue3-json-viewer';
-import 'vue3-json-viewer/dist/index.css';
+<script setup lang="ts" name="APIDoes">
 import type { apiDetailsType } from '../typing';
 import InputCard from './InputCard.vue';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { findData, getCodeText, dealNoRef } from '../utils';
+import {randomString} from "@/utils/utils";
+import Monaco from './monaco.vue'
 
 type cardType = {
     columns: object[];
@@ -112,38 +119,49 @@ const props = defineProps({
     },
 });
 const { selectApi } = toRefs(props);
+const loading = ref(false)
 
 const requestCard = reactive<cardType>({
     columns: [
         {
             title: '参数名',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'paramsName',
+            key: 'paramsName',
+            width: 320
         },
         {
             title: '参数说明',
-            dataIndex: 'description',
-            key: 'description',
+            dataIndex: 'desc',
+            key: 'desc',
         },
         {
             title: '请求类型',
             dataIndex: 'in',
             key: 'in',
+            width: 80
         },
         {
             title: '是否必须',
             dataIndex: 'required',
             key: 'required',
             scopedSlots: true,
+            width: 80
         },
         {
             title: '参数类型',
+            dataIndex: 'paramsType',
+            key: 'paramsType',
+            width: 200
+        },
+        {
+            title: 'schema',
             dataIndex: 'type',
             key: 'type',
-            scopedSlots: true,
+            width: 200
         },
     ],
     tableData: [],
+    tips: [],
     codeText: undefined,
     getData: () => {
         if (!props.selectApi.requestBody)
@@ -159,27 +177,30 @@ const requestCard = reactive<cardType>({
             const schemaName = _ref?.split('/').pop();
             const type = schema.type || '';
             const tableData = findData(props.schemas, schemaName);
-            requestCard.codeText =
-                type === 'array'
-                    ? [getCodeText(props.schemas, tableData, 3)]
-                    : getCodeText(props.schemas, tableData, 3);
+            // requestCard.codeText =
+            //     type === 'array'
+            //         ? [getCodeText(props.schemas, tableData, 3)]
+            //         : getCodeText(props.schemas, tableData, 3);
+            const { codeText, codeTips } = getCodeText(props.schemas, tableData, 3)
+            requestCard.codeText = JSON.stringify(codeText)
+            requestCard.tips = codeTips
             requestCard.tableData = [
                 {
-                    name: schemaName[0].toLowerCase() + schemaName.substring(1),
-                    description: schemaName,
+                    paramsName: schemaName[0].toLowerCase() + schemaName.substring(1),
+                    desc: schemaName,
                     in: 'body',
+                    id: randomString(),
                     required: true,
-                    schema: { type: type || schemaName },
-                    children: tableData.map((item) => ({
-                        name: item.paramsName,
-                        description: item.desc,
-                        required: false,
-                        schema: { type: item.paramsType },
-                    })),
+                    paramsType: type || schemaName,
+                    type: type || schemaName,
+                    children: tableData,
                 },
             ];
             // console.log(requestCard,'requestCard')
         }
+        setTimeout(() => {
+          loading.value = true
+        }, 1000)
     },
 });
 const responseStatusCard = reactive<cardType>({
@@ -189,6 +210,7 @@ const responseStatusCard = reactive<cardType>({
             title: '状态码',
             dataIndex: 'code',
             key: 'code',
+            width: 200
         },
         {
             title: '说明',
@@ -199,6 +221,7 @@ const responseStatusCard = reactive<cardType>({
             title: 'schema',
             dataIndex: 'schema',
             key: 'schema',
+            width: 200
         },
     ],
     tableData: [],
@@ -231,6 +254,7 @@ const respParamsCard = reactive<cardType>({
         {
             title: '参数名称',
             dataIndex: 'paramsName',
+            width: 320
         },
         {
             title: '参数说明',
@@ -239,9 +263,16 @@ const respParamsCard = reactive<cardType>({
         {
             title: '类型',
             dataIndex: 'paramsType',
+            width: 200
+        },
+        {
+          title: 'schema',
+          dataIndex: 'schema',
+          width: 200
         },
     ],
     tableData: [],
+    tips: [],
     codeText: '',
     getData: (code: string) => {
         const schemaName = responseStatusCard.tableData.find(
@@ -249,10 +280,21 @@ const respParamsCard = reactive<cardType>({
         )?.schema;
 
         const tableData = findData(props.schemas, schemaName);
-        respParamsCard.codeText = getCodeText(props.schemas, tableData, 3);
+        const { codeText, codeTips } = getCodeText(props.schemas, tableData, 3)
+        respParamsCard.codeText = JSON.stringify(codeText)
+        respParamsCard.tips = codeTips
         respParamsCard.tableData = tableData;
+      setTimeout(() => {
+        loading.value = true
+      }, 1000)
     },
 });
+
+const options = {
+  minimap: {
+    enabled: false
+  }
+}
 
 const getContent = (data: any) => {
     if (data && data.content) {
@@ -263,17 +305,18 @@ const getContent = (data: any) => {
 onMounted(() => {
     requestCard.getData();
     responseStatusCard.getData();
-    watch(
-        () => props.selectApi,
-        () => {
-            requestCard.getData();
-            responseStatusCard.getData();
-        },
-    );
+});
 
-    watch([() => responseStatusCard.activeKey, () => props.selectApi], (n) => {
-        n[0] && respParamsCard.getData(n[0]);
-    });
+watch(
+  () => props.selectApi,
+  () => {
+    requestCard.getData();
+    responseStatusCard.getData();
+  },
+);
+
+watch([() => responseStatusCard.activeKey, () => props.selectApi], (n) => {
+  n[0] && respParamsCard.getData(n[0]);
 });
 </script>
 
