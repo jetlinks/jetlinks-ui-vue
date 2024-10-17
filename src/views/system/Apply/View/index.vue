@@ -29,6 +29,7 @@ const secureKey = ref<string>('');
 getAppInfo_api(clientId).then((resp: any) => {
     secureKey.value = resp.result.apiServer.secureKey;
 });
+
 </script>
 
 <style lang="less" scoped>
