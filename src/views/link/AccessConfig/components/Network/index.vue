@@ -191,7 +191,7 @@
                                             ).name
                                         }}
                                     </p>
-                                    <p v-if="config.document">
+                                    <p v-if="config?.document">
                                         <Markdown :source="config.document" />
                                     </p>
                                     <div v-if="getNetworkCurrent()">
@@ -208,7 +208,7 @@
                                     </div>
                                     <div
                                         v-if="
-                                            config.routes &&
+                                            config?.routes &&
                                             config.routes.length > 0
                                         "
                                     >
@@ -227,11 +227,11 @@
                                                 :pagination="false"
                                                 :rowKey="generateUUID()"
                                                 :data-source="
-                                                    config.routes || []
+                                                    config?.routes || []
                                                 "
                                                 bordered
                                                 :columns="
-                                                    config.id === 'MQTT'
+                                                    config?.id === 'MQTT'
                                                         ? columnsMQTT
                                                         : columnsHTTP
                                                 "
@@ -551,7 +551,7 @@ const next = async () => {
                       )
                     : await getChildConfigView(procotolCurrent.value);
             if (resp.status === 200) {
-                config.value = resp.result;
+                config.value = resp.result || {};
                 current.value = current.value + 1;
                 const Group = {
                     title: '分组',
