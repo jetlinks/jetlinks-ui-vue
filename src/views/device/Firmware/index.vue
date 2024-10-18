@@ -86,7 +86,7 @@ import type { ActionsType } from '@/components/Table/index';
 import { query, queryProduct, remove } from '@/api/device/firmware';
 import TaskDrawer from './Task/index.vue';
 import dayjs from 'dayjs';
-import _ from 'lodash-es';
+import { map, cloneDeep } from 'lodash-es';
 import Save from './Save/index.vue';
 import type { FormDataType } from './type';
 import { onlyMessage } from '@/utils/comm';
@@ -240,7 +240,7 @@ const handleAdd = () => {
     visible.value = true;
 };
 const handleEdit = (data: Partial<Record<string, any>>) => {
-    current.value = _.cloneDeep(data);
+    current.value = cloneDeep(data);
     visible.value = true;
 };
 
@@ -273,7 +273,7 @@ onMounted(() => {
         terms: [{ column: 'state', value: 1 }], // 不传参会报错，暂时查询启用状态的，后期会改查全部 todo
     }).then((resp: any) => {
         const list = resp.result.filter((it: any) => {
-            return _.map(it?.features || [], 'id').includes('supportFirmware');
+            return map(it?.features || [], 'id').includes('supportFirmware');
         });
         productOptions.value = list.map((item: any) => ({
             label: item.name,

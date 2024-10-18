@@ -28,7 +28,9 @@ export const initWebSocket = () => {
             timer = setInterval(heartCheck, 2000)
             if (tempQueue.length > 0) {
                 for (let i = tempQueue.length - 1; i >= 0; i--) {
-                    ws.send(tempQueue[i].msg)
+                    if (ws.readyState === WebSocket.OPEN) {
+                        ws.send(tempQueue[i].msg)
+                    }
                 }
             }
         }
@@ -95,7 +97,7 @@ export const getWebSocket = (id: string, topic: string, parameter: Record<string
         const unsub = JSON.stringify({ id, type: 'unsub' })
         delete subs[id]
         tempQueue = tempQueue.filter(item => item.id !== id)
-        if (thisWs) {
+        if (thisWs && thisWs.readyState === WebSocket.OPEN) {
             thisWs.send(unsub)
         }
     }

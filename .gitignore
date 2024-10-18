@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+edge-gateway
 dist-ssr
 *.local
 components.d.ts

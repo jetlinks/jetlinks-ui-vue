@@ -527,7 +527,7 @@ const uploader: uploaderType = {
     //     'image/pjpeg',
     // ],
     imageTypes: ['.jpg', '.png', '.jfif', '.pjp', '.pjpeg', '.jpeg'],
-    iconTypes: ['image/x-icon'],
+    iconTypes: ['image/x-icon', 'image/vnd.microsoft.icon'],
     // logo格式校验
     // beforeLogoUpload: ({ size, type }: File) => {
     beforeLogoUpload: (file: File) => {
@@ -549,7 +549,7 @@ const uploader: uploaderType = {
     },
     // 浏览器页签格式校验
     beforeIconUpload: (file) => {
-        const typeBool = file.type.includes('x-icon');
+        const typeBool =  uploader.iconTypes.includes(file.type);
         const sizeBool = file.size / 1024 / 1024 < 1;
         if (!typeBool) {
             onlyMessage(`请上传ico格式的图片`, 'error');
