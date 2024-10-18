@@ -26,6 +26,7 @@
 import { PopoverModal } from '../index'
 import Item from './Item.vue'
 import {Form} from "ant-design-vue";
+import {BooleanValueMap} from "../utils";
 
 const emit = defineEmits([
   'update:trueText',
@@ -64,6 +65,7 @@ const props = defineProps({
 });
 
 const formItemContext = Form.useInjectFormItemContext();
+const defaultValue = BooleanValueMap()
 
 const formRef = ref()
 const visible = ref(false)
@@ -89,12 +91,16 @@ const onOk = async () => {
   }
 }
 
+const initValue = () => {
+  formData.value.trueText = props.trueText || defaultValue.trueText
+  formData.value.trueValue = props.trueValue || defaultValue.trueValue
+  formData.value.falseText = props.falseText || defaultValue.falseText
+  formData.value.falseValue = props.falseValue || defaultValue.falseValue
+}
+
 const onCancel = () => {
   formRef.value?.resetFields();
-  formData.value.trueText = props.trueText || '是'
-  formData.value.trueValue = props.trueValue || 'true'
-  formData.value.falseText = props.falseText || '否'
-  formData.value.falseValue = props.falseValue || 'false'
+  initValue()
   emit('cancel');
 }
 
@@ -104,10 +110,7 @@ watch(() => [
   props.falseText,
   props.falseValue,
 ], () => {
-  formData.value.trueText = props.trueText || '是'
-  formData.value.trueValue = props.trueValue || 'true'
-  formData.value.falseText = props.falseText || '否'
-  formData.value.falseValue = props.falseValue || 'false'
+  initValue()
 })
 
 </script>
