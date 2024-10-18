@@ -4,6 +4,7 @@
     title="批量操作"
     width="90%"
     okText="新增任务"
+    :confirmLoading="loading"
     @cancel="onCancel"
     @ok="onOk"
   >
@@ -18,29 +19,28 @@
           <a-form-item label="名称" name="name">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
-          <a-form-item name="deviceId">
+          <a-form-item name="thingList">
             <template #label>
               涉及网关
               <div class="form-label-extra gateway-list-label">
-                <a-badge :count="gatewayList.length" />
+                <a-badge :count="formModel.thingList.length" />
                 <a-button type="link" @click="openGatewayModal">选择</a-button>
               </div>
             </template>
             <GatewaySelect
-              v-model:value="formModel.deviceId"
-              :options="gatewayList"
-              @delete="gatewayListDelete"
+              v-model:value="formModel.thingList"
             />
           </a-form-item>
-          <a-form-item label="任务类型" name="type" required>
+          <a-form-item label="任务类型" name="jobType" required>
             <CheckButton
-              v-model:value="formModel.type"
+              v-model:value="formModel.jobType"
               :options="batchOperateOptions"
               :beforeChange="batchOperateChange"
             />
           </a-form-item>
           <a-form-item label="说明" name="description">
             <a-textarea
+              v-model:value="formModel.description"
               placeholder="请输入说明"
               :rows="4"
             />
@@ -48,16 +48,16 @@
         </a-form>
       </div>
       <div class="task-content">
-        <ContentPlugin v-if="formModel.type === 'plugin'" :options="gatewayList" />
-        <ContentRemote v-else-if="formModel.type === 'remote'" :options="gatewayList" />
-        <ContentChildren v-else-if="formModel.type === 'device'"  :options="gatewayList" :updateDevice="updateDevice" @change="onChildrenChange"/>
-        <ContentAiModel v-else-if="formModel.type === 'AiModel'"  :options="gatewayList" @change="onChildrenChange"/>
-        <ContentAiResource v-else-if="formModel.type === 'AiResource'"  :options="gatewayList" @change="onChildrenChange"/>
-        <ContentCollectorTemplate v-else-if="formModel.type === 'CollectorTemplate'"  :options="gatewayList" @change="onChildrenChange"/>
+        <ContentPlugin v-if="formModel.jobType === 'plugin'" ref="contentRef" :options="formModel.thingList" />
+        <ContentRemote v-else-if="formModel.jobType === 'remote'" :options="formModel.thingList" />
+        <ContentChildren v-else-if="formModel.jobType === 'device'"  :options="formModel.thingList" :updateDevice="updateDevice" @change="onChildrenChange"/>
+        <ContentAiModel v-else-if="formModel.jobType === 'AiModel'"  :options="formModel.thingList" />
+        <ContentAiResource v-else-if="formModel.jobType === 'AiResource'"  :options="formModel.thingList" />
+        <ContentCollectorTemplate v-else-if="formModel.jobType === 'CollectorTemplate'"  :options="formModel.thingList" />
       </div>
       <GatewayModal
         v-if="gatewayData.visible"
-        :filter="gatewayList"
+        :filter="formModel.thingList"
         @cancel="closeGatewayModal"
         @ok="addGateway"
       />
@@ -75,9 +75,12 @@ import ContentAiModel from './AiModel/index.vue'
 import ContentAiResource from './AiResource/index.vue'
 import ContentCollectorTemplate from './CollectorTemplate/index.vue'
 import { detail } from '@/api/device/instance';
+import { createTask } from '@/api/edge/batch'
+import { useRequest } from '@/hook'
 
 import {useBatchOperateOptions} from "@/views/edge/Batch/util";
 import {Modal} from "ant-design-vue";
+import {onlyMessage} from "@/utils/comm";
 
 const props = defineProps({
   value: {
@@ -92,17 +95,23 @@ const props = defineProps({
 
 const emit = defineEmits(['cancel', 'ok'])
 
+const { loading, run } = useRequest( createTask, {
+  immediate: false,
+  onSuccess() {
+    onCancel()
+  }
+})
+
 const { batchOperateOptions } = useBatchOperateOptions()
 
+const contentRef = ref()
 const formRef = ref()
 const formModel = reactive({
   name: '',
-  deviceId: [],
-  type: undefined,
+  jobType: undefined,
+  thingList: props.list,
   description: undefined
 })
-
-const gatewayList = ref(props.list || [])
 
 const gatewayData = reactive({
   visible: false,
@@ -126,7 +135,7 @@ const rules = {
       },
     },
   ],
-  deviceId: [{
+  thingList: [{
     required: true,
     validator: (_rule, value) => {
       if (!value.length) {
@@ -144,7 +153,7 @@ const rules = {
 const updateDevice = (id) => {
   detail(id).then(resp => {
     if (resp.success) {
-      gatewayList.value = gatewayList.value.map(item => {
+      formModel.thingList = formModel.thingList.map(item => {
         if (item.id) {
           item.state = resp.result.state
         }
@@ -164,15 +173,11 @@ const openGatewayModal = () => {
 
 const addGateway = (rows) => {
   gatewayData.visible = false
-  gatewayList.value.push(...rows.map(item => ({
+  formModel.thingList.push(...rows.map(item => ({
     value: item.id,
     label: item.name,
     ...item
   })))
-}
-
-const gatewayListDelete = (id) => {
-  gatewayList.value = gatewayList.value.filter(item => item.id !== id)
 }
 
 const onCancel = () => {
@@ -180,20 +185,40 @@ const onCancel = () => {
 }
 
 const onOk = async () => {
-  let validateStatus = false
   const formResp = await formRef.value.validate()
 
   if (!formResp) {
     return
   }
 
-  if (validateStatus) {
-    emit('ok')
+  const commandArgs = await contentRef.value.getValue()
+
+  if (!commandArgs.length) {
+    onlyMessage('请选择插件', 'warning')
+    return
   }
+
+  const newThingList = formModel.thingList.map(item => {
+    return {
+      thingId: item.id,
+      thingType: item.deviceType.value,
+      thingName: item.name
+    }
+  })
+  const newParams = {
+    ...formModel,
+    thingList: newThingList,
+    commandArgs,
+    resourceTotal: newThingList.length,
+    serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : '',
+    commandId: 'SaveByTemplate'
+  }
+
+  run(newParams)
 }
 
 const batchOperateChange = (e) => {
-  if (e === formModel.type) {
+  if (e === formModel.jobType) {
     return
   }
 
