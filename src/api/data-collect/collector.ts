@@ -95,3 +95,6 @@ export const getBacnetValueType = () => server.get(`/collect/bacnet/value/types`
  * 导出点位数据
  */
 export const exportPoint = (collectorId:string,provider:string) => server.get(`/data-collect/point/${collectorId}/${provider}/export.xlsx`, {}, {responseType: 'blob'})
+
+//获取iec104
+export const queryIEC104 = () => server.get("/collect/iec104/types")
