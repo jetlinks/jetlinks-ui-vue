@@ -30,6 +30,7 @@
 </template>
 
 <script setup lang="ts" name="LivePlayer">
+import { ref } from 'vue'
 import Player, { Events, Sniffer } from 'xgplayer'
 import { settingEnum } from './utils'
 
@@ -60,6 +61,7 @@ type PlayerProps = {
 };
 
 const props = defineProps<PlayerProps>();
+const isHevcSupport = ref<boolean>(true)
 
 const playerElement = ref<HTMLVideoElement>();
 let player: any = null
@@ -97,8 +99,6 @@ const init = () => {
   destroy()
   setTimeout(() => {
 
-    console.log(props.protocol)
-
     player = new Player({
       el: playerElement.value,
       // autoplay: props.autoplay ?? true,
@@ -120,15 +120,12 @@ const init = () => {
     })
 
     player.on(Events.PLAY, (ev) => {
-      console.log('-播放开始-', ev);
       props.onPlay?.()
     })
     player.on(Events.PAUSE, (ev) => {
-      console.log('-播放暂停-', ev);
       props.onPause?.()
     })
     player.on(Events.ENDED, (ev) => {
-      console.log('-播放结束-', ev);
       props.onEnded?.()
     })
     player.on(Events.TIME_UPDATE, (ev) => {
@@ -141,14 +138,19 @@ const init = () => {
       }
     })
     player.on(Events.SEEKED, (ev) => {
-      console.log('-跳着播放-', ev);
       if (props.live) {
         init()
       }
     })
+
     player.on(Events.ERROR, (ev) => {
-      console.log('-播放错误-', ev);
-      if (props.live) {
+      isHevcSupport.value = Player.isHevcSupported()
+      if (!isHevcSupport.value) {
+        playerElement.value.querySelector('.xgplayer-error-text').innerHTML = '该浏览器不支持hevc(h265)解码'
+        playerElement.value.querySelector('.xgplayer-error-tips').innerHTML = ''
+      }
+
+      if (props.live && isHevcSupport.value) {
         setTimeout(() => {
           init()
         }, 5000)
