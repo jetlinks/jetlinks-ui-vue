@@ -11,13 +11,8 @@
       :defaultParams="{
         terms: [
           {
-            column: 'type',
+            column: 'jobType',
             value: type
-          },
-          {
-            column: 'id',
-            termType: 'device-involve-task',
-            value: ''
           }
         ]
       }"

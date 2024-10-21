@@ -52,10 +52,8 @@ const typeSelect = (e) => {
 <style scoped lang="less">
 .type-select-warp {
   flex: 1 1 0;
-  border: 1px solid #f1f1f1;
   display: flex;
   flex-direction: column;
-  padding: 16px;
 
   .tips {
     margin-bottom: 16px;

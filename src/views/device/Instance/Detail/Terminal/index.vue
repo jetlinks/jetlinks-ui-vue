@@ -17,7 +17,6 @@ import {getWebSocket} from "./websocket";
 
 const wsRef = ref()
 const wsInitRef = ref()
-const termRef = ref()
 const terminal = ref()
 const sessionId = ref()
 const fitAddon = new FitAddon();
@@ -25,6 +24,7 @@ const token = getToken()
 const instanceStore = useInstanceStore();
 const { current } = storeToRefs(instanceStore);
 
+let termRef
 const url = ref()
 
 const getData = (input = '') => {
@@ -39,7 +39,7 @@ const getData = (input = '') => {
 }
 
 const initTerm = () => {
-  termRef.value = new Terminal({
+  termRef = new Terminal({
     rendererType: "canvas", //渲染类型
     convertEol: true, //启用时，光标将设置为下一行的开头
     scrollback: 45, //终端中的回滚量
@@ -60,13 +60,13 @@ const initTerm = () => {
     LogLevel: 'debug',
   });
 
-  termRef.value.loadAddon(fitAddon);
-  termRef.value.open(terminal.value);
+  termRef.loadAddon(fitAddon);
+  termRef.open(terminal.value);
   // 不能初始化的时候fit,需要等terminal准备就绪,可以设置延时操作
   setTimeout(() => {
     fitAddon.fit()
   }, 5)
-  termRef.value.onData((data) => {
+  termRef.onData((data) => {
     getData(data)
   })
 }
@@ -78,7 +78,7 @@ const getInitData = () => {
       onlyMessage('连接失败')
     }
     sessionId.value = resp.payload?.sessionId
-    termRef.value.write(resp.payload.output)
+    termRef.write(resp.payload.output)
   });
 }
 
@@ -93,15 +93,13 @@ const removeResizeListener = () => {
   window.removeEventListener('resize', onResize)
 }
 
-watch(() => [current.value.id, terminal.value], () => {
-  if(current.value?.id && terminal.value){
-    getInitData()
+onMounted(() => {
+  getInitData()
+  nextTick(() => {
     initTerm()
-    onTerminalResize()
-  }
-}, {
-  immediate: true
-})
+  })
+  onTerminalResize()
+});
 
 const unSub = () => {
   if (wsRef.value) {
