@@ -1,77 +1,90 @@
 <template>
-  <div class="log-card-item-warp">
+  <div class="log-card-item-warp" @click="showTaskDetail">
 
     <div class="content">
       <div class="item-body">
         <div class="body-header">
-            <div class="header-title">
+          <div class="header-title">
               {{ detail.name || '测试内容' }}
-            </div>
-          <div>
-            {{ detail.state.text }}
+          </div>
+          <div class="header-status bg-color-200">
+            <BadgeStatus
+              :text="detail.state.text"
+              :status="detail.state.value"
+              :statusNames="{
+                ...colorMap,
+                'running': 'primary'
+              }"
+            />
           </div>
           <div class="header-action">
-
+            <a-dropdown>
+              <a-button type="text">
+                <template #icon>
+                  <AIcon type="EllipsisOutlined" />
+                </template>
+              </a-button>
+              <template #overlay>
+                <a-menu>
+                  <a-menu-item @click="onCopy">
+                    从相同设备创建任务
+                  </a-menu-item>
+                </a-menu>
+              </template>
+            </a-dropdown>
           </div>
         </div>
         <div class="body-detail">
           <div class="detail-desc">
-            <div class="detail-title">说明</div>
-            <div class="detail-value">{{ detail.description}}</div>
+            <div class="detail-title text-color-500">说明</div>
+            <div class="detail-value text-color-600">{{ detail.description}}</div>
           </div>
           <div class="detail-time">
-            <div class="detail-title">时间</div>
-            <div class="detail-value">{{ dayjs(detail.createTime).format('YYYY-MM-DD HH:mm:ss')}}</div>
+            <div class="detail-title text-color-500">时间</div>
+            <div class="detail-value text-color-600">{{ dayjs(detail.createTime).format('YYYY-MM-DD HH:mm:ss')}}</div>
           </div>
         </div>
-        <div class="body-count">
+        <div class="body-count bg-color-200">
           <div>
-            <label>网关数量</label>
-            <span>{{ detail.thingTotal }}</span>
+            <a-space>
+              <Icon type="icon-shebei" style="font-size: 16px" />
+              <label class="text-color-500">网关数量</label>
+              <span class="text-color-900">{{ detail.thingTotal }}</span>
+            </a-space>
           </div>
           <div>
-            <label>插件数量</label>
-            <span>{{ detail.thingTotal }}</span>
+            <a-space>
+              <Icon type="icon-chajianbao" style="font-size: 16px" />
+              <label class="text-color-500">插件数量</label>
+              <span class="text-color-900">{{ detail.thingTotal }}</span>
+            </a-space>
           </div>
         </div>
         <div class="body-progress">
-          <div class="progress--warp" :style="progressStyles"></div>
+          <div class="progress--warp bg-color-200">
+            <div v-for="item in options" :style="{ width: item.per + '%', background: item.bgc }"></div>
+          </div>
         </div>
         <div class="body-status">
           <div v-for="item in options" class="status-item">
+            <Icon :type="item.icon" :style="{color: item.color}" />
             <label>
               {{ item.label}}
             </label>
             <span>
-              {{ item.value }}%
+              {{ item.value }}
             </span>
           </div>
           <div class="status-item last-item">
             <label>
               任务总数
             </label>
-            <span>
-              88
+            <span class="text-color-900">
+              {{ taskTotal }}
             </span>
           </div>
         </div>
       </div>
-<!--      <div class="item-action">-->
-<!--        <a-tooltip title="详情">-->
-<!--          <a-button type="text" @click="visible = true" >-->
-<!--            <template #icon>-->
-<!--              <AIcon type="EyeOutlined" />-->
-<!--            </template>-->
-<!--          </a-button>-->
-<!--        </a-tooltip>-->
-<!--        <a-tooltip title="从相同设备创建任务">-->
-<!--          <a-button type="text" @click="onCopy">-->
-<!--            <template #icon>-->
-<!--              <AIcon type="CopyOutlined" />-->
-<!--            </template>-->
-<!--          </a-button>-->
-<!--        </a-tooltip>-->
-<!--      </div>-->
     </div>
   </div>
   <Detail
@@ -91,6 +104,7 @@ import Detail from './Detail.vue'
 import TaskDetail from "./TaskDetail.vue";
 import {getContext} from "../util";
 import dayjs from 'dayjs'
+import Icon from '../components/Icon.vue'
 
 const props = defineProps({
   detail: {
@@ -101,37 +115,47 @@ const props = defineProps({
 
 const visible = ref(false)
 const context = getContext()
+const colorMap = {
+  'success': 'success',
+  'complete': 'success',
+  'running': 'warning',
+  'incomplete': 'warning',
+  'failed': 'error',
+  'waiting': 'primary'
+}
+
+const iconMap = {
+  'success': 'CheckCircleFilled',
+  'running': 'ClockCircleFilled',
+  'failed': 'InfoCircleFilled',
+  'canceled': 'PauseCircleFilled',
+  'waiting': 'icon-paiduizhong',
+}
 
 const taskDetail = reactive({
   visible: false,
   detail: undefined
 })
 
-const options = computed(() => {
-  return [
-    { label: '已完成', value: 0 },
-    { label: '已失败', value: 0 },
-    { label: '进行中', value: 0 },
-    { label: '排队中', value: 0 },
-  ]
+const taskTotal = computed(() => {
+  return props.detail.stateCount?.reduce((prev, next) => prev + next.total, 0) || 0
 })
 
-const progressStyles = computed(() => {
-    const value = {
-      'success': 10,
-      'warning': 10,
-      'error': 10,
+const options = computed(() => {
+
+  return props.detail.stateCount?.map(item => {
+    const per = taskTotal.value ? Math.round(parseFloat(item.total / taskTotal.value) * 100) : 0 ; // 单个进度比例
+    const key = colorMap[item.state.value]
+    return {
+      label: item.state.text,
+      type: item.state.value,
+      value: item.total,
+      icon: iconMap[item.state.value],
+      per: key ? per : 0,
+      bgc: key ? `var(--ant-${key}-color)` : 'transparent',
+      color: key ? `var(--ant-${key}-color)` : '#646C73',
     }
-
-    const bgi = Object.keys(value).reduce((prev, key, index) => {
-      const v = Object.values(value).splice(0, index + 1).reduce((a, b) => a + b, 0)
-      prev += `var(--ant-${key}-color) 0, var(--ant-${key}-color) ${v}%,`
-      return prev
-    }, '')
-
-  return {
-    'background-image': 'linear-gradient(90deg,' + bgi + '#EFF0F1 0, #EFF0F1 100%)'
-  }
+  }) || []
 })
 
 const showTaskDetail = (record) => {
@@ -165,11 +189,21 @@ const onCopy = () => {
       display: flex;
       gap: 12px;
       margin-bottom: 16px;
+      align-items: center;
 
       .header-title {
         font-size: 16px;
         color: @font-gray-900;
         font-weight: 500;
+      }
+
+      .header-status {
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      .header-action {
+        margin-left: auto;
       }
     }
 
@@ -190,18 +224,26 @@ const onCopy = () => {
 
       .detail-title {
         width: 40px;
-        color: @font-gray-500;
+
       }
 
       .detail-value {
         flex: 1 1 0;
         min-width: 0;
-        color: @font-gray-600;
+
       }
     }
 
     .body-count {
       margin-bottom: 16px;
+      display: flex;
+      padding: 8px 24px;
+      border-radius: 6px;
+
+      >div {
+        flex: 1;
+        min-width: 0;
+      }
     }
 
     .body-progress {
@@ -211,7 +253,10 @@ const onCopy = () => {
     .body-status {
       display: flex;
       .status-item {
-        width: 134px;
+        width: 120px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
       }
 
       .last-item {
@@ -220,8 +265,11 @@ const onCopy = () => {
     }
 
     .progress--warp {
-      height: 4px;
+      height: 6px;
       position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
     }
   }
 }
