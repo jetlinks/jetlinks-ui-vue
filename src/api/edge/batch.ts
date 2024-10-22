@@ -6,7 +6,15 @@ import server from '@/utils/request'
  * @param internalId 连接id
  * @param data
  */
-export const _queryByEdge = (thingId: string,internalId:string,data:any) => server.post(`/edge/device/${thingId}/_/edge/master/bind/${internalId}/_query/no-paging?paging=false`,data)
+export const _queryByEdge = (thingId: string,data:any) => server.post(`/edge/device/${thingId}/_/edge/command/QueryBindInfoList/_execute`,data)
+
+/**
+ * 绑定子设备命令
+ * @param thingId 边缘网关ID
+ * @param commandId 命令ID{BindMasterDevice:绑定单个,BatchBindDevice:批量绑定,UnbindDevice:解绑}
+ * @param data
+ */
+export const _commandByEdge = (thingId: string,commandId:string,data:any) => server.post(`/edge/device/${thingId}/_/edge/command/${commandId}/_execute`,data)
 
 /**
  * 创建任务

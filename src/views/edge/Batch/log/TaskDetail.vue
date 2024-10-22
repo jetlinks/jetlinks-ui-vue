@@ -7,6 +7,12 @@
     :maskClosable="false"
   >
     <div class="generalInfo">
+      <div class="header" >
+        <div class="header-left">
+          {{ data.name || '--' }}
+        </div>
+        <div class="header-right"></div>
+      </div>
       <div class="allOperation">
         <PermissionButton
           @click="stopAll"
@@ -279,11 +285,15 @@ const stopUpgrades = async (id) => {
 
 onMounted(() => {
   queryHistoryList();
+  console.log('props.data====',props.data);
 });
 </script>
 <style lang="less" scoped>
 .generalInfo {
   margin-bottom: 30px;
+  .header{
+    
+  }
   .progress {
     width: 100%;
     line-height: 32px;

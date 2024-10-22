@@ -14,7 +14,7 @@
                 <a-tab-pane
                     v-for="item in options"
                     :key="item.id"
-                    @click="onChangeEdge(item)"
+                   
                 >
                     <template #tab>
                         <div>
@@ -42,7 +42,9 @@
                 <a-button type="link" @click="handleRefresh"
                     ><AIcon type="RedoOutlined"
                 /></a-button>
-                <a-button v-if="!_checked" type="primary">保存</a-button>
+                <a-button v-if="!_checked" type="primary" @click="onSaveAll"
+                    >保存</a-button
+                >
             </a-space>
         </div>
         <div class="content">
@@ -74,7 +76,9 @@
                                 <template v-if="column.key === 'id'">
                                     <j-ellipsis>
                                         {{
-                                            record.id ? record.id : '自动生成'
+                                            record.Mappingtype !== 'auto'
+                                                ? record.id
+                                                : '自动生成'
                                         }}</j-ellipsis
                                     >
                                 </template>
@@ -174,7 +178,7 @@
                     <span>边端未映射设备列表</span>
                     <a-input-search
                         v-model:value="_search"
-                        style="width: 200px; border-radius: 50%"
+                        style="width: 200px"
                         placeholder="搜索"
                         enter-button
                         @search="onRightSearch"
@@ -231,9 +235,11 @@
 </template>
 
 <script setup name="TaskChildren">
-import { queryNoPagingPost } from '@/api/device/instance';
-import { _queryByEdge } from '@/api/edge/batch';
+import { queryNoPagingPost, addDevice,editDevice } from '@/api/device/instance';
+import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
 import { getImage } from '@/utils/comm';
+import { onlyMessage } from '@/utils/comm';
+import { randomString } from '@/utils/utils';
 
 const props = defineProps({
     options: {
@@ -254,23 +260,13 @@ const _drop = ref({});
 const _dropList = ref([]);
 const edgeId = ref('');
 const edgeCurrent = ref({});
-const instanceId = ref('local');
 const _checked = ref(true);
 const _search = ref('');
 const _edgeInitList = ref([]);
+const _bindInitList = ref([]);
 
 const options = computed(() => {
-    return [
-        ...props.options,
-        {
-            id: '1',
-            value: '1',
-            name: '云端模板',
-            MappingStatus: 'none',
-            label: ' 云端模板',
-            state: { text: '在线', value: 'online' },
-        },
-    ];
+    return props.options;
 });
 
 const stateMap = new Map();
@@ -336,7 +332,7 @@ const handleSearch = async (e) => {
                 type: 'and',
             },
         ];
-        if (e?.terms.length) {
+        if (e?.terms?.length) {
             terms.push(e.terms[0]);
         }
         const res = await queryNoPagingPost({
@@ -346,11 +342,12 @@ const handleSearch = async (e) => {
         });
 
         if (res.success) {
-            const resp = await _queryByEdge(edgeId.value, instanceId.value, {
+            const resp = await _queryByEdge(edgeId.value, {
                 terms: [{ column: 'key', value: '', termType: 'notnull' }],
             });
             if (resp.success) {
-                _dropList.value = resp.result;
+                _dropList.value = [...resp.result];
+                _bindInitList.value = [...resp.result];
             }
             _dataSource.value = res.result.map((item) => {
                 const isMap = _dropList.value?.find(
@@ -374,69 +371,119 @@ const handleSearch = async (e) => {
 };
 
 const getNoMapping = async () => {
-    const res = await _queryByEdge(edgeId.value, instanceId.value, {
+    const res = await _queryByEdge(edgeId.value, {
         terms: [{ column: 'key', value: '', termType: 'isnull' }],
     });
     if (res.success) {
-        edgeList.value = res.result;
+        edgeList.value = [...res.result];
         _edgeInitList.value = [...res.result];
     }
 };
-//保存单个
-const onSaveSingle = async (record) => {};
-//保存全部
-const onSaveAll = () => {};
-const onCancel = () => {};
 
 const onStart = (item) => {
     _drop.value = item;
 };
 
-const onDrop = (e, item) => {
-    item.Mapping = _drop.value;
-    item.MappingStatus = 'warning';
-    item.action = 'drop';
-    edgeList.value = edgeList.value.filter((i) => i.id !== _drop.value.id);
-    _edgeInitList.value = _edgeInitList.value.filter((i) => i.id !== _drop.value.id);
-    _dropList.value.push(item);
-    item.loading = true;
-    setTimeout(() => {
-        item.loading = false;
-        item.MappingStatus = 'error';
-    }, 1000);
+const onDrop = async (e, item) => {
+    if (_checked.value) {
+        item.loading = true;
+        item.Mapping = _drop.value;
+        const res = await _commandByEdge(edgeId.value, 'BindMasterDevice', {
+            deviceId: _drop.value.id,
+            masterDeviceId: item.id,
+        }).finally(() => {
+            item.loading = false;
+        });
+        if (res.success) {
+            item.MappingStatus = 'success';
+            handleRefresh();
+        } else {
+            item.MappingStatus = 'error';
+        }
+    } else {
+        item.Mapping = _drop.value;
+        item.MappingStatus = 'warning';
+        item.action = 'drop';
+        edgeList.value = edgeList.value.filter((i) => i.id !== _drop.value.id);
+        _edgeInitList.value = _edgeInitList.value.filter(
+            (i) => i.id !== _drop.value.id,
+        );
+        _dropList.value.push(item);
+    }
 };
 
 const onDropAuto = () => {
     if (_drop.value.masterProductId) {
         const obj = {
-            id: '',
+            id: randomString(12),
             name: _drop.value.name,
+            Mappingtype: 'auto',
             Mapping: _drop.value,
             MappingStatus: 'warning',
         };
         edgeList.value = edgeList.value.filter((i) => i.id !== _drop.value.id);
-        _edgeInitList.value = _edgeInitList.value.filter((i) => i.id !== _drop.value.id);
+        _edgeInitList.value = _edgeInitList.value.filter(
+            (i) => i.id !== _drop.value.id,
+        );
         _dataSource.value.unshift(obj);
         _dropList.value.unshift(obj);
+        if (_checked.value) {
+            onAuto(obj);
+        }
+    }
+};
+
+const onAuto = async (item) => {
+    const deviceInfo = {
+        id: item.id,
+        name: item.name,
+        parentId: edgeId.value,
+        productId: item.Mapping.masterProductId,
+        productName: item.Mapping.productName,
+    };
+    const res = await addDevice(deviceInfo);
+    if (res.success) {
+        item.loading = true;
+        const resp = await _commandByEdge(edgeId.value, 'BindMasterDevice', {
+            deviceId: _drop.value.id,
+            masterDeviceId: item.id,
+        }).finally(() => {
+            item.loading = false;
+        });
+        if (resp.success) {
+            item.MappingStatus = 'success';
+            handleRefresh();
+        } else {
+            item.MappingStatus = 'error';
+        }
     }
 };
 
 const onDelete = (item) => {
     item.action = 'delete';
     if (item.id) {
-        item.loading = true;
-        const res = true;
-        setTimeout(() => {
-            item.loading = false;
-        }, 1000);
-        if (res) {
+        if (_checked.value) {
+            item.loading = true;
+            _commandByEdge(edgeId.value, 'UnbindDevice', {
+                key: item.id,
+            })
+                .then((res) => {
+                    if (res.success) {
+                        item.MappingStatus = 'none';
+                        handleRefresh();
+                    } else {
+                        item.MappingStatus = 'error';
+                    }
+                })
+                .finally(() => {
+                    item.loading = false;
+                });
+        } else {
             edgeList.value.push(item.Mapping);
             _edgeInitList.value.push(item.Mapping);
             item.Mapping = {};
-            item.MappingStatus = 'success';
+            item.MappingStatus = 'none';
             _dropList.value = _dropList.value.filter((i) => i.id !== item.id);
-        } else {
-            item.MappingStatus = 'error';
         }
     } else {
         edgeList.value.push(item.Mapping);
@@ -449,33 +496,74 @@ const onDelete = (item) => {
         );
     }
 };
+
+const onSaveAll = async () => {
+    const _arr = _dataSource.value
+        .map((item) => {
+            if (
+                item.MappingStatus === 'warning' ||
+                item.MappingStatus === 'success'
+            ) {
+                return {
+                    deviceId: item.Mapping.id,
+                    key: item.id,
+                };
+            }
+        })
+        .filter((item) => item?.deviceId);
+    const _none = _bindInitList.value.map((item) => item?.id);
+    const _auto = _dataSource.value.filter(
+        (item) => item?.Mappingtype === 'auto',
+    );
+    if (_none.length) {
+        await _commandByEdge(edgeId.value, 'BatchUnbindDevice', {
+            deviceId: _none,
+        });
+    }
+    if (_auto.length) {
+        const objs = _auto.map((item) => ({
+            id: item.id,
+            name: item.name,
+            parentId: edgeId.value,
+            productId: item.Mapping.masterProductId,
+            productName: item.Mapping.productName,
+        }));
+        await editDevice(objs);
+    }
+
+    const res = await _commandByEdge(edgeId.value, 'BatchBindDevice', {
+        bindInfo: _arr,
+    });
+    if (res.success) {
+        handleRefresh();
+        onlyMessage('操作成功');
+    }
+};
 const onChange = (checked) => {
-    console.log('checked====', checked);
+    if (checked) {
+        onSaveAll();
+    }
 };
 
-const onChangeEdge = (item) => {
-    edgeCurrent.value = item;
-    handleRefresh();
-};
 
 const handleRefresh = () => {
     getNoMapping();
-    handleSearch();
+    handleSearch(true);
 };
 
 const onRefresh = () => {
-    props?.updateDevice();
+    props?.updateDevice(edgeId.value);
 };
 
-const onRightSearch = (e)=>{
-    console.log('eee====',e);
-    if(e){
-        edgeList.value = _edgeInitList.value.filter((i) => i.name.indexOf(e) > -1);
-    }else{
-        edgeList.value = _edgeInitList.value
+const onRightSearch = (e) => {
+    if (e) {
+        edgeList.value = _edgeInitList.value.filter(
+            (i) => i.name.indexOf(e) > -1,
+        );
+    } else {
+        edgeList.value = _edgeInitList.value;
     }
-   
-}
+};
 
 onMounted(() => {
     if (props.options?.length) {
@@ -487,19 +575,20 @@ onMounted(() => {
 watch(
     () => edgeId.value,
     (val) => {
-        if (val) {
+        const obj = props.options.find((item) => item.value === val);
+        if(obj?.value){
+            edgeCurrent.value = obj;
+        }
+        if (val && obj?.state?.value === 'online')  {
             handleRefresh();
+            
+        }else{
+            _edgeInitList.value = [];
+            edgeList.value = [];
         }
     },
+    { immediate: true },
 );
-
-// watch(
-//     () => _dataSource.value,
-//     () => {
-//         console.log('_dataSource.value====', _dataSource.value);
-//     },
-//     { deep: true },
-// );
 </script>
 
 <style lang="less" scoped>
