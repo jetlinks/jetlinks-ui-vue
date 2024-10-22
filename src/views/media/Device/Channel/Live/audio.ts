@@ -64,11 +64,9 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
                     anwser.sdp = resp.sdp;
                     anwser.type = 'answer';
 
-                    if (resp.code !== 0) {
-                        localPc!.setRemoteDescription(anwser).then(()=>{
-                            videoStart(deviceId, channelId)
-                        })
-                    }
+                    localPc!.setRemoteDescription(anwser).then(()=>{
+                        videoStart(deviceId, channelId)
+                    })
                 })
             });
         })

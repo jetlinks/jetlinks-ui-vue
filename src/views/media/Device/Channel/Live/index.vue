@@ -6,8 +6,9 @@
         :width="type === 'share' ? '100%' : _type ? 1200 : 900"
         :class="{ share: type === 'share' }"
         :maskClosable="false"
-        @ok="_vis = false"
+        :keyboard="false"
         :destroyOnClose="true"
+        @ok="_vis = false"
     >
         <template #closeIcon>
             <j-button :disabled="type === 'share'" type="text"
@@ -224,7 +225,7 @@ const player = ref();
 const url = ref('');
 const showAudio = ref(false);
 // 视频类型
-const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('mp4');
+const mediaType = ref<'mp4' | 'flv' | 'hls' | 'rtc'>('rtc');
 const showTool = ref(false);
 const showToolLock = ref(false);
 
@@ -315,7 +316,7 @@ const mediaStart = () => {
   if (mediaType.value !== 'rtc') {
     url.value = _url
   } else {
-    openVideo(props.data.deviceId, props.data.channelId, _url,(e) => {
+    openVideo(props.data.deviceId, props.data.channelId,(e) => {
       url.value = e
     })
   }
