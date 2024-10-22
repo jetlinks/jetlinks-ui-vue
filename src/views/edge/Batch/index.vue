@@ -3,9 +3,7 @@
     <FullPage>
       <div class="batch-warp">
         <div class="top">
-          <Device
-            v-model:value="deviceList"
-          />
+          <Device />
           <Operate @selected="operateSelect" />
         </div>
         <div class="bottom">

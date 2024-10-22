@@ -9,20 +9,19 @@
       :style="{ padding: 0, marginBottom: 0 }"
       @search="handleSearch"
     />
-    <Card />
-<!--    <JProTable-->
-<!--      ref="edgeDeviceRef"-->
-<!--      model="CARD"-->
-<!--      style="padding: 12px 0 0"-->
-<!--      :columns="columns"-->
-<!--      :request="query"-->
-<!--      :params="params"-->
-<!--      :gridColumn="1"-->
-<!--    >-->
-<!--      <template #card="slotProps">-->
-<!--        <Card :detail="slotProps" />-->
-<!--      </template>-->
-<!--    </JProTable>-->
+    <JProTable
+      ref="edgeDeviceRef"
+      model="CARD"
+      style="padding: 12px 0 0"
+      :columns="columns"
+      :request="query"
+      :params="params"
+      :gridColumn="1"
+    >
+      <template #card="slotProps">
+        <Card :detail="slotProps" />
+      </template>
+    </JProTable>
   </div>
 </template>
 

@@ -18,7 +18,7 @@
           <a-form-item label="名称" name="name">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
-          <a-form-item name="gateway">
+          <a-form-item name="deviceId">
             <template #label>
               涉及网关
               <div class="form-label-extra gateway-list-label">
@@ -27,7 +27,7 @@
               </div>
             </template>
             <GatewaySelect
-              v-model:value="formModel.gateway"
+              v-model:value="formModel.deviceId"
               :options="gatewayList"
               @delete="gatewayListDelete"
             />
@@ -35,12 +35,13 @@
           <a-form-item label="任务类型" name="type" required>
             <CheckButton
               v-model:value="formModel.type"
-              :options="BatchOperateOptions"
+              :options="batchOperateOptions"
             />
           </a-form-item>
           <a-form-item label="说明" name="description">
             <a-textarea
               placeholder="请输入说明"
+              :rows="4"
             />
           </a-form-item>
         </a-form>
@@ -49,6 +50,9 @@
         <ContentPlugin v-if="formModel.type === 'plugin'" :options="gatewayList" />
         <ContentRemote v-else-if="formModel.type === 'remote'" :options="gatewayList" />
         <ContentChildren v-else-if="formModel.type === 'device'"  :options="gatewayList" @change="onChildrenChange"/>
+        <ContentAiModel v-else-if="formModel.type === 'AiModel'"  :options="gatewayList" @change="onChildrenChange"/>
+        <ContentAiResource v-else-if="formModel.type === 'AiResource'"  :options="gatewayList" @change="onChildrenChange"/>
+        <ContentCollectorTemplate v-else-if="formModel.type === 'CollectorTemplate'"  :options="gatewayList" @change="onChildrenChange"/>
       </div>
       <GatewayModal
         v-if="gatewayData.visible"
@@ -66,7 +70,11 @@ import GatewayModal from './GatewayModal.vue'
 import ContentPlugin from './Plugin/index.vue'
 import ContentRemote from './Remote/index.vue'
 import ContentChildren from './Children/index.vue'
-import { BatchOperateOptions } from '../util'
+import ContentAiModel from './AiModel/index.vue'
+import ContentAiResource from './AiResource/index.vue'
+import ContentCollectorTemplate from './CollectorTemplate/index.vue'
+
+import {useBatchOperateOptions} from "@/views/edge/Batch/util";
 
 const props = defineProps({
   value: {
@@ -81,12 +89,12 @@ const props = defineProps({
 
 const emit = defineEmits(['cancel', 'ok'])
 
+const { batchOperateOptions } = useBatchOperateOptions()
+
 const formRef = ref()
-const pluginRef = ref()
-const remoteRef = ref()
 const formModel = reactive({
   name: '',
-  gateway: '',
+  deviceId: [],
   type: undefined,
   description: undefined
 })
@@ -115,7 +123,7 @@ const rules = {
       },
     },
   ],
-  gateway: [{
+  deviceId: [{
     required: true,
     validator: (_rule, value) => {
       if (!value.length) {
@@ -160,7 +168,7 @@ const onOk = async () => {
   const formResp = await formRef.value.validate()
 
   if (!formResp) {
-
+    return
   }
 
   if (validateStatus) {
@@ -193,9 +201,7 @@ const onChildrenChange = (e)=>{
   gap: 24px;
 
   .task-form {
-    width: 300px;
-    padding-right: 12px;
-    border-right: 1px solid #f1f1f1;
+    width: 380px;
   }
 
 
@@ -213,7 +219,7 @@ const onChildrenChange = (e)=>{
   }
 
   .gateway-list-label {
-    width: 216px;
+    width: 310px;
     justify-content: space-between;
   }
 }

@@ -63,14 +63,17 @@ watch(() => props.value, () => {
 
 <style scoped lang="less">
 .gateway-select-warp {
-  padding: 4px 0;
-  border: 1px solid #f1f1f1;
+  padding: 8px;
+  border: 1px solid @border-base-color;
+  border-radius: 6px;
+  min-height: 100px;
 
   .gateway-select-item {
     display: flex;
     gap: 4px;
     cursor: pointer;
     padding: 8px 6px;
+    border-radius: 4px;
 
     .content {
       flex: 1 1 0;
@@ -86,7 +89,7 @@ watch(() => props.value, () => {
     }
 
     &:hover {
-      background-color: #f1f1f1;
+      background-color: #f5f5f5;
 
       .tool {
         visibility: visible;

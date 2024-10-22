@@ -1,6 +1,6 @@
 <template>
   <div class="operate-warp">
-    <div class="operate-item" v-for="item in BatchOperateOptions" @click="showTask(item.value)">
+    <div class="operate-item" v-for="item in batchOperateOptions" @click="showTask(item.value)">
       <div class="img"></div>
       <div class="content">
         <div class="content-title"> {{ item.label }}</div>
@@ -16,9 +16,11 @@
 </template>
 
 <script setup name="BatchOperate">
-import { BatchOperateOptions } from '../util'
+import { useBatchOperateOptions } from '../util'
 
 const emit = defineEmits(['selected'])
+
+const { batchOperateOptions } = useBatchOperateOptions()
 
 const showTask = (type) => {
   emit('selected', {type})
@@ -32,6 +34,8 @@ const showTask = (type) => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
+  height: 100%;
 
   .operate-item {
     display: flex;
@@ -42,6 +46,7 @@ const showTask = (type) => {
 
     .content-title {
       color: @font-gray-900;
+      font-weight: 500;
     }
 
     .content-tip {
