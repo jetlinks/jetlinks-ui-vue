@@ -21,12 +21,12 @@ const videoStart = (deviceId: string, channelId: string) => {
 
 }
 
-export const createRec = () => {
+export const createRtc = () => {
     localPc = new RTCPeerConnection()
 }
 
 export const rtcStream = (url) => {
-    createRec()
+    createRtc()
     _onTrack = []
 
     localPc!.ontrack = (e) => {
@@ -36,7 +36,7 @@ export const rtcStream = (url) => {
 }
 
 export const openAudio = (deviceId: string, channelId: string, options: { volume: (value: number) => void }) => {
-    createRec()
+    createRtc()
 
     navigator.mediaDevices.getUserMedia({
         audio: true
@@ -67,7 +67,6 @@ export const openAudio = (deviceId: string, channelId: string, options: { volume
                     localPc!.setRemoteDescription(anwser).then(()=>{
                         videoStart(deviceId, channelId)
                     })
-
                 })
             });
         })

@@ -48,7 +48,7 @@
                                 "
                             >
                                 <TypeSelect
-                                    v-model:value="record.valueType.type"
+                                    v-model:value="record.valueType"
                                     style="flex: 1 1 0; min-width: 0"
                                 />
                                 <DoubleParams
@@ -157,6 +157,7 @@ import {
     DoubleParams,
 } from '@/components/Metadata/Table';
 import { Form } from 'ant-design-vue';
+import { isObject } from 'lodash-es'
 
 const props = defineProps({
     value: {
@@ -334,20 +335,21 @@ const addItem = () => {
 };
 
 watch(
-		() => [JSON.stringify(props.value), visible.value],
-		(val) => {
-			if (visible.value) {
-				dataSource.value = JSON.parse(val[0] || '[]').map(el => {
-					return {
-						...el,
-						expands: el.expands || {
-							required: false,
-						}
-					}
-				});
-			}
-		},
-		{ immediate: true },
+    () => [JSON.stringify(props.value), visible.value],
+    (val) => {
+        if (visible.value) {
+            dataSource.value = JSON.parse(val[0] || '[]').map(item => {
+              item = {
+                expands: {
+                  required: false,
+                },
+                ...item,
+              }
+              return item
+            });
+        }
+    },
+    { immediate: true },
 );
 </script>
 

@@ -1,4 +1,5 @@
 import { schemaObjType } from "./typing";
+import {randomString} from "@/utils/utils";
 
 
 /**
@@ -8,28 +9,38 @@ import { schemaObjType } from "./typing";
  */
 export function findData(schemas: object, schemaName: string , paths:string[]=[]) {
     const basicType = ['string', 'integer', 'boolean','number'];
-   
+
     if (!schemaName || !schemas[schemaName]) {
         return [];
     }
     const result: schemaObjType[] = [];
     const schema = schemas[schemaName];
+    const required = schema.required || []
+
     Object.entries(schema.properties).forEach((item: [string, any]) => {
+        const [paramsName, extra] = item
+
         const paramsType =
-            (item[1].$ref && item[1].$ref.split('/').pop()) ||
-            (item[1].items?.$ref && item[1].items.$ref.split('/').pop()) ||
-            item[1].item?.type ||
-            item[1].type ||
+            (extra.$ref && extra.$ref.split('/').pop()) ||
+            (extra.items?.$ref && extra.items.$ref.split('/').pop()) ||
+            extra.item?.type ||
+            extra.type ||
             '';
+        const schema = extra.format ? `${paramsType}(${extra.format})` : ''
+
         const schemaObj: schemaObjType = {
-            paramsName: item[0],
+            paramsName: paramsName,
             paramsType,
-            desc: item[1].description || '',
+            required: required.includes(paramsName),
+            desc: extra.description || '',
+            schema: schema,
+            type: !basicType.includes(paramsType) ? paramsType : '',
+            id: randomString()
         };
-      
-        if (!basicType.includes(paramsType) && paths.filter(path=>path === schemaName).length >=2 ){
+
+        if (!basicType.includes(paramsType) && (paths.filter(path=>path === schemaName).length <=2) ){
             paths.push(schemaName)
-            schemaObj.children =  findData(schemas, paramsType);
+            schemaObj.children =  findData(schemas, paramsType, paths);
         }
         result.push(schemaObj);
     });
@@ -47,54 +58,89 @@ export function getCodeText(
     schemas: object,
     arr: schemaObjType[],
     level: number,
-): object {
-    const result = {};
+    paths: string[] = []
+): any {
+    const tips: Array<string | undefined> = []
+    let result = {}
     arr.forEach((item) => {
+        let value: any = ""
+        tips.push(item.desc)
         switch (item.paramsType) {
             case 'string':
-                result[item.paramsName] = '';
+                value = ''
                 break;
             case 'integer':
-                result[item.paramsName] = 0;
+            case 'number':
+                value = 0
                 break;
             case 'boolean':
-                result[item.paramsName] = true;
+                value = true
                 break;
             case 'array':
-                result[item.paramsName] = [];
+                value = []
                 break;
             case 'object':
-                result[item.paramsName] = '';
-                break;
-            case 'number':
-                result[item.paramsName] = 0;
+                value = {}
                 break;
             default: {
-                const properties = schemas[item.paramsType]?.properties as object || {};
-                const newArr = Object.entries(properties).map(
-                    (item: [string, any]) => {
-                        return{
-                        paramsName: item[0],
-                        paramsType: level
-                            ?   (item[1].$ref && item[1].$ref.split('/').pop()) ||
-                            (item[1].items?.$ref &&
-                                item[1].items.$ref.split('/').pop()) ||
-                                item[1].item?.type ||
-                                item[1].type ||
-                            ''
-                            : item[1].type,
-                    }},
-                );
-                result[item.paramsName] = getCodeText(
-                    schemas,
-                    newArr,
-                    level - 1,
-                );
+                if (item.children) {
+                    if (paths.filter(path=> path === item.paramsName).length >=2) {
+                        break
+                    }
+                    paths.push(item.paramsName)
+                    const _result = getCodeText(
+                        schemas,
+                        item.children,
+                        level - 1,
+                        paths
+                    )
+                    value = _result.codeText
+                    tips.push(..._result.codeTips)
+                    tips.push(undefined)
+                } else {
+                    if (paths.filter(path=> path === item.paramsName).length >=2) {
+                        break
+                    }
+                    paths.push(item.paramsName)
+                    const properties = schemas[item.paramsType]?.properties as object || {};
+                    const newArr = Object.entries(properties).map(
+                        (item: [string, any]) => {
+                            const [paramsName, extra] = item
+
+                            const paramsType =
+                                (extra.$ref && extra.$ref.split('/').pop()) ||
+                                (extra.items?.$ref && extra.items.$ref.split('/').pop()) ||
+                                extra.item?.type ||
+                                extra.type ||
+                                '';
+
+                            return{
+                                paramsName: paramsName,
+                                desc: extra.description || '',
+                                paramsType: paramsType,
+                                schema: extra.format ? `${paramsType}(${extra.format})` : ''
+                            }},
+                    );
+
+                    const _result = getCodeText(
+                        schemas,
+                        newArr,
+                        level - 1,
+                        paths
+                    )
+                    value = _result.codeText
+                    tips.push(..._result.codeTips)
+                    tips.push(undefined)
+                }
             }
         }
+        result[item.paramsName] = value
     });
+    return {
+        codeText: result,
+        codeTips: tips
 
-    return result;
+    };
 }
 
 /**

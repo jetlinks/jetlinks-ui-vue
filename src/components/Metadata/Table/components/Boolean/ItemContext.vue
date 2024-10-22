@@ -43,8 +43,8 @@ const formData = reactive({
 });
 
 const valueChange = () => {
-  emits(`update:value`, formData)
-  emits(`change`, formData)
+  emits(`update:value`, toRaw(formData))
+  emits(`change`, toRaw(formData))
 }
 
 watch(() => JSON.stringify(props.value), () => {
@@ -52,7 +52,7 @@ watch(() => JSON.stringify(props.value), () => {
   formData.trueValue = props.value?.trueValue;
   formData.falseText = props.value?.falseText;
   formData.falseValue = props.value?.falseValue;
-})
+}, { immediate: true})
 
 </script>
 
