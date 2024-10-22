@@ -82,7 +82,6 @@ const metadata = reactive(props.data.metadata ? JSON.parse(props.data.metadata) 
         md5: '',
     },
     provider: 'plugin',
-    creatorId: userInfoStore.userInfos.id,
     description: '',
 })
 
@@ -118,7 +117,6 @@ const handleSave = () => {
     formRef.value?.validate().then(async () => {
         loading.value = true;
         metadata.name = formData.value.name;
-        metadata.createTime = new Date().getTime();
         const params = {
             ...formData.value,
             metadata: JSON.stringify(metadata)
