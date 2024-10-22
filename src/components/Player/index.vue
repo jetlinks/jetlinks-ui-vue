@@ -20,10 +20,13 @@
 <!--        @timeupdate="props.onTimeUpdate"-->
 <!--    />-->
   <div class="media-player-container" >
-    <div ref="playerElement">
+    <div ref="playerElement" v-if="protocol !== 'rtc'">
       <span v-if="!props.url">
         No Video
       </span>
+    </div>
+    <div class="rtc-video-content" v-else>
+      <video ref="playerElement" />
     </div>
 
   </div>
@@ -144,6 +147,7 @@ const init = () => {
     })
 
     player.on(Events.ERROR, (ev) => {
+      console.log('[media error] > ', ev)
       isHevcSupport.value = Player.isHevcSupported()
       if (!isHevcSupport.value) {
         playerElement.value.querySelector('.xgplayer-error-text').innerHTML = '该浏览器不支持hevc(h265)解码'
@@ -193,5 +197,9 @@ defineExpose({
   justify-content: center;
   align-items: center;
   color: #fff;
+}
+.rtc-video-content, .rtc-video-content video {
+  height: 100%;
+  width: 100%;
 }
 </style>

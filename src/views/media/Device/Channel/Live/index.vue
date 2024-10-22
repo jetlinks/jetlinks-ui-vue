@@ -140,7 +140,7 @@
                         <template #center>
                             <div
                               :class="{ 'center': true, 'center-active': showAudio}"
-                              @click="openWebrtc"
+                              @click="openAudioPlay"
                             >
                               <div class="center-volume" :style="{ height: `${volume}%`}"> </div>
                               <AIcon :type=" showAudio ? 'AudioOutlined' : 'AudioMutedOutlined' "/>
@@ -256,7 +256,7 @@ const _speed = computed(() => {
     return speedList.find((item) => item.value === speed.value)?.label;
 });
 
-const openWebrtc = () => {
+const openAudioPlay = () => {
   if (showAudio.value === false) {
     openAudio(
       props.data.deviceId,
