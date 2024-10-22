@@ -99,6 +99,11 @@ const destroy = () => {
 
 const init = () => {
 
+  if (props.protocol === 'rtc') {
+    playerElement.value.srcObject = props.url
+    return
+  }
+
   destroy()
   setTimeout(() => {
 

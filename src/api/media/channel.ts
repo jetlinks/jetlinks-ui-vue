@@ -24,6 +24,13 @@ export default {
     ptzStart: (deviceId: string, channelId: string, type: string) =>
         `${BASE_API_PATH}/media/device/${deviceId}/${channelId}/live.${type}?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`,
 
+    ptzStartPlay: (deviceId: string, channelId: string, type: string, data: any) =>
+        server.post(`/media/device/${deviceId}/${channelId}/live.${type}?:X_Access_Token=${LocalStore.get(TOKEN_KEY)}`, data, {}, {
+            responseType: 'json',
+            headers:{
+                'Content-Type':'text/plain;charset=utf-8'
+            }}),
+
     // 云台控制-停止
     ptzStop: (deviceId: string, channelId: string) => server.post(`/media/device/${deviceId}/${channelId}/_ptz/STOP`),
 
