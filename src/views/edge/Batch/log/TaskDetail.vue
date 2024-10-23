@@ -136,6 +136,7 @@
         <JProTable
             ref="tableRef"
             model="TABLE"
+            style="padding: 0"
             :columns="columns"
             :request="_query"
             :scroll="{ x: true }"
@@ -177,11 +178,13 @@
                             : '#646C73',
                     }"
                 >
+                  <a-space>
                     <Icon :type="iconMap[record.state.value]" />
                     <div>{{ record.state.text }}</div>
                     <div v-if="record.state.value === 'failed'">
                         :{{ record.errorCode || '--' }}
                     </div>
+                  </a-space>
                 </div>
             </template>
             <template #action="record">
@@ -242,6 +245,7 @@
                         :tooltip="{
                             title: '删除',
                         }"
+                        danger
                         style="padding: 0"
                         :popConfirm="{
                             title: '确认删除?',
