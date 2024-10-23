@@ -8,12 +8,17 @@
                         v-model:value="cycle"
                         style="width: 120px"
                         :options="periodOptions"
+                        @change="queryCharts"
                     >
                     </j-select>
                 </div>
                 <div v-if="cycle !== '*' && _type">
                     统计规则：
-                    <j-select v-model:value="agg" style="width: 120px">
+                    <j-select
+                        v-model:value="agg"
+                        style="width: 120px"
+                        @change="queryCharts"
+                    >
                         <j-select-option value="AVG">平均值</j-select-option>
                         <j-select-option value="MAX">最大值</j-select-option>
                         <j-select-option value="MIN">最小值</j-select-option>
@@ -47,7 +52,7 @@ const prop = defineProps({
     },
 });
 
-const cycle = ref<string>();
+const cycle = ref<string>('');
 const agg = ref<string>('AVG');
 const loading = ref<boolean>(false);
 const chartsList = ref<any[]>([]);
@@ -92,8 +97,7 @@ const queryChartsAggList = async () => {
             endTime = dayjs(prop.time[1]).format('YYYY-MM-DD HH:mm:ss');
         }
 
-        const dataList: any[] = [
-        ];
+        const dataList: any[] = [];
         (resp.result as any[]).forEach((i: any) => {
             dataList.push({
                 ...i,
@@ -228,51 +232,63 @@ const getOptions = (arr: any[]) => {
         ],
     };
 };
+
+const queryCharts = () => {
+    if (cycle.value === '*' && _type.value) {
+        queryChartsList();
+    } else {
+        queryChartsAggList();
+    }
+};
 watch(
     () => prop.time,
     (val) => {
         const diffInSeconds = dayjs(val[1]).diff(dayjs(val[0]), 'minute');
         if (diffInSeconds < 60) {
-            periodOptions.value = _type.value ? [
-                {
-                    label: '实际值',
-                    value: '*',
-                },
-                {
-                    label: '按分钟统计',
-                    value: '1m',
-                },
-            ] : [
-                {
-                    label: '按分钟统计',
-                    value: '1m',
-                },
-            ]
+            periodOptions.value = _type.value
+                ? [
+                      {
+                          label: '实际值',
+                          value: '*',
+                      },
+                      {
+                          label: '按分钟统计',
+                          value: '1m',
+                      },
+                  ]
+                : [
+                      {
+                          label: '按分钟统计',
+                          value: '1m',
+                      },
+                  ];
             cycle.value = _type.value ? '*' : '1m';
         } else if (diffInSeconds < 1440) {
-            periodOptions.value = _type.value ? [
-                {
-                    label: '实际值',
-                    value: '*',
-                },
-                {
-                    label: '按分钟统计',
-                    value: '1m',
-                },
-                {
-                    label: '按小时统计',
-                    value: '1h',
-                },
-            ] :  [
-                {
-                    label: '按分钟统计',
-                    value: '1m',
-                },
-                {
-                    label: '按小时统计',
-                    value: '1h',
-                },
-            ]
+            periodOptions.value = _type.value
+                ? [
+                      {
+                          label: '实际值',
+                          value: '*',
+                      },
+                      {
+                          label: '按分钟统计',
+                          value: '1m',
+                      },
+                      {
+                          label: '按小时统计',
+                          value: '1h',
+                      },
+                  ]
+                : [
+                      {
+                          label: '按分钟统计',
+                          value: '1m',
+                      },
+                      {
+                          label: '按小时统计',
+                          value: '1h',
+                      },
+                  ];
             cycle.value = _type.value ? '*' : '1m';
         } else if (diffInSeconds < 43200) {
             periodOptions.value = [
@@ -299,23 +315,12 @@ watch(
             ];
             cycle.value = '1d';
         }
+        queryCharts();
     },
     {
         deep: true,
         immediate: true,
     },
-);
-
-watch(
-    () => [cycle.value, agg.value],
-    ([newCycle]) => {
-        if (newCycle === '*' && _type.value) {
-            queryChartsList();
-        } else {
-            queryChartsAggList();
-        }
-    },
-    { deep: true},
 );
 
 watchEffect(() => {

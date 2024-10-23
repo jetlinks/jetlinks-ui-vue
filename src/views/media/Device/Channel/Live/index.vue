@@ -6,8 +6,9 @@
         :width="type === 'share' ? '100%' : _type ? 1200 : 900"
         :class="{ share: type === 'share' }"
         :maskClosable="false"
-        @ok="_vis = false"
+        :keyboard="false"
         :destroyOnClose="true"
+        @ok="_vis = false"
     >
         <template #closeIcon>
             <j-button :disabled="type === 'share'" type="text"
@@ -77,6 +78,7 @@
                     >
                 </div>
                 <LivePlayer
+                    v-if="_vis"
                     ref="player"
                     :live="true"
                     :url="url"
@@ -85,16 +87,17 @@
                 />
             </div>
             <div class="media-live-actions" v-if="_type && showActions">
-              <div class="title">
-                预置点位
-              </div>
-              <div class="media-preset">
-                <Preset
-                  v-if="(data.ptzType.value === 0 || data.ptzType.value === 1) && route.query.type !== 'onvif'"
-                  :data="data"
-                  @refresh="onRefresh"
-                />
-              </div>
+              <template v-if="(data.ptzType.value === 0 || data.ptzType.value === 1) && route.query.type !== 'onvif'">
+                <div class="title">
+                  预置点位
+                </div>
+                <div class="media-preset">
+                  <Preset
+                    :data="data"
+                    @refresh="onRefresh"
+                  />
+                </div>
+              </template>
               <div class="title">
                 视频格式
               </div>
@@ -140,7 +143,7 @@
                         <template #center>
                             <div
                               :class="{ 'center': true, 'center-active': showAudio}"
-                              @click="openWebrtc"
+                              @click="openAudioPlay"
                             >
                               <div class="center-volume" :style="{ height: `${volume}%`}"> </div>
                               <AIcon :type=" showAudio ? 'AudioOutlined' : 'AudioMutedOutlined' "/>
@@ -189,6 +192,7 @@ import { useSystem } from '@/store/system';
 import { mediaConfigMap } from '../data';
 import { onlyMessage } from '@/utils/comm';
 import {closeAudio, createRec, openAudio, rtcStream} from "./audio";
+import {closeVideo, openVideo} from "@/views/media/Device/Channel/Live/video";
 
 type Emits = {
     (e: 'update:visible', data: boolean): void;
@@ -256,7 +260,7 @@ const _speed = computed(() => {
     return speedList.find((item) => item.value === speed.value)?.label;
 });
 
-const openWebrtc = () => {
+const openAudioPlay = () => {
   if (showAudio.value === false) {
     openAudio(
       props.data.deviceId,
@@ -312,7 +316,9 @@ const mediaStart = () => {
   if (mediaType.value !== 'rtc') {
     url.value = _url
   } else {
-    rtcStream(_url)
+    openVideo(props.data.deviceId, props.data.channelId,(e) => {
+      url.value = e
+    })
   }
 };
 
@@ -414,23 +420,20 @@ const onRefresh = () => {
     emit('refresh');
 };
 
-const voiceMouseDown = () => {
-
-}
-
-const voiceMouseUp = () => {
-
-}
 
 watch(
     () => _vis.value,
     (val: boolean) => {
         if (val) {
+          setTimeout(() => {
             mediaStart();
+          }, 100)
             getIsRecord();
         } else {
             // url置空, 即销毁播放器
             url.value = '';
+            closeVideo()
+            closeVideo()
         }
     },
     {

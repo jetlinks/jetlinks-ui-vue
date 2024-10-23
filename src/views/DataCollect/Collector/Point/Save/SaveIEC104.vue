@@ -1,11 +1,7 @@
 <template>
     <j-modal :title="data.id ? '编辑' : '新增'" visible @cancel="handleCancel">
         <j-form :model="formData" layout="vertical" ref="formRef">
-            <j-form-item
-                label="点位名称"
-                name="name"
-                :rules="rules.name"
-            >
+            <j-form-item label="点位名称" name="name" :rules="rules.name">
                 <j-input
                     placeholder="请输入点位名称"
                     v-model:value="formData.name"
@@ -55,18 +51,30 @@
                     :column="3"
                 />
             </j-form-item>
-            <j-form-item :name="['configuration', 'terms']" :rules="[{
-                validator: Area,
-                trigger: 'change',
-            }]">
+            <j-form-item
+                :name="['configuration', 'terms']"
+                :rules="[
+                    {
+                        validator: Area,
+                        trigger: 'change',
+                    },
+                ]"
+            >
                 <template #label>
                     <j-space>
-                        <span>点位死区</span><span class="explain">点位死区范围内的异常数据将被过滤（请勿配置非数值类型）</span>
+                        <span>点位死区</span
+                        ><span class="explain"
+                            >点位死区范围内的异常数据将被过滤（请勿配置非数值类型）</span
+                        >
                     </j-space>
                 </template>
                 <DeathArea v-model:value="formData.configuration.terms" />
             </j-form-item>
-            <j-form-item label="轮询任务" :name="['configuration', 'interval']" :rules="rules.configuration.interval">
+            <j-form-item
+                label="轮询任务"
+                :name="['configuration', 'interval']"
+                :rules="rules.configuration.interval"
+            >
                 <p>
                     采集频率<span
                         style="
@@ -124,6 +132,7 @@
 import {
     savePoint,
     updatePoint,
+    queryIEC104,
 } from '@/api/data-collect/collector';
 import { randomString } from '@/utils/utils';
 import DeathArea from './DeathArea.vue';
@@ -137,12 +146,8 @@ const props = defineProps({
 const emit = defineEmits(['change']);
 
 const loading = ref(false);
-const formRef = ref()
-const dataTypeList = ref([
-    { label: '单点开关量', value: 'onePointTelecontrol' },
-    { label: '双点开关量', value: 'twoPointTelecontrol' },
-    { label: '归一化值', value: 'prefabActivationOneParameter' },
-]);
+const formRef = ref();
+const dataTypeList = ref();
 const formData = ref({
     name: props.data.name,
     configuration: props.data.configuration || {
@@ -198,12 +203,14 @@ const rules = {
 const Area = (_: any, value: any): Promise<any> =>
     new Promise(async (resolve, reject) => {
         if (!value) {
-            return resolve('')
+            return resolve('');
         }
         if (value?.length === 0) {
-            return resolve('')
+            return resolve('');
         } else if (value?.length === 1) {
-            return value[0].value && value[0].termType ? resolve('') : reject('请配置点位死区');
+            return value[0].value && value[0].termType
+                ? resolve('')
+                : reject('请配置点位死区');
         } else {
             if (value?.[0].column === 'currentValue') {
                 // value.forEach((item:any) => {
@@ -213,18 +220,22 @@ const Area = (_: any, value: any): Promise<any> =>
                 //         return reject('请配置点位死区')
                 //     }
                 // });
-                const pass = value.every((item: any) => item.termType && item.value)
-                return pass ? resolve('') : reject('请配置点位死区')
+                const pass = value.every(
+                    (item: any) => item.termType && item.value,
+                );
+                return pass ? resolve('') : reject('请配置点位死区');
             } else {
                 value.forEach((item: any) => {
-                    if (item.column === `this['currentValue'] - this['lastValue']*init/100`) {
-                        return reject('请配置点位死区')
+                    if (
+                        item.column ===
+                        `this['currentValue'] - this['lastValue']*init/100`
+                    ) {
+                        return reject('请配置点位死区');
                     } else {
-                        return resolve('')
+                        return resolve('');
                     }
                 });
             }
-
         }
     });
 
@@ -240,12 +251,14 @@ const handleOk = async () => {
         pointKey: props.data.pointKey || randomString(9),
         provider: props.data.provider,
         collectorId: props.data.collectorId,
-        accessModes: res?.accessModes.filter((item: any) => item)
-    }
+        accessModes: res?.accessModes.filter((item: any) => item),
+    };
     loading.value = true;
     const response = !props.data.id
-        ? await savePoint(params).catch(() => { })
-        : await updatePoint(props.data.id, { ...props.data, ...params }).catch(() => { });
+        ? await savePoint(params).catch(() => {})
+        : await updatePoint(props.data.id, { ...props.data, ...params }).catch(
+              () => {},
+          );
     emit('change', response?.status === 200);
     loading.value = false;
 };
@@ -254,10 +267,27 @@ const handleCancel = () => {
     emit('change', false);
 };
 
-onMounted(() => {
-    formData.value.features = props.data.features?.map((item: any) => item.value)
-    if (props.data.accessModes?.length !== 0) {
-        formData.value.accessModes = props.data.accessModes?.map((item: any) => item.value)
+const queryDataType = async () => {
+    const res = await queryIEC104();
+    if (res.success) {
+        dataTypeList.value = res.result.map((i:any)=>{
+            return {
+                label: i.name,
+                value: i.key
+            }
+        });
     }
-})
+};
+
+onMounted(() => {
+    queryDataType();
+    formData.value.features = props.data.features?.map(
+        (item: any) => item.value,
+    );
+    if (props.data.accessModes?.length !== 0) {
+        formData.value.accessModes = props.data.accessModes?.map(
+            (item: any) => item.value,
+        );
+    }
+});
 </script>

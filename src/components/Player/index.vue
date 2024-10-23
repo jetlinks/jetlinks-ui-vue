@@ -20,18 +20,39 @@
 <!--        @timeupdate="props.onTimeUpdate"-->
 <!--    />-->
   <div class="media-player-container" >
-    <div ref="playerElement">
+    <div ref="playerElement" v-if="protocol !== 'rtc'">
       <span v-if="!props.url">
         No Video
       </span>
+    </div>
+    <div v-else ref="playerContentElement" class="rtc-video-content">
+      <video ref="playerElement" :style="playerStyles" />
+      <div class="rtc-tool">
+        <div class="left">
+          <AIcon :type="rtcData.playStatus === 'play' ? 'PauseOutlined' : 'CaretRightOutlined'" @click="playToggle" />
+        </div>
+        <div class="right">
+          <a-space>
+            <AIcon @click="toggle" :type="isFullscreen ? 'CompressOutlined' : 'ExpandOutlined'" />
+          </a-space>
+        </div>
+      </div>
     </div>
 
   </div>
 </template>
 
 <script setup lang="ts" name="LivePlayer">
+import { ref, reactive } from 'vue'
 import Player, { Events, Sniffer } from 'xgplayer'
 import { settingEnum } from './utils'
+import { useFullscreen } from '@vueuse/core'
+import {
+  CompressOutlined,
+  ExpandOutlined,
+  PauseOutlined,
+  CaretRightOutlined
+} from '@ant-design/icons-vue'
 
 type PlayerProps = {
     url?: string;
@@ -60,8 +81,17 @@ type PlayerProps = {
 };
 
 const props = defineProps<PlayerProps>();
+const isHevcSupport = ref<boolean>(true)
 
 const playerElement = ref<HTMLVideoElement>();
+const playerContentElement = ref<HTMLVideoElement>();
+const playerStyles = ref({})
+const rtcData = reactive({
+  playStatus: 'pause'
+})
+
+const { toggle, isFullscreen } = useFullscreen(playerContentElement)
+
 let player: any = null
 
 /**
@@ -87,75 +117,91 @@ const paused = () => {
 
 const destroy = () => {
   if (player) {
-    player.destroy()
+    player.destroy?.()
     player = null
   }
 }
 
-const init = () => {
+const initEvent = () => {
+  const fn = player.on ? 'on' : 'addEventListener'
 
-  destroy()
-  setTimeout(() => {
+  player[fn](Events.PLAY, (ev) => {
+    props.onPlay?.()
+    rtcData.playStatus = Events.PLAY
+  })
+  player[fn](Events.PAUSE, (ev) => {
+    props.onPause?.()
+    rtcData.playStatus = Events.PAUSE
+  })
+  player[fn](Events.ENDED, (ev) => {
+    props.onEnded?.()
+  })
+  player[fn](Events.TIME_UPDATE, (ev) => {
+    props.onTimeUpdate?.(ev)
+  })
+  player[fn](Events.CANPLAY, (ev) => {
+    console.log('-媒体数据加载好了-', ev);
+    if (props.autoplay !== false) {
+      play()
+    }
+  })
+  player[fn](Events.SEEKED, (ev) => {
+    if (props.live) {
+      init()
+    }
+  })
 
-    console.log(props.protocol)
+  player[fn](Events.ERROR, (ev) => {
+    console.log('[media error] > ', ev)
+    isHevcSupport.value = Player.isHevcSupported()
+    if (!isHevcSupport.value) {
+      playerElement.value.querySelector('.xgplayer-error-text').innerHTML = '该浏览器不支持hevc(h265)解码'
+      playerElement.value.querySelector('.xgplayer-error-tips').innerHTML = ''
+    }
 
-    player = new Player({
-      el: playerElement.value,
-      // autoplay: props.autoplay ?? true,
-      url: props.url,
-      isLive: props.live,
-      width: '100%',
-      height: '100%',
-      hasStart: false,
-      playbackRate: false,
-      ignores: ['progress', 'volume', 'time', 'replay'],
-      closeVideoClick: true,
-      closeVideoDblclick: true,
-      closeVideoTouch: true,
-      closePlayerBlur: true,
-      closeControlsBlur: true,
-      closeFocusVideoFocus: true,
-      closePlayVideoFocus: true,
-      ...settingEnum[props.protocol || 'mp4']
-    })
-
-    player.on(Events.PLAY, (ev) => {
-      console.log('-播放开始-', ev);
-      props.onPlay?.()
-    })
-    player.on(Events.PAUSE, (ev) => {
-      console.log('-播放暂停-', ev);
-      props.onPause?.()
-    })
-    player.on(Events.ENDED, (ev) => {
-      console.log('-播放结束-', ev);
-      props.onEnded?.()
-    })
-    player.on(Events.TIME_UPDATE, (ev) => {
-      props.onTimeUpdate?.(ev)
-    })
-    player.on(Events.CANPLAY, (ev) => {
-      console.log('-媒体数据加载好了-', ev);
-      if (props.autoplay !== false) {
-        play()
-      }
-    })
-    player.on(Events.SEEKED, (ev) => {
-      console.log('-跳着播放-', ev);
-      if (props.live) {
+    if (props.live && isHevcSupport.value) {
+      setTimeout(() => {
         init()
-      }
-    })
-    player.on(Events.ERROR, (ev) => {
-      console.log('-播放错误-', ev);
-      if (props.live) {
-        setTimeout(() => {
-          init()
-        }, 5000)
-      }
-      props.onError?.(ev)
-    })
-  }, 30)
+      }, 5000)
+    }
+    props.onError?.(ev)
+  })
+}
+
+const init = () => {
+  if (props.protocol === 'rtc') {
+    playerElement.value.srcObject = props.url
+    player = playerElement.value
+
+    initEvent()
+  } else {
+    destroy()
+    setTimeout(() => {
+
+      player = new Player({
+        el: playerElement.value,
+        // autoplay: props.autoplay ?? true,
+        url: props.url,
+        isLive: props.live,
+        width: '100%',
+        height: '100%',
+        hasStart: false,
+        playbackRate: false,
+        ignores: ['progress', 'volume', 'time', 'replay', 'cssfullscreen'],
+        closeVideoClick: true,
+        closeVideoDblclick: true,
+        closeVideoTouch: true,
+        closePlayerBlur: true,
+        closeControlsBlur: true,
+        closeFocusVideoFocus: true,
+        closePlayVideoFocus: true,
+        ...settingEnum[props.protocol || 'mp4']
+      })
+
+      initEvent()
+    }, 30)
+
+  }
 }
 
 watch(() => props.url, () => {
@@ -191,5 +237,37 @@ defineExpose({
   justify-content: center;
   align-items: center;
   color: #fff;
+}
+
+.rtc-video-content,
+.rtc-video-content video {
+  height: 100%;
+  width: 100%;
+}
+
+.rtc-video-content {
+  position: relative;
+
+  video::-webkit-media-controls-enclosure {
+    display: none;
+  }
+}
+
+.rtc-tool {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  background-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, .37), rgba(0, 0, 0, .75), rgba(0, 0, 0, .75));
+  transition: opacity .5s ease, visibility .5s ease;
+  height: 48px;
+  font-size: 20px;
+  padding: 4px 12px 0;
+  align-items: center;
+
+  .right {
+    margin-left: auto;
+  }
 }
 </style>
