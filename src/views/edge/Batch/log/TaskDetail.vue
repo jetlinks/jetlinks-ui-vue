@@ -82,7 +82,7 @@
                 </PermissionButton>
                 <PermissionButton style="float: right" @click="onCopy"
                     ><template #icon
-                        ><AIcon type="EllipsisOutlined" />
+                        ><AIcon type="CopyOutlined" />
                     </template>
                     从相同设备创建任务
                 </PermissionButton>
