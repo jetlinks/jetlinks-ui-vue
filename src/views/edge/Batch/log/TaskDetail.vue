@@ -209,6 +209,7 @@
             model="TABLE"
             :columns="columns"
             :request="_query"
+            :scroll="{ x: true }"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
                 terms: [
@@ -224,10 +225,10 @@
                 <Ellipsis style="width: 100%">{{ detail.data.id }}</Ellipsis>
             </template>
             <template #pulginName="{ detail }">
-                {{ detail.data.name }}
+                <Ellipsis style="width: 100%"> {{ detail.data.name }}</Ellipsis>
             </template>
             <template #filename="{ detail }">
-                {{ JSON.parse(detail.data.metadata || '{}')?.filename || '--' }}
+              <Ellipsis style="width: 100%"> {{ JSON.parse(detail.data.metadata || '{}')?.filename || '--' }}</Ellipsis>
             </template>
             <template #completeTime="record">
                 {{
@@ -372,35 +373,52 @@ const columns = [
         title: '插件名称',
         key: 'pulginName',
         scopedSlots: true,
-        width: 120,
+        width: 150,
     },
     {
         title: '文件',
         key: 'filename',
         scopedSlots: true,
+        width: 150,
     },
     {
         title: '资源库ID',
         key: 'id',
         dataIndex: 'id',
+        ellipsis: true,
+        width: 80,
     },
     {
         title: '边缘网关',
         key: 'thingName',
         dataIndex: 'thingName',
         scopedSlots: true,
+        width: 150,
+    },
+    {
+        title: '响应超时时间',
+        key: 'timeoutSeconds',
+        dataIndex: 'timeoutSeconds',
+        scopedSlots: true,
+        width: 200,
+    },
+    {
+        title: '重试次数',
+        key: 'maxRetry',
+        dataIndex: 'maxRetry',
+        width: 150,
     },
     {
         title: '完成时间',
         key: 'completeTime',
-        // dataIndex: 'version'
         scopedSlots: true,
+        width: 300,
     },
     {
         title: '状态',
-        // dataIndex: 'state',
         key: 'state',
         scopedSlots: true,
+        width: 150,
     },
     {
         title: '操作',
