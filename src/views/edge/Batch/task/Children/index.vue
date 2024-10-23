@@ -5,6 +5,24 @@
                 >拖拽右侧边缘端设备卡片到左侧对应项区域框内，即可完成绑定</span
             >
         </div>
+        <div>
+          <a-tabs v-model:activeKey="activeKey">
+            <a-tab-pane v-for="item in options" :key="item.id"  >
+              <template #tab>
+                <badge-status
+                  :status="item.state.value"
+                  :text="item.label"
+                  :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                            notActive: 'warning',
+                        }"
+                />
+              </template>
+            </a-tab-pane>
+          </a-tabs>
+
+        </div>
         <div class="content">
             <div class="left">
                 <div>云端设备列表</div>
@@ -96,6 +114,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    updateDevice: {
+      type: Function,
+      default: undefined
+    }
 });
 
 const emit = defineEmits(['change']);
@@ -107,6 +129,11 @@ const _dropList = ref([]);
 const edgeId = ref('123');
 const instanceId = ref('local');
 const isFirst = ref(false);
+const activeKey = ref('')
+
+const options = computed(() => {
+  return props.options
+})
 
 const columns = [
     {

@@ -44,7 +44,7 @@ export const useSystem = defineStore('system', {
             collapsed: false,
             pure: false
         },
-        calendarTagColor:new Map(),
+        calendarTagColor:new Map([['holiday','rgb(161, 180, 204)'],['weekend','rgb(149, 222, 100)'],['workday', 'rgba(105,177,255)']]),
         showThreshold: true
     }),
     actions: {

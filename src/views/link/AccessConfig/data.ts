@@ -17,6 +17,8 @@ ProtocolMapping.set('opc-ua', 'OPC_UA');
 ProtocolMapping.set('edge-child-device', 'EdgeGateway');
 ProtocolMapping.set('collector-gateway', 'collector-gateway');
 ProtocolMapping.set('official-edge-gateway', 'MQTT');
+ProtocolMapping.set('agent-device-gateway', 'MQTT');
+ProtocolMapping.set('agent-media-device-gateway', 'MQTT');
 
 const NetworkTypeMapping = new Map();
 NetworkTypeMapping.set('websocket-server', 'WEB_SOCKET_SERVER');

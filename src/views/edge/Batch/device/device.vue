@@ -14,49 +14,15 @@
       :params="params"
       :defaultParams="defaultParams"
       :gridColumn="3"
-      :scroll="{ y: 300}"
+      :scroll="{ y: 350 }"
     >
       <template #card="slotProps">
-        <CardBox
-          :value="slotProps"
-          :status="slotProps.state?.value"
-          :statusText="slotProps.state?.text"
-          :statusNames="{
-                            online: 'processing',
-                            offline: 'error',
-                            notActive: 'warning',
-                        }"
+        <Card
+          :record="slotProps"
           :active="deviceRowKeys.includes(slotProps.id)"
           @click="handleClick"
         >
-          <template #img>
-            <img
-              :width="80"
-              :height="80"
-              :src="
-                                    slotProps?.photoUrl ||
-                                    getImage('/device-gateway.png')
-                                "
-            />
-          </template>
-          <template #content>
-            <Ellipsis style="width: calc(100% - 100px)">
-                                <span style="font-size: 16px; font-weight: 600">
-                                    {{ slotProps.name }}
-                                </span>
-            </Ellipsis>
-            <j-row style="margin-top: 18px">
-              <j-col :span="24">
-                <div class="card-item-content-text">
-                  产品名称
-                </div>
-                <Ellipsis style="width: 100%">
-                  {{ slotProps.productName }}
-                </Ellipsis>
-              </j-col>
-            </j-row>
-          </template>
-        </CardBox>
+        </Card>
       </template>
     </JProTable>
   </div>
@@ -68,6 +34,7 @@ import { getImage } from '@/utils/comm';
 import {queryNoPagingPost} from "@/api/device/product";
 import {queryTree} from "@/api/device/category";
 import {getContext} from "../util";
+import Card from '../components/card.vue'
 
 const params = ref()
 const deviceRowKeys = ref([])

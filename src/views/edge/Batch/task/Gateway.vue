@@ -1,12 +1,11 @@
 <template>
   <div class="gateway-select-warp">
-    <template v-if="options.length">
+    <template v-if="value.length">
       <j-scrollbar :maxHeight="180">
         <div
-          v-for="item in options"
+          v-for="item in value"
           :class="{
             'gateway-select-item': true,
-            'selected': myValue === item.value
           }"
         >
           <div class="icon">
@@ -15,7 +14,7 @@
           <div class="content">
             {{ item.label }}
           </div>
-          <div class="tool" @click="() => onDelete(item.value)">
+          <div class="tool" @click="() => onDelete(item.id)">
             <AIcon type="DeleteOutlined" />
           </div>
         </div>
@@ -32,33 +31,17 @@ const props = defineProps({
   value: {
     type: String,
     default: undefined
-  },
-  options: {
-    type: Array,
-    default: () => []
   }
 })
 
-const myValue = ref()
 
-// const onSelected = (record) => {
-//   myValue.value = record
-//   emit('update:value', record)
-//   emit('change', record)
-// }
 
 const onDelete = (id) => {
-  if (myValue.value === id) {
-    myValue.value = undefined
-    emit('update:value', undefined)
-    emit('change', undefined)
-  }
+  const array = props.value.filter(item => item.id === id)
+  emit('update:value', array)
+  emit('change', array)
   emit('delete', id)
 }
-
-watch(() => props.value, () => {
-  myValue.value = props.value || []
-}, { immediate: true })
 </script>
 
 <style scoped lang="less">

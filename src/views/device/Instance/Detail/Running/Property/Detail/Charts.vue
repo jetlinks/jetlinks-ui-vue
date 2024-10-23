@@ -307,7 +307,7 @@ watch(
 );
 
 watch(
-    () => [cycle.value, agg.value, prop.time],
+    () => [cycle.value, agg.value],
     ([newCycle]) => {
         if (newCycle === '*' && _type.value) {
             queryChartsList();
@@ -315,7 +315,7 @@ watch(
             queryChartsAggList();
         }
     },
-    { deep: true, immediate: true },
+    { deep: true},
 );
 
 watchEffect(() => {
