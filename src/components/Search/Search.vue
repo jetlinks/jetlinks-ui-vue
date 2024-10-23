@@ -20,7 +20,7 @@ import { saveSearchHistory, getSearchHistory, deleteSearchHistory } from '@/api/
 import {isObject} from "lodash-es";
 
 interface Emit {
-  (e: 'search', data: any): void
+  (e: 'search', data: any, terms: any, options: any): void
 }
 
 const props = defineProps({
@@ -53,8 +53,8 @@ const emit = defineEmits<Emit>()
 /**
  * 提交
  */
-const searchSubmit = (data: any) => {
-  emit('search', data)
+const searchSubmit = (data: any, terms: any, optionsMap: any) => {
+  emit('search', data, terms, optionsMap)
 }
 
 const styles = computed(() => {

@@ -94,28 +94,34 @@ const columns = [
   }
 ]
 
-const handleSearch = (e) => {
-  console.log('[handleSearch]>', e)
-  if (e.terms.length) {
-    const item = e.terms[0].terms[0]
-    const newParams = [{
-      ...item,
-      column: 'name',
-    }]
+const handleSearch = (e, terms) => {
+  const _terms = terms.terms[0].terms.filter(item => item)
+  if (_terms.length) {
+    const newParams = []
+    const termsItem = _terms[0]
 
-    if (item.column !== 'all') {
+    if (termsItem.value) {
+      const item = e.terms[0].terms[0]
+      newParams.push({
+      ...item,
+        column: 'name',
+      })
+    }
+
+    if (termsItem.column !== 'all') {
       newParams.push({
         column: 'state',
-        value: item.column,
+        value: termsItem.column,
         type: 'and'
       })
     }
-    params.value = {
+
+    params.value = newParams.length ? {
       terms: [{
         terms: newParams,
         type: 'and'
       }]
-    }
+    } : e
   } else {
     params.value = e
   }

@@ -10,7 +10,7 @@
               {{ item.label }}
             </label>
           </div>
-          <a-button type="text" class="history-icon" @click.stop="() => showHistoryTask(item)">
+          <a-button v-if="item.value !== 'device'" type="text" class="history-icon" @click.stop="() => showHistoryTask(item)">
             <AIcon type="ExceptionOutlined" />
           </a-button>
         </div>
