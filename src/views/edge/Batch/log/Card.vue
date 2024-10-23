@@ -95,6 +95,7 @@
   />
   <TaskDetail
     v-if="taskDetail.visible"
+    :data="taskDetail.detail"
     @closeDetail="taskDetailClose"
   />
 </template>
@@ -158,10 +159,11 @@ const options = computed(() => {
   }) || []
 })
 
-const showTaskDetail = (record) => {
-  taskDetail.detail = record
+const showTaskDetail = () => {
+  taskDetail.detail = props.detail
   taskDetail.visible = true
 }
+
 
 const taskDetailClose = () => {
   taskDetail.detail = undefined
