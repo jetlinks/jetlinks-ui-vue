@@ -11,7 +11,7 @@
             <a-form-item name="id">
                 <template #label>
                     <span>
-                        插件ID
+                        模板ID
                         <a-tooltip
                             title="若不填写，系统将自动生成唯一ID"
                         >
@@ -22,19 +22,26 @@
                         </a-tooltip>
                     </span>
                 </template>
-                <a-input v-model:value="formData.targetId" :disabled="data.targetId" placeholder="请输入插件ID"></a-input>
+                <a-input v-model:value="formData.targetId" :disabled="data.targetId" placeholder="请输入模板ID"></a-input>
             </a-form-item>
             <a-form-item label="名称" name="name">
                 <a-input v-model:value="formData.name" placeholder="请输入名称"></a-input>
             </a-form-item>
-            <a-form-item label="文件" :name="['metadata', 'filename']" :rules="{
-                required: true
+            <a-form-item label="文件" :name="['metadata' ,'properties', 'fileName']" :rules="{
+                required: true,
+                message: '请选择文件',
+                trigger: 'blur'
             }">
-                <UploadFile
-                    :fileInfo="{url: formData.metadata.configuration.location, name: formData.metadata.filename}"
-                    v-model:model-value="formData.metadata.configuration.location"
-                    v-model:fileName="formData.metadata.filename"
-                />
+                <a-input v-show="false" v-model:value="formData.metadata.properties.fileName" ></a-input>
+                <a-upload
+                    name="file"
+                    accept=".json"
+                    :before-upload="beforeUpload"
+                    :fileList="list"
+                    @remove="remove"
+                >
+                    <a-button>上传文件</a-button><span class="upload-tip">格式要求：.json</span>
+                </a-upload>
             </a-form-item>
             <a-form-item label="说明">
                 <a-textarea v-model:value="formData.metadata.description" :maxlength="200" showCount placeholder="请输入说明"></a-textarea>
@@ -49,6 +56,7 @@ import { save } from '@/api/edge-resource/ai-model';
 import { onlyMessage } from "@/utils/comm";
 import { randomString } from "@/utils/utils";
 import { uploadFile } from "@/api/link/plugin";
+import {cloneDeep} from "lodash-es";
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -58,6 +66,21 @@ const props = defineProps({
     }
 })
 
+const initMetadata = {
+    id: "",
+    name: '',
+    serviceId: 'collectorService:collector',
+    category: '',
+    description: '',
+    properties: {
+        fileName: '',
+    },
+    metadata: {
+        collector: {},
+        points: []
+    }
+}
+const list = ref([]);
 const loading = ref(false);
 const formRef = ref();
 const formData = ref<Record<string, any>>({
@@ -65,17 +88,9 @@ const formData = ref<Record<string, any>>({
     targetId: props.data.targetId || undefined,
     name: props.data.name || undefined,
     describe: props.data?.describe || undefined,
-    targetType: props.data?.targetType || 'PluginDriver',
-    serviceId:"pluginService:driver",
-    metadata: props.data?.metadata ? JSON.parse(props.data.metadata) : {
-        name: '',
-        filename: '',
-        provider: 'jar',
-        description: '',
-        configuration: {
-            location: '',
-        }
-    },
+    targetType: props.data?.targetType || 'entityTemplate:Collector',
+    serviceId: "commonService:entityTemplate",
+    metadata: props.data?.metadata ? JSON.parse(props.data.metadata) : cloneDeep(initMetadata),
 })
 
 const rules = {
@@ -101,6 +116,33 @@ const rules = {
     ],
 }
 
+const beforeUpload = (file: any, files) => {
+    // console.log('file: ', file);
+    debugger
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = async (result) => {
+        const text = result.target?.result;
+        console.log('text: ', text);
+        if (!file.type.includes('json')) {
+            onlyMessage('请上传json格式文件', 'error');
+            return false;
+        }
+        list.value = files;
+        debugger
+        const data = JSON.parse(text || '{}');
+        Object.assign(formData.value.metadata, data)
+        formData.value.metadata.properties.fileName = file.name;
+        formRef.value?.validateFields('metadata');
+        return true;
+    };
+    return false;
+}
+
+const remove = () => {
+    list.value = [];
+    formData.value.metadata = initMetadata;
+}
 const handleSave = async () => {
     formRef.value?.validate().then(async () => {
         loading.value = true
@@ -119,8 +161,22 @@ const handleSave = async () => {
         }
     });
 }
+
+watch(() => props.data.id, () => {
+    if (props.data.id) {
+        list.value = [
+            {
+                url: '',
+                name: JSON.parse(props.data.metadata).properties.fileName
+            }
+        ]
+    }
+}, {immediate: true})
 </script>
 
 <style scoped lang="less">
-
+.upload-tip {
+    color: #999;
+    padding-left: 12px;
+}
 </style>
