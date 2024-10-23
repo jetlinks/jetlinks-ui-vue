@@ -294,7 +294,12 @@ const onSave = () => {
         .then(async () => {
             const arr = toRaw(modelRef).dataSource.filter(
                 (i: any) => i.channelId,
-            );
+            ).map(item => {
+                if (instanceStore.current.state?.value === 'notActive') {
+                    item.state = 'disabled'
+                }
+                return item;
+            });
             if (arr && arr.length !== 0) {
                 console.log(arr);
                 const resp = await saveMapping(
