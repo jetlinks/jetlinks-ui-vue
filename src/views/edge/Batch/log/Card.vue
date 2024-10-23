@@ -95,7 +95,10 @@
   />
   <TaskDetail
     v-if="taskDetail.visible"
+    :data="taskDetail.detail"
+    @copy="onCopy"
     @closeDetail="taskDetailClose"
+    @refresh="emit('reload')"
   />
 </template>
 
@@ -116,6 +119,8 @@ const props = defineProps({
     default: undefined
   },
 })
+
+const emit = defineEmits(['reload'])
 
 const visible = ref(false)
 const context = getContext()
@@ -162,10 +167,11 @@ const options = computed(() => {
   }) || []
 })
 
-const showTaskDetail = (record) => {
-  taskDetail.detail = record
+const showTaskDetail = () => {
+  taskDetail.detail = props.detail
   taskDetail.visible = true
 }
+
 
 const taskDetailClose = () => {
   taskDetail.detail = undefined

@@ -25,7 +25,7 @@
       }"
     >
       <template #card="slotProps">
-        <Card :detail="slotProps" :type="type" />
+        <Card :detail="slotProps" :type="type" @reload="reload"/>
       </template>
     </JProTable>
   </div>
