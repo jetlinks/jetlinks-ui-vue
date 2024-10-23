@@ -1,7 +1,13 @@
 <template>
   <div class="log-warp">
+    <pro-search
+      type="simple"
+      :columns="columns"
+      :style="{ padding: 0, marginBottom: 0 }"
+      @search="handleSearch"
+    />
     <JProTable
-      ref="edgeDeviceRef"
+      ref="tableRef"
       model="CARD"
       style="padding: 12px 0 0"
       :columns="columns"
@@ -9,6 +15,7 @@
       :params="params"
       :gridColumn="1"
       :defaultParams="{
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [
           {
             column: 'jobType',
@@ -18,14 +25,13 @@
       }"
     >
       <template #card="slotProps">
-        <Card :detail="slotProps" />
+        <Card :detail="slotProps" :type="type" />
       </template>
     </JProTable>
   </div>
 </template>
 
 <script setup name="BatchLog">
-import {BatchOperateOptions} from "../util";
 import { queryTask } from '@/api/edge/batch'
 import Card from './Card.vue'
 
@@ -34,45 +40,95 @@ const props = defineProps({
     type: String,
     default: undefined
   },
-  deviceList: {
-    type: Array,
-    default: undefined
-  }
 })
 const params = ref()
+const tableRef = ref()
 
 const columns = [
   {
     title: '操作类型',
     dataIndex: 'type',
     key: 'type',
-    search: {
-      type: 'select',
-      options: BatchOperateOptions
-    },
   },
   {
     title: '涉及网关',
     dataIndex: 'gateway',
     key: 'gateway',
-    search: {
-      type: 'string',
-    },
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
     key: 'createTime',
-    search: {
-      type: 'date',
-    },
   },
+  {
+    title: '全部任务',
+    dataIndex: 'all',
+    hideInTable: true,
+    search: {
+      type: 'string'
+    }
+  },
+  {
+    title: '全部完成',
+    dataIndex: 'complete',
+    hideInTable: true,
+    search: {
+      type: 'string'
+    }
+  },
+  {
+    title: '进行中',
+    dataIndex: 'running',
+    hideInTable: true,
+    search: {
+      type: 'string'
+    }
+  },
+  {
+    title: '未完成',
+    dataIndex: 'incomplete',
+    hideInTable: true,
+    search: {
+      type: 'string'
+    }
+  }
 ]
 
 const handleSearch = (e) => {
-  params.value = e
+  console.log('[handleSearch]>', e)
+  if (e.terms.length) {
+    const item = e.terms[0].terms[0]
+    const newParams = [{
+      ...item,
+      column: 'name',
+    }]
+
+    if (item.column !== 'all') {
+      newParams.push({
+        column: 'state',
+        value: item.column,
+        type: 'and'
+      })
+    }
+    params.value = {
+      terms: [{
+        terms: newParams,
+        type: 'and'
+      }]
+    }
+  } else {
+    params.value = e
+  }
+
 }
 
+const reload = () => {
+  tableRef.value?.reload()
+}
+
+defineExpose({
+  reload
+})
 
 </script>
 

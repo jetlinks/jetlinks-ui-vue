@@ -110,7 +110,11 @@ const props = defineProps({
   detail: {
     type: Object,
     default: () => ({})
-  }
+  },
+  type: {
+    type: String,
+    default: undefined
+  },
 })
 
 const visible = ref(false)
@@ -170,7 +174,8 @@ const taskDetailClose = () => {
 
 const onCopy = () => {
   context.openTask({
-    gateway: []
+    thingList: [],
+    jobType: props.type
   })
 }
 </script>

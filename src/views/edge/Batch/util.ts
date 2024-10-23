@@ -95,5 +95,39 @@ export const useBatchOperateOptions = () => {
     return {
         batchOperateOptions
     }
+}
 
+export const useTemplateRowSelection = () => {
+    const selectedRowKeys = ref<Array<string>>([])
+    const selectedRowMap = new Map();
+
+    const handleSelect = (selected: boolean, array: any[]) => {
+        const keys = new Set(selectedRowKeys.value)
+
+        array.map((i) => {
+            if (selected) {
+                keys.add(i.id)
+                selectedRowMap.set(i.id, i)
+            } else {
+                keys.delete(i.id)
+                selectedRowMap.delete(i.id)
+            }
+        });
+
+        selectedRowKeys.value = [...keys.values()]
+    }
+    const onSelectChange = (item: any, state: boolean) => {
+        handleSelect(state, [item])
+    };
+
+    const selectAll = (selected: boolean, selectedRows: any[], changeRows: any) => {
+        handleSelect(selected, changeRows)
+    };
+
+    return {
+        selectedRowKeys,
+        selectedRowMap,
+        onSelectChange,
+        selectAll
+    }
 }

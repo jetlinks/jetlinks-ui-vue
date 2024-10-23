@@ -29,10 +29,10 @@
         ]
       }"
       :rowSelection="{
-            selectedRowKeys: _selectedRowKeys,
+            selectedRowKeys: selectedRowKeys,
             onSelect: onSelectChange,
             onSelectAll: selectAll,
-            onSelectNone: () => (_selectedRowKeys = []),
+            onSelectNone: () => (selectedRowKeys = []),
         }"
     />
   </div>
@@ -41,22 +41,13 @@
 <script setup name="TaskPlugin">
 import { query } from '@/api/edge/resource'
 import { pick } from 'lodash-es'
+import {useTemplateRowSelection} from "@/views/edge/Batch/util";
 
 const params = ref()
-const _selectedRowKeys = ref([])
 
-const selectedRowMap = new Map();
+const { selectedRowKeys, selectedRowMap, onSelectChange, selectAll } = useTemplateRowSelection()
 
 const columns = [
-  {
-    title: '资源库ID',
-    key: 'id',
-    dataIndex: 'id',
-    ellipsis: true,
-    search: {
-      type: 'string',
-    },
-  },
   {
     title: '插件ID',
     key: 'targetId',
@@ -86,35 +77,17 @@ const columns = [
     dataIndex: 'description',
     key: 'description',
     ellipsis: true,
+  },
+  {
+    title: '资源库ID',
+    key: 'id',
+    dataIndex: 'id',
+    ellipsis: true,
     search: {
       type: 'string',
     },
   },
 ]
-
-const handleSelect = (selected, array) => {
-  const keys = new Set(_selectedRowKeys.value)
-
-  array.map((i) => {
-    if (selected) {
-      keys.add(i.id)
-      selectedRowMap.set(i.id, i)
-    } else {
-      keys.delete(i.id)
-      selectedRowMap.delete(i.id)
-    }
-  });
-
-  _selectedRowKeys.value = [...keys.values()]
-}
-const onSelectChange = (item, state) => {
-  handleSelect(state, [item])
-};
-
-const selectAll = (selected, selectedRows, changeRows) => {
-  handleSelect(selected, changeRows)
-};
-
 const queryFn = async (_params) => {
 
   const resp = await query(_params)
@@ -126,6 +99,7 @@ const queryFn = async (_params) => {
       data: resp.result.data?.map(item => {
         const _metadata = JSON.parse(item.metadata)
         item.file = _metadata.filename
+        item.description = _metadata.description
         item.type = _metadata.provider
         return item
       }),
