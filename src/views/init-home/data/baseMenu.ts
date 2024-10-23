@@ -2798,6 +2798,67 @@ export default [
               "show": true
             },
             "supportDataAccess": false
+          },
+          {
+            "id": "badf8b6e4b9211471aea033a33be8a0c",
+            "parentId": "fc84e1e78b5d12b71bf048bc636fca08",
+            "path": "rqCP-UBRR-JiXd",
+            "sortIndex": 3,
+            "level": 3,
+            "owner": "iot",
+            "name": "采集器模板",
+            "code": "EdgeResource/CollectorTemplate",
+            "icon": "CopyOutlined",
+            "url": "/edge-resource/collector-template",
+            "describe": "",
+            "buttons": [
+              {
+                "id": "add",
+                "name": "新增",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "action",
+                "name": "启/禁用",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "issue",
+                "name": "下发",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "indirectMenus": [],
+            "assetAccesses": [],
+            "options": {
+              "show": true
+            },
+            "createTime": 1729580485795,
+            "granted": true
           }
         ],
         "supportDataAccess": false

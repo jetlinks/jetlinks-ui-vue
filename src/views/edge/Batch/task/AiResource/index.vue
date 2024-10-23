@@ -17,16 +17,30 @@
       model="TABLE"
       style="padding: 0"
       :columns="columns"
-      :request="query"
+      :request="queryFn"
       :params="params"
-      :gridColumn="3"
+      :defaultParams="{
+        sort: [{ name: 'createTime', order: 'desc' }],
+        terms: [{column: 'targetType', value: 'PluginDriver'}]
+      }"
+      :rowSelection="{
+            selectedRowKeys: selectedRowKeys,
+            onSelect: onSelectChange,
+            onSelectAll: selectAll,
+            onSelectNone: () => (selectedRowKeys = []),
+        }"
     />
   </div>
 </template>
 
 <script setup name="AiResource">
+import { queryPage } from '@/api/edge-resource/ai-model'
+import {useTemplateRowSelection} from '../../util'
+import {pick} from "lodash-es";
 
 const params = ref()
+const { selectedRowKeys, selectedRowMap, onSelectChange, selectAll } = useTemplateRowSelection()
+
 const columns = [
   {
     title: '底库ID',
@@ -67,15 +81,43 @@ const columns = [
     dataIndex: 'description',
     key: 'description',
     ellipsis: true,
-    search: {
-      type: 'string',
-    },
   },
 ]
 
 const handleSearch = (e) => {
   params.value = e
 }
+
+const queryFn = async (_params) => {
+
+  const resp = await queryPage(_params)
+  return {
+    status: resp.status,
+    code: resp.status,
+    result: {
+      ...resp.result,
+      data: resp.result.data?.map(item => {
+        const _metadata = JSON.parse(item.metadata)
+        item.file = item.properties.fileName
+        item.type = _metadata.provider
+        return item
+      }),
+    },
+  }
+}
+
+const handleValue = async () => {
+  return [...selectedRowMap.values()].map(item => {
+    return {
+      data: pick(item, ['id', 'targetId', 'metadata', 'targetType', 'serviceId', 'name'])
+    }
+  })
+}
+
+defineExpose({
+  getValue: handleValue
+})
+
 </script>
 
 <style scoped lang="less">

@@ -4,7 +4,7 @@
       <div class="batch-warp">
         <div class="top">
           <Device />
-          <Operate :deviceList="deviceList" @selected="operateSelect" />
+          <Operate ref="operateRef" :deviceList="deviceList" @selected="operateSelect" />
         </div>
       </div>
       <Task
@@ -12,6 +12,7 @@
         :value="taskData"
         :list="deviceList"
         @cancel="onCancel"
+        @ok="onOk"
       />
     </FullPage>
   </page-container>
@@ -20,13 +21,13 @@
 <script setup name="Batch">
 import Device from './device/index.vue'
 import Operate from './operate/index.vue'
-import Log from './log/index.vue'
 import Task from './task'
 import { ContextName} from "./util";
 
 const visible = ref(false)
 const deviceList = ref([])
 const taskData = ref()
+const operateRef = ref()
 
 const onCancel = () => {
   visible.value = false
@@ -34,6 +35,7 @@ const onCancel = () => {
 
 const onOk = () => {
   visible.value = false
+  operateRef.value?.updateLog()
 }
 
 const openTask = (data) => {

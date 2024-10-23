@@ -17,15 +17,30 @@
       model="TABLE"
       style="padding: 0"
       :columns="columns"
-      :request="query"
+      :request="queryPage"
       :params="params"
-      :gridColumn="3"
+      :defaultParams="{
+        sort: [{ name: 'createTime', order: 'desc' }],
+        terms: [{column: 'targetType', value: 'entityTemplate:Collector'}]
+      }"
+      :rowSelection="{
+            selectedRowKeys: selectedRowKeys,
+            onSelect: onSelectChange,
+            onSelectAll: selectAll,
+            onSelectNone: () => (selectedRowKeys = []),
+        }"
     />
   </div>
 </template>
 
 <script setup name="CollectorTemplate">
+import { queryPage } from '@/api/edge-resource/ai-model'
+import {pick} from "lodash-es";
+import {useTemplateRowSelection} from '../../util'
+
 const params = ref()
+const { selectedRowKeys, selectedRowMap, onSelectChange, selectAll } = useTemplateRowSelection()
+
 const columns = [
   {
     title: '模板ID',
@@ -45,8 +60,8 @@ const columns = [
   },
   {
     title: '通讯协议',
-    key: 'type',
-    dataIndex: 'type',
+    key: 'category',
+    dataIndex: 'category',
     search: {
       type: 'string',
     },
@@ -55,26 +70,50 @@ const columns = [
     title: '文件',
     key: 'file',
     dataIndex: 'file',
-  },
-  {
-    title: '版本号',
-    key: 'version',
-    dataIndex: 'version',
+    ellipsis: true,
   },
   {
     title: '描述',
     dataIndex: 'description',
     key: 'description',
     ellipsis: true,
-    search: {
-      type: 'string',
-    },
   },
 ]
 
 const handleSearch = (e) => {
   params.value = e
 }
+
+const queryFn = async (_params) => {
+
+  const resp = await queryPage(_params)
+  return {
+    status: resp.status,
+    code: resp.status,
+    result: {
+      ...resp.result,
+      data: resp.result.data?.map(item => {
+        const _metadata = JSON.parse(item.metadata)
+        item.file = item.properties.fileName
+        item.description = item.properties.description
+        item.type = _metadata.provider
+        return item
+      }),
+    },
+  }
+}
+
+const handleValue = async () => {
+  return [...selectedRowMap.values()].map(item => {
+    return {
+      data: pick(item, ['id', 'targetId', 'metadata', 'targetType', 'serviceId', 'name'])
+    }
+  })
+}
+
+defineExpose({
+  getValue: handleValue
+})
 </script>
 
 <style scoped lang="less">

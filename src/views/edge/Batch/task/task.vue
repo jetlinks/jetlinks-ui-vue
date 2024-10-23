@@ -8,14 +8,15 @@
     @cancel="onCancel"
     @ok="onOk"
   >
+    <a-form
+      layout="vertical"
+      ref="formRef"
+      :model="formModel"
+      :rules="rules"
+    >
     <div class="task-body">
+
       <div class="task-form">
-        <a-form
-          layout="vertical"
-          ref="formRef"
-          :model="formModel"
-          :rules="rules"
-        >
           <a-form-item label="名称" name="name">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
@@ -38,23 +39,51 @@
               :beforeChange="batchOperateChange"
             />
           </a-form-item>
-          <a-form-item label="说明" name="description">
+          <a-form-item v-if="!showBindChildren" label="说明" name="description">
             <a-textarea
               v-model:value="formModel.description"
               placeholder="请输入说明"
               :rows="4"
             />
           </a-form-item>
-        </a-form>
       </div>
       <div class="task-content">
+        <div v-if="!showBindChildren">
+          <a-row :gutter="16">
+            <a-col :span="12">
+              <a-form-item label="响应超时时间" name="timeoutSeconds" required>
+                <a-input-number
+                  v-model:value="formModel.timeoutSeconds"
+                  :min="0"
+                  :max="999999"
+                  :precision="0"
+                  placeholder="请输入响应超时时间（秒）"
+                  style="width: 100%;"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="重试次数" name="maxRetry" required>
+                <a-input-number
+                  v-model:value="formModel.maxRetry"
+                  :min="0"
+                  :max="999999"
+                  :precision="0"
+                  placeholder="请输入重试次数"
+                  style="width: 100%;"
+                />
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </div>
         <ContentPlugin v-if="formModel.jobType === 'plugin'" ref="contentRef" :options="formModel.thingList" />
-        <ContentRemote v-else-if="formModel.jobType === 'remote'" :options="formModel.thingList" />
-        <ContentChildren v-else-if="formModel.jobType === 'device'"  :options="formModel.thingList" :updateDevice="updateDevice" @change="onChildrenChange"/>
-        <ContentAiModel v-else-if="formModel.jobType === 'AiModel'"  :options="formModel.thingList" />
-        <ContentAiResource v-else-if="formModel.jobType === 'AiResource'"  :options="formModel.thingList" />
-        <ContentCollectorTemplate v-else-if="formModel.jobType === 'CollectorTemplate'"  :options="formModel.thingList" />
+        <ContentRemote v-else-if="formModel.jobType === 'remote'" ref="contentRef" :options="formModel.thingList" />
+        <ContentChildren v-else-if="formModel.jobType === 'device'" ref="contentRef" :options="formModel.thingList" :updateDevice="updateDevice" @change="onChildrenChange"/>
+        <ContentAiModel v-else-if="formModel.jobType === 'AiModel'" ref="contentRef" :options="formModel.thingList" />
+        <ContentAiResource v-else-if="formModel.jobType === 'AiResource'" ref="contentRef" :options="formModel.thingList" />
+        <ContentCollectorTemplate v-else-if="formModel.jobType === 'CollectorTemplate'" ref="contentRef"  :options="formModel.thingList" />
       </div>
+
       <GatewayModal
         v-if="gatewayData.visible"
         :filter="formModel.thingList"
@@ -62,6 +91,13 @@
         @ok="addGateway"
       />
     </div>
+    </a-form>
+    <template #footer>
+      <div v-if="!showBindChildren">
+        <a-button @click="onCancel">取消</a-button>
+        <a-button type="primary" @click="onOk">确定</a-button>
+      </div>
+    </template>
   </a-modal>
 </template>
 
@@ -98,7 +134,7 @@ const emit = defineEmits(['cancel', 'ok'])
 const { loading, run } = useRequest( createTask, {
   immediate: false,
   onSuccess() {
-    onCancel()
+    emit('ok')
   }
 })
 
@@ -116,6 +152,9 @@ const formModel = reactive({
 const gatewayData = reactive({
   visible: false,
   selectRow: []
+})
+const showBindChildren = computed(() => {
+  return formModel.jobType === 'device'
 })
 
 const rules = {
@@ -148,6 +187,18 @@ const rules = {
   description: [
     { max: 200, message: '最多可输入200位字符', trigger: 'blur' },
   ],
+  timeoutSeconds: [
+    {
+      required: true,
+      message: '请输入响应超时时间'
+    }
+  ],
+  maxRetry: [
+    {
+      required: true,
+      message: '请输入重试次数'
+    }
+  ]
 }
 
 const updateDevice = (id) => {
@@ -201,7 +252,7 @@ const onOk = async () => {
   const newThingList = formModel.thingList.map(item => {
     return {
       thingId: item.id,
-      thingType: item.deviceType.value,
+      thingType: 'device',
       thingName: item.name
     }
   })
@@ -210,8 +261,11 @@ const onOk = async () => {
     thingList: newThingList,
     commandArgs,
     resourceTotal: newThingList.length,
-    serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : '',
-    commandId: 'SaveByTemplate'
+    serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : 'aiService:modelManager',
+    commandId: 'SaveByTemplate',
+    others: {
+      thingList: newThingList
+    }
   }
 
   run(newParams)

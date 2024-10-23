@@ -2,7 +2,7 @@
     <page-container>
         <pro-search
             :columns="columns"
-            target="edge-resource-plugin"
+            target="edge-resource-collector-template"
             @search="handleSearch"
         />
         <full-page>
@@ -13,14 +13,14 @@
                 :params="params"
                 :defaultParams="{
                     sort: [{ name: 'createTime', order: 'desc' }],
-                    terms: [{column: 'targetType', value: 'PluginDriver'}]
+                    terms: [{column: 'targetType', value: 'entityTemplate:Collector'}]
                 }"
             >
                 <template #headerTitle>
                     <j-space>
                         <PermissionButton
                             type="primary"
-                            hasPermission="EdgeResource/AiModel:add"
+                            hasPermission="EdgeResource/CollectorTemplate:add"
                             @click="handleAdd"
                         >
                             <template #icon
@@ -63,7 +63,7 @@
                             <j-row :gutter="16" style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        插件ID
+                                        模板ID
                                     </div>
                                     <Ellipsis>
                                         <span>
@@ -73,10 +73,10 @@
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        版本号
+                                        通讯协议
                                     </div>
                                     <Ellipsis style="width: 100%">
-                                        {{ slotProps.version || '--' }}
+                                        {{ JSON.parse(slotProps.metadata || '{}').category || '--' }}
                                     </Ellipsis>
                                 </j-col>
                             </j-row>
@@ -89,7 +89,7 @@
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
-                                :hasPermission="'EdgeResource/Plugin:' + item.key"
+                                :hasPermission="'EdgeResource/CollectorTemplate:' + item.key"
                             >
                                 <AIcon
                                     type="DeleteOutlined"
@@ -131,7 +131,7 @@
                                 :danger="i.key === 'delete'"
                                 :hasPermission="
                                     i.key === 'view'
-                                        ? true : 'EdgeResource/Plugin:' + i.key"
+                                        ? true : 'EdgeResource/CollectorTemplate:' + i.key"
                             >
                                 <template #icon>
                                     <AIcon :type="i.icon"/>
@@ -316,7 +316,7 @@ const handleSave = () => {
 }
 
 const handleView = (id: string) => {
-    menuStore.jumpPage('EdgeResource/Plugin/Detail', {id});
+    menuStore.jumpPage('EdgeResource/CollectorTemplate/Detail', {id});
 }
 </script>
 
