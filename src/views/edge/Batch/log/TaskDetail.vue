@@ -80,8 +80,14 @@
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
                     刷新状态
                 </PermissionButton>
+                <PermissionButton style="float: right" @click="onCopy"
+                    ><template #icon
+                        ><AIcon type="EllipsisOutlined" />
+                    </template>
+                    从相同设备创建任务
+                </PermissionButton>
                 <PermissionButton
-                    style="float: right"
+                    style="float: right; margin-right: 20px"
                     danger
                     :tooltip="{
                         title:
@@ -99,12 +105,6 @@
                 >
                     <template #icon><AIcon type="DeleteOutlined" /> </template>
                     删除任务
-                </PermissionButton>
-                <PermissionButton
-                    style="float: right"
-                    @click="onCopy"
-                    ><template #icon><AIcon type="EllipsisOutlined" /> </template>
-                    从相同设备创建任务
                 </PermissionButton>
             </div>
             <div class="body-progress">
@@ -208,7 +208,7 @@
             ref="tableRef"
             model="TABLE"
             :columns="columns"
-            :request="queryTaskdDtail"
+            :request="_query"
             :defaultParams="{
                 sorts: [{ name: 'createTime', order: 'desc' }],
                 terms: [
@@ -360,7 +360,7 @@ const props = defineProps({
         type: String,
     },
 });
-const emit = defineEmits(['closeDetail', 'refresh']);
+const emit = defineEmits(['closeDetail', 'refresh', 'copy']);
 const columns = [
     {
         title: '插件ID',
@@ -412,6 +412,7 @@ const columns = [
 ];
 
 const tableRef = ref();
+const dataSource = ref({});
 
 const colorMap = {
     success: 'success',
@@ -454,6 +455,14 @@ const options = computed(() => {
         }) || []
     );
 });
+
+const _query = async (e) => {
+    const res = await queryTaskdDtail(e);
+    if (res.success) {
+        dataSource.value = res.result;
+    }
+    return res;
+};
 
 const refreshState = () => {
     tableRef.value?.reload();
@@ -505,23 +514,23 @@ const stopUpgrades = async (id) => {
 };
 //删除某个记录
 const deleteUpgrades = async (id) => {
-    const res = await deleteOneTask(id);
-    if (res.success) {
-        refreshState();
+    if (dataSource.value?.total === 1) {
+        deleteAll();
+    } else {
+        const res = await deleteOneTask(id);
+        if (res.success) {
+            refreshState();
+        }
     }
 };
 
-const onCopy =()=>{
-  
-}
-
-onMounted(() => {
-    console.log('props.data====', props.data);
-});
+const onCopy = () => {
+    emit('copy');
+};
 </script>
 <style lang="less" scoped>
 .generalInfo {
-    margin-bottom: 30px;
+    // margin-bottom: 30px;
     .header {
         display: flex;
         justify-content: space-between;
