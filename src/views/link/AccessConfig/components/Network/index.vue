@@ -558,7 +558,7 @@ const next = async () => {
                       )
                     : await getChildConfigView(procotolCurrent.value);
             if (resp.status === 200) {
-                config.value = resp.result;
+                config.value = resp.result || {};
                 current.value = current.value + 1;
                 const Group = {
                     title: '分组',

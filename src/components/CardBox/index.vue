@@ -158,12 +158,14 @@ const props = defineProps({
     }
 });
 
-const getBackgroundColor = (code: string | number) => {
-    const _color = color[code] || color.default;
+const getBackgroundColor = (code: string) => {
+    const _color1 = getHexColor(code, 0.03);
+    const _color2 = getHexColor(code, 0);
+
     return `linear-gradient(
                 188.4deg,
-                rgba(${_color}, 0.03) 30%,
-                rgba(${_color}, 0) 80%
+                ${_color1} 30%,
+                ${_color2} 80%
             )`;
 };
 

@@ -1371,6 +1371,16 @@
   dependencies:
     vue-demi "*"
 
+"@xterm/addon-fit@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@xterm/addon-fit/-/addon-fit-0.10.0.tgz#bebf87fadd74e3af30fdcdeef47030e2592c6f55"
+  integrity sha512-UFYkDm4HUahf2lnEyHvio51TNGiLK66mqP2JoATy7hRZeXaGMRDr00JiSF7m63vR5WKATF605yEggJKsw0JpMQ==
+
+"@xterm/xterm@^5.5.0":
+  version "5.5.0"
+  resolved "https://registry.npmmirror.com/@xterm/xterm/-/xterm-5.5.0.tgz#275fb8f6e14afa6e8a0c05d4ebc94523ff775396"
+  integrity sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==
+
 JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.npmmirror.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
@@ -3493,10 +3503,10 @@ jetlinks-store@^0.0.3:
   resolved "https://registry.npmjs.org/jetlinks-store/-/jetlinks-store-0.0.3.tgz"
   integrity sha512-AZf/soh1hmmwjBZ00fr1emuMEydeReaI6IBTGByQYhTmK1Zd5pQAxC7WLek2snRAn/HHDgJfVz2hjditKThl6Q==
 
-jetlinks-ui-components@^1.0.48:
-  version "1.0.48"
-  resolved "https://registry.npmmirror.com/jetlinks-ui-components/-/jetlinks-ui-components-1.0.48.tgz"
-  integrity sha512-tAKplLwXLCo/ofbgrLAvOgjZrjdgbMx+rnf+rvK17vjaTV13gWtn/77UNFzCa3kO4TXGn+FVU6qY6wULZO4U/w==
+jetlinks-ui-components@^1.0.51:
+  version "1.0.51"
+  resolved "https://registry.npmmirror.com/jetlinks-ui-components/-/jetlinks-ui-components-1.0.51.tgz#c3d399fc6a3d8b1d08638ca606c89b5019245ab8"
+  integrity sha512-WL1DRWEW/le/vWjEodPT6BpXu1MLFYTPA1MpQsuVelap0dRZEDGks0LXhdYAL0XqJDWbcmX8g1p76P035TBKgQ==
   dependencies:
     "@vueuse/core" "^9.12.0"
     "@vueuse/router" "^9.13.0"

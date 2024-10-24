@@ -7,18 +7,20 @@
     :deleteRequest='(_target: string, id: string) => deleteSearchHistory(target, id)'
     :columns='columns'
     :class='props.class'
-    style='padding-top: 18px; padding-bottom: 18px;'
+    :style='styles'
     @search='searchSubmit'
   />
-</template> 
+</template>
 
 <script setup lang='ts' name='ProSearch'>
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
+import { computed } from 'vue'
 import { JColumnsProps } from 'components/Table/types'
 import { saveSearchHistory, getSearchHistory, deleteSearchHistory } from '@/api/comm'
+import {isObject} from "lodash-es";
 
 interface Emit {
-  (e: 'search', data: any): void
+  (e: 'search', data: any, terms: any, options: any): void
 }
 
 const props = defineProps({
@@ -39,6 +41,10 @@ const props = defineProps({
   class: {
     type: String,
     default: ''
+  },
+  style: {
+    type: Object,
+    default: () => ({})
   }
 })
 
@@ -47,9 +53,25 @@ const emit = defineEmits<Emit>()
 /**
  * 提交
  */
-const searchSubmit = (data: any) => {
-  emit('search', data)
+const searchSubmit = (data: any, terms: any, optionsMap: any) => {
+  emit('search', data, terms, optionsMap)
 }
+
+const styles = computed(() => {
+  const defaultStyle = {
+    'padding-top': '18px',
+    'padding-bottom': '18px',
+  }
+
+  if (isObject(props.style)) {
+    return {
+      ...defaultStyle,
+      ...props.style
+    }
+  }
+
+  return defaultStyle
+})
 
 </script>
 
