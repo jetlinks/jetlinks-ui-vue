@@ -50,6 +50,7 @@ BackMap.set('official-edge-gateway', getImage('/access/edge.png'));
 BackMap.set('collector-gateway', getImage('/access/collector-gateway.png'));
 BackMap.set('onvif',getImage('/access/onvif.png'));
 BackMap.set('media-plugin',getImage('/access/media-plugin.png'))
+BackMap.set('agent-device-gateway',getImage('/access/agent-device.png'))
 
 const descriptionList = {
     'udp-device-gateway':
