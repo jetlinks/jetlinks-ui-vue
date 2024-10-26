@@ -7,8 +7,9 @@ import type { ConfigInfoType } from '@/views/system/Basis/typing';
 import { LocalStore } from '@/utils/comm'
 import { SystemConst } from '@/utils/consts'
 import {
-    getTagsColor,  
+    getTagsColor,
 } from '@/api/system/calendar'
+import Config from '../../config/config'
 
 type SystemStateType = {
     isCommunity: boolean;
@@ -68,8 +69,8 @@ export const useSystem = defineStore('system', {
             const res = await settingDetail('front')
             if (res.success) {
                 const ico: any = document.querySelector('link[rel="icon"]');
-                ico.href = res.result.ico;
-                document.title = res.result.title || '';
+                ico.href = res.result.ico || Config.logo;
+                document.title = res.result.title || Config.title;
                 this.configInfo['front'] = res.result
             }
         },
@@ -77,8 +78,8 @@ export const useSystem = defineStore('system', {
                 const _data = this.configInfo['front']
             if (_data) {
                 const ico: any = document.querySelector('link[rel="icon"]');
-                ico.href = _data.ico;
-                document.title = _data.title || '';
+                ico.href = _data.ico || Config.logo;
+                document.title = _data.title || Config.title;
             }
         },
         async getSystemConfig() {
