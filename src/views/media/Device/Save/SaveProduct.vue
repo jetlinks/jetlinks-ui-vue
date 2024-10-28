@@ -428,9 +428,11 @@ const handleCancel = () => {
  * 添加接入网关
  */
 const handleAdd = () => {
-    const tab: any = window.open(
-        `${origin}/#/iot/link/accessConfig/detail/:id?save=true&view=false&type=${props.channel}`,
-    );
+    const tab: any = props.channels.length > 1
+        ? window.open(
+              `${origin}/#/iot/link/accessConfig/detail/:id?save=true&view=false`,
+          )
+        : window.open(`${origin}/#/iot/link/accessConfig/detail/:id?save=true&view=false&type=${props.channel}`);
     tab.onTabSaveSuccess = async (value: any) => {
         await getGatewayList();
         handleClick(gatewayList.value?.[0]);
