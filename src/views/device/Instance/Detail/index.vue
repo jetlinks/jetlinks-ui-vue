@@ -182,10 +182,6 @@ const initList = [
     key: 'Log',
     tab: '日志管理',
   },
-  {
-    key: 'Shadow',
-    tab: '设备影子'
-  }
 ];
 
 const list = ref([...initList]);
