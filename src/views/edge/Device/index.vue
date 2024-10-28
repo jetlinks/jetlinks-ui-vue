@@ -217,7 +217,7 @@ import { useMenuStore } from '@/store/menu';
 import {getImage, getToken, onlyMessage} from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
-import { restPassword, getRemoteProxyUrl } from '@/api/edge/device';
+import {restPassword, getRemoteProxyUrl, getRemoteToken} from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
@@ -467,16 +467,18 @@ const getActions = (
                 title: '远程控制',
             },
             icon: 'ControlOutlined',
-            onClick: () => {
-              const url = `${window.location.origin + window.location.pathname}edge-gateway/#/?terminal=cloud&thingType=device&thingId=${data.id}`
-              window.open(url)
+            onClick: async () => {
+              // const url = `${window.location.origin + window.location.pathname}edge-gateway/#/?terminal=cloud&thingType=device&thingId=${data.id}`
+              // window.open(url)
 
-              // const resp = await getRemoteProxyUrl(data.id)
-              //
-              // if (resp.success) {
-              //   const url = `${window.location.origin + window.location.pathname}api/edge/device/${data.id}/_/login?:X_Access_Token=${getToken()}`
-              //   window.open(url)
-              // }
+              const resp = await getRemoteToken(data.id)
+
+              if (resp.success) {
+                const remoteUrl = '/#/?token'+ resp.result
+                const base64Url = btoa(remoteUrl)
+                const url = `${window.location.origin + window.location.pathname}api/edge/device/${data.id}/_/${base64Url}?:X_Access_Token=${getToken()}`
+                window.open(url)
+              }
             },
         },
         // {

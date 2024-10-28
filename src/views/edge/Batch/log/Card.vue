@@ -210,7 +210,11 @@ const taskDetailClose = () => {
 
 const onCopy = () => {
   context.openTask({
-    thingList: [],
+    thingList: (props.detail.others?.thingList || []).map(item => ({
+      ...item,
+      label: item.name || item.thingName,
+      value: item.id || item.thingId
+    })),
     jobType: props.type
   })
 }
