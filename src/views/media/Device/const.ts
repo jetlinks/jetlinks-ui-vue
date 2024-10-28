@@ -3,7 +3,7 @@ export const PROVIDER_OPTIONS = [
     { label: '固定地址', value: 'fixed-media' },
     { label: 'Onvif', value: 'onvif'},
     { label: '插件', value: 'media-plugin'},
-    { label: 'Agent接入', value: 'agent-device-gateway'}
+    { label: 'Agent接入', value: 'agent-media-device-gateway'}
 ]
 export const streamMode = [
     { label: 'UDP', value: 'UDP' },
@@ -15,5 +15,5 @@ export const providerType = {
     'fixed-media': '固定地址',
     'onvif': 'Onvif',
     'media-plugin': '插件',
-    'agent-device-gateway':'Agent接入'
+    'agent-media-device-gateway':'Agent接入'
 };
