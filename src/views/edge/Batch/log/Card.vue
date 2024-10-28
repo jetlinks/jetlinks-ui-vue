@@ -26,8 +26,37 @@
               </a-button>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item @click="onCopy">
-                    从相同设备创建任务
+                  <a-menu-item >
+                    <PermissionButton
+                      style="width: 100%;text-align: left;"
+                      type="text"
+                      @click="onCopy"
+                    >
+                      从相同设备创建任务
+                    </PermissionButton>
+
+                  </a-menu-item>
+                  <a-menu-item :disabled="detail.state.value === 'running'">
+                    <PermissionButton
+                      style="width: 100%;text-align: left;"
+                      danger
+                      :tooltip="{
+                        title:
+                            detail.state.value === 'running'
+                                ? '任务进行不可删除'
+                                : '',
+                      }"
+                      type="text"
+                      :popConfirm="{
+                        title: '确认删除?',
+                        onConfirm: async () => {
+                            onDelete();
+                        },
+                    }"
+                      :disabled="detail.state.value === 'running'"
+                    >
+                      删除任务
+                    </PermissionButton>
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -108,6 +137,7 @@ import TaskDetail from "./TaskDetail.vue";
 import {getContext} from "../util";
 import dayjs from 'dayjs'
 import Icon from '../components/Icon.vue'
+import {deleteAllTask} from "@/api/edge/batch";
 
 const props = defineProps({
   detail: {
@@ -183,6 +213,13 @@ const onCopy = () => {
     thingList: [],
     jobType: props.type
   })
+}
+
+const onDelete = async () => {
+  const resp = await deleteAllTask(props.detail.id)
+  if (resp.success) {
+    emit('reload')
+  }
 }
 </script>
 

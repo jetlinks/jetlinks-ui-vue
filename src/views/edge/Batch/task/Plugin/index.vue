@@ -26,6 +26,7 @@
             column: 'targetType',
             value: 'PluginDriver'
           }
+          ,{column: 'state', value: 'enabled'}
         ]
       }"
       :rowSelection="{

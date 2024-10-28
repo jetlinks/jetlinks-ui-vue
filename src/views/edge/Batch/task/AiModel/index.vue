@@ -21,7 +21,7 @@
       :params="params"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
-        terms: [{column: 'targetType', value: 'AiModel'}]
+        terms: [{column: 'targetType', value: 'AiModel'},{column: 'state', value: 'enabled'}]
       }"
       :rowSelection="{
             selectedRowKeys: selectedRowKeys,

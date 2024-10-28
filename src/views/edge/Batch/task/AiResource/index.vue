@@ -21,7 +21,7 @@
       :params="params"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
-        terms: [{column: 'targetType', value: 'PluginDriver'}]
+        terms: [{column: 'targetType', value: 'PluginDriver'},{column: 'state', value: 'enabled'}]
       }"
       :rowSelection="{
             selectedRowKeys: selectedRowKeys,
