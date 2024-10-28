@@ -479,27 +479,27 @@ const getActions = (
               // }
             },
         },
-        {
-            key: 'password',
-            text: '重置密码',
-            tooltip: {
-                title: '重置密码',
-            },
-            icon: 'RedoOutlined',
-            popConfirm: {
-                title: '确认重置密码为Jetlinks123？',
-                onConfirm: () => {
-                    const response = restPassword(data.id);
-                    response.then((resp: any) => {
-                        if (resp.status === 200) {
-                            onlyMessage('操作成功！');
-                            edgeDeviceRef.value?.reload();
-                        }
-                    });
-                    return response;
-                },
-            },
-        },
+        // {
+        //     key: 'password',
+        //     text: '重置密码',
+        //     tooltip: {
+        //         title: '重置密码',
+        //     },
+        //     icon: 'RedoOutlined',
+        //     popConfirm: {
+        //         title: '确认重置密码为Jetlinks123？',
+        //         onConfirm: () => {
+        //             const response = restPassword(data.id);
+        //             response.then((resp: any) => {
+        //                 if (resp.status === 200) {
+        //                     onlyMessage('操作成功！');
+        //                     edgeDeviceRef.value?.reload();
+        //                 }
+        //             });
+        //             return response;
+        //         },
+        //     },
+        // },
     ];
 
     const deleteItem = {
