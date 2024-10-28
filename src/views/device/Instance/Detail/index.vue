@@ -243,6 +243,13 @@ const getDetail = () => {
       tab: '物联网卡',
     });
   }
+
+  if (instanceStore.current?.features.some(item => item.id === 'deviceShadow-manager') && isNoCommunity) {
+    list.value.push({
+      key: 'Shadow',
+      tab: '设备影子'
+    })
+  }
   if (
       permissionStore.hasPermission('device/Firmware:view') &&
       instanceStore.current?.features?.find(
