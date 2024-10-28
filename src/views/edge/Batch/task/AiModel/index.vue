@@ -36,7 +36,6 @@
 <script setup name="AiModel">
 import { queryPage } from '@/api/edge-resource/ai-model'
 import {useTemplateRowSelection} from '../../util'
-import {pick} from "lodash-es";
 
 const params = ref()
 const { selectedRowKeys, selectedRowMap, onSelectChange, selectAll } = useTemplateRowSelection()
@@ -98,7 +97,7 @@ const queryFn = async (_params) => {
 const handleValue = async () => {
   return [...selectedRowMap.values()].map(item => {
     return {
-      data: pick(item, ['id', 'targetId', 'metadata', 'targetType', 'serviceId', 'name'])
+      data: item
     }
   })
 }
