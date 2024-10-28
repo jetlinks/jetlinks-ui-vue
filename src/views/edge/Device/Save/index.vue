@@ -209,9 +209,9 @@ watch(
                             type: 'and',
                         },
                         {
-                            termType: 'eq',
+                            termType: 'in',
                             column: 'accessProvider',
-                            value: 'official-edge-gateway',
+                            value: ['official-edge-gateway','agent-device-gateway'],
                         },
                     ],
                 },
