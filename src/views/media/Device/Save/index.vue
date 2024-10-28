@@ -499,6 +499,7 @@
             v-model:productId="formData.productId"
             v-model:password="formData.others.access_pwd"
             :channel="formData.channel"
+            :channels="[formData.channel]"
             @close="getProductList"
         />
     </page-container>
@@ -565,7 +566,7 @@ const getProductList = async () => {
         formData.value.others.access_pwd = result[0]?.configuration?.access_pwd
         formData.value.streamMode = result[0]?.configuration?.stream_mode
     }
-   
+
 };
 
 const handleProductChange = () => {

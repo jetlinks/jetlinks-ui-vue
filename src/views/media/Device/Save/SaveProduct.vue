@@ -228,6 +228,7 @@ const props = defineProps({
     visible: { type: Boolean, default: false },
     productId: { type: String, default: '' },
     channel: { type: String, default: '' },
+    channels: { type: Array, default: () => [] },
     deviceType: { type: String, default: 'device' },
 });
 
@@ -271,7 +272,7 @@ const getGatewayList = async () => {
     const params = {
         pageSize: 100,
         sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [{ column: 'provider', value: props.channel }],
+        terms: [{ column: 'provider', termType: 'in', value: props.channels }],
     };
     const { result } = await DeviceApi.queryProvider(params);
     gatewayList.value = result.data;
