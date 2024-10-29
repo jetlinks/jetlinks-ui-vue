@@ -6,17 +6,21 @@
     @cancel="onCancel"
     @ok="onOk"
   >
+    <a-tabs v-model:active="activeKey">
+      <a-tab-pane tab="按设备选择" value="device"></a-tab-pane>
+    </a-tabs>
     <div class="device-select-body">
       <pro-search
         type="simple"
         :columns="columns"
-        :style="{ paddingBottom: 0, marginBottom: 0 }"
+        :style="{ padding: 0, marginBottom: 0 }"
         @search="handleSearch"
       />
       <JProTable
         ref="edgeDeviceRef"
         model="CARD"
         :columns="columns"
+        :style="{ padding: 0 }"
         :request="query"
         :params="params"
         :defaultParams="defaultParams"
@@ -102,6 +106,8 @@ const props = defineProps({
     default: []
   }
 })
+
+const activeKey = ref('device')
 
 const defaultParams = computed(() => {
   const _params = {
