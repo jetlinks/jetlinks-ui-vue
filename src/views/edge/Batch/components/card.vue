@@ -6,8 +6,8 @@
       </div>
       <div class="item-body">
         <div class="item-body-title">
-          <div class="body-title-render">
-            <Ellipsis>
+          <div class="body-title-render" style="width: calc(100% - 80px);">
+            <Ellipsis >
               {{ record.name }}
             </Ellipsis>
           </div>
