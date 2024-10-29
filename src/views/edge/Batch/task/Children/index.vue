@@ -246,6 +246,7 @@ import {
     editDevice,
 } from '@/api/device/instance';
 import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
+import { queryProductList } from '@/api/device/product';
 import { getImage } from '@/utils/comm';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
@@ -270,7 +271,7 @@ const _drop = ref({});
 const _dropList = ref([]);
 const edgeId = ref('');
 const edgeCurrent = ref({});
-const _checked = ref(false);
+const _checked = ref(true);
 const _search = ref('');
 const _edgeInitList = ref([]);
 const _bindInitList = ref([]);
@@ -455,22 +456,40 @@ const onCover = async (e, item) => {
 
 const onDropAuto = () => {
     if (_drop.value.masterProductId) {
-        const obj = {
-            id: randomString(12),
-            name: _drop.value.name,
-            Mappingtype: 'auto',
-            Mapping: _drop.value,
-            MappingStatus: 'warning',
-        };
-        edgeList.value = edgeList.value.filter((i) => i.id !== _drop.value.id);
-        _edgeInitList.value = _edgeInitList.value.filter(
-            (i) => i.id !== _drop.value.id,
-        );
-        _dataSource.value.unshift(obj);
-        _dropList.value.unshift(obj);
-        if (_checked.value) {
-            onAuto(obj);
-        }
+        queryProductList({
+            terms: [
+                {
+                    column: 'id',
+                    value: _drop.value.masterProductId,
+                    termType: 'eq',
+                },
+            ],
+        }).then((res) => {
+            if (res.success) {
+                if (res.result.data.length > 0) {
+                    const obj = {
+                        id: randomString(12),
+                        name: _drop.value.name,
+                        Mappingtype: 'auto',
+                        Mapping: _drop.value,
+                        MappingStatus: 'warning',
+                    };
+                    edgeList.value = edgeList.value.filter(
+                        (i) => i.id !== _drop.value.id,
+                    );
+                    _edgeInitList.value = _edgeInitList.value.filter(
+                        (i) => i.id !== _drop.value.id,
+                    );
+                    _dataSource.value.unshift(obj);
+                    _dropList.value.unshift(obj);
+                    if (_checked.value) {
+                        onAuto(obj);
+                    }
+                } else {
+                    onlyMessage('云端产品不存在', 'error');
+                }
+            }
+        });
     }
 };
 
@@ -482,6 +501,7 @@ const onAuto = async (item) => {
         productId: item.Mapping.masterProductId,
         productName: item.Mapping.productName,
     };
+
     const res = await addDevice(deviceInfo);
     if (res.success) {
         item.loading = true;
@@ -502,7 +522,6 @@ const onAuto = async (item) => {
 
 const onDelete = (item) => {
     item.action = 'delete';
-    console.log('item====',item);
     if (item.id) {
         if (_checked.value) {
             item.loading = true;
@@ -525,11 +544,10 @@ const onDelete = (item) => {
             _edgeInitList.value.push(item.Mapping);
             _dataSource.value = _dataSource.value.filter(
                 (i) => i.Mapping?.id !== item.Mapping?.id,
-            )
+            );
             // item.Mapping = {};
             // item.MappingStatus = 'none';
             _dropList.value = _dropList.value.filter((i) => i.id !== item.id);
-            
         }
     } else {
         edgeList.value.push(item.Mapping);
@@ -616,6 +634,19 @@ onMounted(() => {
         edgeCurrent.value = props.options[0];
     }
 });
+
+const onClose =async () => {
+    const _auto = _dataSource.value.filter(
+        (item) => item?.Mappingtype === 'auto',
+    );
+    if (_auto.length) {
+        onSaveAll()
+    }
+};
+
+defineExpose({
+    onClose
+})
 
 watch(
     () => edgeId.value,

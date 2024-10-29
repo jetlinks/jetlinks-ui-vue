@@ -92,6 +92,7 @@
       />
     </div>
     </a-form>
+    <ChildrenModal v-if="modalVisible" @cancel="modalVisible = false" @ok="childOk" @close="childCancel"/>
     <template #footer>
       <div v-if="!showBindChildren">
         <a-button @click="onCancel">取消</a-button>
@@ -117,6 +118,7 @@ import { useRequest } from '@/hook'
 import {useBatchOperateOptions} from "@/views/edge/Batch/util";
 import {Modal} from "ant-design-vue";
 import {onlyMessage} from "@/utils/comm";
+import ChildrenModal from './Children/ChildrenModal.vue'
 
 const props = defineProps({
   value: {
@@ -148,6 +150,7 @@ const formModel = reactive({
   thingList: props.list,
   description: undefined
 })
+const modalVisible = ref(false)
 
 const gatewayData = reactive({
   visible: false,
@@ -236,7 +239,11 @@ const addGateway = (rows) => {
 }
 
 const onCancel = () => {
-  emit('cancel')
+  if(formModel.jobType === 'device') {
+    modalVisible.value = true
+  }else{
+    emit('cancel')
+  }
 }
 
 const onOk = async () => {
@@ -305,6 +312,19 @@ const init = () => {
 }
 
 init()
+
+
+const childCancel = () => {
+  modalVisible.value = false
+  emit('cancel')
+}
+
+const childOk = async() => {
+  await contentRef.value?.onClose()
+  setTimeout(() => {
+    childCancel()
+  }, 300)
+}
 
 const onChildrenChange = (e)=>{
   console.log('eeeee====',e);
