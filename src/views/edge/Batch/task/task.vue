@@ -1,7 +1,7 @@
 <template>
   <a-modal
     visible
-    title="批量操作"
+    :title="title"
     width="90%"
     okText="新增任务"
     :confirmLoading="loading"
@@ -17,7 +17,7 @@
     <div class="task-body">
 
       <div class="task-form">
-          <a-form-item label="名称" name="name">
+          <a-form-item label="名称" name="name" v-if="!showBindChildren">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
           <a-form-item name="thingList">
@@ -55,7 +55,7 @@
                 <a-input-number
                   v-model:value="formModel.timeoutSeconds"
                   :min="0"
-                  :max="999999"
+                  :max="99999"
                   :precision="0"
                   placeholder="请输入响应超时时间（秒）"
                   style="width: 100%;"
@@ -67,7 +67,7 @@
                 <a-input-number
                   v-model:value="formModel.maxRetry"
                   :min="0"
-                  :max="999999"
+                  :max="99999"
                   :precision="0"
                   placeholder="请输入重试次数"
                   style="width: 100%;"
@@ -155,6 +155,10 @@ const gatewayData = reactive({
 })
 const showBindChildren = computed(() => {
   return formModel.jobType === 'device'
+})
+
+const title = computed(() => {
+  return batchOperateOptions.value.find(item => item.value === formModel.jobType)?.label
 })
 
 const rules = {
