@@ -95,7 +95,10 @@
   />
   <TaskDetail
     v-if="taskDetail.visible"
+    :data="taskDetail.detail"
+    @copy="onCopy"
     @closeDetail="taskDetailClose"
+    @refresh="emit('reload')"
   />
 </template>
 
@@ -110,8 +113,14 @@ const props = defineProps({
   detail: {
     type: Object,
     default: () => ({})
-  }
+  },
+  type: {
+    type: String,
+    default: undefined
+  },
 })
+
+const emit = defineEmits(['reload'])
 
 const visible = ref(false)
 const context = getContext()
@@ -158,10 +167,11 @@ const options = computed(() => {
   }) || []
 })
 
-const showTaskDetail = (record) => {
-  taskDetail.detail = record
+const showTaskDetail = () => {
+  taskDetail.detail = props.detail
   taskDetail.visible = true
 }
+
 
 const taskDetailClose = () => {
   taskDetail.detail = undefined
@@ -170,7 +180,8 @@ const taskDetailClose = () => {
 
 const onCopy = () => {
   context.openTask({
-    gateway: []
+    thingList: [],
+    jobType: props.type
   })
 }
 </script>

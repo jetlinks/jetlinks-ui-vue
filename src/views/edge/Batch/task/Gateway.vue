@@ -12,7 +12,9 @@
             <AIcon type="InboxOutlined" />
           </div>
           <div class="content">
-            {{ item.label }}
+            <Ellipsis>
+              {{ item.label }}
+            </Ellipsis>
           </div>
           <div class="tool" @click="() => onDelete(item.id)">
             <AIcon type="DeleteOutlined" />
@@ -34,10 +36,8 @@ const props = defineProps({
   }
 })
 
-
-
 const onDelete = (id) => {
-  const array = props.value.filter(item => item.id === id)
+  const array = props.value.filter(item => item.id !== id)
   emit('update:value', array)
   emit('change', array)
   emit('delete', id)

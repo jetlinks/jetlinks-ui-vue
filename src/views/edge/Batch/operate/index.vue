@@ -10,7 +10,7 @@
               {{ item.label }}
             </label>
           </div>
-          <a-button type="text" class="history-icon" @click.stop="() => showHistoryTask(item)">
+          <a-button v-if="item.value !== 'device'" type="text" class="history-icon" @click.stop="() => showHistoryTask(item)">
             <AIcon type="ExceptionOutlined" />
           </a-button>
         </div>
@@ -47,8 +47,8 @@
     </template>
     <Log
       v-if="visible"
+      ref="logRef"
       :type="operateActive.type"
-      :deviceList="deviceKeys"
     />
   </a-drawer>
 </template>
@@ -69,8 +69,9 @@ const emit = defineEmits(['selected'])
 
 const { batchOperateOptions } = useBatchOperateOptions()
 const visible = ref(false)
+const logRef = ref()
+
 const disabled = computed(() => !props.deviceList.length)
-const deviceKeys = computed(() => props.deviceList.map(item => item.id))
 
 const operateActive = reactive({
   title: undefined,
@@ -94,6 +95,14 @@ const showHistoryTask = (item) => {
 const closeHistoryTask = () => {
   visible.value = false
 }
+
+const updateLog = () => {
+  logRef.value?.reload()
+}
+
+defineExpose({
+  updateLog
+})
 
 </script>
 
