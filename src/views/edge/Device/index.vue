@@ -217,7 +217,7 @@ import { useMenuStore } from '@/store/menu';
 import {getImage, getToken, onlyMessage} from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
-import {restPassword, getRemoteProxyUrl, getRemoteToken} from '@/api/edge/device';
+import {restPassword, getRemoteProxyUrl, getRemoteToken, getRemoteSystem} from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
@@ -468,15 +468,15 @@ const getActions = (
             },
             icon: 'ControlOutlined',
             onClick: async () => {
-              // const url = `${window.location.origin + window.location.pathname}edge-gateway/#/?terminal=cloud&thingType=device&thingId=${data.id}`
-              // window.open(url)
 
               const resp = await getRemoteToken(data.id)
 
               if (resp.success) {
-                const remoteUrl = '/#/?token'+ resp.result
-                const base64Url = btoa(remoteUrl)
-                const url = `${window.location.origin + window.location.pathname}api/edge/device/${data.id}/_/${base64Url}?:X_Access_Token=${getToken()}`
+                const system = await getRemoteSystem(data.id, [ "paths" ])
+                const path = system.result[0]?.properties['base-path']
+                const base64Url = btoa(path)
+                const proxyUrl = await getRemoteProxyUrl(data.id)
+                const url = `${window.location.origin + window.location.pathname}api/edge/device/${data.id}/_proxy/${proxyUrl.result}/${base64Url}/#/?token=` + resp.result
                 window.open(url)
               }
             },
