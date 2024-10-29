@@ -9,24 +9,22 @@
                 拖拽右侧边缘端设备卡片到左侧对应项区域框内，即可完成绑定
             </span>
         </div>
-        <div>
+        <div style="width: 65vw">
             <a-tabs v-model:activeKey="edgeId">
-                <a-tab-pane
-                    v-for="item in options"
-                    :key="item.id"
-                   
-                >
+                <a-tab-pane v-for="item in options" :key="item.id">
                     <template #tab>
-                        <div>
+                        <div style="text-wrap: initial; display: flex">
                             <badge-status
                                 :status="item.state.value"
-                                :text="item.label"
                                 :statusNames="{
                                     online: 'success',
                                     offline: 'error',
                                     notActive: 'warning',
                                 }"
                             />
+                            <j-ellipsis style="width: 100px">{{
+                                item.label
+                            }}</j-ellipsis>
                         </div>
                     </template>
                 </a-tab-pane>
@@ -109,7 +107,12 @@
                                     >
                                         从右侧拖拽卡片至此
                                     </div>
-                                    <div v-else class="left-map">
+                                    <div
+                                        v-else
+                                        class="left-map"
+                                        @dragover.prevent
+                                        @drop="(e) => onCover(e, record)"
+                                    >
                                         <div>
                                             <j-ellipsis>
                                                 {{ record.Mapping.name }}({{
@@ -235,11 +238,16 @@
 </template>
 
 <script setup name="TaskChildren">
-import { queryNoPagingPost, addDevice,editDevice } from '@/api/device/instance';
+import {
+    queryNoPagingPost,
+    addDevice,
+    editDevice,
+} from '@/api/device/instance';
 import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
 import { getImage } from '@/utils/comm';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
+import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
     options: {
@@ -412,6 +420,16 @@ const onDrop = async (e, item) => {
     }
 };
 
+// const onCover = async (e, item) => {
+//     console.log('item====',item);
+//     const coverData = cloneDeep(item.Mapping)
+//     if(_checked.value){
+        
+//     }else{
+        
+//     }
+// };
+
 const onDropAuto = () => {
     if (_drop.value.masterProductId) {
         const obj = {
@@ -536,7 +554,7 @@ const onSaveAll = async () => {
     });
     if (res.success) {
         handleRefresh();
-        onlyMessage('操作成功');
+        onlyMessage('编辑绑定子设备成功');
     }
 };
 const onChange = (checked) => {
@@ -544,7 +562,6 @@ const onChange = (checked) => {
         onSaveAll();
     }
 };
-
 
 const handleRefresh = () => {
     getNoMapping();
@@ -576,13 +593,12 @@ watch(
     () => edgeId.value,
     (val) => {
         const obj = props.options.find((item) => item.value === val);
-        if(obj?.value){
+        if (obj?.value) {
             edgeCurrent.value = obj;
         }
-        if (val && obj?.state?.value === 'online')  {
+        if (val && obj?.state?.value === 'online') {
             handleRefresh();
-            
-        }else{
+        } else {
             _edgeInitList.value = [];
             edgeList.value = [];
         }

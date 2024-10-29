@@ -74,7 +74,7 @@ const columns = [
     ellipsis: true,
   },
   {
-    title: '说明',
+    title: '描述',
     dataIndex: 'description',
     key: 'description',
     ellipsis: true,
