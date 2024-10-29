@@ -132,8 +132,8 @@ DataMap.set('opc-ua', { type: 'channel', title: '通道类设备接入' });
 DataMap.set('official-edge-gateway', { type: 'edge', title: '官方接入' });
 DataMap.set('edge-child-device', { type: 'edge', title: '官方接入' });
 DataMap.set('network', { type: 'network', title: '自定义设备接入' });
-DataMap.set('agent-device-gateway',{ type:'network', title:'Agent类设备接入'})
-DataMap.set('agent-media-device-gateway',{ type:'network', title:'Agent类设备接入'})
+DataMap.set('agent-device-gateway',{ type:'network', title:'Agent代理接入'})
+DataMap.set('agent-media-device-gateway',{ type:'network', title:'Agent代理接入'})
 
 const getTypeList = (result: Record<string, any>) => {
     const list = [];
@@ -213,7 +213,7 @@ const getTypeList = (result: Record<string, any>) => {
         });
     agent.length && list.push({
         list: [...agent],
-        title: 'Agent类设备接入'
+        title: 'Agent代理接入'
     })
     return list;
 };
