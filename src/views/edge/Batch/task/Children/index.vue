@@ -195,7 +195,9 @@
                             :draggable="true"
                             @dragstart="() => onStart(item)"
                         >
-                            <div class="item-name">{{ item.name }}</div>
+                            <div class="item-name">
+                                <j-ellipsis>{{ item.name }}</j-ellipsis>
+                            </div>
                             <div class="item-info">
                                 <span>
                                     <j-ellipsis>ID:{{ item.id }}</j-ellipsis>
@@ -268,7 +270,7 @@ const _drop = ref({});
 const _dropList = ref([]);
 const edgeId = ref('');
 const edgeCurrent = ref({});
-const _checked = ref(true);
+const _checked = ref(false);
 const _search = ref('');
 const _edgeInitList = ref([]);
 const _bindInitList = ref([]);
@@ -419,16 +421,37 @@ const onDrop = async (e, item) => {
         _dropList.value.push(item);
     }
 };
-
-// const onCover = async (e, item) => {
-//     console.log('item====',item);
-//     const coverData = cloneDeep(item.Mapping)
-//     if(_checked.value){
-        
-//     }else{
-        
-//     }
-// };
+//覆盖操作
+const onCover = async (e, item) => {
+    const coverData = cloneDeep(item.Mapping);
+    if (_checked.value) {
+        item.loading = true;
+        item.Mapping = _drop.value;
+        const res = await _commandByEdge(edgeId.value, 'BindMasterDevice', {
+            deviceId: _drop.value.id,
+            masterDeviceId: item.id,
+        }).finally(() => {
+            item.loading = false;
+        });
+        if (res.success) {
+            item.MappingStatus = 'success';
+            handleRefresh();
+        } else {
+            item.MappingStatus = 'error';
+        }
+    } else {
+        item.Mapping = {
+            ..._drop.value,
+        };
+        item.MappingStatus = 'warning';
+        item.action = 'drop';
+        edgeList.value.unshift(coverData);
+        edgeList.value = edgeList.value.filter((i) => i.id !== _drop.value.id);
+        _edgeInitList.value = _edgeInitList.value.filter(
+            (i) => i.id !== _drop.value.id,
+        );
+    }
+};
 
 const onDropAuto = () => {
     if (_drop.value.masterProductId) {
@@ -479,6 +502,7 @@ const onAuto = async (item) => {
 
 const onDelete = (item) => {
     item.action = 'delete';
+    console.log('item====',item);
     if (item.id) {
         if (_checked.value) {
             item.loading = true;
@@ -499,9 +523,13 @@ const onDelete = (item) => {
         } else {
             edgeList.value.push(item.Mapping);
             _edgeInitList.value.push(item.Mapping);
-            item.Mapping = {};
-            item.MappingStatus = 'none';
+            _dataSource.value = _dataSource.value.filter(
+                (i) => i.Mapping?.id !== item.Mapping?.id,
+            )
+            // item.Mapping = {};
+            // item.MappingStatus = 'none';
             _dropList.value = _dropList.value.filter((i) => i.id !== item.id);
+            
         }
     } else {
         edgeList.value.push(item.Mapping);
