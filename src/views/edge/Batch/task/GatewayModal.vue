@@ -128,7 +128,7 @@ const defaultParams = computed(() => {
   if (props.filter.length) {
     _params.terms[0].terms.push({
       column: 'id$nin',
-      value: props.filter.map(item => item.id).join(','),
+      value: props.filter.map(item => item.id || item.thingId).join(','),
       type: 'and'
     })
   }
