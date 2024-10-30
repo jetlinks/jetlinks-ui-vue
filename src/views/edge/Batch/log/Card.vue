@@ -127,7 +127,7 @@
   />
   <TaskDetail
     v-if="taskDetail.visible"
-    :data="taskDetail.detail"
+    :data="detail"
     @copy="onCopy"
     @closeDetail="taskDetailClose"
     @refresh="emit('reload')"
@@ -250,6 +250,7 @@ const onDelete = async () => {
         font-size: 16px;
         color: @font-gray-900;
         font-weight: 500;
+        max-width:550px;
       }
 
       .header-status {

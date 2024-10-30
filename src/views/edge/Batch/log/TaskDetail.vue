@@ -9,7 +9,9 @@
         <div class="generalInfo">
             <div class="header">
                 <div class="header-left">
-                    <div style="font-size: 20px;max-width: 300px;"><j-ellipsis>{{ data.name || '--' }}</j-ellipsis></div>
+                    <div style="font-size: 20px; max-width: 300px">
+                        <j-ellipsis>{{ data.name || '--' }}</j-ellipsis>
+                    </div>
                     <div class="header-status bg-color-200">
                         <BadgeStatus
                             :text="data.state.text"
@@ -62,16 +64,22 @@
                 <!-- {{ data.description || '--' }} -->
             </div>
             <div class="allOperation">
-                <PermissionButton @click="stopAll"
+                <PermissionButton @click="stopAll" :disabled="!stateArr.includes('running')"
                     ><template #icon><AIcon type="PauseOutlined" /> </template
                     >全部暂停
                 </PermissionButton>
-                <PermissionButton style="margin-left: 20px" @click="startAll"
+                <PermissionButton style="margin-left: 20px" @click="startAll" :disabled="!stateArr.includes('canceled')"
                     ><template #icon
                         ><AIcon type="CaretRightOutlined" /> </template
                     >全部开始</PermissionButton
                 >
-                <PermissionButton style="margin-left: 20px" @click="batchRetry" :disabled="data.state.value !== 'failed'"
+                <PermissionButton
+                    style="margin-left: 20px"
+                    @click="batchRetry"
+                    :tooltip="{
+                        title: stateArr.includes('failed') ? '批量重试' : '',
+                    }"
+                    :disabled="!stateArr.includes('failed')"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
                     批量重试
                 </PermissionButton>
@@ -123,13 +131,13 @@
                         />
                         {{ item.label }}
                     </div>
-                    <div style="font-size: 20px;">
+                    <div style="font-size: 20px">
                         {{ item.value }}
                     </div>
                 </div>
                 <div class="status-item last-item">
                     <label> 任务总数 </label>
-                    <span class="text-color-900" style="font-size: 20px;">
+                    <span class="text-color-900" style="font-size: 20px">
                         {{ taskTotal }}
                     </span>
                 </div>
@@ -431,11 +439,10 @@ const options = computed(() => {
     );
 });
 
-const handleDisabled = ()=>{
-    console.log('props.====',props.data.stateCount);
-    // const _arr = 
-}
-handleDisabled()
+const stateArr = computed(() => {
+    return props.data.stateCount.map((item) => item.state.value);
+});
+
 const _query = async (e) => {
     const res = await queryTaskdDtail(e);
     if (res.success) {

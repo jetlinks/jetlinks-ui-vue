@@ -239,7 +239,7 @@ const addGateway = (rows) => {
 }
 
 const onCancel = () => {
-  if(formModel.jobType === 'device') {
+  if(formModel.jobType === 'device' && contentRef.value.checked()) {
     modalVisible.value = true
   }else{
     emit('cancel')

@@ -130,6 +130,7 @@ const handleSearch = (e, terms) => {
 
 const reload = () => {
   tableRef.value?.reload()
+  
 }
 
 defineExpose({

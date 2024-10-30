@@ -65,10 +65,10 @@
                     <div class="left-list">
                         <a-table
                             :columns="columns"
-                            :model="'TABLE'"
+                           
                             :dataSource="_dataSource"
                             :pagination="false"
-                            :scroll="{ y: 500 }"
+                            :scroll="{ y: '400px' }"
                         >
                             <template #bodyCell="{ column, record }">
                                 <template v-if="column.key === 'id'">
@@ -79,6 +79,9 @@
                                                 : '自动生成'
                                         }}</j-ellipsis
                                     >
+                                </template>
+                                <template v-else-if="column.key === 'name'">
+                                    <j-ellipsis>{{ record.name }}</j-ellipsis>
                                 </template>
                                 <template v-else-if="column.key === 'Mapping'">
                                     <div>
@@ -644,8 +647,18 @@ const onClose =async () => {
     }
 };
 
+const isModal  = ()=>{
+    const obj = _dataSource.value.find(item => item?.MappingStatus === 'warning' );
+    if(obj?.id){
+        return true
+    }else{
+        return false
+    }
+}
+
 defineExpose({
-    onClose
+    onClose,
+    checked:isModal,
 })
 
 watch(
@@ -744,7 +757,7 @@ watch(
                 border-color: #e4e6e7;
             }
             .left-list {
-                height: 520px;
+                height: 500px;
                 padding: 12px;
                 .left-drag {
                     border: 1px solid #eff0f1;
