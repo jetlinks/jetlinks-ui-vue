@@ -9,7 +9,7 @@
         <div class="generalInfo">
             <div class="header">
                 <div class="header-left">
-                    <div style="font-size: 20px">{{ data.name || '--' }}</div>
+                    <div style="font-size: 20px;max-width: 300px;"><j-ellipsis>{{ data.name || '--' }}</j-ellipsis></div>
                     <div class="header-status bg-color-200">
                         <BadgeStatus
                             :text="data.state.text"
@@ -58,7 +58,8 @@
                 </div>
             </div>
             <div class="dec">
-                {{ data.description || '--' }}
+                <j-ellipsis>{{ data.description || '--' }}</j-ellipsis>
+                <!-- {{ data.description || '--' }} -->
             </div>
             <div class="allOperation">
                 <PermissionButton @click="stopAll"
@@ -70,7 +71,7 @@
                         ><AIcon type="CaretRightOutlined" /> </template
                     >全部开始</PermissionButton
                 >
-                <PermissionButton style="margin-left: 20px" @click="batchRetry"
+                <PermissionButton style="margin-left: 20px" @click="batchRetry" :disabled="data.state.value !== 'failed'"
                     ><template #icon><AIcon type="RedoOutlined" /> </template>
                     批量重试
                 </PermissionButton>
@@ -81,9 +82,7 @@
                     刷新状态
                 </PermissionButton>
                 <PermissionButton style="float: right" @click="onCopy"
-                    ><template #icon
-                        ><AIcon type="CopyOutlined" />
-                    </template>
+                    ><template #icon><AIcon type="CopyOutlined" /> </template>
                     从相同设备创建任务
                 </PermissionButton>
                 <PermissionButton
@@ -117,17 +116,20 @@
             </div>
             <div class="body-status">
                 <div v-for="item in options" class="status-item">
-                    <Icon :type="item.icon" :style="{ color: item.color }" />
-                    <label>
+                    <div>
+                        <Icon
+                            :type="item.icon"
+                            :style="{ color: item.color }"
+                        />
                         {{ item.label }}
-                    </label>
-                    <span>
+                    </div>
+                    <div style="font-size: 20px;">
                         {{ item.value }}
-                    </span>
+                    </div>
                 </div>
                 <div class="status-item last-item">
                     <label> 任务总数 </label>
-                    <span class="text-color-900">
+                    <span class="text-color-900" style="font-size: 20px;">
                         {{ taskTotal }}
                     </span>
                 </div>
@@ -160,11 +162,19 @@
             <template #thingName="{ thingName }">
                 <Ellipsis style="width: 100%"> {{ thingName }}</Ellipsis>
             </template>
+            <template #timeoutSeconds="{ timeoutSeconds }">
+                <Ellipsis style="width: 100%"> {{ timeoutSeconds }}s</Ellipsis>
+            </template>
             <template #id="{ id }">
                 <Ellipsis style="width: 100%"> {{ id }}</Ellipsis>
             </template>
             <template #filename="{ detail }">
-              <Ellipsis style="width: 100%"> {{ JSON.parse(detail.data.metadata || '{}')?.filename || '--' }}</Ellipsis>
+                <Ellipsis style="width: 100%">
+                    {{
+                        JSON.parse(detail.data.metadata || '{}')?.filename ||
+                        '--'
+                    }}</Ellipsis
+                >
             </template>
             <template #completeTime="record">
                 {{
@@ -184,17 +194,20 @@
                             : '#646C73',
                     }"
                 >
-                  <a-space>
-                  
-                    <Icon :type="iconMap[record.state.value]" />
-                    <j-ellipsis>
-                        <div>{{ record.state.text }}</div>
-                    <div v-if="record.state.value === 'failed'">
-                        :{{ record.errorCode || '--' }}
-                    </div>  
-                    </j-ellipsis>
-                 
-                  </a-space>
+                    <a-space>
+                        <Icon :type="iconMap[record.state.value]" />
+                        <j-ellipsis>
+                            <div>{{ record.state.text }}</div>
+                            <div
+                                v-if="
+                                    record.state.value === 'failed' &&
+                                    record.errorCodeMessage
+                                "
+                            >
+                                {{ ':' + record.errorCodeMessage }}
+                            </div>
+                        </j-ellipsis>
+                    </a-space>
                 </div>
             </template>
             <template #action="record">
@@ -362,7 +375,7 @@ const columns = [
         title: '状态',
         key: 'state',
         scopedSlots: true,
-        width: 150,
+        width: 180,
     },
     {
         title: '操作',
@@ -418,6 +431,11 @@ const options = computed(() => {
     );
 });
 
+const handleDisabled = ()=>{
+    console.log('props.====',props.data.stateCount);
+    // const _arr = 
+}
+handleDisabled()
 const _query = async (e) => {
     const res = await queryTaskdDtail(e);
     if (res.success) {
@@ -546,8 +564,8 @@ const onCopy = () => {
         .status-item {
             width: 120px;
             display: flex;
-            gap: 12px;
             align-items: center;
+            flex-direction: column;
         }
 
         .last-item {
@@ -570,6 +588,6 @@ const onCopy = () => {
 .state {
     display: flex;
     align-items: center;
-    width: 130px;
+    width: 140px;
 }
 </style>

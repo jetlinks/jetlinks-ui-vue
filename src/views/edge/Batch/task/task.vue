@@ -54,7 +54,7 @@
               <a-form-item label="响应超时时间" name="timeoutSeconds" required>
                 <a-input-number
                   v-model:value="formModel.timeoutSeconds"
-                  :min="0"
+                  :min="1"
                   :max="99999"
                   :precision="0"
                   placeholder="请输入响应超时时间（秒）"
@@ -66,7 +66,7 @@
               <a-form-item label="重试次数" name="maxRetry" required>
                 <a-input-number
                   v-model:value="formModel.maxRetry"
-                  :min="0"
+                  :min="1"
                   :max="99999"
                   :precision="0"
                   placeholder="请输入重试次数"
