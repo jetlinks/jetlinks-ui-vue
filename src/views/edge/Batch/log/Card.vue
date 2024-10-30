@@ -5,7 +5,8 @@
       <div class="item-body">
         <div class="body-header">
           <div class="header-title">
-              {{ detail.name || '测试内容' }}
+             
+              <j-ellipsis> {{ detail.name  }}</j-ellipsis>
           </div>
           <div class="header-status bg-color-200">
             <BadgeStatus
@@ -66,7 +67,9 @@
         <div class="body-detail">
           <div class="detail-desc">
             <div class="detail-title text-color-500">说明</div>
-            <div class="detail-value text-color-600">{{ detail.description}}</div>
+            <div class="detail-value text-color-600">
+              <j-ellipsis>{{ detail.description || '--'}}</j-ellipsis>
+            </div>
           </div>
           <div class="detail-time">
             <div class="detail-title text-color-500">时间</div>
