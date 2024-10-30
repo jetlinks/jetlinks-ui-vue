@@ -3,7 +3,7 @@
         visible
         title="任务详情"
         width="75vw"
-        :closable="false"
+        @cancel="$emit('closeDetail')"
         :maskClosable="false"
     >
         <div class="generalInfo">
@@ -157,6 +157,12 @@
             <template #pulginName="{ detail }">
                 <Ellipsis style="width: 100%"> {{ detail.data.name }}</Ellipsis>
             </template>
+            <template #thingName="{ thingName }">
+                <Ellipsis style="width: 100%"> {{ thingName }}</Ellipsis>
+            </template>
+            <template #id="{ id }">
+                <Ellipsis style="width: 100%"> {{ id }}</Ellipsis>
+            </template>
             <template #filename="{ detail }">
               <Ellipsis style="width: 100%"> {{ JSON.parse(detail.data.metadata || '{}')?.filename || '--' }}</Ellipsis>
             </template>
@@ -179,11 +185,15 @@
                     }"
                 >
                   <a-space>
+                  
                     <Icon :type="iconMap[record.state.value]" />
-                    <div>{{ record.state.text }}</div>
+                    <j-ellipsis>
+                        <div>{{ record.state.text }}</div>
                     <div v-if="record.state.value === 'failed'">
                         :{{ record.errorCode || '--' }}
-                    </div>
+                    </div>  
+                    </j-ellipsis>
+                 
                   </a-space>
                 </div>
             </template>
@@ -319,7 +329,8 @@ const columns = [
         key: 'id',
         dataIndex: 'id',
         ellipsis: true,
-        width: 80,
+        scopedSlots: true,
+        width: 100,
     },
     {
         title: '边缘网关',
@@ -559,6 +570,6 @@ const onCopy = () => {
 .state {
     display: flex;
     align-items: center;
-    width: 120px;
+    width: 130px;
 }
 </style>
