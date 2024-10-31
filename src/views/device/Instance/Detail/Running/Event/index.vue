@@ -14,7 +14,12 @@
         :bodyStyle="{ padding: '0 0 0 24px' }"
     >
         <template  v-for="i in objectKey" #[i.key]='slotProps'>
-            <Ellipsis >
+            <ValueRender
+                v-if="events.data.valueType.properties.find(item => item.id === i.key)?.valueType?.type === 'file'"
+                :data="slotProps"
+                :dataIndex="i.dataIndex"
+            />
+            <Ellipsis v-else>
                 <span @click="detail(slotProps[i.dataIndex])">{{  JSON.stringify(slotProps[i.dataIndex])}}</span>
             </Ellipsis>
         </template>
@@ -49,6 +54,7 @@ import { getEventList } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import JsonViewer from 'vue-json-viewer';
 import { cloneDeep } from 'lodash-es';
+import ValueRender from './ValueRender.vue';
 
 const events = defineProps({
     data: {
@@ -81,9 +87,14 @@ const params = ref<Record<string, any>>({});
 const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
 const objectKey = ref<Array>([]);
+const imgLoad = ref(true);
 
 const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
+
+const handleError = () => {
+    debugger
+}
 
 watchEffect(() => {
     columns.value = [...defaultColumns];
@@ -103,6 +114,17 @@ watchEffect(() => {
                         type: i?.valueType?.type || 'string',
                         rename: i.id,
                     },
+                    scopedSlots: true,
+                });
+            } else if(i.valueType?.type === 'file') {
+                objectKey.value.push({
+                    key:i.id,
+                    dataIndex: `${i.id}_format`
+                });
+                columns.value.splice(0, 0, {
+                    key: i.id,
+                    title: i.name,
+                    dataIndex: i.id,
                     scopedSlots: true,
                 });
             } else {

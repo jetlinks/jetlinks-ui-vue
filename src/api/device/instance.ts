@@ -689,3 +689,8 @@ export const uploadAnalyzeMetadata = (productId:string,data: any) => server.post
  * @param id 设备ID
  */
 export const getDeviceShadow = (id: string) => server.get(`/device/shadow/${id}`)
+
+/**
+ * 物模型事件图片地址代理
+ */
+export const proxyUrl = (deviceId: string, url: string) => server.get(`/edge/device/${deviceId}/_proxy?url=${url}`, {}, { responseType: 'blob' })
