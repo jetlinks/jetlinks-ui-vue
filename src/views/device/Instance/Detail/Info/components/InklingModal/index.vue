@@ -53,7 +53,7 @@ const handleOk = async () => {
     loading.value = true
     const res = await savePluginData(
       'device',
-      props.pluginId!,
+      props.accessId!,
       route.params.id as string,
       checkKey.value
     ).catch(() => ({ success: false }))
@@ -71,7 +71,7 @@ const handleCancel = () => {
 }
 
 const getCheckedKeys = () => {
-  getPluginData( 'device', props.pluginId!, route.params.id as string,).then(res => {
+  getPluginData( 'device', props.accessId!, route.params.id as string,).then(res => {
     if (res.success) {
       checkKey.value = res.result?.externalId || ''
     }
