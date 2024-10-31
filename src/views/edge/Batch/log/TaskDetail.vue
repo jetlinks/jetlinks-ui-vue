@@ -64,7 +64,7 @@
                 <!-- {{ data.description || '--' }} -->
             </div>
             <div class="allOperation">
-                <PermissionButton @click="stopAll" :disabled="!stateArr.includes('running')"
+                <PermissionButton @click="stopAll" :disabled="!stateArr.includes('waiting')"
                     ><template #icon><AIcon type="PauseOutlined" /> </template
                     >全部暂停
                 </PermissionButton>

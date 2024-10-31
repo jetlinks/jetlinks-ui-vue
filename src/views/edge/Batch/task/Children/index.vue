@@ -65,7 +65,6 @@
                     <div class="left-list">
                         <a-table
                             :columns="columns"
-                           
                             :dataSource="_dataSource"
                             :pagination="false"
                             :scroll="{ y: '400px' }"
@@ -225,6 +224,8 @@
                                     >
                                 </span>
                             </div>
+                        </div>
+                        <div class="right-pagination">
                         </div>
                     </template>
                     <template v-else>
@@ -631,6 +632,28 @@ const onRightSearch = (e) => {
     }
 };
 
+
+
+const onClose = async () => {
+    const _auto = _dataSource.value.filter(
+        (item) => item?.Mappingtype === 'auto',
+    );
+    if (_auto.length) {
+        onSaveAll();
+    }
+};
+
+const isModal = () => {
+    const obj = _dataSource.value.find(
+        (item) => item?.MappingStatus === 'warning',
+    );
+    if (obj?.id) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 onMounted(() => {
     if (props.options?.length) {
         edgeId.value = props.options[0].value;
@@ -638,28 +661,10 @@ onMounted(() => {
     }
 });
 
-const onClose =async () => {
-    const _auto = _dataSource.value.filter(
-        (item) => item?.Mappingtype === 'auto',
-    );
-    if (_auto.length) {
-        onSaveAll()
-    }
-};
-
-const isModal  = ()=>{
-    const obj = _dataSource.value.find(item => item?.MappingStatus === 'warning' );
-    if(obj?.id){
-        return true
-    }else{
-        return false
-    }
-}
-
 defineExpose({
     onClose,
-    checked:isModal,
-})
+    checked: isModal,
+});
 
 watch(
     () => edgeId.value,
