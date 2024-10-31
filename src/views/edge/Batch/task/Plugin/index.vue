@@ -26,6 +26,7 @@
             column: 'targetType',
             value: 'PluginDriver'
           }
+          ,{column: 'state', value: 'enabled'}
         ]
       }"
       :rowSelection="{
@@ -73,7 +74,7 @@ const columns = [
     ellipsis: true,
   },
   {
-    title: '说明',
+    title: '描述',
     dataIndex: 'description',
     key: 'description',
     ellipsis: true,

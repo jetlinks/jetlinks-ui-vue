@@ -146,6 +146,7 @@ import {EventEmitter} from '@/utils/utils';
 import {usePermissionStore} from '@/store/permission';
 import {isNoCommunity} from '@/utils/utils';
 import {useSystem} from '@/store/system';
+import {getRemoteProxyUrl, getRemoteSystem, getRemoteToken} from "@/api/edge/device";
 
 const menuStory = useMenuStore();
 const {showThreshold} = useSystem();
@@ -182,10 +183,6 @@ const initList = [
     key: 'Log',
     tab: '日志管理',
   },
-  {
-    key: 'Shadow',
-    tab: '设备影子'
-  }
 ];
 
 const list = ref([...initList]);
@@ -242,6 +239,13 @@ const getDetail = () => {
       key: 'CardManagement',
       tab: '物联网卡',
     });
+  }
+
+  if (instanceStore.current?.features.some(item => item.id === 'deviceShadow-manager') && isNoCommunity) {
+    list.value.push({
+      key: 'Shadow',
+      tab: '设备影子'
+    })
   }
   if (
       permissionStore.hasPermission('device/Firmware:view') &&
@@ -419,10 +423,21 @@ const jumpProduct = () => {
   });
 };
 
-const onClick = () => {
-  menuStory.jumpPage('edge/Device/Remote', {
-    id: instanceStore.current.id,
-  });
+const onClick = async () => {
+  // menuStory.jumpPage('edge/Device/Remote', {
+  //   id: instanceStore.current.id,
+  // });
+  const deviceId = instanceStore.current.id
+  const resp = await getRemoteToken(deviceId)
+
+  if (resp.success) {
+    const system = await getRemoteSystem(deviceId, [ "paths" ])
+    const path = system.result[0]?.properties['base-path']
+    const base64Url = btoa(path)
+    const proxyUrl = await getRemoteProxyUrl(deviceId)
+    const url = `${window.location.origin + window.location.pathname}api/edge/device/${deviceId}/_proxy/${proxyUrl.result}/${base64Url}/#/?token=` + resp.result
+    window.open(url)
+  }
 }
 
 onMounted(() => {

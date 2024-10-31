@@ -1,7 +1,7 @@
 <template>
   <a-modal
     visible
-    title="批量操作"
+    :title="title"
     width="90%"
     okText="新增任务"
     :confirmLoading="loading"
@@ -17,7 +17,7 @@
     <div class="task-body">
 
       <div class="task-form">
-          <a-form-item label="名称" name="name">
+          <a-form-item label="名称" name="name" v-if="!showBindChildren">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
           <a-form-item name="thingList">
@@ -54,8 +54,8 @@
               <a-form-item label="响应超时时间" name="timeoutSeconds" required>
                 <a-input-number
                   v-model:value="formModel.timeoutSeconds"
-                  :min="0"
-                  :max="999999"
+                  :min="1"
+                  :max="99999"
                   :precision="0"
                   placeholder="请输入响应超时时间（秒）"
                   style="width: 100%;"
@@ -66,8 +66,8 @@
               <a-form-item label="重试次数" name="maxRetry" required>
                 <a-input-number
                   v-model:value="formModel.maxRetry"
-                  :min="0"
-                  :max="999999"
+                  :min="1"
+                  :max="99999"
                   :precision="0"
                   placeholder="请输入重试次数"
                   style="width: 100%;"
@@ -92,6 +92,7 @@
       />
     </div>
     </a-form>
+    <ChildrenModal v-if="modalVisible" @cancel="modalVisible = false" @ok="childOk" @close="childCancel"/>
     <template #footer>
       <div v-if="!showBindChildren">
         <a-button @click="onCancel">取消</a-button>
@@ -117,6 +118,7 @@ import { useRequest } from '@/hook'
 import {useBatchOperateOptions} from "@/views/edge/Batch/util";
 import {Modal} from "ant-design-vue";
 import {onlyMessage} from "@/utils/comm";
+import ChildrenModal from './Children/ChildrenModal.vue'
 
 const props = defineProps({
   value: {
@@ -148,6 +150,7 @@ const formModel = reactive({
   thingList: props.list,
   description: undefined
 })
+const modalVisible = ref(false)
 
 const gatewayData = reactive({
   visible: false,
@@ -155,6 +158,10 @@ const gatewayData = reactive({
 })
 const showBindChildren = computed(() => {
   return formModel.jobType === 'device'
+})
+
+const title = computed(() => {
+  return batchOperateOptions.value.find(item => item.value === formModel.jobType)?.label
 })
 
 const rules = {
@@ -232,7 +239,11 @@ const addGateway = (rows) => {
 }
 
 const onCancel = () => {
-  emit('cancel')
+  if(formModel.jobType === 'device' && contentRef.value.checked()) {
+    modalVisible.value = true
+  }else{
+    emit('cancel')
+  }
 }
 
 const onOk = async () => {
@@ -301,6 +312,19 @@ const init = () => {
 }
 
 init()
+
+
+const childCancel = () => {
+  modalVisible.value = false
+  emit('cancel')
+}
+
+const childOk = async() => {
+  await contentRef.value?.onClose()
+  setTimeout(() => {
+    childCancel()
+  }, 300)
+}
 
 const onChildrenChange = (e)=>{
   console.log('eeeee====',e);

@@ -421,7 +421,11 @@
                         <div>不影响设备接入平台，可保持设备初始化值。</div>
                     </div>
 
-                    <div v-else-if="formData.channel === 'fixed-media'" class="doc" style="height: 600">
+                    <div
+                        v-else-if="formData.channel === 'fixed-media'"
+                        class="doc"
+                        style="height: 600"
+                    >
                         <h1>1.概述</h1>
                         <div>
                             视频设备通过RTSP、RTMP固定地址接入平台分为2步。
@@ -441,16 +445,20 @@
                             只能选择接入方式为固定地址的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择固定地址类型的网关完成产品创建。
                         </div>
                     </div>
-                    <div v-else-if="formData.channel === 'onvif'" class="doc" style="height: 600">
+                    <div
+                        v-else-if="formData.channel === 'onvif'"
+                        class="doc"
+                        style="height: 600"
+                    >
                         <h1>1.概述</h1>
                         <div>
                             JetLinks平台支持通过Onvif方式接入视频设备。分为两个部分，包括平台端配置和设备端配置。本文通过海康摄像头为例将onvif视频接入到平台播放。
                         </div>
                         <h1>2.配置说明</h1>
+                        <div>设备端配置</div>
                         <div>
-                            设备端配置
+                            1.本文以海康监控为例演示，登录海康监控设备后台，进入配置>网络>高级配置>集成协议，用户自定义输入用户名和密码，完成用户添加。
                         </div>
-                        <div>1.本文以海康监控为例演示，登录海康监控设备后台，进入配置>网络>高级配置>集成协议，用户自定义输入用户名和密码，完成用户添加。</div>
                         <div class="image">
                             <j-image
                                 width="100%"
@@ -458,10 +466,16 @@
                             />
                         </div>
                         <div>平台端配置</div>
-                        <div>ID：设备唯一标识，若不填写，系统将自动生成唯一标识</div>
+                        <div>
+                            ID：设备唯一标识，若不填写，系统将自动生成唯一标识
+                        </div>
                         <div>设备名称：用户自定义输入小于或等于64位字符</div>
-                        <div>所属产品：选择接入方式为Onvif的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择Onvif类型的网关完成产品创建</div>
-                        <div>接入地址：不同平台的摄像头接入地址组合方式不一致，请参考对应品牌接入Onvif的地址设置。如海康：http://ip/onvif/device_service。IP地址来自于海康监控设备端后台：配置>网络>基本配置>TCP/IP</div>
+                        <div>
+                            所属产品：选择接入方式为Onvif的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择Onvif类型的网关完成产品创建
+                        </div>
+                        <div>
+                            接入地址：不同平台的摄像头接入地址组合方式不一致，请参考对应品牌接入Onvif的地址设置。如海康：http://ip/onvif/device_service。IP地址来自于海康监控设备端后台：配置>网络>基本配置>TCP/IP
+                        </div>
                         <div class="image">
                             <j-image
                                 width="100%"
@@ -478,16 +492,50 @@
                         </div>
                         <h1>3.所有配置项填写完成，点击保存。</h1>
                     </div>
-                    <div v-else-if="formData.channel === 'media-plugin'" class="doc" style="height: 600">
+                    <div
+                        v-else-if="formData.channel === 'media-plugin'"
+                        class="doc"
+                        style="height: 600"
+                    >
                         <h1>1.概述</h1>
                         <div>
                             JetLinks平台支持通过调用SDK或API请求将第三方系统视频设备数据接入到平台。
                         </div>
                         <h1>2.配置说明</h1>
                         <div>2.1平台端配置</div>
-                        <div>ID：设备唯一标识，若不填写，系统将自动生成唯一标识</div>
+                        <div>
+                            ID：设备唯一标识，若不填写，系统将自动生成唯一标识
+                        </div>
                         <div>设备名称：用户自定义输入小于或等于64位字符</div>
-                        <div>所属产品：选择接入方式为插件视频接入的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择插件类型的网关完成产品创建。</div>
+                        <div>
+                            所属产品：选择接入方式为插件视频接入的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择插件类型的网关完成产品创建。
+                        </div>
+                        <h1>3.所有配置项填写完成，点击保存。</h1>
+                    </div>
+                    <div
+                        v-else-if="formData.channel === 'agent-media-device-gateway'"
+                        class="doc"
+                        style="height: 600"
+                    >
+                        <h1>1.概述</h1>
+                        <div>
+                            JetLinks平台支持通过Agent代理，将具有视频能力的边缘网关接入到平台。边缘网关下的视频设备可将其视频通道统一推送至云平台。用户在平台中即可在该网关下直接查看和管理所有已接入的视频通道。
+                        </div>
+                        <div class="image">
+                            <j-image
+                                width="100%"
+                                :src="getImage('/media/agent_doc.png')"
+                            />
+                        </div>
+                        <h1>2.配置说明</h1>
+                        <div>2.1平台端配置</div>
+                        <div>
+                            ID：设备唯一标识，若不填写，系统将自动生成唯一标识
+                        </div>
+                        <div>设备名称：用户自定义输入小于或等于64位字符</div>
+                        <div>
+                            所属产品：选择接入方式为Agent视频设备接入的产品，若当前无对应产品，可点击右侧快速添加按钮，填写产品名称和选择Agent视频设备接入类型的网关完成产品创建。
+                        </div>
                         <h1>3.所有配置项填写完成，点击保存。</h1>
                     </div>
                 </j-col>
@@ -499,6 +547,7 @@
             v-model:productId="formData.productId"
             v-model:password="formData.others.access_pwd"
             :channel="formData.channel"
+            :channels="[formData.channel]"
             @close="getProductList"
         />
     </page-container>
@@ -560,12 +609,11 @@ const getProductList = async () => {
     };
     const { result } = await DeviceApi.queryProductList(params);
     productList.value = result;
-    if(result.length && !route.query.id){
-        formData.value.productId = result[0]?.id
-        formData.value.others.access_pwd = result[0]?.configuration?.access_pwd
-        formData.value.streamMode = result[0]?.configuration?.stream_mode
+    if (result.length && !route.query.id) {
+        formData.value.productId = result[0]?.id;
+        formData.value.others.access_pwd = result[0]?.configuration?.access_pwd;
+        formData.value.streamMode = result[0]?.configuration?.stream_mode;
     }
-   
 };
 
 const handleProductChange = () => {
@@ -626,7 +674,10 @@ const getDetail = async () => {
                 : productData?.configuration?.stream_mode;
         }
         if (productData && formData.value.channel === 'media-plugin') {
-            if(!res.result.others || JSON.stringify(res.result?.others) === "{}"){
+            if (
+                !res.result.others ||
+                JSON.stringify(res.result?.others) === '{}'
+            ) {
                 formData.value.others = productData?.configuration;
             }
             const resp: any = await queryDeviceConfig(formData.value.id);
@@ -663,7 +714,10 @@ const handleSubmit = () => {
         ...extraParams
     } = formData.value;
     let params: any;
-    if (formData.value.channel === 'fixed-media') {
+    if (
+        formData.value.channel === 'fixed-media' ||
+        formData.value.channel === 'agent-media-device-gateway'
+    ) {
         // 固定地址
         params = !id
             ? extraParams
@@ -712,7 +766,6 @@ const handleSubmit = () => {
                   ...extraParams,
               };
     }
-
     formRef.value
         ?.validate()
         .then(async () => {

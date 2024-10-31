@@ -95,8 +95,8 @@ const columns = [
 ]
 
 const handleSearch = (e, terms) => {
-  const _terms = terms.terms[0].terms.filter(item => item)
-  if (_terms.length) {
+  const _terms = terms?.terms?.[0]?.terms?.filter(item => item)
+  if (_terms?.length) {
     const newParams = []
     const termsItem = _terms[0]
 
@@ -130,6 +130,7 @@ const handleSearch = (e, terms) => {
 
 const reload = () => {
   tableRef.value?.reload()
+  
 }
 
 defineExpose({

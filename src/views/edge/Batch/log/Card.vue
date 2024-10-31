@@ -5,7 +5,8 @@
       <div class="item-body">
         <div class="body-header">
           <div class="header-title">
-              {{ detail.name || '测试内容' }}
+             
+              <j-ellipsis> {{ detail.name  }}</j-ellipsis>
           </div>
           <div class="header-status bg-color-200">
             <BadgeStatus
@@ -26,8 +27,37 @@
               </a-button>
               <template #overlay>
                 <a-menu>
-                  <a-menu-item @click="onCopy">
-                    从相同设备创建任务
+                  <a-menu-item >
+                    <PermissionButton
+                      style="width: 100%;text-align: left;"
+                      type="text"
+                      @click="onCopy"
+                    >
+                      从相同设备创建任务
+                    </PermissionButton>
+
+                  </a-menu-item>
+                  <a-menu-item :disabled="detail.state.value === 'running'">
+                    <PermissionButton
+                      style="width: 100%;text-align: left;"
+                      danger
+                      :tooltip="{
+                        title:
+                            detail.state.value === 'running'
+                                ? '任务进行不可删除'
+                                : '',
+                      }"
+                      type="text"
+                      :popConfirm="{
+                        title: '确认删除?',
+                        onConfirm: async () => {
+                            onDelete();
+                        },
+                    }"
+                      :disabled="detail.state.value === 'running'"
+                    >
+                      删除任务
+                    </PermissionButton>
                   </a-menu-item>
                 </a-menu>
               </template>
@@ -37,7 +67,9 @@
         <div class="body-detail">
           <div class="detail-desc">
             <div class="detail-title text-color-500">说明</div>
-            <div class="detail-value text-color-600">{{ detail.description}}</div>
+            <div class="detail-value text-color-600">
+              <j-ellipsis>{{ detail.description || '--'}}</j-ellipsis>
+            </div>
           </div>
           <div class="detail-time">
             <div class="detail-title text-color-500">时间</div>
@@ -95,7 +127,7 @@
   />
   <TaskDetail
     v-if="taskDetail.visible"
-    :data="taskDetail.detail"
+    :data="detail"
     @copy="onCopy"
     @closeDetail="taskDetailClose"
     @refresh="emit('reload')"
@@ -108,6 +140,7 @@ import TaskDetail from "./TaskDetail.vue";
 import {getContext} from "../util";
 import dayjs from 'dayjs'
 import Icon from '../components/Icon.vue'
+import {deleteAllTask} from "@/api/edge/batch";
 
 const props = defineProps({
   detail: {
@@ -180,9 +213,20 @@ const taskDetailClose = () => {
 
 const onCopy = () => {
   context.openTask({
-    thingList: [],
+    thingList: (props.detail.others?.thingList || []).map(item => ({
+      ...item,
+      label: item.name || item.thingName,
+      value: item.id || item.thingId
+    })),
     jobType: props.type
   })
+}
+
+const onDelete = async () => {
+  const resp = await deleteAllTask(props.detail.id)
+  if (resp.success) {
+    emit('reload')
+  }
 }
 </script>
 
@@ -206,6 +250,7 @@ const onCopy = () => {
         font-size: 16px;
         color: @font-gray-900;
         font-weight: 500;
+        max-width:550px;
       }
 
       .header-status {

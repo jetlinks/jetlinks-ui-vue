@@ -9,24 +9,22 @@
                 拖拽右侧边缘端设备卡片到左侧对应项区域框内，即可完成绑定
             </span>
         </div>
-        <div>
+        <div style="width: 65vw">
             <a-tabs v-model:activeKey="edgeId">
-                <a-tab-pane
-                    v-for="item in options"
-                    :key="item.id"
-                   
-                >
+                <a-tab-pane v-for="item in options" :key="item.id">
                     <template #tab>
-                        <div>
+                        <div style="text-wrap: initial; display: flex">
                             <badge-status
                                 :status="item.state.value"
-                                :text="item.label"
                                 :statusNames="{
                                     online: 'success',
                                     offline: 'error',
                                     notActive: 'warning',
                                 }"
                             />
+                            <j-ellipsis style="width: 100px">{{
+                                item.label
+                            }}</j-ellipsis>
                         </div>
                     </template>
                 </a-tab-pane>
@@ -67,10 +65,9 @@
                     <div class="left-list">
                         <a-table
                             :columns="columns"
-                            :model="'TABLE'"
                             :dataSource="_dataSource"
                             :pagination="false"
-                            :scroll="{ y: 500 }"
+                            :scroll="{ y: '400px' }"
                         >
                             <template #bodyCell="{ column, record }">
                                 <template v-if="column.key === 'id'">
@@ -81,6 +78,9 @@
                                                 : '自动生成'
                                         }}</j-ellipsis
                                     >
+                                </template>
+                                <template v-else-if="column.key === 'name'">
+                                    <j-ellipsis>{{ record.name }}</j-ellipsis>
                                 </template>
                                 <template v-else-if="column.key === 'Mapping'">
                                     <div>
@@ -109,7 +109,12 @@
                                     >
                                         从右侧拖拽卡片至此
                                     </div>
-                                    <div v-else class="left-map">
+                                    <div
+                                        v-else
+                                        class="left-map"
+                                        @dragover.prevent
+                                        @drop="(e) => onCover(e, record)"
+                                    >
                                         <div>
                                             <j-ellipsis>
                                                 {{ record.Mapping.name }}({{
@@ -192,7 +197,9 @@
                             :draggable="true"
                             @dragstart="() => onStart(item)"
                         >
-                            <div class="item-name">{{ item.name }}</div>
+                            <div class="item-name">
+                                <j-ellipsis>{{ item.name }}</j-ellipsis>
+                            </div>
                             <div class="item-info">
                                 <span>
                                     <j-ellipsis>ID:{{ item.id }}</j-ellipsis>
@@ -218,6 +225,8 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="right-pagination">
+                        </div>
                     </template>
                     <template v-else>
                         <j-empty style="margin-top: 50%" />
@@ -235,11 +244,17 @@
 </template>
 
 <script setup name="TaskChildren">
-import { queryNoPagingPost, addDevice,editDevice } from '@/api/device/instance';
+import {
+    queryNoPagingPost,
+    addDevice,
+    editDevice,
+} from '@/api/device/instance';
 import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
+import { queryProductList } from '@/api/device/product';
 import { getImage } from '@/utils/comm';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
+import { cloneDeep } from 'lodash-es';
 
 const props = defineProps({
     options: {
@@ -411,25 +426,74 @@ const onDrop = async (e, item) => {
         _dropList.value.push(item);
     }
 };
-
-const onDropAuto = () => {
-    if (_drop.value.masterProductId) {
-        const obj = {
-            id: randomString(12),
-            name: _drop.value.name,
-            Mappingtype: 'auto',
-            Mapping: _drop.value,
-            MappingStatus: 'warning',
+//覆盖操作
+const onCover = async (e, item) => {
+    const coverData = cloneDeep(item.Mapping);
+    if (_checked.value) {
+        item.loading = true;
+        item.Mapping = _drop.value;
+        const res = await _commandByEdge(edgeId.value, 'BindMasterDevice', {
+            deviceId: _drop.value.id,
+            masterDeviceId: item.id,
+        }).finally(() => {
+            item.loading = false;
+        });
+        if (res.success) {
+            item.MappingStatus = 'success';
+            handleRefresh();
+        } else {
+            item.MappingStatus = 'error';
+        }
+    } else {
+        item.Mapping = {
+            ..._drop.value,
         };
+        item.MappingStatus = 'warning';
+        item.action = 'drop';
+        edgeList.value.unshift(coverData);
         edgeList.value = edgeList.value.filter((i) => i.id !== _drop.value.id);
         _edgeInitList.value = _edgeInitList.value.filter(
             (i) => i.id !== _drop.value.id,
         );
-        _dataSource.value.unshift(obj);
-        _dropList.value.unshift(obj);
-        if (_checked.value) {
-            onAuto(obj);
-        }
+    }
+};
+
+const onDropAuto = () => {
+    if (_drop.value.masterProductId) {
+        queryProductList({
+            terms: [
+                {
+                    column: 'id',
+                    value: _drop.value.masterProductId,
+                    termType: 'eq',
+                },
+            ],
+        }).then((res) => {
+            if (res.success) {
+                if (res.result.data.length > 0) {
+                    const obj = {
+                        id: randomString(12),
+                        name: _drop.value.name,
+                        Mappingtype: 'auto',
+                        Mapping: _drop.value,
+                        MappingStatus: 'warning',
+                    };
+                    edgeList.value = edgeList.value.filter(
+                        (i) => i.id !== _drop.value.id,
+                    );
+                    _edgeInitList.value = _edgeInitList.value.filter(
+                        (i) => i.id !== _drop.value.id,
+                    );
+                    _dataSource.value.unshift(obj);
+                    _dropList.value.unshift(obj);
+                    if (_checked.value) {
+                        onAuto(obj);
+                    }
+                } else {
+                    onlyMessage('云端产品不存在', 'error');
+                }
+            }
+        });
     }
 };
 
@@ -441,6 +505,7 @@ const onAuto = async (item) => {
         productId: item.Mapping.masterProductId,
         productName: item.Mapping.productName,
     };
+
     const res = await addDevice(deviceInfo);
     if (res.success) {
         item.loading = true;
@@ -481,8 +546,11 @@ const onDelete = (item) => {
         } else {
             edgeList.value.push(item.Mapping);
             _edgeInitList.value.push(item.Mapping);
-            item.Mapping = {};
-            item.MappingStatus = 'none';
+            _dataSource.value = _dataSource.value.filter(
+                (i) => i.Mapping?.id !== item.Mapping?.id,
+            );
+            // item.Mapping = {};
+            // item.MappingStatus = 'none';
             _dropList.value = _dropList.value.filter((i) => i.id !== item.id);
         }
     } else {
@@ -536,7 +604,7 @@ const onSaveAll = async () => {
     });
     if (res.success) {
         handleRefresh();
-        onlyMessage('操作成功');
+        onlyMessage('编辑绑定子设备成功');
     }
 };
 const onChange = (checked) => {
@@ -544,7 +612,6 @@ const onChange = (checked) => {
         onSaveAll();
     }
 };
-
 
 const handleRefresh = () => {
     getNoMapping();
@@ -565,6 +632,28 @@ const onRightSearch = (e) => {
     }
 };
 
+
+
+const onClose = async () => {
+    const _auto = _dataSource.value.filter(
+        (item) => item?.Mappingtype === 'auto',
+    );
+    if (_auto.length) {
+        onSaveAll();
+    }
+};
+
+const isModal = () => {
+    const obj = _dataSource.value.find(
+        (item) => item?.MappingStatus === 'warning',
+    );
+    if (obj?.id) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
 onMounted(() => {
     if (props.options?.length) {
         edgeId.value = props.options[0].value;
@@ -572,17 +661,21 @@ onMounted(() => {
     }
 });
 
+defineExpose({
+    onClose,
+    checked: isModal,
+});
+
 watch(
     () => edgeId.value,
     (val) => {
         const obj = props.options.find((item) => item.value === val);
-        if(obj?.value){
+        if (obj?.value) {
             edgeCurrent.value = obj;
         }
-        if (val && obj?.state?.value === 'online')  {
+        if (val && obj?.state?.value === 'online') {
             handleRefresh();
-            
-        }else{
+        } else {
             _edgeInitList.value = [];
             edgeList.value = [];
         }
@@ -669,7 +762,7 @@ watch(
                 border-color: #e4e6e7;
             }
             .left-list {
-                height: 520px;
+                height: 500px;
                 padding: 12px;
                 .left-drag {
                     border: 1px solid #eff0f1;

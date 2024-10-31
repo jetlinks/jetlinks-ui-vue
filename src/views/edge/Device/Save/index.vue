@@ -147,8 +147,9 @@
         v-model:visible="visible"
         v-model:productId="modelRef.productId"
         :channel="'official-edge-gateway'"
-        @close="onClose"
+        :channels="provider"
         :deviceType="'gateway'"
+        @close="onClose"
         @save="onSave"
     />
 </template>
@@ -172,6 +173,7 @@ const visible = ref<boolean>(false);
 
 const formRef = ref();
 
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 const modelRef = reactive({
     productId: undefined,
     id: undefined,
@@ -209,9 +211,9 @@ watch(
                             type: 'and',
                         },
                         {
-                            termType: 'eq',
+                            termType: 'in',
                             column: 'accessProvider',
-                            value: 'official-edge-gateway',
+                            value: provider,
                         },
                     ],
                 },

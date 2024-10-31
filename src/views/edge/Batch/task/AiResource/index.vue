@@ -21,7 +21,7 @@
       :params="params"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
-        terms: [{column: 'targetType', value: 'PluginDriver'}]
+        terms: [{column: 'targetType', value: 'PluginDriver'},{column: 'state', value: 'enabled'}]
       }"
       :rowSelection="{
             selectedRowKeys: selectedRowKeys,
@@ -109,7 +109,7 @@ const queryFn = async (_params) => {
 const handleValue = async () => {
   return [...selectedRowMap.values()].map(item => {
     return {
-      data: pick(item, ['id', 'targetId', 'metadata', 'targetType', 'serviceId', 'name'])
+      data: item
     }
   })
 }

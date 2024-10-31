@@ -37,6 +37,7 @@
   >
     <template #title>
       <div class="drawer-header-title">
+        <span> <Icon :type="operateActive.icon" /></span>
         <span>{{operateActive.title}}历史任务</span>
         <a-button type="text" style="padding: 6px;margin-left: auto" @click="closeHistoryTask">
           <template #icon>
@@ -78,6 +79,7 @@ const operateActive = reactive({
   icon: undefined,
   type: undefined
 })
+
 
 const showTask = (item) => {
   if (!disabled.value) {
