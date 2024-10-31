@@ -465,7 +465,7 @@ const startAll = async () => {
 };
 //全部重试
 const batchRetry = async () => {
-    const res = await startAllTask(props.data.id, ['canceled', 'failed']);
+    const res = await startAllTask(props.data.id, ['failed']);
     if (res.success) {
         refreshState();
     }
