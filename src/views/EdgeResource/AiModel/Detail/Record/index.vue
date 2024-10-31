@@ -51,7 +51,20 @@ const columns = [
         search: {
             type: 'date'
         }
-    }
+    },
+    {
+        title: '状态',
+        dataIndex: 'state',
+        key: 'state',
+        search: {
+            type: 'select',
+            options: [
+                {label: '全部完成', value: 'complete'},
+                {label: '未完成', value: 'incomplete'},
+                {label: '进行中', value: 'running'},
+            ]
+        }
+    },
 ]
 
 const handleSearch = (e: any) => {

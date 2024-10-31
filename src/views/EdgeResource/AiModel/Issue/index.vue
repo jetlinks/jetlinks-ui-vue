@@ -10,6 +10,18 @@
                 <j-form-item label="名称" name="name">
                     <j-input v-model:value="formData.name" placeholder="请输入任务名称"></j-input>
                 </j-form-item>
+                <j-row :gutter="16">
+                    <j-col :span="12">
+                        <j-form-item label="响应超时时间" name="timeoutSeconds">
+                            <j-input-number v-model:value="formData.timeoutSeconds" style="width: 100%;" :min="1" :max="10000" placeholder="请输入响应超时时间"></j-input-number>
+                        </j-form-item>
+                    </j-col>
+                    <j-col :span="12">
+                        <j-form-item label="重试次数" name="maxRetry">
+                            <j-input-number v-model:value="formData.maxRetry" style="width: 100%;" :min="1" :max="10000" placeholder="请输入重试次数"></j-input-number>
+                        </j-form-item>
+                    </j-col>
+                </j-row>
                 <j-form-item label="网关设备选择方式">
                     <j-card-select v-model:value="chooseType" :options="options"></j-card-select>
                 </j-form-item>
@@ -41,7 +53,15 @@ const props = defineProps({
     data: {
         type: Object,
         default: () => ({}),
-    }
+    },
+    jobType: {
+        type: String,
+        default: '',
+    },
+    serviceId: {
+        type: String,
+        default: '',
+    },
 })
 const current = ref(1);
 const chooseType = ref('device');
@@ -49,15 +69,26 @@ const formRef = ref();
 const deviceList = ref<Record<string, any>[]>([]);
 const formData = ref<Record<string, any>>({
     name: undefined,
-    type: 'resourceIssue',
-    deviceId: [],
+    timeoutSeconds: null,
+    maxRetry: null,
+    jobType: props.jobType,
+    serviceId: props.serviceId,
+    commandId: 'SaveByTemplate',
+    thingList: [],
     targetId: props.data.targetId,
+    resourceTotal: 1,
 })
 
 const rules = {
     name: [
         {required: true, message: '请输入任务名称', trigger: 'blur'},
         {max: 64, message: '最多输入64个字符', trigger: 'change'},
+    ],
+    timeoutSeconds: [
+        {required: true, message: '请输入响应超时时间', trigger: 'blur'},
+    ],
+    maxRetry: [
+        {required: true, message: '请输入重试次数', trigger: 'blur'},
     ],
 }
 
@@ -79,13 +110,24 @@ const handleSubmit = () => {
             }
             const data = {
                 ...formData.value,
-                deviceId: deviceList.value.map(item => item.id),
-                data: {
-                    issueInfo: deviceList.value.map(item => {
+                thingList: deviceList.value.map(item => {
+                    return {
+                        thingId: item.id,
+                        thingType: 'device',
+                        thingName: item.name
+                    }
+                }),
+                commandArgs: [
+                    {
+                        data: props.data
+                    }
+                ],
+                others: {
+                    thingList: deviceList.value.map(item => {
                         return {
-                            deviceId: item.id,
-                            deviceName: item.name,
-                            entityTemplates: [props.data],
+                            thingId: item.id,
+                            thingType: 'device',
+                            thingName: item.name
                         }
                     })
                 }

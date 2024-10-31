@@ -2801,7 +2801,6 @@ export default [
           },
           {
             "id": "badf8b6e4b9211471aea033a33be8a0c",
-            "parentId": "fc84e1e78b5d12b71bf048bc636fca08",
             "path": "rqCP-UBRR-JiXd",
             "sortIndex": 3,
             "level": 3,
@@ -2811,6 +2810,7 @@ export default [
             "icon": "CopyOutlined",
             "url": "/edge-resource/collector-template",
             "describe": "",
+            "status": 1,
             "buttons": [
               {
                 "id": "add",
@@ -2848,6 +2848,7 @@ export default [
                 "granted": true
               }
             ],
+            showPage: ['plugin-driver'],
             "accessSupport": {
               "text": "不支持",
               "value": "unsupported"

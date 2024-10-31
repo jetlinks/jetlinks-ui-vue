@@ -12,7 +12,7 @@
                 :request="queryPage"
                 :params="params"
                 :defaultParams="{
-                    sort: [{ name: 'createTime', order: 'desc' }],
+                    sorts: [{ name: 'createTime', order: 'desc' }],
                     terms: [{column: 'targetType', value: 'PluginDriver'}]
                 }"
             >
@@ -144,7 +144,7 @@
         </full-page>
     </page-container>
     <Save v-if="saveVisible" :data="currentData" @close="saveVisible = false" @save="handleSave"/>
-    <Issue v-if="issueVisible" :data="currentData" @close="issueVisible = false"/>
+    <Issue v-if="issueVisible" jobType="plugin" serviceId="pluginService:driver" :data="currentData" @close="issueVisible = false"/>
 </template>
 
 <script setup lang="ts">
