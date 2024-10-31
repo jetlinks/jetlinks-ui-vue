@@ -1,5 +1,5 @@
 <template>
-  <div class="log-card-item-warp" @click="showTaskDetail">
+  <div class="log-card-item-warp" @click="emit('click')">
 
     <div class="content">
       <div class="item-body">
@@ -119,24 +119,9 @@
       </div>
     </div>
   </div>
-  <Detail
-    v-if="visible"
-    @cancel="visible = false"
-    @showTaskDetail="showTaskDetail"
-    @copy="onCopy"
-  />
-  <TaskDetail
-    v-if="taskDetail.visible"
-    :data="detail"
-    @copy="onCopy"
-    @closeDetail="taskDetailClose"
-    @refresh="emit('reload')"
-  />
 </template>
 
 <script setup name="LogCard">
-import Detail from './Detail.vue'
-import TaskDetail from "./TaskDetail.vue";
 import {getContext} from "../util";
 import dayjs from 'dayjs'
 import Icon from '../components/Icon.vue'
@@ -153,9 +138,8 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['reload'])
+const emit = defineEmits(['reload','click'])
 
-const visible = ref(false)
 const context = getContext()
 const colorMap = {
   'success': 'success',
@@ -174,10 +158,7 @@ const iconMap = {
   'waiting': 'icon-paiduizhong',
 }
 
-const taskDetail = reactive({
-  visible: false,
-  detail: undefined
-})
+
 
 const taskTotal = computed(() => {
   return props.detail.stateCount?.reduce((prev, next) => prev + next.total, 0) || 0
@@ -200,16 +181,8 @@ const options = computed(() => {
   }) || []
 })
 
-const showTaskDetail = () => {
-  taskDetail.detail = props.detail
-  taskDetail.visible = true
-}
 
 
-const taskDetailClose = () => {
-  taskDetail.detail = undefined
-  taskDetail.visible = false
-}
 
 const onCopy = () => {
   context.openTask({
