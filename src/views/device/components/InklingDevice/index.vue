@@ -145,12 +145,12 @@ const props = defineProps({
         default: undefined,
     },
     type: {
-      type: String,
-      default: 'device',
+        type: String,
+        default: 'device',
     },
     internalId: {
-      type: String,
-      default: undefined,
+        type: String,
+        default: undefined,
     },
 });
 
@@ -181,9 +181,10 @@ const queryInkingDevices = (data: string[]) => {
             return;
         }
 
-        const res = await getInkingDevices(data,props.accessId);
+        const res = await getInkingDevices(data, props.accessId);
         if (res) {
-          disabledKeys.value = res.result?.map((item) => item.externalId) || [];
+            disabledKeys.value =
+                res.result?.map((item) => item.externalId) || [];
         }
 
         resolve(true);
@@ -250,15 +251,17 @@ const init = async () => {
         const resp = await getCommandsByAccess(props.accessId);
         if (resp.success && resp.result?.length) {
             // 获取分页查询条件
-            const item = resp.result.find(item => item.id === 'QueryDevicePage');
+            const item = resp.result.find(
+                (item) => item.id === 'QueryDevicePage',
+            );
             if (item) {
-                showPage.value = true
+                showPage.value = true;
                 columns.value = item.expands?.terms?.map((t) => ({
-                  title: t.name,
-                  dataIndex: t.id,
-                  search: {
-                    type: t.valueType.type,
-                  },
+                    title: t.name,
+                    dataIndex: t.id,
+                    search: {
+                        type: t.valueType.type,
+                    },
                 }));
             }
         }
