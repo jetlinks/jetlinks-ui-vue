@@ -173,10 +173,6 @@ const initList = [
         key: 'Log',
         tab: '日志管理',
     },
-    {
-        key:'Shadow',
-        tab:'设备影子'
-    }
 ];
 
 const list = ref([...initList]);
@@ -220,6 +216,12 @@ const getStatus = (id: string) => {
 
 const getDetail = () => {
     const keys = list.value.map((i) => i.key);
+    if(isNoCommunity){
+      list.value.push({
+        key:'Shadow',
+        tab:'设备影子'
+      })
+    }
     if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity && showThreshold) {
         list.value.push({
             key: 'AlarmRecord',
