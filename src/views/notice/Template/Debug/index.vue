@@ -18,11 +18,10 @@
                 <j-select
                     v-model:value="formData.configId"
                     placeholder="请选择通知配置"
-                    :getPopupContainer="(node)=>node"
                 >
                     <j-select-option
                         v-for="(item, index) in configList"
-                        :key="index"
+                        :key="item.id"
                         :value="item.id"
                     >
                         {{ item.name }}
@@ -105,7 +104,7 @@
     </j-modal>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="TemplateDebugger">
 import { PropType } from 'vue';
 import TemplateApi from '@/api/notice/template';
 import type {
