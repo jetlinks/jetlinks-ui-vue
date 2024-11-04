@@ -201,14 +201,13 @@ onMounted(() => {
         .controls {
             display: none;
             font-size: 14px;
-
             :deep(.ant-btn-text) {
                 padding: 4px 8px;
             }
         }
         &:hover {
             .controls {
-                display: block;
+                display: flex;
             }
         }
     }
