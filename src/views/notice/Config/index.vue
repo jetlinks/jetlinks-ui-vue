@@ -465,23 +465,21 @@ const getActions = (
                 },
             })
     }
+
+  if (
+    data.provider !== 'dingTalkMessage' &&
+    data.provider !== 'corpMessage'
+  ) {
+    others.children = others.children?.filter(item => item.key !== 'bind')
+  }
+
+
     if (type === 'card') {
-        if (
-            data.provider !== 'dingTalkMessage' &&
-            data.provider !== 'corpMessage'
-        )
-            others.children?.splice(1, 1);
         actions.splice(actions.length - 1, 0, others);
-        return actions;
     } else {
-        if (
-            data.provider !== 'dingTalkMessage' &&
-            data.provider !== 'corpMessage'
-        )
-            others.children?.splice(1, 1);
         actions.splice(actions.length - 1, 0, ...others.children);
-        return actions;
     }
+  return actions;
 };
 </script>
 <style lang="less" scoped>

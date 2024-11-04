@@ -39,6 +39,7 @@
                         :hasPermission="`${permission}:update`"
                         @click="visible = true"
                         key="import"
+                        v-if="type === 'product'"
                         >快速导入</PermissionButton
                     >
                     <PermissionButton
