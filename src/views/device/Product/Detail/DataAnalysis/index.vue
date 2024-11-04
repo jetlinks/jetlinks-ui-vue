@@ -6,7 +6,7 @@
                 脚本语言:
                 <j-select
                     :defaultValue="'JavaScript'"
-                    style="width: 200; margin-left: 5px"
+                    style="width: 200px; margin-left: 5px"
                 >
                     <j-select-option value="JavaScript"
                         >JavaScript(ECMAScript 5)</j-select-option
