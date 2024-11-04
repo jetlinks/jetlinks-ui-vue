@@ -313,7 +313,7 @@ const handleDateClick = (selectInfo) => {
             `.fc-day[data-date="${selectInfo.dateStr}"]`,
         );
         selectedDate.classList.add('selectedDate');
-    } else {
+    } else if(!choiceEnd.value){
         if (dayjs(selectInfo.dateStr).isBefore(choiceStart.value)) {
             onlyMessage('结束时间必须大于开始时间');
             return;
