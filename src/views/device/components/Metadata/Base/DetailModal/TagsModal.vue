@@ -29,7 +29,7 @@
       >
         <JsonView :value="dataTypeTable.dataSource"/>
       </a-descriptions-item>
-      <a-descriptions-item label="读写类型">{{ readTypeText }}</a-descriptions-item>
+      <!--   -->
       <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
     </j-descriptions>
     <template #footer>
