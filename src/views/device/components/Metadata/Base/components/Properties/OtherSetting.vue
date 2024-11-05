@@ -57,15 +57,7 @@
                                     :getPopupContainer="
                                         (node) => tableWrapperRef || node
                                     "
-                                    :options="
-                                        (
-                                            item.properties[index].type
-                                                ?.elements || []
-                                        ).map((a) => ({
-                                            label: a.text,
-                                            value: a.value,
-                                        }))
-                                    "
+                                    :options="getOptions(item, index)"
                                 />
                             </template>
                         </j-table>
@@ -544,6 +536,27 @@ const confirm = () => {
             reject(false);
         }
     });
+};
+
+//获取下拉选择
+const getOptions = (item: any, index: any) => {
+    if (item.properties[index].type?.type === 'boolean') {
+        return [
+            {
+                label: item.properties[index].type?.trueText,
+                value: item.properties[index].type?.trueValue,
+            },
+            {
+                label: item.properties[index].type?.falseText,
+                value: item.properties[index].type?.falseValue,
+            },
+        ];
+    } else {
+        return (item.properties[index].type?.elements || []).map((a) => ({
+            label: a.text,
+            value: a.value,
+        }));
+    }
 };
 
 watch(
