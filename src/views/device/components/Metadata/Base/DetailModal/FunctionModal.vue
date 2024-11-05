@@ -8,7 +8,7 @@
       @cancel="cancel"
       @ok="ok"
   >
-    <j-descriptions
+    <a-descriptions
         :column="1"
         :labelStyle="{
           width: '72px',
@@ -28,7 +28,11 @@
         <JsonView :value="dataTypeTable.output"/>
       </a-descriptions-item>
       <a-descriptions-item v-if="showSetting && data.expands?.storageType" label="存储方式">{{ settingData[data.expands?.storageType] }}</a-descriptions-item>
-    </j-descriptions>
+      <a-descriptions-item label="功能说明" v-if="data.description">
+       <a-textarea :value="data.description" disabled></a-textarea>
+      </a-descriptions-item>
+      
+    </a-descriptions>
     <template #footer>
       <j-button type="primary" @click="ok">确认</j-button>
     </template>
@@ -55,7 +59,7 @@ const props = defineProps({
   type: {
     type: String,
     default: undefined
-  }
+  },
 })
 
 const emit = defineEmits(['cancel'])
