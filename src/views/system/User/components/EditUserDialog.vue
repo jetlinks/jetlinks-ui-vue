@@ -265,6 +265,7 @@ const confirm = () => {
 };
 
 const formRef = ref<FormInstance>();
+const _roleDetail = ref([] as any[]);
 const form = reactive({
     data: {} as formType,
     rules: {
@@ -317,6 +318,7 @@ const form = reactive({
         else if (props.type === 'reset') form.data = { id } as formType;
         else if (props.type === 'edit') {
             getUser_api(id).then((resp: any) => {
+                _roleDetail.value = resp.result.roleList;
                 form.data = {
                     ...(resp.result as formType),
                     orgIdList: resp.result.orgList.map(
@@ -417,7 +419,40 @@ const  dealRoleList = (data:any) =>{
 //     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
 // })
 
+
 form.init();
+
+const hasNodeWithId = (tree:any,id:any)=>{
+    if (tree.id === id) {
+        return true;
+    }
+    
+    // 如果当前节点有子节点，递归检查每个子节点
+    if (tree.children && tree.children.length > 0) {
+        for (let child of tree.children) {
+            if (hasNodeWithId(child, id)) {
+                return true;
+            }
+        }
+    }
+    // 如果没有找到，返回 false
+    return false;
+}
+
+watch(
+    ()=>[form.roleOptions,form.data.roleIdList],
+    ([x,y])=>{
+        if(y?.length>0){
+            y.forEach((item:any)=>{
+                if(!hasNodeWithId(x,item)){
+                    const obj = _roleDetail.value.find(i=>i.id===item)
+                    form.roleOptions.push(obj)
+                }
+            })
+        }
+    },
+    {immediate:true}
+)
 
 interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
     result: T;
