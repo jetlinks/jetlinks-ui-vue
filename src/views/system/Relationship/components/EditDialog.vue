@@ -198,8 +198,8 @@ const form = reactive({
 
     getObjectList: () => {
         getObjectList_api().then((resp: any) => {
-            form.objectList = resp.result;
-            targetList.value = resp.result
+            form.objectList = resp.result.filter(item=>item.id === 'device');
+            targetList.value = resp.result.filter(item=>item.id === 'user');
         });
     },
     submit: () => {
