@@ -65,7 +65,6 @@ const handleOk = async () => {
             provider: 'BACNetIp',
             collectorId: props.data?.id,
             collectorName: props.data?.name,
-            pointKey: item.id,
             configuration: {
                 interval: item.configuration?.interval?.value,
                 valueType: item.valueType,
