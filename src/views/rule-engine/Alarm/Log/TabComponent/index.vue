@@ -75,12 +75,7 @@
                             </div>
                             <j-row :gutter="24">
                                 <j-col
-                                    :span="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                            ? 6
-                                            : 8
-                                    "
+                                    :span="6"
                                     class="content-left"
                                 >
                                     <div class="content-title">告警维度</div>
@@ -91,12 +86,7 @@
                                     >
                                 </j-col>
                                 <j-col
-                                    :span="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                            ? 6
-                                            : 8
-                                    "
+                                    :span="6"
                                 >
                                     <div class="content-title">
                                         最近告警时间
@@ -123,12 +113,7 @@
                                     </Ellipsis>
                                 </j-col>
                                 <j-col
-                                    :span="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                            ? 6
-                                            : 8
-                                    "
+                                    :span="6"
                                 >
                                     <div class="content-title">
                                         告警持续时长
@@ -139,10 +124,7 @@
                                 </j-col>
                                 <j-col
                                     :span="6"
-                                    v-if="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                    "
+                                  
                                 >
                                     <div class="content-title">告警原因</div>
                                     <Ellipsis
