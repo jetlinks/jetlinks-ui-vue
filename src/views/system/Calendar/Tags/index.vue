@@ -1,54 +1,64 @@
 <template>
     <div class="tagsContainer" ref="tags">
-        <PermissionButton type="primary"  hasPermission="system/Calendar:add" ghost block @click="addTag" :disabled="rapidOn" style="margin-bottom: 10px;">
+        <PermissionButton
+            type="primary"
+            hasPermission="system/Calendar:add"
+            ghost
+            block
+            @click="addTag"
+            :disabled="rapidOn"
+            style="margin-bottom: 10px"
+        >
             + 新增标签
         </PermissionButton>
-        <div v-for="i in tagsList" class="tag">
-            <div class="tagLeft">
-                <div
-                    :style="{ background: i.color }"
-                    class="colorExtractor"
-                ></div>
-                <Ellipsis
-                    class="tagName"
-                    style="
-                        width: 120px;
-                        cursor: url('/images/calendar/hover.png'), pointer;
-                    "
-                    :id="i.id"
-                    >{{ i.name }}</Ellipsis
-                >
-            </div>
-            <div class="controls">
-                <PermissionButton
-                    type="text"
-                     hasPermission="system/Calendar:update"
-                    :disabled="i.disabled || rapidOn"
-                    :tooltip="{
-                        title: '编辑'
-                    }"
-                    @click="() => editData(i)"
-                >
-                    <template #icon>
-                        <AIcon type="EditOutlined" />
-                    </template>
-                </PermissionButton>
-                <PermissionButton
-                    type="text"
-                     hasPermission="system/Calendar:delete"
-                    :disabled="i.disabled || rapidOn"
-                    :tooltip="{
-                        title: '删除'
-                    }"
-                    :popConfirm="{
-                        title: `确认删除？`,
-                        onConfirm: () => deleteData(i.id),
-                    }"
-                >
-                    <template #icon>
-                        <AIcon type="DeleteOutlined" />
-                    </template>
-                </PermissionButton>
+        <div class="content">
+            <div v-for="i in tagsList" class="tag">
+                <div class="tagLeft">
+                    <div
+                        :style="{ background: i.color }"
+                        class="colorExtractor"
+                    ></div>
+                    <Ellipsis
+                        class="tagName"
+                        style="
+                            width: 120px;
+                            cursor: url('/images/calendar/hover.png'), pointer;
+                        "
+                        :id="i.id"
+                        >{{ i.name }}</Ellipsis
+                    >
+                </div>
+                <div class="controls">
+                    <PermissionButton
+                        type="text"
+                        hasPermission="system/Calendar:update"
+                        :disabled="i.disabled || rapidOn"
+                        :tooltip="{
+                            title: '编辑',
+                        }"
+                        @click="() => editData(i)"
+                    >
+                        <template #icon>
+                            <AIcon type="EditOutlined" />
+                        </template>
+                    </PermissionButton>
+                    <PermissionButton
+                        type="text"
+                        hasPermission="system/Calendar:delete"
+                        :disabled="i.disabled || rapidOn"
+                        :tooltip="{
+                            title: '删除',
+                        }"
+                        :popConfirm="{
+                            title: `确认删除？`,
+                            onConfirm: () => deleteData(i.id),
+                        }"
+                    >
+                        <template #icon>
+                            <AIcon type="DeleteOutlined" />
+                        </template>
+                    </PermissionButton>
+                </div>
             </div>
         </div>
     </div>
@@ -83,10 +93,10 @@ const addTag = () => {
     editType.value = 'add';
 };
 const buildInTag = ['weekend', 'holiday', 'workday'];
-const defaultColor = new Map()
-defaultColor.set('weekend', 'rgb(149, 222, 100)')
-defaultColor.set('holiday', 'rgb(161, 180, 204)')
-defaultColor.set('workday', 'rgba(105,177,255)')
+const defaultColor = new Map();
+defaultColor.set('weekend', 'rgb(149, 222, 100)');
+defaultColor.set('holiday', 'rgb(161, 180, 204)');
+defaultColor.set('workday', 'rgba(105,177,255)');
 
 const createDrag = () => {
     new Draggable(tags.value, {
@@ -166,7 +176,11 @@ onMounted(() => {
     width: 15%;
     background-color: #fff;
     padding: 10px;
-    border-right: 1px solid #CCCCCC;
+    border-right: 1px solid #cccccc;
+    .content {
+        overflow: auto;
+        height: 700px;
+    }
     .tag {
         display: flex;
         justify-content: space-between;
@@ -184,21 +198,20 @@ onMounted(() => {
                 margin-right: 8px;
             }
         }
-        .controls{
+        .controls {
             display: none;
             font-size: 14px;
-           
-            :deep(.ant-btn-text){
+            :deep(.ant-btn-text) {
                 padding: 4px 8px;
             }
         }
-        &:hover{
-            .controls{
-                display: block;
+        &:hover {
+            .controls {
+                display: flex;
             }
         }
     }
-    .tag:hover{
+    .tag:hover {
         background-color: rgb(242, 242, 242);
         border-radius: 4px;
     }

@@ -299,7 +299,7 @@ import {
 import { FormValidate, FormState } from '../data';
 import type { FormInstance } from 'ant-design-vue';
 import type { FormDataType } from '../type.d';
-import { cloneDeep, isArray } from 'lodash-es';
+import { cloneDeep, isArray, omit } from 'lodash-es';
 import { protocolList } from '@/utils/consts';
 import GateWayFormItem from '@/views/DataCollect/Channel/Save/GateWayFormItem.vue';
 import { testIpv4_6 } from '@/utils/validate';
@@ -338,6 +338,10 @@ const handleOk = async () => {
         };
     } else if (params?.provider === 'iec104') {
         params.configuration = {};
+    } else if(params?.provider === 'BACNetIp'){
+        if(!params.configuration.overIp?.subnetAddress){
+            params.configuration.overIp = omit(params.configuration.overIp,['subnetAddress'])
+        }
     }
 
     params.circuitBreaker = {
