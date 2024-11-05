@@ -286,7 +286,7 @@
         <Export
             v-if="exportVisible"
             @close="exportVisible = false"
-            :data="_selectedRowKeys"
+            :data="params"
         />
         <!-- 绑定设备 -->
         <BindDevice
