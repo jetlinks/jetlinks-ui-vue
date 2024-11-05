@@ -153,7 +153,7 @@
                                 </j-col>
                             </j-row>
                         </template>
-                        <template #actions="item">
+                        <!-- <template #actions="item">
                             <PermissionButton
                                 :disabled="
                                     item.key === 'solve' &&
@@ -172,7 +172,7 @@
                                 <AIcon :type="item.icon" />
                                 <span>{{ item?.text }}</span>
                             </PermissionButton>
-                        </template>
+                        </template> -->
                     </CardBox>
                 </template>
             </JProTable>
@@ -493,10 +493,8 @@ const refreshTable = () => {
     tableRef.value.reload(params.value);
 };
 const showDrawer = (data: any) => {
-    if (data.targetType === 'device') {
-        drawerData.value = data;
-        visibleDrawer.value = true;
-    }
+    drawerData.value = data;
+    visibleDrawer.value = true;
 };
 onMounted(() => {
     if (props.type !== 'all' && !props.id) {
