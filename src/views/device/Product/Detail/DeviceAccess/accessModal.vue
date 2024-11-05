@@ -31,6 +31,10 @@
       :params="params"
       :gridColumn="2"
       :gridColumns="[2]"
+      :pagination="{
+         pageSizeOptions: ['4', '12', '24', '48'],
+         showSizeChanger: true,
+      }"
     >
       <template #headerTitle>
         <PermissionButton
