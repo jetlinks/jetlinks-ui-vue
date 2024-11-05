@@ -57,15 +57,7 @@
                                     :getPopupContainer="
                                         (node) => tableWrapperRef || node
                                     "
-                                    :options="
-                                        (
-                                            item.properties[index].type
-                                                ?.elements || []
-                                        ).map((a) => ({
-                                            label: a.text,
-                                            value: a.value,
-                                        }))
-                                    "
+                                    :options="getOptions(item, index)"
                                 />
                             </template>
                         </j-table>
@@ -336,7 +328,7 @@ const visible = ref(false);
 const modalVisible = ref(false);
 
 const config = ref<any>([]);
-const configValue = ref(props.value?.expands);
+const configValue = ref(props.value?.expands || {});
 
 const extraForm = reactive({
     limit: {
@@ -546,16 +538,37 @@ const confirm = () => {
     });
 };
 
+//获取下拉选择
+const getOptions = (item: any, index: any) => {
+    if (item.properties[index].type?.type === 'boolean') {
+        return [
+            {
+                label: item.properties[index].type?.trueText,
+                value: item.properties[index].type?.trueValue,
+            },
+            {
+                label: item.properties[index].type?.falseText,
+                value: item.properties[index].type?.falseValue,
+            },
+        ];
+    } else {
+        return (item.properties[index].type?.elements || []).map((a) => ({
+            label: a.text,
+            value: a.value,
+        }));
+    }
+};
+
 watch(
     () => modalVisible.value,
     async () => {
         if (modalVisible.value) {
-            configValue.value = omit(props.value, [
-                'source',
-                'type',
-                'metrics',
-                'required',
-            ]);
+            // configValue.value = omit(props.value, [
+            //     'source',
+            //     'type',
+            //     'metrics',
+            //     'required',
+            // ]);
             getConfig();
             if (showExtra.value) {
                 thresholdDetailQuery();

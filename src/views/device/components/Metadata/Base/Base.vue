@@ -151,11 +151,18 @@
             :disabled="record.expands?.isProduct"
         />
         <a-select
-            v-else-if="props.type === 'events'"
+            v-else-if="props.type === 'events' && !_isFullscreen"
             v-model:value="record.expands.level"
             style="width: 100%"
             :options="EventLevel"
-            :getPopupContainer="(node) => tableRef.tableWrapperRef || node"
+            :disabled="record.expands?.isProduct"
+        />
+        <a-select
+            v-else-if="props.type === 'events' && _isFullscreen"
+            v-model:value="record.expands.level"
+            style="width: 100%"
+            :options="EventLevel"
+            :getPopupContainer="getPopupContainer"
             :disabled="record.expands?.isProduct"
         />
       </EditTableFormItem>
