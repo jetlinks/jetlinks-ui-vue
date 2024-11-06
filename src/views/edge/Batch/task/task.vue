@@ -2,9 +2,10 @@
   <a-modal
     visible
     :title="title"
-    width="90%"
+    width="90vw"
     okText="新增任务"
     :confirmLoading="loading"
+    :mask-closable="false"
     @cancel="onCancel"
     @ok="onOk"
   >
@@ -356,7 +357,7 @@ const onChildrenChange = (e)=>{
   }
 
   .gateway-list-label {
-    width: 310px;
+    width: 280px;
     justify-content: space-between;
   }
 }

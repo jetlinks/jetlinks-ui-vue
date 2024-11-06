@@ -9,7 +9,7 @@ export const BatchOperateOptions = [
     {
         icon: 'icon-anzhuangchajian',
         label: '安装插件',
-        tip: '批量安装插件至边缘端',
+        tip: '批量安装插件至边缘网关',
         value: 'plugin'
     },
     {
@@ -49,7 +49,7 @@ export const useBatchOperateOptions = () => {
         {
             icon: 'icon-anzhuangchajian',
             label: '安装插件',
-            tip: '批量安装插件至边缘端',
+            tip: '批量安装插件至边缘网关',
             value: 'plugin',
             key: 'resourceIssue',
         },
