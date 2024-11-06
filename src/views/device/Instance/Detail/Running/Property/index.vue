@@ -54,7 +54,7 @@
                             @click="i.onClick && i.onClick(slotProps)"
                             type="link"
                             style="padding: 0px"
-                            :hasPermission="'device/Instance:update'"
+                          
                         >
                             <template #icon><AIcon :type="i.icon" /></template>
                         </PermissionButton>
