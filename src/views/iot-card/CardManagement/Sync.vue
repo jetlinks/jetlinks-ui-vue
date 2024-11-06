@@ -12,23 +12,22 @@
       <!--        <j-progress :percent="_percent" />-->
       <!--      </div>-->
       <!--      <div v-else>-->
-     <j-spin :spinning="loading">
-       <p>{{ syncData.count }}张物联卡等待同步状态</p>
-     </j-spin>
+      <!--        <p>{{ syncData.count }}张物联卡已同步至最新状态</p>-->
       <!--      </div>-->
+      <p>{{ syncData.total }}张物联卡等待更新状态</p>
     </div>
     <template #footer>
-      <a-button type="primary" :loading="loading" @click="handleCancel">确定</a-button>
+      <a-button :loading="flag" type="primary" @click="handleCancel">完成</a-button>
     </template>
   </j-modal>
 </template>
 
 <script setup name="SyncModal">
-// import {BASE_API_PATH} from "@/utils/variable";
-// import {paramsEncodeQuery} from "@/utils/encodeQuery";
-// import {getToken} from "@/utils/comm";
-// import {EventSourcePolyfill} from 'event-source-polyfill';
-import {sync} from "@/api/iot-card/cardManagement";
+import {BASE_API_PATH} from "@/utils/variable";
+import {paramsEncodeQuery} from "@/utils/encodeQuery";
+import {getToken} from "@/utils/comm";
+import {EventSourcePolyfill} from 'event-source-polyfill';
+import {queryCount} from "@/api/iot-card/cardManagement";
 
 const emit = defineEmits(['close']);
 
@@ -40,7 +39,6 @@ const props = defineProps({
 })
 
 const flag = ref(true)
-const loading = ref(false)
 const syncData = reactive({
   count: 0,
   total: 0,
@@ -56,52 +54,54 @@ const handleCancel = () => {
 }
 
 const getData = () => {
-  loading.value = true
-  sync(props.params).then(resp => {
-    console.log(resp.result)
-    syncData.count = resp?.result || 0
-  }).finally(() => {
-    loading.value = false
+  const _params = paramsEncodeQuery(props.params)
+  const urlParams = new URLSearchParams()
+
+  Object.keys(_params).forEach(key => {
+    if (_params[key]) {
+      urlParams.append(key, _params[key])
+    }
   })
-  // const _params = paramsEncodeQuery(props.params)
-  // const urlParams = new URLSearchParams()
-  //
-  // Object.keys(_params).forEach(key => {
-  //   if (_params[key]) {
-  //     urlParams.append(key, _params[key])
-  //   }
-  // })
-  // const api = `${BASE_API_PATH}/network/card/state/_sync?:X_Access_Token=${getToken()}&${urlParams}`
-  // const esp = new EventSourcePolyfill(api)
-  //
-  // esp.onmessage = (e) => {
-  //   syncData.count += Number(e.data)
-  //   if (syncData.count >= syncData.total) {
-  //     esp.close()
-  //     flag.value = false
-  //   }
-  // }
-  //
-  // esp.onerror = (e) => {
-  //   esp.close()
-  //   flag.value = false
-  // }
+  const api = `${BASE_API_PATH}/network/card/state/_sync?:X_Access_Token=${getToken()}&${urlParams}`
+  const esp = new EventSourcePolyfill(api)
+
+  esp.onmessage = (e) => {
+    syncData.count += Number(e.data || 0)
+    // if (syncData.count >= syncData.total) {
+    //   esp.close()
+    //   flag.value = false
+    // }
+  }
+
+  esp.onerror = (e) => {
+    esp.close()
+  }
 }
 
 
-// const getTotal = () => {
-//   queryCount(props.params).then(res => {
-//     if (res.success) {
-//       syncData.total = res.result
-//       getData()
-//     }
-//   })
-// }
-//
-// getTotal()
-//
+const getTotal = () => {
+  queryCount({
+    "terms": [
+      ...(props.params?.terms || []),
+      {
+        "column": "syncCardStatus",
+        "termType": "not",
+        "value": "running",
+        type: 'and'
+      }
+    ]
+  }).then(res => {
+    if (res.success) {
+      syncData.total = res.result
+      getData()
+      flag.value = false
+    }
+  })
+}
 
-getData()
+onMounted(() => {
+  getTotal()
+})
 </script>
 
 <style scoped>
