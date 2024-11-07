@@ -23,11 +23,20 @@
                 data?.actualDesc
             }}</j-descriptions-item>
             <j-descriptions-item label="告警源" :span="2">
-                设备ID：<a-button
-                    type="link"
-                    @click="() => gotoDevice(data?.sourceId)"
-                    >{{ data?.sourceId }}</a-button
-                >
+                <div v-if="data.targetType === 'device'">
+                    设备ID：<a-button
+                        type="link"
+                        @click="() => gotoDevice(data?.sourceId)"
+                        >{{ data?.sourceId }}</a-button
+                    >
+                </div>
+                <div v-else>
+                    场景联动ID：<a-button
+                        type="link"
+                        @click="() => gotoRule(data)"
+                        >{{ data?.sourceId }}</a-button
+                    >
+                </div>
             </j-descriptions-item>
             <j-descriptions-item label="告警流水" :span="2"
                 ><div style="max-height: 500px; overflow-y: auto">
@@ -60,6 +69,14 @@ const closeModal = () => {
 const gotoDevice = (id) => {
     menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
 };
+const gotoRule = (record) => {
+    menuStory.jumpPage(
+        'rule-engine/Scene/Save',
+        {},
+        { triggerType:record.sourceName==='定时触发'?'timer':'manual', id:record.sourceId, type: 'view' },
+    );
+}
+
 </script>
 <style lang="less" scoped>
 .alarmInfo {
