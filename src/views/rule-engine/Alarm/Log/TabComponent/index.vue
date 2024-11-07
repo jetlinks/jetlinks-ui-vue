@@ -209,7 +209,7 @@ imgMap.set('org', getImage('/alarm/org.png'));
 const titleMap = new Map();
 titleMap.set('product', '产品');
 titleMap.set('device', '设备');
-titleMap.set('other', '其他');
+titleMap.set('other', '场景');
 titleMap.set('org', '组织');
 
 const columns = [

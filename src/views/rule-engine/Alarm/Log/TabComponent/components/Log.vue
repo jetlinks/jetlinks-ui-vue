@@ -13,12 +13,8 @@
                     }}</span
             ></template>
             <template v-if="column.dataIndex === 'sourceName'">
-                <Ellipsis>
-                    设备名称：
-                    <span class="deviceId" @click="() => gotoDevice(record.targetId)">{{
-                        text
-                    }}</span></Ellipsis
-                >
+                <Ellipsis v-if="record.targetType === 'device'">设备名称：<span class="deviceId" @click="() => gotoDevice(record.targetId)">{{text}}</span></Ellipsis>
+                <Ellipsis v-else>场景联动名称：<span class="deviceId" @click="() => gotoRule(record)">{{text}}</span></Ellipsis>
             </template>
             <template
                 v-if="
@@ -134,6 +130,15 @@ const queryData = async () => {
 const gotoDevice = (id) => {
     menuStory.jumpPage('device/Instance/Detail', { id, tab: 'Running' });
 };
+
+const gotoRule = (record) => {
+    menuStory.jumpPage(
+        'rule-engine/Scene/Save',
+        {},
+        { triggerType:record.sourceName==='定时触发'?'timer':'manual', id:record.sourceId, type: 'view' },
+    );
+}
+
 const showDetail = (data) => {
     visibleDetail.value = true;
     current.value = data;
