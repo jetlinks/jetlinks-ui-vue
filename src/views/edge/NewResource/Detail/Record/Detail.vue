@@ -20,12 +20,10 @@
                         {{ record.thingTotal }}
                     </a-descriptions-item>
                     <a-descriptions-item label="文件" :labelStyle="{width: '110px'}">
-                        {{JSON.parse(resourceStore.resource.metadata || '{}')?.filename || resourceStore.resource?.properties?.fileName}}
+                        {{JSON.parse(resourceStore.resource.metadata || '{}')?.filename || JSON.parse(resourceStore.resource.metadata || '{}')?.properties?.fileName || resourceStore.resource?.properties?.fileName}}
                     </a-descriptions-item>
-                    <a-descriptions-item label="版本" :labelStyle="{width: '110px'}"></a-descriptions-item>
                     <a-descriptions-item label="说明" :labelStyle="{width: '110px'}">
-                        {{JSON.parse(resourceStore.resource.metadata || '{}')?.description || resourceStore.resource?.properties?.fileName}}
-
+                        {{JSON.parse(resourceStore.resource.metadata || '{}')?.description || '--'}}
                     </a-descriptions-item>
                 </a-descriptions>
             </div>
@@ -33,23 +31,45 @@
                 <TitleComponent data="任务信息"/>
                 <div style="display: flex;justify-content: space-between;">
                     <j-space>
-                        <j-button @click="handlePauseAll">
+                        <PermissionButton :disabled="!stateArr.includes('waiting')" @click="handlePauseAll">
                             <AIcon type="PauseOutlined"/>
                             全部暂停
-                        </j-button>
-                        <j-button @click="handleStartAll">
+                        </PermissionButton>
+                        <PermissionButton :disabled="!stateArr.includes('canceled')" @click="handleStartAll">
                             <AIcon type="PlayCircleOutlined"/>
                             全部开始
-                        </j-button>
-                        <j-button @click="handlePauseAllRetry">
+                        </PermissionButton>
+                        <PermissionButton :disabled="!stateArr.includes('failed')" @click="handlePauseAllRetry">
                             <AIcon type="RedoOutlined"/>
                             批量重试
-                        </j-button>
+                        </PermissionButton>
+                        <PermissionButton @click="handleRefresh">
+                            <AIcon type="RedoOutlined"/>
+                            刷新状态
+                        </PermissionButton>
                     </j-space>
-                    <j-button type="text" @click="handleRefresh">
-                        <AIcon type="RedoOutlined"/>
-                        刷新
-                    </j-button>
+                    <j-space>
+                        <PermissionButton
+                            style="float: right; margin-right: 20px"
+                            danger
+                            :tooltip="{
+                                title:
+                                    record.state.value === 'running'
+                                        ? '任务进行不可删除'
+                                        : '',
+                            }"
+                            :popConfirm="{
+                                title: '确认删除?',
+                                onConfirm: async () => {
+                                    deleteAll();
+                                },
+                            }"
+                            :disabled="record.state.value === 'running'"
+                        >
+                            <template #icon><AIcon type="DeleteOutlined" /> </template>
+                            删除任务
+                        </PermissionButton>
+                    </j-space>
                 </div>
                 <div class="progress--warp" :style="progressStyles">
                 </div>
@@ -73,15 +93,29 @@
                     :columns="gatewayColumns"
                 >
                     <template #state="slotProps">
-                        <a-space>
-                            <Icon :type="iconMap[slotProps.state.value]" :style="{color: `var(--ant-${colorMap[slotProps.state.value]}-color)`}"></Icon>
-                            <div class="state-text" v-if="slotProps.state?.value === 'failed'">
-                                {{ slotProps.state?.text }}：{{ slotProps.errorCode }}
-                            </div>
-                            <div class="state-text" v-else>
-                                {{ slotProps.state?.text }}
-                            </div>
-                        </a-space>
+                        <div
+                            class="state"
+                            :style="{
+                                color: colorMap[slotProps.state.value]
+                                ? `var(--ant-${colorMap[slotProps.state.value]}-color)`
+                                : '#646C73',
+                    }"
+                        >
+                            <a-space>
+                                <Icon :type="iconMap[slotProps.state.value]" />
+                                <j-ellipsis>
+                                    <span>{{ slotProps.state.text }}</span>
+                                    <span
+                                        v-if="
+                                            slotProps.state.value === 'failed' &&
+                                            slotProps.errorCodeMessage
+                                        "
+                                    >
+                                        {{ ':' + slotProps.errorCodeMessage }}
+                                    </span>
+                                </j-ellipsis>
+                            </a-space>
+                        </div>
                     </template>
                     <template #completeTime="slotProps">
                         {{ slotProps.completeTime ? dayjs(slotProps.completeTime).format('YYYY-MM-DD HH:mm:ss') : '--' }}
@@ -206,6 +240,10 @@ const iconMap = {
     'canceled': 'PauseCircleFilled',
     'waiting': 'icon-paiduizhong',
 }
+
+const stateArr = computed(() => {
+    return props.record.stateCount.map((item) => item.state.value);
+});
 
 const emit = defineEmits(['showTaskDetail', 'copy', 'cancel', 'reload']);
 

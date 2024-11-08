@@ -13,14 +13,13 @@
                 :params="params"
                 :defaultParams="{
                     sorts: [{ name: 'createTime', order: 'desc' }],
-                    terms: [{column: 'targetType', value: 'AiModel'}]
                 }"
             >
                 <template #headerTitle>
                     <j-space>
                         <PermissionButton
                             type="primary"
-                            hasPermission="EdgeResource/AiModel:add"
+                            hasPermission="edge/NewResource:add"
                             @click="handleAdd"
                         >
                             <template #icon
@@ -63,20 +62,20 @@
                             <j-row :gutter="16" style="margin-top: 18px">
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        模型ID
+                                        类型
                                     </div>
                                     <Ellipsis>
                                         <span>
-                                            {{ slotProps.targetId }}
+                                            {{ TargetTypeOptions.find(item => slotProps.targetType === item.value)?.label }}
                                         </span>
                                     </Ellipsis>
                                 </j-col>
                                 <j-col :span="12">
                                     <div class="card-item-content-text">
-                                        版本号
+                                        说明
                                     </div>
                                     <Ellipsis style="width: 100%">
-                                        {{ slotProps.version || '--' }}
+                                        {{ JSON.parse(slotProps.metadata || '{}')?.description || '--' }}
                                     </Ellipsis>
                                 </j-col>
                             </j-row>
@@ -89,7 +88,7 @@
                                     ...item.tooltip,
                                 }"
                                 @click="item.onClick"
-                                :hasPermission="'EdgeResource/AiModel:' + item.key"
+                                :hasPermission="'edge/NewResource:' + item.key"
                             >
                                 <AIcon
                                     type="DeleteOutlined"
@@ -102,6 +101,9 @@
                             </PermissionButton>
                         </template>
                     </CardBox>
+                </template>
+                <template #describe="slotProps">
+                    {{ JSON.parse(slotProps.metadata || '{}')?.description || '--' }}
                 </template>
                 <template #state="slotProps">
                     <BadgeStatus
@@ -131,7 +133,7 @@
                                 :danger="i.key === 'delete'"
                                 :hasPermission="
                                     i.key === 'view'
-                                        ? true : 'EdgeResource/AiModel:' + i.key"
+                                        ? true : 'edge/NewResource:' + i.key"
                             >
                                 <template #icon>
                                     <AIcon :type="i.icon"/>
@@ -144,16 +146,17 @@
         </full-page>
     </page-container>
     <Save v-if="saveVisible" :data="currentData" @close="saveVisible = false" @save="handleSave"/>
-    <Issue v-if="issueVisible" jobType="AiModel" service-id="aiService:modelManager" :data="currentData" @close="issueVisible = false"/>
+    <Issue v-if="issueVisible" :jobType="JobTypeEnum[currentData?.targetType]" :service-id="ServiceIdEnum[currentData?.targetType]" :data="currentData" @close="issueVisible = false"/>
 </template>
 
 <script setup lang="ts">
 import Save from './Save/index.vue';
 import Issue from './Issue/index.vue';
-import {queryPage, remove, update} from '@/api/edge-resource/ai-model'
+import {queryPage, remove, update} from '@/api/edge-resource'
 import {getImage, onlyMessage} from "@/utils/comm";
-import BadgeStatus from "components/BadgeStatus/index.vue";
+import BadgeStatus from "@/components/BadgeStatus/index.vue";
 import { useMenuStore } from "store/menu";
+import { TargetTypeOptions, ServiceIdEnum, JobTypeEnum } from './utils';
 
 const columns = [
     {
@@ -179,6 +182,10 @@ const columns = [
         dataIndex: 'targetType',
         key: 'targetType',
         width: 200,
+        search: {
+            type: 'select',
+            options: TargetTypeOptions
+        }
     },
     {
         title: '状态',
@@ -198,7 +205,8 @@ const columns = [
         title: '说明',
         dataIndex: 'describe',
         key: 'describe',
-        width: 200
+        width: 200,
+        scopedSlots: true
     },
     {
         title: '操作',
@@ -254,7 +262,7 @@ const getActions = (data, type) => {
             },
         },
         {
-            key: 'setting',
+            key: 'issue',
             text: '下发',
             tooltip: {
                 title: data.state.value === 'disabled' ? '请先启用，再下发' : '下发',
@@ -316,7 +324,7 @@ const handleSave = () => {
 }
 
 const handleView = (id: string) => {
-    menuStore.jumpPage('EdgeResource/AiModel/Detail', {id});
+    menuStore.jumpPage('edge/NewResource/Detail', {id});
 }
 </script>
 

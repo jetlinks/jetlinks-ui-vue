@@ -13,17 +13,20 @@
                 <j-row :gutter="16">
                     <j-col :span="12">
                         <j-form-item label="响应超时时间" name="timeoutSeconds">
-                            <j-input-number v-model:value="formData.timeoutSeconds" style="width: 100%;" :min="1" :max="10000" placeholder="请输入响应超时时间"></j-input-number>
+                            <j-input-number v-model:value="formData.timeoutSeconds" style="width: 100%;" :min="1" :max="10000" :precision="0" placeholder="请输入响应超时时间(秒)"></j-input-number>
                         </j-form-item>
                     </j-col>
                     <j-col :span="12">
                         <j-form-item label="重试次数" name="maxRetry">
-                            <j-input-number v-model:value="formData.maxRetry" style="width: 100%;" :min="1" :max="10000" placeholder="请输入重试次数"></j-input-number>
+                            <j-input-number v-model:value="formData.maxRetry" style="width: 100%;" :min="1" :max="10000" :precision="0" placeholder="请输入重试次数"></j-input-number>
                         </j-form-item>
                     </j-col>
                 </j-row>
                 <j-form-item label="网关设备选择方式">
                     <j-card-select v-model:value="chooseType" :options="options"></j-card-select>
+                </j-form-item>
+                <j-form-item label="说明">
+                    <j-textarea v-model:value="formData.description" placeholder="请输入说明" :maxlength="200" showCount></j-textarea>
                 </j-form-item>
             </div>
             <GatewayDevice v-if="current !== 1" v-model:value="deviceList"/>
@@ -132,6 +135,7 @@ const handleSubmit = () => {
                     })
                 }
             }
+            debugger
             const res = await createTask(data);
             if(res.success) {
                 onlyMessage('操作成功');
