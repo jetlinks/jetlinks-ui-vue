@@ -494,6 +494,8 @@ const onDropAuto = () => {
                 }
             }
         });
+    }else{
+        onlyMessage('该设备所属产品不是由云端模板创建，不支持支持直接在云端生成对应设备', 'warning');
     }
 };
 
