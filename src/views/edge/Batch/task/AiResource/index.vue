@@ -57,6 +57,7 @@ const columns = [
     search: {
       type: 'string',
     },
+    ellipsis: true,
   },
   {
     title: '底库类型',
@@ -65,11 +66,13 @@ const columns = [
     search: {
       type: 'string',
     },
+    ellipsis: true,
   },
   {
     title: '文件',
     key: 'file',
     dataIndex: 'file',
+    ellipsis: true,
   },
   {
     title: '版本号',

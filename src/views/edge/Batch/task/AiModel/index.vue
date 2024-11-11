@@ -56,6 +56,7 @@ const columns = [
     search: {
       type: 'string',
     },
+    ellipsis: true,
   },
   {
     title: '文件',
