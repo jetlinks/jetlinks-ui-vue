@@ -174,6 +174,15 @@ const handleSearch = (e) => {
     params.value = e;
 };
 
+const changeContextSelected = () => {
+  context.addGateWay(
+    deviceSelected.value.map((item) => ({
+      value: item.id,
+      label: item.name,
+      ...item,
+    })),
+  );
+}
 const handleClick = (record) => {
     const index = deviceSelected.value.findIndex(
         (item) => item.id === record.id,
@@ -185,13 +194,7 @@ const handleClick = (record) => {
         deviceSelected.value.push(record);
         deviceRowKeys.value.push(record.id);
     }
-    context.addGateWay(
-        deviceSelected.value.map((item) => ({
-            value: item.id,
-            label: item.name,
-            ...item,
-        })),
-    );
+    changeContextSelected()
 };
 
 const selectAll = (selected, record, changeRows) => {
@@ -214,6 +217,7 @@ const selectAll = (selected, record, changeRows) => {
     }
     deviceSelected.value = [...selectedMap.values()];
     deviceRowKeys.value = [...selectedMap.keys()];
+    changeContextSelected()
 };
 
 const onSelectNone = () => {
