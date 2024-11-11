@@ -61,15 +61,6 @@ const columns = [
     ellipsis: true,
   },
   {
-    title: '通讯协议',
-    key: 'category',
-    dataIndex: 'category',
-    search: {
-      type: 'string',
-    },
-    ellipsis: true,
-  },
-  {
     title: '文件',
     key: 'file',
     dataIndex: 'file',
