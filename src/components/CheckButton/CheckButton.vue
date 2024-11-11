@@ -145,7 +145,7 @@ watch(
   .j-check-button-item {
     flex: 1;
     min-width: 0;
-    padding: 8px 18px;
+    padding: 8px;
     border-radius: 20px;
     background-color: #F8F9FA;
     transition: all 0.3s;
