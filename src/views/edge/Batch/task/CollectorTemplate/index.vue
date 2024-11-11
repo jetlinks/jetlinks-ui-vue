@@ -19,6 +19,7 @@
       :columns="columns"
       :request="queryPage"
       :params="params"
+      :scroll="{ y: 320}"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
         terms: [{column: 'targetType', value: 'entityTemplate:Collector'}]

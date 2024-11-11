@@ -19,6 +19,7 @@
       :columns="columns"
       :request="queryFn"
       :params="params"
+      :scroll="{ y: 320}"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
         terms: [{column: 'targetType', value: 'AiModel'},{column: 'state', value: 'enabled'}]
