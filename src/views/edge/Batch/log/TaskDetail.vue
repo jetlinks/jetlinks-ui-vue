@@ -52,7 +52,7 @@
                                 />
                                 <label class="text-color-500">插件数量</label>
                                 <span class="text-color-900">{{
-                                    data?.thingTotal
+                                    data?.others.commandTotal || 0
                                 }}</span>
                             </a-space>
                         </div>
