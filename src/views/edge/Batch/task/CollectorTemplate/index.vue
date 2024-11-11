@@ -89,7 +89,7 @@ const queryFn = async (_params) => {
       data: resp.result.data?.map(item => {
         const _metadata = JSON.parse(item.metadata)
         item.file = item.properties.fileName
-        item.description = item.properties.description
+        item.description = _metadata.description
         item.type = _metadata.provider
         return item
       }),

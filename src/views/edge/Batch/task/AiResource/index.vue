@@ -104,6 +104,7 @@ const queryFn = async (_params) => {
         const _metadata = JSON.parse(item.metadata)
         item.file = item.properties.fileName
         item.type = _metadata.provider
+        item._metadata = _metadata._metadata
         return item
       }),
     },
