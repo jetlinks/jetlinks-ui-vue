@@ -23,12 +23,54 @@
             }"
         >
             <template #card="slotProps">
-                <Card
-                    :record="slotProps"
-                    :active="deviceRowKeys.includes(slotProps.id)"
-                    @click="handleClick"
-                >
-                </Card>
+<!--                <Card-->
+<!--                    :record="slotProps"-->
+<!--                    :active="deviceRowKeys.includes(slotProps.id)"-->
+<!--                    @click="handleClick"-->
+<!--                >-->
+<!--                </Card>-->
+              <CardBox
+                :value="slotProps"
+                @click="handleClick"
+                :active="deviceRowKeys.includes(slotProps.id)"
+                :status="slotProps.state?.value"
+                :statusText="slotProps.state?.text"
+                :statusNames="{
+                            online: 'processing',
+                            offline: 'error',
+                            notActive: 'warning',
+                        }"
+              >
+                <template #img>
+                  <img
+                    :width="80"
+                    :height="80"
+                    :src="slotProps?.photoUrl || getImage('/device/instance/device-card.png')"
+                  />
+                </template>
+                <template #content>
+                  <Ellipsis
+                    style="
+                                    width: calc(100% - 100px);
+                                    margin-bottom: 18px;
+                                "
+                  >
+                    <span style="font-size: 16px; font-weight: 600">
+                      {{ slotProps.name }}
+                    </span>
+                  </Ellipsis>
+                  <j-row>
+                    <j-col :span="24">
+                      <div class="card-item-content-text">
+                        产品名称
+                      </div>
+                      <Ellipsis style="width: 100%">
+                        {{ slotProps.productName }}
+                      </Ellipsis>
+                    </j-col>
+                  </j-row>
+                </template>
+              </CardBox>
             </template>
             <template #registryTime="slotProps">
                 {{
@@ -48,7 +90,7 @@ import { getImage } from '@/utils/comm';
 import { queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { getContext } from '../util';
-import Card from '../components/card.vue';
+// import Card from '../components/card.vue';
 import dayjs from 'dayjs';
 
 const params = ref();
