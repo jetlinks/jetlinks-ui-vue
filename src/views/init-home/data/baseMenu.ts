@@ -2593,278 +2593,6 @@ export default [
         ],
       },
       {
-        "id": "fc84e1e78b5d12b71bf048bc636fca08",
-        "path": "gNTl-tlVc",
-        "sortIndex": 8,
-        "level": 2,
-        "owner": "iot",
-        "name": "边端资源库",
-        "code": "EdgeResource",
-        "describe": "",
-        "url": "/edge-resource",
-        "icon": "RadarChartOutlined",
-        "status": 1,
-        "permissions": [],
-        "accessSupport": {
-          "text": "不支持",
-          "value": "unsupported"
-        },
-        "indirectMenus": [],
-        "options": {
-          "show": true
-        },
-        "children": [
-          {
-            "id": "e954e245ff12575c0107d08d95abc7e5",
-            "path": "gNTl-tlVc-zRSv",
-            "sortIndex": 1,
-            "level": 3,
-            "owner": "iot",
-            "name": "AI模型",
-            "code": "EdgeResource/AiModel",
-            "describe": "",
-            "url": "/edge-resource/ai-model",
-            "icon": "HeatMapOutlined",
-            "status": 1,
-            "permissions": [],
-            "accessSupport": {
-              "text": "不支持",
-              "value": "unsupported"
-            },
-            "indirectMenus": [],
-            showPage: ['plugin-driver'],
-            "buttons": [
-              {
-                "id": "add",
-                "name": "新增",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "delete",
-                "name": "删除",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "update",
-                "name": "编辑",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "setting",
-                "name": "下发",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "action",
-                "name": "启/禁用",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              }
-            ],
-            "options": {
-              "show": true
-            },
-            "supportDataAccess": false
-          },
-          {
-            "id": "81f1047fb45d0c35cf5c4366949a9068",
-            "path": "gNTl-tlVc-Qmdp",
-            "sortIndex": 2,
-            "level": 3,
-            "owner": "iot",
-            "name": "插件",
-            "code": "EdgeResource/Plugin",
-            "describe": "",
-            "url": "/edge-resource/plugin",
-            "icon": "StrikethroughOutlined",
-            "status": 1,
-            "permissions": [],
-            "accessSupport": {
-              "text": "不支持",
-              "value": "unsupported"
-            },
-            "indirectMenus": [],
-            showPage: ['plugin-driver'],
-            "buttons": [
-              {
-                "id": "add",
-                "name": "新增",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "delete",
-                "name": "删除",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "update",
-                "name": "编辑",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "action",
-                "name": "启/禁用",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "issue",
-                "name": "下发",
-                "description": "",
-                "permissions": [
-                  {
-                    "permission": "plugin-driver",
-                    "actions": [
-                      "query"
-                    ]
-                  }
-                ]
-              }
-            ],
-            "options": {
-              "show": true
-            },
-            "supportDataAccess": false
-          },
-          {
-            "id": "badf8b6e4b9211471aea033a33be8a0c",
-            "path": "rqCP-UBRR-JiXd",
-            "sortIndex": 3,
-            "level": 3,
-            "owner": "iot",
-            "name": "采集器模板",
-            "code": "EdgeResource/CollectorTemplate",
-            "icon": "CopyOutlined",
-            "url": "/edge-resource/collector-template",
-            "describe": "",
-            "status": 1,
-            "buttons": [
-              {
-                "id": "add",
-                "name": "新增",
-                "description": "",
-                "enabled": false,
-                "granted": true
-              },
-              {
-                "id": "delete",
-                "name": "删除",
-                "description": "",
-                "enabled": false,
-                "granted": true
-              },
-              {
-                "id": "update",
-                "name": "编辑",
-                "description": "",
-                "enabled": false,
-                "granted": true
-              },
-              {
-                "id": "action",
-                "name": "启/禁用",
-                "description": "",
-                "enabled": false,
-                "granted": true
-              },
-              {
-                "id": "issue",
-                "name": "下发",
-                "description": "",
-                "enabled": false,
-                "granted": true
-              }
-            ],
-            showPage: ['plugin-driver'],
-            "accessSupport": {
-              "text": "不支持",
-              "value": "unsupported"
-            },
-            "indirectMenus": [],
-            "assetAccesses": [],
-            "options": {
-              "show": true
-            },
-            "createTime": 1729580485795,
-            "granted": true
-          }
-        ],
-        "supportDataAccess": false
-      },
-      {
         code: 'edge',
         name: '边缘网关',
         owner: 'iot',
@@ -2987,6 +2715,75 @@ export default [
             accessSupport: { text: "间接支持", value: "indirect" },
             supportDataAccess: false,
             indirectMenus: ['1b136e7e4e4e74bb24b91802e4cfcd2d']
+          },
+          {
+            "id": "aa30a56878065635574bb62dd4f894e6",
+            "path": "yci3-B2Qf-m3oA",
+            "sortIndex": 2,
+            "level": 3,
+            "owner": "iot",
+            "name": "资源库",
+            "code": "edge/NewResource",
+            "icon": "SlidersOutlined",
+            "url": "/iot/edge/new-resource",
+            "describe": "",
+            showPage: ['edge-manager'],
+            permissions: [
+              {
+                "permission": "entity-template",
+                "actions": [
+                  "query"
+                ]
+              }
+            ],
+            "buttons": [
+              {
+                "id": "add",
+                "name": "新增",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "delete",
+                "name": "删除",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "update",
+                "name": "编辑",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "issue",
+                "name": "下发",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              },
+              {
+                "id": "action",
+                "name": "启/禁用",
+                "description": "",
+                "enabled": false,
+                "granted": true
+              }
+            ],
+            "accessSupport": {
+              "text": "不支持",
+              "value": "unsupported"
+            },
+            "indirectMenus": [],
+            "assetAccesses": [],
+            "options": {
+              "show": true
+            },
+            "createTime": 1730966464081,
+            "granted": true
           },
           {
             code: 'edge/Batch',

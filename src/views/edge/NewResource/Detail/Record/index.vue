@@ -32,6 +32,12 @@ const props = defineProps({
 })
 const tableRef = ref();
 const defaultParams = {
+    sorts: [
+        {
+            name: 'createTime',
+            order: 'desc',
+        }
+    ],
     terms: [
         {
             column: "targetId",

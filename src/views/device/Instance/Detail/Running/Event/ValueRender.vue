@@ -8,18 +8,11 @@
         @cancel="visible = false"
         @ok="visible = false"
     >
-        <div style="display: flex;justify-content: center">
-            <img
-                v-if="isImage"
-                :src="data[dataIndex]"
-                alt=""
-            />
-            <img
-                v-else
-                :src="blobUrl"
-                alt=""
-            />
-        </div>
+        <img
+            style="width: 100%;object-fit: contain;"
+            :src="blobUrl"
+            alt=""
+        />
     </a-modal>
 </template>
 
@@ -42,7 +35,6 @@ const props = defineProps({
 
 const visible = ref(false);
 const instanceStore = useInstanceStore();
-const isImage = ref(false);
 const handleDownload = () => {
     const link = new URL(props.data[props.dataIndex]);
     const path = link.pathname;
@@ -61,23 +53,14 @@ const handleDownload = () => {
 const blobUrl = ref();
 const handleCheck = () => {
     const url = props.data[props.dataIndex];
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-        isImage.value = true;
+    if(instanceStore.current.accessProvider === 'agent-device-gateway') {
         visible.value = true;
-    }
-    img.onerror = () => {
-        isImage.value = false;
-        if(instanceStore.current.accessProvider === 'agent-device-gateway') {
-            visible.value = true;
-            proxyUrl(instanceStore.current.id, url).then(res => {
-                const blob = new Blob([res]);
-                blobUrl.value = window.URL.createObjectURL(blob);
-            })
-        } else {
-            handleDownload();
-        }
+        proxyUrl(instanceStore.current?.parentId, url).then(res => {
+            const blob = new Blob([res]);
+            blobUrl.value = window.URL.createObjectURL(blob);
+        })
+    } else {
+        handleDownload();
     }
 }
 

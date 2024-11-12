@@ -141,7 +141,6 @@ const options = computed(() => {
 })
 
 const showTaskDetail = () => {
-  debugger
   taskDetail.detail = props.detail
   taskDetail.visible = true
 }
