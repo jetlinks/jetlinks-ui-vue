@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%; height: 400px;position: relative">
+    <div style="width: 100%; height: 500px;position: relative">
       <div class="loading" v-if="loading.value">
         <a-spin :spinning="loading.value" size="large" tip="点位加载中..." />
       </div>
@@ -15,20 +15,24 @@
 
 <script lang="ts" setup name="DashBoardMap">
 import AmapComponent from 'components/AMapComponent/AMap.vue';
-import {getDeviceGeoJson} from '@/api/device/dashboard';
 import {ElAmapMarkerCluster} from "@vuemap/vue-amap";
+import {getCenterPoint} from "@/utils/map";
+import { EventSourcePolyfill } from 'event-source-polyfill';
+import {BASE_API_PATH, TOKEN_KEY} from "@/utils/variable";
+import {LocalStore} from "@/utils/comm";
 
 const deviceList = ref([])
 const _pageSize = 5000
 const loading = reactive({
-  value: false
+  value: false,
+  schedule: 0
 })
 
 let map
-
+let source
 
 const extraOptions = {
-  gridSize: 60, // 设置网格像素大小
+  gridSize: 10,
   renderClusterMarker(context) {
     const div = document.createElement('div');
     const Hue = 180 - 0.9 * 180;
@@ -58,64 +62,60 @@ const extraOptions = {
       </div>
     `)
     context.marker.setAnchor('bottom-center')
+    context.marker.setOffset(new AMap.Pixel(0, 3))
     // context.marker.setIcon(icon)
   }, // 自定义非聚合点样式
 }
 
-const queryDeviceGeoJson = async (pageIndex: number, pageSize = _pageSize) => {
+const queryDeviceGeoJson = async () => {
+  source = new EventSourcePolyfill(
+    `${BASE_API_PATH}/geo/object/device/_search/geo.json?:X_Access_Token=${LocalStore.get(
+      TOKEN_KEY,
+    )}&filter.paging=false`
+  )
 
-  if (!loading.value) {
-    loading.value = true
-  }
-
-  const res = await getDeviceGeoJson({
-    filter: {
-      pageSize,
-      pageIndex,
-      terms: []
+  source.onmessage = (e: any) => {
+    const result = JSON.parse(e.data);
+    console.log('[features]>',result, e)
+    const features = result.features
+    const arr = []
+    if (!loading.value) {
+      loading.value = true
+      loading.schedule = 0
     }
-  })
-
-  if (res.success) {
-    const { data: list, pageIndex: _index, total} = res.result
-    for (let i = 0; i < list.length; i++) {
-      const item = list[i]
-      deviceList.value.push({
-        lnglat: [item.point.lon, item.point.lat],
-        label: item.tags.deviceName
+    features.forEach(item => {
+      arr.push({
+        lnglat: item.geometry.coordinates,
+        label: item.properties.deviceName
       })
-    }
-
-    const currentTotal = (_index + 1 ) * _pageSize // 当前累积总数
-    const remaining = total - currentTotal // 剩余数量
-
-    if (remaining > 0) {
-      setTimeout(() => {
-        queryDeviceGeoJson(pageIndex + 1, remaining >= _pageSize ? _pageSize : remaining)
-      }, 10)
-    } else {
-      loading.value = false
-    }
+    })
+    deviceList.value.push(...arr)
   }
+
+  source.onerror = (e) => {
+    console.log('[event source error] > ', e)
+    source.close();
+    loading.value = false
+  };
+
 }
 
-const onClick = ({ clusterData, markers }) => {
+const onClick = ({ clusterData }) => {
   if (clusterData.length <=1) {
     return
   }
 
-  let allLng = 0
-  let allLat = 0
+  const [ northEast, southWest] = getCenterPoint(clusterData.map(item => {
+    return [item.lnglat.lng, item.lnglat.lat]
+  }))
 
-  for (const item of clusterData) {
-    allLng += item.lnglat.lng
-    allLat += item.lnglat.lat
-  }
+  const bounds = new AMap.Bounds(
+    new AMap.LngLat(northEast[0], northEast[1]),
+    new AMap.LngLat(southWest[0], southWest[1]),
+  )
 
-  const lat = allLat / clusterData.length
-  const lng = allLng / clusterData.length
-
-  map.setZoom(map.getZoom() + 2, [lng, lat])
+  const [zoom, center] = map.getFitZoomAndCenterByBounds(bounds,  [10, 10, 10, 10],19)
+  map.setZoomAndCenter(zoom, center)
 }
 
 const onMapInit = (instance) => {
@@ -154,6 +154,7 @@ queryDeviceGeoJson(0)
     box-shadow: 0 0 16px rgba(0, 0, 0, .2);
     width: 120px;
     display: -webkit-box;
+    text-align: center;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
     word-break: break-all;
