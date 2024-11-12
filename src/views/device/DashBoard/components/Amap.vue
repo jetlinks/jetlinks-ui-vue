@@ -76,7 +76,6 @@ const queryDeviceGeoJson = async () => {
 
   source.onmessage = (e: any) => {
     const result = JSON.parse(e.data);
-    console.log('[features]>',result, e)
     const features = result.features
     const arr = []
     if (!loading.value) {

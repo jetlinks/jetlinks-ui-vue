@@ -12,7 +12,19 @@
             </div>
             <j-spin :spinning="loading">
                 <div class="map-tree-content">
-                    <j-card class="map-tree-content-card" title="源数据">
+                    <j-card class="map-tree-content-card" >
+                      <template #title>
+                        <div class="map-tree-header">
+                          <span>数据源</span>
+                          <div>
+                            <a-input v-model:value="searchText" placeholder="请输入搜索名称" @change="onSearch">
+                              <template #suffix>
+                                <AIcon type="SearchOutlined" />
+                              </template>
+                            </a-input>
+                          </div>
+                        </div>
+                      </template>
                         <j-tree
                             checkable
                             :height="300"
@@ -58,6 +70,7 @@
 import { treeMapping, saveMapping } from '@/api/device/instance';
 import { onlyMessage } from '@/utils/comm';
 import { useInstanceStore } from "store/instance";
+import { debounce } from 'lodash-es'
 
 const _props = defineProps({
     type: {
@@ -83,7 +96,7 @@ const rightList = ref<any[]>([]);
 
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
-
+const searchText = ref()
 const handleData = (data: any[], type: string, provider?: string) => {
     data.forEach((item) => {
         item.key = item.id;
@@ -108,21 +121,25 @@ const handleData = (data: any[], type: string, provider?: string) => {
     return data as any[];
 };
 
-const handleSearch = async () => {
+const handleSearch = debounce(async () => {
     loading.value = true;
-    const resp = await treeMapping({
-        // terms: [
-        //     {
-        //         column: 'provider',
-        //         value: _props.type,
-        //     },
-        // ],
-    });
+
+    const params = {}
+
+    if (searchText.value) {
+      params.terms = [{
+        column: 'name',
+        termType: 'like',
+        value: `%${searchText.value}%`
+      }]
+    }
+
+    const resp = await treeMapping(params);
     loading.value = false;
     if (resp.status === 200) {
         dataSource.value = handleData(resp.result as any[], 'channel');
     }
-};
+}, 1000)
 
 const onCheck = (keys: string[], e: any) => {
     checkedKeys.value = [...keys];
@@ -159,12 +176,12 @@ const handleClick = async () => {
             }));
             params.push(...array);
         });
-        const filterParms = params.filter((item) => !!item.metadataId);
-        if (filterParms && filterParms.length !== 0) {
+        const filterParams = params.filter((item) => !!item.metadataId);
+        if (filterParams?.length !== 0) {
             const res = await saveMapping(
                 _props.deviceId,
                 _props.type,
-                filterParms,
+              filterParams,
             );
             if (res.status === 200) {
                 onlyMessage('操作成功');
@@ -178,6 +195,10 @@ const handleClick = async () => {
 const handleClose = () => {
     _emits('close');
 };
+
+const onSearch = () => {
+  handleSearch()
+}
 
 watchEffect(() => {
     if (_props.type) {
@@ -201,5 +222,10 @@ watchEffect(() => {
             height: 300px;
         }
     }
+}
+.map-tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
