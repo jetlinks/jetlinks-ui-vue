@@ -345,29 +345,29 @@ const columns = ref([
                 }),
         },
     },
-    {
-        key: 'accessProvider',
-        title: '网关类型',
-        dataIndex: 'accessProvider',
-        valueType: 'select',
-        hideInTable: true,
-        search: {
-            type: 'select',
-            // rename: 'productId$product-info',
-            options: () =>
-                new Promise((resolve) => {
-                    getProviders().then((resp: any) => {
-                        const data = resp.result || [];
-                        resolve(
-                            accessConfigTypeFilter(data).map((item) => ({
-                                ...item,
-                                value: `accessProvider is ${item.id}`,
-                            })),
-                        );
-                    });
-                }),
-        },
-    },
+    // {
+    //     key: 'accessProvider',
+    //     title: '网关类型',
+    //     dataIndex: 'accessProvider',
+    //     valueType: 'select',
+    //     hideInTable: true,
+    //     search: {
+    //         type: 'select',
+    //         // rename: 'productId$product-info',
+    //         options: () =>
+    //             new Promise((resolve) => {
+    //                 getProviders().then((resp: any) => {
+    //                     const data = resp.result || [];
+    //                     resolve(
+    //                         accessConfigTypeFilter(data).map((item) => ({
+    //                             ...item,
+    //                             value: `accessProvider is ${item.id}`,
+    //                         })),
+    //                     );
+    //                 });
+    //             }),
+    //     },
+    // },
     {
         key: 'accessId',
         dataIndex: 'accessId',

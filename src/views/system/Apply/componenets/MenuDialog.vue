@@ -111,7 +111,7 @@ function getTree(params: string) {
 }
 
 const getCheckMenu = (data: any, keys: any) => {
-    data.forEach((item: any) => {   
+    data.forEach((item: any) => {
             if (item.children) {
                 getCheckMenu(item.children, keys)
             } else {
@@ -128,7 +128,7 @@ function getMenus(id: string) {
             {
                 column: 'appId',
                 value: id,
-            },  
+            },
             {
                 terms:[
                     {
@@ -172,6 +172,7 @@ function getSystemList(id: string) {
 
 const dealMenu = (data:any)=>{
     data?.forEach((i:any)=>{
+        delete i.id
         i.options = {
             show:true
         }
@@ -179,7 +180,7 @@ const dealMenu = (data:any)=>{
             dealMenu(i.children)
         }
     })
-   
+
 }
 watch(() => props.data, (newVal: any) => {
     form.checkedSystem = newVal?.page.configuration?.checkedSystem
