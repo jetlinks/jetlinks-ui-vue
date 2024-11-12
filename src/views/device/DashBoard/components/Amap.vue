@@ -124,7 +124,7 @@ const onMapInit = (instance) => {
   }
 }
 
-queryDeviceGeoJson(0)
+queryDeviceGeoJson()
 </script>
 <style scoped>
 .loading {
