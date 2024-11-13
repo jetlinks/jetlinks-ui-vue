@@ -12,7 +12,9 @@
         okText="确定"
     >
         <j-form ref="formRef" :model="form.data" layout="vertical">
-            <div class="formName" v-if="form.IsShow('add', 'edit')">基础信息</div>
+            <div class="formName" v-if="form.IsShow('add', 'edit')">
+                基础信息
+            </div>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="24">
                     <j-form-item
@@ -74,9 +76,15 @@
             </j-row>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="12">
-                    <j-form-item name="roleIdList" label="角色" class="flex"
+                    <j-form-item
+                        name="roleIdList"
+                        label="角色"
+                        class="flex"
                         :rules="[
-                            { required: form.data.username !== 'admin', message: '请选择角色' },
+                            {
+                                required: form.data.username !== 'admin',
+                                message: '请选择角色',
+                            },
                         ]"
                     >
                         <j-tree-select
@@ -86,18 +94,22 @@
                             style="width: calc(100% - 40px)"
                             placeholder="请选择角色"
                             :tree-data="form.roleOptions"
-                            :fieldNames="{ label: 'name', value: 'id', children:'children' }"
+                            :fieldNames="{
+                                label: 'name',
+                                value: 'id',
+                                children: 'children',
+                            }"
                             :disabled="form.data.username === 'admin'"
                             :filterTreeNode="
                                 (v, node) => filterSelectNode(v, node, 'name')
                             "
                         >
-                        <template #title="{ name }">
-                            <div style="width: calc(100% - 10px) ">
-                                <Ellipsis>{{ name }}</Ellipsis>
-                            </div>
-                        </template>
-                    </j-tree-select>
+                            <template #title="{ name }">
+                                <div style="width: calc(100% - 10px)">
+                                    <Ellipsis>{{ name }}</Ellipsis>
+                                </div>
+                            </template>
+                        </j-tree-select>
                         <PermissionButton
                             :hasPermission="`${rolePermission}:add`"
                             @click="form.clickAddItem('roleIdList', 'Role')"
@@ -136,7 +148,9 @@
                     </j-form-item>
                 </j-col>
             </j-row>
-            <div class="formName" v-if="form.IsShow('add', 'edit')">账号信息</div>
+            <div class="formName" v-if="form.IsShow('add', 'edit')">
+                账号信息
+            </div>
             <j-row :gutter="24" v-if="form.IsShow('add', 'edit')">
                 <j-col :span="24">
                     <j-form-item
@@ -152,7 +166,7 @@
                             {
                                 validator: form.rules.checkUserName,
                                 trigger: 'blur',
-                            }
+                            },
                         ]"
                     >
                         <j-input
@@ -194,9 +208,7 @@
                                 validator: form.rules.checkAgainPassword,
                                 trigger: 'blur',
                             },
-                            {
-
-                            }
+                            {},
                         ]"
                     >
                         <j-input-password
@@ -222,14 +234,14 @@ import {
     updateUser_api,
     updatePassword_api,
     getUser_api,
-    getRoleList
+    getRoleList,
 } from '@/api/system/user';
 import { Rule } from 'ant-design-vue/es/form';
 import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
-import { uniqBy } from 'lodash-es';
+import { cloneDeep, uniqBy } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 
 const deptPermission = 'system/Department';
@@ -265,13 +277,14 @@ const confirm = () => {
 };
 
 const formRef = ref<FormInstance>();
+const _roleDetail = ref([] as any[]);
 const form = reactive({
     data: {} as formType,
     rules: {
         checkUserName: (_rule: Rule, value: string): Promise<any> =>
             new Promise((resolve, reject) => {
-                if(props.type==='edit') return resolve('')
-                else if(!value) return reject('请输入用户名');
+                if (props.type === 'edit') return resolve('');
+                else if (!value) return reject('请输入用户名');
                 else if (value.length > 64) return reject('最多可输入64个字符');
                 validateField_api('username', value).then((resp: any): any => {
                     resp.result.passed
@@ -317,6 +330,7 @@ const form = reactive({
         else if (props.type === 'reset') form.data = { id } as formType;
         else if (props.type === 'edit') {
             getUser_api(id).then((resp: any) => {
+                _roleDetail.value = resp.result.roleList;
                 form.data = {
                     ...(resp.result as formType),
                     orgIdList: resp.result.orgList.map(
@@ -327,9 +341,9 @@ const form = reactive({
                     ),
                 };
                 form.data.roleIdList = resp.result?.roleList?.map((i: any) => {
-                    return i.id
+                    return i.id;
                 });
-                form._departmentOptions = resp.result?.orgList
+                form._departmentOptions = resp.result?.orgList;
                 nextTick(() => {
                     formRef.value?.clearValidate();
                 });
@@ -365,17 +379,19 @@ const form = reactive({
         return api(params);
     },
     getRoleList: () => {
-        getRoleList({ sorts: [{ name: 'createTime', order: 'desc' }] }).then((resp: any) => {
-           if(resp.status === 200){
-            form.roleOptions =  dealRoleList(resp.result)
-           }
-        });
+        getRoleList({ sorts: [{ name: 'createTime', order: 'desc' }] }).then(
+            (resp: any) => {
+                if (resp.status === 200) {
+                    form.roleOptions = dealRoleList(resp.result);
+                }
+            },
+        );
     },
     getDepartmentList: () => {
         getDepartmentList_api({
-        paging: false,
-        sorts: [{ name: 'sortIndex', order: 'asc' }],
-    }).then((resp: any) => {
+            paging: false,
+            sorts: [{ name: 'sortIndex', order: 'asc' }],
+        }).then((resp: any) => {
             form.departmentOptions = resp.result.sort((a: any, b: any) =>
                 a.sortIndex === b.sortIndex
                     ? b.createTime - a.createTime
@@ -393,31 +409,62 @@ const form = reactive({
         };
     },
 });
-const checkCh = async(_rule:Rule,value:string) => {
-                if (/[\u4e00-\u9fa5]/.test(value)) return Promise.reject('用户名不能包含中文');
-                else return Promise.resolve('')
-            }
-const  dealRoleList = (data:any) =>{
-    return data.map((item:any)=>{
+const checkCh = async (_rule: Rule, value: string) => {
+    if (/[\u4e00-\u9fa5]/.test(value))
+        return Promise.reject('用户名不能包含中文');
+    else return Promise.resolve('');
+};
+const dealRoleList = (data: any) => {
+    return data.map((item: any) => {
         return {
             name: item.groupName,
             id: item.groupId,
             disabled: true,
-            children: item?.roles ?  item.roles.map((i:any)=>{
-            return {
-                name:i.name,
-                id:i.id
-            }
-        }) : []
-        }
-    })
-}
+            children: item?.roles
+                ? item.roles.map((i: any) => {
+                      return {
+                          name: i.name,
+                          id: i.id,
+                      };
+                  })
+                : [],
+        };
+    });
+};
 // 组织已删除在仍显示在列表中
 // const _departmentOptions = computed(() => {
 //     return uniqBy([...form.departmentOptions, ...form._departmentOptions], 'id')
 // })
 
+
 form.init();
+
+const hasNodeWithId = (arr: any, id: any) => {
+    for (let item of arr) {
+        if (item.id === id) {
+            return true;
+        }
+        if (item.children && hasNodeWithId(item.children, id)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+watch(
+    () => _roleDetail.value,
+    (val) => {
+        if (val && form.roleOptions.length) {
+            const tree = cloneDeep(form.roleOptions);
+            val.forEach((item: any) => {
+                if (!hasNodeWithId(tree, item.id)) {
+                    form.roleOptions.push(item);
+                }
+            });
+        }
+    },
+    { immediate: true },
+);
 
 interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
     result: T;
@@ -480,16 +527,16 @@ type optionType = {
         }
     }
 }
-.formName{
+.formName {
     margin-bottom: 10px;
     font-size: 16px;
-    &::before{
-    width: 2px;
-    background-color: rgb(184, 184, 184);
-    display: inline-block;
-    height: 13px;
-    margin-right: 3px;
-    content:''
+    &::before {
+        width: 2px;
+        background-color: rgb(184, 184, 184);
+        display: inline-block;
+        height: 13px;
+        margin-right: 3px;
+        content: '';
     }
 }
 </style>

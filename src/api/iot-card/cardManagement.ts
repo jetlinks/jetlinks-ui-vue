@@ -58,7 +58,7 @@ export const resumptionBatch = (data: any) => server.get(`/network/card/_resumpt
 /**
  * 同步物联卡状态
  */
-export const sync = (data: any) => server.get(`/network/card/state/_sync`,data);
+export const sync = (data: any) => server.post(`/network/card/state/_sync`,data);
 
 /**
  * 批量删除物联卡

@@ -14,7 +14,7 @@
         :bodyStyle="{ padding: '0 0 0 24px' }"
     >
         <template  v-for="i in objectKey" #[i.key]='slotProps'>
-            <Ellipsis >
+            <Ellipsis>
                 <span @click="detail(slotProps[i.dataIndex])">{{  JSON.stringify(slotProps[i.dataIndex])}}</span>
             </Ellipsis>
         </template>
@@ -90,7 +90,7 @@ watchEffect(() => {
     if (events.data?.valueType?.type === 'object') {
         const eventProperties = cloneDeep(events.data.valueType?.properties || [])
         eventProperties.reverse().map((i: any) => {
-            if (i.valueType?.type === 'object') {
+            if (['object', 'array'].includes(i.valueType?.type)) {
                 objectKey.value.push({
                     key:i.id,
                     dataIndex: `${i.id}_format`

@@ -94,10 +94,10 @@ export default defineConfig(({ mode}) => {
                 // target: 'http://192.168.33.46:8844', // 本地开发环境
                 // target: 'http://192.168.33.99:8844', // 本地开发环境1
                 // target: 'http://192.168.33.6:38848', // 社区版开发环境
-                  target: 'http://192.168.32.36:8844', // 刘本地
+                //   target: 'http://192.168.32.36:8844', // 刘本地
                 //   target: 'http://192.168.32.187:8844', // 谭本地
                 //   target: 'http://192.168.33.66:8844', // 苟本地
-                //   target: 'http://192.168.35.155:8844', // 王本地
+                  target: 'http://192.168.32.189:8844', // 王本地
                   ws: 'ws://192.168.33.46:8844',
                   changeOrigin: true,
                   rewrite: (path) => path.replace(/^\/api/, '')

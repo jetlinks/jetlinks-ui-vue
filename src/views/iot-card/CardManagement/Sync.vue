@@ -1,22 +1,23 @@
 <template>
   <j-modal
-    visible
-    width="800px"
-    :maskClosable="false"
-    title="同步"
-    :closable="false"
+      visible
+      width="800px"
+      :maskClosable="false"
+      title="同步"
+      :closable="false"
   >
-    <div style="margin: 10px 0px 20px 0px; padding-right: 10px;">
-      <div v-if="flag">
-        <div>正在同步物联卡状态</div>
-        <j-progress :percent="_percent" />
-      </div>
-      <div v-else>
-        <p>{{ syncData.count }}张物联卡已同步至最新状态</p>
-      </div>
+    <div style="margin: 10px 0 20px 0; padding-right: 10px;">
+      <!--      <div v-if="flag">-->
+      <!--        <div>正在同步物联卡状态</div>-->
+      <!--        <j-progress :percent="_percent" />-->
+      <!--      </div>-->
+      <!--      <div v-else>-->
+      <!--        <p>{{ syncData.count }}张物联卡已同步至最新状态</p>-->
+      <!--      </div>-->
+      <p>{{ syncData.total }}张物联卡等待更新状态</p>
     </div>
     <template #footer>
-      <a-button v-if="!flag" type="primary" @click="handleCancel">完成</a-button>
+      <a-button :loading="flag" type="primary" @click="handleCancel">完成</a-button>
     </template>
   </j-modal>
 </template>
@@ -25,7 +26,7 @@
 import {BASE_API_PATH} from "@/utils/variable";
 import {paramsEncodeQuery} from "@/utils/encodeQuery";
 import {getToken} from "@/utils/comm";
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import {EventSourcePolyfill} from 'event-source-polyfill';
 import {queryCount} from "@/api/iot-card/cardManagement";
 
 const emit = defineEmits(['close']);
@@ -44,9 +45,9 @@ const syncData = reactive({
   error: 0
 })
 
-const _percent = computed(() => {
-  return syncData.total ? ((syncData.error + syncData.count) / syncData.total * 100).toFixed(2) : 0
-})
+// const _percent = computed(() => {
+//   return syncData.total ? ((syncData.error + syncData.count) / syncData.total * 100).toFixed(2) : 0
+// })
 
 const handleCancel = () => {
   emit('close')
@@ -65,32 +66,42 @@ const getData = () => {
   const esp = new EventSourcePolyfill(api)
 
   esp.onmessage = (e) => {
-    syncData.count += Number(e.data)
-    if (syncData.count >= syncData.total) {
-      esp.close()
-      flag.value = false
-    }
+    syncData.count += Number(e.data || 0)
+    // if (syncData.count >= syncData.total) {
+    //   esp.close()
+    //   flag.value = false
+    // }
   }
 
   esp.onerror = (e) => {
     esp.close()
-    flag.value = false
   }
 }
 
 
 const getTotal = () => {
-  queryCount(props.params).then(res => {
+  queryCount({
+    "terms": [
+      ...(props.params?.terms || []),
+      {
+        "column": "syncCardStatus",
+        "termType": "not",
+        "value": "running",
+        type: 'and'
+      }
+    ]
+  }).then(res => {
     if (res.success) {
       syncData.total = res.result
       getData()
+      flag.value = false
     }
   })
 }
 
-getTotal()
-
-
+onMounted(() => {
+  getTotal()
+})
 </script>
 
 <style scoped>

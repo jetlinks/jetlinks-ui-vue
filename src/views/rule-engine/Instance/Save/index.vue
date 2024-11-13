@@ -41,6 +41,7 @@
 <script lang="ts" setup>
 import { saveRule, modify } from '@/api/rule-engine/instance';
 import { getImage, onlyMessage } from '@/utils/comm';
+import {omit} from "lodash-es";
 
 const emit = defineEmits(['success', 'closeSave']);
 const props = defineProps({
@@ -86,7 +87,7 @@ const handleSave = () => {
                     onlyMessage('操作失败', 'error');
                 }
             } else {
-                let resp = await modify(modelRef.value?.id, modelRef.value);
+                let resp = await modify(modelRef.value?.id, omit(modelRef.value, 'modelMeta'));
                 loading.value = false;
                 if (resp.status === 200) {
                     onlyMessage('操作成功！');
