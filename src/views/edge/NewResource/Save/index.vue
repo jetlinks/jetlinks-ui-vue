@@ -48,6 +48,7 @@
                 }"
             >
                 <UploadFile
+                    :accept="['.jar', '.zip', '.gz']"
                     :fileInfo="{url: formData.metadata.fileUrl, name: formData.properties?.fileName}"
                     v-model:model-value="formData.metadata.fileUrl"
                     v-model:fileName="formData.properties.fileName"
@@ -65,6 +66,7 @@
                 }"
             >
                 <UploadFile
+                    :accept="['.jar', '.zip']"
                     :fileInfo="{url: formData.metadata.configuration.location, name: formData.metadata.filename}"
                     v-model:model-value="formData.metadata.configuration.location"
                     v-model:fileName="formData.metadata.filename"
@@ -99,6 +101,7 @@ import { onlyMessage } from "@/utils/comm";
 import { randomString } from "@/utils/utils";
 import { useUserInfo } from "store/userInfo";
 import {ServiceIdEnum, TargetTypeOptions} from "@/views/edge/NewResource/utils";
+import {cloneDeep} from "lodash-es";
 
 const emit = defineEmits(['close', 'save']);
 const props = defineProps({
@@ -155,7 +158,7 @@ const formData = ref<Record<string, any>>({
     properties: props.data?.properties || {
         fileName: ""
     },
-    metadata: props.data.metadata ? JSON.parse(props.data.metadata) : initAiModelMetadata
+    metadata: props.data.metadata ? JSON.parse(props.data.metadata) : cloneDeep(initAiModelMetadata)
 })
 
 const rules = {
@@ -212,13 +215,13 @@ const handleChangeTargetType = (e: any) => {
     formData.value.serviceId = ServiceIdEnum[e[0]]
     switch (formData.value.targetType) {
         case 'AiModel':
-            formData.value.metadata = initAiModelMetadata;
+            formData.value.metadata = cloneDeep(initAiModelMetadata);
             break;
         case 'PluginDriver':
-            formData.value.metadata = initPluginDriverMetadata;
+            formData.value.metadata = cloneDeep(initPluginDriverMetadata);
             break;
         case 'entityTemplate:Collector':
-            formData.value.metadata = initCollectorTemplateMetadata;
+            formData.value.metadata = cloneDeep(initCollectorTemplateMetadata);
             break;
     }
 }
