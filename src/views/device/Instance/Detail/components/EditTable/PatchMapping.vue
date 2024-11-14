@@ -17,7 +17,7 @@
                         <div class="map-tree-header">
                           <span>数据源</span>
                           <div>
-                            <a-input v-model:value="searchText" placeholder="请输入搜索名称" @change="onSearch">
+                            <a-input placeholder="请输入搜索名称" @change="onSearch">
                               <template #suffix>
                                 <AIcon type="SearchOutlined" />
                               </template>
@@ -68,7 +68,7 @@
 
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
-import { onlyMessage } from '@/utils/comm';
+import {onlyMessage,} from '@/utils/comm';
 import { useInstanceStore } from "store/instance";
 import { debounce } from 'lodash-es'
 
@@ -96,7 +96,7 @@ const rightList = ref<any[]>([]);
 
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
-const searchText = ref()
+let dataSourceCache
 const handleData = (data: any[], type: string, provider?: string) => {
     data.forEach((item) => {
         item.key = item.id;
@@ -121,25 +121,19 @@ const handleData = (data: any[], type: string, provider?: string) => {
     return data as any[];
 };
 
-const handleSearch = debounce(async () => {
+const handleSearch = async () => {
     loading.value = true;
 
     const params = {}
 
-    if (searchText.value) {
-      params.terms = [{
-        column: 'name',
-        termType: 'like',
-        value: `%${searchText.value}%`
-      }]
-    }
-
     const resp = await treeMapping(params);
     loading.value = false;
     if (resp.status === 200) {
-        dataSource.value = handleData(resp.result as any[], 'channel');
+        const _data = handleData(resp.result as any[], 'channel');
+        dataSourceCache = JSON.stringify(_data)
+        dataSource.value = _data
     }
-}, 1000)
+}
 
 const onCheck = (keys: string[], e: any) => {
     checkedKeys.value = [...keys];
@@ -196,9 +190,25 @@ const handleClose = () => {
     _emits('close');
 };
 
-const onSearch = () => {
-  handleSearch()
+const treeFilter = (data: any[], value: any, key: string = 'name'): any[] => {
+  if (!data) return []
+
+  return data.filter(item => {
+    if (item.children && item.children.length) {
+      item.children = treeFilter(item.children || [], value, key)
+      return !!item.children.length
+    } else {
+      return item[key].includes(value)
+    }
+  })
 }
+
+const onSearch = debounce((e) => {
+  // handleSearch()
+  const _data = JSON.parse(dataSourceCache || '[]')
+  const text = e.target.value
+  dataSource.value = text ? treeFilter(_data, e.target.value, 'title') : _data
+}, 300)
 
 watchEffect(() => {
     if (_props.type) {
