@@ -277,7 +277,7 @@ watch(
 
     .left,
     .right {
-        //width: 50%;
+        width: 270px;
         //height: 350px;
         height: calc(50% - 7px);
         border: 1px solid lightgray;
