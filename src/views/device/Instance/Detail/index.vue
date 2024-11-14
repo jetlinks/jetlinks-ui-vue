@@ -124,6 +124,7 @@ import Running from './Running/index.vue';
 import Metadata from '../../components/Metadata/index.vue';
 import MetadataMap from './MetadataMap/index.vue';
 import ChildDevice from './ChildDevice/index.vue';
+import Child from './Child/index.vue';
 import Diagnose from './Diagnose/index.vue';
 import Function from './Function/index.vue';
 import Modbus from './Modbus/index.vue';
@@ -192,6 +193,7 @@ const tabs = {
   Metadata,
   Running,
   ChildDevice,
+  Child,
   Diagnose,
   Function,
   Modbus,
@@ -308,13 +310,22 @@ const getDetail = () => {
   }
   if (
       instanceStore.current?.deviceType?.value === 'gateway' &&
-      !keys.includes('ChildDevice')
+      !keys.includes('ChildDevice')&&
+      !keys.includes('Child')
   ) {
-    // 产品类型为网关的情况下才显示此模块
-    list.value.push({
-      key: 'ChildDevice',
+  
+    if(instanceStore.current?.accessProvider === 'agent-device-gateway'){
+      list.value.push({
+      key: 'Child',
       tab: '子设备',
     });
+    }else{
+  // 产品类型为网关的情况下才显示此模块
+      list.value.push({
+        key: 'ChildDevice',
+        tab: '子设备',
+      });
+    }
   }
   if (
       instanceStore.current?.accessProvider === 'edge-child-device' &&
