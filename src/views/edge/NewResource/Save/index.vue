@@ -12,7 +12,7 @@
             <a-form-item name="targetType">
                 <j-card-select
                     :disabled="!!data.id"
-                    v-model:value="targetType"
+                    v-model:value="formData.targetType"
                     :options="TargetTypeOptions"
                     :column="3"
                     @change="handleChangeTargetType"
@@ -111,7 +111,6 @@ const props = defineProps({
     }
 })
 
-const targetType = ref('AiModel');
 const initAiModelMetadata = {
     name: '',
     fileUrl: '',
