@@ -19,6 +19,7 @@
       :columns="columns"
       :request="queryFn"
       :params="params"
+      :scroll="{ y: 320}"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
         terms: [{column: 'targetType', value: 'AiModel'},{column: 'state', value: 'enabled'}]
@@ -56,6 +57,7 @@ const columns = [
     search: {
       type: 'string',
     },
+    ellipsis: true,
   },
   {
     title: '文件',
@@ -86,7 +88,7 @@ const queryFn = async (_params) => {
       data: resp.result.data?.map(item => {
         const _metadata = JSON.parse(item.metadata)
         item.file = item.properties.fileName
-        item.description = item.properties.description
+        item.description = _metadata.description
         item.type = _metadata.provider
         return item
       }),

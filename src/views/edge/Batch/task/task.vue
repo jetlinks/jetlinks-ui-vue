@@ -2,9 +2,9 @@
   <a-modal
     visible
     :title="title"
-    width="90%"
+    width="90vw"
     okText="新增任务"
-    :confirmLoading="loading"
+    :mask-closable="false"
     @cancel="onCancel"
     @ok="onOk"
   >
@@ -96,7 +96,7 @@
     <template #footer>
       <div v-if="!showBindChildren">
         <a-button @click="onCancel">取消</a-button>
-        <a-button type="primary" @click="onOk">确定</a-button>
+        <a-button type="primary" :loading="loading" @click="onOk">确定</a-button>
       </div>
     </template>
   </a-modal>
@@ -262,9 +262,9 @@ const onOk = async () => {
 
   const newThingList = formModel.thingList.map(item => {
     return {
-      thingId: item.id,
+      thingId: item.id || item.thingId,
       thingType: 'device',
-      thingName: item.name
+      thingName: item.name || item.thingName
     }
   })
   const newParams = {
@@ -275,7 +275,8 @@ const onOk = async () => {
     serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : 'aiService:modelManager',
     commandId: 'SaveByTemplate',
     others: {
-      thingList: newThingList
+      thingList: newThingList,
+      commandTotal: commandArgs.length || 0
     }
   }
 
@@ -356,7 +357,7 @@ const onChildrenChange = (e)=>{
   }
 
   .gateway-list-label {
-    width: 310px;
+    width: 280px;
     justify-content: space-between;
   }
 }

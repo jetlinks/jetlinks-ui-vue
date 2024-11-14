@@ -19,6 +19,7 @@
       :columns="columns"
       :request="queryFn"
       :params="params"
+      :scroll="{ y: 320}"
       :defaultParams="{
         sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [

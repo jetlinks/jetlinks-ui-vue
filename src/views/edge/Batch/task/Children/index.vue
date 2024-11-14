@@ -22,7 +22,7 @@
                                     notActive: 'warning',
                                 }"
                             />
-                            <j-ellipsis style="width: 100px">{{
+                            <j-ellipsis style="width: 90px">{{
                                 item.label
                             }}</j-ellipsis>
                         </div>

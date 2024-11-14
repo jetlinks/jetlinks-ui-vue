@@ -5,7 +5,7 @@
       <div class="item-body">
         <div class="body-header">
           <div class="header-title">
-             
+
               <j-ellipsis> {{ detail.name  }}</j-ellipsis>
           </div>
           <div class="header-status bg-color-200">
@@ -88,7 +88,7 @@
             <a-space>
               <Icon type="icon-chajianbao" style="font-size: 16px" />
               <label class="text-color-500">插件数量</label>
-              <span class="text-color-900">{{ detail.thingTotal }}</span>
+              <span class="text-color-900">{{ detail.others.commandTotal || 0 }}</span>
             </a-space>
           </div>
         </div>

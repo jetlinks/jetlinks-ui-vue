@@ -19,7 +19,13 @@
                         </div>
                         <LevelIcon :level="AlarmData.level"></LevelIcon>
                     </div>
-                    <div style="font-size: 12px; margin-left: 10px; margin-top:5px">
+                    <div
+                        style="
+                            font-size: 12px;
+                            margin-left: 10px;
+                            margin-top: 5px;
+                        "
+                    >
                         {{ AlarmData?.description || '暂无说明' }}
                     </div>
                 </div>
@@ -56,14 +62,14 @@
             <a-radio-button value="logs">告警日志</a-radio-button>
         </a-radio-group>
         <Record
+            v-if="activeKey === 'record'"
             :currentId="AlarmData.id"
             ref="RecordRef"
-            v-if="activeKey === 'record'"
         ></Record>
         <Log
+            v-else
             :currentId="AlarmData.id"
             :configId="AlarmData.alarmConfigId"
-            v-else
         />
     </a-drawer>
     <SolveComponent

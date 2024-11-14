@@ -19,6 +19,7 @@
       :columns="columns"
       :request="queryPage"
       :params="params"
+      :scroll="{ y: 320}"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
         terms: [{column: 'targetType', value: 'entityTemplate:Collector'}]
@@ -57,14 +58,7 @@ const columns = [
     search: {
       type: 'string',
     },
-  },
-  {
-    title: '通讯协议',
-    key: 'category',
-    dataIndex: 'category',
-    search: {
-      type: 'string',
-    },
+    ellipsis: true,
   },
   {
     title: '文件',
@@ -94,9 +88,10 @@ const queryFn = async (_params) => {
       ...resp.result,
       data: resp.result.data?.map(item => {
         const _metadata = JSON.parse(item.metadata)
+        const _templateMetadata = JSON.parse(_metadata.metadata || '{}')
         item.file = item.properties.fileName
-        item.description = item.properties.description
-        item.type = _metadata.provider
+        item.description = _templateMetadata.description
+        item.type = _templateMetadata.provider
         return item
       }),
     },

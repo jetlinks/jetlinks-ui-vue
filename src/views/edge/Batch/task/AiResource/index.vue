@@ -19,6 +19,7 @@
       :columns="columns"
       :request="queryFn"
       :params="params"
+      :scroll="{ y: 320}"
       :defaultParams="{
         sort: [{ name: 'createTime', order: 'desc' }],
         terms: [{column: 'targetType', value: 'PluginDriver'},{column: 'state', value: 'enabled'}]
@@ -57,6 +58,7 @@ const columns = [
     search: {
       type: 'string',
     },
+    ellipsis: true,
   },
   {
     title: '底库类型',
@@ -65,11 +67,13 @@ const columns = [
     search: {
       type: 'string',
     },
+    ellipsis: true,
   },
   {
     title: '文件',
     key: 'file',
     dataIndex: 'file',
+    ellipsis: true,
   },
   {
     title: '版本号',
@@ -100,6 +104,7 @@ const queryFn = async (_params) => {
         const _metadata = JSON.parse(item.metadata)
         item.file = item.properties.fileName
         item.type = _metadata.provider
+        item._metadata = _metadata._metadata
         return item
       }),
     },
