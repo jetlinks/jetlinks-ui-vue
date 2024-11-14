@@ -614,12 +614,15 @@ const onSubmit = async () => {
 
     loading.value = true;
     const response =
-        id === ':id' ? await save(params) : await update({ ...params, id });
+        id === ':id' ? await save(params).finally(()=>{
+            loading.value = false
+        }) : await update({ ...params, id }).finally(()=>{
+            loading.value = false
+        });
     if (response.status === 200) {
         onlyMessage('操作成功', 'success');
         router.push('/iot/link/Stream');
     }
-    loading.value = false;
 };
 
 const detail = async (id: string) => {
