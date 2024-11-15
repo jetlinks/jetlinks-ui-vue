@@ -8,7 +8,7 @@
     <template #title>
       <span style="color: #1d2129">{{errorMap.message}}</span>
     </template>
-    <div v-if="errorMap.visible" class="table-form-error-target" ></div>
+    <div class="table-form-error-target" ></div>
   </a-tooltip>
   <div :id="eventKey" style="position: relative" :class="{'edit-table-form-has-error': errorMap.message }">
     <slot />
