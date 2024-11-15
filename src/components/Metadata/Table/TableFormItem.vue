@@ -1,5 +1,6 @@
 <template>
   <a-tooltip
+    v-if="errorMap.visible"
     color="#ffffff"
     :get-popup-container="popContainer"
     :arrowPointAtCenter="true"
@@ -76,7 +77,7 @@ const filedValue = computed(() => {
 provide(TABLE_FORM_ITEM_ERROR, errorMap)
 
 const popContainer = (e) => {
-  return e
+  return e 
 }
 
 const removeTimer = () => {
