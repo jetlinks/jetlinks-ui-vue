@@ -259,6 +259,38 @@ export const unbindBatchDevice = (deviceId: string, data: Record<string, any>) =
  */
 export const bindDevice = (deviceId: string, data: Record<string, any>) => server.post(`/device/gateway/${deviceId}/bind`, data)
 
+/**
+ * 云端批量禁用设备-云边协同
+ * @param gatewayId 网关设备ID 
+ * @param data 云端子设备ID集合
+ * @returns
+ */
+export const _undeployCloud = (gatewayId: string, data: Record<string, any>,params?:any) => server.post(`/edge/action-sync/${gatewayId}/_undeploy`, data,params)
+
+/**
+ * 云端批量启用设备-云边协同
+ * @param gatewayId 网关设备ID 
+ * @param data 云端子设备ID集合
+ * @returns
+ */
+export const _deployCloud = (gatewayId: string, data: Record<string, any>,params?:any) => server.post(`/edge/action-sync/${gatewayId}/_deploy`, data,params)
+
+/**
+ * 云端批量解绑设备-云边协同
+ * @param gatewayId 网关设备ID 
+ * @param data 云端子设备ID集合
+ * @returns
+ */
+export const _unbindCloud = (gatewayId: string, data: Record<string, any>,params?:any) => server.post(`/edge/action-sync/${gatewayId}/_unbind`, data,params)
+
+/**
+ * 云端批量删除设备-云边协同
+ * @param gatewayId 网关设备ID 
+ * @param data 云端子设备ID集合
+ * @returns
+ */
+export const _deleteCloud = (gatewayId: string, data: Record<string, any>,params?:any) => server.post(`/edge/action-sync/${gatewayId}/_delete`, data,params)
+
 
 /**
  * 查询是否存在云端映射设备
