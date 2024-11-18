@@ -1,7 +1,7 @@
 <template>
     <a-upload
         name="file"
-        accept=".jar,.zip"
+        :accept="accept.join(',')"
         :action="uploadUrl"
         :headers="{
             [TOKEN_KEY]: LocalStore.get(TOKEN_KEY),
@@ -16,7 +16,7 @@
     >
         <div>
             <a-button>上传文件</a-button>
-            <span class="upload-tip">格式要求：.jar .zip</span>
+            <span class="upload-tip">格式要求：{{ accept.join('，') }}</span>
         </div>
     </a-upload>
     <template v-if="loading">
@@ -57,6 +57,10 @@ const props = defineProps({
     uploadUrl: {
         type: String,
         default: FileUpload
+    },
+    accept: {
+        type: Array,
+        default: () => ([])
     }
 });
 
@@ -76,10 +80,11 @@ const remove = () => {
 };
 
 const beforeUpload: UploadProps['beforeUpload'] = (file, fl) => {
+    loading.value = true;
     const arr = file.name.split('.');
-    const isFile = ['jar', 'zip'].includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
+    const isFile = props.accept?.map(item => item.replace('.', '')).includes(arr[arr.length - 1]); // file.type === 'application/zip' || file.type === 'application/javj-archive'
     if (!isFile) {
-        onlyMessage('请上传.jar,.zip格式的文件', 'error');
+        onlyMessage(`请上传${props.accept?.join('、')}格式的文件`, 'error');
         loading.value = false;
         return false;
     }
@@ -87,7 +92,6 @@ const beforeUpload: UploadProps['beforeUpload'] = (file, fl) => {
     return isFile;
 };
 const handleChange = async (info: UploadChangeParam) => {
-    loading.value = true;
     if (info.file.status === 'done') {
         loading.value = false;
         const result = info.file.response?.result;

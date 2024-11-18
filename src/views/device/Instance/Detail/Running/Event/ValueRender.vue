@@ -55,7 +55,7 @@ const handleCheck = () => {
     const url = props.data[props.dataIndex];
     if(instanceStore.current.accessProvider === 'agent-device-gateway') {
         visible.value = true;
-        proxyUrl(instanceStore.current?.parentId, url).then(res => {
+        proxyUrl(instanceStore?.current.deviceType.value === 'childrenDevice' ? instanceStore.current?.parentId : instanceStore.current.id, url).then(res => {
             const blob = new Blob([res]);
             blobUrl.value = window.URL.createObjectURL(blob);
         })

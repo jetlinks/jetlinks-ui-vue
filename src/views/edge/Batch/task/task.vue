@@ -272,7 +272,7 @@ const onOk = async () => {
     thingList: newThingList,
     commandArgs,
     resourceTotal: newThingList.length,
-    serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : 'aiService:modelManager',
+    serviceId: formModel.jobType === 'plugin' ? 'pluginService:driver' : formModel.jobType === 'CollectorTemplate' ? 'commonService:entityTemplate' : 'aiService:modelManager',
     commandId: 'SaveByTemplate',
     others: {
       thingList: newThingList,
