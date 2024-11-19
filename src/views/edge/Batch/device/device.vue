@@ -218,9 +218,6 @@ const columns = [
 
 const handleSearch = (e) => {
     if (e.terms?.[0]?.terms?.[0]?.column === 'productId$product-info') {
-        if (e.terms?.[0]?.terms?.[0]?.termType === 'not') {
-            e.terms[0].terms[0].options = [e.terms[0].terms[0].termType];
-        }
         switch (e.terms?.[0]?.terms?.[0]?.termType) {
             case 'not':
                 e.terms[0].terms[0].options = [e.terms[0].terms[0].termType];
@@ -232,15 +229,18 @@ const handleSearch = (e) => {
                     `classifiedId is ${e.terms[0].terms[0].value}`
                 break;
             case 'in':
-               
                 const newValue = e.terms[0].terms[0].value.join(', ')
-                console.log(newValue,'newValue')
-            // e.terms[0].terms[0].value =
-            //         `classifiedId in ${}`
+                e.terms[0].terms[0].value =
+                    `classifiedId in (${newValue})`
                 break;
+            case 'nin':
+                const _value = e.terms[0].terms[0].value.join(', ')
+                e.terms[0].terms[0].value =
+                    `classifiedId nin (${_value})`
+                break;
+            default:
+               return
         }
-
-        // ('classifiedId is');
         e.terms[0].terms[0] = omit(e.terms[0].terms[0], ['termType']);
     }
     params.value = e;
