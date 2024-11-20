@@ -20,7 +20,7 @@
           <a-form-item label="名称" name="name" v-if="!showBindChildren">
             <a-input v-model:value="formModel.name" placeholder="请输入任务名称" />
           </a-form-item>
-          <a-form-item name="thingList">
+          <a-form-item name="thingList" style="width: 100%;">
             <template #label>
               涉及网关
               <div class="form-label-extra gateway-list-label">
@@ -352,13 +352,14 @@ const onChildrenChange = (e)=>{
     right: 0;
     display: flex;
     align-items: center;
-    gap: 24px;
+    // gap: 24px;
     transform: translateX(calc(100% + 12px));
   }
 
   .gateway-list-label {
-    width: 280px;
-    justify-content: space-between;
+    // width: 15rem;
+    // justify-content: space-between;
+    // padding-right: 24px;
   }
 }
 </style>
