@@ -1,79 +1,81 @@
 <template>
-    <pro-search
-        class="device-running-search"
-        :columns="columns"
-        target="device-instance-running-events"
-        @search="handleSearch"
+  <pro-search
+      class="device-running-search"
+      :columns="columns"
+      @search="handleSearch"
+  />
+  <!--  target="device-instance-running-events"-->
+  <JProTable
+      ref="eventsRef"
+      :columns="columns"
+      :request="_getEventList"
+      model="TABLE"
+      :params="params"
+      :bodyStyle="{ padding: '0 0 0 24px' }"
+  >
+    <template v-for="i in objectKey" #[i.key]='slotProps'>
+      <Ellipsis>
+        <span @click="detail(slotProps[i.dataIndex])">{{ JSON.stringify(slotProps[i.dataIndex]) }}</span>
+      </Ellipsis>
+    </template>
+    <template #timestamp="slotProps">
+      {{ dayjs(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+    </template>
+    <template #action="slotProps">
+      <j-button type="link" @click="detail(slotProps)">
+        <AIcon type="SearchOutlined"/>
+      </j-button>
+    </template>
+  </JProTable>
+  <j-modal
+      :width="600"
+      v-model:visible="visible"
+      title="详情"
+      class="device-running-event-modal"
+  >
+    <JsonViewer
+        :value="info"
+        style="max-height: calc(100vh - 400px); overflow: auto"
     />
-    <JProTable
-        ref="eventsRef"
-        :columns="columns"
-        :request="_getEventList"
-        model="TABLE"
-        :params="params"
-        :bodyStyle="{ padding: '0 0 0 24px' }"
-    >
-        <template  v-for="i in objectKey" #[i.key]='slotProps'>
-            <Ellipsis>
-                <span @click="detail(slotProps[i.dataIndex])">{{  JSON.stringify(slotProps[i.dataIndex])}}</span>
-            </Ellipsis>
-        </template>
-        <template #timestamp="slotProps">
-            {{ dayjs(slotProps.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
-        </template>
-        <template #action="slotProps">
-            <j-button type="link" @click="detail(slotProps)">
-                <AIcon type="SearchOutlined" />
-            </j-button>
-        </template>
-    </JProTable>
-    <j-modal
-        :width="600"
-        v-model:visible="visible"
-        title="详情"
-        class="device-running-event-modal"
-    >
-        <JsonViewer
-            :value="info"
-            style="max-height: calc(100vh - 400px); overflow: auto"
-        />
-        <template #footer>
-            <j-button type="primary" @click="visible = false">关闭</j-button>
-        </template>
-    </j-modal>
+    <template #footer>
+      <j-button type="primary" @click="visible = false">关闭</j-button>
+    </template>
+  </j-modal>
 </template>
 
 <script lang="ts" setup>
 import dayjs from 'dayjs';
-import { getEventList } from '@/api/device/instance';
-import { useInstanceStore } from '@/store/instance';
+import {getEventList} from '@/api/device/instance';
+import {useInstanceStore} from '@/store/instance';
 import JsonViewer from 'vue-json-viewer';
-import { cloneDeep } from 'lodash-es';
+import {cloneDeep} from 'lodash-es';
+import {ITypes} from "components/ValueItem/types";
 
 const events = defineProps({
-    data: {
-        type: Object,
-        default: () => {},
+  data: {
+    type: Object,
+    default: () => {
     },
+  },
 });
 const instanceStore = useInstanceStore();
 
 const defaultColumns = [
-    {
-        title: '时间',
-        dataIndex: 'timestamp',
-        key: 'timestamp',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
+  {
+    title: '时间',
+    dataIndex: 'timestamp',
+    key: 'timestamp',
+    scopedSlots: true,
+    search: {
+      type: 'date',
     },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        key: 'action',
-        scopedSlots: true,
-    },
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    key: 'action',
+    scopedSlots: true,
+  },
 ];
 
 const columns = ref<Array<Record<string, any>>>([...defaultColumns]);
@@ -82,80 +84,113 @@ const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
 const objectKey = ref<Array>([]);
 
+const componentsType = {
+  int: 'number',
+  long: 'number',
+  float: 'number',
+  double: 'number',
+  string: 'string',
+  array: 'string',
+  password: 'string',
+  enum: 'select',
+  boolean: 'select',
+  date: 'date',
+  object: 'string',
+  geoPoint: 'string',
+  file: 'string',
+  time: 'time',
+}
+
 const _getEventList = (_params: any) =>
     getEventList(instanceStore.current.id || '', events.data.id || '', _params);
 
 watchEffect(() => {
-    columns.value = [...defaultColumns];
-    if (events.data?.valueType?.type === 'object') {
-        const eventProperties = cloneDeep(events.data.valueType?.properties || [])
-        eventProperties.reverse().map((i: any) => {
-            if (['object', 'array'].includes(i.valueType?.type)) {
-                objectKey.value.push({
-                    key:i.id,
-                    dataIndex: `${i.id}_format`
-                });
-                columns.value.splice(0, 0, {
-                    key: i.id,
-                    title: i.name,
-                    dataIndex: `${i.id}_format`,
-                    search: {
-                        type: i?.valueType?.type || 'string',
-                        rename: i.id,
-                    },
-                    scopedSlots: true,
-                });
-            } else {
-                columns.value.splice(0, 0, {
-                    key: i.id,
-                    title: i.name,
-                    dataIndex: `${i.id}_format`,
-                    search: {
-                        type: i?.valueType?.type || 'string',
-                        rename: i.id,
-                    },
-                    ellipsis: true,
-                    scopedSlots: true,
-                });
-            }
+  columns.value = [...defaultColumns];
+  if (events.data?.valueType?.type === 'object') {
+    const eventProperties = cloneDeep(events.data.valueType?.properties || [])
+    eventProperties.reverse().map((i: any) => {
+      if (['object', 'array'].includes(i.valueType?.type)) {
+        objectKey.value.push({
+          key: i.id,
+          dataIndex: `${i.id}_format`
         });
-    } else {
         columns.value.splice(0, 0, {
-            title: '数据',
-            dataIndex: 'value',
+          key: i.id,
+          title: i.name,
+          dataIndex: `${i.id}_format`,
+          search: {
+            type: 'string',
+            rename: i.id,
+          },
+          scopedSlots: true,
         });
-    }
+      } else {
+        const arr = i?.valueType?.type === 'boolean' ? [
+          {
+            label: i?.valueType.falseText,
+            value: i?.valueType.falseValue
+          },
+          {
+            label: i?.valueType.trueText,
+            value: i?.valueType.trueValue
+          },
+        ] : (i?.valueType?.elements || []).map(item => {
+          return {
+            label: item.text,
+            value: item.value
+          }
+        })
+        columns.value.splice(0, 0, {
+          key: i.id,
+          title: i.name,
+          dataIndex: `${i.id}_format`,
+          search: {
+            type: componentsType?.[i?.valueType?.type] || 'string',
+            rename: i.id,
+            options: arr
+          },
+          ellipsis: true,
+          scopedSlots: true,
+        });
+      }
+    });
+  } else {
+    columns.value.splice(0, 0, {
+      title: '数据',
+      dataIndex: 'value',
+    });
+  }
 });
 
 const handleSearch = (_params: any) => {
-    params.value = _params;
+  params.value = _params;
 };
 
 const detail = (_info: any) => {
-    info.value = _info;
-    visible.value = true;
-    // Modal.info({
-    //     title: () => '详情',
-    //     width: 850,
-    //     content: () => h('JsonViewer', {
-    //         'expand-depth': 5,
-    //         value: _info
-    //     }),
-    //     okText: '关闭',
-    // });
+  info.value = _info;
+  visible.value = true;
+  // Modal.info({
+  //     title: () => '详情',
+  //     width: 850,
+  //     content: () => h('JsonViewer', {
+  //         'expand-depth': 5,
+  //         value: _info
+  //     }),
+  //     okText: '关闭',
+  // });
 };
 </script>
 
 <style lang="less">
 .device-running-search {
-    margin: 0 0 24px 0;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+  margin: 0 0 24px 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 .device-running-event-modal {
-    .ant-modal-body {
-        padding: 0 20px;
-    }
+  .ant-modal-body {
+    padding: 0 20px;
+  }
 }
 </style>
