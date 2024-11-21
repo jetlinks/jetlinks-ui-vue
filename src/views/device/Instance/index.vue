@@ -232,6 +232,7 @@ import { accessConfigTypeFilter } from '@/utils/setting';
 import TagSearch from './components/TagSearch.vue';
 import { Modal } from 'ant-design-vue';
 import { isNoCommunity } from '@/utils/utils';
+
 const instanceRef = ref<Record<string, any>>({});
 const params = ref<Record<string, any>>({});
 const _selectedRowKeys = ref<string[]>([]);
@@ -410,18 +411,17 @@ const columns = ref([
             ],
         },
     },
-
-    // {
-    //     key: 'id$dev-tag',
-    //     dataIndex: 'id$dev-tag',
-    //     title: '设备标签',
-    //     hideInTable: true,
-    //     search: {
-    //         type: 'component',
-    //         components: TagSearch,
-    //         termOptions: ['eq'],
-    //     },
-    // },
+    {
+        key: 'id$dev-tag',
+        dataIndex: 'id$dev-tag',
+        title: '标签',
+        hideInTable: true,
+        search: {
+            type: 'component',
+            components: TagSearch,
+            termOptions: ['eq'],
+        },
+    },
     {
         title: '说明',
         dataIndex: 'describe',
@@ -829,6 +829,15 @@ const handleSearch = (_params: any) => {
     // params.value = _params;
     const newParams = (_params?.terms as any[])?.map((item1) => {
         item1.terms = item1.terms.map((item2: any) => {
+          console.log('[handleSearch]>',item2)
+
+            if (item2.column === 'id$dev-tag') {
+              return {
+                terms: item2.value,
+                type: item2.type
+              }
+            }
+
             if (item2.column === 'id$dim-assets') {
                 if (item2.termType === 'not') {
                     const oldValue = JSON.parse(item2.value);
@@ -845,7 +854,6 @@ const handleSearch = (_params: any) => {
                 )
             ) {
                 const oldTermType = item2.termType === 'nin' ?  'not' : item2.termType;
-                console.log(item2.termType,'termType')
                 delete item2.termType;
                 return {
                     ...item2,
