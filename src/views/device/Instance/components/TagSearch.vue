@@ -147,7 +147,6 @@ const submitSearch = () => {
         }, [])
     }
 
-  console.log('[result]>',result)
     emit('update:value',result)
     emit('change')
     visible.value = false

@@ -478,7 +478,6 @@ const handleParams = (config: Record<string, any>) => {
     if (Object.keys(_terms).length) {
         const url = new URLSearchParams();
         Object.keys(_terms).forEach((key) => {
-            console.log(_terms[key]);
             url.append(key, _terms[key]);
         });
         return url.toString();
@@ -829,7 +828,6 @@ const handleSearch = (_params: any) => {
     // params.value = _params;
     const newParams = (_params?.terms as any[])?.map((item1) => {
         item1.terms = item1.terms.map((item2: any) => {
-          console.log('[handleSearch]>',item2)
 
             if (item2.column === 'id$dev-tag') {
               return {
