@@ -7,7 +7,9 @@
     "dev:force": "vite --force",
     "build": "node ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
-    "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo"
+    "clean": "pnpm rimraf node_modules && pnpm rimraf dist && pnpm rimraf .turbo",
+    "modules:init": "git submodule init && git submodule update && git submodule foreach git checkout master && git submodule foreach git pull origin master",
+    "modules:update": "git submodule update"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",

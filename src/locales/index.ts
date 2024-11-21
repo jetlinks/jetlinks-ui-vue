@@ -17,7 +17,6 @@ const i18n = createI18n({
   locale: localStorage.getItem('lang') || language.split('-')[0] || 'en',
   fallbackLocale: language,
   messages,
-  legacy: false
 })
 
 export default i18n
