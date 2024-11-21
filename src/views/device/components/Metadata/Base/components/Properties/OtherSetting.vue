@@ -506,26 +506,30 @@ const confirm = () => {
             const expands = {
                 ...(configValue.value || {}),
             };
-            if (metrics) {
-                expands.metrics = metrics;
-            }
+            // if (metrics) {
+            //     expands.metrics = metrics;
+            // }
             if (showExtra.value && extraForm.type) {
                 ThresholdRef.value?.validate().then(async () => {
                     await thresholdUpdate(extraForm);
-                    expands.otherEdit = true;
+                    // expands.otherEdit = true;
                     emit('update:value', {
                         ...props.value,
                         expands,
+                        metrics,
+                        otherEdit:true
                     });
                     emit('change');
                     modalVisible.value = false;
                     resolve(true);
                 });
             } else {
-                expands.otherEdit = true;
+                // expands.otherEdit = true;
                 emit('update:value', {
                     ...props.value,
                     expands,
+                    otherEdit:true,
+                    metrics
                 });
                 emit('change');
                 modalVisible.value = false;
