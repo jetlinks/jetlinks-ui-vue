@@ -110,7 +110,7 @@
     <template #valueType="{ record, index }">
       <EditTableFormItem :name="[index, 'valueType']" @change="metadataChange">
         <div style="display: flex; align-items: center" v-if="['properties', 'tags'].includes(type)">
-          <TypeSelect v-model:value="record.valueType" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
+          <TypeSelect @valueChange="onTypeChange(index)" v-model:value="record.valueType" style="flex: 1 1 0;min-width: 0" :disabled="record.expands?.isProduct"/>
           <IntegerParams v-if="['int', 'long'].includes(record.valueType.type)" v-model:value="record.valueType.unit" :disabled="record.expands?.isProduct"/>
           <DoubleParams v-else-if="['float', 'double'].includes(record.valueType.type)" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
           <StringParams v-else-if="record.valueType.type === 'string'" v-model:value="record.valueType" :disabled="record.expands?.isProduct"/>
@@ -678,6 +678,16 @@ onBeforeRouteLeave((to, from, next) => { // 设备管理外路由跳转
   parentTabsChange(next as Function)
 })
 
+
+const onTypeChange = (index) => {
+  // 清除其他配置和指标
+  dataSource.value[index] = {
+    ...dataSource.value[index],
+    expands: {
+      ...omit(dataSource.value[index]?.expands, ['metrics', 'expands'])
+    }
+  }
+}
 </script>
 
 <style scoped lang="less">
