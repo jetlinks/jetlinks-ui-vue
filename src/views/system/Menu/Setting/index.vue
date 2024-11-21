@@ -262,7 +262,7 @@ const onDragend = (info: AntTreeNodeDropEvent) => {
 };
 
 const synchronization = async () => {
-    const menu = synchronizationMenu(cloneDeep(systemMenu.value), BaseMenu);
+    const menu = synchronizationMenu(cloneDeep(systemMenu.value), baseMenu.value);
     menu.push(USER_CENTER_MENU_DATA);
     const res = await updateMenus(menu).catch(() => {});
     if (res?.status === 200) {
@@ -293,13 +293,14 @@ const synchronizationMenu = (menu: any, baseMenu: any) => {
 };
 onMounted(() => {
     getSystemPermission_api().then((resp: any) => {
-        // const filterBaseMenu = BaseMenu.filter(item => ![
-        //   USER_CENTER_MENU_CODE,messageSubscribe
-        // ].includes(item.code))
-        // baseMenu.value = filterMenu(
-        //     resp.result.map((item: any) => JSON.parse(item).id),
-        //   filterBaseMenu,
-        // );
+        const filterBaseMenu = BaseMenu.filter(item => ![
+          USER_CENTER_MENU_CODE,messageSubscribe
+        ].includes(item.code))
+        console.log(resp.result.map((item: any) => JSON.parse(item).id),'map')
+        baseMenu.value = filterMenu(
+            resp.result.map((item: any) => JSON.parse(item).id),
+          filterBaseMenu,
+        );
         getMenuTree_api(params).then((resp: any) => {
             if (resp.status == 200) {
                 systemMenu.value = resp.result?.filter(
