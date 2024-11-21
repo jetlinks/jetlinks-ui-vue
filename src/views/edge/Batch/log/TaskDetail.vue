@@ -10,12 +10,12 @@
             <div class="header">
                 <div class="header-left">
                     <div style="font-size: 20px; max-width: 300px">
-                        <j-ellipsis>{{ data.name || '--' }}</j-ellipsis>
+                        <j-ellipsis>{{ _detail.name || '--' }}</j-ellipsis>
                     </div>
                     <div class="header-status bg-color-200">
                         <BadgeStatus
-                            :text="data.state.text"
-                            :status="data.state.value"
+                            :text="_detail.state.text"
+                            :status="_detail.state.value"
                             :statusNames="{
                                 ...colorMap,
                                 running: 'primary',
@@ -28,7 +28,7 @@
                         class="text-color-500"
                         :style="{ fontSize: '12px', marginRight: '10px' }"
                         >{{
-                            dayjs(data.createTime).format('YYYY-MM-DD HH:mm:ss')
+                            dayjs(_detail.createTime).format('YYYY-MM-DD HH:mm:ss')
                         }}</span
                     >
                     <div class="body-count bg-color-200">
@@ -40,7 +40,7 @@
                                 />
                                 <label class="text-color-500">网关数量</label>
                                 <span class="text-color-900">{{
-                                    data?.thingTotal
+                                    _detail?.thingTotal
                                 }}</span>
                             </a-space>
                         </div>
@@ -52,7 +52,7 @@
                                 />
                                 <label class="text-color-500">插件数量</label>
                                 <span class="text-color-900">{{
-                                    data?.others.commandTotal || 0
+                                    _detail?.others.commandTotal || 0
                                 }}</span>
                             </a-space>
                         </div>
@@ -312,10 +312,12 @@ import {
     stopOneTask,
     deleteOneTask,
     deleteAllTask,
+    queryTask
 } from '@/api/edge/batch';
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import Icon from '../components/Icon.vue';
+import { termType } from '@/components/Search/util';
 const props = defineProps({
     data: {
         type: Object,
@@ -396,6 +398,7 @@ const columns = [
 
 const tableRef = ref();
 const dataSource = ref({});
+const _detail = ref(props.data)
 
 const colorMap = {
     success: 'success',
@@ -415,13 +418,13 @@ const iconMap = {
 };
 const taskTotal = computed(() => {
     return (
-        props.data.stateCount?.reduce((prev, next) => prev + next.total, 0) || 0
+        _detail.value.stateCount?.reduce((prev, next) => prev + next.total, 0) || 0
     );
 });
 
 const options = computed(() => {
     return (
-        props.data.stateCount?.map((item) => {
+        _detail.value.stateCount?.map((item) => {
             const per = taskTotal.value
                 ? Math.round(parseFloat(item.total / taskTotal.value) * 100)
                 : 0; // 单个进度比例
@@ -440,7 +443,7 @@ const options = computed(() => {
 });
 
 const stateArr = computed(() => {
-    return props.data.stateCount.map((item) => item.state.value);
+    return _detail.value.stateCount.map((item) => item.state.value);
 });
 
 const _query = async (e) => {
@@ -453,6 +456,7 @@ const _query = async (e) => {
 
 const refreshState = () => {
     tableRef.value?.reload();
+    getDetail();
     onlyMessage('操作成功');
     emit('refresh');
 };
@@ -514,6 +518,22 @@ const deleteUpgrades = async (id) => {
 const onCopy = () => {
     emit('copy');
 };
+
+const getDetail =async () => {
+    const res = await queryTask({
+        terms:[{
+            column:'id',
+            value:props.data.id,
+            termType:'eq'
+        }]
+    });
+    if(res.success){
+       _detail.value=res.result.data?.[0]
+    }
+}
+getDetail()
+
+
 </script>
 <style lang="less" scoped>
 .generalInfo {

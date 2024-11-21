@@ -23,54 +23,57 @@
             }"
         >
             <template #card="slotProps">
-<!--                <Card-->
-<!--                    :record="slotProps"-->
-<!--                    :active="deviceRowKeys.includes(slotProps.id)"-->
-<!--                    @click="handleClick"-->
-<!--                >-->
-<!--                </Card>-->
-              <CardBox
-                :value="slotProps"
-                @click="handleClick"
-                :active="deviceRowKeys.includes(slotProps.id)"
-                :status="slotProps.state?.value"
-                :statusText="slotProps.state?.text"
-                :statusNames="{
-                            online: 'processing',
-                            offline: 'error',
-                            notActive: 'warning',
-                        }"
-              >
-                <template #img>
-                  <img
-                    :width="80"
-                    :height="80"
-                    :src="slotProps?.photoUrl || getImage('/device/instance/device-card.png')"
-                  />
-                </template>
-                <template #content>
-                  <Ellipsis
-                    style="
-                                    width: calc(100% - 100px);
-                                    margin-bottom: 18px;
-                                "
-                  >
-                    <span style="font-size: 16px; font-weight: 600">
-                      {{ slotProps.name }}
-                    </span>
-                  </Ellipsis>
-                  <j-row>
-                    <j-col :span="24">
-                      <div class="card-item-content-text">
-                        产品名称
-                      </div>
-                      <Ellipsis style="width: 100%">
-                        {{ slotProps.productName }}
-                      </Ellipsis>
-                    </j-col>
-                  </j-row>
-                </template>
-              </CardBox>
+                <!--                <Card-->
+                <!--                    :record="slotProps"-->
+                <!--                    :active="deviceRowKeys.includes(slotProps.id)"-->
+                <!--                    @click="handleClick"-->
+                <!--                >-->
+                <!--                </Card>-->
+                <CardBox
+                    :value="slotProps"
+                    @click="handleClick"
+                    :active="deviceRowKeys.includes(slotProps.id)"
+                    :status="slotProps.state?.value"
+                    :statusText="slotProps.state?.text"
+                    :statusNames="{
+                        online: 'processing',
+                        offline: 'error',
+                        notActive: 'warning',
+                    }"
+                >
+                    <template #img>
+                        <img
+                            :width="80"
+                            :height="80"
+                            :src="
+                                slotProps?.photoUrl ||
+                                getImage('/device/instance/device-card.png')
+                            "
+                        />
+                    </template>
+                    <template #content>
+                        <Ellipsis
+                            style="
+                                width: calc(100% - 100px);
+                                margin-bottom: 18px;
+                            "
+                        >
+                            <span style="font-size: 16px; font-weight: 600">
+                                {{ slotProps.name }}
+                            </span>
+                        </Ellipsis>
+                        <j-row>
+                            <j-col :span="24">
+                                <div class="card-item-content-text">
+                                    产品名称
+                                </div>
+                                <Ellipsis style="width: 100%">
+                                    {{ slotProps.productName }}
+                                </Ellipsis>
+                            </j-col>
+                        </j-row>
+                    </template>
+                </CardBox>
             </template>
             <template #registryTime="slotProps">
                 {{
@@ -90,6 +93,7 @@ import { getImage } from '@/utils/comm';
 import { queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import { getContext } from '../util';
+import { omit } from 'lodash-es';
 // import Card from '../components/card.vue';
 import dayjs from 'dayjs';
 
@@ -102,7 +106,7 @@ const transformData = (arr) => {
         return (arr || []).map((item) => {
             return {
                 ...item,
-                id: `classifiedId is ${item.id}`,
+                id: item.id,
                 children: transformData(item.children),
             };
         });
@@ -213,18 +217,44 @@ const columns = [
 ];
 
 const handleSearch = (e) => {
+    if (e.terms?.[0]?.terms?.[0]?.column === 'productId$product-info') {
+        switch (e.terms?.[0]?.terms?.[0]?.termType) {
+            case 'not':
+                e.terms[0].terms[0].options = [e.terms[0].terms[0].termType];
+                e.terms[0].terms[0].value =
+                    'classifiedId is ' + e.terms[0].terms[0].value;
+                break;
+            case 'eq':
+                e.terms[0].terms[0].value =
+                    `classifiedId is ${e.terms[0].terms[0].value}`
+                break;
+            case 'in':
+                const newValue = e.terms[0].terms[0].value.join(', ')
+                e.terms[0].terms[0].value =
+                    `classifiedId in (${newValue})`
+                break;
+            case 'nin':
+                const _value = e.terms[0].terms[0].value.join(', ')
+                e.terms[0].terms[0].value =
+                    `classifiedId nin (${_value})`
+                break;
+            default:
+               return
+        }
+        e.terms[0].terms[0] = omit(e.terms[0].terms[0], ['termType']);
+    }
     params.value = e;
 };
 
 const changeContextSelected = () => {
-  context.addGateWay(
-    deviceSelected.value.map((item) => ({
-      value: item.id,
-      label: item.name,
-      ...item,
-    })),
-  );
-}
+    context.addGateWay(
+        deviceSelected.value.map((item) => ({
+            value: item.id,
+            label: item.name,
+            ...item,
+        })),
+    );
+};
 const handleClick = (record) => {
     const index = deviceSelected.value.findIndex(
         (item) => item.id === record.id,
@@ -236,7 +266,7 @@ const handleClick = (record) => {
         deviceSelected.value.push(record);
         deviceRowKeys.value.push(record.id);
     }
-    changeContextSelected()
+    changeContextSelected();
 };
 
 const selectAll = (selected, record, changeRows) => {
@@ -259,7 +289,7 @@ const selectAll = (selected, record, changeRows) => {
     }
     deviceSelected.value = [...selectedMap.values()];
     deviceRowKeys.value = [...selectedMap.keys()];
-    changeContextSelected()
+    changeContextSelected();
 };
 
 const onSelectNone = () => {
