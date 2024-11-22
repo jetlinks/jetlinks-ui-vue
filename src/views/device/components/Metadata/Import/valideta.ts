@@ -4,28 +4,28 @@ export const testProperties = (data:any) =>{
 }
 
 export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolean)=>{
-    if(data.type === 'boolean'){
-        if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
-            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
-            return true
-        }
-    }
-    if(data.type === 'enum' && !isObject){
-        if(data?.elements?.length > 0){
-            data.elements.forEach((a:any,b:number)=>{
-                if(!a.value || !a.text){
-                    onlyMessage(`方法定义inputs第${index+1}个数组ValueType中elements缺失必填属性`,'error')
-                    return true
-                }
-            })
-        }else{
-            onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elements属性`,'error')
-            return true
-        }
-    }
+    // if(data.type === 'boolean'){
+    //     if(!data?.trueText || !data?.trueValue || !data?.falseText || !data?.falseValue){
+    //         onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失必填属性`,'error')
+    //         return true
+    //     }
+    // }
+    // if(data.type === 'enum' && !isObject){
+    //     if(data?.elements?.length > 0){
+    //         data.elements.forEach((a:any,b:number)=>{
+    //             if(!a.value || !a.text){
+    //                 onlyMessage(`方法定义inputs第${index+1}个数组ValueType中elements缺失必填属性`,'error')
+    //                 return true
+    //             }
+    //         })
+    //     }else{
+    //         onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elements属性`,'error')
+    //         return true
+    //     }
+    // }
     if(data.type === 'array' && !isArray && !isObject){
         if(data?.elementType){
-            testType(data.elementType,index,true)
+           return testType(data.elementType,index,true)
         }else{
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失elementType属性`,'error')
             return true
@@ -38,7 +38,7 @@ export const testType = (data:any,index:number,isArray?:boolean,isObject?:boolea
         }
     }
     if(data.type === 'object' && !isArray  && !isObject){
-        if(data?.valueType?.properties?.length > 0){
+        if(data?.properties?.length > 0){
           return  testObject(data.properties,index)
         }else{
             onlyMessage(`方法定义inputs第${index+1}个数组ValueType中缺失properties属性`,'error')
