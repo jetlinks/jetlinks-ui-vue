@@ -171,7 +171,8 @@
                                             <a-badge
                                                 :status="
                                                     statusMap.get(
-                                                        scopedSlots.state.value,
+                                                        scopedSlots?.state
+                                                            ?.value,
                                                     )
                                                 "
                                             />
@@ -266,6 +267,7 @@
                             class="right-item"
                             :draggable="true"
                             @dragstart="() => onStart(item)"
+                            @click="onDetail(item)"
                         >
                             <div class="item-name">
                                 <j-ellipsis>{{ item.name }}</j-ellipsis>
@@ -319,6 +321,13 @@
             :batch="actionRef.batch"
             @close="onClose"
         />
+        <DeviceDetail
+            v-if="edgeVisible"
+            :data="edgeCurrent"
+            type="edge"
+            :edgeId="route.params.id"
+            @close="onDetailClose"
+        />
     </div>
 </template>
 
@@ -348,6 +357,7 @@ import actionModal from './actionModal.vue';
 import { Modal } from 'ant-design-vue';
 import { TOKEN_KEY } from '@/utils/variable';
 import { EventEmitter } from '@/utils/utils';
+import DeviceDetail from '@/views/edge/Batch/task/Children/DeviceDetail/index.vue';
 
 const props = defineProps({
     isRefresh: {
@@ -382,7 +392,10 @@ const actionRef = reactive({
     rows: [],
     batch: false,
 });
+const edgeVisible = ref(false);
+const edgeCurrent = ref({});
 const editStatus = ref(false);
+const route = useRoute();
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
@@ -598,18 +611,28 @@ const getActions = (type, data) => {
     ];
     const batchActions = [
         {
-            key: 'view',
+            key: 'unbind',
             text: '批量解绑',
             tooltip: {
                 title: '批量解绑',
             },
             icon: 'DisconnectOutlined',
             onClick: () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'unbind';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'unbind';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'unbind';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
         },
 
@@ -621,11 +644,21 @@ const getActions = (type, data) => {
             },
             icon: 'StopOutlined',
             onClick: () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'undeploy';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'undeploy';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'undeploy';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
         },
         {
@@ -636,11 +669,21 @@ const getActions = (type, data) => {
             },
             icon: 'CheckCircleOutlined',
             onClick: () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'deploy';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'deploy';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'deploy';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
         },
         {
@@ -650,11 +693,21 @@ const getActions = (type, data) => {
                 title: '批量删除',
             },
             onClick: async () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'delete';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'delete';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'delete';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
             icon: 'DeleteOutlined',
         },
@@ -678,6 +731,20 @@ const onClose = () => {
     _selectedRowKeys.value = [];
     actionRef.batch = false;
     handleRefresh();
+};
+
+const onDetail = (item) => {
+    setTimeout(() => {
+        edgeVisible.value = true;
+        edgeCurrent.value = item;
+    },300);
+};
+
+const onDetailClose = async () => {
+    // edgeVisible.value = false;
+    await instanceStore.refresh(route.params?.id).finally(()=>{
+        edgeVisible.value = false
+    })
 };
 
 const onRightSearch = (e) => {
