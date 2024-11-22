@@ -135,18 +135,22 @@
                                     <div v-else>{{ '自动生成' }}</div>
                                 </template>
                                 <template #state="scopedSlots">
-                                    <a-tag
-                                        :color="
-                                            stateMap.get(
-                                                scopedSlots.MappingStatus,
-                                            )?.status
-                                        "
-                                        >{{
-                                            stateMap.get(
-                                                scopedSlots.MappingStatus,
-                                            )?.text
-                                        }}</a-tag
+                                    <a-tooltip
+                                        :title="scopedSlots.MappingError"
                                     >
+                                        <a-tag
+                                            :color="
+                                                stateMap.get(
+                                                    scopedSlots.MappingStatus,
+                                                )?.status
+                                            "
+                                            >{{
+                                                stateMap.get(
+                                                    scopedSlots.MappingStatus,
+                                                )?.text
+                                            }}</a-tag
+                                        >
+                                    </a-tooltip>
                                 </template>
                                 <template #action="scopedSlots">
                                     <div
@@ -163,7 +167,14 @@
                                         @dragover.prevent
                                         @drop="(e) => onCover(e, scopedSlots)"
                                     >
-                                        <div>
+                                        <div style="display: flex">
+                                            <a-badge
+                                                :status="
+                                                    statusMap.get(
+                                                        scopedSlots.state.value,
+                                                    )
+                                                "
+                                            />
                                             <j-ellipsis>
                                                 {{
                                                     scopedSlots.Mapping.name
@@ -244,6 +255,7 @@
                         style="width: 200px"
                         placeholder="搜索"
                         enter-button
+                        allow-clear
                         @search="onRightSearch"
                     />
                 </div>
@@ -328,11 +340,21 @@ import dayjs from 'dayjs';
 import Save from './Save/index.vue';
 import Bind from '../ChildDevice/BindChildDevice/index.vue';
 import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage, LocalStore } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { cloneDeep } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import actionModal from './actionModal.vue';
+import { Modal } from 'ant-design-vue';
+import { TOKEN_KEY } from '@/utils/variable';
+import { EventEmitter } from '@/utils/utils';
+
+const props = defineProps({
+    isRefresh: {
+        type: Boolean,
+        default: () => {},
+    },
+});
 
 const instanceStore = useInstanceStore();
 const _checked = ref(true);
@@ -360,6 +382,7 @@ const actionRef = reactive({
     rows: [],
     batch: false,
 });
+const editStatus = ref(false);
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
@@ -385,39 +408,58 @@ const handleSearch = async (e) => {
         });
 
         if (res.success) {
-            const resp = await _queryByEdge(instanceStore.detail.id, {
-                terms: [{ column: 'key', value: '', termType: 'notnull' }],
-            }).finally(()=>{
-                _dataSource.value = res.result.map((item) => {
-                const isMap = _dropList.value?.find(
-                    (i) => i.id === item.id || i.mappingId === item.id,
-                );
-                if (isMap?.id) {
-                    return {
-                        ...item,
-                        MappingStatus: 'success',
-                        Mapping: isMap,
-                    };
-                } else {
-                    return {
-                        ...item,
-                        MappingStatus: 'none',
-                    };
+            try {
+                const resp = await _queryByEdge(instanceStore.detail.id, {
+                    terms: [{ column: 'key', value: '', termType: 'notnull' }],
+                });
+                if (resp.success) {
+                    _dropList.value = [...resp.result];
+                    _bindInitList.value = [...resp.result];
                 }
-            });
-            })
-            if (resp.success) {
-                _dropList.value = [...resp.result];
-                _bindInitList.value = [...resp.result];
+                _dataSource.value = res.result.map((item) => {
+                    const isMap = _dropList.value?.find(
+                        (i) => i.id === item.id || i.mappingId === item.id,
+                    );
+                    if (isMap?.id) {
+                        return {
+                            ...item,
+                            MappingStatus: 'success',
+                            Mapping: isMap,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            MappingStatus: 'none',
+                        };
+                    }
+                });
+            } catch (error) {
+                _dataSource.value = res.result.map((item) => {
+                    const isMap = _dropList.value?.find(
+                        (i) => i.id === item.id || i.mappingId === item.id,
+                    );
+                    if (isMap?.id) {
+                        return {
+                            ...item,
+                            MappingStatus: 'success',
+                            Mapping: isMap,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            MappingStatus: 'none',
+                        };
+                    }
+                });
             }
-          
-            console.log('_dataSource.value====',_dataSource.value);
-            console.log('res.resulte====',res.result);
+
+            console.log('_dataSource.value====', _dataSource.value);
+            console.log('res.resulte====', res.result);
         }
     }
 };
 
-const onSaveAll = async () => {
+const onSaveAll = async (cb) => {
     const _arr = _dataSource.value
         .map((item) => {
             if (
@@ -457,7 +499,9 @@ const onSaveAll = async () => {
         {
             bindInfo: _arr,
         },
-    );
+    ).finally(() => {
+        cb && cb?.();
+    });
     if (res.success) {
         handleRefresh();
         onlyMessage('操作成功');
@@ -536,8 +580,12 @@ const getActions = (type, data) => {
         {
             key: 'delete',
             text: '删除',
+            disabled: data.state?.value !== 'notActive',
             tooltip: {
-                title:'删除'
+                title:
+                    data.state.value !== 'notActive'
+                        ? '已启用的设备不能删除'
+                        : '删除',
             },
             onClick: async () => {
                 menuVisible.value = false;
@@ -567,11 +615,11 @@ const getActions = (type, data) => {
 
         {
             key: 'undeploy',
-            text:  '批量禁用',
+            text: '批量禁用',
             tooltip: {
-                title:'批量禁用',
+                title: '批量禁用',
             },
-            icon:'StopOutlined',
+            icon: 'StopOutlined',
             onClick: () => {
                 menuVisible.value = false;
                 actionRef.visible = true;
@@ -582,11 +630,11 @@ const getActions = (type, data) => {
         },
         {
             key: 'deploy',
-            text:  '批量启用',
+            text: '批量启用',
             tooltip: {
                 title: '批量启用',
             },
-            icon:'CheckCircleOutlined',
+            icon: 'CheckCircleOutlined',
             onClick: () => {
                 menuVisible.value = false;
                 actionRef.visible = true;
@@ -599,7 +647,7 @@ const getActions = (type, data) => {
             key: 'delete',
             text: '批量删除',
             tooltip: {
-                title:'批量删除',
+                title: '批量删除',
             },
             onClick: async () => {
                 menuVisible.value = false;
@@ -628,7 +676,7 @@ const onClose = () => {
     bindVisible.value = false;
     actionRef.visible = false;
     _selectedRowKeys.value = [];
-    actionRef.batch = false
+    actionRef.batch = false;
     handleRefresh();
 };
 
@@ -676,9 +724,14 @@ const onDrop = async (e, item) => {
                 deviceId: _drop.value.id,
                 masterDeviceId: item.id,
             },
-        ).finally(() => {
-            item.loading = false;
-        });
+        )
+            .finally(() => {
+                item.loading = false;
+            })
+            .catch((e) => {
+                item.MappingStatus = 'error';
+                item.MappingError = e.message;
+            });
         if (res.success) {
             item.MappingStatus = 'success';
             handleRefresh();
@@ -694,6 +747,7 @@ const onDrop = async (e, item) => {
             (i) => i.id !== _drop.value.id,
         );
         _dropList.value.push(item);
+        editStatus.value = true;
     }
 };
 //覆盖操作
@@ -729,6 +783,7 @@ const onCover = async (e, item) => {
         _edgeInitList.value = _edgeInitList.value.filter(
             (i) => i.id !== _drop.value.id,
         );
+        editStatus.value = true;
     }
 };
 
@@ -737,6 +792,7 @@ const onDelete = (item) => {
     if (item.id) {
         if (_checked.value) {
             item.loading = true;
+
             _commandByEdge(instanceStore.detail.id, 'UnbindDevice', {
                 key: item.id,
             })
@@ -750,6 +806,11 @@ const onDelete = (item) => {
                 })
                 .finally(() => {
                     item.loading = false;
+                    // item.MappingStatus = 'error';
+                })
+                .catch((e) => {
+                    item.MappingStatus = 'error';
+                    item.MappingError = e.message;
                 });
         } else {
             edgeList.value.unshift(item.Mapping);
@@ -765,6 +826,7 @@ const onDelete = (item) => {
                 item.Mapping = {};
                 item.MappingStatus = 'none';
             }
+            editStatus.value = true;
         }
     } else {
         edgeList.value.unshift(item.Mapping);
@@ -841,9 +903,14 @@ const onAuto = async (item) => {
                 deviceId: _drop.value.id,
                 masterDeviceId: item.id,
             },
-        ).finally(() => {
-            item.loading = false;
-        });
+        )
+            .finally(() => {
+                item.loading = false;
+            })
+            .catch((e) => {
+                item.MappingStatus = 'error';
+                item.MappingError = e.message;
+            });
         if (resp.success) {
             item.MappingStatus = 'success';
             handleRefresh();
@@ -852,11 +919,58 @@ const onAuto = async (item) => {
         }
     }
 };
+
+//离开页面
+const TabsChange = (next) => {
+    if (editStatus.value && LocalStore.get(TOKEN_KEY)) {
+        const modal = Modal.confirm({
+            content: '页面改动数据未保存',
+            okText: '保存',
+            cancelText: '不保存',
+            zIndex: 1400,
+            closable: true,
+            onOk: () => {
+                onSaveAll();
+                next?.();
+            },
+            onCancel: (e) => {
+                modal.destroy();
+                next?.();
+            },
+        });
+    } else {
+        next?.();
+    }
+};
+
+onBeforeRouteUpdate((to, from, next) => {
+    // 设备管理内路由跳转
+    TabsChange(next);
+});
+
+onBeforeRouteLeave((to, from, next) => {
+    // 设备管理外路由跳转
+    TabsChange(next);
+});
+
+watch(
+    () => props.isRefresh,
+    (val) => {
+        handleRefresh();
+    },
+    { immediate: true },
+);
+
 onMounted(() => {
+    EventEmitter.subscribe(['ChildTabs'], TabsChange);
     if (instanceStore.detail.id) {
         getNoMapping();
         handleRefresh();
     }
+});
+onUnmounted(() => {
+    editStatus.value = false;
+    EventEmitter.unSubscribe(['ChildTabs'], TabsChange);
 });
 </script>
 

@@ -69,6 +69,7 @@ export const columns = [
         search: {
             type: 'string',
         },
+        width: 100,
     },
     {
         title: '状态',
