@@ -62,8 +62,12 @@
                     ],
                 }"
                 :rowSelection="{
+                    // selectedRowKeys: _selectedRowKeys,
+                    // onChange: onSelectChange,
                     selectedRowKeys: _selectedRowKeys,
-                    onChange: onSelectChange,
+                    onSelect: onSelectChange,
+                    onSelectAll: selectAll,
+                    onSelectNone: () => (_selectedRowKeys = []),
                 }"
                 :params="params"
             >
@@ -147,6 +151,7 @@ const columns = [
         title: '所属产品',
         dataIndex: 'productName',
         key: 'productName',
+        ellipsis: true,
         search: {
             type: 'string',
         },
@@ -180,18 +185,47 @@ const handleSearch = (e: any) => {
     params.value = e;
 };
 
-const onSelectChange = (keys: string[], rows: string[]) => {
-    _selectedRowKeys.value = [...keys];
-    console.log(rows);
-    _selectedRowMap.value = rows.map((item) => ({
-        deviceId: item.id,
-        deviceName: item.name,
-    }));
+// const onSelectChange = (keys: string[], rows: string[]) => {
+//     _selectedRowKeys.value = [...keys];
+//     console.log(rows);
+//     _selectedRowMap.value = rows.map((item) => ({
+//         deviceId: item.id,
+//         deviceName: item.name,
+//     }));
+// };
+
+const onSelectChange = (item: any, state: boolean) => {
+    const arr = new Set(_selectedRowKeys.value);
+    if (state) {
+        arr.add(item.id);
+    } else {
+        arr.delete(item.id);
+    }
+    _selectedRowKeys.value = [...arr.values()];
+};
+
+const selectAll = (selected: Boolean, selectedRows: any, changeRows: any) => {
+    if (selected) {
+        changeRows.map((i: any) => {
+            if (!_selectedRowKeys.value.includes(i.id)) {
+                _selectedRowKeys.value.push(i.id);
+            }
+        });
+    } else {
+        const arr = changeRows.map((item: any) => item.id);
+        const _ids: string[] = [];
+        _selectedRowKeys.value.map((i: any) => {
+            if (!arr.includes(i)) {
+                _ids.push(i);
+            }
+        });
+        _selectedRowKeys.value = _ids;
+    }
 };
 
 const cancelSelect = () => {
     _selectedRowKeys.value = [];
-    _selectedRowMap.value = [];
+    // _selectedRowMap.value = [];
 };
 
 const handleOk = () => {
@@ -218,7 +252,7 @@ const handleOk = () => {
                             deviceName: item.name,
                         };
                     });
-                if(arr.length){
+                if (arr.length) {
                     return saveDeviceMapping(instanceStore.current.id, {
                         info: arr,
                     });

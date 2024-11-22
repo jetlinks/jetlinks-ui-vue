@@ -109,7 +109,7 @@
       <div style="padding: 24px; height: 100%">
         <component
             :is="tabs[instanceStore.tabActiveKey]"
-            v-bind="{ type: 'device' }"
+            v-bind="{ type: 'device',isRefresh:isRefresh }"
             @onJump="onTabChange"
         />
       </div>
@@ -154,6 +154,7 @@ const { showThreshold } = useSystem();
 const route = useRoute();
 const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
+const isRefresh = ref(false)
 
 const statusMap = new Map();
 
@@ -390,7 +391,11 @@ const onTabChange = (e: string) => {
     EventEmitter.emit('MetadataTabs', () => {
       instanceStore.tabActiveKey = e;
     });
-  } else {
+  } else if(instanceStore.tabActiveKey === 'Child') {
+    EventEmitter.emit('ChildTabs', () => {
+      instanceStore.tabActiveKey = e;
+    });
+  }else {
     instanceStore.tabActiveKey = e;
   }
 };
@@ -425,6 +430,7 @@ const handleRefresh = async () => {
   if (instanceStore.current?.id) {
     await instanceStore.refresh(instanceStore.current?.id);
     onlyMessage('操作成功');
+    isRefresh.value = !isRefresh.value
   }
 };
 
