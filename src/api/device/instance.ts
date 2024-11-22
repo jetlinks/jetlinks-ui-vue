@@ -261,7 +261,7 @@ export const bindDevice = (deviceId: string, data: Record<string, any>) => serve
 
 /**
  * 云端批量禁用设备-云边协同
- * @param gatewayId 网关设备ID 
+ * @param gatewayId 网关设备ID
  * @param data 云端子设备ID集合
  * @returns
  */
@@ -269,7 +269,7 @@ export const _undeployCloud = (gatewayId: string, data: Record<string, any>,para
 
 /**
  * 云端批量启用设备-云边协同
- * @param gatewayId 网关设备ID 
+ * @param gatewayId 网关设备ID
  * @param data 云端子设备ID集合
  * @returns
  */
@@ -277,7 +277,7 @@ export const _deployCloud = (gatewayId: string, data: Record<string, any>,params
 
 /**
  * 云端批量解绑设备-云边协同
- * @param gatewayId 网关设备ID 
+ * @param gatewayId 网关设备ID
  * @param data 云端子设备ID集合
  * @returns
  */
@@ -285,7 +285,7 @@ export const _unbindCloud = (gatewayId: string, data: Record<string, any>,params
 
 /**
  * 云端批量删除设备-云边协同
- * @param gatewayId 网关设备ID 
+ * @param gatewayId 网关设备ID
  * @param data 云端子设备ID集合
  * @returns
  */
@@ -726,3 +726,5 @@ export const getDeviceShadow = (id: string) => server.get(`/device/shadow/${id}`
  * 物模型事件图片地址代理
  */
 export const proxyUrl = (deviceId: string, url: string) => server.get(`/edge/device/${deviceId}/_proxy?url=${url}`, {}, { responseType: 'blob' })
+
+export const tagsList = () => server.get('/device-instance/tags/key')
