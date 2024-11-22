@@ -453,7 +453,6 @@ onUnmounted(() => {
   max-width: 400px;
   overflow: hidden;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 </style>
