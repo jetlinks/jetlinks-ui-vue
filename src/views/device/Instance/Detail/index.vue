@@ -139,7 +139,7 @@ import Shadow from './Shadow/index.vue';
 import Terminal from './Terminal/index.vue';
 import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import {_deploy, _disconnect} from '@/api/device/instance';
-import {getImage, onlyMessage} from '@/utils/comm';
+import {getImage, onlyMessage, openEdgeUrl} from '@/utils/comm';
 import {getWebSocket} from '@/utils/websocket';
 import {useMenuStore} from '@/store/menu';
 import {useRouterParams} from '@/utils/hooks/useParams';
@@ -435,20 +435,7 @@ const jumpProduct = () => {
 };
 
 const onClick = async () => {
-  // menuStory.jumpPage('edge/Device/Remote', {
-  //   id: instanceStore.current.id,
-  // });
-  const deviceId = instanceStore.current.id
-  const resp = await getRemoteToken(deviceId)
-
-  if (resp.success) {
-    const system = await getRemoteSystem(deviceId, [ "paths" ])
-    const path = system.result[0]?.properties['base-path']
-    const base64Url = btoa(path)
-    const proxyUrl = await getRemoteProxyUrl(deviceId)
-    const url = `${window.location.origin + window.location.pathname}api/edge/device/${deviceId}/_proxy/${proxyUrl.result}/${base64Url}/#/?token=` + resp.result
-    window.open(url)
-  }
+  await openEdgeUrl(instanceStore.current.id)
 }
 
 onMounted(() => {

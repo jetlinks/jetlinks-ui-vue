@@ -214,7 +214,7 @@ import { queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage, onlyMessage } from '@/utils/comm';
+import {getImage, onlyMessage, openEdgeUrl} from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
 import { getRemoteProxyUrl, getRemoteToken, getRemoteSystem} from '@/api/edge/device';
@@ -466,21 +466,7 @@ const getActions = (
         },
         icon: 'ControlOutlined',
         onClick: async () => {
-
-          const resp = await getRemoteToken(data.id)
-
-          if (resp.success) {
-            const _location = window.location.origin + window.location.pathname
-            const system = await getRemoteSystem(data.id, [ "paths" ])
-            const path = system.result[0]?.properties['base-path']
-            const base64Url = btoa(path)
-            const proxyUrl = await getRemoteProxyUrl(data.id)
-            const fallbackBase64 = btoa(`${_location}#/edge/token/${data.id}`)
-
-            const url = `${_location}api/edge/device:${data.id}/_proxy/${proxyUrl.result}/${fallbackBase64}/${base64Url}/#/?token=${resp.result}&terminal=cloud`
-            // const url = `${_location}api/edge/device:${data.id}/_proxy/${proxyUrl.result}/${base64Url}/#/?token=${resp.result}&terminal=cloud`
-            window.open(url)
-          }
+          await openEdgeUrl(data?.id)
         },
       },
     ];
