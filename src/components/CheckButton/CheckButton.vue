@@ -14,7 +14,9 @@
                 }
             "
     >
-      {{ item.label }}
+      <slot name="label">
+        {{ item.label }}
+      </slot>
     </div>
   </div>
 </template>
@@ -56,6 +58,9 @@ const props = defineProps({
   columns: {
     type: Number,
     default: 3
+  },
+  beforeChange: {
+    type: Function
   }
 });
 const emit = defineEmits(['update:value', 'change', 'select']);
@@ -81,13 +86,21 @@ const _options = computed(() => {
   return props.options;
 });
 
-const selected = (key: string | number, disabeld: boolean) => {
+const selected = async (key: string | number, disabeld: boolean) => {
   if (disabeld || props.disabled) return;
+
+  const pending = await props.beforeChange?.(key)
+
+  if (pending === false) {
+    return
+  }
 
   const values = new Set(myValue.value);
 
   if (values.has(key)) {
-    values.delete(key);
+    if (props.multiple) {
+      values.delete(key);
+    }
   } else {
     if (!props.multiple) {
       values.clear();
@@ -126,29 +139,31 @@ watch(
 <style scoped lang="less">
 .j-check-button {
   display: grid;
-  gap: 16px;
+  gap: 12px 8px;
   width: 100%;
 
   .j-check-button-item {
     flex: 1;
     min-width: 0;
     padding: 8px;
-    border-radius: @border-radius-base;
-    background-color: #f2f3f5;
+    border-radius: 20px;
+    background-color: #F8F9FA;
     transition: all 0.3s;
     color: #333;
     text-align: center;
     cursor: pointer;
+    border: 1px solid #F8F9FA;
 
     &:hover {
-      background-color: @primary-color;
+      background-color: #F1F7FF;
+      color: @primary-color;
       opacity: 0.85;
-      color: #fff;
     }
 
     &.selected {
-      background-color: @primary-color;
-      color: #fff;
+      background-color: #F1F7FF;
+      border-color: @primary-color;
+      color: @primary-color;
     }
 
     &.disabled {

@@ -28,7 +28,7 @@ const list = [
     },
     {
         key: 'other',
-        tab: '其他',
+        tab: '场景',
     },
 ];
 const noList = [
@@ -46,7 +46,7 @@ const noList = [
     },
     {
         key: 'other',
-        tab: '其他',
+        tab: '场景',
     },
 ];
 const alarmStore = useAlarmStore();

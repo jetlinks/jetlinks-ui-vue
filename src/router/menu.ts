@@ -88,6 +88,13 @@ export default [
         component: () => import('@/views/oauth/WeChat.vue')
     },
     {
+        path: '/edge/token/:id',
+        meta: {
+            title: 'token失效'
+        },
+        component: () => import('@/views/edge/TokenJump/index.vue')
+    },
+    {
         path: VideoSharePath,
         component: () => import('@/views/media/Device/Channel/Share/index.vue')
     },

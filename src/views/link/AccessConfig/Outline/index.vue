@@ -27,6 +27,8 @@
                     'coap-server-gateway',
                     'tcp-server-gateway',
                     'udp-device-gateway',
+                    'agent-device-gateway',
+                    'agent-media-device-gateway',
                 ].includes(data.provider)
             "
             :data="data"
@@ -36,7 +38,9 @@
             :data="data"
         />
         <ThirdKind
-            v-if="['Ctwing', 'OneNet','OneNet-platform'].includes(data.provider)"
+            v-if="
+                ['Ctwing', 'OneNet', 'OneNet-platform'].includes(data.provider)
+            "
             :data="data"
         />
         <FourthKind

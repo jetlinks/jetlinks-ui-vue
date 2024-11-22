@@ -78,10 +78,6 @@
                                         required: true,
                                         message: '请输入API Host',
                                     },
-                                    {
-                                        validator: validateAddress,
-                                        message: '请输入正确的IP地址或者域名',
-                                    },
                                 ]"
                             >
                                 <template #label>

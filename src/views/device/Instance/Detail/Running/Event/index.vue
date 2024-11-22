@@ -49,7 +49,6 @@ import {getEventList} from '@/api/device/instance';
 import {useInstanceStore} from '@/store/instance';
 import JsonViewer from 'vue-json-viewer';
 import {cloneDeep} from 'lodash-es';
-import {ITypes} from "components/ValueItem/types";
 
 const events = defineProps({
   data: {
