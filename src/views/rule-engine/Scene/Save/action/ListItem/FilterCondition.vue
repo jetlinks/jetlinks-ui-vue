@@ -45,7 +45,7 @@
                 @select="termsTypeSelect"
             />
             <DoubleParamsDropdown
-                v-if="showDouble"
+                v-if="!['notnull', 'isnull'].includes(paramsValue.termType) && showDouble"
                 icon="icon-canshu"
                 placeholder="参数值"
                 value-name="id"
@@ -58,7 +58,7 @@
                 @select="valueSelect"
             />
             <ParamsDropdown
-                v-else
+                v-else-if="!['notnull', 'isnull'].includes(paramsValue.termType)"
                 icon="icon-canshu"
                 placeholder="参数值"
                 value-name="id"
@@ -412,11 +412,18 @@ const termsTypeSelect = (e: { key: string; name: string }) => {
             tabsOptions.value[0].component = 'date';
         }
     }
-
-    paramsValue.value = {
+    if(['isnull', 'notnull'].includes(e.key)){
+        paramsValue.value = {
+            source: tabsOptions.value[0].key,
+            value: 1
+        }
+    }else{
+        paramsValue.value = {
         source: paramsValue.value?.source || tabsOptions.value[0].key,
         value: value,
     };
+    }
+   
     const updateValue = omit(paramsValue, !showAlarm.value ? ['alarm', 'terms'] : [])
     emit('update:value', handleFilterTerms({ ...updateValue }));
   valueChangeAfter();
