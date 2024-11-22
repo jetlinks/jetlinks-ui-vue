@@ -228,7 +228,6 @@ import BadgeStatus from '@/components/BadgeStatus/index.vue';
 import BatchDropdown from '@/components/BatchDropdown/index.vue';
 import { BatchActionsType } from '@/components/BatchDropdown/types';
 import { useRouterParams } from '@/utils/hooks/useParams';
-import { accessConfigTypeFilter } from '@/utils/setting';
 import TagSearch from './components/TagSearch.vue';
 import { Modal } from 'ant-design-vue';
 import { isNoCommunity } from '@/utils/utils';
@@ -419,7 +418,7 @@ const columns = ref([
         search: {
             type: 'component',
             components: TagSearch,
-            termOptions: ['eq'],
+            termOptions: ['eq', 'not'],
         },
     },
     {
