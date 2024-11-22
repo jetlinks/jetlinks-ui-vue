@@ -387,12 +387,8 @@ const handleSearch = async (e) => {
         if (res.success) {
             const resp = await _queryByEdge(instanceStore.detail.id, {
                 terms: [{ column: 'key', value: '', termType: 'notnull' }],
-            });
-            if (resp.success) {
-                _dropList.value = [...resp.result];
-                _bindInitList.value = [...resp.result];
-            }
-            _dataSource.value = res.result.map((item) => {
+            }).finally(()=>{
+                _dataSource.value = res.result.map((item) => {
                 const isMap = _dropList.value?.find(
                     (i) => i.id === item.id || i.mappingId === item.id,
                 );
@@ -409,6 +405,14 @@ const handleSearch = async (e) => {
                     };
                 }
             });
+            })
+            if (resp.success) {
+                _dropList.value = [...resp.result];
+                _bindInitList.value = [...resp.result];
+            }
+          
+            console.log('_dataSource.value====',_dataSource.value);
+            console.log('res.resulte====',res.result);
         }
     }
 };
