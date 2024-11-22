@@ -234,8 +234,10 @@
         </div>
       </EditTableFormItem>
     </template>
-    <template #description="{ record }">
-      <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct" @change="metadataChange"/>
+    <template #description="{ record, index }">
+      <EditTableFormItem :name="[index, 'description']">
+        <a-input v-model:value="record.description" placeholder="请输入说明" :disabled="record.expands?.isProduct" @change="metadataChange"/>
+      </EditTableFormItem>
     </template>
     <template #properties="{ record, index }">
       <EditTableFormItem :name="[index, 'properties']" @change="metadataChange">
