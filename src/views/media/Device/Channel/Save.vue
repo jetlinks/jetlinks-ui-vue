@@ -239,7 +239,7 @@ watch(
             address,
             channelId,
             description,
-            deviceId,
+            deviceId:deviceId || route.query.id,
             name,
             manufacturer,
             ptzType: ptzType?.value || 0,

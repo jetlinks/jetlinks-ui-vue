@@ -29,7 +29,6 @@
             :codeText="requestCard.codeText"
             :loading="loading"
           />
-
         </div>
         <div class="api-card" v-if="requestCard.tableData.length">
             <h5>请求参数</h5>
@@ -172,7 +171,11 @@ const requestCard = reactive<cardType>({
         // schema不是Java中的类的话则不进行解析，直接结束
         if (!_ref) {
             const type = schema.type || '';
-            requestCard.codeText = dealNoRef(type, schema);
+          if(type === 'array'){
+            requestCard.codeText = JSON.stringify(dealNoRef(type, schema));
+          } else {
+            requestCard.codeText = String(dealNoRef(type, schema))
+          }
         } else {
             const schemaName = _ref?.split('/').pop();
             const type = schema.type || '';
@@ -196,8 +199,10 @@ const requestCard = reactive<cardType>({
                     children: tableData,
                 },
             ];
-            // console.log(requestCard,'requestCard')
         }
+
+      console.log(requestCard,'requestCard')
+
         setTimeout(() => {
           loading.value = true
         }, 1000)

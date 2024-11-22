@@ -1065,7 +1065,6 @@ const onSubmit = async () => {
         onlyMessage('操作成功', 'success');
         router.push('/iot/link/Stream');
     }
-    loading.value = false;
 };
 
 const detail = async (id: string) => {

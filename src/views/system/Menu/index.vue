@@ -243,10 +243,17 @@ const table = reactive({
             paging: false,
         };
         const resp: any = await getMenuTree_api(params);
-        const menuArr = resp.result.filter((i:any)=>i.code!=='account-center')
+        const menuArr = resp.result.filter(
+            (i: any) => i.code !== 'account-center',
+        );
         const lastItem = menuArr[menuArr.length - 1];
+        console.log(lastItem, 'lastItem');
         //个人中心排序为9999需要做过滤特殊处理
-        table.total = lastItem ? lastItem.sortIndex + 1 === 9999 ? 10000 : lastItem.sortIndex + 1 : 1;
+        table.total = lastItem
+            ? lastItem.sortIndex + 1 === 9999
+                ? 10000
+                : lastItem.sortIndex + 1
+            : 1;
 
         return {
             code: resp.message,
@@ -265,7 +272,9 @@ const table = reactive({
         };
     },
     addChildren: (row: any) => {
-        const sortIndex = row?.children?.length || 0;
+        const sortIndex = row?.children.sort((a: any, b: any) => {
+            return b.sortIndex - a.sortIndex;
+        })[0].sortIndex;
         router.push(
             `/system/Menu/detail/:id?pid=${row.id}&basePath=${
                 row.url || ''

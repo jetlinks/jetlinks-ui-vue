@@ -103,7 +103,7 @@ const jumpPage = (item: bootConfig) => {
 
             .right-bj {
                 position: absolute;
-                right: 10%;
+                right: 5%;
                 bottom: 0;
                 width: 37px;
             }

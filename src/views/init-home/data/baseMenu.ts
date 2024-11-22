@@ -2609,7 +2609,7 @@ export default [
             owner: 'iot',
             id: 'c9f2530273ec057e3a5674faf3c6c073',
             sortIndex: 1,
-            url: '/iot/edge/Devic',
+            url: '/iot/edge/Device',
             icon: 'icon-bumenguanli',
             showPage: ['edge-manager'],
             permissions: [
@@ -4223,6 +4223,10 @@ export default [
             permissions: [
               {
                 permission: 'IotCard-management',
+                actions: ['export'],
+              },
+              {
+                permission: 'network-card',
                 actions: ['export'],
               },
             ],

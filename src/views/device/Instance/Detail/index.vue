@@ -118,7 +118,7 @@
 </template>
 
 <script lang="ts" setup>
-import {useInstanceStore} from '@/store/instance';
+import { useInstanceStore } from '@/store/instance';
 import Info from './Info/index.vue';
 import Running from './Running/index.vue';
 import Metadata from '../../components/Metadata/index.vue';
@@ -150,7 +150,7 @@ import {useSystem} from '@/store/system';
 import {getRemoteProxyUrl, getRemoteSystem, getRemoteToken} from "@/api/edge/device";
 
 const menuStory = useMenuStore();
-const {showThreshold} = useSystem();
+const { showThreshold } = useSystem();
 const route = useRoute();
 const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
@@ -313,7 +313,7 @@ const getDetail = () => {
       !keys.includes('ChildDevice')&&
       !keys.includes('Child')
   ) {
-  
+
     if(instanceStore.current?.accessProvider === 'agent-device-gateway'){
       list.value.push({
       key: 'Child',
