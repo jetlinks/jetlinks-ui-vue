@@ -115,6 +115,8 @@ const TypeMap = new Map([
     ['official-edge-gateway', 'edge'],
     ['edge-child-device', 'edge'],
     ['network', 'network'],
+    ['agent-device-gateway','network'],
+    ['agent-media-device-gateway','network']
 ]);
 // DataMap后期优化
 const DataMap = new Map();
@@ -130,6 +132,8 @@ DataMap.set('opc-ua', { type: 'channel', title: '通道类设备接入' });
 DataMap.set('official-edge-gateway', { type: 'edge', title: '官方接入' });
 DataMap.set('edge-child-device', { type: 'edge', title: '官方接入' });
 DataMap.set('network', { type: 'network', title: '自定义设备接入' });
+DataMap.set('agent-device-gateway',{ type:'network', title:'Agent代理接入'})
+DataMap.set('agent-media-device-gateway',{ type:'network', title:'Agent代理接入'})
 
 const getTypeList = (result: Record<string, any>) => {
     const list = [];
@@ -138,8 +142,9 @@ const getTypeList = (result: Record<string, any>) => {
     const cloud: any[] = [];
     const channel: any[] = [];
     const edge: any[] = [];
+    const agent: any[] = [];
     result
-        .filter((i:any) => {
+        .filter((i: any) => {
             return i.id !== 'OneNet';
         })
         .forEach((item: any) => {
@@ -169,6 +174,12 @@ const getTypeList = (result: Record<string, any>) => {
             ) {
                 item.type = 'edge';
                 edge.push(item);
+            } else if (
+                item.id === 'agent-device-gateway' ||
+                item.id === 'agent-media-device-gateway'
+            ) {
+                item.type = 'network';
+                agent.push(item);
             } else {
                 item.type = 'network';
                 network.push(item);
@@ -200,7 +211,10 @@ const getTypeList = (result: Record<string, any>) => {
             list: [...edge],
             title: '官方接入',
         });
-
+    agent.length && list.push({
+        list: [...agent],
+        title: 'Agent代理接入'
+    })
     return list;
 };
 

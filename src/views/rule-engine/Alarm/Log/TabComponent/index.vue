@@ -75,12 +75,7 @@
                             </div>
                             <j-row :gutter="24">
                                 <j-col
-                                    :span="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                            ? 6
-                                            : 8
-                                    "
+                                    :span="6"
                                     class="content-left"
                                 >
                                     <div class="content-title">告警维度</div>
@@ -91,12 +86,7 @@
                                     >
                                 </j-col>
                                 <j-col
-                                    :span="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                            ? 6
-                                            : 8
-                                    "
+                                    :span="6"
                                 >
                                     <div class="content-title">
                                         最近告警时间
@@ -123,12 +113,7 @@
                                     </Ellipsis>
                                 </j-col>
                                 <j-col
-                                    :span="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                            ? 6
-                                            : 8
-                                    "
+                                    :span="6"
                                 >
                                     <div class="content-title">
                                         告警持续时长
@@ -139,10 +124,7 @@
                                 </j-col>
                                 <j-col
                                     :span="6"
-                                    v-if="
-                                        props.type === 'device' ||
-                                        slotProps.targetType === 'device'
-                                    "
+                                  
                                 >
                                     <div class="content-title">告警原因</div>
                                     <Ellipsis
@@ -153,7 +135,7 @@
                                 </j-col>
                             </j-row>
                         </template>
-                        <template #actions="item">
+                        <!-- <template #actions="item">
                             <PermissionButton
                                 :disabled="
                                     item.key === 'solve' &&
@@ -172,7 +154,7 @@
                                 <AIcon :type="item.icon" />
                                 <span>{{ item?.text }}</span>
                             </PermissionButton>
-                        </template>
+                        </template> -->
                     </CardBox>
                 </template>
             </JProTable>
@@ -227,7 +209,7 @@ imgMap.set('org', getImage('/alarm/org.png'));
 const titleMap = new Map();
 titleMap.set('product', '产品');
 titleMap.set('device', '设备');
-titleMap.set('other', '其他');
+titleMap.set('other', '场景');
 titleMap.set('org', '组织');
 
 const columns = [
@@ -493,10 +475,8 @@ const refreshTable = () => {
     tableRef.value.reload(params.value);
 };
 const showDrawer = (data: any) => {
-    if (data.targetType === 'device') {
-        drawerData.value = data;
-        visibleDrawer.value = true;
-    }
+    drawerData.value = data;
+    visibleDrawer.value = true;
 };
 onMounted(() => {
     if (props.type !== 'all' && !props.id) {
