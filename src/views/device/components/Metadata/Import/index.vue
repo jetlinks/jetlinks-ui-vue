@@ -209,6 +209,7 @@ import { useMetadataStore } from '@/store/metadata';
 import { omit } from 'lodash-es';
 import { Modal } from 'jetlinks-ui-components';
 import { testObject, testType, testAliType, testAliObject } from './valideta';
+import {TOKEN_KEY} from "@/utils/variable";
 
 const route = useRoute();
 const instanceStore = useInstanceStore();
