@@ -179,7 +179,7 @@
             <template #filename="{ detail }">
                 <Ellipsis style="width: 100%">
                     {{
-                        JSON.parse(detail.data.metadata || '{}')?.filename || detail.data.name ||
+                        JSON.parse(detail.data.metadata || '{}')?.filename || detail.data.file ||
                         '--'
                     }}</Ellipsis
                 >
@@ -317,7 +317,6 @@ import {
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import Icon from '../components/Icon.vue';
-import { termType } from '@/components/Search/util';
 const props = defineProps({
     data: {
         type: Object,
