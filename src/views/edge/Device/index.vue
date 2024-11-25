@@ -507,7 +507,7 @@ const getActions = (
             deleteItem,
         ];
     } else {
-        return [...actions, ...others, deleteItem];
+        return [...actions, deleteItem];
     }
 };
 
