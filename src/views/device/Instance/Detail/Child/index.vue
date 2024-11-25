@@ -334,6 +334,7 @@
             :type="actionRef.type"
             :rows="actionRef.rows"
             :batch="actionRef.batch"
+            :is-map="isMap"
             @close="onClose"
         />
         <DeviceDetail
@@ -411,6 +412,7 @@ const edgeVisible = ref(false);
 const edgeCurrent = ref({});
 const editStatus = ref(false);
 const route = useRoute();
+const isMap = ref(false);
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
@@ -636,13 +638,15 @@ const getActions = (type, data) => {
             key: 'view',
             text: '解绑',
             tooltip: {
-                title: '解绑',
+                title: detail.value.state?.value !== 'online' ? '网关不在线，暂无法操作': '解绑',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: async () => {
                 menuVisible.value = false;
                 actionRef.visible = true;
                 actionRef.type = 'unbind';
+                isMap.value = false
                 actionRef.rows = [_customRow.value?.id];
             },
         },
@@ -651,29 +655,35 @@ const getActions = (type, data) => {
             key: 'action',
             text: data.state?.value !== 'notActive' ? '禁用' : '启用',
             tooltip: {
-                title: data.state?.value !== 'notActive' ? '禁用' : '启用',
+                title:detail.value.state?.value !== 'online'?'网关不在线，暂无法操作': data.state?.value !== 'notActive' ? '禁用' : '启用',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon:
                 data.state.value !== 'notActive'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             onClick: async () => {
+                console.log('data====',data);
                 menuVisible.value = false;
                 actionRef.visible = true;
                 actionRef.rows = [_customRow.value?.id];
+                if(data?.MappingStatus === "success"){
+                    isMap.value = true
+                }
                 if (data.state?.value !== 'notActive') {
                     actionRef.type = 'undeploy';
                 } else {
                     actionRef.type = 'deploy';
                 }
+              
             },
         },
         {
             key: 'delete',
             text: '删除',
-            disabled: data.state?.value !== 'notActive',
+            disabled:detail.value.state?.value !== 'online'|| data.state?.value !== 'notActive',
             tooltip: {
-                title:
+                title:detail.value.state?.value !== 'online'?'网关不在线，暂无法操作':
                     data.state.value !== 'notActive'
                         ? '已启用的设备不能删除'
                         : '删除',
@@ -683,6 +693,9 @@ const getActions = (type, data) => {
                 actionRef.visible = true;
                 actionRef.rows = [_customRow.value?.id];
                 actionRef.type = 'delete';
+                if(data?.MappingStatus === 'success'){
+                    isMap.value = true
+                }
             },
             icon: 'DeleteOutlined',
         },
@@ -697,6 +710,7 @@ const getActions = (type, data) => {
             disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: () => {
+                isMap.value = false
                 if (_checked.value) {
                     menuVisible.value = false;
                     actionRef.visible = true;
@@ -724,6 +738,7 @@ const getActions = (type, data) => {
             disabled: detail.value.state?.value !== 'online',
             icon: 'StopOutlined',
             onClick: () => {
+                isMap.value = true
                 if (_checked.value) {
                     menuVisible.value = false;
                     actionRef.visible = true;
@@ -750,6 +765,7 @@ const getActions = (type, data) => {
             disabled: detail.value.state?.value !== 'online',
             icon: 'CheckCircleOutlined',
             onClick: () => {
+                isMap.value = true
                 if (_checked.value) {
                     menuVisible.value = false;
                     actionRef.visible = true;
@@ -775,6 +791,7 @@ const getActions = (type, data) => {
             },
             disabled: detail.value.state?.value !== 'online',
             onClick: async () => {
+                isMap.value = true
                 if (_checked.value) {
                     menuVisible.value = false;
                     actionRef.visible = true;
@@ -812,6 +829,7 @@ const onClose = () => {
     actionRef.visible = false;
     _selectedRowKeys.value = [];
     actionRef.batch = false;
+    isMap.value = false
     handleRefresh();
 };
 

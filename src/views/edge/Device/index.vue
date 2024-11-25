@@ -307,15 +307,6 @@ const columns = [
         ellipsis: true,
     },
     {
-        title: '注册时间',
-        dataIndex: 'registryTime',
-        key: 'registryTime',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
-    },
-    {
         title: '状态',
         dataIndex: 'state',
         key: 'state',
@@ -327,6 +318,15 @@ const columns = [
                 { label: '离线', value: 'offline' },
                 { label: '在线', value: 'online' },
             ],
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
         },
     },
     {
