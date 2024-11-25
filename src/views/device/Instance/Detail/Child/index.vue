@@ -44,7 +44,7 @@
                     </a-space>
                 </div>
                 <pro-search
-                    :columns="columns"
+                    :columns="searchColumns"
                     type="simple"
                     @search="handleSearch"
                 />
@@ -134,6 +134,16 @@
                                     </div>
                                     <div v-else>{{ '自动生成' }}</div>
                                 </template>
+                                <template #name="scopedSlots"
+                                    ><j-ellipsis>{{
+                                        scopedSlots.name || '--'
+                                    }}</j-ellipsis></template
+                                >
+                                <template #productName="scopedSlots"
+                                    ><j-ellipsis>{{
+                                        scopedSlots.productName || '--'
+                                    }}</j-ellipsis></template
+                                >
                                 <template #state="scopedSlots">
                                     <a-tooltip
                                         :title="scopedSlots.MappingError"
@@ -171,8 +181,8 @@
                                             <a-badge
                                                 :status="
                                                     statusMap.get(
-                                                        scopedSlots?.state
-                                                            ?.value,
+                                                        scopedSlots?.Mapping
+                                                            .state?.value,
                                                     )
                                                 "
                                             />
@@ -313,7 +323,12 @@
             <div v-else class="right-fold"></div>
         </div>
         <Save v-if="visible" @close="onClose" />
-        <Bind v-if="bindVisible" :parentIds="parentIds" @change="onClose" />
+        <Bind
+            v-if="bindVisible"
+            :parentIds="parentIds"
+            @change="onClose"
+            title="绑定平台设备"
+        />
         <actionModal
             v-if="actionRef.visible"
             :type="actionRef.type"
@@ -332,7 +347,7 @@
 </template>
 
 <script setup name="Child">
-import { stateMap, columns, statusMap } from './data';
+import { stateMap, columns, statusMap} from './data';
 import {
     queryNoPagingPost,
     addDevice,
@@ -401,6 +416,69 @@ const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
 };
 
+
+const searchColumns = [
+    {
+        title: '平台设备名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '平台设备ID',
+        dataIndex: 'id',
+        key: 'id',
+        scopedSlots: true,
+        search: {
+            type: 'string',
+            // defaultTermType: 'eq',
+        },
+    },
+    {
+        title: '所属产品',
+        dataIndex: 'productName',
+        key: 'productName',
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            rename: 'productId',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp) => {
+                        resolve(
+                            resp.result.map((item) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+          search: {
+            type: 'date',
+        },
+    },
+  
+    {
+        title: '说明',
+        dataIndex: 'describe',
+        key: 'describe',
+        scopedSlots: true,
+        width: 100,
+        search: {
+            type: 'string',
+        },
+    },
+]
 const handleSearch = async (e) => {
     if (instanceStore.detail.id && e) {
         const terms = [
@@ -416,7 +494,7 @@ const handleSearch = async (e) => {
         }
         const res = await queryNoPagingPost({
             paging: false,
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            // sorts: [{ name: 'createTime', order: 'desc' }],
             terms: terms,
         });
 
@@ -614,8 +692,9 @@ const getActions = (type, data) => {
             key: 'unbind',
             text: '批量解绑',
             tooltip: {
-                title: '批量解绑',
+                title: detail.value.state?.value === 'online' ? '批量解绑' : '网关不在线，暂无法操作',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: () => {
                 if (_checked.value) {
@@ -640,8 +719,9 @@ const getActions = (type, data) => {
             key: 'undeploy',
             text: '批量禁用',
             tooltip: {
-                title: '批量禁用',
+                title: detail.value.state?.value === 'online' ? '批量禁用' : '网关不在线，暂无法操作',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon: 'StopOutlined',
             onClick: () => {
                 if (_checked.value) {
@@ -665,8 +745,9 @@ const getActions = (type, data) => {
             key: 'deploy',
             text: '批量启用',
             tooltip: {
-                title: '批量启用',
+                title: detail.value.state?.value === 'online' ? '批量禁用' : '网关不在线，暂无法操作',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon: 'CheckCircleOutlined',
             onClick: () => {
                 if (_checked.value) {
@@ -690,8 +771,9 @@ const getActions = (type, data) => {
             key: 'delete',
             text: '批量删除',
             tooltip: {
-                title: '批量删除',
+                title: detail.value.state?.value === 'online' ? '批量禁用' : '网关不在线，暂无法操作',
             },
+            disabled: detail.value.state?.value !== 'online',
             onClick: async () => {
                 if (_checked.value) {
                     menuVisible.value = false;
@@ -737,14 +819,14 @@ const onDetail = (item) => {
     setTimeout(() => {
         edgeVisible.value = true;
         edgeCurrent.value = item;
-    },300);
+    }, 300);
 };
 
 const onDetailClose = async () => {
     // edgeVisible.value = false;
-    await instanceStore.refresh(route.params?.id).finally(()=>{
-        edgeVisible.value = false
-    })
+    await instanceStore.refresh(route.params?.id).finally(() => {
+        edgeVisible.value = false;
+    });
 };
 
 const onRightSearch = (e) => {
@@ -759,6 +841,7 @@ const onRightSearch = (e) => {
 //边端未映射
 const getNoMapping = async () => {
     const res = await _queryByEdge(instanceStore.detail.id, {
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [{ column: 'key', value: '', termType: 'isnull' }],
     });
     if (res.success) {
