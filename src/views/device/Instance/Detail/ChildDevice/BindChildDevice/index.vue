@@ -4,7 +4,7 @@
         :maskClosable="false"
         width="1000px"
         :visible="true"
-        title="绑定子设备"
+        :title="title"
         okText="确定"
         cancelText="取消"
         @ok="handleOk"
@@ -24,6 +24,7 @@
                 :request="query"
                 model="TABLE"
                 :defaultParams="{
+                    sorts:[{ name: 'createTime', order: 'desc' }],
                     terms: [
                         {
                             terms: [
@@ -77,7 +78,7 @@
                             ? dayjs(slotProps.registryTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
-                            : ''
+                            : '--'
                     }}
                 </template>
                 <template #state="slotProps">
@@ -98,6 +99,7 @@ import {
     bindDevice,
     queryDeviceMapping,
     saveDeviceMapping,
+    queryNoPagingPost
 } from '@/api/device/instance';
 import dayjs from 'dayjs';
 import { useInstanceStore } from '@/store/instance';
@@ -108,6 +110,10 @@ const props = defineProps({
     parentIds: {
         type: Array,
         default: () => [],
+    },
+    title: {
+        type: String,
+        default: '绑定子设备',
     },
 });
 
@@ -128,6 +134,15 @@ statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
 
 const columns = [
+{
+        title: '设备名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
     {
         title: 'ID',
         dataIndex: 'id',
@@ -139,21 +154,24 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
         title: '所属产品',
         dataIndex: 'productName',
         key: 'productName',
         ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            rename: 'productId',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
