@@ -93,11 +93,15 @@
     </template>
     <template #extra>
       <j-space>
-        <j-button
+        <PermissionButton
             @click="onClick"
             v-if="_arr.includes(instanceStore.current?.accessProvider || '')"
-            type="primary" :disabled="instanceStore.current?.state?.value !== 'online'">远程访问
-        </j-button>
+            type="primary"
+            :disabled="instanceStore.current?.state?.value !== 'online'"
+            hasPermission="device/Instance:remote"
+        >
+          远程访问
+        </PermissionButton>
         <img
             @click="handleRefresh"
             :src="getImage('/device/button.png')"
