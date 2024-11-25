@@ -8,7 +8,7 @@ export const _stopControl = (deviceId: string) => server.post(`/edge/remote/${de
 
 export const getRemoteProxyUrl = (deviceId: string) => server.post(`/edge/device/${deviceId}/_proxy/_start?timeoutMinute=10`)
 
-export const getRemoteToken = (deviceId: string) => server.post(`/edge/device/${deviceId}/token`)
+export const getRemoteToken = (deviceId: string, data) => server.post(`/edge/device/${deviceId}/token`, data)
 export const getRemoteSystem = (deviceId: string, data: any) => server.post(`/edge/device/${deviceId}/_/system/config/scopes`, data)
 
 
