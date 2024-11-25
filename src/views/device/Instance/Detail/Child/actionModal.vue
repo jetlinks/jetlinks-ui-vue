@@ -10,7 +10,7 @@
             </div>
 
             <a-form
-                v-if="type !== 'unbind'"
+                v-if="isMap"
                 layout="vertical"
                 :model="form"
                 ref="formRef"
@@ -153,6 +153,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    isMap: {
+        type: Boolean,
+        default: false,
+    }
 });
 const instanceStore = useInstanceStore();
 const typeMap = new Map();
@@ -195,6 +199,10 @@ const options = computed(() => [
     },
 ]);
 
+const isMap = computed(() => {
+    return props.isMap
+})
+
 const edgeId = instanceStore.detail.id;
 const form = reactive({
     way: ['cloud'],
@@ -210,6 +218,8 @@ const edge = reactive({
     successCount: 0,
     errorMessage: [],
 });
+
+
 const handleResult = (arr) => {
     arr.forEach((item) => {
         if (item.type === 'cloud') {
@@ -242,6 +252,7 @@ const _unbind = async () => {
         }
     }
 };
+
 const onUndeploy = async () => {
     const res =
         form.way[0] === 'cloud'
@@ -337,12 +348,10 @@ const onSave = async () => {
     }
 };
 
-watch(
-    () => form.way,
-    () => {
-        console.log('form.way====', form.way);
-    },
-);
+onMounted(() => {
+    console.log('props.rows====',props.rows);
+    console.log('props.isMap====',props.isMap);
+})
 </script>
 
 <style lang="less" scoped>
