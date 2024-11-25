@@ -596,9 +596,12 @@ const getOptions = (item: any, index: any) => {
 //判断设备接入配置项是否跟物模型字段冲突
 const judgmentConflict = (record: any) => {
     return (
+        record.property === 'metrics' ||
         (props.metadataType === 'events' && record.property === 'level') ||
         (props.metadataType === 'properties' &&
-            (record.property === 'type' || record.property === 'source'))
+            ['groupId', 'groupName', 'source', 'type', 'virtualRule'].includes(
+                record.property,
+            ))
     );
 };
 
