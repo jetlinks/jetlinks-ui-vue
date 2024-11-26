@@ -77,9 +77,14 @@
             </template>
             <template #registryTime="slotProps">
                 {{
-                    dayjs(slotProps.registryTime).format('YYYY-MM-DD hh:mm:ss')
+                    slotProps.registryTime ?dayjs(slotProps.registryTime).format('YYYY-MM-DD hh:mm:ss'):'--'
                 }}
             </template>
+            <template #describe="scopedSlots">
+                                    <j-ellipsis>{{
+                                        scopedSlots.describe || '--'
+                                    }}</j-ellipsis></template
+                                >
             <template #state="slotProps">
                 {{ slotProps.state.text }}
             </template>
@@ -167,15 +172,7 @@ const columns = [
         },
         ellipsis: true,
     },
-    {
-        title: '注册时间',
-        dataIndex: 'registryTime',
-        key: 'registryTime',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
-    },
+
     {
         title: '状态',
         dataIndex: 'state',
@@ -188,6 +185,15 @@ const columns = [
                 { label: '离线', value: 'offline' },
                 { label: '在线', value: 'online' },
             ],
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
         },
     },
     {
@@ -210,6 +216,7 @@ const columns = [
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },

@@ -44,7 +44,7 @@
                     </a-space>
                 </div>
                 <pro-search
-                    :columns="columns"
+                    :columns="searchColumns"
                     type="simple"
                     @search="handleSearch"
                 />
@@ -134,19 +134,33 @@
                                     </div>
                                     <div v-else>{{ '自动生成' }}</div>
                                 </template>
+                                <template #name="scopedSlots"
+                                    ><j-ellipsis>{{
+                                        scopedSlots.name || '--'
+                                    }}</j-ellipsis></template
+                                >
+                                <template #productName="scopedSlots"
+                                    ><j-ellipsis>{{
+                                        scopedSlots.productName || '--'
+                                    }}</j-ellipsis></template
+                                >
                                 <template #state="scopedSlots">
-                                    <a-tag
-                                        :color="
-                                            stateMap.get(
-                                                scopedSlots.MappingStatus,
-                                            )?.status
-                                        "
-                                        >{{
-                                            stateMap.get(
-                                                scopedSlots.MappingStatus,
-                                            )?.text
-                                        }}</a-tag
+                                    <a-tooltip
+                                        :title="scopedSlots.MappingError"
                                     >
+                                        <a-tag
+                                            :color="
+                                                stateMap.get(
+                                                    scopedSlots.MappingStatus,
+                                                )?.status
+                                            "
+                                            >{{
+                                                stateMap.get(
+                                                    scopedSlots.MappingStatus,
+                                                )?.text
+                                            }}</a-tag
+                                        >
+                                    </a-tooltip>
                                 </template>
                                 <template #action="scopedSlots">
                                     <div
@@ -163,7 +177,15 @@
                                         @dragover.prevent
                                         @drop="(e) => onCover(e, scopedSlots)"
                                     >
-                                        <div>
+                                        <div style="display: flex">
+                                            <a-badge
+                                                :status="
+                                                    statusMap.get(
+                                                        scopedSlots?.Mapping
+                                                            .state?.value,
+                                                    )
+                                                "
+                                            />
                                             <j-ellipsis>
                                                 {{
                                                     scopedSlots.Mapping.name
@@ -244,6 +266,7 @@
                         style="width: 200px"
                         placeholder="搜索"
                         enter-button
+                        allow-clear
                         @search="onRightSearch"
                     />
                 </div>
@@ -254,6 +277,7 @@
                             class="right-item"
                             :draggable="true"
                             @dragstart="() => onStart(item)"
+                            @click="onDetail(item)"
                         >
                             <div class="item-name">
                                 <j-ellipsis>{{ item.name }}</j-ellipsis>
@@ -299,19 +323,32 @@
             <div v-else class="right-fold"></div>
         </div>
         <Save v-if="visible" @close="onClose" />
-        <Bind v-if="bindVisible" :parentIds="parentIds" @change="onClose" />
+        <Bind
+            v-if="bindVisible"
+            :parentIds="parentIds"
+            @change="onClose"
+            title="绑定平台设备"
+        />
         <actionModal
             v-if="actionRef.visible"
             :type="actionRef.type"
             :rows="actionRef.rows"
             :batch="actionRef.batch"
+            :is-map="isMap"
             @close="onClose"
+        />
+        <DeviceDetail
+            v-if="edgeVisible"
+            :data="edgeCurrent"
+            type="edge"
+            :edgeId="route.params.id"
+            @close="onDetailClose"
         />
     </div>
 </template>
 
 <script setup name="Child">
-import { stateMap, columns, statusMap } from './data';
+import { stateMap, columns, statusMap} from './data';
 import {
     queryNoPagingPost,
     addDevice,
@@ -328,11 +365,22 @@ import dayjs from 'dayjs';
 import Save from './Save/index.vue';
 import Bind from '../ChildDevice/BindChildDevice/index.vue';
 import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
-import { onlyMessage } from '@/utils/comm';
+import { onlyMessage, LocalStore } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { cloneDeep } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import actionModal from './actionModal.vue';
+import { Modal } from 'ant-design-vue';
+import { TOKEN_KEY } from '@/utils/variable';
+import { EventEmitter } from '@/utils/utils';
+import DeviceDetail from '@/views/edge/Batch/task/Children/DeviceDetail/index.vue';
+
+const props = defineProps({
+    isRefresh: {
+        type: Boolean,
+        default: () => {},
+    },
+});
 
 const instanceStore = useInstanceStore();
 const _checked = ref(true);
@@ -360,11 +408,79 @@ const actionRef = reactive({
     rows: [],
     batch: false,
 });
+const edgeVisible = ref(false);
+const edgeCurrent = ref({});
+const editStatus = ref(false);
+const route = useRoute();
+const isMap = ref(false);
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
 };
 
+
+const searchColumns = [
+    {
+        title: '平台设备名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
+    {
+        title: '平台设备ID',
+        dataIndex: 'id',
+        key: 'id',
+        scopedSlots: true,
+        search: {
+            type: 'string',
+            // defaultTermType: 'eq',
+        },
+    },
+    {
+        title: '所属产品',
+        dataIndex: 'productName',
+        key: 'productName',
+        scopedSlots: true,
+        search: {
+            type: 'select',
+            rename: 'productId',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp) => {
+                        resolve(
+                            resp.result.map((item) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+          search: {
+            type: 'date',
+        },
+    },
+  
+    {
+        title: '说明',
+        dataIndex: 'describe',
+        key: 'describe',
+        scopedSlots: true,
+        width: 100,
+        search: {
+            type: 'string',
+        },
+    },
+]
 const handleSearch = async (e) => {
     if (instanceStore.detail.id && e) {
         const terms = [
@@ -380,40 +496,63 @@ const handleSearch = async (e) => {
         }
         const res = await queryNoPagingPost({
             paging: false,
-            sorts: [{ name: 'createTime', order: 'desc' }],
+            // sorts: [{ name: 'createTime', order: 'desc' }],
             terms: terms,
         });
 
         if (res.success) {
-            const resp = await _queryByEdge(instanceStore.detail.id, {
-                terms: [{ column: 'key', value: '', termType: 'notnull' }],
-            });
-            if (resp.success) {
-                _dropList.value = [...resp.result];
-                _bindInitList.value = [...resp.result];
-            }
-            _dataSource.value = res.result.map((item) => {
-                const isMap = _dropList.value?.find(
-                    (i) => i.id === item.id || i.mappingId === item.id,
-                );
-                if (isMap?.id) {
-                    return {
-                        ...item,
-                        MappingStatus: 'success',
-                        Mapping: isMap,
-                    };
-                } else {
-                    return {
-                        ...item,
-                        MappingStatus: 'none',
-                    };
+            try {
+                const resp = await _queryByEdge(instanceStore.detail.id, {
+                    terms: [{ column: 'key', value: '', termType: 'notnull' }],
+                });
+                if (resp.success) {
+                    _dropList.value = [...resp.result];
+                    _bindInitList.value = [...resp.result];
                 }
-            });
+                _dataSource.value = res.result.map((item) => {
+                    const isMap = _dropList.value?.find(
+                        (i) => i.id === item.id || i.mappingId === item.id,
+                    );
+                    if (isMap?.id) {
+                        return {
+                            ...item,
+                            MappingStatus: 'success',
+                            Mapping: isMap,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            MappingStatus: 'none',
+                        };
+                    }
+                });
+            } catch (error) {
+                _dataSource.value = res.result.map((item) => {
+                    const isMap = _dropList.value?.find(
+                        (i) => i.id === item.id || i.mappingId === item.id,
+                    );
+                    if (isMap?.id) {
+                        return {
+                            ...item,
+                            MappingStatus: 'success',
+                            Mapping: isMap,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            MappingStatus: 'none',
+                        };
+                    }
+                });
+            }
+
+            console.log('_dataSource.value====', _dataSource.value);
+            console.log('res.resulte====', res.result);
         }
     }
 };
 
-const onSaveAll = async () => {
+const onSaveAll = async (cb) => {
     const _arr = _dataSource.value
         .map((item) => {
             if (
@@ -453,7 +592,9 @@ const onSaveAll = async () => {
         {
             bindInfo: _arr,
         },
-    );
+    ).finally(() => {
+        cb && cb?.();
+    });
     if (res.success) {
         handleRefresh();
         onlyMessage('操作成功');
@@ -497,13 +638,15 @@ const getActions = (type, data) => {
             key: 'view',
             text: '解绑',
             tooltip: {
-                title: '解绑',
+                title: detail.value.state?.value !== 'online' ? '网关不在线，暂无法操作': '解绑',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: async () => {
                 menuVisible.value = false;
                 actionRef.visible = true;
                 actionRef.type = 'unbind';
+                isMap.value = false
                 actionRef.rows = [_customRow.value?.id];
             },
         },
@@ -512,97 +655,158 @@ const getActions = (type, data) => {
             key: 'action',
             text: data.state?.value !== 'notActive' ? '禁用' : '启用',
             tooltip: {
-                title: data.state?.value !== 'notActive' ? '禁用' : '启用',
+                title:detail.value.state?.value !== 'online'?'网关不在线，暂无法操作': data.state?.value !== 'notActive' ? '禁用' : '启用',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon:
                 data.state.value !== 'notActive'
                     ? 'StopOutlined'
                     : 'CheckCircleOutlined',
             onClick: async () => {
+                console.log('data====',data);
                 menuVisible.value = false;
                 actionRef.visible = true;
                 actionRef.rows = [_customRow.value?.id];
+                if(data?.MappingStatus === "success"){
+                    isMap.value = true
+                }
                 if (data.state?.value !== 'notActive') {
                     actionRef.type = 'undeploy';
                 } else {
                     actionRef.type = 'deploy';
                 }
+              
             },
         },
         {
             key: 'delete',
             text: '删除',
+            disabled:detail.value.state?.value !== 'online'|| data.state?.value !== 'notActive',
             tooltip: {
-                title:'删除'
+                title:detail.value.state?.value !== 'online'?'网关不在线，暂无法操作':
+                    data.state.value !== 'notActive'
+                        ? '已启用的设备不能删除'
+                        : '删除',
             },
             onClick: async () => {
                 menuVisible.value = false;
                 actionRef.visible = true;
                 actionRef.rows = [_customRow.value?.id];
                 actionRef.type = 'delete';
+                if(data?.MappingStatus === 'success'){
+                    isMap.value = true
+                }
             },
             icon: 'DeleteOutlined',
         },
     ];
     const batchActions = [
         {
-            key: 'view',
+            key: 'unbind',
             text: '批量解绑',
             tooltip: {
-                title: '批量解绑',
+                title: detail.value.state?.value === 'online' ? '批量解绑' : '网关不在线，暂无法操作',
             },
+            disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'unbind';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                isMap.value = false
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'unbind';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'unbind';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
         },
 
         {
             key: 'undeploy',
-            text:  '批量禁用',
+            text: '批量禁用',
             tooltip: {
-                title:'批量禁用',
+                title: detail.value.state?.value === 'online' ? '批量禁用' : '网关不在线，暂无法操作',
             },
-            icon:'StopOutlined',
+            disabled: detail.value.state?.value !== 'online',
+            icon: 'StopOutlined',
             onClick: () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'undeploy';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                isMap.value = true
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'undeploy';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'undeploy';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
         },
         {
             key: 'deploy',
-            text:  '批量启用',
+            text: '批量启用',
             tooltip: {
-                title: '批量启用',
+                title: detail.value.state?.value === 'online' ? '批量禁用' : '网关不在线，暂无法操作',
             },
-            icon:'CheckCircleOutlined',
+            disabled: detail.value.state?.value !== 'online',
+            icon: 'CheckCircleOutlined',
             onClick: () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'deploy';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                isMap.value = true
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'deploy';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'deploy';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
         },
         {
             key: 'delete',
             text: '批量删除',
             tooltip: {
-                title:'批量删除',
+                title: detail.value.state?.value === 'online' ? '批量禁用' : '网关不在线，暂无法操作',
             },
+            disabled: detail.value.state?.value !== 'online',
             onClick: async () => {
-                menuVisible.value = false;
-                actionRef.visible = true;
-                actionRef.type = 'delete';
-                actionRef.rows = _selectedRowKeys.value;
-                actionRef.batch = true;
+                isMap.value = true
+                if (_checked.value) {
+                    menuVisible.value = false;
+                    actionRef.visible = true;
+                    actionRef.type = 'delete';
+                    actionRef.rows = _selectedRowKeys.value;
+                    actionRef.batch = true;
+                } else {
+                    onSaveAll(() => {
+                        menuVisible.value = false;
+                        actionRef.visible = true;
+                        actionRef.type = 'delete';
+                        actionRef.rows = _selectedRowKeys.value;
+                        actionRef.batch = true;
+                    });
+                }
             },
             icon: 'DeleteOutlined',
         },
@@ -624,8 +828,23 @@ const onClose = () => {
     bindVisible.value = false;
     actionRef.visible = false;
     _selectedRowKeys.value = [];
-    actionRef.batch = false
+    actionRef.batch = false;
+    isMap.value = false
     handleRefresh();
+};
+
+const onDetail = (item) => {
+    setTimeout(() => {
+        edgeVisible.value = true;
+        edgeCurrent.value = item;
+    }, 300);
+};
+
+const onDetailClose = async () => {
+    // edgeVisible.value = false;
+    await instanceStore.refresh(route.params?.id).finally(() => {
+        edgeVisible.value = false;
+    });
 };
 
 const onRightSearch = (e) => {
@@ -640,6 +859,7 @@ const onRightSearch = (e) => {
 //边端未映射
 const getNoMapping = async () => {
     const res = await _queryByEdge(instanceStore.detail.id, {
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [{ column: 'key', value: '', termType: 'isnull' }],
     });
     if (res.success) {
@@ -672,9 +892,14 @@ const onDrop = async (e, item) => {
                 deviceId: _drop.value.id,
                 masterDeviceId: item.id,
             },
-        ).finally(() => {
-            item.loading = false;
-        });
+        )
+            .finally(() => {
+                item.loading = false;
+            })
+            .catch((e) => {
+                item.MappingStatus = 'error';
+                item.MappingError = e.message;
+            });
         if (res.success) {
             item.MappingStatus = 'success';
             handleRefresh();
@@ -690,6 +915,7 @@ const onDrop = async (e, item) => {
             (i) => i.id !== _drop.value.id,
         );
         _dropList.value.push(item);
+        editStatus.value = true;
     }
 };
 //覆盖操作
@@ -725,6 +951,7 @@ const onCover = async (e, item) => {
         _edgeInitList.value = _edgeInitList.value.filter(
             (i) => i.id !== _drop.value.id,
         );
+        editStatus.value = true;
     }
 };
 
@@ -733,6 +960,7 @@ const onDelete = (item) => {
     if (item.id) {
         if (_checked.value) {
             item.loading = true;
+
             _commandByEdge(instanceStore.detail.id, 'UnbindDevice', {
                 key: item.id,
             })
@@ -746,6 +974,11 @@ const onDelete = (item) => {
                 })
                 .finally(() => {
                     item.loading = false;
+                    // item.MappingStatus = 'error';
+                })
+                .catch((e) => {
+                    item.MappingStatus = 'error';
+                    item.MappingError = e.message;
                 });
         } else {
             edgeList.value.unshift(item.Mapping);
@@ -761,6 +994,7 @@ const onDelete = (item) => {
                 item.Mapping = {};
                 item.MappingStatus = 'none';
             }
+            editStatus.value = true;
         }
     } else {
         edgeList.value.unshift(item.Mapping);
@@ -837,9 +1071,14 @@ const onAuto = async (item) => {
                 deviceId: _drop.value.id,
                 masterDeviceId: item.id,
             },
-        ).finally(() => {
-            item.loading = false;
-        });
+        )
+            .finally(() => {
+                item.loading = false;
+            })
+            .catch((e) => {
+                item.MappingStatus = 'error';
+                item.MappingError = e.message;
+            });
         if (resp.success) {
             item.MappingStatus = 'success';
             handleRefresh();
@@ -848,11 +1087,58 @@ const onAuto = async (item) => {
         }
     }
 };
+
+//离开页面
+const TabsChange = (next) => {
+    if (editStatus.value && LocalStore.get(TOKEN_KEY)) {
+        const modal = Modal.confirm({
+            content: '页面改动数据未保存',
+            okText: '保存',
+            cancelText: '不保存',
+            zIndex: 1400,
+            closable: true,
+            onOk: () => {
+                onSaveAll();
+                next?.();
+            },
+            onCancel: (e) => {
+                modal.destroy();
+                next?.();
+            },
+        });
+    } else {
+        next?.();
+    }
+};
+
+onBeforeRouteUpdate((to, from, next) => {
+    // 设备管理内路由跳转
+    TabsChange(next);
+});
+
+onBeforeRouteLeave((to, from, next) => {
+    // 设备管理外路由跳转
+    TabsChange(next);
+});
+
+watch(
+    () => props.isRefresh,
+    (val) => {
+        handleRefresh();
+    },
+    { immediate: true },
+);
+
 onMounted(() => {
+    EventEmitter.subscribe(['ChildTabs'], TabsChange);
     if (instanceStore.detail.id) {
         getNoMapping();
         handleRefresh();
     }
+});
+onUnmounted(() => {
+    editStatus.value = false;
+    EventEmitter.unSubscribe(['ChildTabs'], TabsChange);
 });
 </script>
 

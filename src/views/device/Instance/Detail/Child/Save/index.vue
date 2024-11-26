@@ -1,7 +1,7 @@
 <template>
     <a-modal
         visible
-        title="新增并绑定"
+        title="新增并绑定平台设备"
         width="600px"
         @ok="onSave"
         @cancel="emits('close')"
@@ -11,7 +11,13 @@
             <a-form-item
                 label="设备名称"
                 name="name"
-                :rules="{ required: true, message: '请输入设备名称' }"
+                :rules="[
+                    { required: true, message: '请输入设备名称' },
+                    {
+                        max: 64,
+                        message: '最多输入64个字符',
+                    },
+                ]"
             >
                 <a-input
                     v-model:value="form.name"
@@ -20,14 +26,14 @@
             </a-form-item>
 
             <a-form-item
-                label="产品名称"
+                label="所属产品"
                 name="productId"
-                :rules="{ required: true, message: '请选择产品名称' }"
+                :rules="{ required: true, message: '请选择产品' }"
             >
                 <a-select
                     @change="selectChange"
                     v-model:value="form.productId"
-                    placeholder="请选择产品名称"
+                    placeholder="请选择产品"
                 >
                     <a-select-option
                         v-for="i in productList"
@@ -58,7 +64,7 @@ const form = reactive({
     parentId: instanceStore.current.id,
 });
 const formRef = ref();
-const loading = ref(false)
+const loading = ref(false);
 const productList = ref([]);
 
 const getProductList = async () => {
@@ -83,8 +89,10 @@ const selectChange = (_, item) => {
 const onSave = async () => {
     const res = await formRef.value.validateFields();
     if (res) {
-        loading.value = true
-        const resp = await addDevice(form).finally(()=>{loading.value = false});
+        loading.value = true;
+        const resp = await addDevice(form).finally(() => {
+            loading.value = false;
+        });
         if (resp.success) {
             onlyMessage('操作成功');
             emits('close');

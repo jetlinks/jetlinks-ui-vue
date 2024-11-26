@@ -197,6 +197,7 @@ import { useMenuStore } from 'store/menu';
 import { useRouterParams } from '@/utils/hooks/useParams';
 import { accessConfigTypeFilter } from '@/utils/setting';
 import { usePermissionStore } from '@/store/permission';
+import TagSearch from '../Instance/components/TagSearch.vue';
 /**
  * 表格数据
  */
@@ -533,6 +534,17 @@ const query = reactive({
                 ],
             },
         },
+      {
+        key: 'id$dev-instance',
+        dataIndex: 'id$dev-instance',
+        title: '标签',
+        hideInTable: true,
+        search: {
+          type: 'component',
+          components: TagSearch,
+          termOptions: ['eq', 'not'],
+        },
+      },
         {
             title: '状态',
             key: 'state',
@@ -584,6 +596,15 @@ const handleSearch = (e: any) => {
     if (newTerms.terms?.length) {
         newTerms.terms.forEach((a: any) => {
             a.terms = a.terms.map((b: any) => {
+              if (b.column === 'id$dev-instance') {
+                return {
+                  column: 'id$dev-instance',
+                  options: ['productId'],
+                  value: b.value,
+                  type: b.type
+                }
+              }
+
                 if (b.column === 'id$dim-assets') {
                     const value = b.value;
                     b = {

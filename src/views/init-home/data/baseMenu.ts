@@ -810,6 +810,16 @@ export default [
                   },
                 ],
               },
+              {
+                id: 'remote',
+                name: '远程控制',
+                permissions: [
+                  {
+                    permission: 'edge-manager',
+                    actions: ['remote', 'proxy'],
+                  },
+                ],
+              },
             ],
           },
           {
@@ -2692,12 +2702,8 @@ export default [
                 name: '远程控制',
                 permissions: [
                   {
-                    permission: 'device-instance',
-                    actions: ['save'],
-                  },
-                  {
                     permission: 'edge-manager',
-                    actions: ['remote'],
+                    actions: ['remote', 'proxy'],
                   },
                 ],
               },
@@ -2742,81 +2748,35 @@ export default [
                 "name": "新增",
                 "description": "",
                 "enabled": false,
-                "granted": true,
-                "permissions": [
-                  {
-                    "permission": "entity-template",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
-                  }
-                ]
+                "granted": true
               },
               {
                 "id": "delete",
                 "name": "删除",
                 "description": "",
                 "enabled": false,
-                "granted": true,
-                "permissions":[
-                  {
-                    "permission": "entity-template",
-                    "actions": [
-                      "query",
-                      "save",
-                      "delete"
-                    ]
-                  }
-                ]
+                "granted": true
               },
               {
                 "id": "update",
                 "name": "编辑",
                 "description": "",
                 "enabled": false,
-                "granted": true,
-                "permissions": [
-                  {
-                    "permission": "entity-template",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
-                  }
-                ]
+                "granted": true
               },
               {
                 "id": "issue",
                 "name": "下发",
                 "description": "",
                 "enabled": false,
-                "granted": true,
-                "permissions": [
-                  {
-                    "permission": "entity-template",
-                    "actions": [
-                      "query",
-                      "save"
-                    ]
-                  }
-                ]
+                "granted": true
               },
               {
                 "id": "action",
                 "name": "启/禁用",
                 "description": "",
                 "enabled": false,
-                "granted": true,
-                "permissions": [
-                  {
-                    "permission": "entity-template",
-                    "actions": [
-                      "enable",
-                      "disable"
-                    ]
-                  }
-                ]
+                "granted": true
               }
             ],
             "accessSupport": {

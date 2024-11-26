@@ -98,7 +98,7 @@
                     danger
                     :tooltip="{
                         title:
-                            data.state.value === 'running'
+                        _detail.state.value === 'running'
                                 ? '任务进行不可删除'
                                 : '',
                     }"
@@ -108,7 +108,7 @@
                             deleteAll();
                         },
                     }"
-                    :disabled="data.state.value === 'running'"
+                    :disabled="_detail.state.value === 'running'"
                 >
                     <template #icon><AIcon type="DeleteOutlined" /> </template>
                     删除任务
@@ -179,7 +179,7 @@
             <template #filename="{ detail }">
                 <Ellipsis style="width: 100%">
                     {{
-                        JSON.parse(detail.data.metadata || '{}')?.filename ||
+                        JSON.parse(detail.data.metadata || '{}')?.filename || detail.data.file ||
                         '--'
                     }}</Ellipsis
                 >
@@ -317,7 +317,6 @@ import {
 import dayjs from 'dayjs';
 import { onlyMessage } from '@/utils/comm';
 import Icon from '../components/Icon.vue';
-import { termType } from '@/components/Search/util';
 const props = defineProps({
     data: {
         type: Object,
