@@ -1,3 +1,4 @@
+
 export const stateMap = new Map();
 stateMap.set('success', {
     text: '已映射',
@@ -23,6 +24,7 @@ statusMap.set('online','success')
 
 
 export const columns = [
+ 
     {
         title: '平台设备ID',
         dataIndex: 'id',
@@ -30,14 +32,14 @@ export const columns = [
         scopedSlots: true,
         search: {
             type: 'string',
-            defaultTermType: 'eq',
+            // defaultTermType: 'eq',
         },
     },
     {
         title: '平台设备名称',
         dataIndex: 'name',
         key: 'name',
-        ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },
@@ -46,18 +48,15 @@ export const columns = [
         title: '所属产品',
         dataIndex: 'productName',
         key: 'productName',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
+        scopedSlots: true,
     },
     {
         title: '注册时间',
         dataIndex: 'registryTime',
         key: 'registryTime',
         scopedSlots: true,
-        search: {
-            type: 'date',
+          search: {
+            type: 'string',
         },
     },
   
@@ -66,9 +65,7 @@ export const columns = [
         dataIndex: 'describe',
         key: 'describe',
         scopedSlots: true,
-        search: {
-            type: 'string',
-        },
+        width: 100,
     },
     {
         title: '状态',
@@ -76,14 +73,7 @@ export const columns = [
         key: 'state',
         scopedSlots: true,
         width: 70,
-        search: {
-            type: 'select',
-            options: [
-                { label: '禁用', value: 'notActive' },
-                { label: '离线', value: 'offline' },
-                { label: '在线', value: 'online' },
-            ],
-        },
+    
     },
     {
         title: '已映射边端设备',
@@ -93,3 +83,6 @@ export const columns = [
         scopedSlots: true,
     },
 ];
+
+
+

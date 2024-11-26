@@ -214,7 +214,7 @@ import { queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
 import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage, onlyMessage } from '@/utils/comm';
+import {getImage, onlyMessage, openEdgeUrl} from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
 import { getRemoteProxyUrl, getRemoteToken, getRemoteSystem} from '@/api/edge/device';
@@ -249,6 +249,7 @@ const edgeDeviceRef = ref<Record<string, any>>({});
 const importVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const current = ref<Record<string, any>>({});
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
@@ -294,7 +295,13 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                    queryNoPagingPost({ paging: false, terms: [
+                        {
+                            termType: 'in',
+                            column: 'accessProvider',
+                            value: provider,
+                        },
+                    ], }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
@@ -305,15 +312,6 @@ const columns = [
                 }),
         },
         ellipsis: true,
-    },
-    {
-        title: '注册时间',
-        dataIndex: 'registryTime',
-        key: 'registryTime',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
     },
     {
         title: '状态',
@@ -327,6 +325,15 @@ const columns = [
                 { label: '离线', value: 'offline' },
                 { label: '在线', value: 'online' },
             ],
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
         },
     },
     {
@@ -466,21 +473,7 @@ const getActions = (
         },
         icon: 'ControlOutlined',
         onClick: async () => {
-
-          const resp = await getRemoteToken(data.id)
-
-          if (resp.success) {
-            const _location = window.location.origin + window.location.pathname
-            const system = await getRemoteSystem(data.id, [ "paths" ])
-            const path = system.result[0]?.properties['base-path']
-            const base64Url = btoa(path)
-            const proxyUrl = await getRemoteProxyUrl(data.id)
-            const fallbackBase64 = btoa(`${_location}#/edge/token/${data.id}`)
-
-            const url = `${_location}api/edge/device:${data.id}/_proxy/${proxyUrl.result}/${fallbackBase64}/${base64Url}/#/?token=${resp.result}&terminal=cloud`
-            // const url = `${_location}api/edge/device:${data.id}/_proxy/${proxyUrl.result}/${base64Url}/#/?token=${resp.result}&terminal=cloud`
-            window.open(url)
-          }
+          await openEdgeUrl(data?.id)
         },
       },
     ];
@@ -521,7 +514,7 @@ const getActions = (
             deleteItem,
         ];
     } else {
-        return [...actions, ...others, deleteItem];
+        return [...actions, deleteItem];
     }
 };
 

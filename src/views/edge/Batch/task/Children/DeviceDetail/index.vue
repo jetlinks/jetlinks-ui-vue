@@ -103,7 +103,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  instanceStore.current = {}
+//   instanceStore.current = {}
+//   instanceStore.detail = {}
 });
 </script>
 

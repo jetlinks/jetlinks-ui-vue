@@ -4,7 +4,7 @@
         :maskClosable="false"
         width="1000px"
         :visible="true"
-        title="绑定子设备"
+        :title="title"
         okText="确定"
         cancelText="取消"
         @ok="handleOk"
@@ -24,6 +24,7 @@
                 :request="query"
                 model="TABLE"
                 :defaultParams="{
+                    sorts:[{ name: 'createTime', order: 'desc' }],
                     terms: [
                         {
                             terms: [
@@ -62,8 +63,12 @@
                     ],
                 }"
                 :rowSelection="{
+                    // selectedRowKeys: _selectedRowKeys,
+                    // onChange: onSelectChange,
                     selectedRowKeys: _selectedRowKeys,
-                    onChange: onSelectChange,
+                    onSelect: onSelectChange,
+                    onSelectAll: selectAll,
+                    onSelectNone: () => (_selectedRowKeys = []),
                 }"
                 :params="params"
             >
@@ -73,7 +78,7 @@
                             ? dayjs(slotProps.registryTime).format(
                                   'YYYY-MM-DD HH:mm:ss',
                               )
-                            : ''
+                            : '--'
                     }}
                 </template>
                 <template #state="slotProps">
@@ -94,6 +99,7 @@ import {
     bindDevice,
     queryDeviceMapping,
     saveDeviceMapping,
+    queryNoPagingPost
 } from '@/api/device/instance';
 import dayjs from 'dayjs';
 import { useInstanceStore } from '@/store/instance';
@@ -104,6 +110,10 @@ const props = defineProps({
     parentIds: {
         type: Array,
         default: () => [],
+    },
+    title: {
+        type: String,
+        default: '绑定子设备',
     },
 });
 
@@ -124,6 +134,15 @@ statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
 
 const columns = [
+{
+        title: '设备名称',
+        dataIndex: 'name',
+        key: 'name',
+        ellipsis: true,
+        search: {
+            type: 'string',
+        },
+    },
     {
         title: 'ID',
         dataIndex: 'id',
@@ -135,20 +154,24 @@ const columns = [
         },
     },
     {
-        title: '设备名称',
-        dataIndex: 'name',
-        key: 'name',
-        ellipsis: true,
-        search: {
-            type: 'string',
-        },
-    },
-    {
         title: '所属产品',
         dataIndex: 'productName',
         key: 'productName',
+        ellipsis: true,
         search: {
-            type: 'string',
+            type: 'select',
+            rename: 'productId',
+            options: () =>
+                new Promise((resolve) => {
+                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                        resolve(
+                            resp.result.map((item: any) => ({
+                                label: item.name,
+                                value: item.id,
+                            })),
+                        );
+                    });
+                }),
         },
     },
     {
@@ -180,18 +203,47 @@ const handleSearch = (e: any) => {
     params.value = e;
 };
 
-const onSelectChange = (keys: string[], rows: string[]) => {
-    _selectedRowKeys.value = [...keys];
-    console.log(rows);
-    _selectedRowMap.value = rows.map((item) => ({
-        deviceId: item.id,
-        deviceName: item.name,
-    }));
+// const onSelectChange = (keys: string[], rows: string[]) => {
+//     _selectedRowKeys.value = [...keys];
+//     console.log(rows);
+//     _selectedRowMap.value = rows.map((item) => ({
+//         deviceId: item.id,
+//         deviceName: item.name,
+//     }));
+// };
+
+const onSelectChange = (item: any, state: boolean) => {
+    const arr = new Set(_selectedRowKeys.value);
+    if (state) {
+        arr.add(item.id);
+    } else {
+        arr.delete(item.id);
+    }
+    _selectedRowKeys.value = [...arr.values()];
+};
+
+const selectAll = (selected: Boolean, selectedRows: any, changeRows: any) => {
+    if (selected) {
+        changeRows.map((i: any) => {
+            if (!_selectedRowKeys.value.includes(i.id)) {
+                _selectedRowKeys.value.push(i.id);
+            }
+        });
+    } else {
+        const arr = changeRows.map((item: any) => item.id);
+        const _ids: string[] = [];
+        _selectedRowKeys.value.map((i: any) => {
+            if (!arr.includes(i)) {
+                _ids.push(i);
+            }
+        });
+        _selectedRowKeys.value = _ids;
+    }
 };
 
 const cancelSelect = () => {
     _selectedRowKeys.value = [];
-    _selectedRowMap.value = [];
+    // _selectedRowMap.value = [];
 };
 
 const handleOk = () => {
@@ -218,7 +270,7 @@ const handleOk = () => {
                             deviceName: item.name,
                         };
                     });
-                if(arr.length){
+                if (arr.length) {
                     return saveDeviceMapping(instanceStore.current.id, {
                         info: arr,
                     });
