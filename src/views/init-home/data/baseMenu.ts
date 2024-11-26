@@ -2750,35 +2750,81 @@ export default [
                 "name": "新增",
                 "description": "",
                 "enabled": false,
-                "granted": true
+                "granted": true,
+                "permissions": [
+                  {
+                    "permission": "entity-template",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
               },
               {
                 "id": "delete",
                 "name": "删除",
                 "description": "",
                 "enabled": false,
-                "granted": true
+                "granted": true,
+                "permissions":[
+                  {
+                    "permission": "entity-template",
+                    "actions": [
+                      "query",
+                      "save",
+                      "delete"
+                    ]
+                  }
+                ]
               },
               {
                 "id": "update",
                 "name": "编辑",
                 "description": "",
                 "enabled": false,
-                "granted": true
+                "granted": true,
+                "permissions": [
+                  {
+                    "permission": "entity-template",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
               },
               {
                 "id": "issue",
                 "name": "下发",
                 "description": "",
                 "enabled": false,
-                "granted": true
+                "granted": true,
+                "permissions": [
+                  {
+                    "permission": "entity-template",
+                    "actions": [
+                      "query",
+                      "save"
+                    ]
+                  }
+                ]
               },
               {
                 "id": "action",
                 "name": "启/禁用",
                 "description": "",
                 "enabled": false,
-                "granted": true
+                "granted": true,
+                "permissions": [
+                  {
+                    "permission": "entity-template",
+                    "actions": [
+                      "enable",
+                      "disable"
+                    ]
+                  }
+                ]
               }
             ],
             "accessSupport": {

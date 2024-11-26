@@ -48,8 +48,20 @@ const beforeUpload = (file: any, files) => {
 
 const remove = () => {
     list.value = [];
+    const _metadata = cloneDeep(props.metadata);
+    _metadata.properties.fileName = '';
+    emit('update:metadata', _metadata)
     // formData.value.metadata = initMetadata;
 }
+watch(() => props.metadata, () => {
+    if(props.metadata?.properties?.fileName) {
+        list.value = [
+            {
+                name: props.metadata?.properties?.fileName
+            }
+        ]
+    }
+}, { immediate: true })
 </script>
 
 <style scoped lang="less">
