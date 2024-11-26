@@ -21,50 +21,53 @@
       </a-space>
     </div>
     <div class="tags-list">
-      <div class="tags-item" v-for="(item, index) in list" :key="item.id">
-        <div class="action">
-          <a-button danger @click="onDelete(index)" :disabled="list.length === 1">
-            <template #icon>
-              <AIcon type="DeleteOutlined"/>
-            </template>
-          </a-button>
-        </div>
-        <div style="width: 200px">
-          <a-select
-            v-model:value="item.key"
-            allow-clear
-            show-search
-            :options="options"
-            :field-names="{
-                  label: 'fullName',
-                  value: 'key'
-                }"
-            :filter-option="filterOption"
-            placeholder="请选装标签"
-            style="width: 100%"
-            @change="(key, option) => onTermsChange(key, option, index)"
-          />
-        </div>
-        <div class="value" style="flex: 1 1 0;min-width: 0">
-          <a-input v-model:value="item.value" placeholder="标签值" :maxLength="200" />
-        </div>
-        <div class="type">
-          <a-button v-if="index === list.length -1" @click="onAdd">
-            <template #icon>
-              <AIcon type="PlusOutlined"/>
-            </template>
-          </a-button>
-          <a-select
-            v-else
-            v-model:value="item.type"
-            :options="[
-                { label: '并且', value: 'and'},
-                { label: '或者', value: 'or'},
-              ]"
-          />
-        </div>
-
-      </div>
+      <a-form ref="formRef" :model="formData">
+        <a-form-item name="list" :rules="rules" validateStatus="success">
+          <div class="tags-item" v-for="(item, index) in formData.list" :key="item.id">
+            <div class="action">
+              <a-button danger @click="onDelete(index)" :disabled="formData.list.length === 1">
+                <template #icon>
+                  <AIcon type="DeleteOutlined"/>
+                </template>
+              </a-button>
+            </div>
+            <div style="width: 200px">
+              <a-select
+                v-model:value="item.key"
+                allow-clear
+                show-search
+                :options="options"
+                :field-names="{
+                      label: 'fullName',
+                      value: 'key'
+                    }"
+                :filter-option="filterOption"
+                placeholder="请选装标签"
+                style="width: 100%"
+                @change="(key, option) => onTermsChange(key, option, index)"
+              />
+            </div>
+            <div class="value" style="flex: 1 1 0;min-width: 0">
+              <a-input allow-clear v-model:value="item.value" placeholder="标签值" :maxLength="200" />
+            </div>
+            <div class="type">
+              <a-button v-if="index === formData.list.length -1" :disabled="formData.list.length >= 10" @click="onAdd">
+                <template #icon>
+                  <AIcon type="PlusOutlined"/>
+                </template>
+              </a-button>
+              <a-select
+                v-else
+                v-model:value="item.type"
+                :options="[
+                    { label: '并且', value: 'and'},
+                    { label: '或者', value: 'or'},
+                  ]"
+              />
+            </div>
+          </div>
+        </a-form-item>
+      </a-form>
     </div>
 
   </a-modal>
@@ -78,29 +81,7 @@ import {cloneDeep} from "lodash-es";
 
 const emit =  defineEmits(['change','update:value'])
 
-const list = ref([
-  {
-    id: randomString(8),
-    key: undefined,
-    value: undefined,
-    componentType: 'string',
-    type: 'and'
-  },
-  {
-    id: randomString(8),
-    key: undefined,
-    value: undefined,
-    componentType: 'string',
-    type: 'and'
-  },
-  {
-    id: randomString(8),
-    key: undefined,
-    value: undefined,
-    componentType: 'string',
-    type: 'and'
-  },
-])
+
 
 const { data: options, run } = useRequest(tagsList,
   {
@@ -113,12 +94,55 @@ const { data: options, run } = useRequest(tagsList,
     }
   })
 
+const formData = reactive({
+  list: [
+    {
+      id: randomString(8),
+      key: undefined,
+      value: undefined,
+      componentType: 'string',
+      type: 'and'
+    },
+    {
+      id: randomString(8),
+      key: undefined,
+      value: undefined,
+      componentType: 'string',
+      type: 'and'
+    },
+    {
+      id: randomString(8),
+      key: undefined,
+      value: undefined,
+      componentType: 'string',
+      type: 'and'
+    },
+  ]
+})
+const formRef = ref()
 const visible = ref(false);
 const listCache = ref([])
+const rules = [{
+  validator: (_, value) => {
+    const error = []
+
+    if (value.length) {
+      value.forEach((item) => {
+        if (item.key && !item.value) {
+          error.push(`【${item.label}】 请输入`)
+        }
+      })
+    }
+
+    if (error.length) {
+      return Promise.reject(error.join(';'))
+    }
+    return Promise.resolve()
+  }
+}]
 
 const searchText = computed(() => {
   const result = listCache.value.filter(item => item.key)
-  console.log(result)
   if (!result.length) {
     return '点击配置标签筛选范围'
   }
@@ -127,20 +151,17 @@ const searchText = computed(() => {
   }).join(';')
 });
 
-
-
-
 const show = () => {
   visible.value = true;
 
   if (listCache.value.length) {
-    list.value = cloneDeep(listCache.value)
+    formData.list = cloneDeep(listCache.value)
   }
   run()
 };
 
 const onAdd = () =>{
-  list.value.push({
+  formData.list.push({
     id: randomString(8),
     key: undefined,
     value: undefined,
@@ -150,13 +171,19 @@ const onAdd = () =>{
 }
 
 const onDelete = (index) =>{
-  list.value.splice(index,1)
+  formData.list.splice(index,1)
 }
 
-const submitSearch = () => {
+const submitSearch = async () => {
 
-  const resultFilter = list.value.filter(item => item.key)
-  listCache.value = cloneDeep(list.value)
+  const resp = await formRef.value.validateFields()
+
+  if (!resp) {
+    return
+  }
+
+  const resultFilter = formData.list.filter(item => item.key)
+  listCache.value = cloneDeep(formData.list)
   let result =[]
 
   if (resultFilter.length) {
@@ -181,15 +208,17 @@ const submitSearch = () => {
 
 const onTermsChange = (key, option, index) => {
   if (key) {
-    list.value[index].componentType = option.type
+    formData.list[index].componentType = option.type
+    formData.list[index].label = option.fullName
   } else {
-    list.value[index].componentType = "string"
-    list.value[index].value = undefined
+    formData.list[index].componentType = "string"
+    formData.list[index].value = undefined
+    formData.list[index].label = undefined
   }
 }
 
 const onInit = () => {
-  list.value = [
+  formData.list = [
     {
       id: randomString(8),
       key: undefined,
@@ -233,6 +262,13 @@ const filterOption = (input, option) => {
 
   .type {
     width: 72px;
+  }
+}
+
+.tags-list {
+  :deep(.ant-form-item-explain-success) {
+    color: @error-color;
+    margin-top: 8px;
   }
 }
 </style>
