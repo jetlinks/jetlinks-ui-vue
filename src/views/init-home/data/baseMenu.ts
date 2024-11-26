@@ -750,6 +750,8 @@ export default [
                     permission: 'dashboard',
                     actions: ['query'],
                   },
+                  {permission: "edge-action-sync", actions: ["save", "delete"]},
+                  {permission: "edge-manager", actions: ["proxy", "proxy_request"]}
                 ],
               },
               {
@@ -2802,14 +2804,39 @@ export default [
             showPage: ['edge-manager'],
             permissions: [
               {
-                permission: 'device-product',
-                actions: ['query'],
+                  "permission": "device-product",
+                  "actions": [
+                      "query"
+                  ]
               },
               {
-                permission: 'device-instance',
-                actions: ['query'],
+                  "permission": "device-instance",
+                  "actions": [
+                      "query"
+                  ]
               },
-            ],
+              {
+                  "permission": "agent-job",
+                  "actions": [
+                      "query",
+                      "save",
+                      "delete"
+                  ]
+              },
+              {
+                  "permission": "edge-action-sync",
+                  "actions": [
+                      "save",
+                      "delete"
+                  ]
+              },
+              {
+                  "permission": "edge-manager",
+                  "actions": [
+                      "proxy_request"
+                  ]
+              }
+          ],
             buttons: [
 
             ],
