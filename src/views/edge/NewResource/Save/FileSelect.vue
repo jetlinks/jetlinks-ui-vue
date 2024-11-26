@@ -50,6 +50,15 @@ const remove = () => {
     list.value = [];
     // formData.value.metadata = initMetadata;
 }
+watch(() => props.metadata, () => {
+    if(props.metadata) {
+        list.value = [
+            {
+                name: props.metadata?.properties?.fileName
+            }
+        ]
+    }
+}, { immediate: true })
 </script>
 
 <style scoped lang="less">
