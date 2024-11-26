@@ -119,7 +119,7 @@ const transformData = (arr) => {
         return [];
     }
 };
-
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 const defaultParams = {
     sorts: [{ name: 'createTime', order: 'desc' }],
     terms: [
@@ -137,7 +137,7 @@ const columns = [
         key: 'id',
         search: {
             type: 'string',
-            defaultTermType: 'eq',
+            // defaultTermType: 'eq',
         },
         ellipsis: true,
     },
@@ -160,7 +160,13 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp) => {
+                    queryNoPagingPost({ paging: false, terms: [
+                        {
+                            termType: 'in',
+                            column: 'accessProvider',
+                            value: provider,
+                        },
+                    ] }).then((resp) => {
                         resolve(
                             resp.result.map((item) => ({
                                 label: item.name,
