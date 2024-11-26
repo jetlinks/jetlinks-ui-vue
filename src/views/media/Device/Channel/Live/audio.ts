@@ -25,13 +25,12 @@ export const createRtc = () => {
     localPc = new RTCPeerConnection()
 }
 
-export const rtcStream = (url) => {
+export const rtcStream = () => {
     createRtc()
     _onTrack = []
 
     localPc!.ontrack = (e) => {
         _onTrack.push(e.track)
-
     }
 }
 

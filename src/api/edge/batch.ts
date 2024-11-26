@@ -17,6 +17,13 @@ export const _queryByEdge = (thingId: string,data:any) => server.post(`/edge/dev
 export const _commandByEdge = (thingId: string,commandId:string,data:any) => server.post(`/edge/device/${thingId}/_/edge/command/${commandId}/_execute`,data)
 
 /**
+ * 云端调边端详情
+ * @param thingId 边缘网关ID
+ * @param id 设备ID
+ */
+export const _detailByEdge = (thingId: string,id:string) => server.get(`/edge/device/${thingId}/_/device-instance/${id}/detail`,{})
+
+/**
  * 创建任务
  * @param data
  */

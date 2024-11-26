@@ -68,7 +68,6 @@ const columns = props.goal === 'device' ? [
         search: {
             type: 'date',
         },
-        scopedSlots: true,
     },
     {
         title: '阈值限制',

@@ -161,7 +161,7 @@ export function dealNoRef(type:string,schema?:any):any{
         case 'array':
             const itemType = schema?.items?.type
             const item = dealNoRef(itemType)
-            result = [item];
+            result = item ? [item] : [];
             break;
         case 'number':
             result = 0;

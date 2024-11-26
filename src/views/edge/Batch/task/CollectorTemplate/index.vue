@@ -17,7 +17,7 @@
       model="TABLE"
       style="padding: 0"
       :columns="columns"
-      :request="queryPage"
+      :request="queryFn"
       :params="params"
       :scroll="{ y: 320}"
       :defaultParams="{
@@ -81,6 +81,7 @@ const handleSearch = (e) => {
 const queryFn = async (_params) => {
 
   const resp = await queryPage(_params)
+  console.log('resp====',resp);
   return {
     status: resp.status,
     code: resp.status,
@@ -88,10 +89,9 @@ const queryFn = async (_params) => {
       ...resp.result,
       data: resp.result.data?.map(item => {
         const _metadata = JSON.parse(item.metadata)
-        const _templateMetadata = JSON.parse(_metadata.metadata || '{}')
-        item.file = item.properties.fileName
-        item.description = _templateMetadata.description
-        item.type = _templateMetadata.provider
+        item.file = _metadata.properties.fileName
+        item.description = _metadata.description
+        // item.type = _metadata.provider
         return item
       }),
     },

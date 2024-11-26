@@ -68,6 +68,7 @@
                             :dataSource="_dataSource"
                             :pagination="false"
                             :scroll="{ y: '400px' }"
+                            :custom-row="customRow"
                         >
                             <template #bodyCell="{ column, record }">
                                 <template v-if="column.key === 'id'">
@@ -196,6 +197,7 @@
                             class="right-item"
                             :draggable="true"
                             @dragstart="() => onStart(item)"
+                            @click="onDetail(item)"
                         >
                             <div class="item-name">
                                 <j-ellipsis>{{ item.name }}</j-ellipsis>
@@ -241,6 +243,7 @@
             </div>
         </div>
     </div>
+    <DeviceDetail v-if="visible" :data="_current" :type="_type" :edgeId="edgeId" @close="visible = false"/>
 </template>
 
 <script setup name="TaskChildren">
@@ -255,6 +258,7 @@ import { getImage } from '@/utils/comm';
 import { onlyMessage } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
 import { cloneDeep } from 'lodash-es';
+import DeviceDetail from './DeviceDetail/index.vue'
 
 const props = defineProps({
     options: {
@@ -279,10 +283,13 @@ const _checked = ref(true);
 const _search = ref('');
 const _edgeInitList = ref([]);
 const _bindInitList = ref([]);
-
+const visible = ref(false);
+const _current = ref({});
+const _type = ref('device');
 const options = computed(() => {
     return props.options;
 });
+
 
 const stateMap = new Map();
 stateMap.set('success', {
@@ -336,6 +343,22 @@ const columns = [
         scopedSlots: true,
     },
 ];
+
+const customRow = (record) => {
+    return {
+        onClick: (e) => {
+            visible.value = true;
+            _current.value = record;
+            _type.value = 'device';
+        }
+    };
+};
+
+const onDetail = (record) => {
+    visible.value = true;
+    _current.value = record;
+    _type.value = 'edge';
+}
 
 const handleSearch = async (e) => {
     if (edgeId.value && e) {

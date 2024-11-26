@@ -9,6 +9,7 @@
             <div style="width: 750px">
                 <EditTable
                     ref="tableRef"
+                    :validateRowKey="true"
                     :columns="myColumns"
                     :dataSource="dataSource"
                     :pagination="false"

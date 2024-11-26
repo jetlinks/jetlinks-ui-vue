@@ -50,7 +50,20 @@ const saveBtn = () => {
 const findName = (item: any) => {
   let name = undefined
   if (item.dataType) {
-    const _element = item.dataType.elements?.find((a: any) => a.value === item.value)
+    let arr = item.dataType?.elements || []
+    if(item.dataType?.type === 'boolean'){
+      arr = [
+        {
+          text: item.dataType.trueText,
+          value: item.dataType.trueValue,
+        },
+        {
+          text: item.dataType.falseText,
+          value: item.dataType.falseValue,
+        }
+      ]
+    }
+    const _element = arr?.find((a: any) => a.value === item.value)
     name = _element?.text
   }
   return name || item.value

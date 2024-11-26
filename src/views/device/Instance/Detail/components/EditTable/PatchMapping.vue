@@ -12,7 +12,19 @@
             </div>
             <j-spin :spinning="loading">
                 <div class="map-tree-content">
-                    <j-card class="map-tree-content-card" title="源数据">
+                    <j-card class="map-tree-content-card" >
+                      <template #title>
+                        <div class="map-tree-header">
+                          <span>数据源</span>
+                          <div>
+                            <a-input placeholder="请输入通道或采集器名称" allow-clear @change="onSearch">
+                              <template #suffix>
+                                <AIcon type="SearchOutlined" />
+                              </template>
+                            </a-input>
+                          </div>
+                        </div>
+                      </template>
                         <j-tree
                             checkable
                             :height="300"
@@ -56,8 +68,9 @@
 
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
-import { onlyMessage } from '@/utils/comm';
+import {onlyMessage,} from '@/utils/comm';
 import { useInstanceStore } from "store/instance";
+import { debounce } from 'lodash-es'
 
 const _props = defineProps({
     type: {
@@ -83,13 +96,17 @@ const rightList = ref<any[]>([]);
 
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
-
+let dataSourceCache
 const handleData = (data: any[], type: string, provider?: string) => {
     data.forEach((item) => {
         item.key = item.id;
         item.title = item.name;
         item.checkable = type === 'collectors';
-        provider ? (item.provider = provider) : '';
+
+        if (provider) {
+          item.provider = provider
+        }
+
         if (
             item.collectors &&
             Array.isArray(item.collectors) &&
@@ -101,8 +118,10 @@ const handleData = (data: any[], type: string, provider?: string) => {
                 item.provider,
             );
         }
+
         if (item.points && Array.isArray(item.points) && item.points.length) {
             item.children = handleData(item.points, 'points');
+
         }
     });
     return data as any[];
@@ -110,19 +129,17 @@ const handleData = (data: any[], type: string, provider?: string) => {
 
 const handleSearch = async () => {
     loading.value = true;
-    const resp = await treeMapping({
-        // terms: [
-        //     {
-        //         column: 'provider',
-        //         value: _props.type,
-        //     },
-        // ],
-    });
+
+    const params = {}
+
+    const resp = await treeMapping(params);
     loading.value = false;
     if (resp.status === 200) {
-        dataSource.value = handleData(resp.result as any[], 'channel');
+        const _data = handleData(resp.result as any[], 'channel');
+        dataSourceCache = JSON.stringify(_data)
+        dataSource.value = _data
     }
-};
+}
 
 const onCheck = (keys: string[], e: any) => {
     checkedKeys.value = [...keys];
@@ -159,12 +176,12 @@ const handleClick = async () => {
             }));
             params.push(...array);
         });
-        const filterParms = params.filter((item) => !!item.metadataId);
-        if (filterParms && filterParms.length !== 0) {
+        const filterParams = params.filter((item) => !!item.metadataId);
+        if (filterParams?.length !== 0) {
             const res = await saveMapping(
                 _props.deviceId,
                 _props.type,
-                filterParms,
+              filterParams,
             );
             if (res.status === 200) {
                 onlyMessage('操作成功');
@@ -178,6 +195,31 @@ const handleClick = async () => {
 const handleClose = () => {
     _emits('close');
 };
+
+const treeFilter = (data: any[], value: any, key: string = 'name'): any[] => {
+  if (!data) return []
+
+  return data.filter(item => {
+    if (item[key].includes(value)) {
+      return true
+    }
+
+    // 排除点位的搜索
+    if (item.children && item.children.length && !item.hasOwnProperty('points')) {
+      item.children = treeFilter(item.children || [], value, key)
+      return !!item.children.length
+    }
+
+    return false
+  })
+}
+
+const onSearch = debounce((e) => {
+  // handleSearch()
+  const _data = JSON.parse(dataSourceCache || '[]')
+  const text = e.target.value
+  dataSource.value = text ? treeFilter(_data, e.target.value, 'title') : _data
+}, 300)
 
 watchEffect(() => {
     if (_props.type) {
@@ -201,5 +243,10 @@ watchEffect(() => {
             height: 300px;
         }
     }
+}
+.map-tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

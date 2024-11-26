@@ -62,34 +62,22 @@ export const useBatchOperateOptions = () => {
         },
     ])
 
-    if (menuStore.hasMenu('EdgeResource/AiModel')) {
-        batchOperateOptions.value.push({
+    if (menuStore.hasMenu('edge/NewResource')) {
+        batchOperateOptions.value.push(...[{
             icon: 'icon-rongqi',
             label: '下发AI模型',
             tip: '批量下发AI模型至边缘网关',
             value: 'AiModel',
             key: 'resourceIssue',
-        })
-    }
-
-    if (menuStore.hasMenu('EdgeResource/AiResource')) {
-        batchOperateOptions.value.push({
-            icon: 'icon-rongqi1',
-            label: '下发AI底库',
-            tip: '批量下发AI底库至边缘网关',
-            value: 'AiResource',
-            key: 'resourceIssue',
-        })
-    }
-
-    if (menuStore.hasMenu('EdgeResource/CollectorTemplate')) {
-        batchOperateOptions.value.push({
-            icon: 'icon-xiafacaijiqimoban',
-            label: '下发采集器模版',
-            tip: '批量下发AI采集器模版至边缘网关',
-            value: 'CollectorTemplate',
-            key: 'resourceIssue',
-        })
+        },
+            {
+                icon: 'icon-xiafacaijiqimoban',
+                label: '下发采集器模版',
+                tip: '批量下发AI采集器模版至边缘网关',
+                value: 'CollectorTemplate',
+                key: 'resourceIssue',
+            }
+        ])
     }
 
     return {
