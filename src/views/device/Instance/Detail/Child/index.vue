@@ -696,6 +696,7 @@ const getActions = (type, data) => {
                 } else {
                     actionRef.type = 'deploy';
                 }
+              
             },
         },
         {
@@ -737,7 +738,7 @@ const getActions = (type, data) => {
             disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: () => {
-                isMap.value = false;
+               isMap.value = false;
                 if (_checked.value) {
                     menuVisible.value = false;
                     actionRef.visible = true;
