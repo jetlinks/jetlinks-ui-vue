@@ -79,7 +79,6 @@
                         name="media_url"
                         :rules="[
                             { required: true, message: '请输入视频地址' },
-                            { max: 128, message: '最多可输入128个字符' },
                             {
                                 validator: validateUrl,
                             },
