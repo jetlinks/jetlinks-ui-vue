@@ -38,27 +38,58 @@
                                 <template v-if="column.dataIndex === 'type'">{{
                                     record.type?.name
                                 }}</template>
-                                <value-item
+                                <template
                                     v-else-if="column.dataIndex === 'value'"
-                                    v-model:modelValue="
-                                        configValue[record.property]
-                                    "
-                                    :itemType="
-                                        item.properties[index].type?.type
-                                    "
-                                    :extra="{
-                                        dropdownStyle: {
-                                            zIndex: 1071,
-                                        },
-                                        popupStyle: {
-                                            zIndex: 1071,
-                                        },
-                                    }"
-                                    :getPopupContainer="
-                                        (node) => tableWrapperRef || node
-                                    "
-                                    :options="getOptions(item, index)"
-                                />
+                                >
+                                    <a-tooltip
+                                        v-if="judgmentConflict(record)"
+                                        color="#ffffff"
+                                        :get-popup-container="popContainer"
+                                        :arrowPointAtCenter="true"
+                                        placement="topRight"
+                                    >
+                                        <template #title>
+                                            <span style="color: #1d2129"
+                                                >字段冲突，请重新配置</span
+                                            >
+                                        </template>
+                                        <div
+                                            class="table-form-error-target"
+                                        ></div>
+                                    </a-tooltip>
+                                    <div
+                                        style="position: relative"
+                                        :class="{
+                                            'edit-table-form-has-error':
+                                                judgmentConflict(record),
+                                        }"
+                                    >
+                                        <value-item
+                                            v-model:modelValue="
+                                                configValue[record.property]
+                                            "
+                                            :itemType="
+                                                item.properties[index].type
+                                                    ?.type
+                                            "
+                                            :extra="{
+                                                dropdownStyle: {
+                                                    zIndex: 1071,
+                                                },
+                                                popupStyle: {
+                                                    zIndex: 1071,
+                                                },
+                                                disabled:
+                                                    judgmentConflict(record),
+                                            }"
+                                            :getPopupContainer="
+                                                (node) =>
+                                                    tableWrapperRef || node
+                                            "
+                                            :options="getOptions(item, index)"
+                                        />
+                                    </div>
+                                </template>
                             </template>
                         </j-table>
                     </j-collapse-panel>
@@ -407,6 +438,10 @@ const columns = ref([
     },
 ]);
 
+const popContainer = (e) => {
+    return e;
+};
+
 const limitSelect = (keys: string[], key: string, isSelected: boolean) => {
     if (!isSelected) {
         // 删除
@@ -506,30 +541,26 @@ const confirm = () => {
             const expands = {
                 ...(configValue.value || {}),
             };
-            // if (metrics) {
-            //     expands.metrics = metrics;
-            // }
+            if (metrics) {
+                expands.metrics = metrics;
+            }
             if (showExtra.value && extraForm.type) {
                 ThresholdRef.value?.validate().then(async () => {
                     await thresholdUpdate(extraForm);
-                    // expands.otherEdit = true;
+                    expands.otherEdit = true;
                     emit('update:value', {
                         ...props.value,
-                        expands,
-                        metrics,
-                        otherEdit:true
+                        ...expands,
                     });
                     emit('change');
                     modalVisible.value = false;
                     resolve(true);
                 });
             } else {
-                // expands.otherEdit = true;
+                expands.otherEdit = true;
                 emit('update:value', {
                     ...props.value,
-                    expands,
-                    otherEdit:true,
-                    metrics
+                    ...expands,
                 });
                 emit('change');
                 modalVisible.value = false;
@@ -562,16 +593,28 @@ const getOptions = (item: any, index: any) => {
     }
 };
 
+//判断设备接入配置项是否跟物模型字段冲突
+const judgmentConflict = (record: any) => {
+    return (
+        record.property === 'metrics' ||
+        (props.metadataType === 'events' && record.property === 'level') ||
+        (props.metadataType === 'properties' &&
+            ['groupId', 'groupName', 'source', 'type', 'virtualRule'].includes(
+                record.property,
+            ))
+    );
+};
+
 watch(
     () => modalVisible.value,
     async () => {
         if (modalVisible.value) {
-            // configValue.value = omit(props.value, [
-            //     'source',
-            //     'type',
-            //     'metrics',
-            //     'required',
-            // ]);
+            configValue.value = omit(props.value, [
+                'source',
+                'type',
+                'metrics',
+                'required',
+            ]);
             getConfig();
             if (showExtra.value) {
                 thresholdDetailQuery();
@@ -624,5 +667,15 @@ watch(
     :deep(.j-card-item) {
         padding: 12px 14px !important;
     }
+}
+
+.table-form-error-target {
+    position: absolute;
+    right: 2px;
+    top: 0px;
+    border: 16px solid transparent;
+    border-top-color: @error-color;
+    border-right-width: 0;
+    border-bottom-width: 0;
 }
 </style>
