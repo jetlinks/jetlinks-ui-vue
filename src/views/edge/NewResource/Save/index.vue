@@ -79,7 +79,7 @@
                 :rules="{
                     required: true,
                     message: '请选择文件',
-                    trigger: 'blur'
+                    trigger: 'change'
                 }"
             >
                 <FileSelect
