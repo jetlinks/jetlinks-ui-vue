@@ -163,15 +163,25 @@ const requestCard = reactive<cardType>({
     tips: [],
     codeText: undefined,
     getData: () => {
-        if (!props.selectApi.requestBody)
-            return (requestCard.tableData = props.selectApi.parameters);
-        const schema =
-            props.selectApi.requestBody.content['application/json'].schema;
+        if (!props.selectApi.requestBody) {
+          requestCard.tableData = props.selectApi.parameters?.map(i => {
+            const desc =  i.description ? (i.description + (i.schema?.enum?.length ? `,可用值:${i.schema?.enum.join(',')}` : '')) : '';
+            const _paramsType = i.schema?.type ? (i.schema?.type + (i.schema?.format ? `(${i.schema?.format})` : '')) : ''
+            return {
+              ...i,
+              paramsName: i.name,
+              paramsType: _paramsType,
+              desc: desc
+            }
+          })
+          return;
+        }
+        const schema = props.selectApi.requestBody.content['application/json'].schema;
         const _ref = schema.$ref || schema?.items?.$ref;
         // schema不是Java中的类的话则不进行解析，直接结束
         if (!_ref) {
             const type = schema.type || '';
-          if(type === 'array'){
+          if(type === 'array' || type === 'object'){
             requestCard.codeText = JSON.stringify(dealNoRef(type, schema));
           } else {
             requestCard.codeText = String(dealNoRef(type, schema))
@@ -200,9 +210,6 @@ const requestCard = reactive<cardType>({
                 },
             ];
         }
-
-      console.log(requestCard,'requestCard')
-
         setTimeout(() => {
           loading.value = true
         }, 1000)
