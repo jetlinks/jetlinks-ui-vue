@@ -13,6 +13,10 @@
         :params="params"
         :gridColumn="2"
         model="CARD"
+        :pagination="{
+            pageSizeOptions: ['4', '12', '24', '48'],
+            showSizeChanger: true,
+        }"
         :rowSelection="{
             selectedRowKeys: _selectedRowKeys,
             onSelect: onSelectChange,
@@ -107,6 +111,7 @@ const props = defineProps({
         default: () => ([]),
     }
 })
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 const columns = [
     {
         title: 'ID',
@@ -137,9 +142,15 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({paging: false}).then((resp: any) => {
+                    queryNoPagingPost({ paging: false, terms: [
+                            {
+                                termType: 'in',
+                                column: 'accessProvider',
+                                value: provider,
+                            },
+                        ] }).then((resp) => {
                         resolve(
-                            resp.result.map((item: any) => ({
+                            resp.result.map((item) => ({
                                 label: item.name,
                                 value: item.id,
                             })),
@@ -213,16 +224,12 @@ const columns = [
 ];
 
 const defaultParams = {
+    pageSize: 4,
     sorts: [{name: 'createTime', order: 'desc'}],
     terms: [
         {
-            terms: [
-                {
-                    column: 'productId$product-info',
-                    value: 'accessProvider is agent-device-gateway',
-                },
-            ],
-            type: 'and',
+            column: 'productId$product-info',
+            value: 'accessProvider in (agent-device-gateway,agent-media-device-gateway,official-edge-gateway)',
         },
     ],
 };
