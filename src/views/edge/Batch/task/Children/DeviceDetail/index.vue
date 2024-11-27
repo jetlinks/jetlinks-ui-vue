@@ -1,5 +1,5 @@
 <template>
-    <a-modal visible :footer="null" width="70vw" @cancel="emit('close')" :centered="true">
+    <a-modal visible :footer="null" width="70vw" @cancel="emit('close')" :centered="true" :maskClosable="false">
         <template #title>
             <span style="margin-right: 24px">{{ data.name }}</span>
             <j-badge
@@ -43,7 +43,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['close']);
-
+provide('_edgeId', props.edgeId)
 const statusMap = new Map();
 statusMap.set('online', 'success');
 statusMap.set('offline', 'error');
