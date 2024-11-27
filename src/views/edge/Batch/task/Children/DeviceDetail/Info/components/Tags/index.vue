@@ -19,7 +19,7 @@
                 <template #label>
                     <Ellipsis>{{ `${item.name}（${item.key})` }}</Ellipsis>
                 </template>
-                <Ellipsis>{{ findName(item) }}</Ellipsis>
+                <Ellipsis>{{ findName(item) || '--'}}</Ellipsis>
             </j-descriptions-item>
         </j-descriptions>
         <Save v-if="visible" @close="visible = false" @save="saveBtn" />

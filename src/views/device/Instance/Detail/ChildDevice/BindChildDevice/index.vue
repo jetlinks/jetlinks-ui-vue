@@ -24,7 +24,7 @@
                 :request="query"
                 model="TABLE"
                 :defaultParams="{
-                    sorts:[{ name: 'createTime', order: 'desc' }],
+                    sorts: [{ name: 'createTime', order: 'desc' }],
                     terms: [
                         {
                             terms: [
@@ -99,7 +99,7 @@ import {
     bindDevice,
     queryDeviceMapping,
     saveDeviceMapping,
-    queryNoPagingPost
+    queryNoPagingPost,
 } from '@/api/device/instance';
 import dayjs from 'dayjs';
 import { useInstanceStore } from '@/store/instance';
@@ -134,7 +134,7 @@ statusMap.set('offline', 'error');
 statusMap.set('notActive', 'warning');
 
 const columns = [
-{
+    {
         title: '设备名称',
         dataIndex: 'name',
         key: 'name',
@@ -163,7 +163,16 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                    queryNoPagingPost({
+                        paging: false,
+                        terms: [
+                            {
+                                termType: 'eq',
+                                column: 'deviceType',
+                                value: 'childrenDevice',
+                            },
+                        ],
+                    }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,

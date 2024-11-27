@@ -426,7 +426,7 @@ const editStatus = ref(false);
 const route = useRoute();
 const isMap = ref(false);
 const dropLoading = ref(false);
-const dropStateTiming = ref([''])
+const isToDetail = ref(false)
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
@@ -927,6 +927,7 @@ const handleRefresh = () => {
 };
 
 const onJump = (id) => {
+    isToDetail.value = true;
     TabsChange(() => {
         menuStory.jumpPage('device/Instance/Detail', { id });
     });
@@ -1165,8 +1166,8 @@ const TabsChange = (next) => {
             zIndex: 1400,
             closable: true,
             onOk: () => {
-                onSaveAll();
-                next?.();
+                onSaveAll(()=>next?.());
+                
             },
             onCancel: (e) => {
                 if (!e.triggerCancel) {
@@ -1186,12 +1187,22 @@ const TabsChange = (next) => {
 
 onBeforeRouteUpdate((to, from, next) => {
     // 设备管理内路由跳转
-    TabsChange(next);
+    if(isToDetail.value){
+        next
+    }else{
+        TabsChange(next);
+    }
+    
 });
 
 onBeforeRouteLeave((to, from, next) => {
     // 设备管理外路由跳转
-    TabsChange(next);
+    if(isToDetail.value){
+        next
+    }else{
+        TabsChange(next);
+    }
+    
 });
 
 watch(
