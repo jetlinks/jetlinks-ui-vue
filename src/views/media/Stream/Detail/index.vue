@@ -121,6 +121,7 @@
                                     v-model:value="
                                         formData.configuration.apiPort
                                     "
+                                    @change="changePort"
                                 />
                             </j-form-item>
                         </j-col>
@@ -477,6 +478,7 @@
                                                     :min="1"
                                                     :max="65535"
                                                     :precision="0"
+                                                    disabled
                                                     placeholder="MP4端口"
                                                     v-model:value="
                                                         formData
@@ -520,6 +522,7 @@
                                                     :min="1"
                                                     :max="65535"
                                                     :precision="0"
+                                                    disabled
                                                     placeholder="HLS端口"
                                                     v-model:value="
                                                         formData
@@ -563,6 +566,7 @@
                                                     :min="1"
                                                     :max="65535"
                                                     :precision="0"
+                                                    disabled
                                                     placeholder="FLV端口"
                                                     v-model:value="
                                                         formData
@@ -960,6 +964,12 @@ const formData = ref<FormDataType>({
     },
 });
 
+const changePort = (port: any) => {
+    formData.value.otherConfiguration.internalNet.flvPort = port;
+    formData.value.otherConfiguration.internalNet.mp4Port = port;
+    formData.value.otherConfiguration.internalNet.hlsPort = port;
+};
+
 const onSubmit = async () => {
     let data: any = await formRef.value?.validate();
     let params = { ...data };
@@ -1050,8 +1060,11 @@ const onSubmit = async () => {
     ];
 
     params = omit(params, ['otherConfiguration']);
-    params.configuration.distinguish = formData.value.configuration.distinguish;
-    params.configuration.playerConfig = playerConfig;
+    if (params.provider === 'embedded-zlmedia') {
+        params.configuration.distinguish =
+            formData.value.configuration.distinguish;
+        params.configuration.playerConfig = playerConfig;
+    }
     loading.value = true;
     const response =
         id === ':id'

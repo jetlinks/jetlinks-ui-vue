@@ -260,7 +260,7 @@ export const openEdgeUrl = async (id: string) => {
     const fallbackBase64 = btoa(`${_location}#/edge/token/${id}`)
     const basePath = BASE_API_PATH?.replace('/', '') || ''
 
-    const url = `${_location}${basePath}/edge/device:${id}/_proxy/${proxyUrl.result}/${fallbackBase64}/${base64Url}/#/?token=${resp.result}&terminal=cloud`
+    const url = `${_location}${basePath}/edge/device:${id}/_proxy/${proxyUrl.result}/${fallbackBase64}/${base64Url}/#/?token=${resp.result}&thingId=${id}&terminal=cloud`
 
     window.open(url)
   }

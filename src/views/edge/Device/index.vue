@@ -249,6 +249,7 @@ const edgeDeviceRef = ref<Record<string, any>>({});
 const importVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const current = ref<Record<string, any>>({});
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
@@ -294,7 +295,13 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                    queryNoPagingPost({ paging: false, terms: [
+                        {
+                            termType: 'in',
+                            column: 'accessProvider',
+                            value: provider,
+                        },
+                    ], }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,

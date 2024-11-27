@@ -77,7 +77,7 @@
             <j-form-item label="推送控制">
                 <a-switch v-model:checked="formData.pushControl"></a-switch>
             </j-form-item>
-            <j-form-item :name="['features']" v-if="formData.pushControl"> 
+            <j-form-item :name="['features']" v-if="formData.pushControl">
                 <j-checkbox-group v-model:value="formData.features">
                     <j-checkbox value="changedOnly" name="type"
                         >只推送变化的数据</j-checkbox
@@ -106,7 +106,7 @@ import {
     savePointBatch,
     getBacnetValueType,
 } from '@/api/data-collect/collector';
-import { cloneDeep, isObject , omit } from 'lodash-es';
+import { cloneDeep, isObject, omit } from 'lodash-es';
 import { regOnlyNumber } from '../../../data';
 
 const props = defineProps({
@@ -143,7 +143,7 @@ const getIdAndType = async () => {
 
 const handleOk = async () => {
     const data = cloneDeep(formData.value);
-    const { accessModes, features, interval, valueType , pushControl } = data;
+    const { accessModes, features, interval, valueType, pushControl } = data;
     const ischange =
         accessModes.length !== 0 ||
         pushControl ||
@@ -162,12 +162,14 @@ const handleOk = async () => {
                     );
                 }
             }
-            if (features.length !== 0) {
-                i.features = data.features;
-            } else {
-                i.features = [];
+            if (pushControl) {
+                if (features.length !== 0) {
+                    i.features = data.features;
+                } else {
+                    i.features = [];
+                }
             }
-            
+
             if (!!interval || Number(interval) === 0) {
                 i.interval = data.interval;
                 i.configuration = {

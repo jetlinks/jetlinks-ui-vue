@@ -327,7 +327,7 @@ const props = defineProps({
     },
 });
 const emit = defineEmits(['closeDetail', 'refresh', 'copy']);
-const columns = [
+const columns = computed(()=>([
     {
         title: '插件ID',
         key: 'pulginId',
@@ -335,7 +335,7 @@ const columns = [
         width: 150,
     },
     {
-        title: '插件名称',
+        title: props.data.jobType==='CollectorTemplate' ? '模版名称' : '插件名称',
         key: 'pulginName',
         scopedSlots: true,
         width: 150,
@@ -393,7 +393,7 @@ const columns = [
         width: 120,
         scopedSlots: true,
     },
-];
+]));
 
 const tableRef = ref();
 const dataSource = ref({});
