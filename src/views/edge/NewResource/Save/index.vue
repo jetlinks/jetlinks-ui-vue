@@ -40,11 +40,10 @@
             <a-form-item
                 v-if="formData.targetType == 'AiModel'"
                 label="文件"
-                :name="['properties', 'fileName']"
+                name="properties"
                 :rules="{
                     required: true,
-                    message: '请上传文件',
-                    trigger: 'blur'
+                    validator: validateModelFile
                 }"
             >
                 <UploadFile
@@ -58,11 +57,10 @@
             <a-form-item
                 v-else-if="formData.targetType == 'PluginDriver'"
                 label="文件"
-                :name="['metadata', 'filename']"
+                name="metadata"
                 :rules="{
                     required: true,
-                    message: '请上传文件',
-                    trigger: 'blur'
+                    validator: validatePluginFile
                 }"
             >
                 <UploadFile
@@ -70,20 +68,22 @@
                     :fileInfo="{url: formData.metadata.configuration.location, name: formData.metadata.filename}"
                     v-model:model-value="formData.metadata.configuration.location"
                     v-model:fileName="formData.metadata.filename"
+                    @change="handlePluginFileChange"
                 />
             </a-form-item>
             <a-form-item
                 v-else-if="formData.targetType == 'entityTemplate:Collector'"
                 label="文件"
-                :name="['metadata' ,'properties', 'fileName']"
+                name="metadata"
                 :rules="{
                     required: true,
-                    message: '请选择文件',
-                    trigger: 'change'
+                    validator: validateTemplateFile
                 }"
             >
                 <FileSelect
                     v-model:metadata="formData.metadata"
+                    v-model:fileName="formData.metadata.properties.fileName"
+                    @change="handleTemplateFileChange"
                 />
             </a-form-item>
             <a-form-item label="说明">
@@ -184,8 +184,37 @@ const rules = {
 }
 
 const handleFileChange = (data: any) => {
+    formRef.value?.validateFields(['properties'])
     formData.value.metadata.others.fileName = data.name;
     formData.value.metadata.others.md5 = data.md5;
+}
+
+const handlePluginFileChange = () => {
+    formRef.value?.validateFields(['metadata'])
+}
+const handleTemplateFileChange = () => {
+    formRef.value?.validateFields(['metadata'])
+}
+
+const validateModelFile = (rule: any, value: string) => {
+    if (!value?.fileName) {
+        return Promise.reject('请选择文件');
+    }
+    return Promise.resolve();
+}
+
+const validatePluginFile = (rule: any, value: string) => {
+    if (!value?.filename) {
+        return Promise.reject('请选择文件');
+    }
+    return Promise.resolve();
+}
+
+const validateTemplateFile = (rule: any, value: string) => {
+    if (!value?.properties?.fileName) {
+        return Promise.reject('请选择文件');
+    }
+    return Promise.resolve();
 }
 const handleSave = () => {
     formRef.value?.validate().then(async () => {
@@ -215,12 +244,19 @@ const handleChangeTargetType = (e: any) => {
     switch (formData.value.targetType) {
         case 'AiModel':
             formData.value.metadata = cloneDeep(initAiModelMetadata);
+            formData.value.properties = {
+                fileName: ""
+            }
             break;
         case 'PluginDriver':
             formData.value.metadata = cloneDeep(initPluginDriverMetadata);
+            formData.value.properties = {
+                fileName: ""
+            }
             break;
         case 'entityTemplate:Collector':
             formData.value.metadata = cloneDeep(initCollectorTemplateMetadata);
+            delete formData.value.properties
             break;
     }
 }

@@ -14,7 +14,7 @@
 import {onlyMessage} from "@/utils/comm";
 import {PropType} from "vue";
 import {cloneDeep} from "lodash-es";
-const emit = defineEmits(['update:metadata'])
+const emit = defineEmits(['update:metadata', 'update:fileName', 'change']);
 const props = defineProps({
     metadata: {
         type: Object as PropType<Record<string, any>>,
@@ -36,11 +36,10 @@ const beforeUpload = (file: any, files) => {
         list.value = files;
         const data = JSON.parse(text || '{}');
         const _metadata = cloneDeep(props.metadata);
-        _metadata.properties.fileName = file.name;
         Object.assign(_metadata, data)
-        // formData.value.metadata.properties.fileName = file.name;
-        // formRef.value?.validateFields('metadata');
         emit('update:metadata', _metadata)
+        emit('update:fileName', file.name)
+        emit('change')
         return true;
     };
     return false;
@@ -48,10 +47,8 @@ const beforeUpload = (file: any, files) => {
 
 const remove = () => {
     list.value = [];
-    const _metadata = cloneDeep(props.metadata);
-    _metadata.properties.fileName = '';
-    emit('update:metadata', _metadata)
-    // formData.value.metadata = initMetadata;
+    emit('change')
+    emit('update:fileName', '')
 }
 watch(() => props.metadata, () => {
     if(props.metadata?.properties?.fileName) {
