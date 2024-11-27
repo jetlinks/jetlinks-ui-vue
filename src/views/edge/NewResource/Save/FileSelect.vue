@@ -13,8 +13,8 @@
 <script setup lang="ts">
 import {onlyMessage} from "@/utils/comm";
 import {PropType} from "vue";
-import {cloneDeep} from "lodash-es";
-const emit = defineEmits(['update:metadata', 'update:fileName', 'change']);
+import {cloneDeep, omit} from "lodash-es";
+const emit = defineEmits(['update:metadata'])
 const props = defineProps({
     metadata: {
         type: Object as PropType<Record<string, any>>,
@@ -28,7 +28,6 @@ const beforeUpload = (file: any, files) => {
     reader.readAsText(file);
     reader.onload = async (result) => {
         const text = result.target?.result;
-        console.log('text: ', text);
         if (!file.type.includes('json')) {
             onlyMessage('请上传json格式文件', 'error');
             return false;
@@ -36,10 +35,11 @@ const beforeUpload = (file: any, files) => {
         list.value = files;
         const data = JSON.parse(text || '{}');
         const _metadata = cloneDeep(props.metadata);
-        Object.assign(_metadata, data)
+        _metadata.properties.fileName = file.name;
+        Object.assign(_metadata, omit(data, ['createTime']))
+        // formData.value.metadata.properties.fileName = file.name;
+        // formRef.value?.validateFields('metadata');
         emit('update:metadata', _metadata)
-        emit('update:fileName', file.name)
-        emit('change')
         return true;
     };
     return false;
@@ -47,8 +47,10 @@ const beforeUpload = (file: any, files) => {
 
 const remove = () => {
     list.value = [];
-    emit('change')
-    emit('update:fileName', '')
+    const _metadata = cloneDeep(props.metadata);
+    _metadata.properties.fileName = '';
+    emit('update:metadata', _metadata)
+    // formData.value.metadata = initMetadata;
 }
 watch(() => props.metadata, () => {
     if(props.metadata?.properties?.fileName) {

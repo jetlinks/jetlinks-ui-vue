@@ -279,10 +279,16 @@ const gatewayColumns = [
         width: 100,
     },
     {
-        title: '设备状态',
-        dataIndex: 'deviceState',
-        ellipsis: true,
-        width: 100,
+        title: '响应超时时间',
+        dataIndex: 'timeoutSeconds',
+        key: 'timeoutSeconds',
+        scopedSlots: true,
+    },
+    {
+        title: '重试次数',
+        dataIndex: 'maxRetry',
+        key: 'maxRetry',
+        scopedSlots: true,
     },
     {
         title: '完成时间',
