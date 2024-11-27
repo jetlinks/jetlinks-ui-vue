@@ -93,11 +93,15 @@
     </template>
     <template #extra>
       <j-space>
-        <j-button
+        <PermissionButton
             @click="onClick"
             v-if="_arr.includes(instanceStore.current?.accessProvider || '')"
-            type="primary" :disabled="instanceStore.current?.state?.value !== 'online'">远程访问
-        </j-button>
+            type="primary"
+            :disabled="instanceStore.current?.state?.value !== 'online'"
+            hasPermission="device/Instance:remote"
+        >
+          远程访问
+        </PermissionButton>
         <img
             @click="handleRefresh"
             :src="getImage('/device/button.png')"
@@ -109,7 +113,7 @@
       <div style="padding: 24px; height: 100%">
         <component
             :is="tabs[instanceStore.tabActiveKey]"
-            v-bind="{ type: 'device' }"
+            v-bind="{ type: 'device',isRefresh:isRefresh }"
             @onJump="onTabChange"
         />
       </div>
@@ -139,7 +143,7 @@ import Shadow from './Shadow/index.vue';
 import Terminal from './Terminal/index.vue';
 import CardManagement from '@/views/iot-card/CardManagement/Detail/index.vue';
 import {_deploy, _disconnect} from '@/api/device/instance';
-import {getImage, onlyMessage} from '@/utils/comm';
+import {getImage, onlyMessage, openEdgeUrl} from '@/utils/comm';
 import {getWebSocket} from '@/utils/websocket';
 import {useMenuStore} from '@/store/menu';
 import {useRouterParams} from '@/utils/hooks/useParams';
@@ -154,6 +158,7 @@ const { showThreshold } = useSystem();
 const route = useRoute();
 const routerParams = useRouterParams();
 const instanceStore = useInstanceStore();
+const isRefresh = ref(false)
 
 const statusMap = new Map();
 
@@ -313,8 +318,8 @@ const getDetail = () => {
       !keys.includes('ChildDevice')&&
       !keys.includes('Child')
   ) {
-
-    if(instanceStore.current?.accessProvider === 'agent-device-gateway'){
+    const providers = ['agent-device-gateway', 'agent-media-device-gateway'];
+    if(providers.includes(instanceStore.current?.accessProvider)){
       list.value.push({
       key: 'Child',
       tab: '子设备',
@@ -390,7 +395,11 @@ const onTabChange = (e: string) => {
     EventEmitter.emit('MetadataTabs', () => {
       instanceStore.tabActiveKey = e;
     });
-  } else {
+  } else if(instanceStore.tabActiveKey === 'Child') {
+    EventEmitter.emit('ChildTabs', () => {
+      instanceStore.tabActiveKey = e;
+    });
+  }else {
     instanceStore.tabActiveKey = e;
   }
 };
@@ -425,6 +434,7 @@ const handleRefresh = async () => {
   if (instanceStore.current?.id) {
     await instanceStore.refresh(instanceStore.current?.id);
     onlyMessage('操作成功');
+    isRefresh.value = !isRefresh.value
   }
 };
 
@@ -435,20 +445,7 @@ const jumpProduct = () => {
 };
 
 const onClick = async () => {
-  // menuStory.jumpPage('edge/Device/Remote', {
-  //   id: instanceStore.current.id,
-  // });
-  const deviceId = instanceStore.current.id
-  const resp = await getRemoteToken(deviceId)
-
-  if (resp.success) {
-    const system = await getRemoteSystem(deviceId, [ "paths" ])
-    const path = system.result[0]?.properties['base-path']
-    const base64Url = btoa(path)
-    const proxyUrl = await getRemoteProxyUrl(deviceId)
-    const url = `${window.location.origin + window.location.pathname}api/edge/device/${deviceId}/_proxy/${proxyUrl.result}/${base64Url}/#/?token=` + resp.result
-    window.open(url)
-  }
+  await openEdgeUrl(instanceStore.current.id)
 }
 
 onMounted(() => {
@@ -466,7 +463,6 @@ onUnmounted(() => {
   max-width: 400px;
   overflow: hidden;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 </style>

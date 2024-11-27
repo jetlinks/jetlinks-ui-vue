@@ -77,9 +77,14 @@
             </template>
             <template #registryTime="slotProps">
                 {{
-                    dayjs(slotProps.registryTime).format('YYYY-MM-DD hh:mm:ss')
+                    slotProps.registryTime ?dayjs(slotProps.registryTime).format('YYYY-MM-DD hh:mm:ss'):'--'
                 }}
             </template>
+            <template #describe="scopedSlots">
+                                    <j-ellipsis>{{
+                                        scopedSlots.describe || '--'
+                                    }}</j-ellipsis></template
+                                >
             <template #state="slotProps">
                 {{ slotProps.state.text }}
             </template>
@@ -114,7 +119,7 @@ const transformData = (arr) => {
         return [];
     }
 };
-
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 const defaultParams = {
     sorts: [{ name: 'createTime', order: 'desc' }],
     terms: [
@@ -132,7 +137,7 @@ const columns = [
         key: 'id',
         search: {
             type: 'string',
-            defaultTermType: 'eq',
+            // defaultTermType: 'eq',
         },
         ellipsis: true,
     },
@@ -155,7 +160,13 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp) => {
+                    queryNoPagingPost({ paging: false, terms: [
+                        {
+                            termType: 'in',
+                            column: 'accessProvider',
+                            value: provider,
+                        },
+                    ] }).then((resp) => {
                         resolve(
                             resp.result.map((item) => ({
                                 label: item.name,
@@ -167,15 +178,7 @@ const columns = [
         },
         ellipsis: true,
     },
-    {
-        title: '注册时间',
-        dataIndex: 'registryTime',
-        key: 'registryTime',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
-    },
+
     {
         title: '状态',
         dataIndex: 'state',
@@ -188,6 +191,15 @@ const columns = [
                 { label: '离线', value: 'offline' },
                 { label: '在线', value: 'online' },
             ],
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
         },
     },
     {
@@ -210,6 +222,7 @@ const columns = [
         dataIndex: 'describe',
         key: 'describe',
         ellipsis: true,
+        scopedSlots: true,
         search: {
             type: 'string',
         },

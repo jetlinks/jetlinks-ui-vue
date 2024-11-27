@@ -20,7 +20,7 @@
         <div :class="{ 'operate-action': true, 'disabled': disabled}" @click="showTask(item)">
           <a-space>
             <span>开始</span>
-            <AIcon type="ArrowRightOutlined"/>
+            <AIcon type="ArrowRightOutlined" :style=" disabled &&{cursor: 'not-allowed'}"/>
           </a-space>
         </div>
       </div>
