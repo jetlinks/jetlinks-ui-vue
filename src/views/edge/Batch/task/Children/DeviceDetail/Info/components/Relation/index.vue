@@ -26,7 +26,7 @@
                     {{
                         item?.related
                             ? (item?.related || []).map((i) => i.name).join(',')
-                            : ''
+                            : '--'
                     }}
                 </Ellipsis>
             </j-descriptions-item>

@@ -329,13 +329,13 @@ const props = defineProps({
 const emit = defineEmits(['closeDetail', 'refresh', 'copy']);
 const columns = computed(()=>([
     {
-        title: '插件ID',
+        title: 'ID',
         key: 'pulginId',
         scopedSlots: true,
         width: 150,
     },
     {
-        title: props.data.jobType==='CollectorTemplate' ? '模版名称' : '插件名称',
+        title:'名称',
         key: 'pulginName',
         scopedSlots: true,
         width: 150,
