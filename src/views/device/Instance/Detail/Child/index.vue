@@ -206,7 +206,7 @@
                                             @click="
                                                 scopedSlots.action === 'drop'
                                                     ? onDrop('', scopedSlots)
-                                                    : onDelete(scopedSlots)
+                                                    : onDelete(scopedSlots,'refresh')
                                             "
                                         >
                                             <AIcon type="RedoOutlined" />
@@ -1019,9 +1019,8 @@ const onCover = async (e, item) => {
     }
 };
 
-const onDelete = (item) => {
-    item.action = 'delete';
-    if (item.id) {
+const onDelete = (item,type) => {
+    if (item.id && item.MappingStatus!=='error' || type==='refresh') {
         if (_checked.value) {
             item.loading = true;
 
@@ -1037,6 +1036,8 @@ const onDelete = (item) => {
                     }
                 })
                 .finally(() => {
+                    item.Mapping = {}
+                    item.MappingStatus = 'none'
                     setTimeout(() => {
                         item.loading = false;
                     }, 500);
@@ -1044,7 +1045,6 @@ const onDelete = (item) => {
                 .catch((e) => {
                     item.MappingStatus = 'error';
                     item.MappingError = e.message;
-                    
                 });
         } else {
             edgeList.value.unshift(item.Mapping);
@@ -1072,6 +1072,7 @@ const onDelete = (item) => {
             (i) => i.Mapping?.id !== item.Mapping?.id,
         );
     }
+    item.action = 'delete';
 };
 //拖拽自动生成
 const onDropAuto = () => {

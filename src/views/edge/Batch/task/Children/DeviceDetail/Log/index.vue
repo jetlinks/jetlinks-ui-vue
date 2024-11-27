@@ -8,7 +8,7 @@
     <JProTable
         ref="instanceRefLog"
         :columns="columns"
-        :request="(e: Record<string, any>) => queryLog(instanceStore.current.id, e)"
+        :request="(e: Record<string, any>) => queryLogByEdge(edgeId,instanceStore.current.id, e)"
         model="TABLE"
         :defaultParams="{ sorts: [{ name: 'timestamp', order: 'desc' }] }"
         :params="params"
@@ -49,12 +49,14 @@
 <script lang="ts" setup>
 import type { ActionsType } from '@/components/Table';
 import { queryLog, queryLogsType } from '@/api/device/instance';
+import {queryLogByEdge} from '@/api/edge/batch';
 import { useInstanceStore } from '@/store/instance';
 import dayjs from 'dayjs';
 import { Modal, Textarea } from 'jetlinks-ui-components';
 
 const params = ref<Record<string, any>>({});
 const instanceStore = useInstanceStore();
+const edgeId = inject('_edgeId')
 
 const columns = [
     {
