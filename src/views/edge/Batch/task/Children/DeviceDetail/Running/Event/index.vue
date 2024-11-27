@@ -51,6 +51,7 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs';
 import { getEventList } from '@/api/device/instance';
+import {getEventListByEdge} from '@/api/edge/batch';
 import { useInstanceStore } from '@/store/instance';
 import JsonViewer from 'vue-json-viewer';
 import { cloneDeep } from 'lodash-es';
@@ -88,9 +89,10 @@ const visible = ref<boolean>(false);
 const info = ref<Record<string, any>>({});
 const objectKey = ref<Array>([]);
 const imgLoad = ref(true);
-
+const edgeId = inject('_edgeId')
 const _getEventList = (_params: any) =>
-    getEventList(instanceStore.current.id || '', events.data.id || '', _params);
+    // getEventList(instanceStore.current.id || '', events.data.id || '', _params);
+    getEventListByEdge(edgeId,instanceStore.current.id || '', events.data.id || '', _params);
 
 const handleError = () => {
     debugger

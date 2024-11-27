@@ -7,7 +7,7 @@
                 <span class="header-action-desc">实时保存映射关系至边端</span>
             </div>
             <a-space>
-                <a-button v-if="!_checked" type="primary" @click="onSaveAll"
+                <a-button v-if="!_checked" type="primary" @click="onSaveAll()"
                     >保存</a-button
                 >
             </a-space>
@@ -46,7 +46,7 @@
                 <pro-search
                     :columns="searchColumns"
                     type="simple"
-                    @search="handleSearch"
+                    @search="onSearch"
                 />
                 <div class="left-list">
                     <div style="min-height: 560px">
@@ -196,14 +196,6 @@
                                         </div>
 
                                         <a-button
-                                            v-if="!scopedSlots.loading"
-                                            type="link"
-                                            @click="onDelete(scopedSlots)"
-                                        >
-                                            <AIcon type="DeleteOutlined" />
-                                        </a-button>
-
-                                        <a-button
                                             v-if="
                                                 !scopedSlots.loading &&
                                                 scopedSlots.MappingStatus ===
@@ -214,10 +206,17 @@
                                             @click="
                                                 scopedSlots.action === 'drop'
                                                     ? onDrop('', scopedSlots)
-                                                    : onDelete(scopedSlots)
+                                                    : onDelete(scopedSlots,'refresh')
                                             "
                                         >
                                             <AIcon type="RedoOutlined" />
+                                        </a-button>
+                                        <a-button
+                                            v-if="!scopedSlots.loading"
+                                            type="link"
+                                            @click="onDelete(scopedSlots)"
+                                        >
+                                            <AIcon type="DeleteOutlined" />
                                         </a-button>
                                         <a-spin v-if="scopedSlots.loading" />
                                     </div>
@@ -427,6 +426,7 @@ const editStatus = ref(false);
 const route = useRoute();
 const isMap = ref(false);
 const dropLoading = ref(false);
+const dropStateTiming = ref([''])
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
@@ -462,7 +462,14 @@ const searchColumns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp) => {
+                    queryNoPagingPost({ paging: false,terms: [
+            {
+                termType: 'eq',
+                column: 'deviceType',
+                value: 'childrenDevice',
+            },
+           
+        ],}).then((resp) => {
                         resolve(
                             resp.result.map((item) => ({
                                 label: item.name,
@@ -509,8 +516,10 @@ const handleSearch = async (e) => {
         }
         const res = await queryNoPagingPost({
             paging: false,
-            // sorts: [{ name: 'createTime', order: 'desc' }],
+            sorts: [{ name: 'createTime', order: 'desc' }],
             terms: terms,
+        }).finally(() => {
+            editStatus.value = false;
         });
 
         if (res.success) {
@@ -563,6 +572,12 @@ const handleSearch = async (e) => {
             console.log('res.resulte====', res.result);
         }
     }
+};
+
+const onSearch = (e) => {
+    TabsChange(() => {
+        handleSearch(e);
+    });
 };
 
 const onSaveAll = async (cb) => {
@@ -621,11 +636,13 @@ const onChange = (checked) => {
 };
 
 const onClick = (type) => {
-    if (type === 'add') {
-        visible.value = true;
-    } else {
-        bindVisible.value = true;
-    }
+    TabsChange(() => {
+        if (type === 'add') {
+            visible.value = true;
+        } else {
+            bindVisible.value = true;
+        }
+    });
 };
 
 const handleRow = (e, record) => {
@@ -696,7 +713,6 @@ const getActions = (type, data) => {
                 } else {
                     actionRef.type = 'deploy';
                 }
-              
             },
         },
         {
@@ -738,7 +754,7 @@ const getActions = (type, data) => {
             disabled: detail.value.state?.value !== 'online',
             icon: 'DisconnectOutlined',
             onClick: () => {
-               isMap.value = false;
+                isMap.value = false;
                 if (_checked.value) {
                     menuVisible.value = false;
                     actionRef.visible = true;
@@ -867,6 +883,7 @@ const onClose = () => {
     _selectedRowKeys.value = [];
     actionRef.batch = false;
     isMap.value = false;
+    editStatus.value = false;
     handleRefresh();
 };
 
@@ -910,7 +927,9 @@ const handleRefresh = () => {
 };
 
 const onJump = (id) => {
-    menuStory.jumpPage('device/Instance/Detail', { id });
+    TabsChange(() => {
+        menuStory.jumpPage('device/Instance/Detail', { id });
+    });
 };
 
 //开始拖拽
@@ -938,6 +957,12 @@ const onDrop = async (e, item) => {
             .catch((e) => {
                 item.MappingStatus = 'error';
                 item.MappingError = e.message;
+                edgeList.value = edgeList.value.filter(
+                    (i) => i.id !== _drop.value.id,
+                );
+                _edgeInitList.value = _edgeInitList.value.filter(
+                    (i) => i.id !== _drop.value.id,
+                );
             });
         if (res.success) {
             item.MappingStatus = 'success';
@@ -994,9 +1019,8 @@ const onCover = async (e, item) => {
     }
 };
 
-const onDelete = (item) => {
-    item.action = 'delete';
-    if (item.id) {
+const onDelete = (item,type) => {
+    if (item.id && item.MappingStatus!=='error' || type==='refresh') {
         if (_checked.value) {
             item.loading = true;
 
@@ -1012,9 +1036,11 @@ const onDelete = (item) => {
                     }
                 })
                 .finally(() => {
+                    item.Mapping = {}
+                    item.MappingStatus = 'none'
                     setTimeout(() => {
                         item.loading = false;
-                    },500)
+                    }, 500);
                 })
                 .catch((e) => {
                     item.MappingStatus = 'error';
@@ -1046,6 +1072,7 @@ const onDelete = (item) => {
             (i) => i.Mapping?.id !== item.Mapping?.id,
         );
     }
+    item.action = 'delete';
 };
 //拖拽自动生成
 const onDropAuto = () => {
@@ -1142,8 +1169,14 @@ const TabsChange = (next) => {
                 next?.();
             },
             onCancel: (e) => {
-                modal.destroy();
-                next?.();
+                if (!e.triggerCancel) {
+                    // 取消按钮
+                    modal.destroy();
+                    next?.();
+                } else {
+                    // 右上角取消按钮
+                    modal.destroy();
+                }
             },
         });
     } else {

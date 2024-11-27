@@ -318,8 +318,8 @@ const getDetail = () => {
       !keys.includes('ChildDevice')&&
       !keys.includes('Child')
   ) {
-
-    if(instanceStore.current?.accessProvider === 'agent-device-gateway'){
+    const providers = ['agent-device-gateway', 'agent-media-device-gateway'];
+    if(providers.includes(instanceStore.current?.accessProvider)){
       list.value.push({
       key: 'Child',
       tab: '子设备',
