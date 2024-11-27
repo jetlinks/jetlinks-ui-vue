@@ -22,7 +22,7 @@ const bodyHidden = () => {
     if (hasScrollbar) {
         updateStyle(document.body as HTMLElement, {
             overflow: 'hidden',
-            width: 'calc(100% - 17px)',
+            width: 'calc(100% - 6px)',
         })
     }
 }
