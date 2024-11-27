@@ -11,7 +11,7 @@
     >
       <div class="token-jump-body">
         <img src="/images/edge/token-error-icon.png">
-        <span style="color: #1F2429;padding: 24px 0;">远程访问秘钥已过期</span>
+        <span style="color: #1F2429;padding: 24px 0;">{{ msg }}</span>
         <a-button style="width: 180px" type="primary" @click="onBack">返回</a-button>
       </div>
     </a-modal>
@@ -23,6 +23,10 @@ import {useMenuStore} from "store/menu";
 
 const menuStory = useMenuStore();
 const route = useRoute()
+
+const msg = computed(() => {
+  return route.query.proxy_error || '远程访问秘钥已过期'
+})
 
 const onBack = () => {
   menuStory.jumpPage('device/Instance/Detail', { id: route.params.id})

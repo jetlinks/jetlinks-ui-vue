@@ -325,10 +325,12 @@ const validateHex = async (rule: any, value: any) => {
 };
 
 const validatorOpc_UA = async (rule: any, value: any) => {
-    console.log(value);
+    console.log(value.every((i) => {
+            return i || i === 0;
+        }));
     return value.length &&
         value.every((i) => {
-            return i;
+            return i || i === 0;
         })
         ? Promise.resolve()
         : Promise.reject(`请输入${props.data.name}`);

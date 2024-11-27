@@ -1120,7 +1120,7 @@ const detail = async (id: string) => {
                     rtmpPort: '',
                 },
             };
-            configuration?.playerConfig.forEach((item: any) => {
+            configuration?.playerConfig?.forEach((item: any) => {
                 formData.value.otherConfiguration.internalNet[
                     item.format + 'Port'
                 ] = item.localPort;
