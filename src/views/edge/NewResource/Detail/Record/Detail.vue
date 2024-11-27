@@ -268,15 +268,16 @@ const gatewayColumns = [
         width: 200,
     },
     {
+        title: '资源库ID',
+        dataIndex: 'id',
+        key: 'id',
+        ellipsis: true,
+        width: 200,
+    },
+    {
         title: '网关设备名称',
         dataIndex: 'thingName',
         ellipsis: true,
-    },
-    {
-        title: '设备类型',
-        dataIndex: 'deviceType',
-        ellipsis: true,
-        width: 100,
     },
     {
         title: '响应超时时间',
