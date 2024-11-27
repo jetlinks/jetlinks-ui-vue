@@ -7,7 +7,7 @@
                 <span class="header-action-desc">实时保存映射关系至边端</span>
             </div>
             <a-space>
-                <a-button v-if="!_checked" type="primary" @click="onSaveAll"
+                <a-button v-if="!_checked" type="primary" @click="onSaveAll()"
                     >保存</a-button
                 >
             </a-space>
