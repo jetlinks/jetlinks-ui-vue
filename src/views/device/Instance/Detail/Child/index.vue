@@ -510,29 +510,29 @@ const searchColumns = [
 ];
 const handleSearch = async (e) => {
     if (instanceStore.detail.id && e) {
-            const terms = [
-                {
-                    column: 'parentId',
-                    value: instanceStore.detail.id,
-                    termType: 'eq',
-                    type: 'and',
-                },
-            ];
-            if (e?.terms?.length) {
-                terms.push(e.terms[0]);
-            }
-            const res = await queryNoPagingPost({
-                paging: false,
-                sorts: [{ name: 'createTime', order: 'desc' }],
-                terms: terms,
-            }).finally(() => {
-                editStatus.value = false;
-            });
+        const terms = [
+            {
+                column: 'parentId',
+                value: instanceStore.detail.id,
+                termType: 'eq',
+                type: 'and',
+            },
+        ];
+        if (e?.terms?.length) {
+            terms.push(e.terms[0]);
+        }
+        const res = await queryNoPagingPost({
+            paging: false,
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: terms,
+        }).finally(() => {
+            editStatus.value = false;
+        });
 
-            if (res.success) {
-                try {
-                    if(instanceStore.detail.state.value === 'online'){
-                        const resp = await _queryByEdge(instanceStore.detail.id, {
+        if (res.success) {
+            try {
+                if (instanceStore.detail.state.value == 'online') {
+                    const resp = await _queryByEdge(instanceStore.detail.id, {
                         terms: [
                             { column: 'key', value: '', termType: 'notnull' },
                         ],
@@ -541,48 +541,48 @@ const handleSearch = async (e) => {
                         _dropList.value = [...resp.result];
                         _bindInitList.value = [...resp.result];
                     }
-                    _dataSource.value = res.result.map((item) => {
-                        const isMap = _dropList.value?.find(
-                            (i) => i.id === item.id || i.mappingId === item.id,
-                        );
-                        if (isMap?.id) {
-                            return {
-                                ...item,
-                                MappingStatus: 'success',
-                                Mapping: isMap,
-                            };
-                        } else {
-                            return {
-                                ...item,
-                                MappingStatus: 'none',
-                            };
-                        }
-                    });
-                    }
-                 
-                } catch (error) {
-                    _dataSource.value = res.result.map((item) => {
-                        const isMap = _dropList.value?.find(
-                            (i) => i.id === item.id || i.mappingId === item.id,
-                        );
-                        if (isMap?.id) {
-                            return {
-                                ...item,
-                                MappingStatus: 'success',
-                                Mapping: isMap,
-                            };
-                        } else {
-                            return {
-                                ...item,
-                                MappingStatus: 'none',
-                            };
-                        }
-                    });
+                   
                 }
-                // console.log('_dataSource.value====', _dataSource.value);
-                // console.log('res.resulte====', res.result);
+                _dataSource.value = res.result.map((item) => {
+                        const isMap = _dropList.value?.find(
+                            (i) => i.id === item.id || i.mappingId === item.id,
+                        );
+                        if (isMap?.id) {
+                            return {
+                                ...item,
+                                MappingStatus: 'success',
+                                Mapping: isMap,
+                            };
+                        } else {
+                            return {
+                                ...item,
+                                MappingStatus: 'none',
+                            };
+                        }
+                    });
+            } catch (error) {
+                _dataSource.value = res.result.map((item) => {
+                    const isMap = _dropList.value?.find(
+                        (i) => i.id === item.id || i.mappingId === item.id,
+                    );
+                    if (isMap?.id) {
+                        return {
+                            ...item,
+                            MappingStatus: 'success',
+                            Mapping: isMap,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            MappingStatus: 'none',
+                        };
+                    }
+                });
             }
+            // console.log('_dataSource.value====', _dataSource.value);
+            // console.log('res.resulte====', res.result);
         }
+    }
 };
 
 const onSearch = (e) => {
@@ -1081,14 +1081,20 @@ const onDelete = (item, type) => {
             editStatus.value = true;
         }
     } else {
+        // console.log('item.Mapping====', item.Mapping);
         edgeList.value.unshift(item.Mapping);
         _edgeInitList.value.unshift(item.Mapping);
-        _dataSource.value = _dataSource.value.filter(
-            (i) => i.Mapping?.id !== item.Mapping?.id,
-        );
-        _dropList.value = _dropList.value.filter(
-            (i) => i.Mapping?.id !== item.Mapping?.id,
-        );
+        if (item.MappingStatus === 'error') {
+            item.Mapping = {};
+            item.MappingStatus = 'none';
+        } else {
+            _dataSource.value = _dataSource.value.filter(
+                (i) => i.Mapping?.id !== item.Mapping?.id,
+            );
+            _dropList.value = _dropList.value.filter(
+                (i) => i.Mapping?.id !== item.Mapping?.id,
+            );
+        }
     }
     item.action = 'delete';
 };
