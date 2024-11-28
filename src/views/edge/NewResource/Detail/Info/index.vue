@@ -36,7 +36,7 @@
         <div class="title">
             <span>点位信息</span>
         </div>
-        <Points :dataSource="JSON.parse(metadata.metadata || '{}')?.points" />
+        <Points :dataSource="typeof metadata.metadata === 'string' ? JSON.parse(metadata.metadata || '{}')?.points : metadata.metadata?.metadata" />
     </template>
     <Save v-if="visible" :data="data" @close="visible = false" @save="handleSave"/>
 </template>
