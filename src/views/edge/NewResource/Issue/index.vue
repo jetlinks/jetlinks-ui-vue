@@ -3,6 +3,7 @@
         title="下发"
         visible
         width="50%"
+        :maskClosable="false"
         @cancel="emit('close')"
     >
         <j-form :model="formData" ref="formRef" layout="vertical" :rules="rules">
@@ -135,7 +136,6 @@ const handleSubmit = () => {
                     })
                 }
             }
-            debugger
             const res = await createTask(data);
             if(res.success) {
                 onlyMessage('操作成功');
