@@ -39,7 +39,7 @@
                             type="link"
                             @click="onClick('bind')"
                         >
-                            <AIcon type="DisconnectOutlined" />
+                            <AIcon type="LinkOutlined" />
                         </PermissionButton>
                     </a-space>
                 </div>
@@ -206,7 +206,10 @@
                                             @click="
                                                 scopedSlots.action === 'drop'
                                                     ? onDrop('', scopedSlots)
-                                                    : onDelete(scopedSlots,'refresh')
+                                                    : onDelete(
+                                                          scopedSlots,
+                                                          'refresh',
+                                                      )
                                             "
                                         >
                                             <AIcon type="RedoOutlined" />
@@ -363,6 +366,7 @@
 import { stateMap, columns, statusMap } from './data';
 import {
     queryNoPagingPost,
+    getProductListNoPage,
     addDevice,
     editDevice,
     _undeployCloud,
@@ -379,7 +383,7 @@ import Bind from '../ChildDevice/BindChildDevice/index.vue';
 import { _queryByEdge, _commandByEdge } from '@/api/edge/batch';
 import { onlyMessage, LocalStore } from '@/utils/comm';
 import { randomString } from '@/utils/utils';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, set } from 'lodash-es';
 import { useMenuStore } from '@/store/menu';
 import actionModal from './actionModal.vue';
 import { Modal } from 'ant-design-vue';
@@ -426,7 +430,7 @@ const editStatus = ref(false);
 const route = useRoute();
 const isMap = ref(false);
 const dropLoading = ref(false);
-const isToDetail = ref(false)
+const isToDetail = ref(false);
 
 const onSelectChange = (keys) => {
     _selectedRowKeys.value = [...keys];
@@ -462,14 +466,16 @@ const searchColumns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false,terms: [
-            {
-                termType: 'eq',
-                column: 'deviceType',
-                value: 'childrenDevice',
-            },
-           
-        ],}).then((resp) => {
+                    getProductListNoPage({
+                        paging: false,
+                        terms: [
+                            {
+                                termType: 'eq',
+                                column: 'deviceType',
+                                value: 'childrenDevice',
+                            },
+                        ],
+                    }).then((resp) => {
                         resolve(
                             resp.result.map((item) => ({
                                 label: item.name,
@@ -502,74 +508,77 @@ const searchColumns = [
     },
 ];
 const handleSearch = async (e) => {
-    if (instanceStore.detail.id && e) {
-        const terms = [
-            {
-                column: 'parentId',
-                value: instanceStore.detail.id,
-                termType: 'eq',
-                type: 'and',
-            },
-        ];
-        if (e?.terms?.length) {
-            terms.push(e.terms[0]);
-        }
-        const res = await queryNoPagingPost({
-            paging: false,
-            sorts: [{ name: 'createTime', order: 'desc' }],
-            terms: terms,
-        }).finally(() => {
-            editStatus.value = false;
-        });
-
-        if (res.success) {
-            try {
-                const resp = await _queryByEdge(instanceStore.detail.id, {
-                    terms: [{ column: 'key', value: '', termType: 'notnull' }],
-                });
-                if (resp.success) {
-                    _dropList.value = [...resp.result];
-                    _bindInitList.value = [...resp.result];
-                }
-                _dataSource.value = res.result.map((item) => {
-                    const isMap = _dropList.value?.find(
-                        (i) => i.id === item.id || i.mappingId === item.id,
-                    );
-                    if (isMap?.id) {
-                        return {
-                            ...item,
-                            MappingStatus: 'success',
-                            Mapping: isMap,
-                        };
-                    } else {
-                        return {
-                            ...item,
-                            MappingStatus: 'none',
-                        };
-                    }
-                });
-            } catch (error) {
-                _dataSource.value = res.result.map((item) => {
-                    const isMap = _dropList.value?.find(
-                        (i) => i.id === item.id || i.mappingId === item.id,
-                    );
-                    if (isMap?.id) {
-                        return {
-                            ...item,
-                            MappingStatus: 'success',
-                            Mapping: isMap,
-                        };
-                    } else {
-                        return {
-                            ...item,
-                            MappingStatus: 'none',
-                        };
-                    }
-                });
+    if (instanceStore.detail.state.value === 'online') {
+        if (instanceStore.detail.id && e) {
+            const terms = [
+                {
+                    column: 'parentId',
+                    value: instanceStore.detail.id,
+                    termType: 'eq',
+                    type: 'and',
+                },
+            ];
+            if (e?.terms?.length) {
+                terms.push(e.terms[0]);
             }
+            const res = await queryNoPagingPost({
+                paging: false,
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms: terms,
+            }).finally(() => {
+                editStatus.value = false;
+            });
 
-            console.log('_dataSource.value====', _dataSource.value);
-            console.log('res.resulte====', res.result);
+            if (res.success) {
+                try {
+                    const resp = await _queryByEdge(instanceStore.detail.id, {
+                        terms: [
+                            { column: 'key', value: '', termType: 'notnull' },
+                        ],
+                    });
+                    if (resp.success) {
+                        _dropList.value = [...resp.result];
+                        _bindInitList.value = [...resp.result];
+                    }
+                    _dataSource.value = res.result.map((item) => {
+                        const isMap = _dropList.value?.find(
+                            (i) => i.id === item.id || i.mappingId === item.id,
+                        );
+                        if (isMap?.id) {
+                            return {
+                                ...item,
+                                MappingStatus: 'success',
+                                Mapping: isMap,
+                            };
+                        } else {
+                            return {
+                                ...item,
+                                MappingStatus: 'none',
+                            };
+                        }
+                    });
+                } catch (error) {
+                    _dataSource.value = res.result.map((item) => {
+                        const isMap = _dropList.value?.find(
+                            (i) => i.id === item.id || i.mappingId === item.id,
+                        );
+                        if (isMap?.id) {
+                            return {
+                                ...item,
+                                MappingStatus: 'success',
+                                Mapping: isMap,
+                            };
+                        } else {
+                            return {
+                                ...item,
+                                MappingStatus: 'none',
+                            };
+                        }
+                    });
+                }
+                // console.log('_dataSource.value====', _dataSource.value);
+                // console.log('res.resulte====', res.result);
+            }
         }
     }
 };
@@ -888,10 +897,10 @@ const onClose = () => {
 };
 
 const onDetail = (item) => {
-    setTimeout(() => {
-        edgeVisible.value = true;
-        edgeCurrent.value = item;
-    }, 300);
+    // setTimeout(() => {
+    //     edgeVisible.value = true;
+    //     edgeCurrent.value = item;
+    // }, 300);
 };
 
 const onDetailClose = async () => {
@@ -912,13 +921,15 @@ const onRightSearch = (e) => {
 };
 //边端未映射
 const getNoMapping = async () => {
-    const res = await _queryByEdge(instanceStore.detail.id, {
-        sorts: [{ name: 'createTime', order: 'desc' }],
-        terms: [{ column: 'key', value: '', termType: 'isnull' }],
-    });
-    if (res.success) {
-        edgeList.value = [...res.result];
-        _edgeInitList.value = [...res.result];
+    if (instanceStore.detail.state?.value === 'online') {
+        const res = await _queryByEdge(instanceStore.detail.id, {
+            sorts: [{ name: 'createTime', order: 'desc' }],
+            terms: [{ column: 'key', value: '', termType: 'isnull' }],
+        });
+        if (res.success) {
+            edgeList.value = [...res.result];
+            _edgeInitList.value = [...res.result];
+        }
     }
 };
 const handleRefresh = () => {
@@ -929,7 +940,11 @@ const handleRefresh = () => {
 const onJump = (id) => {
     isToDetail.value = true;
     TabsChange(() => {
-        menuStory.jumpPage('device/Instance/Detail', { id });
+        const url = menuStory.hasMenu('device/Instance/Detail');
+        window.location.href = `/#${url.replace(':id', id)}`;
+        setTimeout(() => {
+            window.location.reload();
+        });
     });
 };
 
@@ -1020,8 +1035,8 @@ const onCover = async (e, item) => {
     }
 };
 
-const onDelete = (item,type) => {
-    if (item.id && item.MappingStatus!=='error' || type==='refresh') {
+const onDelete = (item, type) => {
+    if ((item.id && item.MappingStatus !== 'error') || type === 'refresh') {
         if (_checked.value) {
             item.loading = true;
 
@@ -1037,8 +1052,8 @@ const onDelete = (item,type) => {
                     }
                 })
                 .finally(() => {
-                    item.Mapping = {}
-                    item.MappingStatus = 'none'
+                    item.Mapping = {};
+                    item.MappingStatus = 'none';
                     setTimeout(() => {
                         item.loading = false;
                     }, 500);
@@ -1166,8 +1181,7 @@ const TabsChange = (next) => {
             zIndex: 1400,
             closable: true,
             onOk: () => {
-                onSaveAll(()=>next?.());
-                
+                onSaveAll(() => next?.());
             },
             onCancel: (e) => {
                 if (!e.triggerCancel) {
@@ -1187,22 +1201,20 @@ const TabsChange = (next) => {
 
 onBeforeRouteUpdate((to, from, next) => {
     // 设备管理内路由跳转
-    if(isToDetail.value){
-        next
-    }else{
+    if (isToDetail.value) {
+        next;
+    } else {
         TabsChange(next);
     }
-    
 });
 
 onBeforeRouteLeave((to, from, next) => {
     // 设备管理外路由跳转
-    if(isToDetail.value){
-        next
-    }else{
+    if (isToDetail.value) {
+        next;
+    } else {
         TabsChange(next);
     }
-    
 });
 
 watch(

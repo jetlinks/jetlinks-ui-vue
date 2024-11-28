@@ -355,9 +355,9 @@ const customRow = (record) => {
 };
 
 const onDetail = (record) => {
-    visible.value = true;
-    _current.value = record;
-    _type.value = 'edge';
+    // visible.value = true;
+    // _current.value = record;
+    // _type.value = 'edge';
 }
 
 const handleSearch = async (e) => {
