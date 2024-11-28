@@ -468,6 +468,7 @@ const searchColumns = [
                 new Promise((resolve) => {
                     getProductListNoPage({
                         paging: false,
+                        sorts: [{ name: 'createTime', order: 'desc' }],
                         terms: [
                             {
                                 termType: 'eq',
@@ -508,8 +509,7 @@ const searchColumns = [
     },
 ];
 const handleSearch = async (e) => {
-    if (instanceStore.detail.state.value === 'online') {
-        if (instanceStore.detail.id && e) {
+    if (instanceStore.detail.id && e) {
             const terms = [
                 {
                     column: 'parentId',
@@ -531,7 +531,8 @@ const handleSearch = async (e) => {
 
             if (res.success) {
                 try {
-                    const resp = await _queryByEdge(instanceStore.detail.id, {
+                    if(instanceStore.detail.state.value === 'online'){
+                        const resp = await _queryByEdge(instanceStore.detail.id, {
                         terms: [
                             { column: 'key', value: '', termType: 'notnull' },
                         ],
@@ -557,6 +558,8 @@ const handleSearch = async (e) => {
                             };
                         }
                     });
+                    }
+                 
                 } catch (error) {
                     _dataSource.value = res.result.map((item) => {
                         const isMap = _dropList.value?.find(
@@ -580,7 +583,6 @@ const handleSearch = async (e) => {
                 // console.log('res.resulte====', res.result);
             }
         }
-    }
 };
 
 const onSearch = (e) => {

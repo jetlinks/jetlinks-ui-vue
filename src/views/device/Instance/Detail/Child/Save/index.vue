@@ -76,6 +76,12 @@ const getProductList = async () => {
                 column: 'deviceType',
                 value: 'childrenDevice',
             },
+            {
+                termType: 'eq',
+                column: 'state',
+                value: 1,
+                type: 'and',
+            },
         ],
     });
     if (res.status === 200) {
