@@ -50,7 +50,6 @@
 
 <script setup name="Save">
 import { getProductListNoPage, addDevice } from '@/api/device/instance';
-
 import { useInstanceStore } from '@/store/instance';
 import { onlyMessage } from '@/utils/comm';
 
@@ -69,6 +68,8 @@ const productList = ref([]);
 
 const getProductList = async () => {
     const res = await getProductListNoPage({
+        paging: false,
+        sorts: [{ name: 'createTime', order: 'desc' }],
         terms: [
             {
                 termType: 'eq',
