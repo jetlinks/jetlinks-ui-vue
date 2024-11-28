@@ -20,10 +20,13 @@ const bodyHidden = () => {
     const hasScrollbar = bodyHasScrollbar()
 
     if (hasScrollbar) {
-        updateStyle(document.body as HTMLElement, {
-            overflow: 'hidden',
-            width: 'calc(100% - 17px)',
-        })
+        const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+        if(scrollBarWidth > 0){
+            updateStyle(document.body as HTMLElement, {
+                overflow: 'hidden',
+                width: `calc(100% - ${scrollBarWidth}px)`,
+            })
+        }
     }
 }
 
