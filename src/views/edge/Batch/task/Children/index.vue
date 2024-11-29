@@ -127,7 +127,7 @@
                                         <a-button
                                             v-if="!record.loading"
                                             type="link"
-                                            @click="onDelete(record)"
+                                            @click.stop="onDelete(record)"
                                         >
                                             <AIcon type="DeleteOutlined" />
                                         </a-button>
@@ -139,7 +139,7 @@
                                             "
                                             type="link"
                                             style="padding: 0"
-                                            @click="
+                                            @click.stop="
                                                 record.action === 'drop'
                                                     ? onDrop('', record)
                                                     : onDelete(record)
@@ -347,17 +347,17 @@ const columns = [
 const customRow = (record) => {
     return {
         onClick: (e) => {
-            visible.value = true;
-            _current.value = record;
-            _type.value = 'device';
+            // visible.value = true;
+            // _current.value = record;
+            // _type.value = 'device';
         }
     };
 };
 
 const onDetail = (record) => {
-    visible.value = true;
-    _current.value = record;
-    _type.value = 'edge';
+    // visible.value = true;
+    // _current.value = record;
+    // _type.value = 'edge';
 }
 
 const handleSearch = async (e) => {

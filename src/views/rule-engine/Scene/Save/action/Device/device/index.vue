@@ -220,8 +220,10 @@ const filterType = async (newVal: any) => {
             terms: [
                 { termType: 'eq', column: 'objectTypeName', value: '设备' },
             ],
-        });
-        if (res.success && res.result.length !== 0) {
+        }).catch(()=>{
+            _typeList[2].disabled = true
+        })
+        if (res.success && res.result.length === 0) {
             // _typeList.push(TypeMap.relation)
             // TypeMap.relation.disabled = true;
           _typeList[2].disabled = true
