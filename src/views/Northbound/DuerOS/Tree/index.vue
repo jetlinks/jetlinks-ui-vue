@@ -83,6 +83,7 @@ const selectItem = (data) => {
     emit('viewData', data);
 };
 const handleAdd = () => {
+    selectedId.value = ""
     emit('viewData', {
         type: 'add',
     });
