@@ -29,6 +29,7 @@
                     :showUploadList="showUploadList"
                     :before-upload="beforeUpload"
                     @change="uploadChange"
+                    @reject="onReject"
                     @drop="handleDrop"
                 >
                     <div class="dragger-box">
@@ -148,20 +149,20 @@ const submitData = async (metadataStr) => {
         });
     } else {
         onlyMessage('请先上传文件', 'error');
-        showUploadList.value = false
+        showUploadList.value = false;
     }
 };
 
 const onOk = () => {
-    onlyMessage('操作成功！')
+    onlyMessage('操作成功！');
     emit('ok', submitMetadata);
     visible.value = false;
 };
 
 const onReject = () => {
-  init();
-  onlyMessage('请上传.xlsx或.csv格式文件', 'warning');
-}
+    init();
+    onlyMessage('请上传.xlsx或.csv格式文件', 'warning');
+};
 
 const downFile = (type) => {
     const url =
@@ -179,30 +180,35 @@ const downFile = (type) => {
 const handleDrop = () => {};
 
 const handleError = () => {
-  onlyMessage('上传失败', 'error');
-  init()
-}
+    onlyMessage('上传失败', 'error');
+    init();
+};
 
 const beforeUpload = (file) => {
-  console.log(file,'file')
-  const isCsv = file.type === 'text/csv';
-  const isXlsx = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-  if (!isCsv && !isXlsx) {
-    onReject()
-  } else {
-    const formData = new FormData()
-    formData.append('file', file)
-    uploadAnalyzeMetadata(info.value?.id, formData).then(res => {
-      if (res.success) {
-        submitData(res.result)
-      } else {
-        handleError()
-      }
-    }).catch(() => {
-      handleError()
-    })
-  }
-  return false
+    const isCsv = file.type === 'text/csv';
+    const isXlsx =
+        file.type ===
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    console.log(isCsv, isXlsx);
+    if (!isCsv && !isXlsx) {
+        onReject();
+        console.log(isCsv, isXlsx, file.type);
+    } else {
+        const formData = new FormData();
+        formData.append('file', file);
+        uploadAnalyzeMetadata(current.value?.id, formData)
+            .then((res) => {
+                if (res.success) {
+                    submitData(res.result);
+                } else {
+                    handleError();
+                }
+            })
+            .catch(() => {
+                handleError();
+            });
+    }
+    return false;
 };
 
 const uploadChange = async (info) => {
