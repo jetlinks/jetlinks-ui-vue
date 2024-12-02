@@ -97,6 +97,10 @@ const jumpDetail = (item: any) => {
     border: 1px solid #e0e4e8;
     border-radius: 2px;
     height: 100%;
+    .title {
+        color: rgba(0, 0, 0, 0.64);
+        font-size: 14px;
+    }
 }
 .new-alarm-items {
     ul {
