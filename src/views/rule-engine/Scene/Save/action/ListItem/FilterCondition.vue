@@ -386,7 +386,7 @@ const columnSelect = (e: any) => {
     
     formModel.value.branches![props.branchName].then[props.thenName].actions[
         props.actionName
-    ].options!.terms[props.termsName].terms[props.name][0] = e.name || e.fullName;
+    ].options!.terms[props.termsName].terms[props.name][0] = e.fullName || e.name;
 };
 
 const termsTypeSelect = (e: { key: string; name: string }) => {
