@@ -34,6 +34,11 @@ export type modeType = 'api'| 'appManger' | 'home'
 export type schemaObjType = {
     paramsName: string;
     paramsType: string;
+    id: string;
+    type?: string;
+    schema?: string;
+
+    required?: boolean
     desc?: string;
     children?: schemaObjType[];
 };

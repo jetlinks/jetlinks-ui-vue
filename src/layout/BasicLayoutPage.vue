@@ -36,13 +36,6 @@ import { useMenuStore } from '@/store/menu'
 import { User, Notice } from './components'
 import { storeToRefs } from 'pinia'
 
-type StateType = {
-  collapsed: boolean;
-  openKeys: string[];
-  selectedKeys: string[];
-  pure: boolean;
-};
-
 const router = useRouter();
 const route = useRoute();
 const systemStore = useSystemStore()

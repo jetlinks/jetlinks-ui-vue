@@ -194,9 +194,6 @@
                                 validator: form.rules.checkAgainPassword,
                                 trigger: 'blur',
                             },
-                            {
-
-                            }
                         ]"
                     >
                         <a-input-password
@@ -228,6 +225,7 @@ import { DefaultOptionType } from 'ant-design-vue/es/vc-tree-select/TreeSelect';
 import { AxiosResponse } from 'axios';
 import { passwordRegEx } from '@/utils/validate';
 import { filterSelectNode, onlyMessage } from '@/utils/comm';
+import { cloneDeep, uniqBy } from 'lodash-es';
 
 const deptPermission = 'system/Department';
 const rolePermission = 'system/Role';
@@ -262,6 +260,7 @@ const confirm = () => {
 };
 
 const formRef = ref<FormInstance>();
+const _roleDetail = ref([] as any[]);
 const form = reactive({
     data: {} as formType,
     rules: {
@@ -314,6 +313,7 @@ const form = reactive({
         else if (props.type === 'reset') form.data = { id } as formType;
         else if (props.type === 'edit') {
             getUser_api(id).then((resp: any) => {
+                _roleDetail.value = resp.result.roleList;
                 form.data = {
                     ...(resp.result as formType),
                     orgIdList: resp.result.orgList.map(
@@ -364,7 +364,7 @@ const form = reactive({
     getRoleList: () => {
         getRoleList({ sorts: [{ name: 'createTime', order: 'desc' }] }).then((resp: any) => {
            if(resp.status === 200){
-            form.roleOptions =  dealRoleList(resp.result)
+            form.roleOptions = dealRoleList(resp.result)
            }
         });
     },
@@ -415,6 +415,33 @@ const  dealRoleList = (data:any) =>{
 // })
 
 form.init();
+
+const hasNodeWithId = (arr: any, id: any)=>{
+    for (let item of arr) {
+        if (item.id === id) {
+            return true;
+        }
+        if (item.children && hasNodeWithId(item.children, id)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+watch(
+    () => _roleDetail.value,
+    (val) => {
+        if (val && form.roleOptions.length) {
+            const tree = cloneDeep(form.roleOptions);
+            val.forEach((item: any) => {
+                if (!hasNodeWithId(tree, item.id)) {
+                    form.roleOptions.push(item);
+                }
+            });
+        }
+    },
+    { immediate: true },
+);
 
 interface AxiosResponseRewrite<T = any[]> extends AxiosResponse<T, any> {
     result: T;
@@ -481,12 +508,12 @@ type optionType = {
     margin-bottom: 10px;
     font-size: 16px;
     &::before{
-    width: 2px;
-    background-color: rgb(184, 184, 184);
-    display: inline-block;
-    height: 13px;
-    margin-right: 3px;
-    content:''
+        width: 2px;
+        background-color: rgb(184, 184, 184);
+        display: inline-block;
+        height: 13px;
+        margin-right: 3px;
+        content:''
     }
 }
 </style>

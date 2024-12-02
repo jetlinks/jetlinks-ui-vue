@@ -1,28 +1,28 @@
 <template>
   <div class="api-page-container">
     <div class="top">
-      <slot name="top"/>
+      <slot name="top" />
     </div>
-    <a-row class="content" :style="{padding:'24px'}">
-      <a-col
-          :span="24"
-          v-if="props.showTitle"
-          style="font-size: 16px;margin-bottom: 48px;"
+    <div class="api-page-content" :style="styles">
+      <div
+        v-if="props.showTitle"
+        style="font-size: 16px;margin-bottom: 48px;"
       >
         API文档
-      </a-col>
-      <a-col :span="5" class="tree-content">
-        <LeftTree
+      </div>
+      <div class="api-page-body">
+        <div class="tree-content">
+          <LeftTree
             @select="treeSelect"
             :mode="props.mode"
             :has-home="props.hasHome"
             :code="props.code"
-        />
-      </a-col>
-      <a-col :span="19">
-        <HomePage v-show="showHome"/>
-        <div class="url-page" v-show="!showHome">
-          <ChooseApi
+          />
+        </div>
+        <div class="api-page-detail">
+          <HomePage v-show="showHome" />
+          <div class="url-page" v-show="!showHome">
+            <ChooseApi
               v-show="!selectedApi.url"
               v-model:click-api="selectedApi"
               v-model:selectedRowKeys="selectedKeys"
@@ -31,36 +31,36 @@
               :source-keys="selectSourceKeys"
               :mode="props.mode"
               @refresh="getSelectKeys"
-          />
+            />
 
-          <div
+            <div
               class="api-details"
               v-if="selectedApi.url && tableData.length > 0"
-          >
-            <a-button
-                @click="selectedApi = initSelectedApi"
-                style="margin-bottom: 24px"
-            >返回
-            </a-button
             >
-            <a-tabs v-model:activeKey="activeKey" type="card">
-              <a-tab-pane key="does" tab="文档">
-                <ApiDoes
-                    :select-api="selectedApi"
-                    :schemas="schemas"
-                />
-              </a-tab-pane>
-              <a-tab-pane key="test" tab="调试">
-                <ApiTest
-                    :select-api="selectedApi"
-                    :schemas="schemas"
-                />
-              </a-tab-pane>
-            </a-tabs>
+              <a-button
+                @click="selectedApi = initSelectedApi"
+                style="margin-bottom: 24px; width: 80px">返回</a-button>
+              <div class="api-details-tabs">
+                <a-tabs v-model:activeKey="activeKey" type="card">
+                  <a-tab-pane key="does" tab="文档">
+                    <ApiDoes
+                      :select-api="selectedApi"
+                      :schemas="schemas"
+                    />
+                  </a-tab-pane>
+                  <a-tab-pane key="test" tab="调试">
+                    <ApiTest
+                      :select-api="selectedApi"
+                      :schemas="schemas"
+                    />
+                  </a-tab-pane>
+                </a-tabs>
+              </div>
+            </div>
           </div>
         </div>
-      </a-col>
-    </a-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -89,6 +89,12 @@ const props = defineProps<{
 }>();
 const showHome = ref<boolean>(Boolean(props.hasHome)); // 是否展示home页面
 const tableData = ref([]);
+
+const styles = computed(() => {
+  return {
+    padding: props.mode === 'api' ? 0 : '24px'
+  }
+})
 const treeSelect = (node: treeNodeTpye, nodeSchemas: object = {}) => {
   if (node.key === 'home') return (showHome.value = true);
   schemas.value = nodeSchemas;
@@ -179,16 +185,48 @@ watch(
 
 <style lang="less" scoped>
 .api-page-container {
-  .content {
+  height: 100%;
+
+  .api-page-content {
     background-color: #fff;
     margin: 0 !important;
 
-    .tree-content {
-      padding-bottom: 30px;
-      height: calc(100vh - 230px);
-      overflow-y: auto;
-      border-right: 1px solid #e9e9e9;
+    .api-page-body {
+      position: relative;
+      display: flex;
+      gap: 16px;
+
+      .tree-content {
+        height: calc(100vh - 230px);
+        width: 280px;
+        overflow-y: auto;
+        border-right: 1px solid #e9e9e9;
+      }
+
+      .api-page-detail {
+        position: absolute;
+        left: 296px;
+        top: 0;
+        bottom: 0;
+        right: 0;
+
+        .url-page {
+          height: 100%;
+        }
+
+        .api-details {
+          max-height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          .api-details-tabs {
+            overflow-y: auto;
+          }
+        }
+      }
     }
+
   }
+
 }
 </style>

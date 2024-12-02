@@ -12,6 +12,7 @@
     "modules:update": "git submodule update"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
@@ -24,6 +25,9 @@
     "@jetlinks-web/utils": "^1.2.1",
     "@micro-zoe/micro-app": "1.0.0-rc.5",
     "@vuemap/vue-amap": "^2.0.13",
+    "@vueuse/router": "^11.3.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
     "axios": "^1.6.7",
     "colorpicker-v3": "^2.10.2",
     "dayjs": "^1.11.8",

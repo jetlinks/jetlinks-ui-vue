@@ -1,4 +1,4 @@
-<template>
+ <template>
   <j-page-container>
     <div class="menu-container">
       <pro-search
@@ -213,8 +213,17 @@ const getList = async (_params: any) => {
     paging: false,
   }
   const resp: any = await getMenuTree(params)
-  const lastItem = resp.result[resp.result.length - 1]
-  total.value = lastItem ? lastItem.sortIndex + 1 : 1
+  const menuArr = resp.result.filter(
+    (i: any) => i.code !== 'account-center',
+  );
+  const lastItem = menuArr[menuArr.length - 1];
+  console.log(lastItem, 'lastItem');
+  //个人中心排序为9999需要做过滤特殊处理
+  total.value = lastItem
+    ? lastItem.sortIndex + 1 === 9999
+      ? 10000
+      : lastItem.sortIndex + 1
+    : 1;
 
   return {
     code: resp.message,

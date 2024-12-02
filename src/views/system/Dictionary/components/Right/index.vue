@@ -2,7 +2,7 @@
     <div class="des">
         <div class="des_head">
             <div>字典ID：<span>{{ data.id }}</span></div>
-          <div style="display: flex;">说明：<j-ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></j-ellipsis></div>
+            <div style="display: flex;">说明：<j-ellipsis style="width: calc(100% - 200px);"><span>{{ data.describe }}</span></j-ellipsis></div>
             <div>创建日期：<span v-time-format="'YYYY-MM-DD HH:mm:ss'"> {{data?.createTime}}</span></div>
         </div>
         <div class="contain">

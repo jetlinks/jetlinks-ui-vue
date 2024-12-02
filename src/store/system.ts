@@ -19,7 +19,7 @@ export const useSystemStore = defineStore('system', () => {
   const ico = ref<string>('/favicon.ico') // 浏览器标签页logo
   const systemInfo = ref<Record<string, any>>({})
   const microApp = ref<Record<string, any>>({})
-  const calendarTagColor = new Map()
+  const calendarTagColor = new Map([['holiday','rgb(161, 180, 204)'],['weekend','rgb(149, 222, 100)'],['workday', 'rgba(105,177,255)']])
   const showThreshold = ref(true)
 
   const layout = reactive<LayoutType>({
