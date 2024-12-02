@@ -408,7 +408,7 @@ const columnSelect = (option: any) => {
 
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
-    ][0] = option.name || option.fullName;
+    ][0] = option.fullName || option.name ;
     formModel.value.options!.when[props.branches_Index].terms[props.whenName].terms[
         props.termsName
     ][1] = paramsValue.termType;
