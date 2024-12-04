@@ -210,14 +210,14 @@
 </template>
 
 <script lang="ts" setup>
-import { queryGatewayList, queryNoPagingPost } from '@/api/device/product';
+import { queryNoPagingPost } from '@/api/device/product';
 import { queryTree } from '@/api/device/category';
-import { ActionsType } from '@/views/device/Instance/typings';
+import type { ActionsType } from '@/views/device/Instance/typings';
 import { useMenuStore } from '@/store/menu';
-import { getImage, onlyMessage } from '@/utils/comm';
+import {getImage, onlyMessage, openEdgeUrl} from '@/utils/comm';
 import dayjs from 'dayjs';
 import { query, _delete, _deploy, _undeploy } from '@/api/device/instance';
-import { restPassword } from '@/api/edge/device';
+import { getRemoteProxyUrl, getRemoteToken, getRemoteSystem} from '@/api/edge/device';
 import Save from './Save/index.vue';
 import Import from '@/views/device/Instance/Import/index.vue';
 import BadgeStatus from '@/components/BadgeStatus/index.vue';
@@ -231,7 +231,7 @@ const defaultParams = {
             terms: [
                 {
                     column: 'productId$product-info',
-                    value: 'accessProvider is official-edge-gateway',
+                    value: 'accessProvider in (agent-device-gateway,agent-media-device-gateway,official-edge-gateway)',
                 },
             ],
             type: 'and',
@@ -249,6 +249,7 @@ const edgeDeviceRef = ref<Record<string, any>>({});
 const importVisible = ref<boolean>(false);
 const visible = ref<boolean>(false);
 const current = ref<Record<string, any>>({});
+const provider = ['agent-device-gateway', 'agent-media-device-gateway', 'official-edge-gateway']
 
 const transformData = (arr: any[]): any[] => {
     if (Array.isArray(arr) && arr.length) {
@@ -294,7 +295,13 @@ const columns = [
             rename: 'productId',
             options: () =>
                 new Promise((resolve) => {
-                    queryNoPagingPost({ paging: false }).then((resp: any) => {
+                    queryNoPagingPost({ paging: false, terms: [
+                        {
+                            termType: 'in',
+                            column: 'accessProvider',
+                            value: provider,
+                        },
+                    ], }).then((resp: any) => {
                         resolve(
                             resp.result.map((item: any) => ({
                                 label: item.name,
@@ -305,15 +312,6 @@ const columns = [
                 }),
         },
         ellipsis: true,
-    },
-    {
-        title: '注册时间',
-        dataIndex: 'registryTime',
-        key: 'registryTime',
-        scopedSlots: true,
-        search: {
-            type: 'date',
-        },
     },
     {
         title: '状态',
@@ -327,6 +325,15 @@ const columns = [
                 { label: '离线', value: 'offline' },
                 { label: '在线', value: 'online' },
             ],
+        },
+    },
+    {
+        title: '注册时间',
+        dataIndex: 'registryTime',
+        key: 'registryTime',
+        scopedSlots: true,
+        search: {
+            type: 'date',
         },
     },
     {
@@ -458,43 +465,19 @@ const getActions = (
                 },
             },
         },
-    ];
-    const others = [
-        {
-            key: 'setting',
-            text: '远程控制',
-            tooltip: {
-                title: '远程控制',
-            },
-            icon: 'ControlOutlined',
-            onClick: () => {
-                menuStory.jumpPage('edge/Device/Remote', {
-                    id: data.id,
-                });
-            },
+      {
+        key: 'setting',
+        text: '远程访问',
+        tooltip: {
+          title: '远程访问',
         },
-        {
-            key: 'password',
-            text: '重置密码',
-            tooltip: {
-                title: '重置密码',
-            },
-            icon: 'RedoOutlined',
-            popConfirm: {
-                title: '确认重置密码为Jetlinks123？',
-                onConfirm: () => {
-                    const response = restPassword(data.id);
-                    response.then((resp: any) => {
-                        if (resp.status === 200) {
-                            onlyMessage('操作成功！');
-                            edgeDeviceRef.value?.reload();
-                        }
-                    });
-                    return response;
-                },
-            },
+        icon: 'ControlOutlined',
+        onClick: async () => {
+          await openEdgeUrl(data?.id)
         },
+      },
     ];
+
 
     const deleteItem = {
         key: 'delete',
@@ -528,16 +511,10 @@ const getActions = (
         const arr = actions.filter((i: ActionsType) => i.key !== 'view');
         return [
             ...arr,
-            {
-                key: 'others',
-                text: '其他',
-                icon: 'EllipsisOutlined',
-                children: [...others],
-            },
             deleteItem,
         ];
     } else {
-        return [...actions, ...others, deleteItem];
+        return [...actions, deleteItem];
     }
 };
 

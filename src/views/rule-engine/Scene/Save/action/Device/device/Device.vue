@@ -23,7 +23,7 @@
             <CardBox
                 :value="slotProps"
                 @click="handleClick"
-                :active="value[0]?.value === slotProps.id"
+                :active="selectedDevicesId.includes(slotProps.id)"
                 :status="slotProps.state?.value"
                 :statusText="slotProps.state?.text"
                 :statusNames="{
@@ -64,10 +64,11 @@
         </template>
     </JProTable>
 </template>
-  
-  <script setup lang='ts' name='Product'>
-import { query, detail } from '@/api/device/instance';
+
+<script setup lang="ts" name="Product">
+import { query, detail , queryNoPagingPost } from '@/api/device/instance';
 import { getImage } from '@/utils/comm';
+import { cloneDeep } from 'lodash-es';
 import { PropType } from 'vue';
 
 type Emit = {
@@ -95,6 +96,13 @@ const props = defineProps({
 });
 
 const emit = defineEmits<Emit>();
+
+//已选中设备id
+const selectedDevicesId = computed(()=>{
+    return props.value?.map((i:any)=>{
+        return i.value
+    })
+})
 
 const columns = [
     {
@@ -162,22 +170,33 @@ const deviceQuery = (p: any) => {
 };
 
 const handleClick = (_detail: any) => {
-    if (props.value?.[0]?.value === _detail.id) {
-        emit('update:value', undefined);
-        emit('change', {});
+    const selectedDevices = cloneDeep(props.value) || [];
+    const selectedIndex = props.value?.findIndex((i: any) => {
+        return i.value === _detail.id;
+    });
+    if (selectedIndex !== -1) {
+        selectedDevices.splice(selectedIndex, 1);
     } else {
-        emit('update:value', [{ value: _detail.id, name: _detail.name }]);
-        emit('change', _detail);
+        selectedDevices.push({ value: _detail.id, name: _detail.name });
     }
+
+    if (!selectedDevices.length) {
+        emit('update:value', undefined);
+        emit('change', undefined);
+    }else{
+        emit('update:value', selectedDevices);
+        emit('change', selectedDevices);
+    }
+    // if (props.value?.[0]?.value === _detail.id) {
+    //     emit('update:value', undefined);
+    //     emit('change', {});
+    // } else {
+    //     emit('update:value', [{ value: _detail.id, name: _detail.name }]);
+    //     emit('change', _detail);
+    // }
 };
 
-onMounted(() => {
-    if(props.value?.[0]?.value){
-        detail(props.value?.[0]?.value).then(resp => {
-            emit('change', resp.result);
-        })
-    }
-})
+
 
 watchEffect(() => {
     params.value = {
@@ -190,9 +209,29 @@ watchEffect(() => {
             : [{ terms: [{ column: 'productId', value: props?.productId }] }],
     };
 });
+
+onMounted(async() => {
+    // if (props.value?.[0]?.value) {
+    //     detail(props.value?.[0]?.value).then((resp) => {
+    //         emit('change', resp.result);
+    //     });
+    // }
+    if(props.value || props.value.length){
+      const selectedDevices = cloneDeep(props.value)
+      const res:any = await  queryNoPagingPost({terms:[{ terms: [{ column: 'productId', value: props?.productId }]}]})
+      if(res.success){
+       const hasDevices = selectedDevices.filter((i:any)=>{
+            return res.result.find((item:any)=>{
+                return item.id === i.value
+            })
+        })
+      emit('change',hasDevices)
+      }
+    }
+});
 </script>
-  
-  <style scoped lang='less'>
+
+<style scoped lang="less">
 .search {
     margin-bottom: 0;
     padding: 0 0 24px 0;

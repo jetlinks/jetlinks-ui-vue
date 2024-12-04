@@ -1,7 +1,7 @@
 <template>
   <div :class="{'select-no-value': !value}">
     <a-select
-      v-bind="props"
+      v-bind="omit(props, 'value')"
       allow-clear
       :value="myValue"
       style="width: 100%"
@@ -21,6 +21,7 @@ import { selectProps } from 'ant-design-vue/lib/select';
 import defaultOptions from './data';
 import {useTableWrapper} from "@/components/Metadata/Table/context";
 import {BooleanValueMap} from "../utils";
+import {omit} from "lodash-es";
 
 const props = defineProps({
   ...selectProps(),
@@ -33,10 +34,10 @@ const props = defineProps({
     default: () => ({
       type: undefined
     })
-  }
+  },
 });
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'valueChange']);
 
 const myValue = ref(props.value.type)
 
@@ -59,8 +60,8 @@ const change = (key) => {
     })
     newValueType = Object.assign(newValueType, extra)
   }
-
   emit('update:value', newValueType)
+  emit('valueChange', newValueType)
 }
 
 watch(

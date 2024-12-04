@@ -275,7 +275,7 @@ export const handleGroupAndFilter = (branches: any[], when: any[]) =>{
 
         if (index === 0 || item.executeAnyway) {
             group.push({
-                branchName: item.branchName || item.whenOptions?.branchName || `条件${group.length + 1}`,
+                branchName: item.branchName || item.whenOptions?.branchName || `条件`,
                 key: item.key || item.branchId,
                 children: []
             })

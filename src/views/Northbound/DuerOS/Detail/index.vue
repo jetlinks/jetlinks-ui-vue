@@ -884,9 +884,9 @@ watch(
     async () => {
         noData.value = false
         formRef.value?.resetFields();
+        await getProduct(props.data?.id || ':id' as string);
+        getTypes();
         if (props.data?.id) {
-            await getProduct(props.data?.id as string);
-            getTypes();
             const resp = await detail(props.data?.id as string);
             const _data: any = resp.result;
             const _obj = cloneDeep(_data);

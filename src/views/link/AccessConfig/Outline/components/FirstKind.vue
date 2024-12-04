@@ -31,39 +31,53 @@
                 </div>
             </template>
         </AccessCard>
-        <TitleComponent data="消息协议" style="margin-top: 20px">
-        </TitleComponent>
-        <AccessCard v-if="protocol" :data="{ ...protocol, type: 'protocol' }">
-        </AccessCard>
-        <TitleComponent
-            v-if="config?.routes && config.routes.length > 0"
-            :data="
-                data.provider === 'mqtt-server-gateway' ||
-                data.provider === 'mqtt-client-gateway'
-                    ? 'topic'
-                    : 'URL信息'
+        <template
+            v-if="
+                ![
+                    'agent-device-gateway',
+                    'agent-media-device-gateway',
+                ].includes(data.provider)
             "
-            style="margin-top: 20px"
         >
-        </TitleComponent>
-        <div v-if="config?.routes && config.routes.length > 0">
-            <j-scrollbar height="350">
-                <j-table
-                    :pagination="false"
-                    :rowKey="generateUUID()"
-                    :data-source="config.routes || []"
-                    bordered
-                    :columns="config.id === 'MQTT' ? columnsMQTT : columnsHTTP"
-                    :scroll="{ y: 400 }"
-                >
-                    <template #bodyCell="{ column, text, record }">
-                        <template v-if="column.dataIndex === 'stream'">
-                            {{ getStream(record) }}
+            <TitleComponent data="消息协议" style="margin-top: 20px">
+            </TitleComponent>
+            <AccessCard
+                v-if="protocol"
+                :data="{ ...protocol, type: 'protocol' }"
+            >
+            </AccessCard>
+            <TitleComponent
+                v-if="config?.routes && config.routes.length > 0"
+                :data="
+                    data.provider === 'mqtt-server-gateway' ||
+                    data.provider === 'mqtt-client-gateway'
+                        ? 'topic'
+                        : 'URL信息'
+                "
+                style="margin-top: 20px"
+            >
+            </TitleComponent>
+            <div v-if="config?.routes && config.routes.length > 0">
+                <j-scrollbar height="350">
+                    <j-table
+                        :pagination="false"
+                        :rowKey="generateUUID()"
+                        :data-source="config.routes || []"
+                        bordered
+                        :columns="
+                            config.id === 'MQTT' ? columnsMQTT : columnsHTTP
+                        "
+                        :scroll="{ y: 400 }"
+                    >
+                        <template #bodyCell="{ column, text, record }">
+                            <template v-if="column.dataIndex === 'stream'">
+                                {{ getStream(record) }}
+                            </template>
                         </template>
-                    </template>
-                </j-table>
-            </j-scrollbar>
-        </div>
+                    </j-table>
+                </j-scrollbar>
+            </div>
+        </template>
     </div>
 </template>
 

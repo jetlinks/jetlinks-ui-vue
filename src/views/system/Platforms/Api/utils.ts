@@ -166,6 +166,11 @@ export function dealNoRef(type:string,schema?:any):any{
         case 'number':
             result = 0;
             break;
+        case 'object':
+            const _itemType = schema?.items?.type
+            const _item = dealNoRef(_itemType)
+            result = _item ? {..._item}: {};
+            break;
         default:
             return;
     }

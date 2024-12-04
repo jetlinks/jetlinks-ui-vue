@@ -1,7 +1,8 @@
 import type { Slots } from 'vue'
-import { TOKEN_KEY } from '@/utils/variable'
+import {BASE_API_PATH, TOKEN_KEY} from '@/utils/variable'
 import { message } from 'jetlinks-ui-components';
 import {cloneDeep, isArray} from "lodash-es";
+import {getRemoteProxyUrl, getRemoteSystem, getRemoteToken} from "@/api/edge/device";
 
 /**
  * 静态图片资源处理
@@ -193,4 +194,74 @@ export const isFullScreen = () => {
       document.webkitIsFullScreen ||
       document.webkitFullScreen ||
       document.msFullScreen)
+}
+
+export const hexToRGB = (hex: string) => {
+  let alpha = false,
+      h = hex.slice(hex.startsWith("#") ? 1 : 0);
+  if (h.length === 3) {
+    h = [...h].map((x) => x + x).join("")
+  } else if (h.length === 8) {
+    alpha = true;
+  } else {
+    h = parseInt(h, 16);
+  }
+
+
+  return [
+    h >>> (alpha ? 24 : 16),
+    (h & (alpha ? 0x00ff0000 : 0x00ff00)) >>> (alpha ? 16 : 8),
+    ((h & (alpha ? 0x0000ff00 : 0x0000ff)) >>> (alpha ? 8 : 0))
+  ]
+}
+
+export const openEdgeUrl = async (id: string) => {
+  const resp = await getRemoteToken(id,
+    {
+      "expires": 7200000,
+      "authentication": {
+        "user": {
+          "id": "",
+          "username": "admin",
+          "name": "超级管理员",
+          "userType": "admin",
+          "type": "user"
+        },
+        "permissions": [
+          {
+            "id": "*",
+            "name": "*",
+            "actions": [
+              "*"
+            ],
+            "dataAccesses": []
+          }
+        ],
+        "dimensions": [
+          {
+            "id": "",
+            "username": "admin",
+            "name": "超级管理员",
+            "userType": "admin",
+            "type": "user"
+          }
+        ],
+        "attributes": {}
+      }
+    })
+
+  if (resp.success) {
+    const _location = window.location.origin + window.location.pathname
+    const system = await getRemoteSystem(id, [ "paths" ])
+    const path = system.result[0]?.properties['base-path']
+    // const path = 'http://192.168.32.116:5173'
+    const base64Url = btoa(path)
+    const proxyUrl = await getRemoteProxyUrl(id)
+    const fallbackBase64 = btoa(`${_location}#/edge/token/${id}`)
+    const basePath = BASE_API_PATH?.replace('/', '') || ''
+
+    const url = `${_location}${basePath}/edge/device:${id}/_proxy/${proxyUrl.result}/${fallbackBase64}/${base64Url}/#/?token=${resp.result}&thingId=${id}&terminal=cloud`
+
+    window.open(url)
+  }
 }

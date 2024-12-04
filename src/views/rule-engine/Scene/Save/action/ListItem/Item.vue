@@ -299,7 +299,7 @@
                                             margin-right: 12px;
                                         "
                                     >
-                                        {{ data?.options?.name }}
+                                        {{ Array.isArray(data?.options?.name) ? data?.options?.name?.join(',') : data?.options?.name }}
                                     </Ellipsis>
                                     <Ellipsis style="max-width: 400px">
                                         {{ data?.options?.propertiesName }}

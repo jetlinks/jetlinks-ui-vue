@@ -9,6 +9,7 @@
             <div style="width: 750px">
                 <EditTable
                     ref="tableRef"
+                    :validateRowKey="true"
                     :columns="myColumns"
                     :dataSource="dataSource"
                     :pagination="false"
@@ -223,6 +224,7 @@ const defaultColumns = [
         title: '参数标识',
         dataIndex: 'id',
         form: {
+            required: true,
             rules: [
                 {
                     asyncValidator(_, value, ...setting) {
@@ -256,6 +258,7 @@ const defaultColumns = [
         title: '参数名称',
         dataIndex: 'name',
         form: {
+            required: true,
             rules: [
                 {
                     required: true,

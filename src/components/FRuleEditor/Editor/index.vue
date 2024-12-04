@@ -1,278 +1,294 @@
 <template>
-  <div class="editor-box">
-    <div class="top">
-      <div class="left">
-        <span v-for="item in symbolList.filter((t: SymbolType, i: number) => i <= 3)" :key="item.key"
-          @click="addOperatorValue(item.value)">
-          {{ item.value }}
-        </span>
-        <span>
-          <j-dropdown>
-            <AIcon type="MoreOutlined" />
-            <template #overlay>
-              <j-menu>
-                <j-menu-item v-for="item in symbolList.filter((t: SymbolType, i: number) => i > 6)" :key="item.key"
-                  @click="addOperatorValue(item.value)">
-                  {{ item.value }}
-                </j-menu-item>
-              </j-menu>
-            </template>
-          </j-dropdown>
-        </span>
-      </div>
-      <div class="right">
-        <span v-if="mode !== 'advance'">
-          <j-tooltip :title="!id ? '请先输入标识' : '设置属性规则'">
-            <AIcon type="FullscreenOutlined" :class="!id ? 'disabled' : ''" @click="fullscreenClick" />
-          </j-tooltip>
-        </span>
-      </div>
+    <div class="editor-box">
+        <div class="top">
+            <div class="left">
+                <span
+                    v-for="item in symbolList.filter((t: SymbolType, i: number) => i <= 3)"
+                    :key="item.key"
+                    @click="addOperatorValue(item.value)"
+                >
+                    {{ item.value }}
+                </span>
+                <span>
+                    <j-dropdown
+                        :getPopupContainer="(node) => node || document.body"
+                    >
+                        <AIcon type="MoreOutlined" />
+                        <template #overlay>
+                            <j-menu>
+                                <j-menu-item
+                                    v-for="item in symbolList.filter((t: SymbolType, i: number) => i > 6)"
+                                    :key="item.key"
+                                    @click="addOperatorValue(item.value)"
+                                >
+                                    {{ item.value }}
+                                </j-menu-item>
+                            </j-menu>
+                        </template>
+                    </j-dropdown>
+                </span>
+            </div>
+            <div class="right">
+                <span v-if="mode !== 'advance'">
+                    <j-tooltip :title="!id ? '请先输入标识' : '设置属性规则'">
+                        <AIcon
+                            type="FullscreenOutlined"
+                            :class="!id ? 'disabled' : ''"
+                            @click="fullscreenClick"
+                        />
+                    </j-tooltip>
+                </span>
+            </div>
+        </div>
+        <div class="editor">
+            <j-monaco-editor
+                v-if="loading"
+                v-model:model-value="_value"
+                theme="vs"
+                ref="editor"
+                language="javascript"
+                :registrationTypescript="typescriptTip"
+                :registrationTips="registrationTips"
+                :init="editorInit"
+            />
+        </div>
     </div>
-    <div class="editor">
-      <j-monaco-editor v-if="loading" v-model:model-value="_value" theme="vs" ref="editor" language="javascript" :registrationTypescript="typescriptTip" :registrationTips="registrationTips"
-        :init="editorInit"/>
-    </div>
-  </div>
 </template>
 <script setup lang="ts" name="Editor">
-import {
-  queryTypescript,
-  queryProductTs
-} from '@/api/device/instance';
+import { queryTypescript, queryProductTs } from '@/api/device/instance';
 import { useInstanceStore } from '@/store/instance';
 import { useProductStore } from '@/store/product';
 import { cloneDeep } from 'lodash-es';
-import { inject } from 'vue'
+import { inject } from 'vue';
 interface Props {
-  mode?: 'advance' | 'simple';
-  id?: string;
-  value?: string;
-  tips?:  Array<any>
+    mode?: 'advance' | 'simple';
+    id?: string;
+    value?: string;
+    tips?: Array<any>;
 }
-const props = defineProps<Props>()
-const target = inject('target')
-const instanceStore = useInstanceStore()
-const productStore = useProductStore()
+const props = defineProps<Props>();
+const target = inject('target');
+const instanceStore = useInstanceStore();
+const productStore = useProductStore();
 interface Emits {
-  (e: 'change', data: string): void;
-  (e: 'update:value', data: string): void;
+    (e: 'change', data: string): void;
+    (e: 'update:value', data: string): void;
 }
 
-const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>();
 
 type editorType = {
-  insert(val: string): void
-}
-const editor = ref<editorType>()
+    insert(val: string): void;
+};
+const editor = ref<editorType>();
 
 type SymbolType = {
-  key: string,
-  value: string
-}
+    key: string;
+    value: string;
+};
 
 const typescriptTip = reactive({
-  typescript: ''
-})
+    typescript: '',
+});
 const registrationTips = ref<any>({
-  name: 'javascript'
-})
+    name: 'javascript',
+});
 const editorInit = (editor: any, monaco: any) => {
-  monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-    noSemanticValidation: true,
-    noSyntaxValidation: false,
-  });
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: true,
+        noSyntaxValidation: false,
+    });
 
-  // compiler options
-  monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-    allowJs: true,
-    checkJs: true,
-    allowNonTsExtensions: true,
-    target: monaco.languages.typescript.ScriptTarget.ESNext,
-    strictNullChecks: false,
-    strictPropertyInitialization: true,
-    strictFunctionTypes: true,
-    strictBindCallApply: true,
-    useDefineForClassFields: true,//permit class static fields with private name to have initializer
-    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-    module: monaco.languages.typescript.ModuleKind.CommonJS,
-    typeRoots: ["types"],
-    lib: ["esnext"]
-  });
-}
+    // compiler options
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+        allowJs: true,
+        checkJs: true,
+        allowNonTsExtensions: true,
+        target: monaco.languages.typescript.ScriptTarget.ESNext,
+        strictNullChecks: false,
+        strictPropertyInitialization: true,
+        strictFunctionTypes: true,
+        strictBindCallApply: true,
+        useDefineForClassFields: true, //permit class static fields with private name to have initializer
+        moduleResolution:
+            monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+        module: monaco.languages.typescript.ModuleKind.CommonJS,
+        typeRoots: ['types'],
+        lib: ['esnext'],
+    });
+};
 
 const symbolList = [
-  {
-    key: 'add',
-    value: '+',
-  },
-  {
-    key: 'subtract',
-    value: '-',
-  },
-  {
-    key: 'multiply',
-    value: '*',
-  },
-  {
-    key: 'divide',
-    value: '/',
-  },
-  {
-    key: 'parentheses',
-    value: '()',
-  },
-  {
-    key: 'cubic',
-    value: '^',
-  },
-  {
-    key: 'dayu',
-    value: '>',
-  },
-  {
-    key: 'dayudengyu',
-    value: '>=',
-  },
-  {
-    key: 'dengyudengyu',
-    value: '==',
-  },
-  {
-    key: 'xiaoyudengyu',
-    value: '<=',
-  },
-  {
-    key: 'xiaoyu',
-    value: '<',
-  },
-  {
-    key: 'jiankuohao',
-    value: '<>',
-  },
-  {
-    key: 'andand',
-    value: '&&',
-  },
-  {
-    key: 'huohuo',
-    value: '||',
-  },
-  {
-    key: 'fei',
-    value: '!',
-  },
-  {
-    key: 'and',
-    value: '&',
-  },
-  {
-    key: 'huo',
-    value: '|',
-  },
-  {
-    key: 'bolang',
-    value: '~',
-  },
+    {
+        key: 'add',
+        value: '+',
+    },
+    {
+        key: 'subtract',
+        value: '-',
+    },
+    {
+        key: 'multiply',
+        value: '*',
+    },
+    {
+        key: 'divide',
+        value: '/',
+    },
+    {
+        key: 'parentheses',
+        value: '()',
+    },
+    {
+        key: 'cubic',
+        value: '^',
+    },
+    {
+        key: 'dayu',
+        value: '>',
+    },
+    {
+        key: 'dayudengyu',
+        value: '>=',
+    },
+    {
+        key: 'dengyudengyu',
+        value: '==',
+    },
+    {
+        key: 'xiaoyudengyu',
+        value: '<=',
+    },
+    {
+        key: 'xiaoyu',
+        value: '<',
+    },
+    {
+        key: 'jiankuohao',
+        value: '<>',
+    },
+    {
+        key: 'andand',
+        value: '&&',
+    },
+    {
+        key: 'huohuo',
+        value: '||',
+    },
+    {
+        key: 'fei',
+        value: '!',
+    },
+    {
+        key: 'and',
+        value: '&',
+    },
+    {
+        key: 'huo',
+        value: '|',
+    },
+    {
+        key: 'bolang',
+        value: '~',
+    },
 ] as SymbolType[];
 
 const _value = computed({
-  get: () => props.value || '',
-  set: (data: string) => {
-    emit('update:value', data);
-  }
-})
+    get: () => props.value || '',
+    set: (data: string) => {
+        emit('update:value', data);
+    },
+});
 
-const loading = ref(false)
+const loading = ref(false);
 const queryCode = () => {
-  registrationTips.value.suggestions = cloneDeep(props.tips)
-  let id = ''
-  if(target==='device'){
-    id = instanceStore.current.id
-    queryTypescript(id).then(res => {
-      if (res.status===200) {
-        typescriptTip.typescript = res.result
-      }
-    })
-  }else if(target ==='product'){
-    id = productStore.current.id
-    queryProductTs(id).then(res => {
-      if (res.status===200) {
-        typescriptTip.typescript = res.result
-      }
-    })
-  }
-  
-}
-
+    registrationTips.value.suggestions = cloneDeep(props.tips);
+    let id = '';
+    if (target === 'device') {
+        id = instanceStore.current.id;
+        queryTypescript(id).then((res) => {
+            if (res.status === 200) {
+                typescriptTip.typescript = res.result;
+            }
+        });
+    } else if (target === 'product') {
+        id = productStore.current.id;
+        queryProductTs(id).then((res) => {
+            if (res.status === 200) {
+                typescriptTip.typescript = res.result;
+            }
+        });
+    }
+};
 
 const addOperatorValue = (val: string) => {
-  editor.value?.insert(val)
-}
+    editor.value?.insert(val);
+};
 
 const fullscreenClick = () => {
-  if (props.id) {
-    emit('change', 'advance');
-  }
-}
+    if (props.id) {
+        emit('change', 'advance');
+    }
+};
 
 defineExpose({
-  addOperatorValue
-})
+    addOperatorValue,
+});
 
 onMounted(() => {
-  setTimeout(() => {
-    loading.value = true;
-  }, 100);
-})
+    setTimeout(() => {
+        loading.value = true;
+    }, 100);
+});
 
-queryCode()
+queryCode();
 </script>
 <style lang="less" scoped>
 .editor-box {
-  margin-bottom: 10px;
-  border: 1px solid lightgray;
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
 
-  .top {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-    border-bottom: 1px solid lightgray;
+    .top {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 100%;
+        border-bottom: 1px solid lightgray;
 
-    .left {
-      display: flex;
-      align-items: center;
-      width: 60%;
-      margin: 0 5px;
+        .left {
+            display: flex;
+            align-items: center;
+            width: 60%;
+            margin: 0 5px;
 
-      span {
-        display: inline-block;
-        height: 40px;
-        margin: 0 10px;
-        line-height: 40px;
-        cursor: pointer;
-      }
+            span {
+                display: inline-block;
+                height: 40px;
+                margin: 0 10px;
+                line-height: 40px;
+                cursor: pointer;
+            }
+        }
+
+        .right {
+            display: flex;
+            align-items: center;
+            width: 10%;
+            margin: 0 5px;
+
+            span {
+                margin: 0 5px;
+            }
+        }
+
+        .disabled {
+            color: rgba(#000, 0.5);
+            cursor: not-allowed;
+        }
     }
 
-    .right {
-      display: flex;
-      align-items: center;
-      width: 10%;
-      margin: 0 5px;
-
-      span {
-        margin: 0 5px;
-      }
+    .editor {
+        height: 300px;
     }
-
-    .disabled {
-      color: rgba(#000, 0.5);
-      cursor: not-allowed;
-    }
-  }
-
-  .editor {
-    height: 300px;
-  }
 }
 </style>
