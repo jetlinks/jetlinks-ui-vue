@@ -467,9 +467,9 @@ const getActions = (
         },
       {
         key: 'setting',
-        text: '远程控制',
+        text: '远程访问',
         tooltip: {
-          title: '远程控制',
+          title: '远程访问',
         },
         icon: 'ControlOutlined',
         onClick: async () => {
