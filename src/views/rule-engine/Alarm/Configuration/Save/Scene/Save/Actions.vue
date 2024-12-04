@@ -160,7 +160,7 @@
                 <span style="padding-left: 4px">{{ item.options?.type }}</span>
                 <AIcon type="icon-mubiao" style="padding:0 4px"/>
                 <Ellipsis style='max-width: 120px;margin-right: 12px;'>
-                  {{ item.options?.name }}
+                  {{ Array.isArray(item?.options?.name) ? item?.options?.name?.join(',') : item.options?.name }}
                 </Ellipsis>
                 <Ellipsis style='max-width: 120px;'>
                   {{ item.options?.propertiesName }}

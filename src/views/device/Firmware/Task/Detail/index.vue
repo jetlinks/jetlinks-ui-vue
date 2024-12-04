@@ -114,7 +114,9 @@
                     </div>
                 </template>
                 <template v-if="column.dataIndex === 'version'">
-                    {{ text || '--' }}
+                    <Ellipsis>
+                        {{ text || '--' }}
+                    </Ellipsis>
                 </template>
             </template>
         </j-table>

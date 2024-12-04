@@ -95,7 +95,7 @@
                                         <div>
                                             {{
                                                 dayjs(
-                                                    slotProps?.alarmTime,
+                                                    slotProps?.lastAlarmTime || slotProps?.alarmTime,
                                                 ).format(
                                                     'YYYY-MM-DD HH:mm:ss',
                                                 ) +
