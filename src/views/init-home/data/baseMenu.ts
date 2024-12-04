@@ -814,7 +814,7 @@ export default [
               },
               {
                 id: 'remote',
-                name: '远程控制',
+                name: '远程访问',
                 permissions: [
                   {
                     permission: 'edge-manager',
@@ -2701,7 +2701,7 @@ export default [
               },
               {
                 id: 'setting',
-                name: '远程控制',
+                name: '远程访问',
                 permissions: [
                   {
                     permission: 'edge-manager',
@@ -2850,39 +2850,51 @@ export default [
             showPage: ['edge-manager'],
             permissions: [
               {
-                  "permission": "device-product",
-                  "actions": [
-                      "query"
-                  ]
+                "permission": "device-product",
+                "actions": [
+                  "query"
+                ]
               },
               {
-                  "permission": "device-instance",
-                  "actions": [
-                      "query"
-                  ]
+                "permission": "device-instance",
+                "actions": [
+                  "query"
+                ]
               },
               {
-                  "permission": "agent-job",
-                  "actions": [
-                      "query",
-                      "save",
-                      "delete"
-                  ]
+                "permission": "agent-job",
+                "actions": [
+                  "query",
+                  "save",
+                  "delete"
+                ]
               },
               {
-                  "permission": "edge-action-sync",
-                  "actions": [
-                      "save",
-                      "delete"
-                  ]
+                "permission": "batch-operation-task",
+                "actions": [
+                  "query",
+                  "save",
+                  "delete",
+                  "deploy"
+                ]
               },
               {
-                  "permission": "edge-manager",
-                  "actions": [
-                      "proxy_request"
-                  ]
+                "permission": "batch-operation-history",
+                "actions": [
+                  "query",
+                  "save",
+                  "delete"
+                ]
+              },
+              {
+                "permission": "batch-dev-operation-detail",
+                "actions": [
+                  "query",
+                  "save",
+                  "delete"
+                ]
               }
-          ],
+            ],
             buttons: [
 
             ],
