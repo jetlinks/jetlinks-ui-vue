@@ -135,7 +135,7 @@
                                 </j-col>
                             </j-row>
                         </template>
-                        <template #actions="item">
+                        <!-- <template #actions="item">
                             <PermissionButton
                                 :disabled="
                                     item.key === 'solve' &&
@@ -154,7 +154,7 @@
                                 <AIcon :type="item.icon" />
                                 <span>{{ item?.text }}</span>
                             </PermissionButton>
-                        </template>
+                        </template> -->
                     </CardBox>
                 </template>
             </JProTable>
