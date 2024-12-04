@@ -1,5 +1,6 @@
 <template>
   <j-select
+      v-bind="props"
     v-model:value="myValue"
     style="width: 100%;"
     :options="options"

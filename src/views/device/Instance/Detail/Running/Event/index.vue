@@ -65,6 +65,7 @@ const defaultColumns = [
     dataIndex: 'timestamp',
     key: 'timestamp',
     scopedSlots: true,
+    width: 200,
     search: {
       type: 'date',
     },
