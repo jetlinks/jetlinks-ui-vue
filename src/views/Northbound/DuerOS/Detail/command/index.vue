@@ -326,7 +326,7 @@ watch(
     (val) => {
         if (val) {
             const newVal = cloneDeep(val);
-            if (val.message.properties) {
+            if (val.message.properties && typeof val.message.properties === 'object') {
                 if (
                     props.actionType === 'command' &&
                     val.messageType === 'WRITE_PROPERTY'
