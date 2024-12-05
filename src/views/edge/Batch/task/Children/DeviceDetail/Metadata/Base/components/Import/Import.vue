@@ -70,6 +70,7 @@ import {getTemplate as getProductTemplate} from '@/api/device/product'
 import {downloadFileByUrl} from "@/utils/utils";
 import {useGroupActive, useTableWrapper} from "@/components/Metadata/Table/context";
 import { useProductStore } from '@/store/product';
+import { useInstanceStore } from '@/store/instance'
 
 const props = defineProps({
   target: {
@@ -83,7 +84,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['ok'])
-const { current } = useProductStore()
+const { current } = props.target === 'product' ? useProductStore() : useInstanceStore();
 const visible = ref(false);
 const successCount = ref(0);
 const errorCount = ref(0);

@@ -70,6 +70,7 @@ import {
     useTableWrapper,
 } from '@/components/Metadata/Table/context';
 import { useProductStore } from '@/store/product';
+import { useInstanceStore } from '@/store/instance'
 
 const props = defineProps({
     target: {
@@ -83,7 +84,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['ok']);
-const { current } = useProductStore();
+const { current } = props.target === 'product' ? useProductStore() : useInstanceStore();
 const visible = ref(false);
 const successCount = ref(0);
 const errorCount = ref(0);
@@ -189,14 +190,12 @@ const beforeUpload = (file) => {
     const isXlsx =
         file.type ===
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-    console.log(isCsv, isXlsx);
     if (!isCsv && !isXlsx) {
         onReject();
-        console.log(isCsv, isXlsx, file.type);
     } else {
         const formData = new FormData();
         formData.append('file', file);
-        uploadAnalyzeMetadata(current.value?.id, formData)
+        uploadAnalyzeMetadata(current?.id, formData)
             .then((res) => {
                 if (res.success) {
                     submitData(res.result);
@@ -220,6 +219,7 @@ const uploadChange = async (info) => {
         onlyMessage('上传失败', 'error');
     }
 };
+
 </script>
 
 <style scoped lang="less">
