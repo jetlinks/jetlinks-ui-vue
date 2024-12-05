@@ -102,7 +102,6 @@ const handleData = (data: any[], type: string, provider?: string) => {
         item.key = item.id;
         item.title = item.name;
         item.checkable = type === 'collectors';
-
         if (provider) {
           item.provider = provider
         }
@@ -121,7 +120,8 @@ const handleData = (data: any[], type: string, provider?: string) => {
 
         if (item.points && Array.isArray(item.points) && item.points.length) {
             item.children = handleData(item.points, 'points');
-
+        }else{
+            item.disableCheckbox = true
         }
     });
     return data as any[];

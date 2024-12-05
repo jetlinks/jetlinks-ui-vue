@@ -97,32 +97,35 @@ const queryFirmwareList = async () => {
         ],
     });
     if (res.success) {
-        firmwareList.value = res.result;
-    }
-    if (props.type === 'device') {
-        // 查看固件所属产品下所有的任务 过滤掉不包含该设备的升级任务的固件
-        const resp = await historyPaginateNot({
-            paging: false,
-            sorts: [{ name: 'createTime', order: 'desc' }],
-            terms: [
-                {
-                    terms: [
-                        {
-                            column: 'productId',
-                            value: current.productId,
-                        },
-                    ],
-                },
-            ],
-        });
-        if (resp.success) {
-            firmwareList.value = firmwareList.value.filter((i) => {
-                return resp.result.find((item) => {
-                    return (
-                        i.id === item.firmwareId && current.id === item.deviceId
-                    );
-                });
+  
+        if (props.type === 'device') {
+            // 查看固件所属产品下所有的任务 过滤掉不包含该设备的升级任务的固件
+            const resp = await historyPaginateNot({
+                paging: false,
+                sorts: [{ name: 'createTime', order: 'desc' }],
+                terms: [
+                    {
+                        terms: [
+                            {
+                                column: 'productId',
+                                value: current.productId,
+                            },
+                        ],
+                    },
+                ],
             });
+            if (resp.success) {
+                firmwareList.value = res.result.filter((i) => {
+                    return resp.result.find((item) => {
+                        return (
+                            i.id === item.firmwareId &&
+                            current.id === item.deviceId
+                        );
+                    });
+                });
+            }
+        }else{
+            firmwareList.value = res.result;
         }
     }
 };
@@ -189,8 +192,8 @@ onMounted(() => {
     }
     .firmwareFoot {
         justify-content: space-between;
-        .firmwareFootTitle{
-            color:#A3A3A3
+        .firmwareFootTitle {
+            color: #a3a3a3;
         }
     }
 }

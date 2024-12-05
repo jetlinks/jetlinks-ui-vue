@@ -185,6 +185,7 @@
 <script lang="ts" setup>
 import EditTable from './EditTable.vue';
 import MSelect from '../../../components/MSelect/index.vue';
+import { cloneDeep, omit } from 'lodash-es';
 
 const formRef = ref();
 
@@ -280,14 +281,73 @@ const funcChange = (val: string, _inputs?: any[]) => {
     }
 };
 
+const saveBtn = () =>
+    new Promise((resolve) => {
+        formRef.value
+            .validate()
+            .then(async (_data: any) => {
+                if (modelRef.message.inputs?.length) {
+                    await editRef.value?.onSave().catch(() => {
+                        resolve(false);
+                    });
+                }
+                const data = cloneDeep(_data);
+                if (
+                    props.actionType === 'command' &&
+                    modelRef.messageType === 'WRITE_PROPERTY'
+                ) {
+                    omit(data, ['message']);
+                    data.message = {
+                        properties: {
+                            [_data.message.properties]: _data.message.value,
+                        },
+                    };
+                }
+                if (
+                    (props.actionType === 'command' ||
+                        props.actionType === 'latestData') &&
+                    modelRef.messageType === 'READ_PROPERTY'
+                ) {
+                    omit(data, ['message']);
+                    data.message = {
+                        properties: [_data.message.properties],
+                    };
+                }
+                emit('update:modelValue', data);
+                resolve(data);
+            })
+            .catch((err: any) => {
+                resolve(err);
+            });
+    });
+
 watch(
     () => props.modelValue,
-    (newVal) => {
-        if (newVal) {
-            Object.assign(modelRef, newVal);
-            if (newVal?.message?.properties) {
+    (val) => {
+        if (val) {
+            const newVal = cloneDeep(val);
+            if (val.message.properties) {
+                if (
+                    props.actionType === 'command' &&
+                    val.messageType === 'WRITE_PROPERTY'
+                ) {
+                    newVal.message.properties = Object.keys(
+                        val.message.properties,
+                    )[0];
+                    newVal.message.value = Object.keys(
+                        val.message.properties,
+                    )[0];
+                }
+                if (
+                    (props.actionType === 'command' ||
+                        props.actionType === 'latestData') &&
+                        val.messageType === 'READ_PROPERTY'
+                ){
+                    newVal.message.properties = val.message.properties[0]
+                }
                 onPropertyChange(newVal?.message?.properties, true);
             }
+            Object.assign(modelRef, newVal);
             if (newVal?.message?.functionId) {
                 funcChange(
                     newVal?.message?.functionId,
@@ -300,24 +360,6 @@ watch(
         immediate: true,
     },
 );
-
-const saveBtn = () =>
-    new Promise((resolve) => {
-        formRef.value
-            .validate()
-            .then(async (_data: any) => {
-                if (modelRef.message.inputs?.length) {
-                    await editRef.value?.onSave().catch(() => {
-                        resolve(false);
-                    });
-                }
-                emit('update:modelValue', _data);
-                resolve(_data);
-            })
-            .catch((err: any) => {
-                resolve(err);
-            });
-    });
 
 defineExpose({ saveBtn });
 </script>
