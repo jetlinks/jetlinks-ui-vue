@@ -5,6 +5,7 @@
         visible
         width="1300px"
         title="编辑规则"
+        centered
         :destroyOnClose="true"
         :dialogStyle="{
           zIndex: 1072

@@ -15,6 +15,7 @@
             @cancel="modalVis = false"
             @ok="handleModalSubmit"
             destroyOnClose
+            :zIndex="1031"
         >
             <div style="width: 100%; height: 400px">
                 <el-amap

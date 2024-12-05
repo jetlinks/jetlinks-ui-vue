@@ -17,7 +17,7 @@
                         <div class="map-tree-header">
                           <span>数据源</span>
                           <div>
-                            <a-input placeholder="请输入搜索名称" @change="onSearch">
+                            <a-input placeholder="请输入通道或采集器名称" allow-clear @change="onSearch">
                               <template #suffix>
                                 <AIcon type="SearchOutlined" />
                               </template>
@@ -102,7 +102,11 @@ const handleData = (data: any[], type: string, provider?: string) => {
         item.key = item.id;
         item.title = item.name;
         item.checkable = type === 'collectors';
-        provider ? (item.provider = provider) : '';
+
+        if (provider) {
+          item.provider = provider
+        }
+
         if (
             item.collectors &&
             Array.isArray(item.collectors) &&
@@ -114,8 +118,10 @@ const handleData = (data: any[], type: string, provider?: string) => {
                 item.provider,
             );
         }
+
         if (item.points && Array.isArray(item.points) && item.points.length) {
             item.children = handleData(item.points, 'points');
+
         }
     });
     return data as any[];
@@ -194,12 +200,17 @@ const treeFilter = (data: any[], value: any, key: string = 'name'): any[] => {
   if (!data) return []
 
   return data.filter(item => {
-    if (item.children && item.children.length) {
+    if (item[key].includes(value)) {
+      return true
+    }
+
+    // 排除点位的搜索
+    if (item.children && item.children.length && !item.hasOwnProperty('points')) {
       item.children = treeFilter(item.children || [], value, key)
       return !!item.children.length
-    } else {
-      return item[key].includes(value)
     }
+
+    return false
   })
 }
 

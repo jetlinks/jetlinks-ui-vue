@@ -42,7 +42,7 @@
                                     v-else-if="column.dataIndex === 'value'"
                                 >
                                     <a-tooltip
-                                        v-if="judgmentConflict(record)"
+                                        v-if="_disabled(record.property)"
                                         color="#ffffff"
                                         :get-popup-container="popContainer"
                                         :arrowPointAtCenter="true"
@@ -50,7 +50,7 @@
                                     >
                                         <template #title>
                                             <span style="color: #1d2129"
-                                                >字段冲突，请重新配置</span
+                                                >{{`该字段与系统内置字段冲突，请避免以下字段：${conflictData.join(',')}`}}</span
                                             >
                                         </template>
                                         <div
@@ -61,7 +61,7 @@
                                         style="position: relative"
                                         :class="{
                                             'edit-table-form-has-error':
-                                                judgmentConflict(record),
+                                                _disabled(record.property),
                                         }"
                                     >
                                         <value-item
@@ -80,7 +80,7 @@
                                                     zIndex: 1071,
                                                 },
                                                 disabled:
-                                                    judgmentConflict(record),
+                                                    _disabled(record.property),
                                             }"
                                             :getPopupContainer="
                                                 (node) =>
@@ -593,7 +593,7 @@ const getOptions = (item: any, index: any) => {
     }
 };
 
-//判断设备接入配置项是否跟物模型字段冲突
+
 const judgmentConflict = (record: any) => {
     return (
         record.property === 'metrics' ||
@@ -604,6 +604,22 @@ const judgmentConflict = (record: any) => {
             ))
     );
 };
+
+//判断设备接入配置项是否跟物模型字段冲突
+const conflictData = computed(() => {
+  let arr:any = []
+  if(props.metadataType === 'properties') {
+    arr = ['groupId', 'groupName', 'source', 'type', 'virtualRule']
+  }
+  if(props.metadataType === 'events') {
+    arr = ['level']
+  }
+  return [...arr, 'metrics']
+})
+
+const _disabled = (_property:any) => {
+  return conflictData.value.includes(_property)
+}
 
 watch(
     () => modalVisible.value,

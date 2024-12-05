@@ -87,7 +87,7 @@ const handleOk = async () => {
     if (dataSource.value.length) {
         loading.value = true
         const list = (dataSource.value || [])
-            .filter((item: any) => item?.key && item?.value)
+            .filter((item: any) => item?.key && (item?.value !== undefined && item?.value !== null))
             .map((i: any) => {
                 const { dataType, ...extra } = i;
                 return { ...extra };
@@ -101,7 +101,7 @@ const handleOk = async () => {
                 onlyMessage('操作成功！');
             }
           }
-          const _list = (dataSource.value || []).filter((item: any) => item?.key && !item?.value);
+          const _list = (dataSource.value || []).filter((item: any) => item?.key && (item?.value === undefined || item?.value === null));
           if (_list.length) {
             // 删除值
             _list.map(async (item: any) => {

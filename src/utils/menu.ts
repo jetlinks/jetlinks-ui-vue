@@ -151,7 +151,7 @@ const extraRouteObj = {
     ],
   },
   'edge/Device': {
-    children: [{ code: 'Remote', name: '远程控制' }],
+    children: [{ code: 'Remote', name: '远程访问' }],
   },
   'rule-engine/Alarm/Log': {
     children: [{ code: 'Record', name: '处理记录' }]

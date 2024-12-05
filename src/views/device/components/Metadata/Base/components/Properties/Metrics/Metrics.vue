@@ -91,7 +91,7 @@ const columns: any = [
             if (value) {
               const option = setting[2]
 
-              if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.value === value)) {
+              if (dataSource.value.filter((_, index) => index !== option.index).some(item => item.id === value)) {
                 return Promise.reject('该标识已存在')
               }
               return Promise.resolve()

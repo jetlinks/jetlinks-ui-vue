@@ -33,7 +33,11 @@
                                 }}
                             </div>
                         </div>
-                        <div class="version">V {{ i.version }}</div>
+                        <div class="version">
+                            <Ellipsis style="max-width: 100px">
+                                V {{ i.version }}
+                            </Ellipsis>
+                        </div>
                     </div>
                     <!-- <div class="mask">查看升级任务</div> -->
                 </template>
