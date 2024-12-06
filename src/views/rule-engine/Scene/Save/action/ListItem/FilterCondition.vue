@@ -584,7 +584,7 @@ watch(
 
 watch(() => props.value, () => {
   const terms = analysisFilterTerms(props.value)
-  console.log(props.value, terms)
+//   console.log(props.value, terms)
   paramsValue.value = terms.value
   paramsValue.column = terms.column
   paramsValue.type = terms.type
