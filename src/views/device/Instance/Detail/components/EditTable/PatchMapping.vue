@@ -12,26 +12,55 @@
             </div>
             <j-spin :spinning="loading">
                 <div class="map-tree-content">
-                    <j-card class="map-tree-content-card" >
-                      <template #title>
-                        <div class="map-tree-header">
-                          <span>数据源</span>
-                          <div>
-                            <a-input placeholder="请输入通道或采集器名称" allow-clear @change="onSearch">
-                              <template #suffix>
-                                <AIcon type="SearchOutlined" />
-                              </template>
-                            </a-input>
-                          </div>
-                        </div>
-                      </template>
+                    <j-card class="map-tree-content-card">
+                        <template #title>
+                            <div class="map-tree-header">
+                                <span>数据源</span>
+                                <div>
+                                    <a-input
+                                        placeholder="请输入通道或采集器名称"
+                                        allow-clear
+                                        v-model:value="searchValue"
+                                        @change="onSearch"
+                                    >
+                                        <template #suffix>
+                                            <AIcon type="SearchOutlined" />
+                                        </template>
+                                    </a-input>
+                                </div>
+                            </div>
+                        </template>
                         <j-tree
+                            v-if="dataSource.length"
                             checkable
+                            v-model:expandedKeys="expandedKeys"
                             :height="300"
                             :tree-data="dataSource"
                             :checkedKeys="checkedKeys"
                             @check="onCheck"
-                        />
+                        >
+                            <template #title="{ title }">
+                                <span v-if="title.indexOf(searchValue) > -1">
+                                    {{
+                                        title.substring(
+                                            0,
+                                            title.indexOf(searchValue),
+                                        )
+                                    }}
+                                    <span style="color: #f50">{{
+                                        searchValue
+                                    }}</span>
+                                    {{
+                                        title.substring(
+                                            title.indexOf(searchValue) +
+                                                searchValue.length,
+                                        )
+                                    }}
+                                </span>
+                                <span v-else>{{ title }}</span>
+                            </template>
+                        </j-tree>
+                        <j-empty v-else style="margin-top: 16px"></j-empty>
                     </j-card>
                     <div style="width: 100px">
                         <j-button
@@ -68,9 +97,9 @@
 
 <script lang="ts" setup>
 import { treeMapping, saveMapping } from '@/api/device/instance';
-import {onlyMessage,} from '@/utils/comm';
-import { useInstanceStore } from "store/instance";
-import { debounce } from 'lodash-es'
+import { onlyMessage } from '@/utils/comm';
+import { useInstanceStore } from 'store/instance';
+import { debounce } from 'lodash-es';
 
 const _props = defineProps({
     type: {
@@ -90,23 +119,23 @@ const _emits = defineEmits(['close', 'save']);
 
 const instanceStore = useInstanceStore();
 const checkedKeys = ref<string[]>([]);
-
+const searchValue = ref()
 const leftList = ref<any[]>([]);
-const rightList = ref<any[]>([]);
 
+const rightList = ref<any[]>([]);
+const expandedKeys = ref<any[]>([]);
 const dataSource = ref<any[]>([]);
 const loading = ref<boolean>(false);
-let dataSourceCache
+
+let dataSourceCache;
 const handleData = (data: any[], type: string, provider?: string) => {
     data.forEach((item) => {
         item.key = item.id;
         item.title = item.name;
         item.checkable = type === 'collectors';
-
         if (provider) {
-          item.provider = provider
+            item.provider = provider;
         }
-
         if (
             item.collectors &&
             Array.isArray(item.collectors) &&
@@ -121,7 +150,8 @@ const handleData = (data: any[], type: string, provider?: string) => {
 
         if (item.points && Array.isArray(item.points) && item.points.length) {
             item.children = handleData(item.points, 'points');
-
+        } else {
+            item.disableCheckbox = true;
         }
     });
     return data as any[];
@@ -130,16 +160,16 @@ const handleData = (data: any[], type: string, provider?: string) => {
 const handleSearch = async () => {
     loading.value = true;
 
-    const params = {}
+    const params = {};
 
     const resp = await treeMapping(params);
     loading.value = false;
     if (resp.status === 200) {
         const _data = handleData(resp.result as any[], 'channel');
-        dataSourceCache = JSON.stringify(_data)
-        dataSource.value = _data
+        dataSourceCache = JSON.stringify(_data);
+        dataSource.value = _data;
     }
-}
+};
 
 const onCheck = (keys: string[], e: any) => {
     checkedKeys.value = [...keys];
@@ -147,11 +177,15 @@ const onCheck = (keys: string[], e: any) => {
 };
 
 const onRight = () => {
+    leftList.value.forEach((i: any) => {
+        i.disableCheckbox = true;
+    });
     rightList.value = leftList.value;
 };
 
 const _delete = (_key: string) => {
     const _index = rightList.value.findIndex((i) => i.key === _key);
+    leftList.value[_index].disableCheckbox = false;
     rightList.value.splice(_index, 1);
     checkedKeys.value = rightList.value.map((i) => i.key);
     leftList.value = rightList.value;
@@ -172,7 +206,10 @@ const handleClick = async () => {
                     (i: any) => i.name === element.name,
                 )?.metadataId,
                 provider: item.provider,
-                state: instanceStore.current.state.value == 'notActive' ? 'disabled': null,
+                state:
+                    instanceStore.current.state.value == 'notActive'
+                        ? 'disabled'
+                        : null,
             }));
             params.push(...array);
         });
@@ -181,7 +218,7 @@ const handleClick = async () => {
             const res = await saveMapping(
                 _props.deviceId,
                 _props.type,
-              filterParams,
+                filterParams,
             );
             if (res.status === 200) {
                 onlyMessage('操作成功');
@@ -197,29 +234,38 @@ const handleClose = () => {
 };
 
 const treeFilter = (data: any[], value: any, key: string = 'name'): any[] => {
-  if (!data) return []
+    if (!data) return [];
+    return data.filter((item) => {
+        if (item[key].includes(value)) {
+            if (item.parentId) {
+                !expandedKeys.value.includes(item.parentId) &&
+                    expandedKeys.value.push(item.parentId);
+            }
+            return true;
+        }
 
-  return data.filter(item => {
-    if (item[key].includes(value)) {
-      return true
-    }
+        // 排除点位的搜索
+        if (
+            item.children &&
+            item.children.length &&
+            !item.hasOwnProperty('points')
+        ) {
+            item.children = treeFilter(item.children || [], value, key);
+            return !!item.children.length;
+        }
 
-    // 排除点位的搜索
-    if (item.children && item.children.length && !item.hasOwnProperty('points')) {
-      item.children = treeFilter(item.children || [], value, key)
-      return !!item.children.length
-    }
-
-    return false
-  })
-}
+        return false;
+    });
+};
 
 const onSearch = debounce((e) => {
-  // handleSearch()
-  const _data = JSON.parse(dataSourceCache || '[]')
-  const text = e.target.value
-  dataSource.value = text ? treeFilter(_data, e.target.value, 'title') : _data
-}, 300)
+    // handleSearch()
+    const _data = JSON.parse(dataSourceCache || '[]');
+    const text = e.target.value;
+    dataSource.value = text
+        ? treeFilter(_data, e.target.value, 'title')
+        : _data;
+}, 300);
 
 watchEffect(() => {
     if (_props.type) {
@@ -245,8 +291,8 @@ watchEffect(() => {
     }
 }
 .map-tree-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 </style>

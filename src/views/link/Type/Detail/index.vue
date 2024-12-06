@@ -37,7 +37,9 @@
                                         show-search
                                         :filter-option="filterOption"
                                         @change="changeType"
-                                        :disabled="!!NetworkType || id !== ':id'"
+                                        :disabled="
+                                            !!NetworkType || id !== ':id'
+                                        "
                                     />
                                 </j-form-item>
                             </j-col>
@@ -1496,54 +1498,44 @@ const getResourcesClusters = () => {
 };
 
 const getDetail = () => {
-    if (id !== ':id') {
-        loading.value = true;
-        detail(id).then((resp) => {
-            if (resp.status === 200) {
-                const result: any = resp.result;
-                const { configuration, cluster } = result;
-                formData.value = { ...result };
-                shareCluster.value = result.shareCluster;
-                activeKey.value = ['1'];
-                if (result.shareCluster) {
-                    dynamicValidateForm.cluster[0].configuration = {
-                        ...cloneDeep(Configuration), //防止编辑时，表单字段不完善，导致输入/选择框新出现时找不到
-                        ...configuration,
-                    };
-                } else {
-                    dynamicValidateForm.cluster = cluster;
-                    // const arr = cluster.map((item: any) => item.configuration.serverId)
-                    //遍历数据更新对应的本地端口
-                    // setTimeout(() => {
-                    //     cluster.forEach((item: any, index: number) => {
-                    //         const { serverId } = item.configuration
-                    //         if(!resourcesClustersMap.get(serverId)){
-                    //             // await getResourcesClustersById(serverId)
-                    //         }
-                    //         const checked = resourcesClustersMap.get(serverId)
-                    //         getPortOptions(checked, index);
-                    //     });
-                    // }, 0);
-                }
-
-                if (dynamicValidateForm.cluster.length === 1) {
-                    dynamicValidateForm.cluster[0].id = '1';
-                }
+    loading.value = true;
+    detail(id).then((resp) => {
+        if (resp.status === 200) {
+            const result: any = resp.result;
+            const { configuration, cluster } = result;
+            formData.value = { ...result };
+            shareCluster.value = result.shareCluster;
+            activeKey.value = ['1'];
+            if (result.shareCluster) {
+                dynamicValidateForm.cluster[0].configuration = {
+                    ...cloneDeep(Configuration), //防止编辑时，表单字段不完善，导致输入/选择框新出现时找不到
+                    ...configuration,
+                };
+            } else {
+                dynamicValidateForm.cluster = cluster;
+                // const arr = cluster.map((item: any) => item.configuration.serverId)
+                //遍历数据更新对应的本地端口
+                // setTimeout(() => {
+                //     cluster.forEach((item: any, index: number) => {
+                //         const { serverId } = item.configuration
+                //         if(!resourcesClustersMap.get(serverId)){
+                //             // await getResourcesClustersById(serverId)
+                //         }
+                //         const checked = resourcesClustersMap.get(serverId)
+                //         getPortOptions(checked, index);
+                //     });
+                // }, 0);
             }
-        });
-        loading.value = false;
-    }
-};
 
-onMounted(() => {
-    getSupports();
-    getCertificates();
-    getResourcesCurrent();
-    if (isNoCommunity) {
-        getResourcesClusters();
-    }
-    getDetail();
-});
+            if (dynamicValidateForm.cluster.length === 1) {
+                dynamicValidateForm.cluster[0].id = '1';
+            }
+        }
+        getResourcesCurrent();
+    });
+    loading.value = false;
+  
+};
 
 watch(
     () => formData.value.shareCluster,
@@ -1587,6 +1579,20 @@ watch(
     },
     { deep: true, immediate: true },
 );
+
+onMounted(async () => {
+    getSupports();
+    getCertificates();
+
+    if (isNoCommunity) {
+        getResourcesClusters();
+    }
+    if (id !== ':id') {
+        getDetail();
+    } else {
+        getResourcesCurrent();
+    }
+});
 </script>
 
 <style lang="less" scoped>

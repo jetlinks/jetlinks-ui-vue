@@ -10,7 +10,9 @@
                                 :src="getImage('/alarm/bashboard.png')"
                                 alt=""
                             />{{
-                                dayjs(item.alarmTime).format(
+                                item.lastAlarmTime ? dayjs(item.lastAlarmTime).format(
+                                    'YYYY-MM-DD HH:mm:ss',
+                                ) : dayjs(item.alarmTime).format(
                                     'YYYY-MM-DD HH:mm:ss',
                                 )
                             }}
