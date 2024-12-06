@@ -160,7 +160,7 @@ provide('filter-params', columnOptions);
 
 const columnRequest = () => {
     const param = {
-        branch: props.branchName,
+        branch: props.branchName === 0 ? props.branchName : props.branchName / 2,
         branchGroup: props.thenName,
         action: props.actionName,
     };
