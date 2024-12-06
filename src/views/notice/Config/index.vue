@@ -202,7 +202,7 @@
 <script setup lang="ts">
 import ConfigApi from '@/api/notice/config';
 import type { ActionsType } from '@/views/device/Instance/typings';
-
+import { usePermissionStore } from '@/store/permission';
 import { NOTICE_METHOD, MSG_TYPE } from '@/views/notice/const';
 import SyncUser from './SyncUser/index.vue';
 import Debug from './Debug/index.vue';
