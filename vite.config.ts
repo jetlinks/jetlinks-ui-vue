@@ -12,7 +12,7 @@ import {
 } from 'vite-plugin-style-import'
 import * as path from 'path'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
-import { optimizeDeps } from './configs/plugin/optimize'
+import { optimizeDeps, registerModulesAlias } from './configs/plugin'
 import progress from 'vite-plugin-progress'
 
 // https://vitejs.dev/config/
@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
         resolve: {
             alias: {
                 '@': path.resolve(__dirname, 'src'),
+                ...registerModulesAlias()
             },
         },
         build: {
