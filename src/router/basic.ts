@@ -52,3 +52,11 @@ export const INIT_HOME: RouteRecordItem = {
     title: "初始化",
   },
 }
+
+export const EDGE_TOKEN_ROUTE: RouteRecordItem = {
+  path: '/edge/token/:id',
+  meta: {
+    title: 'token失效'
+  },
+  component: () => import('@/views/TokenJump/index.vue')
+};

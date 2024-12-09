@@ -1,0 +1,23 @@
+@set: {
+  0: #ffffff;
+  50: #F8F9FA;
+  200: #EFF0F1;
+  300: #E4E6E7;
+  400: #C3C7CB;
+  500: #8D9399;
+  600: #646C73;
+  900: #1F2429;
+}
+
+each(@set, {
+  .text-color-@{key} {
+    color: @value;
+  }
+  .bg-color-@{key} {
+    background-color: @value;
+  }
+  .border-color-@{key} {
+    border-color: @value;
+  }
+})
+

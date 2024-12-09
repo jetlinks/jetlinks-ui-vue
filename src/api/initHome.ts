@@ -16,3 +16,7 @@ export const getInit = () => request.get(`/user/settings/init`)
 // 查询保存后的数据
 export const detail = (data?: any) => request.post(`/system/config/scopes`, data)
 
+// 获取当前系统权限信息
+
+export const getSystemPermission = () =>request.get(`/system/resources/permission`)
+

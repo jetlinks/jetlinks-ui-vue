@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts" name="MenuSetting">
-import { getMenuTree_api } from '@/api/system/menu';
+import { getMenuTree } from '@/api/system/menu';
 import {
     getSystemPermission as getSystemPermission_api,
     updateMenus,
@@ -301,7 +301,7 @@ onMounted(() => {
             resp.result.map((item: any) => JSON.parse(item).id),
           filterBaseMenu,
         );
-        getMenuTree_api(params).then((resp: any) => {
+        getMenuTree(params).then((resp: any) => {
             if (resp.status == 200) {
                 systemMenu.value = resp.result?.filter(
                     (item: { code: string }) =>

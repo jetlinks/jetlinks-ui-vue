@@ -7,7 +7,7 @@ import {handleMenus, handleMenusMap, handleSiderMenu} from '@/utils'
 import {getOwnMenuThree} from '@/api/system/menu'
 import {getGlobModules} from '@/router/globModules'
 import {getExtraRouters} from '@/router/extraMenu'
-import {USER_CENTER_ROUTE, INIT_HOME} from '@/router/basic'
+import {USER_CENTER_ROUTE, INIT_HOME, EDGE_TOKEN_ROUTE} from '@/router/basic'
 import {useAuthStore} from '@/store/auth'
 import {OWNER_KEY} from "@/utils/consts";
 
@@ -115,6 +115,7 @@ export const useMenuStore = defineStore('menu', () => {
 
             routes.push(USER_CENTER_ROUTE) // 添加个人中心
             routes.push(INIT_HOME) // 添加初始化页面
+            routes.push(EDGE_TOKEN_ROUTE) //添加边缘网关token失效页面
             authStore.handlePermission(resp.result) // 处理按钮权限
             menu.value = routes
             console.log('routes', routes)
