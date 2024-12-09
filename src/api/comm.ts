@@ -27,6 +27,13 @@ export const getSearchHistory = (target:string) => request.get(`/user/settings/$
  */
 export const deleteSearchHistory = (target:string, id:string) => request.remove(`/user/settings/${target}/${id}`)
 
+/**
+ * 聚合查询
+ * @param data
+ * @returns
+ */
+export const queryDashboard = (data: Record<string, any>) => request.post(`/dashboard/_multi`, data)
+
 export const getRemoteProxyUrl = (deviceId: string) => request.post(`/edge/device/${deviceId}/_proxy/_start?timeoutMinute=10`)
 
 export const getRemoteToken = (deviceId: string, data: any) => request.post(`/edge/device/${deviceId}/token`, data)

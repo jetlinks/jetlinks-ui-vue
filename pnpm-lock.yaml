@@ -24,8 +24,8 @@ importers:
         specifier: ^6.1.15
         version: 6.1.15(@fullcalendar/core@6.1.15)(vue@3.3.4)
       '@jetlinks-web/components':
-        specifier: 2.3.0
-        version: 2.3.0(@types/markdown-it@14.1.2)(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)
+        specifier: 2.4.10
+        version: 2.4.10(@types/markdown-it@14.1.2)(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)
       '@jetlinks-web/constants':
         specifier: ^1.0.3
         version: 1.0.3
@@ -178,6 +178,9 @@ importers:
 
   src/modules/device-manager-ui:
     dependencies:
+      '@jetlinks-web/components':
+        specifier: ^2.4.10
+        version: 2.4.10(@types/markdown-it@14.1.2)(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)
       async-validator:
         specifier: ^4.2.5
         version: 4.2.5
@@ -560,8 +563,8 @@ packages:
     resolution: {integrity: sha512-liyH3UMoglHBUn70iCYcy9CQlInx/lp50W2aeSxqqrvmG+LDj/Jj7tBJhBoQL4fECkldGhbmW0g2ommHfL6Wmw==}
     engines: {node: '>= 16'}
 
-  '@jetlinks-web/components@2.3.0':
-    resolution: {integrity: sha512-QDVI5ege178UbhWR1fxwu1S0RTuJHLFHZrwGaBnf3EVftYyROC7Ye/6fua0gfulDr/HAyI2CYLTwYWSWF+fgvA==}
+  '@jetlinks-web/components@2.4.10':
+    resolution: {integrity: sha512-27bvbBWW61oE2J2nxdgf7fpADjxS+TVUjAyuO6NhF78C8k7xf03VXhWe+Lq8bewhvxIWSmIxV32OZgjueQnKoQ==}
 
   '@jetlinks-web/constants@1.0.3':
     resolution: {integrity: sha512-tf04D1Rfa5lxlMJD0Dwq4tXIrQBfCy8QCwpmOV2PVL//zHzdhC/X/hxZketwcED7jEG5gmmDvqL/zJNd0NyKZA==}
@@ -1609,9 +1612,6 @@ packages:
   mlly@1.6.1:
     resolution: {integrity: sha512-vLgaHvaeunuOXHSmEbZ9izxPx3USsk8KCQ8iC+aTlp5sKRSoZvwhHh5L9VbKSaVC6sJDqbyohIS76E2VmHIPAA==}
 
-  monaco-editor@0.40.0:
-    resolution: {integrity: sha512-1wymccLEuFSMBvCk/jT1YDW/GuxMLYwnFwF9CDyYCxoTw2Pt379J3FUhwy9c43j51JdcxVPjwk0jm0EVDsBS2g==}
-
   monaco-editor@0.51.0:
     resolution: {integrity: sha512-xaGwVV1fq343cM7aOYB6lVE4Ugf0UyimdD/x5PWcWBMKENwectaEu77FAN7c5sFiyumqeJdX1RPTh1ocioyDjw==}
 
@@ -1627,6 +1627,11 @@ packages:
 
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@3.3.8:
+    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -1713,8 +1718,8 @@ packages:
   picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
-  picocolors@1.1.0:
-    resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
+  picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
   picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -1884,6 +1889,10 @@ packages:
 
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
+    engines: {node: '>=0.10.0'}
+
+  source-map-js@1.2.1:
+    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
   source-map@0.6.1:
@@ -2552,7 +2561,7 @@ snapshots:
 
   '@intlify/shared@9.10.1': {}
 
-  '@jetlinks-web/components@2.3.0(@types/markdown-it@14.1.2)(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)':
+  '@jetlinks-web/components@2.4.10(@types/markdown-it@14.1.2)(vue-router@4.2.2(vue@3.3.4))(vue@3.3.4)':
     dependencies:
       '@ant-design/icons-vue': 7.0.1(vue@3.3.4)
       '@vuemap/vue-amap': 2.1.5(vue@3.3.4)
@@ -2573,7 +2582,7 @@ snapshots:
       markdown-it-sup: 2.0.0
       markdown-it-task-lists: 2.1.1
       markdown-it-toc-done-right: 4.2.0
-      monaco-editor: 0.40.0
+      monaco-editor: 0.51.0
       resize-observer-polyfill: 1.5.1
       sortablejs: 1.15.3
     transitivePeerDependencies:
@@ -3806,8 +3815,6 @@ snapshots:
       pkg-types: 1.0.3
       ufo: 1.5.3
 
-  monaco-editor@0.40.0: {}
-
   monaco-editor@0.51.0: {}
 
   mrmime@2.0.0: {}
@@ -3817,6 +3824,8 @@ snapshots:
   muggle-string@0.2.2: {}
 
   nanoid@3.3.7: {}
+
+  nanoid@3.3.8: {}
 
   nanopop@2.4.2: {}
 
@@ -3898,7 +3907,7 @@ snapshots:
 
   picocolors@1.0.0: {}
 
-  picocolors@1.1.0: {}
+  picocolors@1.1.1: {}
 
   picomatch@2.3.1: {}
 
@@ -3932,9 +3941,9 @@ snapshots:
 
   postcss@8.4.44:
     dependencies:
-      nanoid: 3.3.7
-      picocolors: 1.1.0
-      source-map-js: 1.2.0
+      nanoid: 3.3.8
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
 
   preact@10.12.1: {}
 
@@ -4053,6 +4062,8 @@ snapshots:
   sortablejs@1.15.3: {}
 
   source-map-js@1.2.0: {}
+
+  source-map-js@1.2.1: {}
 
   source-map@0.6.1:
     optional: true
