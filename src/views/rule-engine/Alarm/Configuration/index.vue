@@ -250,8 +250,8 @@ const columns = [
                           value: 'org',
                       },
                       {
-                          label: '其他',
-                          value: 'other',
+                          label: '场景',
+                          value: 'scene',
                       },
                   ]
                 : [
@@ -264,8 +264,8 @@ const columns = [
                           value: 'device',
                       },
                       {
-                          label: '其他',
-                          value: 'other',
+                          label: '场景',
+                          value: 'scene',
                       },
                   ],
         },

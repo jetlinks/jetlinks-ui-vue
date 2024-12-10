@@ -148,6 +148,7 @@ import Metadata from '../../../device/components/Metadata/index.vue';
 import DataAnalysis from './DataAnalysis/index.vue';
 import MetadataMap from './MetadataMap';
 import AlarmRecord from '@/views/device/Instance/Detail/AlarmRecord/index.vue';
+import Invalid from '@/views/device/Instance/Detail/Invalid/index.vue'
 import Firmware from '@/views/device/Instance/Detail/Firmware/index.vue';
 import {
     _deploy,
@@ -206,6 +207,7 @@ const tabs = {
     MetadataMap,
     AlarmRecord,
     Firmware,
+    Invalid
 };
 
 const onBack = () => {
@@ -336,10 +338,14 @@ const getProtocol = async () => {
             isNoCommunity &&
             showThreshold
         ) {
-            list.value.push({
+            list.value.push(...[{
                 key: 'AlarmRecord',
-                tab: '预处理数据',
-            });
+                tab: '告警记录',
+            },{
+                key: 'Invalid',
+                tab: '无效数据'
+            }]);
+            
         }
     }
 };

@@ -178,7 +178,7 @@
 
 <script lang="ts" setup>
 import { getImage } from '@/utils/comm';
-import { getOrgList, query, getAlarmProduct } from '@/api/rule-engine/log';
+import { getOrgList, query, getAlarmProduct , queryAlarmRecordByType } from '@/api/rule-engine/log';
 import { useAlarmStore } from '@/store/alarm';
 import { storeToRefs } from 'pinia';
 import dayjs from 'dayjs';
@@ -354,7 +354,7 @@ let params: any = ref({
     terms: [],
 });
 const handleSearch = async (params: any) => {
-    const resp: any = await query(params);
+    const resp: any =props.type !== 'all' ? await queryAlarmRecordByType(props.type,params) : await query(params);
     if (resp.status === 200) {
         const res: any = await getOrgList();
         if (res.status === 200) {
@@ -378,14 +378,6 @@ const handleSearch = async (params: any) => {
 
 const search = (data: any) => {
     params.value.terms = [...data?.terms];
-    if (props.type !== 'all' && !props.id) {
-        params.value.terms.push({
-            termType: 'eq',
-            column: 'targetType',
-            value: props.type,
-            type: 'and',
-        });
-    }
     if (props.type === 'device') {
         data?.terms.forEach((i: any, _index: number) => {
             i.terms.forEach((item: any, index: number) => {
@@ -479,16 +471,6 @@ const showDrawer = (data: any) => {
     visibleDrawer.value = true;
 };
 onMounted(() => {
-    if (props.type !== 'all' && !props.id) {
-        params.value.terms = [
-            {
-                termType: 'eq',
-                column: 'targetType',
-                value: props.type,
-                type: 'and',
-            },
-        ];
-    }
     if (props.id) {
         params.value.terms = [
             {

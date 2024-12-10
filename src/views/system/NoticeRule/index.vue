@@ -75,8 +75,8 @@ const systemNotice = [
                 name: '组织告警',
             },
             {
-                provider: 'alarm-other',
-                name: '其他告警',
+                provider: 'alarm-scene',
+                name: '场景告警',
             },
         ],
     },

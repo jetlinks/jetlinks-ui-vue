@@ -149,12 +149,12 @@ const selectOpt1 = ref<Object[]>([
     { label: '设备', value: 'device' },
     { label: '产品', value: 'product' },
     { label: '组织', value: 'org' },
-    { label: '其它', value: 'other' },
+    { label: '场景', value: 'scene' },
 ]);
 const selectOpt2 = ref<SelectTypes['options']>([
     { label: '设备', value: 'device' },
     { label: '产品', value: 'product' },
-    { label: '其它', value: 'other' },
+    { label: '场景', value: 'scene' },
 ]);
 let queryCodition = reactive({
     startTime: 0,
