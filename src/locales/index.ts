@@ -12,7 +12,7 @@ Object.keys(zhFiles).forEach((key) => {
 })
 
 Object.keys(enFiles).forEach((key) => {
-  const result = (zhFiles[key] as any)?.default
+  const result = (enFiles[key] as any)?.default
   Object.assign(enUS, result)
 })
 
