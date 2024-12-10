@@ -338,13 +338,34 @@ const getAlarmConfig = async () => {
 getAlarmConfig();
 const getCurrentAlarm = async () => {
     const alarmLevel: any = await getAlarmLevel();
+    const params ={
+    "pageIndex": 0,
+    "pageSize": 12,
+    "sorts": [
+        {
+            "name": "alarmTime",
+            "order": "desc"
+        }
+    ],
+    "terms": [
+        {
+            "terms": [
+                {
+                    "type": "or",
+                    "value": "warning",
+                    "termType": "eq",
+                    "column": "state"
+                }
+            ]
+        }
+    ]
+}
     const sorts = { alarmTime: 'desc' };
-    const currentAlarm: any = await getAlarm(encodeQuery({ sorts }));
+    const currentAlarm: any = await getAlarm(params);
     if (currentAlarm.status === 200) {
         if (alarmLevel.status === 200) {
             const levels = alarmLevel.result.levels;
             state.alarmList = currentAlarm.result?.data
-                .filter((i: any) => i?.state?.value === 'warning')
                 .map((item: { level: any }) => ({
                     ...item,
                     levelName: levels.find((l: any) => l.level === item.level)

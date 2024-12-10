@@ -68,3 +68,8 @@ export const initApplication = (clientId: string | number) => server.get<{name: 
  * @returns 
  */
 export const authLoginConfig = () => server.get(`/authorize/login/configs`)
+
+/**
+ * 查看后端配置模块
+ */
+export const queryModal = (serviceId:string) => server.get(`/command-supports/service/${serviceId}/exists`)
