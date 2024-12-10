@@ -148,7 +148,7 @@ let alarmState = ref<Footer[]>([
 const selectOpt1 = ref<Object[]>([
     { label: '设备', value: 'device' },
     { label: '产品', value: 'product' },
-    { label: '组织', value: 'org' },
+    { label: '组织', value: 'organization' },
     { label: '场景', value: 'scene' },
 ]);
 const selectOpt2 = ref<SelectTypes['options']>([
@@ -448,12 +448,12 @@ const selectChange = () => {
             limit: 9,
         },
     };
-    let tip = '其它';
+    let tip = '场景';
     if (queryCodition.targetType === 'device') {
         tip = '设备';
     } else if (queryCodition.targetType === 'product') {
         tip = '产品';
-    } else if (queryCodition.targetType === 'org') {
+    } else if (queryCodition.targetType === 'organization') {
         tip = '组织';
     }
     // 网络请求

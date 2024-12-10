@@ -204,13 +204,13 @@ const imgMap = new Map();
 imgMap.set('product', getImage('/alarm/product.png'));
 imgMap.set('device', getImage('/alarm/device.png'));
 imgMap.set('other', getImage('/alarm/other.png'));
-imgMap.set('org', getImage('/alarm/org.png'));
+imgMap.set('organization', getImage('/alarm/org.png'));
 
 const titleMap = new Map();
 titleMap.set('product', '产品');
 titleMap.set('device', '设备');
-titleMap.set('other', '场景');
-titleMap.set('org', '组织');
+titleMap.set('scene', '场景');
+titleMap.set('organization', '组织');
 
 const columns = [
     {
@@ -293,7 +293,7 @@ const newColumns = computed(() => {
         case 'device':
             otherColumns.title = '设备名称';
             break;
-        case 'org':
+        case 'organization':
             otherColumns.title = '组织名称';
             break;
         case 'other':

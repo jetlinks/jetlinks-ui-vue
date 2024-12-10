@@ -247,7 +247,7 @@ const columns = [
                       },
                       {
                           label: '组织',
-                          value: 'org',
+                          value: 'organization',
                       },
                       {
                           label: '场景',
@@ -368,8 +368,8 @@ const current = ref<any>({});
 const map = {
     product: '产品',
     device: '设备',
-    org: '组织',
-    other: '其他',
+    organization: '组织',
+    scene: '场景',
 };
 const handleSearch = (e: any) => {
     e.terms.map((i: any) => {

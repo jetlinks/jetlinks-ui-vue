@@ -91,7 +91,7 @@
 
 <script setup>
 import {
-    queryByDevice as queryAlarmRecord,
+    queryAlarmRecordByType,
     queryPreHandleHistory,
 } from '@/api/rule-engine/log';
 import { useInstanceStore } from '@/store/instance';
@@ -319,8 +319,7 @@ const solveType = ref('handle');
 const currentAlarm = ref();
 const visibleDrawer = ref(false);
 const defaultParams =
-    props.type === 'device'
-        ? {
+ {
               sorts: [{ name: 'alarmTime', order: 'desc' }],
               terms: [
                   {
@@ -330,41 +329,15 @@ const defaultParams =
                               value: current.id,
                               termType: 'eq',
                           },
-                          {
-                              column: 'alarmConfigSource',
-                              value: 'device-property-preprocessor',
-                              termType: 'eq',
-                          },
                       ],
                       type: 'and',
                   },
               ],
           }
-        : {
-              sorts: [{ name: 'alarmTime', order: 'desc' }],
-              terms: [
-                  {
-                      terms: [
-                          {
-                              column: 'targetId$dev-instance',
-                              value: [
-                                  {
-                                      column: 'product_id',
-                                      value: current.id,
-                                      termType: 'eq',
-                                  },
-                              ],
-                          },
-                          {
-                              column: 'alarmConfigSource',
-                              value: 'device-property-preprocessor',
-                              termType: 'eq',
-                          },
-                      ],
-                      type: 'and',
-                  },
-              ],
-          };
+
+const queryAlarmRecord = async(queryParams) =>{
+    return await queryAlarmRecordByType(props.type,queryParams)
+}
 const handleSearch = (e) => {
     params.value = e;
 };
@@ -443,11 +416,6 @@ const refreshCurrent = async () => {
                 column: 'id',
                 termType: 'eq',
                 value: currentAlarm.value.id,
-            },
-            {
-                column: 'alarmConfigSource',
-                value: 'device-property-preprocessor',
-                termType: 'eq',
             },
         ],
     });

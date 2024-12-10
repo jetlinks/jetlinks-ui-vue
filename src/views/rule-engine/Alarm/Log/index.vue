@@ -43,7 +43,7 @@ onMounted(()=>{
                 tab: '设备',
             },
             {
-                key: 'org',
+                key: 'organization',
                 tab: '组织',
             },
             {
