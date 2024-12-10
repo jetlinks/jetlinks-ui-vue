@@ -14,10 +14,20 @@
         :params="params"
     >
         <template #alarmTime="slotProps">
-            {{ dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss') }}
+           <Ellipsis> {{ dayjs(slotProps.alarmTime).format('YYYY-MM-DD HH:mm:ss') }}</Ellipsis>
         </template>
         <template #duration="slotProps">
             <Duration :data="slotProps" />
+        </template>
+        <template #alarmName="slotProps">
+            <Ellipsis>
+                {{ slotProps.alarmName }}
+            </Ellipsis>
+        </template>
+        <template #level="slotProps">
+            <Ellipsis>
+                {{ levelMap[slotProps.level] }}
+            </Ellipsis>
         </template>
         <template #handleTime="slotProps">
             {{
@@ -91,6 +101,7 @@ import Duration from '@/views/rule-engine/Alarm/Log/components/Duration.vue';
 import Solve from '@/views/rule-engine/Alarm/Log/SolveComponent/index.vue';
 import AlarmLog from './components/AlarmLog.vue';
 import { useMenuStore } from 'store/menu';
+import { useAlarmLevel } from '@/hook';
 const props = defineProps({
     type: {
         type: String,
@@ -98,6 +109,7 @@ const props = defineProps({
     },
 });
 const menuStory = useMenuStore();
+const { levelMap } = useAlarmLevel();
 const { current } =
     props.type === 'device' ? useInstanceStore() : useProductStore();
 const columns =
@@ -117,6 +129,19 @@ const columns =
                   dataIndex: 'duration',
                   key: 'duration',
                   scopedSlots: true,
+              },
+              {
+                title: '告警名称',
+                dataIndex: 'alarmName',
+                key: 'alarmName',
+                width: 200,
+                scopedSlots: true,
+              },
+              {
+                title: '告警级别',
+                dataIndex: 'level',
+                key: 'level',
+                scopedSlots: true,
               },
               {
                   title: '触发条件',
@@ -198,6 +223,19 @@ const columns =
                   dataIndex: 'duration',
                   key: 'duration',
                   scopedSlots: true,
+              },
+              {
+                title: '告警名称',
+                dataIndex: 'alarmName',
+                key: 'alarmName',
+                width: 200,
+                scopedSlots: true,
+              },
+              {
+                title: '告警级别',
+                dataIndex: 'level',
+                key: 'level',
+                scopedSlots: true,
               },
               {
                   title: '触发条件',

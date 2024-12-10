@@ -240,7 +240,7 @@ const getDetail = () => {
   if (permissionStore.hasPermission('rule-engine/Alarm/Log:view') && isNoCommunity && showThreshold) {
     list.value.push(...[{
       key: 'AlarmRecord',
-      tab: '预处理数据',
+      tab: '告警记录',
     },{
       key: 'Invalid',
       tab: '无效数据'
