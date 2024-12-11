@@ -190,7 +190,7 @@ import Duration from '../components/Duration.vue';
 import { useAlarmLevel } from '@/hook';
 const menuStory = useMenuStore();
 const tableRef = ref();
-const { levelMap, levelList } = useAlarmLevel();
+const { levelMap, getLevelList} = useAlarmLevel();
 const alarmStore = useAlarmStore();
 const { data } = storeToRefs(alarmStore);
 const drawerData = ref();
@@ -237,7 +237,7 @@ const columns = [
         search: {
             type: 'select',
             options: async () => {
-                return levelList.value;
+                return getLevelList();
             },
         },
         scopedSlots: true,
