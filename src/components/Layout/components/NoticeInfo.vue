@@ -132,9 +132,7 @@ const onChange = (_key: string) => {
     getData(type.value);
 };
 
-onMounted(async () => {
-    onChange(props.tabs?.[0]?.key || "alarm");
-});
+
 
 const onRefresh = (id: string,index:number) => {
     const flag = cloneDeep(refreshObj.value[id]);
@@ -161,6 +159,10 @@ const onMore = (key: string) => {
 
     emits('action');
 };
+
+onMounted(async () => {
+    onChange(props.tabs?.[0]?.key || "alarm");
+});
 </script>
 
 <style lang="less" scoped>

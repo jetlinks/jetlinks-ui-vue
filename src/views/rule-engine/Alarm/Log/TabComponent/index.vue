@@ -78,7 +78,7 @@
                                     :span="6"
                                     class="content-left"
                                 >
-                                    <div class="content-title">告警维度</div>
+                                    <div class="content-title">告警目标</div>
                                     <Ellipsis
                                         ><div>
                                             {{ slotProps?.targetName }}

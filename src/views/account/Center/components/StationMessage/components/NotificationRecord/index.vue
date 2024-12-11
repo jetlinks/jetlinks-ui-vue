@@ -110,7 +110,7 @@ const getType = computed(() => {
             'alarm',
             'alarm-product',
             'alarm-device',
-            'alarm-other',
+            'alarm-scene',
             'alarm-org',
         ];
     }
